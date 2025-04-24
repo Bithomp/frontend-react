@@ -247,7 +247,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
     { label: 'Currency', key: 'currencyCode' },
     { label: 'Currency issuer', key: 'currencyIssuer' },
     { label: selectedCurrency.toUpperCase() + ' Amount equavalent', key: 'amountInFiats.' + selectedCurrency },
-    { label: 'Direction', key: 'direction' },
     { label: 'Transfer fee as Text', key: 'transferFeeExport' },
     { label: 'Transfer fee', key: 'transferFeeNumber' },
     { label: 'Transfer fee currency', key: 'transferFeeCurrencyCode' },
@@ -616,7 +615,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                               {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
                               <td className="center">
                                 <a href={'/explorer/' + a.hash} aria-label={a.txType}>
-                                  <TypeToIcon type={a.txType} direction={a.direction} />
+                                  <TypeToIcon type={a.txType} direction={a.amountNumber > 0 ? 'received' : 'sent'} />
                                 </a>
                               </td>
                               <td>
