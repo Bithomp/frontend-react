@@ -113,13 +113,20 @@ const nftokenChanges = (changes, nftokens, txType) => {
         if (showAll) {
           output.push(
             <tr key={'h' + i}>
-              <TData>&nbsp;</TData>
+              <TData>{i + 1}.</TData>
               <TData>
-                {i + 1}. <AddressWithIconFilled data={{ address }} name="address" />
+                <AddressWithIconFilled data={{ address }} name="address" />
               </TData>
             </tr>
           )
         }
+        output.push(
+          <tr>
+            <TData colspan="2">
+              <hr />
+            </TData>
+          </tr>
+        )
         for (let i = 0; i < change.length; i++) {
           const nftInfo = nftokens[change[i].nftokenID]
           if (showAll) {
@@ -151,6 +158,14 @@ const nftokenChanges = (changes, nftokens, txType) => {
             output.push(<React.Fragment key={'t' + i}>{nftData(change[i], nftInfo, txType)}</React.Fragment>)
           }
         }
+        output.push(
+          <tr>
+            <TData colspan="2">
+              <hr />
+              <br />
+            </TData>
+          </tr>
+        )
         return output
       })}
       {transfer && (
