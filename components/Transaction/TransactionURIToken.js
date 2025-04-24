@@ -4,7 +4,7 @@ import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled, amountFormat, nftIdLink } from '../../utils/format'
 
-//URITokenBuy, URITokenCreateSellOffer, URITokenCancelSellOffer, URITokenBurn
+//URITokenMint, URITokenBuy, URITokenCreateSellOffer, URITokenCancelSellOffer, URITokenBurn
 
 const nftData = (change, nftInfo, txType) => {
   return (
@@ -23,10 +23,10 @@ const nftData = (change, nftInfo, txType) => {
               </TData>
             </tr>
           )}
-          {nftInfo.flags && (
+          {nftInfo.flags?.burnable && (
             <tr>
-              <TData>Flag{Object.keys(nftInfo.flags).length > 1 ? 's' : ''}</TData>
-              <TData>{flagList(nftInfo.flags)}</TData>
+              <TData>Flag</TData>
+              <TData className="orange">burnable</TData>
             </tr>
           )}
         </>
@@ -124,6 +124,21 @@ const uritokenChanges = (changes, nftokens, txType) => {
       {transfer && (
         <>
           <tr>
+            <TData className="bold">
+              <br />
+              NFT Transfer
+            </TData>
+            <TData>
+              <br />
+              <br />
+            </TData>
+          </tr>
+          <tr>
+            <TData colSpan="2">
+              <hr />
+            </TData>
+          </tr>
+          <tr>
             <TData>Transfer from</TData>
             <TData>
               <AddressWithIconFilled data={{ address: addressFrom }} name="address" />
@@ -136,6 +151,12 @@ const uritokenChanges = (changes, nftokens, txType) => {
             </TData>
           </tr>
           {nftData(changes?.[addressTo][0], nftokens[changes?.[addressTo][0].uritokenID], txType)}
+          <tr>
+            <TData colSpan="2">
+              <hr />
+              <br />
+            </TData>
+          </tr>
         </>
       )}
     </>
@@ -149,7 +170,12 @@ export const TransactionURIToken = ({ data, pageFiatRate, selectedCurrency }) =>
   const txType = tx?.TransactionType
 
   return (
-    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
+    <TransactionCard
+      data={data}
+      pageFiatRate={pageFiatRate}
+      selectedCurrency={selectedCurrency}
+      notFullySupported={txType === 'URITokenBuy'}
+    >
       <tr>
         <TData>Initiated by</TData>
         <TData>
@@ -209,19 +235,16 @@ export const TransactionURIToken = ({ data, pageFiatRate, selectedCurrency }) =>
           )}
         </>
       )}
-
       {specification.flags?.burnable && (
         <tr>
           <TData>Flag</TData>
           <TData className="orange">burnable</TData>
         </tr>
       )}
-      {outcome?.uriTokenChanges && Object.keys(outcome?.uriTokenChanges).length > 0 && txType !== 'NFTokenBurn' && (
-        <tr>
-          <TData>URI Token Changes</TData>
-          <TData>{uritokenChanges(outcome?.uritokenChanges, outcome?.affectedObjects?.uritokens, txType)}</TData>
-        </tr>
-      )}
+      {outcome?.uritokenChanges &&
+        Object.keys(outcome?.uritokenChanges).length > 0 &&
+        txType !== 'NFTokenBurn' &&
+        uritokenChanges(outcome?.uritokenChanges, outcome?.affectedObjects?.uritokens, txType)}
     </TransactionCard>
   )
 }
