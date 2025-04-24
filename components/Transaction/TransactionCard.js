@@ -102,6 +102,11 @@ export const TransactionCard = ({
             clientname = 'bithomp.com'
           }
 
+          if (memopiece.slice(0, 17) === 'xahauexplorer.com') {
+            memopiece = ''
+            clientname = 'xahauexplorer.com'
+          }
+
           if (memotype) {
             if (memotype.slice(0, 25) === '[https://xumm.community]-') {
               memotype = memotype.slice(25)
