@@ -148,22 +148,26 @@ const nftokenChanges = (changes, nftokens, txType) => {
               addressFrom = address
             }
           } else {
-            output.push(
-              <tr>
-                <TData colSpan="2">
-                  <hr />
-                </TData>
-              </tr>
-            )
+            if (txType !== 'NFTokenMint') {
+              output.push(
+                <tr>
+                  <TData colSpan="2">
+                    <hr />
+                  </TData>
+                </tr>
+              )
+            }
             output.push(<React.Fragment key={'t' + i}>{nftData(change[i], nftInfo, txType)}</React.Fragment>)
-            output.push(
-              <tr>
-                <TData colSpan="2">
-                  <hr />
-                  <br />
-                </TData>
-              </tr>
-            )
+            if (txType !== 'NFTokenMint') {
+              output.push(
+                <tr>
+                  <TData colSpan="2">
+                    <hr />
+                    <br />
+                  </TData>
+                </tr>
+              )
+            }
           }
         }
         return output
