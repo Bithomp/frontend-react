@@ -199,14 +199,38 @@ const flagList = (flags) => {
   return flagList
 }
 
+const showAllOfferLinks = (changes) => {
+  const indexes = []
+
+  Object.values(changes).forEach((arr) => {
+    arr.forEach((item) => {
+      if (item.index) {
+        indexes.push(nftOfferLink(item.index))
+      }
+    })
+  })
+
+  return indexes
+}
+
 export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { specification, tx, outcome } = data
 
   const txType = tx?.TransactionType
 
+  const direction = specification.flags.sellToken ? 'Sell' : 'Buy'
+
+  const txTypeSpecial =
+    txType + (txType === 'NFTokenAcceptOffer' || txType === 'NFTokenCreateOffer' ? ' - ' + direction + ' Offer' : '')
+
   return (
-    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
+    <TransactionCard
+      data={data}
+      pageFiatRate={pageFiatRate}
+      selectedCurrency={selectedCurrency}
+      txTypeSpecial={txTypeSpecial}
+    >
       <tr>
         <TData>Initiated by</TData>
         <TData>
@@ -326,17 +350,22 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           )}
         </>
       )}
-      {specification.flags && (
-        <tr>
-          <TData>Flag{Object.keys(specification.flags).length > 1 ? 's' : ''}</TData>
-          <TData>{flagList(specification.flags)}</TData>
-        </tr>
-      )}
+      {specification.flags &&
+        !(Object.keys(specification.flags).length === 1 && specification.flags.sellToken === true) && (
+          <tr>
+            <TData>Flag{Object.keys(specification.flags).length > 1 ? 's' : ''}</TData>
+            <TData>{flagList(specification.flags)}</TData>
+          </tr>
+        )}
       {outcome?.nftokenChanges &&
         Object.keys(outcome?.nftokenChanges).length > 0 &&
         nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType)}
-      {txType === 'NFTokenCreateOffer' &&
-        outcome?.nftokenOfferChanges?.map((change) => change.map((offer) => nftOfferLink(offer.index)))}
+      {txType === 'NFTokenCreateOffer' && Object.keys(outcome?.nftokenOfferChanges).length > 0 && (
+        <tr>
+          <TData>Offer changes</TData>
+          <TData>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</TData>
+        </tr>
+      )}
     </TransactionCard>
   )
 }
