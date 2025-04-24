@@ -120,13 +120,6 @@ const nftokenChanges = (changes, nftokens, txType) => {
             </tr>
           )
         }
-        output.push(
-          <tr>
-            <TData colspan="2">
-              <hr />
-            </TData>
-          </tr>
-        )
         for (let i = 0; i < change.length; i++) {
           const nftInfo = nftokens[change[i].nftokenID]
           if (showAll) {
@@ -155,17 +148,24 @@ const nftokenChanges = (changes, nftokens, txType) => {
               addressFrom = address
             }
           } else {
+            output.push(
+              <tr>
+                <TData colSpan="2">
+                  <hr />
+                </TData>
+              </tr>
+            )
             output.push(<React.Fragment key={'t' + i}>{nftData(change[i], nftInfo, txType)}</React.Fragment>)
+            output.push(
+              <tr>
+                <TData colSpan="2">
+                  <hr />
+                  <br />
+                </TData>
+              </tr>
+            )
           }
         }
-        output.push(
-          <tr>
-            <TData colspan="2">
-              <hr />
-              <br />
-            </TData>
-          </tr>
-        )
         return output
       })}
       {transfer && (
@@ -181,7 +181,7 @@ const nftokenChanges = (changes, nftokens, txType) => {
             </TData>
           </tr>
           <tr>
-            <TData colspan="2">
+            <TData colSpan="2">
               <hr />
             </TData>
           </tr>
@@ -199,7 +199,7 @@ const nftokenChanges = (changes, nftokens, txType) => {
           </tr>
           {nftData(changes?.[addressTo][0], nftokens[changes?.[addressTo][0].nftokenID], txType)}
           <tr>
-            <TData colspan="2">
+            <TData colSpan="2">
               <hr />
               <br />
             </TData>
