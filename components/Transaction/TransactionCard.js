@@ -175,7 +175,7 @@ export const TransactionCard = ({
           if (clientname) {
             output.push(
               <tr key="a3">
-                <TData>Client</TData>
+                <TData>Client web</TData>
                 <TData>
                   <a href={'https://' + clientname} rel="nofollow">
                     {clientname}
