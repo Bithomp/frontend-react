@@ -156,6 +156,21 @@ const nftokenChanges = (changes, nftokens, txType) => {
       {transfer && (
         <>
           <tr>
+            <TData className="bold">
+              <br />
+              NFT Transfer
+            </TData>
+            <TData>
+              <br />
+              <br />
+            </TData>
+          </tr>
+          <tr>
+            <TData colspan="2">
+              <hr />
+            </TData>
+          </tr>
+          <tr>
             <TData>Transfer from</TData>
             <TData>
               <AddressWithIconFilled data={{ address: addressFrom }} name="address" />
@@ -168,6 +183,12 @@ const nftokenChanges = (changes, nftokens, txType) => {
             </TData>
           </tr>
           {nftData(changes?.[addressTo][0], nftokens[changes?.[addressTo][0].nftokenID], txType)}
+          <tr>
+            <TData colspan="2">
+              <hr />
+              <br />
+            </TData>
+          </tr>
         </>
       )}
     </>

@@ -1,8 +1,8 @@
 import { BsInfoCircleFill } from 'react-icons/bs'
 
-export const TData = ({ tooltip, className, children }) => (
+export const TData = ({ tooltip, className, colspan, children }) => (
   <>
-    <td className={className + ' tx-td'}>
+    <td className={className + ' tx-td'} colspan={colspan}>
       {children}
       {tooltip && (
         <>
