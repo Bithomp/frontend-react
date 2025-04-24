@@ -86,10 +86,32 @@ const dateFormatters = {
   }
 }
 
-const processDataForExport = (activities, platform) => {
+const processDataForExport = (activities, platform, selectedCurrency) => {
   return activities.map((activity) => {
+    const sending = activity.amountInFiats?.[selectedCurrency]?.[0] === '-'
+
     const processedActivity = { ...activity }
     processedActivity.timestampExport = dateFormatters[platform](activity.timestamp)
+    if (platform === 'Koinly') {
+      if (activity.amount?.issuer) {
+        let koinlyId =
+          koinly[xahauNetwork ? 'xahau' : 'xrpl'][activity.amount?.issuer + ':' + activity.amount?.currency]
+        if (koinlyId) {
+          processedActivity.sentCurrency = sending ? koinlyId : ''
+          processedActivity.receivedCurrency = !sending ? koinlyId : ''
+        }
+      }
+    } else if (platform === 'CoinLedger') {
+      processedActivity.type = activity.amountNumber > 0 ? 'Deposit' : 'Withdrawal'
+    } else if (platform === 'CoinTracking') {
+      processedActivity.type =
+        activity.amountNumber > 0
+          ? 'Deposit'
+          : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+          ? 'Other Fee'
+          : 'Withdrawal'
+    }
+
     return processedActivity
   })
 }
@@ -124,9 +146,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         headers: [
           { label: 'Date', key: 'timestampExport' },
           { label: 'Sent Amount', key: 'sentAmount' },
-          { label: 'Sent Currency', key: 'koinlySentCurrency' },
+          { label: 'Sent Currency', key: 'sentCurrency' },
           { label: 'Received Amount', key: 'receivedAmount' },
-          { label: 'Received Currency', key: 'koinlyReceivedCurrency' },
+          { label: 'Received Currency', key: 'receivedCurrency' },
           { label: 'Fee Amount', key: 'txFeeNumber' },
           { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
           { label: 'Net Worth Amount', key: 'amountInFiats.' + selectedCurrency },
@@ -147,7 +169,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Amount Received', key: 'receivedAmount' },
           { label: 'Fee Currency (Optional)', key: 'txFeeCurrencyCode' },
           { label: 'Fee Amount (Optional)', key: 'txFeeNumber' },
-          { label: 'Type', key: 'coinLedgerTxType' },
+          { label: 'Type', key: 'type' },
           { label: 'Description (Optional)', key: 'memo' },
           { label: 'TxHash (Optional)', key: 'hash' }
         ]
@@ -155,7 +177,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
       {
         platform: 'CoinTracking',
         headers: [
-          { label: 'Type', key: 'coinTrackingTxType' },
+          { label: 'Type', key: 'type' },
           { label: 'Buy Amount', key: 'receivedAmount' },
           { label: 'Buy Currency', key: 'receivedCurrency' },
           { label: 'Sell Amount', key: 'sentAmount' },
@@ -225,7 +247,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
     { label: 'Currency', key: 'currencyCode' },
     { label: 'Currency issuer', key: 'currencyIssuer' },
     { label: selectedCurrency.toUpperCase() + ' Amount equavalent', key: 'amountInFiats.' + selectedCurrency },
-    { label: 'Direction', key: 'direction' },
     { label: 'Transfer fee as Text', key: 'transferFeeExport' },
     { label: 'Transfer fee', key: 'transferFeeNumber' },
     { label: 'Transfer fee currency', key: 'transferFeeCurrencyCode' },
@@ -325,18 +346,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].currencyCode = res.activities[i].amount?.currency || nativeCurrency
         const { currency } = amountParced(res.activities[i].amount)
 
-        let scvCurrency = currency
-
-        if (res.activities[i].amount?.issuer) {
-          let koinlyId =
-            koinly[xahauNetwork ? 'xahau' : 'xrpl'][
-              res.activities[i].amount?.issuer + ':' + res.activities[i].amount?.currency
-            ]
-          if (koinlyId) {
-            scvCurrency = koinlyId
-          }
-        }
-
         res.activities[i].currencyIssuer = res.activities[i].amount?.issuer
 
         res.activities[i].transferFeeExport = amountFormat(res.activities[i].transferFee)
@@ -356,25 +365,10 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : ''
         res.activities[i].receivedCurrency = !sending ? currency : ''
 
-        // For Koinly platform
-        res.activities[i].koinlySentCurrency = sending ? scvCurrency : ''
-        res.activities[i].koinlyReceivedCurrency = !sending ? scvCurrency : ''
-
         res.activities[i].netWorthCurrency = selectedCurrency.toUpperCase()
 
         //sanitize memos for CSV
         res.activities[i].memo = res.activities[i].memo?.replace(/"/g, "'") || ''
-
-        // For CoinLedger platform
-        res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
-
-        // For CoinTracking platform
-        res.activities[i].coinTrackingTxType =
-          res.activities[i].amountNumber > 0
-            ? 'Deposit'
-            : Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber
-            ? 'Other Fee'
-            : 'Withdrawal'
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -573,7 +567,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
               </div>
               {rendered && (
                 <CSVLink
-                  data={processDataForExport(filteredActivities || [], platformCSVExport)}
+                  data={processDataForExport(filteredActivities || [], platformCSVExport, selectedCurrency)}
                   headers={
                     platformCSVHeaders.find(
                       (header) => header.platform.toLowerCase() === platformCSVExport.toLowerCase()
@@ -621,7 +615,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                               {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
                               <td className="center">
                                 <a href={'/explorer/' + a.hash} aria-label={a.txType}>
-                                  <TypeToIcon type={a.txType} direction={a.direction} />
+                                  <TypeToIcon type={a.txType} direction={a.amountNumber > 0 ? 'received' : 'sent'} />
                                 </a>
                               </td>
                               <td>
