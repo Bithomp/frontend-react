@@ -149,7 +149,7 @@ const nftokenChanges = (changes, nftokens, txType) => {
           } else {
             if (txType === 'NFTokenModify') {
               output.push(
-                <tr>
+                <tr key="nft-modify-header">
                   <TData className="bold">
                     <br />
                     NFT Modified
@@ -164,7 +164,7 @@ const nftokenChanges = (changes, nftokens, txType) => {
 
             if (txType !== 'NFTokenMint') {
               output.push(
-                <tr>
+                <tr key="hr-top">
                   <TData colSpan="2">
                     <hr />
                   </TData>
@@ -174,7 +174,7 @@ const nftokenChanges = (changes, nftokens, txType) => {
             output.push(<React.Fragment key={'t' + i}>{nftData(nftChnages[i], nftInfo, txType)}</React.Fragment>)
             if (txType !== 'NFTokenMint') {
               output.push(
-                <tr>
+                <tr key="hr-bottom">
                   <TData colSpan="2">
                     <hr />
                     <br />
