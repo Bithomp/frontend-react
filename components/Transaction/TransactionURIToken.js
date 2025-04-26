@@ -56,11 +56,11 @@ const uritokenChanges = (changes, nftokens, txType) => {
   */
   let showAll = true
   let transfer = false
-  let addressFrom = ''
-  let addressTo = ''
+  let addressFrom = {}
+  let addressTo = {}
   if (txType === 'URITokenBuy' || txType === 'URITokenCreateSellOffer' || txType === 'URITokenMint') {
     showAll = false
-    if (txType === 'URITokenBuy' && Object.keys(changes).length === 2) {
+    if (txType === 'URITokenBuy' && changes.length === 2) {
       transfer = true
     }
   }
@@ -74,22 +74,22 @@ const uritokenChanges = (changes, nftokens, txType) => {
           </TData>
         </tr>
       )}
-      {Object.keys(changes).map((address, i) => {
-        const change = changes[address]
+      {changes.map((change, i) => {
         let output = []
         if (showAll) {
           output.push(
             <tr key={'h' + i}>
               <TData>&nbsp;</TData>
               <TData>
-                {i + 1}. <AddressWithIconFilled data={address} name="address" />
+                {i + 1}. <AddressWithIconFilled data={change} name="address" />
               </TData>
             </tr>
           )
         }
 
-        for (let i = 0; i < change.length; i++) {
-          const nftInfo = nftokens[change[i].uritokenID]
+        const nftChnages = change.uritokenChanges
+        for (let i = 0; i < nftChnages.length; i++) {
+          const nftInfo = nftokens[nftChnages[i].uritokenID]
           if (showAll) {
             output.push(
               <tr key={i}>
@@ -97,10 +97,10 @@ const uritokenChanges = (changes, nftokens, txType) => {
                 <TData>
                   <span
                     className={
-                      change[i].status === 'added' ? 'green' : change[i].status === 'removed' ? 'red' : 'orange'
+                      nftChnages[i].status === 'added' ? 'green' : nftChnages[i].status === 'removed' ? 'red' : 'orange'
                     }
                   >
-                    {change[i].status}
+                    {nftChnages[i].status}
                   </span>{' '}
                   NFT
                 </TData>
@@ -110,13 +110,13 @@ const uritokenChanges = (changes, nftokens, txType) => {
 
           if (transfer) {
             //added for one, removed for another one.
-            if (change[i].status === 'added') {
-              addressTo = address
-            } else if (change[i].status === 'removed') {
-              addressFrom = address
+            if (nftChnages[i].status === 'added') {
+              addressTo = { address: change.address, addressDetails: change.addressDetails }
+            } else if (nftChnages[i].status === 'removed') {
+              addressFrom = { address: change.address, addressDetails: change.addressDetails }
             }
           } else {
-            output.push(<React.Fragment key={'t' + i}>{nftData(change[i], nftInfo, txType)}</React.Fragment>)
+            output.push(<React.Fragment key={'t' + i}>{nftData(nftChnages[i], nftInfo, txType)}</React.Fragment>)
           }
         }
         return output
@@ -141,16 +141,16 @@ const uritokenChanges = (changes, nftokens, txType) => {
           <tr>
             <TData>Transfer from</TData>
             <TData>
-              <AddressWithIconFilled data={{ address: addressFrom }} name="address" />
+              <AddressWithIconFilled data={addressFrom} name="address" />
             </TData>
           </tr>
           <tr>
             <TData>Transfer to</TData>
             <TData>
-              <AddressWithIconFilled data={{ address: addressTo }} name="address" />
+              <AddressWithIconFilled data={addressTo} name="address" />
             </TData>
           </tr>
-          {nftData(changes?.[addressTo][0], nftokens[changes?.[addressTo][0].uritokenID], txType)}
+          {nftData(changes?.[0].uritokenChanges[0], nftokens[changes?.[0].uritokenChanges[0].uritokenID], txType)}
           <tr>
             <TData colSpan="2">
               <hr />
@@ -242,7 +242,7 @@ export const TransactionURIToken = ({ data, pageFiatRate, selectedCurrency }) =>
         </tr>
       )}
       {outcome?.uritokenChanges &&
-        Object.keys(outcome?.uritokenChanges).length > 0 &&
+        outcome?.uritokenChanges.length > 0 &&
         txType !== 'NFTokenBurn' &&
         uritokenChanges(outcome?.uritokenChanges, outcome?.affectedObjects?.uritokens, txType)}
     </TransactionCard>
