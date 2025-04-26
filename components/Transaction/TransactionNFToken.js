@@ -51,18 +51,16 @@ const nftData = (change, nftInfo, txType) => {
         </tr>
       )}
       {change.previousURI && (
-        <>
-          <tr>
-            <TData>Previous URI</TData>
-            <TData>{decode(change.previousURI)}</TData>
-          </tr>
-          {change.uri && (
-            <tr>
-              <TData className="orange">New URI</TData>
-              <TData>{decode(change.uri)}</TData>
-            </tr>
-          )}
-        </>
+        <tr>
+          <TData>Previous URI</TData>
+          <TData>{decode(change.previousURI)}</TData>
+        </tr>
+      )}
+      {change.uri && (
+        <tr>
+          <TData className="bold">New URI</TData>
+          <TData>{decode(change.uri)}</TData>
+        </tr>
       )}
     </>
   )
@@ -70,30 +68,31 @@ const nftData = (change, nftInfo, txType) => {
 
 const nftokenChanges = (changes, nftokens, txType) => {
   /*
-  "nftokenChanges": {
-    "rJcEbVWJ7xFjL8J9LsbxBMVSRY2C7DU7rz": [
-      {
-        "status": "removed",
-        "nftokenID": "000B0000C124E14881533A9AFE4A5F481795C17003A9FACF16E5DA9C00000001",
-        "uri": "697066733A2F2F516D516A447644686648634D7955674441784B696734416F4D547453354A72736670694545704661334639515274"
-      }
-    ],
-    "rM3UEiJzg7nMorRhdED5savWDt1Gqb6TLw": [
-      {
-        "status": "added",
-        "nftokenID": "000B0000C124E14881533A9AFE4A5F481795C17003A9FACF16E5DA9C00000001",
-        "uri": "697066733A2F2F516D516A447644686648634D7955674441784B696734416F4D547453354A72736670694545704661334639515274"
-      }
-    ]
-  },
+  [
+    {
+      "address": "rniNyQQA1bzfSQ4mF7f1QCQQsh5VYb7BoG",
+      "addressDetails": {
+        "address": "rniNyQQA1bzfSQ4mF7f1QCQQsh5VYb7BoG",
+        "username": null,
+        "service": null
+      },
+      "nftokenChanges": [
+        {
+          "status": "modified",
+          "nftokenID": "0010000035308C84A98C961A792FD63695C66FFD4120DE0D46DD60CE0020B433",
+          "uri": "ABC123"
+        }
+      ]
+    }
+  ]
   */
   let showAll = true
   let transfer = false
-  let addressFrom = ''
-  let addressTo = ''
+  let addressFrom = {}
+  let addressTo = {}
   if (txType === 'NFTokenMint' || txType === 'NFTokenModify' || txType === 'NFTokenAcceptOffer') {
     showAll = false
-    if (txType === 'NFTokenAcceptOffer' && Object.keys(changes).length === 2) {
+    if (txType === 'NFTokenAcceptOffer' && changes.length === 2) {
       transfer = true
     }
   }
@@ -107,21 +106,21 @@ const nftokenChanges = (changes, nftokens, txType) => {
           </TData>
         </tr>
       )}
-      {Object.keys(changes).map((address, i) => {
-        const change = changes[address]
+      {changes.map((change, i) => {
         let output = []
         if (showAll) {
           output.push(
             <tr key={'h' + i}>
               <TData>{i + 1}.</TData>
               <TData>
-                <AddressWithIconFilled data={{ address }} name="address" />
+                <AddressWithIconFilled data={change} name="address" />
               </TData>
             </tr>
           )
         }
-        for (let i = 0; i < change.length; i++) {
-          const nftInfo = nftokens[change[i].nftokenID]
+        const nftChnages = change.nftokenChanges
+        for (let i = 0; i < nftChnages.length; i++) {
+          const nftInfo = nftokens[nftChnages[i].nftokenID]
           if (showAll) {
             output.push(
               <tr key={i}>
@@ -129,10 +128,10 @@ const nftokenChanges = (changes, nftokens, txType) => {
                 <TData>
                   <span
                     className={
-                      change[i].status === 'added' ? 'green' : change[i].status === 'removed' ? 'red' : 'orange'
+                      nftChnages[i].status === 'added' ? 'green' : nftChnages[i].status === 'removed' ? 'red' : 'orange'
                     }
                   >
-                    {change[i].status}
+                    {nftChnages[i].status}
                   </span>{' '}
                   NFT
                 </TData>
@@ -142,12 +141,27 @@ const nftokenChanges = (changes, nftokens, txType) => {
 
           if (transfer) {
             //added for one, removed for another one.
-            if (change[i].status === 'added') {
-              addressTo = address
-            } else if (change[i].status === 'removed') {
-              addressFrom = address
+            if (nftChnages[i].status === 'added') {
+              addressTo = { address: change.address, addressDetails: change.addressDetails }
+            } else if (nftChnages[i].status === 'removed') {
+              addressFrom = { address: change.address, addressDetails: change.addressDetails }
             }
           } else {
+            if (txType === 'NFTokenModify') {
+              output.push(
+                <tr>
+                  <TData className="bold">
+                    <br />
+                    NFT Modified
+                  </TData>
+                  <TData>
+                    <br />
+                    <br />
+                  </TData>
+                </tr>
+              )
+            }
+
             if (txType !== 'NFTokenMint') {
               output.push(
                 <tr>
@@ -157,7 +171,7 @@ const nftokenChanges = (changes, nftokens, txType) => {
                 </tr>
               )
             }
-            output.push(<React.Fragment key={'t' + i}>{nftData(change[i], nftInfo, txType)}</React.Fragment>)
+            output.push(<React.Fragment key={'t' + i}>{nftData(nftChnages[i], nftInfo, txType)}</React.Fragment>)
             if (txType !== 'NFTokenMint') {
               output.push(
                 <tr>
@@ -192,16 +206,16 @@ const nftokenChanges = (changes, nftokens, txType) => {
           <tr>
             <TData>Transfer from</TData>
             <TData>
-              <AddressWithIconFilled data={{ address: addressFrom }} name="address" />
+              <AddressWithIconFilled data={addressFrom} name="address" />
             </TData>
           </tr>
           <tr>
             <TData>Transfer to</TData>
             <TData>
-              <AddressWithIconFilled data={{ address: addressTo }} name="address" />
+              <AddressWithIconFilled data={addressTo} name="address" />
             </TData>
           </tr>
-          {nftData(changes?.[addressTo][0], nftokens[changes?.[addressTo][0].nftokenID], txType)}
+          {nftData(changes?.[0].nftokenChanges[0], nftokens[changes?.[0].nftokenChanges[0].nftokenID], txType)}
           <tr>
             <TData colSpan="2">
               <hr />
@@ -401,7 +415,7 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           </tr>
         )}
       {outcome?.nftokenChanges &&
-        Object.keys(outcome?.nftokenChanges).length > 0 &&
+        outcome?.nftokenChanges.length > 0 &&
         nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType)}
       {txType === 'NFTokenCreateOffer' && Object.keys(outcome?.nftokenOfferChanges).length > 0 && (
         <tr>
