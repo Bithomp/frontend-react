@@ -175,12 +175,20 @@ const nftokenChanges = (changes, nftokens, txType) => {
             }
             if (txType === 'NFTokenModify') {
               output.push(
-                <tr key="owner">
-                  <TData>Owner</TData>
-                  <TData>
-                    <AddressWithIconFilled data={change} name="address" />
-                  </TData>
-                </tr>
+                <React.Fragment key="owner-and-issuer">
+                  <tr>
+                    <TData>Issuer</TData>
+                    <TData>
+                      <AddressWithIconFilled data={nftokens[changes?.[0].nftokenChanges[0].nftokenID]} name="issuer" />
+                    </TData>
+                  </tr>
+                  <tr>
+                    <TData>Owner</TData>
+                    <TData>
+                      <AddressWithIconFilled data={change} name="address" />
+                    </TData>
+                  </tr>
+                </React.Fragment>
               )
             }
             output.push(<React.Fragment key={'t' + i}>{nftData(nftChnages[i], nftInfo, txType)}</React.Fragment>)
