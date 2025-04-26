@@ -58,7 +58,9 @@ const nftData = (change, nftInfo, txType) => {
       )}
       {change.uri && (
         <tr>
-          <TData className={txType !== 'NFTokenMint' ? 'bold' : ''}>{txType !== 'NFTokenMint' ? 'New ' : ''}URI</TData>
+          <TData className={txType !== 'NFTokenMint' ? 'bold orange' : ''}>
+            {txType !== 'NFTokenMint' ? 'New ' : ''}URI
+          </TData>
           <TData>{decode(change.uri)}</TData>
         </tr>
       )}
@@ -167,6 +169,16 @@ const nftokenChanges = (changes, nftokens, txType) => {
                 <tr key="hr-top">
                   <TData colSpan="2">
                     <hr />
+                  </TData>
+                </tr>
+              )
+            }
+            if (txType === 'NFTokenModify') {
+              output.push(
+                <tr key="owner">
+                  <TData>Owner</TData>
+                  <TData>
+                    <AddressWithIconFilled data={change} name="address" />
                   </TData>
                 </tr>
               )
