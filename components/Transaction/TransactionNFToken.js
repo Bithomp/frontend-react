@@ -154,7 +154,7 @@ const nftokenChanges = (changes, nftokens, txType) => {
                 <tr key="nft-modify-header">
                   <TData className="bold">
                     <br />
-                    NFT Modified
+                    Modified NFT
                   </TData>
                   <TData>
                     <br />
@@ -267,15 +267,13 @@ const flagList = (flags) => {
 
 const showAllOfferLinks = (changes) => {
   const indexes = []
-
-  Object.values(changes).forEach((arr) => {
-    arr.forEach((item) => {
-      if (item.index) {
-        indexes.push(nftOfferLink(item.index))
-      }
-    })
-  })
-
+  for (let i = 0; i < changes.length; i++) {
+    for (let j = 0; j < changes[i].nftokenOfferChanges.length; j++) {
+      indexes.push(
+        <React.Fragment key={i + '-' + j}>{nftOfferLink(changes[i].nftokenOfferChanges[j].index)}</React.Fragment>
+      )
+    }
+  }
   return indexes
 }
 
@@ -429,7 +427,7 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
       {outcome?.nftokenChanges &&
         outcome?.nftokenChanges.length > 0 &&
         nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType)}
-      {txType === 'NFTokenCreateOffer' && Object.keys(outcome?.nftokenOfferChanges).length > 0 && (
+      {txType === 'NFTokenCreateOffer' && outcome?.nftokenOfferChanges.length > 0 && (
         <tr>
           <TData>Offer</TData>
           <TData>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</TData>
