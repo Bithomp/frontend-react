@@ -14,7 +14,7 @@ const nftData = (change, nftInfo, txType) => {
         <TData>NFT</TData>
         <TData>{nftIdLink(change.nftokenID)}</TData>
       </tr>
-      {txType !== 'NFTokenMint' && txType !== 'NFTokenModify' && (
+      {txType !== 'NFTokenMint' && (
         <>
           {nftInfo.issuer && (
             <tr>
@@ -175,20 +175,12 @@ const nftokenChanges = (changes, nftokens, txType) => {
             }
             if (txType === 'NFTokenModify') {
               output.push(
-                <React.Fragment key="owner-and-issuer">
-                  <tr>
-                    <TData>Issuer</TData>
-                    <TData>
-                      <AddressWithIconFilled data={nftokens[changes?.[0].nftokenChanges[0].nftokenID]} name="issuer" />
-                    </TData>
-                  </tr>
-                  <tr>
-                    <TData>Owner</TData>
-                    <TData>
-                      <AddressWithIconFilled data={change} name="address" />
-                    </TData>
-                  </tr>
-                </React.Fragment>
+                <tr key="owner-and-issuer">
+                  <TData>Owner</TData>
+                  <TData>
+                    <AddressWithIconFilled data={change} name="address" />
+                  </TData>
+                </tr>
               )
             }
             output.push(<React.Fragment key={'t' + i}>{nftData(nftChnages[i], nftInfo, txType)}</React.Fragment>)
