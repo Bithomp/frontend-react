@@ -6,6 +6,7 @@ import { devNet, useWidth, avatarServer } from '../../utils'
 import { addressUsernameOrServiceLink, amountFormat, shortNiceNumber, timeFormat } from '../../utils/format'
 import Image from 'next/image'
 import { LinkTx } from '../../utils/links'
+import Link from 'next/link'
 
 export default function Whales({ currency, data, setData }) {
   const [oldData, setOldData] = useState(null)
@@ -15,7 +16,7 @@ export default function Whales({ currency, data, setData }) {
 
   const checkStatApi = async () => {
     //?currency=true&service=true
-    const response = await axios('v2/transactions/whale?limit=6')
+    const response = await axios('v2/transactions/whale?limit=3')
     const data = response.data
     if (data) {
       setData(data)
@@ -73,8 +74,10 @@ export default function Whales({ currency, data, setData }) {
     <>
       {data?.length > 0 && (
         <>
-          <h2 className="center landing-h2">{t('home.whales.header')}</h2>
           <div className="whale-transactions-block">
+            <div className="whale-header">
+              {t('menu.network.top-transfers-24h')} (<Link href="whales">view more</Link>)
+            </div>
             {data.map((tx) => (
               <div key={tx.hash} className={'tx-row' + (difference?.includes(tx) ? ' just-added' : '')}>
                 <span className="tx-time">{timeFormat(tx.timestamp)}</span>
@@ -125,6 +128,17 @@ export default function Whales({ currency, data, setData }) {
           </div>
         </>
       )}
+      <style jsx>{`
+        .whale-header {
+          position: absolute;
+          top: -25px;
+          left: 0;
+          font-size: 16px;
+        }
+        .whale-transactions-block {
+          position: relative;
+        }
+      `}</style>
     </>
   )
 }

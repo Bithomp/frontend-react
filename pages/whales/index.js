@@ -39,10 +39,10 @@ export default function Whales({ data, selectedCurrency }) {
 
   return (
     <>
-      <SEO title={ledgerName + ' Whales'} description="The most significant transactions for the last 24 hours" />
+      <SEO title={ledgerName + ' Whales'} description={t('home.whales.header')} />
       <div className="content-text">
         <WhaleTabs tab="transactions" />
-        <h1 className="center">The most significant transactions for the last 24 hours</h1>
+        <h1 className="center">{t('home.whales.header')}</h1>
 
         {!isMobile ? (
           <table className="table-large shrink">
