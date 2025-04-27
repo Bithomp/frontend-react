@@ -1,6 +1,6 @@
 import { AddressWithIconFilled, amountFormat, fullNiceNumber } from '../utils/format'
 
-export const WhalesTable = ({ isMobile, data }) => (
+export const WhalesTable = ({ isMobile, data, noAmount }) => (
   <>
     {Array.isArray(data) && (
       <>
@@ -11,7 +11,7 @@ export const WhalesTable = ({ isMobile, data }) => (
                 <th>#</th>
                 <th>Address</th>
                 <th className="right">Transactions</th>
-                <th className="right">Amount</th>
+                {!noAmount && <th className="right">Amount</th>}
               </tr>
             </thead>
             <tbody>
@@ -22,7 +22,9 @@ export const WhalesTable = ({ isMobile, data }) => (
                     <AddressWithIconFilled data={tx} />
                   </td>
                   <td className="right">{fullNiceNumber(tx.transactionsCount)}</td>
-                  <td className="right">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</td>
+                  {!noAmount && (
+                    <td className="right">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -40,10 +42,12 @@ export const WhalesTable = ({ isMobile, data }) => (
                     <br />
                     <AddressWithIconFilled data={tx} />
                     <p>Transactions: {fullNiceNumber(tx.transactionsCount)}</p>
-                    <p>
-                      Amount:{' '}
-                      <span className="bold">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</span>
-                    </p>
+                    {!noAmount && (
+                      <p>
+                        Amount:{' '}
+                        <span className="bold">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</span>
+                      </p>
+                    )}
                   </td>
                 </tr>
               ))}
