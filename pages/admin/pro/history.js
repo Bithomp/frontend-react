@@ -15,8 +15,7 @@ import {
   amountParced,
   fullDateAndTime,
   niceNumber,
-  shortNiceNumber,
-  txIdLink
+  shortNiceNumber
 } from '../../../utils/format'
 import ProTabs from '../../../components/Tabs/ProTabs'
 import { crawlerStatus } from '../../../utils/pro'
@@ -31,6 +30,7 @@ import DownloadIcon from '../../../public/images/download.svg'
 import { koinly } from '../../../utils/koinly'
 import { TbArrowsSort } from 'react-icons/tb'
 import SimpleSelect from '../../../components/UI/SimpleSelect'
+import { LinkTx } from '../../../utils/links'
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { address } = query
@@ -620,9 +620,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                               <td>{fullDateAndTime(a.timestamp)}</td>
                               {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
                               <td className="center">
-                                <a href={'/explorer/' + a.hash} aria-label={a.txType}>
+                                <LinkTx tx={a.hash}>
                                   <TypeToIcon type={a.txType} direction={isSending(a) ? 'sent' : 'received'} />
-                                </a>
+                                </LinkTx>
                               </td>
                               <td>
                                 <div style={{ width: 160 }}>
@@ -693,7 +693,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                                   {showFiat(a.amountInFiats?.[selectedCurrency], selectedCurrency)}
                                 </p>
                                 {a.memo && <p>Memo: {a.memo?.slice(0, 197) + (a.memo?.length > 197 ? '...' : '')}</p>}
-                                <p>Tx: {txIdLink(a.hash)}</p>
+                                <p>
+                                  Tx: <LinkTx tx={a.hash} />
+                                </p>
                               </td>
                             </tr>
                           ))}

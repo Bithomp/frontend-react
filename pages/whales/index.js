@@ -1,13 +1,14 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { AddressWithIconFilled, amountFormat, shortNiceNumber, timeFormat, txIdLink } from '../../utils/format'
+import { AddressWithIconFilled, amountFormat, shortNiceNumber, timeFormat } from '../../utils/format'
 import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
 
 import SEO from '../../components/SEO'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { devNet, ledgerName } from '../../utils'
 import WhaleTabs from '../../components/Tabs/WhaleTabs'
+import { LinkTx } from '../../utils/links'
 
 export async function getServerSideProps(context) {
   const { locale, req } = context
@@ -67,7 +68,9 @@ export default function Whales({ data, selectedCurrency }) {
                   <td>
                     <AddressWithIconFilled data={tx} name="destinationAddress" />
                   </td>
-                  <td className="center">{txIdLink(tx.hash, 0)}</td>
+                  <td className="center">
+                    <LinkTx tx={tx.hash} icon={true} />
+                  </td>
                   <td>{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</td>
                   <td suppressHydrationWarning>
                     {devNet
@@ -96,7 +99,9 @@ export default function Whales({ data, selectedCurrency }) {
                     <br />
                     To:
                     <AddressWithIconFilled data={tx} name="destinationAddress" />
-                    <p>Transaction link: {txIdLink(tx.hash, 0)}</p>
+                    <p>
+                      Transaction link: <LinkTx tx={tx.hash} icon={true} />
+                    </p>
                     <p>Amount: {amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</p>
                     <p suppressHydrationWarning>
                       Fiat value:

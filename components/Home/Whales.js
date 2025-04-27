@@ -3,8 +3,9 @@ import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
 import { devNet, useWidth, avatarServer } from '../../utils'
-import { addressUsernameOrServiceLink, amountFormat, shortNiceNumber, timeFormat, txIdLink } from '../../utils/format'
+import { addressUsernameOrServiceLink, amountFormat, shortNiceNumber, timeFormat } from '../../utils/format'
 import Image from 'next/image'
+import { LinkTx } from '../../utils/links'
 
 export default function Whales({ currency, data, setData }) {
   const [oldData, setOldData] = useState(null)
@@ -100,7 +101,9 @@ export default function Whales({ currency, data, setData }) {
                     {addressUsernameOrServiceLink(tx, 'destinationAddress', { short: width > 800 ? 9 : 6 })}
                   </span>
                 </span>
-                <span className="tx-link">{txIdLink(tx.hash, 0)}</span>
+                <span className="tx-link">
+                  <LinkTx tx={tx.hash} icon={true} />
+                </span>
                 <span className="tx-amount">
                   {width >= 800 && amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}
                 </span>
