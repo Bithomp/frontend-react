@@ -58,8 +58,8 @@ const nftData = (change, nftInfo, txType) => {
       )}
       {change.uri && (
         <tr>
-          <TData className={txType !== 'NFTokenMint' ? 'bold orange' : ''}>
-            {txType !== 'NFTokenMint' ? 'New ' : ''}URI
+          <TData className={txType === 'NFTokenModify' ? 'bold orange' : ''}>
+            {txType === 'NFTokenModify' ? 'New ' : ''}URI
           </TData>
           <TData>{decode(change.uri)}</TData>
         </tr>
