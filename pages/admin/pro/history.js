@@ -86,9 +86,16 @@ const dateFormatters = {
   }
 }
 
-const processDataForExport = (activities, platform, selectedCurrency) => {
+const isSending = (a) => {
+  if (a.amount?.value) {
+    return a.amount.value[0] === '-'
+  }
+  return a.amount[0] === '-'
+}
+
+const processDataForExport = (activities, platform) => {
   return activities.map((activity) => {
-    const sending = activity.amountInFiats?.[selectedCurrency]?.[0] === '-'
+    const sending = isSending(activity)
 
     const processedActivity = { ...activity }
     processedActivity.timestampExport = dateFormatters[platform](activity.timestamp)
@@ -102,14 +109,13 @@ const processDataForExport = (activities, platform, selectedCurrency) => {
         }
       }
     } else if (platform === 'CoinLedger') {
-      processedActivity.type = activity.amountNumber > 0 ? 'Deposit' : 'Withdrawal'
+      processedActivity.type = isSending(activity) ? 'Withdrawal' : 'Deposit'
     } else if (platform === 'CoinTracking') {
-      processedActivity.type =
-        activity.amountNumber > 0
-          ? 'Deposit'
-          : Math.abs(activity.amountNumber) <= activity.txFeeNumber
-          ? 'Other Fee'
-          : 'Withdrawal'
+      processedActivity.type = isSending(activity)
+        ? 'Withdrawal'
+        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+        ? 'Other Fee'
+        : 'Deposit'
     }
 
     return processedActivity
@@ -339,9 +345,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
     */
     if (res) {
       for (let i = 0; i < res.activities.length; i++) {
-        let sending = res.activities[i].amountInFiats?.[selectedCurrency]?.[0] === '-'
+        const sending = isSending(res.activities[i])
         res.activities[i].index = options?.marker ? activities.length + 1 + i : i + 1
-        res.activities[i].amountExport = amountFormat(res.activities[i].amount)
+        res.activities[i].amountExport = amountFormat(res.activities[i].amount, { noSpace: true })
         res.activities[i].amountNumber = res.activities[i].amount?.value || res.activities[i].amount / 1000000
         res.activities[i].currencyCode = res.activities[i].amount?.currency || nativeCurrency
         const { currency } = amountParced(res.activities[i].amount)
@@ -567,13 +573,13 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
               </div>
               {rendered && (
                 <CSVLink
-                  data={processDataForExport(filteredActivities || [], platformCSVExport, selectedCurrency)}
+                  data={processDataForExport(filteredActivities || [], platformCSVExport)}
                   headers={
                     platformCSVHeaders.find(
                       (header) => header.platform.toLowerCase() === platformCSVExport.toLowerCase()
                     )?.headers || []
                   }
-                  filename={'export ' + new Date().toISOString() + '.csv'}
+                  filename={'export ' + platformCSVExport + ' ' + new Date().toISOString() + '.csv'}
                   className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
                 >
                   <DownloadIcon /> CSV for {platformCSVExport}
@@ -615,7 +621,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                               {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
                               <td className="center">
                                 <a href={'/explorer/' + a.hash} aria-label={a.txType}>
-                                  <TypeToIcon type={a.txType} direction={a.amountNumber > 0 ? 'received' : 'sent'} />
+                                  <TypeToIcon type={a.txType} direction={isSending(a) ? 'sent' : 'received'} />
                                 </a>
                               </td>
                               <td>
