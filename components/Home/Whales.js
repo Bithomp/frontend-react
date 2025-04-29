@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { explorerName } from '../utils'
 
-import { devNet, useWidth, avatarServer } from '../../utils'
+import { devNet, useWidth, avatarServer, explorerName } from '../../utils'
 import { addressUsernameOrServiceLink, amountFormat, shortNiceNumber, timeFormat } from '../../utils/format'
 import Image from 'next/image'
 import { LinkTx } from '../../utils/links'
 import Link from 'next/link'
-import SEO from '../components/SEO'
+import SEO from '../../components/SEO'
 
 export default function Whales({ currency, data, setData }) {
   const [oldData, setOldData] = useState(null)
