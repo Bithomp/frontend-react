@@ -133,7 +133,7 @@ export const TransactionCard = ({
               </tr>
             )
           } else {
-            if (memopiece.length > 100 && memopiece.split(' ').length === 1) {
+            if (memopiece.length > 100 && memopiece.split(' ').length === 1 && memopiece.includes('.')) {
               //jwt
               memopiece = memopiece.replace('"', '')
               const pieces = memopiece.split('.')
@@ -162,10 +162,10 @@ export const TransactionCard = ({
                     <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
                     <TData>
                       {memotype && memotype.toLowerCase() !== 'memo' && (
-                        <>
+                        <span className="bold">
                           {memotype}
                           <br />
-                        </>
+                        </span>
                       )}
                       {memopiece}
                     </TData>
