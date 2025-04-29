@@ -36,10 +36,7 @@ export default function Whales({ data }) {
 
   return (
     <>
-      <SEO
-        title="Whale Receivers"
-        description="Addresses that are submitted the most transactions in the last 24 hours."
-      />
+      <SEO title="Whale Receivers" description="Addresses that submitted the most transactions in the last 24 hours." />
       <div className="content-text">
         <WhaleTabs tab="submitters" />
         <h1 className="center">
