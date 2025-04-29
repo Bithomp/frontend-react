@@ -1,252 +1,50 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
-import dynamic from 'next/dynamic'
-import axios from 'axios'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Image from 'next/image'
-import { axiosServer, passHeaders } from '../../utils/axios'
 
-import { devNet, xahauNetwork, avatarSrc, nativeCurrency } from '../../utils'
+import { nativeCurrency, avatarSrc } from '../../utils'
 import { shortNiceNumber } from '../../utils/format'
-import { getIsSsrMobile } from '../../utils/mobile'
 
-const RelatedLinks = dynamic(() => import('../../components/Account/RelatedLinks'), { ssr: false })
+import SEO from '../SEO'
+import SearchBlock from '../Layout/SearchBlock'
+import AccountSummary from './AccountSummary'
+//import LedgerData from './LedgerData'
+//import PublicData from './PublicData'
+//import XamanData from './XamanData'
+//import ObjectsData from './ObjectsData'
+//import NftData from './NftData'
 
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-
-export async function getServerSideProps(context) {
-  const { locale, query, req } = context
-  let initialData = null
-  const { id, ledgerTimestamp } = query
-  //keep it from query instead of params, anyway it is an array sometimes
-  const account = id ? (Array.isArray(id) ? id[0] : id) : ''
-  if (account) {
-    try {
-      const res = await axiosServer({
-        method: 'get',
-        url:
-          'v2/address/' +
-          account +
-          '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true&obligations=true' +
-          (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : ''),
-        headers: passHeaders(req)
-      })
-      initialData = res?.data
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  if (initialData) {
-    initialData.id = account
-  }
-
-  return {
-    props: {
-      id: account,
-      ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
-      isSsrMobile: getIsSsrMobile(context),
-      initialData,
-      ...(await serverSideTranslations(locale, ['common', 'account']))
-    }
-  }
-}
-
-import SEO from '../../components/SEO'
-import SearchBlock from '../../components/Layout/SearchBlock'
-import Did from '../../components/Account/Did'
-import { fetchHistoricalRate } from '../../utils/common'
-import AccountSummary from '../../components/Account/AccountSummary'
-import LedgerData from '../../components/Account/LedgerData'
-import PublicData from '../../components/Account/PublicData'
-import XamanData from '../../components/Account/XamanData'
-import ObjectsData from '../../components/Account/ObjectsData'
-import NftData from '../../components/Account/NftData'
-import Account from '../../components/Account'
-
-export default function AccountPage({
-  initialData,
-  refreshPage,
-  id,
-  selectedCurrency,
-  ledgerTimestampQuery,
-  account,
-  setSignRequest,
-  fiatRate
-}) {
+export default function Account({ data, loading, errorMessage, ledgerTimestamp, account }) {
   const { t } = useTranslation()
-
-  /*
-  obligations: {
-    "trustlines": 44799,
-    "holders": 12131,
-    "tokens": 7
-  }
-  */
-
-  const [data, setData] = useState({})
-  const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
-  const [ledgerTimestampInput, setLedgerTimestampInput] = useState(ledgerTimestampQuery)
-  const [pageFiatRate, setPageFiatRate] = useState(0)
-  const [userData, setUserData] = useState({
-    username: initialData?.username,
-    service: initialData?.service?.name,
-    address: initialData?.address || id
-  })
-  const [networkInfo, setNetworkInfo] = useState({})
-  const [balances, setBalances] = useState({})
-  const [shownOnSmall, setShownOnSmall] = useState(null)
-  const [objects, setObjects] = useState({})
-  //const [obligations, setObligations] = useState({})
-  const [gateway, setGateway] = useState(false)
-
-  useEffect(() => {
-    if (!initialData?.address) return
-    setData(initialData)
-
-    if (initialData?.obligations) {
-      //setObligations(initialData.obligations)
-      if (initialData.obligations?.trustlines > 200) {
-        setGateway(true)
-      } else {
-        //keep it here for cases when address changes without refreshing the page
-        setGateway(false)
-      }
-    } else {
-      //keep it here for cases when address changes without refreshing the page
-      setGateway(false)
-    }
-  }, [initialData])
-
-  useEffect(() => {
-    async function fetchData() {
-      const networkInfoData = await axios('v2/server')
-      setNetworkInfo(networkInfoData?.data)
-    }
-    fetchData()
-  }, [])
-
-  const checkApi = async (opts) => {
-    if (!id) return
-    setLoading(true)
-
-    let noCache = ''
-
-    if (opts?.noCache) {
-      noCache = '&timestamp=' + Date.now()
-    }
-
-    const response = await axios(
-      '/v2/address/' +
-        id +
-        '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true' +
-        noCache +
-        (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : '')
-    ).catch((error) => {
-      setErrorMessage(t('error.' + error.message))
-    })
-    setLoading(false)
-    let newdata = response?.data
-    if (newdata) {
-      if (newdata.address) {
-        setData(newdata)
-        setUserData({
-          username: newdata.username,
-          service: newdata.service?.name,
-          address: newdata.address
-        })
-      } else {
-        if (newdata.error) {
-          setErrorMessage(t('error-api.' + newdata.error))
-        } else {
-          setErrorMessage('Error')
-        }
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (!selectedCurrency) return
-    if (data?.address) {
-      checkApi({ noCache: true })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, refreshPage, ledgerTimestamp])
-
-  useEffect(() => {
-    if (!selectedCurrency) return
-    if (!ledgerTimestamp) {
-      setPageFiatRate(fiatRate)
-    } else {
-      //if there is ledgerTimestamp then we need a historical rate
-      fetchHistoricalRate({ timestamp: ledgerTimestamp, selectedCurrency, setPageFiatRate })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fiatRate, ledgerTimestamp])
-
-  useEffect(() => {
-    if (!data?.ledgerInfo || !networkInfo) return
-    let balanceList = {
-      total: {
-        native: data.ledgerInfo.balance
-      },
-      reserved: {
-        native: Number(networkInfo.reserveBase) + data.ledgerInfo.ownerCount * networkInfo.reserveIncrement
-      },
-      available: {}
-    }
-
-    if (balanceList.reserved.native > balanceList.total.native) {
-      balanceList.reserved.native = balanceList.total.native
-    }
-
-    balanceList.available.native = balanceList.total.native - balanceList.reserved.native
-
-    if (balanceList.available.native < 0) {
-      balanceList.available.native = 0
-    }
-
-    setBalances(balanceList)
-  }, [data, networkInfo, pageFiatRate])
-
-  const resetTimeMachine = () => {
-    setLedgerTimestampInput(null)
-    setLedgerTimestamp(null)
-  }
-
   return (
     <>
-      <Account
-        data={data}
-        loading={loading}
-        errorMessage={errorMessage}
-        ledgerTimestamp={ledgerTimestamp}
-        account={account}
-      />
       <SEO
         page="Account"
         title={
           t('explorer.header.account') +
           ' ' +
-          (initialData?.service?.name || initialData?.username || initialData?.address || id) +
+          (data?.service?.name || data?.username || data?.address || data?.id) +
           (data?.ledgerInfo?.balance > 1000000
             ? ' - ' + shortNiceNumber(data.ledgerInfo.balance / 1000000, 2, 0) + ' ' + nativeCurrency
             : '')
         }
         description={
           'Account details, transactions, NFTs, Tokens for ' +
-          (initialData?.service?.name || initialData?.username) +
+          (data?.service?.name || data?.username) +
           ' ' +
-          (initialData?.address || id)
+          (data?.address || data?.id)
         }
-        image={{ file: avatarSrc(initialData?.address) }}
+        image={{ file: avatarSrc(data?.address) }}
       />
-      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" userData={userData} />
+      <SearchBlock
+        searchPlaceholderText={t('explorer.enter-address')}
+        tab="account"
+        userData={{
+          username: data?.username,
+          service: data?.service?.name,
+          address: data?.address || data?.id
+        }}
+      />
       <div className="content-profile account">
-        {id ? (
+        {data?.id ? (
           <>
             {loading ? (
               <div className="center" style={{ marginTop: '80px' }}>
@@ -267,14 +65,14 @@ export default function AccountPage({
                             <AccountSummary
                               data={data}
                               account={account}
-                              balances={balances}
-                              refreshPage={refreshPage}
-                              selectedCurrency={selectedCurrency}
-                              pageFiatRate={pageFiatRate}
+                              //balances={balances}
+                              //refreshPage={refreshPage}
+                              //selectedCurrency={selectedCurrency}
+                              //pageFiatRate={pageFiatRate}
                             />
                           </div>
                         )}
-
+                        {/** 
                         <div className="center show-on-small-w800 grey" style={{ marginTop: 10 }}>
                           {((!account?.address && !data?.service) || data?.address === account?.address) &&
                             !data?.ledgerInfo?.blackholed && (
@@ -460,7 +258,6 @@ export default function AccountPage({
                             <tbody>
                               <tr>
                                 <td colSpan="2" className="no-padding">
-                                  {/*  (info) Check account balance and settings in any Time in the past. */}
                                   <div className="time-machine">
                                     <DatePicker
                                       selected={ledgerTimestampInput || new Date()}
@@ -541,6 +338,7 @@ export default function AccountPage({
                           />
                           <RelatedLinks data={data} />
                         </div>
+                        */}
                       </>
                     )}
                   </>
