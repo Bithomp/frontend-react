@@ -1,9 +1,7 @@
-import { useTranslation, Trans } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { stripText, isAddressOrUsername, setTabParams, useWidth, xahauNetwork, nativeCurrency } from '../utils'
@@ -34,6 +32,7 @@ import NftTabs from '../components/Tabs/NftTabs'
 
 import LinkIcon from '../public/images/link.svg'
 import FiltersFrame from '../components/Layout/FiltersFrame'
+import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -673,39 +672,16 @@ export default function NftSales({
           </div>
         </>
         <>
-          <InfiniteScroll
+          <InfiniteScrolling
             dataLength={sales.length}
-            next={checkApi}
-            hasMore={hasMore}
-            loader={
-              !errorMessage && (
-                <p className="center">
-                  {hasMore !== 'first' ? (
-                    <>
-                      {!sessionToken ? (
-                        <Trans i18nKey="general.login-to-bithomp-pro-explorer-or-sales-page">
-                          Use different filter options or select other search parameters to explore more NFTs that match your interests. Log in to <Link href="/admin">Bithomp Pro</Link> to enable infinite scroll and access all existing results!
-                        </Trans>
-                      ) : (
-                        <>
-                          {!subscriptionExpired ? (
-                            t('nft-sales.load-more')
-                          ) : (
-                            <Trans i18nKey="general.renew-bithomp-pro">
-                              Your Bithomp Pro subscription has expired.
-                              <Link href="/admin/subscriptions">Renew your subscription</Link>.
-                            </Trans>
-                          )}
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    t('nft-sales.load-more')
-                  )}
-                </p>
-              )
-            }
-            endMessage={<p className="center">{t('nft-sales.end')}</p>}
+            loadMore={checkApi}
+            hasMore={hasMore} 
+            errorMessage={errorMessage}
+            subscriptionExpired={subscriptionExpired}
+            sessionToken={sessionToken}
+            endMessage={t('nft-sales.end')}
+            loadMoreMessage={t('nft-sales.load-more')}
+            noSessionTokenMessage={true}           
             height={!filtersHide ? '1300px' : '100vh'}
           >
             {activeView === 'list' && (
@@ -882,7 +858,7 @@ export default function NftSales({
                 )}
               </>
             )}
-          </InfiniteScroll>
+          </InfiniteScrolling>
         </>
       </FiltersFrame>
     </>
