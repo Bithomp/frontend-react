@@ -9,7 +9,11 @@ const pages = [
   { loc: 'amendments', changefreq: 'always', priority: '1' },
   { loc: 'validators', changefreq: 'always', priority: '1' },
   { loc: 'amms', changefreq: 'always', priority: '1' },
+  { loc: 'whales', changefreq: 'always', priority: '1' },
 
+  { loc: 'whales/receivers', changefreq: 'always', priority: '0.9' },
+  { loc: 'whales/senders', changefreq: 'always', priority: '0.9' },
+  { loc: 'whales/submitters', changefreq: 'always', priority: '0.9' },
   { loc: 'nft-sales', changefreq: 'daily', priority: '0.9' },
   { loc: 'nft-statistics', changefreq: 'always', priority: '0.9' },
   { loc: 'nft-volumes', changefreq: 'always', priority: '0.9' },
@@ -25,6 +29,7 @@ const pages = [
   { loc: 'donate', changefreq: 'daily', priority: '0.7' },
   { loc: 'alerts', changefreq: 'daily', priority: '0.7' },
   { loc: 'last-ledger-information', changefreq: 'always', priority: '0.7' },
+  { loc: 'whales', changefreq: 'always', priority: '0.7' },
   { loc: 'nodes', changefreq: 'always', priority: '0.7' },
   { loc: 'activations', changefreq: 'always', priority: '0.7' },
   { loc: 'domains', changefreq: 'always', priority: '0.7' },
@@ -88,9 +93,13 @@ function generateSiteMap(posts) {
     'rlusd',
     'xrp-xah-taxes',
     'object',
-    'about-us'
+    'about-us',
+    'whales',
+    'whales/receivers',
+    'whales/senders',
+    'whales/submitters'
   ]
-  const oldPages = [] // 'explorer/'
+  const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
 
   return `<?xml version="1.0" encoding="UTF-8"?>
