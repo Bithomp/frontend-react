@@ -42,7 +42,7 @@ export default function Whales({ data }) {
         <h1 className="center">
           {ledgerName + ' addresses that submitted the most transactions in the last 24 hours'}
         </h1>
-        <WhalesTable isMobile={isMobile} data={data} noAmount={true} showFee={true} />
+        <WhalesTable isMobile={isMobile} data={data.addresses} noAmount={true} showFee={true} />
       </div>
     </>
   )
