@@ -229,7 +229,7 @@ export const TransactionURIToken = ({ data, pageFiatRate, selectedCurrency }) =>
             <tr>
               <TData>Destination</TData>
               <TData>
-                <AddressWithIconFilled data={specification} name="destination" />
+                <AddressWithIconFilled data={specification.destination} />
               </TData>
             </tr>
           )}

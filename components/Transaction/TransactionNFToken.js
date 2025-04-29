@@ -318,7 +318,7 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
             <tr>
               <TData>Destination</TData>
               <TData>
-                <AddressWithIconFilled data={specification.destination} name="address" />
+                <AddressWithIconFilled data={specification.destination} />
               </TData>
             </tr>
           )}
