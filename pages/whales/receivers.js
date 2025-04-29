@@ -40,7 +40,7 @@ export default function Whales({ data }) {
       <div className="content-text">
         <WhaleTabs tab="receivers" />
         <h1 className="center">{ledgerName + ' addresses that received the most in the last 24 hours'}</h1>
-        <WhalesTable isMobile={isMobile} data={data} />
+        <WhalesTable isMobile={isMobile} data={data.addresses} />
       </div>
     </>
   )
