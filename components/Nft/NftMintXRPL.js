@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import { typeNumberOnly, encode } from '../../utils'
 import CheckBox from '../../components/UI/CheckBox'
 import AddressInput from "../../components/UI/AddressInput"
 import IssuerSelect from "../../components/UI/IssuerSelect"
+import FormInput from '../../components/UI/FormInput'
 
 export default function NftMintXRPL({ account, setSignRequest, refreshPage }) {
   const { t } = useTranslation()
@@ -12,9 +12,10 @@ export default function NftMintXRPL({ account, setSignRequest, refreshPage }) {
     transferFee: '',
     issuer: '',
     uri: '',
-    nftokenTaxon: '0',
+    nftokenTaxon: '',
     expiration: '',
     destination: '',
+    hasExpiration: false, // New property
     flags: {
       burnable: false,
       onlyXRP: false,
@@ -98,7 +99,9 @@ export default function NftMintXRPL({ account, setSignRequest, refreshPage }) {
   }
 
   const onTaxonInput = (value) => {
-    setFormData({ ...formData, nftokenTaxon: value })
+    if (value === '' || /^\d+$/.test(value)) {
+      setFormData({ ...formData, nftokenTaxon: value === '' ? "0" : value })
+    }
   }
 
   const onSubmit = async () => {
@@ -150,13 +153,13 @@ export default function NftMintXRPL({ account, setSignRequest, refreshPage }) {
         tx.Destination = formData.destination
       }
 
-      if (formData.expiration && formData.expiration !== '') {
-        const expirationDate = new Date(formData.expiration)
-        const now = new Date()
+      if (formData.hasExpiration && formData.expiration && formData.expiration !== '') {
+        const expirationDate = new Date(formData.expiration);
+        const now = new Date();
         if (expirationDate <= now) {
-          throw new Error(t('nft-mint.error.expiration-past', 'Expiration date must be in the future'))
+          throw new Error(t('nft-mint.error.expiration-past', 'Expiration date must be in the future'));
         }
-        tx.Expiration = Math.floor(expirationDate.getTime() / 1000)
+        tx.Expiration = Math.floor(expirationDate.getTime() / 1000);
       }
 
       // Send transaction to parent component for signing
@@ -202,20 +205,15 @@ export default function NftMintXRPL({ account, setSignRequest, refreshPage }) {
       </div>
 
       <div className="form-group" style={{ marginBottom: '16px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          color: 'var(--text-main)' 
-        }}>{t("table.taxon", "NFTokenTaxon*")}:</label>
         <div className="input-validation">
-          <IssuerSelect
-            issuersList={taxonsList.map((taxon) => ({ value: taxon.toString(), label: taxon.toString() }))}
-            selectedIssuer={formData.nftokenTaxon}
-            setSelectedIssuer={onTaxonInput}
-            placeholder="Search or enter taxon"
-            isLoading={isLoadingTaxons}
-            allowCustomValue={true}
-            style={{ padding: '8px' }}
+          <FormInput
+            title="Taxon"
+            placeholder={t("nfts.search-by-taxon", "Search by taxon")}
+            setValue={onTaxonInput}
+            defaultValue={formData?.issuer ? formData.nftokenTaxon : ''}
+            key={formData?.issuer || 'empty'}
+            disabled={!formData.issuer}
+            onKeyPress={typeNumberOnly}
           />
         </div>
         <small style={{ display: 'block', color: 'var(--text-secondary)' }}>
@@ -252,17 +250,27 @@ export default function NftMintXRPL({ account, setSignRequest, refreshPage }) {
           color: 'var(--text-main)' 
         }}>Transfer Fee (%):</label>
         <div className="input-validation">
-          <input
-            type="text"
-            name="transferFee"
-            placeholder="0.0"
-            value={formData.transferFee}
-            onChange={handleInputChange}
-            max="50"
-            min="0"
-            className="input-text"
-            
-          />
+          <div style={{ position: 'relative' }}>
+            <input
+              type="number"
+              name="transferFee"
+              placeholder="0.0"
+              value={formData.transferFee}
+              onChange={handleInputChange}
+              max="50"
+              min="0"
+              step="0.1"
+              className="input-text"
+              style={{ paddingRight: '30px' }}
+            />
+            <span style={{ 
+              position: 'absolute', 
+              right: '10px', 
+              top: '50%', 
+              transform: 'translateY(-50%)',
+              color: 'var(--text-secondary)'
+            }}>%</span>
+          </div>
         </div>
         <small style={{  display: 'block', color: 'var(--text-secondary)' }}>
           Royalty fee between 0 and 50% that the issuer receives when the NFT is resold.
@@ -296,17 +304,32 @@ export default function NftMintXRPL({ account, setSignRequest, refreshPage }) {
             value={formData.expiration}
             onChange={handleInputChange}
             className="input-text calendar-teal"
-            
+            disabled={!formData.hasExpiration}
+            style={{ opacity: formData.hasExpiration ? '1' : '0.5' }}
           />
           <style jsx>{`
             .calendar-teal::-webkit-calendar-picker-indicator {
-              /* Use current text color */
               filter: brightness(0) saturate(100%) invert(40%) sepia(28%) saturate(3280%) hue-rotate(156deg) brightness(92%) contrast(90%);
             }
           `}</style>
         </div>
-        <small style={{  display: 'block', color: 'var(--text-secondary)' }}>
-          Date and time when the NFT offer expires.
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+          <CheckBox
+            checked={!formData.hasExpiration}
+            setChecked={(checked) => {
+              setFormData({
+                ...formData,
+                hasExpiration: !checked,
+                expiration: !checked ? formData.expiration : ''
+              });
+            }}
+            name="no-expiration"
+          >
+            No Expiration
+          </CheckBox>
+        </div>
+        <small style={{ display: 'block', color: 'var(--text-secondary)' }}>
+          Date and time when the NFT offer expires. Leave unchecked for no expiration.
         </small>
       </div>
 

@@ -1,486 +1,356 @@
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { sha512 } from 'crypto-hash'
+import axios from 'axios'
+import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server } from '../../utils'
+import CheckBox from '../UI/CheckBox'
 
-import { useState, useEffect } from "react"
-import { useTranslation } from "next-i18next"
-import axios from "axios"
-import { typeNumberOnly, encode, isValidTaxon, xahauNetwork } from "../../utils"
-import CheckBox from "../../components/UI/CheckBox"
-import AddressInput from "../../components/UI/AddressInput"
-import IssuerSelect from "../../components/UI/IssuerSelect"
+const checkmark = '/images/checkmark.svg'
 
-export default function NftMintXahau({ account, setSignRequest, refreshPage }) {
-  const { t } = useTranslation()
-  const [formData, setFormData] = useState({
-    transferFee: "",
-    issuer: "",
-    uri: "",
-    nftokenTaxon: "0",
-    amount: "",
-    expiration: "",
-    destination: "",
-    flags: {
-      burnable: false,
-      onlyXRP: false,
-      transferable: true,
-      mutable: false,
-    },
-  })
-  const [calculatedNFTokenID, setCalculatedNFTokenID] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [rawData, setRawData] = useState({})
-  const [taxonsList, setTaxonsList] = useState([])
-  const [isLoadingTaxons, setIsLoadingTaxons] = useState(false)
+let interval
+let startTime
 
-  // Update NFTokenID calculation whenever relevant form fields change
+export default function NftMintXahau({ setSignRequest, uriQuery, digestQuery }) {
+  const router = useRouter()
+  const [uri, setUri] = useState(uriQuery)
+  const [digest, setDigest] = useState(digestQuery)
+  const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
+  const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [metadataError, setMetadataError] = useState('')
+  const [calculateDigest, setCalculateDigest] = useState(false)
+  const [metadata, setMetadata] = useState('')
+  const [metadataStatus, setMetadataStatus] = useState('')
+  const [metaLoadedFromUri, setMetaLoadedFromUri] = useState(false)
+  const [update, setUpdate] = useState(false)
+  const [minted, setMinted] = useState('')
+  const [uriValidDigest, setUriValidDigest] = useState(isIdValid(digestQuery))
+
+  let uriRef
+  let digestRef
+
   useEffect(() => {
-    calculateNFTokenID()
-  }, [formData.issuer, formData.nftokenTaxon, formData.transferFee, formData.flags, account])
-
-  // Fetch taxons when component mounts
-  useEffect(() => {
-    fetchTaxons()
+    return () => {
+      setUpdate(false)
+      clearInterval(interval)
+    }
   }, [])
 
-  const fetchTaxons = async () => {
-    setIsLoadingTaxons(true)
-    try {
-      // Replace with your actual API endpoint for fetching taxons
-      const response = await axios.get(`v2/${xahauNetwork ? "uritoken" : "nft"}-taxons?limit=100`)
-      if (response?.data?.taxons) {
-        setTaxonsList(response.data.taxons)
-      }
-    } catch (error) {
-      console.error("Error fetching taxons:", error)
-    } finally {
-      setIsLoadingTaxons(false)
-    }
-  }
-
-  const calculateNFTokenID = () => {
-    // Only calculate if we have at least issuer and taxon
-    if (!formData.issuer && !account) {
-      setCalculatedNFTokenID("")
-      return
-    }
-
-    try {
-      // This is a simplified placeholder for the NFTokenID calculation
-      // In a real implementation, you would need to follow the Xahau protocol
-      const issuerAddress = formData.issuer || account
-      const taxon = Number.parseInt(formData.nftokenTaxon || 0)
-      const flags = getFlagsValue()
-
-      // Format for Xahau: chain:21337:NFTokenID
-      const tokenId = `chain:21337:00001000${issuerAddress.substring(0, 8)}${taxon.toString(16).padStart(8, "0")}`
-      setCalculatedNFTokenID(tokenId.toUpperCase())
-    } catch (err) {
-      console.error("Error calculating NFTokenID:", err)
-      setCalculatedNFTokenID("")
-    }
-  }
-
-  const getFlagsValue = () => {
-    let flagsValue = 0
-    if (formData.flags.burnable) flagsValue |= 1
-    if (formData.flags.onlyXRP) flagsValue |= 2
-    if (formData.flags.transferable) flagsValue |= 8
-    if (formData.flags.mutable) flagsValue |= 4
-    return flagsValue
-  }
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-  }
-
-  const handleFlagChange = (name, checked) => {
-    setFormData({
-      ...formData,
-      flags: { ...formData.flags, [name]: checked },
-    })
-  }
-
-  const setIssuer = (value) => {
-    setFormData({ ...formData, issuer: value })
-    setRawData({ ...rawData, issuer: value })
-  }
-
-  const setDestination = (value) => {
-    setFormData({ ...formData, destination: value })
-    setRawData({ ...rawData, owner: value }) // Using 'owner' key as in the NFT Explorer
-  }
-
-  const onTaxonInput = (value) => {
-    if (isValidTaxon(value)) {
-      setFormData({ ...formData, nftokenTaxon: value })
+  useEffect(() => {
+    if (update) {
+      interval = setInterval(() => getMetadata(), 5000)
     } else {
-      setFormData({ ...formData, nftokenTaxon: "0" })
+      clearInterval(interval)
     }
+  }, [update])
+
+  const onUriChange = (e) => {
+    let uri = e.target.value
+    setUri(uri)
+    setMetaLoadedFromUri(false)
+    setMetadata('')
+    setDigest('')
+    setMetadataError('')
+    setUriValidDigest(false)
+  }
+
+  const getMetadata = async () => {
+    setMetadataStatus('Trying to load the metadata from URI...')
+    const response = await axios
+      .get('v2/metadata?url=' + encodeURIComponent(uri) + '&type=xls35')
+      .catch((error) => {
+        console.log(error)
+        setMetadataStatus('error')
+      })
+    if (response?.data) {
+      if (response.data?.metadata) {
+        setMetaLoadedFromUri(true)
+        setMetadata(JSON.stringify(response.data.metadata, undefined, 4))
+        checkDigest(response.data.metadata)
+        setMetadataStatus('')
+        setUpdate(false)
+      } else if (response.data?.message) {
+        setMetadataStatus(response.data.message)
+        setUpdate(false)
+      } else {
+        if (Date.now() - startTime < 120000) {
+          setUpdate(true)
+          setMetadataStatus(
+            'Trying to load the metadata from URI... (' +
+              Math.ceil((Date.now() - startTime) / 1000 / 5) +
+              '/24 attempts)'
+          )
+        } else {
+          setUpdate(false)
+          setMetadataStatus('Load failed')
+        }
+      }
+    }
+  }
+
+  const loadMetadata = async () => {
+    if (uri) {
+      setMetaLoadedFromUri(false)
+      getMetadata()
+      startTime = Date.now()
+    } else {
+      setMetadataStatus('Please enter URI :)')
+      uriRef?.focus()
+    }
+  }
+
+  const onDigestChange = (e) => {
+    let digest = e.target.value
+    setDigest(digest)
   }
 
   const onSubmit = async () => {
-    setIsLoading(true)
-    setError("")
+    if (!uri) {
+      setErrorMessage('Please enter URI')
+      uriRef?.focus()
+      return
+    }
 
-    try {
-      // Validate input
-      // if (!account) {
-      //   throw new Error(t("common:error.not-connected", "Please connect your wallet first"))
-      // }
+    if (digest && !isIdValid(digest)) {
+      setErrorMessage('Please enter a valid Digest')
+      digestRef?.focus()
+      return
+    }
 
-      if (!formData.nftokenTaxon) {
-        throw new Error(t("nft-mint.error.taxon-required", "NFTokenTaxon is required"))
-      }
+    if (!agreeToSiteTerms) {
+      setErrorMessage('Please agree to the Terms and conditions')
+      return
+    }
 
-      // Prepare the NFTokenMint transaction
-      const tx = {
-        TransactionType: "NFTokenMint",
-        Account: formData.issuer || account,
-        NFTokenTaxon: Number.parseInt(formData.nftokenTaxon),
-        Flags: getFlagsValue(),
-        NetworkID: 21337, // For Xahau
-      }
+    if (!agreeToPrivacyPolicy) {
+      setErrorMessage('Please agree to the Privacy policy')
+      return
+    }
 
-      // Add optional fields
-      if (formData.transferFee && formData.transferFee !== "") {
-        // Convert percentage to basis points (1% = 1000)
-        const feeValue = Number.parseFloat(formData.transferFee)
-        if (feeValue < 0 || feeValue > 50) {
-          throw new Error(t("nft-mint.error.transfer-fee-range", "Transfer fee must be between 0 and 50%"))
+    setErrorMessage('')
+
+    let request = {
+      TransactionType: 'URITokenMint',
+      Memos: [
+        {
+          Memo: {
+            MemoData: encode('NFT Mint')
+          }
         }
-        tx.TransferFee = Number.parseInt(feeValue * 1000)
-      }
+      ]
+    }
 
-      if (formData.uri && formData.uri !== "") {
-        // Check URI length before encoding
-        if (Buffer.from(formData.uri).length > 256) {
-          throw new Error(t("nft-mint.error.uri-too-long", "URI must be less than 256 bytes"))
-        }
-        // Convert URI to hex format
-        tx.URI = encode(formData.uri)
-      }
+    if (uri) {
+      request.URI = encode(uri)
+    }
 
-      if (formData.destination && formData.destination !== "") {
-        // Validate destination address (simple check, can be enhanced)
-        if (!formData.destination.startsWith("r")) {
-          throw new Error(t("nft-mint.error.invalid-destination", "Invalid destination address"))
-        }
-        tx.Destination = formData.destination
-      }
+    if (digest) {
+      request.Digest = digest
+    }
 
-      if (formData.expiration && formData.expiration !== "") {
-        const expirationDate = new Date(formData.expiration)
-        const now = new Date()
-        if (expirationDate <= now) {
-          throw new Error(t("nft-mint.error.expiration-past", "Expiration date must be in the future"))
-        }
-        tx.Expiration = Math.floor(expirationDate.getTime() / 1000)
-      }
+    setSignRequest({
+      redirect: 'nft',
+      request,
+      callback: afterSubmit
+    })
+  }
 
-      // Add Amount (specific to Xahau)
-      if (formData.amount && formData.amount !== "") {
-        // Convert XRP to drops (1 XRP = 1,000,000 drops)
-        const xrpAmount = Number.parseFloat(formData.amount)
-        if (xrpAmount < 0) {
-          throw new Error(t("nft-mint.error.amount-negative", "Amount cannot be negative"))
-        }
-        // Convert to drops and format as string
-        tx.Amount = String(Math.floor(xrpAmount * 1000000))
-      }
+  const afterSubmit = (id) => {
+    setMinted(id)
+  }
 
-      // Send transaction to parent component for signing
-      setSignRequest({
-        tx,
-        feeMultiplier: 1.2,
-        callback: () => {
-          refreshPage && refreshPage()
-        },
+  useEffect(() => {
+    if (agreeToSiteTerms || agreeToPrivacyPolicy) {
+      setErrorMessage('')
+    }
+  }, [agreeToSiteTerms, agreeToPrivacyPolicy])
+
+  useEffect(() => {
+    if (calculateDigest) {
+      setDigest('')
+    }
+  }, [calculateDigest])
+
+  useEffect(() => {
+    let queryAddList = []
+    let queryRemoveList = []
+    if (digest) {
+      queryAddList.push({
+        name: 'digest',
+        value: digest
       })
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setIsLoading(false)
+      setErrorMessage('')
+    } else {
+      queryRemoveList.push('digest')
+    }
+    if (uri) {
+      queryAddList.push({
+        name: 'uri',
+        value: uri
+      })
+      setErrorMessage('')
+    } else {
+      queryRemoveList.push('uri')
+    }
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+  }, [digest, uri, router])
+
+  const onMetadataChange = (e) => {
+    setDigest('')
+    setMetadataError('')
+    let metadata = e.target.value
+    setMetadata(metadata)
+    if (!metaLoadedFromUri) {
+      if (metadata && isValidJson(metadata)) {
+        checkDigest(metadata)
+      } else {
+        setMetadataError('Please enter valid JSON')
+      }
     }
   }
 
+  const checkDigest = async (metadata) => {
+    if (!metadata) return
+    if (typeof metadata === 'string') {
+      metadata = JSON.parse(metadata)
+    }
+    let ourDigest = await sha512(JSON.stringify(metadata)?.trim())
+    ourDigest = ourDigest.toString().slice(0, 64)
+    setDigest(ourDigest.toUpperCase())
+  }
+
   return (
-    <div className="nft-mint-form" style={{ 
-      padding: '20px', 
-      maxWidth: '800px', 
-      margin: '0 auto',
-
-    }}>
-      <h2 style={{ 
-        marginBottom: '20px', 
-        textAlign: 'center',
-        color: 'var(--text-main)'
-      }}>Mint NFT on Xahau</h2>
-
-      <div className="form-group" style={{ marginBottom: '16px' }}>
-        <AddressInput
-          title={t("table.issuer", "Issuer Address")}
-          placeholder={t("nfts.search-by-issuer", "Enter issuer address")}
-          setValue={setIssuer}
-          rawData={rawData}
-          type="issuer"
-          defaultValue={account || ""}
-          style={{ padding: '8px' }}
-        />
-        <small style={{ marginTop: '3px', display: 'block', color: 'var(--text-secondary)' }}>
-          Leave blank to use your connected account. Must be a valid XRPL address.
-        </small>
-      </div>
-
-      <div className="form-group" style={{ marginBottom: '16px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          color: 'var(--text-main)' 
-        }}>{t("table.taxon", "NFTokenTaxon*")}:</label>
-        <div className="input-validation">
-          <IssuerSelect
-            issuersList={taxonsList.map((taxon) => ({ value: taxon.toString(), label: taxon.toString() }))}
-            selectedIssuer={formData.nftokenTaxon}
-            setSelectedIssuer={onTaxonInput}
-            placeholder="Search or enter taxon"
-            isLoading={isLoadingTaxons}
-            allowCustomValue={true}
-            style={{ padding: '8px' }}
-          />
-        </div>
-        <small style={{ marginTop: '3px', display: 'block', color: 'var(--text-secondary)' }}>
-          Collection or category ID (integer). Used to group NFTs.
-        </small>
-      </div>
-
-      <div className="form-group" style={{ marginBottom: '16px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          color: 'var(--text-main)' 
-        }}>URI:</label>
-        <div className="input-validation">
-          <input
-            type="text"
-            name="uri"
-            placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
-            value={formData.uri}
-            onChange={handleInputChange}
-            className="input-text"
-          />
-        </div>
-        <small style={{ marginTop: '3px', display: 'block', color: 'var(--text-secondary)' }}>
-          Link to external metadata or content (max 256 bytes).
-        </small>
-      </div>
-
-      <div className="form-group" style={{ marginBottom: '16px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          color: 'var(--text-main)' 
-        }}>Transfer Fee (%):</label>
-        <div className="input-validation">
-          <input
-            type="text"
-            name="transferFee"
-            placeholder="0.0"
-            value={formData.transferFee}
-            onChange={handleInputChange}
-            max="50"
-            min="0"
-            className="input-text"
-         
-          />
-        </div>
-        <small style={{ marginTop: '3px', display: 'block', color: 'var(--text-secondary)' }}>
-          Royalty fee between 0 and 50% that the issuer receives when the NFT is resold.
-        </small>
-      </div>
-
-      <div className="form-group" style={{ marginBottom: '16px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          color: 'var(--text-main)' 
-        }}>Amount (XAH):</label>
-        <div className="input-validation">
-          <input
-            type="text"
-            name="amount"
-            placeholder="0"
-            value={formData.amount}
-            onChange={handleInputChange}
-            onKeyDown={typeNumberOnly}
-            className="input-text"
-   
-          />
-        </div>
-        <small style={{ marginTop: '3px', display: 'block', color: 'var(--text-secondary)' }}>
-          XAH price to sell the NFT for (converted to drops). Use 0 if NFT is given away.
-        </small>
-      </div>
-
-      <div className="form-group" style={{ marginBottom: '16px' }}>
-        <AddressInput
-          title={t("table.destination", "Destination")}
-          placeholder={t("nfts.search-by-owner", "Enter destination address")}
-          setValue={setDestination}
-          rawData={{ owner: formData.destination }}
-          type="owner"
-          style={{ padding: '8px' }}
-        />
-        <small style={{ marginTop: '3px', display: 'block', color: 'var(--text-secondary)' }}>
-          Xahau address to receive the minted NFT. Only works when Amount is set.
-        </small>
-      </div>
-
-      <div className="form-group" style={{ marginBottom: '16px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          color: 'var(--text-main)' 
-        }}>Expiration:</label>
-        <div className="input-validation" style={{ position: 'relative' }}>
-          <input
-            type="datetime-local"
-            name="expiration"
-            value={formData.expiration}
-            onChange={handleInputChange}
-            className="input-text calendar-teal"
-           
-          />
-          <style jsx>{`
-            .calendar-teal::-webkit-calendar-picker-indicator {
-              /* Approximate #00B1C1 using a CSS filter */
-              filter: brightness(0) saturate(100%) invert(40%) sepia(28%) saturate(3280%) hue-rotate(156deg) brightness(92%) contrast(90%);
-            }
-          `}</style>
-        </div>
-        <small style={{ marginTop: '3px', display: 'block', color: 'var(--text-secondary)' }}>
-          Date and time when the NFT offer expires. Only valid if Amount is also set.
-        </small>
-      </div>
-
-      <div className="form-group flags" style={{ 
-        marginBottom: '16px', 
-        padding: '12px', 
-
-      }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '10px',
-          color: 'var(--text-main)'
-        }}>Flags:</label>
-        <div className="flag-options" style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', 
-          gap: '10px'
-        }}>
-          <CheckBox
-            checked={formData.flags.burnable}
-            setChecked={(checked) => handleFlagChange("burnable", checked)}
-            name="burnable-xahau"
-          >
-            Burnable
-          </CheckBox>
-
-          <CheckBox
-            checked={formData.flags.onlyXRP}
-            setChecked={(checked) => handleFlagChange("onlyXRP", checked)}
-            name="onlyXRP-xahau"
-          >
-            Only XAH
-          </CheckBox>
-
-          <CheckBox
-            checked={formData.flags.transferable}
-            setChecked={(checked) => handleFlagChange("transferable", checked)}
-            name="transferable-xahau"
-          >
-            Transferable
-          </CheckBox>
-
-          <CheckBox
-            checked={formData.flags.mutable}
-            setChecked={(checked) => handleFlagChange("mutable", checked)}
-            name="mutable-xahau"
-          >
-            Mutable
-          </CheckBox>
-        </div>
-      </div>
-
-      {calculatedNFTokenID && (
-        <div className="predicted-nftid" style={{ 
-          padding: '15px', 
-          backgroundColor: 'var(--background-input)', 
-          borderRadius: '6px', 
-          marginTop: '20px', 
-          marginBottom: '20px',
-          border: '1px solid var(--button-additional)'
-        }}>
-          <h3 style={{ 
-            marginBottom: '10px',
-            color: 'var(--accent-icon)'
-          }}>Predicted NFTokenID:</h3>
-          <div className="token-id-box" style={{ 
-            padding: '10px', 
-            backgroundColor: 'var(--background-main)', 
-            border: '1px solid var(--border-color)', 
-            borderRadius: '4px',
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center' 
-          }}>
-            <code style={{ 
-              wordBreak: 'break-all',
-              color: 'var(--text-main)'
-            }}>{calculatedNFTokenID}</code>
-            <button
-              type="button"
-              className="copy-btn"
-              onClick={() => navigator.clipboard.writeText(calculatedNFTokenID)}
-              style={{ 
-                padding: '6px 10px', 
-                marginLeft: '10px',
-                backgroundColor: 'var(--background-button)',
-                color: 'var(--text-button)',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
+    <>
+      {!minted && (
+        <>
+          <p>URI that points to the data or metadata associated with the NFT:</p>
+          <div className="input-validation">
+            <input
+              placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
+              value={uri}
+              onChange={onUriChange}
+              className="input-text"
+              ref={(node) => {
+                uriRef = node
               }}
-            >
-              Copy
-            </button>
+              spellCheck="false"
+              maxLength="256"
+              name="uri"
+            />
           </div>
-          <small style={{ marginTop: '3px', display: 'block', color: 'var(--text-secondary)' }}>
-            This is the pre-calculated NFTokenID with format: {`{chain:21337:NFTokenID}`}. You can add this to your
-            metadata before minting.
-          </small>
-        </div>
+
+          {!uriValidDigest && (
+            <>
+              <CheckBox checked={calculateDigest} setChecked={setCalculateDigest} name="add-digest">
+                Add <b>Digest</b> (recommended)
+              </CheckBox>
+
+              {calculateDigest && (
+                <>
+                  <p>
+                    The digest is calculated from the metadata. It is used to verify that the URI and the metadata
+                    have not been tampered with.
+                  </p>
+
+                  <button
+                    className="button-action thin"
+                    onClick={loadMetadata}
+                    style={{ marginBottom: '10px' }}
+                    name="load-metadata-button"
+                  >
+                    Load metadata
+                  </button>
+
+                  <b className="orange" style={{ marginLeft: '20px' }}>
+                    {metadataStatus}
+                  </b>
+
+                  <p>
+                    Metadata: <b className="orange">{metadataError}</b>
+                  </p>
+                  <textarea
+                    value={metadata}
+                    placeholder="Paste your JSON metadata here"
+                    onChange={onMetadataChange}
+                    className="input-text"
+                    autoFocus={true}
+                    readOnly={metaLoadedFromUri}
+                    name="metadata"
+                  />
+                </>
+              )}
+            </>
+          )}
+
+          {(calculateDigest || uriValidDigest) && (
+            <>
+              <p>Digest:</p>
+              <div className="input-validation">
+                <input
+                  placeholder="Digest"
+                  value={digest}
+                  onChange={onDigestChange}
+                  className="input-text"
+                  ref={(node) => {
+                    digestRef = node
+                  }}
+                  spellCheck="false"
+                  maxLength="64"
+                  readOnly={metaLoadedFromUri}
+                  name="digest"
+                />
+                {isIdValid(digest) && <img src={checkmark} className="validation-icon" alt="validated" />}
+              </div>
+            </>
+          )}
+
+          <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
+            I agree with the{' '}
+            <Link href="/terms-and-conditions" target="_blank">
+              Terms and conditions
+            </Link>
+            .
+          </CheckBox>
+
+          <CheckBox
+            checked={agreeToPrivacyPolicy}
+            setChecked={setAgreeToPrivacyPolicy}
+            name="agree-to-privacy-policy"
+          >
+            I agree with the{' '}
+            <Link href="/privacy-policy" target="_blank">
+              Privacy policy
+            </Link>
+            .
+          </CheckBox>
+
+          <p className="center">
+            <button className="button-action" onClick={onSubmit} name="submit-button">
+              Mint NFT
+            </button>
+          </p>
+        </>
       )}
 
-      {error && <div className="error-message" style={{ 
-        padding: '10px 15px', 
-        backgroundColor: 'var(--background-error)',
-        color: 'var(--text-error)',
-        borderRadius: '4px',
-        marginBottom: '20px' 
-      }}>{error}</div>}
+      {minted && (
+        <>
+          The NFT was successfully minted:
+          <br />
+          <Link href={'/nft/' + minted} className="brake">
+            {server}/nft/{minted}
+          </Link>
+          <br />
+          <br />
+          <center>
+            <button className="button-action" onClick={() => setMinted('')} name="mint-another-nft">
+              Mint another NFT
+            </button>
+          </center>
+        </>
+      )}
 
-      <p className="center" style={{ textAlign: 'center', marginTop: '25px' }}>
-        <button
-          type="button"
-          className="button-action"
-          onClick={onSubmit}
-          disabled={isLoading || !account}
-          name="submit-button"
-          style={{ padding: '6px 12px', fontSize: '16px' }}
-        >
-          {isLoading ? "Loading..." : "Mint NFT"}
-        </button>
-      </p>
-    </div>
+      <p className="red center" dangerouslySetInnerHTML={{ __html: errorMessage || '&nbsp;' }} />
+    </>
   )
-}
+} 
