@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { ledgerName, xahauNetwork } from '../../utils'
+import { xahauNetwork } from '../../utils'
 import { amountFormat, niceNumber } from '../../utils/format'
 import { LedgerLink } from '../../utils/links'
 
@@ -216,9 +216,8 @@ export default function Statistics({ data, setData }) {
 
   return (
     <>
-      <h2 className="center landing-h2">{t('home.stat.header', { ledgerName })}</h2>
       <div className="statistics-block">
-        <div className="stat-header">Transactions (last 24h)</div>
+        <div className="stat-header">Transactions (24h)</div>
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.accountsActiveLast24h')}</div>
           <div>{transactionsLast24h.activeAccounts}</div>
@@ -241,7 +240,7 @@ export default function Statistics({ data, setData }) {
       </div>
       {xahauNetwork && (
         <div className="statistics-block">
-          <div className="stat-header">Hooks (last 24h)</div>
+          <div className="stat-header">Hooks (24h)</div>
           <div className="stat-piece">
             <div className="stat-piece-header">Hook parent txs</div>
             <div>{hooksLast24h.emitTxs}</div>

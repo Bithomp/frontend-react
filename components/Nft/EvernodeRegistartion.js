@@ -1,7 +1,7 @@
-import { fullDateAndTime, txIdLink } from '../../utils/format'
+import { fullDateAndTime } from '../../utils/format'
 import CountryWithFlag from '../UI/CountryWithFlag'
 import Mailto from 'react-protected-mailto'
-import { LedgerLink } from '../../utils/links'
+import { LedgerLink, LinkTx } from '../../utils/links'
 import CopyButton from '../UI/CopyButton'
 
 export default function EvernodeRegistartion({ data }) {
@@ -32,7 +32,7 @@ export default function EvernodeRegistartion({ data }) {
         <tr>
           <td>Hash</td>
           <td>
-            {txIdLink(data.hash, 6)} <CopyButton text={data.hash} />{' '}
+            <LinkTx tx={data.hash} /> <CopyButton text={data.hash} />{' '}
           </td>
         </tr>
         <tr>

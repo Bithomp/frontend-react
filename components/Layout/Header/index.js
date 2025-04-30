@@ -266,6 +266,8 @@ export default function Header({
             <Link href="/distribution">{t('menu.network.distribution', { nativeCurrency })}</Link>
             <Link href="/last-ledger-information">{t('menu.network.last-ledger-information')}</Link>
             <Link href="/ledger">{t('menu.network.last-ledger-transactions')}</Link>
+            <Link href="/whales">{t('menu.network.top-transfers-24h')}</Link>
+
             {/* Hide Verified Domains for XAHAU while they are not ready yet */}
             {!xahauNetwork && <Link href="/domains">{t('menu.network.verified-domains')}</Link>}
             <Link href="/validators">{t('menu.network.validators')}</Link>

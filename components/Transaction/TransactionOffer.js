@@ -16,8 +16,6 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { tx, specification, outcome } = data
 
-  //console.log('TransactionOffer', data) //delete
-
   const sourceOrderbookChange = outcome?.orderbookChanges
     ?.filter((entry) => entry.address === specification.source.address)?.[0]
     ?.orderbookChanges.filter((entry) => entry.sequence === specification.orderSequence)?.[0]

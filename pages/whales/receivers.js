@@ -31,7 +31,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Whales({ data }) {
+export default function WhaleReceivers({ data }) {
   const isMobile = useIsMobile()
 
   return (

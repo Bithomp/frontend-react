@@ -298,6 +298,9 @@ export default function MobileMenu({
           <Link href="/ledger" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.network.last-ledger-transactions')}
           </Link>
+          <Link href="/whales" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.network.top-transfers-24h')}
+          </Link>
 
           {/* Hide Verified Domains for XAHAU while they are not ready yet */}
           {!xahauNetwork && (

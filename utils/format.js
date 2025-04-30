@@ -299,15 +299,6 @@ export const nftIdLink = (nftId, chars = 10) => {
   return <Link href={'/nft/' + nftId}>{shortHash(nftId, chars)}</Link>
 }
 
-export const txIdLink = (txId, chars = 10) => {
-  if (!txId) return ''
-  return (
-    <a href={'/explorer/' + txId} aria-label="Transaction link">
-      {!chars ? <LinkIcon /> : shortHash(txId, chars)}
-    </a>
-  )
-}
-
 export const nftLink = (nft, type, options = {}) => {
   if (!nft || !type || !nft[type]) return ''
 

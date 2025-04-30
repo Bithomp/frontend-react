@@ -20,7 +20,7 @@ const Container = ({ children }) => {
 const ObjectSearch = () => {
   return (
     <>
-      <SEO page="Object details" description="Object search" />
+      <SEO title="Object details" description="Object search" />
       <SearchBlock tab="object" searchPlaceholderText="Search Object by LedgerEntry" />
       <Container>
         <h1 className="center">Object search</h1>
