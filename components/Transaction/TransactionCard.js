@@ -291,7 +291,7 @@ export const TransactionCard = ({
                         <tr key={i}>
                           <TData>Emitted TX {outcome?.emittedTxns?.length > 1 ? i + 1 : ''}</TData>
                           <TData>
-                            <LinkTx tx={etx?.id} />
+                            <LinkTx tx={etx?.txHash} /> {etx?.tx?.TransactionType}
                           </TData>
                         </tr>
                       ))}
