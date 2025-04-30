@@ -60,8 +60,6 @@ export const TransactionCard = ({
 
   if (!data) return null
 
-  //console.log('TransactionCard', data) //delete
-
   const { id, error_message, tx, outcome, meta, specification, error } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
@@ -250,7 +248,7 @@ export const TransactionCard = ({
                   </tr>
                   {meta?.HookExecutions?.map((hr, i) => (
                     <tr key={i}>
-                      <TData>Hook return {meta?.HookExecutions.length > 1 ? i + 1 : ''}:</TData>
+                      <TData>Hook return{meta?.HookExecutions.length > 1 ? ' ' + (i + 1) : ''}</TData>
                       <TData className="orange bold">{decode(hr.HookExecution?.HookReturnString)}</TData>
                     </tr>
                   ))}
