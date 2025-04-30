@@ -12,11 +12,12 @@ import { avatarServer, isAddressValid, isIdValid, isValidNftXls20, useWidth, xah
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import { MdDelete } from 'react-icons/md'
-import { addressLink, amountFormat, nativeCurrencyToFiat, nftIdLink, timeFromNow, txIdLink } from '../../utils/format'
+import { addressLink, amountFormat, nativeCurrencyToFiat, nftIdLink, timeFromNow } from '../../utils/format'
 import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
 import { nftPriceData, nftThumbnail } from '../../utils/nft'
+import { LinkTx } from '../../utils/links'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -212,8 +213,18 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
       return (
         <>
           {ledgerInfo[type + 'At'] && <>{timeFromNow(ledgerInfo[type + 'At'], i18n)}</>}
-          {ledgerInfo[type + 'TxHash'] && <> {txIdLink(ledgerInfo[type + 'TxHash'], 0)}</>}
-          {ledgerInfo[type + 'ID'] && <> {txIdLink(ledgerInfo[type + 'ID'], 0)}</>}
+          {ledgerInfo[type + 'TxHash'] && (
+            <>
+              {' '}
+              <LinkTx tx={ledgerInfo[type + 'TxHash']} icon={true} />
+            </>
+          )}
+          {ledgerInfo[type + 'ID'] && (
+            <>
+              {' '}
+              <LinkTx tx={ledgerInfo[type + 'ID']} icon={true} />
+            </>
+          )}
         </>
       )
     }

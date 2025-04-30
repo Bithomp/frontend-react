@@ -43,6 +43,7 @@
       "distribution": "{{nativeCurrency}} distribution",
       "last-ledger-information": "Last ledger information",
       "last-ledger-transactions": "Last ledger transactions",
+      "top-transfers-24h": "Top transfers (24h)",
       "verified-domains": "Verified domains",
       "validators": "Validators",
       "amendments": "Amendments",

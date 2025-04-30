@@ -9,6 +9,7 @@ export default function WhaleTabs({ tab }) {
     { value: 'receivers', label: 'Received the most' },
     { value: 'senders', label: 'Sent the most' },
     { value: 'submitters', label: 'Submitted the most' }
+    //{ value: 'fee', label: 'Paid the most fees' }
   ]
 
   const changePage = (tab) => {
@@ -20,6 +21,8 @@ export default function WhaleTabs({ tab }) {
       router.push('/whales/senders')
     } else if (tab === 'submitters') {
       router.push('/whales/submitters')
+    } else if (tab === 'fee') {
+      router.push('/whales/fee')
     }
   }
 

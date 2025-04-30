@@ -43,6 +43,7 @@
       "distribution": "Distribusi {{nativeCurrency}}",
       "last-ledger-information": "Informasi Ledger Terbaru",
       "last-ledger-transactions": "Transaksi Ledger Terbaru",
+      "top-transfers-24h": "Transfer terbesar (24j)",
       "verified-domains": "Domain yang Terverifikasi",
       "validators": "Validasi",
       "amendments": "Perubahan",

@@ -1,13 +1,18 @@
-//import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 //import { useState, useEffect } from 'react'
 //import { network } from '../../utils'
 import { useIsMobile } from '../../utils/mobile'
 //import axios from 'axios'
+import { useRouter } from 'next/router'
 
 export default function TopLinks() {
-  //const { t } = useTranslation()
+  const { t } = useTranslation()
   const isMobile = useIsMobile()
+  const router = useRouter()
+
   //const [countryCode, setCountryCode] = useState('')
+
+  const pathname = router.pathname
 
   //check country
   {
@@ -153,6 +158,35 @@ export default function TopLinks() {
   }
 
   */
+  }
+
+  //explorer links
+  //includes /address and /tx
+  if (pathname.includes('transaction') || pathname.includes('/account')) {
+    return (
+      <div className="top-links">
+        <span className="tooltip">
+          <a href="/go/earn-on-xrp" target="_blank" rel="noreferrer" className="top-link orange">
+            Earn on XRP 💰
+          </a>
+          <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
+        </span>{' '}
+        |{' '}
+        <span className="tooltip">
+          <a href="/go/play-slots" target="_blank" rel="noreferrer" className="top-link orange">
+            Play Slots and win 70,000 XRP ❤️
+          </a>
+          <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
+        </span>
+        {isMobile ? <br /> : ' | '}
+        <span className="tooltip">
+          <a href="/go/playxrp" target="_blank" rel="noreferrer" className="top-link orange">
+            Welcome bonus up to 7 BTC + 250 free spins 💸
+          </a>
+          <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
+        </span>
+      </div>
+    )
   }
 
   return (

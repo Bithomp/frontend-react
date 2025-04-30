@@ -43,6 +43,7 @@
       "distribution": "{{nativeCurrency}}の分布",
       "last-ledger-information": "現在のレジャー情報",
       "last-ledger-transactions": "現在のトランザクション情報",
+      "top-transfers-24h": "最大送金（24時間）",
       "verified-domains": "検証済みドメイン",
       "validators": "バリデータ",
       "amendments": "修正案",

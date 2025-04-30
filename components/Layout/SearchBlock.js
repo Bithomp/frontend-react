@@ -220,6 +220,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       const response = await axios('v3/search/' + searchFor)
       setSearching(false)
       const data = response.data
+      if (data.type === 'transaction') {
+        router.push('/tx/' + searchFor)
+        return
+      }
       if (data.type === 'nftoken' || data.type === 'uriToken') {
         router.push('/nft/' + searchFor)
         return
@@ -235,21 +239,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       if (data.type === 'ledgerEntry') {
         router.push('/object/' + searchFor)
         return
-      }
-
-      if (data.type === 'transaction') {
-        const txType = data.data?.tx?.TransactionType
-        //show some transactions in the new design
-        if (txType?.includes('Check') || txType === 'Payment') {
-          //old transaction type names // remake to v3/search to use new ones
-          router.push('/tx/' + searchFor)
-          return
-        }
-        //allow transaction search only on the tab transactions for now (while it's not ready for public)
-        if (tab === 'transaction') {
-          router.push('/tx/' + searchFor)
-          return
-        }
       }
     }
 
