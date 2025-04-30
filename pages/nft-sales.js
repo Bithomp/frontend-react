@@ -681,7 +681,7 @@ export default function NftSales({
             sessionToken={sessionToken}
             endMessage={t('nft-sales.end')}
             loadMoreMessage={t('nft-sales.load-more')}
-            noSessionTokenMessage={true}           
+            noSessionTokenMessage={t('nfts.change-filters')}
             height={!filtersHide ? '1300px' : '100vh'}
           >
             {activeView === 'list' && (

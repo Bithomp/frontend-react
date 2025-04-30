@@ -313,7 +313,6 @@
     "no-data": "Keine Daten verfügbar",
     "loading": "Lade...",
     "login-to-bithomp-pro": "Das Laden weiterer Daten ist für <1>eingeloggte</1> Bithomp Pro-Abonnenten verfügbar.",
-    "login-to-bithomp-pro-explorer-or-sales-page": "Verwenden Sie verschiedene Filteroptionen oder wählen Sie andere Suchparameter, um mehr NFTs zu entdecken, die Ihren Interessen entsprechen. Melden Sie sich bei <1>Bithomp Pro</1> an, um das unendliche Scrollen zu aktivieren und auf alle bestehenden Ergebnisse zuzugreifen!",
     "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
     "load-failed": "Laden fehlgeschlagen",
     "all-issuers": "Alle Emittenten",
@@ -630,7 +629,8 @@
     "on-service": "auf {{service}}",
     "amount-on-service": "{{amount}} auf {{service}}",
     "load-more": "Wir suchen nach Daten auf dem Ledger... bitte warten...",
-    "end": "Hier sind alle NFTs die wir finden konnten."
+    "end": "Hier sind alle NFTs die wir finden konnten.",
+    "change-filters": "Verwenden Sie verschiedene Filteroptionen oder wählen Sie andere Suchparameter, um mehr NFTs zu entdecken, die Ihren Interessen entsprechen."
   },
   "nft-sales": {
     "header": "NFT Verkäufe",

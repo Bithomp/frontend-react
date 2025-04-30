@@ -313,7 +313,6 @@
     "no-data": "データがありません",
     "loading": "読み込み中...",
     "login-to-bithomp-pro": "Bithomp Proの<1>サブスクリプション加入者</1>は、さらに多くのデータを読み込むことができます。",
-    "login-to-bithomp-pro-explorer-or-sales-page": "さまざまなフィルターオプションを使用するか、他の検索パラメーターを選択して、興味に合ったNFTをさらに探索してください。<1>Bithomp Pro</1> にログインして、無限スクロールを有効にし、すべての既存の結果にアクセスしましょう！",
     "renew-bithomp-pro": "Bithomp Proのサブスクリプション期間が終了しました。<1>サブスクリプションを更新してください。</1>.",
     "load-failed": "読み込みに失敗しました",
     "all-issuers": "全ての発行者",
@@ -630,7 +629,8 @@
     "on-service": "{{service}}",
     "amount-on-service": "{{service}}にて{{amount}}",
     "load-more": "XRPLからデータを探しています...しばらくお待ちください...",
-    "end": "取得できた全てのNFTを表示しています。"
+    "end": "取得できた全てのNFTを表示しています。",
+    "change-filters": "異なるフィルターオプションを使用するか、他の検索パラメーターを選択して、興味に合ったNFTをさらに探索してください。"
   },
   "nft-sales": {
     "header": "NFTの販売",

@@ -313,7 +313,6 @@
     "no-data": "Tidak ada data tersedia",
     "loading": "Memuat...",
     "login-to-bithomp-pro": "Memuat lebih banyak data tersedia untuk pelanggan Bithomp Pro yang <1>termasuk login</1>.",
-    "login-to-bithomp-pro-explorer-or-sales-page": "Gunakan berbagai opsi filter atau pilih parameter pencarian lainnya untuk menjelajahi lebih banyak NFT yang sesuai dengan minat Anda. Masuk ke <1>Bithomp Pro</1> untuk mengaktifkan gulir tak terbatas dan mengakses semua hasil yang ada!",
     "renew-bithomp-pro": "Langganan Bithomp Pro Anda telah kedaluwarsa. <1>Perbarui langganan Anda</1>.",
     "load-failed": "Gagal memuat",
     "all-issuers": "Semua penerbit",
@@ -630,7 +629,8 @@
     "on-service": "di {{service}}",
     "amount-on-service": "{{amount}} di {{service}}",
     "load-more": "Kami sedang mencari data di XRPL... harap tunggu...",
-    "end": "Ini adalah semua NFT yang dapat kami temukan."
+    "end": "Ini adalah semua NFT yang dapat kami temukan.",
+    "change-filters": "Gunakan berbagai opsi filter atau pilih parameter pencarian lainnya untuk menjelajahi lebih banyak NFT yang sesuai dengan minat Anda."
   },
   "nft-sales": {
     "header": "Penjualan NFT",
