@@ -407,9 +407,7 @@ export default function NftsComponent({
         } else {
           if (marker === 'first') {
             setErrorMessage(
-              hasActiveFilters() 
-                ? t('nfts.no-nfts')
-                : t('general.no-data')
+              t('nfts.no-nfts') + " " + (hasActiveFilters()  ? t('general.change-filters') : "" )
             )
           } else {
             setHasMore(false)
@@ -624,10 +622,9 @@ export default function NftsComponent({
       search ||
       mintedPeriod && mintedPeriod !== 'all' ||
       burnedPeriod ||
-      includeBurned ||
-      includeWithoutMediaData ||
+      !includeBurned ||
+      !includeWithoutMediaData ||
       (listTab === 'onSale')
-      // (listTab === 'nfts' && order !== 'mintedNew')
     )
   }
 

@@ -227,9 +227,9 @@ export default function NftSales({
       buyer ||
       seller ||
       search ||
-      (period && period !== (xahauNetwork ? 'year' : 'week')) ||
+      (period && period !== 'all') ||
       (saleTab !== 'primaryAndSecondary') ||
-      includeWithoutMediaData ||
+      !includeWithoutMediaData ||
       currency ||
       currencyIssuer
     )
@@ -357,9 +357,7 @@ export default function NftSales({
         } else {
           if (marker === 'first') {
             setErrorMessage(
-              hasActiveFilters() 
-                ? t('nfts.no-nfts')
-                : t('general.no-data')
+              t('general.no-data') + " " + (hasActiveFilters()  ? t('general.change-filters') : "" )
             )
           } else {
             setHasMore(false)

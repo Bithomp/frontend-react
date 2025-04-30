@@ -324,7 +324,8 @@
     "search": "Search",
     "of-many": "dari banyak",
     "of": "dari",
-    "sort-by": "Urutkan berdasarkan"
+    "sort-by": "Urutkan berdasarkan",
+    "change-filters": "Coba sesuaikan filter untuk melihat hasil yang sesuai dengan pencarian Anda!"
   },
   "form": {
     "error": {
@@ -625,7 +626,7 @@
     "search-by-owner": "Cari berdasarkan pemilik NFT",
     "search-by-buyer": "Cari berdasarkan pembeli NFT",
     "search-by-seller": "Cari berdasarkan penjual NFT",
-    "no-nfts": "Kami tidak dapat menemukan NFT dengan parameter pencarian Anda. Coba sesuaikan filter untuk melihat hasil yang sesuai dengan pencarian Anda!",
+    "no-nfts": "Kami tidak dapat menemukan NFT dengan parameter pencarian Anda.",
     "on-service": "di {{service}}",
     "amount-on-service": "{{amount}} di {{service}}",
     "load-more": "Kami sedang mencari data di XRPL... harap tunggu...",
