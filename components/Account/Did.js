@@ -1,8 +1,9 @@
 import { i18n } from 'next-i18next'
-import { codeHighlight, fullDateAndTime, shortHash, timeFromNow, txIdLink } from '../../utils/format'
+import { codeHighlight, fullDateAndTime, shortHash, timeFromNow } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 import { decode, isUrlValid } from '../../utils'
 import { useTranslation } from 'next-i18next'
+import { LinkTx } from '../../utils/links'
 
 export default function Did({ data, setSignRequest, account, ledgerTimestamp }) {
   /*
@@ -132,7 +133,7 @@ export default function Did({ data, setSignRequest, account, ledgerTimestamp }) 
               <td>Created</td>
               <td>
                 {timeFromNow(didData.createdAt, i18n)} ({fullDateAndTime(didData.createdAt)}){' '}
-                {txIdLink(didData.createdTxHash, 0)}
+                <LinkTx tx={didData.createdTxHash} icon={true} />
               </td>
             </tr>
           )}
@@ -141,7 +142,7 @@ export default function Did({ data, setSignRequest, account, ledgerTimestamp }) 
               <td>Updated</td>
               <td>
                 {timeFromNow(didData.updatedAt, i18n)} ({fullDateAndTime(didData.updatedAt)}){' '}
-                {txIdLink(didData.updatedTxHash, 0)}
+                <LinkTx tx={didData.updatedTxHash} icon={true} />
               </td>
             </tr>
           )}
@@ -199,13 +200,13 @@ export default function Did({ data, setSignRequest, account, ledgerTimestamp }) 
         {didData.createdAt && (
           <p>
             <span className="grey">Created</span> {timeFromNow(didData.createdAt, i18n)}{' '}
-            {txIdLink(didData.createdTxHash, 0)}
+            <LinkTx tx={didData.createdTxHash} icon={true} />
           </p>
         )}
         {didData.updatedAt && didData.updatedAt !== didData.createdAt && (
           <p>
             <span className="grey">Updated</span> {timeFromNow(didData.updatedAt, i18n)}{' '}
-            {txIdLink(didData.updatedTxHash, 0)}
+            <LinkTx tx={didData.updatedTxHash} icon={true} />
           </p>
         )}
         {url && (

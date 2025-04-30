@@ -11,7 +11,7 @@ import {
 import { TransactionCard } from '../TransactionCard'
 import { xls14NftValue } from '../../../utils'
 import CopyButton from '../../UI/CopyButton'
-import { addressBalanceChanges } from '../../../utils/transaction'
+import { addressBalanceChanges, dappBySourceTag } from '../../../utils/transaction'
 import DestinationTagProblemSolving from './DestinationTagProblemSolving'
 import PaymentInstructions from './PaymentInstructions'
 
@@ -113,6 +113,9 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
       : change
   }
 
+  //don't show sourcetag if it's the tag of a known dapp
+  const dapp = dappBySourceTag(specification.source.tag)
+
   return (
     <TransactionCard
       data={data}
@@ -138,7 +141,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
-      {specification.source?.tag !== undefined && (
+      {specification.source?.tag !== undefined && !dapp && (
         <tr>
           <TData>Source tag</TData>
           <TData className="bold">{specification.source.tag}</TData>

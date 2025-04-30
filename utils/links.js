@@ -5,7 +5,7 @@ import CopyButton from '../components/UI/CopyButton'
 import { server } from '.'
 
 export const LinkTx = ({ tx, icon, children }) =>
-  tx ? <a href={server + `/explorer/${tx}`}>{children || (icon ? <LinkIcon /> : shortHash(tx, 10))}</a> : ''
+  tx ? <Link href={`/tx/${tx}`}>{children || (icon ? <LinkIcon /> : shortHash(tx, 10))}</Link> : ''
 
 export const LedgerLink = ({ version, text, style, onClick }) =>
   version ? (

@@ -43,6 +43,7 @@
       "distribution": "Distribución de {{nativeCurrency}}",
       "last-ledger-information": "Información del último libro contable",
       "last-ledger-transactions": "Transacciones del último libro contable",
+      "top-transfers-24h": "Top transferencias (24h)",
       "verified-domains": "Dominios verificados",
       "validators": "Validadores",
       "amendments": "Enmiendas",
