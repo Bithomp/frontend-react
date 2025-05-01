@@ -360,15 +360,11 @@ export default function NftMintXRPL({ setSignRequest }) {
     <>
       <SEO title="XRP Ledger NFT Mint" />
       <div className="page-services-nft-mint">
-        <h1 className="center">XRPL NFT Mint</h1>
-        <p>
-          Mint a new NFT on the XRP Ledger. Enter the URI and configure your NFT properties below.
-        </p>
 
         {!minted && (
           <>
-            <p>URI that points to the data or metadata associated with the NFT:</p>
-            <div className="input-validation">
+            <p className="mb-2">URI that points to the data or metadata associated with the NFT:</p>
+            <div className="input-validation mb-4">
               <input
                 placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
                 value={uri}
@@ -383,8 +379,8 @@ export default function NftMintXRPL({ setSignRequest }) {
               />
             </div>
 
-            <p>NFT Taxon (classification number, required):</p>
-            <div className="input-validation">
+            <p className="mb-2">NFT Taxon (classification number, required):</p>
+            <div className="input-validation mb-4">
               <input
                 placeholder="0"
                 value={taxon}
@@ -398,16 +394,18 @@ export default function NftMintXRPL({ setSignRequest }) {
               />
             </div>
             
-            <p>Issuer (optional - if different from your account):</p>
-            <AddressInput
-              placeholder="Search by address or username..."
-              onSelect={onIssuerChange}
-              initialValue={issuer}
-              name="issuer"
-            />
+            <p style={{ marginBottom: "-5px" }}>Issuer (optional - if different from your account):</p>
+            <div className="mb-4">
+              <AddressInput
+                placeholder="Search by address or username..."
+                onSelect={onIssuerChange}
+                initialValue={issuer}
+                name="issuer"
+              />
+            </div>
             
-            <p>Transfer Fee (optional, 0-50%):</p>
-            <div className="input-validation">
+            <p className="mb-2">Transfer Fee (optional, 0-50%):</p>
+            <div className="input-validation mb-4">
               <input
                 placeholder="Enter percentage (e.g., 2.5)"
                 value={transferFee}
@@ -421,16 +419,18 @@ export default function NftMintXRPL({ setSignRequest }) {
               />
             </div>
             
-            <p>Destination (optional - account to receive the NFT):</p>
-            <AddressInput
-              placeholder="Search by address or username..."
-              onSelect={onDestinationChange}
-              initialValue={destination}
-              name="destination"
-            />
+            <p style={{ marginBottom: "-5px" }}>Destination (optional - account to receive the NFT):</p>
+            <div className="mb-4">
+              <AddressInput
+                placeholder="Search by address or username..."
+                onSelect={onDestinationChange}
+                initialValue={destination}
+                name="destination"
+              />
+            </div>
 
-            <p>Initial listing price in XRP (optional - creates a sell offer):</p>
-            <div className="input-validation">
+            <p className="mb-2">Initial listing price in XRP (optional - creates a sell offer):</p>
+            <div className="input-validation mb-4">
               <input
                 placeholder="0.0"
                 value={amount}
@@ -446,13 +446,15 @@ export default function NftMintXRPL({ setSignRequest }) {
 
             {amount && parseFloat(amount) > 0 && (
               <>
-                <p>Offer expiration (if creating a sell offer):</p>
-                <ExpirationSelect onChange={onExpirationChange} />
+                <p className="mb-2">Offer expiration (if creating a sell offer):</p>
+                <div className="mb-4">
+                  <ExpirationSelect onChange={onExpirationChange} />
+                </div>
               </>
             )}
 
-            <p>NFT Flags:</p>
-            <div className="nft-flags-container">
+            <p className="mb-2">NFT Flags:</p>
+            <div className="nft-flags-container mb-4">
               <CheckBox checked={flags.tfTransferable} setChecked={() => handleFlagChange('tfTransferable')} name="transferable">
                 Transferable (can be transferred to others)
               </CheckBox>
@@ -469,42 +471,48 @@ export default function NftMintXRPL({ setSignRequest }) {
 
             {!uriValidDigest && (
               <>
-                <CheckBox checked={calculateDigest} setChecked={setCalculateDigest} name="add-digest">
-                  Add <b>Digest</b> (recommended)
-                </CheckBox>
+                <div className="mb-4">
+                  <CheckBox checked={calculateDigest} setChecked={setCalculateDigest} name="add-digest">
+                    Add <b>Digest</b> (recommended)
+                  </CheckBox>
+                </div>
 
                 {calculateDigest && (
                   <>
-                    <p>
+                    <p className="mb-2">
                       The digest is calculated from the metadata. It is used to verify that the URI and the metadata
                       have not been tampered with.
                     </p>
 
-                    <button
-                      className="button-action thin"
-                      onClick={loadMetadata}
-                      style={{ marginBottom: '10px' }}
-                      name="load-metadata-button"
-                    >
-                      Load metadata
-                    </button>
+                    <div className="mb-4">
+                      <button
+                        className="button-action thin"
+                        onClick={loadMetadata}
+                        name="load-metadata-button"
+                      >
+                        Load metadata
+                      </button>
 
-                    <b className="orange" style={{ marginLeft: '20px' }}>
-                      {metadataStatus}
-                    </b>
+                      <b className="orange" style={{ marginLeft: '20px' }}>
+                        {metadataStatus}
+                      </b>
+                    </div>
 
-                    <p>
+                    <p className="mb-2">
                       Metadata: <b className="orange">{metadataError}</b>
                     </p>
-                    <textarea
-                      value={metadata}
-                      placeholder="Paste your JSON metadata here"
-                      onChange={onMetadataChange}
-                      className="input-text"
-                      autoFocus={true}
-                      readOnly={metaLoadedFromUri}
-                      name="metadata"
-                    />
+                    <div className="mb-4">
+                      <textarea
+                        value={metadata}
+                        placeholder="Paste your JSON metadata here"
+                        onChange={onMetadataChange}
+                        className="input-text"
+                        autoFocus={true}
+                        readOnly={metaLoadedFromUri}
+                        name="metadata"
+                        rows={6}
+                      />
+                    </div>
                   </>
                 )}
               </>
@@ -512,8 +520,8 @@ export default function NftMintXRPL({ setSignRequest }) {
 
             {(calculateDigest || uriValidDigest) && (
               <>
-                <p>Digest:</p>
-                <div className="input-validation">
+                <p className="mb-2">Digest:</p>
+                <div className="input-validation mb-4">
                   <input
                     placeholder="Digest"
                     value={digest}
@@ -527,32 +535,36 @@ export default function NftMintXRPL({ setSignRequest }) {
                     readOnly={metaLoadedFromUri}
                     name="digest"
                   />
-                  {isIdValid(digest) && <img src={checkmark} className="validation-icon" alt="validated" />}
+                  {isIdValid(digest) && <img src={checkmark || "/placeholder.svg"} className="validation-icon" alt="validated" />}
                 </div>
               </>
             )}
 
-            <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
-              I agree with the{' '}
-              <Link href="/terms-and-conditions" target="_blank">
-                Terms and conditions
-              </Link>
-              .
-            </CheckBox>
+            <div className="mb-4">
+              <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
+                I agree with the{' '}
+                <Link href="/terms-and-conditions" target="_blank">
+                  Terms and conditions
+                </Link>
+                .
+              </CheckBox>
+            </div>
 
-            <CheckBox
-              checked={agreeToPrivacyPolicy}
-              setChecked={setAgreeToPrivacyPolicy}
-              name="agree-to-privacy-policy"
-            >
-              I agree with the{' '}
-              <Link href="/privacy-policy" target="_blank">
-                Privacy policy
-              </Link>
-              .
-            </CheckBox>
+            <div className="mb-4">
+              <CheckBox
+                checked={agreeToPrivacyPolicy}
+                setChecked={setAgreeToPrivacyPolicy}
+                name="agree-to-privacy-policy"
+              >
+                I agree with the{' '}
+                <Link href="/privacy-policy" target="_blank">
+                  Privacy policy
+                </Link>
+                .
+              </CheckBox>
+            </div>
 
-            <p className="center">
+            <p className="center mt-6">
               <button className="button-action" onClick={onSubmit} name="submit-button">
                 {amount && parseFloat(amount) > 0 ? 'Mint NFT & Create Sell Offer' : 'Mint NFT'}
               </button>
@@ -562,22 +574,21 @@ export default function NftMintXRPL({ setSignRequest }) {
 
         {minted && (
           <>
-            The NFT was successfully minted:
-            <br />
-            <Link href={'/nft/' + minted} className="brake">
-              {server}/nft/{minted}
-            </Link>
-            <br />
-            <br />
-            <center>
+            <p className="mb-4">The NFT was successfully minted:</p>
+            <p className="mb-4">
+              <Link href={'/nft/' + minted} className="brake">
+                {server}/nft/{minted}
+              </Link>
+            </p>
+            <div className="center mt-6">
               <button className="button-action" onClick={() => setMinted('')} name="mint-another-nft">
                 Mint another NFT
               </button>
-            </center>
+            </div>
           </>
         )}
 
-        <p className="red center" dangerouslySetInnerHTML={{ __html: errorMessage || '&nbsp;' }} />
+        <p className="red center mt-4" dangerouslySetInnerHTML={{ __html: errorMessage || '&nbsp;' }} />
       </div>
     </>
   )
