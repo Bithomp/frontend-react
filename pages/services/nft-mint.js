@@ -34,7 +34,7 @@ export default function NftMint({ account, setSignRequest, refreshPage }) {
         </p>
         
         <NftMintTabs />
-        
+        {/* // remove nfttabs */}
         <div className="form-container">
           {xahauNetwork ? (
             <NftMintXahau 
@@ -43,7 +43,7 @@ export default function NftMint({ account, setSignRequest, refreshPage }) {
               refreshPage={refreshPage}
             />
           ) : (
-            <NftMintXRPL 
+            <NftMintXRPL  
               account={account} 
               setSignRequest={setSignRequest}
               refreshPage={refreshPage}

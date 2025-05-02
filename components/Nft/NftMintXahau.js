@@ -189,10 +189,6 @@ export default function NftMintXahau({ setSignRequest }) {
     <>
       <SEO title="Xahau NFT Mint" />
       <div className="page-services-nft-mint content-center">
-        <h1 className="center">Xahau NFT Mint</h1>
-        <p>
-          Mint a new NFT on Xahau. Enter the URI and (optionally) metadata digest.
-        </p>
 
         {!minted && (
           <>

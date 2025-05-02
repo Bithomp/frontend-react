@@ -30,8 +30,8 @@ export default function NftMintXRPL({ setSignRequest }) {
   const [flags, setFlags] = useState({
     tfBurnable: false,
     tfOnlyXRP: false,
-    tfTrustLine: false,
-    tfTransferable: true
+    tfTransferable: true,
+    tfMutable: false
   }) // XRPL specific - NFToken flags
 
   // New fields for NFTokenMint
@@ -40,6 +40,7 @@ export default function NftMintXRPL({ setSignRequest }) {
   const [destination, setDestination] = useState('') // Optional destination address
   const [amount, setAmount] = useState('') // Amount for initial offer
   const [expiration, setExpiration] = useState(0) // Expiration in days
+  const [mintForOtherAccount, setMintForOtherAccount] = useState(false)
 
   let uriRef
   let digestRef
@@ -227,14 +228,20 @@ export default function NftMintXRPL({ setSignRequest }) {
       return
     }
 
+    // If transferFee is set, tfTransferable must be enabled
+    if (transferFee && parseFloat(transferFee) > 0 && !flags.tfTransferable) {
+      setErrorMessage('Transferable flag must be enabled if Transfer Fee is set.')
+      return
+    }
+
     setErrorMessage('')
 
     // Calculate flags for NFTokenMint
     let nftFlags = 0
-    if (flags.tfBurnable) nftFlags |= 1
-    if (flags.tfOnlyXRP) nftFlags |= 2
-    if (flags.tfTrustLine) nftFlags |= 4
-    if (!flags.tfTransferable) nftFlags |= 8
+    if (flags.tfBurnable) nftFlags |= 1         // 0x00000001
+    if (flags.tfOnlyXRP) nftFlags |= 2          // 0x00000002
+    if (flags.tfTransferable) nftFlags |= 8     // 0x00000008
+    if (flags.tfMutable) nftFlags |= 16         // 0x00000010
 
     // Build the NFTokenMint transaction request
     let request = {
@@ -394,15 +401,39 @@ export default function NftMintXRPL({ setSignRequest }) {
               />
             </div>
             
-            <p style={{ marginBottom: "-5px" }}>Issuer (optional - if different from your account):</p>
-            <div className="mb-4">
-              <AddressInput
-                placeholder="Search by address or username..."
-                onSelect={onIssuerChange}
-                initialValue={issuer}
-                name="issuer"
-              />
-            </div>
+            <>
+              <div className="mb-4">
+                <CheckBox 
+                  checked={mintForOtherAccount} 
+                  setChecked={() => {
+                    setMintForOtherAccount(!mintForOtherAccount)
+                    if (!mintForOtherAccount) {
+                      setIssuer('') // Clear issuer when unchecking
+                    }
+                  }} 
+                  name="mint-for-other"
+                >
+                  Mint on behalf of another account
+                </CheckBox>
+              </div>
+
+              {mintForOtherAccount && (
+                <>
+                  <p style={{ marginBottom: "-5px" }}>Issuer (account you're minting for):</p>
+                  <div className="mb-4">
+                    <AddressInput
+                      placeholder="Search by address or username..."
+                      onSelect={onIssuerChange}
+                      initialValue={issuer}
+                      name="issuer"
+                    />
+                  </div>
+                  <p className="orange mb-2">
+                    Note: You must be authorized as a minter for this account, or the transaction will fail.
+                  </p>
+                </>
+              )}
+            </>
             
             <p className="mb-2">Transfer Fee (optional, 0-50%):</p>
             <div className="input-validation mb-4">
@@ -455,7 +486,16 @@ export default function NftMintXRPL({ setSignRequest }) {
 
             <p className="mb-2">NFT Flags:</p>
             <div className="nft-flags-container mb-4">
-              <CheckBox checked={flags.tfTransferable} setChecked={() => handleFlagChange('tfTransferable')} name="transferable">
+              <CheckBox
+                checked={flags.tfTransferable}
+                setChecked={() => {
+                  // Prevent unchecking if transferFee is set
+                  if (!transferFee || parseFloat(transferFee) === 0) {
+                    handleFlagChange('tfTransferable')
+                  }
+                }}
+                name="transferable"
+              >
                 Transferable (can be transferred to others)
               </CheckBox>
               <CheckBox checked={flags.tfBurnable} setChecked={() => handleFlagChange('tfBurnable')} name="burnable">
@@ -464,80 +504,15 @@ export default function NftMintXRPL({ setSignRequest }) {
               <CheckBox checked={flags.tfOnlyXRP} setChecked={() => handleFlagChange('tfOnlyXRP')} name="only-xrp">
                 Only XRP (can only be sold for XRP)
               </CheckBox>
-              <CheckBox checked={flags.tfTrustLine} setChecked={() => handleFlagChange('tfTrustLine')} name="trustline">
-                TrustLine (requires a trustline)
+              <CheckBox checked={flags.tfMutable} setChecked={() => handleFlagChange('tfMutable')} name="mutable">
+                Mutable (URI can be updated)
               </CheckBox>
             </div>
 
-            {!uriValidDigest && (
-              <>
-                <div className="mb-4">
-                  <CheckBox checked={calculateDigest} setChecked={setCalculateDigest} name="add-digest">
-                    Add <b>Digest</b> (recommended)
-                  </CheckBox>
-                </div>
-
-                {calculateDigest && (
-                  <>
-                    <p className="mb-2">
-                      The digest is calculated from the metadata. It is used to verify that the URI and the metadata
-                      have not been tampered with.
-                    </p>
-
-                    <div className="mb-4">
-                      <button
-                        className="button-action thin"
-                        onClick={loadMetadata}
-                        name="load-metadata-button"
-                      >
-                        Load metadata
-                      </button>
-
-                      <b className="orange" style={{ marginLeft: '20px' }}>
-                        {metadataStatus}
-                      </b>
-                    </div>
-
-                    <p className="mb-2">
-                      Metadata: <b className="orange">{metadataError}</b>
-                    </p>
-                    <div className="mb-4">
-                      <textarea
-                        value={metadata}
-                        placeholder="Paste your JSON metadata here"
-                        onChange={onMetadataChange}
-                        className="input-text"
-                        autoFocus={true}
-                        readOnly={metaLoadedFromUri}
-                        name="metadata"
-                        rows={6}
-                      />
-                    </div>
-                  </>
-                )}
-              </>
-            )}
-
-            {(calculateDigest || uriValidDigest) && (
-              <>
-                <p className="mb-2">Digest:</p>
-                <div className="input-validation mb-4">
-                  <input
-                    placeholder="Digest"
-                    value={digest}
-                    onChange={onDigestChange}
-                    className="input-text"
-                    ref={(node) => {
-                      digestRef = node
-                    }}
-                    spellCheck="false"
-                    maxLength="64"
-                    readOnly={metaLoadedFromUri}
-                    name="digest"
-                  />
-                  {isIdValid(digest) && <img src={checkmark || "/placeholder.svg"} className="validation-icon" alt="validated" />}
-                </div>
-              </>
+            {transferFee && parseFloat(transferFee) > 0 && !flags.tfTransferable && (
+              <div className="red mb-2">
+                Transferable flag must be enabled if Transfer Fee is set.
+              </div>
             )}
 
             <div className="mb-4">
