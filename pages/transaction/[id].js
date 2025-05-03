@@ -121,7 +121,7 @@ export default function Transaction({ data, selectedCurrency }) {
     <>
       <SEO
         page="Transaction"
-        title={t('explorer.header.transaction') + txHash}
+        title={t('explorer.header.transaction') + ' ' + txHash}
         description={'Transaction details for tx: ' + txHash}
       />
       <SearchBlock tab="transaction" />
