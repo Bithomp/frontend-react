@@ -175,7 +175,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Amount Received', key: 'receivedAmount' },
           { label: 'Fee Currency (Optional)', key: 'txFeeCurrencyCode' },
           { label: 'Fee Amount (Optional)', key: 'txFeeNumber' },
-          { label: 'Type', key: 'type' },
+          { label: 'Type', key: 'coinLedgerTxType' },
           { label: 'Description (Optional)', key: 'memo' },
           { label: 'TxHash (Optional)', key: 'hash' }
         ]
@@ -183,7 +183,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
       {
         platform: 'CoinTracking',
         headers: [
-          { label: 'Type', key: 'type' },
+          { label: 'Type', key: 'coinTrackingTxType' },
           { label: 'Buy Amount', key: 'receivedAmount' },
           { label: 'Buy Currency', key: 'receivedCurrency' },
           { label: 'Sell Amount', key: 'sentAmount' },
@@ -375,6 +375,16 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         //sanitize memos for CSV
         res.activities[i].memo = res.activities[i].memo?.replace(/"/g, "'") || ''
+
+        // For CoinLedger platform
+        res.activities[i].coinLedgerTxType = sending ? 'Withdrawal' : 'Deposit'
+
+        // For CoinTracking platform
+        res.activities[i].coinTrackingTxType = !sending
+          ? 'Deposit'
+          : Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber
+          ? 'Other Fee'
+          : 'Withdrawal'
       }
       setData(res) // last request data
       if (options?.marker) {
