@@ -83,6 +83,11 @@ const dateFormatters = {
     // Format: dd.mm.yyyy HH:MM:SS in UTC
     const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
+  },
+  BlockPit: (timestamp) => {
+    // Format: DD.MM.YYYY HH:MM:SS in UTC
+    const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
+    return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
   }
 }
 
@@ -109,9 +114,15 @@ const processDataForExport = (activities, platform) => {
         }
       }
     } else if (platform === 'CoinLedger') {
-      processedActivity.type = isSending(activity) ? 'Withdrawal' : 'Deposit'
+      processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     } else if (platform === 'CoinTracking') {
-      processedActivity.type = isSending(activity)
+      processedActivity.type = sending
+        ? 'Withdrawal'
+        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+        ? 'Other Fee'
+        : 'Deposit'
+    } else if (platform === 'BlockPit') {
+      processedActivity.type = sending
         ? 'Withdrawal'
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'Other Fee'
@@ -199,6 +210,22 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Buy Value in Account Currency', key: 'amountInFiats.' + selectedCurrency },
           { label: 'Sell Value in Account Currency', key: '' },
           { label: 'Liquidity pool', key: '' }
+        ]
+      },
+      {
+        platform: 'BlockPit',
+        headers: [
+          { label: 'Date (UTC)', key: 'timestampExport' },
+          { label: 'Integration Name', key: 'platform' },
+          { label: 'Label', key: 'blockPitTxType' },
+          { label: 'Outgoing Asset', key: 'sentCurrency' },
+          { label: 'Outgoing Amount', key: 'sentAmount' },
+          { label: 'Incoming Asset', key: 'receivedCurrency' },
+          { label: 'Incoming Amount', key: 'receivedAmount' },
+          { label: 'Fee Asset (optional)', key: 'txFeeCurrencyCode' },
+          { label: 'Fee Amount (optional)', key: 'txFeeNumber' },
+          { label: 'Comment (optional)', key: 'memo' },
+          { label: 'Trx. ID (optional)', key: 'hash' }
         ]
       }
     ],
@@ -564,7 +591,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
                     { value: 'CoinLedger', label: 'CoinLedger' },
-                    { value: 'CoinTracking', label: 'CoinTracking' }
+                    { value: 'CoinTracking', label: 'CoinTracking' },
+                    { value: 'BlockPit', label: 'BlockPit' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
@@ -581,6 +609,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   }
                   filename={'export ' + platformCSVExport + ' ' + new Date().toISOString() + '.csv'}
                   className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
+                  uFEFF={platformCSVExport === 'BlockPit' ? false : undefined}
                 >
                   <DownloadIcon /> CSV for {platformCSVExport}
                 </CSVLink>
