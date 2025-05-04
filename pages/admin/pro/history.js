@@ -78,7 +78,24 @@ const dateFormatters = {
     // Format: MM/DD/YYYY HH:MM:SS in UTC
     const { mm, dd, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
+  },
+  CoinTracking: (timestamp) => {
+    // Format: dd.mm.yyyy HH:MM:SS in UTC
+    const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
+    return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
+  },
+  TokenTax: (timestamp) => {
+    // Format: MM/DD/YY HH:MM
+    const { mm, dd, yyyy, hh, min } = timePieces(timestamp)
+    return `${mm}/${dd}/${yyyy} ${hh}:${min}`
   }
+}
+
+const isSending = (a) => {
+  if (a.amount?.value) {
+    return a.amount.value[0] === '-'
+  }
+  return a.amount[0] === '-'
 }
 
 const processDataForExport = (activities, platform) => {
@@ -97,13 +114,15 @@ const processDataForExport = (activities, platform) => {
         }
       }
     } else if (platform === 'CoinLedger') {
-      processedActivity.type = isSending(activity) ? 'Withdrawal' : 'Deposit'
+      processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     } else if (platform === 'CoinTracking') {
-      processedActivity.type = isSending(activity)
+      processedActivity.type = sending
         ? 'Withdrawal'
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'Other Fee'
         : 'Deposit'
+    } else if (platform === 'TokenTax') {
+      processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     }
 
     return processedActivity
@@ -140,9 +159,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         headers: [
           { label: 'Date', key: 'timestampExport' },
           { label: 'Sent Amount', key: 'sentAmount' },
-          { label: 'Sent Currency', key: 'koinlySentCurrency' },
+          { label: 'Sent Currency', key: 'sentCurrency' },
           { label: 'Received Amount', key: 'receivedAmount' },
-          { label: 'Received Currency', key: 'koinlyReceivedCurrency' },
+          { label: 'Received Currency', key: 'receivedCurrency' },
           { label: 'Fee Amount', key: 'txFeeNumber' },
           { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
           { label: 'Net Worth Amount', key: 'amountInFiats.' + selectedCurrency },
@@ -166,6 +185,43 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Type', key: 'type' },
           { label: 'Description (Optional)', key: 'memo' },
           { label: 'TxHash (Optional)', key: 'hash' }
+        ]
+      },
+      {
+        platform: 'CoinTracking',
+        headers: [
+          { label: 'Type', key: 'type' },
+          { label: 'Buy Amount', key: 'receivedAmount' },
+          { label: 'Buy Currency', key: 'receivedCurrency' },
+          { label: 'Sell Amount', key: 'sentAmount' },
+          { label: 'Sell Currency', key: 'sentCurrency' },
+          { label: 'Fee', key: 'txFeeNumber' },
+          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange', key: 'platform' },
+          { label: 'Trade-Group', key: '' },
+          { label: 'Comment', key: 'memo' },
+          { label: 'Date', key: 'timestampExport' },
+          // Optional
+          { label: 'Tx-ID', key: 'hash' },
+          { label: 'Buy Value in Account Currency', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'Sell Value in Account Currency', key: '' },
+          { label: 'Liquidity pool', key: '' }
+        ]
+      },
+      {
+        platform: 'TokenTax',
+        headers: [
+          { label: 'Type', key: 'type' },
+          { label: 'BuyAmount', key: 'receivedAmount' },
+          { label: 'BuyCurrency', key: 'receivedCurrency' },
+          { label: 'SellAmount', key: 'sentAmount' },
+          { label: 'SellCurrency', key: 'sentCurrency' },
+          { label: 'FeeAmount', key: 'txFeeNumber' },
+          { label: 'FeeCurrency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange', key: 'platform' },
+          { label: 'Group', key: '' },
+          { label: 'Comment', key: 'memo' },
+          { label: 'Date', key: 'timestampExport' }
         ]
       }
     ],
@@ -336,15 +392,12 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].sentCurrency = sending ? currency : ''
 
         res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : ''
-        res.activities[i].receivedCurrency = !sending ? scvCurrency : ''
+        res.activities[i].receivedCurrency = !sending ? currency : ''
 
         res.activities[i].netWorthCurrency = selectedCurrency.toUpperCase()
 
         //sanitize memos for CSV
         res.activities[i].memo = res.activities[i].memo?.replace(/"/g, "'") || ''
-
-        // For CoinLedger platform
-        res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -533,7 +586,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   setValue={setPlatformCSVExport}
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' }
+                    { value: 'CoinLedger', label: 'CoinLedger' },
+                    { value: 'CoinTracking', label: 'CoinTracking' },
+                    { value: 'TokenTax', label: 'TokenTax' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
