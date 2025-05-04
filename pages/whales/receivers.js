@@ -31,7 +31,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Whales({ data }) {
+export default function WhaleReceivers({ data }) {
   const isMobile = useIsMobile()
 
   return (
@@ -40,7 +40,6 @@ export default function Whales({ data }) {
       <div className="content-text">
         <WhaleTabs tab="receivers" />
         <h1 className="center">{ledgerName + ' addresses that received the most in the last 24 hours'}</h1>
-
         <WhalesTable isMobile={isMobile} data={data} />
       </div>
     </>

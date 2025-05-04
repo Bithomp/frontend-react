@@ -8,7 +8,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
 import { stripText, decode, network, isValidJson, xahauNetwork, devNet, encode } from '../../utils'
-import { AddressWithIconFilled, convertedAmount, usernameOrAddress } from '../../utils/format'
+import { AddressWithIconFilled, convertedAmount, timeFromNow, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl } from '../../utils/nft'
 import {
@@ -77,7 +77,7 @@ const hasJsonMeta = (nft) => {
 }
 
 export default function Nft({ setSignRequest, account, pageMeta, id, selectedCurrency, refreshPage }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const [data, setData] = useState({})
   const [decodedUri, setDecodedUri] = useState(null)
@@ -301,6 +301,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         return t('table.minted')
       }
     } else {
+      //if there is URI then it's URI modified, otherwise burned
+      if (event.url) {
+        return t('table.updated')
+      }
       return <span className="red">{t('table.burned')}</span>
     }
   }
@@ -342,12 +346,22 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           <tr>
             <td className="bold">{eventType(nftEvent)}</td>
             <td>
-              {fullDateAndTime(nftEvent.changedAt)}{' '}
+              {timeFromNow(nftEvent.changedAt, i18n)} ({fullDateAndTime(nftEvent.changedAt)}){' '}
               <a href={'/explorer/' + nftEvent.txHash}>
                 <LinkIcon />
               </a>
             </td>
           </tr>
+          {nftEvent.url && (
+            <tr>
+              <td>{t('table.uri')}</td>
+              <td>
+                <a href={nftEvent.url} target="_blank" rel="noreferrer nofollow">
+                  {nftEvent.url}
+                </a>
+              </td>
+            </tr>
+          )}
           {nftEvent.amount && nftEvent.amount !== '0' && (
             <tr>
               <td>{t('table.price')}</td>

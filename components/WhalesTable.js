@@ -1,8 +1,8 @@
-import { AddressWithIconFilled, amountFormat } from '../utils/format'
+import { AddressWithIconFilled, amountFormat, fullNiceNumber } from '../utils/format'
 
-export const WhalesTable = ({ isMobile, data }) => (
+export const WhalesTable = ({ isMobile, data, noAmount, showFee }) => (
   <>
-    {Array.isArray(data) && (
+    {Array.isArray(data?.addresses) && (
       <>
         {!isMobile ? (
           <table className="table-large shrink">
@@ -11,18 +11,22 @@ export const WhalesTable = ({ isMobile, data }) => (
                 <th>#</th>
                 <th>Address</th>
                 <th className="right">Transactions</th>
-                <th className="right">Amount</th>
+                {!noAmount && <th className="right">Amount</th>}
+                {showFee && <th className="right">Fees paid</th>}
               </tr>
             </thead>
             <tbody>
-              {data?.map((tx, i) => (
+              {data?.addresses?.map((tx, i) => (
                 <tr key={i}>
                   <td>{i + 1}</td>
                   <td>
                     <AddressWithIconFilled data={tx} />
                   </td>
-                  <td className="right">{tx.transactionsCount}</td>
-                  <td className="right">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</td>
+                  <td className="right">{fullNiceNumber(tx.transactionsCount)}</td>
+                  {!noAmount && (
+                    <td className="right">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</td>
+                  )}
+                  {showFee && <td className="right">{amountFormat(tx.fee, { short: true, maxFractionDigits: 2 })}</td>}
                 </tr>
               ))}
             </tbody>
@@ -39,11 +43,19 @@ export const WhalesTable = ({ isMobile, data }) => (
                   <td>
                     <br />
                     <AddressWithIconFilled data={tx} />
-                    <p>Transactions: {tx.transactionsCount}</p>
-                    <p>
-                      Amount:{' '}
-                      <span className="bold">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</span>
-                    </p>
+                    <p>Transactions: {fullNiceNumber(tx.transactionsCount)}</p>
+                    {!noAmount && (
+                      <p>
+                        Amount:{' '}
+                        <span className="bold">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</span>
+                      </p>
+                    )}
+                    {showFee && (
+                      <p>
+                        Fees paid:{' '}
+                        <span className="bold">{amountFormat(tx.fee, { short: true, maxFractionDigits: 2 })}</span>
+                      </p>
+                    )}
                   </td>
                 </tr>
               ))}

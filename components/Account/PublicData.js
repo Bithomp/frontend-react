@@ -1,13 +1,6 @@
 import { useTranslation } from 'next-i18next'
 
-import {
-  AddressWithIconFilled,
-  fullDateAndTime,
-  fullNiceNumber,
-  niceNumber,
-  timeFromNow,
-  txIdLink
-} from '../../utils/format'
+import { AddressWithIconFilled, fullDateAndTime, fullNiceNumber, niceNumber, timeFromNow } from '../../utils/format'
 import { devNet, nativeCurrency, networks, server } from '../../utils'
 
 import CopyButton from '../UI/CopyButton'
@@ -310,7 +303,14 @@ export default function PublicData({ data }) {
             <td>Activated</td>
             <td>
               {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
-              {data?.inceptionTxHash ? <> {txIdLink(data.inceptionTxHash, 0)}</> : ''}
+              {data?.inceptionTxHash ? (
+                <>
+                  {' '}
+                  <LinkTx tx={data.inceptionTxHash} icon={true} />
+                </>
+              ) : (
+                ''
+              )}
             </td>
           </tr>
           {data.genesis && (

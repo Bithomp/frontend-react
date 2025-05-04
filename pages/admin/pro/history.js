@@ -15,8 +15,7 @@ import {
   amountParced,
   fullDateAndTime,
   niceNumber,
-  shortNiceNumber,
-  txIdLink
+  shortNiceNumber
 } from '../../../utils/format'
 import ProTabs from '../../../components/Tabs/ProTabs'
 import { crawlerStatus } from '../../../utils/pro'
@@ -31,6 +30,7 @@ import DownloadIcon from '../../../public/images/download.svg'
 import { koinly } from '../../../utils/koinly'
 import { TbArrowsSort } from 'react-icons/tb'
 import SimpleSelect from '../../../components/UI/SimpleSelect'
+import { LinkTx } from '../../../utils/links'
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { address } = query
@@ -57,6 +57,18 @@ const showFiat = (fiat, selectedCurrency) => {
   )
 }
 
+const timePieces = (timestamp) => {
+  const date = new Date(timestamp * 1000) // Convert to milliseconds
+  const pad = (n) => n.toString().padStart(2, '0')
+  const dd = pad(date.getUTCDate())
+  const mm = pad(date.getUTCMonth() + 1)
+  const yyyy = date.getUTCFullYear()
+  const hh = pad(date.getUTCHours())
+  const min = pad(date.getUTCMinutes())
+  const ss = pad(date.getUTCSeconds())
+  return { dd, mm, yyyy, hh, min, ss }
+}
+
 const dateFormatters = {
   Koinly: (timestamp) => {
     // ISO format: YYYY-MM-DDTHH:MM:SS.000Z
@@ -64,41 +76,36 @@ const dateFormatters = {
   },
   CoinLedger: (timestamp) => {
     // Format: MM/DD/YYYY HH:MM:SS in UTC
-    const date = new Date(timestamp * 1000) // Convert to milliseconds
-
-    const pad = (n) => n.toString().padStart(2, '0')
-
-    const mm = pad(date.getUTCMonth() + 1)
-    const dd = pad(date.getUTCDate())
-    const yyyy = date.getUTCFullYear()
-
-    const hh = pad(date.getUTCHours())
-    const min = pad(date.getUTCMinutes())
-    const ss = pad(date.getUTCSeconds())
-
+    const { mm, dd, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
-  },
-  TokenTax: (timestamp) => {
-    // Format: MM/DD/YY HH:MM
-    const date = new Date(timestamp * 1000)
-
-    const pad = (n) => n.toString().padStart(2, '0')
-
-    const mm = pad(date.getUTCMonth() + 1)
-    const dd = pad(date.getUTCDate())
-    const yy = date.getUTCFullYear().toString().slice(-2)
-
-    const hh = pad(date.getUTCHours())
-    const min = pad(date.getUTCMinutes())
-
-    return `${mm}/${dd}/${yy} ${hh}:${min}`
   }
 }
 
 const processDataForExport = (activities, platform) => {
   return activities.map((activity) => {
+    const sending = isSending(activity)
+
     const processedActivity = { ...activity }
     processedActivity.timestampExport = dateFormatters[platform](activity.timestamp)
+    if (platform === 'Koinly') {
+      if (activity.amount?.issuer) {
+        let koinlyId =
+          koinly[xahauNetwork ? 'xahau' : 'xrpl'][activity.amount?.issuer + ':' + activity.amount?.currency]
+        if (koinlyId) {
+          processedActivity.sentCurrency = sending ? koinlyId : ''
+          processedActivity.receivedCurrency = !sending ? koinlyId : ''
+        }
+      }
+    } else if (platform === 'CoinLedger') {
+      processedActivity.type = isSending(activity) ? 'Withdrawal' : 'Deposit'
+    } else if (platform === 'CoinTracking') {
+      processedActivity.type = isSending(activity)
+        ? 'Withdrawal'
+        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+        ? 'Other Fee'
+        : 'Deposit'
+    }
+
     return processedActivity
   })
 }
@@ -156,25 +163,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Amount Received', key: 'receivedAmount' },
           { label: 'Fee Currency (Optional)', key: 'txFeeCurrencyCode' },
           { label: 'Fee Amount (Optional)', key: 'txFeeNumber' },
-          { label: 'Type', key: 'coinLedgerTxType' },
+          { label: 'Type', key: 'type' },
           { label: 'Description (Optional)', key: 'memo' },
           { label: 'TxHash (Optional)', key: 'hash' }
-        ]
-      },
-      {
-        platform: 'TokenTax',
-        headers: [
-          { label: 'Type', key: 'tokenTaxTxType' },
-          { label: 'BuyAmount', key: 'receivedAmount' },
-          { label: 'BuyCurrency', key: 'receivedCurrency' },
-          { label: 'SellAmount', key: 'sentAmount' },
-          { label: 'SellCurrency', key: 'sentCurrency' },
-          { label: 'FeeAmount', key: 'txFeeNumber' },
-          { label: 'FeeCurrency', key: 'txFeeCurrencyCode' },
-          { label: 'Exchange', key: 'platform' },
-          { label: 'Group', key: '' },
-          { label: 'Comment', key: 'memo' },
-          { label: 'Date', key: 'timestampExport' }
         ]
       }
     ],
@@ -229,7 +220,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
     { label: 'Currency', key: 'currencyCode' },
     { label: 'Currency issuer', key: 'currencyIssuer' },
     { label: selectedCurrency.toUpperCase() + ' Amount equavalent', key: 'amountInFiats.' + selectedCurrency },
-    { label: 'Direction', key: 'direction' },
     { label: 'Transfer fee as Text', key: 'transferFeeExport' },
     { label: 'Transfer fee', key: 'transferFeeNumber' },
     { label: 'Transfer fee currency', key: 'transferFeeCurrencyCode' },
@@ -322,24 +312,12 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
     */
     if (res) {
       for (let i = 0; i < res.activities.length; i++) {
-        let sending = res.activities[i].amountInFiats?.[selectedCurrency]?.[0] === '-'
+        const sending = isSending(res.activities[i])
         res.activities[i].index = options?.marker ? activities.length + 1 + i : i + 1
-        res.activities[i].amountExport = amountFormat(res.activities[i].amount)
+        res.activities[i].amountExport = amountFormat(res.activities[i].amount, { noSpace: true })
         res.activities[i].amountNumber = res.activities[i].amount?.value || res.activities[i].amount / 1000000
         res.activities[i].currencyCode = res.activities[i].amount?.currency || nativeCurrency
         const { currency } = amountParced(res.activities[i].amount)
-
-        let scvCurrency = currency
-
-        if (res.activities[i].amount?.issuer) {
-          let koinlyId =
-            koinly[xahauNetwork ? 'xahau' : 'xrpl'][
-              res.activities[i].amount?.issuer + ':' + res.activities[i].amount?.currency
-            ]
-          if (koinlyId) {
-            scvCurrency = koinlyId
-          }
-        }
 
         res.activities[i].currencyIssuer = res.activities[i].amount?.issuer
 
@@ -358,11 +336,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].sentCurrency = sending ? currency : ''
 
         res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : ''
-        res.activities[i].receivedCurrency = !sending ? currency : ''
-
-        // For Koinly platform
-        res.activities[i].koinlySentCurrency = sending ? scvCurrency : ''
-        res.activities[i].koinlyReceivedCurrency = !sending ? scvCurrency : ''
+        res.activities[i].receivedCurrency = !sending ? scvCurrency : ''
 
         res.activities[i].netWorthCurrency = selectedCurrency.toUpperCase()
 
@@ -371,9 +345,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         // For CoinLedger platform
         res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
-
-        // For TokenTax platform
-        res.activities[i].tokenTaxTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -562,8 +533,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   setValue={setPlatformCSVExport}
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' },
-                    { value: 'TokenTax', label: 'TokenTax' }
+                    { value: 'CoinLedger', label: 'CoinLedger' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
@@ -578,7 +548,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                       (header) => header.platform.toLowerCase() === platformCSVExport.toLowerCase()
                     )?.headers || []
                   }
-                  filename={'export ' + new Date().toISOString() + '.csv'}
+                  filename={'export ' + platformCSVExport + ' ' + new Date().toISOString() + '.csv'}
                   className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
                 >
                   <DownloadIcon /> CSV for {platformCSVExport}
@@ -619,9 +589,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                               <td>{fullDateAndTime(a.timestamp)}</td>
                               {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
                               <td className="center">
-                                <a href={'/explorer/' + a.hash} aria-label={a.txType}>
-                                  <TypeToIcon type={a.txType} direction={a.direction} />
-                                </a>
+                                <LinkTx tx={a.hash}>
+                                  <TypeToIcon type={a.txType} direction={isSending(a) ? 'sent' : 'received'} />
+                                </LinkTx>
                               </td>
                               <td>
                                 <div style={{ width: 160 }}>
@@ -692,7 +662,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                                   {showFiat(a.amountInFiats?.[selectedCurrency], selectedCurrency)}
                                 </p>
                                 {a.memo && <p>Memo: {a.memo?.slice(0, 197) + (a.memo?.length > 197 ? '...' : '')}</p>}
-                                <p>Tx: {txIdLink(a.hash)}</p>
+                                <p>
+                                  Tx: <LinkTx tx={a.hash} />
+                                </p>
                               </td>
                             </tr>
                           ))}
