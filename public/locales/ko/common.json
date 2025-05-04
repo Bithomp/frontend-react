@@ -43,6 +43,7 @@
       "distribution": "{{nativeCurrency}} 분배",
       "last-ledger-information": "최근 원장 정보",
       "last-ledger-transactions": "최근 거래 정보",
+      "top-transfers-24h": "최대 이체 (24시간)",
       "verified-domains": "검증된 도메인",
       "validators": "벨리데이터",
       "amendments": "수정사항",

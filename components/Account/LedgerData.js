@@ -10,13 +10,12 @@ import {
   amountFormat,
   fullDateAndTime,
   nativeCurrencyToFiat,
-  timeFromNow,
-  txIdLink
+  timeFromNow
 } from '../../utils/format'
 import { devNet, getCoinsUrl, isDomainValid, nativeCurrency, server, stripDomain, xahauNetwork } from '../../utils'
 
 import CopyButton from '../UI/CopyButton'
-import { LinkAmm } from '../../utils/links'
+import { LinkAmm, LinkTx } from '../../utils/links'
 
 import { MdDeleteForever, MdVerified } from 'react-icons/md'
 import { FiEdit } from 'react-icons/fi'
@@ -77,7 +76,12 @@ export default function LedgerData({
           {timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)} ({fullDateAndTime(data.ledgerInfo.lastSubmittedAt)})
         </>
       )}
-      {data?.ledgerInfo?.lastSubmittedTxHash && <> {txIdLink(data.ledgerInfo.lastSubmittedTxHash, 0)}</>}
+      {data?.ledgerInfo?.lastSubmittedTxHash && (
+        <>
+          {' '}
+          <LinkTx tx={data.ledgerInfo.lastSubmittedTxHash} icon={true} />
+        </>
+      )}
     </>
   )
 
@@ -87,7 +91,12 @@ export default function LedgerData({
       {data.inception && (
         <>
           {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
-          {data?.inceptionTxHash && <> {txIdLink(data.inceptionTxHash, 0)}</>}
+          {data?.inceptionTxHash && (
+            <>
+              {' '}
+              <LinkTx tx={data.inceptionTxHash} icon={true} />
+            </>
+          )}
         </>
       )}
     </>
@@ -273,11 +282,16 @@ export default function LedgerData({
           {timeFromNow(data.ledgerInfo.previousTxnAt, i18n)} ({fullDateAndTime(data.ledgerInfo.previousTxnAt)})
         </>
       )}
-      {data?.ledgerInfo?.previousTxnID && <> {txIdLink(data.ledgerInfo.previousTxnID, 0)}</>}
+      {data?.ledgerInfo?.previousTxnID && (
+        <>
+          {' '}
+          <LinkTx tx={data.ledgerInfo.previousTxnID} icon={true} />
+        </>
+      )}
     </>
   )
 
-  //const lastAccountTxNode = txIdLink(data.ledgerInfo.accountTxnID, 6)
+  //const lastAccountTxNode = <LinkTx tx={data.ledgerInfo.accountTxnID} />
 
   const messageKeyNode = <code className="code-highlight">{data.ledgerInfo.messageKey}</code>
 
