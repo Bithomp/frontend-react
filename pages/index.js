@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 
-import { server, explorerName, nativeCurrency, devNet, xahauNetwork, wssServer } from '../utils'
+import { server, explorerName, nativeCurrency, devNet, xahauNetwork, wssServer, ledgerName } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -60,7 +60,7 @@ function sendData() {
         command: 'subscribe',
         streams: ['statistics', 'whale_transactions'],
         id: 1,
-        limit: 10
+        limit: 3
       })
     )
   } else {
@@ -184,6 +184,8 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
           </div>
         </div>
       )}
+
+      <h2 className="center landing-h2">{t('home.stat.header', { ledgerName })}</h2>
 
       <div className="home-whale-transactions">
         <Whales currency={selectedCurrency} data={whaleTransactions} setData={setWhaleTransactions} />
