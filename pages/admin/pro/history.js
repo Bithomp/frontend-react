@@ -78,7 +78,24 @@ const dateFormatters = {
     // Format: MM/DD/YYYY HH:MM:SS in UTC
     const { mm, dd, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
+  },
+  CoinTracking: (timestamp) => {
+    // Format: dd.mm.yyyy HH:MM:SS in UTC
+    const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
+    return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
+  },
+  CryptoTax: (timestamp) => {
+    // Format: YYYY-MM-DD HH:mm:ss
+    const { yyyy, mm, dd, hh, min, ss } = timePieces(timestamp)
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`
   }
+}
+
+const isSending = (a) => {
+  if (a.amount?.value) {
+    return a.amount.value[0] === '-'
+  }
+  return a.amount[0] === '-'
 }
 
 const processDataForExport = (activities, platform) => {
@@ -104,6 +121,12 @@ const processDataForExport = (activities, platform) => {
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'Other Fee'
         : 'Deposit'
+    } else if (platform === 'CryptoTax') {
+      processedActivity.cryptoTaxTxType = !sending
+        ? 'buy'
+        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+        ? 'fee'
+        : 'sell'
     }
 
     return processedActivity
@@ -140,9 +163,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         headers: [
           { label: 'Date', key: 'timestampExport' },
           { label: 'Sent Amount', key: 'sentAmount' },
-          { label: 'Sent Currency', key: 'koinlySentCurrency' },
+          { label: 'Sent Currency', key: 'sentCurrency' },
           { label: 'Received Amount', key: 'receivedAmount' },
-          { label: 'Received Currency', key: 'koinlyReceivedCurrency' },
+          { label: 'Received Currency', key: 'receivedCurrency' },
           { label: 'Fee Amount', key: 'txFeeNumber' },
           { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
           { label: 'Net Worth Amount', key: 'amountInFiats.' + selectedCurrency },
@@ -166,6 +189,47 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Type', key: 'type' },
           { label: 'Description (Optional)', key: 'memo' },
           { label: 'TxHash (Optional)', key: 'hash' }
+        ]
+      },
+      {
+        platform: 'CoinTracking',
+        headers: [
+          { label: 'Type', key: 'type' },
+          { label: 'Buy Amount', key: 'receivedAmount' },
+          { label: 'Buy Currency', key: 'receivedCurrency' },
+          { label: 'Sell Amount', key: 'sentAmount' },
+          { label: 'Sell Currency', key: 'sentCurrency' },
+          { label: 'Fee', key: 'txFeeNumber' },
+          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange', key: 'platform' },
+          { label: 'Trade-Group', key: '' },
+          { label: 'Comment', key: 'memo' },
+          { label: 'Date', key: 'timestampExport' },
+          // Optional
+          { label: 'Tx-ID', key: 'hash' },
+          { label: 'Buy Value in Account Currency', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'Sell Value in Account Currency', key: '' },
+          { label: 'Liquidity pool', key: '' }
+        ]
+      },
+      {
+        platform: 'CryptoTax',
+        headers: [
+          { label: 'Timestamp (UTC)', key: 'timestampExport' },
+          { label: 'Type', key: 'type' },
+          { label: 'Base Currency', key: 'baseCurrency' },
+          { label: 'Base Amount', key: 'baseAmount' },
+          { label: 'Quote Currency (Optional)', key: '' },
+          { label: 'Quote Amount (Optional)', key: '' },
+          { label: 'Fee Currency (Optional)', key: 'cryptoTaxFeeCurrencyCode' },
+          { label: 'Fee Amount (Optional)', key: 'cryptoTaxFeeNumber' },
+          { label: 'From (Optional)', key: 'counterparty' },
+          { label: 'To (Optional)', key: 'address' },
+          { label: 'Blockchain (Optional)', key: '' },
+          { label: 'ID (Optional)', key: 'hash' },
+          { label: 'Description (Optional)', key: 'memo' },
+          { label: 'Reference Price Per Unit (Optional)', key: '' },
+          { label: 'Reference Price Currency (Optional)', key: '' }
         ]
       }
     ],
@@ -336,15 +400,29 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].sentCurrency = sending ? currency : ''
 
         res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : ''
-        res.activities[i].receivedCurrency = !sending ? scvCurrency : ''
+        res.activities[i].receivedCurrency = !sending ? currency : ''
 
         res.activities[i].netWorthCurrency = selectedCurrency.toUpperCase()
 
         //sanitize memos for CSV
         res.activities[i].memo = res.activities[i].memo?.replace(/"/g, "'") || ''
 
-        // For CoinLedger platform
-        res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
+        // For CryptoTax platform
+        res.activities[i].cryptoTaxFeeCurrencyCode = res.activities[i].txFeeCurrencyCode
+        res.activities[i].cryptoTaxFeeNumber = res.activities[i].txFeeNumber
+
+        if (res.activities[i].cryptoTaxTxType === 'buy') {
+          res.activities[i].baseCurrency = res.activities[i].receivedCurrency
+          res.activities[i].baseAmount = res.activities[i].receivedAmount
+        } else {
+          res.activities[i].baseCurrency = res.activities[i].sentCurrency
+          res.activities[i].baseAmount = res.activities[i].sentAmount
+          // don't include this fee amount in the fee column for type 'fee'
+          if (res.activities[i].cryptoTaxTxType === 'fee') {
+            res.activities[i].cryptoTaxFeeCurrencyCode = ''
+            res.activities[i].cryptoTaxFeeNumber = ''
+          }
+        }
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -533,7 +611,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   setValue={setPlatformCSVExport}
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' }
+                    { value: 'CoinLedger', label: 'CoinLedger' },
+                    { value: 'CoinTracking', label: 'CoinTracking' },
+                    { value: 'CryptoTax', label: 'CryptoTax' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
