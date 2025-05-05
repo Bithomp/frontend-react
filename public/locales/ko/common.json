@@ -324,7 +324,8 @@
     "search": "검색",
     "of-many": "중에서",
     "of": "의",
-    "sort-by": "정렬 기준"
+    "sort-by": "정렬 기준",
+    "change-filters": "필터를 조정하여 검색에 맞는 결과를 확인해보세요!"
   },
   "form": {
     "error": {
@@ -625,11 +626,12 @@
     "search-by-owner": "NFT 소유자 탐색",
     "search-by-buyer": "NFT 구매자 탐색",
     "search-by-seller": "NFT 판매자 탐색",
-    "no-nfts": "귀하의 검색 매개변수로 어떤 NFT도 찾을 수 없습니다",
+    "no-nfts": "귀하의 검색 매개변수로 어떤 NFT도 찾을 수 없습니다.",
     "on-service": "{{service}}에서",
     "amount-on-service": "{{service}}에서 {{amount}}",
     "load-more": "XRPL에 대한 데이터를 찾을 수 없습니다. 잠시만 기다려주세요",
-    "end": "저희가 찾을 수 있는 모든 NFT는 다음과 같습니다"
+    "end": "저희가 찾을 수 있는 모든 NFT는 다음과 같습니다",
+    "change-filters": "다른 필터 옵션을 사용하거나 다른 검색 매개변수를 선택하여 관심에 맞는 NFT를 더 찾아보세요."
   },
   "nft-sales": {
     "header": "NFT 판매",

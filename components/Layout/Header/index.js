@@ -165,7 +165,7 @@ export default function Header({
     <div className={menuOpen ? 'mobile-menu-open' : ''}>
       <header>
         <div className="header-logo">
-          <Link href="/" aria-label="Main page">
+          <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
             {(width < 1060 && width > 350) || width > 1240 || !width ? (
               xahauNetwork ? (
                 <XahauExplorer height="43" width="263" />
