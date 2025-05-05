@@ -630,7 +630,8 @@
     "on-service": "di {{service}}",
     "amount-on-service": "{{amount}} di {{service}}",
     "load-more": "Kami sedang mencari data di XRPL... harap tunggu...",
-    "end": "Ini adalah semua NFT yang dapat kami temukan."
+    "end": "Ini adalah semua NFT yang dapat kami temukan.",
+    "change-filters": "Gunakan berbagai opsi filter atau pilih parameter pencarian lainnya untuk menjelajahi lebih banyak NFT yang sesuai dengan minat Anda."
   },
   "nft-sales": {
     "header": "Penjualan NFT",
