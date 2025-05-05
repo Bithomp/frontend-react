@@ -5,7 +5,8 @@ import SEO from '../../components/SEO'
 import { xahauNetwork } from '../../utils'
 import NftMintXRPL from '../../components/Nft/NftMintXRPL'
 import NftMintXahau from '../../components/Nft/NftMintXahau'
-import NftMintTabs from '../../components/Tabs/NftMintTabs'
+import NetworkTabs from '../../components/Tabs/NetworkTabs'
+
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -33,7 +34,7 @@ export default function NftMint({ account, setSignRequest, refreshPage }) {
           )}
         </p>
         
-        <NftMintTabs />
+        <NetworkTabs />
         {/* // remove nfttabs */}
         <div className="form-container">
           {xahauNetwork ? (

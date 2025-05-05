@@ -42,6 +42,9 @@ export default function NftMintXRPL({ setSignRequest }) {
   const [expiration, setExpiration] = useState(0) // Expiration in days
   const [mintForOtherAccount, setMintForOtherAccount] = useState(false)
 
+  // Add new state for sell offer checkbox
+  const [createSellOffer, setCreateSellOffer] = useState(false)
+
   let uriRef
   let digestRef
   let taxonRef
@@ -244,7 +247,7 @@ export default function NftMintXRPL({ setSignRequest }) {
     if (flags.tfMutable) nftFlags |= 16         // 0x00000010
 
     // Build the NFTokenMint transaction request
-    let request = {
+    let mintRequest = {
       TransactionType: 'NFTokenMint',
       NFTokenTaxon: parseInt(taxon),
       Flags: nftFlags,
@@ -259,36 +262,29 @@ export default function NftMintXRPL({ setSignRequest }) {
 
     // Add URI if provided (properly encoded)
     if (uri && uri.trim()) {
-      request.URI = encode(uri)
+      mintRequest.URI = encode(uri)
     }
 
     // Add optional fields ONLY if they have valid values
     if (issuer && issuer.trim()) {
-      request.Issuer = issuer.trim()
+      mintRequest.Issuer = issuer.trim()
     }
 
     // Add TransferFee if provided - multiply by 1000 for XRPL format
     if (transferFee && transferFee.trim()) {
-      // Convert from percentage (e.g., 2.5%) to the format expected by XRPL (2500)
       const feeValue = parseFloat(transferFee.trim())
       if (!isNaN(feeValue) && feeValue >= 0 && feeValue <= 50) {
-        // Multiply by 1000 because XRPL stores transfer fee in thousandths of a percent
-        request.TransferFee = Math.round(feeValue * 1000)
+        mintRequest.TransferFee = Math.round(feeValue * 1000)
       }
     }
 
     if (destination && destination.trim()) {
-      request.Destination = destination.trim()
+      mintRequest.Destination = destination.trim()
     }
 
-    // Determine if we need to create a sell offer after minting
-    let createSellOffer = false
+    // If amount is provided, prepare a NFTokenCreateOffer transaction after minting
     let sellOfferRequest = null
-
-    if (amount && parseFloat(amount) > 0) {
-      createSellOffer = true
-
-      // Prepare the NFTokenCreateOffer transaction (will be executed after minting)
+    if (createSellOffer && amount && parseFloat(amount) > 0) {
       sellOfferRequest = {
         TransactionType: 'NFTokenCreateOffer',
         NFTokenID: '', // Will be filled after successful minting
@@ -296,39 +292,29 @@ export default function NftMintXRPL({ setSignRequest }) {
         Flags: 1 // Sell offer
       }
 
-      // Add destination if provided (for private offers)
       if (destination && destination.trim()) {
         sellOfferRequest.Destination = destination.trim()
       }
 
-      // Add expiration if provided
       if (expiration > 0) {
-        // Calculate expiration timestamp (current time + days in seconds)
         const expirationTimestamp = Math.floor(Date.now() / 1000) + (expiration * 24 * 60 * 60)
         sellOfferRequest.Expiration = expirationTimestamp
       }
     }
 
-    console.log('NFTokenMint request:', request)
-    
-    // Send the minting request first, then handle the sell offer if needed
+    // Mint NFT first, then create offer if needed
     setSignRequest({
       redirect: 'nft',
-      request,
+      request: mintRequest,
       callback: (id) => {
-        if (createSellOffer && id) {
-          // If NFT minting was successful and we want to create a sell offer
+        if (sellOfferRequest && id) {
           sellOfferRequest.NFTokenID = id
-          console.log('NFTokenCreateOffer request:', sellOfferRequest)
-          
-          // Chain the sell offer request after minting completes
           setSignRequest({
             redirect: 'nft',
             request: sellOfferRequest,
             callback: () => setMinted(id)
           })
         } else {
-          // If only minting was done
           setMinted(id)
         }
       }
@@ -422,10 +408,11 @@ export default function NftMintXRPL({ setSignRequest }) {
                   <p style={{ marginBottom: "-5px" }}>Issuer (account you're minting for):</p>
                   <div className="mb-4">
                     <AddressInput
-                      placeholder="Search by address or username..."
+                      placeholder="Issuer address"
                       onSelect={onIssuerChange}
                       initialValue={issuer}
                       name="issuer"
+                      hideButton={true}
                     />
                   </div>
                   <p className="orange mb-2">
@@ -450,33 +437,44 @@ export default function NftMintXRPL({ setSignRequest }) {
               />
             </div>
             
-            <p style={{ marginBottom: "-5px" }}>Destination (optional - account to receive the NFT):</p>
             <div className="mb-4">
-              <AddressInput
-                placeholder="Search by address or username..."
-                onSelect={onDestinationChange}
-                initialValue={destination}
-                name="destination"
-              />
+              <CheckBox
+                checked={createSellOffer}
+                setChecked={() => setCreateSellOffer(!createSellOffer)}
+                name="create-sell-offer"
+              >
+                Create a Sell offer
+              </CheckBox>
             </div>
 
-            <p className="mb-2">Initial listing price in XRP (optional - creates a sell offer):</p>
-            <div className="input-validation mb-4">
-              <input
-                placeholder="0.0"
-                value={amount}
-                onChange={onAmountChange}
-                className="input-text"
-                ref={(node) => {
-                  amountRef = node
-                }}
-                spellCheck="false"
-                name="amount"
-              />
-            </div>
-
-            {amount && parseFloat(amount) > 0 && (
+            {createSellOffer && (
               <>
+                <p className="mb-2">Initial listing price in XRP (Amount):</p>
+                <div className="input-validation mb-4">
+                  <input
+                    placeholder="0.0"
+                    value={amount}
+                    onChange={onAmountChange}
+                    className="input-text"
+                    ref={(node) => {
+                      amountRef = node
+                    }}
+                    spellCheck="false"
+                    name="amount"
+                  />
+                </div>
+
+                <p style={{ marginBottom: "-5px" }}>Destination (optional - account to receive the NFT):</p>
+                <div className="mb-4">
+                  <AddressInput
+                    placeholder="Destination address"
+                    onSelect={onDestinationChange}
+                    initialValue={destination}
+                    name="destination"
+                    hideButton={true}
+                  />
+                </div>
+
                 <p className="mb-2">Offer expiration (if creating a sell offer):</p>
                 <div className="mb-4">
                   <ExpirationSelect onChange={onExpirationChange} />
@@ -514,6 +512,9 @@ export default function NftMintXRPL({ setSignRequest }) {
                 Transferable flag must be enabled if Transfer Fee is set.
               </div>
             )}
+
+            {/* Add space between flags and terms checkboxes */}
+            <div style={{ height: 32 }} />
 
             <div className="mb-4">
               <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
