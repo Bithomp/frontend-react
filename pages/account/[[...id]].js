@@ -165,10 +165,7 @@ export default function Account({
 
   useEffect(() => {
     if (!selectedCurrency) return
-    if (data?.address) {
-      checkApi({ noCache: true })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    checkApi({ noCache: true })
   }, [id, refreshPage, ledgerTimestamp])
 
   useEffect(() => {
