@@ -76,24 +76,18 @@ const dateFormatters = {
   },
   CoinLedger: (timestamp) => {
     // Format: MM/DD/YYYY HH:MM:SS in UTC
-    const date = new Date(timestamp * 1000) // Convert to milliseconds
-
-    const pad = (n) => n.toString().padStart(2, '0')
-
-    const mm = pad(date.getUTCMonth() + 1)
-    const dd = pad(date.getUTCDate())
-    const yyyy = date.getUTCFullYear()
-
-    const hh = pad(date.getUTCHours())
-    const min = pad(date.getUTCMinutes())
-    const ss = pad(date.getUTCSeconds())
-
+    const { mm, dd, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
   },
   CoinTracking: (timestamp) => {
     // Format: dd.mm.yyyy HH:MM:SS in UTC
     const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
+  },
+  ZenLedger: (timestamp) => {
+    // Format: mm/dd/yyyy hh:mm:ss in UTC
+    const { mm, dd, yyyy, hh, min, ss } = timePieces(timestamp)
+    return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
   }
 }
 
@@ -104,12 +98,14 @@ const isSending = (a) => {
   return a.amount[0] === '-'
 }
 
-const processDataForExport = (activities, platform) => {
+const processDataForExport = ({ activities, platform, selectedCurrency }) => {
   return activities.map((activity) => {
     const sending = isSending(activity)
 
     const processedActivity = { ...activity }
+
     processedActivity.timestampExport = dateFormatters[platform](activity.timestamp)
+
     if (platform === 'Koinly') {
       if (activity.amount?.issuer) {
         let koinlyId =
@@ -120,13 +116,33 @@ const processDataForExport = (activities, platform) => {
         }
       }
     } else if (platform === 'CoinLedger') {
-      processedActivity.type = isSending(activity) ? 'Withdrawal' : 'Deposit'
+      processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     } else if (platform === 'CoinTracking') {
-      processedActivity.type = isSending(activity)
+      processedActivity.type = sending
         ? 'Withdrawal'
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'Other Fee'
         : 'Deposit'
+    } else if (platform === 'ZenLedger') {
+      if (activity.amountNumber > 0) {
+        processedActivity.type = 'Receive'
+        processedActivity.receivedAmount = activity.amountNumber
+        processedActivity.receivedCurrency = activity.receivedCurrency
+
+        // USD Value
+        processedActivity.sentAmount =
+          activity.amountInFiats?.[selectedCurrency] > 0 ? activity.amountInFiats?.[selectedCurrency] : ''
+        processedActivity.sentCurrency = selectedCurrency
+      } else {
+        processedActivity.type = Math.abs(activity.amountNumber) <= activity.txFeeNumber ? 'Fee' : 'Send'
+        processedActivity.sentAmount = activity.amountNumber
+        processedActivity.sentCurrency = activity.currencyCode
+
+        // USD Value
+        processedActivity.receivedAmount =
+          activity.amountInFiats?.[selectedCurrency] > 0 ? activity.amountInFiats?.[selectedCurrency] : ''
+        processedActivity.receivedCurrency = selectedCurrency
+      }
     }
 
     return processedActivity
@@ -163,9 +179,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         headers: [
           { label: 'Date', key: 'timestampExport' },
           { label: 'Sent Amount', key: 'sentAmount' },
-          { label: 'Sent Currency', key: 'koinlySentCurrency' },
+          { label: 'Sent Currency', key: 'sentCurrency' },
           { label: 'Received Amount', key: 'receivedAmount' },
-          { label: 'Received Currency', key: 'koinlyReceivedCurrency' },
+          { label: 'Received Currency', key: 'receivedCurrency' },
           { label: 'Fee Amount', key: 'txFeeNumber' },
           { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
           { label: 'Net Worth Amount', key: 'amountInFiats.' + selectedCurrency },
@@ -189,6 +205,42 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Type', key: 'type' },
           { label: 'Description (Optional)', key: 'memo' },
           { label: 'TxHash (Optional)', key: 'hash' }
+        ]
+      },
+      {
+        platform: 'CoinTracking',
+        headers: [
+          { label: 'Type', key: 'type' },
+          { label: 'Buy Amount', key: 'receivedAmount' },
+          { label: 'Buy Currency', key: 'receivedCurrency' },
+          { label: 'Sell Amount', key: 'sentAmount' },
+          { label: 'Sell Currency', key: 'sentCurrency' },
+          { label: 'Fee', key: 'txFeeNumber' },
+          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange', key: 'platform' },
+          { label: 'Trade-Group', key: '' },
+          { label: 'Comment', key: 'memo' },
+          { label: 'Date', key: 'timestampExport' },
+          // Optional
+          { label: 'Tx-ID', key: 'hash' },
+          { label: 'Buy Value in Account Currency', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'Sell Value in Account Currency', key: '' },
+          { label: 'Liquidity pool', key: '' }
+        ]
+      },
+      {
+        platform: 'ZenLedger',
+        headers: [
+          { label: 'Timestamp', key: 'timestampExport' },
+          { label: 'Type', key: 'type' },
+          { label: 'IN Amount', key: 'receivedAmount' },
+          { label: 'IN Currency', key: 'receivedCurrency' },
+          { label: 'Out Amount', key: 'sentAmount' },
+          { label: 'Out Currency', key: 'sentCurrency' },
+          { label: 'Fee Amount', key: 'txFeeNumber' },
+          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange(optional)', key: 'platform' },
+          { label: 'US Based', key: '' }
         ]
       }
     ],
@@ -365,9 +417,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         //sanitize memos for CSV
         res.activities[i].memo = res.activities[i].memo?.replace(/"/g, "'") || ''
-
-        // For CoinLedger platform
-        res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -556,7 +605,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   setValue={setPlatformCSVExport}
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' }
+                    { value: 'CoinLedger', label: 'CoinLedger' },
+                    { value: 'CoinTracking', label: 'CoinTracking' },
+                    { value: 'ZenLedger', label: 'ZenLedger' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
@@ -565,7 +616,11 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
               </div>
               {rendered && (
                 <CSVLink
-                  data={processDataForExport(filteredActivities || [], platformCSVExport)}
+                  data={processDataForExport({
+                    activities: filteredActivities || [],
+                    platform: platformCSVExport,
+                    selectedCurrency
+                  })}
                   headers={
                     platformCSVHeaders.find(
                       (header) => header.platform.toLowerCase() === platformCSVExport.toLowerCase()
