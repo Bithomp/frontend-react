@@ -2,7 +2,7 @@ import { AddressWithIconFilled, amountFormat, fullNiceNumber } from '../utils/fo
 
 export const WhalesTable = ({ isMobile, data, noAmount, showFee }) => (
   <>
-    {Array.isArray(data) && (
+    {Array.isArray(data?.addresses) && (
       <>
         {!isMobile ? (
           <table className="table-large shrink">
@@ -16,7 +16,7 @@ export const WhalesTable = ({ isMobile, data, noAmount, showFee }) => (
               </tr>
             </thead>
             <tbody>
-              {data?.map((tx, i) => (
+              {data?.addresses?.map((tx, i) => (
                 <tr key={i}>
                   <td>{i + 1}</td>
                   <td>

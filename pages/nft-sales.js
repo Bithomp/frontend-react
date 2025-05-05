@@ -220,6 +220,21 @@ export default function NftSales({
     ])
   }
 
+  const hasActiveFilters = () => {
+    return !!(
+      issuer ||
+      taxon ||
+      buyer ||
+      seller ||
+      search ||
+      (period && period !== 'all') ||
+      (saleTab !== 'primaryAndSecondary') ||
+      !includeWithoutMediaData ||
+      currency ||
+      currencyIssuer
+    )
+  }
+
   const checkApi = async (options) => {
     if (!period || !sortCurrency) return
 
@@ -341,7 +356,9 @@ export default function NftSales({
           setSales([...salesData, ...newdata.sales])
         } else {
           if (marker === 'first') {
-            setErrorMessage(t('general.no-data'))
+            setErrorMessage(
+              t('general.no-data') + " " + (hasActiveFilters()  ? t('general.change-filters') : "" )
+            )
           } else {
             setHasMore(false)
           }

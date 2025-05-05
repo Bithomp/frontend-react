@@ -406,7 +406,9 @@ export default function NftsComponent({
           setData([...nftsData, ...nftList])
         } else {
           if (marker === 'first') {
-            setErrorMessage(t('nfts.no-nfts'))
+            setErrorMessage(
+              t('nfts.no-nfts') + " " + (hasActiveFilters()  ? t('general.change-filters') : "" )
+            )
           } else {
             setHasMore(false)
           }
@@ -610,6 +612,21 @@ export default function NftsComponent({
         }
       },
   */
+
+  // Add this function to check if any filters are active
+  const hasActiveFilters = () => {
+    return !!(
+      issuer ||
+      taxon ||
+      owner ||
+      search ||
+      mintedPeriod && mintedPeriod !== 'all' ||
+      burnedPeriod ||
+      !includeBurned ||
+      !includeWithoutMediaData ||
+      (listTab === 'onSale')
+    )
+  }
 
   return (
     <>
@@ -861,7 +878,9 @@ export default function NftsComponent({
                         <tr>
                           <th className="center">{t('table.index')}</th>
                           <th>NFT</th>
-                          <th className="right">{t('table.minted')}</th>
+                          {order !== 'offerCreatedNew' && order !== 'offerCreatedOld' && (
+                            <th className="right">{t('table.minted')}</th>
+                          )}
                           {!xahauNetwork && <th className="right">{t('table.serial')}</th>}
                           {!isValidTaxon(taxon) && !xahauNetwork && <th className="right">{t('table.taxon')}</th>}
                           {!issuer && <th className="right">{t('table.issuer')}</th>}
@@ -887,7 +906,9 @@ export default function NftsComponent({
                                   <td>
                                     {nftThumbnail(nft)} {nftNameLink(nft)}
                                   </td>
-                                  <td className="right">{timeOrDate(nft.issuedAt)}</td>
+                                  {order !== 'offerCreatedNew' && order !== 'offerCreatedOld' && (
+                                    <td className="right">{timeOrDate(nft.issuedAt)}</td>
+                                  )}
                                   {!xahauNetwork && <td className="right">{nft.sequence}</td>}
                                   {!isValidTaxon(taxon) && !xahauNetwork && (
                                     <td className="right">{nft.nftokenTaxon}</td>
@@ -936,9 +957,11 @@ export default function NftsComponent({
                                   </td>
                                   <td>
                                     <div className="brake">NFT: {nftNameLink(nft)}</div>
-                                    <div>
-                                      {t('table.minted')}: {fullDateAndTime(nft.issuedAt)}
-                                    </div>
+                                    {order !== 'offerCreatedNew' && order !== 'offerCreatedOld' && (
+                                      <div>
+                                        {t('table.minted')}: {fullDateAndTime(nft.issuedAt)}
+                                      </div>
+                                    )}
                                     {!xahauNetwork && (
                                       <>
                                         {t('table.serial')}: {nft.sequence}
