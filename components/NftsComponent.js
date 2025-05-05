@@ -407,7 +407,9 @@ export default function NftsComponent({
           setData([...nftsData, ...nftList])
         } else {
           if (marker === 'first') {
-            setErrorMessage(t('nfts.no-nfts'))
+            setErrorMessage(
+              t('nfts.no-nfts') + " " + (hasActiveFilters()  ? t('general.change-filters') : "" )
+            )
           } else {
             setHasMore(false)
           }
@@ -611,6 +613,21 @@ export default function NftsComponent({
         }
       },
   */
+
+  // Add this function to check if any filters are active
+  const hasActiveFilters = () => {
+    return !!(
+      issuer ||
+      taxon ||
+      owner ||
+      search ||
+      mintedPeriod && mintedPeriod !== 'all' ||
+      burnedPeriod ||
+      !includeBurned ||
+      !includeWithoutMediaData ||
+      (listTab === 'onSale')
+    )
+  }
 
   return (
     <>
