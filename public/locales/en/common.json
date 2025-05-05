@@ -630,7 +630,8 @@
     "on-service": "on {{service}}",
     "amount-on-service": "{{amount}} on {{service}}",
     "load-more": "We are looking for data on the ledger... please wait...",
-    "end": "Here are all the NFTs we could find."
+    "end": "Here are all the NFTs we could find.",
+    "change-filters": "Use different filter options or select other search parameters to explore more NFTs that match your interests."
   },
   "nft-sales": {
     "header": "NFT sales",

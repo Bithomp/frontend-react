@@ -630,7 +630,8 @@
     "on-service": "sur {{service}}",
     "amount-on-service": "{{amount}} sur {{service}}",
     "load-more": "Nous cherchons des données sur le registre... veuillez patienter...",
-    "end": "Voici tous les NFTs que nous avons pu trouver."
+    "end": "Voici tous les NFTs que nous avons pu trouver.",
+    "change-filters": "Utilisez différentes options de filtres ou sélectionnez d’autres paramètres de recherche pour explorer plus de NFTs correspondant à vos intérêts."
   },
   "nft-sales": {
     "header": "Ventes NFT",
