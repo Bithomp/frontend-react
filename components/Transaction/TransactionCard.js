@@ -18,7 +18,7 @@ import {
   timeFromNow
 } from '../../utils/format'
 import { decode, server, xahauNetwork } from '../../utils'
-import { errorCodeDescription, shortErrorCode } from '../../utils/transaction'
+import { dappBySourceTag, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import { add } from '../../utils/calc'
 
 const gatewaySum = (balances) => {
@@ -60,8 +60,6 @@ export const TransactionCard = ({
 
   if (!data) return null
 
-  //console.log('TransactionCard', data) //delete
-
   const { id, error_message, tx, outcome, meta, specification, error } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
@@ -74,8 +72,6 @@ export const TransactionCard = ({
     status: 'error'
   }
   */
-
-  const hookReturn = meta?.HookExecutions?.[0]?.HookExecution?.HookReturnString
 
   const waitLedgers = tx?.LastLedgerSequence - outcome?.ledgerIndex
 
@@ -100,6 +96,11 @@ export const TransactionCard = ({
           if (memopiece.slice(0, 16) === 'xrplexplorer.com' || memopiece.slice(0, 11) === 'bithomp.com') {
             memopiece = ''
             clientname = 'bithomp.com'
+          }
+
+          if (memopiece.slice(0, 17) === 'xahauexplorer.com') {
+            memopiece = ''
+            clientname = 'xahauexplorer.com'
           }
 
           if (memotype) {
@@ -130,7 +131,7 @@ export const TransactionCard = ({
               </tr>
             )
           } else {
-            if (memopiece.length > 100 && memopiece.split(' ').length === 1) {
+            if (memopiece.length > 100 && memopiece.split(' ').length === 1 && memopiece.includes('.')) {
               //jwt
               memopiece = memopiece.replace('"', '')
               const pieces = memopiece.split('.')
@@ -158,11 +159,11 @@ export const TransactionCard = ({
                   <tr key={'a1' + j}>
                     <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
                     <TData>
-                      {memotype && (
-                        <>
+                      {memotype && memotype.toLowerCase() !== 'memo' && (
+                        <span className="bold">
                           {memotype}
                           <br />
-                        </>
+                        </span>
                       )}
                       {memopiece}
                     </TData>
@@ -175,7 +176,7 @@ export const TransactionCard = ({
           if (clientname) {
             output.push(
               <tr key="a3">
-                <TData>Client</TData>
+                <TData>Client web</TData>
                 <TData>
                   <a href={'https://' + clientname} rel="nofollow">
                     {clientname}
@@ -199,6 +200,8 @@ export const TransactionCard = ({
     //check why wouldn't it be always in specs
     emitTX = specification?.emittedDetails?.emitParentTxnID || tx?.EmitDetails?.EmitParentTxnID
   }
+
+  const dapp = dappBySourceTag(tx?.SourceTag)
 
   return (
     <>
@@ -243,12 +246,12 @@ export const TransactionCard = ({
                       <span className="bold">{txTypeSpecial || tx.TransactionType}</span>
                     </TData>
                   </tr>
-                  {hookReturn && (
-                    <tr>
-                      <TData>Hook return</TData>
-                      <TData className="orange bold">{decode(hookReturn)}</TData>
+                  {meta?.HookExecutions?.map((hr, i) => (
+                    <tr key={i}>
+                      <TData>Hook return{meta?.HookExecutions.length > 1 ? ' ' + (i + 1) : ''}</TData>
+                      <TData className="orange bold">{decode(hr.HookExecution?.HookReturnString)}</TData>
                     </tr>
-                  )}
+                  ))}
                   {!isSuccessful && (
                     <>
                       <tr>
@@ -286,7 +289,7 @@ export const TransactionCard = ({
                         <tr key={i}>
                           <TData>Emitted TX {outcome?.emittedTxns?.length > 1 ? i + 1 : ''}</TData>
                           <TData>
-                            <LinkTx tx={etx?.id} />
+                            {etx?.tx?.TransactionType} <LinkTx tx={etx?.txHash} icon={true} />
                           </TData>
                         </tr>
                       ))}
@@ -300,10 +303,10 @@ export const TransactionCard = ({
                       )}
                     </>
                   )}
-                  {tx.TransactionType !== 'Payment' && !tx.TransactionType?.includes('Check') && tx.SourceTag && (
+                  {dapp && (
                     <tr>
-                      <TData>Source tag</TData>
-                      <TData>{tx.SourceTag}</TData>
+                      <TData>Client</TData>
+                      <TData>{dapp}</TData>
                     </tr>
                   )}
 
@@ -447,7 +450,9 @@ export const TransactionCard = ({
                         <>
                           {tx.TicketSequence ? (
                             <tr>
-                              <TData>Ticket sequence</TData>
+                              <TData>
+                                <span className="bold">Ticket</span> sequence
+                              </TData>
                               <TData>#{tx.TicketSequence}</TData>
                             </tr>
                           ) : (
@@ -457,6 +462,15 @@ export const TransactionCard = ({
                             </tr>
                           )}
                         </>
+                      )}
+                      {(dapp ||
+                        (tx?.SourceTag !== undefined &&
+                          tx.TransactionType !== 'Payment' &&
+                          !tx.TransactionType?.includes('Check'))) && (
+                        <tr>
+                          <TData>Source tag</TData>
+                          <TData>{tx?.SourceTag}</TData>
+                        </tr>
                       )}
                       {tx?.hash && id !== tx.hash && (
                         <tr>
