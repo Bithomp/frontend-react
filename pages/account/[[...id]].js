@@ -172,6 +172,7 @@ export default function Account({
     if (data?.address) {
       checkApi({ noCache: true })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, refreshPage, ledgerTimestamp])
 
   useEffect(() => {
