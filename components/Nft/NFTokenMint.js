@@ -1,48 +1,36 @@
-import { useState, useEffect } from 'react'
-import { useTranslation } from 'next-i18next'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { sha512 } from 'crypto-hash'
 import axios from 'axios'
-import { encode, isIdValid, isValidJson, server, isAddressValid } from '../../utils'
+import { encode, isIdValid, server } from '../../utils'
 import CheckBox from '../UI/CheckBox'
 import AddressInput from '../UI/AddressInput'
 import ExpirationSelect from '../UI/ExpirationSelect'
 import SEO from '../SEO'
 
-const checkmark = '/images/checkmark.svg'
+export default function NFTokenMint ({ setSignRequest }) {
 
-export default function NftMintXRPL({ setSignRequest }) {
-  const { t } = useTranslation()
   const [uri, setUri] = useState('')
   const [digest, setDigest] = useState('')
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
   const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [metadataError, setMetadataError] = useState('')
-  const [calculateDigest, setCalculateDigest] = useState(false)
-  const [metadata, setMetadata] = useState('')
-  const [metadataStatus, setMetadataStatus] = useState('')
-  const [metaLoadedFromUri, setMetaLoadedFromUri] = useState(false)
   const [update, setUpdate] = useState(false)
   const [minted, setMinted] = useState('')
-  const [uriValidDigest, setUriValidDigest] = useState(false)
-  const [taxon, setTaxon] = useState('0') // XRPL specific - taxon field
+  const [taxon, setTaxon] = useState('0')
   const [flags, setFlags] = useState({
     tfBurnable: false,
     tfOnlyXRP: false,
     tfTransferable: true,
     tfMutable: false
-  }) // XRPL specific - NFToken flags
+  })
 
-  // New fields for NFTokenMint
-  const [issuer, setIssuer] = useState('') // Optional issuer field
-  const [transferFee, setTransferFee] = useState('') // Transfer fee (0-50000 representing 0-50%)
-  const [destination, setDestination] = useState('') // Optional destination address
-  const [amount, setAmount] = useState('') // Amount for initial offer
-  const [expiration, setExpiration] = useState(0) // Expiration in days
+  const [issuer, setIssuer] = useState('')
+  const [transferFee, setTransferFee] = useState('')
+  const [destination, setDestination] = useState('')
+  const [amount, setAmount] = useState('')
+  const [expiration, setExpiration] = useState(0)
   const [mintForOtherAccount, setMintForOtherAccount] = useState(false)
-
-  // Add new state for sell offer checkbox
   const [createSellOffer, setCreateSellOffer] = useState(false)
 
   let uriRef
@@ -50,30 +38,24 @@ export default function NftMintXRPL({ setSignRequest }) {
   let taxonRef
   let transferFeeRef
   let amountRef
-  let interval
+  const intervalRef = useRef(null) // useRef for interval
   let startTime
 
   useEffect(() => {
     return () => {
       setUpdate(false)
-      clearInterval(interval)
+      clearInterval(intervalRef.current)
     }
   }, [])
 
   useEffect(() => {
     if (update) {
-      interval = setInterval(() => getMetadata(), 5000) // 5 seconds
+      intervalRef.current = setInterval(() => getMetadata(), 5000)
     } else {
-      clearInterval(interval)
+      clearInterval(intervalRef.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [update])
-
-  useEffect(() => {
-    if (calculateDigest) {
-      setDigest('')
-    }
-  }, [calculateDigest])
 
   useEffect(() => {
     if (agreeToSiteTerms || agreeToPrivacyPolicy) {
@@ -84,11 +66,7 @@ export default function NftMintXRPL({ setSignRequest }) {
   const onUriChange = (e) => {
     let uri = e.target.value
     setUri(uri)
-    setMetaLoadedFromUri(false)
-    setMetadata('')
     setDigest('')
-    setMetadataError('')
-    setUriValidDigest(false)
   }
 
   const onTaxonChange = (e) => {
@@ -97,26 +75,19 @@ export default function NftMintXRPL({ setSignRequest }) {
   }
 
   const onTransferFeeChange = (e) => {
-    // Accept decimal numbers for better user experience (like 2.5 for 2.5%)
     let value = e.target.value.replace(/[^\d\.]/g, '')
-    
-    // Ensure only one decimal point
     const decimalPoints = value.split('.').length - 1
     if (decimalPoints > 1) {
       const parts = value.split('.')
       value = parts[0] + '.' + parts.slice(1).join('')
     }
-    
-    // Make sure the value doesn't exceed 50% (50000/1000)
     if (value === '' || parseFloat(value) <= 50) {
       setTransferFee(value)
     }
   }
 
   const onAmountChange = (e) => {
-    // Only accept numbers and decimal point for amount
     let value = e.target.value.replace(/[^\d\.]/g, '')
-    // Ensure only one decimal point
     const decimalPoints = value.split('.').length - 1
     if (decimalPoints > 1) {
       const parts = value.split('.')
@@ -126,11 +97,19 @@ export default function NftMintXRPL({ setSignRequest }) {
   }
 
   const onIssuerChange = (value) => {
-    setIssuer(typeof value === 'object' && value.address ? value.address : value)
+    if (typeof value === 'object' && value.address) {
+      setIssuer(value.address)
+    } else if (typeof value === 'string') {
+      setIssuer(value)
+    }
   }
 
   const onDestinationChange = (value) => {
-    setDestination(typeof value === 'object' && value.address ? value.address : value)
+    if (typeof value === 'object' && value.address) {
+      setDestination(value.address)
+    } else if (typeof value === 'string') {
+      setDestination(value)
+    }
   }
 
   const onExpirationChange = (days) => {
@@ -141,14 +120,12 @@ export default function NftMintXRPL({ setSignRequest }) {
     setMetadataStatus('Trying to load the metadata from URI...')
     const response = await axios
       .get('v2/metadata?url=' + encodeURIComponent(uri) + '&type=xls20')
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
         setMetadataStatus('error')
       })
     if (response?.data) {
       if (response.data?.metadata) {
-        setMetaLoadedFromUri(true)
-        setMetadata(JSON.stringify(response.data.metadata, undefined, 4))
+
         checkDigest(response.data.metadata)
         setMetadataStatus('')
         setUpdate(false)
@@ -171,21 +148,6 @@ export default function NftMintXRPL({ setSignRequest }) {
     }
   }
 
-  const loadMetadata = async () => {
-    if (uri) {
-      setMetaLoadedFromUri(false)
-      getMetadata()
-      startTime = Date.now()
-    } else {
-      setMetadataStatus('Please enter URI :)')
-      uriRef?.focus()
-    }
-  }
-
-  const onDigestChange = (e) => {
-    let digest = e.target.value
-    setDigest(digest)
-  }
 
   const onSubmit = async () => {
     if (!uri) {
@@ -210,43 +172,42 @@ export default function NftMintXRPL({ setSignRequest }) {
       return
     }
 
-    // Validate taxon value for XRPL
     if (!taxon || isNaN(parseInt(taxon))) {
       setErrorMessage('Please enter a valid Taxon value (integer)')
       taxonRef?.focus()
       return
     }
 
-    // Validate transfer fee if provided
     if (transferFee && (isNaN(parseInt(transferFee)) || parseInt(transferFee) < 0 || parseInt(transferFee) > 50000)) {
       setErrorMessage('Transfer Fee must be between 0 and 50000 (0-50%)')
       transferFeeRef?.focus()
       return
     }
 
-    // Validate amount if provided
     if (amount && (isNaN(parseFloat(amount)) || parseFloat(amount) <= 0)) {
       setErrorMessage('Please enter a valid amount')
       amountRef?.focus()
       return
     }
 
-    // If transferFee is set, tfTransferable must be enabled
     if (transferFee && parseFloat(transferFee) > 0 && !flags.tfTransferable) {
       setErrorMessage('Transferable flag must be enabled if Transfer Fee is set.')
       return
     }
 
+    if (mintForOtherAccount && (!issuer || !issuer.trim())) {
+      setErrorMessage('Please enter an Issuer address when minting for another account.')
+      return
+    }
+
     setErrorMessage('')
 
-    // Calculate flags for NFTokenMint
     let nftFlags = 0
-    if (flags.tfBurnable) nftFlags |= 1         // 0x00000001
-    if (flags.tfOnlyXRP) nftFlags |= 2          // 0x00000002
-    if (flags.tfTransferable) nftFlags |= 8     // 0x00000008
-    if (flags.tfMutable) nftFlags |= 16         // 0x00000010
+    if (flags.tfBurnable) nftFlags |= 1
+    if (flags.tfOnlyXRP) nftFlags |= 2
+    if (flags.tfTransferable) nftFlags |= 8
+    if (flags.tfMutable) nftFlags |= 16
 
-    // Build the NFTokenMint transaction request
     let mintRequest = {
       TransactionType: 'NFTokenMint',
       NFTokenTaxon: parseInt(taxon),
@@ -260,17 +221,14 @@ export default function NftMintXRPL({ setSignRequest }) {
       ]
     }
 
-    // Add URI if provided (properly encoded)
     if (uri && uri.trim()) {
       mintRequest.URI = encode(uri)
     }
 
-    // Add optional fields ONLY if they have valid values
     if (issuer && issuer.trim()) {
       mintRequest.Issuer = issuer.trim()
     }
 
-    // Add TransferFee if provided - multiply by 1000 for XRPL format
     if (transferFee && transferFee.trim()) {
       const feeValue = parseFloat(transferFee.trim())
       if (!isNaN(feeValue) && feeValue >= 0 && feeValue <= 50) {
@@ -278,61 +236,21 @@ export default function NftMintXRPL({ setSignRequest }) {
       }
     }
 
-    if (destination && destination.trim()) {
-      mintRequest.Destination = destination.trim()
-    }
-
-    // If amount is provided, prepare a NFTokenCreateOffer transaction after minting
-    let sellOfferRequest = null
     if (createSellOffer && amount && parseFloat(amount) > 0) {
-      sellOfferRequest = {
-        TransactionType: 'NFTokenCreateOffer',
-        NFTokenID: '', // Will be filled after successful minting
-        Amount: String(Math.round(parseFloat(amount) * 1000000)), // Convert to drops
-        Flags: 1 // Sell offer
-      }
-
+      mintRequest.Amount = String(Math.round(parseFloat(amount) * 1000000))
       if (destination && destination.trim()) {
-        sellOfferRequest.Destination = destination.trim()
+        mintRequest.Destination = destination.trim()
       }
-
       if (expiration > 0) {
-        const expirationTimestamp = Math.floor(Date.now() / 1000) + (expiration * 24 * 60 * 60)
-        sellOfferRequest.Expiration = expirationTimestamp
+        mintRequest.Expiration = Math.floor(Date.now() / 1000) + (expiration * 24 * 60 * 60)
       }
     }
 
-    // Mint NFT first, then create offer if needed
     setSignRequest({
       redirect: 'nft',
       request: mintRequest,
-      callback: (id) => {
-        if (sellOfferRequest && id) {
-          sellOfferRequest.NFTokenID = id
-          setSignRequest({
-            redirect: 'nft',
-            request: sellOfferRequest,
-            callback: () => setMinted(id)
-          })
-        } else {
-          setMinted(id)
-        }
-      }
+      callback: (id) => setMinted(id)
     })
-  }
-
-  const onMetadataChange = (e) => {
-    setDigest('')
-    setMetadataError('')
-    let metadata = e.target.value
-    setMetadata(metadata)
-    if (!metaLoadedFromUri) {
-      if (metadata && isValidJson(metadata)) {
-        checkDigest(metadata)
-      } else {
-        setMetadataError('Please enter valid JSON')
-      }
-    }
   }
 
   const checkDigest = async (metadata) => {
@@ -372,7 +290,7 @@ export default function NftMintXRPL({ setSignRequest }) {
               />
             </div>
 
-            <p className="mb-2">NFT Taxon (classification number, required):</p>
+            <p className="mb-2">NFT Taxon (collection identifier, leave as 0 for the issuer’s first collection):</p>
             <div className="input-validation mb-4">
               <input
                 placeholder="0"
@@ -388,14 +306,14 @@ export default function NftMintXRPL({ setSignRequest }) {
             </div>
             
             <>
-              <div className="mb-4">
+              <div >
                 <CheckBox 
                   checked={mintForOtherAccount} 
                   setChecked={() => {
-                    setMintForOtherAccount(!mintForOtherAccount)
-                    if (!mintForOtherAccount) {
-                      setIssuer('') // Clear issuer when unchecking
+                    if (mintForOtherAccount) {
+                      setIssuer('') 
                     }
+                    setMintForOtherAccount(!mintForOtherAccount)
                   }} 
                   name="mint-for-other"
                 >
@@ -406,10 +324,10 @@ export default function NftMintXRPL({ setSignRequest }) {
               {mintForOtherAccount && (
                 <>
                   <p style={{ marginBottom: "-5px" }}>Issuer (account you're minting for):</p>
-                  <div className="mb-4">
+                  <div >
                     <AddressInput
                       placeholder="Issuer address"
-                      onSelect={onIssuerChange}
+                      setValue={onIssuerChange}
                       initialValue={issuer}
                       name="issuer"
                       hideButton={true}
@@ -437,7 +355,7 @@ export default function NftMintXRPL({ setSignRequest }) {
               />
             </div>
             
-            <div className="mb-4">
+            <div >
               <CheckBox
                 checked={createSellOffer}
                 setChecked={() => setCreateSellOffer(!createSellOffer)}
@@ -465,18 +383,18 @@ export default function NftMintXRPL({ setSignRequest }) {
                 </div>
 
                 <p style={{ marginBottom: "-5px" }}>Destination (optional - account to receive the NFT):</p>
-                <div className="mb-4">
+                <div >
                   <AddressInput
                     placeholder="Destination address"
-                    onSelect={onDestinationChange}
+                    setValue={onDestinationChange}
                     initialValue={destination}
                     name="destination"
                     hideButton={true}
                   />
                 </div>
 
-                <p className="mb-2">Offer expiration (if creating a sell offer):</p>
-                <div className="mb-4">
+                <p className="mb-2">Offer expiration:</p>
+                <div >
                   <ExpirationSelect onChange={onExpirationChange} />
                 </div>
               </>
@@ -487,15 +405,20 @@ export default function NftMintXRPL({ setSignRequest }) {
               <CheckBox
                 checked={flags.tfTransferable}
                 setChecked={() => {
-                  // Prevent unchecking if transferFee is set
-                  if (!transferFee || parseFloat(transferFee) === 0) {
-                    handleFlagChange('tfTransferable')
+                  if (flags.tfTransferable && transferFee && parseFloat(transferFee) > 0) {
+                    return
                   }
+                  handleFlagChange('tfTransferable')
                 }}
                 name="transferable"
               >
                 Transferable (can be transferred to others)
               </CheckBox>
+              {transferFee && parseFloat(transferFee) > 0 && !flags.tfTransferable && (
+                <div className="red mb-2" style={{ marginTop: '8px', marginBottom: '8px' }}>
+                  Transferable flag must be enabled if Transfer Fee is set.
+                </div>
+              )}
               <CheckBox checked={flags.tfBurnable} setChecked={() => handleFlagChange('tfBurnable')} name="burnable">
                 Burnable (can be destroyed by the issuer)
               </CheckBox>
@@ -507,16 +430,9 @@ export default function NftMintXRPL({ setSignRequest }) {
               </CheckBox>
             </div>
 
-            {transferFee && parseFloat(transferFee) > 0 && !flags.tfTransferable && (
-              <div className="red mb-2">
-                Transferable flag must be enabled if Transfer Fee is set.
-              </div>
-            )}
-
-            {/* Add space between flags and terms checkboxes */}
             <div style={{ height: 32 }} />
 
-            <div className="mb-4">
+            <div >
               <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
                 I agree with the{' '}
                 <Link href="/terms-and-conditions" target="_blank">
@@ -526,7 +442,7 @@ export default function NftMintXRPL({ setSignRequest }) {
               </CheckBox>
             </div>
 
-            <div className="mb-4">
+            <div >
               <CheckBox
                 checked={agreeToPrivacyPolicy}
                 setChecked={setAgreeToPrivacyPolicy}
@@ -542,7 +458,7 @@ export default function NftMintXRPL({ setSignRequest }) {
 
             <p className="center mt-6">
               <button className="button-action" onClick={onSubmit} name="submit-button">
-                {amount && parseFloat(amount) > 0 ? 'Mint NFT & Create Sell Offer' : 'Mint NFT'}
+                Mint NFT
               </button>
             </p>
           </>
@@ -550,8 +466,8 @@ export default function NftMintXRPL({ setSignRequest }) {
 
         {minted && (
           <>
-            <p className="mb-4">The NFT was successfully minted:</p>
-            <p className="mb-4">
+            <p >The NFT was successfully minted:</p>
+            <p >
               <Link href={'/nft/' + minted} className="brake">
                 {server}/nft/{minted}
               </Link>

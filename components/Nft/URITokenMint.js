@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react'
-import { useTranslation } from 'next-i18next'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { sha512 } from 'crypto-hash'
 import axios from 'axios'
-import { encode, isIdValid, isValidJson, server, xahauNetwork } from '../../utils'
+import { encode, isIdValid, isValidJson, server } from '../../utils'
 import CheckBox from '../UI/CheckBox'
 import SEO from '../SEO'
 
 const checkmark = '/images/checkmark.svg'
 
-export default function NftMintXahau({ setSignRequest }) {
-  const { t } = useTranslation()
+export default function URITokenMint ({ setSignRequest }) {
+
   const [uri, setUri] = useState('')
   const [digest, setDigest] = useState('')
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
@@ -27,21 +26,21 @@ export default function NftMintXahau({ setSignRequest }) {
 
   let uriRef
   let digestRef
-  let interval
+  const intervalRef = useRef(null) // useRef for interval
   let startTime
 
   useEffect(() => {
     return () => {
       setUpdate(false)
-      clearInterval(interval)
+      clearInterval(intervalRef.current)
     }
   }, [])
 
   useEffect(() => {
     if (update) {
-      interval = setInterval(() => getMetadata(), 5000)
+      intervalRef.current = setInterval(() => getMetadata(), 5000)
     } else {
-      clearInterval(interval)
+      clearInterval(intervalRef.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [update])
@@ -60,8 +59,7 @@ export default function NftMintXahau({ setSignRequest }) {
     setMetadataStatus('Trying to load the metadata from URI...')
     const response = await axios
       .get('v2/metadata?url=' + encodeURIComponent(uri) + '&type=xls35')
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
         setMetadataStatus('error')
       })
     if (response?.data) {
@@ -153,12 +151,8 @@ export default function NftMintXahau({ setSignRequest }) {
     setSignRequest({
       redirect: 'nft',
       request,
-      callback: afterSubmit
+      callback: (id) => setMinted(id)
     })
-  }
-
-  const afterSubmit = (id) => {
-    setMinted(id)
   }
 
   const onMetadataChange = (e) => {

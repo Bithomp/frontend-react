@@ -1,11 +1,10 @@
-import { useState } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import SEO from '../../components/SEO'
 import { xahauNetwork } from '../../utils'
-import NftMintXRPL from '../../components/Nft/NftMintXRPL'
-import NftMintXahau from '../../components/Nft/NftMintXahau'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
+import URITokenMint from '../../components/Nft/URITokenMint'
+import NFTokenMint from '../../components/Nft/NFTokenMint'
 
 
 export async function getServerSideProps({ locale }) {
@@ -35,16 +34,16 @@ export default function NftMint({ account, setSignRequest, refreshPage }) {
         </p>
         
         <NetworkTabs />
-        {/* // remove nfttabs */}
+        
         <div className="form-container">
           {xahauNetwork ? (
-            <NftMintXahau 
+            <URITokenMint
               account={account} 
               setSignRequest={setSignRequest}
               refreshPage={refreshPage}
             />
           ) : (
-            <NftMintXRPL  
+            <NFTokenMint
               account={account} 
               setSignRequest={setSignRequest}
               refreshPage={refreshPage}
