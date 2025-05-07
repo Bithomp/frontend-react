@@ -79,7 +79,6 @@ export default function Account({
     "tokens": 7
   }
   */
-
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -101,6 +100,11 @@ export default function Account({
   useEffect(() => {
     if (!initialData?.address) return
     setData(initialData)
+    setUserData({
+      username: initialData.username,
+      service: initialData.service?.name,
+      address: initialData.address
+    })
 
     if (initialData?.obligations) {
       //setObligations(initialData.obligations)
