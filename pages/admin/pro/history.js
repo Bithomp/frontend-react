@@ -83,6 +83,11 @@ const dateFormatters = {
     // Format: dd.mm.yyyy HH:MM:SS in UTC
     const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
+  },
+  ZenLedger: (timestamp) => {
+    // Format: mm/dd/yyyy hh:mm:ss in UTC
+    const { mm, dd, yyyy, hh, min, ss } = timePieces(timestamp)
+    return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
   }
 }
 
@@ -93,12 +98,14 @@ const isSending = (a) => {
   return a.amount[0] === '-'
 }
 
-const processDataForExport = (activities, platform) => {
+const processDataForExport = ({ activities, platform, selectedCurrency }) => {
   return activities.map((activity) => {
     const sending = isSending(activity)
 
     const processedActivity = { ...activity }
+
     processedActivity.timestampExport = dateFormatters[platform](activity.timestamp)
+
     if (platform === 'Koinly') {
       if (activity.amount?.issuer) {
         let koinlyId =
@@ -116,6 +123,26 @@ const processDataForExport = (activities, platform) => {
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'Other Fee'
         : 'Deposit'
+    } else if (platform === 'ZenLedger') {
+      if (activity.amountNumber > 0) {
+        processedActivity.type = 'Receive'
+        processedActivity.receivedAmount = activity.amountNumber
+        processedActivity.receivedCurrency = activity.receivedCurrency
+
+        // USD Value
+        processedActivity.sentAmount =
+          activity.amountInFiats?.[selectedCurrency] > 0 ? activity.amountInFiats?.[selectedCurrency] : ''
+        processedActivity.sentCurrency = selectedCurrency
+      } else {
+        processedActivity.type = Math.abs(activity.amountNumber) <= activity.txFeeNumber ? 'Fee' : 'Send'
+        processedActivity.sentAmount = activity.amountNumber
+        processedActivity.sentCurrency = activity.currencyCode
+
+        // USD Value
+        processedActivity.receivedAmount =
+          activity.amountInFiats?.[selectedCurrency] > 0 ? activity.amountInFiats?.[selectedCurrency] : ''
+        processedActivity.receivedCurrency = selectedCurrency
+      }
     }
 
     return processedActivity
@@ -199,6 +226,21 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Buy Value in Account Currency', key: 'amountInFiats.' + selectedCurrency },
           { label: 'Sell Value in Account Currency', key: '' },
           { label: 'Liquidity pool', key: '' }
+        ]
+      },
+      {
+        platform: 'ZenLedger',
+        headers: [
+          { label: 'Timestamp', key: 'timestampExport' },
+          { label: 'Type', key: 'type' },
+          { label: 'IN Amount', key: 'receivedAmount' },
+          { label: 'IN Currency', key: 'receivedCurrency' },
+          { label: 'Out Amount', key: 'sentAmount' },
+          { label: 'Out Currency', key: 'sentCurrency' },
+          { label: 'Fee Amount', key: 'txFeeNumber' },
+          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange(optional)', key: 'platform' },
+          { label: 'US Based', key: '' }
         ]
       }
     ],
@@ -564,7 +606,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
                     { value: 'CoinLedger', label: 'CoinLedger' },
-                    { value: 'CoinTracking', label: 'CoinTracking' }
+                    { value: 'CoinTracking', label: 'CoinTracking' },
+                    { value: 'ZenLedger', label: 'ZenLedger' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
@@ -573,7 +616,11 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
               </div>
               {rendered && (
                 <CSVLink
-                  data={processDataForExport(filteredActivities || [], platformCSVExport)}
+                  data={processDataForExport({
+                    activities: filteredActivities || [],
+                    platform: platformCSVExport,
+                    selectedCurrency
+                  })}
                   headers={
                     platformCSVHeaders.find(
                       (header) => header.platform.toLowerCase() === platformCSVExport.toLowerCase()
