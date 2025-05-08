@@ -59,6 +59,9 @@
         .react-select__indicators {
           display: flex;
         }
+        .react-select__input {
+          opacity: 1 !important;
+        }
       }
     }
     .search-button {
