@@ -17,7 +17,7 @@ import {
   shortHash,
   timeFromNow
 } from '../../utils/format'
-import { decode, server, xahauNetwork } from '../../utils'
+import { server, xahauNetwork } from '../../utils'
 import { dappBySourceTag, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import { add } from '../../utils/calc'
 
@@ -246,10 +246,10 @@ export const TransactionCard = ({
                       <span className="bold">{txTypeSpecial || tx.TransactionType}</span>
                     </TData>
                   </tr>
-                  {meta?.HookExecutions?.map((hr, i) => (
+                  {outcome?.hooksExecutions?.map((hr, i) => (
                     <tr key={i}>
-                      <TData>Hook return{meta?.HookExecutions.length > 1 ? ' ' + (i + 1) : ''}</TData>
-                      <TData className="orange bold">{decode(hr.HookExecution?.HookReturnString)}</TData>
+                      <TData>Hook return{outcome?.hooksExecutions.length > 1 ? ' ' + (i + 1) : ''}</TData>
+                      <TData className="orange bold">{hr.returnString}</TData>
                     </tr>
                   ))}
                   {!isSuccessful && (
