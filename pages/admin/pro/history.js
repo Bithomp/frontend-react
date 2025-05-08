@@ -120,6 +120,8 @@ const processDataForExport = (activities, platform) => {
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'Other Fee'
         : 'Deposit'
+    } else if (platform === 'TaxBit') {
+      processedActivity.type = sending ? 'Sell' : 'Buy'
     }
 
     return processedActivity
@@ -156,9 +158,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         headers: [
           { label: 'Date', key: 'timestampExport' },
           { label: 'Sent Amount', key: 'sentAmount' },
-          { label: 'Sent Currency', key: 'koinlySentCurrency' },
+          { label: 'Sent Currency', key: 'sentCurrency' },
           { label: 'Received Amount', key: 'receivedAmount' },
-          { label: 'Received Currency', key: 'koinlyReceivedCurrency' },
+          { label: 'Received Currency', key: 'receivedCurrency' },
           { label: 'Fee Amount', key: 'txFeeNumber' },
           { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
           { label: 'Net Worth Amount', key: 'amountInFiats.' + selectedCurrency },
@@ -213,7 +215,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'source_name', key: '' },
           { label: 'from_wallet_address', key: 'counterparty' },
           { label: 'to_wallet_address', key: 'address' },
-          { label: 'category', key: 'taxBitTxType' },
+          { label: 'category', key: 'type' },
           { label: 'in_currency', key: 'receivedCurrency' },
           { label: 'in_amount', key: 'receivedAmount' },
           { label: 'in_currency_fiat', key: 'netWorthCurrency' },
@@ -404,9 +406,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         //sanitize memos for CSV
         res.activities[i].memo = res.activities[i].memo?.replace(/"/g, "'") || ''
-
-        // For TaxBit platform
-        res.activities[i].taxBitTxType = sending ? 'Sell' : 'Buy'
       }
       setData(res) // last request data
       if (options?.marker) {
