@@ -34,6 +34,7 @@ const CustomClearIndicator = (props) => {
   if (!inputValue) return null
 
   const handleClear = (e) => {
+    e.preventDefault()
     e.stopPropagation()
     onInputChange('', { action: 'input-change' })
   }
@@ -41,11 +42,13 @@ const CustomClearIndicator = (props) => {
   return (
     <div
       onClick={handleClear}
+      onTouchEnd={handleClear}
       style={{
         cursor: 'pointer',
         paddingRight: '8px',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        touchAction: 'manipulation'
       }}
     >
       <IoMdClose size={18} color="#666" />
