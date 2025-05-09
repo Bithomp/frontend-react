@@ -87,6 +87,11 @@ const dateFormatters = {
   TaxBit: (timestamp) => {
     // ISO format: YYYY-MM-DDTHH:MM:SS.000Z (same as Koinly)
     return new Date(timestamp * 1000).toISOString()
+  },
+  TokenTax: (timestamp) => {
+    // Format: MM/DD/YY HH:MM
+    const { mm, dd, yyyy, hh, min } = timePieces(timestamp)
+    return `${mm}/${dd}/${yyyy} ${hh}:${min}`
   }
 }
 
@@ -122,6 +127,8 @@ const processDataForExport = (activities, platform) => {
         : 'Deposit'
     } else if (platform === 'TaxBit') {
       processedActivity.type = sending ? 'Sell' : 'Buy'
+    } else if (platform === 'TokenTax') {
+      processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     }
 
     return processedActivity
@@ -230,6 +237,22 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'fee_fiat', key: 'txFeeInFiats.' + selectedCurrency },
           { label: 'memo', key: 'memo' },
           { label: 'status', key: '' }
+        ]
+      },
+      {
+        platform: 'TokenTax',
+        headers: [
+          { label: 'Type', key: 'type' },
+          { label: 'BuyAmount', key: 'receivedAmount' },
+          { label: 'BuyCurrency', key: 'receivedCurrency' },
+          { label: 'SellAmount', key: 'sentAmount' },
+          { label: 'SellCurrency', key: 'sentCurrency' },
+          { label: 'FeeAmount', key: 'txFeeNumber' },
+          { label: 'FeeCurrency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange', key: 'platform' },
+          { label: 'Group', key: '' },
+          { label: 'Comment', key: 'memo' },
+          { label: 'Date', key: 'timestampExport' }
         ]
       }
     ],
@@ -596,7 +619,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                     { value: 'Koinly', label: 'Koinly' },
                     { value: 'CoinLedger', label: 'CoinLedger' },
                     { value: 'CoinTracking', label: 'CoinTracking' },
-                    { value: 'TaxBit', label: 'TaxBit' }
+                    { value: 'TaxBit', label: 'TaxBit' },
+                    { value: 'TokenTax', label: 'TokenTax' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
