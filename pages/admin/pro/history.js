@@ -83,6 +83,11 @@ const dateFormatters = {
     // Format: dd.mm.yyyy HH:MM:SS in UTC
     const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
+  },
+  TokenTax: (timestamp) => {
+    // Format: MM/DD/YY HH:MM
+    const { mm, dd, yyyy, hh, min } = timePieces(timestamp)
+    return `${mm}/${dd}/${yyyy} ${hh}:${min}`
   }
 }
 
@@ -116,6 +121,8 @@ const processDataForExport = (activities, platform) => {
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'Other Fee'
         : 'Deposit'
+    } else if (platform === 'TokenTax') {
+      processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     }
 
     return processedActivity
@@ -199,6 +206,22 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Buy Value in Account Currency', key: 'amountInFiats.' + selectedCurrency },
           { label: 'Sell Value in Account Currency', key: '' },
           { label: 'Liquidity pool', key: '' }
+        ]
+      },
+      {
+        platform: 'TokenTax',
+        headers: [
+          { label: 'Type', key: 'type' },
+          { label: 'BuyAmount', key: 'receivedAmount' },
+          { label: 'BuyCurrency', key: 'receivedCurrency' },
+          { label: 'SellAmount', key: 'sentAmount' },
+          { label: 'SellCurrency', key: 'sentCurrency' },
+          { label: 'FeeAmount', key: 'txFeeNumber' },
+          { label: 'FeeCurrency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange', key: 'platform' },
+          { label: 'Group', key: '' },
+          { label: 'Comment', key: 'memo' },
+          { label: 'Date', key: 'timestampExport' }
         ]
       }
     ],
@@ -564,7 +587,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
                     { value: 'CoinLedger', label: 'CoinLedger' },
-                    { value: 'CoinTracking', label: 'CoinTracking' }
+                    { value: 'CoinTracking', label: 'CoinTracking' },
+                    { value: 'TokenTax', label: 'TokenTax' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
