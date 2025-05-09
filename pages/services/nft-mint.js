@@ -1,17 +1,20 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import SEO from '../../components/SEO'
+import { getIsSsrMobile } from '../../utils/mobile'
 import { xahauNetwork } from '../../utils'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import URITokenMint from '../../components/Nft/URITokenMint'
 import NFTokenMint from '../../components/Nft/NFTokenMint'
 
-export async function getServerSideProps({ locale, query }) {
+export const getServerSideProps = async (context) => {
+  const { query, locale } = context
   const { uri, digest } = query
   return {
     props: {
       uriQuery: uri || '',
       digestQuery: digest || '',
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -44,9 +47,7 @@ export default function NftMint({ account, setSignRequest, refreshPage, uriQuery
         <div className="form-container">
           {xahauNetwork ? (
             <URITokenMint
-              account={account} 
               setSignRequest={setSignRequest}
-              refreshPage={refreshPage}
               uriQuery={uriQuery}
               digestQuery={digestQuery}
             />

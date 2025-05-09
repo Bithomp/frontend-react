@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-// import { getIsSsrMobile } from '../../utils/mobile'
 import { sha512 } from 'crypto-hash'
 import axios from 'axios' 
 import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork } from '../../utils'
 const checkmark = '/images/checkmark.svg'
 import CheckBox from '../../components/UI/CheckBox'
+
 
 let interval
 let startTime
@@ -237,12 +237,6 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
   return (
     <>
       <div className="page-services-nft-mint content-center">
-        
-        {/* <h1 className="center">NFT Mint</h1>
-        <p>
-          You can use this page to create a new NFT, a unique digital asset that can be used in a variety of
-          applications.
-        </p> */}
 
         {!minted && (
           <>
