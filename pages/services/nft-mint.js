@@ -6,22 +6,28 @@ import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import URITokenMint from '../../components/Nft/URITokenMint'
 import NFTokenMint from '../../components/Nft/NFTokenMint'
 
-
-export async function getServerSideProps({ locale }) {
+export async function getServerSideProps({ locale, query }) {
+  const { uri, digest } = query
   return {
     props: {
+      uriQuery: uri || '',
+      digestQuery: digest || '',
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
 
-export default function NftMint({ account, setSignRequest, refreshPage }) {
+export default function NftMint({ account, setSignRequest, refreshPage, uriQuery, digestQuery }) {
   const { t } = useTranslation()
+
 
   return (
     <>
       <SEO 
-        title={t('nft-mint.title', 'NFT Mint')} 
+        title={xahauNetwork 
+          ? t('nft-mint.title-xahau', 'Xahau NFT Mint') 
+          : t('nft-mint.title-xrpl', 'XRP Ledger NFT Mint')
+        } 
         description={t('nft-mint.description', 'Mint NFTs on XRPL and Xahau networks')}
       />
       <div className="page-services-nft-mint content-center">
@@ -41,6 +47,8 @@ export default function NftMint({ account, setSignRequest, refreshPage }) {
               account={account} 
               setSignRequest={setSignRequest}
               refreshPage={refreshPage}
+              uriQuery={uriQuery}
+              digestQuery={digestQuery}
             />
           ) : (
             <NFTokenMint

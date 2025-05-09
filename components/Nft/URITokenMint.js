@@ -1,17 +1,23 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+// import { getIsSsrMobile } from '../../utils/mobile'
 import { sha512 } from 'crypto-hash'
-import axios from 'axios'
-import { encode, isIdValid, isValidJson, server } from '../../utils'
-import CheckBox from '../UI/CheckBox'
-import SEO from '../SEO'
-
+import axios from 'axios' 
+import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork } from '../../utils'
 const checkmark = '/images/checkmark.svg'
+import CheckBox from '../../components/UI/CheckBox'
 
-export default function URITokenMint ({ setSignRequest }) {
+let interval
+let startTime
 
-  const [uri, setUri] = useState('')
-  const [digest, setDigest] = useState('')
+export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) {
+  const { i18n } = useTranslation()
+  const router = useRouter()
+
+  const [uri, setUri] = useState(uriQuery)
+  const [digest, setDigest] = useState(digestQuery)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
   const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -22,28 +28,31 @@ export default function URITokenMint ({ setSignRequest }) {
   const [metaLoadedFromUri, setMetaLoadedFromUri] = useState(false)
   const [update, setUpdate] = useState(false)
   const [minted, setMinted] = useState('')
-  const [uriValidDigest, setUriValidDigest] = useState(false)
+  const [uriValidDigest, setUriValidDigest] = useState(isIdValid(digestQuery))
 
   let uriRef
   let digestRef
-  const intervalRef = useRef(null) // useRef for interval
-  let startTime
 
   useEffect(() => {
+    //on component unmount
     return () => {
       setUpdate(false)
-      clearInterval(intervalRef.current)
+      clearInterval(interval)
     }
   }, [])
 
   useEffect(() => {
     if (update) {
-      intervalRef.current = setInterval(() => getMetadata(), 5000)
+      interval = setInterval(() => getMetadata(), 5000) //5 seconds
     } else {
-      clearInterval(intervalRef.current)
+      clearInterval(interval)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [update])
+
+  useEffect(() => {
+    setErrorMessage('')
+  }, [i18n.language])
 
   const onUriChange = (e) => {
     let uri = e.target.value
@@ -57,9 +66,11 @@ export default function URITokenMint ({ setSignRequest }) {
 
   const getMetadata = async () => {
     setMetadataStatus('Trying to load the metadata from URI...')
+    const nftType = xahauNetwork ? 'xls35' : 'xls20'
     const response = await axios
-      .get('v2/metadata?url=' + encodeURIComponent(uri) + '&type=xls35')
-      .catch(() => {
+      .get('v2/metadata?url=' + encodeURIComponent(uri) + '&type=' + nftType)
+      .catch((error) => {
+        console.log(error)
         setMetadataStatus('error')
       })
     if (response?.data) {
@@ -74,6 +85,7 @@ export default function URITokenMint ({ setSignRequest }) {
         setUpdate(false)
       } else {
         if (Date.now() - startTime < 120000) {
+          // 2 minutes
           setUpdate(true)
           setMetadataStatus(
             'Trying to load the metadata from URI... (' +
@@ -147,13 +159,56 @@ export default function URITokenMint ({ setSignRequest }) {
     if (digest) {
       request.Digest = digest
     }
+    
+    console.log('request', request)
 
     setSignRequest({
       redirect: 'nft',
       request,
-      callback: (id) => setMinted(id)
+      callback: afterSubmit
     })
   }
+
+  const afterSubmit = (id) => {
+    setMinted(id)
+  }
+
+  useEffect(() => {
+    if (agreeToSiteTerms || agreeToPrivacyPolicy) {
+      setErrorMessage('')
+    }
+  }, [agreeToSiteTerms, agreeToPrivacyPolicy])
+
+  useEffect(() => {
+    if (calculateDigest) {
+      setDigest('')
+    }
+  }, [calculateDigest])
+
+  useEffect(() => {
+    let queryAddList = []
+    let queryRemoveList = []
+    if (digest) {
+      queryAddList.push({
+        name: 'digest',
+        value: digest
+      })
+      setErrorMessage('')
+    } else {
+      queryRemoveList.push('digest')
+    }
+    if (uri) {
+      queryAddList.push({
+        name: 'uri',
+        value: uri
+      })
+      setErrorMessage('')
+    } else {
+      queryRemoveList.push('uri')
+    }
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [digest, uri])
 
   const onMetadataChange = (e) => {
     setDigest('')
@@ -181,8 +236,13 @@ export default function URITokenMint ({ setSignRequest }) {
 
   return (
     <>
-      <SEO title="Xahau NFT Mint" />
       <div className="page-services-nft-mint content-center">
+        
+        {/* <h1 className="center">NFT Mint</h1>
+        <p>
+          You can use this page to create a new NFT, a unique digital asset that can be used in a variety of
+          applications.
+        </p> */}
 
         {!minted && (
           <>
@@ -297,7 +357,7 @@ export default function URITokenMint ({ setSignRequest }) {
 
         {minted && (
           <>
-            The NFT was successfully minted:
+            The NFT was sucefully minted:
             <br />
             <Link href={'/nft/' + minted} className="brake">
               {server}/nft/{minted}

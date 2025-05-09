@@ -1,21 +1,16 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { sha512 } from 'crypto-hash'
-import axios from 'axios'
-import { encode, isIdValid, server } from '../../utils'
+import { encode } from '../../utils'
 import CheckBox from '../UI/CheckBox'
 import AddressInput from '../UI/AddressInput'
 import ExpirationSelect from '../UI/ExpirationSelect'
-import SEO from '../SEO'
 
 export default function NFTokenMint ({ setSignRequest }) {
 
   const [uri, setUri] = useState('')
-  const [digest, setDigest] = useState('')
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
   const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [update, setUpdate] = useState(false)
   const [minted, setMinted] = useState('')
   const [taxon, setTaxon] = useState('0')
   const [flags, setFlags] = useState({
@@ -34,28 +29,9 @@ export default function NFTokenMint ({ setSignRequest }) {
   const [createSellOffer, setCreateSellOffer] = useState(false)
 
   let uriRef
-  let digestRef
   let taxonRef
   let transferFeeRef
   let amountRef
-  const intervalRef = useRef(null) // useRef for interval
-  let startTime
-
-  useEffect(() => {
-    return () => {
-      setUpdate(false)
-      clearInterval(intervalRef.current)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (update) {
-      intervalRef.current = setInterval(() => getMetadata(), 5000)
-    } else {
-      clearInterval(intervalRef.current)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [update])
 
   useEffect(() => {
     if (agreeToSiteTerms || agreeToPrivacyPolicy) {
@@ -66,7 +42,6 @@ export default function NFTokenMint ({ setSignRequest }) {
   const onUriChange = (e) => {
     let uri = e.target.value
     setUri(uri)
-    setDigest('')
   }
 
   const onTaxonChange = (e) => {
@@ -116,49 +91,10 @@ export default function NFTokenMint ({ setSignRequest }) {
     setExpiration(days)
   }
 
-  const getMetadata = async () => {
-    setMetadataStatus('Trying to load the metadata from URI...')
-    const response = await axios
-      .get('v2/metadata?url=' + encodeURIComponent(uri) + '&type=xls20')
-      .catch(() => {
-        setMetadataStatus('error')
-      })
-    if (response?.data) {
-      if (response.data?.metadata) {
-
-        checkDigest(response.data.metadata)
-        setMetadataStatus('')
-        setUpdate(false)
-      } else if (response.data?.message) {
-        setMetadataStatus(response.data.message)
-        setUpdate(false)
-      } else {
-        if (Date.now() - startTime < 120000) {
-          setUpdate(true)
-          setMetadataStatus(
-            'Trying to load the metadata from URI... (' +
-              Math.ceil((Date.now() - startTime) / 1000 / 5) +
-              '/24 attempts)'
-          )
-        } else {
-          setUpdate(false)
-          setMetadataStatus('Load failed')
-        }
-      }
-    }
-  }
-
-
   const onSubmit = async () => {
     if (!uri) {
       setErrorMessage('Please enter URI')
       uriRef?.focus()
-      return
-    }
-
-    if (digest && !isIdValid(digest)) {
-      setErrorMessage('Please enter a valid Digest')
-      digestRef?.focus()
       return
     }
 
@@ -253,27 +189,17 @@ export default function NFTokenMint ({ setSignRequest }) {
     })
   }
 
-  const checkDigest = async (metadata) => {
-    if (!metadata) return
-    if (typeof metadata === 'string') {
-      metadata = JSON.parse(metadata)
-    }
-    let ourDigest = await sha512(JSON.stringify(metadata)?.trim())
-    ourDigest = ourDigest.toString().slice(0, 64)
-    setDigest(ourDigest.toUpperCase())
-  }
-
   const handleFlagChange = (flag) => {
     setFlags(prev => ({ ...prev, [flag]: !prev[flag] }))
   }
 
   return (
     <>
-      <SEO title="XRP Ledger NFT Mint" />
       <div className="page-services-nft-mint">
 
         {!minted && (
           <>
+            {/* URI */}
             <p className="mb-2">URI that points to the data or metadata associated with the NFT:</p>
             <div className="input-validation mb-4">
               <input
@@ -290,7 +216,8 @@ export default function NFTokenMint ({ setSignRequest }) {
               />
             </div>
 
-            <p className="mb-2">NFT Taxon (collection identifier, leave as 0 for the issuer’s first collection):</p>
+            {/* NFT Taxon */}
+            <p className="mb-2">NFT Taxon (collection identifier, leave as 0 for the issuer's first collection):</p>
             <div className="input-validation mb-4">
               <input
                 placeholder="0"
@@ -304,58 +231,72 @@ export default function NFTokenMint ({ setSignRequest }) {
                 name="taxon"
               />
             </div>
-            
-            <>
-              <div >
-                <CheckBox 
-                  checked={mintForOtherAccount} 
-                  setChecked={() => {
-                    if (mintForOtherAccount) {
-                      setIssuer('') 
-                    }
-                    setMintForOtherAccount(!mintForOtherAccount)
-                  }} 
-                  name="mint-for-other"
-                >
-                  Mint on behalf of another account
-                </CheckBox>
-              </div>
 
-              {mintForOtherAccount && (
-                <>
-                  <p style={{ marginBottom: "-5px" }}>Issuer (account you're minting for):</p>
-                  <div >
-                    <AddressInput
-                      placeholder="Issuer address"
-                      setValue={onIssuerChange}
-                      initialValue={issuer}
-                      name="issuer"
-                      hideButton={true}
-                    />
-                  </div>
-                  <p className="orange mb-2">
-                    Note: You must be authorized as a minter for this account, or the transaction will fail.
-                  </p>
-                </>
-              )}
-            </>
-            
-            <p className="mb-2">Transfer Fee (optional, 0-50%):</p>
-            <div className="input-validation mb-4">
-              <input
-                placeholder="Enter percentage (e.g., 2.5)"
-                value={transferFee}
-                onChange={onTransferFeeChange}
-                className="input-text"
-                ref={(node) => {
-                  transferFeeRef = node
+            {/* Transferable */}
+            <div className="mb-2">
+              <CheckBox
+                checked={flags.tfTransferable}
+                setChecked={() => {
+                  // If disabling and royalty is set, do nothing
+                  if (flags.tfTransferable && transferFee && parseFloat(transferFee) > 0) {
+                    return
+                  }
+                  handleFlagChange('tfTransferable')
                 }}
-                spellCheck="false"
-                name="transfer-fee"
-              />
+                name="transferable"
+              >
+                Transferable (can be transferred to others)
+              </CheckBox>
             </div>
-            
-            <div >
+
+            {/* Royalty (Transfer Fee) - only show if Transferable is checked */}
+            {flags.tfTransferable && (
+              <>
+                <p className="mb-2">Royalty (paid to the issuer, 0-50%):</p>
+                <div className="input-validation mb-4">
+                  <input
+                    placeholder="0"
+                    value={transferFee}
+                    onChange={onTransferFeeChange}
+                    className="input-text"
+                    ref={(node) => {
+                      transferFeeRef = node
+                    }}
+                    spellCheck="false"
+                    name="transfer-fee"
+                  />
+                </div>
+              </>
+            )}
+            {transferFee && parseFloat(transferFee) > 0 && !flags.tfTransferable && (
+              <div className="red mb-2" style={{ marginTop: '8px', marginBottom: '8px' }}>
+                Transferable flag must be enabled if Royalty is set.
+              </div>
+            )}
+
+            {/* Mutable */}
+            <div className="mb-2">
+              <CheckBox checked={flags.tfMutable} setChecked={() => handleFlagChange('tfMutable')} name="mutable">
+                Mutable (URI can be updated)
+              </CheckBox>
+            </div>
+
+            {/* Only XRP */}
+            <div className="mb-2">
+              <CheckBox checked={flags.tfOnlyXRP} setChecked={() => handleFlagChange('tfOnlyXRP')} name="only-xrp">
+                Only XRP (can only be sold for XRP)
+              </CheckBox>
+            </div>
+
+            {/* Burnable */}
+            <div className="mb-4">
+              <CheckBox checked={flags.tfBurnable} setChecked={() => handleFlagChange('tfBurnable')} name="burnable">
+                Burnable (can be destroyed by the issuer)
+              </CheckBox>
+            </div>
+
+            {/* Create Sell Offer */}
+            <div className="mb-2">
               <CheckBox
                 checked={createSellOffer}
                 setChecked={() => setCreateSellOffer(!createSellOffer)}
@@ -365,6 +306,7 @@ export default function NFTokenMint ({ setSignRequest }) {
               </CheckBox>
             </div>
 
+            {/* Sell Offer Fields */}
             {createSellOffer && (
               <>
                 <p className="mb-2">Initial listing price in XRP (Amount):</p>
@@ -383,7 +325,7 @@ export default function NFTokenMint ({ setSignRequest }) {
                 </div>
 
                 <p style={{ marginBottom: "-5px" }}>Destination (optional - account to receive the NFT):</p>
-                <div >
+                <div>
                   <AddressInput
                     placeholder="Destination address"
                     setValue={onDestinationChange}
@@ -394,45 +336,50 @@ export default function NFTokenMint ({ setSignRequest }) {
                 </div>
 
                 <p className="mb-2">Offer expiration:</p>
-                <div >
+                <div>
                   <ExpirationSelect onChange={onExpirationChange} />
                 </div>
               </>
             )}
 
-            <p className="mb-2">NFT Flags:</p>
-            <div className="nft-flags-container mb-4">
-              <CheckBox
-                checked={flags.tfTransferable}
+            {/* Mint on behalf of another account */}
+            <div className="mb-2">
+              <CheckBox 
+                checked={mintForOtherAccount} 
                 setChecked={() => {
-                  if (flags.tfTransferable && transferFee && parseFloat(transferFee) > 0) {
-                    return
+                  if (mintForOtherAccount) {
+                    setIssuer('') 
                   }
-                  handleFlagChange('tfTransferable')
-                }}
-                name="transferable"
+                  setMintForOtherAccount(!mintForOtherAccount)
+                }} 
+                name="mint-for-other"
               >
-                Transferable (can be transferred to others)
-              </CheckBox>
-              {transferFee && parseFloat(transferFee) > 0 && !flags.tfTransferable && (
-                <div className="red mb-2" style={{ marginTop: '8px', marginBottom: '8px' }}>
-                  Transferable flag must be enabled if Transfer Fee is set.
-                </div>
-              )}
-              <CheckBox checked={flags.tfBurnable} setChecked={() => handleFlagChange('tfBurnable')} name="burnable">
-                Burnable (can be destroyed by the issuer)
-              </CheckBox>
-              <CheckBox checked={flags.tfOnlyXRP} setChecked={() => handleFlagChange('tfOnlyXRP')} name="only-xrp">
-                Only XRP (can only be sold for XRP)
-              </CheckBox>
-              <CheckBox checked={flags.tfMutable} setChecked={() => handleFlagChange('tfMutable')} name="mutable">
-                Mutable (URI can be updated)
+                Mint on behalf of another account
               </CheckBox>
             </div>
 
+            {mintForOtherAccount && (
+              <>
+                <p style={{ marginBottom: "-5px" }}>Issuer (account you're minting for):</p>
+                <div>
+                  <AddressInput
+                    placeholder="Issuer address"
+                    setValue={onIssuerChange}
+                    initialValue={issuer}
+                    name="issuer"
+                    hideButton={true}
+                  />
+                </div>
+                <p className="orange mb-2">
+                  Note: You must be authorized as a minter for this account, or the transaction will fail.
+                </p>
+              </>
+            )}
+
             <div style={{ height: 32 }} />
 
-            <div >
+            {/* Terms and Privacy */}
+            <div>
               <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
                 I agree with the{' '}
                 <Link href="/terms-and-conditions" target="_blank">
@@ -442,7 +389,7 @@ export default function NFTokenMint ({ setSignRequest }) {
               </CheckBox>
             </div>
 
-            <div >
+            <div>
               <CheckBox
                 checked={agreeToPrivacyPolicy}
                 setChecked={setAgreeToPrivacyPolicy}
