@@ -12,10 +12,16 @@ import {
 } from '../../utils/format'
 import { decode } from '../../utils'
 import { i18n } from 'next-i18next'
+import CopyButton from '../UI/CopyButton'
 
 //NFTokenAcceptOffer, NFTokenBurn, NFTokenCancelOffer, NFTokenCreateOffer, NFTokenMint, NFTokenModify
 
 const nftData = (change, nftInfo, txType) => {
+  let decodedURI = ''
+  if (change?.uri) {
+    decodedURI = decode(change.uri)
+  }
+
   return (
     <>
       <tr>
@@ -64,12 +70,14 @@ const nftData = (change, nftInfo, txType) => {
           <TData>{decode(change.previousURI)}</TData>
         </tr>
       )}
-      {change.uri && (
+      {decodedURI && (
         <tr>
           <TData className={txType === 'NFTokenModify' ? 'bold orange' : ''}>
             {txType === 'NFTokenModify' ? 'New ' : ''}URI
           </TData>
-          <TData>{decode(change.uri)}</TData>
+          <TData>
+            {decodedURI} <CopyButton text={decodedURI} />{' '}
+          </TData>
         </tr>
       )}
     </>
