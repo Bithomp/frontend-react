@@ -2,8 +2,16 @@ import React from 'react'
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled, amountFormat, nftIdLink, nftOfferLink } from '../../utils/format'
+import {
+  AddressWithIconFilled,
+  amountFormat,
+  fullDateAndTime,
+  nftIdLink,
+  nftOfferLink,
+  timeFromNow
+} from '../../utils/format'
 import { decode } from '../../utils'
+import { i18n } from 'next-i18next'
 
 //NFTokenAcceptOffer, NFTokenBurn, NFTokenCancelOffer, NFTokenCreateOffer, NFTokenMint, NFTokenModify
 
@@ -314,14 +322,6 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
               </TData>
             </tr>
           )}
-          {tx.Destination && (
-            <tr>
-              <TData>Destination</TData>
-              <TData>
-                <AddressWithIconFilled data={specification.destination} />
-              </TData>
-            </tr>
-          )}
           {tx.TransferFee !== undefined && (
             <tr>
               <TData>Transfer fee</TData>
@@ -336,7 +336,7 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           <TData>{nftIdLink(tx.NFTokenID)}</TData>
         </tr>
       )}
-      {txType === 'NFTokenCreateOffer' && (
+      {(txType === 'NFTokenCreateOffer' || txType === 'NFTokenMint') && (
         <>
           {tx.Owner && (
             <tr>
@@ -354,7 +354,7 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           )}
           {tx.Amount && tx.Amount !== '0' && (
             <tr>
-              <TData>Amount</TData>
+              <TData>{txType === 'NFTokenMint' ? 'Price' : 'Amount'}</TData>
               <TData>
                 {amountFormat(specification.amount, { tooltip: 'right' })}
                 {/* specification.amountInConvertCurrencies?.[selectedCurrency] && (
