@@ -192,7 +192,7 @@ export default function Header({
             hoverStates={hoverStates}
           >
             <Link href="/faucet">{t('menu.developers.faucet')}</Link>
-            {xahauNetwork && <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>}
+            <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
             <Link href="/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
             <Link href="/submit-account-information">{t('menu.project-registration')}</Link>
@@ -239,7 +239,7 @@ export default function Header({
             <Link href={'/nft-offers' + (displayName ? '/' + address : '')}>{t('menu.nft.offers')}</Link>
             <Link href="/nft-distribution">{t('menu.nft.distribution')}</Link>
             <Link href="/nft-statistics">{t('menu.nft.statistics')}</Link>
-            {xahauNetwork && <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>}
+            <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
           </MenuDropDown>
 
           {/* Hide AMM for XAHAU */}

@@ -5,7 +5,7 @@ import SEO from '../components/SEO'
 
 import { getIsSsrMobile } from '../utils/mobile'
 import { devNet, ledgerName, nativeCurrency } from '../utils'
-import FaucetTabs from '../components/Tabs/FaucetTabs'
+import NetworkTabs from '../components/Tabs/NetworkTabs'
 import Ads from '../components/Layout/Ads'
 import { useTranslation } from 'next-i18next'
 
@@ -27,7 +27,7 @@ export default function FaucetPage({ account, showAds }) {
       <SEO title="Faucet" description={'Get Free ' + ledgerName + ' ' + nativeCurrency} />
       <div className="content-text content-center">
         <h1 className="center">{t('menu.developers.faucet')}</h1>
-        <FaucetTabs />
+        <NetworkTabs />
         <Faucet account={account} type={devNet ? 'faucet' : 'testPayment'} />
       </div>
       <Ads showAds={showAds} />
