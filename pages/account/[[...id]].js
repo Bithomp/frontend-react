@@ -58,7 +58,8 @@ import LedgerData from '../../components/Account/LedgerData'
 import PublicData from '../../components/Account/PublicData'
 import XamanData from '../../components/Account/XamanData'
 import ObjectsData from '../../components/Account/ObjectsData'
-import NftData from '../../components/Account/NftData'
+import NFTokenData from '../../components/Account/NFTokenData'
+import URITokenData from '../../components/Account/URITokenData'
 
 export default function Account({
   initialData,
@@ -512,7 +513,15 @@ export default function Account({
                             gateway={gateway}
                           />
                           <PublicData data={data} />
-                          <NftData data={data} objects={objects} ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp} />
+                          {xahauNetwork ? (
+                            <URITokenData data={data} />
+                          ) : (
+                            <NFTokenData
+                              data={data}
+                              objects={objects}
+                              ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            />
+                          )}
                           {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}
