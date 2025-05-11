@@ -608,8 +608,7 @@ export const stripDomain = (x) => {
 }
 
 export const isDomainValid = (x) => {
-  var re = /^((?:(?:(?:\w[\.\-\+]?)*)\w)+)((?:(?:(?:\w[\.\-\+]?){0,62})\w)+)\.(\w{2,8})$/
-  return re.test(x)
+  return x && /^(?!:\/\/)([a-zA-Z0-9-_]{1,63}\.)+[a-zA-Z]{2,}$/.test(x)
 }
 
 export const isAddressValid = (x) => {

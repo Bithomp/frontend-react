@@ -83,11 +83,6 @@ const dateFormatters = {
     // Format: dd.mm.yyyy HH:MM:SS in UTC
     const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
-  },
-  BlockPit: (timestamp) => {
-    // Format: DD.MM.YYYY HH:MM:SS in UTC
-    const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
-    return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
   }
 }
 
@@ -114,19 +109,17 @@ const processDataForExport = (activities, platform) => {
         }
       }
     } else if (platform === 'CoinLedger') {
-      processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
+      processedActivity.type = isSending(activity) ? 'Withdrawal' : 'Deposit'
     } else if (platform === 'CoinTracking') {
-      processedActivity.type = sending
+      processedActivity.type = isSending(activity)
         ? 'Withdrawal'
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'Other Fee'
         : 'Deposit'
-    } else if (platform === 'BlockPit') {
-      processedActivity.type = sending
-        ? 'Withdrawal'
-        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
-        ? 'Other Fee'
-        : 'Deposit'
+    } else if (platform === 'TaxBit') {
+      processedActivity.type = sending ? 'Sell' : 'Buy'
+    } else if (platform === 'TokenTax') {
+      processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     }
 
     return processedActivity
@@ -179,16 +172,16 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         platform: 'CoinLedger',
         headers: [
           { label: 'Date (UTC)', key: 'timestampExport' },
-          { label: 'Platform (Optional)', key: 'platform' },
+          { label: 'Platform', key: 'platform' },
           { label: 'Asset Sent', key: 'sentCurrency' },
           { label: 'Amount Sent', key: 'sentAmount' },
           { label: 'Asset Received', key: 'receivedCurrency' },
           { label: 'Amount Received', key: 'receivedAmount' },
-          { label: 'Fee Currency (Optional)', key: 'txFeeCurrencyCode' },
-          { label: 'Fee Amount (Optional)', key: 'txFeeNumber' },
+          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+          { label: 'Fee Amount', key: 'txFeeNumber' },
           { label: 'Type', key: 'type' },
-          { label: 'Description (Optional)', key: 'memo' },
-          { label: 'TxHash (Optional)', key: 'hash' }
+          { label: 'Description', key: 'memo' },
+          { label: 'TxHash', key: 'hash' }
         ]
       },
       {
@@ -210,22 +203,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Buy Value in Account Currency', key: 'amountInFiats.' + selectedCurrency },
           { label: 'Sell Value in Account Currency', key: '' },
           { label: 'Liquidity pool', key: '' }
-        ]
-      },
-      {
-        platform: 'BlockPit',
-        headers: [
-          { label: 'Date (UTC)', key: 'timestampExport' },
-          { label: 'Integration Name', key: 'platform' },
-          { label: 'Label', key: 'blockPitTxType' },
-          { label: 'Outgoing Asset', key: 'sentCurrency' },
-          { label: 'Outgoing Amount', key: 'sentAmount' },
-          { label: 'Incoming Asset', key: 'receivedCurrency' },
-          { label: 'Incoming Amount', key: 'receivedAmount' },
-          { label: 'Fee Asset (optional)', key: 'txFeeCurrencyCode' },
-          { label: 'Fee Amount (optional)', key: 'txFeeNumber' },
-          { label: 'Comment (optional)', key: 'memo' },
-          { label: 'Trx. ID (optional)', key: 'hash' }
         ]
       }
     ],
@@ -591,8 +568,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
                     { value: 'CoinLedger', label: 'CoinLedger' },
-                    { value: 'CoinTracking', label: 'CoinTracking' },
-                    { value: 'BlockPit', label: 'BlockPit' }
+                    { value: 'CoinTracking', label: 'CoinTracking' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>

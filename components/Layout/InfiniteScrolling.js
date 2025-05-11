@@ -10,6 +10,7 @@ export default function InfiniteScrolling({
   errorMessage,
   subscriptionExpired,
   sessionToken,
+  noSessionTokenMessage,
   height,
   endMessage,
   loadMoreMessage,
@@ -36,9 +37,12 @@ export default function InfiniteScrolling({
             {hasMore !== 'first' ? (
               <>
                 {!sessionToken ? (
-                  <Trans i18nKey="general.login-to-bithomp-pro">
-                    Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers.
-                  </Trans>
+                  <>                  
+                    {noSessionTokenMessage && <>{noSessionTokenMessage}<br/></>}
+                    <Trans i18nKey="general.login-to-bithomp-pro">
+                      Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers.
+                    </Trans>
+                  </>                
                 ) : (
                   <>
                     {!subscriptionExpired ? (

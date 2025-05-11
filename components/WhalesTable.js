@@ -35,7 +35,7 @@ export const WhalesTable = ({ isMobile, data, noAmount, showFee }) => (
           <table className="table-mobile">
             <thead></thead>
             <tbody>
-              {data?.map((tx, i) => (
+              {data?.addresses?.map((tx, i) => (
                 <tr key={i}>
                   <td style={{ padding: '5px' }} className="center">
                     <b>{i + 1}</b>
