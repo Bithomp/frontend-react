@@ -83,6 +83,20 @@ const dateFormatters = {
     // Format: dd.mm.yyyy HH:MM:SS in UTC
     const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
+  },
+  TaxBit: (timestamp) => {
+    // ISO format: YYYY-MM-DDTHH:MM:SS.000Z (same as Koinly)
+    return new Date(timestamp * 1000).toISOString()
+  },
+  TokenTax: (timestamp) => {
+    // Format: MM/DD/YY HH:MM
+    const { mm, dd, yyyy, hh, min } = timePieces(timestamp)
+    return `${mm}/${dd}/${yyyy} ${hh}:${min}`
+  },
+  BlockPit: (timestamp) => {
+    // Format: DD.MM.YYYY HH:MM:SS in UTC
+    const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
+    return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
   }
 }
 
@@ -109,9 +123,13 @@ const processDataForExport = (activities, platform) => {
         }
       }
     } else if (platform === 'CoinLedger') {
-      processedActivity.type = isSending(activity) ? 'Withdrawal' : 'Deposit'
+      // https://help.coinledger.io/en/articles/6028758-universal-manual-import-template-guide
+      // Deposit and Withdrawals are a non-taxable self-transfers
+      // Trades need to be in one line as Trade type.
+      // NFTs should be as Trades too
+      processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     } else if (platform === 'CoinTracking') {
-      processedActivity.type = isSending(activity)
+      processedActivity.type = sending
         ? 'Withdrawal'
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'Other Fee'
@@ -120,6 +138,21 @@ const processDataForExport = (activities, platform) => {
       processedActivity.type = sending ? 'Sell' : 'Buy'
     } else if (platform === 'TokenTax') {
       processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
+    } else if (platform === 'BlockPit') {
+      processedActivity.type = sending
+        ? 'Withdrawal'
+        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+        ? 'Fee'
+        : 'Deposit'
+      // don't include this fee amount in the fee column for type 'fee'
+      if (processedActivity.type === 'Fee') {
+        processedActivity.sentAmount = processedActivity.txFeeNumber
+        processedActivity.sentCurrency = processedActivity.txFeeCurrencyCode
+        processedActivity.txFeeCurrencyCode = ''
+        processedActivity.txFeeNumber = ''
+        processedActivity.receivedAmount = ''
+        processedActivity.receivedCurrency = ''
+      }
     }
 
     return processedActivity
@@ -203,6 +236,63 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Buy Value in Account Currency', key: 'amountInFiats.' + selectedCurrency },
           { label: 'Sell Value in Account Currency', key: '' },
           { label: 'Liquidity pool', key: '' }
+        ]
+      },
+      {
+        platform: 'TaxBit',
+        headers: [
+          { label: 'timestamp', key: 'timestampExport' },
+          { label: 'txid', key: 'hash' },
+          { label: 'source_name', key: '' },
+          { label: 'from_wallet_address', key: 'counterparty' },
+          { label: 'to_wallet_address', key: 'address' },
+          { label: 'category', key: 'type' },
+          { label: 'in_currency', key: 'receivedCurrency' },
+          { label: 'in_amount', key: 'receivedAmount' },
+          { label: 'in_currency_fiat', key: 'netWorthCurrency' },
+          { label: 'in_amount_fiat', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'out_currency', key: 'sentCurrency' },
+          { label: 'out_amount', key: 'sentAmount' },
+          { label: 'out_currency_fiat', key: 'netWorthCurrency' },
+          { label: 'out_amount_fiat', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'fee_currency', key: 'txFeeCurrencyCode' },
+          { label: 'fee', key: 'txFeeNumber' },
+          { label: 'fee_currency_fiat', key: selectedCurrency },
+          { label: 'fee_fiat', key: 'txFeeInFiats.' + selectedCurrency },
+          { label: 'memo', key: 'memo' },
+          { label: 'status', key: '' }
+        ]
+      },
+      {
+        platform: 'TokenTax',
+        headers: [
+          { label: 'Type', key: 'type' },
+          { label: 'BuyAmount', key: 'receivedAmount' },
+          { label: 'BuyCurrency', key: 'receivedCurrency' },
+          { label: 'SellAmount', key: 'sentAmount' },
+          { label: 'SellCurrency', key: 'sentCurrency' },
+          { label: 'FeeAmount', key: 'txFeeNumber' },
+          { label: 'FeeCurrency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange', key: 'platform' },
+          { label: 'Group', key: '' },
+          { label: 'Comment', key: 'memo' },
+          { label: 'Date', key: 'timestampExport' }
+        ]
+      },
+      {
+        platform: 'BlockPit',
+        headers: [
+          { label: 'Date (UTC)', key: 'timestampExport' },
+          { label: 'Integration Name', key: 'platform' },
+          { label: 'Label', key: 'type' },
+          { label: 'Outgoing Asset', key: 'sentCurrency' },
+          { label: 'Outgoing Amount', key: 'sentAmount' },
+          { label: 'Incoming Asset', key: 'receivedCurrency' },
+          { label: 'Incoming Amount', key: 'receivedAmount' },
+          { label: 'Fee Asset (optional)', key: 'txFeeCurrencyCode' },
+          { label: 'Fee Amount (optional)', key: 'txFeeNumber' },
+          { label: 'Comment (optional)', key: 'memo' },
+          { label: 'Trx. ID (optional)', key: 'hash' }
         ]
       }
     ],
@@ -568,7 +658,10 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
                     { value: 'CoinLedger', label: 'CoinLedger' },
-                    { value: 'CoinTracking', label: 'CoinTracking' }
+                    { value: 'CoinTracking', label: 'CoinTracking' },
+                    { value: 'TaxBit', label: 'TaxBit' },
+                    { value: 'TokenTax', label: 'TokenTax' },
+                    { value: 'BlockPit', label: 'BlockPit' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
