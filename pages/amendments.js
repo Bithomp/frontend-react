@@ -26,7 +26,7 @@ export const getServerSideProps = async (context) => {
 
 const amendmentLink = (a) => {
   if (a.name) {
-    if (a.introduced) {
+    if (a.introduced && !xahauNetwork) {
       return <a href={'https://xrpl.org/known-amendments.html#' + a.name.toLowerCase()}>{a.name}</a>
     }
     return a.name

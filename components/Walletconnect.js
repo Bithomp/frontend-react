@@ -158,7 +158,7 @@ export function WalletConnect({
       return a.split(':')[2]
     })
 
-    const address0 = accounts[0]
+    const address0 = accounts?.[0]
 
     if (!tx.Account) {
       tx.Account = address0

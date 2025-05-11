@@ -1,3 +1,4 @@
+
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -406,7 +407,9 @@ export default function NftsComponent({
           setData([...nftsData, ...nftList])
         } else {
           if (marker === 'first') {
-            setErrorMessage(t('nfts.no-nfts'))
+            setErrorMessage(
+              t('nfts.no-nfts') + " " + (hasActiveFilters()  ? t('general.change-filters') : "" )
+            )
           } else {
             setHasMore(false)
           }
@@ -610,6 +613,21 @@ export default function NftsComponent({
         }
       },
   */
+
+  // Add this function to check if any filters are active
+  const hasActiveFilters = () => {
+    return !!(
+      issuer ||
+      taxon ||
+      owner ||
+      search ||
+      mintedPeriod && mintedPeriod !== 'all' ||
+      burnedPeriod ||
+      !includeBurned ||
+      !includeWithoutMediaData ||
+      (listTab === 'onSale')
+    )
+  }
 
   return (
     <>
@@ -851,6 +869,7 @@ export default function NftsComponent({
               sessionToken={sessionToken}
               endMessage={t('nfts.end')}
               loadMoreMessage={t('nfts.load-more')}
+              noSessionTokenMessage={t('nfts.change-filters')}
               //height={!filtersHide ? '1300px' : '100vh'}
             >
               {activeView === 'list' && (
