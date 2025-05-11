@@ -446,18 +446,26 @@ export const TransactionCard = ({
                           <TData>{tx.SetFlag}</TData>
                         </tr>
                       )}
+                      {tx.Flags !== undefined && (
+                        <tr>
+                          <TData tooltip="Set of bit-flags for this transaction (UInt32)">Flags value</TData>
+                          <TData>{tx.Flags}</TData>
+                        </tr>
+                      )}
                       {tx?.TransactionType !== 'UNLReport' && (
                         <>
                           {tx.TicketSequence ? (
                             <tr>
-                              <TData>
+                              <TData tooltip="The sequence number of the ticket to use in place of a Sequence number.">
                                 <span className="bold">Ticket</span> sequence
                               </TData>
                               <TData>#{tx.TicketSequence}</TData>
                             </tr>
                           ) : (
                             <tr>
-                              <TData>Sequence</TData>
+                              <TData tooltip="The sequence number of the account sending the transaction.">
+                                Sequence
+                              </TData>
                               <TData>#{tx.Sequence}</TData>
                             </tr>
                           )}
