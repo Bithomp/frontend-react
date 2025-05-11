@@ -289,7 +289,19 @@ export const TransactionCard = ({
                         <tr key={i}>
                           <TData>Emitted TX {outcome?.emittedTxns?.length > 1 ? i + 1 : ''}</TData>
                           <TData>
-                            {etx?.tx?.TransactionType} <LinkTx tx={etx?.txHash} icon={true} />
+                            {etx?.tx?.TransactionType}{' '}
+                            {etx?.tx?.TransactionType === 'Payment' && (
+                              <>
+                                [<span className="bold">{amountFormat(etx?.tx?.Amount, { noSpace: true })} </span>
+                                {nativeCurrencyToFiat({
+                                  amount: etx?.tx?.Amount,
+                                  selectedCurrency,
+                                  fiatRate: pageFiatRate
+                                })}{' '}
+                                ]{' '}
+                              </>
+                            )}
+                            <LinkTx tx={etx?.txHash} icon={true} />
                           </TData>
                         </tr>
                       ))}
