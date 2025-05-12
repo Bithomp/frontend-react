@@ -31,6 +31,7 @@ import { koinly } from '../../../utils/koinly'
 import { TbArrowsSort } from 'react-icons/tb'
 import SimpleSelect from '../../../components/UI/SimpleSelect'
 import { LinkTx } from '../../../utils/links'
+import { IoMdClose } from 'react-icons/io'
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { address } = query
@@ -139,6 +140,14 @@ const processDataForExport = (activities, platform) => {
   })
 }
 
+const platformList = [
+  { value: 'Koinly', label: 'Koinly' },
+  { value: 'CoinLedger', label: 'CoinLedger' },
+  { value: 'CoinTracking', label: 'CoinTracking' },
+  { value: 'TaxBit', label: 'TaxBit' },
+  { value: 'TokenTax', label: 'TokenTax' }
+]
+
 export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
   const router = useRouter()
   const width = useWidth()
@@ -161,6 +170,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   const [removeDust, setRemoveDust] = useState(false)
   const [filteredActivities, setFilteredActivities] = useState([])
   const [platformCSVExport, setPlatformCSVExport] = useState('Koinly')
+  const [exportCsvMenuOpen, setExportCsvMenuOpen] = useState(false)
 
   const platformCSVHeaders = useMemo(
     () => [
@@ -507,7 +517,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   return (
     <>
       <SEO title="My addresses: history" />
-      <div className="page-pro-history">
+      <div className={`page-pro-history ${exportCsvMenuOpen ? 'is-sort-menu-open' : ''}`}>
         <h1 className="center">Pro address balances history</h1>
 
         <AdminTabs name="mainTabs" tab="pro" />
@@ -616,18 +626,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   marginBottom: 20
                 }}
               >
-                <SimpleSelect
-                  value={platformCSVExport}
-                  setValue={setPlatformCSVExport}
-                  optionsList={[
-                    { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' },
-                    { value: 'CoinTracking', label: 'CoinTracking' },
-                    { value: 'TaxBit', label: 'TaxBit' },
-                    { value: 'TokenTax', label: 'TokenTax' }
-                  ]}
-                />
-                <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
+                <SimpleSelect value={platformCSVExport} setValue={setPlatformCSVExport} optionsList={platformList} />
+                <button className="dropdown-btn" onClick={() => setExportCsvMenuOpen(!exportCsvMenuOpen)}>
                   <TbArrowsSort />
                 </button>
               </div>
@@ -777,6 +777,37 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
             {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
           </>
         </FiltersFrame>
+
+        {platformList && (
+          <div
+            style={{
+              zIndex: 999999
+            }}
+            className="dropdown--mobile"
+          >
+            <div className="dropdown__head">
+              <span>Platform</span>
+              <button onClick={() => setExportCsvMenuOpen(false)}>
+                <IoMdClose />
+              </button>
+            </div>
+            <ul>
+              {platformList.map((item, i) => (
+                <li
+                  key={i}
+                  style={{ fontWeight: item.value === platformCSVExport ? 'bold' : 'normal' }}
+                  onClick={() => {
+                    setPlatformCSVExport(item.value)
+                    setExportCsvMenuOpen(false)
+                  }}
+                  suppressHydrationWarning
+                >
+                  {item.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </>
   )
