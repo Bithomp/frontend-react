@@ -189,7 +189,7 @@ export default function NFTokenMint ({ setSignRequest }) {
         {!minted && (
           <>
             {/* URI */}
-            <p >URI that points to the data or metadata associated with the NFT:</p>
+            <p>URI that points to the data or metadata associated with the NFT:</p>
             <div className="input-validation">
               <input
                 placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
@@ -206,7 +206,7 @@ export default function NFTokenMint ({ setSignRequest }) {
             </div>
 
             {/* NFT Taxon */}
-            <p >NFT Taxon (collection identifier, leave as 0 for the issuer's first collection):</p>
+            <p>NFT Taxon (collection identifier, leave as 0 for the issuer's first collection):</p>
             <div className="input-validation ">
               <input
                 placeholder="0"
@@ -241,7 +241,7 @@ export default function NFTokenMint ({ setSignRequest }) {
             {/* Royalty (Transfer Fee) - only show if Transferable is checked */}
             {flags.tfTransferable && (
               <>
-                <p >Royalty (paid to the issuer, 0-50%):</p>
+                <p>Royalty (paid to the issuer, 0-50%):</p>
                 <div className="input-validation">
                   <input
                     placeholder="0"
@@ -293,7 +293,7 @@ export default function NFTokenMint ({ setSignRequest }) {
             {/* Sell Offer Fields */}
             {createSellOffer && (
               <>
-                <p >Initial listing price in XRP (Amount):</p>
+                <p>Initial listing price in XRP (Amount):</p>
                 <div className="input-validation">
                   <input
                     placeholder="0.0"
@@ -397,8 +397,8 @@ export default function NFTokenMint ({ setSignRequest }) {
 
         {minted && (
           <>
-            <p >The NFT was successfully minted:</p>
-            <p >
+            <p>The NFT was successfully minted:</p>
+            <p>
               <Link href={'/nft/' + minted} className="brake">
                 {server}/nft/{minted}
               </Link>
