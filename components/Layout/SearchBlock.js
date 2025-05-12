@@ -28,13 +28,16 @@ let typingTimer
 
 const CustomClearIndicator = (props) => {
   const {
-    selectProps: { inputValue, onInputChange }
+    selectProps: { inputValue, onInputChange },
+    setSearchSuggestions
   } = props
 
   if (!inputValue) return null
 
   const handleClear = (e) => {
     e.stopPropagation()
+    props.clearValue()
+    setSearchSuggestions([])
     onInputChange('', { action: 'input-change' })
   }
 
@@ -57,7 +60,7 @@ const CustomClearIndicator = (props) => {
 const CustomIndicatorsContainer = (props) => {
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <CustomClearIndicator {...props} />
+      <CustomClearIndicator {...props} setSearchSuggestions={props.selectProps.setSearchSuggestions} />
       <components.IndicatorsContainer {...props} />
     </div>
   )
@@ -138,7 +141,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         e.preventDefault()
         return
       }
-
       requestSuggestions(e?.target?.value)
     }
   }
@@ -325,26 +327,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
-  const searchOnFocus = () => {
-    const selectInstance = searchInput?.current?.select
-    if (!selectInstance?.hasValue()) return // No value, nothing to select.
-    const textElem = selectInstance.controlRef.querySelector('[class*=singleValue]') // Element which has the text.
-    // Following code is from https://stackoverflow.com/a/4183448/6612182
-    if (window.getSelection && document.createRange) {
-      // Every browser
-      const sel = window.getSelection()
-      const range = document.createRange()
-      range.selectNodeContents(textElem)
-      sel.removeAllRanges()
-      sel.addRange(range)
-    } else if (document.selection && document.body.createTextRange) {
-      // Microsoft
-      const textRange = document.body.createTextRange()
-      textRange.moveToElementText(textElem)
-      textRange.select()
-    }
-  }
-
   const explorerHeader = (tab) => {
     if (
       ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object'].includes(tab)
@@ -377,7 +359,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 className="search-input search-input-select"
                 placeholder={searchPlaceholderText}
                 onChange={searchOnChange}
-                onFocus={searchOnFocus}
                 spellCheck="false"
                 options={searchSuggestions}
                 getOptionLabel={(option) => (
@@ -441,6 +422,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 }
                 aria-label="Search"
                 components={{ IndicatorsContainer: CustomIndicatorsContainer }}
+                setSearchSuggestions={setSearchSuggestions}
               />
             </div>
           ) : (
