@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { encode, server, network } from '../../utils'
-import { isValidTaxon } from '../../utils/nft'
-import CheckBox from '../UI/CheckBox'
-import AddressInput from '../UI/AddressInput'
-import ExpirationSelect from '../UI/ExpirationSelect'
+import { encode, server, network } from '../../../utils'
+import { isValidTaxon } from '../../../utils/nft'
+import CheckBox from '../../UI/CheckBox'
+import AddressInput from '../../UI/AddressInput'
+import ExpirationSelect from '../../UI/ExpirationSelect'
 
 export default function NFTokenMint({ setSignRequest }) {
   const [uri, setUri] = useState('')
