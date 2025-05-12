@@ -41,6 +41,7 @@ const CustomClearIndicator = (props) => {
   return (
     <div
       onClick={handleClear}
+      onTouchEnd={handleClear}
       style={{
         cursor: 'pointer',
         paddingRight: '8px',

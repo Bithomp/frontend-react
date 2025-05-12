@@ -31,12 +31,6 @@ const nftData = (change, nftInfo, txType) => {
           )}
         </>
       )}
-      {nftInfo.sequence !== undefined && (
-        <tr>
-          <TData>NFT serial</TData>
-          <TData>{nftInfo.sequence}</TData>
-        </tr>
-      )}
     </>
   )
 }
