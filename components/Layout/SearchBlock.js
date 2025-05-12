@@ -35,6 +35,7 @@ const CustomClearIndicator = (props) => {
 
   const handleClear = (e) => {
     e.stopPropagation()
+    props.clearValue()
     onInputChange('', { action: 'input-change' })
   }
 
