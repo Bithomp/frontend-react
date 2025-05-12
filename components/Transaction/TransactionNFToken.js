@@ -22,35 +22,33 @@ const nftData = (change, nftInfo, txType) => {
     decodedURI = decode(change.uri)
   }
 
+  const flagsAsString = flagList(nftInfo.flags)
+
   return (
     <>
       <tr>
         <TData>NFT</TData>
         <TData>{nftIdLink(change.nftokenID)}</TData>
       </tr>
-      {txType !== 'NFTokenMint' && (
-        <>
-          {nftInfo.issuer && (
-            <tr>
-              <TData>Issuer</TData>
-              <TData>
-                <AddressWithIconFilled data={nftInfo} name="issuer" />
-              </TData>
-            </tr>
-          )}
-          {nftInfo.transferFee !== undefined && (
-            <tr>
-              <TData>Transfer fee</TData>
-              <TData>{nftInfo.transferFee / 1000}%</TData>
-            </tr>
-          )}
-          {nftInfo.flags && (
-            <tr>
-              <TData>Flag{Object.keys(nftInfo.flags).length > 1 ? 's' : ''}</TData>
-              <TData>{flagList(nftInfo.flags)}</TData>
-            </tr>
-          )}
-        </>
+      {txType !== 'NFTokenMint' && nftInfo.issuer && (
+        <tr>
+          <TData>Issuer</TData>
+          <TData>
+            <AddressWithIconFilled data={nftInfo} name="issuer" />
+          </TData>
+        </tr>
+      )}
+      {nftInfo.transferFee !== undefined && (
+        <tr>
+          <TData>Transfer fee</TData>
+          <TData>{nftInfo.transferFee / 1000}%</TData>
+        </tr>
+      )}
+      {flagsAsString && (
+        <tr>
+          <TData>Flag{flagsAsString.includes(',') ? 's' : ''}</TData>
+          <TData>{flagsAsString}</TData>
+        </tr>
       )}
       {nftInfo.nftokenTaxon !== undefined && (
         <tr>
@@ -165,30 +163,27 @@ const nftokenChanges = (changes, nftokens, txType) => {
               addressFrom = { address: change.address, addressDetails: change.addressDetails }
             }
           } else {
-            if (txType === 'NFTokenModify') {
-              output.push(
-                <tr key="nft-modify-header">
-                  <TData className="bold">
-                    <br />
-                    Modified NFT
-                  </TData>
-                  <TData>
-                    <br />
-                    <br />
-                  </TData>
-                </tr>
-              )
-            }
+            output.push(
+              <tr key="nft-modify-header">
+                <TData className="bold">
+                  <br />
+                  {txType === 'NFTokenModify' ? 'Modified NFT' : 'NFT Data ' + (nftChnages.length > 1 ? i + 1 : '')}
+                </TData>
+                <TData>
+                  <br />
+                  <br />
+                </TData>
+              </tr>
+            )
 
-            if (txType !== 'NFTokenMint') {
-              output.push(
-                <tr key="hr-top">
-                  <TData colSpan="2">
-                    <hr />
-                  </TData>
-                </tr>
-              )
-            }
+            output.push(
+              <tr key="hr-top">
+                <TData colSpan="2">
+                  <hr />
+                </TData>
+              </tr>
+            )
+
             if (txType === 'NFTokenModify') {
               output.push(
                 <tr key="owner-and-issuer">
@@ -200,37 +195,21 @@ const nftokenChanges = (changes, nftokens, txType) => {
               )
             }
             output.push(<React.Fragment key={'t' + i}>{nftData(nftChnages[i], nftInfo, txType)}</React.Fragment>)
-            if (txType !== 'NFTokenMint') {
-              output.push(
-                <tr key="hr-bottom">
-                  <TData colSpan="2">
-                    <hr />
-                    <br />
-                  </TData>
-                </tr>
-              )
-            }
+
+            output.push(
+              <tr key="hr-bottom">
+                <TData colSpan="2">
+                  <hr />
+                  <br />
+                </TData>
+              </tr>
+            )
           }
         }
         return output
       })}
       {transfer && (
         <>
-          <tr>
-            <TData className="bold">
-              <br />
-              NFT Transfer
-            </TData>
-            <TData>
-              <br />
-              <br />
-            </TData>
-          </tr>
-          <tr>
-            <TData colSpan="2">
-              <hr />
-            </TData>
-          </tr>
           <tr>
             <TData>Transfer from</TData>
             <TData>
@@ -241,6 +220,21 @@ const nftokenChanges = (changes, nftokens, txType) => {
             <TData>Transfer to</TData>
             <TData>
               <AddressWithIconFilled data={addressTo} name="address" />
+            </TData>
+          </tr>
+          <tr>
+            <TData className="bold">
+              <br />
+              NFT Data
+            </TData>
+            <TData>
+              <br />
+              <br />
+            </TData>
+          </tr>
+          <tr>
+            <TData colSpan="2">
+              <hr />
             </TData>
           </tr>
           {nftData(changes?.[0].nftokenChanges[0], nftokens[changes?.[0].nftokenChanges[0].nftokenID], txType)}
@@ -266,6 +260,8 @@ const flagList = (flags) => {
   },
   */
   let flagList = ''
+
+  if (!flags) return flagList
 
   for (let key in flags) {
     if (flags[key]) {
@@ -320,35 +316,19 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
-      {txType === 'NFTokenMint' && (
-        <>
-          {tx.Issuer && (
-            <tr>
-              <TData>Issuer</TData>
-              <TData>
-                <AddressWithIconFilled data={specification.issuer} name="address" />
-              </TData>
-            </tr>
-          )}
-          {tx.TransferFee !== undefined && (
-            <tr>
-              <TData>Transfer fee</TData>
-              <TData>{tx.TransferFee / 1000} %</TData>
-            </tr>
-          )}
-        </>
-      )}
-      {txType === 'NFTokenBurn' && (
+      {txType === 'NFTokenMint' && tx.Issuer && (
         <tr>
-          <TData>NFT</TData>
-          <TData>{nftIdLink(tx.NFTokenID)}</TData>
+          <TData>Issuer</TData>
+          <TData>
+            <AddressWithIconFilled data={specification.issuer} name="address" />
+          </TData>
         </tr>
       )}
       {(txType === 'NFTokenCreateOffer' || txType === 'NFTokenMint') && (
         <>
           {tx.Owner && (
             <tr>
-              <TData>Owner</TData>
+              <TData>NFT owner</TData>
               <TData>
                 <AddressWithIconFilled data={specification} name="owner" />
               </TData>
@@ -360,44 +340,9 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
               <TData>{nftIdLink(tx.NFTokenID)}</TData>
             </tr>
           )}
-          {tx.Amount && tx.Amount !== '0' && (
-            <tr>
-              <TData>{txType === 'NFTokenMint' ? 'Price' : 'Amount'}</TData>
-              <TData>
-                {amountFormat(specification.amount, { tooltip: 'right' })}
-                {/* specification.amountInConvertCurrencies?.[selectedCurrency] && (
-                  <> (≈ {convertedAmount(nftEvent, selectedCurrency)})</>
-                ) */}
-              </TData>
-            </tr>
-          )}
-          {tx.Expiration && (
-            <tr>
-              <TData>Expiration</TData>
-              <TData>
-                {timeFromNow(tx.Expiration, i18n, 'ripple')} ({fullDateAndTime(tx.Expiration, 'ripple')})
-              </TData>
-            </tr>
-          )}
-          {tx.Destination && (
-            <tr>
-              <TData>Destination</TData>
-              <TData>
-                <AddressWithIconFilled data={specification.destination} />
-              </TData>
-            </tr>
-          )}
         </>
       )}
-      {txType === 'NFTokenCancelOffer' &&
-        tx.NFTokenOffers?.map((offerId, i) => {
-          return (
-            <tr key={i}>
-              <TData>Offer {tx.NFTokenOffers.length > 1 ? i + 1 : ''}</TData>
-              <TData>{nftOfferLink(offerId)}</TData>
-            </tr>
-          )
-        })}
+
       {txType === 'NFTokenAcceptOffer' && (
         <>
           {tx.NFTokenSellOffer && (
@@ -425,22 +370,81 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           )}
         </>
       )}
-      {specification.flags &&
-        !(Object.keys(specification.flags).length === 1 && specification.flags.sellToken === true) && (
-          <tr>
-            <TData>Flag{Object.keys(specification.flags).length > 1 ? 's' : ''}</TData>
-            <TData>{flagList(specification.flags)}</TData>
-          </tr>
-        )}
-      {outcome?.nftokenChanges &&
-        outcome?.nftokenChanges.length > 0 &&
+
+      {outcome?.nftokenChanges?.length > 0 &&
         nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType)}
-      {txType === 'NFTokenCreateOffer' && outcome?.nftokenOfferChanges.length > 0 && (
-        <tr>
-          <TData>Offer</TData>
-          <TData>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</TData>
-        </tr>
-      )}
+
+      {/* show created offer details */}
+      {(txType === 'NFTokenCreateOffer' || txType === 'NFTokenMint') &&
+        (tx.Amount || tx.Expiration || tx.Destination) && (
+          <>
+            <tr>
+              <TData className="bold">
+                {!outcome?.nftokenChanges?.length && <br />}
+                NFT Offer Details
+              </TData>
+              <TData>
+                {!outcome?.nftokenChanges?.length && <br />}
+                <br />
+              </TData>
+            </tr>
+            <tr>
+              <TData colSpan="2">
+                <hr />
+              </TData>
+            </tr>
+
+            {outcome?.nftokenOfferChanges?.length > 0 && (
+              <tr>
+                <TData>Offer</TData>
+                <TData>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</TData>
+              </tr>
+            )}
+
+            {/* show 0 Amounts */}
+            {tx.Amount && (
+              <tr>
+                <TData>{txType === 'NFTokenMint' ? 'Price' : 'Amount'}</TData>
+                <TData>
+                  {amountFormat(specification.amount, { tooltip: 'right' })}
+                  {/* specification.amountInConvertCurrencies?.[selectedCurrency] && (
+                  <> (≈ {convertedAmount(nftEvent, selectedCurrency)})</>
+                ) */}
+                </TData>
+              </tr>
+            )}
+            {tx.Expiration && (
+              <tr>
+                <TData>Expiration</TData>
+                <TData>
+                  {timeFromNow(tx.Expiration, i18n, 'ripple')} ({fullDateAndTime(tx.Expiration, 'ripple')})
+                </TData>
+              </tr>
+            )}
+            {tx.Destination && (
+              <tr>
+                <TData>Destination</TData>
+                <TData>
+                  <AddressWithIconFilled data={specification.destination} />
+                </TData>
+              </tr>
+            )}
+            <tr>
+              <TData colSpan="2">
+                <hr />
+              </TData>
+            </tr>
+          </>
+        )}
+      {txType === 'NFTokenCancelOffer' &&
+        tx.NFTokenOffers?.map((offerId, i) => {
+          return (
+            <tr key={i}>
+              <TData>Offer {tx.NFTokenOffers.length > 1 ? i + 1 : ''}</TData>
+              <TData>{nftOfferLink(offerId)}</TData>
+            </tr>
+          )
+        })}
     </TransactionCard>
   )
 }
