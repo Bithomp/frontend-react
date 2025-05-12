@@ -1,12 +1,34 @@
 import Link from 'next/link'
 
-export default function URITokenData({ data }) {
+export default function URITokenData({ data, uriTokenList }) {
+  if (!uriTokenList && !data.ledgerInfo?.flags?.uriTokenIssuer) return ''
+
   const title = 'NFT Data (URI Token)'
 
-  const ownedNftsNode = <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'}>View owned NFTs</Link>
+  const ownedNftsNode = !uriTokenList ? (
+    'Loading...'
+  ) : uriTokenList?.length > 0 ? (
+    <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'} className="bold">
+      View owned NFTs ({uriTokenList?.length})
+    </Link>
+  ) : (
+    "This account doesn't own any NFTs."
+  )
 
-  const nftOffersNode = <Link href={'/nft-offers/' + data?.address}>View NFT Offers</Link>
+  //calculate how many children in uriTokenList array have param 'Destination' or "Amount"
+  const onSaleNftsCount = uriTokenList?.filter((item) => item.Destination || item.Amount).length
 
+  const nftOffersNode = !uriTokenList ? (
+    'Loading...'
+  ) : onSaleNftsCount > 0 ? (
+    <Link href={'/nft-offers/' + data?.address} className="bold">
+      View NFT Sell Offers ({onSaleNftsCount})
+    </Link>
+  ) : (
+    "This account doesn't have any NFT Sell Offers."
+  )
+
+  /*
   const mintedNftsNode = (
     <Link href={'/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true'}>
       View minted NFTs
@@ -26,6 +48,7 @@ export default function URITokenData({ data }) {
   const soldNftsNode = (
     <Link href={'/nft-sales?seller=' + data?.address + '&period=all&includeWithoutMediaData=true'}>View sold NFTs</Link>
   )
+  */
 
   return (
     <>
@@ -40,6 +63,7 @@ export default function URITokenData({ data }) {
             <td>Owned NFTs</td>
             <td>{ownedNftsNode}</td>
           </tr>
+          {/*
           <tr>
             <td>Minted NFTs</td>
             <td>{mintedNftsNode}</td>
@@ -52,6 +76,7 @@ export default function URITokenData({ data }) {
             <td>Burned NFTs</td>
             <td>{burnedNftsNode}</td>
           </tr>
+          */}
           <tr>
             <td>NFT Offers</td>
             <td>{nftOffersNode}</td>
@@ -67,9 +92,11 @@ export default function URITokenData({ data }) {
       <div className="show-on-small-w800">
         <center>{title.toUpperCase()}</center>
         <p>{ownedNftsNode}</p>
+        {/*
         <p>{mintedNftsNode}</p>
         <p>{soldNftsNode}</p>
         <p>{burnedNftsNode}</p>
+        */}
         <p>{nftOffersNode}</p>
         {data.ledgerInfo?.flags?.uriTokenIssuer && (
           <p>
