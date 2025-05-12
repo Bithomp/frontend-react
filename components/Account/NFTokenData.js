@@ -1,9 +1,8 @@
 import Link from 'next/link'
 
 import { AddressWithIconFilled, fullDateAndTime } from '../../utils/format'
-import { xahauNetwork } from '../../utils'
 
-export default function NftData({ data, objects, ledgerTimestamp }) {
+export default function NFTokenData({ data, objects, ledgerTimestamp }) {
   if (
     !data?.ledgerInfo?.nftokenMinter &&
     !data.ledgerInfo?.burnedNFTokens &&
@@ -86,45 +85,41 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
           </tr>
         </thead>
         <tbody>
-          {!xahauNetwork && (
-            <>
-              {data?.ledgerInfo?.activated && (
-                <tr>
-                  <td>Owned NFTs</td>
-                  <td>{ownedNftsNode}</td>
-                </tr>
-              )}
-              {data.ledgerInfo?.mintedNFTokens && (
-                <tr>
-                  <td>Minted NFTs</td>
-                  <td>{mintedNftsNode}</td>
-                </tr>
-              )}
-              {data.ledgerInfo?.burnedNFTokens && (
-                <tr>
-                  <td>Burned NFTs</td>
-                  <td>{burnedNftsNode}</td>
-                </tr>
-              )}
-              {data?.ledgerInfo?.activated && (
-                <tr>
-                  <td>NFT Offers</td>
-                  <td>{nftOffersNode}</td>
-                </tr>
-              )}
-              {data.ledgerInfo?.firstNFTokenSequence && (
-                <tr>
-                  <td>First NFT sequence</td>
-                  <td>{data.ledgerInfo.firstNFTokenSequence}</td>
-                </tr>
-              )}
-              {data.ledgerInfo?.nftokenMinter && (
-                <tr>
-                  <td>NFT minter</td>
-                  <td>{nftMinterNode}</td>
-                </tr>
-              )}
-            </>
+          {data?.ledgerInfo?.activated && (
+            <tr>
+              <td>Owned NFTs</td>
+              <td>{ownedNftsNode}</td>
+            </tr>
+          )}
+          {data.ledgerInfo?.mintedNFTokens && (
+            <tr>
+              <td>Minted NFTs</td>
+              <td>{mintedNftsNode}</td>
+            </tr>
+          )}
+          {data.ledgerInfo?.burnedNFTokens && (
+            <tr>
+              <td>Burned NFTs</td>
+              <td>{burnedNftsNode}</td>
+            </tr>
+          )}
+          {data?.ledgerInfo?.activated && (
+            <tr>
+              <td>NFT Offers</td>
+              <td>{nftOffersNode}</td>
+            </tr>
+          )}
+          {data.ledgerInfo?.firstNFTokenSequence && (
+            <tr>
+              <td>First NFT sequence</td>
+              <td>{data.ledgerInfo.firstNFTokenSequence}</td>
+            </tr>
+          )}
+          {data.ledgerInfo?.nftokenMinter && (
+            <tr>
+              <td>NFT minter</td>
+              <td>{nftMinterNode}</td>
+            </tr>
           )}
 
           {data.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
@@ -133,35 +128,26 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
               <td className="bold">disallowed</td>
             </tr>
           )}
-          {data.ledgerInfo?.flags?.uriTokenIssuer && (
-            <tr>
-              <td>URI token issuer</td>
-              <td className="bold">true</td>
-            </tr>
-          )}
         </tbody>
       </table>
       <div className="show-on-small-w800">
         <center>{historicalTitle || title.toUpperCase()}</center>
-        {!xahauNetwork && (
+
+        {data?.ledgerInfo?.activated && <p>{ownedNftsNode}</p>}
+        {data.ledgerInfo?.mintedNFTokens && <p>{mintedNftsNode}</p>}
+        {data.ledgerInfo?.burnedNFTokens && <p>{burnedNftsNode}</p>}
+        {data?.ledgerInfo?.activated && <p>{nftOffersNode}</p>}
+        {data.ledgerInfo?.firstNFTokenSequence && (
+          <p>
+            <span className="grey">First NFT sequence</span> {data.ledgerInfo.firstNFTokenSequence}
+          </p>
+        )}
+        {data.ledgerInfo?.nftokenMinter && (
           <>
-            {data?.ledgerInfo?.activated && <p>{ownedNftsNode}</p>}
-            {data.ledgerInfo?.mintedNFTokens && <p>{mintedNftsNode}</p>}
-            {data.ledgerInfo?.burnedNFTokens && <p>{burnedNftsNode}</p>}
-            {data?.ledgerInfo?.activated && <p>{nftOffersNode}</p>}
-            {data.ledgerInfo?.firstNFTokenSequence && (
-              <p>
-                <span className="grey">First NFT sequence</span> {data.ledgerInfo.firstNFTokenSequence}
-              </p>
-            )}
-            {data.ledgerInfo?.nftokenMinter && (
-              <>
-                <p>
-                  <span className="grey">NFT minter</span>
-                </p>
-                {nftMinterNode}
-              </>
-            )}
+            <p>
+              <span className="grey">NFT minter</span>
+            </p>
+            {nftMinterNode}
           </>
         )}
         {data.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
