@@ -355,66 +355,67 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
         nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType)}
 
       {/* show created offer details */}
-      {(txType === 'NFTokenCreateOffer' || txType === 'NFTokenMint') && (
-        <>
-          <tr>
-            <TData className="bold">
-              {!outcome?.nftokenChanges?.length && <br />}
-              NFT Offer Details
-            </TData>
-            <TData>
-              {!outcome?.nftokenChanges?.length && <br />}
-              <br />
-            </TData>
-          </tr>
-          <tr>
-            <TData colSpan="2">
-              <hr />
-            </TData>
-          </tr>
-
-          {outcome?.nftokenOfferChanges.length > 0 && (
+      {(txType === 'NFTokenCreateOffer' || txType === 'NFTokenMint') &&
+        (tx.Amount || tx.Expiration || tx.Destination) && (
+          <>
             <tr>
-              <TData>Offer</TData>
-              <TData>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</TData>
-            </tr>
-          )}
-
-          {/* show 0 Amounts */}
-          {tx.Amount && (
-            <tr>
-              <TData>{txType === 'NFTokenMint' ? 'Price' : 'Amount'}</TData>
+              <TData className="bold">
+                {!outcome?.nftokenChanges?.length && <br />}
+                NFT Offer Details
+              </TData>
               <TData>
-                {amountFormat(specification.amount, { tooltip: 'right' })}
-                {/* specification.amountInConvertCurrencies?.[selectedCurrency] && (
+                {!outcome?.nftokenChanges?.length && <br />}
+                <br />
+              </TData>
+            </tr>
+            <tr>
+              <TData colSpan="2">
+                <hr />
+              </TData>
+            </tr>
+
+            {outcome?.nftokenOfferChanges?.length > 0 && (
+              <tr>
+                <TData>Offer</TData>
+                <TData>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</TData>
+              </tr>
+            )}
+
+            {/* show 0 Amounts */}
+            {tx.Amount && (
+              <tr>
+                <TData>{txType === 'NFTokenMint' ? 'Price' : 'Amount'}</TData>
+                <TData>
+                  {amountFormat(specification.amount, { tooltip: 'right' })}
+                  {/* specification.amountInConvertCurrencies?.[selectedCurrency] && (
                   <> (≈ {convertedAmount(nftEvent, selectedCurrency)})</>
                 ) */}
-              </TData>
-            </tr>
-          )}
-          {tx.Expiration && (
+                </TData>
+              </tr>
+            )}
+            {tx.Expiration && (
+              <tr>
+                <TData>Expiration</TData>
+                <TData>
+                  {timeFromNow(tx.Expiration, i18n, 'ripple')} ({fullDateAndTime(tx.Expiration, 'ripple')})
+                </TData>
+              </tr>
+            )}
+            {tx.Destination && (
+              <tr>
+                <TData>Destination</TData>
+                <TData>
+                  <AddressWithIconFilled data={specification.destination} />
+                </TData>
+              </tr>
+            )}
             <tr>
-              <TData>Expiration</TData>
-              <TData>
-                {timeFromNow(tx.Expiration, i18n, 'ripple')} ({fullDateAndTime(tx.Expiration, 'ripple')})
+              <TData colSpan="2">
+                <hr />
               </TData>
             </tr>
-          )}
-          {tx.Destination && (
-            <tr>
-              <TData>Destination</TData>
-              <TData>
-                <AddressWithIconFilled data={specification.destination} />
-              </TData>
-            </tr>
-          )}
-          <tr>
-            <TData colSpan="2">
-              <hr />
-            </TData>
-          </tr>
-        </>
-      )}
+          </>
+        )}
       {txType === 'NFTokenCancelOffer' &&
         tx.NFTokenOffers?.map((offerId, i) => {
           return (
