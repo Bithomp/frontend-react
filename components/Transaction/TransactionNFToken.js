@@ -211,21 +211,6 @@ const nftokenChanges = (changes, nftokens, txType) => {
       {transfer && (
         <>
           <tr>
-            <TData className="bold">
-              <br />
-              NFT Transfer
-            </TData>
-            <TData>
-              <br />
-              <br />
-            </TData>
-          </tr>
-          <tr>
-            <TData colSpan="2">
-              <hr />
-            </TData>
-          </tr>
-          <tr>
             <TData>Transfer from</TData>
             <TData>
               <AddressWithIconFilled data={addressFrom} name="address" />
@@ -235,6 +220,21 @@ const nftokenChanges = (changes, nftokens, txType) => {
             <TData>Transfer to</TData>
             <TData>
               <AddressWithIconFilled data={addressTo} name="address" />
+            </TData>
+          </tr>
+          <tr>
+            <TData className="bold">
+              <br />
+              NFT Data
+            </TData>
+            <TData>
+              <br />
+              <br />
+            </TData>
+          </tr>
+          <tr>
+            <TData colSpan="2">
+              <hr />
             </TData>
           </tr>
           {nftData(changes?.[0].nftokenChanges[0], nftokens[changes?.[0].nftokenChanges[0].nftokenID], txType)}
@@ -293,8 +293,6 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
   if (!data) return null
   const { specification, tx, outcome } = data
 
-  console.log(data) //delete
-
   const txType = tx?.TransactionType
 
   const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
@@ -326,17 +324,11 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           </TData>
         </tr>
       )}
-      {txType === 'NFTokenBurn' && (
-        <tr>
-          <TData>NFT</TData>
-          <TData>{nftIdLink(tx.NFTokenID)}</TData>
-        </tr>
-      )}
       {(txType === 'NFTokenCreateOffer' || txType === 'NFTokenMint') && (
         <>
           {tx.Owner && (
             <tr>
-              <TData>Owner</TData>
+              <TData>NFT owner</TData>
               <TData>
                 <AddressWithIconFilled data={specification} name="owner" />
               </TData>
@@ -346,6 +338,34 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
             <tr>
               <TData>NFT</TData>
               <TData>{nftIdLink(tx.NFTokenID)}</TData>
+            </tr>
+          )}
+        </>
+      )}
+
+      {txType === 'NFTokenAcceptOffer' && (
+        <>
+          {tx.NFTokenSellOffer && (
+            <tr>
+              <TData>Sell offer</TData>
+              <TData>{nftOfferLink(tx.NFTokenSellOffer)}</TData>
+            </tr>
+          )}
+          {tx.NFTokenBuyOffer && (
+            <tr>
+              <TData>Buy offer</TData>
+              <TData>{nftOfferLink(tx.NFTokenBuyOffer)}</TData>
+            </tr>
+          )}
+          {tx.NFTokenBrokerFee && tx.NFTokenBrokerFee !== '0' && (
+            <tr>
+              <TData>Broker fee</TData>
+              <TData>
+                {amountFormat(specification.nftokenBrokerFee, { tooltip: 'right' })}
+                {/* specification.amountInConvertCurrencies?.[selectedCurrency] && (
+                  <> (≈ {convertedAmount(nftEvent, selectedCurrency)})</>
+                ) */}
+              </TData>
             </tr>
           )}
         </>
@@ -425,33 +445,6 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
             </tr>
           )
         })}
-      {txType === 'NFTokenAcceptOffer' && (
-        <>
-          {tx.NFTokenSellOffer && (
-            <tr>
-              <TData>Sell offer</TData>
-              <TData>{nftOfferLink(tx.NFTokenSellOffer)}</TData>
-            </tr>
-          )}
-          {tx.NFTokenBuyOffer && (
-            <tr>
-              <TData>Buy offer</TData>
-              <TData>{nftOfferLink(tx.NFTokenBuyOffer)}</TData>
-            </tr>
-          )}
-          {tx.NFTokenBrokerFee && tx.NFTokenBrokerFee !== '0' && (
-            <tr>
-              <TData>Broker fee</TData>
-              <TData>
-                {amountFormat(specification.nftokenBrokerFee, { tooltip: 'right' })}
-                {/* specification.amountInConvertCurrencies?.[selectedCurrency] && (
-                  <> (≈ {convertedAmount(nftEvent, selectedCurrency)})</>
-                ) */}
-              </TData>
-            </tr>
-          )}
-        </>
-      )}
     </TransactionCard>
   )
 }
