@@ -125,40 +125,40 @@ export default function NFTokenMint({ setSignRequest }) {
     if (flags.tfTransferable) nftFlags |= 8
     if (flags.tfMutable) nftFlags |= 16
 
-    let mintRequest = {
+    let request = {
       TransactionType: 'NFTokenMint',
       NFTokenTaxon: parseInt(taxon),
       Flags: nftFlags
     }
 
     if (uri && uri.trim()) {
-      mintRequest.URI = encode(uri)
+      request.URI = encode(uri)
     }
 
     if (issuer && issuer.trim()) {
-      mintRequest.Issuer = issuer.trim()
+      request.Issuer = issuer.trim()
     }
 
     if (transferFee && transferFee.trim()) {
       const feeValue = parseFloat(transferFee.trim())
       if (!isNaN(feeValue) && feeValue >= 0 && feeValue <= 50) {
-        mintRequest.TransferFee = Math.round(feeValue * 1000)
+        request.TransferFee = Math.round(feeValue * 1000)
       }
     }
 
     if (createSellOffer && amount !== '' && !isNaN(parseFloat(amount)) && parseFloat(amount) >= 0) {
-      mintRequest.Amount = String(Math.round(parseFloat(amount) * 1000000))
+      request.Amount = String(Math.round(parseFloat(amount) * 1000000))
       if (destination && destination.trim()) {
-        mintRequest.Destination = destination.trim()
+        request.Destination = destination.trim()
       }
       if (expiration > 0) {
-        mintRequest.Expiration = Math.floor(Date.now() / 1000) + expiration * 24 * 60 * 60 - 946684800
+        request.Expiration = Math.floor(Date.now() / 1000) + expiration * 24 * 60 * 60 - 946684800
       }
     }
 
     setSignRequest({
       redirect: 'nft',
-      request: mintRequest,
+      request,
       callback: (id) => setMinted(id)
     })
   }
