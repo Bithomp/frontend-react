@@ -20,17 +20,15 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function NftMint({  setSignRequest, uriQuery, digestQuery }) {
+export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
   const { t } = useTranslation()
-
 
   return (
     <>
-      <SEO 
-        title={xahauNetwork 
-          ? t('nft-mint.title-xahau', 'Xahau NFT Mint') 
-          : t('nft-mint.title-xrpl', 'XRP Ledger NFT Mint')
-        } 
+      <SEO
+        title={
+          xahauNetwork ? t('nft-mint.title-xahau', 'Xahau NFT Mint') : t('nft-mint.title-xrpl', 'XRP Ledger NFT Mint')
+        }
         description={t('nft-mint.description', 'Mint NFTs on XRPL and Xahau networks')}
       />
       <div className="page-services-nft-mint content-center">
@@ -41,20 +39,14 @@ export default function NftMint({  setSignRequest, uriQuery, digestQuery }) {
             'You can use this page to create a new NFT, a unique digital asset that can be used in a variety of applications.'
           )}
         </p>
-        
+
         <NetworkTabs />
-        
+
         <div className="form-container">
           {xahauNetwork ? (
-            <URITokenMint
-              setSignRequest={setSignRequest}
-              uriQuery={uriQuery}
-              digestQuery={digestQuery}
-            />
+            <URITokenMint setSignRequest={setSignRequest} uriQuery={uriQuery} digestQuery={digestQuery} />
           ) : (
-            <NFTokenMint
-              setSignRequest={setSignRequest}
-            />
+            <NFTokenMint setSignRequest={setSignRequest} />
           )}
         </div>
       </div>

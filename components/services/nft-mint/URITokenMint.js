@@ -3,11 +3,10 @@ import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { sha512 } from 'crypto-hash'
-import axios from 'axios' 
-import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork } from '../../../utils'
+import axios from 'axios'
+import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork } from '../../utils'
 const checkmark = '/images/checkmark.svg'
-import CheckBox from '../../UI/CheckBox'
-
+import CheckBox from '../../components/UI/CheckBox'
 
 let interval
 let startTime
@@ -142,14 +141,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
     setErrorMessage('')
 
     let request = {
-      TransactionType: 'URITokenMint',
-      Memos: [
-        {
-          Memo: {
-            MemoData: encode('NFT Mint')
-          }
-        }
-      ]
+      TransactionType: 'URITokenMint'
     }
 
     if (uri) {
@@ -159,7 +151,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
     if (digest) {
       request.Digest = digest
     }
-    
+
     console.log('request', request)
 
     setSignRequest({
@@ -237,7 +229,6 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
   return (
     <>
       <div className="page-services-nft-mint content-center">
-
         {!minted && (
           <>
             <p>URI that points to the data or metadata associated with the NFT:</p>
