@@ -267,6 +267,8 @@ const flagList = (flags) => {
   */
   let flagList = ''
 
+  if (!flags) return flagList
+
   for (let key in flags) {
     if (flags[key]) {
       //skip sellToken flag for tokenCreateOffer, we show it already
@@ -306,6 +308,8 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
     (direction && (txType === 'NFTokenAcceptOffer' || txType === 'NFTokenCreateOffer')
       ? ' - ' + direction + ' Offer'
       : '')
+
+  const flagsAsString = flagList(specification?.flags)
 
   return (
     <TransactionCard
@@ -425,13 +429,12 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           )}
         </>
       )}
-      {specification.flags &&
-        !(Object.keys(specification.flags).length === 1 && specification.flags.sellToken === true) && (
-          <tr>
-            <TData>Flag{Object.keys(specification.flags).length > 1 ? 's' : ''}</TData>
-            <TData>{flagList(specification.flags)}</TData>
-          </tr>
-        )}
+      {flagsAsString && (
+        <tr>
+          <TData>Flag{flagsAsString.includes(',') ? 's' : ''}</TData>
+          <TData>{flagsAsString}</TData>
+        </tr>
+      )}
       {outcome?.nftokenChanges &&
         outcome?.nftokenChanges.length > 0 &&
         nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType)}
