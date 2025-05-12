@@ -4,9 +4,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { sha512 } from 'crypto-hash'
 import axios from 'axios' 
-import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork } from '../../utils'
+import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork } from '../../../utils'
 const checkmark = '/images/checkmark.svg'
-import CheckBox from '../../components/UI/CheckBox'
+import CheckBox from '../../UI/CheckBox'
 
 
 let interval
@@ -351,7 +351,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
 
         {minted && (
           <>
-            The NFT was sucefully minted:
+            The NFT was successfully minted:
             <br />
             <Link href={'/nft/' + minted} className="brake">
               {server}/nft/{minted}

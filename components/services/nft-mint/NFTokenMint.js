@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { encode } from '../../utils'
-import CheckBox from '../UI/CheckBox'
-import AddressInput from '../UI/AddressInput'
-import ExpirationSelect from '../UI/ExpirationSelect'
+import { encode } from '../../../utils'
+import CheckBox from '../../UI/CheckBox'
+import AddressInput from '../../UI/AddressInput'
+import ExpirationSelect from '../../UI/ExpirationSelect'
 
 
 export default function NFTokenMint ({ setSignRequest }) {
@@ -31,8 +31,7 @@ export default function NFTokenMint ({ setSignRequest }) {
 
   let uriRef
   let taxonRef
-  let transferFeeRef
-  let amountRef
+
 
   useEffect(() => {
     if (agreeToSiteTerms || agreeToPrivacyPolicy) {
@@ -109,26 +108,15 @@ export default function NFTokenMint ({ setSignRequest }) {
       return
     }
 
-    if (!taxon || isNaN(parseInt(taxon))) {
-      setErrorMessage('Please enter a valid Taxon value (integer)')
+    if (
+      !taxon ||
+      isNaN(Number(taxon)) ||
+      !Number.isInteger(Number(taxon)) ||
+      Number(taxon) < 0 ||
+      Number(taxon) > 4294967295
+    ) {
+      setErrorMessage('Please enter a valid Taxon value (integer between 0 and 4294967295)')
       taxonRef?.focus()
-      return
-    }
-
-    if (transferFee && (isNaN(parseInt(transferFee)) || parseInt(transferFee) < 0 || parseInt(transferFee) > 50000)) {
-      setErrorMessage('Transfer Fee must be between 0 and 50000 (0-50%)')
-      transferFeeRef?.focus()
-      return
-    }
-
-    if (amount && (isNaN(parseFloat(amount)) || parseFloat(amount) <= 0)) {
-      setErrorMessage('Please enter a valid amount')
-      amountRef?.focus()
-      return
-    }
-
-    if (transferFee && parseFloat(transferFee) > 0 && !flags.tfTransferable) {
-      setErrorMessage('Transferable flag must be enabled if Transfer Fee is set.')
       return
     }
 
@@ -201,8 +189,8 @@ export default function NFTokenMint ({ setSignRequest }) {
         {!minted && (
           <>
             {/* URI */}
-            <p className="mb-2">URI that points to the data or metadata associated with the NFT:</p>
-            <div className="input-validation mb-4">
+            <p >URI that points to the data or metadata associated with the NFT:</p>
+            <div className="input-validation">
               <input
                 placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
                 value={uri}
@@ -218,8 +206,8 @@ export default function NFTokenMint ({ setSignRequest }) {
             </div>
 
             {/* NFT Taxon */}
-            <p className="mb-2">NFT Taxon (collection identifier, leave as 0 for the issuer's first collection):</p>
-            <div className="input-validation mb-4">
+            <p >NFT Taxon (collection identifier, leave as 0 for the issuer's first collection):</p>
+            <div className="input-validation ">
               <input
                 placeholder="0"
                 value={taxon}
@@ -234,7 +222,7 @@ export default function NFTokenMint ({ setSignRequest }) {
             </div>
 
             {/* Transferable */}
-            <div className="mb-2">
+            <div >
               <CheckBox
                 checked={flags.tfTransferable}
                 setChecked={() => {
@@ -253,8 +241,8 @@ export default function NFTokenMint ({ setSignRequest }) {
             {/* Royalty (Transfer Fee) - only show if Transferable is checked */}
             {flags.tfTransferable && (
               <>
-                <p className="mb-2">Royalty (paid to the issuer, 0-50%):</p>
-                <div className="input-validation mb-4">
+                <p >Royalty (paid to the issuer, 0-50%):</p>
+                <div className="input-validation">
                   <input
                     placeholder="0"
                     value={transferFee}
@@ -269,35 +257,30 @@ export default function NFTokenMint ({ setSignRequest }) {
                 </div>
               </>
             )}
-            {transferFee && parseFloat(transferFee) > 0 && !flags.tfTransferable && (
-              <div className="red mb-2" style={{ marginTop: '8px', marginBottom: '8px' }}>
-                Transferable flag must be enabled if Royalty is set.
-              </div>
-            )}
 
             {/* Mutable */}
-            <div className="mb-2">
+            <div >
               <CheckBox checked={flags.tfMutable} setChecked={() => handleFlagChange('tfMutable')} name="mutable">
                 Mutable (URI can be updated)
               </CheckBox>
             </div>
 
             {/* Only XRP */}
-            <div className="mb-2">
+            <div>
               <CheckBox checked={flags.tfOnlyXRP} setChecked={() => handleFlagChange('tfOnlyXRP')} name="only-xrp">
                 Only XRP (can only be sold for XRP)
               </CheckBox>
             </div>
 
             {/* Burnable */}
-            <div className="mb-4">
+            <div >
               <CheckBox checked={flags.tfBurnable} setChecked={() => handleFlagChange('tfBurnable')} name="burnable">
                 Burnable (can be destroyed by the issuer)
               </CheckBox>
             </div>
 
             {/* Create Sell Offer */}
-            <div className="mb-2">
+            <div>
               <CheckBox
                 checked={createSellOffer}
                 setChecked={() => setCreateSellOffer(!createSellOffer)}
@@ -310,8 +293,8 @@ export default function NFTokenMint ({ setSignRequest }) {
             {/* Sell Offer Fields */}
             {createSellOffer && (
               <>
-                <p className="mb-2">Initial listing price in XRP (Amount):</p>
-                <div className="input-validation mb-4">
+                <p >Initial listing price in XRP (Amount):</p>
+                <div className="input-validation">
                   <input
                     placeholder="0.0"
                     value={amount}
@@ -336,7 +319,7 @@ export default function NFTokenMint ({ setSignRequest }) {
                   />
                 </div>
 
-                <p className="mb-2">Offer expiration:</p>
+                <p>Offer expiration:</p>
                 <div>
                   <ExpirationSelect onChange={onExpirationChange} />
                 </div>
@@ -344,7 +327,7 @@ export default function NFTokenMint ({ setSignRequest }) {
             )}
 
             {/* Mint on behalf of another account */}
-            <div className="mb-2">
+            <div>
               <CheckBox 
                 checked={mintForOtherAccount} 
                 setChecked={() => {
@@ -371,7 +354,7 @@ export default function NFTokenMint ({ setSignRequest }) {
                     hideButton={true}
                   />
                 </div>
-                <p className="orange mb-2">
+                <p className="orange">
                   Note: You must be authorized as a minter for this account, or the transaction will fail.
                 </p>
               </>
@@ -404,7 +387,7 @@ export default function NFTokenMint ({ setSignRequest }) {
               </CheckBox>
             </div>
 
-            <p className="center mt-6">
+            <p className="center">
               <button className="button-action" onClick={onSubmit} name="submit-button">
                 Mint NFT
               </button>
@@ -420,7 +403,7 @@ export default function NFTokenMint ({ setSignRequest }) {
                 {server}/nft/{minted}
               </Link>
             </p>
-            <div className="center mt-6">
+            <div className="center">
               <button className="button-action" onClick={() => setMinted('')} name="mint-another-nft">
                 Mint another NFT
               </button>
@@ -428,7 +411,7 @@ export default function NFTokenMint ({ setSignRequest }) {
           </>
         )}
 
-        <p className="red center mt-4" dangerouslySetInnerHTML={{ __html: errorMessage || '&nbsp;' }} />
+        <p className="red center " dangerouslySetInnerHTML={{ __html: errorMessage || '&nbsp;' }} />
       </div>
     </>
   )

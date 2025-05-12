@@ -4,8 +4,8 @@ import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { xahauNetwork } from '../../utils'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
-import URITokenMint from '../../components/Nft/URITokenMint'
-import NFTokenMint from '../../components/Nft/NFTokenMint'
+import URITokenMint from '../../components/services/nft-mint/URITokenMint'
+import NFTokenMint from '../../components/services/nft-mint/NFTokenMint'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -20,7 +20,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function NftMint({ account, setSignRequest, refreshPage, uriQuery, digestQuery }) {
+export default function NftMint({  setSignRequest, uriQuery, digestQuery }) {
   const { t } = useTranslation()
 
 
@@ -53,9 +53,7 @@ export default function NftMint({ account, setSignRequest, refreshPage, uriQuery
             />
           ) : (
             <NFTokenMint
-              account={account} 
               setSignRequest={setSignRequest}
-              refreshPage={refreshPage}
             />
           )}
         </div>
