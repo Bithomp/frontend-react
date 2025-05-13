@@ -118,6 +118,10 @@ const processDataForExport = (activities, platform) => {
         }
       }
     } else if (platform === 'CoinLedger') {
+      // https://help.coinledger.io/en/articles/6028758-universal-manual-import-template-guide
+      // Deposit and Withdrawals are a non-taxable self-transfers
+      // Trades need to be in one line as Trade type.
+      // NFTs should be as Trades too
       processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     } else if (platform === 'CoinTracking') {
       processedActivity.type = sending
