@@ -375,8 +375,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           processedActivity.receivedCurrency = ''
         }
       } else if (platformCSVExport === 'ZenLedger') {
+        const usdCurrency = 'usd'
         if (!sending) {
-          const usdCurrency = 'usd'
           processedActivity.receivedAmount = activity.amountNumber
           processedActivity.receivedCurrency = activity.receivedCurrency
 
