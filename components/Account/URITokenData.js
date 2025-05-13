@@ -28,27 +28,15 @@ export default function URITokenData({ data, uriTokenList }) {
     "This account doesn't have any NFT Sell Offers."
   )
 
-  /*
   const mintedNftsNode = (
     <Link href={'/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true'}>
       View minted NFTs
     </Link>
   )
 
-  const burnedNftsNode = (
-    <Link
-      href={
-        '/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true&burnedPeriod=all'
-      }
-    >
-      View burned NFTs
-    </Link>
-  )
-
   const soldNftsNode = (
     <Link href={'/nft-sales?seller=' + data?.address + '&period=all&includeWithoutMediaData=true'}>View sold NFTs</Link>
   )
-  */
 
   return (
     <>
@@ -63,40 +51,29 @@ export default function URITokenData({ data, uriTokenList }) {
             <td>Owned NFTs</td>
             <td>{ownedNftsNode}</td>
           </tr>
-          {/*
-          <tr>
-            <td>Minted NFTs</td>
-            <td>{mintedNftsNode}</td>
-          </tr>
-          <tr>
-            <td>Sold NFTs</td>
-            <td>{soldNftsNode}</td>
-          </tr>
-          <tr>
-            <td>Burned NFTs</td>
-            <td>{burnedNftsNode}</td>
-          </tr>
-          */}
+          {data.ledgerInfo?.flags?.uriTokenIssuer && (
+            <tr>
+              <td>Minted NFTs</td>
+              <td>{mintedNftsNode}</td>
+            </tr>
+          )}
+          {(data.ledgerInfo?.flags?.uriTokenIssuer || uriTokenList?.length > 0) && (
+            <tr>
+              <td>Sold NFTs</td>
+              <td>{soldNftsNode}</td>
+            </tr>
+          )}
           <tr>
             <td>NFT Offers</td>
             <td>{nftOffersNode}</td>
           </tr>
-          {data.ledgerInfo?.flags?.uriTokenIssuer && (
-            <tr>
-              <td>URI token issuer</td>
-              <td className="bold">true</td>
-            </tr>
-          )}
         </tbody>
       </table>
       <div className="show-on-small-w800">
         <center>{title.toUpperCase()}</center>
         <p>{ownedNftsNode}</p>
-        {/*
-        <p>{mintedNftsNode}</p>
-        <p>{soldNftsNode}</p>
-        <p>{burnedNftsNode}</p>
-        */}
+        {data.ledgerInfo?.flags?.uriTokenIssuer && <p>{mintedNftsNode}</p>}
+        {(data.ledgerInfo?.flags?.uriTokenIssuer || uriTokenList?.length > 0) && <p>{soldNftsNode}</p>}
         <p>{nftOffersNode}</p>
         {data.ledgerInfo?.flags?.uriTokenIssuer && (
           <p>
