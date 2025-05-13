@@ -118,10 +118,6 @@ const processDataForExport = (activities, platform) => {
         }
       }
     } else if (platform === 'CoinLedger') {
-      // https://help.coinledger.io/en/articles/6028758-universal-manual-import-template-guide
-      // Deposit and Withdrawals are a non-taxable self-transfers
-      // Trades need to be in one line as Trade type.
-      // NFTs should be as Trades too
       processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     } else if (platform === 'CoinTracking') {
       processedActivity.type = sending
@@ -185,16 +181,16 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         platform: 'CoinLedger',
         headers: [
           { label: 'Date (UTC)', key: 'timestampExport' },
-          { label: 'Platform', key: 'platform' },
+          { label: 'Platform (Optional)', key: 'platform' },
           { label: 'Asset Sent', key: 'sentCurrency' },
           { label: 'Amount Sent', key: 'sentAmount' },
           { label: 'Asset Received', key: 'receivedCurrency' },
           { label: 'Amount Received', key: 'receivedAmount' },
-          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
-          { label: 'Fee Amount', key: 'txFeeNumber' },
+          { label: 'Fee Currency (Optional)', key: 'txFeeCurrencyCode' },
+          { label: 'Fee Amount (Optional)', key: 'txFeeNumber' },
           { label: 'Type', key: 'type' },
-          { label: 'Description', key: 'memo' },
-          { label: 'TxHash', key: 'hash' }
+          { label: 'Description (Optional)', key: 'memo' },
+          { label: 'TxHash (Optional)', key: 'hash' }
         ]
       },
       {
