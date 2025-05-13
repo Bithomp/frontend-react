@@ -274,6 +274,8 @@ export default function NFTokenMint({ setSignRequest }) {
               </CheckBox>
             </div>
 
+            <br />
+
             {/* Create Sell Offer */}
             <div>
               <CheckBox
