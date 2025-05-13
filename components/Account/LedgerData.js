@@ -684,7 +684,7 @@ export default function LedgerData({
           </>
         )}
         {data.ledgerInfo?.domain && (
-          <p>
+          <div>
             <span className="grey">Domain </span>
             {domainUnverifiedSign}
             {verifyDomainNode}
@@ -698,7 +698,7 @@ export default function LedgerData({
               domainNotValidNode
             )}
             {domainChangeAndRemoveButtons}
-          </p>
+          </div>
         )}
         {xahauNetwork ? (
           <>

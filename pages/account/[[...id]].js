@@ -514,7 +514,7 @@ export default function Account({
                           />
                           <PublicData data={data} />
                           {xahauNetwork ? (
-                            <URITokenData data={data} />
+                            <URITokenData data={data} uriTokenList={objects?.uriTokenList} />
                           ) : (
                             <NFTokenData
                               data={data}
