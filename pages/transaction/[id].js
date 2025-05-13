@@ -20,7 +20,8 @@ import {
   TransactionPayment,
   TransactionSetRegularKey,
   TransactionTrustSet,
-  TransactionURIToken
+  TransactionURIToken,
+  TransactionRemit
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
@@ -109,6 +110,8 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionDID
   } else if (txType?.includes('URIToken')) {
     TransactionComponent = TransactionURIToken
+  } else if (txType === 'Remit') {
+    TransactionComponent = TransactionRemit
   } else {
     TransactionComponent = TransactionDetails
   }

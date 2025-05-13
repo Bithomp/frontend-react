@@ -1,13 +1,15 @@
 @use "select.scss";
 
-$phone-bp: 440px;
+$small-screen: 440px; // minimum screen 
+
+//right-now it's only one simple-slect - used for sorting. 
 
 .dropdown {
   @include select.react-select;
   min-width: 270px;
 
   &--desktop {
-    @media(max-width: $phone-bp) {
+    @media(max-width: $small-screen) {
       display: none;
     }
   }
@@ -41,7 +43,7 @@ $phone-bp: 440px;
       width: fit-content;
     }
 
-    @media(min-width: $phone-bp) {
+    @media(min-width: $small-screen) {
       display: none;
     }
   }
@@ -76,7 +78,7 @@ $phone-bp: 440px;
     color: var(--text-main);
     padding: 0 5px;
 
-    @media(min-width: 440px) {
+    @media(min-width: $small-screen) {
       display: none;
     }
   }

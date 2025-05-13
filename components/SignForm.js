@@ -522,15 +522,23 @@ export default function SignForm({
         const includedInLedger = inLedger || ledger_index
         if (validated && includedInLedger) {
           if (redirectName === 'nft') {
-            //check for URI token
-            for (let i = 0; i < meta.AffectedNodes.length; i++) {
-              const node = meta.AffectedNodes[i]
-              if (node.CreatedNode?.LedgerEntryType === 'URIToken') {
-                checkCrawlerStatus({ inLedger: includedInLedger, param: node.CreatedNode.LedgerIndex })
-                break
+            if (xahauNetwork) {
+              //check for URIToken
+              for (let i = 0; i < meta.AffectedNodes.length; i++) {
+                const node = meta.AffectedNodes[i]
+                if (node.CreatedNode?.LedgerEntryType === 'URIToken') {
+                  checkCrawlerStatus({ inLedger: includedInLedger, param: node.CreatedNode.LedgerIndex })
+                  break
+                }
               }
+              return
+            } else {
+              //check for NFToken
+              if (meta.nftoken_id) {
+                checkCrawlerStatus({ inLedger: includedInLedger, param: meta.nftoken_id })
+              }
+              return
             }
-            return
           }
           checkCrawlerStatus({ inLedger: includedInLedger, type: TransactionType })
         } else {

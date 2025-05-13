@@ -28,9 +28,8 @@ import Image from 'next/image'
 import { CSVLink } from 'react-csv'
 import DownloadIcon from '../../../public/images/download.svg'
 import { koinly } from '../../../utils/koinly'
-import { TbArrowsSort } from 'react-icons/tb'
-import SimpleSelect from '../../../components/UI/SimpleSelect'
 import { LinkTx } from '../../../utils/links'
+import RadioOptions from '../../../components/UI/RadioOptions'
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { address } = query
@@ -83,11 +82,6 @@ const dateFormatters = {
     // Format: dd.mm.yyyy HH:MM:SS in UTC
     const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
-  },
-  ZenLedger: (timestamp) => {
-    // Format: mm/dd/yyyy hh:mm:ss in UTC
-    const { mm, dd, yyyy, hh, min, ss } = timePieces(timestamp)
-    return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
   }
 }
 
@@ -116,38 +110,28 @@ const processDataForExport = ({ activities, platform, selectedCurrency }) => {
         }
       }
     } else if (platform === 'CoinLedger') {
-      processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
+      processedActivity.type = isSending(activity) ? 'Withdrawal' : 'Deposit'
     } else if (platform === 'CoinTracking') {
       processedActivity.type = sending
         ? 'Withdrawal'
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'Other Fee'
         : 'Deposit'
-    } else if (platform === 'ZenLedger') {
-      if (activity.amountNumber > 0) {
-        processedActivity.type = 'Receive'
-        processedActivity.receivedAmount = activity.amountNumber
-        processedActivity.receivedCurrency = activity.receivedCurrency
-
-        // USD Value
-        processedActivity.sentAmount =
-          activity.amountInFiats?.[selectedCurrency] > 0 ? activity.amountInFiats?.[selectedCurrency] : ''
-        processedActivity.sentCurrency = selectedCurrency
-      } else {
-        processedActivity.type = Math.abs(activity.amountNumber) <= activity.txFeeNumber ? 'Fee' : 'Send'
-        processedActivity.sentAmount = activity.amountNumber
-        processedActivity.sentCurrency = activity.currencyCode
-
-        // USD Value
-        processedActivity.receivedAmount =
-          activity.amountInFiats?.[selectedCurrency] > 0 ? activity.amountInFiats?.[selectedCurrency] : ''
-        processedActivity.receivedCurrency = selectedCurrency
-      }
     }
 
     return processedActivity
   })
 }
+
+const platformList = [
+  { value: 'Koinly', label: 'Koinly' },
+  { value: 'CoinLedger', label: 'CoinLedger' },
+  { value: 'CoinTracking', label: 'CoinTracking' },
+  { value: 'TaxBit', label: 'TaxBit' },
+  { value: 'TokenTax', label: 'TokenTax' },
+  { value: 'BlockPit', label: 'BlockPit' },
+  { value: 'CryptoTax', label: 'CryptoTax' }
+]
 
 export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
   const router = useRouter()
@@ -226,21 +210,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Buy Value in Account Currency', key: 'amountInFiats.' + selectedCurrency },
           { label: 'Sell Value in Account Currency', key: '' },
           { label: 'Liquidity pool', key: '' }
-        ]
-      },
-      {
-        platform: 'ZenLedger',
-        headers: [
-          { label: 'Timestamp', key: 'timestampExport' },
-          { label: 'Type', key: 'type' },
-          { label: 'IN Amount', key: 'receivedAmount' },
-          { label: 'IN Currency', key: 'receivedCurrency' },
-          { label: 'Out Amount', key: 'sentAmount' },
-          { label: 'Out Currency', key: 'sentCurrency' },
-          { label: 'Fee Amount', key: 'txFeeNumber' },
-          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
-          { label: 'Exchange(optional)', key: 'platform' },
-          { label: 'US Based', key: '' }
         ]
       }
     ],
@@ -524,7 +493,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         >
           <>
             {verifiedAddresses?.length > 0 && data && activities && data.total > activities.length && (
-              <div className="center" style={{ marginLeft: -32 }}>
+              <div className="center" style={{ margin: 'auto' }}>
                 <button
                   className="button-action narrow thin"
                   onClick={() => getProAddressHistory({ marker: data.marker })}
@@ -535,7 +504,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                 <br />
               </div>
             )}
-            Addresses
+            <div style={{ margin: 'auto' }}>Addresses</div>
             {verifiedAddresses?.length > 0 ? (
               <>
                 {verifiedAddresses.map((address, i) => (
@@ -606,8 +575,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
                     { value: 'CoinLedger', label: 'CoinLedger' },
-                    { value: 'CoinTracking', label: 'CoinTracking' },
-                    { value: 'ZenLedger', label: 'ZenLedger' }
+                    { value: 'CoinTracking', label: 'CoinTracking' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
@@ -628,6 +596,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   }
                   filename={'export ' + platformCSVExport + ' ' + new Date().toISOString() + '.csv'}
                   className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
+                  uFEFF={platformCSVExport === 'BlockPit' ? false : undefined}
                 >
                   <DownloadIcon /> CSV for {platformCSVExport}
                 </CSVLink>

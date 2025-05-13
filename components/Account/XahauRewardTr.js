@@ -17,9 +17,9 @@ export default function XahauRewardTr({ data, setSignRequest, account, mobile, s
   const elapsedSinceLast = data.ledgerInfo?.ledger - data.ledgerInfo?.rewardLgrLast
   let accumulator = parseInt(data.ledgerInfo?.rewardAccumulator, 16)
   if (parseInt(data.ledgerInfo?.balance) > 0 && elapsedSinceLast > 0) {
-    accumulator += parseInt(data.ledgerInfo?.balance) * elapsedSinceLast
+    accumulator += (parseInt(data.ledgerInfo?.balance) / 1000000) * elapsedSinceLast
   }
-  const reward = (accumulator / elapsed) * rewardRate
+  const reward = (accumulator / elapsed) * rewardRate * 1000000
 
   const rewardNode = (
     <span className="bold">
