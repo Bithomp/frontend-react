@@ -92,6 +92,11 @@ const dateFormatters = {
     const { mm, dd, yyyy, hh, min } = timePieces(timestamp)
     return `${mm}/${dd}/${yyyy} ${hh}:${min}`
   },
+  CryptoTax: (timestamp) => {
+    // Format: YYYY-MM-DD HH:mm:ss
+    const { yyyy, mm, dd, hh, min, ss } = timePieces(timestamp)
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`
+  },
   BlockPit: (timestamp) => {
     // Format: DD.MM.YYYY HH:MM:SS in UTC
     const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
@@ -137,6 +142,28 @@ const processDataForExport = (activities, platform) => {
       processedActivity.type = sending ? 'Sell' : 'Buy'
     } else if (platform === 'TokenTax') {
       processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
+    } else if (platform === 'CryptoTax') {
+      processedActivity.type = !sending
+        ? 'buy'
+        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+        ? 'fee'
+        : 'sell'
+
+      processedActivity.cryptoTaxFeeCurrencyCode = processedActivity.txFeeCurrencyCode
+      processedActivity.cryptoTaxFeeNumber = processedActivity.txFeeNumber
+
+      if (processedActivity.type === 'buy') {
+        processedActivity.baseCurrency = processedActivity.receivedCurrency
+        processedActivity.baseAmount = processedActivity.receivedAmount
+      } else {
+        processedActivity.baseCurrency = processedActivity.sentCurrency
+        processedActivity.baseAmount = processedActivity.sentAmount
+        // don't include this fee amount in the fee column for type 'fee'
+        if (processedActivity.type === 'fee') {
+          processedActivity.cryptoTaxFeeCurrencyCode = ''
+          processedActivity.cryptoTaxFeeNumber = ''
+        }
+      }
     } else if (platform === 'BlockPit') {
       processedActivity.type = sending
         ? 'Withdrawal'
@@ -164,7 +191,8 @@ const platformList = [
   { value: 'CoinTracking', label: 'CoinTracking' },
   { value: 'TaxBit', label: 'TaxBit' },
   { value: 'TokenTax', label: 'TokenTax' },
-  { value: 'BlockPit', label: 'BlockPit' }
+  { value: 'BlockPit', label: 'BlockPit' },
+  { value: 'CryptoTax', label: 'CryptoTax' }
 ]
 
 export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
@@ -285,6 +313,26 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Group', key: '' },
           { label: 'Comment', key: 'memo' },
           { label: 'Date', key: 'timestampExport' }
+        ]
+      },
+      {
+        platform: 'CryptoTax',
+        headers: [
+          { label: 'Timestamp (UTC)', key: 'timestampExport' },
+          { label: 'Type', key: 'type' },
+          { label: 'Base Currency', key: 'baseCurrency' },
+          { label: 'Base Amount', key: 'baseAmount' },
+          { label: 'Quote Currency (Optional)', key: '' },
+          { label: 'Quote Amount (Optional)', key: '' },
+          { label: 'Fee Currency (Optional)', key: 'cryptoTaxFeeCurrencyCode' },
+          { label: 'Fee Amount (Optional)', key: 'cryptoTaxFeeNumber' },
+          { label: 'From (Optional)', key: 'counterparty' },
+          { label: 'To (Optional)', key: 'address' },
+          { label: 'Blockchain (Optional)', key: '' },
+          { label: 'ID (Optional)', key: 'hash' },
+          { label: 'Description (Optional)', key: 'memo' },
+          { label: 'Reference Price Per Unit (Optional)', key: '' },
+          { label: 'Reference Price Currency (Optional)', key: '' }
         ]
       },
       {
