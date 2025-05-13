@@ -153,6 +153,8 @@ export default function ObjectsData({
           let accountObjectsWithMpt = accountObjects.filter((o) => o.LedgerEntryType === 'MPToken') || []
           setMptList(accountObjectsWithMpt)
 
+          const accountObjectWithURITokens = accountObjects.filter((o) => o.LedgerEntryType === 'URIToken') || []
+
           //https://github.com/Bithomp/xrpl-api/blob/master/src/models/account_object.ts#L95-L131
 
           let accountObjectWithRippleState =
@@ -202,7 +204,8 @@ export default function ObjectsData({
             payChannelList: accountObjectWithPayChannel,
             rippleStateList: accountObjectWithRippleState,
             mptIssuanceList: accountObjectWithMptIssuance,
-            mptList: accountObjectsWithMpt
+            mptList: accountObjectsWithMpt,
+            uriTokenList: accountObjectWithURITokens
           })
         } else {
           // no objects
@@ -215,7 +218,8 @@ export default function ObjectsData({
             payChannelList: [],
             rippleStateList: [],
             mptIssuanceList: [],
-            mptList: []
+            mptList: [],
+            uriTokenList: []
           })
         }
       }
