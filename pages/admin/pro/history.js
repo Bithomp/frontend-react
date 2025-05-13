@@ -82,6 +82,30 @@ const dateFormatters = {
     // Format: dd.mm.yyyy HH:MM:SS in UTC
     const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
+  },
+  TaxBit: (timestamp) => {
+    // ISO format: YYYY-MM-DDTHH:MM:SS.000Z (same as Koinly)
+    return new Date(timestamp * 1000).toISOString()
+  },
+  TokenTax: (timestamp) => {
+    // Format: MM/DD/YY HH:MM
+    const { mm, dd, yyyy, hh, min } = timePieces(timestamp)
+    return `${mm}/${dd}/${yyyy} ${hh}:${min}`
+  },
+  CryptoTax: (timestamp) => {
+    // Format: YYYY-MM-DD HH:mm:ss
+    const { yyyy, mm, dd, hh, min, ss } = timePieces(timestamp)
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`
+  },
+  BlockPit: (timestamp) => {
+    // Format: DD.MM.YYYY HH:MM:SS in UTC
+    const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
+    return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
+  },
+  ZenLedger: (timestamp) => {
+    // Format: mm/dd/yyyy hh:mm:ss in UTC
+    const { mm, dd, yyyy, hh, min, ss } = timePieces(timestamp)
+    return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
   }
 }
 
@@ -92,37 +116,6 @@ const isSending = (a) => {
   return a.amount[0] === '-'
 }
 
-const processDataForExport = ({ activities, platform, selectedCurrency }) => {
-  return activities.map((activity) => {
-    const sending = isSending(activity)
-
-    const processedActivity = { ...activity }
-
-    processedActivity.timestampExport = dateFormatters[platform](activity.timestamp)
-
-    if (platform === 'Koinly') {
-      if (activity.amount?.issuer) {
-        let koinlyId =
-          koinly[xahauNetwork ? 'xahau' : 'xrpl'][activity.amount?.issuer + ':' + activity.amount?.currency]
-        if (koinlyId) {
-          processedActivity.sentCurrency = sending ? koinlyId : ''
-          processedActivity.receivedCurrency = !sending ? koinlyId : ''
-        }
-      }
-    } else if (platform === 'CoinLedger') {
-      processedActivity.type = isSending(activity) ? 'Withdrawal' : 'Deposit'
-    } else if (platform === 'CoinTracking') {
-      processedActivity.type = sending
-        ? 'Withdrawal'
-        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
-        ? 'Other Fee'
-        : 'Deposit'
-    }
-
-    return processedActivity
-  })
-}
-
 const platformList = [
   { value: 'Koinly', label: 'Koinly' },
   { value: 'CoinLedger', label: 'CoinLedger' },
@@ -130,7 +123,8 @@ const platformList = [
   { value: 'TaxBit', label: 'TaxBit' },
   { value: 'TokenTax', label: 'TokenTax' },
   { value: 'BlockPit', label: 'BlockPit' },
-  { value: 'CryptoTax', label: 'CryptoTax' }
+  { value: 'CryptoTax', label: 'CryptoTax' },
+  { value: 'ZenLedger', label: 'ZenLedger' }
 ]
 
 export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
@@ -211,10 +205,199 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Sell Value in Account Currency', key: '' },
           { label: 'Liquidity pool', key: '' }
         ]
+      },
+      {
+        platform: 'TaxBit',
+        headers: [
+          { label: 'timestamp', key: 'timestampExport' },
+          { label: 'txid', key: 'hash' },
+          { label: 'source_name', key: '' },
+          { label: 'from_wallet_address', key: 'counterparty' },
+          { label: 'to_wallet_address', key: 'address' },
+          { label: 'category', key: 'type' },
+          { label: 'in_currency', key: 'receivedCurrency' },
+          { label: 'in_amount', key: 'receivedAmount' },
+          { label: 'in_currency_fiat', key: 'netWorthCurrency' },
+          { label: 'in_amount_fiat', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'out_currency', key: 'sentCurrency' },
+          { label: 'out_amount', key: 'sentAmount' },
+          { label: 'out_currency_fiat', key: 'netWorthCurrency' },
+          { label: 'out_amount_fiat', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'fee_currency', key: 'txFeeCurrencyCode' },
+          { label: 'fee', key: 'txFeeNumber' },
+          { label: 'fee_currency_fiat', key: selectedCurrency },
+          { label: 'fee_fiat', key: 'txFeeInFiats.' + selectedCurrency },
+          { label: 'memo', key: 'memo' },
+          { label: 'status', key: '' }
+        ]
+      },
+      {
+        platform: 'TokenTax',
+        headers: [
+          { label: 'Type', key: 'type' },
+          { label: 'BuyAmount', key: 'receivedAmount' },
+          { label: 'BuyCurrency', key: 'receivedCurrency' },
+          { label: 'SellAmount', key: 'sentAmount' },
+          { label: 'SellCurrency', key: 'sentCurrency' },
+          { label: 'FeeAmount', key: 'txFeeNumber' },
+          { label: 'FeeCurrency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange', key: 'platform' },
+          { label: 'Group', key: '' },
+          { label: 'Comment', key: 'memo' },
+          { label: 'Date', key: 'timestampExport' }
+        ]
+      },
+      {
+        platform: 'CryptoTax',
+        headers: [
+          { label: 'Timestamp (UTC)', key: 'timestampExport' },
+          { label: 'Type', key: 'type' },
+          { label: 'Base Currency', key: 'baseCurrency' },
+          { label: 'Base Amount', key: 'baseAmount' },
+          { label: 'Quote Currency (Optional)', key: '' },
+          { label: 'Quote Amount (Optional)', key: '' },
+          { label: 'Fee Currency (Optional)', key: 'cryptoTaxFeeCurrencyCode' },
+          { label: 'Fee Amount (Optional)', key: 'cryptoTaxFeeNumber' },
+          { label: 'From (Optional)', key: 'counterparty' },
+          { label: 'To (Optional)', key: 'address' },
+          { label: 'Blockchain (Optional)', key: '' },
+          { label: 'ID (Optional)', key: 'hash' },
+          { label: 'Description (Optional)', key: 'memo' },
+          { label: 'Reference Price Per Unit (Optional)', key: '' },
+          { label: 'Reference Price Currency (Optional)', key: '' }
+        ]
+      },
+      {
+        platform: 'BlockPit',
+        headers: [
+          { label: 'Date (UTC)', key: 'timestampExport' },
+          { label: 'Integration Name', key: 'platform' },
+          { label: 'Label', key: 'type' },
+          { label: 'Outgoing Asset', key: 'sentCurrency' },
+          { label: 'Outgoing Amount', key: 'sentAmount' },
+          { label: 'Incoming Asset', key: 'receivedCurrency' },
+          { label: 'Incoming Amount', key: 'receivedAmount' },
+          { label: 'Fee Asset (optional)', key: 'txFeeCurrencyCode' },
+          { label: 'Fee Amount (optional)', key: 'txFeeNumber' },
+          { label: 'Comment (optional)', key: 'memo' },
+          { label: 'Trx. ID (optional)', key: 'hash' }
+        ]
+      },
+      {
+        platform: 'ZenLedger',
+        headers: [
+          { label: 'Timestamp', key: 'timestampExport' },
+          { label: 'Type', key: 'type' },
+          { label: 'IN Amount', key: 'receivedAmount' },
+          { label: 'IN Currency', key: 'receivedCurrency' },
+          { label: 'Out Amount', key: 'sentAmount' },
+          { label: 'Out Currency', key: 'sentCurrency' },
+          { label: 'Fee Amount', key: 'txFeeNumber' },
+          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange(optional)', key: 'platform' },
+          { label: 'US Based', key: '' }
+        ]
       }
     ],
     [selectedCurrency]
   )
+
+  // Use inside the component with useMemo to create a new scope and memoized data.
+  // This helps get new data for ZenLedger (force to USD currency) and prevents unnecessary re-renders.
+  const processDataForExport = useMemo(() => {
+    return (filteredActivities || []).map((activity) => {
+      const sending = isSending(activity)
+
+      const processedActivity = { ...activity }
+
+      processedActivity.timestampExport = dateFormatters[platformCSVExport](activity.timestamp)
+
+      if (platformCSVExport === 'Koinly') {
+        if (activity.amount?.issuer) {
+          let koinlyId =
+            koinly[xahauNetwork ? 'xahau' : 'xrpl'][activity.amount?.issuer + ':' + activity.amount?.currency]
+          if (koinlyId) {
+            processedActivity.sentCurrency = sending ? koinlyId : ''
+            processedActivity.receivedCurrency = !sending ? koinlyId : ''
+          }
+        }
+      } else if (platformCSVExport === 'CoinLedger') {
+        // https://help.coinledger.io/en/articles/6028758-universal-manual-import-template-guide
+        // Deposit and Withdrawals are a non-taxable self-transfers
+        // Trades need to be in one line as Trade type.
+        // NFTs should be as Trades too
+        processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
+      } else if (platformCSVExport === 'CoinTracking') {
+        processedActivity.type = sending
+          ? 'Withdrawal'
+          : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+          ? 'Other Fee'
+          : 'Deposit'
+      } else if (platformCSVExport === 'TaxBit') {
+        processedActivity.type = sending ? 'Sell' : 'Buy'
+      } else if (platformCSVExport === 'TokenTax') {
+        processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
+      } else if (platformCSVExport === 'CryptoTax') {
+        processedActivity.type = !sending
+          ? 'buy'
+          : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+          ? 'fee'
+          : 'sell'
+
+        processedActivity.cryptoTaxFeeCurrencyCode = processedActivity.txFeeCurrencyCode
+        processedActivity.cryptoTaxFeeNumber = processedActivity.txFeeNumber
+
+        if (processedActivity.type === 'buy') {
+          processedActivity.baseCurrency = processedActivity.receivedCurrency
+          processedActivity.baseAmount = processedActivity.receivedAmount
+        } else {
+          processedActivity.baseCurrency = processedActivity.sentCurrency
+          processedActivity.baseAmount = processedActivity.sentAmount
+          // don't include this fee amount in the fee column for type 'fee'
+          if (processedActivity.type === 'fee') {
+            processedActivity.cryptoTaxFeeCurrencyCode = ''
+            processedActivity.cryptoTaxFeeNumber = ''
+          }
+        }
+      } else if (platformCSVExport === 'BlockPit') {
+        processedActivity.type = sending
+          ? 'Withdrawal'
+          : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+          ? 'Fee'
+          : 'Deposit'
+        // don't include this fee amount in the fee column for type 'fee'
+        if (processedActivity.type === 'Fee') {
+          processedActivity.sentAmount = processedActivity.txFeeNumber
+          processedActivity.sentCurrency = processedActivity.txFeeCurrencyCode
+          processedActivity.txFeeCurrencyCode = ''
+          processedActivity.txFeeNumber = ''
+          processedActivity.receivedAmount = ''
+          processedActivity.receivedCurrency = ''
+        }
+      } else if (platformCSVExport === 'ZenLedger') {
+        if (!sending) {
+          const usdCurrency = 'usd'
+          processedActivity.receivedAmount = activity.amountNumber
+          processedActivity.receivedCurrency = activity.receivedCurrency
+
+          // USD Value
+          processedActivity.sentAmount =
+            activity.amountInFiats?.[usdCurrency] > 0 ? activity.amountInFiats?.[usdCurrency] : ''
+          processedActivity.sentCurrency = usdCurrency
+        } else {
+          processedActivity.type = Math.abs(activity.amountNumber) <= activity.txFeeNumber ? 'Fee' : 'Send'
+          processedActivity.sentAmount = activity.amountNumber
+          processedActivity.sentCurrency = activity.currencyCode
+          // USD Value
+          processedActivity.receivedAmount =
+            activity.amountInFiats?.[usdCurrency] > 0 ? activity.amountInFiats?.[usdCurrency] : ''
+          processedActivity.receivedCurrency = usdCurrency
+        }
+      }
+
+      return processedActivity
+    })
+  }, [filteredActivities, platformCSVExport])
 
   useEffect(() => {
     setRendered(true)
@@ -456,7 +639,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
       }
     }
   }
-
   return (
     <>
       <SEO title="My addresses: history" />
@@ -564,31 +746,23 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
               </CheckBox>
             </div>
             <div>
-              <div
-                style={{
-                  marginBottom: 20
-                }}
-              >
-                <SimpleSelect
-                  value={platformCSVExport}
-                  setValue={setPlatformCSVExport}
-                  optionsList={[
-                    { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' },
-                    { value: 'CoinTracking', label: 'CoinTracking' }
-                  ]}
-                />
-                <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
-                  <TbArrowsSort />
-                </button>
-              </div>
+              Tax Export Platform
+              <RadioOptions
+                tabList={platformList}
+                tab={platformCSVExport}
+                setTab={setPlatformCSVExport}
+                name="platformSelect"
+              />
               {rendered && (
                 <CSVLink
-                  data={processDataForExport({
-                    activities: filteredActivities || [],
-                    platform: platformCSVExport,
-                    selectedCurrency
-                  })}
+                  onClick={() => {
+                    // Force USD currency for ZenLedger
+                    const usdCurrency = 'usd'
+                    if (platformCSVExport === 'ZenLedger' && selectedCurrency !== usdCurrency) {
+                      setSelectedCurrency(usdCurrency)
+                    }
+                  }}
+                  data={processDataForExport}
                   headers={
                     platformCSVHeaders.find(
                       (header) => header.platform.toLowerCase() === platformCSVExport.toLowerCase()
