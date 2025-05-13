@@ -127,8 +127,11 @@ export default function NFTokenMint({ setSignRequest }) {
 
     let request = {
       TransactionType: 'NFTokenMint',
-      NFTokenTaxon: parseInt(taxon),
-      Flags: nftFlags
+      NFTokenTaxon: parseInt(taxon)
+    }
+
+    if (nftFlags !== 0) {
+      request.Flags = nftFlags
     }
 
     if (uri && uri.trim()) {
