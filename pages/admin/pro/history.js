@@ -91,6 +91,11 @@ const dateFormatters = {
     // Format: MM/DD/YY HH:MM
     const { mm, dd, yyyy, hh, min } = timePieces(timestamp)
     return `${mm}/${dd}/${yyyy} ${hh}:${min}`
+  },
+  BlockPit: (timestamp) => {
+    // Format: DD.MM.YYYY HH:MM:SS in UTC
+    const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
+    return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
   }
 }
 
@@ -132,6 +137,21 @@ const processDataForExport = (activities, platform) => {
       processedActivity.type = sending ? 'Sell' : 'Buy'
     } else if (platform === 'TokenTax') {
       processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
+    } else if (platform === 'BlockPit') {
+      processedActivity.type = sending
+        ? 'Withdrawal'
+        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+        ? 'Fee'
+        : 'Deposit'
+      // don't include this fee amount in the fee column for type 'fee'
+      if (processedActivity.type === 'Fee') {
+        processedActivity.sentAmount = processedActivity.txFeeNumber
+        processedActivity.sentCurrency = processedActivity.txFeeCurrencyCode
+        processedActivity.txFeeCurrencyCode = ''
+        processedActivity.txFeeNumber = ''
+        processedActivity.receivedAmount = ''
+        processedActivity.receivedCurrency = ''
+      }
     }
 
     return processedActivity
@@ -143,7 +163,8 @@ const platformList = [
   { value: 'CoinLedger', label: 'CoinLedger' },
   { value: 'CoinTracking', label: 'CoinTracking' },
   { value: 'TaxBit', label: 'TaxBit' },
-  { value: 'TokenTax', label: 'TokenTax' }
+  { value: 'TokenTax', label: 'TokenTax' },
+  { value: 'BlockPit', label: 'BlockPit' }
 ]
 
 export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
@@ -264,6 +285,22 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Group', key: '' },
           { label: 'Comment', key: 'memo' },
           { label: 'Date', key: 'timestampExport' }
+        ]
+      },
+      {
+        platform: 'BlockPit',
+        headers: [
+          { label: 'Date (UTC)', key: 'timestampExport' },
+          { label: 'Integration Name', key: 'platform' },
+          { label: 'Label', key: 'type' },
+          { label: 'Outgoing Asset', key: 'sentCurrency' },
+          { label: 'Outgoing Amount', key: 'sentAmount' },
+          { label: 'Incoming Asset', key: 'receivedCurrency' },
+          { label: 'Incoming Amount', key: 'receivedAmount' },
+          { label: 'Fee Asset (optional)', key: 'txFeeCurrencyCode' },
+          { label: 'Fee Amount (optional)', key: 'txFeeNumber' },
+          { label: 'Comment (optional)', key: 'memo' },
+          { label: 'Trx. ID (optional)', key: 'hash' }
         ]
       }
     ],
@@ -635,6 +672,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   }
                   filename={'export ' + platformCSVExport + ' ' + new Date().toISOString() + '.csv'}
                   className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
+                  uFEFF={platformCSVExport === 'BlockPit' ? false : undefined}
                 >
                   <DownloadIcon /> CSV for {platformCSVExport}
                 </CSVLink>
