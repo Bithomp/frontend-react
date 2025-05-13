@@ -28,9 +28,8 @@ import Image from 'next/image'
 import { CSVLink } from 'react-csv'
 import DownloadIcon from '../../../public/images/download.svg'
 import { koinly } from '../../../utils/koinly'
-import { TbArrowsSort } from 'react-icons/tb'
-import SimpleSelect from '../../../components/UI/SimpleSelect'
 import { LinkTx } from '../../../utils/links'
+import RadioOptions from '../../../components/UI/RadioOptions'
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { address } = query
@@ -138,6 +137,14 @@ const processDataForExport = (activities, platform) => {
     return processedActivity
   })
 }
+
+const platformList = [
+  { value: 'Koinly', label: 'Koinly' },
+  { value: 'CoinLedger', label: 'CoinLedger' },
+  { value: 'CoinTracking', label: 'CoinTracking' },
+  { value: 'TaxBit', label: 'TaxBit' },
+  { value: 'TokenTax', label: 'TokenTax' }
+]
 
 export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
   const router = useRouter()
@@ -540,7 +547,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         >
           <>
             {verifiedAddresses?.length > 0 && data && activities && data.total > activities.length && (
-              <div className="center" style={{ marginLeft: -32 }}>
+              <div className="center" style={{ margin: 'auto' }}>
                 <button
                   className="button-action narrow thin"
                   onClick={() => getProAddressHistory({ marker: data.marker })}
@@ -551,7 +558,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                 <br />
               </div>
             )}
-            Addresses
+            <div style={{ margin: 'auto' }}>Addresses</div>
             {verifiedAddresses?.length > 0 ? (
               <>
                 {verifiedAddresses.map((address, i) => (
@@ -611,26 +618,13 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
               </CheckBox>
             </div>
             <div>
-              <div
-                style={{
-                  marginBottom: 20
-                }}
-              >
-                <SimpleSelect
-                  value={platformCSVExport}
-                  setValue={setPlatformCSVExport}
-                  optionsList={[
-                    { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' },
-                    { value: 'CoinTracking', label: 'CoinTracking' },
-                    { value: 'TaxBit', label: 'TaxBit' },
-                    { value: 'TokenTax', label: 'TokenTax' }
-                  ]}
-                />
-                <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
-                  <TbArrowsSort />
-                </button>
-              </div>
+              Tax Export Platform
+              <RadioOptions
+                tabList={platformList}
+                tab={platformCSVExport}
+                setTab={setPlatformCSVExport}
+                name="platformSelect"
+              />
               {rendered && (
                 <CSVLink
                   data={processDataForExport(filteredActivities || [], platformCSVExport)}
