@@ -3,7 +3,7 @@ import Tabs from '.'
 import { networks, network } from '../../utils'
 import { useRouter } from 'next/router'
 
-export default function FaucetTabs() {
+export default function NetworkTabs() {
   const router = useRouter()
 
   let apiTabs = [
