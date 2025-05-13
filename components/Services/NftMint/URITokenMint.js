@@ -153,7 +153,6 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
     }
 
     setSignRequest({
-      redirect: 'nft',
       request,
       callback: afterSubmit
     })

@@ -165,7 +165,6 @@ export default function NFTokenMint({ setSignRequest }) {
     }
 
     setSignRequest({
-      redirect: 'nft',
       request,
       callback: (id) => setMinted(id)
     })
