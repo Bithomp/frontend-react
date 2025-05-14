@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
       id: account,
       ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
       isSsrMobile: getIsSsrMobile(context),
-      initialData,
+      initialData: initialData || null,
       ...(await serverSideTranslations(locale, ['common', 'account']))
     }
   }
@@ -80,7 +80,7 @@ export default function Account({
     "tokens": 7
   }
   */
-  const [data, setData] = useState({})
+  const [data, setData] = useState(initialData)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
@@ -100,7 +100,6 @@ export default function Account({
 
   useEffect(() => {
     if (!initialData?.address) return
-    setData(initialData)
     setUserData({
       username: initialData.username,
       service: initialData.service?.name,
