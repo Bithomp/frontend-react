@@ -5,8 +5,10 @@ import { isValidTaxon } from '../../../utils/nft'
 import CheckBox from '../../UI/CheckBox'
 import AddressInput from '../../UI/AddressInput'
 import ExpirationSelect from '../../UI/ExpirationSelect'
+import { useRouter } from 'next/router'
 
 export default function NFTokenMint({ setSignRequest }) {
+  const router = useRouter()
   const [uri, setUri] = useState('')
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
   const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false)
@@ -37,14 +39,40 @@ export default function NFTokenMint({ setSignRequest }) {
     }
   }, [agreeToSiteTerms, agreeToPrivacyPolicy])
 
+  // Autofill from GET params on mount
+  useEffect(() => {
+    if (router.isReady) {
+      const { uri: uriParam, taxon: taxonParam } = router.query
+      if (typeof uriParam === 'string' && uriParam !== uri) setUri(uriParam)
+      if (typeof taxonParam === 'string' && taxonParam !== taxon) setTaxon(taxonParam.replace(/[^\d]/g, ''))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady])
+
+  // Helper to update URL params
+  const updateUrlParams = (newParams) => {
+    const query = { ...router.query, ...newParams }
+    // Remove empty values
+    Object.keys(query).forEach((k) => {
+      if (query[k] === '' || query[k] == null) delete query[k]
+    })
+    router.replace(
+      { pathname: router.pathname, query },
+      undefined,
+      { shallow: true }
+    )
+  }
+
   const onUriChange = (e) => {
-    let uri = e.target.value
-    setUri(uri)
+    let uriValue = e.target.value
+    setUri(uriValue)
+    updateUrlParams({ uri: uriValue })
   }
 
   const onTaxonChange = (e) => {
     const value = e.target.value.replace(/[^\d]/g, '')
     setTaxon(value)
+    updateUrlParams({ taxon: value })
   }
 
   const onTransferFeeChange = (e) => {
