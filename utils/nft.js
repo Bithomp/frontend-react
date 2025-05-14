@@ -137,11 +137,13 @@ export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell') => {
 }
 
 export const nftThumbnail = (nft) => {
-  if (!nft || !nft.nftokenID) return ''
+  if (!nft) return ''
+  const nftId = nft.nftokenID || nft.uritokenID
+  if (!nftId) return ''
   const imageSrc = nftUrl(nft, 'thumbnail')
   if (!imageSrc) return ''
   return (
-    <Link href={'/nft/' + nft.nftokenID}>
+    <Link href={'/nft/' + nftId}>
       <img
         src={imageSrc}
         width="32px"

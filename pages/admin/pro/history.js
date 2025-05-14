@@ -28,9 +28,8 @@ import Image from 'next/image'
 import { CSVLink } from 'react-csv'
 import DownloadIcon from '../../../public/images/download.svg'
 import { koinly } from '../../../utils/koinly'
-import { TbArrowsSort } from 'react-icons/tb'
-import SimpleSelect from '../../../components/UI/SimpleSelect'
 import { LinkTx } from '../../../utils/links'
+import RadioOptions from '../../../components/UI/RadioOptions'
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { address } = query
@@ -84,10 +83,24 @@ const dateFormatters = {
     const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
   },
+  TaxBit: (timestamp) => {
+    // ISO format: YYYY-MM-DDTHH:MM:SS.000Z (same as Koinly)
+    return new Date(timestamp * 1000).toISOString()
+  },
   TokenTax: (timestamp) => {
     // Format: MM/DD/YY HH:MM
     const { mm, dd, yyyy, hh, min } = timePieces(timestamp)
     return `${mm}/${dd}/${yyyy} ${hh}:${min}`
+  },
+  CryptoTax: (timestamp) => {
+    // Format: YYYY-MM-DD HH:mm:ss
+    const { yyyy, mm, dd, hh, min, ss } = timePieces(timestamp)
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`
+  },
+  BlockPit: (timestamp) => {
+    // Format: DD.MM.YYYY HH:MM:SS in UTC
+    const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
+    return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
   }
 }
 
@@ -114,6 +127,10 @@ const processDataForExport = (activities, platform) => {
         }
       }
     } else if (platform === 'CoinLedger') {
+      // https://help.coinledger.io/en/articles/6028758-universal-manual-import-template-guide
+      // Deposit and Withdrawals are a non-taxable self-transfers
+      // Trades need to be in one line as Trade type.
+      // NFTs should be as Trades too
       processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     } else if (platform === 'CoinTracking') {
       processedActivity.type = sending
@@ -121,13 +138,62 @@ const processDataForExport = (activities, platform) => {
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'Other Fee'
         : 'Deposit'
+    } else if (platform === 'TaxBit') {
+      processedActivity.type = sending ? 'Sell' : 'Buy'
     } else if (platform === 'TokenTax') {
       processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
+    } else if (platform === 'CryptoTax') {
+      processedActivity.type = !sending
+        ? 'buy'
+        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+        ? 'fee'
+        : 'sell'
+
+      processedActivity.cryptoTaxFeeCurrencyCode = processedActivity.txFeeCurrencyCode
+      processedActivity.cryptoTaxFeeNumber = processedActivity.txFeeNumber
+
+      if (processedActivity.type === 'buy') {
+        processedActivity.baseCurrency = processedActivity.receivedCurrency
+        processedActivity.baseAmount = processedActivity.receivedAmount
+      } else {
+        processedActivity.baseCurrency = processedActivity.sentCurrency
+        processedActivity.baseAmount = processedActivity.sentAmount
+        // don't include this fee amount in the fee column for type 'fee'
+        if (processedActivity.type === 'fee') {
+          processedActivity.cryptoTaxFeeCurrencyCode = ''
+          processedActivity.cryptoTaxFeeNumber = ''
+        }
+      }
+    } else if (platform === 'BlockPit') {
+      processedActivity.type = sending
+        ? 'Withdrawal'
+        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
+        ? 'Fee'
+        : 'Deposit'
+      // don't include this fee amount in the fee column for type 'fee'
+      if (processedActivity.type === 'Fee') {
+        processedActivity.sentAmount = processedActivity.txFeeNumber
+        processedActivity.sentCurrency = processedActivity.txFeeCurrencyCode
+        processedActivity.txFeeCurrencyCode = ''
+        processedActivity.txFeeNumber = ''
+        processedActivity.receivedAmount = ''
+        processedActivity.receivedCurrency = ''
+      }
     }
 
     return processedActivity
   })
 }
+
+const platformList = [
+  { value: 'Koinly', label: 'Koinly' },
+  { value: 'CoinLedger', label: 'CoinLedger' },
+  { value: 'CoinTracking', label: 'CoinTracking' },
+  { value: 'TaxBit', label: 'TaxBit' },
+  { value: 'TokenTax', label: 'TokenTax' },
+  { value: 'BlockPit', label: 'BlockPit' },
+  { value: 'CryptoTax', label: 'CryptoTax' }
+]
 
 export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
   const router = useRouter()
@@ -209,6 +275,31 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         ]
       },
       {
+        platform: 'TaxBit',
+        headers: [
+          { label: 'timestamp', key: 'timestampExport' },
+          { label: 'txid', key: 'hash' },
+          { label: 'source_name', key: '' },
+          { label: 'from_wallet_address', key: 'counterparty' },
+          { label: 'to_wallet_address', key: 'address' },
+          { label: 'category', key: 'type' },
+          { label: 'in_currency', key: 'receivedCurrency' },
+          { label: 'in_amount', key: 'receivedAmount' },
+          { label: 'in_currency_fiat', key: 'netWorthCurrency' },
+          { label: 'in_amount_fiat', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'out_currency', key: 'sentCurrency' },
+          { label: 'out_amount', key: 'sentAmount' },
+          { label: 'out_currency_fiat', key: 'netWorthCurrency' },
+          { label: 'out_amount_fiat', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'fee_currency', key: 'txFeeCurrencyCode' },
+          { label: 'fee', key: 'txFeeNumber' },
+          { label: 'fee_currency_fiat', key: selectedCurrency },
+          { label: 'fee_fiat', key: 'txFeeInFiats.' + selectedCurrency },
+          { label: 'memo', key: 'memo' },
+          { label: 'status', key: '' }
+        ]
+      },
+      {
         platform: 'TokenTax',
         headers: [
           { label: 'Type', key: 'type' },
@@ -222,6 +313,42 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Group', key: '' },
           { label: 'Comment', key: 'memo' },
           { label: 'Date', key: 'timestampExport' }
+        ]
+      },
+      {
+        platform: 'CryptoTax',
+        headers: [
+          { label: 'Timestamp (UTC)', key: 'timestampExport' },
+          { label: 'Type', key: 'type' },
+          { label: 'Base Currency', key: 'baseCurrency' },
+          { label: 'Base Amount', key: 'baseAmount' },
+          { label: 'Quote Currency (Optional)', key: '' },
+          { label: 'Quote Amount (Optional)', key: '' },
+          { label: 'Fee Currency (Optional)', key: 'cryptoTaxFeeCurrencyCode' },
+          { label: 'Fee Amount (Optional)', key: 'cryptoTaxFeeNumber' },
+          { label: 'From (Optional)', key: 'counterparty' },
+          { label: 'To (Optional)', key: 'address' },
+          { label: 'Blockchain (Optional)', key: '' },
+          { label: 'ID (Optional)', key: 'hash' },
+          { label: 'Description (Optional)', key: 'memo' },
+          { label: 'Reference Price Per Unit (Optional)', key: '' },
+          { label: 'Reference Price Currency (Optional)', key: '' }
+        ]
+      },
+      {
+        platform: 'BlockPit',
+        headers: [
+          { label: 'Date (UTC)', key: 'timestampExport' },
+          { label: 'Integration Name', key: 'platform' },
+          { label: 'Label', key: 'type' },
+          { label: 'Outgoing Asset', key: 'sentCurrency' },
+          { label: 'Outgoing Amount', key: 'sentAmount' },
+          { label: 'Incoming Asset', key: 'receivedCurrency' },
+          { label: 'Incoming Amount', key: 'receivedAmount' },
+          { label: 'Fee Asset (optional)', key: 'txFeeCurrencyCode' },
+          { label: 'Fee Amount (optional)', key: 'txFeeNumber' },
+          { label: 'Comment (optional)', key: 'memo' },
+          { label: 'Trx. ID (optional)', key: 'hash' }
         ]
       }
     ],
@@ -505,7 +632,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         >
           <>
             {verifiedAddresses?.length > 0 && data && activities && data.total > activities.length && (
-              <div className="center" style={{ marginLeft: -32 }}>
+              <div className="center" style={{ margin: 'auto' }}>
                 <button
                   className="button-action narrow thin"
                   onClick={() => getProAddressHistory({ marker: data.marker })}
@@ -516,7 +643,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                 <br />
               </div>
             )}
-            Addresses
+            <div style={{ margin: 'auto' }}>Addresses</div>
             {verifiedAddresses?.length > 0 ? (
               <>
                 {verifiedAddresses.map((address, i) => (
@@ -576,25 +703,13 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
               </CheckBox>
             </div>
             <div>
-              <div
-                style={{
-                  marginBottom: 20
-                }}
-              >
-                <SimpleSelect
-                  value={platformCSVExport}
-                  setValue={setPlatformCSVExport}
-                  optionsList={[
-                    { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' },
-                    { value: 'CoinTracking', label: 'CoinTracking' },
-                    { value: 'TokenTax', label: 'TokenTax' }
-                  ]}
-                />
-                <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
-                  <TbArrowsSort />
-                </button>
-              </div>
+              Tax Export Platform
+              <RadioOptions
+                tabList={platformList}
+                tab={platformCSVExport}
+                setTab={setPlatformCSVExport}
+                name="platformSelect"
+              />
               {rendered && (
                 <CSVLink
                   data={processDataForExport(filteredActivities || [], platformCSVExport)}
@@ -605,6 +720,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   }
                   filename={'export ' + platformCSVExport + ' ' + new Date().toISOString() + '.csv'}
                   className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
+                  uFEFF={platformCSVExport === 'BlockPit' ? false : undefined}
                 >
                   <DownloadIcon /> CSV for {platformCSVExport}
                 </CSVLink>

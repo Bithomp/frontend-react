@@ -24,6 +24,8 @@ import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
 import { addressLink, amountFormat, capitalize, duration, fullNiceNumber, shortHash } from '../utils/format'
 import { LedgerLink } from '../utils/links'
+import Link from 'next/link'
+import Image from 'next/image'
 
 const convertToDrops = (amount) => {
   return parseInt(amount * 1000000).toString()
@@ -32,7 +34,7 @@ const convertToDrops = (amount) => {
 const maxAmount = 100 // in native currency
 const defaultAmount = 10 // in native currency
 
-export default function Faucet({ account, type }) {
+export default function Faucet({ account, type, sessionTokenData }) {
   const router = useRouter()
   const { address: queryAddress, amount: queryAmount, destinationTag: queryDestinationTag } = router.query
 
@@ -45,6 +47,7 @@ export default function Faucet({ account, type }) {
   const [token, setToken] = useState()
   const [step, setStep] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [lastLedgerIndex, setLastLedgerIndex] = useState()
 
   const { t, i18n } = useTranslation()
   const { theme } = useTheme()
@@ -140,16 +143,31 @@ export default function Faucet({ account, type }) {
       return
     }
 
-    setLoading(true)
-
     let data = { 'cf-turnstile-response': token, address }
+
+    if (testPayment) {
+      if (!lastLedgerIndex) {
+        setErrorMessage('Please enter the Latest Ledger Index, you can find the number on the landing page')
+        return
+      }
+      data.lastLedgerIndex = lastLedgerIndex
+    } else {
+      data.amount = amount
+    }
+
     if (destinationTag) {
       data.destinationTag = parseInt(destinationTag)
     }
 
-    if (!testPayment) {
-      data.amount = amount
+    if (sessionTokenData) {
+      if (testPayment) {
+        data.testPaymentSessionToken = sessionTokenData.testPaymentSessionToken
+      } else {
+        data.faucetSessionToken = sessionTokenData.faucetSessionToken
+      }
     }
+
+    setLoading(true)
 
     const endPoint = testPayment ? 'v2/testPayment' : 'v2/faucet'
 
@@ -206,6 +224,15 @@ export default function Faucet({ account, type }) {
     setAmount(amountString)
   }
 
+  const onLastLedgerChange = (e) => {
+    setErrorMessage('')
+    let amountString = e.target.value
+    if (!amountString || amountString < 0) {
+      setErrorMessage('Please enter a latest ledger index, you can find the number on the landing page')
+    }
+    setLastLedgerIndex(amountString)
+  }
+
   const setAddressValue = (value) => {
     //do not erase fetched names by updating the address in raw data
     if (!isAddressValid(address)) {
@@ -250,7 +277,25 @@ export default function Faucet({ account, type }) {
               onKeyPress={typeNumberOnly}
               defaultValue={destinationTag}
             />
-            {!testPayment && (
+            {testPayment ? (
+              <div>
+                {width > 1100 && <br />}
+                <span className="input-title">
+                  <Image src="/images/pages/faucet/lastLedgerIndex.png" alt="Ledger" width={141} height={55} />{' '}
+                  <b>Last Ledger Index</b> Find it in the statistics on the <Link href="/">Landing page</Link>
+                </span>
+                <input
+                  placeholder={'Enter only numbers of the latest ledger index'}
+                  onChange={onLastLedgerChange}
+                  onKeyPress={typeNumberOnly}
+                  className="input-text"
+                  spellCheck="false"
+                  maxLength="10"
+                  min="0"
+                  type="text"
+                />
+              </div>
+            ) : (
               <div>
                 {width > 1100 && <br />}
                 <span className="input-title">

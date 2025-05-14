@@ -56,6 +56,8 @@ const askInfoScreens = [
 ]
 const noCheckboxScreens = [...voteTxs, 'setDomain', 'setDid', 'setAvatar']
 
+let transactionFetched = false
+
 export default function SignForm({
   setSignRequest,
   account,
@@ -515,14 +517,20 @@ export default function SignForm({
     setAwaiting(true)
     setStatus(t('signin.status.awaiting-crawler'))
     //txid can be in the ledger or not, so we need to check it in the ledger
-    if (txid) {
+    if (txid && !transactionFetched) {
       const response = await axios('xrpl/transaction/' + txid)
+
       if (response.data) {
+        transactionFetched = true
         const { validated, inLedger, ledger_index, meta, TransactionType } = response.data
         const includedInLedger = inLedger || ledger_index
         if (validated && includedInLedger) {
-          if (redirectName === 'nft') {
-            //check for URI token
+          if (TransactionType?.includes('NFToken')) {
+            if (meta.nftoken_id) {
+              checkCrawlerStatus({ inLedger: includedInLedger, param: meta.nftoken_id })
+            }
+            return
+          } else if (TransactionType?.includes('URIToken')) {
             for (let i = 0; i < meta.AffectedNodes.length; i++) {
               const node = meta.AffectedNodes[i]
               if (node.CreatedNode?.LedgerEntryType === 'URIToken') {
@@ -633,7 +641,7 @@ export default function SignForm({
       return
     }
 
-    // For NFT transaction, lets wait for crawler to finish it's job
+    // For NFT and DID transaction, lets wait for crawler to finish it's job
     if (txType?.includes('NFToken') || txType?.includes('URIToken') || txType?.includes('DID')) {
       checkTxInCrawler({ txid: txHash, redirectName })
       return
