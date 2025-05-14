@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -72,6 +72,7 @@ export default function Account({
   fiatRate
 }) {
   const { t } = useTranslation()
+  const isFirstRender = useRef(true)
 
   /*
   obligations: {
@@ -168,10 +169,14 @@ export default function Account({
   }
 
   useEffect(() => {
-    if (!selectedCurrency) return
-    if (data?.address) {
-      checkApi({ noCache: true })
+    if (!selectedCurrency || !id) return
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
     }
+
+    checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, refreshPage, ledgerTimestamp])
 
