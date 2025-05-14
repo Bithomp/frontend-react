@@ -11,6 +11,8 @@ const pages = [
   { loc: 'amms', changefreq: 'always', priority: '1' },
   { loc: 'whales', changefreq: 'always', priority: '1' },
 
+  { loc: 'services/nft-mint', changefreq: 'monthly', priority: '0.9' },
+
   { loc: 'whales/receivers', changefreq: 'always', priority: '0.9' },
   { loc: 'whales/senders', changefreq: 'always', priority: '0.9' },
   { loc: 'whales/submitters', changefreq: 'always', priority: '0.9' },
@@ -97,7 +99,8 @@ function generateSiteMap(posts) {
     'whales',
     'whales/receivers',
     'whales/senders',
-    'whales/submitters'
+    'whales/submitters',
+    'services/nft-mint'
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
