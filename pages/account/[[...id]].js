@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
       id: account,
       ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
       isSsrMobile: getIsSsrMobile(context),
-      initialData,
+      initialData: initialData || null,
       ...(await serverSideTranslations(locale, ['common', 'account']))
     }
   }
@@ -72,6 +72,7 @@ export default function Account({
   fiatRate
 }) {
   const { t } = useTranslation()
+  const isFirstRender = useRef(true)
 
   /*
   obligations: {
@@ -80,7 +81,7 @@ export default function Account({
     "tokens": 7
   }
   */
-  const [data, setData] = useState({})
+  const [data, setData] = useState(initialData)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
@@ -100,7 +101,6 @@ export default function Account({
 
   useEffect(() => {
     if (!initialData?.address) return
-    setData(initialData)
     setUserData({
       username: initialData.username,
       service: initialData.service?.name,
@@ -169,10 +169,14 @@ export default function Account({
   }
 
   useEffect(() => {
-    if (!selectedCurrency) return
-    if (data?.address) {
-      checkApi({ noCache: true })
+    if (!selectedCurrency || !id) return
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
     }
+
+    checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, refreshPage, ledgerTimestamp])
 
