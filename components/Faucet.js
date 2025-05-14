@@ -32,7 +32,7 @@ const convertToDrops = (amount) => {
 const maxAmount = 100 // in native currency
 const defaultAmount = 10 // in native currency
 
-export default function Faucet({ account, type, sessionTokenData }) {
+export default function Faucet({ account, type }) {
   const router = useRouter()
   const { address: queryAddress, amount: queryAmount, destinationTag: queryDestinationTag } = router.query
 
@@ -149,14 +149,6 @@ export default function Faucet({ account, type, sessionTokenData }) {
 
     if (!testPayment) {
       data.amount = amount
-    }
-
-    if (sessionTokenData) {
-      if (testPayment) {
-        data.testPaymentSessionToken = sessionTokenData.testPaymentSessionToken
-      } else {
-        data.faucetSessionToken = sessionTokenData.faucetSessionToken
-      }
     }
 
     const endPoint = testPayment ? 'v2/testPayment' : 'v2/faucet'
