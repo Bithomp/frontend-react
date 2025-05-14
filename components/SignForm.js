@@ -525,12 +525,12 @@ export default function SignForm({
         const { validated, inLedger, ledger_index, meta, TransactionType } = response.data
         const includedInLedger = inLedger || ledger_index
         if (validated && includedInLedger) {
-          if (TransactionType?.includes('NFToken')) {
+          if (TransactionType === 'NFTokenMint') {
             if (meta.nftoken_id) {
               checkCrawlerStatus({ inLedger: includedInLedger, param: meta.nftoken_id })
             }
             return
-          } else if (TransactionType?.includes('URIToken')) {
+          } else if (TransactionType === 'URITokenMint') {
             for (let i = 0; i < meta.AffectedNodes.length; i++) {
               const node = meta.AffectedNodes[i]
               if (node.CreatedNode?.LedgerEntryType === 'URIToken') {
