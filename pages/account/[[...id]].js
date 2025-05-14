@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
       id: account,
       ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
       isSsrMobile: getIsSsrMobile(context),
-      initialData: initialData || null,
+      initialData: initialData || {},
       ...(await serverSideTranslations(locale, ['common', 'account']))
     }
   }

@@ -1,5 +1,5 @@
 import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { sha512 } from 'crypto-hash'
 import Select from 'react-select'
@@ -54,7 +54,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id: nftId,
-      pageMeta,
+      pageMeta: pageMeta || {},
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft']))
     }
@@ -78,8 +78,9 @@ const hasJsonMeta = (nft) => {
 
 export default function Nft({ setSignRequest, account, pageMeta, id, selectedCurrency, refreshPage }) {
   const { t, i18n } = useTranslation()
+  const isFirstRender = useRef(true)
 
-  const [data, setData] = useState({})
+  const [data, setData] = useState(pageMeta)
   const [decodedUri, setDecodedUri] = useState(null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -94,6 +95,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   const [countSellOffers, setCountSellOffers] = useState(null)
   const [isValidDigest, setIsValidDigest] = useState(false)
   const [warnings, setWarnings] = useState([])
+  const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
     if (!data || !hasJsonMeta(data) || !data.digest) return
@@ -110,7 +112,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
 
   const checkApi = async (opts) => {
     if (!id) return
-    setLoading(true)
+
+    if (!isFirstRender.current) {
+      setLoading(true)
+    }
 
     setSellOffersFilter('active-valid')
     setBuyOffersFilter('active-valid')
@@ -246,13 +251,17 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   */
 
   useEffect(() => {
-    if (!selectedCurrency) return
-    if (!data?.nftokenID) {
-      // no token - first time fetching - allow right away
+    setRendered(true)
+    if (!selectedCurrency || !id) return
+
+    if (isFirstRender.current) {
+      // check the cahced version
       checkApi()
-    } else {
-      checkApi({ noCache: true })
+      isFirstRender.current = false
+      return
     }
+
+    checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, refreshPage, selectedCurrency])
 
@@ -1079,7 +1088,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                         <div className="column-left">
                           {!notFoundInTheNetwork ? (
                             <>
-                              <NftPreview nft={data} />
+                              {rendered && <NftPreview nft={data} />}
                               {setAsAvatarButton()}
                               {sellButton(data.buyOffers)}
                               {buyButton(data.sellOffers)}
@@ -1128,7 +1137,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                         </div>
 
                         <div className="column-right">
-                          {!notFoundInTheNetwork && (
+                          {!notFoundInTheNetwork && rendered && (
                             <SocialShare
                               title={nftName(data) || 'XRPL NFT'}
                               description={pageMeta?.metadata?.description || ''}
