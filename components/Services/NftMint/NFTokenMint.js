@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { encode, server, network } from '../../../utils'
+import { encode, server, network, addAndRemoveQueryParams } from '../../../utils'
 import { isValidTaxon } from '../../../utils/nft'
 import CheckBox from '../../UI/CheckBox'
 import AddressInput from '../../UI/AddressInput'
 import ExpirationSelect from '../../UI/ExpirationSelect'
 import { useRouter } from 'next/router'
 
-export default function NFTokenMint({ setSignRequest }) {
+export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) {
   const router = useRouter()
-  const [uri, setUri] = useState('')
+  const [uri, setUri] = useState(uriQuery)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
   const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [minted, setMinted] = useState('')
-  const [taxon, setTaxon] = useState('0')
+  const [taxon, setTaxon] = useState(taxonQuery)
   const [flags, setFlags] = useState({
     tfBurnable: false,
     tfOnlyXRP: false,
@@ -39,40 +39,39 @@ export default function NFTokenMint({ setSignRequest }) {
     }
   }, [agreeToSiteTerms, agreeToPrivacyPolicy])
 
-  // Autofill from GET params on mount
   useEffect(() => {
-    if (router.isReady) {
-      const { uri: uriParam, taxon: taxonParam } = router.query
-      if (typeof uriParam === 'string' && uriParam !== uri) setUri(uriParam)
-      if (typeof taxonParam === 'string' && taxonParam !== taxon) setTaxon(taxonParam.replace(/[^\d]/g, ''))
+    let queryAddList = []
+    let queryRemoveList = []
+    if (isValidTaxon(taxon)) {
+      queryAddList.push({
+        name: 'taxon',
+        value: taxon
+      })
+      setErrorMessage('')
+    } else {
+      queryRemoveList.push('taxon')
     }
+    if (uri) {
+      queryAddList.push({
+        name: 'uri',
+        value: uri
+      })
+      setErrorMessage('')
+    } else {
+      queryRemoveList.push('uri')
+    }
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.isReady])
-
-  // Helper to update URL params
-  const updateUrlParams = (newParams) => {
-    const query = { ...router.query, ...newParams }
-    // Remove empty values
-    Object.keys(query).forEach((k) => {
-      if (query[k] === '' || query[k] == null) delete query[k]
-    })
-    router.replace(
-      { pathname: router.pathname, query },
-      undefined,
-      { shallow: true }
-    )
-  }
+  }, [taxon, uri])
 
   const onUriChange = (e) => {
     let uriValue = e.target.value
     setUri(uriValue)
-    updateUrlParams({ uri: uriValue })
   }
 
   const onTaxonChange = (e) => {
     const value = e.target.value.replace(/[^\d]/g, '')
     setTaxon(value)
-    updateUrlParams({ taxon: value })
   }
 
   const onTransferFeeChange = (e) => {
@@ -145,11 +144,6 @@ export default function NFTokenMint({ setSignRequest }) {
       return
     }
 
-    if (createSellOffer && (amount === '' || parseFloat(amount) < 0 || isNaN(parseFloat(amount)))) {
-      setErrorMessage('Please enter a valid Amount for the Sell offer.')
-      return
-    }
-
     setErrorMessage('')
 
     let nftFlags = 0
@@ -193,6 +187,7 @@ export default function NFTokenMint({ setSignRequest }) {
     }
 
     setSignRequest({
+      redirect: 'nft',
       request,
       callback: (id) => setMinted(id)
     })
@@ -208,7 +203,7 @@ export default function NFTokenMint({ setSignRequest }) {
         {!minted && (
           <>
             {/* URI */}
-            <span className="input-title">URI that points to the data or metadata associated with the NFT:</span>
+            <p>URI that points to the data or metadata associated with the NFT:</p>
             <div className="input-validation">
               <input
                 placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
@@ -225,10 +220,7 @@ export default function NFTokenMint({ setSignRequest }) {
             </div>
 
             {/* NFT Taxon */}
-            <br />
-            <span className="input-title">
-              NFT Taxon (collection identifier, leave as 0 for the issuer's first collection):
-            </span>
+            <p> NFT Taxon (collection identifier, leave as 0 for the issuer's first collection):</p>
             <div className="input-validation ">
               <input
                 placeholder="0"
@@ -263,8 +255,7 @@ export default function NFTokenMint({ setSignRequest }) {
             {/* Royalty (Transfer Fee) - only show if Transferable is checked */}
             {flags.tfTransferable && (
               <>
-                <br />
-                <span className="input-title">Royalty (paid to the issuer, 0-50%):</span>
+                <p>Royalty (paid to the issuer, 0-50%):</p>
                 <div className="input-validation">
                   <input
                     placeholder="0"
@@ -301,8 +292,6 @@ export default function NFTokenMint({ setSignRequest }) {
               </CheckBox>
             </div>
 
-            <br />
-
             {/* Create Sell Offer */}
             <div>
               <CheckBox
@@ -317,8 +306,7 @@ export default function NFTokenMint({ setSignRequest }) {
             {/* Sell Offer Fields */}
             {createSellOffer && (
               <>
-                <br />
-                <span className="input-title">Initial listing price in XRP (Amount):</span>
+                <p>Initial listing price in XRP (Amount):</p>
                 <div className="input-validation">
                   <input
                     placeholder="0.0"
@@ -329,17 +317,20 @@ export default function NFTokenMint({ setSignRequest }) {
                     name="amount"
                   />
                 </div>
-                <br />
-                <AddressInput
-                  title="Destination (optional - account to receive the NFT):"
-                  placeholder="Destination address"
-                  setValue={onDestinationChange}
-                  initialValue={destination}
-                  name="destination"
-                  hideButton={true}
-                />
+
+                <p style={{ marginBottom: '-5px' }}>Destination (optional - account to receive the NFT):</p>
                 <div>
-                  <span className="input-title">Offer expiration</span>
+                  <AddressInput
+                    placeholder="Destination address"
+                    setValue={onDestinationChange}
+                    initialValue={destination}
+                    name="destination"
+                    hideButton={true}
+                  />
+                </div>
+
+                <p>Offer expiration:</p>
+                <div>
                   <ExpirationSelect onChange={onExpirationChange} />
                 </div>
               </>
@@ -363,10 +354,9 @@ export default function NFTokenMint({ setSignRequest }) {
 
             {mintForOtherAccount && (
               <>
-                <br />
+                <p style={{ marginBottom: '-5px' }}>Issuer (account you're minting for):</p>
                 <div>
                   <AddressInput
-                    title="Issuer address (account you're minting for):"
                     placeholder="Issuer address"
                     setValue={onIssuerChange}
                     initialValue={issuer}
