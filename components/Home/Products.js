@@ -136,7 +136,7 @@ export default function Products() {
       title: t('titles.nft', { ns: 'products' }),
       list: [
         {
-          link: '/nft-mint',
+          link: '/services//nft-mint',
           text: t('items.nft-mint', { ns: 'products' })
         },
         {
