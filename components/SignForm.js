@@ -518,42 +518,32 @@ export default function SignForm({
     setStatus(t('signin.status.awaiting-crawler'))
     //txid can be in the ledger or not, so we need to check it in the ledger
     if (txid && !transactionFetched) {
-      console.log('checking the transaction id') //delete
       const response = await axios('xrpl/transaction/' + txid)
 
       if (response.data) {
-        console.log('transactionFetched', transactionFetched) //delete
         transactionFetched = true
         const { validated, inLedger, ledger_index, meta, TransactionType } = response.data
-        console.log(
-          'validated, inLedger, ledger_index, meta, TransactionType',
-          validated,
-          inLedger,
-          ledger_index,
-          meta,
-          TransactionType
-        ) //delete
         const includedInLedger = inLedger || ledger_index
         if (validated && includedInLedger) {
-          console.log('validated', includedInLedger, TransactionType) //delete
           if (TransactionType === 'NFTokenMint') {
-            console.log('NFTokenMint it is') //delete
             if (meta.nftoken_id) {
-              console.log(meta.nftoken_id) //delete
-              checkCrawlerStatus({ inLedger: includedInLedger, param: meta.nftoken_id })
+              checkCrawlerStatus({ inLedger: includedInLedger, param: meta.nftoken_id, type: TransactionType })
             }
             return
           } else if (TransactionType === 'URITokenMint') {
             for (let i = 0; i < meta.AffectedNodes.length; i++) {
               const node = meta.AffectedNodes[i]
               if (node.CreatedNode?.LedgerEntryType === 'URIToken') {
-                checkCrawlerStatus({ inLedger: includedInLedger, param: node.CreatedNode.LedgerIndex })
+                checkCrawlerStatus({
+                  inLedger: includedInLedger,
+                  param: node.CreatedNode.LedgerIndex,
+                  type: TransactionType
+                })
                 break
               }
             }
             return
           }
-          console.log('Opps', TransactionType) //delete
           checkCrawlerStatus({ inLedger: includedInLedger, type: TransactionType })
         } else {
           //if not validated or if no ledger info received, delay for 1.5 seconds
