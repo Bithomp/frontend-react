@@ -61,6 +61,8 @@ import ObjectsData from '../../components/Account/ObjectsData'
 import NFTokenData from '../../components/Account/NFTokenData'
 import URITokenData from '../../components/Account/URITokenData'
 //import IOUData from '../../components/Account/IOUData'
+//import EscrowData from '../../components/Account/EscrowData'
+//import DexOrdersData from '../../components/Account/DexOrdersData'
 
 export default function Account({
   initialData,
@@ -510,6 +512,14 @@ export default function Account({
                             rippleStateList={objects?.rippleStateList}
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                           />
+                          <EscrowData
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            escrowList={objects?.escrowList}
+                          />
+                          <DexOrdersData
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            offerList={objects?.offerList}
+                          />
                           */}
 
                           <LedgerData
@@ -536,11 +546,11 @@ export default function Account({
                           )}
                           {/*
                           We need to add here
-                          - assets // we show the link in LedgerData
+                          - assets // we show the link in LedgerData - IOUData
                           - nfts xls-20 // we show the link in NFTs data
                           - obligations // data need to be synced on the backend first, we don't show it yet
-                          - orders // we show the link in the Ledgerdata
-                          - escrows // we show the link in the Ledgerdata
+                          - dex orders // we show the link in the Ledgerdata - DexOrdersData
+                          - escrows // we show the link in the Ledgerdata - EscrowData
                           - xls-14 nfts // only when exists - show separately them - or forget =)
                           */}
                           {data?.ledgerInfo?.activated && !gateway && (

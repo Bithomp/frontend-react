@@ -1,19 +1,18 @@
 import { fullDateAndTime } from '../../utils/format'
 
-export default function IOUData({ rippleStateList, ledgerTimestamp }) {
-  //show the section only if there are tokens to show
-  if (!rippleStateList?.length) return ''
+export default function EscrowData({ escrowList, ledgerTimestamp }) {
+  //show the section only if there are escrows to show
+  if (!escrowList?.length) return ''
 
   const title = ledgerTimestamp ? (
-    <span className="red bold">Historical Token data ({fullDateAndTime(ledgerTimestamp)})</span>
+    <span className="red bold">Historical Escrow data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
-    'Tokens (IOUs)'
+    'Escrows'
   )
 
-  const statusNode = !rippleStateList ? 'Loading...' : <span>There are {rippleStateList?.length} tokens</span>
+  const statusNode = !escrowList ? 'Loading...' : <span>There are {escrowList?.length} escrows</span>
 
-  // console.log(rippleStateList) //delete
-  // amount / gateway details / trustline settings
+  //console.log(escrowList) //delete
 
   return (
     <>
