@@ -196,29 +196,21 @@ export default function ObjectsData({
             }
           }
           setObjects({
-            depositPreauthList: accountObjectWithDepositPreauth,
             escrowList: accountObjectWithEscrow,
             nftOfferList: accountObjectWithNFTokenOffer,
             nftList: nfts,
             offerList: accountObjectWithOffer,
-            payChannelList: accountObjectWithPayChannel,
             rippleStateList: accountObjectWithRippleState,
-            mptIssuanceList: accountObjectWithMptIssuance,
-            mptList: accountObjectsWithMpt,
             uriTokenList: accountObjectWithURITokens
           })
         } else {
           // no objects
           setObjects({
-            depositPreauthList: [],
             escrowList: [],
             nftOfferList: [],
             nftList: [],
             offerList: [],
-            payChannelList: [],
             rippleStateList: [],
-            mptIssuanceList: [],
-            mptList: [],
             uriTokenList: []
           })
         }
