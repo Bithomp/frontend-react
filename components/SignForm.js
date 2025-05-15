@@ -546,7 +546,7 @@ export default function SignForm({
           delay(1500, checkTxInCrawler, { txid, redirectName })
         }
       } else {
-        //if no info on transaction, delay 1.5 sec
+        //if no info on transaction, delay 1.5 sec and try again
         delay(1500, checkTxInCrawler, { txid, redirectName })
       }
     } else {
@@ -666,7 +666,16 @@ export default function SignForm({
       // othewrwise wait until crawler catch up with the ledger where this transaction was included
       if (ledgerIndex >= inLedger || inLedger - 10 > ledgerIndex) {
         if (param) {
-          signRequest.callback(param)
+          //when we are back from xaman, there no signRequest, we can not call a callback
+          // shall we redirect to nft page instead?
+          if (signRequest?.callback) {
+            signRequest.callback(param)
+          } else {
+            //we are on mobile
+            if (type === 'NFTokenMint' || type === 'URITokenMint') {
+              router.push('/nft/' + param)
+            }
+          }
         }
         closeSignInFormAndRefresh()
       } else {
