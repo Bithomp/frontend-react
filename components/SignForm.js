@@ -451,7 +451,7 @@ export default function SignForm({
       setStatus(t('signin.xaman.statuses.redirecting'))
       //return to the same page
       signInPayload.options.return_url = {
-        app: server + router.asPath + '?uuid={id}'
+        app: server + router.asPath + (router.asPath.includes('?') ? '&' : '?') + 'uuid={id}'
       }
 
       if (tx.TransactionType === 'Payment') {
