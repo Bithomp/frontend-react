@@ -60,6 +60,7 @@ import XamanData from '../../components/Account/XamanData'
 import ObjectsData from '../../components/Account/ObjectsData'
 import NFTokenData from '../../components/Account/NFTokenData'
 import URITokenData from '../../components/Account/URITokenData'
+//import IOUData from '../../components/Account/IOUData'
 
 export default function Account({
   initialData,
@@ -504,6 +505,13 @@ export default function Account({
                             </div>
                           )}
 
+                          {/* hide while its not ready
+                          <IOUData
+                            rippleStateList={objects?.rippleStateList}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                          />
+                          */}
+
                           <LedgerData
                             data={data}
                             account={account}
@@ -526,6 +534,15 @@ export default function Account({
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             />
                           )}
+                          {/*
+                          We need to add here
+                          - assets // we show the link in LedgerData
+                          - nfts xls-20 // we show the link in NFTs data
+                          - obligations // data need to be synced on the backend first, we don't show it yet
+                          - orders // we show the link in the Ledgerdata
+                          - escrows // we show the link in the Ledgerdata
+                          - xls-14 nfts // only when exists - show separately them - or forget =)
+                          */}
                           {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}
