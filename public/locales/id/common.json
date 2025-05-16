@@ -173,7 +173,6 @@
       "ledger-index": "Indeks ledger",
       "close-time": "Waktu penutupan",
       "transactions": "Transaksi",
-      "txs-per-sec": "txs/s",
       "quorum": "Quorum validasi",
       "proposers": "Pengusul",
       "accounts": "Akun",

@@ -173,7 +173,6 @@
       "ledger-index": "№ леджера",
       "close-time": "Время",
       "transactions": "Транзакций в леджере",
-      "txs-per-sec": "тран/сек",
       "quorum": "Кворум валидаторов",
       "proposers": "предлагающих",
       "accounts": "Адреса",

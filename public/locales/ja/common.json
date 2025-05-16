@@ -173,7 +173,6 @@
       "ledger-index": "レジャーインデックス",
       "close-time": "クローズ時間",
       "transactions": "トランザクション",
-      "txs-per-sec": "tx/秒",
       "quorum": "バリデーション定足数",
       "proposers": "提出者",
       "accounts": "アカウント",

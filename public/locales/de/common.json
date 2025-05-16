@@ -173,7 +173,6 @@
       "ledger-index": "Ledger Index",
       "close-time": "Schliesszeit",
       "transactions": "Transaktionen",
-      "txs-per-sec": "Trans/s",
       "quorum": "Quorum Validatoren",
       "proposers": "Antragsteller",
       "accounts": "Konten",

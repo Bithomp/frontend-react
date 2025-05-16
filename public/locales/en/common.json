@@ -173,7 +173,6 @@
       "ledger-index": "Ledger index",
       "close-time": "Close time",
       "transactions": "Transactions",
-      "txs-per-sec": "txs/s",
       "quorum": "Validation quorum",
       "proposers": "proposers",
       "accounts": "Accounts",
