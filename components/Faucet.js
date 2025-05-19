@@ -251,7 +251,16 @@ export default function Faucet({ account, type, sessionTokenData }) {
     <>
       {(step === 0 || !testPayment) && (
         <>
-          {testPayment && <p className="center">{t('experience-fast-transactions', { ns: 'faucet', explorerName })}</p>}
+          {testPayment ? (
+            <p className="center">{t('experience-fast-transactions', { ns: 'faucet', explorerName })}</p>
+          ) : (
+            <p>
+              Need test {nativeCurrency} for your {ledgerName} development? Use our secure and fast {explorerName}{' '}
+              Faucet to receive free {nativeCurrency} directly to your {devNet} wallet address. Whether you're building
+              wallets, dApps, NFT platforms, or DeFi tools on the {ledgerName}, this faucet helps you test transactions
+              without using real funds.
+            </p>
+          )}
           <div>
             <AddressInput
               title={t('table.address')}

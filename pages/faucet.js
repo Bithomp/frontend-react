@@ -4,7 +4,7 @@ import Faucet from '../components/Faucet'
 import SEO from '../components/SEO'
 
 import { getIsSsrMobile } from '../utils/mobile'
-import { devNet, ledgerName, nativeCurrency } from '../utils'
+import { devNet, explorerName, ledgerName, nativeCurrency } from '../utils'
 import NetworkTabs from '../components/Tabs/NetworkTabs'
 import Ads from '../components/Layout/Ads'
 import { useTranslation } from 'next-i18next'
@@ -50,9 +50,25 @@ export default function FaucetPage({ account, showAds, sessionTokenData }) {
 
   return (
     <>
-      <SEO title="Faucet" description={'Get Free ' + ledgerName + ' ' + nativeCurrency} />
+      <SEO
+        title={'Faucet. Free ' + nativeCurrency + ' from ' + explorerName + ' Faucet for Developers.'}
+        description={
+          'Get free ' +
+          nativeCurrency +
+          ' for development and testing on the ' +
+          ledgerName +
+          '. Instantly fund your ' +
+          explorerName +
+          ' wallet with ' +
+          nativeCurrency +
+          ' using our reliable and fast faucet.'
+        }
+        descriptionWithNetwork={true}
+      />
       <div className="content-text content-center">
-        <h1 className="center">{t('menu.developers.faucet')}</h1>
+        <h1 className="center">
+          {explorerName} {t('menu.developers.faucet')} — Get Free {nativeCurrency}
+        </h1>
         <NetworkTabs />
         <Faucet account={account} type={devNet ? 'faucet' : 'testPayment'} sessionTokenData={sessionTokenData} />
       </div>
