@@ -14,7 +14,7 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
   const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [minted, setMinted] = useState('')
-  const [taxon, setTaxon] = useState(taxonQuery)
+  const [taxon, setTaxon] = useState(taxonQuery || '0')
   const [flags, setFlags] = useState({
     tfBurnable: false,
     tfOnlyXRP: false,
@@ -187,7 +187,6 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
     }
 
     setSignRequest({
-      redirect: 'nft',
       request,
       callback: (id) => setMinted(id)
     })
@@ -203,7 +202,7 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
         {!minted && (
           <>
             {/* URI */}
-            <p>URI that points to the data or metadata associated with the NFT:</p>
+            <span className="input-title">URI that points to the data or metadata associated with the NFT:</span>
             <div className="input-validation">
               <input
                 placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
