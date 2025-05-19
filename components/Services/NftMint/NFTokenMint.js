@@ -219,7 +219,10 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
             </div>
 
             {/* NFT Taxon */}
-            <p> NFT Taxon (collection identifier, leave as 0 for the issuer's first collection):</p>
+            <br />
+            <span className="input-title">
+              NFT Taxon (collection identifier, leave as 0 for the issuer's first collection):
+            </span>
             <div className="input-validation ">
               <input
                 placeholder="0"
@@ -254,7 +257,8 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
             {/* Royalty (Transfer Fee) - only show if Transferable is checked */}
             {flags.tfTransferable && (
               <>
-                <p>Royalty (paid to the issuer, 0-50%):</p>
+                <br />
+                <span className="input-title">Royalty (paid to the issuer, 0-50%):</span>
                 <div className="input-validation">
                   <input
                     placeholder="0"
@@ -291,6 +295,8 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
               </CheckBox>
             </div>
 
+            <br />
+
             {/* Create Sell Offer */}
             <div>
               <CheckBox
@@ -305,7 +311,8 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
             {/* Sell Offer Fields */}
             {createSellOffer && (
               <>
-                <p>Initial listing price in XRP (Amount):</p>
+                <br />
+                <span className="input-title">Initial listing price in XRP (Amount):</span>
                 <div className="input-validation">
                   <input
                     placeholder="0.0"
@@ -316,10 +323,10 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
                     name="amount"
                   />
                 </div>
-
-                <p style={{ marginBottom: '-5px' }}>Destination (optional - account to receive the NFT):</p>
+                <br />
                 <div>
                   <AddressInput
+                    title="Destination (optional - account to receive the NFT):"
                     placeholder="Destination address"
                     setValue={onDestinationChange}
                     initialValue={destination}
@@ -327,9 +334,9 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
                     hideButton={true}
                   />
                 </div>
-
-                <p>Offer expiration:</p>
+                <br />
                 <div>
+                  <span className="input-title">Offer expiration</span>
                   <ExpirationSelect onChange={onExpirationChange} />
                 </div>
               </>
@@ -353,9 +360,10 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
 
             {mintForOtherAccount && (
               <>
-                <p style={{ marginBottom: '-5px' }}>Issuer (account you're minting for):</p>
+                <br />
                 <div>
                   <AddressInput
+                    title="Issuer address (account you're minting for):"
                     placeholder="Issuer address"
                     setValue={onIssuerChange}
                     initialValue={issuer}
