@@ -6,13 +6,13 @@
   align-items: center;
   transition: background-color .5s;
   .brand-item {
-    height: 80px;
-    width: 340px;
+    height: 70px;
+    width: 308px;
     display: inline-block;
     background-color: var(--button-additional);
     z-index: 1;
     position: relative;
-    margin: 10px;
+    margin: 6px;
     cursor: pointer;
     box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
     color: var(--text-main);
@@ -22,8 +22,8 @@
     }
     .brand-item-icon {
       position: absolute;
-      left: 16px;
-      height: 40px;
+      left: 10px;
+      height: 34px;
       top: 50%;
       transform: translateY(-50%);
     }
@@ -34,21 +34,21 @@
     }
     .brand-item-title {
       position: absolute;
-      top: 10px;
-      left: 76px;
+      top: 6px;
+      left: 56px;
       font-size: 14px;
       font-weight: 700;
     }
     .brand-item-text {
       position: absolute;
-      top: 30px;
-      left: 76px;
-      right: 15px;
+      top: 24px;
+      left: 56px;
+      right: 5px;
       font-size: 14px;
     }
   }
-  /* 760px - 2 brands, 1100 - 3 brands, 1460 px when 4 brands */
-  @media only screen and (max-width: 1460px) {
+  /* CHANGE: old: 760px - 2 brands, 1100 - 3 brands, new: 1279 px when 4 brands */
+  @media only screen and (max-width: 1279px) {
     .brand-item {
       height: 40px;
       width: 154px;
