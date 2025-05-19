@@ -1,14 +1,14 @@
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 
-import moment from 'moment'
-import 'moment/locale/ru' // 'ru'
-import 'moment/locale/ko' // 'ko'
-import 'moment/locale/de' // 'de'
-import 'moment/locale/es' // 'es'
-import 'moment/locale/id' // 'id'
-import 'moment/locale/ja' // 'ja'
-import 'moment/locale/fr' // 'fr'
+import dayjs from 'dayjs'
+import 'dayjs/locale/ru' // 'ru'
+import 'dayjs/locale/ko' // 'ko'
+import 'dayjs/locale/de' // 'de'
+import 'dayjs/locale/es' // 'es'
+import 'dayjs/locale/id' // 'id'
+import 'dayjs/locale/ja' // 'ja'
+import 'dayjs/locale/fr' // 'fr'
 
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
@@ -32,7 +32,7 @@ export default function LanguageSwitch({ close }) {
 
   const langChange = (lang) => {
     if (lang === 'default' || lang === 'undefined' || !lang) return
-    moment.locale(lang)
+    dayjs.locale(lang)
     cookies.set('NEXT_LOCALE', lang, cookieParams)
   }
 
