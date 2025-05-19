@@ -57,7 +57,7 @@
         height: 30px;
       }
       .brand-item-title {
-        left: 60px;
+        top: 9px;
         font-size: 14px;
         font-weight: 400;
       }
@@ -75,11 +75,7 @@
       }
       &.btcbit {
         .brand-item-icon {
-          left: 33px;
           height: 25px;
-        }
-        .brand-item-title {
-          left: 70px;
         }
       }
       &.nexo {
