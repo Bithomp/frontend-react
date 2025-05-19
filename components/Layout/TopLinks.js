@@ -180,6 +180,13 @@ export default function TopLinks() {
         </span>
         {isMobile ? <br /> : ' | '}
         <span className="tooltip">
+          <a href="/go/yield-xrp" target="_blank" rel="noreferrer" className="top-link orange">
+            Earn XRP Yields 💵
+          </a>
+          <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
+        </span>
+        {isMobile ? <br /> : ' | '}
+        <span className="tooltip">
           <a href="/go/playxrp" target="_blank" rel="noreferrer" className="top-link orange">
             Welcome bonus up to 7 BTC + 250 free spins 💸
           </a>

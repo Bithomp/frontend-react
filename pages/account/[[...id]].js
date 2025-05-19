@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
       id: account,
       ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
       isSsrMobile: getIsSsrMobile(context),
-      initialData: initialData || null,
+      initialData: initialData || {},
       ...(await serverSideTranslations(locale, ['common', 'account']))
     }
   }
@@ -60,6 +60,9 @@ import XamanData from '../../components/Account/XamanData'
 import ObjectsData from '../../components/Account/ObjectsData'
 import NFTokenData from '../../components/Account/NFTokenData'
 import URITokenData from '../../components/Account/URITokenData'
+//import IOUData from '../../components/Account/IOUData'
+//import EscrowData from '../../components/Account/EscrowData'
+//import DexOrdersData from '../../components/Account/DexOrdersData'
 
 export default function Account({
   initialData,
@@ -504,6 +507,21 @@ export default function Account({
                             </div>
                           )}
 
+                          {/* hide while its not ready
+                          <IOUData
+                            rippleStateList={objects?.rippleStateList}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                          />
+                          <EscrowData
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            escrowList={objects?.escrowList}
+                          />
+                          <DexOrdersData
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            offerList={objects?.offerList}
+                          />
+                          */}
+
                           <LedgerData
                             data={data}
                             account={account}
@@ -526,6 +544,15 @@ export default function Account({
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             />
                           )}
+                          {/*
+                          We need to add here
+                          - assets // we show the link in LedgerData - IOUData
+                          - nfts xls-20 // we show the link in NFTs data
+                          - obligations // data need to be synced on the backend first, we don't show it yet
+                          - dex orders // we show the link in the Ledgerdata - DexOrdersData
+                          - escrows // we show the link in the Ledgerdata - EscrowData
+                          - xls-14 nfts // only when exists - show separately them - or forget =)
+                          */}
                           {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}

@@ -152,11 +152,9 @@ export default function MobileMenu({
           <Link href="/faucet" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.developers.faucet')}
           </Link>
-          {xahauNetwork && (
-            <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t('menu.services.nft-mint')}
-            </Link>
-          )}
+          <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.services.nft-mint')}
+          </Link>
           {!displayName && (
             <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t('menu.usernames')}
@@ -175,9 +173,9 @@ export default function MobileMenu({
               {t('menu.price-alerts', { nativeCurrency })}
             </Link>
           )}
-          {/* <a href={'/submit/'} className="mobile-menu-item">
+          <a href={'/submit/'} className="mobile-menu-item">
             {t('menu.submit-offline-tx')}
-          </a> */}
+          </a>
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
@@ -253,11 +251,9 @@ export default function MobileMenu({
           <Link href="/nft-statistics" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.nft.statistics')}
           </Link>
-          {xahauNetwork && (
-            <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t('menu.services.nft-mint')}
-            </Link>
-          )}
+          <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.services.nft-mint')}
+          </Link>
         </div>
 
         {/* Hide AMM for XAHAU */}

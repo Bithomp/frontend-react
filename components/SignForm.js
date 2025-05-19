@@ -451,7 +451,7 @@ export default function SignForm({
       setStatus(t('signin.xaman.statuses.redirecting'))
       //return to the same page
       signInPayload.options.return_url = {
-        app: server + router.asPath + '?uuid={id}'
+        app: server + router.asPath + (router.asPath.includes('?') ? '&' : '?') + 'uuid={id}'
       }
 
       if (tx.TransactionType === 'Payment') {
@@ -525,16 +525,20 @@ export default function SignForm({
         const { validated, inLedger, ledger_index, meta, TransactionType } = response.data
         const includedInLedger = inLedger || ledger_index
         if (validated && includedInLedger) {
-          if (TransactionType?.includes('NFToken')) {
+          if (TransactionType === 'NFTokenMint') {
             if (meta.nftoken_id) {
-              checkCrawlerStatus({ inLedger: includedInLedger, param: meta.nftoken_id })
+              checkCrawlerStatus({ inLedger: includedInLedger, param: meta.nftoken_id, type: TransactionType })
             }
             return
-          } else if (TransactionType?.includes('URIToken')) {
+          } else if (TransactionType === 'URITokenMint') {
             for (let i = 0; i < meta.AffectedNodes.length; i++) {
               const node = meta.AffectedNodes[i]
               if (node.CreatedNode?.LedgerEntryType === 'URIToken') {
-                checkCrawlerStatus({ inLedger: includedInLedger, param: node.CreatedNode.LedgerIndex })
+                checkCrawlerStatus({
+                  inLedger: includedInLedger,
+                  param: node.CreatedNode.LedgerIndex,
+                  type: TransactionType
+                })
                 break
               }
             }
@@ -546,7 +550,7 @@ export default function SignForm({
           delay(1500, checkTxInCrawler, { txid, redirectName })
         }
       } else {
-        //if no info on transaction, delay 1.5 sec
+        //if no info on transaction, delay 1.5 sec and try again
         delay(1500, checkTxInCrawler, { txid, redirectName })
       }
     } else {
@@ -646,7 +650,7 @@ export default function SignForm({
       checkTxInCrawler({ txid: txHash, redirectName })
       return
     } else {
-      // no checks or delays for non NFT transactions
+      // no checks or delays for non NFT/DID transactions
       closeSignInFormAndRefresh()
     }
   }
@@ -666,7 +670,17 @@ export default function SignForm({
       // othewrwise wait until crawler catch up with the ledger where this transaction was included
       if (ledgerIndex >= inLedger || inLedger - 10 > ledgerIndex) {
         if (param) {
-          signRequest.callback(param)
+          //when we are back from xaman, there no signRequest, we can not call a callback
+          // shall we redirect to nft page instead?
+          if (signRequest?.callback) {
+            signRequest.callback(param)
+          } else {
+            //we are on mobile
+            if (type === 'NFTokenMint' || type === 'URITokenMint') {
+              router.push('/nft/' + param)
+              return
+            }
+          }
         }
         closeSignInFormAndRefresh()
       } else {

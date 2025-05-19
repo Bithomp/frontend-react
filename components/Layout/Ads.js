@@ -5,6 +5,7 @@ import { brandsBlock } from '../../styles/components/ads.module.scss'
 
 import BtcBit from '../../public/images/sponsored/btcbit.svg'
 import Nexo from '../../public/images/sponsored/nexo.svg'
+import Doppler from '../../public/images/sponsored/doppler.svg'
 
 export default function Ads({ showAds, heightNoAds }) {
   const { theme } = useTheme()
@@ -27,6 +28,13 @@ export default function Ads({ showAds, heightNoAds }) {
   if (!xahauNetwork) {
     return (
       <div className={brandsBlock}>
+        <a href="/go/xrp-yield" target="_blank" rel="noreferrer">
+          <div className="brand-item doppler">
+            <Doppler className="brand-item-icon" fill={theme === 'dark' ? 'white' : '#1C1F21'} />
+            <div className="brand-item-title">XRP Yields</div>
+            <div className="brand-item-text">Deposit XRP and earn XRP native yields.</div>
+          </div>
+        </a>
         <a href="/go/play-xrp" target="_blank" rel="noreferrer">
           <div className="brand-item">
             <img src="/images/sponsored/xbit.png" className="brand-item-icon" alt="play xrp" />

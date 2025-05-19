@@ -193,7 +193,7 @@ export const TransactionCard = ({
 
   const errorMessage = error_message || error
 
-  const filteredBalanceChanges = outcome?.balanceChanges.filter((change) => !noBalanceChange(change))
+  const filteredBalanceChanges = outcome?.balanceChanges?.filter((change) => !noBalanceChange(change))
 
   let emitTX = null
   if (xahauNetwork) {
@@ -369,9 +369,9 @@ export const TransactionCard = ({
                       </tr>
                     ))}
                   {/* keep here outcome?.balanceChanges.length, to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
-                  {tx.TransactionType !== 'UNLReport' && (outcome?.balanceChanges.length > 2 || notFullySupported) && (
+                  {tx.TransactionType !== 'UNLReport' && (outcome?.balanceChanges?.length > 2 || notFullySupported) && (
                     <>
-                      {filteredBalanceChanges.length > 1 && (
+                      {filteredBalanceChanges?.length > 1 && (
                         <tr>
                           <TData>Affected accounts</TData>
                           <TData>
@@ -380,7 +380,7 @@ export const TransactionCard = ({
                           </TData>
                         </tr>
                       )}
-                      {filteredBalanceChanges.map((change, index) => {
+                      {filteredBalanceChanges?.map((change, index) => {
                         return (
                           <tr key={index}>
                             <TData>

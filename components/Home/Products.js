@@ -136,6 +136,10 @@ export default function Products() {
       title: t('titles.nft', { ns: 'products' }),
       list: [
         {
+          link: '/services/nft-mint',
+          text: t('items.nft-mint', { ns: 'products' })
+        },
+        {
           link: '/nft-explorer',
           text: t('items.nft-explorer', { ns: 'products' })
         },
@@ -150,12 +154,7 @@ export default function Products() {
       ]
     }
 
-    if (xahauNetwork) {
-      part3.list.unshift({
-        link: '/nft-mint',
-        text: t('items.nft-mint', { ns: 'products' })
-      })
-    } else {
+    if (!xahauNetwork) {
       part3.list.push({
         link: '/nft-minters',
         text: t('items.nft-minters', { ns: 'products' })

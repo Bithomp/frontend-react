@@ -173,7 +173,6 @@
       "ledger-index": "Índice Libro contable",
       "close-time": "Hora de cierre",
       "transactions": "Transacciones",
-      "txs-per-sec": "tps/s",
       "quorum": "Cuórum de validación",
       "proposers": "Validadores",
       "accounts": "Cuentas",

@@ -173,7 +173,6 @@
       "ledger-index": "원장 지표",
       "close-time": "폐쇄시간",
       "transactions": "거래",
-      "txs-per-sec": "초",
       "quorum": "유효 쿼럼",
       "proposers": "제안자",
       "accounts": "거래",

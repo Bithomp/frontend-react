@@ -3,7 +3,17 @@ import { useRouter } from 'next/router'
 
 import { server, explorerName, xahauNetwork } from '../utils'
 
-export default function SEO({ title, titleWithNetwork, description, image, page, images, websiteName, noindex }) {
+export default function SEO({
+  title,
+  titleWithNetwork,
+  description,
+  descriptionWithNetwork,
+  image,
+  page,
+  images,
+  websiteName,
+  noindex
+}) {
   const router = useRouter()
 
   description = description || title
@@ -94,7 +104,7 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
   return (
     <NextSeo
       title={titleWithNetwork ? title : explorerName + ' ' + title}
-      description={description + ' ' + explorerName}
+      description={descriptionWithNetwork ? description : description + ' ' + explorerName}
       openGraph={openGraph}
       twitter={twitter}
       languageAlternates={languageAlternates}

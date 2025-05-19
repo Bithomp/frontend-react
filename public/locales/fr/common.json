@@ -173,7 +173,6 @@
       "ledger-index": "Indice du registre",
       "close-time": "Heure de fermeture",
       "transactions": "Transactions",
-      "txs-per-sec": "tx/s",
       "quorum": "Quorum de validation",
       "proposers": "Proposeurs",
       "accounts": "Comptes",
