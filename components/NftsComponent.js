@@ -1,4 +1,3 @@
-
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -372,8 +371,10 @@ export default function NftsComponent({
 
                 if (key.toLowerCase() === 'attributes' && nftList[i].metadata[key]) {
                   Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
-                    if (nftList[i].metadata[key][attribute].trait_type) {
-                      let traitType = nftList[i].metadata[key][attribute]?.trait_type?.toString()
+                    if (nftList[i].metadata[key][attribute].trait_type || nftList[i].metadata[key][attribute].name) {
+                      let traitType =
+                        nftList[i].metadata[key][attribute]?.trait_type?.toString() ||
+                        nftList[i].metadata[key][attribute].name?.toString()
                       let traitValue = nftList[i].metadata[key][attribute]?.value?.toString()
                       traitType = traitType?.replace(/"/g, '""')
                       traitValue = traitValue?.replace(/"/g, '""')
@@ -407,9 +408,7 @@ export default function NftsComponent({
           setData([...nftsData, ...nftList])
         } else {
           if (marker === 'first') {
-            setErrorMessage(
-              t('nfts.no-nfts') + " " + (hasActiveFilters()  ? t('general.change-filters') : "" )
-            )
+            setErrorMessage(t('nfts.no-nfts') + ' ' + (hasActiveFilters() ? t('general.change-filters') : ''))
           } else {
             setHasMore(false)
           }
@@ -621,11 +620,11 @@ export default function NftsComponent({
       taxon ||
       owner ||
       search ||
-      mintedPeriod && mintedPeriod !== 'all' ||
+      (mintedPeriod && mintedPeriod !== 'all') ||
       burnedPeriod ||
       !includeBurned ||
       !includeWithoutMediaData ||
-      (listTab === 'onSale')
+      listTab === 'onSale'
     )
   }
 
