@@ -42,7 +42,7 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
   useEffect(() => {
     let queryAddList = []
     let queryRemoveList = []
-    if (isValidTaxon(taxon)) {
+    if (isValidTaxon(taxon) && taxon !== '0') {
       queryAddList.push({
         name: 'taxon',
         value: taxon
