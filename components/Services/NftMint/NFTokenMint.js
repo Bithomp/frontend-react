@@ -324,16 +324,14 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
                   />
                 </div>
                 <br />
-                <div>
-                  <AddressInput
-                    title="Destination (optional - account to receive the NFT):"
-                    placeholder="Destination address"
-                    setValue={onDestinationChange}
-                    initialValue={destination}
-                    name="destination"
-                    hideButton={true}
-                  />
-                </div>
+                <AddressInput
+                  title="Destination (optional - account to receive the NFT):"
+                  placeholder="Destination address"
+                  setValue={onDestinationChange}
+                  initialValue={destination}
+                  name="destination"
+                  hideButton={true}
+                />
                 <br />
                 <div>
                   <span className="input-title">Offer expiration</span>
@@ -361,16 +359,14 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
             {mintForOtherAccount && (
               <>
                 <br />
-                <div>
-                  <AddressInput
-                    title="Issuer address (account you're minting for):"
-                    placeholder="Issuer address"
-                    setValue={onIssuerChange}
-                    initialValue={issuer}
-                    name="issuer"
-                    hideButton={true}
-                  />
-                </div>
+                <AddressInput
+                  title="Issuer address (account you're minting for):"
+                  placeholder="Issuer address"
+                  setValue={onIssuerChange}
+                  initialValue={issuer}
+                  name="issuer"
+                  hideButton={true}
+                />
                 <p className="orange">
                   Note: You must be authorized as a minter for this account, or the transaction will fail.
                 </p>
