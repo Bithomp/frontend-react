@@ -37,11 +37,10 @@
     "bignumber.js": "^9.1.2",
     "buffer": "^6.0.3",
     "crypto-hash": "^2.0.1",
+    "dayjs": "^1.11.13",
     "i18n-iso-countries": "^7.4.0",
     "i18next": "^22.4.10",
     "mobile-detect": "^1.4.5",
-    "moment": "^2.29.3",
-    "moment-duration-format": "^2.3.2",
     "next": "^14.2.16",
     "next-i18next": "^13.2.1",
     "next-qrcode": "^2.5.1",
@@ -92,7 +91,6 @@
     "eslint": "8.57.0",
     "eslint-config-next": "^14.2.14",
     "husky": "^8.0.3",
-    "jquery": "^3.7.1",
     "typescript": "^4.9.5",
     "webpack": "^5.0.0"
   }
