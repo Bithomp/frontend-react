@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { encode, server, network } from '../../../utils'
+import { encode, server, network, addAndRemoveQueryParams } from '../../../utils'
 import { isValidTaxon } from '../../../utils/nft'
 import CheckBox from '../../UI/CheckBox'
 import AddressInput from '../../UI/AddressInput'
 import ExpirationSelect from '../../UI/ExpirationSelect'
+import { useRouter } from 'next/router'
 
-export default function NFTokenMint({ setSignRequest }) {
-  const [uri, setUri] = useState('')
+export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
+  const router = useRouter()
+  const [uri, setUri] = useState(uriQuery)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
   const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [minted, setMinted] = useState('')
-  const [taxon, setTaxon] = useState('0')
+  const [taxon, setTaxon] = useState(taxonQuery || '0')
   const [flags, setFlags] = useState({
     tfBurnable: false,
     tfOnlyXRP: false,
@@ -37,9 +39,34 @@ export default function NFTokenMint({ setSignRequest }) {
     }
   }, [agreeToSiteTerms, agreeToPrivacyPolicy])
 
+  useEffect(() => {
+    let queryAddList = []
+    let queryRemoveList = []
+    if (isValidTaxon(taxon) && taxon !== '0') {
+      queryAddList.push({
+        name: 'taxon',
+        value: taxon
+      })
+      setErrorMessage('')
+    } else {
+      queryRemoveList.push('taxon')
+    }
+    if (uri) {
+      queryAddList.push({
+        name: 'uri',
+        value: uri
+      })
+      setErrorMessage('')
+    } else {
+      queryRemoveList.push('uri')
+    }
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taxon, uri])
+
   const onUriChange = (e) => {
-    let uri = e.target.value
-    setUri(uri)
+    let uriValue = e.target.value
+    setUri(uriValue)
   }
 
   const onTaxonChange = (e) => {
@@ -114,11 +141,6 @@ export default function NFTokenMint({ setSignRequest }) {
 
     if (mintForOtherAccount && (!issuer || !issuer.trim())) {
       setErrorMessage('Please enter an Issuer address when minting for another account.')
-      return
-    }
-
-    if (createSellOffer && (amount === '' || parseFloat(amount) < 0 || isNaN(parseFloat(amount)))) {
-      setErrorMessage('Please enter a valid Amount for the Sell offer.')
       return
     }
 
@@ -310,6 +332,7 @@ export default function NFTokenMint({ setSignRequest }) {
                   name="destination"
                   hideButton={true}
                 />
+                <br />
                 <div>
                   <span className="input-title">Offer expiration</span>
                   <ExpirationSelect onChange={onExpirationChange} />
@@ -336,23 +359,21 @@ export default function NFTokenMint({ setSignRequest }) {
             {mintForOtherAccount && (
               <>
                 <br />
-                <div>
-                  <AddressInput
-                    title="Issuer address (account you're minting for):"
-                    placeholder="Issuer address"
-                    setValue={onIssuerChange}
-                    initialValue={issuer}
-                    name="issuer"
-                    hideButton={true}
-                  />
-                </div>
-                <p className="orange">
+                <AddressInput
+                  title="Issuer address (account you're minting for):"
+                  placeholder="Issuer address"
+                  setValue={onIssuerChange}
+                  initialValue={issuer}
+                  name="issuer"
+                  hideButton={true}
+                />
+                <span className="orange">
                   Note: You must be authorized as a minter for this account, or the transaction will fail.
-                </p>
+                </span>
               </>
             )}
 
-            <div style={{ height: 32 }} />
+            <br />
 
             {/* Terms and Privacy */}
             <div>
