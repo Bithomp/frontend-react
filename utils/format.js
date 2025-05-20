@@ -74,7 +74,7 @@ export const AddressWithIconFilled = ({ data, name, copyButton }) => {
 export const nativeCurrencyToFiat = (params) => {
   if (devNet) return ''
   const { amount, selectedCurrency, fiatRate } = params
-  if (!amount || !selectedCurrency || !fiatRate || !isAmountInNativeCurrency(amount)) return ''
+  if (!amount || amount === '0' || !selectedCurrency || !fiatRate || !isAmountInNativeCurrency(amount)) return ''
 
   let calculatedAmount = null
 
@@ -819,7 +819,7 @@ export const duration = (t, seconds, options) => {
   if (hours > 0) parts.push(`${hours}${t('units.hours-short')}`)
   if (minutes > 0) parts.push(`${minutes}${t('units.minutes-short')}`)
   if (options?.seconds && secs > 0) parts.push(`${secs}${t('units.seconds-short')}`)
-  
+
   return parts.join(' ')
 }
 
