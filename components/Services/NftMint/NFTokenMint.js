@@ -7,7 +7,7 @@ import AddressInput from '../../UI/AddressInput'
 import ExpirationSelect from '../../UI/ExpirationSelect'
 import { useRouter } from 'next/router'
 
-export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) {
+export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
   const router = useRouter()
   const [uri, setUri] = useState(uriQuery)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
@@ -367,13 +367,13 @@ export default function NFTokenMint({ setSignRequest, uriQuery , taxonQuery  }) 
                   name="issuer"
                   hideButton={true}
                 />
-                <p className="orange">
+                <span className="orange">
                   Note: You must be authorized as a minter for this account, or the transaction will fail.
-                </p>
+                </span>
               </>
             )}
 
-            <div style={{ height: 32 }} />
+            <br />
 
             {/* Terms and Privacy */}
             <div>
