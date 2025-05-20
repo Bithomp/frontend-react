@@ -1,25 +1,27 @@
 import { Buffer } from 'buffer'
+import dayjs from 'dayjs'
+import * as durationPlugin from 'dayjs/plugin/duration'
+import * as relativeTimePlugin from 'dayjs/plugin/relativeTime'
+import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
 import { Trans } from 'next-i18next'
-import moment from 'moment'
-import momentDurationFormatSetup from 'moment-duration-format'
+import React from 'react'
 
+import CopyButton from '../components/UI/CopyButton'
 import LinkIcon from '../public/images/link.svg'
+import { mpUrl } from './nft'
 import {
-  stripText,
-  nativeCurrency,
-  nativeCurrenciesImages,
   avatarServer,
   devNet,
   isAmountInNativeCurrency,
+  nativeCurrency,
+  nativeCurrenciesImages,
+  stripText,
   xls14NftValue
 } from '.'
-import { mpUrl } from './nft'
-import Image from 'next/image'
-import CopyButton from '../components/UI/CopyButton'
 
-momentDurationFormatSetup(moment)
+dayjs.extend(durationPlugin)
+dayjs.extend(relativeTimePlugin)
 
 export const NiceNativeBalance = ({ amount }) => {
   return (
@@ -72,7 +74,7 @@ export const AddressWithIconFilled = ({ data, name, copyButton }) => {
 export const nativeCurrencyToFiat = (params) => {
   if (devNet) return ''
   const { amount, selectedCurrency, fiatRate } = params
-  if (!amount || !selectedCurrency || !fiatRate || !isAmountInNativeCurrency(amount)) return ''
+  if (!amount || amount === '0' || !selectedCurrency || !fiatRate || !isAmountInNativeCurrency(amount)) return ''
 
   let calculatedAmount = null
 
@@ -734,13 +736,13 @@ export const timeFromNow = (timestamp, i18n, type) => {
   } else {
     lang = i18n.language.slice(0, 2)
   }
-  moment.locale(lang)
+  dayjs.locale(lang)
 
   if (type === 'ripple') {
     timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
   }
 
-  return <span suppressHydrationWarning>{moment(timestamp * 1000, 'unix').fromNow()}</span>
+  return <span suppressHydrationWarning>{dayjs(timestamp * 1000, 'unix').fromNow()}</span>
 }
 
 export const fullDateAndTime = (timestamp, type = null, options) => {
@@ -803,30 +805,22 @@ export const expirationExpired = (t, timestamp, type) => {
 }
 
 export const duration = (t, seconds, options) => {
-  /*
-    years:   Y or y
-    months:  M
-    weeks:   W or w
-    days:    D or d
-    hours:   H or h
-    minutes: m
-    seconds: s
-    ms:      S
-  */
   if (!seconds) return ''
-  return moment
-    .duration(seconds, 'seconds')
-    .format(
-      'd[' +
-        t('units.days-short') +
-        '] h[' +
-        t('units.hours-short') +
-        '] m[' +
-        t('units.minutes-short') +
-        ']' +
-        (options?.seconds ? ' s[' + t('units.seconds-short') + ']' : ''),
-      { trim: 'both' }
-    )
+
+  const dur = dayjs.duration(seconds, 'seconds')
+  const parts = []
+
+  const days = Math.floor(dur.asDays())
+  const hours = dur.hours()
+  const minutes = dur.minutes()
+  const secs = dur.seconds()
+
+  if (days > 0) parts.push(`${days}${t('units.days-short')}`)
+  if (hours > 0) parts.push(`${hours}${t('units.hours-short')}`)
+  if (minutes > 0) parts.push(`${minutes}${t('units.minutes-short')}`)
+  if (options?.seconds && secs > 0) parts.push(`${secs}${t('units.seconds-short')}`)
+
+  return parts.join(' ')
 }
 
 //need to make dynamic fraction digits

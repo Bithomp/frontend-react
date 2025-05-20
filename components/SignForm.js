@@ -528,9 +528,13 @@ export default function SignForm({
           if (TransactionType === 'NFTokenMint') {
             if (meta.nftoken_id) {
               checkCrawlerStatus({ inLedger: includedInLedger, param: meta.nftoken_id, type: TransactionType })
+            } else {
+              //if no token found
+              closeSignInFormAndRefresh()
             }
             return
           } else if (TransactionType === 'URITokenMint') {
+            let foundToken = false
             for (let i = 0; i < meta.AffectedNodes.length; i++) {
               const node = meta.AffectedNodes[i]
               if (node.CreatedNode?.LedgerEntryType === 'URIToken') {
@@ -539,8 +543,12 @@ export default function SignForm({
                   param: node.CreatedNode.LedgerIndex,
                   type: TransactionType
                 })
+                foundToken = true
                 break
               }
+            }
+            if (!foundToken) {
+              closeSignInFormAndRefresh()
             }
             return
           }
@@ -707,6 +715,7 @@ export default function SignForm({
     setSignRequest(null)
     setAwaiting(false)
     setStatus('')
+    transactionFetched = false
   }
 
   const buttonStyle = {
