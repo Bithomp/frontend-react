@@ -21,7 +21,8 @@ import {
   TransactionSetRegularKey,
   TransactionTrustSet,
   TransactionURIToken,
-  TransactionRemit
+  TransactionRemit,
+  TransactionEnableAmendment
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
@@ -112,6 +113,8 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionURIToken
   } else if (txType === 'Remit') {
     TransactionComponent = TransactionRemit
+  } else if (txType === 'EnableAmendment') {
+    TransactionComponent = TransactionEnableAmendment
   } else {
     TransactionComponent = TransactionDetails
   }
