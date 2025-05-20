@@ -226,7 +226,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         <tr>
           <TData>Delivered amount</TData>
           <TData>
-            <span className="bold green">{amountFormat(outcome.deliveredAmount, { precise: true })}</span>
+            <span className="bold green">{amountFormat(outcome.deliveredAmount, { precise: 'nice' })}</span>
             {outcome.deliveredAmount?.issuer && (
               <>({addressUsernameOrServiceLink(outcome.deliveredAmount, 'issuer', { short: true })})</>
             )}
