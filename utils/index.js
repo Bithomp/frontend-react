@@ -586,16 +586,12 @@ export const isEmailValid = (x) => {
 }
 
 export const isUrlValid = (x) => {
-  let re = new RegExp(
-    '^(https?:\\/\\/)?' + // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-      '(\\#[-a-z\\d_]*)?$',
-    'i'
-  ) // fragment locator
-  return !!re.test(x)
+  try {
+    new URL(x)
+    return true
+  } catch (_) {
+    return false
+  }
 }
 
 export const stripDomain = (x) => {
