@@ -10,6 +10,7 @@ const getBalanceChanges = (data, address) => {
 export const addressBalanceChanges = (data, address) => {
   if (!data) return null
   const { outcome, specification } = data
+  if (!outcome) return null
   let allSourceBalanceChanges = getBalanceChanges(outcome.balanceChanges, address)
   if (specification.source.address !== address) {
     // if address we looking for is not an executor, return as it is
