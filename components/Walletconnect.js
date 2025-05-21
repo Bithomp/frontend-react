@@ -142,7 +142,9 @@ export function WalletConnect({
       try {
         sessionNew = await connect()
       } catch (err) {
-        if (err.message?.includes('No matching key')) {
+        if (err?.message?.includes('WebSocket connection failed')) {
+          console.warn('WebSocket connection failed')
+        } else if (err.message?.includes('No matching key')) {
           console.warn('Resetting WalletConnect storage due to invalid pairing')
           localStorage.clear()
           location.reload()
