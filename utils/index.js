@@ -431,7 +431,7 @@ export const networks = {
     server: 'https://bithomp.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/go/buy-first-xrp',
-    explorerName: 'XRPL',
+    explorerName: 'XRP Ledger',
     ledgerName: 'XRPL',
     minLedger: 32570,
     subname: ''
