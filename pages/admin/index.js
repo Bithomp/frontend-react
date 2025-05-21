@@ -383,6 +383,9 @@ export default function Admin({
                       language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
                     }}
                     onSuccess={setToken}
+                    onError={() => {
+                      // ignore Turnstile errors
+                    }}
                   />
                 )}
               </div>
