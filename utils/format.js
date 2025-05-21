@@ -952,7 +952,11 @@ export const decodeJsonMemo = (memopiece, options) => {
     }
   }
   if (memopiece[0] === '{') {
-    memopiece = JSON.parse(memopiece)
+    try {
+      memopiece = JSON.parse(memopiece)
+    } catch (e) {
+      return memopiece
+    }
     return codeHighlight(memopiece)
   }
   return ''
