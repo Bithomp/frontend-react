@@ -375,11 +375,9 @@ export default function SignForm({
 
   const ledgerwalletTxSending = (tx) => {
     setScreen('ledgerwallet')
-    if (tx.TransactionType === 'NFTokenCreateOffer') {
-      setStatus('Unfortunatelly, Ledger Wallet does not support NFTokenCreateOffer Transaction Type yet.')
-      return
-    }
-    setStatus('Please, connect your Ledger Wallet and open the XRP app.')
+    setStatus(
+      'Please, connect your Ledger Wallet and open the XRP app. Note: Nano S does not support some transactions.'
+    )
     ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
   }
 
