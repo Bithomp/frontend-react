@@ -3,6 +3,8 @@ import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
+import { xahauNetwork } from '../../utils'
+import Link from 'next/link'
 
 export const TransactionEnableAmendment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -21,6 +23,20 @@ export const TransactionEnableAmendment = ({ data, pageFiatRate, selectedCurrenc
           <TData>Amendment</TData>
           <TData className="bold">
             {specification.amendmentDetails.name} <CopyButton text={specification.amendmentDetails.name} />
+            {!xahauNetwork && (
+              <span>
+                {' '}
+                (
+                <a
+                  href={`https://xrpl.org/resources/known-amendments#${specification.amendmentDetails.name.toLowerCase()}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  read more
+                </a>
+                )
+              </span>
+            )}
           </TData>
         </tr>
       )}
@@ -33,13 +49,9 @@ export const TransactionEnableAmendment = ({ data, pageFiatRate, selectedCurrenc
       {specification.amendmentDetails?.introduced && (
         <tr>
           <TData>Introduced</TData>
-          <TData>{specification.amendmentDetails?.introduced}</TData>
-        </tr>
-      )}
-      {specification.amendmentDetails?.enabled !== undefined && (
-        <tr>
-          <TData>Enabled</TData>
-          <TData>{specification.amendmentDetails.enabled ? 'true' : 'false'}</TData>
+          <TData>
+            {specification.amendmentDetails?.introduced} (<Link href="/amendments">view other amendments</Link>)
+          </TData>
         </tr>
       )}
     </TransactionCard>
