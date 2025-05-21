@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
+import { xahauNetwork } from '../utils'
 import CheckBox from '../components/UI/CheckBox'
 import SEO from '../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../utils/mobile'
+import { IoChevronForward, IoArrowBack } from 'react-icons/io5'
+import { useTheme } from '../components/Layout/ThemeContext'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -24,11 +27,13 @@ const ACCOUNT_FLAGS = {
   disallowIncomingCheck: 13,
   disallowIncomingNFTokenOffer: 12,
   disallowIncomingPayChan: 14,
-  disallowIncomingTrustline: 15
+  disallowIncomingTrustline: 15,
+  xahauSpecificFlag: 99 // <-- placeholder value, replace with real one if known
 }
 
 export default function AccountSettings({ account, setSignRequest }) {
   const { t } = useTranslation(['account-settings', 'common'])
+  const { theme } = useTheme()
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
@@ -39,8 +44,69 @@ export default function AccountSettings({ account, setSignRequest }) {
     disallowIncomingCheck: false,
     disallowIncomingNFTokenOffer: false,
     disallowIncomingPayChan: false,
-    disallowIncomingTrustline: false
+    disallowIncomingTrustline: false,
+    xahauSpecificFlag: false
   })
+  const [selectedFlag, setSelectedFlag] = useState(null)
+  const [editedFlag, setEditedFlag] = useState(null)
+
+  // Determine which flags to use based on network
+  const flagKeys = xahauNetwork
+    ? [
+        'requireDestTag',
+        'disallowXRP',
+        'disallowIncomingCheck',
+        'disallowIncomingPayChan',
+        'disallowIncomingTrustline',
+        'xahauSpecificFlag'
+      ]
+    : [
+        'requireDestTag',
+        'disallowXRP',
+        'disallowIncomingCheck',
+        'disallowIncomingNFTokenOffer',
+        'disallowIncomingPayChan',
+        'disallowIncomingTrustline'
+      ]
+
+  // Flag display names and descriptions
+  const flagDetails = {
+    requireDestTag: {
+      name: 'Require Destination Tag',
+      displayName: 'Require Destination Tag',
+      status: (value) => (value ? 'Yes' : 'No')
+    },
+    disallowXRP: {
+      name: 'Disallow XRP',
+      displayName: 'Allow Incoming XRP',
+      status: (value) => (value ? 'Blocked' : 'Allowed')
+    },
+    disallowIncomingCheck: {
+      name: 'Disallow Incoming Checks',
+      displayName: 'Allow Incoming Checks',
+      status: (value) => (value ? 'Blocked' : 'Allowed')
+    },
+    disallowIncomingNFTokenOffer: {
+      name: 'Disallow Incoming NFT Offers',
+      displayName: 'Allow Incoming NFT Offers',
+      status: (value) => (value ? 'Blocked' : 'Allowed')
+    },
+    disallowIncomingPayChan: {
+      name: 'Disallow Incoming Payment Channels',
+      displayName: 'Allow Incoming PayChan',
+      status: (value) => (value ? 'Blocked' : 'Allowed')
+    },
+    disallowIncomingTrustline: {
+      name: 'Disallow Incoming Trust Lines',
+      displayName: 'Allow Incoming Trustline',
+      status: (value) => (value ? 'Blocked' : 'Allowed')
+    },
+    xahauSpecificFlag: {
+      name: 'Xahau Specific Permission',
+      displayName: 'Xahau Specific Permission',
+      status: (value) => (value ? 'Enabled' : 'Disabled')
+    }
+  }
 
   useEffect(() => {
     if (!account?.address) {
@@ -53,14 +119,11 @@ export default function AccountSettings({ account, setSignRequest }) {
         setAccountData(response.data)
         if (response.data?.ledgerInfo?.flags) {
           const ledgerFlags = response.data.ledgerInfo.flags
-          setFlags({
-            requireDestTag: !!ledgerFlags.requireDestTag,
-            disallowXRP: !!ledgerFlags.disallowXRP,
-            disallowIncomingCheck: !!ledgerFlags.disallowIncomingCheck,
-            disallowIncomingNFTokenOffer: !!ledgerFlags.disallowIncomingNFTokenOffer,
-            disallowIncomingPayChan: !!ledgerFlags.disallowIncomingPayChan,
-            disallowIncomingTrustline: !!ledgerFlags.disallowIncomingTrustline
+          const newFlags = {}
+          flagKeys.forEach((flag) => {
+            newFlags[flag] = !!ledgerFlags[flag]
           })
+          setFlags(newFlags)
         }
         setLoading(false)
       } catch (error) {
@@ -70,15 +133,26 @@ export default function AccountSettings({ account, setSignRequest }) {
     }
     fetchAccountData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account])
+  }, [account, xahauNetwork])
 
   const handleFlagChange = (flag) => {
-    setFlags((prev) => ({ ...prev, [flag]: !prev[flag] }))
-    setErrorMessage('')
-    setSuccessMessage('')
+    if (selectedFlag === flag) {
+      setSelectedFlag(null)
+    } else {
+      setSelectedFlag(flag)
+      setEditedFlag(flags[flag])
+      setErrorMessage('')
+      setSuccessMessage('')
+    }
   }
 
-  const onSubmit = async () => {
+  const toggleFlag = () => {
+    if (selectedFlag) {
+      setEditedFlag(!editedFlag)
+    }
+  }
+
+  const saveFlag = () => {
     if (!account?.address) {
       setErrorMessage(t('error.not-signed-in'))
       return
@@ -90,34 +164,66 @@ export default function AccountSettings({ account, setSignRequest }) {
     }
 
     const currentFlags = accountData.ledgerInfo.flags
-    const transactions = []
 
-    Object.keys(ACCOUNT_FLAGS).forEach((flag) => {
-      if (currentFlags[flag] !== flags[flag]) {
-        const tx = {
-          TransactionType: 'AccountSet',
-          Account: account.address
-        }
-        if (flags[flag]) {
-          tx.SetFlag = ACCOUNT_FLAGS[flag]
-        } else {
-          tx.ClearFlag = ACCOUNT_FLAGS[flag]
-        }
-        transactions.push(tx)
-      }
-    })
-
-    if (transactions.length === 0) {
+    // Check if the flag value has actually changed
+    if (currentFlags[selectedFlag] === editedFlag) {
       setErrorMessage('No changes to save.')
       return
     }
 
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address
+    }
+
+    if (editedFlag) {
+      tx.SetFlag = ACCOUNT_FLAGS[selectedFlag]
+    } else {
+      tx.ClearFlag = ACCOUNT_FLAGS[selectedFlag]
+    }
+
+    // Create a transactions array with just one transaction
+    const transactions = [tx]
+
+    // Use the exact format as specified
     setSignRequest({
       request: transactions[0],
       callback: () => {
-        setSuccessMessage('Settings updated successfully.')  
+        setSuccessMessage('Settings updated successfully.')
       }
     })
+
+    // Update the flags state with the new value
+    setFlags((prev) => ({
+      ...prev,
+      [selectedFlag]: editedFlag
+    }))
+
+    // Update accountData to reflect the new flag state
+    setAccountData((prev) => {
+      if (prev && prev.ledgerInfo && prev.ledgerInfo.flags) {
+        return {
+          ...prev,
+          ledgerInfo: {
+            ...prev.ledgerInfo,
+            flags: {
+              ...prev.ledgerInfo.flags,
+              [selectedFlag]: editedFlag
+            }
+          }
+        }
+      }
+      return prev
+    })
+
+    // Close the detail view
+    setSelectedFlag(null)
+  }
+
+  const cancelEdit = () => {
+    setSelectedFlag(null)
+    setErrorMessage('')
+    setSuccessMessage('')
   }
 
   if (loading) {
@@ -142,7 +248,65 @@ export default function AccountSettings({ account, setSignRequest }) {
         <SEO title={t('title')} />
         <div className="content-center">
           <h1 className="center">{t('title')}</h1>
-          <p className="center"></p>
+          <p className="center">{t('error.not-signed-in')}</p>
+        </div>
+      </>
+    )
+  }
+
+  // Render flag detail view when a flag is selected
+  if (selectedFlag) {
+    const flag = selectedFlag
+    const detail = flagDetails[flag]
+
+    return (
+      <>
+        <SEO title={detail.name} />
+        <div className="content-center account-settings">
+          <div className="back-button-container">
+            <button
+              className="back-button"
+              onClick={cancelEdit}              
+            >
+              <IoArrowBack size={20} color={theme === 'dark' ? '#fff' : '#000'} />
+              <span style={{ marginLeft: '5px' }}>Back</span>
+            </button>
+          </div>
+
+          <h1 className="center">{detail.name}</h1>
+          <div className="flag-toggle-container">
+            <div className="flag-toggle-item">
+              <label className="flag-toggle-label">
+                {flag === 'requireDestTag' ? 'Enforce destination tag' : detail.displayName}
+              </label>
+              <CheckBox
+                checked={editedFlag}
+                setChecked={toggleFlag}
+                name={`toggle-${flag}`}
+                style={{
+                  marginTop: '-16px'
+                }}
+              />
+            </div>
+
+            <button
+              className="button-action"
+              onClick={saveFlag}              
+            >
+              Save
+            </button>
+          </div>
+
+          {errorMessage && (
+            <p className="red center">
+              {errorMessage}
+            </p>
+          )}
+          {successMessage && (            
+            <p className="green center">
+              {successMessage}
+            </p>
+          )}
         </div>
       </>
     )
@@ -151,99 +315,38 @@ export default function AccountSettings({ account, setSignRequest }) {
   return (
     <>
       <SEO title={t('title')} />
-      <div className="content-center">
+      <div className="content-center account-settings">
         <h1 className="center">Account Settings</h1>
-        <p className="center">
-          Manage your account settings on the XRP Ledger.
-        </p>
-        <div className="page-services-nft-mint">
-          <h2>Permissions</h2>
-          <div>
-            <CheckBox
-              checked={flags.requireDestTag}
-              setChecked={() => handleFlagChange('requireDestTag')}
-              name="require-dest-tag"
+        <p className="center">Manage your account settings on the XRP Ledger.</p>
+        <div>
+          {flagKeys.map((flag) => (
+            <div
+              key={flag}
+              className="permission-item"
+              onClick={() => handleFlagChange(flag)}      
             >
-              Require Destination Tag
-            </CheckBox>
-            <p className="grey">
-              Require a destination tag to send transactions to this account.
+              <div>
+                <div className="permission-item-title">{flagDetails[flag].displayName}</div>
+                <div className="permission-item-status">
+                  {flagDetails[flag].status(flags[flag])}
+                </div>
+              </div>
+              <IoChevronForward size={20} color={theme === 'dark' ? '#fff' : '#6b7280'} />
+            </div>
+          ))}
+          {errorMessage && (
+            <p className="red center">
+              {errorMessage}
             </p>
-          </div>
-          <div>
-            <CheckBox
-              checked={flags.disallowXRP}
-              setChecked={() => handleFlagChange('disallowXRP')}
-              name="disallow-xrp"
-            >
-              Disallow XRP
-            </CheckBox>
-            <p className="grey">
-              XRP should not be sent to this account (advisory; not enforced by the protocol).
+          )}
+          {successMessage && (
+            <p className="green center">
+              {successMessage}
             </p>
-          </div>
-          <div>
-            <CheckBox
-              checked={flags.disallowIncomingNFTokenOffer}
-              setChecked={() => handleFlagChange('disallowIncomingNFTokenOffer')}
-              name="disallow-nft-offers"
-            >
-              Disallow Incoming NFT Offers
-            </CheckBox>
-            <p className="grey">
-              Block incoming NFT offers.
-            </p>
-          </div>
-          <div>
-            <CheckBox
-              checked={flags.disallowIncomingCheck}
-              setChecked={() => handleFlagChange('disallowIncomingCheck')}
-              name="disallow-checks"
-            >
-              Disallow Incoming Checks
-            </CheckBox>
-            <p className="grey">
-              Block incoming Checks.
-            </p>
-          </div>
-          <div>
-            <CheckBox
-              checked={flags.disallowIncomingPayChan}
-              setChecked={() => handleFlagChange('disallowIncomingPayChan')}
-              name="disallow-paychan"
-            >
-              Disallow Incoming Payment Channels
-            </CheckBox>
-            <p className="grey">
-              Block incoming Payment Channels.
-            </p>
-          </div>
-          <div>
-            <CheckBox
-              checked={flags.disallowIncomingTrustline}
-              setChecked={() => handleFlagChange('disallowIncomingTrustline')}
-              name="disallow-trustline"
-            >
-              Disallow Incoming Trust Lines
-            </CheckBox>
-            <p className="grey">
-              Block incoming trust lines.
-            </p>
-          </div>
-          <div style={{ height: 32 }} />
-          <p className="center">
-            <button className="button-action" onClick={onSubmit} name="submit-button">
-              Save Settings
-            </button>
-          </p>
-          {errorMessage && <p className="red center">{errorMessage}</p>}
-          {successMessage && <p className="green center">{successMessage}</p>}
-          <div style={{ marginTop: '20px' }}>
-            <p className="center">
-              <Link href={`/account/${account.address}`}>
-                Back to my account
-              </Link>
-            </p>
+          )}
+          <br />
+          <div className="center">
+            <Link href={`/account/${account.address}`}>Back to my account</Link>
           </div>
         </div>
       </div>
