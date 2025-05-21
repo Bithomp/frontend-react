@@ -24,8 +24,8 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
 
   const checkChanges = outcome?.checkChanges
 
-  //here we need to check source balance changes, as executor can be source/destination or anyone when expired
-  const destinationBalanceChangesList = addressBalanceChanges(data, checkChanges.destination.address)
+  //here we need to check destination balance changes, as executor can be source/destination or anyone when expired
+  const destinationBalanceChangesList = addressBalanceChanges(data, checkChanges?.destination?.address)
 
   /*
   {
@@ -57,79 +57,87 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
-      <tr>
-        <TData>Source</TData>
-        <TData>
-          <AddressWithIconFilled data={checkChanges.source} name="address" />
-        </TData>
-      </tr>
-      {checkChanges.source?.tag !== undefined && !dapp && (
-        <tr>
-          <TData>Source tag</TData>
-          <TData className="bold">{checkChanges.source.tag}</TData>
-        </tr>
-      )}
-      <tr>
-        <TData>Destination</TData>
-        <TData>
-          <AddressWithIconFilled data={checkChanges.destination} name="address" />
-        </TData>
-      </tr>
-      {checkChanges.destination?.tag !== undefined && (
-        <tr>
-          <TData>Destination tag</TData>
-          <TData className="bold">{checkChanges.destination.tag}</TData>
-        </tr>
-      )}
-      {tx?.InvoiceID && (
-        <tr>
-          <TData>Invoice ID</TData>
-          <TData>
-            {shortHash(tx.InvoiceID, 10)} <CopyButton text={tx.InvoiceID} />
-          </TData>
-        </tr>
+      {checkChanges && (
+        <>
+          {checkChanges.source && (
+            <tr>
+              <TData>Source</TData>
+              <TData>
+                <AddressWithIconFilled data={checkChanges.source} name="address" />
+              </TData>
+            </tr>
+          )}
+          {checkChanges.source?.tag !== undefined && !dapp && (
+            <tr>
+              <TData>Source tag</TData>
+              <TData className="bold">{checkChanges.source.tag}</TData>
+            </tr>
+          )}
+          {checkChanges.destination && (
+            <tr>
+              <TData>Destination</TData>
+              <TData>
+                <AddressWithIconFilled data={checkChanges?.destination} name="address" />
+              </TData>
+            </tr>
+          )}
+          {checkChanges.destination?.tag !== undefined && (
+            <tr>
+              <TData>Destination tag</TData>
+              <TData className="bold">{checkChanges.destination.tag}</TData>
+            </tr>
+          )}
+          {tx?.InvoiceID && (
+            <tr>
+              <TData>Invoice ID</TData>
+              <TData>
+                {shortHash(tx.InvoiceID, 10)} <CopyButton text={tx.InvoiceID} />
+              </TData>
+            </tr>
+          )}
+
+          {checkChanges.checkID && (
+            <tr>
+              <TData>Check ID</TData>
+              <TData>
+                {shortHash(checkChanges.checkID, 10)} <CopyButton text={checkChanges.checkID} />
+              </TData>
+            </tr>
+          )}
+
+          {checkChanges.sendMax && (
+            <tr>
+              <TData>Max amount</TData>
+              <TData>
+                <span className="bold orange">{amountFormat(checkChanges.sendMax)}</span>
+                {checkChanges.sendMax?.issuer && (
+                  <>({addressUsernameOrServiceLink(checkChanges.sendMax, 'issuer', { short: true })})</>
+                )}
+                {nativeCurrencyToFiat({
+                  amount: checkChanges.sendMax,
+                  selectedCurrency,
+                  fiatRate: pageFiatRate
+                })}
+              </TData>
+            </tr>
+          )}
+
+          {checkChanges.expiration && (
+            <tr>
+              <TData className={timestampExpired(checkChanges.expiration) ? 'red' : ''}>
+                {expirationExpired(t, checkChanges.expiration)}
+              </TData>
+              <TData>
+                {timeFromNow(checkChanges.expiration, i18n)}
+                {', '}
+                {fullDateAndTime(checkChanges.expiration)}
+              </TData>
+            </tr>
+          )}
+        </>
       )}
 
-      {checkChanges?.checkID && (
-        <tr>
-          <TData>Check ID</TData>
-          <TData>
-            {shortHash(checkChanges?.checkID, 10)} <CopyButton text={checkChanges?.checkID} />
-          </TData>
-        </tr>
-      )}
-
-      {checkChanges.sendMax && (
-        <tr>
-          <TData>Max amount</TData>
-          <TData>
-            <span className="bold orange">{amountFormat(checkChanges.sendMax)}</span>
-            {checkChanges.sendMax?.issuer && (
-              <>({addressUsernameOrServiceLink(checkChanges.sendMax, 'issuer', { short: true })})</>
-            )}
-            {nativeCurrencyToFiat({
-              amount: checkChanges.sendMax,
-              selectedCurrency,
-              fiatRate: pageFiatRate
-            })}
-          </TData>
-        </tr>
-      )}
-
-      {checkChanges.expiration && (
-        <tr>
-          <TData className={timestampExpired(checkChanges.expiration) ? 'red' : ''}>
-            {expirationExpired(t, checkChanges.expiration)}
-          </TData>
-          <TData>
-            {timeFromNow(checkChanges.expiration, i18n)}
-            {', '}
-            {fullDateAndTime(checkChanges.expiration)}
-          </TData>
-        </tr>
-      )}
-
-      {tx.TransactionType === 'CheckCash' && (
+      {tx.TransactionType === 'CheckCash' && destinationBalanceChangesList?.length > 0 && (
         <tr>
           <TData>
             Redeemed
