@@ -55,7 +55,7 @@ export default function Did({ data, setSignRequest, account, ledgerTimestamp }) 
 
   if (!didData) return ''
 
-  const url = didData.url
+  const url = decode(didData.uri)
 
   const idNode = (
     <>
