@@ -4,6 +4,15 @@ import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import countries from 'i18n-iso-countries'
 import Cookies from 'universal-cookie'
 
+export const safeClone = (obj) => {
+  if (typeof structuredClone === 'function') {
+    return structuredClone(obj)
+  } else {
+    // Fallback: JSON clone (only for simple objects, doesmt work for functions, Date, Map, Set etc)
+    return JSON.parse(JSON.stringify(obj))
+  }
+}
+
 export const cookieParams = { path: '/', maxAge: 31536000 }
 
 export const useCookie = (key, defaultValue) => {
