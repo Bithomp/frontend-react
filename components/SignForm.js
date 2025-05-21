@@ -613,8 +613,8 @@ export default function SignForm({
       setStatus(t('signin.status.awaiting-broker', { serviceName: broker }))
       if (broker === 'bidds') {
         setAwaiting(true)
-        const response = await axios('/v2/bidds/transaction/broker/' + txHash).catch((error) => {
-          console.log(error)
+        const response = await axios('/v2/bidds/transaction/broker/' + txHash).catch(() => {
+          console.log('ERROR: can not get bidds transaction')
           setStatus(t('signin.status.failed-broker', { serviceName: broker }))
           closeSignInFormAndRefresh() //setAwaiting false inside
         })

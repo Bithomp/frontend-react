@@ -36,8 +36,8 @@ const fiatAmountAt = async (payment) => {
     .get(
       'v2/rates/history/nearest/eur?date=' + payment.processedAt + '000' //13 digits
     )
-    .catch((error) => {
-      console.log(error)
+    .catch(() => {
+      console.log("ERROR: can't get history rate")
     })
   if (rate?.data?.eur) {
     return niceNumber((payment.amount / 1000000) * rate.data.eur, 2, 'EUR')

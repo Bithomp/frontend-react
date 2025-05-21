@@ -22,7 +22,7 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
   const getApiData = async () => {
     const partnerData = await axiosAdmin.get('partner').catch((error) => {
       if (error && error.message !== 'canceled') {
-        console.log(error)
+        console.log("ERROR: can't get partner data")
         if (error.response?.data?.error === 'errors.token.required') {
           router.push('/admin')
         }
@@ -59,7 +59,7 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
       .put('partner/partner', { country: billingCountry }, { baseUrl: '/api/' })
       .catch((error) => {
         if (error && error.message !== 'canceled') {
-          console.log(error)
+          console.log("ERROR: can't save country")
         }
       })
     if (data?.data?.country) {

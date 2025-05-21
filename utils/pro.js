@@ -101,7 +101,7 @@ export const removeProAddress = async (id, callback) => {
 export const updateProAddress = async (id, data) => {
   if (!id || !data) return
   //{ settings: { escrowsExecution: false, nftokensOffersCancellation: true }}
-  await axiosAdmin.put('user/address/' + id, data).catch((error) => {
-    console.log(error)
+  await axiosAdmin.put('user/address/' + id, data).catch(() => {
+    console.log("ERROR: can't update pro address")
   })
 }

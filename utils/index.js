@@ -275,8 +275,8 @@ export const useLocalStorage = (key, initialValue) => {
         const valueToStore = value instanceof Function ? value(storedValue) : value
         setState(valueToStore)
         localStorage.setItem(key, JSON.stringify(valueToStore))
-      } catch (error) {
-        console.log(error)
+      } catch {
+        console.log('Error saving to localStorage')
       }
     },
     [key, setState]
@@ -286,7 +286,7 @@ export const useLocalStorage = (key, initialValue) => {
     try {
       localStorage.removeItem(key)
     } catch {
-      console.log(error)
+      console.log("ERROR: can't remove from localStorage")
     }
   }, [key])
 
