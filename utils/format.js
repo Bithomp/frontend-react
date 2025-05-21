@@ -636,10 +636,10 @@ export const niceCurrency = (currency) => {
   if (currency.length > 3) {
     if (firstTwoNumbers === '01') {
       // deprecated demurraging/interest-bearing
-      type = 'IOU demurraging'
       let currencyText = Buffer.from(currency.substr(2, 8), 'hex')
-      currencyText = currencyText.substr(0, 3)
+      currencyText = currencyText.toString().substr(0, 3)
       let profit = currency.substr(16, 16)
+      let valuePrefix = ''
       if (profit === 'C1F76FF6ECB0BAC6' || profit === 'C1F76FF6ECB0CCCD') {
         valuePrefix = '(-0.5%pa)'
       } else if (profit === '41F76FF6ECB0BAC6' || profit === '41F76FF6ECB0CCCD') {
@@ -659,7 +659,7 @@ export const niceCurrency = (currency) => {
         */
         valuePrefix = '(??%pa)'
       }
-      currency = currencyText
+      currency = currencyText + ' ' + valuePrefix
     } else if (firstTwoNumbers === '02') {
       currency = Buffer.from(currency.substring(16), 'hex')
     } else if (firstTwoNumbers === '03') {
