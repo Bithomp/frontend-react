@@ -328,7 +328,6 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
                   title="Destination (optional - account to receive the NFT):"
                   placeholder="Destination address"
                   setValue={onDestinationChange}
-                  initialValue={destination}
                   name="destination"
                   hideButton={true}
                 />
@@ -363,7 +362,6 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
                   title="Issuer address (account you're minting for):"
                   placeholder="Issuer address"
                   setValue={onIssuerChange}
-                  initialValue={issuer}
                   name="issuer"
                   hideButton={true}
                 />
