@@ -556,6 +556,14 @@ export const amountFormat = (amount, options = {}) => {
     textCurrency = textCurrency?.trim()
   }
 
+  if (!isNaN(textCurrency?.trim())) {
+    textCurrency = textCurrency?.trim()
+    textCurrency = '"' + textCurrency + '"'
+    if (!options.noSpace) {
+      textCurrency = ' ' + textCurrency
+    }
+  }
+
   if (options.precise) {
     if (options.precise === 'nice') {
       return niceNumber(value, 0, null, 15) + ' ' + valuePrefix + ' ' + textCurrency
