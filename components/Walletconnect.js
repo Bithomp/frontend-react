@@ -142,7 +142,12 @@ export function WalletConnect({
       try {
         sessionNew = await connect()
       } catch (err) {
-        if (err.message === 'Modal closed') {
+        if (err.message?.includes('No matching key')) {
+          console.warn('Resetting WalletConnect storage due to invalid pairing')
+          localStorage.clear()
+          location.reload()
+          return
+        } else if (err.message === 'Modal closed') {
           return
         }
         setAwaiting(false)
