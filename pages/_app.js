@@ -30,6 +30,20 @@ import '../styles/components/nprogress.css'
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
 
+function useIsBot() {
+  const [isBot, setIsBot] = useState(false)
+
+  useEffect(() => {
+    const ua = navigator.userAgent.toLowerCase()
+    const botKeywords = ['bot', 'crawl', 'slurp', 'spider']
+
+    const isBotUA = botKeywords.some((keyword) => ua.includes(keyword))
+    setIsBot(isBotUA)
+  }, [])
+
+  return isBot
+}
+
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
@@ -51,6 +65,7 @@ const MyApp = ({ Component, pageProps }) => {
   }, [])
 
   const router = useRouter()
+  const isBot = useIsBot()
 
   useEffect(() => {
     //pages where we need to show the latest fiat price
@@ -160,7 +175,7 @@ const MyApp = ({ Component, pageProps }) => {
             />
             <ScrollToTop />
             {/* available only on the mainnet and testnet, only on the client side, only when online */}
-            {(networkId === 0 || networkId === 1) && isClient && isOnline && (
+            {(networkId === 0 || networkId === 1) && isClient && isOnline && !isBot && (
               <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
             )}
             {(signRequest || isValidUUID(uuid)) && (
