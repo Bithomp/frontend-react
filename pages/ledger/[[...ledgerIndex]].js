@@ -7,8 +7,8 @@ import SEO from '../../components/SEO'
 
 import { network, ledgerName, minLedger, avatarServer } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { fullDateAndTime, shortHash, addressUsernameOrServiceLink } from '../../utils/format'
-import { LedgerLink } from '../../utils/links'
+import { fullDateAndTime, addressUsernameOrServiceLink } from '../../utils/format'
+import { LedgerLink, LinkTx } from '../../utils/links'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import Image from 'next/image'
 
@@ -181,7 +181,7 @@ export default function Ledger({ pageMeta, ledgerIndexQuery }) {
                           </td>
                           <td className="hide-on-mobile">{tx.txStatus}</td>
                           <td className="right">
-                            <a href={'/explorer/' + tx.hash}>{shortHash(tx.hash, 5)}</a>
+                            <LinkTx tx={tx.hash} short={5} />
                           </td>
                         </tr>
                       ))
