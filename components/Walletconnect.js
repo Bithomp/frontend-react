@@ -142,7 +142,10 @@ export function WalletConnect({
       try {
         sessionNew = await connect()
       } catch (err) {
-        if (err?.message?.includes('WebSocket connection failed')) {
+        if (
+          err?.message?.includes('WebSocket connection failed') ||
+          err?.message?.includes('Socket stalled when trying to connect')
+        ) {
           console.warn('WebSocket connection failed')
         } else if (err.message?.includes('No matching key')) {
           console.warn('Resetting WalletConnect storage due to invalid pairing')
@@ -151,6 +154,11 @@ export function WalletConnect({
           return
         } else if (err.message === 'Modal closed') {
           return
+        } else if (
+          err.message.includes('setExternalProvider is not a function') ||
+          err.message.includes('Cannot redefine property')
+        ) {
+          return // skip reporting
         }
         setAwaiting(false)
         if (err.message === 'Requested chains reside on testnet') {
