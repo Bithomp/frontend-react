@@ -1,13 +1,25 @@
-import ReactCountryFlag from 'react-country-flag'
-import { countriesTranslated } from '../../utils'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'next-i18next'
+
+import ReactCountryFlag from 'react-country-flag'
+
+import { countriesTranslated } from '../../utils'
 
 export default function CountryWithFlag({ countryCode, type }) {
   const { i18n } = useTranslation()
-  if (!countryCode) return ''
-  const countries = countriesTranslated(i18n.language)
+  const [countries, setCountries] = useState(null)
 
+  useEffect(() => {
+    const loadCountries = async () => {
+      const data = await countriesTranslated(i18n.language)
+      setCountries(data)
+    }
+    loadCountries()
+  }, [i18n.language])
+
+  if (!countryCode) return ''
   if (countryCode === 'unknown') return <b>Unknown</b>
+  if (!countries) return countryCode
 
   return (
     <>

@@ -7,7 +7,7 @@ import { useLocalStorage, countriesTranslated } from '../../utils'
 
 export default function CountrySelect({ countryCode, setCountryCode, type }) {
   const { i18n } = useTranslation()
-  const countries = countriesTranslated(i18n.language)
+  const [countries, setCountries] = useState(null)
 
   const countryArr = countries.countryArr
 
@@ -29,6 +29,14 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
       }
     }
   }
+
+  useEffect(() => {
+    const loadCountries = async () => {
+      const data = await countriesTranslated(i18n.language)
+      setCountries(data)
+    }
+    loadCountries()
+  }, [i18n.language])
 
   useEffect(() => {
     if (type === 'onlySelect') {

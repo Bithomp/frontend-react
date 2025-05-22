@@ -10,7 +10,15 @@ import { axiosAdmin } from '../../utils/axios'
 export default function BillingCountry({ billingCountry, setBillingCountry, choosingCountry, setChoosingCountry }) {
   const router = useRouter()
   const { i18n } = useTranslation()
-  const countries = countriesTranslated(i18n.language)
+  const [countries, setCountries] = useState(null)
+
+  useEffect(() => {
+    const loadCountries = async () => {
+      const data = await countriesTranslated(i18n.language)
+      setCountries(data)
+    }
+    loadCountries()
+  }, [i18n.language])
 
   const [loading, setLoading] = useState(true) //keep true for country select
 
