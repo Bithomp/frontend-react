@@ -8,7 +8,6 @@ import SEO from '../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../utils/mobile'
 import { IoChevronForward, IoArrowBack } from 'react-icons/io5'
-import { useTheme } from '../components/Layout/ThemeContext'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -33,7 +32,6 @@ const ACCOUNT_FLAGS = {
 
 export default function AccountSettings({ account, setSignRequest }) {
   const { t } = useTranslation(['account-settings', 'common'])
-  const { theme } = useTheme()
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
@@ -268,7 +266,7 @@ export default function AccountSettings({ account, setSignRequest }) {
               className="back-button"
               onClick={cancelEdit}              
             >
-              <IoArrowBack size={20} color={theme === 'dark' ? '#fff' : '#000'} />
+              <IoArrowBack size={20} className="icon-color"/>
               <span style={{ marginLeft: '5px' }}>Back</span>
             </button>
           </div>
@@ -331,7 +329,7 @@ export default function AccountSettings({ account, setSignRequest }) {
                   {flagDetails[flag].status(flags[flag])}
                 </div>
               </div>
-              <IoChevronForward size={20} color={theme === 'dark' ? '#fff' : '#6b7280'} />
+              <IoChevronForward size={20} className="icon-color" />
             </div>
           ))}
           {errorMessage && (

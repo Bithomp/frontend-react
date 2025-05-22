@@ -45,5 +45,12 @@
     align-items: center;
     gap: 15px;
   }
+  .icon-color {
+    color: var(--text-primary);
+
+    .dark & {
+      color: #fff;
+    }
+  }
 
 }

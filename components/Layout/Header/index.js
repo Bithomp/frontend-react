@@ -432,7 +432,7 @@ export default function Header({
                 <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
                 <a href={server + '/explorer/' + address}>{t('signin.actions.my-transactions')}</a>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
-                <Link href="/account-settings/">{t('signin.actions.account-settings')}</Link>
+                <Link href="/account-settings/">{t('signin.actions.account-settings' , 'Account Settings')}</Link>
                 <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
 
                 {!username && <Link href={'/username?address=' + address}>{t('menu.usernames')}</Link>}
