@@ -2,19 +2,38 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { useWidth } from '../utils'
+import CheckBox from '../components/UI/CheckBox'
 import AddressInput from '../components/UI/AddressInput'
 import FormInput from '../components/UI/FormInput'
 import NetworkTabs from '../components/Tabs/NetworkTabs'
 import { typeNumberOnly } from '../utils'
-import { capitalize, devNet, maxAmount, nativeCurrency } from '../utils/format'
+import { devNet, explorerName, ledgerName, nativeCurrency } from '../utils'
 import { useState } from 'react'
 
-export default function Send({ account, showAds }) {
+export default function Send({ account }) {
   const { t } = useTranslation()
   const width = useWidth()
   const [address, setAddress] = useState('')
   const [destinationTag, setDestinationTag] = useState('')
   const [amount, setAmount] = useState('')
+  const [memo, setMemo] = useState('')
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [fee, setFee] = useState('')
+  const [feeError, setFeeError] = useState('')
+
+  const handleFeeChange = (e) => {
+    const value = e.target.value
+    setFee(value)
+    
+    // Convert to drops (1 XRP = 1,000,000 drops)
+    const feeInDrops = parseFloat(value) * 1000000
+    
+    if (feeInDrops > 1000000) { // 1 XRP in drops
+      setFeeError(t('form.error.max-fee', 'Maximum fee is 1 XRP'))
+    } else {
+      setFeeError('')
+    }
+  }
 
   return (
     <>
@@ -44,10 +63,10 @@ export default function Send({ account, showAds }) {
             onKeyPress={typeNumberOnly}
             defaultValue={destinationTag}
           />
-          <div>
+          <div className="form-input">
             {width > 1100 && <br />}
             <span className="input-title">
-              {capitalize(devNet)} {nativeCurrency} amount (maximum: {maxAmount} {nativeCurrency})
+              amount
             </span>
             <input
               placeholder={'Enter amount in ' + nativeCurrency}
@@ -61,7 +80,64 @@ export default function Send({ account, showAds }) {
               inputMode="decimal"
               defaultValue={amount / 1000000}
             />
-          </div>  
+          </div>
+          <div className="form-input">
+            {width > 1100 && <br />}
+            <span className="input-title">
+              {t('form.memo', 'Memo')}
+            </span>
+            <input
+              placeholder={t('form.placeholder.memo', 'Enter memo')}
+              onChange={(e) => setMemo(e.target.value)}
+              className="input-text"
+              spellCheck="false"
+              maxLength="100"
+              type="text"
+              defaultValue={memo}
+            />
+          </div>
+          <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-payment">
+            {t('form.advanced-payment', 'Advanced Payment Options')}
+          </CheckBox>
+          {showAdvanced && (
+            <div>
+              <br />
+              <span className="input-title">
+                {t('form.fee', 'Fee')}
+              </span>
+              <input
+                placeholder={t('form.placeholder.fee', 'Enter fee in XRP')}
+                onChange={handleFeeChange}
+                onKeyPress={typeNumberOnly}
+                className={`input-text ${feeError ? 'error' : ''}`}
+                spellCheck="false"
+                maxLength="35"
+                min="0"
+                type="text"
+                inputMode="decimal"
+                defaultValue={fee}
+              />
+              {feeError && <div className="error-message">{feeError}</div>}
+            </div>
+          )}
+          <br />
+          <div className="center">
+            <button
+              className="button-action"
+              onClick={() => {
+                // TODO: Implement send payment logic
+                console.log('Sending payment:', {
+                  address,
+                  destinationTag,
+                  amount,
+                  memo,
+                  fee: showAdvanced ? fee : undefined
+                })
+              }}
+            >
+              {t('form.send', 'Send Payment')}
+            </button>
+          </div>
         </div>
       </div>
     </>
