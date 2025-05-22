@@ -155,7 +155,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
       </Head>
 
       <section className="home-hero">
-        <h1 className="center landing-h1">{t('explorer.header.main', { explorerName })}</h1>
+        <h1 className="center">{t('explorer.header.main', { explorerName })}</h1>
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
         <SearchBlock tab="explorer" />
         <Ads showAds={showAds} heightNoAds={30} />
@@ -184,7 +184,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
         </div>
       )}
 
-      <h2 className="center landing-h2">{t('home.stat.header', { ledgerName })}</h2>
+      <h2 className="center">{t('home.stat.header', { ledgerName })}</h2>
 
       <div className="home-whale-transactions">
         <Whales currency={selectedCurrency} data={whaleTransactions} setData={setWhaleTransactions} />
