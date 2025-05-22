@@ -572,6 +572,7 @@
   "explorer": {
     "header": {
       "main": "Penjelajah {{explorerName}}",
+      "sub": "Pindai transaksi, akun, token, dan NFT {{nativeCurrency}} — cara cepat dan terpercaya untuk menjelajahi {{nativeCurrency}} Ledger.",
       "amm": "AMM pool information",
       "object": "Object information",
       "account": "Account information",
