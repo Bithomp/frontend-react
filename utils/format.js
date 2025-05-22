@@ -682,7 +682,7 @@ export const amountParced = (amount) => {
   let type = ''
   let issuer = null
 
-  if (amount.value && !(!amount.issuer && amount.currency === nativeCurrency)) {
+  if (amount.value && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
     currency = amount.currency
     value = amount.value
     issuer = amount.issuer
@@ -706,6 +706,11 @@ export const amountParced = (amount) => {
       }
       value = xls14NftVal
     }
+  } else if (amount.mpt_issuance_id) {
+    currency = amount.mpt_issuance_id
+    value = amount.value
+    type = 'MPT'
+    valuePrefix = 'MPT'
   } else {
     type = nativeCurrency
     if (amount.value) {
