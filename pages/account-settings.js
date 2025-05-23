@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { xahauNetwork } from '../utils'
+import { xahauNetwork , explorerName} from '../utils'
 import CheckBox from '../components/UI/CheckBox'
 import SEO from '../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -131,7 +131,7 @@ export default function AccountSettings({ account, setSignRequest }) {
     }
     fetchAccountData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, xahauNetwork])
+  }, [account])
 
   const handleFlagChange = (flag) => {
     if (selectedFlag === flag) {
@@ -315,7 +315,7 @@ export default function AccountSettings({ account, setSignRequest }) {
       <SEO title={t('title')} />
       <div className="content-center account-settings">
         <h1 className="center">Account Settings</h1>
-        <p className="center">Manage your account settings on the XRP Ledger.</p>
+        <p className="center">Manage your account settings on the {explorerName}.</p>
         <div>
           {flagKeys.map((flag) => (
             <div
