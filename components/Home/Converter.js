@@ -40,7 +40,6 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
 
   return (
     <>
-      <h2>{rate}</h2>
       <div>
         <input
           className="converter-amount"
@@ -78,6 +77,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
           <div className="converter-xrp"></div>
         )}
       </div>
+      <p className="converter-rate">{rate}</p>
     </>
   )
 }

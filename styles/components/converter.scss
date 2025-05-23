@@ -35,6 +35,15 @@
   padding-left: 5px;
 }
 
+.converter-rate {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--unaccent-text);
+  margin: 8px 5px;
+  padding: 4px 0;
+  line-height: 1.4;
+}
+
 @media only screen and (max-width: 1024px) {
   .converter-amount {
     margin: 5px 5px;

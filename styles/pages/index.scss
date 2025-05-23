@@ -1,7 +1,19 @@
-.home-hero {
+.home-section {
   padding: 20px 0;
-  p {
+  > p {
     margin: 20px;
+  }
+}
+
+.home-price-tools {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
   }
 }
 
@@ -11,7 +23,7 @@
   padding-top: 32px;
   height: 200px;
   text-align: center;
-  @media only screen and (max-width: 803px) {
+  @media only screen and (max-width: 768px) {
     padding-top: 0;
     height: 170px;
     margin-left: 0;
@@ -24,7 +36,7 @@
   width: 404px;
   margin-right: 20px;
   min-height: 265px;
-  @media only screen and (max-width: 803px) {
+  @media only screen and (max-width: 768px) {
     min-height: 291px;
     margin-left: 10px;
     width: calc(100% - 20px);
