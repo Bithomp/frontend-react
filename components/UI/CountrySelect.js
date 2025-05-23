@@ -13,12 +13,11 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
 
   const hasRun = useRef(false)
 
-  const loadCountries = async () => {
-    const data = await countriesTranslated(i18n.language)
-    setCountries(data)
-  }
-
   useEffect(() => {
+    const loadCountries = async () => {
+      const data = await countriesTranslated(i18n.language)
+      setCountries(data)
+    }
     loadCountries()
   }, [i18n.language])
 
