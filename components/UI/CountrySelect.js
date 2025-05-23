@@ -1,18 +1,26 @@
 import Select from 'react-select'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { useLocalStorage, countriesTranslated } from '../../utils'
+import { countriesTranslated } from '../../utils'
 
 export default function CountrySelect({ countryCode, setCountryCode, type }) {
   const { i18n } = useTranslation()
   const [countries, setCountries] = useState(null)
 
-  const countryArr = countries?.countryArr || []
-
-  const [savedCountry, setSavedCounty] = useLocalStorage('country')
   const [selectCountry, setSelectCountry] = useState({ value: '', label: '' })
+
+  const hasRun = useRef(false)
+
+  const loadCountries = async () => {
+    const data = await countriesTranslated(i18n.language)
+    setCountries(data)
+  }
+
+  useEffect(() => {
+    loadCountries()
+  }, [i18n.language])
 
   async function fetchData() {
     const response = await axios('client/info')
@@ -21,67 +29,65 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
       const countryCode = json.country.toUpperCase()
       setSelectCountry({
         value: countryCode,
-        label: countries?.getNameTranslated?.(countryCode) || countryCode
+        label: countries.getNameTranslated?.(countryCode)
       })
       setCountryCode(countryCode)
       if (type !== 'onlySelect') {
-        setSavedCounty(countryCode)
+        localStorage.setItem('country', countryCode)
       }
     }
   }
 
   useEffect(() => {
-    const loadCountries = async () => {
-      const data = await countriesTranslated(i18n.language)
-      setCountries(data)
+    let savedCountry = localStorage.getItem('country')
+    if (savedCountry) {
+      savedCountry = savedCountry.replace(/"/g, '')
     }
-    loadCountries()
-  }, [i18n.language])
 
-  useEffect(() => {
-    if (type === 'onlySelect') {
-      if (countryCode) {
+    if (!hasRun.current && countries !== undefined && countries !== null) {
+      if (type === 'onlySelect') {
+        if (countryCode) {
+          setSelectCountry({
+            value: countryCode,
+            label: countries.getNameTranslated(countryCode)
+          })
+          setCountryCode(countryCode)
+        } else {
+          fetchData()
+        }
+      } else if (savedCountry) {
         setSelectCountry({
-          value: countryCode,
-          label: countries.getNameTranslated(countryCode)
+          value: savedCountry,
+          label: countries.getNameTranslated(savedCountry)
         })
-        setCountryCode(countryCode)
+        setCountryCode(savedCountry)
       } else {
         fetchData()
       }
-    } else if (savedCountry) {
-      setSelectCountry({
-        value: savedCountry,
-        label: countries.getNameTranslated(savedCountry)
-      })
-      setCountryCode(savedCountry)
-    } else {
-      fetchData()
+      hasRun.current = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
-  useEffect(() => {
-    if (selectCountry.value) {
+    if (countries && selectCountry.value && hasRun.current) {
       setSelectCountry({
         value: selectCountry.value,
         label: countries.getNameTranslated(selectCountry.value)
       })
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i18n.language])
+  }, [countries])
 
   const onCountryChange = (item) => {
     setSelectCountry(item)
     if (type !== 'onlySelect') {
-      setSavedCounty(item.value)
+      localStorage.setItem('country', item.value)
     }
     setCountryCode(item.value)
   }
 
   return (
     <Select
-      options={countryArr}
+      options={countries?.countryArr || []}
       value={selectCountry}
       onChange={onCountryChange}
       isSearchable={true}
