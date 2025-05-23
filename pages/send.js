@@ -1,16 +1,19 @@
-import { useTranslation } from 'next-i18next'
+import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { useWidth } from '../utils'
 import CheckBox from '../components/UI/CheckBox'
 import AddressInput from '../components/UI/AddressInput'
 import FormInput from '../components/UI/FormInput'
+import CopyButton from '../components/UI/CopyButton'
+import { LinkTx, LinkAccount } from '../utils/links'
 import NetworkTabs from '../components/Tabs/NetworkTabs'
-import { typeNumberOnly } from '../utils'
-import { devNet, explorerName, ledgerName, nativeCurrency } from '../utils'
+import { typeNumberOnly, isAddressValid, isTagValid , nativeCurrency} from '../utils'
+import { fullDateAndTime , timeFromNow } from '../utils/format'
 import { useState } from 'react'
+import { xrpToDrops } from 'xrpl'
 
-export default function Send({ account }) {
+export default function Send({ account, setSignRequest }) {
   const { t } = useTranslation()
   const width = useWidth()
   const [address, setAddress] = useState('')
@@ -20,18 +23,97 @@ export default function Send({ account }) {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [fee, setFee] = useState('')
   const [feeError, setFeeError] = useState('')
+  const [error, setError] = useState('')
+  const [txResult, setTxResult] = useState(null)
 
   const handleFeeChange = (e) => {
     const value = e.target.value
     setFee(value)
     
-    // Convert to drops (1 XRP = 1,000,000 drops)
     const feeInDrops = parseFloat(value) * 1000000
     
-    if (feeInDrops > 1000000) { // 1 XRP in drops
-      setFeeError(t('form.error.max-fee', 'Maximum fee is 1 XRP'))
+    if (feeInDrops > 1000000) {
+      setFeeError(t('form.error.max-fee', 'Maximum fee is 1 ' + nativeCurrency))
     } else {
       setFeeError('')
+    }
+  }
+
+  const handleSend = async () => {
+    setError('')
+    setTxResult(null)
+    console.log('Starting transaction...')
+
+    // Validate required fields
+    if (!address || !isAddressValid(address)) {
+      console.error('Invalid address:', address)
+      setError(t('form.error.invalid-address', 'Please enter a valid destination address'))
+      return
+    }
+
+    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+      console.error('Invalid amount:', amount)
+      setError(t('form.error.invalid-amount', 'Please enter a valid amount'))
+      return
+    }
+
+    if (destinationTag && !isTagValid(destinationTag)) {
+      console.error('Invalid destination tag:', destinationTag)
+      setError(t('form.error.invalid-destination-tag', 'Please enter a valid destination tag'))
+      return
+    }
+
+    if (feeError) {
+      console.error('Fee error:', feeError)
+      setError(feeError)
+      return
+    }
+    try {
+      const payment = {
+        TransactionType: 'Payment',
+        Account: account.address,
+        Destination: address,
+        Amount: xrpToDrops(amount.toString()),
+        Memos: memo ? [{
+          Memo: {
+            MemoData: Buffer.from(memo).toString('hex').toUpperCase(),
+            MemoFormat: Buffer.from('text/plain').toString('hex').toUpperCase()
+          }
+        }] : undefined,
+        DestinationTag: destinationTag ? parseInt(destinationTag) : undefined,
+        Fee: fee ? xrpToDrops(fee.toString()) : undefined
+      }
+
+      setSignRequest({  
+        request: payment,
+        wallet: account.wallet,
+        callback: (result) => {
+          if (result.result) {
+            setTxResult({
+              date: result.result.date,
+              destination: result.result.Destination,
+              amount: (parseInt(result.result.Amount) / 1000000).toString(),
+              destinationTag: result.result.DestinationTag?.toString(),
+              sourceTag: result.result.SourceTag?.toString(),
+              fee: (parseInt(result.result.Fee) / 1000000).toString(),
+              sequence: result.result.Sequence?.toString(),
+              memo: result.result.Memos?.[0]?.Memo?.MemoData ? 
+                Buffer.from(result.result.Memos[0].Memo.MemoData, 'hex').toString() : 
+                undefined,
+              hash: result.result.hash,
+              status: result.result.meta?.TransactionResult,
+              validated: result.result.validated,
+              ledgerIndex: result.result.ledger_index,
+              balanceChanges: result.result.balanceChanges
+            })
+          } else {
+            console.error('No transaction result received')
+          }
+        },
+      })
+    } catch (err) {
+      console.error('Error in handleSend:', err.message)
+      setError(err.message)
     }
   }
 
@@ -66,7 +148,7 @@ export default function Send({ account }) {
           <div className="form-input">
             {width > 1100 && <br />}
             <span className="input-title">
-              amount
+              {t('form.amount', 'Amount')}
             </span>
             <input
               placeholder={'Enter amount in ' + nativeCurrency}
@@ -78,7 +160,7 @@ export default function Send({ account }) {
               min="0"
               type="text"
               inputMode="decimal"
-              defaultValue={amount / 1000000}
+              defaultValue={amount}
             />
           </div>
           <div className="form-input">
@@ -106,7 +188,7 @@ export default function Send({ account }) {
                 {t('form.fee', 'Fee')}
               </span>
               <input
-                placeholder={t('form.placeholder.fee', 'Enter fee in XRP')}
+                placeholder={t('form.placeholder.fee', 'Enter fee in ' + nativeCurrency)}
                 onChange={handleFeeChange}
                 onKeyPress={typeNumberOnly}
                 className={`input-text ${feeError ? 'error' : ''}`}
@@ -121,23 +203,40 @@ export default function Send({ account }) {
             </div>
           )}
           <br />
+          {error && <div className="error-message center">{error}</div>}          
           <div className="center">
             <button
               className="button-action"
-              onClick={() => {
-                // TODO: Implement send payment logic
-                console.log('Sending payment:', {
-                  address,
-                  destinationTag,
-                  amount,
-                  memo,
-                  fee: showAdvanced ? fee : undefined
-                })
-              }}
+              onClick={handleSend}
+              disabled={!account?.address}
             >
               {t('form.send', 'Send Payment')}
             </button>
           </div>
+          {txResult && (
+            <>
+              <br />
+              <div>
+                <h3 className="center">{t('transaction.success', 'Transaction Successful')}</h3>
+                <div>
+                  <p><strong>{t('transaction.date', 'Date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')}  ({fullDateAndTime(txResult.date, 'ripple')})</p>
+                  <p><strong>{t('transaction.destination', 'Destination')}:</strong> <LinkAccount address={txResult.destination} /> <CopyButton text={txResult.destination} /></p>
+                  <p><strong>{t('transaction.amount', 'Amount')}:</strong> {txResult.amount} {nativeCurrency}</p>
+                  <p><strong>{t('transaction.destination-tag', 'Destination Tag')}:</strong> {txResult.destinationTag}</p>
+                  <p><strong>{t('transaction.source-tag', 'Source Tag')}:</strong> {txResult.sourceTag}</p>
+                  <p><strong>{t('transaction.fee', 'Fee')}:</strong> {txResult.fee} {nativeCurrency}</p>
+                  <p><strong>{t('transaction.sequence', 'Sequence')}:</strong> #{txResult.sequence}</p>
+                  {txResult.memo && (
+                    <p><strong>{t('transaction.memo', 'Memo')}:</strong> {txResult.memo}</p>
+                  )}
+                  <p >
+                    <strong>{t('transaction.hash', 'Transaction Hash')}: </strong> 
+                    <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

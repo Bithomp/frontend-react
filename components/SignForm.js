@@ -656,6 +656,19 @@ export default function SignForm({
       checkTxInCrawler({ txid: txHash, redirectName })
       return
     } else {
+      // For payment transactions, get the transaction result and pass it to the callback
+      if (txType === 'Payment' && signRequest?.callback) {
+        try {
+          const response = await axios('xrpl/transaction/' + txHash)
+          if (response.data) {
+            signRequest.callback({
+              result: response.data
+            })
+          }
+        } catch (error) {
+          console.log('Error fetching transaction result:', error)
+        }
+      }
       // no checks or delays for non NFT/DID transactions
       closeSignInFormAndRefresh()
     }
