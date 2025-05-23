@@ -165,6 +165,9 @@
     "search-placeholder": "Suche nach Adresse / Transaktion / NFT / Benutzername / PayString / Angebot",
     "search-placeholder-short": "Suche nach Adresse / Transaktion",
     "scan-qr": "CODE SCANNEN",
+    "price": {
+      "header": "{{nativeCurrency}} Live Preis & Konverter"
+    },
     "whales": {
       "header": "Die signifikantesten Transaktionen der letzten 24 Stunden"
     },

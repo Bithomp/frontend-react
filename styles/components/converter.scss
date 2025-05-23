@@ -1,3 +1,17 @@
+.converter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.converter-input-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
 .converter-amount {
   box-sizing: border-box;
   width: 156px;
@@ -33,6 +47,16 @@
 }
 .converter-xrp-text {
   padding-left: 5px;
+}
+
+.converter-rate {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--unaccent-text);
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 4px 0;
+  line-height: 1.4;
 }
 
 @media only screen and (max-width: 1024px) {
