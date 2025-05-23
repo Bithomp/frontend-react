@@ -294,10 +294,10 @@ export default function Faucet({ account, type, sessionTokenData }) {
                 {width > 1100 && <br />}
                 <span className="input-title">
                   <Image src="/images/pages/faucet/lastLedgerIndex.png" alt="Ledger" width={141} height={55} />{' '}
-                  <b>Last Ledger Index</b> Find it in the statistics on the <Link href="/">Landing page</Link>
+                  <b>Last Ledger Index.</b> Find it in the statistics on the <Link href="/">Landing page</Link>
                 </span>
                 <input
-                  placeholder={'Enter only numbers of the latest ledger index'}
+                  placeholder={t('form.placeholder.enter-latest-ledger-index', { ns: 'faucet'})}
                   onChange={onLastLedgerChange}
                   onKeyPress={typeNumberOnly}
                   className="input-text"

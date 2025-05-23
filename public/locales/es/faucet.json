@@ -1,10 +1,12 @@
 {
+  "get-free": "Obtén gratis",
   "error-occured": "Ocurrió un error",
   "try-later": "Ya has intentado hoy. Regresa a las {{time}}.",
   "experience-fast-transactions": "¡Experimenta lo rápido y fácil que es transaccionar en {{explorerName}}!",
   "form": {
     "placeholder": {
-      "enter-address": "Introduce la dirección de {{ledgerName}}"
+      "enter-address": "Introduce la dirección de {{ledgerName}}",
+      "enter-latest-ledger-index": "Introduce solo los números del índice del último ledger"
     }
   },
   "how-it-works": "Cómo funciona:",
