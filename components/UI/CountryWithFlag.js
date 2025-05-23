@@ -19,7 +19,6 @@ export default function CountryWithFlag({ countryCode, type }) {
 
   if (!countryCode) return ''
   if (countryCode === 'unknown') return <b>Unknown</b>
-  if (!countries) return countryCode
 
   return (
     <>
@@ -30,7 +29,7 @@ export default function CountryWithFlag({ countryCode, type }) {
           lineHeight: '1.5em'
         }}
       />{' '}
-      {type === 'code' ? countryCode : countries.getNameTranslated(countryCode)}
+      {type === 'code' ? countryCode : countries ? countries.getNameTranslated(countryCode) : countryCode}
     </>
   )
 }
