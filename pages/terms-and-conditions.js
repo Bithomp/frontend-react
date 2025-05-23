@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
       <SEO title={t('menu.terms-and-conditions')} noindex={true} />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: September 21, 2024</p>
+        <p>Last updated: May 23, 2025</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h2>Interpretation and Definitions</h2>
         <h2>Interpretation</h2>
@@ -261,6 +261,22 @@ export default function TermsAndConditions() {
           We are not responsible for any issues or disruptions arising from the use of Cloudflare's services. Any claims
           or disputes related to Cloudflare's services should be directed to Cloudflare in accordance with their Terms
           of Service.
+        </p>
+        <h2>Use of Sentry for Error Monitoring and Performance Tracing</h2>
+        <p>
+          We use Sentry, a third-party service, for error monitoring and performance tracing. This means that certain
+          technical information about your visit (such as browser type, device information, IP address, visited pages,
+          and user interactions) may be automatically collected and sent to Sentry for the purpose of identifying bugs,
+          improving performance, and ensuring the stability of our website.
+        </p>
+        <p>
+          The data shared with Sentry is used strictly for diagnostic and analytical purposes and is handled in
+          accordance with Sentry’s own privacy policies. We do not use Sentry to collect personal information such as
+          your name, email, or financial data.
+        </p>
+        <p>
+          By continuing to use our website, you consent to this type of technical data collection for monitoring and
+          improvement purposes.
         </p>
         <h2>Use of Direct Registration System</h2>
         <p>
@@ -888,7 +904,8 @@ export default function TermsAndConditions() {
         <h2>For European Union (EU) Users</h2>
         <p>
           If You are a European Union consumer, you will benefit from any mandatory provisions of the law of the country
-          in which you are resident in. You can access the European Commission's Online Dispute Resolution platform to resolve disputes: 
+          in which you are resident in. You can access the European Commission's Online Dispute Resolution platform to
+          resolve disputes:
           <a href="https://ec.europa.eu/consumers/odr/main/?event=main.home2.show"> Online Dispute Resolution</a>.
         </p>
         <h2>United States Legal Compliance</h2>
