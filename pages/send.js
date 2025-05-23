@@ -8,10 +8,9 @@ import FormInput from '../components/UI/FormInput'
 import CopyButton from '../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../utils/links'
 import NetworkTabs from '../components/Tabs/NetworkTabs'
-import { typeNumberOnly, isAddressValid, isTagValid , nativeCurrency} from '../utils'
-import { fullDateAndTime , timeFromNow } from '../utils/format'
+import { typeNumberOnly, isAddressValid, isTagValid, nativeCurrency, encode, decode } from '../utils'
+import { fullDateAndTime, timeFromNow } from '../utils/format'
 import { useState } from 'react'
-import { xrpToDrops } from 'xrpl'
 
 export default function Send({ account, setSignRequest }) {
   const { t } = useTranslation()
@@ -33,7 +32,7 @@ export default function Send({ account, setSignRequest }) {
     const feeInDrops = parseFloat(value) * 1000000
     
     if (feeInDrops > 1000000) {
-      setFeeError(t('form.error.max-fee', 'Maximum fee is 1 ' + nativeCurrency))
+      setFeeError('Maximum fee is 1 ' + nativeCurrency)
     } else {
       setFeeError('')
     }
@@ -42,29 +41,23 @@ export default function Send({ account, setSignRequest }) {
   const handleSend = async () => {
     setError('')
     setTxResult(null)
-    console.log('Starting transaction...')
 
-    // Validate required fields
     if (!address || !isAddressValid(address)) {
-      console.error('Invalid address:', address)
-      setError(t('form.error.invalid-address', 'Please enter a valid destination address'))
+      setError(t('form.error.address-invalid', 'Please enter a valid address.'))
       return
     }
 
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-      console.error('Invalid amount:', amount)
-      setError(t('form.error.invalid-amount', 'Please enter a valid amount'))
+      setError('Please enter a valid amount.')
       return
     }
 
     if (destinationTag && !isTagValid(destinationTag)) {
-      console.error('Invalid destination tag:', destinationTag)
-      setError(t('form.error.invalid-destination-tag', 'Please enter a valid destination tag'))
+      setError('Please enter a valid destination tag.')
       return
     }
 
     if (feeError) {
-      console.error('Fee error:', feeError)
       setError(feeError)
       return
     }
@@ -73,15 +66,24 @@ export default function Send({ account, setSignRequest }) {
         TransactionType: 'Payment',
         Account: account.address,
         Destination: address,
-        Amount: xrpToDrops(amount.toString()),
-        Memos: memo ? [{
+        Amount: String(Math.round(parseFloat(amount) * 1000000))
+      }
+
+      if (destinationTag || destinationTag === '0') {
+        payment.DestinationTag = parseInt(destinationTag)
+      }
+
+      if (memo) {
+        payment.Memos = [{
           Memo: {
-            MemoData: Buffer.from(memo).toString('hex').toUpperCase(),
-            MemoFormat: Buffer.from('text/plain').toString('hex').toUpperCase()
+            MemoData: encode(memo),
+            MemoFormat: encode('text/plain')
           }
-        }] : undefined,
-        DestinationTag: destinationTag ? parseInt(destinationTag) : undefined,
-        Fee: fee ? xrpToDrops(fee.toString()) : undefined
+        }]
+      }
+
+      if (fee) {
+        payment.Fee = String(Math.round(parseFloat(fee) * 1000000))
       }
 
       setSignRequest({  
@@ -98,7 +100,7 @@ export default function Send({ account, setSignRequest }) {
               fee: (parseInt(result.result.Fee) / 1000000).toString(),
               sequence: result.result.Sequence?.toString(),
               memo: result.result.Memos?.[0]?.Memo?.MemoData ? 
-                Buffer.from(result.result.Memos[0].Memo.MemoData, 'hex').toString() : 
+                decode(result.result.Memos[0].Memo.MemoData) : 
                 undefined,
               hash: result.result.hash,
               status: result.result.meta?.TransactionResult,
@@ -107,12 +109,11 @@ export default function Send({ account, setSignRequest }) {
               balanceChanges: result.result.balanceChanges
             })
           } else {
-            console.error('No transaction result received')
+            setError("Transaction failed")
           }
         },
       })
     } catch (err) {
-      console.error('Error in handleSend:', err.message)
       setError(err.message)
     }
   }
@@ -120,16 +121,16 @@ export default function Send({ account, setSignRequest }) {
   return (
     <>
       <SEO
-        title={t('send.title', 'Send Payment')}
-        description={t('send.description', 'Send a payment to a destination address')}
+        title={'Send Payment'}
+        description={'Send a payment to a destination address'}
       />
       <div className="content-text content-center">
-        <h1 className="center">{t('send.title', 'Send Payment')}</h1>
+        <h1 className="center">Send Payment</h1>
         <NetworkTabs />
         
         <div>
           <AddressInput
-            title={t('form.destination', 'Destination')}
+            title={t('table.destination', 'Destination')}
             placeholder="Destination address"
             name="destination"
             hideButton={true}
@@ -148,7 +149,7 @@ export default function Send({ account, setSignRequest }) {
           <div className="form-input">
             {width > 1100 && <br />}
             <span className="input-title">
-              {t('form.amount', 'Amount')}
+              {t('table.amount', 'Amount')}
             </span>
             <input
               placeholder={'Enter amount in ' + nativeCurrency}
@@ -166,10 +167,10 @@ export default function Send({ account, setSignRequest }) {
           <div className="form-input">
             {width > 1100 && <br />}
             <span className="input-title">
-              {t('form.memo', 'Memo')}
+              {t('table.memo', 'Memo')}
             </span>
             <input
-              placeholder={t('form.placeholder.memo', 'Enter memo')}
+              placeholder={'Enter memo'}
               onChange={(e) => setMemo(e.target.value)}
               className="input-text"
               spellCheck="false"
@@ -179,16 +180,16 @@ export default function Send({ account, setSignRequest }) {
             />
           </div>
           <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-payment">
-            {t('form.advanced-payment', 'Advanced Payment Options')}
+            Advanced Payment Options
           </CheckBox>
           {showAdvanced && (
             <div>
               <br />
               <span className="input-title">
-                {t('form.fee', 'Fee')}
+                Fee
               </span>
               <input
-                placeholder={t('form.placeholder.fee', 'Enter fee in ' + nativeCurrency)}
+                placeholder={'Enter fee in ' + nativeCurrency}
                 onChange={handleFeeChange}
                 onKeyPress={typeNumberOnly}
                 className={`input-text ${feeError ? 'error' : ''}`}
@@ -199,38 +200,47 @@ export default function Send({ account, setSignRequest }) {
                 inputMode="decimal"
                 defaultValue={fee}
               />
-              {feeError && <div className="error-message">{feeError}</div>}
+              {feeError && <div className="red">{feeError}</div>}
             </div>
           )}
           <br />
-          {error && <div className="error-message center">{error}</div>}          
+          {error && ( 
+            <>
+              <div className="red center">{error}</div>
+              <br />
+            </>
+          )}          
           <div className="center">
             <button
               className="button-action"
               onClick={handleSend}
               disabled={!account?.address}
             >
-              {t('form.send', 'Send Payment')}
+              Send Payment
             </button>
           </div>
           {txResult && (
             <>
               <br />
               <div>
-                <h3 className="center">{t('transaction.success', 'Transaction Successful')}</h3>
+                <h3 className="center">Transaction Successful</h3>
                 <div>
-                  <p><strong>{t('transaction.date', 'Date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')}  ({fullDateAndTime(txResult.date, 'ripple')})</p>
-                  <p><strong>{t('transaction.destination', 'Destination')}:</strong> <LinkAccount address={txResult.destination} /> <CopyButton text={txResult.destination} /></p>
-                  <p><strong>{t('transaction.amount', 'Amount')}:</strong> {txResult.amount} {nativeCurrency}</p>
-                  <p><strong>{t('transaction.destination-tag', 'Destination Tag')}:</strong> {txResult.destinationTag}</p>
-                  <p><strong>{t('transaction.source-tag', 'Source Tag')}:</strong> {txResult.sourceTag}</p>
-                  <p><strong>{t('transaction.fee', 'Fee')}:</strong> {txResult.fee} {nativeCurrency}</p>
-                  <p><strong>{t('transaction.sequence', 'Sequence')}:</strong> #{txResult.sequence}</p>
+                  <p><strong>{t('table.date', 'Date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')}  ({fullDateAndTime(txResult.date, 'ripple')})</p>
+                  <p><strong>{t('table.destination', 'Destination')}:</strong> <LinkAccount address={txResult.destination} /> <CopyButton text={txResult.destination} /></p>
+                  <p><strong>{t('table.amount', 'Amount')}:</strong> {txResult.amount} {nativeCurrency}</p>
+                  {txResult.destinationTag && (
+                    <p><strong>{t('table.destination-tag', 'Destination Tag')}:</strong> {txResult.destinationTag}</p>
+                  )}
+                  {txResult.sourceTag && (
+                    <p><strong>Source Tag:</strong> {txResult.sourceTag}</p>
+                  )}
+                  <p><strong>Fee:</strong> {txResult.fee} {nativeCurrency}</p>
+                  <p><strong>{t('table.sequence', 'Sequence')}:</strong> #{txResult.sequence}</p>
                   {txResult.memo && (
-                    <p><strong>{t('transaction.memo', 'Memo')}:</strong> {txResult.memo}</p>
+                    <p><strong>{t('table.memo', 'Memo')}:</strong> {txResult.memo}</p>
                   )}
                   <p >
-                    <strong>{t('transaction.hash', 'Transaction Hash')}: </strong> 
+                    <strong>{t('table.hash', 'Hash')}: </strong> 
                     <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
                   </p>
                 </div>
