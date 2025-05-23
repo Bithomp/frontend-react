@@ -9,7 +9,7 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
   const { i18n } = useTranslation()
   const [countries, setCountries] = useState(null)
 
-  const countryArr = countries.countryArr
+  const countryArr = countries?.countryArr || []
 
   const [savedCountry, setSavedCounty] = useLocalStorage('country')
   const [selectCountry, setSelectCountry] = useState({ value: '', label: '' })
@@ -21,7 +21,7 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
       const countryCode = json.country.toUpperCase()
       setSelectCountry({
         value: countryCode,
-        label: countries.getNameTranslated(countryCode)
+        label: countries?.getNameTranslated?.(countryCode) || countryCode
       })
       setCountryCode(countryCode)
       if (type !== 'onlySelect') {
