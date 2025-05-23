@@ -227,7 +227,7 @@ export default function NftSales({
       seller ||
       search ||
       (period && period !== 'all') ||
-      (saleTab !== 'primaryAndSecondary') ||
+      saleTab !== 'primaryAndSecondary' ||
       !includeWithoutMediaData ||
       currency ||
       currencyIssuer
@@ -355,9 +355,7 @@ export default function NftSales({
           setSales([...salesData, ...newdata.sales])
         } else {
           if (marker === 'first') {
-            setErrorMessage(
-              t('general.no-data') + " " + (hasActiveFilters()  ? t('general.change-filters') : "" )
-            )
+            setErrorMessage(t('general.no-data') + ' ' + (hasActiveFilters() ? t('general.change-filters') : ''))
           } else {
             setHasMore(false)
           }
@@ -605,7 +603,7 @@ export default function NftSales({
         setActiveView={setActiveView}
         count={nftCount}
         hasMore={hasMore}
-        data={data?.sales || []}
+        data={sales || []}
         csvHeaders={csvHeaders}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
@@ -692,7 +690,7 @@ export default function NftSales({
           <InfiniteScrolling
             dataLength={sales.length}
             loadMore={checkApi}
-            hasMore={hasMore} 
+            hasMore={hasMore}
             errorMessage={errorMessage}
             subscriptionExpired={subscriptionExpired}
             sessionToken={sessionToken}

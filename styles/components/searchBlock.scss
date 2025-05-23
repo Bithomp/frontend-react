@@ -63,6 +63,9 @@
           opacity: 1 !important;
         }
       }
+      .react-select__dropdown-indicator {
+        opacity: 0;
+      }
     }
     .search-button {
       position: absolute;

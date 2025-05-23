@@ -572,6 +572,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}}エクスプローラ",
+      "sub": "{{nativeCurrency}} の取引、アカウント、トークン、NFT をスキャン — 高速かつ信頼できる方法で {{nativeCurrency}} Ledger を探索。",
       "amm": "AMMプール情報",
       "object": "オブジェクト情報",
       "account": "アカウント情報",

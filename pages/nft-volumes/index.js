@@ -236,7 +236,7 @@ export default function NftVolumes({
         )
         .catch((error) => {
           if (error && error.message !== 'canceled') {
-            console.log(error)
+            console.log("ERROR: can't get chart data nft volumes")
           }
           setLoadingChart(false)
         })

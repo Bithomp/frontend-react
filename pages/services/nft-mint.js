@@ -9,18 +9,19 @@ import NFTokenMint from '../../components/Services/NftMint/NFTokenMint'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
-  const { uri, digest } = query
+  const { uri, digest, taxon } = query
   return {
     props: {
       uriQuery: uri || '',
       digestQuery: digest || '',
+      taxonQuery: taxon || '0',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
 
-export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
+export default function NftMint({ setSignRequest, uriQuery, digestQuery, taxonQuery }) {
   const { t } = useTranslation()
 
   return (
@@ -46,7 +47,7 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
           {xahauNetwork ? (
             <URITokenMint setSignRequest={setSignRequest} uriQuery={uriQuery} digestQuery={digestQuery} />
           ) : (
-            <NFTokenMint setSignRequest={setSignRequest} />
+            <NFTokenMint setSignRequest={setSignRequest} uriQuery={uriQuery} taxonQuery={taxonQuery} />
           )}
         </div>
       </div>

@@ -305,6 +305,9 @@ const assetUrl = (uri, type = 'image', gateway = 'our') => {
   if (ipfs) {
     return ipfs
   } else if (uri.slice(0, 8) === 'https://') {
+    if (type === 'video' && uri.toLowerCase().includes('youtube.com')) {
+      return null
+    }
     return `https://cdn.${webSiteName}/${type}?url=${encodeURIComponent(stripText(uri))}`
   } else if ((type === 'image' || type === 'thumbnail') && uri.slice(0, 10) === 'data:image') {
     return stripText(uri)

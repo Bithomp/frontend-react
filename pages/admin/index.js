@@ -374,15 +374,20 @@ export default function Admin({
             <>
               <br />
               <div style={{ height: '65px' }}>
-                <Turnstile
-                  siteKey={siteKey}
-                  style={{ margin: 'auto' }}
-                  options={{
-                    theme,
-                    language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
-                  }}
-                  onSuccess={setToken}
-                />
+                {siteKey && (
+                  <Turnstile
+                    siteKey={siteKey}
+                    style={{ margin: 'auto' }}
+                    options={{
+                      theme,
+                      language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
+                    }}
+                    onSuccess={setToken}
+                    onError={() => {
+                      // ignore Turnstile errors
+                    }}
+                  />
+                )}
               </div>
               <br />
               <div

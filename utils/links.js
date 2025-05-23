@@ -2,10 +2,9 @@ import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
 import { shortHash } from './format'
 import CopyButton from '../components/UI/CopyButton'
-import { server } from '.'
 
-export const LinkTx = ({ tx, icon, children }) =>
-  tx ? <Link href={`/tx/${tx}`}>{children || (icon ? <LinkIcon /> : shortHash(tx, 10))}</Link> : ''
+export const LinkTx = ({ tx, icon, short, children }) =>
+  tx ? <Link href={`/tx/${tx}`}>{children || (icon ? <LinkIcon /> : shortHash(tx, short || 10))}</Link> : ''
 
 export const LedgerLink = ({ version, text, style, onClick }) =>
   version ? (

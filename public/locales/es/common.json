@@ -572,6 +572,7 @@
   "explorer": {
     "header": {
       "main": "Explorador {{explorerName}}",
+      "sub": "Escanea transacciones, cuentas, tokens y NFTs de {{nativeCurrency}}: la forma rápida y confiable de explorar el {{nativeCurrency}} Ledger.",
       "amm": "Información del pool AMM",
       "object": "Información del objeto",
       "account": "Información de la cuenta",

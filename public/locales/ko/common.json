@@ -572,6 +572,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} 탐색기",
+      "sub": "{{nativeCurrency}} 거래, 계정, 토큰 및 NFT를 스캔하세요 — 빠르고 신뢰할 수 있는 방법으로 {{nativeCurrency}} Ledger를 탐색하세요.",
       "amm": "AMM 풀 정보",
       "object": "객체 정보",
       "account": "계정 정보",

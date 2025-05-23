@@ -572,6 +572,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} Explorer",
+      "sub": "Scan {{nativeCurrency}} transactions, accounts, tokens, and NFTs — the fast and trusted way to explore the {{nativeCurrency}} Ledger.",
       "amm": "AMM pool information",
       "object": "Object information",
       "account": "Account information",

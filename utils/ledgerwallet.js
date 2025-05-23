@@ -94,9 +94,15 @@ const ledgerwalletSign = async ({
     setStatus('Getting transaction fee...')
     const params = await getNextTransactionParams(tx)
     setAwaiting(false)
-    tx.Sequence = params.Sequence
-    tx.Fee = params.Fee
-    tx.LastLedgerSequence = params.LastLedgerSequence
+    if (params) {
+      tx.Sequence = params.Sequence
+      tx.Fee = params.Fee
+      tx.LastLedgerSequence = params.LastLedgerSequence
+    } else {
+      setStatus('Error getting transaction fee.')
+      return
+    }
+
     setStatus('Sign the transaction in Ledger Wallet.')
     try {
       const signature = await signTransactionWithLedger(xrpApp, tx)
