@@ -92,7 +92,7 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
           {billingCountry && (
             <>
               Your billing country is{' '}
-              <a onClick={() => setChoosingCountry(true)}>{countries.getNameTranslated(billingCountry)}</a>
+              <a onClick={() => setChoosingCountry(true)}>{countries?.getNameTranslated?.(billingCountry) || billingCountry}</a>
             </>
           )}
         </>
