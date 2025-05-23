@@ -11,6 +11,7 @@ import {
   timeFromNow
 } from '../../utils/format'
 import { addressBalanceChanges } from '../../utils/transaction'
+import { i18n } from 'next-i18next'
 
 export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null

@@ -230,7 +230,7 @@ export default function Subscriptions({
   const getTransactions = async () => {
     const response = await axiosAdmin.get('partner/transactions?limit=5').catch((error) => {
       if (error && error.message !== 'canceled') {
-        console.log(error)
+        console.log("ERROR: can't get partner's transactions")
         if (error.response?.data?.error === 'errors.token.required') {
           router.push('/admin')
         }

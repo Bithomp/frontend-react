@@ -9,7 +9,7 @@ import {
 } from '../../../utils/format'
 
 import { TransactionCard } from '../TransactionCard'
-import { xls14NftValue } from '../../../utils'
+import { nativeCurrency, xls14NftValue } from '../../../utils'
 import CopyButton from '../../UI/CopyButton'
 import { addressBalanceChanges, dappBySourceTag } from '../../../utils/transaction'
 import DestinationTagProblemSolving from './DestinationTagProblemSolving'
@@ -40,7 +40,10 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
     txTypeSpecial = 'Conversion payment'
   } else {
     //check if iou involved (pathfinding or iou with fee)
-    if (sourceBalanceChangesList[0]?.value !== '-' + outcome.deliveredAmount?.value) {
+    if (
+      !outcome.deliveredAmount?.mpt_issuance_id &&
+      sourceBalanceChangesList[0]?.value !== '-' + outcome.deliveredAmount?.value
+    ) {
       iouPayment = true
     }
   }
@@ -132,9 +135,15 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           </TData>
         </tr>
       )}
-      {isSuccessful && !isConvertion && (
-        <DestinationTagProblemSolving specification={specification} pageFiatRate={pageFiatRate} />
-      )}
+      {isSuccessful &&
+        !isConvertion &&
+        (!outcome.deliveredAmount ||
+          outcome.deliveredAmount.issuer ||
+          (!outcome.deliveredAmount.issuer &&
+            outcome.deliveredAmount.currency === nativeCurrency &&
+            Number(outcome.deliveredAmount.value) < 100000)) && (
+          <DestinationTagProblemSolving specification={specification} pageFiatRate={pageFiatRate} />
+        )}
       <tr>
         <TData>{isConvertion ? 'Address' : 'Source'}</TData>
         <TData>
@@ -220,7 +229,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         <tr>
           <TData>Delivered amount</TData>
           <TData>
-            <span className="bold green">{amountFormat(outcome.deliveredAmount)}</span>
+            <span className="bold green">{amountFormat(outcome.deliveredAmount, { precise: 'nice' })}</span>
             {outcome.deliveredAmount?.issuer && (
               <>({addressUsernameOrServiceLink(outcome.deliveredAmount, 'issuer', { short: true })})</>
             )}

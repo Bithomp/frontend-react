@@ -66,12 +66,10 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
   const getMetadata = async () => {
     setMetadataStatus('Trying to load the metadata from URI...')
     const nftType = xahauNetwork ? 'xls35' : 'xls20'
-    const response = await axios
-      .get('v2/metadata?url=' + encodeURIComponent(uri) + '&type=' + nftType)
-      .catch((error) => {
-        console.log(error)
-        setMetadataStatus('error')
-      })
+    const response = await axios.get('v2/metadata?url=' + encodeURIComponent(uri) + '&type=' + nftType).catch(() => {
+      console.log("ERROR: can't get nft metadata")
+      setMetadataStatus('error')
+    })
     if (response?.data) {
       if (response.data?.metadata) {
         setMetaLoadedFromUri(true)

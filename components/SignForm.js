@@ -375,11 +375,9 @@ export default function SignForm({
 
   const ledgerwalletTxSending = (tx) => {
     setScreen('ledgerwallet')
-    if (tx.TransactionType === 'NFTokenCreateOffer') {
-      setStatus('Unfortunatelly, Ledger Wallet does not support NFTokenCreateOffer Transaction Type yet.')
-      return
-    }
-    setStatus('Please, connect your Ledger Wallet and open the XRP app.')
+    setStatus(
+      'Please, connect your Ledger Wallet and open the XRP app. Note: Nano S does not support some transactions.'
+    )
     ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
   }
 
@@ -528,9 +526,13 @@ export default function SignForm({
           if (TransactionType === 'NFTokenMint') {
             if (meta.nftoken_id) {
               checkCrawlerStatus({ inLedger: includedInLedger, param: meta.nftoken_id, type: TransactionType })
+            } else {
+              //if no token found
+              closeSignInFormAndRefresh()
             }
             return
           } else if (TransactionType === 'URITokenMint') {
+            let foundToken = false
             for (let i = 0; i < meta.AffectedNodes.length; i++) {
               const node = meta.AffectedNodes[i]
               if (node.CreatedNode?.LedgerEntryType === 'URIToken') {
@@ -539,8 +541,12 @@ export default function SignForm({
                   param: node.CreatedNode.LedgerIndex,
                   type: TransactionType
                 })
+                foundToken = true
                 break
               }
+            }
+            if (!foundToken) {
+              closeSignInFormAndRefresh()
             }
             return
           }
@@ -605,8 +611,8 @@ export default function SignForm({
       setStatus(t('signin.status.awaiting-broker', { serviceName: broker }))
       if (broker === 'bidds') {
         setAwaiting(true)
-        const response = await axios('/v2/bidds/transaction/broker/' + txHash).catch((error) => {
-          console.log(error)
+        const response = await axios('/v2/bidds/transaction/broker/' + txHash).catch(() => {
+          console.log('ERROR: can not get bidds transaction')
           setStatus(t('signin.status.failed-broker', { serviceName: broker }))
           closeSignInFormAndRefresh() //setAwaiting false inside
         })
@@ -707,6 +713,7 @@ export default function SignForm({
     setSignRequest(null)
     setAwaiting(false)
     setStatus('')
+    transactionFetched = false
   }
 
   const buttonStyle = {

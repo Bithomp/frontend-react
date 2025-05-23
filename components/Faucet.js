@@ -48,6 +48,7 @@ export default function Faucet({ account, type, sessionTokenData }) {
   const [step, setStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [lastLedgerIndex, setLastLedgerIndex] = useState()
+  const [resetKey, setResetKey] = useState(0)
 
   const { t, i18n } = useTranslation()
   const { theme } = useTheme()
@@ -183,6 +184,8 @@ export default function Faucet({ account, type, sessionTokenData }) {
     setLoading(false)
 
     setStep(1)
+
+    setResetKey(Date.now())
 
     if (response?.data?.success) {
       setData(response.data)
@@ -360,6 +363,7 @@ export default function Faucet({ account, type, sessionTokenData }) {
                 <>
                   <br />
                   <Turnstile
+                    key={resetKey}
                     siteKey={siteKey}
                     style={{ margin: 'auto' }}
                     options={{
@@ -367,6 +371,9 @@ export default function Faucet({ account, type, sessionTokenData }) {
                       language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
                     }}
                     onSuccess={setToken}
+                    onError={() => {
+                      // ignore Turnstile errors
+                    }}
                   />
                   <br />
                   <button

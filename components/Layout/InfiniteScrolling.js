@@ -37,12 +37,17 @@ export default function InfiniteScrolling({
             {hasMore !== 'first' ? (
               <>
                 {!sessionToken ? (
-                  <>                  
-                    {noSessionTokenMessage && <>{noSessionTokenMessage}<br/></>}
+                  <>
                     <Trans i18nKey="general.login-to-bithomp-pro">
                       Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers.
                     </Trans>
-                  </>                
+                    {noSessionTokenMessage && (
+                      <>
+                        <br />
+                        {noSessionTokenMessage}
+                      </>
+                    )}
+                  </>
                 ) : (
                   <>
                     {!subscriptionExpired ? (

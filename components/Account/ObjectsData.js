@@ -29,7 +29,8 @@ const isNegativeBalance = (balance) => {
 
 const objectsCountText = (objects) => {
   if (!objects) return ''
-  if (objects.length > 1) return objects.length + ' '
+  let countList = objects.filter((p) => p !== undefined)
+  if (countList.length > 1) return countList.length + ' '
   return ''
 }
 
@@ -601,14 +602,16 @@ export default function ObjectsData({
                   </tr>
                 </thead>
                 <tbody>
-                  {hookList.map((p, i) => (
-                    <tr key={i}>
-                      <td>{i}</td>
-                      <td className="right">
-                        {p} <CopyButton text={p} />
-                      </td>
-                    </tr>
-                  ))}
+                  {hookList.map((p, i) =>
+                    p !== undefined ? (
+                      <tr key={i}>
+                        <td>{i}</td>
+                        <td>
+                          {p} <CopyButton text={p} />
+                        </td>
+                      </tr>
+                    ) : null
+                  )}
                 </tbody>
               </table>
               <div className="show-on-small-w800">
@@ -618,11 +621,13 @@ export default function ObjectsData({
                   {'Hooks'.toUpperCase()}
                   {historicalTitle}
                 </center>
-                {hookList.map((p, i) => (
-                  <p key={i}>
-                    <span className="grey">{i}</span> {shortHash(p, 16)} <CopyButton text={p} />
-                  </p>
-                ))}
+                {hookList.map((p, i) =>
+                  p !== undefined ? (
+                    <p key={i}>
+                      <span className="grey">{i}</span> {shortHash(p, 16)} <CopyButton text={p} />
+                    </p>
+                  ) : null
+                )}
               </div>
             </>
           )}

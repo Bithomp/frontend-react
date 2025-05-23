@@ -27,8 +27,8 @@ export default function CopyButton({ text }) {
           setIsTooltipEnabled(true)
         }, 5000)
       })
-      .catch((err) => {
-        console.log(err)
+      .catch(() => {
+        console.log('Error copying text')
       })
   }
 

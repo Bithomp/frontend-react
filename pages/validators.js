@@ -1,6 +1,5 @@
 import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect, memo } from 'react'
-import moment from 'moment'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import ReactCountryFlag from 'react-country-flag'
 import { useTheme } from '../components/Layout/ThemeContext'
@@ -61,8 +60,6 @@ const fixCountry = (country) => {
   //accept UK as a country code for GB
   return country?.toUpperCase() === 'UK' ? 'GB' : country
 }
-
-moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
 
 export default function Validators({ amendment, initialData, initialErrorMessage }) {
   const [validators, setValidators] = useState(null)
