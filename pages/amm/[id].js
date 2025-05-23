@@ -134,7 +134,7 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
 
   const oldDateAndTime = (
     <span className="orange bold" style={{ float: 'right' }}>
-      {data.ledgerTimestamp ? fullDateAndTime(data.ledgerTimestamp) : ''}
+      {data?.ledgerTimestamp ? fullDateAndTime(data.ledgerTimestamp) : ''}
     </span>
   )
 
