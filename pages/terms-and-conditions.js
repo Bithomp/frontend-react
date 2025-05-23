@@ -833,6 +833,44 @@ export default function TermsAndConditions() {
           By using Bithomp Pro paid services, you acknowledge that you have read, understood, and agree to be bound by
           these terms and conditions.
         </p>
+        <h2>NFT Minting Terms of Use</h2>
+        <p>By using the NFT minting feature on our website, you agree to the following terms:</p>
+        <p>
+          <strong>User Responsibility</strong>
+        </p>
+        <p>
+          You are solely responsible for the content you mint as an NFT, including but not limited to images, metadata,
+          and any associated files or information. We do not review, endorse, or guarantee the legality, accuracy, or
+          appropriateness of any minted NFTs.
+        </p>
+        <p>
+          <strong>Compliance with Laws</strong>
+        </p>
+        <p>
+          You agree not to mint NFTs that infringe on intellectual property rights, promote illegal activity, contain
+          harmful or offensive content, or otherwise violate applicable laws or regulations.
+        </p>
+        <p>
+          <strong>Finality</strong>
+        </p>
+        <p>
+          All NFT minting transactions are irreversible. We cannot reverse, cancel, or modify any transaction once it
+          has been confirmed on the blockchain.
+        </p>
+        <p>
+          <strong>No Custody or Guarantee </strong>
+        </p>
+        <p>
+          We do not store, manage, or have access to your private keys or NFTs. We do not guarantee the visibility,
+          marketability, or functionality of minted NFTs on third-party platforms or marketplaces.
+        </p>
+        <p>
+          <strong>Service Limitation </strong>
+        </p>
+        <p>
+          We reserve the right to suspend or restrict access to NFT minting features at its sole discretion, including
+          in response to abuse, legal requests, or technical issues.
+        </p>
 
         <h2>Termination</h2>
         <p>
