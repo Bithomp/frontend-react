@@ -1,0 +1,267 @@
+import { i18n, useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import SEO from '../components/SEO'
+import { useWidth } from '../utils'
+import CheckBox from '../components/UI/CheckBox'
+import AddressInput from '../components/UI/AddressInput'
+import FormInput from '../components/UI/FormInput'
+import CopyButton from '../components/UI/CopyButton'
+import { LinkTx, LinkAccount } from '../utils/links'
+import NetworkTabs from '../components/Tabs/NetworkTabs'
+import { typeNumberOnly, isAddressValid, isTagValid, nativeCurrency, encode, decode } from '../utils'
+import { fullDateAndTime, timeFromNow } from '../utils/format'
+import { useState } from 'react'
+
+export default function Send({ account, setSignRequest }) {
+  const { t } = useTranslation()
+  const width = useWidth()
+  const [address, setAddress] = useState('')
+  const [destinationTag, setDestinationTag] = useState('')
+  const [amount, setAmount] = useState('')
+  const [memo, setMemo] = useState('')
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [fee, setFee] = useState('')
+  const [feeError, setFeeError] = useState('')
+  const [error, setError] = useState('')
+  const [txResult, setTxResult] = useState(null)
+
+  const handleFeeChange = (e) => {
+    const value = e.target.value
+    setFee(value)
+
+    const feeInDrops = parseFloat(value) * 1000000
+
+    if (feeInDrops > 1000000) {
+      setFeeError('Maximum fee is 1 ' + nativeCurrency)
+    } else {
+      setFeeError('')
+    }
+  }
+
+  const handleSend = async () => {
+    setError('')
+    setTxResult(null)
+
+    if (!address || !isAddressValid(address)) {
+      setError(t('form.error.address-invalid', 'Please enter a valid address.'))
+      return
+    }
+
+    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+      setError('Please enter a valid amount.')
+      return
+    }
+
+    if (destinationTag && !isTagValid(destinationTag)) {
+      setError('Please enter a valid destination tag.')
+      return
+    }
+
+    if (feeError) {
+      setError(feeError)
+      return
+    }
+    try {
+      const payment = {
+        TransactionType: 'Payment',
+        Account: account.address,
+        Destination: address,
+        Amount: String(Math.round(parseFloat(amount) * 1000000))
+      }
+
+      if (destinationTag || destinationTag === '0') {
+        payment.DestinationTag = parseInt(destinationTag)
+      }
+
+      if (memo) {
+        payment.Memos = [
+          {
+            Memo: {
+              MemoData: encode(memo),
+              MemoFormat: encode('text/plain')
+            }
+          }
+        ]
+      }
+
+      if (fee) {
+        payment.Fee = String(Math.round(parseFloat(fee) * 1000000))
+      }
+
+      setSignRequest({
+        request: payment,
+        wallet: account.wallet,
+        callback: (result) => {
+          if (result.result) {
+            setTxResult({
+              date: result.result.date,
+              destination: result.result.Destination,
+              amount: (parseInt(result.result.Amount) / 1000000).toString(),
+              destinationTag: result.result.DestinationTag?.toString(),
+              sourceTag: result.result.SourceTag?.toString(),
+              fee: (parseInt(result.result.Fee) / 1000000).toString(),
+              sequence: result.result.Sequence?.toString(),
+              memo: result.result.Memos?.[0]?.Memo?.MemoData ? decode(result.result.Memos[0].Memo.MemoData) : undefined,
+              hash: result.result.hash,
+              status: result.result.meta?.TransactionResult,
+              validated: result.result.validated,
+              ledgerIndex: result.result.ledger_index,
+              balanceChanges: result.result.balanceChanges
+            })
+          } else {
+            setError('Transaction failed')
+          }
+        }
+      })
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  return (
+    <>
+      <SEO title="Send payment" description="Send a payment to a destination address" />
+      <div className="content-text content-center">
+        <h1 className="center">Send payment</h1>
+        <NetworkTabs />
+
+        <div>
+          <AddressInput
+            title={t('table.destination', 'Destination')}
+            placeholder="Destination address"
+            name="destination"
+            hideButton={true}
+            setValue={setAddress}
+            initialValue={address}
+          />
+          {width > 1100 && <br />}
+          <FormInput
+            title={t('table.destination-tag')}
+            placeholder={t('form.placeholder.destination-tag')}
+            setInnerValue={setDestinationTag}
+            hideButton={true}
+            onKeyPress={typeNumberOnly}
+            defaultValue={destinationTag}
+          />
+          <div className="form-input">
+            {width > 1100 && <br />}
+            <span className="input-title">{t('table.amount', 'Amount')}</span>
+            <input
+              placeholder={'Enter amount in ' + nativeCurrency}
+              onChange={(e) => setAmount(e.target.value)}
+              onKeyPress={typeNumberOnly}
+              className="input-text"
+              spellCheck="false"
+              maxLength="35"
+              min="0"
+              type="text"
+              inputMode="decimal"
+              defaultValue={amount}
+            />
+          </div>
+          <div className="form-input">
+            {width > 1100 && <br />}
+            <span className="input-title">{t('table.memo', 'Memo')}</span>
+            <input
+              placeholder={'Enter memo'}
+              onChange={(e) => setMemo(e.target.value)}
+              className="input-text"
+              spellCheck="false"
+              maxLength="100"
+              type="text"
+              defaultValue={memo}
+            />
+          </div>
+          <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-payment">
+            Advanced Payment Options
+          </CheckBox>
+          {showAdvanced && (
+            <div>
+              <br />
+              <span className="input-title">Fee</span>
+              <input
+                placeholder={'Enter fee in ' + nativeCurrency}
+                onChange={handleFeeChange}
+                onKeyPress={typeNumberOnly}
+                className={`input-text ${feeError ? 'error' : ''}`}
+                spellCheck="false"
+                maxLength="35"
+                min="0"
+                type="text"
+                inputMode="decimal"
+                defaultValue={fee}
+              />
+              {feeError && <div className="red">{feeError}</div>}
+            </div>
+          )}
+          <br />
+          {error && (
+            <>
+              <div className="red center">{error}</div>
+              <br />
+            </>
+          )}
+          <div className="center">
+            <button className="button-action" onClick={handleSend} disabled={!account?.address}>
+              Send Payment
+            </button>
+          </div>
+          {txResult && (
+            <>
+              <br />
+              <div>
+                <h3 className="center">Transaction Successful</h3>
+                <div>
+                  <p>
+                    <strong>{t('table.date', 'Date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')} (
+                    {fullDateAndTime(txResult.date, 'ripple')})
+                  </p>
+                  <p>
+                    <strong>{t('table.destination', 'Destination')}:</strong>{' '}
+                    <LinkAccount address={txResult.destination} /> <CopyButton text={txResult.destination} />
+                  </p>
+                  <p>
+                    <strong>{t('table.amount', 'Amount')}:</strong> {txResult.amount} {nativeCurrency}
+                  </p>
+                  {txResult.destinationTag && (
+                    <p>
+                      <strong>{t('table.destination-tag', 'Destination Tag')}:</strong> {txResult.destinationTag}
+                    </p>
+                  )}
+                  {txResult.sourceTag && (
+                    <p>
+                      <strong>Source Tag:</strong> {txResult.sourceTag}
+                    </p>
+                  )}
+                  <p>
+                    <strong>Fee:</strong> {txResult.fee} {nativeCurrency}
+                  </p>
+                  <p>
+                    <strong>{t('table.sequence', 'Sequence')}:</strong> #{txResult.sequence}
+                  </p>
+                  {txResult.memo && (
+                    <p>
+                      <strong>{t('table.memo', 'Memo')}:</strong> {txResult.memo}
+                    </p>
+                  )}
+                  <p>
+                    <strong>{t('table.hash', 'Hash')}: </strong>
+                    <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  )
+}
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common']))
+    }
+  }
+}

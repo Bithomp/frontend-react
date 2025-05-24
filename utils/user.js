@@ -55,9 +55,18 @@ export const broadcastTransaction = async ({
 }
 
 export const getNextTransactionParams = async (tx) => {
+  // If a custom fee is set, store it before getting params
+  const customFee = tx.Fee
+
   const response = await axios.post('v2/transaction/nextTransactionParams', tx).catch((error) => {
     console.error(error)
   })
 
-  return response?.data
+  const params = response?.data
+  if (params && customFee) {
+    // Restore the custom fee if it was set
+    params.Fee = customFee
+  }
+
+  return params
 }
