@@ -28,9 +28,9 @@ export default function Send({ account, setSignRequest }) {
   const handleFeeChange = (e) => {
     const value = e.target.value
     setFee(value)
-    
+
     const feeInDrops = parseFloat(value) * 1000000
-    
+
     if (feeInDrops > 1000000) {
       setFeeError('Maximum fee is 1 ' + nativeCurrency)
     } else {
@@ -74,19 +74,21 @@ export default function Send({ account, setSignRequest }) {
       }
 
       if (memo) {
-        payment.Memos = [{
-          Memo: {
-            MemoData: encode(memo),
-            MemoFormat: encode('text/plain')
+        payment.Memos = [
+          {
+            Memo: {
+              MemoData: encode(memo),
+              MemoFormat: encode('text/plain')
+            }
           }
-        }]
+        ]
       }
 
       if (fee) {
         payment.Fee = String(Math.round(parseFloat(fee) * 1000000))
       }
 
-      setSignRequest({  
+      setSignRequest({
         request: payment,
         wallet: account.wallet,
         callback: (result) => {
@@ -99,9 +101,7 @@ export default function Send({ account, setSignRequest }) {
               sourceTag: result.result.SourceTag?.toString(),
               fee: (parseInt(result.result.Fee) / 1000000).toString(),
               sequence: result.result.Sequence?.toString(),
-              memo: result.result.Memos?.[0]?.Memo?.MemoData ? 
-                decode(result.result.Memos[0].Memo.MemoData) : 
-                undefined,
+              memo: result.result.Memos?.[0]?.Memo?.MemoData ? decode(result.result.Memos[0].Memo.MemoData) : undefined,
               hash: result.result.hash,
               status: result.result.meta?.TransactionResult,
               validated: result.result.validated,
@@ -109,9 +109,9 @@ export default function Send({ account, setSignRequest }) {
               balanceChanges: result.result.balanceChanges
             })
           } else {
-            setError("Transaction failed")
+            setError('Transaction failed')
           }
-        },
+        }
       })
     } catch (err) {
       setError(err.message)
@@ -120,14 +120,11 @@ export default function Send({ account, setSignRequest }) {
 
   return (
     <>
-      <SEO
-        title={'Send Payment'}
-        description={'Send a payment to a destination address'}
-      />
+      <SEO title="Send payment" description="Send a payment to a destination address" />
       <div className="content-text content-center">
-        <h1 className="center">Send Payment</h1>
+        <h1 className="center">Send payment</h1>
         <NetworkTabs />
-        
+
         <div>
           <AddressInput
             title={t('table.destination', 'Destination')}
@@ -148,9 +145,7 @@ export default function Send({ account, setSignRequest }) {
           />
           <div className="form-input">
             {width > 1100 && <br />}
-            <span className="input-title">
-              {t('table.amount', 'Amount')}
-            </span>
+            <span className="input-title">{t('table.amount', 'Amount')}</span>
             <input
               placeholder={'Enter amount in ' + nativeCurrency}
               onChange={(e) => setAmount(e.target.value)}
@@ -166,9 +161,7 @@ export default function Send({ account, setSignRequest }) {
           </div>
           <div className="form-input">
             {width > 1100 && <br />}
-            <span className="input-title">
-              {t('table.memo', 'Memo')}
-            </span>
+            <span className="input-title">{t('table.memo', 'Memo')}</span>
             <input
               placeholder={'Enter memo'}
               onChange={(e) => setMemo(e.target.value)}
@@ -185,9 +178,7 @@ export default function Send({ account, setSignRequest }) {
           {showAdvanced && (
             <div>
               <br />
-              <span className="input-title">
-                Fee
-              </span>
+              <span className="input-title">Fee</span>
               <input
                 placeholder={'Enter fee in ' + nativeCurrency}
                 onChange={handleFeeChange}
@@ -204,18 +195,14 @@ export default function Send({ account, setSignRequest }) {
             </div>
           )}
           <br />
-          {error && ( 
+          {error && (
             <>
               <div className="red center">{error}</div>
               <br />
             </>
-          )}          
+          )}
           <div className="center">
-            <button
-              className="button-action"
-              onClick={handleSend}
-              disabled={!account?.address}
-            >
+            <button className="button-action" onClick={handleSend} disabled={!account?.address}>
               Send Payment
             </button>
           </div>
@@ -225,22 +212,40 @@ export default function Send({ account, setSignRequest }) {
               <div>
                 <h3 className="center">Transaction Successful</h3>
                 <div>
-                  <p><strong>{t('table.date', 'Date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')}  ({fullDateAndTime(txResult.date, 'ripple')})</p>
-                  <p><strong>{t('table.destination', 'Destination')}:</strong> <LinkAccount address={txResult.destination} /> <CopyButton text={txResult.destination} /></p>
-                  <p><strong>{t('table.amount', 'Amount')}:</strong> {txResult.amount} {nativeCurrency}</p>
+                  <p>
+                    <strong>{t('table.date', 'Date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')} (
+                    {fullDateAndTime(txResult.date, 'ripple')})
+                  </p>
+                  <p>
+                    <strong>{t('table.destination', 'Destination')}:</strong>{' '}
+                    <LinkAccount address={txResult.destination} /> <CopyButton text={txResult.destination} />
+                  </p>
+                  <p>
+                    <strong>{t('table.amount', 'Amount')}:</strong> {txResult.amount} {nativeCurrency}
+                  </p>
                   {txResult.destinationTag && (
-                    <p><strong>{t('table.destination-tag', 'Destination Tag')}:</strong> {txResult.destinationTag}</p>
+                    <p>
+                      <strong>{t('table.destination-tag', 'Destination Tag')}:</strong> {txResult.destinationTag}
+                    </p>
                   )}
                   {txResult.sourceTag && (
-                    <p><strong>Source Tag:</strong> {txResult.sourceTag}</p>
+                    <p>
+                      <strong>Source Tag:</strong> {txResult.sourceTag}
+                    </p>
                   )}
-                  <p><strong>Fee:</strong> {txResult.fee} {nativeCurrency}</p>
-                  <p><strong>{t('table.sequence', 'Sequence')}:</strong> #{txResult.sequence}</p>
+                  <p>
+                    <strong>Fee:</strong> {txResult.fee} {nativeCurrency}
+                  </p>
+                  <p>
+                    <strong>{t('table.sequence', 'Sequence')}:</strong> #{txResult.sequence}
+                  </p>
                   {txResult.memo && (
-                    <p><strong>{t('table.memo', 'Memo')}:</strong> {txResult.memo}</p>
+                    <p>
+                      <strong>{t('table.memo', 'Memo')}:</strong> {txResult.memo}
+                    </p>
                   )}
-                  <p >
-                    <strong>{t('table.hash', 'Hash')}: </strong> 
+                  <p>
+                    <strong>{t('table.hash', 'Hash')}: </strong>
                     <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
                   </p>
                 </div>
@@ -259,4 +264,4 @@ export async function getStaticProps({ locale }) {
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
-} 
+}
