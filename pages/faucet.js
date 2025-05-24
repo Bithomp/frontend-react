@@ -46,7 +46,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function FaucetPage({ account, showAds, sessionTokenData }) {
-  const { t } = useTranslation(['faucet', 'common'])
+  const { t } = useTranslation()
 
   return (
     <>
@@ -67,7 +67,7 @@ export default function FaucetPage({ account, showAds, sessionTokenData }) {
       />
       <div className="content-text content-center">
         <h1 className="center">
-          {explorerName} {t('common:menu.developers.faucet')} — {t('faucet:get-free')} {nativeCurrency}
+          {explorerName} {t('menu.developers.faucet')?.toLowerCase()} — {t('faucet:get-free')} {nativeCurrency}
         </h1>
         <NetworkTabs />
         <Faucet account={account} type={devNet ? 'faucet' : 'testPayment'} sessionTokenData={sessionTokenData} />

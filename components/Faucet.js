@@ -297,7 +297,7 @@ export default function Faucet({ account, type, sessionTokenData }) {
                   <b>Last Ledger Index.</b> Find it in the statistics on the <Link href="/">Landing page</Link>
                 </span>
                 <input
-                  placeholder={t('form.placeholder.enter-latest-ledger-index', { ns: 'faucet'})}
+                  placeholder={t('form.placeholder.enter-latest-ledger-index', { ns: 'faucet' })}
                   onChange={onLastLedgerChange}
                   onKeyPress={typeNumberOnly}
                   className="input-text"
