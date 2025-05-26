@@ -10,27 +10,36 @@
     cursor: pointer;
     border-bottom: 1px solid #ccc
   }
+
   .permission-item-title {
     font-size: 1rem;
     font-weight: 500;
   }
+
   .permission-item-status {
     color: var(--text-secondary);
     font-size: 14px;
   }
+
   .back-button {
     background: transparent;
     border: none;
     display: flex;
     align-items: center;
     cursor: pointer;
-    padding: 5px
+    padding: 5px;
+
+    .dark & span {
+      color: #fff;
+    }
   }
+
   .back-button-container {
     display: flex;
     align-items: center;
     margin-bottom: 15px;
   }
+
   .flag-toggle-container {
     display: flex;
     justify-content: space-between;
@@ -38,6 +47,7 @@
     flex-wrap: wrap;
     gap: 10px;
   }
+
   .flag-toggle-item {
     flex: 1;
     min-width: 200px;
@@ -45,6 +55,7 @@
     align-items: center;
     gap: 15px;
   }
+
   .icon-color {
     color: var(--text-primary);
 

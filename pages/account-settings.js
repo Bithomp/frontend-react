@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { xahauNetwork , explorerName} from '../utils'
+import { xahauNetwork, explorerName } from '../utils'
 import CheckBox from '../components/UI/CheckBox'
 import SEO from '../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -31,6 +31,9 @@ const ASF_FLAGS = {
   disallowIncomingRemit: 16,
   tshCollect: 11,
   allowTrustLineClawback: 16,
+  asfDefaultRipple: 8,
+  asfDepositAuth: 9,
+  asfDisableMaster: 4,
 }
 
 // TF flags (can be combined in one transaction)
@@ -57,12 +60,19 @@ export default function AccountSettings({ account, setSignRequest }) {
 
   // Determine which ASF flags to use based on network
   const getAvailableAsfFlags = () => {
-    const commonAsfFlags = ['disallowIncomingCheck', 'disallowIncomingPayChan', 'disallowIncomingTrustline']
+    const commonAsfFlags = [
+      'disallowIncomingCheck',
+      'disallowIncomingPayChan',
+      'disallowIncomingTrustline',
+      'asfDefaultRipple',
+      'asfDepositAuth',
+      'asfDisableMaster'
+    ]
 
     if (xahauNetwork) {
-      return [...commonAsfFlags, 'disallowIncomingRemit', 'tshCollect', 'allowTrustLineClawback']
+      return [...commonAsfFlags, 'disallowIncomingRemit', 'tshCollect']
     } else {
-      return [...commonAsfFlags, 'globalFreeze', 'noFreeze', 'authorizedNFTokenMinter', 'disallowIncomingNFTokenOffer']
+      return [...commonAsfFlags, 'globalFreeze', 'noFreeze', 'authorizedNFTokenMinter', 'disallowIncomingNFTokenOffer', 'allowTrustLineClawback']
     }
   }
 
@@ -74,19 +84,19 @@ export default function AccountSettings({ account, setSignRequest }) {
     // ASF Flags
     disallowIncomingCheck: {
       name: 'Disallow Incoming Checks',
-      displayName: 'Allow Incoming Checks',
+      displayName: 'Disallow Incoming Checks',
       status: (value) => (value ? 'Blocked' : 'Allowed'),
       type: 'asf',
     },
     disallowIncomingPayChan: {
       name: 'Disallow Incoming Payment Channels',
-      displayName: 'Allow Incoming PayChan',
+      displayName: 'Disallow Incoming PayChan',
       status: (value) => (value ? 'Blocked' : 'Allowed'),
       type: 'asf',
     },
     disallowIncomingTrustline: {
       name: 'Disallow Incoming Trust Lines',
-      displayName: 'Allow Incoming Trustline',
+      displayName: 'Disallow Incoming Trustline',
       status: (value) => (value ? 'Blocked' : 'Allowed'),
       type: 'asf',
     },
@@ -110,13 +120,13 @@ export default function AccountSettings({ account, setSignRequest }) {
     },
     disallowIncomingNFTokenOffer: {
       name: 'Disallow Incoming NFT Offers',
-      displayName: 'Allow Incoming NFT Offers',
+      displayName: 'Disallow Incoming NFT Offers',
       status: (value) => (value ? 'Blocked' : 'Allowed'),
       type: 'asf',
     },
     disallowIncomingRemit: {
       name: 'Disallow Incoming Remit',
-      displayName: 'Allow Incoming Remit',
+      displayName: 'Disallow Incoming Remit',
       status: (value) => (value ? 'Blocked' : 'Allowed'),
       type: 'asf',
     },
@@ -130,6 +140,24 @@ export default function AccountSettings({ account, setSignRequest }) {
       name: 'Allow TrustLine Clawback',
       displayName: 'Allow TrustLine Clawback',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
+      type: 'asf',
+    },
+    asfDefaultRipple: {
+      name: 'Default Ripple',
+      displayName: 'Default Ripple',
+      status: (value) => (value ? 'Enabled' : 'Disabled'),
+      type: 'asf',
+    },
+    asfDepositAuth: {
+      name: 'Deposit Authorization',
+      displayName: 'Deposit Authorization',
+      status: (value) => (value ? 'Required' : 'Not Required'),
+      type: 'asf',
+    },
+    asfDisableMaster: {
+      name: 'Disable Master Key',
+      displayName: 'Master Key',
+      status: (value) => (value ? 'Disabled' : 'Enabled'),
       type: 'asf',
     },
     // TF Flags
@@ -147,13 +175,13 @@ export default function AccountSettings({ account, setSignRequest }) {
     },
     disallowXRP: {
       name: 'Disallow XRP',
-      displayName: 'Allow Incoming XRP',
+      displayName: 'Disallow Incoming XRP',
       status: (value) => (value ? 'Blocked' : 'Allowed'),
       type: 'tf',
     },
   }
 
-  useEffect(() => {    
+  useEffect(() => {
     const fetchAccountData = async () => {
       try {
         const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
@@ -206,6 +234,7 @@ export default function AccountSettings({ account, setSignRequest }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])
+  console.log(accountData)
 
   const handleAsfFlagChange = (flag) => {
     if (selectedFlag === flag) {
@@ -404,9 +433,9 @@ export default function AccountSettings({ account, setSignRequest }) {
           <div className="back-button-container">
             <button
               className="back-button"
-              onClick={cancelEdit}              
+              onClick={cancelEdit}
             >
-              <IoArrowBack size={20} className="icon-color"/>
+              <IoArrowBack size={20} className="icon-color" />
               <span style={{ marginLeft: '5px' }}>Back</span>
             </button>
           </div>
@@ -429,7 +458,7 @@ export default function AccountSettings({ account, setSignRequest }) {
           </div>
 
           {errorMessage && <p className="red center">{errorMessage}</p>}
-          {successMessage && <p className="green center">{successMessage}</p>}          
+          {successMessage && <p className="green center">{successMessage}</p>}
         </div>
       </>
     )
