@@ -294,6 +294,7 @@ export default function Faucet({ account, type, sessionTokenData }) {
                     ns="faucet"
                     components={[
                       <strong key="strong" />,
+                      <Link key="link" href="/" passHref>
                         <a />
                       </Link>
                     ]}
