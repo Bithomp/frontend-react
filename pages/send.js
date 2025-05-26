@@ -220,7 +220,7 @@ export default function Send({ account, setSignRequest }) {
                     <LinkAccount address={txResult.destination} /> <CopyButton text={txResult.destination} />
                   </p>
                   <p>
-                    <strong>{t('table.amount', 'Amount')}:</strong> {txResult.amount}
+                    <strong>{t('table.amount')}:</strong> {txResult.amount}
                   </p>
                   {txResult.destinationTag && (
                     <p>
