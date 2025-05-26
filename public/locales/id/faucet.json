@@ -3,6 +3,9 @@
   "error-occured": "Terjadi kesalahan",
   "try-later": "Anda sudah mencobanya hari ini. Kembali lagi dalam {{time}}.",
   "experience-fast-transactions": "Rasakan betapa cepat dan mudahnya melakukan transaksi di {{explorerName}}!",
+  "last-ledger-index-find-on-landing-page": "<strong>Indeks ledger terbaru.</strong> Temukan di statistik pada <1>halaman utama.</1>",
+  "faucet-description": "Butuh {{nativeCurrency}} uji coba untuk pengembangan di {{ledgerName}}? Gunakan {{explorerName}} Faucet kami yang aman dan cepat untuk menerima {{nativeCurrency}} gratis langsung ke alamat dompet {{devNet}} Anda. Baik Anda sedang membangun dompet, dApp, platform NFT, atau alat DeFi di {{ledgerName}}, faucet ini membantu Anda menguji transaksi tanpa menggunakan dana sungguhan.",
+  "enter-amount": "{{devNet}} {{nativeCurrency}} jumlah (maksimum: {{maxAmount}} {{nativeCurrency}})",
   "form": {
     "placeholder": {
       "enter-address": "Masukkan alamat {{ledgerName}} Anda",

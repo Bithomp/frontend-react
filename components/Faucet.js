@@ -257,12 +257,7 @@ export default function Faucet({ account, type, sessionTokenData }) {
           {testPayment ? (
             <p className="center">{t('experience-fast-transactions', { ns: 'faucet', explorerName })}</p>
           ) : (
-            <p>
-              Need test {nativeCurrency} for your {ledgerName} development? Use our secure and fast {explorerName}{' '}
-              Faucet to receive free {nativeCurrency} directly to your {devNet} wallet address. Whether you're building
-              wallets, dApps, NFT platforms, or DeFi tools on the {ledgerName}, this faucet helps you test transactions
-              without using real funds.
-            </p>
+            <p>{t('faucet-description', { ns: 'faucet', explorerName, nativeCurrency, ledgerName, devNet })}</p>
           )}
           <div>
             <AddressInput
@@ -294,7 +289,15 @@ export default function Faucet({ account, type, sessionTokenData }) {
                 {width > 1100 && <br />}
                 <span className="input-title">
                   <Image src="/images/pages/faucet/lastLedgerIndex.png" alt="Ledger" width={141} height={55} />{' '}
-                  <b>Last Ledger Index.</b> Find it in the statistics on the <Link href="/">Landing page</Link>
+                  <Trans
+                    i18nKey="last-ledger-index-find-on-landing-page"
+                    ns="faucet"
+                    components={[
+                      <strong key="strong" />,
+                        <a />
+                      </Link>
+                    ]}
+                  />
                 </span>
                 <input
                   placeholder={t('form.placeholder.enter-latest-ledger-index', { ns: 'faucet' })}
@@ -311,7 +314,7 @@ export default function Faucet({ account, type, sessionTokenData }) {
               <div>
                 {width > 1100 && <br />}
                 <span className="input-title">
-                  {capitalize(devNet)} {nativeCurrency} amount (maximum: {maxAmount} {nativeCurrency})
+                  {capitalize(t('enter-amount', { ns: 'faucet', nativeCurrency, devNet, maxAmount }))}
                 </span>
                 <input
                   placeholder={'Enter amount in ' + nativeCurrency}

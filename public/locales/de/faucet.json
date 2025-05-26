@@ -3,6 +3,9 @@
   "error-occured": "Ein Fehler ist aufgetreten",
   "try-later": "Sie haben es heute bereits versucht. Kommen Sie nach {{time}} zurück.",
   "experience-fast-transactions": "Erleben Sie, wie schnell und einfach Transaktionen auf {{explorerName}} sind!",
+  "last-ledger-index-find-on-landing-page": "<strong>Letzter Ledger-Index.</strong> Finden Sie ihn in den Statistiken auf <1>der Startseite</1>.",
+  "faucet-description": "Benötigen Sie Test-{{nativeCurrency}} für Ihre {{ledgerName}}-Entwicklung? Nutzen Sie unseren sicheren und schnellen {{explorerName}} Faucet, um kostenloses {{nativeCurrency}} direkt an Ihre {{devNet}}-Wallet-Adresse zu erhalten. Egal, ob Sie Wallets, dApps, NFT-Plattformen oder DeFi-Tools auf der {{ledgerName}} entwickeln – dieser Faucet hilft Ihnen, Transaktionen zu testen, ohne echtes Geld zu verwenden.",
+  "enter-amount": "{{devNet}} {{nativeCurrency}} Betrag (Maximum: {{maxAmount}} {{nativeCurrency}})",
   "form": {
     "placeholder": {
       "enter-address": "Geben Sie Ihre {{ledgerName}} Adresse ein",
