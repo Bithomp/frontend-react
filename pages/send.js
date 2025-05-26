@@ -7,9 +7,10 @@ import AddressInput from '../components/UI/AddressInput'
 import FormInput from '../components/UI/FormInput'
 import CopyButton from '../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../utils/links'
+import { multiply, divide } from '../utils/calc'
 import NetworkTabs from '../components/Tabs/NetworkTabs'
 import { typeNumberOnly, isAddressValid, isTagValid, nativeCurrency, encode, decode } from '../utils'
-import { fullDateAndTime, timeFromNow } from '../utils/format'
+import { fullDateAndTime, timeFromNow, amountFormat } from '../utils/format'
 import { useState } from 'react'
 
 export default function Send({ account, setSignRequest }) {
@@ -29,9 +30,7 @@ export default function Send({ account, setSignRequest }) {
     const value = e.target.value
     setFee(value)
 
-    const feeInDrops = parseFloat(value) * 1000000
-
-    if (feeInDrops > 1000000) {
+    if (Number(value) > 1) {
       setFeeError('Maximum fee is 1 ' + nativeCurrency)
     } else {
       setFeeError('')
@@ -43,7 +42,7 @@ export default function Send({ account, setSignRequest }) {
     setTxResult(null)
 
     if (!address || !isAddressValid(address)) {
-      setError(t('form.error.address-invalid', 'Please enter a valid address.'))
+      setError(t('form.error.address-invalid'))
       return
     }
 
@@ -66,7 +65,7 @@ export default function Send({ account, setSignRequest }) {
         TransactionType: 'Payment',
         Account: account.address,
         Destination: address,
-        Amount: String(Math.round(parseFloat(amount) * 1000000))
+        Amount: multiply(amount, 1000000)
       }
 
       if (destinationTag || destinationTag === '0') {
@@ -85,7 +84,7 @@ export default function Send({ account, setSignRequest }) {
       }
 
       if (fee) {
-        payment.Fee = String(Math.round(parseFloat(fee) * 1000000))
+        payment.Fee = multiply(fee, 1000000)
       }
 
       setSignRequest({
@@ -96,11 +95,11 @@ export default function Send({ account, setSignRequest }) {
             setTxResult({
               date: result.result.date,
               destination: result.result.Destination,
-              amount: (parseInt(result.result.Amount) / 1000000).toString(),
-              destinationTag: result.result.DestinationTag?.toString(),
-              sourceTag: result.result.SourceTag?.toString(),
-              fee: (parseInt(result.result.Fee) / 1000000).toString(),
-              sequence: result.result.Sequence?.toString(),
+              amount: amountFormat(result.result.Amount),
+              destinationTag: result.result.DestinationTag,
+              sourceTag: result.result.SourceTag,
+              fee: amountFormat(result.result.Fee),
+              sequence: result.result.Sequence,
               memo: result.result.Memos?.[0]?.Memo?.MemoData ? decode(result.result.Memos[0].Memo.MemoData) : undefined,
               hash: result.result.hash,
               status: result.result.meta?.TransactionResult,
@@ -127,7 +126,7 @@ export default function Send({ account, setSignRequest }) {
 
         <div>
           <AddressInput
-            title={t('table.destination', 'Destination')}
+            title={t('table.destination')}
             placeholder="Destination address"
             name="destination"
             hideButton={true}
@@ -145,7 +144,7 @@ export default function Send({ account, setSignRequest }) {
           />
           <div className="form-input">
             {width > 1100 && <br />}
-            <span className="input-title">{t('table.amount', 'Amount')}</span>
+            <span className="input-title">{t('table.amount')}</span>
             <input
               placeholder={'Enter amount in ' + nativeCurrency}
               onChange={(e) => setAmount(e.target.value)}
@@ -161,7 +160,7 @@ export default function Send({ account, setSignRequest }) {
           </div>
           <div className="form-input">
             {width > 1100 && <br />}
-            <span className="input-title">{t('table.memo', 'Memo')}</span>
+            <span className="input-title">{t('table.memo')}</span>
             <input
               placeholder={'Enter memo'}
               onChange={(e) => setMemo(e.target.value)}
@@ -213,19 +212,19 @@ export default function Send({ account, setSignRequest }) {
                 <h3 className="center">Transaction Successful</h3>
                 <div>
                   <p>
-                    <strong>{t('table.date', 'Date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')} (
+                    <strong>{t('table.date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')} (
                     {fullDateAndTime(txResult.date, 'ripple')})
                   </p>
                   <p>
-                    <strong>{t('table.destination', 'Destination')}:</strong>{' '}
+                    <strong>{t('table.destination')}:</strong>{' '}
                     <LinkAccount address={txResult.destination} /> <CopyButton text={txResult.destination} />
                   </p>
                   <p>
-                    <strong>{t('table.amount', 'Amount')}:</strong> {txResult.amount} {nativeCurrency}
+                    <strong>{t('table.amount', 'Amount')}:</strong> {txResult.amount}
                   </p>
                   {txResult.destinationTag && (
                     <p>
-                      <strong>{t('table.destination-tag', 'Destination Tag')}:</strong> {txResult.destinationTag}
+                      <strong>{t('table.destination-tag')}:</strong> {txResult.destinationTag}
                     </p>
                   )}
                   {txResult.sourceTag && (
@@ -234,18 +233,18 @@ export default function Send({ account, setSignRequest }) {
                     </p>
                   )}
                   <p>
-                    <strong>Fee:</strong> {txResult.fee} {nativeCurrency}
+                    <strong>Fee:</strong> {txResult.fee}
                   </p>
                   <p>
-                    <strong>{t('table.sequence', 'Sequence')}:</strong> #{txResult.sequence}
+                    <strong>{t('table.sequence')}:</strong> #{txResult.sequence}
                   </p>
                   {txResult.memo && (
                     <p>
-                      <strong>{t('table.memo', 'Memo')}:</strong> {txResult.memo}
+                      <strong>{t('table.memo')}:</strong> {txResult.memo}
                     </p>
                   )}
                   <p>
-                    <strong>{t('table.hash', 'Hash')}: </strong>
+                    <strong>{t('table.hash')}: </strong>
                     <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
                   </p>
                 </div>
