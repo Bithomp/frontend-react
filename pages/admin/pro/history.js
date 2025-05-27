@@ -305,7 +305,15 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   // Use inside the component with useMemo to create a new scope and memoized data.
   // This helps get new data for ZenLedger (force to USD currency) and prevents unnecessary re-renders.
   const processDataForExport = useMemo(() => {
-    return (filteredActivities || []).map((activity) => {
+    let dataToExport = filteredActivities || []
+
+    if (platformCSVExport === 'ZenLedger') {
+      dataToExport = dataToExport.filter((activity) => {
+        return Math.abs(parseFloat(activity.amountInFiats?.[usdCurrency])) > 0
+      })
+    }
+
+    return dataToExport.map((activity) => {
       const sending = isSending(activity)
 
       const processedActivity = { ...activity }
@@ -376,6 +384,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         }
       } else if (platformCSVExport === 'ZenLedger') {
         const usdCurrency = 'usd'
+
         if (!sending) {
           processedActivity.receivedAmount = activity.amountNumber
           processedActivity.receivedCurrency = activity.receivedCurrency
