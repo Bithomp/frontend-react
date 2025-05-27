@@ -1,10 +1,12 @@
 {
+  "get-free": "無料でもらう",
   "error-occured": "エラーが発生しました",
   "try-later": "本日既に利用済みです。{{time}}にお試しください。",
   "experience-fast-transactions": "{{explorerName}}で取引がどれほど迅速かつ簡単であるかを体験してください！",
   "form": {
     "placeholder": {
-      "enter-address": "{{ledgerName}}のアドレスを入力してください"
+      "enter-address": "{{ledgerName}}のアドレスを入力してください",
+      "enter-latest-ledger-index": "最新の元帳インデックスの数字のみを入力してください"
     }
   },
   "how-it-works": "仕組み:",

@@ -1,10 +1,12 @@
 {
+  "get-free": "Получи бесплатные",
   "error-occured": "Ошибка",
   "try-later": "Вы уже пробовали сегодня. Вернитесь через {{time}}.",
   "experience-fast-transactions": "Узнайте, как быстро и легко совершать транзакции в сети {{explorerName}}!",
   "form": {
     "placeholder": {
-      "enter-address": "Введите свой адрес {{ledgerName}}"
+      "enter-address": "Введите свой адрес {{ledgerName}}",
+      "enter-latest-ledger-index": "Введите только цифры последнего леджера"
     }
   },
   "how-it-works": "Как это работает:",

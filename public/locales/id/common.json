@@ -165,6 +165,9 @@
     "search-placeholder": "Cari berdasarkan Alamat / Transaksi / NFT / Username / PayString / Penawaran",
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
     "scan-qr": "PINDAI KODE",
+    "price": {
+      "header": "Harga {{nativeCurrency}} Langsung & Konverter"
+    },
     "whales": {
       "header": "Transaksi paling signifikan dalam 24 jam terakhir"
     },
@@ -572,6 +575,7 @@
   "explorer": {
     "header": {
       "main": "Penjelajah {{explorerName}}",
+      "sub": "Pindai transaksi, akun, token, dan NFT {{nativeCurrency}} — cara cepat dan terpercaya untuk menjelajahi {{nativeCurrency}} Ledger.",
       "amm": "AMM pool information",
       "object": "Object information",
       "account": "Account information",

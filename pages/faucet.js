@@ -67,7 +67,7 @@ export default function FaucetPage({ account, showAds, sessionTokenData }) {
       />
       <div className="content-text content-center">
         <h1 className="center">
-          {explorerName} {t('menu.developers.faucet')} — Get Free {nativeCurrency}
+          {explorerName} {t('menu.developers.faucet')?.toLowerCase()} — {t('faucet:get-free')} {nativeCurrency}
         </h1>
         <NetworkTabs />
         <Faucet account={account} type={devNet ? 'faucet' : 'testPayment'} sessionTokenData={sessionTokenData} />

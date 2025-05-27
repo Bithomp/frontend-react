@@ -10,7 +10,15 @@ import { axiosAdmin } from '../../utils/axios'
 export default function BillingCountry({ billingCountry, setBillingCountry, choosingCountry, setChoosingCountry }) {
   const router = useRouter()
   const { i18n } = useTranslation()
-  const countries = countriesTranslated(i18n.language)
+  const [countries, setCountries] = useState(null)
+
+  useEffect(() => {
+    const loadCountries = async () => {
+      const data = await countriesTranslated(i18n.language)
+      setCountries(data)
+    }
+    loadCountries()
+  }, [i18n.language])
 
   const [loading, setLoading] = useState(true) //keep true for country select
 
@@ -22,7 +30,7 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
   const getApiData = async () => {
     const partnerData = await axiosAdmin.get('partner').catch((error) => {
       if (error && error.message !== 'canceled') {
-        console.log(error)
+        console.log("ERROR: can't get partner data")
         if (error.response?.data?.error === 'errors.token.required') {
           router.push('/admin')
         }
@@ -59,7 +67,7 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
       .put('partner/partner', { country: billingCountry }, { baseUrl: '/api/' })
       .catch((error) => {
         if (error && error.message !== 'canceled') {
-          console.log(error)
+          console.log("ERROR: can't save country")
         }
       })
     if (data?.data?.country) {
@@ -84,7 +92,7 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
           {billingCountry && (
             <>
               Your billing country is{' '}
-              <a onClick={() => setChoosingCountry(true)}>{countries.getNameTranslated(billingCountry)}</a>
+              <a onClick={() => setChoosingCountry(true)}>{countries?.getNameTranslated?.(billingCountry) || billingCountry}</a>
             </>
           )}
         </>

@@ -39,7 +39,7 @@ const ldJsonWebsite = {
     nativeCurrency + ' Explorer',
     explorerName + ' Explorer',
     'Scan ' + nativeCurrency + ' Ledger',
-    'Bithomp' + explorerName + ' and Services'
+    'Bithomp ' + explorerName + ' and Services'
   ],
   url: server,
   potentialAction: {
@@ -154,46 +154,49 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }} />
       </Head>
 
-      <div className="center">
-        <h1 className="landing-h1">{t('explorer.header.main', { explorerName })}</h1>
-      </div>
-
-      <SearchBlock tab="explorer" />
-
-      <Ads showAds={showAds} heightNoAds={30} />
+      <section className="home-section">
+        <h1 className="center">{t('explorer.header.main', { explorerName })}</h1>
+        <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
+        <SearchBlock tab="explorer" />
+        <Ads showAds={showAds} heightNoAds={30} />
+      </section>
 
       <Products />
 
       {!devNet && (
-        <div className="flex flex-center">
-          <div className="home-converter">
-            <Converter
-              selectedCurrency={selectedCurrency}
-              setSelectedCurrency={setSelectedCurrency}
-              chartPeriod={chartPeriod}
-              fiatRate={fiatRate}
-            />
+        <section className="home-section">
+          <h2 className="center">{t('home.price.header', { nativeCurrency })}</h2>
+          <div className="home-price-tools">
+            <div className="home-converter">
+              <Converter
+                selectedCurrency={selectedCurrency}
+                setSelectedCurrency={setSelectedCurrency}
+                chartPeriod={chartPeriod}
+                fiatRate={fiatRate}
+              />
+            </div>
+            <div className="home-price-chart">
+              <PriceChart
+                currency={selectedCurrency}
+                chartPeriod={chartPeriod}
+                setChartPeriod={setChartPeriod}
+                hideToolbar={true}
+              />
+            </div>
           </div>
-          <div className="home-price-chart">
-            <PriceChart
-              currency={selectedCurrency}
-              chartPeriod={chartPeriod}
-              setChartPeriod={setChartPeriod}
-              hideToolbar={true}
-            />
-          </div>
-        </div>
+        </section>
       )}
 
-      <h2 className="center landing-h2">{t('home.stat.header', { ledgerName })}</h2>
+      <section className="home-section">
+        <h2 className="center">{t('home.stat.header', { ledgerName })}</h2>
+        <div className="home-whale-transactions">
+          <Whales currency={selectedCurrency} data={whaleTransactions} setData={setWhaleTransactions} />
+        </div>
+        <div className="home-statistics">
+          <Statistics data={statistics} setData={setStatistics} />
+        </div>
+      </section>
 
-      <div className="home-whale-transactions">
-        <Whales currency={selectedCurrency} data={whaleTransactions} setData={setWhaleTransactions} />
-      </div>
-
-      <div className="home-statistics">
-        <Statistics data={statistics} setData={setStatistics} />
-      </div>
     </>
   )
 }

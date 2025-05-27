@@ -40,7 +40,10 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
     txTypeSpecial = 'Conversion payment'
   } else {
     //check if iou involved (pathfinding or iou with fee)
-    if (sourceBalanceChangesList[0]?.value !== '-' + outcome.deliveredAmount?.value) {
+    if (
+      !outcome.deliveredAmount?.mpt_issuance_id &&
+      sourceBalanceChangesList[0]?.value !== '-' + outcome.deliveredAmount?.value
+    ) {
       iouPayment = true
     }
   }

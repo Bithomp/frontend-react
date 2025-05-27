@@ -6,11 +6,6 @@ import { appWithTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
 import { GoogleAnalytics } from '@next/third-parties/google'
 
-import Header from '../components/Layout/Header'
-import Footer from '../components/Layout/Footer'
-import ScrollToTop from '../components/Layout/ScrollToTop'
-import BackgroundImage from '../components/Layout/BackgroundImage'
-
 const SignForm = dynamic(() => import('../components/SignForm'), { ssr: false })
 import TopLinks from '../components/Layout/TopLinks'
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
@@ -29,6 +24,25 @@ import '../styles/components/nprogress.css'
 
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
+
+const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
+const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
+const ScrollToTop = dynamic(() => import('../components/Layout/ScrollToTop'), { ssr: true })
+const BackgroundImage = dynamic(() => import('../components/Layout/BackgroundImage'), { ssr: true })
+
+function useIsBot() {
+  const [isBot, setIsBot] = useState(false)
+
+  useEffect(() => {
+    const ua = navigator.userAgent.toLowerCase()
+    const botKeywords = ['bot', 'crawl', 'slurp', 'spider']
+
+    const isBotUA = botKeywords.some((keyword) => ua.includes(keyword))
+    setIsBot(isBotUA)
+  }, [])
+
+  return isBot
+}
 
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
@@ -51,6 +65,7 @@ const MyApp = ({ Component, pageProps }) => {
   }, [])
 
   const router = useRouter()
+  const isBot = useIsBot()
 
   useEffect(() => {
     //pages where we need to show the latest fiat price
@@ -160,7 +175,7 @@ const MyApp = ({ Component, pageProps }) => {
             />
             <ScrollToTop />
             {/* available only on the mainnet and testnet, only on the client side, only when online */}
-            {(networkId === 0 || networkId === 1) && isClient && isOnline && (
+            {(networkId === 0 || networkId === 1) && isClient && isOnline && !isBot && (
               <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
             )}
             {(signRequest || isValidUUID(uuid)) && (

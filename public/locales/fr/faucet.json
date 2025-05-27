@@ -1,10 +1,12 @@
 {
+  "get-free": "Obtiens des gratuits",
   "error-occured:": "Une erreur est survenue",
   "try-later": "Vous avez déjà essayé aujourd'hui. Revenez dans {{time}}.",
   "experience-fast-transactions": "Découvrez à quel point il est rapide et facile d'effectuer des transactions sur le réseau {{explorerName}} !",
   "form": {
     "placeholder": {
-      "enter-address": "Entrez votre adresse {{ledgerName}}"
+      "enter-address": "Entrez votre adresse {{ledgerName}}",
+      "enter-latest-ledger-index": "Entrez uniquement les chiffres de l’index du dernier ledger"
     }
   },
   "how-it-works": "Comment ça fonctionne :",

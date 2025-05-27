@@ -57,7 +57,7 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
     setLoading(true)
     const response = await axiosAdmin.get('user/favorites').catch((error) => {
       if (error && error.message !== 'canceled') {
-        console.log(error)
+        console.log("ERROR: can't get favorites")
         if (error.response?.data?.error === 'errors.token.required') {
           router.push('/admin')
         } else {
@@ -160,8 +160,8 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
       await Promise.all(
         list.map(async (a) => {
           const url = 'v2/address/' + a.entity + '?&ledgerInfo=true'
-          const response = await axios(url).catch((error) => {
-            console.log(error)
+          const response = await axios(url).catch(() => {
+            console.log("ERROR: can't get address info")
           })
           if (response?.data) {
             list = list.map((l) => {
@@ -182,8 +182,8 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
       let nftList = list.map((a) => a.entity)
       const url =
         'v2/' + (xahauNetwork ? 'uritokens' : 'nfts') + '?ids=' + nftList + '&uri=true&metadata=true&sellOffers=true' //&buyOffers=true&offersValidate=true
-      const response = await axios(url).catch((error) => {
-        console.log(error)
+      const response = await axios(url).catch(() => {
+        console.log("ERROR: can't get nft info")
       })
       const nftsInfo = xahauNetwork ? response?.data?.uritokens : response?.data?.nfts
 

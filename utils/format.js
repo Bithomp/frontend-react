@@ -556,6 +556,14 @@ export const amountFormat = (amount, options = {}) => {
     textCurrency = textCurrency?.trim()
   }
 
+  if (!isNaN(textCurrency?.trim())) {
+    textCurrency = textCurrency?.trim()
+    textCurrency = '"' + textCurrency + '"'
+    if (!options.noSpace) {
+      textCurrency = ' ' + textCurrency
+    }
+  }
+
   if (options.precise) {
     if (options.precise === 'nice') {
       return niceNumber(value, 0, null, 15) + ' ' + valuePrefix + ' ' + textCurrency
@@ -628,10 +636,10 @@ export const niceCurrency = (currency) => {
   if (currency.length > 3) {
     if (firstTwoNumbers === '01') {
       // deprecated demurraging/interest-bearing
-      type = 'IOU demurraging'
       let currencyText = Buffer.from(currency.substr(2, 8), 'hex')
-      currencyText = currencyText.substr(0, 3)
+      currencyText = currencyText.toString().substr(0, 3)
       let profit = currency.substr(16, 16)
+      let valuePrefix = ''
       if (profit === 'C1F76FF6ECB0BAC6' || profit === 'C1F76FF6ECB0CCCD') {
         valuePrefix = '(-0.5%pa)'
       } else if (profit === '41F76FF6ECB0BAC6' || profit === '41F76FF6ECB0CCCD') {
@@ -651,7 +659,7 @@ export const niceCurrency = (currency) => {
         */
         valuePrefix = '(??%pa)'
       }
-      currency = currencyText
+      currency = currencyText + ' ' + valuePrefix
     } else if (firstTwoNumbers === '02') {
       currency = Buffer.from(currency.substring(16), 'hex')
     } else if (firstTwoNumbers === '03') {
@@ -674,7 +682,7 @@ export const amountParced = (amount) => {
   let type = ''
   let issuer = null
 
-  if (amount.value && !(!amount.issuer && amount.currency === nativeCurrency)) {
+  if (amount.value && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
     currency = amount.currency
     value = amount.value
     issuer = amount.issuer
@@ -698,6 +706,11 @@ export const amountParced = (amount) => {
       }
       value = xls14NftVal
     }
+  } else if (amount.mpt_issuance_id) {
+    currency = amount.mpt_issuance_id
+    value = amount.value
+    type = 'MPT'
+    valuePrefix = 'MPT'
   } else {
     type = nativeCurrency
     if (amount.value) {
@@ -952,7 +965,11 @@ export const decodeJsonMemo = (memopiece, options) => {
     }
   }
   if (memopiece[0] === '{') {
-    memopiece = JSON.parse(memopiece)
+    try {
+      memopiece = JSON.parse(memopiece)
+    } catch (e) {
+      return memopiece
+    }
     return codeHighlight(memopiece)
   }
   return ''

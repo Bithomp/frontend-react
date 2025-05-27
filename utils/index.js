@@ -1,8 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
-import countries from 'i18n-iso-countries'
 import Cookies from 'universal-cookie'
+
+export const safeClone = (obj) => {
+  if (typeof structuredClone === 'function') {
+    return structuredClone(obj)
+  } else {
+    // Fallback: JSON clone (only for simple objects, doesmt work for functions, Date, Map, Set etc)
+    return JSON.parse(JSON.stringify(obj))
+  }
+}
 
 export const cookieParams = { path: '/', maxAge: 31536000 }
 
@@ -78,26 +86,30 @@ export const periodDescription = (periodName) => {
   }
 }
 
-export const countriesTranslated = (language) => {
+export const countriesTranslated = async (language) => {
   let lang = language.slice(0, 2)
   if (language === 'default') {
     lang = 'en'
   }
+
   const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko", "fr" etc
   if (notSupportedLanguages.includes(lang)) {
     lang = 'en'
   }
-  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
+
+  const countries = await import('i18n-iso-countries')
+  const languageData = await import(`i18n-iso-countries/langs/${lang}.json`)
   countries.registerLocale(languageData)
-  countries.getNameTranslated = (code) => {
+
+  const getNameTranslated = (code) => {
     return countries.getName(code, lang, { select: 'official' })
   }
 
-  countries.getNamesTranslated = () => {
+  const getNamesTranslated = () => {
     return countries.getNames(lang, { select: 'official' })
   }
 
-  const countryObj = countries.getNamesTranslated()
+  const countryObj = getNamesTranslated()
   const countryArr = Object.entries(countryObj).map(([key, value]) => {
     return {
       label: value,
@@ -105,9 +117,12 @@ export const countriesTranslated = (language) => {
     }
   })
   countryArr.sort((a, b) => a.label.localeCompare(b.label, lang))
-  countries.countryArr = countryArr
 
-  return countries
+  return {
+    countryArr,
+    getNameTranslated,
+    getNamesTranslated
+  }
 }
 
 export const chartSpan = (period) => {
@@ -275,8 +290,8 @@ export const useLocalStorage = (key, initialValue) => {
         const valueToStore = value instanceof Function ? value(storedValue) : value
         setState(valueToStore)
         localStorage.setItem(key, JSON.stringify(valueToStore))
-      } catch (error) {
-        console.log(error)
+      } catch {
+        console.log('Error saving to localStorage')
       }
     },
     [key, setState]
@@ -286,7 +301,7 @@ export const useLocalStorage = (key, initialValue) => {
     try {
       localStorage.removeItem(key)
     } catch {
-      console.log(error)
+      console.log("ERROR: can't remove from localStorage")
     }
   }, [key])
 
@@ -422,7 +437,7 @@ export const networks = {
     server: 'https://bithomp.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/go/buy-first-xrp',
-    explorerName: 'XRPL',
+    explorerName: 'XRP Ledger',
     ledgerName: 'XRPL',
     minLedger: 32570,
     subname: ''
@@ -586,16 +601,12 @@ export const isEmailValid = (x) => {
 }
 
 export const isUrlValid = (x) => {
-  let re = new RegExp(
-    '^(https?:\\/\\/)?' + // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-      '(\\#[-a-z\\d_]*)?$',
-    'i'
-  ) // fragment locator
-  return !!re.test(x)
+  try {
+    new URL(x)
+    return true
+  } catch (_) {
+    return false
+  }
 }
 
 export const stripDomain = (x) => {

@@ -66,7 +66,7 @@ const CustomIndicatorsContainer = (props) => {
   )
 }
 export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {} }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const searchParams = useSearchParams()
   const router = useRouter()
   const searchInput = useRef(null)
@@ -187,33 +187,13 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
     if (!searchFor) return
 
-    if (tab === 'account' && isAddressOrUsername(searchFor)) {
-      router.push('/account/' + encodeURI(searchFor) + addParams)
-      return
-    }
-
-    if (tab === 'nfts' && isAddressOrUsername(searchFor)) {
-      router.push('/nfts/' + encodeURI(searchFor) + addParams)
-      return
-    }
-
-    if (tab === 'nft-offers' && isAddressOrUsername(searchFor)) {
-      router.push('/nft-offers/' + encodeURI(searchFor) + addParams)
-      return
-    }
-
     if (tab === 'nft' && isValidNftXls20(searchFor)) {
       router.push('/nft/' + encodeURI(searchFor))
       return
     }
 
-    if (tab === 'amm' && (isAddressOrUsername(searchFor) || isCurrencyHashValid(searchFor))) {
+    if (tab === 'amm' && isCurrencyHashValid(searchFor)) {
       router.push('/amm/' + encodeURI(searchFor))
-      return
-    }
-
-    if (tab === 'nft-volumes' && isAddressOrUsername(searchFor)) {
-      router.push('/nft-volumes/' + encodeURI(searchFor) + addParams)
       return
     }
 
@@ -250,7 +230,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         const { networkId: CTIDnetworkId } = decodeCTID(searchFor)
         if (networkId === CTIDnetworkId) {
           // we are on the correct explorer
-          window.location = '/explorer/' + searchFor
+          window.location = '/' + i18n.language + '/tx/' + searchFor
         } else if (networksIds[CTIDnetworkId]) {
           setErrorMessage(
             <>
@@ -260,7 +240,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               ,{' '}
               <Trans i18nKey="explorer.check-tx-on-different-explorer">
                 check the details{' '}
-                <a href={networksIds[CTIDnetworkId].server + '/explorer/' + searchFor}>
+                <a href={networksIds[CTIDnetworkId].server + '/' + i18n.language + '/tx/' + searchFor}>
                   <u>here</u>
                 </a>
               </Trans>
@@ -290,13 +270,30 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     if (isAddressOrUsername(searchFor)) {
-      router.push('/account/' + encodeURI(searchFor))
+      if (tab === 'nfts') {
+        router.push('/nfts/' + encodeURI(searchFor) + addParams)
+        return
+      }
+
+      if (tab === 'nft-offers') {
+        router.push('/nft-offers/' + encodeURI(searchFor) + addParams)
+        return
+      }
+
+      if (tab === 'amm') {
+        router.push('/amm/' + encodeURI(searchFor))
+        return
+      }
+
+      if (tab === 'nft-volumes') {
+        router.push('/nft-volumes/' + encodeURI(searchFor) + addParams)
+        return
+      }
+
+      router.push('/account/' + encodeURI(searchFor) + addParams)
       return
     }
 
-    //remove tab='transaction' to allow transaction search on all tabs
-    //tx, address etc
-    window.location = '/explorer/' + encodeURI(searchFor)
     return
   }
 
@@ -338,7 +335,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   return (
     <>
-      <div className="search-block" style={tab === 'explorer' ? { backgroundColor: 'unset', height: 60 } : {}}>
+      <div className="search-block" style={tab === 'explorer' ? { backgroundColor: 'unset', height: 90 } : {}}>
         <div className="search-box" style={tab === 'explorer' ? { marginTop: '20px' } : {}}>
           <div className="above-search-box">
             {searching ? (

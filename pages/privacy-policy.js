@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: December 20, 2024</p>
+        <p>Last updated: May 23, 2025</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -427,6 +427,22 @@ export default function PrivacyPolicy() {
         <p>
           Users have the right to request the deactivation or deletion of their accounts. Details on how to deactivate
           or delete accounts can be found in the "Account Management" section.
+        </p>
+        <h2>Use of Sentry for Error Monitoring and Performance Tracing</h2>
+        <p>
+          We use Sentry, a third-party service, for error monitoring and performance tracing. This means that certain
+          technical information about your visit (such as browser type, device information, IP address, visited pages,
+          and user interactions) may be automatically collected and sent to Sentry for the purpose of identifying bugs,
+          improving performance, and ensuring the stability of our website.
+        </p>
+        <p>
+          The data shared with Sentry is used strictly for diagnostic and analytical purposes and is handled in
+          accordance with Sentry’s own privacy policies. We do not use Sentry to collect personal information such as
+          your name, email, or financial data.
+        </p>
+        <p>
+          By continuing to use our website, you consent to this type of technical data collection for monitoring and
+          improvement purposes.
         </p>
         <h2>Use of Google Analytics 4</h2>
         <p>

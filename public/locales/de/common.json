@@ -165,6 +165,9 @@
     "search-placeholder": "Suche nach Adresse / Transaktion / NFT / Benutzername / PayString / Angebot",
     "search-placeholder-short": "Suche nach Adresse / Transaktion",
     "scan-qr": "CODE SCANNEN",
+    "price": {
+      "header": "{{nativeCurrency}} Live Preis & Konverter"
+    },
     "whales": {
       "header": "Die signifikantesten Transaktionen der letzten 24 Stunden"
     },
@@ -572,6 +575,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} Explorer",
+      "sub": "Scanne {{nativeCurrency}}-Transaktionen, -Konten, -Token und NFTs – der schnelle und vertrauenswürdige Weg, das {{nativeCurrency}} Ledger zu erkunden.",
       "amm": "AMM pool information",
       "object": "Objektinformation",
       "account": "Kontoinformation",

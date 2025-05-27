@@ -375,11 +375,9 @@ export default function SignForm({
 
   const ledgerwalletTxSending = (tx) => {
     setScreen('ledgerwallet')
-    if (tx.TransactionType === 'NFTokenCreateOffer') {
-      setStatus('Unfortunatelly, Ledger Wallet does not support NFTokenCreateOffer Transaction Type yet.')
-      return
-    }
-    setStatus('Please, connect your Ledger Wallet and open the XRP app.')
+    setStatus(
+      'Please, connect your Ledger Wallet and open the XRP app. Note: Nano S does not support some transactions.'
+    )
     ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
   }
 
@@ -613,8 +611,8 @@ export default function SignForm({
       setStatus(t('signin.status.awaiting-broker', { serviceName: broker }))
       if (broker === 'bidds') {
         setAwaiting(true)
-        const response = await axios('/v2/bidds/transaction/broker/' + txHash).catch((error) => {
-          console.log(error)
+        const response = await axios('/v2/bidds/transaction/broker/' + txHash).catch(() => {
+          console.log('ERROR: can not get bidds transaction')
           setStatus(t('signin.status.failed-broker', { serviceName: broker }))
           closeSignInFormAndRefresh() //setAwaiting false inside
         })

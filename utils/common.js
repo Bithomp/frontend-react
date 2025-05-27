@@ -11,8 +11,8 @@ export const fetchHistoricalRate = async ({ timestamp, selectedCurrency, setPage
   if (!timestamp || !selectedCurrency || devNet) return
   const response = await axios(
     'v2/rates/history/nearest/' + selectedCurrency + '?date=' + new Date(timestamp).valueOf()
-  ).catch((error) => {
-    console.log(error)
+  ).catch(() => {
+    console.log("ERROR: can't get historical rate")
   })
   if (response?.data?.[selectedCurrency]) {
     setPageFiatRate(response.data[selectedCurrency])
