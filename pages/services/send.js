@@ -63,9 +63,12 @@ export default function Send({ account, setSignRequest }) {
     try {
       let payment = {
         TransactionType: 'Payment',
-        Account: account.address,
         Destination: address,
         Amount: multiply(amount, 1000000)
+      }
+
+      if (account?.address) {
+        payment.Account = account.address
       }
 
       if (destinationTag) {
@@ -88,7 +91,6 @@ export default function Send({ account, setSignRequest }) {
 
       setSignRequest({
         request: payment,
-        wallet: account.wallet,
         callback: (result) => {
           if (result.result) {
             setTxResult({
@@ -201,7 +203,7 @@ export default function Send({ account, setSignRequest }) {
             </>
           )}
           <div className="center">
-            <button className="button-action" onClick={handleSend} disabled={!account?.address}>
+            <button className="button-action" onClick={handleSend}>
               Send Payment
             </button>
           </div>
