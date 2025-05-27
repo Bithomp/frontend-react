@@ -36,10 +36,20 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
     setNativeTokenValue((fiatAmount / fiatRate).toFixed(2))
   }
 
-  const rate = fiatRate ? '1 ' + nativeCurrency + ' = ' + fiatRate + ' ' + selectedCurrency.toUpperCase() : <br />
-
   return (
     <div className="converter">
+      <p className="converter-rate" style={{ marginBottom: '1rem', fontSize: '1.4rem' }}>
+        {fiatRate ? (
+          <>
+            1 {nativeCurrency} ={' '}
+            <b>
+              {fiatRate} {selectedCurrency.toUpperCase()}
+            </b>
+          </>
+        ) : (
+          <br />
+        )}
+      </p>
       <div className="converter-input-group">
         <input
           className="converter-amount"
@@ -77,7 +87,6 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
           <div className="converter-xrp"></div>
         )}
       </div>
-      <p className="converter-rate" style={{ marginBottom: '1rem' }}>{rate}</p>
     </div>
   )
 }
