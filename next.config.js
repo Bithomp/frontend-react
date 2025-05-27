@@ -1,6 +1,11 @@
 const { i18n } = require('./next-i18next.config')
 
-module.exports = {
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true'
+})
+
+
+module.exports = withBundleAnalyzer({
   compiler: {
     styledComponents: true
   },
@@ -95,7 +100,7 @@ module.exports = {
       }
     ]
   }
-}
+})
 
 
 // Injected content via Sentry wizard below
