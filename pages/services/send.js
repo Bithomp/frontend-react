@@ -94,6 +94,7 @@ export default function Send({ account, setSignRequest }) {
         callback: (result) => {
           if (result.result) {
             setTxResult({
+              status: result.result.meta?.TransactionResult,
               date: result.result.date,
               destination: result.result.Destination,
               amount: amountFormat(result.result.Amount),
@@ -207,7 +208,7 @@ export default function Send({ account, setSignRequest }) {
               Send Payment
             </button>
           </div>
-          {txResult && (
+          {txResult?.status === 'tesSUCCESS' && (
             <>
               <br />
               <div>
