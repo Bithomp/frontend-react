@@ -61,14 +61,14 @@ export default function Send({ account, setSignRequest }) {
       return
     }
     try {
-      const payment = {
+      let payment = {
         TransactionType: 'Payment',
         Account: account.address,
         Destination: address,
         Amount: multiply(amount, 1000000)
       }
 
-      if (destinationTag || destinationTag === '0') {
+      if (destinationTag) {
         payment.DestinationTag = parseInt(destinationTag)
       }
 
@@ -76,8 +76,7 @@ export default function Send({ account, setSignRequest }) {
         payment.Memos = [
           {
             Memo: {
-              MemoData: encode(memo),
-              MemoFormat: encode('text/plain')
+              MemoData: encode(memo)
             }
           }
         ]
