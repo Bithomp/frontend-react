@@ -130,7 +130,6 @@ export default function Send({ account, setSignRequest }) {
             name="destination"
             hideButton={true}
             setValue={setAddress}
-            initialValue={address}
           />
           {width > 1100 && <br />}
           <FormInput
