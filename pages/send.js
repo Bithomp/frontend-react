@@ -7,7 +7,7 @@ import AddressInput from '../components/UI/AddressInput'
 import FormInput from '../components/UI/FormInput'
 import CopyButton from '../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../utils/links'
-import { multiply, divide } from '../utils/calc'
+import { multiply } from '../utils/calc'
 import NetworkTabs from '../components/Tabs/NetworkTabs'
 import { typeNumberOnly, isAddressValid, isTagValid, nativeCurrency, encode, decode } from '../utils'
 import { fullDateAndTime, timeFromNow, amountFormat } from '../utils/format'
@@ -216,8 +216,8 @@ export default function Send({ account, setSignRequest }) {
                     {fullDateAndTime(txResult.date, 'ripple')})
                   </p>
                   <p>
-                    <strong>{t('table.destination')}:</strong>{' '}
-                    <LinkAccount address={txResult.destination} /> <CopyButton text={txResult.destination} />
+                    <strong>{t('table.destination')}:</strong> <LinkAccount address={txResult.destination} />{' '}
+                    <CopyButton text={txResult.destination} />
                   </p>
                   <p>
                     <strong>{t('table.amount')}:</strong> {txResult.amount}
