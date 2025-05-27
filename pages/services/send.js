@@ -158,9 +158,11 @@ export default function Send({ account, setSignRequest }) {
           </div>
           <div className="form-input">
             {width > 1100 && <br />}
-            <span className="input-title">{t('table.memo')}</span>
+            <span className="input-title">
+              {t('table.memo')} (<span className="orange">It will be public</span>)
+            </span>
             <input
-              placeholder={'Enter memo'}
+              placeholder="Enter a memo (optional)"
               onChange={(e) => setMemo(e.target.value)}
               className="input-text"
               spellCheck="false"
