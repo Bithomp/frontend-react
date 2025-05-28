@@ -165,6 +165,9 @@
     "search-placeholder": "Поиск по Адресу / Транзакции / Псевдониму / PayString / NFT / Offer ID",
     "search-placeholder-short": "Адрес / Транзакция / Псевдоним",
     "scan-qr": "СКАНИРОВАТЬ КОД",
+    "price": {
+      "header": "{{nativeCurrency}} Текущий курс & Конвертер"
+    },
     "whales": {
       "header": "Самые крупные транзакции за последние 24 часа"
     },

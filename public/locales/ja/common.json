@@ -165,6 +165,9 @@
     "search-placeholder": "アドレス/トランザクション/NFT/ユーザネーム/PayString/オファー/通貨のハッシュで検索",
     "search-placeholder-short": "アドレス/トランザクション/ユーザで検索",
     "scan-qr": "QRコードをスキャン",
+    "price": {
+      "header": "{{nativeCurrency}} 価格 & 変換"
+    },
     "whales": {
       "header": "直近24時間の代表的なトランザクション"
     },

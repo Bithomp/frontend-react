@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
-import countries from 'i18n-iso-countries'
 import Cookies from 'universal-cookie'
 
 export const safeClone = (obj) => {
@@ -87,26 +86,30 @@ export const periodDescription = (periodName) => {
   }
 }
 
-export const countriesTranslated = (language) => {
+export const countriesTranslated = async (language) => {
   let lang = language.slice(0, 2)
   if (language === 'default') {
     lang = 'en'
   }
+
   const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko", "fr" etc
   if (notSupportedLanguages.includes(lang)) {
     lang = 'en'
   }
-  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
+
+  const countries = await import('i18n-iso-countries')
+  const languageData = await import(`i18n-iso-countries/langs/${lang}.json`)
   countries.registerLocale(languageData)
-  countries.getNameTranslated = (code) => {
+
+  const getNameTranslated = (code) => {
     return countries.getName(code, lang, { select: 'official' })
   }
 
-  countries.getNamesTranslated = () => {
+  const getNamesTranslated = () => {
     return countries.getNames(lang, { select: 'official' })
   }
 
-  const countryObj = countries.getNamesTranslated()
+  const countryObj = getNamesTranslated()
   const countryArr = Object.entries(countryObj).map(([key, value]) => {
     return {
       label: value,
@@ -114,9 +117,12 @@ export const countriesTranslated = (language) => {
     }
   })
   countryArr.sort((a, b) => a.label.localeCompare(b.label, lang))
-  countries.countryArr = countryArr
 
-  return countries
+  return {
+    countryArr,
+    getNameTranslated,
+    getNamesTranslated
+  }
 }
 
 export const chartSpan = (period) => {

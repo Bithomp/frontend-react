@@ -76,8 +76,15 @@ export default function Validators({ amendment, initialData, initialErrorMessage
   const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
   const { theme } = useTheme()
+  const [countries, setCountries] = useState(null)
 
-  const countries = countriesTranslated(i18n.language)
+  useEffect(() => {
+    const loadCountries = async () => {
+      const data = await countriesTranslated(i18n.language)
+      setCountries(data)
+    }
+    loadCountries()
+  }, [i18n.language])
 
   const showTime = ({ time }) => {
     if (!time) return 'N/A'
@@ -225,7 +232,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
           />
           {country.toLowerCase() !== 'eu' && (
             <span className="tooltiptext right no-brake">
-              {typeName}: {countries.getNameTranslated(country)}
+              {typeName}: {countries?.getNameTranslated?.(country) || country}
             </span>
           )}
         </span>

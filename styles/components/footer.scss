@@ -4,6 +4,12 @@ footer {
   color: var(--text-contrast);
   transition: background-color .5s, color .5s;
   min-height: 257px;
+  a, .link {
+    color: var(--footer-link);
+    &:hover {
+      color: var(--footer-link-hover);
+    }
+  }
   @media screen and (max-width: 1300px) {
     min-height: 476px;
   }
@@ -34,12 +40,6 @@ footer {
   vertical-align: top;
   margin-bottom: 10px;
   font-size: 14px;
-  a,
-  .link {
-    &:hover {
-      color: var(--text-contrast);
-    }
-  }
 }
 
 .footer-menu-header {

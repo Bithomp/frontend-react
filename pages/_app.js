@@ -6,11 +6,6 @@ import { appWithTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
 import { GoogleAnalytics } from '@next/third-parties/google'
 
-import Header from '../components/Layout/Header'
-import Footer from '../components/Layout/Footer'
-import ScrollToTop from '../components/Layout/ScrollToTop'
-import BackgroundImage from '../components/Layout/BackgroundImage'
-
 const SignForm = dynamic(() => import('../components/SignForm'), { ssr: false })
 import TopLinks from '../components/Layout/TopLinks'
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
@@ -29,6 +24,11 @@ import '../styles/components/nprogress.css'
 
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
+
+const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
+const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
+const ScrollToTop = dynamic(() => import('../components/Layout/ScrollToTop'), { ssr: true })
+const BackgroundImage = dynamic(() => import('../components/Layout/BackgroundImage'), { ssr: true })
 
 function useIsBot() {
   const [isBot, setIsBot] = useState(false)

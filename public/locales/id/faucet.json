@@ -1,10 +1,12 @@
 {
+  "get-free": "Dapatkan gratis",
   "error-occured": "Terjadi kesalahan",
   "try-later": "Anda sudah mencobanya hari ini. Kembali lagi dalam {{time}}.",
   "experience-fast-transactions": "Rasakan betapa cepat dan mudahnya melakukan transaksi di {{explorerName}}!",
   "form": {
     "placeholder": {
-      "enter-address": "Masukkan alamat {{ledgerName}} Anda"
+      "enter-address": "Masukkan alamat {{ledgerName}} Anda",
+      "enter-latest-ledger-index": "Masukkan hanya angka dari indeks buku besar terbaru"
     }
   },
   "how-it-works": "Bagaimana Cara Kerjanya:",
