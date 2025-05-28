@@ -3,6 +3,7 @@ import SEO from '../components/SEO'
 import { getIsSsrMobile } from '../utils/mobile'
 import { network } from '../utils'
 import { nativeCurrency, explorerName, xahauNetwork} from '../utils'
+import Image from 'next/image'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -23,16 +24,18 @@ export default function BlacklistedAddress() {
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/blacklisted-picture.jpg', width: '100%', height: '386', allNetworks: true }}
       />
-      <div className="content-center">
-        <center>
-          <img
-            src="/images/pages/blacklisted-picture.jpg"
-            alt="Blacklisted Accounts on XRPL"
-            style={{ maxWidth: '100%', maxHeight: '386' }}
-          />
-        </center>
-
+      <article className="prose sm:prose-lg dark:prose-invert content-center">
         <h1>Fraud Alert. Blacklisted accounts on {explorerName}</h1>
+
+        <Image
+          src="/images/pages/blacklisted-picture.jpg"
+          alt="Blacklisted Accounts on XRPL"
+          width={1520}
+          height={1084}
+          className="max-w-full h-auto object-contain"
+          priority
+        />
+
         <p>
           Fraud can occur on {explorerName}, just like on any other blockchain, so users must remain vigilant.
         </p>
@@ -46,15 +49,17 @@ export default function BlacklistedAddress() {
           On our website, accounts marked with a "Fraud Alert" are flagged as potentially involved in scams, phishing, or other malicious activities. 
           These accounts are highlighted to warn users before they interact with them.
         </p>
-        <div>
-          <center>
-            <img
-              src={"/images/pages/blacklisted-screen" + (xahauNetwork ? "-xahau" : "") +".png"}
-              alt="Blacklisted Account on XRPL-example"
-              style={{ maxWidth: '100%', maxHeight: 386 }}
-            />
-          </center>
-        </div>
+        <figure>
+          <Image
+            src={"/images/pages/blacklisted-screen" + (xahauNetwork ? "-xahau" : "") +".png"}
+            alt="Blacklisted Account on XRPL-example"
+            width={1520}
+            height={704}
+            className="max-w-full h-auto object-contain"
+            priority
+          />
+          <figcaption>Example of a blacklisted account</figcaption>
+        </figure>
         <p>
           <strong>We strongly recommend proceeding with caution when engaging with flagged accounts to ensure the safety of your assets.</strong>
         </p>
@@ -67,7 +72,7 @@ export default function BlacklistedAddress() {
         <p>
           We can flag accounts ourselves based on objective user reports or receive fraud alerts through our partners' APIs.
         </p>
-      </div>
+      </article>
     </>
   )
 }
