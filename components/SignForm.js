@@ -511,7 +511,8 @@ export default function SignForm({
     }
   }
 
-  const checkTxInCrawler = async ({ txid, redirectName }) => {
+  const checkTxInCrawler = async ({ txid, redirectName, txType }) => {
+    //TODO: Check the case for failed transactions.
     setAwaiting(true)
     setStatus(t('signin.status.awaiting-crawler'))
     //txid can be in the ledger or not, so we need to check it in the ledger
@@ -549,9 +550,21 @@ export default function SignForm({
               closeSignInFormAndRefresh()
             }
             return
+          } else if (TransactionType === 'Payment') {
+            if (signRequest?.callback) {
+              signRequest.callback({
+                result: response.data
+              })
+            }
+            closeSignInFormAndRefresh()
+            return
           }
           checkCrawlerStatus({ inLedger: includedInLedger, type: TransactionType })
         } else {
+          if (txType === 'Payment') {
+            closeSignInFormAndRefresh()
+            return
+          }
           //if not validated or if no ledger info received, delay for 1.5 seconds
           delay(1500, checkTxInCrawler, { txid, redirectName })
         }
@@ -652,11 +665,16 @@ export default function SignForm({
     }
 
     // For NFT and DID transaction, lets wait for crawler to finish it's job
-    if (txType?.includes('NFToken') || txType?.includes('URIToken') || txType?.includes('DID')) {
-      checkTxInCrawler({ txid: txHash, redirectName })
+    if (
+      txType?.includes('NFToken') ||
+      txType?.includes('URIToken') ||
+      txType?.includes('DID') ||
+      txType === 'Payment'
+    ) {
+      checkTxInCrawler({ txid: txHash, redirectName, txType })
       return
     } else {
-      // no checks or delays for non NFT/DID transactions
+      // no checks or delays for non NFT/DID/Payment transactions
       closeSignInFormAndRefresh()
     }
   }
