@@ -308,6 +308,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
     let dataToExport = filteredActivities || []
 
     if (platformCSVExport === 'ZenLedger') {
+      const usdCurrency = 'usd'
       dataToExport = dataToExport.filter((activity) => {
         return Math.abs(parseFloat(activity.amountInFiats?.[usdCurrency])) > 0
       })
