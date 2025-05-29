@@ -66,13 +66,15 @@ export default function AccountSettings({ account, setSignRequest }) {
       'disallowIncomingTrustline',
       'asfDefaultRipple',
       'asfDepositAuth',
-      'asfDisableMaster'
+      'asfDisableMaster',
+      'globalFreeze',
+      'noFreeze',
     ]
 
     if (xahauNetwork) {
       return [...commonAsfFlags, 'disallowIncomingRemit', 'tshCollect']
     } else {
-      return [...commonAsfFlags, 'globalFreeze', 'noFreeze', 'authorizedNFTokenMinter', 'disallowIncomingNFTokenOffer', 'allowTrustLineClawback']
+      return [...commonAsfFlags, 'authorizedNFTokenMinter', 'disallowIncomingNFTokenOffer', 'allowTrustLineClawback']
     }
   }
 
@@ -234,7 +236,6 @@ export default function AccountSettings({ account, setSignRequest }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])
-  console.log(accountData)
 
   const handleAsfFlagChange = (flag) => {
     if (selectedFlag === flag) {
@@ -393,7 +394,7 @@ export default function AccountSettings({ account, setSignRequest }) {
     setSuccessMessage('')
   }
 
-  if (loading || flags === null || tfFlags === null) {
+  if (account?.address && loading) {
     return (
       <>
         <SEO title='Account Settings' description={`Manage your account settings on the ${explorerName}.`} />
@@ -541,10 +542,14 @@ export default function AccountSettings({ account, setSignRequest }) {
         </div>
         {errorMessage && <p className="red center">{errorMessage}</p>}
         {successMessage && <p className="green center">{successMessage}</p>}
-        <br />
-        <div className="center">
-          <Link href={`/account/${account.address}`}>Back to my account</Link>
-        </div>
+        {account?.address && (
+          <>
+            <br />
+            <div className="center">
+              <Link href={`/account/${account.address}`}>Back to my account</Link>
+            </div>
+          </>
+        )}
       </div>
     </>
   )
