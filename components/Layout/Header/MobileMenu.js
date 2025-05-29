@@ -64,6 +64,9 @@ export default function MobileMenu({
               <a href={server + '/explorer/' + address} className="mobile-menu-item">
                 {t('signin.actions.my-transactions')}
               </a>
+              <Link href="/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                Account Settings
+              </Link>
               <Link href={'/nfts/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.my-nfts')}
               </Link>
@@ -176,6 +179,9 @@ export default function MobileMenu({
           <a href={'/submit/'} className="mobile-menu-item">
             {t('menu.submit-offline-tx')}
           </a>
+          <Link href="/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Account Settings
+          </Link>
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
