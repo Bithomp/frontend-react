@@ -198,6 +198,7 @@ export default function Header({
             <Link href="/submit-account-information">{t('menu.project-registration')}</Link>
             {!devNet && <Link href="/alerts">{t('menu.price-alerts', { nativeCurrency })}</Link>}
             <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a>
+            <Link href="/account-settings/">Account Settings</Link>
           </MenuDropDown>
 
           <MenuDropDown id="dropdown3" title="NFT" setHoverStates={setHoverStates} hoverStates={hoverStates}>
@@ -431,8 +432,8 @@ export default function Header({
                 </span>
                 <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
                 <a href={server + '/explorer/' + address}>{t('signin.actions.my-transactions')}</a>
+                <Link href="/account-settings/">Account Settings</Link>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
-                <Link href="/account-settings/">{t('signin.actions.account-settings' , 'Account Settings')}</Link>
                 <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
 
                 {!username && <Link href={'/username?address=' + address}>{t('menu.usernames')}</Link>}
