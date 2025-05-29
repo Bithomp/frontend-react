@@ -3,6 +3,9 @@
   "error-occured:": "Une erreur est survenue",
   "try-later": "Vous avez déjà essayé aujourd'hui. Revenez dans {{time}}.",
   "experience-fast-transactions": "Découvrez à quel point il est rapide et facile d'effectuer des transactions sur le réseau {{explorerName}} !",
+  "last-ledger-index-find-on-landing-page": "<strong>Dernier index du registre.</strong> Retrouvez-le dans les statistiques de la <1>page d’accueil.</1>",
+  "faucet-description": "Vous avez besoin de {{nativeCurrency}} de test pour votre développement sur {{ledgerName}} ? Utilisez notre Faucet {{explorerName}}, sécurisé et rapide, pour recevoir gratuitement des {{nativeCurrency}} directement sur votre adresse de portefeuille {{devNet}}. Que vous développiez des portefeuilles, des dApps, des plateformes NFT ou des outils DeFi sur {{ledgerName}}, ce faucet vous permet de tester les transactions sans utiliser de fonds réels.",
+  "enter-amount": "{{devNet}} {{nativeCurrency}} montant (maximum : {{maxAmount}} {{nativeCurrency}})",
   "form": {
     "placeholder": {
       "enter-address": "Entrez votre adresse {{ledgerName}}",

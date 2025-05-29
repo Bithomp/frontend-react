@@ -3,6 +3,9 @@
   "error-occured": "エラーが発生しました",
   "try-later": "本日既に利用済みです。{{time}}にお試しください。",
   "experience-fast-transactions": "{{explorerName}}で取引がどれほど迅速かつ簡単であるかを体験してください！",
+  "last-ledger-index-find-on-landing-page": "<strong>最新のレジャーインデックス。</strong><1>ランディングページ</1>の統計で確認できます。",
+  "faucet-description": "{{ledgerName}} の開発にテスト用の {{nativeCurrency}} が必要ですか？安全で高速な {{explorerName}} Faucet を使えば、{{devNet}} ウォレットアドレスに無料の {{nativeCurrency}} を直接受け取れます。ウォレット、dApps、NFTプラットフォーム、またはDeFiツールを {{ledgerName}} 上で構築している場合、このFaucetを使えば実際の資金を使わずに取引のテストが可能です。",
+  "enter-amount": "{{devNet}} {{nativeCurrency}} 金額（最大: {{maxAmount}} {{nativeCurrency}}）",
   "form": {
     "placeholder": {
       "enter-address": "{{ledgerName}}のアドレスを入力してください",
