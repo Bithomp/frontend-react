@@ -3,6 +3,9 @@
   "error-occured": "Ocurrió un error",
   "try-later": "Ya has intentado hoy. Regresa a las {{time}}.",
   "experience-fast-transactions": "¡Experimenta lo rápido y fácil que es transaccionar en {{explorerName}}!",
+  "last-ledger-index-find-on-landing-page": "<strong>Índice de libro mayor más reciente.</strong> Consulta las estadísticas en la <1>página de inicio.</1>",
+  "faucet-description": "¿Necesitas {{nativeCurrency}} de prueba para tu desarrollo en {{ledgerName}}? Usa nuestro seguro y rápido Faucet de {{explorerName}} para recibir {{nativeCurrency}} gratis directamente en tu dirección de billetera en {{devNet}}. Ya sea que estés construyendo billeteras, dApps, plataformas NFT o herramientas DeFi en {{ledgerName}}, este Faucet te ayuda a probar transacciones sin usar fondos reales.",
+  "enter-amount": "{{devNet}} {{nativeCurrency}} cantidad (máximo: {{maxAmount}} {{nativeCurrency}})",
   "form": {
     "placeholder": {
       "enter-address": "Introduce la dirección de {{ledgerName}}",
