@@ -192,6 +192,7 @@ export default function Header({
             hoverStates={hoverStates}
           >
             <Link href="/faucet">{t('menu.developers.faucet')}</Link>
+            <Link href="/services/send">Send Payment</Link>
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
             <Link href="/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
