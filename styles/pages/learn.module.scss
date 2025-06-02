@@ -1,0 +1,13 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    justify-content: space-between;
+    box-shadow: 8px 8px 0px #000;
+    border: 4px solid var(--accent-icon);
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: translate(-4px, -4px);
+    }
+}
