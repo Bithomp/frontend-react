@@ -19,12 +19,13 @@ export default function WhatIsXrp() {
         <>
             <SEO
                 title="What is XRP? | Bithomp"
+                canonical="/learn/what-is-xrp"
                 description="Learn about XRP, the digital asset designed for fast, low-cost international payments."
                 image="/images/pages/learn/what-is-xrp/cover.png"
             />
             <div className="max-w-4xl mx-auto px-4">
                 <Breadcrumbs />
-                <article className="prose prose-base sm:prose-lg dark:prose-invert mx-auto max-w-4xl my-10">
+                <article className="prose prose-base sm:prose-lg dark:prose-invert max-w-4xl my-10">
 
                     <h1>What is XRP?</h1>
 
