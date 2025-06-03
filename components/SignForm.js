@@ -551,7 +551,6 @@ export default function SignForm({
             }
             return
           } else if (TransactionType === 'Payment') {
-            console.log(response.data, 'response.data')
             if (signRequest?.callback) {
               signRequest.callback({
                 result: response.data
