@@ -6,8 +6,33 @@
     box-shadow: 8px 8px 0px #000;
     border: 4px solid var(--accent-icon);
     transition: transform 0.2s ease;
+    padding: 1rem;
+
+    text-decoration: none;
+    color: inherit;
 
     &:hover {
         transform: translate(-4px, -4px);
     }
+
+    &:focus {
+        outline: 2px solid var(--accent-icon);
+        outline-offset: 2px;
+    }
+
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .readMore {
+        margin-top: 0.25rem;
+        font-size: var(--text-sm);
+        text-decoration: underline;
+        color: var(--accent-link);
+    }
+
 }
