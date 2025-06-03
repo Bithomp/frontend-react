@@ -7,6 +7,8 @@ import axios from 'axios'
 import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork } from '../../../utils'
 const checkmark = '/images/checkmark.svg'
 import CheckBox from '../../UI/CheckBox'
+import AddressInput from '../../UI/AddressInput'
+import ExpirationSelect from '../../UI/ExpirationSelect'
 
 let interval
 let startTime
@@ -28,6 +30,10 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
   const [update, setUpdate] = useState(false)
   const [minted, setMinted] = useState('')
   const [uriValidDigest, setUriValidDigest] = useState(isIdValid(digestQuery))
+  const [createSellOffer, setCreateSellOffer] = useState(false)
+  const [amount, setAmount] = useState('')
+  const [destination, setDestination] = useState('')
+  const [expiration, setExpiration] = useState(0)
 
   let uriRef
   let digestRef
@@ -113,6 +119,28 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
     setDigest(digest)
   }
 
+  const onAmountChange = (e) => {
+    let value = e.target.value.replace(/[^\d\.]/g, '')
+    const decimalPoints = value.split('.').length - 1
+    if (decimalPoints > 1) {
+      const parts = value.split('.')
+      value = parts[0] + '.' + parts.slice(1).join('')
+    }
+    setAmount(value)
+  }
+
+  const onDestinationChange = (value) => {
+    if (typeof value === 'object' && value.address) {
+      setDestination(value.address)
+    } else if (typeof value === 'string') {
+      setDestination(value)
+    }
+  }
+
+  const onExpirationChange = (days) => {
+    setExpiration(days)
+  }
+
   const onSubmit = async () => {
     if (!uri) {
       setErrorMessage('Please enter URI')
@@ -148,6 +176,16 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
 
     if (digest) {
       request.Digest = digest
+    }
+
+    if (createSellOffer && amount !== '' && !isNaN(parseFloat(amount)) && parseFloat(amount) >= 0) {
+      request.Amount = String(Math.round(parseFloat(amount) * 1000000))
+      if (destination && destination.trim()) {
+        request.Destination = destination.trim()
+      }
+      if (expiration > 0) {
+        request.Expiration = Math.floor(Date.now() / 1000) + expiration * 24 * 60 * 60 - 946684800
+      }
     }
 
     setSignRequest({
@@ -303,6 +341,48 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
                     name="digest"
                   />
                   {isIdValid(digest) && <img src={checkmark} className="validation-icon" alt="validated" />}
+                </div>
+              </>
+            )}
+
+            {/* Create Sell Offer */}
+            <div>
+              <CheckBox
+                checked={createSellOffer}
+                setChecked={() => setCreateSellOffer(!createSellOffer)}
+                name="create-sell-offer"
+              >
+                Create a Sell offer
+              </CheckBox>
+            </div>
+
+            {/* Sell Offer Fields */}
+            {createSellOffer && (
+              <>
+                <br />
+                <span className="input-title">Initial listing price in XAH (Amount):</span>
+                <div className="input-validation">
+                  <input
+                    placeholder="0.0"
+                    value={amount}
+                    onChange={onAmountChange}
+                    className="input-text"
+                    spellCheck="false"
+                    name="amount"
+                  />
+                </div>
+                <br />
+                <AddressInput
+                  title="Destination (optional - account to receive the NFT):"
+                  placeholder="Destination address"
+                  setValue={onDestinationChange}
+                  name="destination"
+                  hideButton={true}
+                />
+                <br />
+                <div>
+                  <span className="input-title">Offer expiration</span>
+                  <ExpirationSelect onChange={onExpirationChange} />
                 </div>
               </>
             )}
