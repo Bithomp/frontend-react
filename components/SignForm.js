@@ -551,10 +551,15 @@ export default function SignForm({
             }
             return
           } else if (TransactionType === 'Payment') {
+            console.log(response.data, 'response.data')
             if (signRequest?.callback) {
               signRequest.callback({
                 result: response.data
               })
+            } else {
+              // For mobile, redirect to transaction page
+              router.push('/tx/' + response.data.hash)
+              return
             }
             closeSignInFormAndRefresh()
             return
