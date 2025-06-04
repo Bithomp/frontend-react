@@ -2,6 +2,7 @@ import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { useWidth, addAndRemoveQueryParams } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
 import CheckBox from '../../components/UI/CheckBox'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
@@ -321,6 +322,7 @@ export const getServerSideProps = async (context) => {
       destinationTagQuery: destinationTag || '',
       memoQuery: memo || '',
       feeQuery: fee || '',
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
   }

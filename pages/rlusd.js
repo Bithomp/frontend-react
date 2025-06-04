@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -22,15 +23,17 @@ export default function RLUSD() {
         noindex={network !== 'mainnet'}
         image={{ file: 'images/pages/rlusd/rocket.png', width: 'auto', height: 'auto', allNetworks: true }}
       />
-      <div className="content-center">
-        <center>
-          <img
-            src="/images/pages/rlusd/rocket.png"
-            alt="RLUSD"
-            style={{ width: '100%', height: 'auto', maxHeight: 500 }}
-          />
-        </center>
+      <article className="prose sm:prose-lg dark:prose-invert content-center">
+
         <h1>What is Ripple USD (RLUSD)?</h1>
+        <Image
+          src="/images/pages/rlusd/rocket.png"
+          alt="RLUSD"
+          width={1520}
+          height={855}
+          className="max-w-full h-auto object-contain"
+          priority
+        />
         <p>
           <em>April 11, 2025</em>
         </p>
@@ -117,7 +120,7 @@ export default function RLUSD() {
         </p>
         <br />
         <br />
-      </div>
+      </article>
     </>
   )
 }
