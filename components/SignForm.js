@@ -555,6 +555,10 @@ export default function SignForm({
               signRequest.callback({
                 result: response.data
               })
+            } else {
+              // For mobile, redirect to transaction page
+              router.push('/tx/' + response.data.hash)
+              return
             }
             closeSignInFormAndRefresh()
             return
