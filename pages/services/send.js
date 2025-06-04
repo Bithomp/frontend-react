@@ -28,7 +28,7 @@ export default function Send({
   const width = useWidth()
   const router = useRouter()
   const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
-  const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTag : null)
+  const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
   const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
   const [memo, setMemo] = useState(memoQuery)
   const [showAdvanced, setShowAdvanced] = useState(Number(feeQuery) > 0 ? true : false)
@@ -225,7 +225,13 @@ export default function Send({
               defaultValue={memo}
             />
           </div>
-          <CheckBox checked={showAdvanced} setChecked={() => {setShowAdvanced(!showAdvanced), setFee(null)}} name="advanced-payment">
+          <CheckBox
+            checked={showAdvanced}
+            setChecked={() => {
+              setShowAdvanced(!showAdvanced), setFee(null)
+            }}
+            name="advanced-payment"
+          >
             Advanced Payment Options
           </CheckBox>
           {showAdvanced && (
