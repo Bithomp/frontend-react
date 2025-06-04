@@ -65,7 +65,7 @@ export default function MobileMenu({
                 {t('signin.actions.my-transactions')}
               </a>
               <Link href="/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                Account Settings
+                My Account Settings
               </Link>
               <Link href={'/nfts/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.my-nfts')}
