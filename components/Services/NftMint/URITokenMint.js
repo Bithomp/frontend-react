@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { sha512 } from 'crypto-hash'
 import axios from 'axios'
-import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork } from '../../../utils'
+import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork, typeNumberOnly } from '../../../utils'
+import { multiply } from '../../../utils/calc'
 const checkmark = '/images/checkmark.svg'
 import CheckBox from '../../UI/CheckBox'
 import AddressInput from '../../UI/AddressInput'
@@ -179,7 +180,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
     }
 
     if (createSellOffer && amount !== '' && !isNaN(parseFloat(amount)) && parseFloat(amount) >= 0) {
-      request.Amount = String(Math.round(parseFloat(amount) * 1000000))
+      request.Amount = multiply(amount, 1000000)
       if (destination && destination.trim()) {
         request.Destination = destination.trim()
       }
@@ -366,8 +367,13 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
                     placeholder="0.0"
                     value={amount}
                     onChange={onAmountChange}
+                    onKeyPress={typeNumberOnly}
                     className="input-text"
                     spellCheck="false"
+                    maxLength="35"
+                    min="0"
+                    type="text"
+                    inputMode="decimal"
                     name="amount"
                   />
                 </div>
