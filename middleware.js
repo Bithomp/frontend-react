@@ -4,12 +4,13 @@ const PUBLIC_FILE = /\.(.*)$/
 
 export async function middleware(req) {
   if (
+    req.nextUrl.pathname === '/favicon.ico' ||
     req.nextUrl.pathname.startsWith('/_next') ||
     req.nextUrl.pathname.startsWith('/api/') ||
     PUBLIC_FILE.test(req.nextUrl.pathname) ||
     req.nextUrl.pathname.includes('/manifest.json')
   ) {
-    return
+    return NextResponse.next()
   }
 
   const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value
