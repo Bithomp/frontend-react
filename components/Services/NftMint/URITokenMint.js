@@ -34,7 +34,9 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
   const [createSellOffer, setCreateSellOffer] = useState(false)
   const [amount, setAmount] = useState('')
   const [destination, setDestination] = useState('')
-  const [expiration, setExpiration] = useState(0)
+  const [flags, setFlags] = useState({
+    tfBurnable: false
+  })
 
   let uriRef
   let digestRef
@@ -121,13 +123,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
   }
 
   const onAmountChange = (e) => {
-    let value = e.target.value.replace(/[^\d\.]/g, '')
-    const decimalPoints = value.split('.').length - 1
-    if (decimalPoints > 1) {
-      const parts = value.split('.')
-      value = parts[0] + '.' + parts.slice(1).join('')
-    }
-    setAmount(value)
+    setAmount(e.target.value)
   }
 
   const onDestinationChange = (value) => {
@@ -138,8 +134,8 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
     }
   }
 
-  const onExpirationChange = (days) => {
-    setExpiration(days)
+  const handleFlagChange = (flag) => {
+    setFlags((prev) => ({ ...prev, [flag]: !prev[flag] }))
   }
 
   const onSubmit = async () => {
@@ -179,13 +175,18 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
       request.Digest = digest
     }
 
-    if (createSellOffer && amount !== '' && !isNaN(parseFloat(amount)) && parseFloat(amount) >= 0) {
-      request.Amount = multiply(amount, 1000000)
+    if (createSellOffer) {
       if (destination && destination.trim()) {
+        if (amount === '' || parseFloat(amount) >= 0) {
+          request.Amount = multiply(amount || '0', 1000000)
+        }
         request.Destination = destination.trim()
+      } else if (amount !== '' && parseFloat(amount) > 0) {
+        request.Amount = multiply(amount, 1000000)
       }
-      if (expiration > 0) {
-        request.Expiration = Math.floor(Date.now() / 1000) + expiration * 24 * 60 * 60 - 946684800
+
+      if (flags.tfBurnable) {
+        request.Flags = 1
       }
     }
 
@@ -385,11 +386,13 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
                   name="destination"
                   hideButton={true}
                 />
-                <br />
-                <div>
-                  <span className="input-title">Offer expiration</span>
-                  <ExpirationSelect onChange={onExpirationChange} />
-                </div>
+                <CheckBox
+                  checked={flags.tfBurnable}
+                  setChecked={() => handleFlagChange('tfBurnable')}
+                  name="burnable"
+                >
+                  Burnable
+                </CheckBox>
               </>
             )}
 
