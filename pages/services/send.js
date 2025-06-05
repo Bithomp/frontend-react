@@ -1,7 +1,7 @@
 import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { useWidth } from '../../utils'
+import { useWidth, addAndRemoveQueryParams } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import CheckBox from '../../components/UI/CheckBox'
 import AddressInput from '../../components/UI/AddressInput'
@@ -12,20 +12,68 @@ import { multiply } from '../../utils/calc'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import { typeNumberOnly, isAddressValid, isTagValid, nativeCurrency, encode, decode } from '../../utils'
 import { fullDateAndTime, timeFromNow, amountFormat } from '../../utils/format'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 
-export default function Send({ account, setSignRequest }) {
+export default function Send({
+  account,
+  setSignRequest,
+  addressQuery,
+  amountQuery,
+  destinationTagQuery,
+  memoQuery,
+  feeQuery
+}) {
   const { t } = useTranslation()
   const width = useWidth()
-  const [address, setAddress] = useState('')
-  const [destinationTag, setDestinationTag] = useState('')
-  const [amount, setAmount] = useState('')
-  const [memo, setMemo] = useState('')
-  const [showAdvanced, setShowAdvanced] = useState(false)
-  const [fee, setFee] = useState('')
+  const router = useRouter()
+  const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
+  const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
+  const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
+  const [memo, setMemo] = useState(memoQuery)
+  const [showAdvanced, setShowAdvanced] = useState(Number(feeQuery) > 0)
+  const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 ? feeQuery : null)
   const [feeError, setFeeError] = useState('')
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
+
+  useEffect(() => {
+    let queryAddList = []
+    let queryRemoveList = []
+
+    if (isAddressValid(address)) {
+      queryAddList.push({ name: 'address', value: address })
+    } else {
+      queryRemoveList.push('address')
+    }
+
+    if (isTagValid(destinationTag)) {
+      queryAddList.push({ name: 'destinationTag', value: destinationTag })
+    } else {
+      queryRemoveList.push('destinationTag')
+    }
+
+    if (amount && Number(amount) > 0) {
+      queryAddList.push({ name: 'amount', value: amount })
+    } else {
+      queryRemoveList.push('amount')
+    }
+
+    if (memo) {
+      queryAddList.push({ name: 'memo', value: memo })
+    } else {
+      queryRemoveList.push('memo')
+    }
+
+    if (fee && Number(amount) > 0) {
+      queryAddList.push({ name: 'fee', value: fee })
+    } else {
+      queryRemoveList.push('fee')
+    }
+
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, destinationTag, amount, memo, fee])
 
   const handleFeeChange = (e) => {
     const value = e.target.value
@@ -57,10 +105,11 @@ export default function Send({ account, setSignRequest }) {
       return
     }
 
-    if (feeError) {
-      setError(feeError)
+    if (Number(fee) > 1) {
+      setError('Maximum fee is 1 ' + nativeCurrency)
       return
     }
+
     try {
       let payment = {
         TransactionType: 'Payment',
@@ -134,6 +183,8 @@ export default function Send({ account, setSignRequest }) {
             name="destination"
             hideButton={true}
             setValue={setAddress}
+            rawData={isAddressValid(address) ? { address } : {}}
+            type="address"
           />
           {width > 1100 && <br />}
           <FormInput
@@ -175,7 +226,13 @@ export default function Send({ account, setSignRequest }) {
               defaultValue={memo}
             />
           </div>
-          <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-payment">
+          <CheckBox
+            checked={showAdvanced}
+            setChecked={() => {
+              setShowAdvanced(!showAdvanced), setFee(null)
+            }}
+            name="advanced-payment"
+          >
             Advanced Payment Options
           </CheckBox>
           {showAdvanced && (
@@ -262,9 +319,16 @@ export default function Send({ account, setSignRequest }) {
 }
 
 export const getServerSideProps = async (context) => {
-  const { locale } = context
+  const { query, locale } = context
+  const { address, amount, destinationTag, memo, fee } = query
+
   return {
     props: {
+      addressQuery: address || '',
+      amountQuery: amount || '',
+      destinationTagQuery: destinationTag || '',
+      memoQuery: memo || '',
+      feeQuery: fee || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
