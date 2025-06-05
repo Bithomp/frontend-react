@@ -3,11 +3,9 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 import { xahauNetwork, explorerName } from '../utils'
-import CheckBox from '../components/UI/CheckBox'
 import SEO from '../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../utils/mobile'
-import { IoChevronForward, IoArrowBack } from 'react-icons/io5'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -50,13 +48,9 @@ export default function AccountSettings({ account, setSignRequest }) {
   const [successMessage, setSuccessMessage] = useState('')
   const [accountData, setAccountData] = useState(null)
   const [flags, setFlags] = useState(null)
-  const [selectedFlag, setSelectedFlag] = useState(null)
-  const [editedFlag, setEditedFlag] = useState(null)
 
-  // TF flags state (for grouped editing)
+  // TF flags state
   const [tfFlags, setTfFlags] = useState(null)
-  const [editedTfFlags, setEditedTfFlags] = useState(null)
-  const [showTfFlagsEditor, setShowTfFlagsEditor] = useState(false)
 
   // Determine which ASF flags to use based on network
   const getAvailableAsfFlags = () => {
@@ -85,100 +79,116 @@ export default function AccountSettings({ account, setSignRequest }) {
   const flagDetails = {
     // ASF Flags
     disallowIncomingCheck: {
-      name: 'Disallow Incoming Checks',
-      displayName: 'Disallow Incoming Checks',
-      status: (value) => (value ? 'Blocked' : 'Allowed'),
+      name: 'Incoming Checks',
+      displayName: 'Incoming Checks',
+      status: (value) => (value ? 'Disallowed' : 'Allowed'),
+      actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'asf',
     },
     disallowIncomingPayChan: {
-      name: 'Disallow Incoming Payment Channels',
-      displayName: 'Disallow Incoming PayChan',
-      status: (value) => (value ? 'Blocked' : 'Allowed'),
+      name: 'Incoming Payment Channels',
+      displayName: 'Incoming Payment Channels',
+      status: (value) => (value ? 'Disallowed' : 'Allowed'),
+      actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'asf',
     },
     disallowIncomingTrustline: {
-      name: 'Disallow Incoming Trust Lines',
-      displayName: 'Disallow Incoming Trustline',
-      status: (value) => (value ? 'Blocked' : 'Allowed'),
+      name: 'Incoming Trust Lines',
+      displayName: 'Incoming Trust Lines',
+      status: (value) => (value ? 'Disallowed' : 'Allowed'),
+      actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'asf',
     },
     globalFreeze: {
       name: 'Global Freeze',
       displayName: 'Global Freeze',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
+      actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
     },
     noFreeze: {
       name: 'No Freeze',
       displayName: 'No Freeze',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
+      actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
     },
     authorizedNFTokenMinter: {
       name: 'Authorized NFToken Minter',
       displayName: 'Authorized NFToken Minter',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
+      actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
     },
     disallowIncomingNFTokenOffer: {
-      name: 'Disallow Incoming NFT Offers',
-      displayName: 'Disallow Incoming NFT Offers',
-      status: (value) => (value ? 'Blocked' : 'Allowed'),
+      name: 'Incoming NFT Offers',
+      displayName: 'Incoming NFT Offers',
+      status: (value) => (value ? 'Disallowed' : 'Allowed'),
+      actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'asf',
     },
     disallowIncomingRemit: {
-      name: 'Disallow Incoming Remit',
-      displayName: 'Disallow Incoming Remit',
-      status: (value) => (value ? 'Blocked' : 'Allowed'),
+      name: 'Incoming Remit',
+      displayName: 'Incoming Remit',
+      status: (value) => (value ? 'Disallowed' : 'Allowed'),
+      actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'asf',
     },
     tshCollect: {
       name: 'TSH Collect',
       displayName: 'TSH Collect',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
+      actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
     },
     allowTrustLineClawback: {
-      name: 'Allow TrustLine Clawback',
-      displayName: 'Allow TrustLine Clawback',
+      name: 'TrustLine Clawback',
+      displayName: 'TrustLine Clawback',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
+      actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
     },
     asfDefaultRipple: {
       name: 'Default Ripple',
       displayName: 'Default Ripple',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
+      actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
     },
     asfDepositAuth: {
       name: 'Deposit Authorization',
       displayName: 'Deposit Authorization',
       status: (value) => (value ? 'Required' : 'Not Required'),
+      actionText: (value) => (value ? 'Make Optional' : 'Require'),
       type: 'asf',
     },
     asfDisableMaster: {
-      name: 'Disable Master Key',
+      name: 'Master Key',
       displayName: 'Master Key',
       status: (value) => (value ? 'Disabled' : 'Enabled'),
+      actionText: (value) => (value ? 'Enable' : 'Disable'),
       type: 'asf',
     },
     // TF Flags
     requireDestTag: {
-      name: 'Require Destination Tag',
-      displayName: 'Require Destination Tag',
+      name: 'Destination Tag',
+      displayName: 'Destination Tag',
       status: (value) => (value ? 'Required' : 'Optional'),
+      actionText: (value) => (value ? 'Make Optional' : 'Require'),
       type: 'tf',
     },
     requireAuth: {
-      name: 'Require Authorization',
-      displayName: 'Require Authorization',
+      name: 'Authorization',
+      displayName: 'Authorization',
       status: (value) => (value ? 'Required' : 'Optional'),
+      actionText: (value) => (value ? 'Make Optional' : 'Require'),
       type: 'tf',
     },
     disallowXRP: {
-      name: 'Disallow XRP',
-      displayName: 'Disallow Incoming XRP',
-      status: (value) => (value ? 'Blocked' : 'Allowed'),
+      name: 'Incoming XRP',
+      displayName: 'Incoming XRP',
+      status: (value) => (value ? 'Disallowed' : 'Allowed'),
+      actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'tf',
     },
   }
@@ -188,7 +198,7 @@ export default function AccountSettings({ account, setSignRequest }) {
       try {
         const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
         setAccountData(response.data)
-
+        console.log(response.data)
         if (response.data?.ledgerInfo?.flags) {
           const ledgerFlags = response.data.ledgerInfo.flags
 
@@ -237,38 +247,7 @@ export default function AccountSettings({ account, setSignRequest }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])
 
-  const handleAsfFlagChange = (flag) => {
-    if (selectedFlag === flag) {
-      setSelectedFlag(null)
-    } else {
-      setSelectedFlag(flag)
-      setEditedFlag(flags[flag])
-      setErrorMessage('')
-      setSuccessMessage('')
-    }
-  }
-
-  const handleTfFlagsEdit = () => {
-    setShowTfFlagsEditor(true)
-    setEditedTfFlags({ ...tfFlags })
-    setErrorMessage('')
-    setSuccessMessage('')
-  }
-
-  const toggleAsfFlag = () => {
-    if (selectedFlag) {
-      setEditedFlag(!editedFlag)
-    }
-  }
-
-  const toggleTfFlag = (flag) => {
-    setEditedTfFlags((prev) => ({
-      ...prev,
-      [flag]: !prev[flag],
-    }))
-  }
-
-  const saveAsfFlag = () => {
+  const handleAsfFlagToggle = (flag) => {
     if (!account?.address) {
       setErrorMessage('Please sign in to your account.')
       return
@@ -279,23 +258,18 @@ export default function AccountSettings({ account, setSignRequest }) {
       return
     }
 
-    const currentFlags = accountData.ledgerInfo.flags || {}
-
-    // Check if the flag value has actually changed
-    if (currentFlags[selectedFlag] === editedFlag) {
-      setErrorMessage('No changes to save.')
-      return
-    }
+    const currentValue = flags[flag]
+    const newValue = !currentValue
 
     const tx = {
       TransactionType: 'AccountSet',
       Account: account.address,
     }
 
-    if (editedFlag) {
-      tx.SetFlag = ASF_FLAGS[selectedFlag]
+    if (newValue) {
+      tx.SetFlag = ASF_FLAGS[flag]
     } else {
-      tx.ClearFlag = ASF_FLAGS[selectedFlag]
+      tx.ClearFlag = ASF_FLAGS[flag]
     }
 
     setSignRequest({
@@ -304,7 +278,7 @@ export default function AccountSettings({ account, setSignRequest }) {
         setSuccessMessage('Settings updated successfully.')
         setFlags((prev) => ({
           ...prev,
-          [selectedFlag]: editedFlag,
+          [flag]: newValue,
         }))
         setAccountData((prev) => {
           if (prev && prev.ledgerInfo) {
@@ -314,30 +288,25 @@ export default function AccountSettings({ account, setSignRequest }) {
                 ...prev.ledgerInfo,
                 flags: {
                   ...prev.ledgerInfo.flags,
-                  [selectedFlag]: editedFlag,
+                  [flag]: newValue,
                 },
               },
             }
           }
           return prev
         })
-        setSelectedFlag(null)
       },
     })
   }
 
-  const saveTfFlags = () => {
+  const handleTfFlagToggle = (flag) => {
     if (!account?.address) {
       setErrorMessage('Please sign in to your account.')
       return
     }
 
-    // Check if any flags have changed
-    const hasChanges = tfFlagKeys.some((flag) => tfFlags[flag] !== editedTfFlags[flag])
-    if (!hasChanges) {
-      setErrorMessage('No changes to save.')
-      return
-    }
+    const currentValue = tfFlags[flag]
+    const newValue = !currentValue
 
     const tx = {
       TransactionType: 'AccountSet',
@@ -345,53 +314,42 @@ export default function AccountSettings({ account, setSignRequest }) {
       Flags: 0,
     }
 
-    // Combine all TF flags into one transaction
-    tfFlagKeys.forEach((flag) => {
-      if (editedTfFlags[flag] !== tfFlags[flag]) {
-        if (editedTfFlags[flag]) {
-          tx.Flags |= TF_FLAGS[flag].set
-        } else {
-          tx.Flags |= TF_FLAGS[flag].clear
-        }
-      }
-    })
+    if (newValue) {
+      tx.Flags = TF_FLAGS[flag].set
+    } else {
+      tx.Flags = TF_FLAGS[flag].clear
+    }
 
     setSignRequest({
       request: tx,
       callback: () => {
         setSuccessMessage('Settings updated successfully.')
-        setTfFlags(editedTfFlags)
+        setTfFlags((prev) => ({
+          ...prev,
+          [flag]: newValue,
+        }))
         setAccountData((prev) => {
           if (prev && prev.ledgerInfo) {
-            const updatedFlags = { ...prev.ledgerInfo.flags }
-            tfFlagKeys.forEach((flag) => {
-              const asfMapping = {
-                requireDestTag: 'requireDestTag',
-                requireAuth: 'requireAuth',
-                disallowXRP: 'disallowXRP',
-              }
-              updatedFlags[asfMapping[flag]] = editedTfFlags[flag]
-            })
+            const asfMapping = {
+              requireDestTag: 'requireDestTag',
+              requireAuth: 'requireAuth',
+              disallowXRP: 'disallowXRP',
+            }
             return {
               ...prev,
               ledgerInfo: {
                 ...prev.ledgerInfo,
-                flags: updatedFlags,
+                flags: {
+                  ...prev.ledgerInfo.flags,
+                  [asfMapping[flag]]: newValue,
+                },
               },
             }
           }
           return prev
         })
-        setShowTfFlagsEditor(false)
       },
     })
-  }
-
-  const cancelEdit = () => {
-    setSelectedFlag(null)
-    setShowTfFlagsEditor(false)
-    setErrorMessage('')
-    setSuccessMessage('')
   }
 
   if (account?.address && loading) {
@@ -422,92 +380,6 @@ export default function AccountSettings({ account, setSignRequest }) {
     )
   }
 
-  // Render ASF flag detail view
-  if (selectedFlag) {
-    const flag = selectedFlag
-    const detail = flagDetails[flag]
-
-    return (
-      <>
-        <SEO title='Account Settings' description={`Manage your account settings on the ${explorerName}.`} />
-        <div className="content-center account-settings">
-          <div className="back-button-container">
-            <button
-              className="back-button"
-              onClick={cancelEdit}
-            >
-              <IoArrowBack size={20} className="icon-color" />
-              <span style={{ marginLeft: '5px' }}>Back</span>
-            </button>
-          </div>
-
-          <h1 className="center">{detail.name}</h1>
-
-          <div className="flag-toggle-container">
-            <div className="flag-toggle-item">
-              <label className="flag-toggle-label">{detail.displayName}</label>
-              <CheckBox
-                checked={editedFlag}
-                setChecked={toggleAsfFlag}
-                name={`toggle-${flag}`}
-                style={{ marginTop: "-22px" }}
-              />
-            </div>
-            <button className="button-action" onClick={saveAsfFlag}>
-              Save
-            </button>
-          </div>
-
-          {errorMessage && <p className="red center">{errorMessage}</p>}
-          {successMessage && <p className="green center">{successMessage}</p>}
-        </div>
-      </>
-    )
-  }
-
-  // Render TF flags editor
-  if (showTfFlagsEditor) {
-    return (
-      <>
-        <SEO title="Transaction Flags" />
-        <div className="content-center account-settings">
-          <div className="back-button-container">
-            <button className="back-button" onClick={cancelEdit}>
-              <IoArrowBack size={20} className="icon-color" />
-              <span style={{ marginLeft: "5px" }}>Back</span>
-            </button>
-          </div>
-
-          <h1 className="center">Transaction Flags</h1>
-
-          <br />
-          <div className="center">
-            <div className="flag-toggle-container">
-              {tfFlagKeys.map((flag) => (
-                <div key={flag} className="flag-toggle-item">
-                  <label className="flag-toggle-label">{flagDetails[flag].displayName}</label>
-                  <CheckBox
-                    checked={editedTfFlags[flag]}
-                    setChecked={() => toggleTfFlag(flag)}
-                    name={`toggle-tf-${flag}`}
-                    style={{ marginTop: "-22px" }}
-                  />
-                </div>
-              ))}
-            </div>
-            <br />
-            <button className="button-action" onClick={saveTfFlags}>
-              Save All Changes
-            </button>
-          </div>
-
-          {errorMessage && <p className="red center">{errorMessage}</p>}
-          {successMessage && <p className="green center">{successMessage}</p>}
-        </div>
-      </>
-    )
-  }
-
   return (
     <>
       <SEO title='Account Settings' description={`Manage your account settings on the ${explorerName}.`} />
@@ -517,39 +389,52 @@ export default function AccountSettings({ account, setSignRequest }) {
 
         {/* TF Flags Section */}
         <div>
-          <h4>Transaction Flags (Combined)</h4>
-          <div className="permission-item" onClick={handleTfFlagsEdit}>
-            <div>
-              <div className="permission-item-title">Edit Transaction Flags</div>
+          <h4>Transaction Flags</h4>
+          {tfFlagKeys.map((flag) => (
+            <div key={flag} className="permission-item">
+              <div>
+                <div className="permission-item-title">{flagDetails[flag].displayName}</div>
+                <div className="permission-item-status">{flagDetails[flag].status(tfFlags[flag])}</div>
+              </div>
+              <button 
+                className="button-action" 
+                onClick={() => handleTfFlagToggle(flag)}
+                style={{ minWidth: '120px' }}
+              >
+                {flagDetails[flag].actionText(tfFlags[flag])}
+              </button>
             </div>
-            <IoChevronForward size={20} className="icon-color" />
-          </div>
+          ))}
         </div>
 
         {/* ASF Flags Section */}
         <br />
         <div>
-          <h4>Account Flags (Individual)</h4>
+          <h4>Account Flags</h4>
           {asfFlagKeys.map((flag) => (
-            <div key={flag} className="permission-item" onClick={() => handleAsfFlagChange(flag)}>
+            <div key={flag} className="permission-item">
               <div>
                 <div className="permission-item-title">{flagDetails[flag].displayName}</div>
                 <div className="permission-item-status">{flagDetails[flag].status(flags[flag])}</div>
               </div>
-              <IoChevronForward size={20} className="icon-color" />
+              <button 
+                className="button-action" 
+                onClick={() => handleAsfFlagToggle(flag)}
+                style={{ minWidth: '120px' }}
+              >
+                {flagDetails[flag].actionText(flags[flag])}
+              </button>
             </div>
           ))}
         </div>
+
         {errorMessage && <p className="red center">{errorMessage}</p>}
         {successMessage && <p className="green center">{successMessage}</p>}
-        {account?.address && (
-          <>
-            <br />
-            <div className="center">
-              <Link href={`/account/${account.address}`}>Back to my account</Link>
-            </div>
-          </>
-        )}
+
+        <br />
+        <div className="center">
+          <Link href={`/account/${account.address}`}>Back to my account</Link>
+        </div>
       </div>
     </>
   )
