@@ -633,10 +633,6 @@ export const isTagValid = (x) => {
   return true
 }
 
-export const isInvoiceIdValid = (x) => {
-  return /^[0-9A-Fa-f]{64}$/.test(x)
-}
-
 export const isUsernameValid = (x) => {
   return x && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(x)
 }

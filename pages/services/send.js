@@ -10,7 +10,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../../utils/links'
 import { multiply } from '../../utils/calc'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
-import { typeNumberOnly, isAddressValid, isTagValid, isInvoiceIdValid, nativeCurrency, encode, decode } from '../../utils'
+import { typeNumberOnly, isAddressValid, isTagValid, isIdValid, nativeCurrency, encode, decode } from '../../utils'
 import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -33,11 +33,11 @@ export default function Send({
   const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
   const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
   const [memo, setMemo] = useState(memoQuery)
-  const [showAdvanced, setShowAdvanced] = useState(Number(feeQuery) > 0 || isTagValid(sourceTagQuery) || isInvoiceIdValid(invoiceIdQuery))
+  const [showAdvanced, setShowAdvanced] = useState(Number(feeQuery) > 0 || isTagValid(sourceTagQuery) || isIdValid(invoiceIdQuery))
   const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 ? feeQuery : null)
   const [feeError, setFeeError] = useState('')
   const [sourceTag, setSourceTag] = useState(isTagValid(sourceTagQuery) ? sourceTagQuery : null)
-  const [invoiceId, setInvoiceId] = useState(isInvoiceIdValid(invoiceIdQuery) ? invoiceIdQuery : null)
+  const [invoiceId, setInvoiceId] = useState(isIdValid(invoiceIdQuery) ? invoiceIdQuery : null)
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
 
@@ -81,7 +81,7 @@ export default function Send({
       queryRemoveList.push('sourceTag')
     }
 
-    if (isInvoiceIdValid(invoiceId)) {
+    if (isIdValid(invoiceId)) {
       queryAddList.push({ name: 'invoiceId', value: invoiceId })
     } else {
       queryRemoveList.push('invoiceId')
@@ -131,7 +131,7 @@ export default function Send({
       return
     }
 
-    if (invoiceId && !isInvoiceIdValid(invoiceId)) {
+    if (invoiceId && !isIdValid(invoiceId)) {
       setError('Invoice ID must be a 64-character hexadecimal string.')
       return
     }
