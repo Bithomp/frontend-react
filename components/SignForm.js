@@ -298,7 +298,10 @@ export default function SignForm({
         tx.Memos = [client]
       }
 
-      tx.SourceTag = 42697468
+      // Only set source tag if it's not already set from the send page
+      if (!tx.SourceTag) {
+        tx.SourceTag = 42697468
+      }
     }
 
     if (!tx.Account && account?.address) {
