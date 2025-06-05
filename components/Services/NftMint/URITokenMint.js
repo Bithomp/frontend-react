@@ -4,12 +4,19 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { sha512 } from 'crypto-hash'
 import axios from 'axios'
-import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork, typeNumberOnly } from '../../../utils'
+import {
+  addAndRemoveQueryParams,
+  encode,
+  isIdValid,
+  isValidJson,
+  server,
+  xahauNetwork,
+  typeNumberOnly
+} from '../../../utils'
 import { multiply } from '../../../utils/calc'
 const checkmark = '/images/checkmark.svg'
 import CheckBox from '../../UI/CheckBox'
 import AddressInput from '../../UI/AddressInput'
-import ExpirationSelect from '../../UI/ExpirationSelect'
 
 let interval
 let startTime
@@ -176,13 +183,22 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
     }
 
     if (createSellOffer) {
-      if (destination && destination.trim()) {
-        if (amount === '' || parseFloat(amount) >= 0) {
-          request.Amount = multiply(amount || '0', 1000000)
-        }
+      if (destination?.trim()) {
         request.Destination = destination.trim()
-      } else if (amount !== '' && parseFloat(amount) > 0) {
+      }
+
+      if (amount === '0') {
+        if (destination?.trim()) {
+          request.Amount = '0'
+        } else {
+          setErrorMessage('Please specify a Destination or change Amount')
+          return
+        }
+      } else if (parseFloat(amount) > 0) {
         request.Amount = multiply(amount, 1000000)
+      } else {
+        setErrorMessage('Please enter a valid Amount')
+        return
       }
 
       if (flags.tfBurnable) {
@@ -347,6 +363,10 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
               </>
             )}
 
+            <CheckBox checked={flags.tfBurnable} setChecked={() => handleFlagChange('tfBurnable')} name="burnable">
+              Burnable
+            </CheckBox>
+
             {/* Create Sell Offer */}
             <div>
               <CheckBox
@@ -386,15 +406,10 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
                   name="destination"
                   hideButton={true}
                 />
-                <CheckBox
-                  checked={flags.tfBurnable}
-                  setChecked={() => handleFlagChange('tfBurnable')}
-                  name="burnable"
-                >
-                  Burnable
-                </CheckBox>
               </>
             )}
+
+            <br />
 
             <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
               I agree with the{' '}
