@@ -4,9 +4,19 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { sha512 } from 'crypto-hash'
 import axios from 'axios'
-import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork } from '../../../utils'
+import {
+  addAndRemoveQueryParams,
+  encode,
+  isIdValid,
+  isValidJson,
+  server,
+  xahauNetwork,
+  typeNumberOnly
+} from '../../../utils'
+import { multiply } from '../../../utils/calc'
 const checkmark = '/images/checkmark.svg'
 import CheckBox from '../../UI/CheckBox'
+import AddressInput from '../../UI/AddressInput'
 
 let interval
 let startTime
@@ -28,6 +38,12 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
   const [update, setUpdate] = useState(false)
   const [minted, setMinted] = useState('')
   const [uriValidDigest, setUriValidDigest] = useState(isIdValid(digestQuery))
+  const [createSellOffer, setCreateSellOffer] = useState(false)
+  const [amount, setAmount] = useState('')
+  const [destination, setDestination] = useState('')
+  const [flags, setFlags] = useState({
+    tfBurnable: false
+  })
 
   let uriRef
   let digestRef
@@ -113,6 +129,22 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
     setDigest(digest)
   }
 
+  const onAmountChange = (e) => {
+    setAmount(e.target.value)
+  }
+
+  const onDestinationChange = (value) => {
+    if (typeof value === 'object' && value.address) {
+      setDestination(value.address)
+    } else if (typeof value === 'string') {
+      setDestination(value)
+    }
+  }
+
+  const handleFlagChange = (flag) => {
+    setFlags((prev) => ({ ...prev, [flag]: !prev[flag] }))
+  }
+
   const onSubmit = async () => {
     if (!uri) {
       setErrorMessage('Please enter URI')
@@ -148,6 +180,30 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
 
     if (digest) {
       request.Digest = digest
+    }
+
+    if (createSellOffer) {
+      if (destination?.trim()) {
+        request.Destination = destination.trim()
+      }
+
+      if (amount === '0') {
+        if (destination?.trim()) {
+          request.Amount = '0'
+        } else {
+          setErrorMessage('Please specify a Destination or change Amount')
+          return
+        }
+      } else if (parseFloat(amount) > 0) {
+        request.Amount = multiply(amount, 1000000)
+      } else {
+        setErrorMessage('Please enter a valid Amount')
+        return
+      }
+
+      if (flags.tfBurnable) {
+        request.Flags = 1
+      }
     }
 
     setSignRequest({
@@ -306,6 +362,54 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
                 </div>
               </>
             )}
+
+            <CheckBox checked={flags.tfBurnable} setChecked={() => handleFlagChange('tfBurnable')} name="burnable">
+              Burnable
+            </CheckBox>
+
+            {/* Create Sell Offer */}
+            <div>
+              <CheckBox
+                checked={createSellOffer}
+                setChecked={() => setCreateSellOffer(!createSellOffer)}
+                name="create-sell-offer"
+              >
+                Create a Sell offer
+              </CheckBox>
+            </div>
+
+            {/* Sell Offer Fields */}
+            {createSellOffer && (
+              <>
+                <br />
+                <span className="input-title">Initial listing price in XAH (Amount):</span>
+                <div className="input-validation">
+                  <input
+                    placeholder="0.0"
+                    value={amount}
+                    onChange={onAmountChange}
+                    onKeyPress={typeNumberOnly}
+                    className="input-text"
+                    spellCheck="false"
+                    maxLength="35"
+                    min="0"
+                    type="text"
+                    inputMode="decimal"
+                    name="amount"
+                  />
+                </div>
+                <br />
+                <AddressInput
+                  title="Destination (optional - account to receive the NFT):"
+                  placeholder="Destination address"
+                  setValue={onDestinationChange}
+                  name="destination"
+                  hideButton={true}
+                />
+              </>
+            )}
+
+            <br />
 
             <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
               I agree with the{' '}
