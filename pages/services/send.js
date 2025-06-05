@@ -177,7 +177,6 @@ export default function Send({
         request: payment,
         callback: (result) => {
           if (result.result) {
-            console.log(result.result)
             setTxResult({
               status: result.result.meta?.TransactionResult,
               date: result.result.date,
