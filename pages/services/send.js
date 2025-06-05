@@ -31,8 +31,8 @@ export default function Send({
   const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
   const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
   const [memo, setMemo] = useState(memoQuery)
-  const [showAdvanced, setShowAdvanced] = useState(Number(feeQuery) > 0 ? true : false)
-  const [fee, setFee] = useState(Number(feeQuery) > 0 ? feeQuery : null)
+  const [showAdvanced, setShowAdvanced] = useState(Number(feeQuery) > 0)
+  const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 ? feeQuery : null)
   const [feeError, setFeeError] = useState('')
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
@@ -105,10 +105,11 @@ export default function Send({
       return
     }
 
-    if (feeError) {
-      setError(feeError)
+    if (Number(fee) > 1) {
+      setError('Maximum fee is 1 ' + nativeCurrency)
       return
     }
+
     try {
       let payment = {
         TransactionType: 'Payment',
