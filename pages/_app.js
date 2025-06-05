@@ -19,6 +19,7 @@ const WalletConnectModalSign = dynamic(
   { ssr: false }
 )
 
+import '../styles/globals.css'
 import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
 

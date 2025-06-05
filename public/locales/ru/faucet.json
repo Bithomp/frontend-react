@@ -3,6 +3,9 @@
   "error-occured": "Ошибка",
   "try-later": "Вы уже пробовали сегодня. Вернитесь через {{time}}.",
   "experience-fast-transactions": "Узнайте, как быстро и легко совершать транзакции в сети {{explorerName}}!",
+  "last-ledger-index-find-on-landing-page": "<strong>Последний номер леджера.</strong> Найдите его в статистике на <1>главной странице<1/>.",
+  "faucet-description": "Нужны тестовые {{nativeCurrency}} для разработки на {{ledgerName}}? Воспользуйтесь нашей безопасной и быстрой раздачей {{explorerName}} монет, чтобы получить бесплатные {{nativeCurrency}} напрямую на ваш кошелёк в {{devNet}}. Если вы создаёте кошельки, dApps, NFT-платформы или DeFi-инструменты на {{ledgerName}}, этот инструмент поможет протестировать транзакции без использования реальных средств.",
+  "enter-amount": "{{devNet}} {{nativeCurrency}} сумма (максимум: {{maxAmount}} {{nativeCurrency}})",
   "form": {
     "placeholder": {
       "enter-address": "Введите свой адрес {{ledgerName}}",

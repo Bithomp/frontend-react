@@ -4,6 +4,7 @@ import { getIsSsrMobile } from '../utils/mobile'
 import { network } from '../utils'
 import { explorerName, ledgerName, xahauNetwork } from '../utils'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -24,15 +25,16 @@ export default function VerifiedDomains() {
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/verified-domains/green-checkmark.jpg', width: 'auto', height: 'auto', allNetworks: true }}
       />
-      <div className="content-center">
-        <center>
-          <img
-            src="/images/pages/verified-domains/green-checkmark.jpg"
-            alt="Verified Domains"
-            style={{ width: '100%', height: 'auto', maxHeight: 500 }}
-          />
-        </center>
+      <article className="prose sm:prose-lg dark:prose-invert content-center">
         <h1>{explorerName} Domain Verification</h1>
+        <Image
+          src="/images/pages/verified-domains/green-checkmark.jpg"
+          alt="Verified Domains"
+          width={1520}
+          height={1000}
+          className="max-w-full h-auto object-contain"
+          priority
+        />
         <p>
           The idea of domain verification is to prove that the same entity operates a particular {explorerName} address
           and a particular domain.
@@ -100,24 +102,32 @@ export default function VerifiedDomains() {
           To set a domain go to <Link href="/domains/">Verified Domains</Link>, press set domain and sign in the
           transaction.
         </p>
-        <center>
-          <img
+        <figure>
+          <Image
             src="/images/pages/verified-domains/domains-screen.png"
-            alt="Verified Domains"
-            style={{ width: '100%', height: 'auto', maxHeight: 500 }}
+            alt="Set a verified domain"
+            width={1520}
+            height={556}
+            className="max-w-full h-auto object-contain"
+            priority
           />
-        </center>
+          <figcaption>Set a verified domain</figcaption>
+        </figure>
         <p>
           Once the domain is set, you can easily change or delete it anytime you need on your{' '}
           <Link href="/account/">Account Page</Link> (you need to be signed in).
         </p>
-        <center>
-          <img
+        <figure>
+          <Image
             src={'/images/' + (xahauNetwork ? 'xahau' : 'xrpl') + 'explorer/verified-domains/screen-account-page.png'}
-            alt="Verified Domains"
-            style={{ width: '100%', height: 'auto', maxHeight: 500 }}
+            alt="Verified domains on your account page"
+            width={1520}
+            height={950}
+            className="max-w-full h-auto object-contain"
+            priority
           />
-        </center>
+          <figcaption>Verified domains on your account page</figcaption>
+        </figure>
         <h2>Verified domains on our website</h2>
         <p>
           On our website you can find <Link href="/domains/">the list of all verified domains on {explorerName}</Link>.
@@ -162,15 +172,19 @@ export default function VerifiedDomains() {
           Bithomp {ledgerName} explorer shows verified domains in the “Ledger Data” block as clickable links in a green
           colour and a checkmark next to them.
         </p>
-        <center>
-          <img
+        <figure>
+          <Image
             src={
               '/images/' + (xahauNetwork ? 'xahau' : 'xrpl') + 'explorer/verified-domains/checkmark-example-screen.png'
             }
-            alt="Verified Domains"
-            style={{ width: '100%', height: 'auto', maxHeight: 500 }}
+            alt="Verified domains on Bithomp"
+            width={1520}
+            height={945}
+            className="max-w-full h-auto object-contain"
+            priority
           />
-        </center>
+          <figcaption>Verified domains on Bithomp</figcaption>
+        </figure>
         <p>
           Our system re-verifies every verified domain every 24 hours to make sure that we only show checkmark for
           currently two-way linked addresses to domains.
@@ -181,7 +195,7 @@ export default function VerifiedDomains() {
           otherwise it can take up to 24 hours to get verified.
         </p>
         <br />
-      </div>
+      </article>
     </>
   )
 }

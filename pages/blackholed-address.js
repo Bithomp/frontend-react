@@ -4,6 +4,7 @@ import { getIsSsrMobile } from '../utils/mobile'
 import { network } from '../utils'
 import { nativeCurrency, explorerName, xahauNetwork } from '../utils'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -24,15 +25,18 @@ export default function BlackholedAddress() {
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/blackholed-picture.png', width: 'auto', height: 'auto', allNetworks: true }}
       />
-      <div className="content-center">
-        <center>
-          <img
-            src="/images/pages/blackholed-picture.png"
-            alt="Blackholed Accounts"
-            style={{ width: '100%', height: 'auto', maxHeight: 500 }}
-          />
-        </center>
+      <article className="prose sm:prose-lg dark:prose-invert content-center">
         <h1>What Are Blackholed Addresses on {explorerName}?</h1>
+
+        <Image
+          src="/images/pages/blackholed-picture.png"
+          alt="Blackholed Accounts"
+          width={760}
+          height={500}
+          className="max-w-full h-auto object-contain"
+          priority
+        />
+
         <p>
           Blackholed addresses are {explorerName} wallet addresses from which funds can never be retrieved or spent.
           These addresses are <strong>permanently unmanageable</strong>, making it impossible to sign transactions from
@@ -52,13 +56,17 @@ export default function BlackholedAddress() {
           <Link href="/account/rrrrrrrrrrrrrrrrrrrrBZbvji">rrrrrrrrrrrrrrrrrrrrBZbvji</Link>. If{' '}
           <strong>no active signer list</strong> is assigned, the account is completely inaccessible.
         </p>
-        <center>
-          <img
+        <figure>
+          <Image
             src={'/images/pages/blackholed-screen' + (xahauNetwork ? '-xahau' : '') + '.png'}
             alt="Blackholed Account-example"
-            style={{ maxWidth: '100%', maxHeight: 500 }}
+            width={1520}
+            height={893}
+            className="max-w-full h-auto object-contain"
+            priority
           />
-        </center>
+          <figcaption>Example of a blackholed account</figcaption>
+        </figure>
         <p>
           Let’s view one of the examples of a blackholed account and how it is highlighted on our website. As you can
           see, we mention that:
@@ -130,7 +138,7 @@ export default function BlackholedAddress() {
           decentralization and prevent unauthorized modifications. While blackholing is a useful tool, it should be done
           with careful consideration, as the process is irreversible.
         </p>
-      </div>
+      </article>
     </>
   )
 }

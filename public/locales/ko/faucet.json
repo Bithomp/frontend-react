@@ -3,6 +3,9 @@
   "error-occured": "오류가 발생했습니다",
   "try-later": "오늘 이미 시도하셨습니다. {{time}}에 다시 돌아오세요.",
   "experience-fast-transactions": "{{explorerName}}에서 거래가 얼마나 빠르고 간편한지 경험해 보세요!",
+  "last-ledger-index-find-on-landing-page": "<strong>최신 원장 인덱스.</strong> <1>랜딩 페이지</1>의 통계에서 확인하세요.",
+  "faucet-description": "{{ledgerName}} 개발을 위해 테스트용 {{nativeCurrency}}가 필요하신가요? 안전하고 빠른 {{explorerName}} Faucet을 사용하여 무료 {{nativeCurrency}}를 {{devNet}} 지갑 주소로 직접 받아보세요. 지갑, dApp, NFT 플랫폼 또는 DeFi 도구를 {{ledgerName}}에서 개발 중이라면 이 Faucet을 통해 실제 자금 없이 트랜잭션을 테스트할 수 있습니다.",
+  "enter-amount": "{{devNet}} {{nativeCurrency}} 금액 (최대: {{maxAmount}} {{nativeCurrency}})",
   "form": {
     "placeholder": {
       "enter-address": "{{ledgerName}} 주소를 입력하세요",

@@ -3,6 +3,7 @@ import SEO from '../components/SEO'
 import { getIsSsrMobile } from '../utils/mobile'
 import { network } from '../utils'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -23,16 +24,18 @@ export default function XrplArticle() {
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/xrpl-article.jpeg', width: 1024, height: 512, allNetworks: true }}
       />
-      <div className="content-center">
-        <center>
-          <img
-            src="/images/pages/xrpl-article.jpeg"
-            alt="What is XRP, XRP Ledger, Ripple"
-            style={{ maxWidth: '100%', maxHeight: 386 }}
-          />
-        </center>
-
+      <article className="prose sm:prose-lg dark:prose-invert content-center">
         <h1>What is XRP, XRP Ledger, Ripple: A Comprehensive Overview</h1>
+
+        <Image
+          src="/images/pages/xrpl-article.jpeg"
+          alt="What is XRP, XRP Ledger, Ripple"
+          width={1024}
+          height={768}
+          className="max-w-full h-auto object-contain"
+          priority
+        />
+
         <p>
           In the ever-evolving landscape of cryptocurrency, XRP has emerged as one of the influential digital assets
           since its inception in 2012. Designed to facilitate fast and affordable cross-border transactions, XRP stands
@@ -63,60 +66,64 @@ export default function XrplArticle() {
 
         <h3>Key Founders</h3>
 
-        <h4>Jed McCaleb</h4>
-        <ul>
-          <li>
+        <dl>
+          <dt>Jed McCaleb</dt>
+          <dd>
             <strong>Title:</strong> Co-founder
-          </li>
-          <li>
+          </dd>
+          <dd>
             <strong>Professional Background/Qualifications:</strong> Prior to his involvement with Ripple, Jed
             established the early Bitcoin exchange Mt.Gox in 2010.
-          </li>
-          <li>
+          </dd>
+          <dd>
             <strong>Key Contributions:</strong> Jed held the position of Chief Technology Officer at Ripple until 2013,
             when he departed to fork XRPL and create the Stellar blockchain.
-          </li>
-        </ul>
+          </dd>
+        </dl>
 
-        <h4>Chris Larsen</h4>
-        <ul>
-          <li>
+        <dl>
+          <dt>Chris Larsen</dt>
+          <dd>
             <strong>Title:</strong> Co-founder
-          </li>
-          <li>
+          </dd>
+          <dd>
             <strong>Professional Background/Qualifications:</strong> Before co-founding Ripple, Chris was instrumental
             in founding online mortgage lender e-Loan in 1996 and Prosper Marketplace, a peer-to-peer lending platform,
             in 2005.
-          </li>
-          <li>
+          </dd>
+          <dd>
             <strong>Key Contributions:</strong> Chris served as the Chief Executive Officer of Ripple from 2012 to 2016
             and has taken on the role of executive chairman since the company's inception.
-          </li>
-        </ul>
+          </dd>
+        </dl>
 
-        <h4>David Schwartz</h4>
-        <ul>
-          <li>
+        <dl>
+          <dt>David Schwartz</dt>
+          <dd>
             <strong>Title:</strong> Co-founder
-          </li>
-          <li>
+          </dd>
+          <dd>
             <strong>Professional Background/Qualifications:</strong> David has extensive experience in software
             development, having previously served as the director of software development at Webmaster Incorporated
             before joining Ripple.
-          </li>
-          <li>
+          </dd>
+          <dd>
             <strong>Key Contributions:</strong> He currently acts as the Chief Technology Officer and Chief
             Cryptographer at Ripple and played a vital role as one of the original architects of the XRP Ledger.
-          </li>
-        </ul>
+          </dd>
+        </dl>
 
         <h3>Other Contributors</h3>
-        <ul>
-          <li>
-            <strong>Arthur Britto:</strong> Arthur transitioned from a career as a video game designer to join Ripple,
-            where he has contributed significantly to the project.
-          </li>
-        </ul>
+        <dl>
+          <dt>Arthur Britto</dt>
+          <dd>
+            <strong>Professional Background/Qualifications:</strong> Arthur transitioned from a career as a video game designer to join Ripple.
+          </dd>
+          <dd>
+            <strong>Key Contributions:</strong> He has contributed significantly to the project.
+          </dd>
+        </dl>
+        
         <h2>What is XRP?</h2>
         <p>
           XRP is the native digital currency of the XRP Ledger, an open-source blockchain that was developed by Ripple
@@ -250,7 +257,7 @@ export default function XrplArticle() {
           continues to evolve, the ongoing development of XRP and the XRP Ledger will be key to understanding the
           broader implications of digital currencies in traditional financial systems.
         </p>
-      </div>
+      </article>
     </>
   )
 }
