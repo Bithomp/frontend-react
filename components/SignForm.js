@@ -553,7 +553,7 @@ export default function SignForm({
               closeSignInFormAndRefresh()
             }
             return
-          } else if (TransactionType === 'Payment') {
+          } else if (TransactionType === 'Payment' || TransactionType === 'CheckCreate') {
             if (signRequest?.callback) {
               signRequest.callback({
                 result: response.data
@@ -568,7 +568,7 @@ export default function SignForm({
           }
           checkCrawlerStatus({ inLedger: includedInLedger, type: TransactionType })
         } else {
-          if (txType === 'Payment') {
+          if (txType === 'Payment' || txType === 'CheckCreate') {
             closeSignInFormAndRefresh()
             return
           }
@@ -676,7 +676,8 @@ export default function SignForm({
       txType?.includes('NFToken') ||
       txType?.includes('URIToken') ||
       txType?.includes('DID') ||
-      txType === 'Payment'
+      txType === 'Payment' ||
+      txType === 'CheckCreate'
     ) {
       checkTxInCrawler({ txid: txHash, redirectName, txType })
       return
