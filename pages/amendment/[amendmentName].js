@@ -390,7 +390,7 @@ export default function AmendmentVoting({ amendmentName, initialData, initialErr
         {a === amendmentName ? (
           <span className="purple bold">{a.length === 64 ? shortHash(a) : a}</span>
         ) : (
-          <a href={'?amendment=' + a} className="orange">
+          <a href={`/amendment/${a}`} className="orange">
             {a.length === 64 ? shortHash(a) : a}
           </a>
         )}
