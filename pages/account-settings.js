@@ -198,7 +198,6 @@ export default function AccountSettings({ account, setSignRequest }) {
       try {
         const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
         setAccountData(response.data)
-        console.log(response.data)
         if (response.data?.ledgerInfo?.flags) {
           const ledgerFlags = response.data.ledgerInfo.flags
 
