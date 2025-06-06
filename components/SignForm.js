@@ -635,6 +635,23 @@ export default function SignForm({
         })
         setAwaiting(false)
         if (response?.data) {
+          /*
+            {
+              "status": true,
+              "code": 200,
+              "message": "Data Fetch Successfully",
+              "data": [
+                {
+                  "Amount": "8880000",
+                  "Destination": "rn6CYo6uSxR6fP7jWg3c8SL5jrqTc2GjCS",
+                  "NFTokenID": "00081B580D828F028B88C7A78C67A2A9719DDB0A902A927EA72C172100000588",
+                  "Owner": "rDzvW4ddvvDXhJNEGFWGkPQ9SYuUeMjKU5",
+                  "Index": "E8E06CE995ABAA2D30AAE21725DFB4D27268F501113E4333120B6CC7E009171A",
+                  "Date": "2023-11-07T10:18:31.000Z"
+                }
+              ]
+            }
+          */
           const responseData = response.data
           if (responseData.status && responseData.data?.hash) {
             // hash of the offer accept transaction
