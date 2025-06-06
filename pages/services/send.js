@@ -10,8 +10,8 @@ import CopyButton from '../../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../../utils/links'
 import { multiply } from '../../utils/calc'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
-import { typeNumberOnly, isAddressValid, isTagValid, nativeCurrency, encode, decode } from '../../utils'
-import { fullDateAndTime, timeFromNow, amountFormat } from '../../utils/format'
+import { typeNumberOnly, isAddressValid, isTagValid, isIdValid, nativeCurrency, encode, decode } from '../../utils'
+import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 
@@ -22,7 +22,9 @@ export default function Send({
   amountQuery,
   destinationTagQuery,
   memoQuery,
-  feeQuery
+  feeQuery,
+  sourceTagQuery,
+  invoiceIdQuery
 }) {
   const { t } = useTranslation()
   const width = useWidth()
@@ -31,9 +33,11 @@ export default function Send({
   const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
   const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
   const [memo, setMemo] = useState(memoQuery)
-  const [showAdvanced, setShowAdvanced] = useState(Number(feeQuery) > 0)
+  const [showAdvanced, setShowAdvanced] = useState(Number(feeQuery) > 0 || isTagValid(sourceTagQuery) || isIdValid(invoiceIdQuery))
   const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 ? feeQuery : null)
   const [feeError, setFeeError] = useState('')
+  const [sourceTag, setSourceTag] = useState(isTagValid(sourceTagQuery) ? sourceTagQuery : null)
+  const [invoiceId, setInvoiceId] = useState(isIdValid(invoiceIdQuery) ? invoiceIdQuery : null)
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
 
@@ -71,9 +75,21 @@ export default function Send({
       queryRemoveList.push('fee')
     }
 
+    if (isTagValid(sourceTag)) {
+      queryAddList.push({ name: 'sourceTag', value: sourceTag })
+    } else {
+      queryRemoveList.push('sourceTag')
+    }
+
+    if (isIdValid(invoiceId)) {
+      queryAddList.push({ name: 'invoiceId', value: invoiceId })
+    } else {
+      queryRemoveList.push('invoiceId')
+    }
+
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, destinationTag, amount, memo, fee])
+  }, [address, destinationTag, amount, memo, fee, sourceTag, invoiceId])
 
   const handleFeeChange = (e) => {
     const value = e.target.value
@@ -110,6 +126,16 @@ export default function Send({
       return
     }
 
+    if (sourceTag && !isTagValid(sourceTag)) {
+      setError('Please enter a valid source tag.')
+      return
+    }
+
+    if (invoiceId && !isIdValid(invoiceId)) {
+      setError('Invoice ID must be a 64-character hexadecimal string.')
+      return
+    }
+
     try {
       let payment = {
         TransactionType: 'Payment',
@@ -139,6 +165,14 @@ export default function Send({
         payment.Fee = multiply(fee, 1000000)
       }
 
+      if (sourceTag) {
+        payment.SourceTag = parseInt(sourceTag)
+      }
+
+      if (invoiceId) {
+        payment.InvoiceID = invoiceId
+      }
+
       setSignRequest({
         request: payment,
         callback: (result) => {
@@ -157,7 +191,8 @@ export default function Send({
               status: result.result.meta?.TransactionResult,
               validated: result.result.validated,
               ledgerIndex: result.result.ledger_index,
-              balanceChanges: result.result.balanceChanges
+              balanceChanges: result.result.balanceChanges,
+              invoiceId: result.result.InvoiceID
             })
           } else {
             setError('Transaction failed')
@@ -229,30 +264,62 @@ export default function Send({
           <CheckBox
             checked={showAdvanced}
             setChecked={() => {
-              setShowAdvanced(!showAdvanced), setFee(null)
+              setShowAdvanced(!showAdvanced)
+              setFee(null)
+              setSourceTag(null)
+              setInvoiceId(null)
             }}
             name="advanced-payment"
           >
             Advanced Payment Options
           </CheckBox>
           {showAdvanced && (
-            <div>
+            <>
               <br />
-              <span className="input-title">Fee</span>
-              <input
-                placeholder={'Enter fee in ' + nativeCurrency}
-                onChange={handleFeeChange}
-                onKeyPress={typeNumberOnly}
-                className={`input-text ${feeError ? 'error' : ''}`}
-                spellCheck="false"
-                maxLength="35"
-                min="0"
-                type="text"
-                inputMode="decimal"
-                defaultValue={fee}
-              />
-              {feeError && <div className="red">{feeError}</div>}
-            </div>
+              <div className="form-input">
+                <span className="input-title">Fee</span>
+                <input
+                  placeholder={'Enter fee in ' + nativeCurrency}
+                  onChange={handleFeeChange}
+                  onKeyPress={typeNumberOnly}
+                  className={`input-text ${feeError ? 'error' : ''}`}
+                  spellCheck="false"
+                  maxLength="35"
+                  min="0"
+                  type="text"
+                  inputMode="decimal"
+                  defaultValue={fee}
+                />
+                {feeError && <div className="red">{feeError}</div>}
+              </div>
+              {width > 1100 && <br />}
+              <div className="form-input">
+                <span className="input-title">Source Tag</span>
+                <input
+                  placeholder="Enter source tag"
+                  onChange={(e) => setSourceTag(e.target.value)}
+                  onKeyPress={typeNumberOnly}
+                  className="input-text"
+                  spellCheck="false"
+                  maxLength="35"
+                  type="text"
+                  defaultValue={sourceTag}
+                />
+              </div>
+              {width > 1100 && <br />}
+              <div className="form-input">
+                <span className="input-title">Invoice ID</span>
+                <input
+                  placeholder="Enter invoice ID"
+                  onChange={(e) => setInvoiceId(e.target.value)}
+                  className="input-text"
+                  spellCheck="false"
+                  maxLength="64"
+                  type="text"
+                  defaultValue={invoiceId}
+                />
+              </div>
+            </>
           )}
           <br />
           {error && (
@@ -308,6 +375,11 @@ export default function Send({
                     <strong>{t('table.hash')}: </strong>
                     <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
                   </p>
+                  {txResult.invoiceId && (
+                    <p>
+                      <strong>Invoice ID:</strong> {shortHash(txResult.invoiceId)} <CopyButton text={txResult.invoiceId} />
+                    </p>
+                  )}
                 </div>
               </div>
             </>
@@ -320,7 +392,7 @@ export default function Send({
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
-  const { address, amount, destinationTag, memo, fee } = query
+  const { address, amount, destinationTag, memo, fee, sourceTag, invoiceId } = query
 
   return {
     props: {
@@ -329,6 +401,8 @@ export const getServerSideProps = async (context) => {
       destinationTagQuery: destinationTag || '',
       memoQuery: memo || '',
       feeQuery: fee || '',
+      sourceTagQuery: sourceTag || '',
+      invoiceIdQuery: invoiceId || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
