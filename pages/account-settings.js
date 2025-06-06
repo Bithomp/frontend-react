@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { xahauNetwork, explorerName } from '../utils'
+import { xahauNetwork, explorerName, nativeCurrency } from '../utils'
 import SEO from '../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -135,8 +135,8 @@ export default function AccountSettings({ account, setSignRequest }) {
       type: 'asf',
     },
     tshCollect: {
-      name: 'TSH Collect',
-      displayName: 'TSH Collect',
+      name: 'Transactional Stakeholder (TSH) Collect',
+      displayName: 'Transactional Stakeholder (TSH) Collect',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
@@ -185,8 +185,8 @@ export default function AccountSettings({ account, setSignRequest }) {
       type: 'tf',
     },
     disallowXRP: {
-      name: 'Incoming XRP',
-      displayName: 'Incoming XRP',
+      name: 'Incoming ' + nativeCurrency,
+      displayName: 'Incoming ' + nativeCurrency,
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'tf',
