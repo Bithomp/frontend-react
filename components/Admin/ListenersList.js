@@ -19,7 +19,7 @@ export default function ListenersList({ listeners }) {
         return (
           <div
             key={listener.id}
-            className={`border shadow bg-white hover:shadow-lg transition-shadow duration-200 mb-3 ${
+            className={`border-2 bg-white dark:bg-gray-800 dark:border-gray-700 hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-shadow duration-200 mb-3 ${
               expandedId === listener.id ? 'ring-2 ring-blue-200' : ''
             }`}
           >
@@ -40,13 +40,13 @@ export default function ListenersList({ listeners }) {
                   )}
                 </div>
                 <div className="text-xs text-gray-500 mt-1 truncate">
-                  <span className="font-medium">Event:</span> {listener.event} &bull; <span className="font-medium">Action:</span> {listener.action}
+                  <span className="font-medium">Event:</span> {listener.event}
                 </div>
                 <div className="text-xs text-gray-400 mt-1 truncate">
                   <span className="font-medium">Connection:</span> {listener.connection?.name || '-'} ({listener.connection?.type || '-'})
                 </div>
               </div>
-              <span className="ml-2 text-gray-400 text-xl flex-shrink-0" aria-hidden>
+              <span className="ml-2 text-black text-2xl flex-shrink-0" aria-hidden>
                 {expandedId === listener.id ? '−' : '+'}
               </span>
             </button>
@@ -58,16 +58,10 @@ export default function ListenersList({ listeners }) {
               {expandedId === listener.id && (
                 <div className="px-3 pb-3 bg-blue-50 text-xs">
                   <div className="text-gray-700 mb-1">
-                    <b>Listener ID:</b> {listener.id}
-                  </div>
-                  <div className="text-gray-700 mb-1">
                     <b>Created:</b> {formatTimestamp(listener.createdAt)}
                   </div>
                   <div className="text-gray-700 mb-1">
                     <b>Updated:</b> {formatTimestamp(listener.updatedAt)}
-                  </div>
-                  <div className="text-gray-700 mb-1">
-                    <b>Partner Connection ID:</b> {listener.partnerConnectionID}
                   </div>
                   <div className="text-gray-700 mb-1 break-all">
                     <b>Connection Webhook:</b>{' '}

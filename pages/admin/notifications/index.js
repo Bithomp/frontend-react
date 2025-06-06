@@ -30,8 +30,8 @@ export default function Integrations() {
 
     return (
         <main className="page-admin content-center">
-            <h1 className="center">Integrations</h1>
-            <AdminTabs name="mainTabs" tab="integrations" />
+            <h1 className="center">Notifications</h1>
+            <AdminTabs name="mainTabs" tab="notifications" />
             <ListenersList listeners={listeners} />
         </main>
     )
