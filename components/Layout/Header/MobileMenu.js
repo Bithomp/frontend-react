@@ -155,6 +155,9 @@ export default function MobileMenu({
           <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Send Payment
           </Link>
+          <Link href="/services/check" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Issue Check
+          </Link>
           <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.nft-mint')}
           </Link>

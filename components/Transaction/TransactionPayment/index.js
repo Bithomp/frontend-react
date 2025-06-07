@@ -178,7 +178,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           </TData>
         </tr>
       )}
-      {(isConvertion || iouPayment) && (
+      {(isConvertion || iouPayment) && sourceBalanceChangesList.length > 0 && (
         <>
           <tr>
             <TData>
