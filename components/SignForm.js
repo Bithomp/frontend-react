@@ -682,7 +682,11 @@ export default function SignForm({
       checkTxInCrawler({ txid: txHash, redirectName, txType })
       return
     } else {
-      // no checks or delays for non NFT/DID/Payment transactions
+
+      if (txType === 'AccountSet' && signRequest?.callback) {
+        signRequest.callback()
+      }
+      // no checks or delays for non NFT/DID transactions
       closeSignInFormAndRefresh()
     }
   }
