@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { xahauNetwork, explorerName, nativeCurrency } from '../utils'
-import SEO from '../components/SEO'
+import { xahauNetwork, explorerName, nativeCurrency } from '../../utils'
+import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { getIsSsrMobile } from '../utils/mobile'
+import { getIsSsrMobile } from '../../utils/mobile'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
