@@ -210,7 +210,7 @@ export default function Did({ data, setSignRequest, account, ledgerTimestamp }) 
           </p>
         )}
         {url && (
-          <p>
+          <div>
             <span className="grey">URL</span> <span className="orange">(unverified)</span>
             <br />
             {isUrlValid(url) ? (
@@ -220,7 +220,7 @@ export default function Did({ data, setSignRequest, account, ledgerTimestamp }) 
             ) : (
               <pre>{url}</pre>
             )}
-          </p>
+          </div>
         )}
         {didData.metadata && (
           <p>
