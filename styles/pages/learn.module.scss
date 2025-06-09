@@ -1,38 +1,52 @@
 .card {
+    // Theme variables - light theme (default)
+    --card-shadow: #000;
+    --card-border: #000;
+    --card-bg: #fff;
+    --card-text: #000;
+    
+    // Layout
     display: flex;
     flex-direction: column;
-    cursor: pointer;
     justify-content: space-between;
-    box-shadow: 8px 8px 0px #000;
-    border: 4px solid var(--accent-icon);
-    transition: transform 0.2s ease;
     padding: 1rem;
-
+    
+    // Visual styles
+    box-shadow: 4px 4px 0px var(--card-shadow);
+    border: 2px solid var(--card-border);
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    
+    // Interaction
+    cursor: pointer;
     text-decoration: none;
-    color: inherit;
-
-    &:hover {
-        transform: translate(-4px, -4px);
-    }
-
-    &:focus {
+    transition: transform 0.2s ease-in-out;
+    
+    // Accessibility
+    &:focus-visible {
         outline: 2px solid var(--accent-icon);
         outline-offset: 2px;
     }
-
+    
+    // Hover state
+    &:hover {
+        transform: translate(-4px, -4px);
+    }
+    
+    // Ensure consistent text decoration and color across all states
     &,
     &:hover,
     &:focus,
     &:active {
         text-decoration: none;
-        color: inherit;
+        color: var(--card-text);
     }
-
+    
+    // Read more link
     .readMore {
         margin-top: 0.25rem;
         font-size: var(--text-sm);
         text-decoration: underline;
         color: var(--accent-link);
     }
-
 }

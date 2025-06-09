@@ -39,7 +39,7 @@ export default function Breadcrumbs() {
             <FaChevronRight className="h-4 w-4 text-gray-400 mx-2" />
             {breadcrumb.isCurrentPage ? (
               <span 
-                className="text-gray-900 font-medium"
+                className="text-gray-900 dark:text-gray-100 font-medium"
                 aria-current="page"
               >
                 {breadcrumb.label}

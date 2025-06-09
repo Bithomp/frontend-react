@@ -60,7 +60,7 @@ export default function LearnPage() {
       <div className="max-w-6xl mx-auto px-4 pb-10">
         <Breadcrumbs />
         <h1 className="!text-3xl sm:!text-4xl font-bold text-center mb-6">Learn About XRP & The XRP Ledger</h1>
-        <p className="text-gray-600 text-center max-w-4xl mx-auto mb-12">
+        <p className="text-gray-600 dark:text-gray-400 text-center max-w-4xl mx-auto mb-12">
           Explore essential concepts behind XRP, the XRP Ledger, Ripple, and wallet activity.
           Understand how the ecosystem works with these beginner-friendly guides and definitions.
         </p>
@@ -70,7 +70,7 @@ export default function LearnPage() {
             <section key={section.category}>
               <h2 className="text-2xl font-semibold mb-4">{section.category}</h2>
               {section.description && (
-                <p className="text-gray-600 mb-4 no-underline hover:no-underline">{section.description}</p>
+                <p className="text-gray-600 dark:text-gray-400 mb-4 no-underline hover:no-underline">{section.description}</p>
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                 {section.items.map((item) => (
@@ -83,7 +83,7 @@ export default function LearnPage() {
                     <div>
                       <h3 className="text-lg font-semibold">{item.title}</h3>
                       {item.description && (
-                        <p className="text-gray-600 mb-4">{item.description}</p>
+                        <p className="text-gray-600 dark:text-gray-400 mb-4">{item.description}</p>
                       )}
                     </div>
                     <p className={`${styles.readMore}`}>Read more →</p>
