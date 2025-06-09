@@ -100,7 +100,14 @@ function generateSiteMap(posts) {
     'whales/receivers',
     'whales/senders',
     'whales/submitters',
-    'services/nft-mint'
+    'services/nft-mint',
+    'learn',
+    'learn/blackholed-address',
+    'learn/blacklisted-address',
+    'learn/verified-domain',
+    'learn/ripple-usd',
+    'learn/what-is-xrp',
+    'learn/what-is-ripple',
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
