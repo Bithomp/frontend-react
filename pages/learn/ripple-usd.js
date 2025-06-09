@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { network } from '../../utils'
+import { network, } from '../../utils'
 import Breadcrumbs from '../../components/Breadcrumbs'
 
 export async function getServerSideProps(context) {
@@ -16,6 +16,8 @@ export async function getServerSideProps(context) {
 }
 
 export default function RLUSD() {
+  const serverUrl = 'bithomp.com'
+
   return (
     <>
       <SEO
@@ -23,6 +25,7 @@ export default function RLUSD() {
         description="What is RLUSD, what are RLUSD advantages and use cases"
         noindex={network !== 'mainnet'}
         image={{ file: 'images/pages/rlusd/rocket.png', width: 'auto', height: 'auto', allNetworks: true }}
+        canonical={serverUrl + '/rlusd'}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
@@ -80,7 +83,7 @@ export default function RLUSD() {
           </li>
           <li>
             <p>
-              <strong>Deep Liquidity:</strong> Backed by Ripple’s reserves, RLUSD is designed to be a liquid and
+              <strong>Deep Liquidity:</strong> Backed by Ripple's reserves, RLUSD is designed to be a liquid and
               reliable asset for users and institutions alike.
             </p>
           </li>
@@ -108,7 +111,7 @@ export default function RLUSD() {
           </li>
           <li>
             <p>
-              <strong>Future DeFi Potential: </strong> RLUSD’s Ethereum issuance may unlock smart contract-based use
+              <strong>Future DeFi Potential: </strong> RLUSD's Ethereum issuance may unlock smart contract-based use
               cases in DeFi, lending, and yield-generating protocols.
             </p>
           </li>

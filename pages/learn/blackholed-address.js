@@ -18,6 +18,8 @@ export async function getServerSideProps(context) {
 }
 
 export default function BlackholedAddress() {
+  const serverUrl = ['mainnet', 'testnet', 'devnet'].includes(network) ? 'bithomp.com' : 'xahauexplorer.com'
+
   return (
     <>
       <SEO
@@ -25,6 +27,7 @@ export default function BlackholedAddress() {
         description="What are blackholed addresses on XRP and Xahau Ledgers, why they are important, how accounts become blackholed."
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/blackholed-picture.png', width: 'auto', height: 'auto', allNetworks: true }}
+        canonical={serverUrl + '/blackholed-address'}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />

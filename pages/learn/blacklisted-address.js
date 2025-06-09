@@ -17,6 +17,8 @@ export async function getServerSideProps(context) {
 }
 
 export default function BlacklistedAddress() {
+  const serverUrl = ['mainnet', 'testnet', 'devnet'].includes(network) ? 'bithomp.com' : 'xahauexplorer.com'
+
   return (
     <>
       <SEO
@@ -24,6 +26,7 @@ export default function BlacklistedAddress() {
         description="What are blacklisted addresses on XRP and Xahau Ledgers, why fraud alert is displayed, how and why accounts become blacklisted."
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/blacklisted-picture.jpg', width: '100%', height: '386', allNetworks: true }}
+        canonical={serverUrl + '/blacklisted-address'}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />

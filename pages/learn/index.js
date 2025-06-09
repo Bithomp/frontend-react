@@ -8,6 +8,21 @@ import { network } from '../../utils'
 import Breadcrumbs from '../../components/Breadcrumbs'
 
 import styles from '../../styles/pages/learn.module.scss'
+import SEO from '../../components/SEO'
+
+const learnPageXRP = {
+  title: 'Learn About XRP & The XRP Ledger | Bithomp',
+  description: 'Explore essential concepts behind XRP, the XRP Ledger, Ripple, and wallet activity. Understand how the ecosystem works with these beginner-friendly guides and definitions.',
+  h1: 'Learn About XRP & The XRP Ledger',
+  canonical: 'bithomp.com/learn',
+}
+
+const learnPageXAHAU = {
+  title: 'Learn About XAHAU & The XAHAU Ledger | XAHAU Explorer',
+  description: 'Explore essential concepts behind XAHAU, the XAHAU Ledger, Ripple, and wallet activity. Understand how the ecosystem works with these beginner-friendly guides and definitions.',
+  h1: 'Learn About XAHAU & The XAHAU Ledger',
+  canonical: 'xahauexplorer.com/learn',
+}
 
 const learnContentXRP = [
   {
@@ -60,21 +75,27 @@ export async function getServerSideProps(context) {
 }
 
 export default function LearnPage() {
+  const learnPage = ['mainnet', 'testnet', 'devnet'].includes(network) ? learnPageXRP : learnPageXAHAU;
   const learnContent = ['mainnet', 'testnet', 'devnet'].includes(network) ? learnContentXRP : learnContentXAHAU;
 
   return (
     <>
+      <SEO
+        title={learnPage.title}
+        description={learnPage.description}
+        canonical={learnPage.canonical}
+      />
       <Head>
-        <title>Learn about XRP, XRPL, Ripple | Bithomp</title>
+        <title>{learnPage.title}</title>
         <meta
           name="description"
-          content="Learn everything about XRP, the XRP Ledger, Ripple, and how to explore the network using Bithomp tools."
+          content={learnPage.description}
         />
       </Head>
 
       <div className="max-w-6xl mx-auto px-4 pb-10">
         <Breadcrumbs />
-        <h1 className="!text-3xl sm:!text-4xl font-bold text-center mb-6">Learn About XRP & The XRP Ledger</h1>
+        <h1 className="!text-3xl sm:!text-4xl font-bold text-center mb-6">{learnPage.h1}</h1>
         <p className="text-gray-600 dark:text-gray-400 text-center max-w-4xl mx-auto mb-12">
           Explore essential concepts behind XRP, the XRP Ledger, Ripple, and wallet activity.
           Understand how the ecosystem works with these beginner-friendly guides and definitions.
