@@ -6,6 +6,7 @@ import { xahauNetwork, explorerName, nativeCurrency } from '../../utils'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
+import CheckBox from '../../components/UI/CheckBox'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -28,7 +29,7 @@ const ASF_FLAGS = {
   disallowIncomingNFTokenOffer: 12,
   disallowIncomingRemit: 16,
   tshCollect: 11,
-  allowTrustLineClawback: 17,
+  allowTrustLineClawback: 16,
   asfDefaultRipple: 8,
   asfDepositAuth: 9,
   asfDisableMaster: 4,
@@ -626,7 +627,7 @@ export default function AccountSettings({ account, setSignRequest }) {
                       placeholder="Enter NFTokenMinter address"
                       value={nftTokenMinter}
                       onChange={(e) => setNftTokenMinter(e.target.value)}
-                      className="input-field"
+                      className="input-text"
                     />
                     <button 
                       className="button-action" 
@@ -644,16 +645,12 @@ export default function AccountSettings({ account, setSignRequest }) {
           
           {/* Advanced Options */}
           <div className="advanced-options">
-            <button 
-              className="toggle-advanced"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-            >
-              {showAdvanced ? 'Hide' : 'Show'} Advanced Options
-            </button>
+            <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-flags">
+              Advanced Options (Use with caution)
+            </CheckBox>
             
             {showAdvanced && (
               <div className="advanced-flags">
-                <h5>Advanced Options (Use with caution)</h5>
                 {flagGroups.advanced.map((flag) => renderFlagItem(flag, 'asf'))}
               </div>
             )}

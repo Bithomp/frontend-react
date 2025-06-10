@@ -48,11 +48,6 @@
   .flag-status {
     color: var(--text-secondary);
     font-size: 14px;
-    
-    &.orange {
-      color: #ff8c00;
-      font-weight: 500;
-    }
   }
 
   .flag-description {
@@ -85,27 +80,6 @@
   .nft-minter-input {
     margin-top: 0.5rem;
     
-    .input-field {
-      width: 100%;
-      max-width: 400px;
-      padding: 8px 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin-bottom: 4px;
-      background: #fff;
-      color: var(--text-primary);
-      
-      .dark & {
-        background: #2a2a2a;
-        border-color: #555;
-        color: #fff;
-        
-        &::placeholder {
-          color: #999;
-        }
-      }
-    }
-    
     small {
       color: var(--text-secondary);
       font-size: 12px;
@@ -114,38 +88,6 @@
 
   .advanced-options {
     margin-top: 2rem;
-    
-    .toggle-advanced {
-      background: transparent;
-      border: 1px solid #ccc;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-bottom: 1rem;
-      color: var(--text-primary);
-      
-      &:hover {
-        background: #f5f5f5;
-      }
-      
-      .dark & {
-        border-color: #555;
-        color: #fff;
-        
-        &:hover {
-          background: #333;
-        }
-      }
-    }
-    
-    .advanced-flags {
-      h5 {
-        color: #ff8c00;
-        margin-bottom: 1rem;
-        font-size: 14px;
-        font-weight: 500;
-      }
-    }
   }
 
   .minter-info {
@@ -206,7 +148,7 @@
     gap: 10px;
     flex-wrap: wrap;
     
-    .input-field {
+    .input-text {
       flex: 1;
       min-width: 250px;
     }
