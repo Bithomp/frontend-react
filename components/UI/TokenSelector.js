@@ -1,71 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'next-i18next';
-import { IoSearch } from 'react-icons/io5';
-import { IoMdClose } from 'react-icons/io';
-import { IoChevronDown } from 'react-icons/io5';
-import axios from 'axios';
-import { avatarServer, nativeCurrency, nativeCurrenciesImages, useWidth } from '../../utils';
-import { niceCurrency, shortAddress } from '../../utils/format';
+import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'next-i18next'
+import { IoSearch } from 'react-icons/io5'
+import { IoMdClose } from 'react-icons/io'
+import { IoChevronDown } from 'react-icons/io5'
+import axios from 'axios'
+import { avatarServer, nativeCurrency, nativeCurrenciesImages, useWidth } from '../../utils'
+import { niceCurrency, shortAddress } from '../../utils/format'
 
 const TokenSelector = ({ value, onChange }) => {
-  const { t } = useTranslation();
-  const width = useWidth();
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchTimeout, setSearchTimeout] = useState(null);
+  const { t } = useTranslation()
+  const width = useWidth()
+  const [isOpen, setIsOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [searchTimeout, setSearchTimeout] = useState(null)
 
   // Handle search with debounce
   useEffect(() => {
     if (searchTimeout) {
-      clearTimeout(searchTimeout);
+      clearTimeout(searchTimeout)
     }
 
     const timeout = setTimeout(async () => {
       if (!searchQuery) {
-        setIsLoading(true);
+        setIsLoading(true)
         try {
           const response = await axios('v2/trustlines/tokens')
-          const tokens = response.data?.tokens || [];
-          setSearchResults([nativeCurrency, ...tokens]);
+          const tokens = response.data?.tokens || []
+          setSearchResults([nativeCurrency, ...tokens])
         } catch (error) {
-          console.error('Error loading tokens:', error);
-          setSearchResults([nativeCurrency]);
+          console.error('Error loading tokens:', error)
+          setSearchResults([nativeCurrency])
         } finally {
-          setIsLoading(false);
+          setIsLoading(false)
         }
-        return;
+        return
       }
 
-      setIsLoading(true);
-      try {        
+      setIsLoading(true)
+      try {
         const response = await axios(`v2/trustlines/tokens/search/${searchQuery}`)
-        const tokens = response.data?.tokens || [];
-        setSearchResults(tokens);
+        const tokens = response.data?.tokens || []
+        setSearchResults(tokens)
       } catch (error) {
-        console.error('Error searching tokens:', error);
-        setSearchResults([]);
+        console.error('Error searching tokens:', error)
+        setSearchResults([])
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    }, 300);
+    }, 300)
 
-    setSearchTimeout(timeout);
+    setSearchTimeout(timeout)
 
     return () => {
       if (searchTimeout) {
-        clearTimeout(searchTimeout);
+        clearTimeout(searchTimeout)
       }
-    };
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery]);
+  }, [searchQuery])
 
   const handleSelect = (token) => {
-    onChange(token);
-    setIsOpen(false);
-    setSearchQuery('');
-  };
+    onChange(token)
+    setIsOpen(false)
+    setSearchQuery('')
+  }
 
   // Helper to get icon url if available
   const getTokenIcon = (token) => {
@@ -73,21 +73,21 @@ const TokenSelector = ({ value, onChange }) => {
     if (!token.issuer) {
       imageUrl = nativeCurrenciesImages[nativeCurrency]
     }
-    return imageUrl;
-  }; 
+    return imageUrl
+  }
 
   // Helper to get token display name
   const getTokenDisplayName = (token) => {
-    if (!token) return nativeCurrency;
-    if (!token.issuer) return nativeCurrency;
-    
-    const issuerDetails = token.issuerDetails || {};
-    const serviceOrUsername = issuerDetails.service || issuerDetails.username;
+    if (!token) return nativeCurrency
+    if (!token.issuer) return nativeCurrency
+
+    const issuerDetails = token.issuerDetails || {}
+    const serviceOrUsername = issuerDetails.service || issuerDetails.username
     if (serviceOrUsername) {
-      return `${niceCurrency(token.currency)} (${serviceOrUsername})`;
+      return `${niceCurrency(token.currency)} (${serviceOrUsername})`
     }
-    return niceCurrency(token.currency);
-  };
+    return niceCurrency(token.currency)
+  }
 
   return (
     <div className="token-selector">
@@ -119,17 +119,12 @@ const TokenSelector = ({ value, onChange }) => {
         <div className="token-selector-modal">
           <div className="token-selector-modal-content">
             {/* Backdrop */}
-            <div 
-              className="token-selector-modal-backdrop"
-              onClick={() => setIsOpen(false)}
-            />
+            <div className="token-selector-modal-backdrop" onClick={() => setIsOpen(false)} />
 
             {/* Modal */}
             <div className="token-selector-modal-container">
               <div className="token-selector-modal-header">
-                <h3 className="token-selector-modal-title">
-                  Select Token
-                </h3>
+                <h3 className="token-selector-modal-title">Select Token</h3>
                 <IoMdClose className="token-selector-modal-close" onClick={() => setIsOpen(false)} />
               </div>
 
@@ -137,7 +132,7 @@ const TokenSelector = ({ value, onChange }) => {
                 <div className="form-input__wrap">
                   <input
                     className="simple-input"
-                    placeholder='Search by currency, issuer, or username'
+                    placeholder="Search by currency, issuer, or username"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     autoFocus
@@ -177,9 +172,7 @@ const TokenSelector = ({ value, onChange }) => {
                     ))}
                   </div>
                 ) : searchQuery ? (
-                  <div className="token-selector-modal-empty">
-                    {t('general.no-data')}
-                  </div>
+                  <div className="token-selector-modal-empty">{t('general.no-data')}</div>
                 ) : null}
               </div>
             </div>
@@ -187,7 +180,7 @@ const TokenSelector = ({ value, onChange }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default TokenSelector; 
+export default TokenSelector
