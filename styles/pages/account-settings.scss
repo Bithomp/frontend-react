@@ -1,0 +1,207 @@
+@import '../variables';
+
+.account-settings {
+  .permission-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc
+  }
+
+  .permission-item-title {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .permission-item-status {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .flag-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .flag-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .flag-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .flag-name {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .flag-status {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .flag-description {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .disabled-reason {
+    font-size: 12px;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  .permanent-flag {
+    color: #666;
+    font-size: 12px;
+    font-style: italic;
+    padding: 2px 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    
+    .dark & {
+      color: #ccc;
+      background: #333;
+    }
+  }
+
+  .nft-minter-input {
+    margin-top: 0.5rem;
+    
+    small {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+  }
+
+  .advanced-options {
+    margin-top: 2rem;
+  }
+
+  .minter-info {
+    margin-top: 0.5rem;
+    
+    small {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-style: italic;
+    }
+  }
+
+  .current-minter {
+    margin-top: 0.5rem;
+    
+    .minter-address {
+      background: #f8f9fa;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-family: monospace;
+      font-size: 14px;
+      word-break: break-all;
+      
+      .dark & {
+        background: #2a2a2a;
+        color: #fff;
+      }
+    }
+    
+    .clear-button {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-bottom: 8px;
+      
+      &:hover {
+        background: #c82333;
+      }
+    }
+    
+    small {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-style: italic;
+      display: block;
+    }
+  }
+
+  .set-minter {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
+    
+    .input-text {
+      flex: 1;
+      min-width: 250px;
+    }
+    
+    small {
+      color: var(--text-secondary);
+      font-size: 12px;
+      flex-basis: 100%;
+      margin-top: 4px;
+    }
+  }
+
+  .back-button {
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+
+    .dark & span {
+      color: #fff;
+    }
+  }
+
+  .back-button-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .flag-toggle-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .flag-toggle-item {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .icon-color {
+    color: var(--text-primary);
+
+    .dark & {
+      color: #fff;
+    }
+  }
+
+}
