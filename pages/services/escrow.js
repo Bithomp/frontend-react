@@ -54,7 +54,7 @@ export default function CreateEscrow({ setSignRequest }) {
     }
 
     // Validate field combinations according to XRPL documentation
-    // Valid combinations: FinishAfter only, FinishAfter+CancelAfter, FinishAfter+Condition, 
+    // Valid combinations: FinishAfter only, FinishAfter+CancelAfter, FinishAfter+Condition,
     // FinishAfter+Condition+CancelAfter, or Condition+CancelAfter
     if (!finishAfter && !condition) {
       setError('You must specify either a finish time or a condition (or both).')
@@ -77,7 +77,7 @@ export default function CreateEscrow({ setSignRequest }) {
     }
 
     const now = Math.floor(Date.now() / 1000)
-    
+
     if (finishAfter && finishAfter <= now) {
       setError('Finish time must be in the future.')
       return
@@ -123,7 +123,6 @@ export default function CreateEscrow({ setSignRequest }) {
       setSignRequest({
         request: escrowCreate,
         callback: (result) => {
-          console.log(result)
           if (result.result) {
             setTxResult({
               status: result.result.meta?.TransactionResult,
@@ -149,7 +148,7 @@ export default function CreateEscrow({ setSignRequest }) {
     } catch (err) {
       setError(err.message)
     }
-  }   
+  }
 
   const parseDateTimeLocal = (value) => {
     if (!value) return null
@@ -162,7 +161,7 @@ export default function CreateEscrow({ setSignRequest }) {
       <div className="content-text content-center">
         <h1 className="center">Create Escrow</h1>
         <NetworkTabs />
-        
+
         <div>
           <AddressInput
             title={t('table.destination')}
@@ -222,7 +221,7 @@ export default function CreateEscrow({ setSignRequest }) {
               defaultValue={cancelAfter ? fullDateAndTime(cancelAfter, 'ripple') : ''}
             />
           </div>
-          
+
           <CheckBox
             checked={showAdvanced}
             setChecked={() => {
@@ -236,7 +235,7 @@ export default function CreateEscrow({ setSignRequest }) {
           >
             Advanced Options
           </CheckBox>
-          
+
           {showAdvanced && (
             <>
               {width > 1100 && <br />}
@@ -253,7 +252,8 @@ export default function CreateEscrow({ setSignRequest }) {
                   defaultValue={condition}
                 />
                 <div className="grey" style={{ fontSize: '12px', marginTop: '5px' }}>
-                  A hex-encoded PREIMAGE-SHA-256 crypto-condition. Funds can only be released if this condition is fulfilled.
+                  A hex-encoded PREIMAGE-SHA-256 crypto-condition. Funds can only be released if this condition is
+                  fulfilled.
                 </div>
               </div>
               {width > 1100 && <br />}
@@ -267,7 +267,7 @@ export default function CreateEscrow({ setSignRequest }) {
               />
             </>
           )}
-          
+
           {error && (
             <>
               {width > 1100 && <br />}
@@ -280,7 +280,7 @@ export default function CreateEscrow({ setSignRequest }) {
               Create Escrow
             </button>
           </div>
-          
+
           {txResult?.status === 'tesSUCCESS' && (
             <>
               <br />
@@ -316,17 +316,20 @@ export default function CreateEscrow({ setSignRequest }) {
                   </p>
                   {txResult.finishAfter && (
                     <p>
-                      <strong>Finish After:</strong> {timeFromNow(txResult.finishAfter, i18n, 'ripple')} ({fullDateAndTime(txResult.finishAfter, 'ripple')})
+                      <strong>Finish After:</strong> {timeFromNow(txResult.finishAfter, i18n, 'ripple')} (
+                      {fullDateAndTime(txResult.finishAfter, 'ripple')})
                     </p>
                   )}
                   {txResult.cancelAfter && (
                     <p>
-                      <strong>Cancel After:</strong> {timeFromNow(txResult.cancelAfter, i18n, 'ripple')} ({fullDateAndTime(txResult.cancelAfter, 'ripple')})
+                      <strong>Cancel After:</strong> {timeFromNow(txResult.cancelAfter, i18n, 'ripple')} (
+                      {fullDateAndTime(txResult.cancelAfter, 'ripple')})
                     </p>
                   )}
                   {txResult.condition && (
                     <p>
-                      <strong>Condition:</strong> {shortHash(txResult.condition)} <CopyButton text={txResult.condition} />
+                      <strong>Condition:</strong> {shortHash(txResult.condition)}{' '}
+                      <CopyButton text={txResult.condition} />
                     </p>
                   )}
                   <p>
@@ -351,4 +354,4 @@ export const getServerSideProps = async (context) => {
       isSsrMobile: getIsSsrMobile(context)
     }
   }
-} 
+}
