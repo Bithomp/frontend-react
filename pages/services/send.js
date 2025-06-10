@@ -14,6 +14,7 @@ import { typeNumberOnly, isAddressValid, isTagValid, isIdValid, nativeCurrency, 
 import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 export default function Send({
   account,
@@ -40,6 +41,7 @@ export default function Send({
   const [invoiceId, setInvoiceId] = useState(isIdValid(invoiceIdQuery) ? invoiceIdQuery : null)
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
+  const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
 
   useEffect(() => {
     let queryAddList = []
@@ -133,6 +135,11 @@ export default function Send({
 
     if (invoiceId && !isIdValid(invoiceId)) {
       setError('Invoice ID must be a 64-character hexadecimal string.')
+      return
+    }
+
+    if (!agreeToSiteTerms) {
+      setError('Please agree to the Terms and conditions')
       return
     }
 
@@ -321,6 +328,14 @@ export default function Send({
               </div>
             </>
           )}
+          <br />
+          <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
+            I agree with the{' '}
+            <Link href="/terms-and-conditions" target="_blank">
+              Terms and conditions
+            </Link>
+            .
+          </CheckBox>
           <br />
           {error && (
             <>
