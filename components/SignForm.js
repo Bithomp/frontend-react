@@ -553,7 +553,7 @@ export default function SignForm({
               closeSignInFormAndRefresh()
             }
             return
-          } else if (TransactionType === 'Payment' || TransactionType === 'CheckCreate') {
+          } else if (TransactionType === 'Payment' || TransactionType === 'CheckCreate' || TransactionType === 'EscrowCreate') {
             if (signRequest?.callback) {
               signRequest.callback({
                 result: response.data
@@ -568,7 +568,7 @@ export default function SignForm({
           }
           checkCrawlerStatus({ inLedger: includedInLedger, type: TransactionType })
         } else {
-          if (txType === 'Payment' || txType === 'CheckCreate') {
+          if (txType === 'Payment' || txType === 'CheckCreate' || txType === 'EscrowCreate') {
             closeSignInFormAndRefresh()
             return
           }
@@ -677,7 +677,8 @@ export default function SignForm({
       txType?.includes('URIToken') ||
       txType?.includes('DID') ||
       txType === 'Payment' ||
-      txType === 'CheckCreate'
+      txType === 'CheckCreate' ||
+      txType === 'EscrowCreate'
     ) {
       checkTxInCrawler({ txid: txHash, redirectName, txType })
       return
