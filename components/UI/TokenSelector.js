@@ -39,55 +39,10 @@ const TokenSelector = ({ value, onChange }) => {
       }
 
       setIsLoading(true);
-      try {
-        // Search for currencies and issuers in parallel
-        const [currenciesResponse, issuersResponse] = await Promise.all([
-          axios(`v2/trustlines/currencies/search/${searchQuery}`),
-          axios(`v2/trustlines/issuers/search/${searchQuery}`)
-        ]);
-
-        const currencies = currenciesResponse.data.currencies || [];
-        const issuers = issuersResponse.data.issuers || [];
-
-        // Get tokens for all currencies found
-        let tokens = [];
-        if (currencies.length > 0) {
-          // Get tokens for each currency in parallel
-          const currencyTokenPromises = currencies.map(async (currency) => {
-            const formattedCurrency = niceCurrency(currency);
-            const response = await axios(`v2/trustlines/tokens?currency=${formattedCurrency}`);
-            return response.data?.tokens || [];
-          });
-          // Wait for all token requests to complete
-          const currencyTokenResults = await Promise.all(currencyTokenPromises);
-          // Flatten the array of token arrays
-          tokens = currencyTokenResults.flat();
-        }
-
-        if (issuers.length > 0) {
-          // Get tokens for each issuer in parallel
-          const issuerTokenPromises = issuers.map(async (issuer) => {
-            const response = await axios(`v2/trustlines/tokens?issuer=${issuer.address}`);
-            return response.data?.tokens || [];
-          });
-
-          // Wait for all token requests to complete
-          const issuerTokenResults = await Promise.all(issuerTokenPromises);
-          // Flatten and combine with existing tokens
-          const issuerTokens = issuerTokenResults.flat();
-          tokens = [...tokens, ...issuerTokens];
-        }
-
-        // Remove duplicates based on token string
-        const uniqueTokens = tokens.reduce((acc, current) => {
-          const key = current.token;
-          if (!acc[key]) {
-            acc[key] = current;
-          }
-          return acc;
-        }, {});
-
-        setSearchResults(Object.values(uniqueTokens));
+      try {        
+        const response = await axios(`v2/trustlines/tokens/search/${searchQuery}`)
+        const tokens = response.data?.tokens || [];
+        setSearchResults(tokens);
       } catch (error) {
         console.error('Error searching tokens:', error);
         setSearchResults([]);
