@@ -32,14 +32,14 @@ const ASF_FLAGS = {
   allowTrustLineClawback: 16,
   asfDefaultRipple: 8,
   asfDepositAuth: 9,
-  asfDisableMaster: 4,
+  asfDisableMaster: 4
 }
 
 // TF flags (can be combined in one transaction)
 const TF_FLAGS = {
   requireDestTag: { set: 0x00010000, clear: 0x00020000 }, // tfRequireDestTag / tfOptionalDestTag
   requireAuth: { set: 0x00040000, clear: 0x00080000 }, // tfRequireAuth / tfOptionalAuth
-  disallowXRP: { set: 0x00100000, clear: 0x00200000 }, // tfDisallowXRP / tfAllowXRP
+  disallowXRP: { set: 0x00100000, clear: 0x00200000 } // tfDisallowXRP / tfAllowXRP
 }
 
 export default function AccountSettings({ account, setSignRequest }) {
@@ -61,16 +61,13 @@ export default function AccountSettings({ account, setSignRequest }) {
     const commonAsfFlags = [
       'disallowIncomingCheck',
       'disallowIncomingPayChan',
-      'disallowIncomingTrustline',
-      'asfDepositAuth',
+      'disallowIncomingTrustline'
+      //'asfDepositAuth' - commented, as didn't work well on my test - need to verify
     ]
 
-    const advancedFlags = [
-      'asfDefaultRipple',
-      'asfDisableMaster',
-      'globalFreeze',
-      'noFreeze',
-    ]
+    const advancedFlags = ['globalFreeze', 'noFreeze']
+    //'asfDefaultRipple' - commented - need a test
+    //'asfDisableMaster' - we need a better description, red button, a warning about master key usage
 
     if (xahauNetwork) {
       return {
@@ -105,8 +102,9 @@ export default function AccountSettings({ account, setSignRequest }) {
       displayName: 'Authorization',
       status: (value) => (value ? 'Required' : 'Not Required'),
       actionText: (value) => (value ? "Don't Require" : 'Require'),
-      type: 'tf',  
-      description: 'If enabled, trustlines to this account require authorization before they can hold tokens. Can only be enabled if the account has no trust lines connected to it.',
+      type: 'tf',
+      description:
+        'If enabled, trustlines to this account require authorization before they can hold tokens. Can only be enabled if the account has no trust lines connected to it.',
       isDefault: (value) => !value
     },
     disallowXRP: {
@@ -123,7 +121,7 @@ export default function AccountSettings({ account, setSignRequest }) {
       name: 'Incoming Checks',
       displayName: 'Incoming Checks',
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
-      actionText: (value) => (value ? 'Allow' : 'Disallow'), 
+      actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'asf',
       description: 'If enabled, other accounts cannot create Checks with this account as the destination.',
       isDefault: (value) => !value
@@ -188,7 +186,8 @@ export default function AccountSettings({ account, setSignRequest }) {
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? '' : 'Enable'),
       type: 'asf',
-      description: 'Allow account to claw back tokens it has issued. Can only be set if the account has an empty owner directory (no trustlines, offers, escrows, payment channels, checks, or signer lists). After you set this flag, it cannot be reverted. The account permanently gains the ability to claw back issued assets on trust lines.',
+      description:
+        'Allow account to claw back tokens it has issued. Can only be set if the account has an empty owner directory (no trustlines, offers, escrows, payment channels, checks, or signer lists). After you set this flag, it cannot be reverted. The account permanently gains the ability to claw back issued assets on trust lines.',
       isDefault: (value) => !value,
       isPermanent: true
     },
@@ -200,7 +199,8 @@ export default function AccountSettings({ account, setSignRequest }) {
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
-      description: 'If enabled, allows rippling on all trustlines by default. This can affect how payments flow through your account.',
+      description:
+        'If enabled, allows rippling on all trustlines by default. This can affect how payments flow through your account.',
       isDefault: (value) => !value,
       isAdvanced: true
     },
@@ -210,7 +210,8 @@ export default function AccountSettings({ account, setSignRequest }) {
       status: (value) => (value ? 'Disabled' : 'Enabled'),
       actionText: (value) => (value ? 'Enable' : 'Disable'),
       type: 'asf',
-      description: 'If disabled, the master key pair cannot be used to sign transactions. Make sure you have other signing methods configured.',
+      description:
+        'If disabled, the master key pair cannot be used to sign transactions. Make sure you have other signing methods configured.',
       isDefault: (value) => !value,
       isAdvanced: true
     },
@@ -230,11 +231,12 @@ export default function AccountSettings({ account, setSignRequest }) {
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? '' : 'Enable'),
       type: 'asf',
-      description: 'If enabled, permanently gives up the ability to freeze tokens issued by this account. This setting cannot be reversed.',
+      description:
+        'If enabled, permanently gives up the ability to freeze tokens issued by this account. This setting cannot be reversed.',
       isDefault: (value) => !value,
       isAdvanced: true,
       isPermanent: true
-    },
+    }
   }
 
   useEffect(() => {
@@ -242,11 +244,10 @@ export default function AccountSettings({ account, setSignRequest }) {
       try {
         const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
         setAccountData(response.data)
-        console.log(response.data)
-        
+
         // Set current NFTokenMinter if it exists
         setCurrentNftTokenMinter(response.data?.ledgerInfo?.nftokenMinter || '')
-        console.log(response.data.ledgerInfo.nftokenMinter)
+
         if (response.data?.ledgerInfo?.flags) {
           const ledgerFlags = response.data.ledgerInfo.flags
 
@@ -262,7 +263,7 @@ export default function AccountSettings({ account, setSignRequest }) {
             const asfMapping = {
               requireDestTag: 'requireDestTag',
               requireAuth: 'requireAuth',
-              disallowXRP: 'disallowXRP',
+              disallowXRP: 'disallowXRP'
             }
             newTfFlags[flag] = !!ledgerFlags[asfMapping[flag]]
           })
@@ -318,7 +319,7 @@ export default function AccountSettings({ account, setSignRequest }) {
       TransactionType: 'AccountSet',
       Account: account.address,
       NFTokenMinter: nftTokenMinter.trim(),
-      SetFlag: 10  // asfAuthorizedNFTokenMinter - required to enable the feature
+      SetFlag: 10 // asfAuthorizedNFTokenMinter - required to enable the feature
     }
 
     setSignRequest({
@@ -336,12 +337,12 @@ export default function AccountSettings({ account, setSignRequest }) {
             }
             return {
               ...prev,
-              ledgerInfo: updatedLedgerInfo,
+              ledgerInfo: updatedLedgerInfo
             }
           }
           return prev
         })
-      },
+      }
     })
   }
 
@@ -349,7 +350,7 @@ export default function AccountSettings({ account, setSignRequest }) {
     const tx = {
       TransactionType: 'AccountSet',
       Account: account.address,
-      ClearFlag: 10  // asfAuthorizedNFTokenMinter
+      ClearFlag: 10 // asfAuthorizedNFTokenMinter
     }
 
     setSignRequest({
@@ -366,12 +367,12 @@ export default function AccountSettings({ account, setSignRequest }) {
             delete updatedLedgerInfo.nftokenMinterDetails
             return {
               ...prev,
-              ledgerInfo: updatedLedgerInfo,
+              ledgerInfo: updatedLedgerInfo
             }
           }
           return prev
         })
-      },
+      }
     })
   }
 
@@ -391,7 +392,7 @@ export default function AccountSettings({ account, setSignRequest }) {
 
     const tx = {
       TransactionType: 'AccountSet',
-      Account: account.address,
+      Account: account.address
     }
 
     // Regular flag handling
@@ -401,8 +402,6 @@ export default function AccountSettings({ account, setSignRequest }) {
       tx.ClearFlag = ASF_FLAGS[flag]
     }
 
-
-
     setSignRequest({
       request: tx,
       callback: () => {
@@ -410,9 +409,9 @@ export default function AccountSettings({ account, setSignRequest }) {
         setErrorMessage('')
         setFlags((prev) => ({
           ...prev,
-          [flag]: newValue,
+          [flag]: newValue
         }))
-        
+
         setAccountData((prev) => {
           if (prev && prev.ledgerInfo) {
             return {
@@ -421,14 +420,14 @@ export default function AccountSettings({ account, setSignRequest }) {
                 ...prev.ledgerInfo,
                 flags: {
                   ...prev.ledgerInfo.flags,
-                  [flag]: newValue,
-                },
-              },
+                  [flag]: newValue
+                }
+              }
             }
           }
           return prev
         })
-      },
+      }
     })
   }
 
@@ -444,7 +443,7 @@ export default function AccountSettings({ account, setSignRequest }) {
     const tx = {
       TransactionType: 'AccountSet',
       Account: account.address,
-      Flags: 0,
+      Flags: 0
     }
 
     if (newValue) {
@@ -459,14 +458,14 @@ export default function AccountSettings({ account, setSignRequest }) {
         setSuccessMessage('Settings updated successfully.')
         setTfFlags((prev) => ({
           ...prev,
-          [flag]: newValue,
+          [flag]: newValue
         }))
         setAccountData((prev) => {
           if (prev && prev.ledgerInfo) {
             const asfMapping = {
               requireDestTag: 'requireDestTag',
               requireAuth: 'requireAuth',
-              disallowXRP: 'disallowXRP',
+              disallowXRP: 'disallowXRP'
             }
             return {
               ...prev,
@@ -474,14 +473,14 @@ export default function AccountSettings({ account, setSignRequest }) {
                 ...prev.ledgerInfo,
                 flags: {
                   ...prev.ledgerInfo.flags,
-                  [asfMapping[flag]]: newValue,
-                },
-              },
+                  [asfMapping[flag]]: newValue
+                }
+              }
             }
           }
           return prev
         })
-      },
+      }
     })
   }
 
@@ -489,21 +488,22 @@ export default function AccountSettings({ account, setSignRequest }) {
     const flagData = flagDetails[flag]
     const currentValue = flagType === 'tf' ? tfFlags[flag] : flags[flag]
     const isNonDefault = !flagData.isDefault(currentValue)
-    
+
     let buttonDisabled = false
     let disabledReason = ''
-    
+
     // Check specific conditions for disabling buttons
     if (flag === 'allowTrustLineClawback' && !canEnableTrustLineClawback() && !currentValue) {
       buttonDisabled = true
-      disabledReason = 'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists (ownerReserve must be 0)'
+      disabledReason =
+        'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists (ownerReserve must be 0)'
     }
-    
+
     if (flag === 'requireAuth' && !canEnableRequireAuth() && !currentValue) {
       buttonDisabled = true
       disabledReason = 'Can only be enabled if account has no trust lines connected to it'
     }
-    
+
     if (flag === 'globalFreeze' && !canChangeGlobalFreeze()) {
       buttonDisabled = true
       disabledReason = 'Cannot change Global Freeze when No Freeze is enabled'
@@ -517,32 +517,22 @@ export default function AccountSettings({ account, setSignRequest }) {
         <div className="flag-header">
           <div className="flag-info">
             <span className="flag-name">{flagData.displayName}</span>
-            <span className={`flag-status ${isNonDefault ? 'orange' : ''}`}>
-              {flagData.status(currentValue)}
-            </span>
+            <span className={`flag-status ${isNonDefault ? 'orange' : ''}`}>{flagData.status(currentValue)}</span>
           </div>
           {showButton && (
-            <button 
-              className="button-action" 
-              onClick={() => flagType === 'tf' ? handleTfFlagToggle(flag) : handleAsfFlagToggle(flag)}
+            <button
+              className="button-action"
+              onClick={() => (flagType === 'tf' ? handleTfFlagToggle(flag) : handleAsfFlagToggle(flag))}
               disabled={buttonDisabled}
               style={{ minWidth: '120px' }}
             >
               {flagData.actionText(currentValue)}
             </button>
           )}
-          {flagData.isPermanent && currentValue && (
-            <span className="permanent-flag">Permanent</span>
-          )}
+          {flagData.isPermanent && currentValue && <span className="permanent-flag">Permanent</span>}
         </div>
-        <div className="flag-description">
-          {flagData.description}
-        </div>
-        {buttonDisabled && disabledReason && (
-          <div className="disabled-reason red">
-            {disabledReason}
-          </div>
-        )}
+        <div className="flag-description">{flagData.description}</div>
+        {buttonDisabled && disabledReason && <div className="disabled-reason red">{disabledReason}</div>}
       </div>
     )
   }
@@ -550,7 +540,7 @@ export default function AccountSettings({ account, setSignRequest }) {
   if (account?.address && loading) {
     return (
       <>
-        <SEO title='Account Settings' description={`Manage your account settings on the ${explorerName}.`} />
+        <SEO title="Account Settings" description={`Manage your account settings on the ${explorerName}.`} />
         <div className="content-center">
           <h1 className="center">Account Settings</h1>
           <div className="center">
@@ -566,7 +556,7 @@ export default function AccountSettings({ account, setSignRequest }) {
   if (!account?.address) {
     return (
       <>
-        <SEO title='Account Settings' description={`Manage your account settings on the ${explorerName}.`} />
+        <SEO title="Account Settings" description={`Manage your account settings on the ${explorerName}.`} />
         <div className="content-center">
           <h1 className="center">Account Settings</h1>
           <p className="center">Please sign in to your account.</p>
@@ -577,7 +567,7 @@ export default function AccountSettings({ account, setSignRequest }) {
 
   return (
     <>
-      <SEO title='Account Settings' description={`Manage your account settings on the ${explorerName}.`} />
+      <SEO title="Account Settings" description={`Manage your account settings on the ${explorerName}.`} />
       <div className="content-center account-settings">
         <h1 className="center">Account Settings</h1>
         <p className="center">Manage your account settings on the {explorerName}.</p>
@@ -585,13 +575,13 @@ export default function AccountSettings({ account, setSignRequest }) {
         {/* Account Flags Section */}
         <div>
           <h4>Account Flags</h4>
-          
+
           {/* TF Flags */}
           {tfFlagKeys.map((flag) => renderFlagItem(flag, 'tf'))}
-          
+
           {/* Basic ASF Flags */}
           {flagGroups.basic.map((flag) => renderFlagItem(flag, 'asf'))}
-          
+
           {/* NFTokenMinter Section */}
           {!xahauNetwork && (
             <div className="flag-item">
@@ -604,7 +594,8 @@ export default function AccountSettings({ account, setSignRequest }) {
                 </div>
               </div>
               <div className="flag-description">
-                Allows another account to mint NFTokens on behalf of this account. Requires setting the asfAuthorizedNFTokenMinter flag and specifying the minter address.
+                Allows another account to mint NFTokens on behalf of this account. Requires setting the
+                asfAuthorizedNFTokenMinter flag and specifying the minter address.
               </div>
               <div className="nft-minter-input">
                 {currentNftTokenMinter ? (
@@ -612,10 +603,7 @@ export default function AccountSettings({ account, setSignRequest }) {
                     <div className="minter-address">
                       <strong>Current NFTokenMinter:</strong> {currentNftTokenMinter}
                     </div>
-                    <button 
-                      className="button-action clear-button" 
-                      onClick={handleClearNftTokenMinter}
-                    >
+                    <button className="button-action clear-button" onClick={handleClearNftTokenMinter}>
                       Clear NFTokenMinter
                     </button>
                     <small>To change the authorized minter, first clear the current one, then set a new one.</small>
@@ -629,11 +617,7 @@ export default function AccountSettings({ account, setSignRequest }) {
                       onChange={(e) => setNftTokenMinter(e.target.value)}
                       className="input-text"
                     />
-                    <button 
-                      className="button-action" 
-                      onClick={handleSetNftTokenMinter}
-                      style={{ minWidth: '120px' }}
-                    >
+                    <button className="button-action" onClick={handleSetNftTokenMinter} style={{ minWidth: '120px' }}>
                       Set NFTokenMinter
                     </button>
                     <small>Enter the address that will be authorized to mint NFTokens for this account</small>
@@ -642,17 +626,15 @@ export default function AccountSettings({ account, setSignRequest }) {
               </div>
             </div>
           )}
-          
+
           {/* Advanced Options */}
           <div className="advanced-options">
             <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-flags">
               Advanced Options (Use with caution)
             </CheckBox>
-            
+
             {showAdvanced && (
-              <div className="advanced-flags">
-                {flagGroups.advanced.map((flag) => renderFlagItem(flag, 'asf'))}
-              </div>
+              <div className="advanced-flags">{flagGroups.advanced.map((flag) => renderFlagItem(flag, 'asf'))}</div>
             )}
           </div>
         </div>
