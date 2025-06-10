@@ -127,9 +127,6 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
   const showHash = (hash) => {
     return windowWidth > 1140 ? <>{hash} </> : <>{shortHash(hash)} </> 
   }
-  console.log('nays', nays)
-  console.log('featureData', featureData)
-  console.log('amendmentData', amendmentData)
   const fixCountry = (country) => {
     //accept UK as a country code for GB
     return country?.toUpperCase() === 'UK' ? 'GB' : country
