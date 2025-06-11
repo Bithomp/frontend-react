@@ -13,6 +13,7 @@ import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import CopyButton from '../../components/UI/CopyButton'
 import { amountFormat, fullDateAndTime, timeFromNow, shortHash } from '../../utils/format'
 import { LinkTx, LinkAccount } from '../../utils/links'
+import Link from 'next/link'
 
 export default function IssueCheck({ setSignRequest }) {
   const { t } = useTranslation();
@@ -25,6 +26,7 @@ export default function IssueCheck({ setSignRequest }) {
   const [invoiceID, setInvoiceID] = useState(null)
   const [txResult, setTxResult] = useState(null)
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
 
   const onExpirationChange = (days) => {
     setExpiration(days)
@@ -50,6 +52,11 @@ export default function IssueCheck({ setSignRequest }) {
 
     if (invoiceID && !isIdValid(invoiceID)) {
       setError('Please enter a valid invoice ID.')
+      return
+    }
+
+    if (!agreeToSiteTerms) {
+      setError('Please agree to the Terms and conditions')
       return
     }
 
@@ -175,9 +182,17 @@ export default function IssueCheck({ setSignRequest }) {
               </div>   
             </>
           )}
+          <br />
+          <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
+            I agree with the{' '}
+            <Link href="/terms-and-conditions" target="_blank">
+              Terms and conditions
+            </Link>
+            .
+          </CheckBox>
           {error && (
             <>
-              {width > 1100 && <br />}
+              <br />
               <div className="red center">{error}</div>
             </>
           )}

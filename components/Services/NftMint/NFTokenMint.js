@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { encode, server, network, addAndRemoveQueryParams } from '../../../utils'
+import { encode, server, addAndRemoveQueryParams } from '../../../utils'
 import { isValidTaxon } from '../../../utils/nft'
 import CheckBox from '../../UI/CheckBox'
 import AddressInput from '../../UI/AddressInput'
@@ -273,13 +273,11 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
             )}
 
             {/* Mutable */}
-            {network === 'devnet' && (
-              <div>
-                <CheckBox checked={flags.tfMutable} setChecked={() => handleFlagChange('tfMutable')} name="mutable">
-                  Mutable (URI can be updated)
-                </CheckBox>
-              </div>
-            )}
+            <div>
+              <CheckBox checked={flags.tfMutable} setChecked={() => handleFlagChange('tfMutable')} name="mutable">
+                Mutable (URI can be updated)
+              </CheckBox>
+            </div>
 
             {/* Only XRP */}
             <div>

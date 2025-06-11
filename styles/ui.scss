@@ -835,6 +835,7 @@ body.dark {
 @include meta.load-css("components/radioOptions.scss");
 @include meta.load-css("components/viewToggle.scss");
 @include meta.load-css("components/pagination.scss");
+@include meta.load-css("components/tokenSelector.scss");
 
 //components
 @include meta.load-css("components/receipt.scss");
@@ -857,3 +858,4 @@ body.dark {
 @include meta.load-css("pages/genesis.scss");
 @include meta.load-css("pages/governance.scss");
 @include meta.load-css("pages/pro-history.scss");
+@include meta.load-css("pages/account-settings.scss");

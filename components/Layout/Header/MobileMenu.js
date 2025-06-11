@@ -64,6 +64,9 @@ export default function MobileMenu({
               <a href={server + '/explorer/' + address} className="mobile-menu-item">
                 {t('signin.actions.my-transactions')}
               </a>
+              <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                My Account Settings
+              </Link>
               <Link href={'/nfts/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.my-nfts')}
               </Link>
@@ -158,6 +161,9 @@ export default function MobileMenu({
           <Link href="/services/check" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Issue Check
           </Link>
+          <Link href="/services/escrow" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Create Escrow
+          </Link>
           <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.nft-mint')}
           </Link>
@@ -182,6 +188,9 @@ export default function MobileMenu({
           <a href={'/submit/'} className="mobile-menu-item">
             {t('menu.submit-offline-tx')}
           </a>
+          <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Account Settings
+          </Link>
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">

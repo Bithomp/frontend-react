@@ -194,12 +194,14 @@ export default function Header({
             <Link href="/faucet">{t('menu.developers.faucet')}</Link>
             <Link href="/services/send">Send Payment</Link>
             <Link href="/services/check">Issue Check</Link>
+            <Link href="/services/escrow">Create Escrow</Link>
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
             <Link href="/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
             <Link href="/submit-account-information">{t('menu.project-registration')}</Link>
             {!devNet && <Link href="/alerts">{t('menu.price-alerts', { nativeCurrency })}</Link>}
             <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a>
+            <Link href="/services/account-settings/">Account Settings</Link>
           </MenuDropDown>
 
           <MenuDropDown id="dropdown3" title="NFT" setHoverStates={setHoverStates} hoverStates={hoverStates}>
@@ -433,6 +435,7 @@ export default function Header({
                 </span>
                 <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
                 <a href={server + '/explorer/' + address}>{t('signin.actions.my-transactions')}</a>
+                <Link href="/services/account-settings/">Account Settings</Link>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
                 <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
 
