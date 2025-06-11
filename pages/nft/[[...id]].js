@@ -975,6 +975,37 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     )
   }
 
+  const updateUriButton = () => {
+    if (!id || !data.flags?.mutable || data.type === 'xls35') return '' //if it is not mutable
+
+    // if not signed, or signed but not an issuer - do not show the button
+    if (!(data?.issuer && account?.address && account.address === data.issuer)) return ''
+
+    let request = {
+      TransactionType: 'NFTokenModify',
+      Account: account.address,
+      Owner: data.owner,
+      NFTokenID: id
+    }
+
+    return (
+      <>
+        <button
+          className="button-action wide center"
+          onClick={() =>
+            setSignRequest({
+              request
+            })
+          }
+        >
+          Modify URI 📝
+        </button>
+        <br />
+        <br />
+      </>
+    )
+  }
+
   const setAsAvatarButton = () => {
     if (!id || data.deletedAt) return '' //if it is already burned do not offer to burn
 
@@ -1095,6 +1126,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                               {cancelNftOfferButtons(t, setSignRequest, account?.address, data)}
                               {data.type === 'xls20' && makeOfferButton(data.sellOffers)}
                               {data.type === 'xls35' && xls35SellOfferButton()}
+                              {updateUriButton()}
                               {burnButton()}
                             </>
                           ) : (

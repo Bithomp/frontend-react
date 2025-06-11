@@ -40,6 +40,7 @@ import SetDid from './SignForms/SetDid'
 import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
 import NftTransfer from './SignForms/NftTransfer'
 import { WalletConnect } from './Walletconnect'
+import NFTokenModify from './SignForms/NFTokenModify'
 
 const qr = '/images/qr.gif'
 
@@ -52,7 +53,8 @@ const askInfoScreens = [
   'setDomain',
   'setDid',
   'setAvatar',
-  'nftTransfer'
+  'nftTransfer',
+  'NFTokenModify'
 ]
 const noCheckboxScreens = [...voteTxs, 'setDomain', 'setDid', 'setAvatar']
 
@@ -200,6 +202,11 @@ export default function SignForm({
 
     if (tx.TransactionType === 'NFTokenBurn' && !agreedToRisks) {
       setScreen('NFTokenBurn')
+      return
+    }
+
+    if (tx.TransactionType === 'NFTokenModify' && !agreedToRisks) {
+      setScreen('NFTokenModify')
       return
     }
 
@@ -553,7 +560,11 @@ export default function SignForm({
               closeSignInFormAndRefresh()
             }
             return
-          } else if (TransactionType === 'Payment' || TransactionType === 'CheckCreate' || TransactionType === 'EscrowCreate') {
+          } else if (
+            TransactionType === 'Payment' ||
+            TransactionType === 'CheckCreate' ||
+            TransactionType === 'EscrowCreate'
+          ) {
             if (signRequest?.callback) {
               signRequest.callback({
                 result: response.data
@@ -683,7 +694,6 @@ export default function SignForm({
       checkTxInCrawler({ txid: txHash, redirectName, txType })
       return
     } else {
-
       if (txType === 'AccountSet' && signRequest?.callback) {
         signRequest.callback()
       }
@@ -884,6 +894,7 @@ export default function SignForm({
       )
 
     if (screen === 'NFTokenBurn') return t('signin.confirm.nft-burn')
+    if (screen === 'NFTokenModify') return 'I understand that URI will be updated for this NFT.'
     if (screen === 'NFTokenCreateOffer' && (signRequest.request.Flags === 1 || xls35Sell)) {
       return t('signin.confirm.nft-create-sell-offer')
     }
@@ -933,6 +944,7 @@ export default function SignForm({
               <>
                 <div className="header">
                   {screen === 'NFTokenBurn' && t('signin.confirm.nft-burn-header')}
+                  {screen === 'NFTokenModify' && "Update NFT's URI"}
                   {screen === 'NFTokenAcceptOffer' &&
                     (signRequest.offerType === 'buy'
                       ? t('signin.confirm.nft-accept-buy-offer-header')
@@ -955,6 +967,10 @@ export default function SignForm({
                     setStatus={setStatus}
                     setFormError={setFormError}
                   />
+                )}
+
+                {screen === 'NFTokenModify' && (
+                  <NFTokenModify signRequest={signRequest} setSignRequest={setSignRequest} setStatus={setStatus} />
                 )}
 
                 {screen === 'nftTransfer' && (
