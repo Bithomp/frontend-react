@@ -12,6 +12,7 @@ import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import CopyButton from '../../components/UI/CopyButton'
 import { amountFormat, fullDateAndTime, timeFromNow, shortHash } from '../../utils/format'
 import { LinkTx, LinkAccount } from '../../utils/links'
+import Link from 'next/link'
 
 const RIPPLE_EPOCH_OFFSET = 946684800 // Seconds between 1970-01-01 and 2000-01-01
 
@@ -28,6 +29,7 @@ export default function CreateEscrow({ setSignRequest }) {
   const [sourceTag, setSourceTag] = useState(null)
   const [txResult, setTxResult] = useState(null)
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
 
   const handleCreateEscrow = async () => {
     setError('')
@@ -90,6 +92,11 @@ export default function CreateEscrow({ setSignRequest }) {
 
     if (finishAfter && cancelAfter && cancelAfter <= finishAfter) {
       setError('Cancel time must be after finish time.')
+      return
+    }
+
+    if (!agreeToSiteTerms) {
+      setError('Please agree to the Terms and conditions')
       return
     }
 
@@ -267,10 +274,17 @@ export default function CreateEscrow({ setSignRequest }) {
               />
             </>
           )}
-
+          <br />
+          <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
+            I agree with the{' '}
+            <Link href="/terms-and-conditions" target="_blank">
+              Terms and conditions
+            </Link>
+            .
+          </CheckBox>
           {error && (
             <>
-              {width > 1100 && <br />}
+              <br />
               <div className="red center">{error}</div>
             </>
           )}
