@@ -79,6 +79,7 @@ export default function Footer() {
           <Link href="/blacklisted-address">Blacklisted address</Link>
           <Link href="/verified-domains">Verified domains</Link>
           {!xahauNetwork && <Link href="/rlusd">Ripple USD</Link>}
+          <Link href="/nft-minting">How to Mint NFT</Link>
         </div>
 
         {!xahauNetwork && (
