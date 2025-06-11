@@ -41,7 +41,6 @@ const TokenSelector = ({ value, onChange }) => {
       setIsLoading(true)
       try {
         const response = await axios(`v2/trustlines/tokens/search/${searchQuery}`)
-        console.log(response)
         const tokens = response.data?.tokens || []
         setSearchResults(tokens)
       } catch (error) {
