@@ -283,7 +283,7 @@ export default function AddressInput({
               placeholder={placeholder}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="input-text"
+              className="input-text input-text-no-border"
               spellCheck="false"
               disabled={disabled}
             />
