@@ -27,11 +27,12 @@ import {
   AddressWithIcon,
   niceCurrency
 } from '../utils/format'
+import TokenSelector from '../components/UI/TokenSelector'
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
 
-  const { order, currency, currencyIssuer } = query
+  const { order, currency, currencyIssuer, service, username } = query
 
   let initialData = null
   let initialErrorMessage = null
@@ -66,6 +67,8 @@ export async function getServerSideProps(context) {
       orderQuery: order || initialData?.order || 'currencyHigh',
       currencyQuery: currency || initialData?.currency || nativeCurrency,
       currencyIssuerQuery: currencyIssuer || initialData?.currencyIssuer || '',
+      serviceQuery: service || '',
+      usernameQuery: username || '',
       initialErrorMessage: initialErrorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
@@ -77,7 +80,6 @@ import SEO from '../components/SEO'
 import { LinkAmm } from '../utils/links'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
-import FormInput from '../components/UI/FormInput'
 
 // add to the list new parameters for CSV
 const updateListForCsv = (list) => {
@@ -93,33 +95,6 @@ const updateListForCsv = (list) => {
   })
 }
 
-const currenciesList = [
-  { currency: '', label: 'All' },
-  { currency: nativeCurrency, label: nativeCurrency },
-  {
-    currency: '524C555344000000000000000000000000000000',
-    currencyIssuer: 'rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De',
-    label: 'RLUSD'
-  }
-  /*
-  {
-    currency: 'USD',
-    currencyIssuer: 'rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq',
-    label: 'USD Gatehub'
-  },
-  {
-    currency: 'USD',
-    currencyIssuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
-    label: 'USD Bitstamp'
-  },
-  {
-    currency: 'EUR',
-    currencyIssuer: 'rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq',
-    label: 'EUR Gatehub'
-  }
-  */
-]
-
 export default function Amms({
   initialData,
   initialErrorMessage,
@@ -129,7 +104,9 @@ export default function Amms({
   subscriptionExpired,
   fiatRate,
   currencyQuery,
-  currencyIssuerQuery
+  currencyIssuerQuery,
+  serviceQuery,
+  usernameQuery
 }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -142,29 +119,51 @@ export default function Amms({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [marker, setMarker] = useState(initialData?.marker)
-  const [currency, setCurrency] = useState(currencyQuery || nativeCurrency)
-  const [currencyIssuer, setCurrencyIssuer] = useState(currencyIssuerQuery || '')
   const [filtersHide, setFiltersHide] = useState(false)
+  const [token, setToken] = useState(() => {
+    if (currencyQuery && currencyQuery !== nativeCurrency) {
+      return {
+        currency: currencyQuery,
+        issuer: currencyIssuerQuery,
+        issuerDetails: {
+          service: serviceQuery,
+          username: usernameQuery
+        }
+      }
+    } else if (currencyQuery === nativeCurrency) {
+      return {
+        currency: nativeCurrency
+      }
+    }
+    return ''
+  })
 
   const controller = new AbortController()
 
   useEffect(() => {
-    if (currency && order === 'currencyHigh') {
-      if (currency === nativeCurrency) {
-        addAndRemoveQueryParams(router, [{ name: 'currency', value: nativeCurrency }], ['currencyIssuer'])
-      } else if (currencyIssuer) {
-        addQueryParams(router, [
-          { name: 'currency', value: currency },
-          { name: 'currencyIssuer', value: currencyIssuer }
-        ])
+    if (token?.currency && order === 'currencyHigh') {
+      if (token.currency === nativeCurrency) {
+        addAndRemoveQueryParams(router, [{ name: 'currency', value: nativeCurrency }], ['currencyIssuer', 'service', 'username'])
+      } else if (token.issuer) {
+        const params = [
+          { name: 'currency', value: token.currency },
+          { name: 'currencyIssuer', value: token.issuer }
+        ]
+        if (token.issuerDetails?.service) {
+          params.push({ name: 'service', value: token.issuerDetails.service })
+        }
+        if (token.issuerDetails?.username) {
+          params.push({ name: 'username', value: token.issuerDetails.username })
+        }
+        addQueryParams(router, params)
       } else {
-        removeQueryParams(router, ['currencyIssuer', 'currency'])
+        removeQueryParams(router, ['currencyIssuer', 'currency', 'service', 'username'])
       }
     } else {
-      removeQueryParams(router, ['currencyIssuer', 'currency'])
+      removeQueryParams(router, ['currencyIssuer', 'currency', 'service', 'username'])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currency, currencyIssuer, order])
+  }, [token, order])
 
   useEffect(() => {
     if (initialData?.amms?.length > 0) {
@@ -183,11 +182,15 @@ export default function Amms({
     const oldOrder = rawData?.order
     const oldCurrency = rawData?.currency
     const oldCurrencyIssuer = rawData?.currencyIssuer
+    const oldService = rawData?.service
+    const oldUsername = rawData?.username
     if (!oldOrder || !order) return
     let loadMoreRequest =
       (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
-      (currency ? oldCurrency === currency : !oldCurrency) &&
-      (currencyIssuer ? oldCurrencyIssuer === currencyIssuer : !oldCurrencyIssuer)
+      (token?.currency ? oldCurrency === token.currency : !oldCurrency) &&
+      (token?.issuer ? oldCurrencyIssuer === token.issuer : !oldCurrencyIssuer) &&
+      (token?.issuerDetails?.service ? oldService === token.issuerDetails.service : !oldService) &&
+      (token?.issuerDetails?.username ? oldUsername === token.issuerDetails.username : !oldUsername)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
     if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
@@ -200,10 +203,16 @@ export default function Amms({
     }
 
     let currencyPart = ''
-    if (currency) {
-      currencyPart = '&currency=' + currency
-      if (currencyIssuer) {
-        currencyPart += '&currencyIssuer=' + currencyIssuer
+    if (token?.currency) {
+      currencyPart = '&currency=' + token.currency
+      if (token.issuer) {
+        currencyPart += '&currencyIssuer=' + token.issuer
+      }
+      if (token.issuerDetails?.service) {
+        currencyPart += '&service=' + token.issuerDetails.service
+      }
+      if (token.issuerDetails?.username) {
+        currencyPart += '&username=' + token.issuerDetails.username
       }
     } else {
       //default
@@ -251,21 +260,17 @@ export default function Amms({
           setErrorMessage(newdata.error)
         } else {
           setErrorMessage('Error')
-          console.log(newdata)
         }
       }
     }
   }
 
   useEffect(() => {
-    if (
-      order &&
-      (rawData.order !== order || rawData.currency !== currency || rawData.currencyIssuer !== currencyIssuer)
-    ) {
+    if (order && (rawData.order !== order || rawData.currency !== token?.currency || rawData.currencyIssuer !== token?.issuer)) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, currency, currencyIssuer])
+  }, [order, token])
 
   const csvHeaders = [
     { label: 'Asset 1', key: 'amountFormated' },
@@ -336,40 +341,12 @@ export default function Amms({
       >
         <>
           <div>
-            {t('table.currency')}
-            <div className={`radio-options${currenciesList.length > 3 ? ' radio-options--large' : ''}`}>
-              {currenciesList.map((cur, i) => (
-                <div className="radio-input" key={i}>
-                  <input
-                    type="radio"
-                    name="selectCurrency"
-                    checked={
-                      cur.currency === currency && (!cur.currencyIssuer || cur.currencyIssuer === currencyIssuer)
-                    }
-                    onChange={() => {
-                      setCurrency(cur.currency)
-                      setCurrencyIssuer(cur.currencyIssuer)
-                    }}
-                    id={'selectCurrency' + i}
-                  />
-                  <label htmlFor={'selectCurrency' + i}>{cur.label}</label>
-                </div>
-              ))}
-            </div>
-          </div>
-          {!currenciesList.some(
-            (item) => item.currency === currency && (!item.currencyIssuer || item.currencyIssuer === currencyIssuer)
-          ) && (
-            <>
-              <FormInput
-                title={t('table.currency') + ' ' + niceCurrency(currency)}
-                defaultValue={currency}
-                disabled={true}
-                hideButton={true}
-              />
-              <FormInput title={t('table.issuer')} defaultValue={currencyIssuer} disabled={true} hideButton={true} />
-            </>
-          )}
+            <p>{t('table.currency')}</p>
+            <TokenSelector 
+              value={token} 
+              onChange={setToken} 
+            />
+          </div>          
         </>
         <InfiniteScrolling
           dataLength={data.length}
