@@ -93,26 +93,36 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
   const detailsTable = () => {
     if (!data?.node) return null
 
-    const rows = Object.entries(data.node)
-      .filter(([k, v]) => typeof v !== 'object' || v === null)
-      .map(([key, value]) => {
-        if (addressFields.includes(key)) {
-          return (
-            <tr key={key}>
-              <td>{key}</td>
-              <td>
-                <AddressWithIconFilled data={data.node} name={key} copyButton={true} />
-              </td>
-            </tr>
-          )
-        }
+    const renderValue = (val) => {
+      if (val === null) return 'null'
+      if (typeof val === 'object') {
+        return (
+          <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+            {JSON.stringify(val, null, 2)}
+          </pre>
+        )
+      }
+      return val?.toString()
+    }
+
+    const rows = Object.entries(data.node).map(([key, value]) => {
+      if (addressFields.includes(key)) {
         return (
           <tr key={key}>
             <td>{key}</td>
-            <td>{value?.toString()}</td>
+            <td>
+              <AddressWithIconFilled data={data.node} name={key} copyButton={true} />
+            </td>
           </tr>
         )
-      })
+      }
+      return (
+        <tr key={key}>
+          <td>{key}</td>
+          <td>{renderValue(value)}</td>
+        </tr>
+      )
+    })
 
     return (
       <table className="table-details">
@@ -124,34 +134,7 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
         <tbody>{rows}</tbody>
       </table>
     )
-  }
-
-  const previousVersionLink = () => {
-    if (!data?.node) return null
-
-    if (data.node.PreviousTxnLgrSeq && data.node.PreviousTxnLgrSeq !== data.ledger_index) {
-      const href =
-        '/object/' +
-        router.query.id +
-        '?ledgerIndex=' +
-        data.node.PreviousTxnLgrSeq
-      return (
-        <Link href={href} className="button-action">
-          Previous version (ledger {data.node.PreviousTxnLgrSeq})
-        </Link>
-      )
-    }
-    if (data.node.PreviousTxnID) {
-      const href =
-        '/object/' + router.query.id + '?previousTxHash=' + data.node.PreviousTxnID
-      return (
-        <Link href={href} className="button-action">
-          Previous version (by tx)
-        </Link>
-      )
-    }
-    return null
-  }
+  } 
 
   // fetch object data for a specific date
   const fetchData = async () => {
@@ -186,12 +169,12 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ledgerDate])
-
+  console.log(data)
   return (
     <>
       <SEO title={data?.node?.LedgerEntryType} description="Ledger object details" />
       <SearchBlock tab="object" searchPlaceholderText="Search by LedgerEntry" />
-      <div className="content-center short-top">
+      <div className="content-profile account short-top">
         {loading ? (
           <div className="center" style={{ marginTop: '80px' }}>
             <span className="waiting"></span>
@@ -205,91 +188,107 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
           </div>
         ) : (
           <>
-            <h1>{data?.node?.LedgerEntryType}</h1>
+            <div className="column-left">
+              <h1>{data?.node?.LedgerEntryType}</h1>
 
-            {/* Time machine */}
-            <table className="table-details" style={{ marginBottom: '20px' }}>
-              <thead>
-                <tr>
-                  <th colSpan="2">Time machine</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colSpan="2" className="no-padding">
-                    <div className="time-machine" style={{ padding: '10px 0' }}>
-                      <DatePicker
-                        selected={ledgerDateInput || new Date()}
-                        onChange={setLedgerDateInput}
-                        selectsStart
-                        showTimeInput
-                        timeInputLabel="Time"
-                        maxDate={new Date()}
-                        dateFormat="yyyy/MM/dd HH:mm:ss"
-                        className="dateAndTimeRange"
-                        showMonthDropdown
-                        showYearDropdown
-                      />
-                    </div>
-                    <div className="flex flex-center">
-                      <button
-                        onClick={() => setLedgerDate(ledgerDateInput)}
-                        className="button-action thin button-wide"
-                      >
-                        Update
-                      </button>{' '}
-                      <button
-                        onClick={() => {
-                          setLedgerDate(null)
-                          setLedgerDateInput(null)
-                        }}
-                        className="button-action thin button-wide"
-                      >
-                        Reset
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              {/* Time machine */}
+              <table className="table-details">
+                <thead>
+                  <tr>
+                    <th colSpan="2">Time Machine</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colSpan="2" className="no-padding">
+                      <div className="time-machine">
+                        <DatePicker
+                          selected={ledgerDateInput || new Date()}
+                          onChange={setLedgerDateInput}
+                          selectsStart
+                          showTimeInput
+                          timeInputLabel="Time"
+                          maxDate={new Date()}
+                          dateFormat="yyyy/MM/dd HH:mm:ss"
+                          className="dateAndTimeRange"
+                          showMonthDropdown
+                          showYearDropdown
+                        />
+                      </div>
+                      <div className="flex flex-center" style={{ gap: '10px' }}>
+                        <button
+                          onClick={() => setLedgerDate(ledgerDateInput)}
+                          className="button-action thin button-wide w-full"
+                        >
+                          Update
+                        </button>{' '}
+                        <button
+                          onClick={() => {
+                            setLedgerDate(null)
+                            setLedgerDateInput(null)
+                          }}
+                          className="button-action thin button-wide w-full"
+                        >
+                          Reset
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-            {previousVersionLink()}
+              <div className="flex flex-center" style={{ gap: '10px' }}>
+                {data.node?.PreviousTxnLgrSeq && data.node?.PreviousTxnLgrSeq !== data.ledger_index && (
+                  <Link href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`} className="button-action w-full word-break">
+                    Previous version (by ledger)
+                  </Link>
+                )}
 
-            {detailsTable()}
+                {data.node?.PreviousTxnID && (
+                  <Link href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`} className="button-action w-full">
+                    Previous version (by tx)
+                  </Link>
+                )}
+              </div>
+              <br />
+            </div>
+            <div className="column-right">
+              {detailsTable()}
 
-            {data?.metadata && (
+              {data?.metadata && (
+                <table className="table-details">
+                  <tbody>
+                    <tr>
+                      <td>Metadata</td>
+                      <td>
+                        <span className="link" onClick={() => setShowMetadata(!showMetadata)}>
+                          {showMetadata ? 'hide' : 'show'}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              )}
+
+              <div className={'slide ' + (showMetadata ? 'opened' : 'closed')}>
+                {showMetadata && codeHighlight(data.metadata)}
+              </div>
+
               <table className="table-details">
                 <tbody>
                   <tr>
-                    <td>Metadata</td>
+                    <td>Raw JSON</td>
                     <td>
-                      <span className="link" onClick={() => setShowMetadata(!showMetadata)}>
-                        {showMetadata ? 'hide' : 'show'}
+                      <span className="link" onClick={() => setShowRaw(!showRaw)}>
+                        {showRaw ? 'hide' : 'show'}
                       </span>
                     </td>
                   </tr>
                 </tbody>
               </table>
-            )}
-
-            <div className={'slide ' + (showMetadata ? 'opened' : 'closed')}>
-              {showMetadata && codeHighlight(data.metadata)}
-            </div>
-
-            <table className="table-details">
-              <tbody>
-                <tr>
-                  <td>Raw JSON</td>
-                  <td>
-                    <span className="link" onClick={() => setShowRaw(!showRaw)}>
-                      {showRaw ? 'hide' : 'show'}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>
-              {showRaw && codeHighlight(rawData)}
+              <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>
+                {showRaw && codeHighlight(rawData)}
+              </div>
             </div>
           </>
         )}
