@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 
@@ -8,6 +8,7 @@ import { nftName, nftUrl } from '../utils/nft'
 import Tabs from './Tabs'
 import LoadingGif from '../public/images/loading.gif'
 import { FaCloudDownloadAlt } from 'react-icons/fa'
+import ReactPannellum, { getConfig } from 'react-pannellum'
 
 const downloadIcon = (
   <div style={{ display: 'inline-block', verticalAlign: 'bottom', height: '19px' }}>
@@ -15,16 +16,44 @@ const downloadIcon = (
   </div>
 )
 
+const isPanorama = (metadata) => {
+  if (!metadata) return false
+  
+  // Check name and description for panorama keywords
+  const panoramaKeywords = ['360', 'panorama', 'panoramic', 'equirectangular']
+  const name = metadata.name?.toLowerCase() || ''
+  const description = metadata.description?.toLowerCase() || ''
+  
+  // Check if name or description contains panorama keywords
+  const hasPanoramaKeyword = panoramaKeywords.some(keyword => 
+    name.includes(keyword) || description.includes(keyword)
+  )
+  
+  // Check for specific camera types known for panoramas
+  const panoramaCameras = ['gopro fusion', 'insta360', 'ricoh theta']
+  const hasPanoramaCamera = panoramaCameras.some(camera => 
+    description.includes(camera.toLowerCase())
+  )
+  
+  return hasPanoramaKeyword || hasPanoramaCamera
+}
+
 export default function NftPreview({ nft }) {
   const { t } = useTranslation()
   const [contentTab, setContentTab] = useState('image')
   const [loaded, setLoaded] = useState(false)
   const [errored, setErrored] = useState(false)
+  const [isPanoramic, setIsPanoramic] = useState(false)
 
   const style = {
     textAlign: 'center',
     marginTop: '40px',
     marginBottom: '20px'
+  }
+
+  const config = {
+    autoLoad: true,
+    autoRotate: -2
   }
 
   const loadingImage = () => {
@@ -60,6 +89,7 @@ export default function NftPreview({ nft }) {
     audio: nftUrl(nft, 'audio', 'cl'),
     model: nftUrl(nft, 'model', 'cl')
   }
+
   const contentTabList = []
   if (imageUrl) {
     contentTabList.push({ value: 'image', label: t('tabs.image') })
@@ -142,6 +172,16 @@ export default function NftPreview({ nft }) {
     }
   }
 
+  useEffect(() => {
+    if (imageUrl || videoUrl) {
+      const panoramic = isPanorama(nft.metadata)
+      setIsPanoramic(panoramic)
+      if (panoramic) {
+        setLoaded(true)
+      }
+    }
+  }, [imageUrl, videoUrl])
+
   return (
     <>
       {contentTabList.length > 1 && (
@@ -165,28 +205,55 @@ export default function NftPreview({ nft }) {
       {imageUrl && contentTab === 'image' && (
         <>
           {loadingImage(nft)}
-          <img
-            style={{ ...imageStyle, display: loaded ? 'inline-block' : 'none' }}
-            src={imageUrl}
-            onLoad={() => {
-              setLoaded(true)
-              setErrored(false)
-            }}
-            onError={({ currentTarget }) => {
-              if (currentTarget.src === imageUrl && imageUrl !== clUrl.image) {
-                currentTarget.src = clUrl.image
-              } else {
-                setErrored(true)
-              }
-            }}
-            alt={nftName(nft)}
-          />
+          {isPanoramic ? (
+            <ReactPannellum
+              id="1"
+              sceneId="firstScene"
+              imageSource={defaultUrl}
+              config={config}
+              style={{ width: '100%', aspectRatio: '2/1', display: loaded ? 'inline-block' : 'none' }}
+            />
+          ) : (
+            <img
+              style={{ ...imageStyle, display: loaded ? 'inline-block' : 'none' }}
+              src={imageUrl}
+              onLoad={() => {
+                setLoaded(true)
+                setErrored(false)
+              }}
+              onError={({ currentTarget }) => {
+                if (currentTarget.src === imageUrl && imageUrl !== clUrl.image) {
+                  currentTarget.src = clUrl.image
+                } else {
+                  setErrored(true)
+                }
+              }}
+              alt={nftName(nft)}
+            />
+          )}
         </>
       )}
       {videoUrl && defaultTab === 'video' && (
-        <video autoPlay playsInline muted loop controls style={{ width: '100%', height: 'auto' }}>
-          <source src={videoUrl} type="video/mp4" />
-        </video>
+        <>
+          {loadingImage(nft)}
+          {isPanoramic ? (
+            <ReactPannellum
+              id="2"
+              sceneId="videoScene"
+              imageSource={videoUrl}
+              config={{
+                ...config,
+                autoLoad: true,
+                autoRotate: 0
+              }}
+              style={{ width: '100%', aspectRatio: '2/1', display: loaded ? 'inline-block' : 'none' }}
+            />
+          ) : (
+            <video autoPlay playsInline muted loop controls style={{ width: '100%', height: 'auto' }}>
+              <source src={videoUrl} type="video/mp4" />
+            </video>
+          )}
+        </>
       )}
       {modelUrl && defaultTab === 'model' && (
         <>
