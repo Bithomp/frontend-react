@@ -8,7 +8,7 @@ import { nftName, nftUrl } from '../utils/nft'
 import Tabs from './Tabs'
 import LoadingGif from '../public/images/loading.gif'
 import { FaCloudDownloadAlt } from 'react-icons/fa'
-import ReactPannellum, { getConfig } from 'react-pannellum'
+import ReactPannellum from 'react-pannellum'
 
 const downloadIcon = (
   <div style={{ display: 'inline-block', verticalAlign: 'bottom', height: '19px' }}>
@@ -49,11 +49,6 @@ export default function NftPreview({ nft }) {
     textAlign: 'center',
     marginTop: '40px',
     marginBottom: '20px'
-  }
-
-  const config = {
-    autoLoad: true,
-    autoRotate: -2
   }
 
   const loadingImage = () => {
@@ -210,7 +205,10 @@ export default function NftPreview({ nft }) {
               id="1"
               sceneId="firstScene"
               imageSource={defaultUrl}
-              config={config}
+              config={{
+                autoLoad: true,
+                autoRotate: -2
+              }}
               style={{ width: '100%', aspectRatio: '2/1', display: loaded ? 'inline-block' : 'none' }}
             />
           ) : (
@@ -241,8 +239,7 @@ export default function NftPreview({ nft }) {
               id="2"
               sceneId="videoScene"
               imageSource={videoUrl}
-              config={{
-                ...config,
+                config={{
                 autoLoad: true,
                 autoRotate: 0
               }}
