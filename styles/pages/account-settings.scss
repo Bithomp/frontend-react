@@ -66,6 +66,11 @@
   .flag-status {
     color: var(--text-secondary);
     font-size: 14px;
+    
+    &.orange {
+      color: var(--orange);
+      font-weight: 500;
+    }
   }
 
   .flag-description {
@@ -75,7 +80,7 @@
     line-height: 1.4;
     
     &.red {
-      color: #dc3545;
+      color: var(--red);
       font-weight: 500;
     }
   }
@@ -84,6 +89,11 @@
     font-size: 12px;
     margin-top: 0.5rem;
     font-style: italic;
+    
+    &.red {
+      color: var(--red);
+      font-weight: 500;
+    }
   }
 
   .permanent-flag {
@@ -225,7 +235,20 @@
     }
   }
 
-
+  .button-action {
+    &.thin {
+      &.orange {
+        background: var(--orange);
+        color: white;
+        border: 1px solid var(--orange);
+        
+        &:hover:not(:disabled) {
+          background: #e8941f;
+          border-color: #e8941f;
+        }
+      }
+    }
+  }
 
   // Mobile responsive adjustments
   @media (max-width: 600px) {

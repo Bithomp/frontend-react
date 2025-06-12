@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { xahauNetwork, explorerName, nativeCurrency } from '../../utils'
+import { xahauNetwork, explorerName, nativeCurrency, isAddressValid } from '../../utils'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -212,7 +212,8 @@ export default function AccountSettings({ account, setSignRequest }) {
       description:
         'WARNING: If disabled, the master key pair cannot be used to sign transactions. Only disable this if you have configured alternative signing methods (like regular keys or multi-signing). Disabling without alternative access will lock you out of your account.',
       isDefault: (value) => !value,
-      isAdvanced: true
+      isAdvanced: true,
+      isHighRisk: true
     },
     globalFreeze: {
       name: 'Global Freeze',
@@ -243,8 +244,9 @@ export default function AccountSettings({ account, setSignRequest }) {
     const fetchAccountData = async () => {
       try {
         const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
+        // const response = await axios(`/v2/address/${account.address}?ledgerInfo=true&obligations=true`)
         setAccountData(response.data)
-
+        console.log('response.data', response.data)
         // Set current NFTokenMinter if it exists
         setCurrentNftTokenMinter(response.data?.ledgerInfo?.nftokenMinter || '')
 
@@ -311,7 +313,7 @@ export default function AccountSettings({ account, setSignRequest }) {
   }
 
   const handleSetNftTokenMinter = () => {
-    if (!nftTokenMinter.trim()) {
+    if (!isAddressValid(nftTokenMinter.trim())) {
       setErrorMessage('Please enter a valid NFTokenMinter address.')
       return
     }
@@ -489,23 +491,24 @@ export default function AccountSettings({ account, setSignRequest }) {
     const flagData = flagDetails[flag]
     const currentValue = flagType === 'tf' ? tfFlags[flag] : flags[flag]
     const isNonDefault = !flagData.isDefault(currentValue)
-
+    const isHighRisk = flagData.isHighRisk
+    
     let buttonDisabled = false
     let disabledReason = ''
-
+    
     // Check specific conditions for disabling buttons
     if (flag === 'allowTrustLineClawback' && !canEnableTrustLineClawback() && !currentValue) {
       buttonDisabled = true
       disabledReason =
         'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists (ownerReserve must be 0)'
     }
-
+    
     if (flag === 'requireAuth' && !canEnableRequireAuth() && !currentValue) {
       buttonDisabled = true
       disabledReason =
         'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists (ownerReserve must be 0)'
     }
-
+    
     if (flag === 'globalFreeze' && !canChangeGlobalFreeze()) {
       buttonDisabled = true
       disabledReason = 'Cannot change Global Freeze when No Freeze is enabled'
@@ -533,7 +536,7 @@ export default function AccountSettings({ account, setSignRequest }) {
           )}
           {flagData.isPermanent && currentValue && <span className="permanent-flag">Permanent</span>}
         </div>
-        <div className="flag-description">{flagData.description}</div>
+        <div className={`flag-description ${isHighRisk ? 'red' : ''}`}>{flagData.description}</div>
         {buttonDisabled && disabledReason && <div className="disabled-reason red">{disabledReason}</div>}
       </div>
     )
