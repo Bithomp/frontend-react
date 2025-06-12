@@ -169,7 +169,7 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ledgerDate])
-  console.log(data)
+  
   return (
     <>
       <SEO title={data?.node?.LedgerEntryType} description="Ledger object details" />
