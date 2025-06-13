@@ -24,8 +24,7 @@ import {
   amountFormatNode,
   amountFormat,
   nativeCurrencyToFiat,
-  AddressWithIcon,
-  niceCurrency
+  AddressWithIcon
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
 
