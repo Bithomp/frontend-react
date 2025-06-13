@@ -195,6 +195,7 @@ export default function Header({
             <Link href="/services/send">Send Payment</Link>
             <Link href="/services/check">Issue Check</Link>
             <Link href="/services/escrow">Create Escrow</Link>
+            <Link href="/services/amm">AMM Services</Link>
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
             <Link href="/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
