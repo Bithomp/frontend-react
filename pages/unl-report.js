@@ -110,7 +110,7 @@ export default function UNLreport() {
       <SEO title={t('header', { ns: 'unl-report' })} />
       <div className="content-text">
         <h1 className="center">{t('header', { ns: 'unl-report' })}</h1>
-        <div className="flex">
+        <div className="flex-container">
           <div className="grey-box center">
             <Trans i18nKey="desc" ns="unl-report">
               Here you can find UNL report for Ledger <b>{{ ledgerIndex: rawData?.ledgerIndex || '' }}</b>, ledger
