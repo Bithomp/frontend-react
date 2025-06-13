@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
       <SEO title={t('menu.terms-and-conditions')} noindex={true} />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: June 10, 2025</p>
+        <p>Last updated: June 12, 2025</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h2>Interpretation and Definitions</h2>
         <h2>Interpretation</h2>
@@ -871,21 +871,21 @@ export default function TermsAndConditions() {
           We reserve the right to suspend or restrict access to NFT minting features at its sole discretion, including
           in response to abuse, legal requests, or technical issues.
         </p>
-        <h2>Sending Payments and Issuing Checks Terms of Use</h2>
+        <h2>Sending Payments, Issuing Checks, Creating Escrows - Terms of Use</h2>
         <p>
-          Users acknowledge and agree that all payments sent and checks issued through our platform are performed solely at
+          Users acknowledge and agree that all payments sent, checks issued, and escrows created through our platform are performed solely at
           their own risk. Our website acts merely as a platform to facilitate the transmission of payment instructions; it
           does not hold or control user funds or secret keys. Users are responsible for verifying the correctness of all
-          payment details before submitting any transactions.
+          payment, check, and escrow details before submitting any transactions.
         </p>
 
         <strong>Liability Disclaimer</strong>
         <p>
           Our website shall not be held responsible for any errors, inaccuracies, or miscommunications arising from user
           input, including incorrect wallet addresses, amounts, destination tags, and invoice IDs. Users acknowledge
-          that once a payment is sent or check is issued, we bear no liability for any loss, delay, or
+          that once a payment is sent, check is issued, or escrow is created, we bear no liability for any loss, delay, or
           unauthorized use resulting from such transactions. By using our services, you agree to hold our platform harmless
-          from any claims, damages, or losses related to payment processing or check issuance.
+          from any claims, damages, or losses related to payment processing, check issuance, or escrow creation.
         </p>
         <h2>Termination</h2>
         <p>
