@@ -158,11 +158,13 @@ const TokenSelector = ({ value, onChange }) => {
                         onClick={() => handleSelect(token)}
                       >
                         <div className="token-selector-modal-item-content">
-                          <img
-                            src={getTokenIcon(token)}
-                            alt={niceCurrency(token.currency)}
-                            className="token-selector-modal-icon"
-                          />
+                          <div className="token-selector-modal-item-icon">
+                            <img
+                              src={getTokenIcon(token)}
+                              alt={niceCurrency(token.currency)}
+                              className="token-selector-modal-icon"
+                            />
+                          </div>
                           <div className="token-selector-modal-item-name">
                             <span>{getTokenDisplayName(token)}</span>
                             {width > 1100 ? <span>{token.issuer}</span> : <span>{shortAddress(token.issuer)}</span>}
@@ -170,6 +172,11 @@ const TokenSelector = ({ value, onChange }) => {
                         </div>
                       </div>
                     ))}
+                    {searchResults.length === 100 && searchQuery && (
+                      <div className="token-selector-modal-empty">
+                        <p>More than 100 results found. Please specify an issuer to narrow down the search.</p>
+                      </div>
+                    )}
                   </div>
                 ) : searchQuery ? (
                   <div className="token-selector-modal-empty">{t('general.no-data')}</div>
