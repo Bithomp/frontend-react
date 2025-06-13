@@ -84,7 +84,7 @@ export default function Domains({ setSignRequest }) {
       <SEO title={t('menu.network.verified-domains')} />
       <div className="content-text">
         <h1 className="center">{t('menu.network.verified-domains')}</h1>
-        <div className="flex">
+        <div className="flex-container">
           <div className="grey-box">
             <h4>{t('domain-verification', { ns: 'domains' })}</h4>
             <p>{t('domain-verification-desc', { ns: 'domains' })}</p>
