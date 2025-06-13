@@ -9,48 +9,56 @@ import AdminTabs from '@/components/Tabs/AdminTabs'
 import { useNotifications } from '@/hooks/useNotifications'
 
 export const getStaticProps = async (context) => {
-    const { locale } = context
-    return {
-        props: {
-            ...(await serverSideTranslations(locale, ['common', 'admin']))
-        }
+  const { locale } = context
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common', 'admin']))
     }
+  }
 }
 
 export default function Notifications() {
-    const { t } = useTranslation('admin')
-    const { rules, channels, isLoading, error } = useNotifications()
+  const { t } = useTranslation('admin')
+  const { rules, channels, isLoading, error } = useNotifications()
 
-    if (isLoading) {
-        return <div>Loading...</div>
-    }
-    if (error) {
-        return <ErrorState />
-    }
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+  if (error) {
+    return <ErrorState />
+  }
 
-    return (
-        <main className="page-admin content-center">
-            <h1 className="center">{t('header', { ns: 'admin' })}</h1>
-            <AdminTabs name="mainTabs" tab="notifications" />
-            <p className="text-left mb-8">
-                Set up custom rules to get notified about blockchain events -
-                like NFT listings or high-value sales - through Slack, Discord, Email, and more.
-            </p>
-            {rules.length === 0 && channels.length === 0 && <EmptyState />}
+  return (
+    <main className="page-admin content-center">
+      <h1 className="center">{t('header', { ns: 'admin' })}</h1>
+      <AdminTabs name="mainTabs" tab="notifications" />
+      <p className="text-left mb-8">
+        Set up custom rules to get notified about blockchain events - like NFT listings or high-value sales - through
+        Slack, Discord, Email, and more.
+      </p>
+      {rules.length === 0 && channels.length === 0 && <EmptyState />}
 
-            <h2>Your notification rules</h2>
-            <div className="flex flex-col gap-4">
-                {rules.map((rule) => (
-                    <RuleCard key={rule.id} rule={rule} />
-                ))}
-            </div>
-            <div className="h-8"></div>
-            <h2>Notification channels</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {channels.map((channel) => (
-                    <ChannelCard key={channel.id} channel={channel} />
-                ))}
-            </div>
-        </main>
-    )
+      {rules.length > 0 && (
+        <>
+          <h2>Your notification rules</h2>
+          <div className="flex flex-col gap-4">
+            {rules.map((rule) => (
+              <RuleCard key={rule.id} rule={rule} />
+            ))}
+          </div>
+        </>
+      )}
+      {channels.length > 0 && (
+        <>
+          <div className="h-8"></div>
+          <h2>Notification channels</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {channels.map((channel) => (
+              <ChannelCard key={channel.id} channel={channel} />
+            ))}
+          </div>
+        </>
+      )}
+    </main>
+  )
 }
