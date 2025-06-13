@@ -5,7 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { AddressWithIconFilled } from '../utils/format'
 import { getIsSsrMobile } from '../utils/mobile'
-import { useWidth } from '../utils'
+import { useWidth, xahauNetwork, explorerName, ledgerName } from '../utils'
 
 import SEO from '../components/SEO'
 
@@ -87,32 +87,31 @@ export default function Domains({ setSignRequest }) {
         <div className="flex">
           <div className="grey-box">
             <h4>{t('domain-verification', { ns: 'domains' })}</h4>
-            <p>{t('domain-verification-desc', { ns: 'domains' })}</p>
-            <p>{t('reason-to-verify', { ns: 'domains' })}</p>
-            <p>{t('two-sides-verification', { ns: 'domains' })}</p>
+            <p>{t('domain-verification-desc', { ns: 'domains', explorerName })}</p>
+            <p>{t('reason-to-verify', { ns: 'domains', ledgerName })}</p>
+            <p>{t('two-sides-verification', { ns: 'domains', ledgerName })}</p>
             <h4>{t('domain-claims-address', { ns: 'domains' })}</h4>
             <p>
-              {t('serve-toml', { ns: 'domains' })}
+              {t('serve-toml', { ns: 'domains', tomlFile: xahauNetwork ? 'xahau-ledger.toml' : 'xrp-ledger.toml' })}
               <br />
-              {'https://{DOMAIN}/.well-known/xrp-ledger.toml'}
+              {xahauNetwork ? 'https://{DOMAIN}/.well-known/xahau.toml' : 'https://{DOMAIN}/.well-known/xrp-ledger.toml'}
               <br />
               {t('address-in-toml', { ns: 'domains' })}
             </p>
-            <p>
-              <a href="https://xrpl.org/xrp-ledger-toml.html">{t('read-about-toml', { ns: 'domains' })}</a>.
-            </p>
-            <p>
-              <Trans i18nKey="toml-editor" ns="domains">
-                <a href="https://dallipay.com/xrpltomleditor/">TOML editor</a> by{' '}
-                <a href="https://x.com/SchlaubiD">SchlaubiD</a>.
-              </Trans>
-            </p>
+            {!xahauNetwork && (
+              <p>
+                <Trans i18nKey="read-about-toml" ns="domains">
+                  You can verify that everything is set properly with the tool:{' '}
+                  <a href="https://xrpl.org/xrp-ledger-toml-checker.html">TOML Checker</a>. 
+                </Trans> 
+              </p>
+            )}
           </div>
           <div className="grey-box">
             <h4>{t('address-claims-domain', { ns: 'domains' })}</h4>
             <p>
-              <Trans i18nKey="set-domain" ns="domains">
-                You should <a href="https://xrpl.org/accountset.html">set a domain for your XRPL address</a> which
+              <Trans i18nKey="set-domain" ns="domains" values={{ ledgerName }}>
+                You should <a href={`https://${ledgerName}.org/accountset.html`}>set a domain for your {ledgerName} address</a> which
                 should match the domain your TOML file is served from.
               </Trans>
               <br />
@@ -133,16 +132,18 @@ export default function Domains({ setSignRequest }) {
               </button>
             </p>
             <h4>{t('verify', { ns: 'domains' })}</h4>
-            <p>
-              <Trans i18nKey="verify-desc" ns="domains">
-                You can verify that everything is set properly with the tool:{' '}
-                <a href="https://xrpl.org/xrp-ledger-toml-checker.html">TOML Checker</a>. The list on this page updates
-                from 3am to 4am (Stockholm time), if you domain is verifed in the Checker tool, but it is not on our
-                list within 24h, then it's possible that we can not parse your TOML file.
-              </Trans>
-            </p>
+            {!xahauNetwork && (
+              <p>
+                <Trans i18nKey="verify-desc" ns="domains">
+                  You can verify that everything is set properly with the tool:{' '}
+                  <a href="https://xrpl.org/xrp-ledger-toml-checker.html">TOML Checker</a>. The list on this page updates
+                  from 3am to 4am (Stockholm time), if you domain is verifed in the Checker tool, but it is not on our
+                  list within 24h, then it's possible that we can not parse your TOML file.
+                </Trans>
+              </p>
+            )}
             <br />
-            <p>{t('desc', { ns: 'domains' })}</p>
+            <p>{t('desc', { ns: 'domains', ledgerName })}</p>
           </div>
         </div>
         <br />

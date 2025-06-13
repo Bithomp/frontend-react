@@ -1,18 +1,18 @@
 {
   "domain-verification": "Domain verification",
-  "domain-verification-desc": "Domain verification aims to demonstrate that the same organization controls a specific XRP Ledger address and a specific domain.",
-  "reason-to-verify": "In the interest of transparency, you might want to validate your domain in order to establish yourself as a reliable provider of XRPL services.",
-  "two-sides-verification": "Since anyone may set any domain for their XRPL address, a relationship that is two-way between the domain and the address is necessary for domain verification.",
+  "domain-verification-desc": "Domain verification aims to demonstrate that the same organization controls a specific {{explorerName}} address and a specific domain.",
+  "reason-to-verify": "In the interest of transparency, you might want to validate your domain in order to establish yourself as a reliable provider of {{ledgerName}} services.",
+  "two-sides-verification": "Since anyone may set any domain for their {{ledgerName}} address, a relationship that is two-way between the domain and the address is necessary for domain verification.",
   "domain-claims-address": "The address should be claimed by the domain",
-  "serve-toml": "Your web server should serve an xrp-ledger.toml file, available at the following URL:",
+  "serve-toml": "Your web server should serve a {{tomlFile}} file, available at the following URL:",
   "address-in-toml": "The address you want to verify should be specified under the [[ACCOUNTS]] entry.",
-  "read-about-toml": "Read more about XRPL TOML",
+  "read-about-toml": "You can verify that everything is set properly with the tool: <2>TOML Checker</2>",
   "toml-editor": "<0>TOML editor</0> by <3>SchlaubiD</3>",
   "address-claims-domain": "The domain should be claimed by the address.",
-  "set-domain": "You should <1>set a domain for your XRPL address</1> which should match the domain your TOML file is served from.",
+  "set-domain": "You should <1>set a domain for your {{ledgerName}} address</1> which should match the domain your TOML file is served from.",
   "verify": "Verify",
   "verify-desc": "You can verify that everything is set properly with the tool: <2>TOML Checker</2>. The list on this page updates from 3am to 4am (Stockholm time), if you domain is verifed in the Checker tool, but it is not on our list within 24h, then it's possible that we can not parse your TOML file.",
-  "desc": "Below you can find the list of all verified domains on XRPL (the page updates every day).",
+  "desc": "Below you can find the list of all verified domains on {{ledgerName}} (the page updates every day).",
   "table": {
     "addresses": "Addresses"
   }

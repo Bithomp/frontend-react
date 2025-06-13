@@ -1,18 +1,18 @@
 {
   "domain-verification": "Verificación de dominio",
-  "domain-verification-desc": "La verificación de dominio pretende demostrar que la misma organización controla una dirección específica de XRP Ledger y un dominio específico.",
-  "reason-to-verify": "Por trasparencia, quizás quieras validar tu dominio para identificarse como un proveedor confiable de servicios XRPL.",
-  "two-sides-verification": "Como cualquier persona puede poner un dominio para su dirección XRPL, una relación en ambos sentidos entre el dominio y la dirección es necesaria para la verificación de dominio.",
+  "domain-verification-desc": "La verificación de dominio pretende demostrar que la misma organización controla una dirección específica de {{explorerName}} y un dominio específico.",
+  "reason-to-verify": "Por trasparencia, quizás quieras validar tu dominio para identificarse como un proveedor confiable de servicios {{ledgerName}}.",
+  "two-sides-verification": "Como cualquier persona puede poner un dominio para su dirección {{ledgerName}}, una relación en ambos sentidos entre el dominio y la dirección es necesaria para la verificación de dominio.",
   "domain-claims-address": "La dirección debe ser reclamada por el dominio",
-  "serve-toml": "Tu servidor web debe tener un fichero xrp-ledger.toml, disponible en la siguiente URL:",
+  "serve-toml": "Tu servidor web debe tener un fichero {{tomlFile}}, disponible en la siguiente URL:",
   "address-in-toml": "La dirección que quieres verificar debe ser especificada debajo del campo [[ACCOUNTS]].",
-  "read-about-toml": "Lee más sobre TOML XRPL",
+  "read-about-toml": "Puedes verificar que todo está correctamente configurado con la herramienta: <2>Comprobador TOML</2>",
   "toml-editor": "<0>TOML editor</0> por <3>SchlaubiD</3>",
   "address-claims-domain": "El dominio debe ser reclamando por la dirección.",
-  "set-domain": "Debes <1>añadir el dominio a tu dirección XRPL</1> que coincida con el dominio de tu archivo TOML.",
+  "set-domain": "Debes <1>añadir el dominio a tu dirección {{ledgerName}}</1> que coincida con el dominio de tu archivo TOML.",
   "verify": "Verificar",
   "verify-desc": "Puedes verificar que todo está correctamente configurado con la herramienta: <2>Comprobador TOML</2>. La lista de esta página se actualiza de 3am a 4am (horario de Stockholm), si tu dominio está verificado por la herramienta, pero no está en la nuestra lista en 24h, entonces es posible que no podamos leer el fichero TOML.",
-  "desc": "Abajo puedes encontrar la lista de dominios verificados en XRPL (la página se actualiza cada día).",
+  "desc": "Abajo puedes encontrar la lista de dominios verificados en {{ledgerName}} (la página se actualiza cada día).",
   "table": {
     "addresses": "Direcciones"
   }
