@@ -13,6 +13,8 @@ import CopyButton from '../../components/UI/CopyButton'
 import { amountFormat, fullDateAndTime, timeFromNow, shortHash } from '../../utils/format'
 import { LinkTx, LinkAccount } from '../../utils/links'
 import Link from 'next/link'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 const RIPPLE_EPOCH_OFFSET = 946684800 // Seconds between 1970-01-01 and 2000-01-01
 
@@ -157,11 +159,6 @@ export default function CreateEscrow({ setSignRequest }) {
     }
   }
 
-  const parseDateTimeLocal = (value) => {
-    if (!value) return null
-    return Math.floor(new Date(value).getTime() / 1000)
-  }
-
   return (
     <>
       <SEO title="Create Escrow" description={'Create an escrow transaction on the ' + explorerName} />
@@ -209,11 +206,17 @@ export default function CreateEscrow({ setSignRequest }) {
             <span className="input-title">
               Finish After <span className="grey">(when funds can be released)</span>
             </span>
-            <input
-              type="datetime-local"
-              onChange={(e) => setFinishAfter(parseDateTimeLocal(e.target.value))}
-              className="input-text"
-              defaultValue={finishAfter ? fullDateAndTime(finishAfter, 'ripple') : ''}
+            <DatePicker
+              selected={finishAfter ? new Date(finishAfter * 1000) : null}
+              onChange={(date) => setFinishAfter(date ? Math.floor(date.getTime() / 1000) : null)}
+              selectsStart
+              showTimeInput
+              timeInputLabel={t('table.time')}
+              dateFormat="yyyy/MM/dd HH:mm:ss"
+              className="dateAndTimeRange"
+              minDate={new Date()}
+              showMonthDropdown
+              showYearDropdown
             />
           </div>
           {width > 1100 && <br />}
@@ -221,11 +224,17 @@ export default function CreateEscrow({ setSignRequest }) {
             <span className="input-title">
               Cancel After <span className="grey">(when escrow expires)</span>
             </span>
-            <input
-              type="datetime-local"
-              onChange={(e) => setCancelAfter(parseDateTimeLocal(e.target.value))}
-              className="input-text"
-              defaultValue={cancelAfter ? fullDateAndTime(cancelAfter, 'ripple') : ''}
+            <DatePicker
+              selected={cancelAfter ? new Date(cancelAfter * 1000) : null}
+              onChange={(date) => setCancelAfter(date ? Math.floor(date.getTime() / 1000) : null)}
+              selectsStart
+              showTimeInput
+              timeInputLabel={t('table.time')}
+              dateFormat="yyyy/MM/dd HH:mm:ss"
+              className="dateAndTimeRange"
+              minDate={new Date()}
+              showMonthDropdown
+              showYearDropdown
             />
           </div>
 
