@@ -195,13 +195,13 @@ export default function Header({
             <Link href="/services/send">Send Payment</Link>
             <Link href="/services/check">Issue Check</Link>
             <Link href="/services/escrow">Create Escrow</Link>
+            <Link href="/services/account-settings/">Account Settings</Link>
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
             <Link href="/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
             <Link href="/submit-account-information">{t('menu.project-registration')}</Link>
             {!devNet && <Link href="/alerts">{t('menu.price-alerts', { nativeCurrency })}</Link>}
             <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a>
-            <Link href="/services/account-settings/">Account Settings</Link>
           </MenuDropDown>
 
           <MenuDropDown id="dropdown3" title="NFT" setHoverStates={setHoverStates} hoverStates={hoverStates}>
