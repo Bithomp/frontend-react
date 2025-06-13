@@ -182,7 +182,7 @@ export const TransactionURIToken = ({ data, pageFiatRate, selectedCurrency }) =>
           <TData>{nftIdLink(tx.URITokenID)}</TData>
         </tr>
       )}
-      {(txType === 'URITokenBuy' || 'URITokenCreateSellOffer' || 'URITokenCancelSellOffer') && (
+      {(txType === 'URITokenBuy' || txType === 'URITokenCreateSellOffer' || txType === 'URITokenCancelSellOffer') && (
         <>
           {tx.Owner && (
             <tr>
