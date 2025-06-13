@@ -251,16 +251,17 @@ export default function AccountSettings({ account, setSignRequest }) {
         setCurrentNftTokenMinter(response.data?.ledgerInfo?.nftokenMinter || '')
 
         if (response.data?.ledgerInfo?.flags) {
-          const ledgerFlags = response.data.ledgerInfo.flags
+          const ledgerFlags = response.data.ledgerInfo.flags || {}
 
-          // Initialize ASF flags
+          // Initialize ASF flags with safe defaults
           const newAsfFlags = {}
           const allAsfFlags = [...flagGroups.basic, ...flagGroups.advanced]
           allAsfFlags.forEach((flag) => {
-            newAsfFlags[flag] = !!ledgerFlags[flag]
+            newAsfFlags[flag] = ledgerFlags[flag] === true
           })
           setFlags(newAsfFlags)
 
+          // Initialize TF flags with safe defaults
           const newTfFlags = {}
           tfFlagKeys.forEach((flag) => {
             const asfMapping = {
@@ -268,7 +269,12 @@ export default function AccountSettings({ account, setSignRequest }) {
               requireAuth: 'requireAuth',
               disallowXRP: 'disallowXRP'
             }
-            newTfFlags[flag] = !!ledgerFlags[asfMapping[flag]]
+            // Add null check and handle Xahau network case
+            if (xahauNetwork) {
+              newTfFlags[flag] = false // Default to false for Xahau network
+            } else {
+              newTfFlags[flag] = ledgerFlags[asfMapping[flag]] === true
+            }
           })
           setTfFlags(newTfFlags)
         } else {
@@ -313,6 +319,7 @@ export default function AccountSettings({ account, setSignRequest }) {
   }
 
   const handleSetNftTokenMinter = () => {
+
     if (!isAddressValid(nftTokenMinter.trim())) {
       setErrorMessage('Please enter a valid NFTokenMinter address.')
       return
@@ -489,9 +496,12 @@ export default function AccountSettings({ account, setSignRequest }) {
 
   const renderFlagItem = (flag, flagType) => {
     const flagData = flagDetails[flag]
-    const currentValue = flagType === 'tf' ? tfFlags[flag] : flags[flag]
-    const isNonDefault = !flagData.isDefault(currentValue)
-    const isHighRisk = flagData.isHighRisk
+    // Add null checks and safe access
+    const currentValue = flagType === 'tf' ? 
+      (tfFlags?.[flag] || false) : 
+      (flags?.[flag] || false)
+    const isNonDefault = flagData && !flagData.isDefault(currentValue)
+    const isHighRisk = flagData?.isHighRisk || false
     
     let buttonDisabled = false
     let disabledReason = ''
@@ -682,7 +692,7 @@ export default function AccountSettings({ account, setSignRequest }) {
           <h4>Account Flags</h4>
 
           {/* TF Flags */}
-          {tfFlagKeys.map((flag) => renderFlagItem(flag, 'tf'))}
+          {!xahauNetwork && tfFlagKeys.map((flag) => renderFlagItem(flag, 'tf'))}
 
           {/* Basic ASF Flags */}
           {flagGroups.basic.map((flag) => renderFlagItem(flag, 'asf'))}
