@@ -3,6 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import EmptyState from '@/components/Admin/notifications/EmptyState'
 import ErrorState from '@/components/Admin/notifications/ErrorState'
+import ChannelCard from '@/components/Admin/notifications/ChannelCard'
 import RuleCard from '@/components/Admin/notifications/RuleCard'
 import AdminTabs from '@/components/Tabs/AdminTabs'
 import { useNotifications } from '@/hooks/useNotifications'
@@ -43,11 +44,11 @@ export default function Notifications() {
                     <RuleCard key={rule.id} rule={rule} />
                 ))}
             </div>
-
+            <div className="h-8"></div>
             <h2>Notification channels</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {channels.map((channel) => (
-                    <pre key={channel.id}>{JSON.stringify(channel, null, 2)}</pre>
+                    <ChannelCard key={channel.id} channel={channel} />
                 ))}
             </div>
         </main>
