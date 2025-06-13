@@ -453,7 +453,7 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
           </div>
         )}
         <br />
-        <div className="flex flex-center">
+        <div className="flex-container flex-center">
           <div className="div-with-table">
             <h4 className="center">{t('table.members', { ns: 'governance' })}</h4>
             <table className="table-large shrink">
@@ -551,7 +551,7 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
           </div>
         </div>
         <br />
-        <div className="flex flex-center">
+        <div className="flex-container flex-center">
           <div className="div-with-table">
             <h4 className="center">{t('table.seat-votes', { ns: 'governance' })}</h4>
             <table className="table-large shrink">
@@ -687,7 +687,7 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
           )}
         </div>
         <br />
-        <div className="flex flex-center">
+        <div className="flex-container flex-center">
           <div className="div-with-table">
             <h4 className="center">{t('table.reward-rate-votes', { ns: 'governance' })}</h4>
             <table className="table-large shrink">
@@ -824,7 +824,7 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
           )}
         </div>
         <br />
-        <div className="flex flex-center">
+        <div className="flex-container flex-center">
           <div className="div-with-table">
             <h4 className="center">{t('table.reward-delay-votes', { ns: 'governance' })}</h4>
             <table className="table-large shrink">
@@ -961,7 +961,7 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
           )}
         </div>
         <br />
-        <div className="flex flex-center">
+        <div className="flex-container flex-center">
           <div className="div-with-table">
             <h4 className="center">{t('table.hook-votes', { ns: 'governance' })}</h4>
             <table className="table-large shrink">

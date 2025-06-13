@@ -122,7 +122,7 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
       />
       <div className="content-center">
         <h1 className="center">{t('menu.network.distribution', { nativeCurrency })}</h1>
-        <div className="flex">
+        <div className="flex-container">
           <div className="grey-box">{t('desc', { ns: 'distribution', nativeCurrency })}</div>
           <div className="grey-box">
             {loading ? (
