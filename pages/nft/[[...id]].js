@@ -984,8 +984,11 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     let request = {
       TransactionType: 'NFTokenModify',
       Account: account.address,
-      Owner: data.owner,
       NFTokenID: id
+    }
+
+    if (data.owner !== account.address) {
+      request.Owner = data.owner
     }
 
     return (
