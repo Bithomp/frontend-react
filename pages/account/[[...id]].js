@@ -328,7 +328,7 @@ export default function Account({
                                 <tbody>
                                   <tr>
                                     <td colSpan="2" className="no-padding">
-                                      <div className="flex flex-center">
+                                      <div className="flex-container flex-center">
                                         {!account?.address && (
                                           <button
                                             className="button-action button-wide thin"
@@ -476,7 +476,7 @@ export default function Account({
                                       showYearDropdown
                                     />
                                   </div>
-                                  <div className="flex flex-center">
+                                  <div className="flex-container flex-center">
                                     <button
                                       onClick={() => setLedgerTimestamp(ledgerTimestampInput)}
                                       className="button-action thin button-wide"

@@ -361,14 +361,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               </a>
             </td>
           </tr>
-          {nftEvent.url && (
+          {nftEvent.uri && (
             <tr>
               <td>{t('table.uri')}</td>
-              <td>
-                <a href={nftEvent.url} target="_blank" rel="noreferrer nofollow">
-                  {nftEvent.url}
-                </a>
-              </td>
+              <td>{nftEvent.url ? nftEvent.url : decode(nftEvent.uri)}</td>
             </tr>
           )}
           {nftEvent.amount && nftEvent.amount !== '0' && (
