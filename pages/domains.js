@@ -114,7 +114,25 @@ export default function Domains({ setSignRequest }) {
             <p>
               <Trans i18nKey="set-domain" ns="domains" values={{ ledgerName }}>
                 You should{' '}
-                <a href={`https://${ledgerName}.org/accountset.html`}>set a domain for your {ledgerName} address</a>{' '}
+                <a
+                  href={xahauNetwork ? '#' : 'https://xrpl.org/accountset.html'}
+                  onClick={
+                    xahauNetwork
+                      ? (e) => {
+                          e.preventDefault()
+                          setSignRequest({
+                            action: 'setDomain',
+                            redirect: 'account',
+                            request: {
+                              TransactionType: 'AccountSet'
+                            }
+                          })
+                        }
+                      : null
+                  }
+                >
+                  set a domain for your {ledgerName} address
+                </a>{' '}
                 which should match the domain your TOML file is served from.
               </Trans>
               <br />
