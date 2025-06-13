@@ -9,7 +9,7 @@
   "read-about-toml": "You can verify that everything is set properly with the tool: <2>TOML Checker</2>",
   "toml-editor": "<0>TOML editor</0> by <3>SchlaubiD</3>",
   "address-claims-domain": "The domain should be claimed by the address.",
-  "set-domain": "You should <1>set a domain for your {{ledgerName}} address</1> which should match the domain your TOML file is served from.",
+  "set-domain": "You should <2>set a domain for your {{ledgerName}} address</2> which should match the domain your TOML file is served from.",
   "verify": "Verify",
   "verify-desc": "You can verify that everything is set properly with the tool: <2>TOML Checker</2>. The list on this page updates from 3am to 4am (Stockholm time), if you domain is verifed in the Checker tool, but it is not on our list within 24h, then it's possible that we can not parse your TOML file.",
   "desc": "Below you can find the list of all verified domains on {{ledgerName}} (the page updates every day).",

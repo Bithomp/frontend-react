@@ -92,9 +92,11 @@ export default function Domains({ setSignRequest }) {
             <p>{t('two-sides-verification', { ns: 'domains', ledgerName })}</p>
             <h4>{t('domain-claims-address', { ns: 'domains' })}</h4>
             <p>
-              {t('serve-toml', { ns: 'domains', tomlFile: xahauNetwork ? 'xahau-ledger.toml' : 'xrp-ledger.toml' })}
+              {t('serve-toml', { ns: 'domains', tomlFile: xahauNetwork ? 'xahau.toml' : 'xrp-ledger.toml' })}
               <br />
-              {xahauNetwork ? 'https://{DOMAIN}/.well-known/xahau.toml' : 'https://{DOMAIN}/.well-known/xrp-ledger.toml'}
+              {xahauNetwork
+                ? 'https://{DOMAIN}/.well-known/xahau.toml'
+                : 'https://{DOMAIN}/.well-known/xrp-ledger.toml'}
               <br />
               {t('address-in-toml', { ns: 'domains' })}
             </p>
@@ -102,8 +104,8 @@ export default function Domains({ setSignRequest }) {
               <p>
                 <Trans i18nKey="read-about-toml" ns="domains">
                   You can verify that everything is set properly with the tool:{' '}
-                  <a href="https://xrpl.org/xrp-ledger-toml-checker.html">TOML Checker</a>. 
-                </Trans> 
+                  <a href="https://xrpl.org/xrp-ledger-toml-checker.html">TOML Checker</a>.
+                </Trans>
               </p>
             )}
           </div>
@@ -111,8 +113,9 @@ export default function Domains({ setSignRequest }) {
             <h4>{t('address-claims-domain', { ns: 'domains' })}</h4>
             <p>
               <Trans i18nKey="set-domain" ns="domains" values={{ ledgerName }}>
-                You should <a href={`https://${ledgerName}.org/accountset.html`}>set a domain for your {ledgerName} address</a> which
-                should match the domain your TOML file is served from.
+                You should{' '}
+                <a href={`https://${ledgerName}.org/accountset.html`}>set a domain for your {ledgerName} address</a>{' '}
+                which should match the domain your TOML file is served from.
               </Trans>
               <br />
               <br />
@@ -136,9 +139,9 @@ export default function Domains({ setSignRequest }) {
               <p>
                 <Trans i18nKey="verify-desc" ns="domains">
                   You can verify that everything is set properly with the tool:{' '}
-                  <a href="https://xrpl.org/xrp-ledger-toml-checker.html">TOML Checker</a>. The list on this page updates
-                  from 3am to 4am (Stockholm time), if you domain is verifed in the Checker tool, but it is not on our
-                  list within 24h, then it's possible that we can not parse your TOML file.
+                  <a href="https://xrpl.org/xrp-ledger-toml-checker.html">TOML Checker</a>. The list on this page
+                  updates from 3am to 4am (Stockholm time), if you domain is verifed in the Checker tool, but it is not
+                  on our list within 24h, then it's possible that we can not parse your TOML file.
                 </Trans>
               </p>
             )}
