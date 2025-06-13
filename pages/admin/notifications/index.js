@@ -1,10 +1,11 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { useNotifications } from '@/hooks/useNotifications'
-import AdminTabs from '@/components/Tabs/AdminTabs'
 import EmptyState from '@/components/Admin/notifications/EmptyState'
 import ErrorState from '@/components/Admin/notifications/ErrorState'
+import RuleCard from '@/components/Admin/notifications/RuleCard'
+import AdminTabs from '@/components/Tabs/AdminTabs'
+import { useNotifications } from '@/hooks/useNotifications'
 
 export const getStaticProps = async (context) => {
     const { locale } = context
@@ -30,29 +31,16 @@ export default function Notifications() {
         <main className="page-admin content-center">
             <h1 className="center">{t('header', { ns: 'admin' })}</h1>
             <AdminTabs name="mainTabs" tab="notifications" />
-                <p className="text-left mb-8">Set up custom rules to get notified about blockchain events - like NFT listings or high-value sales - through Slack, Discord, Email, and more.</p>
+            <p className="text-left mb-8">
+                Set up custom rules to get notified about blockchain events -
+                like NFT listings or high-value sales - through Slack, Discord, Email, and more.
+            </p>
             {rules.length === 0 && channels.length === 0 && <EmptyState />}
 
             <h2>Your notification rules</h2>
             <div className="flex flex-col gap-4">
                 {rules.map((rule) => (
-                    <div
-                        key={rule.id}
-                        className="bg-white rounded-lg shadow p-4 border border-gray-200"
-                    >
-                        <div className="font-semibold text-lg mb-2">
-                            {rule.name || `Rule #${rule.id}`}
-                        </div>
-                        <div className="text-sm text-gray-600 mb-1">
-                            Channel: <span className="font-mono">{rule.channel?.name || rule.channel?.type || 'Unknown'}</span>
-                        </div>
-                        <div className="text-xs text-gray-500 mb-2">
-                            Type: {rule.type || 'N/A'}
-                        </div>
-                        <pre className="bg-gray-50 rounded p-2 text-xs overflow-x-auto">
-                            {JSON.stringify(rule, null, 2)}
-                        </pre>
-                    </div>
+                    <RuleCard key={rule.id} rule={rule} />
                 ))}
             </div>
 
