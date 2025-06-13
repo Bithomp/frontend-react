@@ -1,0 +1,16 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="50" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
+  
+  <!-- Empty box/container -->
+  <rect x="35" y="35" width="50" height="40" fill="none" stroke="#6c757d" stroke-width="2" stroke-dasharray="4,4" rx="4"/>
+  
+  <!-- Three dots indicating empty content -->
+  <circle cx="50" cy="55" r="2" fill="#adb5bd"/>
+  <circle cx="60" cy="55" r="2" fill="#adb5bd"/>
+  <circle cx="70" cy="55" r="2" fill="#adb5bd"/>
+  
+  <!-- Subtle "nothing here" indication -->
+  <path d="M45 85 L75 85" stroke="#dee2e6" stroke-width="2" stroke-linecap="round"/>
+  <path d="M50 90 L70 90" stroke="#dee2e6" stroke-width="2" stroke-linecap="round"/>
+</svg>
