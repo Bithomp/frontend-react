@@ -311,7 +311,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       }
     } else {
       //if there is URI then it's URI modified, otherwise burned
-      if (event.url) {
+      if (event.uri) {
         return t('table.updated')
       }
       return <span className="red">{t('table.burned')}</span>
