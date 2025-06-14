@@ -54,7 +54,8 @@ const pages = [
   { loc: 'blacklisted-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'blackholed-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'verified-domains', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'jobs', changefreq: 'monthly', priority: '0.5' }
+  { loc: 'jobs', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'nft-minting', changefreq: 'monthly', priority: '0.5' }
 ]
 
 //network specific pages
