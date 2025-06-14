@@ -731,7 +731,7 @@ export default function TermsAndConditions() {
           date of the latest version of this API Terms is indicated at the top of the document.
         </p>
 
-        <h2> Bots Terms of Use</h2>
+        <h2>Bots Terms of Use</h2>
 
         <p>
           <strong>1. General Provisions</strong>
