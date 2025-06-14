@@ -38,7 +38,7 @@ export default function Ads({ showAds, heightNoAds }) {
           </div>
         </a>
         <a href="/go/play-xrp" target="_blank" rel="noreferrer">
-          <div className="brand-item">
+          <div className="brand-item xbit">
             <img src="/images/sponsored/xbit.png" className="brand-item-icon" alt="play xrp" />
             <div className="brand-item-title">Play Crypto</div>
             <div className="brand-item-text">Bet in crypto. Get bonus up to 7BTC+250FS with no KYC.</div>
