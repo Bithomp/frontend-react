@@ -44,8 +44,8 @@ export default function Ads({ showAds, heightNoAds }) {
               className="brand-item-icon"
               alt="play xrp"
             />
-            <div className="brand-item-title">Play Crypto</div>
-            <div className="brand-item-text">Bet in crypto. Get bonus up to 7BTC+250FS with no KYC.</div>
+            <div className="brand-item-title">Bet in crypto</div>
+            <div className="brand-item-text">Get bonus up to 7BTC+250FS with no KYC.</div>
           </div>
         </a>
         {/*
