@@ -4,11 +4,13 @@ import { useTranslation } from 'next-i18next'
 import { useIsMobile } from '../../utils/mobile'
 //import axios from 'axios'
 import { useRouter } from 'next/router'
+import { useWidth } from '../../utils'
 
 export default function TopLinks() {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
   const router = useRouter()
+  const width = useWidth()
 
   //const [countryCode, setCountryCode] = useState('')
 
@@ -205,6 +207,13 @@ export default function TopLinks() {
             ? 'Build your long-term wealth with industry-leading rates on XRP, BTC, and more.'
             : 'Earn up to 14%'}
         </a>
+      </span>
+      {width > 1200 || isMobile ? <span style={{ padding: '0 10px' }}>|</span> : ''}
+      <span className="tooltip">
+        <a href="/go/top-play" target="_blank" rel="noreferrer" className="top-link orange">
+          {!isMobile ? 'Bet in crypto. Get cashback on every bet, WB up to 7BTC+250FS with no KYC.' : 'Bet in crypto'}
+        </a>{' '}
+        🤑
       </span>
     </div>
   )
