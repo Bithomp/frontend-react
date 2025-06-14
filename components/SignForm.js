@@ -563,7 +563,9 @@ export default function SignForm({
           } else if (
             TransactionType === 'Payment' ||
             TransactionType === 'CheckCreate' ||
-            TransactionType === 'EscrowCreate'
+            TransactionType === 'EscrowCreate' ||
+            TransactionType === 'AMMCreate' ||
+            TransactionType === 'AMMVote'
           ) {
             if (signRequest?.callback) {
               signRequest.callback({
@@ -579,7 +581,7 @@ export default function SignForm({
           }
           checkCrawlerStatus({ inLedger: includedInLedger, type: TransactionType })
         } else {
-          if (txType === 'Payment' || txType === 'CheckCreate' || txType === 'EscrowCreate') {
+          if (txType === 'Payment' || txType === 'CheckCreate' || txType === 'EscrowCreate' || txType === 'AMMCreate' || txType === 'AMMVote') {
             closeSignInFormAndRefresh()
             return
           }
@@ -689,7 +691,9 @@ export default function SignForm({
       txType?.includes('DID') ||
       txType === 'Payment' ||
       txType === 'CheckCreate' ||
-      txType === 'EscrowCreate'
+      txType === 'EscrowCreate' ||
+      txType === 'AMMCreate' ||
+      txType === 'AMMVote'
     ) {
       checkTxInCrawler({ txid: txHash, redirectName, txType })
       return
