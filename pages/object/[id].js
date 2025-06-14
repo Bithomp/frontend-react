@@ -10,7 +10,9 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { axiosServer, passHeaders } from '../../utils/axios'
-import { codeHighlight, AddressWithIconFilled } from '../../utils/format'
+import { codeHighlight, AddressWithIconFilled, amountFormatNode, addressUsernameOrServiceLink } from '../../utils/format'
+import { avatarServer, nativeCurrency, nativeCurrenciesImages } from '../../utils'
+import { LinkTx, LedgerLink } from '../../utils/links'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -85,10 +87,23 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
     'Destination',
     'Issuer',
     'SendMax',
-    'LowLimit',
-    'HighLimit',
     'RegularKey'
   ]
+
+  const amountFields = ['Balance', 'LowLimit', 'HighLimit']
+
+  const txIdFields = ['PreviousTxnID']
+  const ledgerSeqFields = ['PreviousTxnLgrSeq']
+  const objectIdFields = ['index']
+
+  const tokenIconSrc = (amount) => {
+    if (!amount) return nativeCurrenciesImages[nativeCurrency]
+    if (!amount.issuer) {
+      // native currency (special rrrrr issuer)
+      return nativeCurrenciesImages[nativeCurrency]
+    }
+    return avatarServer + amount.issuer
+  }
 
   const detailsTable = () => {
     if (!data?.node) return null
@@ -106,6 +121,65 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
     }
 
     const rows = Object.entries(data.node).map(([key, value]) => {
+      // Link for transaction id
+      if (txIdFields.includes(key) && typeof value === 'string') {
+        return (
+          <tr key={key}>
+            <td>{key}</td>
+            <td>
+              <LinkTx tx={value} short={12} />
+            </td>
+          </tr>
+        )
+      }
+
+      // Link for ledger sequence number
+      if (ledgerSeqFields.includes(key) && (typeof value === 'number' || typeof value === 'string')) {
+        return (
+          <tr key={key}>
+            <td>{key}</td>
+            <td>
+              <LedgerLink version={value} />
+            </td>
+          </tr>
+        )
+      }
+
+      // Link for object index (hash)
+      if (objectIdFields.includes(key) && typeof value === 'string') {
+        return (
+          <tr key={key}>
+            <td>{key}</td>
+            <td>
+              <Link href={`/object/${value}`}>{value}</Link>
+            </td>
+          </tr>
+        )
+      }
+
+      // Amount-like fields (objects with value/currency/issuer)
+      if (amountFields.includes(key) && typeof value === 'object') {
+        return (
+          <tr key={key}>
+            <td>{key}</td>
+            <td>
+              <img
+                src={tokenIconSrc(value)}
+                alt="token icon"
+                width="18"
+                height="18"
+                style={{ verticalAlign: 'text-bottom', marginRight: 4 }}
+              />
+              {amountFormatNode(value)}{' '}
+              {value?.issuer && (
+                <>
+                  ({addressUsernameOrServiceLink(value, 'issuer', { short: true })})
+                </>
+              )}
+            </td>
+          </tr>
+        )
+      }
       if (addressFields.includes(key)) {
         return (
           <tr key={key}>
