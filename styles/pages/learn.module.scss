@@ -1,0 +1,46 @@
+.card {
+    // Layout
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    
+    // Visual styles
+    box-shadow: 4px 4px 0px var(--card-shadow);
+    border: 2px solid var(--card-border);
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    
+    // Interaction
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s ease-in-out;
+    
+    // Accessibility
+    &:focus-visible {
+        outline: 2px solid var(--accent-icon);
+        outline-offset: 2px;
+    }
+    
+    // Hover state
+    &:hover {
+        transform: translate(-4px, -4px);
+    }
+    
+    // Ensure consistent text decoration and color across all states
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+        text-decoration: none;
+        color: var(--card-text);
+    }
+    
+    // Read more link
+    .readMore {
+        margin-top: 0.25rem;
+        font-size: var(--text-sm);
+        text-decoration: underline;
+        color: var(--accent-link);
+    }
+}
