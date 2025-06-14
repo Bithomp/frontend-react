@@ -190,7 +190,7 @@ export default function TopLinks() {
         {isMobile ? <br /> : ' | '}
         <span className="tooltip">
           <a href="/go/playxrp" target="_blank" rel="noreferrer" className="top-link orange">
-            Welcome bonus up to 7 BTC + 250 free spins 💸
+            Bet in crypto and win with 1xbit! No KYC 🤑
           </a>
           <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
         </span>
