@@ -831,7 +831,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                       {v.serverCountry?.length === 2 && (
                         <p>
                           {t('table.server-country', { ns: 'validators' })}:{' '}
-                          {countries.getNameTranslated(fixCountry(v.serverCountry))}{' '}
+                          {countries?.getNameTranslated(fixCountry(v.serverCountry))}{' '}
                           <ReactCountryFlag
                             countryCode={fixCountry(v.serverCountry)}
                             style={{
