@@ -88,14 +88,15 @@ export default function AMMVoteForm({ setSignRequest }) {
   return (
     <div className="form-container">
       <div>
-        <div  className="w-full">
-          <span className="input-title">Asset 1 Currency</span>
-          <TokenSelector value={asset1} onChange={setAsset1} />        
-        </div>  
-        <br />
-        <div  className="w-full">
-          <span className="input-title">Asset 2 Currency</span>
-          <TokenSelector value={asset2} onChange={setAsset2} />        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+          <div  className="w-full">
+            <span className="input-title">Asset 1 Currency</span>
+            <TokenSelector value={asset1} onChange={setAsset1} />        
+          </div>
+          <div  className="w-full">
+            <span className="input-title">Asset 2 Currency</span>
+            <TokenSelector value={asset2} onChange={setAsset2} />        
+          </div>          
         </div>
         <br />   
         <FormInput

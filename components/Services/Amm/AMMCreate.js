@@ -13,7 +13,7 @@ export default function AMMCreateForm({ setSignRequest }) {
   const [asset2, setAsset2] = useState({ currency: nativeCurrency })
   const [asset2Amount, setAsset2Amount] = useState('')
 
-  const [tradingFee, setTradingFee] = useState('0')
+  const [tradingFee, setTradingFee] = useState()
   const [error, setError] = useState('')
   const [agreeToTerms, setAgreeToTerms] = useState(false)
   const [txResult, setTxResult] = useState(null)
@@ -106,7 +106,7 @@ export default function AMMCreateForm({ setSignRequest }) {
               hideButton={true}            
               />
             </div>
-            <div  className="w-full sm:w-[180px]">
+            <div  className="w-full sm:w-1/2">
               <span className="input-title">Asset 1 Currency</span>
               <TokenSelector value={asset1} onChange={setAsset1} />        
             </div>        
@@ -123,7 +123,7 @@ export default function AMMCreateForm({ setSignRequest }) {
                 hideButton={true}
                 />
             </div>
-            <div  className="w-full sm:w-[180px]">
+            <div  className="w-full sm:w-1/2">
                 <span className="input-title">Asset 2 Currency</span>
                 <TokenSelector value={asset2} onChange={setAsset2} />        
             </div>        
@@ -154,7 +154,7 @@ export default function AMMCreateForm({ setSignRequest }) {
         <br />
         <div className="center">
           <button className="button-action" onClick={onSubmit}>
-            Submit AMMCreate
+            Create AMM
           </button>
         </div>
       </div>
