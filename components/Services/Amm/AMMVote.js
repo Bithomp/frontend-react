@@ -11,7 +11,7 @@ export default function AMMVoteForm({ setSignRequest }) {
   const [asset1, setAsset1] = useState({ currency: nativeCurrency })
   const [asset2, setAsset2] = useState({ currency: nativeCurrency })
 
-  const [tradingFee, setTradingFee] = useState('0')
+  const [tradingFee, setTradingFee] = useState()
   const [error, setError] = useState('')
   const [agreeToTerms, setAgreeToTerms] = useState(false)
   const [txResult, setTxResult] = useState(null)
@@ -27,8 +27,8 @@ export default function AMMVoteForm({ setSignRequest }) {
       return
     }
     
-    if (tradingFee && (isNaN(parseFloat(tradingFee)) || parseFloat(tradingFee) < 0 || parseFloat(tradingFee) > 1000)) {
-      setError('Please enter a valid trading fee between 0 and 1000.')
+    if (tradingFee && (isNaN(parseFloat(tradingFee)) || parseFloat(tradingFee) < 0 || parseFloat(tradingFee) > 1)) {
+      setError('Please enter a valid trading fee between 0 and 1 (percent).')
       return
     }
     if (!agreeToTerms) {
@@ -66,7 +66,7 @@ export default function AMMVoteForm({ setSignRequest }) {
       }
 
       if (tradingFee) {
-        ammVote.TradingFee = parseInt(tradingFee)
+        ammVote.TradingFee = Math.round(parseFloat(tradingFee) * 1000)
       }
 
       setSignRequest({
@@ -100,8 +100,8 @@ export default function AMMVoteForm({ setSignRequest }) {
         </div>
         <br />   
         <FormInput
-          title="Trading Fee (0 - 1000, optional)"
-          placeholder="Fee in tenth of a percent"
+          title="Trading Fee (0 - 1%, optional)"
+          placeholder="Fee in percent (max 1)"
           setInnerValue={setTradingFee}
           defaultValue={tradingFee}
           onKeyPress={typeNumberOnly}

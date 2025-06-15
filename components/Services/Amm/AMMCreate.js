@@ -36,8 +36,8 @@ export default function AMMCreateForm({ setSignRequest }) {
       setError('Please enter a valid amount for asset 2.')
       return
     }
-    if (tradingFee && (isNaN(parseFloat(tradingFee)) || parseFloat(tradingFee) < 0 || parseFloat(tradingFee) > 1000)) {
-      setError('Please enter a valid trading fee between 0 and 1000.')
+    if (tradingFee && (isNaN(parseFloat(tradingFee)) || parseFloat(tradingFee) < 0 || parseFloat(tradingFee) > 1)) {
+      setError('Please enter a valid trading fee between 0 and 1 (percent).')
       return
     }
     if (!agreeToTerms) {
@@ -73,7 +73,8 @@ export default function AMMCreateForm({ setSignRequest }) {
       }
 
       if (tradingFee) {
-        ammCreate.TradingFee = parseInt(tradingFee)
+        // Convert percentage to units of 1/100,000 (e.g. 0.001% -> 1, 1% -> 1000)
+        ammCreate.TradingFee = Math.round(parseFloat(tradingFee) * 1000)
       }
 
       setSignRequest({
@@ -130,8 +131,8 @@ export default function AMMCreateForm({ setSignRequest }) {
         </div>
         <br />   
         <FormInput
-          title="Trading Fee (0 - 1000, optional)"
-          placeholder="Fee in tenth of a percent"
+          title="Trading Fee (0 - 1%, optional)"
+          placeholder="Fee in percent (max 1)"
           setInnerValue={setTradingFee}
           defaultValue={tradingFee}
           onKeyPress={typeNumberOnly}
