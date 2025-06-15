@@ -31,7 +31,7 @@ import TokenSelector from '../components/UI/TokenSelector'
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
 
-  const { order, currency, currencyIssuer, service, username } = query
+  const { order, currency, currencyIssuer } = query
 
   let initialData = null
   let initialErrorMessage = null
@@ -66,8 +66,6 @@ export async function getServerSideProps(context) {
       orderQuery: order || initialData?.order || 'currencyHigh',
       currencyQuery: currency || initialData?.currency || nativeCurrency,
       currencyIssuerQuery: currencyIssuer || initialData?.currencyIssuer || '',
-      serviceQuery: service || '',
-      usernameQuery: username || '',
       initialErrorMessage: initialErrorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
@@ -103,9 +101,7 @@ export default function Amms({
   subscriptionExpired,
   fiatRate,
   currencyQuery,
-  currencyIssuerQuery,
-  serviceQuery,
-  usernameQuery
+  currencyIssuerQuery
 }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -123,11 +119,7 @@ export default function Amms({
     if (currencyQuery && currencyQuery !== nativeCurrency) {
       return {
         currency: currencyQuery,
-        issuer: currencyIssuerQuery,
-        issuerDetails: {
-          service: serviceQuery,
-          username: usernameQuery
-        }
+        issuer: currencyIssuerQuery
       }
     } else if (currencyQuery === nativeCurrency) {
       return {
@@ -148,12 +140,6 @@ export default function Amms({
           { name: 'currency', value: token.currency },
           { name: 'currencyIssuer', value: token.issuer }
         ]
-        if (token.issuerDetails?.service) {
-          params.push({ name: 'service', value: token.issuerDetails.service })
-        }
-        if (token.issuerDetails?.username) {
-          params.push({ name: 'username', value: token.issuerDetails.username })
-        }
         addQueryParams(router, params)
       } else {
         removeQueryParams(router, ['currencyIssuer', 'currency', 'service', 'username'])
@@ -181,15 +167,11 @@ export default function Amms({
     const oldOrder = rawData?.order
     const oldCurrency = rawData?.currency
     const oldCurrencyIssuer = rawData?.currencyIssuer
-    const oldService = rawData?.service
-    const oldUsername = rawData?.username
     if (!oldOrder || !order) return
     let loadMoreRequest =
       (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
       (token?.currency ? oldCurrency === token.currency : !oldCurrency) &&
-      (token?.issuer ? oldCurrencyIssuer === token.issuer : !oldCurrencyIssuer) &&
-      (token?.issuerDetails?.service ? oldService === token.issuerDetails.service : !oldService) &&
-      (token?.issuerDetails?.username ? oldUsername === token.issuerDetails.username : !oldUsername)
+      (token?.issuer ? oldCurrencyIssuer === token.issuer : !oldCurrencyIssuer)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
     if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
@@ -206,12 +188,6 @@ export default function Amms({
       currencyPart = '&currency=' + token.currency
       if (token.issuer) {
         currencyPart += '&currencyIssuer=' + token.issuer
-      }
-      if (token.issuerDetails?.service) {
-        currencyPart += '&service=' + token.issuerDetails.service
-      }
-      if (token.issuerDetails?.username) {
-        currencyPart += '&username=' + token.issuerDetails.username
       }
     } else {
       //default
