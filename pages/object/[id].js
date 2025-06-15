@@ -19,7 +19,6 @@ export async function getServerSideProps(context) {
   const { id, ledgerIndex, date, previousTxHash } = query
 
   let data = null
-  let rawData = null
   let errorMessage = null
 
   const makeQueryString = () => {
@@ -39,14 +38,11 @@ export async function getServerSideProps(context) {
       errorMessage = error.message
     })
     data = res?.data
-
-    // raw object without extra details
-    const rawRes = await axiosServer({
-      method: 'get',
-      url: 'xrpl/ledgerEntry/' + id,
-      headers: passHeaders(req)
-    }).catch(() => {})
-    rawData = rawRes?.data
+    // Handle case when the object is not found
+    if (data?.error) {
+      errorMessage = data.error_message || 'Such object is not found on that network'
+      data = null
+    }
   } catch (e) {
     console.error(e)
   }
@@ -54,7 +50,6 @@ export async function getServerSideProps(context) {
   return {
     props: {
       data,
-      rawData,
       initialErrorMessage: errorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
@@ -62,13 +57,13 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function LedgerObject({ data: initialData, rawData: initialRawData, initialErrorMessage }) {
+export default function LedgerObject({ data: initialData, initialErrorMessage }) {
   const router = useRouter()
 
   // data states (will be updated by the time-machine)
   const [data, setData] = useState(initialData)
-  const [rawData, setRawData] = useState(initialRawData)
-
+  const [rawData, setRawData] = useState(null)
+  
   // ui & feedback states
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [loading, setLoading] = useState(false)
@@ -190,6 +185,15 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
           </tr>
         )
       }
+      if (key === 'previousTxAt') {
+        return (
+          <tr key={key}>
+            <td>{key}</td>
+            <td>{new Date(value * 1000).toISOString()}</td>
+          </tr>
+        )
+      }
+      
       return (
         <tr key={key}>
           <td>{key}</td>
@@ -210,6 +214,24 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
     )
   } 
 
+  // ---------------------------------------------
+  // Lazy fetch for raw JSON (only on user request)
+  // ---------------------------------------------
+  const fetchRaw = async () => {
+    const id = router.query.id
+    let query = ''
+    if (ledgerDate) {
+      query = '?date=' + ledgerDate.toISOString()
+    }
+
+    try {
+      const rawRes = await axios('/xrpl/ledgerEntry/' + id + query).catch(() => {})
+      setRawData(rawRes?.data)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   // fetch object data for a specific date
   const fetchData = async () => {
     setLoading(true)
@@ -222,11 +244,18 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
 
     try {
       const res = await axios('/v2/ledgerEntry/' + id + query)
-      setData(res?.data)
+      if (res?.data?.error === 'entryNotFound') {
+        setErrorMessage('Such object is not found on that network')
+        setData(null)
+      } else {
+        setData(res?.data)
+        setErrorMessage('')
 
-      const rawRes = await axios('/xrpl/ledgerEntry/' + id + query).catch(() => {})
-      setRawData(rawRes?.data)
-      setErrorMessage('')
+        // If the raw panel is already opened – refresh its data as well
+        if (showRaw) {
+          fetchRaw()
+        }
+      }
     } catch (e) {
       console.error(e)
       setErrorMessage(e.message || 'Error')
@@ -241,8 +270,35 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
       return
     }
     fetchData()
+
+    // reflect the chosen date in the URL without reloading the page
+    const newQuery = { ...router.query }
+    // Always drop params that conflict with the time-machine logic
+    delete newQuery.ledgerIndex
+    delete newQuery.previousTxHash
+
+    if (ledgerDate) {
+      newQuery.date = ledgerDate.toISOString()
+    } else {
+      delete newQuery.date
+    }
+    router.replace({ pathname: router.pathname, query: newQuery }, undefined, { shallow: true })
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ledgerDate])
+
+  // ---------------------------------------------
+  // Sync state with server-side props when the URL
+  // query changes (e.g. user navigates to previous
+  // version by ledger or by tx).
+  // ---------------------------------------------
+  useEffect(() => {
+    setData(initialData)
+    setErrorMessage(initialErrorMessage || '')
+    // reset toggles if data changed
+    setShowMetadata(false)
+    setShowRaw(false)
+  }, [initialData, initialErrorMessage])
   
   return (
     <>
@@ -256,7 +312,7 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
             Loading...
           </div>
         ) : errorMessage ? (
-          <div className="orange bold">
+          <div className="center orange bold">
             <br />
             {errorMessage}
           </div>
@@ -312,13 +368,13 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
               </table>
 
               <div className="flex flex-center" style={{ gap: '10px' }}>
-                {data.node?.PreviousTxnLgrSeq && data.node?.PreviousTxnLgrSeq !== data.ledger_index && (
+                {data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index && (
                   <Link href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`} className="button-action w-full word-break">
                     Previous version (by ledger)
                   </Link>
                 )}
 
-                {data.node?.PreviousTxnID && (
+                {data?.node?.PreviousTxnID && (
                   <Link href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`} className="button-action w-full">
                     Previous version (by tx)
                   </Link>
@@ -353,7 +409,15 @@ export default function LedgerObject({ data: initialData, rawData: initialRawDat
                   <tr>
                     <td>Raw JSON</td>
                     <td>
-                      <span className="link" onClick={() => setShowRaw(!showRaw)}>
+                      <span
+                        className="link"
+                        onClick={async () => {
+                          if (!showRaw && !rawData) {
+                            await fetchRaw()
+                          }
+                          setShowRaw(!showRaw)
+                        }}
+                      >
                         {showRaw ? 'hide' : 'show'}
                       </span>
                     </td>
