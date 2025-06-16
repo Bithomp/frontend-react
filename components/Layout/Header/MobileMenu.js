@@ -312,9 +312,6 @@ export default function MobileMenu({
           <Link href="/whales" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.network.top-transfers-24h')}
           </Link>
-          <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            Tokens
-          </Link>
           <Link href="/domains" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.network.verified-domains')}
           </Link>
