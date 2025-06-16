@@ -18,6 +18,10 @@ const TokenSelector = ({ value, onChange }) => {
 
   // Handle search with debounce
   useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
     if (searchTimeout) {
       clearTimeout(searchTimeout)
     }
@@ -59,7 +63,7 @@ const TokenSelector = ({ value, onChange }) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery])
+  }, [searchQuery, isOpen])
 
   const handleSelect = (token) => {
     onChange(token)
