@@ -8426,6 +8426,11 @@ react-onclickoutside@^6.13.0:
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.13.2.tgz#caa6df2c0cfe017506548fa810303fb85d13fb7c"
   integrity sha512-h6Hbf1c8b7tIYY4u90mDdBLY4+AGQVMFtIE89HgC0DtVCh/JfKl477gYqUtGLmjZBKK3MJxomP/lFiLbz4sq9A==
 
+react-pannellum@^0.2.16:
+  version "0.2.16"
+  resolved "https://registry.yarnpkg.com/react-pannellum/-/react-pannellum-0.2.16.tgz#adc3b30859e007e272ec34f561e737cc90e2d9b3"
+  integrity sha512-/9ObPhjUeU9dDhLxGvyckYixSU15Dr31waqS2ipZ6CzEPr2EVvEegj5SnPrCuIIZ5U+bwycaaB0ouxAeUwrSBQ==
+
 react-popper@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-2.3.0.tgz#17891c620e1320dce318bad9fede46a5f71c70ba"
