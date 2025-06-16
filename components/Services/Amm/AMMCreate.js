@@ -158,6 +158,9 @@ export default function AMMCreateForm({ setSignRequest }) {
             Create AMM
           </button>
         </div>
+        <p className="orange bold">
+          ⚠️ XRPL AMMs carry risks such as impermanent loss, sudden fund withdrawals, and market volatility. Creating unbalanced pools can increase these risks by causing poor trading rates and greater exposure to arbitrage. Always do your research and understand your risk tolerance before participating.
+        </p>
       </div>
 
       {txResult?.status === 'tesSUCCESS' && (
