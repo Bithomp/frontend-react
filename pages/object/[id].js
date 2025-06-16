@@ -11,7 +11,6 @@ import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { codeHighlight, AddressWithIconFilled, amountFormatNode, addressUsernameOrServiceLink } from '../../utils/format'
-import { avatarServer, nativeCurrency, nativeCurrenciesImages } from '../../utils'
 import { LinkTx, LedgerLink } from '../../utils/links'
 
 export async function getServerSideProps(context) {
@@ -91,15 +90,6 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
   const ledgerSeqFields = ['PreviousTxnLgrSeq']
   const objectIdFields = ['index']
 
-  const tokenIconSrc = (amount) => {
-    if (!amount) return nativeCurrenciesImages[nativeCurrency]
-    if (!amount.issuer) {
-      // native currency (special rrrrr issuer)
-      return nativeCurrenciesImages[nativeCurrency]
-    }
-    return avatarServer + amount.issuer
-  }
-
   const detailsTable = () => {
     if (!data?.node) return null
 
@@ -115,92 +105,95 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
       return val?.toString()
     }
 
-    const rows = Object.entries(data.node).map(([key, value]) => {
-      // Link for transaction id
-      if (txIdFields.includes(key) && typeof value === 'string') {
-        return (
-          <tr key={key}>
-            <td>{key}</td>
-            <td>
-              <LinkTx tx={value} short={12} />
-            </td>
-          </tr>
-        )
-      }
+    // First render LedgerEntryType if it exists
+    const ledgerEntryTypeRow = data.node.LedgerEntryType ? (
+      <tr key="LedgerEntryType">
+        <td><strong>LedgerEntryType</strong></td>
+        <td><strong>{data.node.LedgerEntryType}</strong></td>
+      </tr>
+    ) : null
 
-      // Link for ledger sequence number
-      if (ledgerSeqFields.includes(key) && (typeof value === 'number' || typeof value === 'string')) {
-        return (
-          <tr key={key}>
-            <td>{key}</td>
-            <td>
-              <LedgerLink version={value} />
-            </td>
-          </tr>
-        )
-      }
+    const rows = Object.entries(data.node)
+      .filter(([key]) => key !== 'LedgerEntryType') // Exclude LedgerEntryType from regular rows
+      .map(([key, value]) => {
+        // Link for transaction id
+        if (txIdFields.includes(key) && typeof value === 'string') {
+          return (
+            <tr key={key}>
+              <td>{key}</td>
+              <td>
+                <LinkTx tx={value} short={12} />
+              </td>
+            </tr>
+          )
+        }
 
-      // Link for object index (hash)
-      if (objectIdFields.includes(key) && typeof value === 'string') {
-        return (
-          <tr key={key}>
-            <td>{key}</td>
-            <td>
-              <Link href={`/object/${value}`}>{value}</Link>
-            </td>
-          </tr>
-        )
-      }
+        // Link for ledger sequence number
+        if (ledgerSeqFields.includes(key) && (typeof value === 'number' || typeof value === 'string')) {
+          return (
+            <tr key={key}>
+              <td>{key}</td>
+              <td>
+                <LedgerLink version={value} />
+              </td>
+            </tr>
+          )
+        }
 
-      // Amount-like fields (objects with value/currency/issuer)
-      if (amountFields.includes(key) && typeof value === 'object') {
+        // Link for object index (hash)
+        if (objectIdFields.includes(key) && typeof value === 'string') {
+          return (
+            <tr key={key}>
+              <td>{key}</td>
+              <td>
+                <Link href={`/object/${value}`}>{value}</Link>
+              </td>
+            </tr>
+          )
+        }
+
+        // Amount-like fields (objects with value/currency/issuer)
+        if (amountFields.includes(key) && typeof value === 'object') {
+          return (
+            <tr key={key}>
+              <td>{key}</td>
+              <td>
+                {amountFormatNode(value)}{' '}
+                {value?.issuer && (
+                  <>
+                    ({addressUsernameOrServiceLink(value, 'issuer', { short: true })})
+                  </>
+                )}
+              </td>
+            </tr>
+          )
+        }
+        if (addressFields.includes(key)) {
+          return (
+            <tr key={key}>
+              <td>{key}</td>
+              <td>
+                <AddressWithIconFilled data={data.node} name={key} copyButton={true} />
+              </td>
+            </tr>
+          )
+        }
+        if (key === 'previousTxAt') {
+          return (
+            <tr key={key}>
+              <td>{key}</td>
+              <td>{new Date(value * 1000).toISOString()}</td>
+            </tr>
+          )
+        }
+        
         return (
           <tr key={key}>
             <td>{key}</td>
-            <td>
-              <img
-                src={tokenIconSrc(value)}
-                alt="token icon"
-                width="18"
-                height="18"
-                style={{ verticalAlign: 'text-bottom', marginRight: 4 }}
-              />
-              {amountFormatNode(value)}{' '}
-              {value?.issuer && (
-                <>
-                  ({addressUsernameOrServiceLink(value, 'issuer', { short: true })})
-                </>
-              )}
-            </td>
+            <td>{renderValue(value)}</td>
           </tr>
         )
-      }
-      if (addressFields.includes(key)) {
-        return (
-          <tr key={key}>
-            <td>{key}</td>
-            <td>
-              <AddressWithIconFilled data={data.node} name={key} copyButton={true} />
-            </td>
-          </tr>
-        )
-      }
-      if (key === 'previousTxAt') {
-        return (
-          <tr key={key}>
-            <td>{key}</td>
-            <td>{new Date(value * 1000).toISOString()}</td>
-          </tr>
-        )
-      }
-      
-      return (
-        <tr key={key}>
-          <td>{key}</td>
-          <td>{renderValue(value)}</td>
-        </tr>
-      )
-    })
+      })
 
     return (
       <table className="table-details">
@@ -209,7 +202,10 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
             <th colSpan="2">Ledger Entry Details</th>
           </tr>
         </thead>
-        <tbody>{rows}</tbody>
+        <tbody>
+          {ledgerEntryTypeRow}
+          {rows}
+        </tbody>
       </table>
     )
   } 
@@ -304,7 +300,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
     <>
       <SEO title={data?.node?.LedgerEntryType} description="Ledger object details" />
       <SearchBlock tab="object" searchPlaceholderText="Search by LedgerEntry" />
-      <div className="content-profile account short-top">
+      <div className="content-profile object short-top">
         {loading ? (
           <div className="center" style={{ marginTop: '80px' }}>
             <span className="waiting"></span>
@@ -319,8 +315,6 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
         ) : (
           <>
             <div className="column-left">
-              <h1>{data?.node?.LedgerEntryType}</h1>
-
               {/* Time machine */}
               <table className="table-details">
                 <thead>
@@ -345,10 +339,10 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                           showYearDropdown
                         />
                       </div>
-                      <div className="flex flex-center" style={{ gap: '10px' }}>
+                      <div className="flex flex-wrap gap-2">
                         <button
                           onClick={() => setLedgerDate(ledgerDateInput)}
-                          className="button-action thin button-wide w-full"
+                          className="button-action button-wide thin w-full"
                         >
                           Update
                         </button>{' '}
@@ -357,7 +351,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                             setLedgerDate(null)
                             setLedgerDateInput(null)
                           }}
-                          className="button-action thin button-wide w-full"
+                          className="button-action button-wide thin w-full"
                         >
                           Reset
                         </button>
@@ -367,15 +361,15 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                 </tbody>
               </table>
 
-              <div className="flex flex-center" style={{ gap: '10px' }}>
+              <div className="flex flex-col gap-2">
                 {data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index && (
-                  <Link href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`} className="button-action w-full word-break">
+                  <Link href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`} className="button-action center">
                     Previous version (by ledger)
                   </Link>
                 )}
 
                 {data?.node?.PreviousTxnID && (
-                  <Link href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`} className="button-action w-full">
+                  <Link href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`} className="button-action center">
                     Previous version (by tx)
                   </Link>
                 )}
