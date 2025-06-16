@@ -12,6 +12,7 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { codeHighlight, AddressWithIconFilled, amountFormatNode, addressUsernameOrServiceLink } from '../../utils/format'
 import { LinkTx, LedgerLink } from '../../utils/links'
+import { object } from '../../styles/pages/object.module.scss'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -298,132 +299,134 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
   
   return (
     <>
-      <SEO title={data?.node?.LedgerEntryType} description="Ledger object details" />
-      <SearchBlock tab="object" searchPlaceholderText="Search by LedgerEntry" />
-      <div className="content-profile object short-top">
-        {loading ? (
-          <div className="center" style={{ marginTop: '80px' }}>
-            <span className="waiting"></span>
-            <br />
-            Loading...
-          </div>
-        ) : errorMessage ? (
-          <div className="center orange bold">
-            <br />
-            {errorMessage}
-          </div>
-        ) : (
-          <>
-            <div className="column-left">
-              {/* Time machine */}
-              <table className="table-details">
-                <thead>
-                  <tr>
-                    <th colSpan="2">Time Machine</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colSpan="2" className="no-padding">
-                      <div className="time-machine">
-                        <DatePicker
-                          selected={ledgerDateInput || new Date()}
-                          onChange={setLedgerDateInput}
-                          selectsStart
-                          showTimeInput
-                          timeInputLabel="Time"
-                          maxDate={new Date()}
-                          dateFormat="yyyy/MM/dd HH:mm:ss"
-                          className="dateAndTimeRange"
-                          showMonthDropdown
-                          showYearDropdown
-                        />
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          onClick={() => setLedgerDate(ledgerDateInput)}
-                          className="button-action button-wide thin w-full"
-                        >
-                          Update
-                        </button>{' '}
-                        <button
-                          onClick={() => {
-                            setLedgerDate(null)
-                            setLedgerDateInput(null)
-                          }}
-                          className="button-action button-wide thin w-full"
-                        >
-                          Reset
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div className="flex flex-col gap-2">
-                {data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index && (
-                  <Link href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`} className="button-action center">
-                    Previous version (by ledger)
-                  </Link>
-                )}
-
-                {data?.node?.PreviousTxnID && (
-                  <Link href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`} className="button-action center">
-                    Previous version (by tx)
-                  </Link>
-                )}
-              </div>
+      <div className={object}>
+        <SEO title={data?.node?.LedgerEntryType} description="Ledger object details" />
+        <SearchBlock tab="object" searchPlaceholderText="Search by LedgerEntry" />
+        <div className="content-profile short-top">
+          {loading ? (
+            <div className="center" style={{ marginTop: '80px' }}>
+              <span className="waiting"></span>
               <br />
+              Loading...
             </div>
-            <div className="column-right">
-              {detailsTable()}
+          ) : errorMessage ? (
+            <div className="center orange bold">
+              <br />
+              {errorMessage}
+            </div>
+          ) : (
+            <>
+              <div className="column-left">
+                {/* Time machine */}
+                <table className="table-details">
+                  <thead>
+                    <tr>
+                      <th colSpan="2">Time Machine</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colSpan="2" className="no-padding">
+                        <div className="time-machine">
+                          <DatePicker
+                            selected={ledgerDateInput || new Date()}
+                            onChange={setLedgerDateInput}
+                            selectsStart
+                            showTimeInput
+                            timeInputLabel="Time"
+                            maxDate={new Date()}
+                            dateFormat="yyyy/MM/dd HH:mm:ss"
+                            className="dateAndTimeRange"
+                            showMonthDropdown
+                            showYearDropdown
+                          />
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            onClick={() => setLedgerDate(ledgerDateInput)}
+                            className="button-action button-wide thin w-full"
+                          >
+                            Update
+                          </button>{' '}
+                          <button
+                            onClick={() => {
+                              setLedgerDate(null)
+                              setLedgerDateInput(null)
+                            }}
+                            className="button-action button-wide thin w-full"
+                          >
+                            Reset
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
 
-              {data?.metadata && (
+                <div className="flex flex-col gap-2">
+                  {data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index && (
+                    <Link href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`} className="button-action center">
+                      Previous version (by ledger)
+                    </Link>
+                  )}
+
+                  {data?.node?.PreviousTxnID && (
+                    <Link href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`} className="button-action center">
+                      Previous version (by tx)
+                    </Link>
+                  )}
+                </div>
+                <br />
+              </div>
+              <div className="column-right">
+                {detailsTable()}
+
+                {data?.metadata && (
+                  <table className="table-details">
+                    <tbody>
+                      <tr>
+                        <td>Metadata</td>
+                        <td>
+                          <span className="link" onClick={() => setShowMetadata(!showMetadata)}>
+                            {showMetadata ? 'hide' : 'show'}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                )}
+
+                <div className={'slide ' + (showMetadata ? 'opened' : 'closed')}>
+                  {showMetadata && codeHighlight(data.metadata)}
+                </div>
+
                 <table className="table-details">
                   <tbody>
                     <tr>
-                      <td>Metadata</td>
+                      <td>Raw JSON</td>
                       <td>
-                        <span className="link" onClick={() => setShowMetadata(!showMetadata)}>
-                          {showMetadata ? 'hide' : 'show'}
+                        <span
+                          className="link"
+                          onClick={async () => {
+                            if (!showRaw && !rawData) {
+                              await fetchRaw()
+                            }
+                            setShowRaw(!showRaw)
+                          }}
+                        >
+                          {showRaw ? 'hide' : 'show'}
                         </span>
                       </td>
                     </tr>
                   </tbody>
                 </table>
-              )}
-
-              <div className={'slide ' + (showMetadata ? 'opened' : 'closed')}>
-                {showMetadata && codeHighlight(data.metadata)}
+                <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>
+                  {showRaw && codeHighlight(rawData)}
+                </div>
               </div>
-
-              <table className="table-details">
-                <tbody>
-                  <tr>
-                    <td>Raw JSON</td>
-                    <td>
-                      <span
-                        className="link"
-                        onClick={async () => {
-                          if (!showRaw && !rawData) {
-                            await fetchRaw()
-                          }
-                          setShowRaw(!showRaw)
-                        }}
-                      >
-                        {showRaw ? 'hide' : 'show'}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>
-                {showRaw && codeHighlight(rawData)}
-              </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
     </>
   )
