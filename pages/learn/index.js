@@ -50,6 +50,13 @@ const learnContentXRP = [
       { title: 'Verified Domain', slug: 'verified-domain' },
     ],
   },
+  {
+    category: 'Bithomp Tools',
+    description: 'Learn how to get the most out of Bithomp’s powerful explorer.',
+    items: [
+      { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
+    ],
+  },
 ]
 
 const learnContentXAHAU = [
@@ -60,6 +67,13 @@ const learnContentXAHAU = [
       { title: 'Blackholed Address', slug: 'blackholed-address' },
       { title: 'Blacklisted Address', slug: 'blacklisted-address' },
       { title: 'Verified Domain', slug: 'verified-domain' },
+    ],
+  },
+  {
+    category: 'Bithomp Tools',
+    description: 'Learn how to get the most out of Bithomp’s powerful explorer.',
+    items: [
+      { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
     ],
   },
 ]
