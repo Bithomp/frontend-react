@@ -54,7 +54,8 @@ const pages = [
   { loc: 'blacklisted-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'blackholed-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'verified-domains', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'jobs', changefreq: 'monthly', priority: '0.5' }
+  { loc: 'jobs', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'explorer-advantages', changefreq: 'monthly', priority: '0.5' },
 ]
 
 //network specific pages
@@ -100,7 +101,14 @@ function generateSiteMap(posts) {
     'whales/receivers',
     'whales/senders',
     'whales/submitters',
-    'services/nft-mint'
+    'services/nft-mint',
+    'learn',
+    'learn/blackholed-address',
+    'learn/blacklisted-address',
+    'learn/verified-domain',
+    'learn/ripple-usd',
+    'learn/what-is-xrp',
+    'learn/what-is-ripple',
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
