@@ -38,10 +38,14 @@ export default function Ads({ showAds, heightNoAds }) {
           </div>
         </a>
         <a href="/go/play-xrp" target="_blank" rel="noreferrer">
-          <div className="brand-item">
-            <img src="/images/sponsored/xbit.png" className="brand-item-icon" alt="play xrp" />
-            <div className="brand-item-title">Play Crypto</div>
-            <div className="brand-item-text">Welcome bonus up to 7 BTC + 250 free spins.</div>
+          <div className="brand-item xbit">
+            <img
+              src={theme === 'dark' ? '/images/sponsored/xbit-white.png' : '/images/sponsored/xbit.png'}
+              className="brand-item-icon"
+              alt="play xrp"
+            />
+            <div className="brand-item-title">Bet in crypto</div>
+            <div className="brand-item-text">Get bonus up to 7BTC+250FS with no KYC.</div>
           </div>
         </a>
         {/*

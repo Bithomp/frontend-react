@@ -352,7 +352,7 @@ export default function NftVolumes({
           ) : (
             <>
               {chartIssuers.length > 0 && chartVolumes.length > 0 && (
-                <div className="flex" style={{ marginLeft: '10px', justifyContent: 'center' }}>
+                <div className="flex-container" style={{ marginLeft: '10px', justifyContent: 'center' }}>
                   <div style={chartDivStyle}>
                     <h3>
                       {t('sales-chart', { ns: 'nft-volumes' })} / {t('volumes-chart', { ns: 'nft-volumes' })} (

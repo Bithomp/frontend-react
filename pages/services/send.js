@@ -1,7 +1,7 @@
 import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { useWidth, addAndRemoveQueryParams } from '../../utils'
+import { addAndRemoveQueryParams } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import CheckBox from '../../components/UI/CheckBox'
 import AddressInput from '../../components/UI/AddressInput'
@@ -28,7 +28,6 @@ export default function Send({
   invoiceIdQuery
 }) {
   const { t } = useTranslation()
-  const width = useWidth()
   const router = useRouter()
   const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
   const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
@@ -228,7 +227,7 @@ export default function Send({
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
           />
-          {width > 1100 && <br />}
+          <div className="form-spacing" />
           <FormInput
             title={t('table.destination-tag')}
             placeholder={t('form.placeholder.destination-tag')}
@@ -238,7 +237,7 @@ export default function Send({
             defaultValue={destinationTag}
           />
           <div className="form-input">
-            {width > 1100 && <br />}
+            <div className="form-spacing" />
             <span className="input-title">{t('table.amount')}</span>
             <input
               placeholder={'Enter amount in ' + nativeCurrency}
@@ -254,7 +253,7 @@ export default function Send({
             />
           </div>
           <div className="form-input">
-            {width > 1100 && <br />}
+            <div className="form-spacing" />
             <span className="input-title">
               {t('table.memo')} (<span className="orange">It will be public</span>)
             </span>
@@ -299,7 +298,7 @@ export default function Send({
                 />
                 {feeError && <div className="red">{feeError}</div>}
               </div>
-              {width > 1100 && <br />}
+              <div className="form-spacing" />
               <div className="form-input">
                 <span className="input-title">Source Tag</span>
                 <input
@@ -313,7 +312,7 @@ export default function Send({
                   defaultValue={sourceTag}
                 />
               </div>
-              {width > 1100 && <br />}
+              <div className="form-spacing" />
               <div className="form-input">
                 <span className="input-title">Invoice ID</span>
                 <input

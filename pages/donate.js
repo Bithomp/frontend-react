@@ -71,7 +71,7 @@ export default function Donate() {
         <h1 className="center">
           {t('menu.donate')} <span className="red">❤</span>
         </h1>
-        <div className="flex">
+        <div className="flex-container">
           <div className="grey-box">
             <Image
               src="/images/donate.png"

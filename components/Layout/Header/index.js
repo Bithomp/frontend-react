@@ -276,7 +276,7 @@ export default function Header({
             <Link href="/whales">{t('menu.network.top-transfers-24h')}</Link>
 
             {/* Hide Verified Domains for XAHAU while they are not ready yet */}
-            {!xahauNetwork && <Link href="/domains">{t('menu.network.verified-domains')}</Link>}
+            <Link href="/domains">{t('menu.network.verified-domains')}</Link>
             <Link href="/validators">{t('menu.network.validators')}</Link>
             <Link href="/amendments">{t('menu.network.amendments')}</Link>
             {!(xahauNetwork && devNet) && <Link href="/nodes">{t('menu.network.nodes')}</Link>}

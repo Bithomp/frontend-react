@@ -321,13 +321,9 @@ export default function MobileMenu({
           <Link href="/whales" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.network.top-transfers-24h')}
           </Link>
-
-          {/* Hide Verified Domains for XAHAU while they are not ready yet */}
-          {!xahauNetwork && (
-            <Link href="/domains" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t('menu.network.verified-domains')}
-            </Link>
-          )}
+          <Link href="/domains" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.network.verified-domains')}
+          </Link>
 
           <Link href="/validators" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.network.validators')}

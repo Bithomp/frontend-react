@@ -215,7 +215,7 @@ export default function Ledger({ pageMeta, ledgerIndexQuery }) {
             )}
           </>
         ) : (
-          <div className="flex">
+          <div className="flex-container">
             <div className="grey-box">
               {!ledgerVersion && ledgerVersion !== '' ? (
                 <p className="center">{t('ledger-not-found', { ns: 'ledger' })}</p>
