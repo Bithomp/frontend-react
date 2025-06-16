@@ -443,7 +443,7 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
               <>
                 {width > 851 && <br />}
                 <br />
-                <div className="flex flex-center">
+                <div className="flex-container flex-center">
                   <span style={width > 851 ? { width: 'calc(70% - 20px)' } : { width: '100%', marginBottom: '-20px' }}>
                     <AddressInput
                       title="Address or NFT"

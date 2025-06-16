@@ -511,7 +511,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
       <div className="content-text">
         <h1 className="center">{t('menu.network.validators')}</h1>
         <NetworkPagesTab tab="validators" />
-        <div className="flex center">
+        <div className="flex-container center">
           <div className="grey-box">
             {validators && (
               <Trans i18nKey="text0" ns="validators">
@@ -531,7 +531,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
           </div>
         </div>
 
-        <div className="flex flex-center">
+        <div className="flex-container flex-center">
           {developerMode && (
             <div className="div-with-table">
               <h4 className="center">Versions</h4>
@@ -831,7 +831,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                       {v.serverCountry?.length === 2 && (
                         <p>
                           {t('table.server-country', { ns: 'validators' })}:{' '}
-                          {countries.getNameTranslated(fixCountry(v.serverCountry))}{' '}
+                          {countries?.getNameTranslated(fixCountry(v.serverCountry))}{' '}
                           <ReactCountryFlag
                             countryCode={fixCountry(v.serverCountry)}
                             style={{

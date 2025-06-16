@@ -24,6 +24,11 @@ body {
   --green: #14913E;
   --orange: #FCAC45;
   --purple: #800080;
+  // Card variables
+  --card-shadow: #000;
+  --card-border: #000;
+  --card-bg: #fff;
+  --card-text: #000;
   }
   body.dark {
   --background-header: #031B21;
@@ -51,6 +56,11 @@ body {
   --green: #62C683;
   --orange: #FAD29E;
   --purple: #EE82EE;
+  // Card variables
+  --card-shadow: #666;
+  --card-border: #666;
+  --card-bg: #1a1a1a;
+  --card-text: #fff;
   }
   
   body[data-networkname*="xahau"] {

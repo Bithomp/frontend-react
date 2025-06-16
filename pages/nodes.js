@@ -74,7 +74,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
           {data?.crawl_time && <> (updated {timeFromNow(data.crawl_time, i18n)}).</>}
         </p>
 
-        <div className="flex flex-center">
+        <div className="flex-container flex-center">
           <div className="div-with-table">
             <h4 className="center">Versions</h4>
             {data?.summary?.versions?.length > 0 && (

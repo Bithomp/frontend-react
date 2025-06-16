@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import ExpirationSelect from '../UI/ExpirationSelect'
 import CheckBox from '../UI/CheckBox'
-import { isAddressValid, typeNumberOnly } from '../../utils'
+import { isAddressValid, typeNumberOnly, useWidth } from '../../utils'
 import AddressInput from '../UI/AddressInput'
 import { amountFormat } from '../../utils/format'
 
 export default function NFTokenCreateOffer({ signRequest, setSignRequest, setStatus, setFormError }) {
   const { t } = useTranslation()
+  const width = useWidth()
 
   const [privateOffer, setPrivateOffer] = useState(false)
 
@@ -102,7 +103,7 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
       ) : (
         <div className="center">
           <br />
-          <span className={xls35Sell ? 'halv xahOnly' : 'quarter xrpOnly'}>
+          <span className={xls35Sell ? 'halv xahOnly' : width > 480 ? 'quarter xrpOnly' : 'halv xrpOnly'}>
             <span className="input-title">{t('signin.amount.set-price')}</span>
             <input
               placeholder={t('signin.amount.enter-amount')}
@@ -117,7 +118,7 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
             />
           </span>
           {!xls35Sell && (
-            <span className="quarter">
+            <span className={width > 480 ? 'quarter' : 'halv'}>
               <span className="input-title">{t('signin.expiration')}</span>
               <ExpirationSelect onChange={onExpirationChange} />
             </span>

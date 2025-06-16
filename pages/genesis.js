@@ -66,7 +66,7 @@ export default function Genesis() {
 
         {/* TODO add description for other networks like in ledger/[[...ledgerindex]].js */}
         {network === 'mainnet' && (
-          <div className="flex">
+          <div className="flex-container">
             <div className="grey-box">
               <Trans i18nKey="genesis.text0">
                 The ledger <b>32570</b> is the earliest ledger available, approximately the first week of XRPL history,

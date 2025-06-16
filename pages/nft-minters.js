@@ -200,7 +200,7 @@ export default function NftMinters({ periodQuery }) {
             tabs={true}
           />
         </div>
-        <div className="flex">
+        <div className="flex-container">
           <div className="grey-box">{t('desc', { ns: 'nft-minters' })}</div>
           <div className="grey-box">
             {loading ? (
