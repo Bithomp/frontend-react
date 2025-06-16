@@ -7,7 +7,8 @@ import { useState, useEffect } from 'react'
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
-import FormInput from '../components/UI/FormInput'
+import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
+import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import { AddressWithIcon, niceCurrency, shortAddress, shortNiceNumber } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -21,7 +22,7 @@ export async function getServerSideProps (context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/trustlines/tokens?limit=100&order=trustlinesHigh',
+      url: 'v2/trustlines/tokens?limit=100&order=rating',
       headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -54,9 +55,10 @@ export default function Tokens ({
   const [marker, setMarker] = useState(initialData?.marker)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [order, setOrder] = useState('trustlinesHigh')
-  const [search, setSearch] = useState('')
+  const [order, setOrder] = useState('rating')
   const [filtersHide, setFiltersHide] = useState(false)
+  const [issuer, setIssuer] = useState('')
+  const [currency, setCurrency] = useState('')
 
   const controller = new AbortController()
 
@@ -64,13 +66,15 @@ export default function Tokens ({
   const apiUrl = (options = {}) => {
     const limit = 100
     const parts = []
-    if (search) {
-      parts.push(`v2/trustlines/tokens/search/${encodeURIComponent(search)}`)
-    } else {
-      parts.push('v2/trustlines/tokens')
-    }
+    parts.push('v2/trustlines/tokens')
     parts.push(`?limit=${limit}`)
     parts.push(`&order=${order}`)
+    if (issuer) {
+      parts.push(`&issuer=${encodeURIComponent(issuer)}`)
+    }
+    if (currency) {
+      parts.push(`&currency=${encodeURIComponent(currency)}`)
+    }
     if (options.marker) {
       parts.push(`&marker=${options.marker}`)
     }
@@ -120,7 +124,7 @@ export default function Tokens ({
     setMarker('first')
     checkApi({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, search])
+  }, [order, issuer, currency])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -162,8 +166,9 @@ export default function Tokens ({
         order={order}
         setOrder={setOrder}
         orderList={[
-          { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
-          { value: 'trustlinesLow', label: 'Trustlines: Low to High' }
+          { value: 'rating', label: 'Rating: High to Low' },
+          // { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
+          // { value: 'trustlinesLow', label: 'Trustlines: Low to High' }
         ]}
         count={data?.length}
         hasMore={marker}
@@ -174,12 +179,10 @@ export default function Tokens ({
       >
         {/* Left filters */}
         <>
-          <FormInput
-            title={t('general.search') || 'Search'}
-            placeholder="Currency, issuer, or username"
-            setValue={(val) => setSearch(val)}
-            defaultValue={search}
-          />
+          <div className="flex flex-col sm:gap-4 md:h-[400px]">
+            <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
+            <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
+          </div>
         </>
         {/* Main content */}
         <InfiniteScrolling
