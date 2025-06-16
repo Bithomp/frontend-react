@@ -207,38 +207,41 @@ export default function Tokens ({
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <br />
-                      <span className="waiting"></span>
-                      <br />
-                      {t('general.loading')}
-                      <br />
-                      <br />
-                    </td>
-                  </tr>
-                ) : !errorMessage ? (
-                  data.map((token, i) => (
-                    <tr key={i}>
-                      <td className="center">{i + 1}</td>
-                      <td>
-                        <TokenCell token={token} />
-                      </td>
-                      <td className="right" suppressHydrationWarning>
-                        {shortNiceNumber(token.trustlines, 0)}
-                      </td>
-                      <td className="right" suppressHydrationWarning>
-                        {shortNiceNumber(token.holders, 0)}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
+                {errorMessage ? (
                   <tr>
                     <td colSpan="100" className="center orange bold">
                       {errorMessage}
                     </td>
                   </tr>
+                ) : (
+                  <>
+                    {data.map((token, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td>
+                          <TokenCell token={token} />
+                        </td>
+                        <td className="right" suppressHydrationWarning>
+                          {shortNiceNumber(token.trustlines, 0)}
+                        </td>
+                        <td className="right" suppressHydrationWarning>
+                          {shortNiceNumber(token.holders, 0)}
+                        </td>
+                      </tr>
+                    ))}
+                    {loading && (
+                      <tr className="center">
+                        <td colSpan="100">
+                          <br />
+                          <span className="waiting"></span>
+                          <br />
+                          {t('general.loading')}
+                          <br />
+                          <br />
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 )}
               </tbody>
             </table>
@@ -247,39 +250,42 @@ export default function Tokens ({
             <table className="table-mobile">
               <thead></thead>
               <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <br />
-                      <span className="waiting"></span>
-                      <br />
-                      {t('general.loading')}
-                      <br />
-                      <br />
-                    </td>
-                  </tr>
-                ) : !errorMessage ? (
-                  data.map((token, i) => (
-                    <tr key={i}>
-                      <td style={{ padding: '5px' }} className="center">
-                        <b>{i + 1}</b>
-                      </td>
-                      <td>
-                        <TokenCell token={token} />
-                        <p>
-                          Trustlines: {shortNiceNumber(token.trustlines, 0)}
-                          <br />
-                          Holders: {shortNiceNumber(token.holders, 0)}
-                        </p>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
+                {errorMessage ? (
                   <tr>
                     <td colSpan="100" className="center orange bold">
                       {errorMessage}
                     </td>
                   </tr>
+                ) : (
+                  <>
+                    {data.map((token, i) => (
+                      <tr key={i}>
+                        <td style={{ padding: '5px' }} className="center">
+                          <b>{i + 1}</b>
+                        </td>
+                        <td>
+                          <TokenCell token={token} />
+                          <p>
+                            Trustlines: {shortNiceNumber(token.trustlines, 0)}
+                            <br />
+                            Holders: {shortNiceNumber(token.holders, 0)}
+                          </p>
+                        </td>
+                      </tr>
+                    ))}
+                    {loading && marker === 'first' && (
+                      <tr className="center">
+                        <td colSpan="100">
+                          <br />
+                          <span className="waiting"></span>
+                          <br />
+                          {t('general.loading')}
+                          <br />
+                          <br />
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 )}
               </tbody>
             </table>
