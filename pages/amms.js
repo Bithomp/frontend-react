@@ -272,6 +272,7 @@ export default function Amms({
       </AddressWithIcon>
     )
   }
+  console.log(token)
 
   return (
     <>
@@ -315,6 +316,22 @@ export default function Amms({
         setFiltersHide={setFiltersHide}
       >
         <>
+        <div className="radio-options">
+          <div className="radio-input">
+            <input
+              type="radio"
+              name="selectCurrency"
+              checked={
+                !token?.currency
+              }
+              onChange={() => {
+                setToken({})
+              }}
+              id={'selectCurrency'}
+            />
+            <label htmlFor={'selectCurrency'}>All</label>
+          </div>
+          </div>
           <div>
             <p>{t('table.currency')}</p>
             <TokenSelector 
