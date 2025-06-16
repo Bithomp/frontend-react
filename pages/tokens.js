@@ -152,7 +152,6 @@ export default function Tokens ({
       </AddressWithIcon>
     )
   }
-  console.log(data)
 
   return (
     <>
