@@ -134,7 +134,7 @@ export default function Amms({
   useEffect(() => {
     if (token?.currency && order === 'currencyHigh') {
       if (token.currency === nativeCurrency) {
-        addAndRemoveQueryParams(router, [{ name: 'currency', value: nativeCurrency }], ['currencyIssuer', 'service', 'username'])
+        addAndRemoveQueryParams(router, [{ name: 'currency', value: nativeCurrency }], ['currencyIssuer'])
       } else if (token.issuer) {
         const params = [
           { name: 'currency', value: token.currency },
@@ -142,10 +142,10 @@ export default function Amms({
         ]
         addQueryParams(router, params)
       } else {
-        removeQueryParams(router, ['currencyIssuer', 'currency', 'service', 'username'])
+        removeQueryParams(router, ['currencyIssuer', 'currency'])
       }
     } else {
-      removeQueryParams(router, ['currencyIssuer', 'currency', 'service', 'username'])
+      removeQueryParams(router, ['currencyIssuer', 'currency'])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, order])
