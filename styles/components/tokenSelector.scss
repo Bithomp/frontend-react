@@ -99,7 +99,8 @@
       flex-direction: column;
 
       .dark & {
-        background: var(--background-input);
+        background: var(--background-block);
+        border: 1px solid var(--unaccent-icon);
       }
     }
 
