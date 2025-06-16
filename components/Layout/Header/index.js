@@ -257,6 +257,8 @@ export default function Header({
             >
               <Link href="/amms">{t('menu.amm.pools')}</Link>
               <Link href="/amm">{t('menu.amm.explorer')}</Link>
+              <Link href="/services/amm?tab=create">Create AMM</Link>
+              <Link href="/services/amm?tab=vote">AMM Vote</Link>
             </MenuDropDown>
           )}
 
