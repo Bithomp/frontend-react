@@ -10,7 +10,12 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { axiosServer, passHeaders } from '../../utils/axios'
-import { codeHighlight, AddressWithIconFilled, amountFormatNode, addressUsernameOrServiceLink } from '../../utils/format'
+import {
+  codeHighlight,
+  AddressWithIconFilled,
+  amountFormatNode,
+  addressUsernameOrServiceLink
+} from '../../utils/format'
 import { LinkTx, LedgerLink } from '../../utils/links'
 
 export async function getServerSideProps(context) {
@@ -62,7 +67,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
   // data states (will be updated by the time-machine)
   const [data, setData] = useState(initialData)
   const [rawData, setRawData] = useState(null)
-  
+
   // ui & feedback states
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [loading, setLoading] = useState(false)
@@ -75,14 +80,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
   const [ledgerDateInput, setLedgerDateInput] = useState(qsDate)
   const isFirstRender = useRef(true)
 
-  const addressFields = [
-    'Account',
-    'Owner',
-    'Destination',
-    'Issuer',
-    'SendMax',
-    'RegularKey'
-  ]
+  const addressFields = ['Account', 'Owner', 'Destination', 'Issuer', 'SendMax', 'RegularKey']
 
   const amountFields = ['Balance', 'LowLimit', 'HighLimit']
 
@@ -108,8 +106,10 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
     // First render LedgerEntryType if it exists
     const ledgerEntryTypeRow = data.node.LedgerEntryType ? (
       <tr key="LedgerEntryType">
-        <td><strong>LedgerEntryType</strong></td>
-        <td><strong>{data.node.LedgerEntryType}</strong></td>
+        <td>LedgerEntryType</td>
+        <td>
+          <strong>{data.node.LedgerEntryType}</strong>
+        </td>
       </tr>
     ) : null
 
@@ -159,11 +159,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
               <td>{key}</td>
               <td>
                 {amountFormatNode(value)}{' '}
-                {value?.issuer && (
-                  <>
-                    ({addressUsernameOrServiceLink(value, 'issuer', { short: true })})
-                  </>
-                )}
+                {value?.issuer && <>({addressUsernameOrServiceLink(value, 'issuer', { short: true })})</>}
               </td>
             </tr>
           )
@@ -186,7 +182,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
             </tr>
           )
         }
-        
+
         return (
           <tr key={key}>
             <td>{key}</td>
@@ -208,7 +204,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
         </tbody>
       </table>
     )
-  } 
+  }
 
   // ---------------------------------------------
   // Lazy fetch for raw JSON (only on user request)
@@ -295,7 +291,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
     setShowMetadata(false)
     setShowRaw(false)
   }, [initialData, initialErrorMessage])
-  
+
   return (
     <>
       <SEO title={data?.node?.LedgerEntryType} description="Ledger object details" />
@@ -363,13 +359,19 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
 
               <div className="flex flex-col gap-2">
                 {data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index && (
-                  <Link href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`} className="button-action center">
+                  <Link
+                    href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`}
+                    className="button-action center"
+                  >
                     Previous version (by ledger)
                   </Link>
                 )}
 
                 {data?.node?.PreviousTxnID && (
-                  <Link href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`} className="button-action center">
+                  <Link
+                    href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
+                    className="button-action center"
+                  >
                     Previous version (by tx)
                   </Link>
                 )}
@@ -418,9 +420,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                   </tr>
                 </tbody>
               </table>
-              <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>
-                {showRaw && codeHighlight(rawData)}
-              </div>
+              <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>{showRaw && codeHighlight(rawData)}</div>
             </div>
           </>
         )}
