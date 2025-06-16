@@ -96,7 +96,7 @@ export default function AMMCreateForm({ setSignRequest }) {
   return (
     <div className="form-container">
       <div>
-        <div className="flex flex-col sm:flex-row">
+        <div className="flex flex-col sm:gap-4 sm:flex-row">
             <div className="flex-1">
               <FormInput
               title="Asset 1 Amount"
@@ -113,7 +113,7 @@ export default function AMMCreateForm({ setSignRequest }) {
             </div>        
         </div>
         <br />
-        <div className="flex flex-col sm:flex-row">
+        <div className="flex flex-col sm:gap-4 sm:flex-row">
             <div className="flex-1">
                 <FormInput
                 title="Asset 2 Amount"
