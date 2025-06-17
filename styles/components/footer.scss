@@ -2,42 +2,57 @@ footer {
   position: relative;
   background-color: var(--background-footer);
   color: var(--text-contrast);
-  transition: background-color .5s, color .5s;
-  min-height: 257px;
-  a, .link {
+  transition: background-color 0.5s, color 0.5s;
+  padding: 2rem 1rem;
+
+  a,
+  .link {
     color: var(--footer-link);
     &:hover {
       color: var(--footer-link-hover);
     }
   }
-  @media screen and (max-width: 1300px) {
-    min-height: 476px;
+
+  @media (min-width: 1024px) {
+    padding: 2rem;
   }
-  @media screen and (max-width: 600px) {
-    min-height: 565px;
-  }
-  @media screen and (max-width: 376px) {
-    min-height: 824px;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
   }
 }
 
 .footer-menu {
-  display: inline-block;
-  margin-top: 20px;
-  margin-left: 20px;
-  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem 3rem;
+  justify-content: center;
+  text-align: center;
+  flex-grow: 1;
 
   a,
   .link {
     display: block;
     margin: 5px 0;
   }
+
+  @media (min-width: 1024px) {
+    justify-content: flex-start;
+    text-align: left;
+  }
 }
 
 .footer-menu-column {
-  display: inline-block;
-  margin-right: 50px;
-  vertical-align: top;
+  min-width: 160px;
   margin-bottom: 10px;
   font-size: 14px;
 }
@@ -46,26 +61,34 @@ footer {
   text-transform: uppercase;
   font-size: 12px;
   line-height: 17px;
+  font-weight: bold;
 }
 
 .footer-brand {
-  vertical-align: top;
-  margin-top: 20px;
-  margin-right: 20px;
-  float: right;
-  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
 
   .footer-logo {
     width: 139px;
     height: 40px;
-    float: right;
-    margin-bottom: 5px;
+    order: -1; /* Show logo on top on mobile */
   }
 
-  .footer-brand-text{
-    clear: both;
+  .footer-brand-text {
     line-height: 20px;
     font-size: 14px;
+  }
+
+  @media (min-width: 1024px) {
+    align-items: flex-start;
+    text-align: left;
+
+    .footer-logo {
+      order: 0;
+    }
   }
 }
 
@@ -84,17 +107,4 @@ footer {
   padding: 20px;
   background-color: var(--background-contrast);
   color: var(--text-oposite);
-}
-
-@media only screen and (max-width: 1024px) {
-  .footer-brand {
-    margin-left: 20px;
-    margin-top: 0;
-    float: none;
-    text-align: center;
-
-    .footer-logo {
-      display: none;
-    }
-  }
 }
