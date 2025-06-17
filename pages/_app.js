@@ -10,8 +10,9 @@ const SignForm = dynamic(() => import('../components/SignForm'), { ssr: false })
 import TopLinks from '../components/Layout/TopLinks'
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
-import { IsSsrMobileContext } from '../utils/mobile'
-import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork, networkId } from '../utils'
+import { IsSsrMobileContext } from '@/utils/mobile'
+import { getBackgroundImage } from '@/utils/backgroundImage'
+import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork, networkId } from '@/utils'
 
 import { getAppMetadata } from '@walletconnect/utils'
 const WalletConnectModalSign = dynamic(
@@ -29,7 +30,6 @@ import { fetchCurrentFiatRate } from '../utils/common'
 const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
 const ScrollToTop = dynamic(() => import('../components/Layout/ScrollToTop'), { ssr: true })
-const BackgroundImage = dynamic(() => import('../components/Layout/BackgroundImage'), { ssr: true })
 
 function useIsBot() {
   const [isBot, setIsBot] = useState(false)
@@ -165,7 +165,11 @@ const MyApp = ({ Component, pageProps }) => {
       </Head>
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
         <ThemeProvider>
-          <div className="body" data-network={network}>
+          <div
+            className="body"
+            data-network={network}
+            style={{ backgroundImage: getBackgroundImage() }}
+          >
             <Header
               setSignRequest={setSignRequest}
               account={account}
@@ -214,7 +218,6 @@ const MyApp = ({ Component, pageProps }) => {
                 fiatRate={fiatRate}
               />
             </div>
-            <BackgroundImage />
             <Footer setSignRequest={setSignRequest} account={account} />
           </div>
         </ThemeProvider>
