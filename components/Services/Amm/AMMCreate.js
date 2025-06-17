@@ -16,6 +16,7 @@ export default function AMMCreateForm({ setSignRequest }) {
   const [tradingFee, setTradingFee] = useState()
   const [error, setError] = useState('')
   const [agreeToTerms, setAgreeToTerms] = useState(false)
+  const [agreeToRisks, setAgreeToRisks] = useState(false)
   const [txResult, setTxResult] = useState(null)
 
   const onSubmit = () => {
@@ -38,6 +39,10 @@ export default function AMMCreateForm({ setSignRequest }) {
     }
     if (tradingFee && (isNaN(parseFloat(tradingFee)) || parseFloat(tradingFee) < 0 || parseFloat(tradingFee) > 1)) {
       setError('Please enter a valid trading fee between 0 and 1 (percent).')
+      return
+    }
+    if (!agreeToRisks) {
+      setError('Please agree to the risks.')
       return
     }
     if (!agreeToTerms) {
@@ -139,6 +144,11 @@ export default function AMMCreateForm({ setSignRequest }) {
           hideButton={true}
         />
         <br />
+        <CheckBox checked={agreeToRisks} setChecked={setAgreeToRisks} name="amm-create-risks">
+          <span className="orange bold">
+            I acknowledge and understand the risks associated with XRPL AMMs, including impermanent loss, fund withdrawal risks, market volatility, and the impact of creating unbalanced pools. I agree to participate at my own risk.
+          </span>
+        </CheckBox>
         <CheckBox checked={agreeToTerms} setChecked={setAgreeToTerms} name="amm-create-terms">
           I agree with the{' '}
           <Link href="/terms-and-conditions" target="_blank">
@@ -157,10 +167,7 @@ export default function AMMCreateForm({ setSignRequest }) {
           <button className="button-action" onClick={onSubmit}>
             Create AMM
           </button>
-        </div>
-        <p className="orange bold">
-          ⚠️ XRPL AMMs carry risks such as impermanent loss, sudden fund withdrawals, and market volatility. Creating unbalanced pools can increase these risks by causing poor trading rates and greater exposure to arbitrage. Always do your research and understand your risk tolerance before participating.
-        </p>
+        </div>        
       </div>
 
       {txResult?.status === 'tesSUCCESS' && (

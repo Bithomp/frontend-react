@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import Link from 'next/link'
-import CheckBox from '../../UI/CheckBox'
 import FormInput from '../../UI/FormInput'
 import { nativeCurrency, typeNumberOnly } from '../../../utils'
 import TokenSelector from '../../UI/TokenSelector'
@@ -13,7 +11,6 @@ export default function AMMVoteForm({ setSignRequest }) {
 
   const [tradingFee, setTradingFee] = useState()
   const [error, setError] = useState('')
-  const [agreeToTerms, setAgreeToTerms] = useState(false)
   const [txResult, setTxResult] = useState(null)
 
   const onSubmit = () => {
@@ -29,10 +26,6 @@ export default function AMMVoteForm({ setSignRequest }) {
     
     if (tradingFee && (isNaN(parseFloat(tradingFee)) || parseFloat(tradingFee) < 0 || parseFloat(tradingFee) > 1)) {
       setError('Please enter a valid trading fee between 0 and 1 (percent).')
-      return
-    }
-    if (!agreeToTerms) {
-      setError('Please agree to the terms and conditions.')
       return
     }
     
@@ -107,14 +100,6 @@ export default function AMMVoteForm({ setSignRequest }) {
           onKeyPress={typeNumberOnly}
           hideButton={true}
         />
-        <br />
-        <CheckBox checked={agreeToTerms} setChecked={setAgreeToTerms} name="amm-create-terms">
-          I agree with the{' '}
-          <Link href="/terms-and-conditions" target="_blank">
-            Terms and conditions
-          </Link>
-          .
-        </CheckBox>
         {error && (
           <>
             <br />
@@ -124,7 +109,7 @@ export default function AMMVoteForm({ setSignRequest }) {
         <br />
         <div className="center">
           <button className="button-action" onClick={onSubmit}>
-            Submit AMMVote
+           Vote
           </button>
         </div>
       </div>

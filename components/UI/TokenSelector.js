@@ -28,10 +28,10 @@ const TokenSelector = ({ value, onChange }) => {
         try {
           const response = await axios('v2/trustlines/tokens')
           const tokens = response.data?.tokens || []
-          setSearchResults([nativeCurrency, ...tokens])
+          setSearchResults([{currency: nativeCurrency}, ...tokens])
         } catch (error) {
           console.error('Error loading tokens:', error)
-          setSearchResults([nativeCurrency])
+          setSearchResults([{currency: nativeCurrency}])
         } finally {
           setIsLoading(false)
         }
