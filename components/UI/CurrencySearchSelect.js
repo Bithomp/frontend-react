@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { IoMdClose } from 'react-icons/io'
 import { IoSearch } from 'react-icons/io5'
+import { niceCurrency } from '../../utils/format'
 
 export default function CurrencySearchSelect({ setCurrency, defaultValue = '' }) {
   const [inputValue, setInputValue] = useState(defaultValue || '')
@@ -31,16 +32,16 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
         let list = res?.data
         if (list && list.currencies) list = list.currencies
         if (!Array.isArray(list)) list = []
-
+        
         const opts = list
           .map((item) => {
             let value = null
             if (typeof item === 'string') {
-              value = item
+              value = niceCurrency(item)
             } else if (item.currency) {
-              value = item.currency
+              value = niceCurrency(item.currency)
             } else if (item.code) {
-              value = item.code
+              value = niceCurrency(item.code)
             }
             if (!value) return null
             return { value, label: value }
@@ -110,6 +111,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
             isLoading={searchingSuggestions}
             components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
             filterOption={() => true}
+            noOptionsMessage={() => (inputValue.length > 2 ? 'No results found' : 'Start typing to search for currencies')}
           />
           <div className="form-input__btns">
             <button className="form-input__clear" onClick={clearAll}>

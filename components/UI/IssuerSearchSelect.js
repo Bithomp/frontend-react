@@ -118,6 +118,7 @@ export default function IssuerSearchSelect({ setIssuer, defaultValue = '' }) {
             instanceId="issuer-search-select"
             components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
             filterOption={() => true}
+            noOptionsMessage={() => (inputValue.length > 3 ? 'No results found' : 'Start typing to search for issuers')}
           />
           <div className="form-input__btns">
             <button className="form-input__clear" onClick={clearAll}>
