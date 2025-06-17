@@ -4,6 +4,7 @@ import axios from 'axios'
 import { IoMdClose } from 'react-icons/io'
 import { IoSearch } from 'react-icons/io5'
 import { niceCurrency } from '../../utils/format'
+import { shortName } from '../../utils'
 
 export default function CurrencySearchSelect({ setCurrency, defaultValue = '' }) {
   const [inputValue, setInputValue] = useState(defaultValue || '')
@@ -38,10 +39,19 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
             let value = null
             if (typeof item === 'string') {
               value = niceCurrency(item)
+              if (item.length > 3 && (item.substr(0, 2) === '02' || !item.match(/^[A-Za-z0-9]{3}$/))) {
+                value += ` (${shortName(item)})`
+              }
             } else if (item.currency) {
               value = niceCurrency(item.currency)
+              if (item.currency.length > 3 && (item.currency.substr(0, 2) === '02' || !item.currency.match(/^[A-Za-z0-9]{3}$/))) {
+                value += ` (${shortName(item.currency)})`
+              }
             } else if (item.code) {
               value = niceCurrency(item.code)
+              if (item.code.length > 3 && (item.code.substr(0, 2) === '02' || !item.code.match(/^[A-Za-z0-9]{3}$/))) {
+                value += ` (${shortName(item.code)})`
+              }
             }
             if (!value) return null
             return { value, label: value }

@@ -3,7 +3,8 @@ import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { IoMdClose } from 'react-icons/io'
 import { IoSearch } from 'react-icons/io5'
-import { shortAddress } from '../../utils/format'
+import { shortAddress, amountFormat } from '../../utils/format'
+import { useWidth } from '../../utils'
 
 export default function IssuerSearchSelect({ setIssuer, defaultValue = '' }) {
   // Core states
@@ -12,6 +13,7 @@ export default function IssuerSearchSelect({ setIssuer, defaultValue = '' }) {
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
   const [notEmpty, setNotEmpty] = useState(!!defaultValue)
   const debounceRef = useRef(null)
+  const windowWidth = useWidth()
 
   // fetch suggestions when inputValue changes (with debounce)
   useEffect(() => {
@@ -49,8 +51,17 @@ export default function IssuerSearchSelect({ setIssuer, defaultValue = '' }) {
               name = item.username || item.name || null
             }
             if (!address) return null
-            const label = name ? `${name} (${shortAddress(address, 6)})` : shortAddress(address, 10)
-            return { value: address, label }
+            return { 
+              value: address,
+              label: name ? `${name} (${shortAddress(address, 6)})` : shortAddress(address, 10),
+              address,
+              username: name,
+              service: item.service,
+              xaman: item.xaman,
+              verifiedDomain: item.verifiedDomain,
+              serviceDomain: item.serviceDomain,
+              balance: item.balance
+            }
           })
           .filter(Boolean)
 
@@ -110,8 +121,51 @@ export default function IssuerSearchSelect({ setIssuer, defaultValue = '' }) {
             onChange={searchOnChange}
             onInputChange={searchOnInputChange}
             inputValue={inputValue}
-            value={null}
+            value={inputValue ? { value: inputValue, label: inputValue } : null}
             options={searchSuggestions}
+            getOptionLabel={(option) => (
+              <>
+                <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address || option.issuer}</span>
+                {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
+                <b className="blue">{option.username}</b>
+                {option.service && (
+                  <>
+                    {option.username ? ' (' : ''}
+                    <b className="green">{option.service}</b>
+                    {option.username ? ')' : ''}
+                  </>
+                )}
+                {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
+                {option.verifiedDomain ? (
+                  <span className="green bold"> {option.verifiedDomain}</span>
+                ) : (
+                  option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
+                )}
+                {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
+                  option.xaman && <>, </>}
+                {option.xaman && (
+                  <>
+                    Xaman{' '}
+                    <span className="orange">
+                      {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
+                    </span>
+                    {option.xamanVerified && <> ✅</>}
+                  </>
+                )}
+                {(option.username ||
+                  option.service ||
+                  option.verifiedDomain ||
+                  option.serviceDomain ||
+                  option.xaman) && <>, </>}
+                {option.balance && (
+                  <>
+                    {' '}
+                    [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]
+                  </>
+                )}
+              </>
+            )}
+            getOptionValue={(option) => option.value}
             isClearable
             isLoading={searchingSuggestions}
             classNamePrefix="react-select"
