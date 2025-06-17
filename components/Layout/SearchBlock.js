@@ -200,7 +200,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     //nft nftOffer uriToken
     if (isIdValid(searchFor)) {
       setSearching(true)
-      const response = await axios('v3/search/' + searchFor)
+      const response = await axios('v3/search/' + searchFor)      
       setSearching(false)
       const data = response.data
       if (data.type === 'transaction') {
@@ -221,6 +221,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       }
       if (data.type === 'ledgerEntry') {
         router.push('/object/' + searchFor)
+        return
+      }
+      
+      if (data.type === 'unknown') {
+        setErrorMessage(data.error)
         return
       }
     }
