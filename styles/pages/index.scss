@@ -120,7 +120,7 @@
       }
       .tx-addresses {
         padding-left: 5px;
-        width: 65%;
+        width: 64%;
         display: inline-block;
         min-height: 22px;
         @media only screen and (max-width: 800px) {
@@ -130,7 +130,7 @@
           vertical-align: middle;
         }
         @media only screen and (max-width: 550px) {
-          width: 54%;
+          width: 50%;
         }
       }
       .tx-link {
@@ -144,12 +144,15 @@
           width: calc(4% - 5px);
           padding: 0;
         }
+        @media only screen and (max-width: 550px) {
+          width: calc(8% - 5px);
+        }
       }
       .tx-amount {
         padding-right: 5px;
         text-align: right;
         display: inline-block;
-        width: 11%;
+        width: 12%;
         @media only screen and (max-width: 800px) {
           width: 0%;
           padding-right: 0;
@@ -164,7 +167,7 @@
           width: 15%;
         }
         @media screen and (max-width: 550px) {
-          width: 24%;
+          width: 26%;
         }
       }
     }

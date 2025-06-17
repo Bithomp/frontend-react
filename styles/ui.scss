@@ -785,6 +785,14 @@ pre {
   }
 }
 
+.prose h1 {
+  font-size: 2.25rem;
+
+  @media (min-width: 640px) {
+    font-size: 3rem;
+  }
+}
+
 body.dark {
   .close-button {
     &:before {
@@ -869,4 +877,3 @@ body.dark {
 @include meta.load-css("pages/governance.scss");
 @include meta.load-css("pages/pro-history.scss");
 @include meta.load-css("pages/account-settings.scss");
-
