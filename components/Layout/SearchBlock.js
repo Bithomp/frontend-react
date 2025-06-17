@@ -223,6 +223,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         router.push('/object/' + searchFor)
         return
       }
+      
+      if (data.type === 'unknown') {
+        setErrorMessage(data.error)
+        return
+      }
     }
 
     if (isValidCTID(searchFor)) {
