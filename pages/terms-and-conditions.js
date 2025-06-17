@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
       <SEO title={t('menu.terms-and-conditions')} noindex={true} />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: June 12, 2025</p>
+        <p>Last updated: June 17, 2025</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h2>Interpretation and Definitions</h2>
         <h2>Interpretation</h2>
@@ -188,7 +188,6 @@ export default function TermsAndConditions() {
           Your privacy rights and how the law protects You. Please read Our Privacy Policy carefully before using Our
           Service.
         </p>
-
         <h2>Third-Party Content and Services</h2>
         <p>
           As a peer-to-peer web3 service, Company helps you explore Tokens (including NFTs and their content) created by
@@ -375,7 +374,6 @@ export default function TermsAndConditions() {
         </p>
         <h2>API Terms of Use</h2>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
-
         <p>
           <strong>1. Acceptance </strong>
         </p>
@@ -404,7 +402,6 @@ export default function TermsAndConditions() {
           Explorer Ltd. and yourself. This agreement holds true even though it is in electronic form and does not
           necessitate physical signing or online acknowledgment, governing your use of our Bithomp API.
         </p>
-
         <p>
           <strong>2. Definitions</strong>
         </p>
@@ -472,7 +469,6 @@ export default function TermsAndConditions() {
           Applications, Data, Services, platforms, channels, and/or products at any time, you agree not to rely on any
           function, behavior, capability, or other aspects of our Bithomp API.
         </p>
-
         <p>
           <strong>4. Scope of Use</strong>
         </p>
@@ -564,7 +560,6 @@ export default function TermsAndConditions() {
           number of call credits for your use each month ("Monthly Call Limit"). If you exceed your Monthly Call Limit
           for your subscribed plan in any given month, an additional charge per exceeded call will be levied.
         </p>
-
         <p>
           <strong>5. Payment Terms</strong>
         </p>
@@ -601,7 +596,6 @@ export default function TermsAndConditions() {
           data to the payment portal operator, acquirer, credit card association, credit card issuer, and other relevant
           third parties, as well as the transfer of your personal data outside of your country.
         </p>
-
         <p>
           <strong>6. Data Caching and Storage</strong>
         </p>
@@ -627,7 +621,6 @@ export default function TermsAndConditions() {
           store, derive from, or translate any Data, API Documentation, or information expressed by the Data (including
           but not limited to hashed or transferred data).
         </p>
-
         <p>
           <strong>7. User Agreement for your Products</strong>
         </p>
@@ -643,7 +636,6 @@ export default function TermsAndConditions() {
           protection laws applicable to you, in no event to be less stringent than the requirements thereunder our{' '}
           <Link href="/privacy-policy">Privacy policy</Link>.
         </p>
-
         <p>
           <strong>8. Security Measures</strong>
         </p>
@@ -673,7 +665,6 @@ export default function TermsAndConditions() {
           execute documents (without compensation) as Bithomp may request from you periodically to perfect Bithomp’s
           rights to our Property.
         </p>
-
         <p>
           <strong>10. Termination </strong>
         </p>
@@ -708,7 +699,6 @@ export default function TermsAndConditions() {
           provide written certification of the destruction of stored Data and information if Bithomp requests such
           certification from you.
         </p>
-
         <p>
           <strong>11. Your Warranties</strong>
         </p>
@@ -730,9 +720,7 @@ export default function TermsAndConditions() {
           any of our Property constitutes acceptance and agreement to all amendments and modifications. The effective
           date of the latest version of this API Terms is indicated at the top of the document.
         </p>
-
         <h2> Bots Terms of Use</h2>
-
         <p>
           <strong>1. General Provisions</strong>
         </p>
@@ -764,7 +752,6 @@ export default function TermsAndConditions() {
           1.7. Users are not permitted to transfer their Account data to third parties. If Account data is transferred,
           users bear full responsibility for the actions conducted by third parties using the user's Account.
         </p>
-
         <p>
           <strong>2. Terms of Use</strong>
         </p>
@@ -778,7 +765,6 @@ export default function TermsAndConditions() {
         </p>
         <p>2.3. The Platform and services are provided on an "as-is" basis.</p>
         <p>2.4. The User assumes all risks associated with the use of the Platform and services.</p>
-
         <p>2.5. The Administration is not responsible for:</p>
         <p>a) The inability to use the Platform for reasons beyond the control of the Administration.</p>
         <p>b) Any acts and/or omissions of service providers, services, networks, software, or equipment.</p>
@@ -794,7 +780,6 @@ export default function TermsAndConditions() {
           You can contact us with queries, comments, and feedback via email at{' '}
           <Mailto email="support@bithomp.com" headers={{ subject: 'Feedback' }} />
         </p>
-
         <h2>Bithomp Pro Subscription Terms of Use</h2>
         <p>
           <strong>Subscription Payment</strong>
@@ -873,20 +858,55 @@ export default function TermsAndConditions() {
         </p>
         <h2>Sending Payments, Issuing Checks, Creating Escrows - Terms of Use</h2>
         <p>
-          Users acknowledge and agree that all payments sent, checks issued, and escrows created through our platform are performed solely at
-          their own risk. Our website acts merely as a platform to facilitate the transmission of payment instructions; it
-          does not hold or control user funds or secret keys. Users are responsible for verifying the correctness of all
-          payment, check, and escrow details before submitting any transactions.
+          Users acknowledge and agree that all payments sent, checks issued, and escrows created through our platform
+          are performed solely at their own risk. Our website acts merely as a platform to facilitate the transmission
+          of payment instructions; it does not hold or control user funds or secret keys. Users are responsible for
+          verifying the correctness of all payment, check, and escrow details before submitting any transactions.
         </p>
-
         <strong>Liability Disclaimer</strong>
         <p>
           Our website shall not be held responsible for any errors, inaccuracies, or miscommunications arising from user
           input, including incorrect wallet addresses, amounts, destination tags, and invoice IDs. Users acknowledge
-          that once a payment is sent, check is issued, or escrow is created, we bear no liability for any loss, delay, or
-          unauthorized use resulting from such transactions. By using our services, you agree to hold our platform harmless
-          from any claims, damages, or losses related to payment processing, check issuance, or escrow creation.
+          that once a payment is sent, check is issued, or escrow is created, we bear no liability for any loss, delay,
+          or unauthorized use resulting from such transactions. By using our services, you agree to hold our platform
+          harmless from any claims, damages, or losses related to payment processing, check issuance, or escrow
+          creation.
         </p>
+        <h2>AMM Create Terms and Conditions</h2>
+        <p>
+          By creating an Automated Market Maker (AMM) pool on Bithomp, you agree to the following terms and conditions:
+        </p>
+        <p>
+          <strong>Risk Acknowledgment</strong>
+        </p>
+        <p>
+          You understand and accept that providing liquidity and creating AMM pools involves risks including, but not
+          limited to, impermanent loss, market volatility, and sudden liquidity withdrawals.
+        </p>
+        <p>
+          <strong>Unbalanced Pools</strong>
+        </p>
+        Creating and maintaining unbalanced pools—where the value of one asset significantly outweighs the other—may
+        increase your exposure to risks such as poor trading rates, arbitrage exploitation, and asset drain.
+        <p>
+          <strong>No Financial Advice</strong>
+        </p>
+        Bithomp does not provide financial, investment, or trading advice. You are responsible for conducting your own
+        research and making decisions based on your risk tolerance.
+        <p>
+          <strong>No Liability</strong>
+        </p>
+        Bithomp shall not be held liable for any losses, damages, or claims arising from your use of AMM pools or
+        related features.
+        <p>
+          <strong>Compliance</strong>
+        </p>
+        You agree to comply with all applicable laws, regulations, and platform policies while using AMM features.
+        <p>
+          <strong>Changes to Terms</strong>
+        </p>
+        These terms may be updated at any time without prior notice. Continued use of AMM creation features implies
+        acceptance of the updated terms.
         <h2>Termination</h2>
         <p>
           We may terminate or suspend Your access immediately, without prior notice or liability, for any reason
