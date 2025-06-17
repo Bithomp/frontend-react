@@ -252,7 +252,7 @@ export default function AccountSettings({ account, setSignRequest }) {
   useEffect(() => {
     const fetchAccountData = async () => {
       try {
-        const response = await axios(`/v2/address/${account.address}?ledgerInfo=true&obligations=true`)
+        const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
         setAccountData(response.data)
         console.log('response.data', response.data)
         // Set current NFTokenMinter if it exists
@@ -319,10 +319,9 @@ export default function AccountSettings({ account, setSignRequest }) {
   }
 
   const canEnableRequireAuth = () => {
-    // Can only be enabled if the account has no issued tokens and no owner objects (trustlines, offers, escrows, etc.)
+    // Can only be enabled if the account has no owner objects (trustlines, offers, escrows, etc.)
     const ownerReserveZero = accountData?.ledgerInfo?.ownerReserve === 0 || !accountData?.ledgerInfo?.ownerReserve
-    const hasIssuedTokens = accountData?.obligations?.tokens > 0
-    return ownerReserveZero && !hasIssuedTokens
+    return ownerReserveZero
   }
 
   const canChangeGlobalFreeze = () => {
@@ -527,13 +526,13 @@ export default function AccountSettings({ account, setSignRequest }) {
     if (flag === 'allowTrustLineClawback' && !canEnableTrustLineClawback() && !currentValue) {
       buttonDisabled = true
       disabledReason =
-        'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists (ownerReserve must be 0)'
+        'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists (issuedTokens will 0, if ownerCount is 0)'
     }
     
     if (flag === 'requireAuth' && !canEnableRequireAuth() && !currentValue) {
       buttonDisabled = true
       disabledReason =
-        'Can only be enabled if the account has no issued tokens, trustlines, offers, escrows, payment channels, checks, or signer lists (ownerReserve must be 0 and issued tokens must be 0)'
+        'Can only be enabled if the account has no trustlines, offers, escrows, payment channels, checks, or signer lists (issuedTokens will 0, if ownerCount is 0)'
     }
     
     if (flag === 'globalFreeze' && !canChangeGlobalFreeze()) {
@@ -624,7 +623,7 @@ export default function AccountSettings({ account, setSignRequest }) {
           <div className="content-center">
             <h1 className="center">Account Settings</h1>
             <p className="center">
-              Please <Link href="/explorer">sign in to your account</Link> to manage your account settings.
+              Please <span className="link" onClick={() => setSignRequest({})}>sign in to your account</span> to manage your account settings.
             </p>
 
             {/* Show form preview when not logged in */}
@@ -703,15 +702,36 @@ export default function AccountSettings({ account, setSignRequest }) {
 
               {/* Advanced Options */}
               <div className="advanced-options">
-                <CheckBox checked={false} setChecked={() => {}} name="advanced-flags" disabled={true}>
+                <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-flags">
                   Advanced Options (Use with caution)
                 </CheckBox>
+
+                {showAdvanced && (
+                  <div className="advanced-flags">
+                    {flagGroups.advanced.map((flag) => {
+                      const flagData = flagDetails[flag]
+                      return (
+                        <div key={flag} className="flag-item">
+                          <div className="flag-header">
+                            <div className="flag-info">
+                              <span className="flag-name">{flagData.displayName}</span>
+                            </div>
+                            <button className="button-action thin" disabled={true} style={{ minWidth: '120px' }}>
+                              {flagData.actionText(false)}
+                            </button>
+                          </div>
+                          <div className="flag-description">{flagData.description}</div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
               </div>
             </div>
 
             <br />
             <div className="center">
-              <Link href="/explorer">Sign in to your account</Link>
+              <span className="link" onClick={() => setSignRequest({})}>Sign in to your account</span>
             </div>
           </div>
         </div>
@@ -812,7 +832,7 @@ export default function AccountSettings({ account, setSignRequest }) {
             {account?.address ? (
               <Link href={`/account/${account.address}`}>View my account page</Link>
             ) : (
-              <Link href="/explorer">Sign in to your account</Link>
+              <span className="link" onClick={() => setSignRequest({})}>Sign in to your account</span>
             )}
           </div>
         </div>
