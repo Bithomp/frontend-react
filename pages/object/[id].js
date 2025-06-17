@@ -14,7 +14,8 @@ import {
   codeHighlight,
   AddressWithIconFilled,
   amountFormatNode,
-  addressUsernameOrServiceLink
+  addressUsernameOrServiceLink,
+  shortAddress
 } from '../../utils/format'
 import { LinkTx, LedgerLink } from '../../utils/links'
 import { object } from '../../styles/pages/object.module.scss'
@@ -67,7 +68,6 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
 
   // data states (will be updated by the time-machine)
   const [data, setData] = useState(initialData)
-  const [rawData, setRawData] = useState(null)
 
   // ui & feedback states
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
@@ -112,6 +112,11 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
           <strong>{data.node.LedgerEntryType}</strong>
         </td>
       </tr>
+    ) : null
+
+    // Add historical data note if viewing a specific ledger
+    const historicalNoteRow = router.query.ledgerIndex || router.query.previousTxHash || router.query.date ? (
+      <span className="orange bold">This is historical data</span>
     ) : null
 
     const rows = Object.entries(data.node)
@@ -184,6 +189,25 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
           )
         }
 
+        if (key === 'flags' && typeof value === 'object') {
+          return (
+            <tr key={key}>
+              <td>{key}</td>
+              <td>
+                <div className="flex flex-wrap gap-1">
+                  {Object.entries(value)
+                    .filter(([, flagValue]) => flagValue === true)
+                    .map(([flag]) => (
+                      <span key={flag} className="badge badge-active">
+                        {flag}
+                      </span>
+                    ))}
+                </div>
+              </td>
+            </tr>
+          )
+        }
+
         return (
           <tr key={key}>
             <td>{key}</td>
@@ -193,36 +217,21 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
       })
 
     return (
-      <table className="table-details">
-        <thead>
-          <tr>
-            <th colSpan="2">Ledger Entry Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ledgerEntryTypeRow}
-          {rows}
-        </tbody>
-      </table>
+      <>
+        {historicalNoteRow}
+        <table className="table-details">
+          <thead>
+            <tr>
+              <th colSpan="2">Ledger Entry Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ledgerEntryTypeRow}
+            {rows}
+          </tbody>
+        </table>
+      </>
     )
-  }
-
-  // ---------------------------------------------
-  // Lazy fetch for raw JSON (only on user request)
-  // ---------------------------------------------
-  const fetchRaw = async () => {
-    const id = router.query.id
-    let query = ''
-    if (ledgerDate) {
-      query = '?date=' + ledgerDate.toISOString()
-    }
-
-    try {
-      const rawRes = await axios('/xrpl/ledgerEntry/' + id + query).catch(() => {})
-      setRawData(rawRes?.data)
-    } catch (e) {
-      console.error(e)
-    }
   }
 
   // fetch object data for a specific date
@@ -243,11 +252,6 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
       } else {
         setData(res?.data)
         setErrorMessage('')
-
-        // If the raw panel is already opened – refresh its data as well
-        if (showRaw) {
-          fetchRaw()
-        }
       }
     } catch (e) {
       console.error(e)
@@ -290,7 +294,6 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
     setErrorMessage(initialErrorMessage || '')
     // reset toggles if data changed
     setShowMetadata(false)
-    setShowRaw(false)
   }, [initialData, initialErrorMessage])
 
   return (
@@ -360,24 +363,82 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                 </table>
 
                 <div className="flex flex-col gap-2">
-                  {data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index && (
-                    <Link
-                      href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`}
-                      className="button-action center"
-                    >
-                      Previous version (by ledger)
-                    </Link>
-                  )}
-
-                  {data?.node?.PreviousTxnID && (
-                    <Link
-                      href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
-                      className="button-action center"
-                    >
-                      Previous version (by tx)
-                    </Link>
-                  )}
+                  <button
+                    onClick={() => {
+                      if (data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index) {
+                        router.push(`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`)
+                      } else if (data?.node?.PreviousTxnID) {
+                        router.push(`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`)
+                      }
+                    }}
+                    className={`button-action center ${!(data?.node?.PreviousTxnLgrSeq || data?.node?.PreviousTxnID) ? 'disabled' : ''}`}
+                    style={!(data?.node?.PreviousTxnLgrSeq || data?.node?.PreviousTxnID) ? { pointerEvents: 'none', opacity: 0.5 } : {}}
+                  >
+                    Previous version
+                  </button>
                 </div>
+                <br />
+                <table className="table-details">
+                  <thead>
+                    <tr>
+                      <th colSpan="2">History</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Current Ledger</td>
+                      <td>
+                        <Link
+                          href={`/object/${router.query.id}?ledgerIndex=${data?.ledger_index}`}
+                          className={router.query.ledgerIndex === data?.ledger_index?.toString() ? 'active' : ''}
+                        >
+                          {data?.ledger_index}
+                        </Link>
+                      </td>
+                    </tr>
+                    {data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index && (
+                      <tr>
+                        <td>Previous Ledger</td>
+                        <td>
+                          <Link
+                            href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`}
+                            className={router.query.ledgerIndex === data.node.PreviousTxnLgrSeq?.toString() ? 'active' : ''}
+                          >
+                            {data.node.PreviousTxnLgrSeq}
+                          </Link>
+                        </td>
+                      </tr>
+                    )}
+                    
+                    {router.query.previousTxHash && (
+                      <tr>
+                        <td>Current Transaction</td>
+                        <td>
+                            <Link
+                              href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
+                              className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
+                            >
+                              {shortAddress(router.query.previousTxHash)}
+                            </Link>
+                        </td>
+                      </tr>
+                    )}
+                    {data?.node?.PreviousTxnID && (
+                      <tr>
+                        <td>Previous Transaction</td>
+                        <td>
+                          <Link
+                            href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
+                            className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
+                          >
+                            {shortAddress(data.node.PreviousTxnID)}
+                          </Link>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+
                 <br />
               </div>
               <div className="column-right">
@@ -409,12 +470,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                       <td>
                         <span
                           className="link"
-                          onClick={async () => {
-                            if (!showRaw && !rawData) {
-                              await fetchRaw()
-                            }
-                            setShowRaw(!showRaw)
-                          }}
+                          onClick={() => setShowRaw(!showRaw)}
                         >
                           {showRaw ? 'hide' : 'show'}
                         </span>
@@ -422,7 +478,9 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                     </tr>
                   </tbody>
                 </table>
-                <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>{showRaw && codeHighlight(rawData)}</div>
+                <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>
+                  {showRaw && codeHighlight(data)}
+                </div>
               </div>
             </>
           )}
