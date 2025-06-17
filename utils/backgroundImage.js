@@ -1,6 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server'
-
-import { devNet } from '../../utils'
+import { devNet } from '.'
 
 function svgImage(network) {
   return (
@@ -25,14 +24,11 @@ function svgImage(network) {
   )
 }
 
-let backgroundText = ''
-
-if (devNet) {
-  backgroundText = devNet.includes('testnet') ? 'testnet' : devNet
-}
-
-const svgString = encodeURIComponent(renderToStaticMarkup(svgImage(backgroundText.toUpperCase())))
-
-export default function BackgroundImage() {
-  return <div className="background" style={{ backgroundImage: `url("data:image/svg+xml,${svgString}")` }}></div>
-}
+export const getBackgroundImage = () => {
+  let backgroundText = ''
+  if (devNet) {
+    backgroundText = devNet.includes('testnet') ? 'testnet' : devNet
+  }
+  const svgString = encodeURIComponent(renderToStaticMarkup(svgImage(backgroundText.toUpperCase())))
+  return `url("data:image/svg+xml,${svgString}")`
+} 

@@ -24,9 +24,9 @@ import {
   amountFormatNode,
   amountFormat,
   nativeCurrencyToFiat,
-  AddressWithIcon,
-  niceCurrency
+  AddressWithIcon
 } from '../utils/format'
+import TokenSelector from '../components/UI/TokenSelector'
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -77,7 +77,6 @@ import SEO from '../components/SEO'
 import { LinkAmm } from '../utils/links'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
-import FormInput from '../components/UI/FormInput'
 
 // add to the list new parameters for CSV
 const updateListForCsv = (list) => {
@@ -92,33 +91,6 @@ const updateListForCsv = (list) => {
     }
   })
 }
-
-const currenciesList = [
-  { currency: '', label: 'All' },
-  { currency: nativeCurrency, label: nativeCurrency },
-  {
-    currency: '524C555344000000000000000000000000000000',
-    currencyIssuer: 'rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De',
-    label: 'RLUSD'
-  }
-  /*
-  {
-    currency: 'USD',
-    currencyIssuer: 'rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq',
-    label: 'USD Gatehub'
-  },
-  {
-    currency: 'USD',
-    currencyIssuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
-    label: 'USD Bitstamp'
-  },
-  {
-    currency: 'EUR',
-    currencyIssuer: 'rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq',
-    label: 'EUR Gatehub'
-  }
-  */
-]
 
 export default function Amms({
   initialData,
@@ -142,21 +114,36 @@ export default function Amms({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [marker, setMarker] = useState(initialData?.marker)
-  const [currency, setCurrency] = useState(currencyQuery || nativeCurrency)
-  const [currencyIssuer, setCurrencyIssuer] = useState(currencyIssuerQuery || '')
   const [filtersHide, setFiltersHide] = useState(false)
+  const [token, setToken] = useState(() => {
+    if (currencyQuery && currencyQuery !== nativeCurrency) {
+      return {
+        currency: currencyQuery,
+        issuer: currencyIssuerQuery
+      }
+    } else if (currencyQuery === nativeCurrency) {
+      return {
+        currency: nativeCurrency
+      }
+    }
+    return ''
+  })
+
+  // control radio selection: 'all' | 'single'
+  const [filterMode, setFilterMode] = useState(() => (token?.currency ? 'single' : 'all'))
 
   const controller = new AbortController()
 
   useEffect(() => {
-    if (currency && order === 'currencyHigh') {
-      if (currency === nativeCurrency) {
+    if (token?.currency && order === 'currencyHigh') {
+      if (token.currency === nativeCurrency) {
         addAndRemoveQueryParams(router, [{ name: 'currency', value: nativeCurrency }], ['currencyIssuer'])
-      } else if (currencyIssuer) {
-        addQueryParams(router, [
-          { name: 'currency', value: currency },
-          { name: 'currencyIssuer', value: currencyIssuer }
-        ])
+      } else if (token.issuer) {
+        const params = [
+          { name: 'currency', value: token.currency },
+          { name: 'currencyIssuer', value: token.issuer }
+        ]
+        addQueryParams(router, params)
       } else {
         removeQueryParams(router, ['currencyIssuer', 'currency'])
       }
@@ -164,7 +151,7 @@ export default function Amms({
       removeQueryParams(router, ['currencyIssuer', 'currency'])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currency, currencyIssuer, order])
+  }, [token, order])
 
   useEffect(() => {
     if (initialData?.amms?.length > 0) {
@@ -186,8 +173,8 @@ export default function Amms({
     if (!oldOrder || !order) return
     let loadMoreRequest =
       (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
-      (currency ? oldCurrency === currency : !oldCurrency) &&
-      (currencyIssuer ? oldCurrencyIssuer === currencyIssuer : !oldCurrencyIssuer)
+      (token?.currency ? oldCurrency === token.currency : !oldCurrency) &&
+      (token?.issuer ? oldCurrencyIssuer === token.issuer : !oldCurrencyIssuer)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
     if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
@@ -200,10 +187,10 @@ export default function Amms({
     }
 
     let currencyPart = ''
-    if (currency) {
-      currencyPart = '&currency=' + currency
-      if (currencyIssuer) {
-        currencyPart += '&currencyIssuer=' + currencyIssuer
+    if (token?.currency) {
+      currencyPart = '&currency=' + token.currency
+      if (token.issuer) {
+        currencyPart += '&currencyIssuer=' + token.issuer
       }
     } else {
       //default
@@ -251,21 +238,17 @@ export default function Amms({
           setErrorMessage(newdata.error)
         } else {
           setErrorMessage('Error')
-          console.log(newdata)
         }
       }
     }
   }
 
   useEffect(() => {
-    if (
-      order &&
-      (rawData.order !== order || rawData.currency !== currency || rawData.currencyIssuer !== currencyIssuer)
-    ) {
+    if (order && (rawData.order !== order || rawData.currency !== token?.currency || rawData.currencyIssuer !== token?.issuer)) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, currency, currencyIssuer])
+  }, [order, token])
 
   const csvHeaders = [
     { label: 'Asset 1', key: 'amountFormated' },
@@ -335,40 +318,42 @@ export default function Amms({
         setFiltersHide={setFiltersHide}
       >
         <>
-          <div>
-            {t('table.currency')}
-            <div className={`radio-options${currenciesList.length > 3 ? ' radio-options--large' : ''}`}>
-              {currenciesList.map((cur, i) => (
-                <div className="radio-input" key={i}>
-                  <input
-                    type="radio"
-                    name="selectCurrency"
-                    checked={
-                      cur.currency === currency && (!cur.currencyIssuer || cur.currencyIssuer === currencyIssuer)
-                    }
-                    onChange={() => {
-                      setCurrency(cur.currency)
-                      setCurrencyIssuer(cur.currencyIssuer)
-                    }}
-                    id={'selectCurrency' + i}
-                  />
-                  <label htmlFor={'selectCurrency' + i}>{cur.label}</label>
-                </div>
-              ))}
+          <div className="radio-options">
+            <div className="radio-input">
+              <input
+                type="radio"
+                name="tokenFilterMode"
+                checked={filterMode === 'all'}
+                onChange={() => {
+                  setFilterMode('all')
+                  setToken({}) // clear any selected token
+                }}
+                id={'tokenFilterAll'}
+              />
+              <label htmlFor={'tokenFilterAll'}>{t('tabs.all-tokens', { defaultValue: 'All tokens' })}</label>
+            </div>
+            <div className="radio-input" style={{ marginLeft: 20 }}>
+              <input
+                type="radio"
+                name="tokenFilterMode"
+                checked={filterMode === 'single'}
+                onChange={() => {
+                  setFilterMode('single')
+                }}
+                id={'tokenFilterSingle'}
+              />
+              <label htmlFor={'tokenFilterSingle'}>{t('tabs.single-token', { defaultValue: 'Single token' })}</label>
             </div>
           </div>
-          {!currenciesList.some(
-            (item) => item.currency === currency && (!item.currencyIssuer || item.currencyIssuer === currencyIssuer)
-          ) && (
-            <>
-              <FormInput
-                title={t('table.currency') + ' ' + niceCurrency(currency)}
-                defaultValue={currency}
-                disabled={true}
-                hideButton={true}
+
+          {filterMode === 'single' && (
+            <div>
+              <p>{t('table.currency')}</p>
+              <TokenSelector
+                value={token}
+                onChange={setToken}
               />
-              <FormInput title={t('table.issuer')} defaultValue={currencyIssuer} disabled={true} hideButton={true} />
-            </>
+            </div>
           )}
         </>
         <InfiniteScrolling
