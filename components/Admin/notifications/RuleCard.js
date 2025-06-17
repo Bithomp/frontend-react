@@ -1,3 +1,5 @@
+import Card from '@/components/UI/Card'
+
 const operatorMap = {
     '$eq': 'is',
     '$ne': 'is not',
@@ -40,11 +42,11 @@ function parseConditions(conditions) {
 
 export default function RuleCard({ rule }) {
     return (
-        <div className="bg-white p-4 border-2 hover:shadow-[4px_4px_0px_0px] transition-shadow shadow-gray-900 duration-300 border-gray-900">
+        <Card>
             <div className="font-bold text-lg mb-2 capitalize">
                 {rule.name || `Rule #${rule.id}`}
             </div>
-            <div className="text-sm text-gray-600 mb-1 flex flex-col sm:flex-row sm:items-center">
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-1 flex flex-col sm:flex-row sm:items-center">
                 <span>
                     Event: <span className="font-bold">{rule.event || 'N/A'}</span>
                 </span>
@@ -52,9 +54,9 @@ export default function RuleCard({ rule }) {
                     Send to: <span className="font-mono font-bold">{rule.channel?.name || rule.channel?.type || 'Unknown'}</span>
                 </span>
             </div>
-            <div className="text-sm text-gray-600 mb-2">
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                 If: <span className="text-xs font-bold">{parseConditions(rule.settings.rules) || 'N/A'}</span>
             </div>
-        </div>
+        </Card>
     )
 }

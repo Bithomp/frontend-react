@@ -14,7 +14,7 @@ export default function EmptyState() {
                     objectFit="contain"
                 />
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 {t('notifications.empty.title', 'No notification rules or channels yet')}
             </h2>
         </div>

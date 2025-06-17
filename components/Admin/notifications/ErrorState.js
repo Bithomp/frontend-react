@@ -9,10 +9,10 @@ export default function ErrorState() {
             <div className="w-48 h-48 relative mb-6">
                 <Image src="/images/error-state.svg" alt="Error" layout="fill" objectFit="contain" />
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 {t('notifications.error.title', 'Error loading notifications')}
             </h2>
-            <p className="text-gray-600 text-center max-w-md mb-6">
+            <p className="text-gray-600 dark:text-gray-400 text-center max-w-md mb-6">
                 {t('notifications.error.description', 'Please try again later.')}
             </p>
         </div>
