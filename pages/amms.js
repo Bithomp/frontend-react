@@ -129,6 +129,9 @@ export default function Amms({
     return ''
   })
 
+  // control radio selection: 'all' | 'single'
+  const [filterMode, setFilterMode] = useState(() => (token?.currency ? 'single' : 'all'))
+
   const controller = new AbortController()
 
   useEffect(() => {
@@ -319,25 +322,39 @@ export default function Amms({
             <div className="radio-input">
               <input
                 type="radio"
-                name="selectCurrency"
-                checked={
-                  !token?.currency
-                }
+                name="tokenFilterMode"
+                checked={filterMode === 'all'}
                 onChange={() => {
-                  setToken({})
+                  setFilterMode('all')
+                  setToken({}) // clear any selected token
                 }}
-                id={'selectCurrency'}
+                id={'tokenFilterAll'}
               />
-              <label htmlFor={'selectCurrency'}>All</label>
+              <label htmlFor={'tokenFilterAll'}>{t('tabs.all-tokens', { defaultValue: 'All tokens' })}</label>
+            </div>
+            <div className="radio-input" style={{ marginLeft: 20 }}>
+              <input
+                type="radio"
+                name="tokenFilterMode"
+                checked={filterMode === 'single'}
+                onChange={() => {
+                  setFilterMode('single')
+                }}
+                id={'tokenFilterSingle'}
+              />
+              <label htmlFor={'tokenFilterSingle'}>{t('tabs.single-token', { defaultValue: 'Single token' })}</label>
             </div>
           </div>
-          <div>
-            <p>{t('table.currency')}</p>
-            <TokenSelector 
-              value={token} 
-              onChange={setToken} 
-            />
-          </div>          
+
+          {filterMode === 'single' && (
+            <div>
+              <p>{t('table.currency')}</p>
+              <TokenSelector
+                value={token}
+                onChange={setToken}
+              />
+            </div>
+          )}
         </>
         <InfiniteScrolling
           dataLength={data.length}
