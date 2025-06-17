@@ -31,7 +31,8 @@ export default function AMMVoteForm({ setSignRequest }) {
     
     try {
       const ammVote = {
-        TransactionType: 'AMMVote'
+        TransactionType: 'AMMVote',
+        TradingFee: Math.round(parseFloat(tradingFee) * 1000) || 0
       }
 
       // Asset 1 amount formatting
@@ -58,10 +59,6 @@ export default function AMMVoteForm({ setSignRequest }) {
         }
       }
 
-      if (tradingFee) {
-        ammVote.TradingFee = Math.round(parseFloat(tradingFee) * 1000)
-      }
-
       setSignRequest({
         request: ammVote,
         callback: (result) => {
@@ -81,6 +78,8 @@ export default function AMMVoteForm({ setSignRequest }) {
   return (
     <div className="form-container">
       <div>
+        <p className="center">Vote on the trading fee for an Automated Market Maker instance. Up to 8 accounts can vote in proportion to the amount of the AMM's LP Tokens they hold. Each new vote re-calculates the AMM's trading fee based on a weighted average of the votes.</p>
+        <br />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
           <div  className="w-full">
             <span className="input-title">Asset 1 Currency</span>
@@ -93,7 +92,7 @@ export default function AMMVoteForm({ setSignRequest }) {
         </div>
         <br />   
         <FormInput
-          title="Trading Fee (0 - 1%, optional)"
+          title="Trading Fee (0 - 1%)"
           placeholder="Fee in percent (max 1)"
           setInnerValue={setTradingFee}
           defaultValue={tradingFee}

@@ -52,7 +52,8 @@ export default function AMMCreateForm({ setSignRequest }) {
     
     try {
       const ammCreate = {
-        TransactionType: 'AMMCreate'
+        TransactionType: 'AMMCreate',
+        TradingFee: Math.round(parseFloat(tradingFee) * 1000) || 0
       }
 
       // Asset 1 amount formatting
@@ -62,7 +63,7 @@ export default function AMMCreateForm({ setSignRequest }) {
         ammCreate.Amount = {
           currency: asset1.currency,
           issuer: asset1.issuer,
-          value: multiply(asset1Amount, 1000000)
+          value: asset1Amount
         }
       }
 
@@ -73,13 +74,8 @@ export default function AMMCreateForm({ setSignRequest }) {
         ammCreate.Amount2 = {
           currency: asset2.currency,
           issuer: asset2.issuer,
-          value: multiply(asset2Amount, 1000000)
+          value: asset2Amount 
         }
-      }
-
-      if (tradingFee) {
-        // Convert percentage to units of 1/100,000 (e.g. 0.001% -> 1, 1% -> 1000)
-        ammCreate.TradingFee = Math.round(parseFloat(tradingFee) * 1000)
       }
 
       setSignRequest({
@@ -136,7 +132,7 @@ export default function AMMCreateForm({ setSignRequest }) {
         </div>
         <br />   
         <FormInput
-          title="Trading Fee (0 - 1%, optional)"
+          title="Trading Fee (0 - 1%)"
           placeholder="Fee in percent (max 1)"
           setInnerValue={setTradingFee}
           defaultValue={tradingFee}

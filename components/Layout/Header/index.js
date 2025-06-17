@@ -195,7 +195,7 @@ export default function Header({
             <Link href="/services/send">Send Payment</Link>
             <Link href="/services/check">Issue Check</Link>
             <Link href="/services/escrow">Create Escrow</Link>
-            {!xahauNetwork && <Link href="/services/amm">AMM Services</Link>}
+            {!xahauNetwork && !devNet && <Link href="/services/amm">AMM Services</Link>}
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
             <Link href="/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
@@ -257,8 +257,12 @@ export default function Header({
             >
               <Link href="/amms">{t('menu.amm.pools')}</Link>
               <Link href="/amm">{t('menu.amm.explorer')}</Link>
-              <Link href="/services/amm?tab=create">Create AMM</Link>
-              <Link href="/services/amm?tab=vote">AMM Vote</Link>
+              {!devNet && (
+                <>
+                  <Link href="/services/amm?tab=create">Create AMM</Link>
+                  <Link href="/services/amm?tab=vote">AMM Vote</Link>
+                </>
+              )}
             </MenuDropDown>
           )}
 
