@@ -114,11 +114,6 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
       </tr>
     ) : null
 
-    // Add historical data note if viewing a specific ledger
-    const historicalNoteRow = router.query.ledgerIndex || router.query.previousTxHash || router.query.date ? (
-      <span className="orange bold">This is historical data</span>
-    ) : null
-
     const rows = Object.entries(data.node)
       .filter(([key]) => key !== 'LedgerEntryType') // Exclude LedgerEntryType from regular rows
       .map(([key, value]) => {
@@ -217,12 +212,15 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
       })
 
     return (
-      <>
-        {historicalNoteRow}
+      <>        
         <table className="table-details">
           <thead>
             <tr>
-              <th colSpan="2">Ledger Entry Details</th>
+              {router.query.ledgerIndex || router.query.previousTxHash || router.query.date ? (
+                <th colSpan="2" className="red bold">Historical Data {router.query.date ? `(${router.query.date})` : ''}</th>
+              ) : (
+                <th colSpan="2">Ledger Entry Details</th>
+              )}
             </tr>
           </thead>
           <tbody>
