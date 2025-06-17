@@ -37,24 +37,28 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
         const opts = list
           .map((item) => {
             let value = null
+            let label = null
             if (typeof item === 'string') {
-              value = niceCurrency(item)
+              value = item
+              label = niceCurrency(item)
               if (item.length > 3 && (item.substr(0, 2) === '02' || !item.match(/^[A-Za-z0-9]{3}$/))) {
-                value += ` (${shortName(item)})`
+                label += ` (${shortName(item)})`
               }
             } else if (item.currency) {
-              value = niceCurrency(item.currency)
+              value = item.currency
+              label = niceCurrency(item.currency)
               if (item.currency.length > 3 && (item.currency.substr(0, 2) === '02' || !item.currency.match(/^[A-Za-z0-9]{3}$/))) {
-                value += ` (${shortName(item.currency)})`
+                label += ` (${shortName(item.currency)})`
               }
             } else if (item.code) {
-              value = niceCurrency(item.code)
+              value = item.code
+              label = niceCurrency(item.code)
               if (item.code.length > 3 && (item.code.substr(0, 2) === '02' || !item.code.match(/^[A-Za-z0-9]{3}$/))) {
-                value += ` (${shortName(item.code)})`
+                label += ` (${shortName(item.code)})`
               }
             }
             if (!value) return null
-            return { value, label: value }
+            return { value, label }
           })
           .filter(Boolean)
 
