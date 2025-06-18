@@ -14,7 +14,7 @@ footer {
   }
 
   @media (min-width: 1024px) {
-    padding: 2rem;
+    padding: 0.5rem;
   }
 }
 
@@ -34,7 +34,7 @@ footer {
 .footer-menu {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem 3rem;
+  gap: 1rem 1rem;
   justify-content: center;
   text-align: center;
   flex-grow: 1;
@@ -85,6 +85,7 @@ footer {
   @media (min-width: 1024px) {
     align-items: flex-start;
     text-align: left;
+    min-width: 280px;
 
     .footer-logo {
       order: 0;
