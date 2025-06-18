@@ -121,7 +121,7 @@ export default function AccountSettings({ account, setSignRequest }) {
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'tf',
-      description: `If enabled, this account cannot receive ${nativeCurrency} payments. Note: This is not enforced by the protocol, so it's still possible to send ${nativeCurrency} to this account.`,
+      description: `If enabled, this means the account does not accept ${nativeCurrency} payments. \n\nNote: This setting is not enforced by the protocol, so ${nativeCurrency} can still be sent to the account.`,
       isDefault: (value) => !value
     },
     // ASF Flags - Basic
@@ -219,7 +219,7 @@ export default function AccountSettings({ account, setSignRequest }) {
       actionText: (value) => (value ? 'Enable' : 'Disable'),
       type: 'asf',
       description:
-        'Disabling the master key pair removes one method of authorizing transactions. You should be sure you can use one of the other ways of authorizing transactions, such as with a regular key or by multi-signing, before you disable the master key pair. (For example, if you assigned a regular key pair, make sure that you can successfully submit transactions with that regular key.) Due to the decentralized nature of the XRP Ledger, no one can restore access to your account if you cannot use the remaining ways of authorizing transactions.\n\nYou should do this if your account\'s master key pair may have been compromised, or if you want to make multi-signing the only way to submit transactions from your account.\n\nTo disable the master key pair, you must use the master key pair. However, you can re-enable the master key pair using any other method of authorizing transactions.',
+        `Disabling the master key pair removes one method of authorizing transactions. You should be sure you can use one of the other ways of authorizing transactions, such as with a regular key or by multi-signing, before you disable the master key pair. (For example, if you assigned a regular key pair, make sure that you can successfully submit transactions with that regular key.) Due to the decentralized nature of the ${explorerName}, no one can restore access to your account if you cannot use the remaining ways of authorizing transactions.\n\nYou should do this if your account\'s master key pair may have been compromised, or if you want to make multi-signing the only way to submit transactions from your account.\n\nTo disable the master key pair, you must use the master key pair. However, you can re-enable the master key pair using any other method of authorizing transactions.`,
       isDefault: (value) => !value,
       isAdvanced: true,
       isHighRisk: true
@@ -314,13 +314,12 @@ export default function AccountSettings({ account, setSignRequest }) {
   }, [account])
 
   const canEnableTrustLineClawback = () => {
-    return accountData?.ledgerInfo?.ownerReserve === 0 || !accountData?.ledgerInfo?.ownerReserve
+    return !accountData?.ledgerInfo?.ownerCount
   }
 
   const canEnableRequireAuth = () => {
     // Can only be enabled if the account has no owner objects (trustlines, offers, escrows, etc.)
-    const ownerReserveZero = accountData?.ledgerInfo?.ownerReserve === 0 || !accountData?.ledgerInfo?.ownerReserve
-    return ownerReserveZero
+    return !accountData?.ledgerInfo?.ownerCount
   }
 
   const canChangeGlobalFreeze = () => {
