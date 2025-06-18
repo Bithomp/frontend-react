@@ -55,6 +55,8 @@ const pages = [
   { loc: 'blackholed-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'verified-domains', changefreq: 'monthly', priority: '0.5' },
   { loc: 'jobs', changefreq: 'monthly', priority: '0.5' },
+
+  { loc: 'nft-minting', changefreq: 'monthly', priority: '0.5' },
   { loc: 'explorer-advantages', changefreq: 'monthly', priority: '0.5' },
 
   { loc: 'learn', changefreq: 'weekly', priority: '0.5' },
@@ -66,7 +68,7 @@ const pages = [
   { loc: 'learn/blackholed-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'learn/blacklisted-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.5' }
 ]
 
 //network specific pages
