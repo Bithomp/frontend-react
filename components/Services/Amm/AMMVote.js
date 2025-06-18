@@ -2,7 +2,8 @@ import { useState } from 'react'
 import FormInput from '../../UI/FormInput'
 import { nativeCurrency, typeNumberOnly } from '../../../utils'
 import TokenSelector from '../../UI/TokenSelector'
-import { LinkAmm } from '../../../utils/links'
+import { LinkAmm, LinkTx } from '../../../utils/links'
+import CopyButton from '../../UI/CopyButton'
 
 
 export default function AMMVoteForm({ setSignRequest }) {
@@ -65,7 +66,8 @@ export default function AMMVoteForm({ setSignRequest }) {
           if (result.result) {
             setTxResult({
               status: result.result.meta?.TransactionResult,
-              ammId: result.result.meta?.AmmID,
+              hash: result.result.hash,
+              ammId: result.result.meta?.AmmID
             })
           }
         }
@@ -116,7 +118,14 @@ export default function AMMVoteForm({ setSignRequest }) {
       {txResult?.status === 'tesSUCCESS' && (
         <div className="center">
           <h3>Transaction Successful</h3>
-          <LinkAmm ammId={txResult.ammId} hash={true} icon={true} copy={true} />
+          <p>
+            <strong>Hash: </strong>
+            <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
+          </p>
+          <p>
+            <strong>AMM ID: </strong>
+            <LinkAmm ammId={txResult.ammId} hash={true} icon={true} copy={true} />
+          </p>
         </div>
       )}
     </div>
