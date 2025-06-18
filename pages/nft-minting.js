@@ -57,8 +57,9 @@ export default function NFTMinting() {
         <p>Before minting, make sure you have:</p>
         <ul>
           <li>
-            Minting NFTs typically requires {nativeCurrency} held in reserve — unless you mint and create the sell offer
-            in the same transaction, or mint on behalf of another account.
+            Activated and funded {nativeCurrency} addrress. Minting NFTs typically requires {nativeCurrency} held in
+            reserve
+            {xahauNetwork ? '.' : ' — unless you mint on behalf of another account.'}
           </li>
           <li>Your media file (JPG, PNG, GIF, MP4, etc.) uploaded to a permanent storage service (like IPFS):</li>
           <li>Prepare metadata: Create a JSON file with NFT details (e.g., name, description, image URL).</li>
@@ -94,29 +95,43 @@ export default function NFTMinting() {
           />
           <figcaption>NFT Minting tool</figcaption>
         </figure>
-        <p>2. Paste your IPFS link. </p>
+        <p>2. Paste your IPFS link - it should direct to your metadata file. </p>
         <div>
           {xahauNetwork ? (
             <>
-              3. Add digest:
-              <br />
-              Adding a digest ensures data integrity. If someone later downloads the content from the URI (e.g., your
-              image link) and computes its hash, it should match the digest you included. This proves the file hasn't
-              been tampered with or changed since the NFT was minted.
+              3. Add digest and set required flags:
+              <p>
+                Adding a digest ensures data integrity. If someone later downloads the content from the URI (e.g., your
+                image link) and computes its hash, it should match the digest you included. This proves the file hasn't
+                been tampered with or changed since the NFT was minted.
+              </p>
+              <p>You can also decide whether your NFT will be burnable or not, and set the corresponding flag.</p>
             </>
           ) : (
             <>
               3. Set the required flags:
-              <br />
-              Decide whether your NFT will be transferable, burnable, and whether it will be sold for {
-                nativeCurrency
-              }{' '}
-              only. You can also set a royalty, create a sell offer, or mint the NFT on behalf of another account (you
-              must be authorized as a minter for that account).
+              <p>
+                Decide whether your NFT will be transferable, burnable, and whether it will be sold for {nativeCurrency}{' '}
+                only. You can also set a royalty and mint the NFT on behalf of another account (you must be authorized
+                as a minter for that account). To authorize another address to mint NFTokens on behalf of your account,
+                use our <Link href="/services/account-settings">Account Settings page</Link>. Just enter the address
+                you wish to authorize and sign the transaction. 
+              </p>
+              <p>
+                {' '}
+                Thanks to the DynamicNFT amendment, you can update the URI fields of your NFTs. You have an option to
+                mint mutable NFTs on Bithomp by simply enabling the corresponding flag.
+              </p>
             </>
           )}
+          <p>4. Create a sell offer for your NFT (optional). </p>
+          <p>
+            Just enter the listing amount in {nativeCurrency} and, if you're creating a private offer, specify the
+            destination address. The sell offer will be created by signing a single transaction together with the
+            minting.
+          </p>
         </div>
-        <p>4. After pressing "Mint NFT," you will be prompted to choose a wallet to sign the transaction.</p>
+        <p>5. After pressing "Mint NFT," you will be prompted to choose a wallet to sign the transaction.</p>
         <figure>
           <Image
             src={
@@ -134,12 +149,11 @@ export default function NFTMinting() {
         </figure>
         <p>
           5. Confirm the transaction. Your NFT will appear on the blockchain and can be viewed on{' '}
-          <Link href="/nft-explorer">{explorerName} NFT Explorer</Link>
+          <Link href="/nft-explorer">{explorerName} NFT Explorer.</Link>
         </p>
 
         <p>
           You can also sell, buy, burn, and transfer NFTs directly through our platform using integrated wallet support.
-          You can also update the URI of your Dynamic NFTs.
         </p>
         <h1>Conclusion</h1>
         <p>
