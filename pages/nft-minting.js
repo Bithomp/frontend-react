@@ -37,7 +37,7 @@ export default function NFTMinting() {
         <h1>Why Mint NFTs on {explorerName}?</h1>
         <ul>
           <li>
-            <strong>Low fees:</strong> {nativeCurrency} transactions cost fractions of a cent.
+            <strong>Low fees:</strong> {explorerName} transactions cost fractions of a cent.
           </li>
 
           <li>
@@ -64,7 +64,7 @@ export default function NFTMinting() {
           <li>
             Your media file (JPG, PNG, GIF, MP4, etc.) uploaded to a permanent storage service (like IPFS):
             <ol className="list-decimal pl-6 mt-2 space-y-2">
-              <li>Prepare metadata: Create a JSON file with NFT details (e.g., name, description, image URL).</li>
+              <li>Prepare metadata: Create a JSON file with NFT details (e.g., name, description, image URI).</li>
               <li>
                 Upload to IPFS: Use a service like Pinata, NFT.Storage, or a local IPFS node to upload your metadata
                 file.
@@ -132,9 +132,8 @@ export default function NFTMinting() {
           )}
           <p>4. Create a sell offer for your NFT (optional). </p>
           <p>
-            Just enter the listing amount in {nativeCurrency} and, if you're creating a private offer, specify the
-            destination address. The sell offer will be created by signing a single transaction together with the
-            minting.
+            Just enter the listing amount and, if you're creating a private offer, specify the destination address. The
+            sell offer will be created by signing a single transaction together with the minting.
           </p>
         </div>
         <p>5. After pressing "Mint NFT," you will be prompted to choose a wallet to sign the transaction.</p>
