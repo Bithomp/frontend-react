@@ -10,8 +10,7 @@ export default function AdminTabs({ name, tab }) {
     { value: 'subscriptions', label: 'Subscriptions' },
     { value: 'pro', label: 'My addresses' },
     { value: 'api', label: 'API' },
-    { value: 'notifications', label: 'Notifications' },
-    //{ value: "bots", label: "Bots" },
+    // { value: 'notifications', label: 'Notifications' },
   ]
 
   const apiTabs = [
@@ -24,8 +23,6 @@ export default function AdminTabs({ name, tab }) {
   const changePage = (tab) => {
     if (tab === 'api') {
       router.push('/admin/api')
-    } else if (tab === 'bots') {
-      router.push('/admin/bots')
     } else if (tab === 'subscriptions') {
       router.push('/admin/subscriptions')
     } else if (tab === 'profile') {
