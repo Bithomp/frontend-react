@@ -1,0 +1,22 @@
+.card {
+    // Layout
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    // Ensure consistent text decoration and color across all states
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+        text-decoration: none;
+        color: var(--card-text);
+    }
+}
+
+.readMore {
+    margin-top: 0.25rem;
+    font-size: var(--text-sm);
+    text-decoration: underline;
+    color: var(--accent-link);
+}

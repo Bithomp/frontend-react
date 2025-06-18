@@ -37,16 +37,8 @@ body.dark {
   background-color: var(--background-main);
   transition: background-color .5s, color .5s;
   color: var(--text-main);
-}
-
-.background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
+  overflow-x: hidden;
   background-size: 100% auto;
-  pointer-events: none;
 }
 
 .content {
@@ -87,7 +79,7 @@ body.dark {
       border-top: 1px solid #ccc;
 
       @media(min-width: 1300px) {
-        z-index: 4;
+        z-index: 3;
       }
     }
   }
@@ -222,6 +214,9 @@ input, textarea {
         box-shadow: none;
       }
     }
+  }
+  &.input-text-no-border {
+    border: none;
   }
 }
 
@@ -458,7 +453,7 @@ table {
   text-align: right !important;
 }
 
-.flex {
+.flex-container {
   display: flex;
   gap: 20px 20px;
   flex-wrap: wrap;
@@ -782,6 +777,14 @@ pre {
   }
 }
 
+.prose h1 {
+  font-size: 2.25rem;
+
+  @media (min-width: 640px) {
+    font-size: 3rem;
+  }
+}
+
 body.dark {
   .close-button {
     &:before {
@@ -814,6 +817,13 @@ body.dark {
     position: absolute;
     left: 0;
     top: 0;
+  }
+}
+
+.form-spacing {
+  height: 20px;
+  @media only screen and (max-width: 1100px) {
+    height: 0;
   }
 }
 

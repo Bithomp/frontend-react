@@ -78,6 +78,7 @@ export default function Footer() {
           <Link href="/blackholed-address">Blackholed address</Link>
           <Link href="/blacklisted-address">Blacklisted address</Link>
           <Link href="/verified-domains">Verified domains</Link>
+          <Link href="/learn/the-bithomp-explorer-advantages">Why Our Explorer</Link>
           {!xahauNetwork && <Link href="/rlusd">Ripple USD</Link>}
           <Link href="/nft-minting">How to Mint NFT</Link>
         </div>

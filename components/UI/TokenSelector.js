@@ -18,6 +18,10 @@ const TokenSelector = ({ value, onChange }) => {
 
   // Handle search with debounce
   useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
     if (searchTimeout) {
       clearTimeout(searchTimeout)
     }
@@ -28,10 +32,10 @@ const TokenSelector = ({ value, onChange }) => {
         try {
           const response = await axios('v2/trustlines/tokens')
           const tokens = response.data?.tokens || []
-          setSearchResults([nativeCurrency, ...tokens])
+          setSearchResults([{currency: nativeCurrency}, ...tokens])
         } catch (error) {
           console.error('Error loading tokens:', error)
-          setSearchResults([nativeCurrency])
+          setSearchResults([{currency: nativeCurrency}])
         } finally {
           setIsLoading(false)
         }
@@ -59,7 +63,7 @@ const TokenSelector = ({ value, onChange }) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery])
+  }, [searchQuery, isOpen])
 
   const handleSelect = (token) => {
     onChange(token)
@@ -158,11 +162,13 @@ const TokenSelector = ({ value, onChange }) => {
                         onClick={() => handleSelect(token)}
                       >
                         <div className="token-selector-modal-item-content">
-                          <img
-                            src={getTokenIcon(token)}
-                            alt={niceCurrency(token.currency)}
-                            className="token-selector-modal-icon"
-                          />
+                          <div className="token-selector-modal-item-icon">
+                            <img
+                              src={getTokenIcon(token)}
+                              alt={niceCurrency(token.currency)}
+                              className="token-selector-modal-icon"
+                            />
+                          </div>
                           <div className="token-selector-modal-item-name">
                             <span>{getTokenDisplayName(token)}</span>
                             {width > 1100 ? <span>{token.issuer}</span> : <span>{shortAddress(token.issuer)}</span>}
@@ -170,6 +176,9 @@ const TokenSelector = ({ value, onChange }) => {
                         </div>
                       </div>
                     ))}
+                    {searchResults.length >= 100 && (
+                      <p className="center orange">More than 100 results found. Please specify an issuer to narrow down the search.</p>
+                    )}
                   </div>
                 ) : searchQuery ? (
                   <div className="token-selector-modal-empty">{t('general.no-data')}</div>

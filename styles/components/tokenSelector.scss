@@ -22,9 +22,7 @@
   &-icon {
     width: 24px;
     height: 24px;
-    border-radius: 50%;
     overflow: hidden;
-    background: #f5f5f5;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,7 +69,7 @@
   &-modal {
     position: fixed;
     inset: 0;
-    z-index: 50;
+    z-index: 9999;
     overflow-y: auto;
 
     &-content {
@@ -96,9 +94,13 @@
       max-width: 28rem;
       width: 100%;
       padding: 1.5rem;
+      height: 32rem;
+      display: flex;
+      flex-direction: column;
 
       .dark & {
-        background: var(--background-input);
+        background: var(--background-block);
+        border: 1px solid var(--unaccent-icon);
       }
     }
 
@@ -107,6 +109,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
+      flex-shrink: 0;
     }
 
     &-title {
@@ -125,9 +128,10 @@
     }
 
     &-list {
-      max-height: 24rem;
+      height: 24rem;
       overflow-y: auto;
       margin-top: 1rem;
+      flex: 1;
     }
 
     &-loading {
@@ -181,14 +185,24 @@
       .dark & {
         color: #9ca3af;
       }
+
+      p {
+        margin: 0;
+        line-height: 1.5;
+        font-size: 0.875rem;
+        max-width: 20rem;
+        margin: 0 auto;
+      }
     }
   }
 
   &-modal-icon {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    object-fit: contain;
+    width: 24px;
+    height: 24px;
     margin-right: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
   }
 }

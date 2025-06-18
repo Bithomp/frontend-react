@@ -55,7 +55,20 @@ const pages = [
   { loc: 'blackholed-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'verified-domains', changefreq: 'monthly', priority: '0.5' },
   { loc: 'jobs', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'nft-minting', changefreq: 'monthly', priority: '0.5' }
+
+  { loc: 'nft-minting', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'explorer-advantages', changefreq: 'monthly', priority: '0.5' },
+
+  { loc: 'learn', changefreq: 'weekly', priority: '0.5' },
+  { loc: 'learn/understanding-the-bithomp-explorer', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/what-is-the-xrp-ledger', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/what-is-ripple', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/what-is-xrp', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/verified-domain', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/blackholed-address', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/blacklisted-address', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.5' }
 ]
 
 //network specific pages
@@ -101,7 +114,15 @@ function generateSiteMap(posts) {
     'whales/receivers',
     'whales/senders',
     'whales/submitters',
-    'services/nft-mint'
+    'services/nft-mint',
+    'learn',
+    'learn/blackholed-address',
+    'learn/blacklisted-address',
+    'learn/verified-domain',
+    'learn/ripple-usd',
+    'learn/what-is-xrp',
+    'learn/what-is-ripple',
+    'learn/the-bithomp-explorer-advantages',
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
