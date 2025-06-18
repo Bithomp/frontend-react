@@ -254,7 +254,6 @@ export default function AccountSettings({ account, setSignRequest }) {
       try {
         const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
         setAccountData(response.data)
-        console.log('response.data', response.data)
         // Set current NFTokenMinter if it exists
         setCurrentNftTokenMinter(response.data?.ledgerInfo?.nftokenMinter || '')
 
@@ -526,13 +525,13 @@ export default function AccountSettings({ account, setSignRequest }) {
     if (flag === 'allowTrustLineClawback' && !canEnableTrustLineClawback() && !currentValue) {
       buttonDisabled = true
       disabledReason =
-        'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists (issuedTokens will 0, if ownerCount is 0)'
+        'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
     }
     
     if (flag === 'requireAuth' && !canEnableRequireAuth() && !currentValue) {
       buttonDisabled = true
       disabledReason =
-        'Can only be enabled if the account has no trustlines, offers, escrows, payment channels, checks, or signer lists (issuedTokens will 0, if ownerCount is 0)'
+        'Can only be enabled if the account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
     }
     
     if (flag === 'globalFreeze' && !canChangeGlobalFreeze()) {
