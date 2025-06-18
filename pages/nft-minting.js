@@ -114,8 +114,8 @@ export default function NFTMinting() {
                 Decide whether your NFT will be transferable, burnable, and whether it will be sold for {nativeCurrency}{' '}
                 only. You can also set a royalty and mint the NFT on behalf of another account (you must be authorized
                 as a minter for that account). To authorize another address to mint NFTokens on behalf of your account,
-                use our <Link href="/services/account-settings">Account Settings page</Link>. Just enter the address
-                you wish to authorize and sign the transaction. 
+                use our <Link href="/services/account-settings">Account Settings page</Link>. Just enter the address you
+                wish to authorize and sign the transaction.
               </p>
               <p>
                 {' '}
