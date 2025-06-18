@@ -57,23 +57,29 @@ export default function NFTMinting() {
         <p>Before minting, make sure you have:</p>
         <ul>
           <li>
-            Activated and funded {nativeCurrency} addrress. Minting NFTs typically requires {nativeCurrency} held in
+            Activated and funded {nativeCurrency} address. Minting NFTs typically requires {nativeCurrency} held in
             reserve
             {xahauNetwork ? '.' : ' — unless you mint on behalf of another account.'}
           </li>
-          <li>Your media file (JPG, PNG, GIF, MP4, etc.) uploaded to a permanent storage service (like IPFS):</li>
-          <li>Prepare metadata: Create a JSON file with NFT details (e.g., name, description, image URL).</li>
           <li>
-            Upload to IPFS: Use a service like Pinata, NFT.Storage, or a local IPFS node to upload your metadata file.
-          </li>
-          <li>Get CID: After upload, you’ll receive a CID (Content Identifier).</li>
-          <li>
-            Form the IPFS link: Use the format{' '}
-            <strong>
-              ipfs://{'{'}CID{'}'}
-            </strong>
+            Your media file (JPG, PNG, GIF, MP4, etc.) uploaded to a permanent storage service (like IPFS):
+            <ol className="list-decimal pl-6 mt-2 space-y-2">
+              <li>Prepare metadata: Create a JSON file with NFT details (e.g., name, description, image URL).</li>
+              <li>
+                Upload to IPFS: Use a service like Pinata, NFT.Storage, or a local IPFS node to upload your metadata
+                file.
+              </li>
+              <li>Get CID: After upload, you’ll receive a CID (Content Identifier).</li>
+              <li>
+                Form the IPFS link: Use the format{' '}
+                <strong>
+                  ipfs://{'{'}CID{'}'}
+                </strong>
+              </li>
+            </ol>
           </li>
         </ul>
+
         <h1>How to Mint an NFT on {explorerName}</h1>
 
         <p>
