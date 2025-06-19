@@ -76,7 +76,32 @@ module.exports = withBundleAnalyzer({
         source: '/developer',
         destination: '/admin',
         permanent: true
-      }
+      },
+      {
+        source: '/xrpl-article',
+        destination: '/learn/what-is-xrp',
+        permanent: true
+      },
+      {
+        source: '/rlusd',
+        destination: '/learn/ripple-usd',
+        permanent: true
+      },
+      {
+        source: '/blackholed-address',
+        destination: '/learn/blackholed-address',
+        permanent: true
+      },
+      {
+        source: '/blacklisted-address',
+        destination: '/learn/blacklisted-address',
+        permanent: true
+      },
+      {
+        source: '/verified-domains',
+        destination: '/learn/verified-domain',
+        permanent: true
+      },
     ]
   },
   async rewrites() {
