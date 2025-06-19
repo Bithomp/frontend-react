@@ -51,9 +51,6 @@ const pages = [
   { loc: 'developer', changefreq: 'yearly', priority: '0.4' },
   { loc: 'press', changefreq: 'yearly', priority: '0.4' },
 
-  { loc: 'blacklisted-address', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'blackholed-address', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'verified-domains', changefreq: 'monthly', priority: '0.5' },
   { loc: 'jobs', changefreq: 'monthly', priority: '0.5' },
   { loc: 'explorer-advantages', changefreq: 'monthly', priority: '0.5' },
 
@@ -78,13 +75,15 @@ if (xahauNetwork) {
   )
 } else {
   // only on xrpl
-  pages.push({ loc: 'rlusd', changefreq: 'monthly', priority: '0.6' })
+  pages.push({ loc: 'learn/what-is-the-xrp-ledger', changefreq: 'monthly', priority: '0.5' })
+  pages.push({ loc: 'learn/what-is-ripple', changefreq: 'monthly', priority: '0.5' })
+  pages.push({ loc: 'learn/what-is-xrp', changefreq: 'monthly', priority: '0.5' })
 }
 
 //works only on the mainnet
 if (network === 'mainnet') {
   if (!xahauNetwork) {
-    pages.push({ loc: 'xrpl-article', changefreq: 'monthly', priority: '0.6' })
+    // not on xahau
   }
   pages.push({ loc: 'xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' })
 }
@@ -99,10 +98,6 @@ function generateSiteMap(posts) {
     'privacy-policy',
     'terms-and-conditions',
     'disclaimer',
-    'xrpl-article',
-    'blacklisted-address',
-    'blackholed-address',
-    'verified-domains',
     'jobs',
     'rlusd',
     'xrp-xah-taxes',
