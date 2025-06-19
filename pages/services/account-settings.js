@@ -66,8 +66,8 @@ export default function AccountSettings({ account, setSignRequest }) {
     const commonAsfFlags = [
       'disallowIncomingCheck',
       'disallowIncomingPayChan',
-      'disallowIncomingTrustline',
-      'asfDepositAuth'
+      'disallowIncomingTrustline'
+      //'asfDepositAuth' - status was shown incorrectly on the test
     ]
 
     const advancedFlags = ['asfDefaultRipple', 'asfDisableMaster', 'globalFreeze', 'noFreeze']
@@ -218,8 +218,7 @@ export default function AccountSettings({ account, setSignRequest }) {
       status: (value) => (value ? 'Disabled' : 'Enabled'),
       actionText: (value) => (value ? 'Enable' : 'Disable'),
       type: 'asf',
-      description:
-        `Disabling the master key pair removes one method of authorizing transactions. You should be sure you can use one of the other ways of authorizing transactions, such as with a regular key or by multi-signing, before you disable the master key pair. (For example, if you assigned a regular key pair, make sure that you can successfully submit transactions with that regular key.) Due to the decentralized nature of the ${explorerName}, no one can restore access to your account if you cannot use the remaining ways of authorizing transactions.\nYou should do this if your account\'s master key pair may have been compromised, or if you want to make multi-signing the only way to submit transactions from your account.\nTo disable the master key pair, you must use the master key pair. However, you can re-enable the master key pair using any other method of authorizing transactions.`,
+      description: `Disabling the master key pair removes one method of authorizing transactions. You should be sure you can use one of the other ways of authorizing transactions, such as with a regular key or by multi-signing, before you disable the master key pair. (For example, if you assigned a regular key pair, make sure that you can successfully submit transactions with that regular key.) Due to the decentralized nature of the ${explorerName}, no one can restore access to your account if you cannot use the remaining ways of authorizing transactions.\nYou should do this if your account\'s master key pair may have been compromised, or if you want to make multi-signing the only way to submit transactions from your account.\nTo disable the master key pair, you must use the master key pair. However, you can re-enable the master key pair using any other method of authorizing transactions.`,
       isDefault: (value) => !value,
       isAdvanced: true,
       isHighRisk: true
@@ -327,7 +326,6 @@ export default function AccountSettings({ account, setSignRequest }) {
   }
 
   const handleSetNftTokenMinter = () => {
-
     if (!isAddressValid(nftTokenMinter.trim())) {
       setErrorMessage('Please enter a valid NFTokenMinter address.')
       return
@@ -505,34 +503,32 @@ export default function AccountSettings({ account, setSignRequest }) {
   const renderFlagItem = (flag, flagType) => {
     const flagData = flagDetails[flag]
     // Add null checks and safe access
-    const currentValue = flagType === 'tf' ? 
-      (tfFlags?.[flag] || false) : 
-      (flags?.[flag] || false)
+    const currentValue = flagType === 'tf' ? tfFlags?.[flag] || false : flags?.[flag] || false
     const isNonDefault = flagData && !flagData.isDefault(currentValue)
     const isHighRisk = flagData?.isHighRisk || false
-    
+
     // Read more handling
     const isExpanded = expandedFlags[flag] || false
     const descriptionText = flagData.description
     const shouldTruncate = descriptionText.length > 200 // arbitrary threshold
     const displayedDescription = isExpanded || !shouldTruncate ? descriptionText : `${descriptionText.slice(0, 200)}...`
-    
+
     let buttonDisabled = false
     let disabledReason = ''
-    
+
     // Check specific conditions for disabling buttons
     if (flag === 'allowTrustLineClawback' && !canEnableTrustLineClawback() && !currentValue) {
       buttonDisabled = true
       disabledReason =
         'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
     }
-    
+
     if (flag === 'requireAuth' && !canEnableRequireAuth() && !currentValue) {
       buttonDisabled = true
       disabledReason =
         'Can only be enabled if the account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
     }
-    
+
     if (flag === 'globalFreeze' && !canChangeGlobalFreeze()) {
       buttonDisabled = true
       disabledReason = 'Cannot change Global Freeze when No Freeze is enabled'
@@ -560,7 +556,8 @@ export default function AccountSettings({ account, setSignRequest }) {
           )}
           {flagData.isPermanent && currentValue && <span className="permanent-flag">Permanent</span>}
         </div>
-        <div className={`flag-description ${isHighRisk ? 'red' : ''}`}>{displayedDescription}
+        <div className={`flag-description ${isHighRisk ? 'red' : ''}`}>
+          {displayedDescription}
           {shouldTruncate && (
             <span
               role="button"
@@ -621,7 +618,11 @@ export default function AccountSettings({ account, setSignRequest }) {
           <div className="content-center">
             <h1 className="center">Account Settings</h1>
             <p className="center">
-              Please <span className="link" onClick={() => setSignRequest({})}>sign in to your account</span> to manage your account settings.
+              Please{' '}
+              <span className="link" onClick={() => setSignRequest({})}>
+                sign in to your account
+              </span>{' '}
+              to manage your account settings.
             </p>
 
             {/* Show form preview when not logged in */}
@@ -700,7 +701,11 @@ export default function AccountSettings({ account, setSignRequest }) {
 
               {/* Advanced Options */}
               <div className="advanced-options">
-                <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-flags">
+                <CheckBox
+                  checked={showAdvanced}
+                  setChecked={() => setShowAdvanced(!showAdvanced)}
+                  name="advanced-flags"
+                >
                   Advanced Options (Use with caution)
                 </CheckBox>
 
@@ -729,7 +734,9 @@ export default function AccountSettings({ account, setSignRequest }) {
 
             <br />
             <div className="center">
-              <span className="link" onClick={() => setSignRequest({})}>Sign in to your account</span>
+              <span className="link" onClick={() => setSignRequest({})}>
+                Sign in to your account
+              </span>
             </div>
           </div>
         </div>
@@ -762,9 +769,7 @@ export default function AccountSettings({ account, setSignRequest }) {
                   <div className="flag-info">
                     <span className="flag-name">Authorized NFToken Minter</span>
                     {account?.address && (
-                      <span className="flag-status">
-                        {currentNftTokenMinter ? currentNftTokenMinter : 'Not Set'}
-                      </span>
+                      <span className="flag-status">{currentNftTokenMinter ? currentNftTokenMinter : 'Not Set'}</span>
                     )}
                   </div>
                   {currentNftTokenMinter ? (
@@ -830,7 +835,9 @@ export default function AccountSettings({ account, setSignRequest }) {
             {account?.address ? (
               <Link href={`/account/${account.address}`}>View my account page</Link>
             ) : (
-              <span className="link" onClick={() => setSignRequest({})}>Sign in to your account</span>
+              <span className="link" onClick={() => setSignRequest({})}>
+                Sign in to your account
+              </span>
             )}
           </div>
         </div>
