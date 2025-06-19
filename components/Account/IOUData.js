@@ -1,6 +1,6 @@
-import { fullDateAndTime } from '../../utils/format'
+import { fullDateAndTime, addressUsernameOrServiceLink, niceCurrency, shortNiceNumber, AddressWithIcon } from '../../utils/format'
 
-export default function IOUData({ rippleStateList, ledgerTimestamp }) {
+export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) {
   //show the section only if there are tokens to show
   if (!rippleStateList?.length) return ''
 
@@ -9,10 +9,6 @@ export default function IOUData({ rippleStateList, ledgerTimestamp }) {
   ) : (
     'Tokens (IOUs)'
   )
-
-  const statusNode = !rippleStateList ? 'Loading...' : <span>There are {rippleStateList?.length} tokens</span>
-
-  // console.log(rippleStateList) //delete
 
   /*
   [
@@ -68,30 +64,48 @@ export default function IOUData({ rippleStateList, ledgerTimestamp }) {
   */
 
   // amount / gateway details / trustline settings
+  const tokenRows = rippleStateList.map((tl, i) => {
+    const issuer = tl.HighLimit?.issuer === userData?.address ? tl.LowLimit : tl.HighLimit
+     // Build a simple string that lists the most important flags for quick visibility
+    // const activeFlags = []
+    // if (tl.flags?.lowFreeze || tl.flags?.highFreeze) activeFlags.push('Freeze')
+    // if (tl.flags?.lowNoRipple || tl.flags?.highNoRipple) activeFlags.push('NoRipple')
+    // if (tl.flags?.lowAuth || tl.flags?.highAuth) activeFlags.push('Auth')
+    // if (tl.flags?.lowReserve || tl.flags?.highReserve) activeFlags.push('Reserve')
+
+    return (
+      <tr key={i}>
+        <td className="center" style={{ width: 30 }}>{i + 1}</td>
+        <td>
+          <AddressWithIcon address={issuer.issuer}>
+            {niceCurrency(tl.Balance?.currency)}
+            <br />
+            {addressUsernameOrServiceLink(issuer, 'issuer', { short: true })}
+          </AddressWithIcon>
+        </td>
+        <td>{shortNiceNumber(Math.abs(tl.Balance?.value))}</td>
+      </tr>
+    )
+  })
 
   return (
     <>
-      <table className="table-details hide-on-small-w800">
+      <table className="table-details">
         <thead>
           <tr>
             <th colSpan="100">{title}</th>
           </tr>
+          <tr>
+            <th>#</th>
+            <th>Currency</th>
+            <th>Balance</th>
+            {/* <th className="right">Flags</th> */}
+          </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Status</td>
-            <td>{statusNode}</td>
-          </tr>
+          {tokenRows}
         </tbody>
       </table>
-      <div className="show-on-small-w800">
-        <br />
-        <center>{title}</center>
-        <p>
-          <span className="grey">Status</span> {statusNode}
-        </p>
-      </div>
-      <style jsx>{``}</style>
     </>
   )
 }
