@@ -11,8 +11,6 @@ export default function EscrowData({ escrowList, ledgerTimestamp }) {
     'Escrows'
   )
 
-  console.log(escrowList) //delete
-
   const escrowRows = escrowList.map((escrow, i) => {
     
     return (
