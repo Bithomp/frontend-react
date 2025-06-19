@@ -34,7 +34,7 @@ export default function NFTMinting() {
         </p>
         <p>In this guide, we’ll walk you through everything you need to know about minting NFTs using our tools.</p>
 
-        <h1>Why Mint NFTs on {explorerName}?</h1>
+        <h2>Why Mint NFTs on {explorerName}?</h2>
         <ul>
           <li>
             <strong>Low fees:</strong> {explorerName} transactions cost fractions of a cent.
@@ -53,7 +53,7 @@ export default function NFTMinting() {
             <strong>No smart contracts required:</strong> Native NFT functionality makes minting simple and safe.
           </li>
         </ul>
-        <h1>What You’ll Need</h1>
+        <h2>What You’ll Need</h2>
         <p>Before minting, make sure you have:</p>
         <ul>
           <li>
@@ -80,7 +80,7 @@ export default function NFTMinting() {
           </li>
         </ul>
 
-        <h1>How to Mint an NFT on {explorerName}</h1>
+        <h2>How to Mint an NFT on {explorerName}</h2>
 
         <p>
           1. Go to the <Link href="services/nft-mint">{explorerName} NFT Minting Tool:</Link>
@@ -160,7 +160,7 @@ export default function NFTMinting() {
         <p>
           You can also sell, buy, burn, and transfer NFTs directly through our platform using integrated wallet support.
         </p>
-        <h1>Conclusion</h1>
+        <h3>Conclusion</h3>
         <p>
           Whether you're an artist, developer, or collector, minting NFTs on {explorerName} is easier than ever. With us
           you have a trusted tool with full wallet integration, simple UX, and transparent blockchain tracking.
