@@ -276,12 +276,7 @@ export default function AccountSettings({ account, setSignRequest }) {
               requireAuth: 'requireAuth',
               disallowXRP: 'disallowXRP'
             }
-            // Add null check and handle Xahau network case
-            if (xahauNetwork) {
-              newTfFlags[flag] = false // Default to false for Xahau network
-            } else {
-              newTfFlags[flag] = ledgerFlags[asfMapping[flag]] === true
-            }
+            newTfFlags[flag] = ledgerFlags[asfMapping[flag]] === true
           })
           setTfFlags(newTfFlags)
         } else {
@@ -757,7 +752,7 @@ export default function AccountSettings({ account, setSignRequest }) {
             <h4>Account Flags</h4>
 
             {/* TF Flags */}
-            {!xahauNetwork && tfFlagKeys.map((flag) => renderFlagItem(flag, 'tf'))}
+            {tfFlagKeys.map((flag) => renderFlagItem(flag, 'tf'))}
 
             {/* Basic ASF Flags */}
             {flagGroups.basic.map((flag) => renderFlagItem(flag, 'asf'))}
