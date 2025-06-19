@@ -61,7 +61,7 @@ import ObjectsData from '../../components/Account/ObjectsData'
 import NFTokenData from '../../components/Account/NFTokenData'
 import URITokenData from '../../components/Account/URITokenData'
 //import IOUData from '../../components/Account/IOUData'
-//import EscrowData from '../../components/Account/EscrowData'
+import EscrowData from '../../components/Account/EscrowData'
 //import DexOrdersData from '../../components/Account/DexOrdersData'
 
 export default function Account({
@@ -511,16 +511,16 @@ export default function Account({
                           <IOUData
                             rippleStateList={objects?.rippleStateList}
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                          />
+                          /> */}
                           <EscrowData
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             escrowList={objects?.escrowList}
                           />
-                          <DexOrdersData
+                          {/* <DexOrdersData
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             offerList={objects?.offerList}
-                          />
-                          */}
+                          /> */}
+                         
 
                           <LedgerData
                             data={data}
