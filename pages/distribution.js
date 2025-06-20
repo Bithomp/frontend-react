@@ -111,7 +111,7 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
           {
             width: 1200,
             height: 630,
-            file: 'previews/630x630/distribution.png'
+            file: 'previews/1200x630/distribution.png'
           }
         ]}
       />

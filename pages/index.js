@@ -141,7 +141,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
           {
             width: 1200,
             height: 630,
-            file: 'previews/630x630/index.png'
+            file: 'previews/1200x630/index.png'
           }
         ]}
       />
