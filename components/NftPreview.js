@@ -175,6 +175,7 @@ export default function NftPreview({ nft }) {
         setLoaded(true)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUrl, videoUrl])
 
   return (
