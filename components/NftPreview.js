@@ -18,23 +18,19 @@ const downloadIcon = (
 
 const isPanorama = (metadata) => {
   if (!metadata) return false
-  
+
   // Check name and description for panorama keywords
   const panoramaKeywords = ['360', 'panorama', 'panoramic', 'equirectangular']
   const name = metadata.name?.toLowerCase() || ''
   const description = metadata.description?.toLowerCase() || ''
-  
+
   // Check if name or description contains panorama keywords
-  const hasPanoramaKeyword = panoramaKeywords.some(keyword => 
-    name.includes(keyword) || description.includes(keyword)
-  )
-  
+  const hasPanoramaKeyword = panoramaKeywords.some((keyword) => name.includes(keyword) || description.includes(keyword))
+
   // Check for specific camera types known for panoramas
   const panoramaCameras = ['gopro fusion', 'insta360', 'ricoh theta']
-  const hasPanoramaCamera = panoramaCameras.some(camera => 
-    description.includes(camera.toLowerCase())
-  )
-  
+  const hasPanoramaCamera = panoramaCameras.some((camera) => description.includes(camera.toLowerCase()))
+
   return hasPanoramaKeyword || hasPanoramaCamera
 }
 
@@ -174,6 +170,10 @@ export default function NftPreview({ nft }) {
       if (panoramic) {
         setLoaded(true)
       }
+      // if no image, but there is a video, don't show loading spinner
+      if (!imageUrl) {
+        setLoaded(true)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUrl, videoUrl])
@@ -240,7 +240,7 @@ export default function NftPreview({ nft }) {
               id="2"
               sceneId="videoScene"
               imageSource={videoUrl}
-                config={{
+              config={{
                 autoLoad: true,
                 autoRotate: 0
               }}

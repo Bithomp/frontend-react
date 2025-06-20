@@ -1,14 +1,13 @@
-// pages/learn.js
-import Link from 'next/link'
-import Head from 'next/head'
-
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { getIsSsrMobile } from '../../utils/mobile'
-import { network } from '../../utils'
-import Breadcrumbs from '../../components/Breadcrumbs'
+import Head from 'next/head'
+import Link from 'next/link'
 
-import styles from '../../styles/pages/learn.module.scss'
-import SEO from '../../components/SEO'
+import Breadcrumbs from '@/components/Breadcrumbs'
+import SEO from '@/components/SEO'
+import Card from '@/components/UI/Card'
+import styles from '@/styles/pages/learn.module.scss'
+import { network } from '@/utils'
+import { getIsSsrMobile } from '@/utils/mobile'
 
 const learnPageXRP = {
   title: 'Learn About XRP & The XRP Ledger | Bithomp',
@@ -50,6 +49,13 @@ const learnContentXRP = [
       { title: 'Verified Domain', slug: 'verified-domain' },
     ],
   },
+  {
+    category: 'Bithomp Tools',
+    description: 'Learn how to get the most out of Bithomp’s powerful explorer.',
+    items: [
+      { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
+    ],
+  },
 ]
 
 const learnContentXAHAU = [
@@ -60,6 +66,13 @@ const learnContentXAHAU = [
       { title: 'Blackholed Address', slug: 'blackholed-address' },
       { title: 'Blacklisted Address', slug: 'blacklisted-address' },
       { title: 'Verified Domain', slug: 'verified-domain' },
+    ],
+  },
+  {
+    category: 'Bithomp Tools',
+    description: 'Learn how to get the most out of Bithomp’s powerful explorer.',
+    items: [
+      { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
     ],
   },
 ]
@@ -110,7 +123,8 @@ export default function LearnPage() {
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                 {section.items.map((item) => (
-                  <Link
+                  <Card
+                    as={Link}
                     aria-label={`Read more about ${item.title}`}
                     href={`/learn/${item.slug}`}
                     key={item.slug}
@@ -123,7 +137,7 @@ export default function LearnPage() {
                       )}
                     </div>
                     <p className={`${styles.readMore}`}>Read more →</p>
-                  </Link>
+                  </Card>
                 ))}
               </div>
             </section>

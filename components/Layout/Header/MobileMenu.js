@@ -169,6 +169,9 @@ export default function MobileMenu({
               AMM Services
             </Link>
           )}
+          <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Account Settings
+          </Link>
           <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.nft-mint')}
           </Link>
@@ -193,9 +196,6 @@ export default function MobileMenu({
           <a href={'/submit/'} className="mobile-menu-item">
             {t('menu.submit-offline-tx')}
           </a>
-          <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            Account Settings
-          </Link>
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">

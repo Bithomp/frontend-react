@@ -44,16 +44,6 @@ export default function SEO({
         width: 630,
         height: 630,
         file: imagePath + 'previews/630x630/index.png'
-      },
-      {
-        file: imagePath + '512.png',
-        width: 512,
-        height: 512
-      },
-      {
-        file: imagePath + '192.png',
-        width: 192,
-        height: 192
       }
     ]
   }

@@ -18,6 +18,10 @@ const TokenSelector = ({ value, onChange }) => {
 
   // Handle search with debounce
   useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
     if (searchTimeout) {
       clearTimeout(searchTimeout)
     }
@@ -59,7 +63,7 @@ const TokenSelector = ({ value, onChange }) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery])
+  }, [searchQuery, isOpen])
 
   const handleSelect = (token) => {
     onChange(token)
@@ -172,10 +176,8 @@ const TokenSelector = ({ value, onChange }) => {
                         </div>
                       </div>
                     ))}
-                    {searchResults.length === 100 && searchQuery && (
-                      <div className="token-selector-modal-empty">
-                        <p>More than 100 results found. Please specify an issuer to narrow down the search.</p>
-                      </div>
+                    {searchResults.length >= 100 && (
+                      <p className="center orange">More than 100 results found. Please specify an issuer to narrow down the search.</p>
                     )}
                   </div>
                 ) : searchQuery ? (
