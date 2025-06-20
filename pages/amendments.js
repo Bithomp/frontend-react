@@ -171,6 +171,11 @@ export default function Amendment() {
             width: 1200,
             height: 630,
             file: 'previews/1200x630/amendments.png'
+          },
+          {
+            width: 630,
+            height: 630,
+            file: 'previews/630x630/amendments.png'
           }
         ]}
       />
