@@ -19,10 +19,11 @@ export default function NftImageOrVideo({ nft }) {
 
   if (Object.keys(imageStyle).length === 0) {
     const nftVideoUrl = nftUrl(nft, 'video')
+    const nftImageUrl = nftUrl(nft, 'preview')
     if (nftVideoUrl) {
       return (
         <div className="tile-content" onMouseOver={playMovie}>
-          <video playsInline muted preload="metadata">
+          <video playsInline muted preload="metadata" poster={nftImageUrl}>
             <source src={nftVideoUrl} type="video/mp4" />
           </video>
         </div>

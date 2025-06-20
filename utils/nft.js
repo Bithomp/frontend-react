@@ -319,7 +319,7 @@ const assetUrl = (uri, type = 'image', gateway = 'our') => {
 const metaUrl = (nft, type = 'image', gateway = 'our') => {
   if (!nft.metadata) return null
   let meta = nft.metadata
-  if (type === 'image' || type === 'thumbnail') {
+  if (type === 'image' || type === 'thumbnail' || type === 'preview') {
     //Evernode
     if ((meta.evernodeRegistration || meta.evernodeLease) && gateway === 'our') {
       return '/images/nft/evernode.png'
@@ -342,7 +342,7 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
     if (meta.animation) return assetUrl(meta.animation, 'preview', gateway)
     if (meta.animation_url) return assetUrl(meta.animation_url, 'preview', gateway)
   }
-  if (type === 'video' || type === 'thumbnail') {
+  if (type === 'video' || type === 'thumbnail' || type === 'preview') {
     if (meta.video) return assetUrl(meta.video, type, gateway)
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway)
     if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway)

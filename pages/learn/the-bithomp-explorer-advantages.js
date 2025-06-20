@@ -64,21 +64,14 @@ export default function UnderstandingTheBithompExplorer() {
             />
             <figcaption>Fiat prices calculation</figcaption>
           </figure>
-          <p>Most explorers show transaction amounts in nativeCurrency, with no fiat conversion.</p>
+          <p>Most explorers show transaction amounts with no fiat conversion.</p>
           <p>
-            <strong>Bithomp {explorerName} Explorer </strong>goes further — it provides{' '}
-            <strong>historical fiat values </strong> for each transaction, calculated using deep order book data and AMM
-            pools rates at the time when the transaction was accepted. You can view values in{' '}
-            <strong>40 different currencies</strong>, making it ideal for:
+            <strong>Bithomp {explorerName} Explorer </strong>goes further — it provides historical values in{' '}
+            <strong> 40 different currencies</strong>, making it ideal for:
           </p>
           <ul>
-            <li>Tax reporting</li>
-
-            <li>Accounting</li>
-
+            <li>Tax reporting / accounting</li>
             <li>Regulatory audits</li>
-
-            <li>Personal finance tracking</li>
           </ul>
           <h3>2. Automatic Explanations for Common Issues</h3>
           <figure>
@@ -98,7 +91,7 @@ export default function UnderstandingTheBithompExplorer() {
           </figure>
           <p>Have you ever seen a transaction that failed or looked incomplete and had no idea why?</p>
           <p>
-            <strong>{explorerName} explorer automatically detects and explains</strong> common issues, such as:
+            <strong>Bithomp {explorerName} explorer automatically detects and explains</strong> common issues, such as:
           </p>
           <ul>
             <li>Missing destination tags (common with exchanges)</li>
