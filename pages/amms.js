@@ -290,7 +290,7 @@ export default function Amms({
                 {
                   width: 1200,
                   height: 630,
-                  file: 'previews/1200x630/amms.png'
+                  file: 'previews/630x630/amms.png'
                 }
               ]
         }
