@@ -142,11 +142,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
             width: 1200,
             height: 630,
             file: 'previews/1200x630/index.png'
-          },
-          {
-            width: 630,
-            height: 630,
-            file: 'previews/630x630/index.png'
           }
         ]}
       />
@@ -196,7 +191,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
           <Statistics data={statistics} setData={setStatistics} />
         </div>
       </section>
-
     </>
   )
 }

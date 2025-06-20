@@ -244,7 +244,10 @@ export default function Amms({
   }
 
   useEffect(() => {
-    if (order && (rawData.order !== order || rawData.currency !== token?.currency || rawData.currencyIssuer !== token?.issuer)) {
+    if (
+      order &&
+      (rawData.order !== order || rawData.currency !== token?.currency || rawData.currencyIssuer !== token?.issuer)
+    ) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -288,11 +291,6 @@ export default function Amms({
                   width: 1200,
                   height: 630,
                   file: 'previews/1200x630/amms.png'
-                },
-                {
-                  width: 630,
-                  height: 630,
-                  file: 'previews/630x630/amms.png'
                 }
               ]
         }
@@ -349,10 +347,7 @@ export default function Amms({
           {filterMode === 'single' && (
             <div>
               <p>{t('table.currency')}</p>
-              <TokenSelector
-                value={token}
-                onChange={setToken}
-              />
+              <TokenSelector value={token} onChange={setToken} />
             </div>
           )}
         </>
