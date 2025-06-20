@@ -565,6 +565,12 @@ export default function LedgerData({
               <td className="bold">disabled</td>
             </tr>
           )}
+          {data.ledgerInfo?.flags?.tshCollect && (
+            <tr>
+              <td>Transactional Stakeholder Collect</td>
+              <td className="bold">enabled</td>
+            </tr>
+          )}
           {data.ledgerInfo?.flags?.passwordSpent && (
             <tr>
               <td>Free re-key</td>
@@ -821,6 +827,11 @@ export default function LedgerData({
         {data.ledgerInfo?.flags?.disableMaster && (
           <p>
             <span className="grey">Master key</span> <span className="bold">disabled</span>
+          </p>
+        )}
+        {data.ledgerInfo?.flags?.tshCollect && (
+          <p>
+            <span className="grey">Transactional Stakeholder Collect</span> enabled
           </p>
         )}
         {data.ledgerInfo?.flags?.passwordSpent && (

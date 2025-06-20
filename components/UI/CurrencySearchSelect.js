@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { IoMdClose } from 'react-icons/io'
 import { IoSearch } from 'react-icons/io5'
+import { niceCurrency } from '../../utils/format'
+import { shortName } from '../../utils'
 
 export default function CurrencySearchSelect({ setCurrency, defaultValue = '' }) {
   const [inputValue, setInputValue] = useState(defaultValue || '')
@@ -31,19 +33,32 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
         let list = res?.data
         if (list && list.currencies) list = list.currencies
         if (!Array.isArray(list)) list = []
-
+        
         const opts = list
           .map((item) => {
             let value = null
+            let label = null
             if (typeof item === 'string') {
               value = item
+              label = niceCurrency(item)
+              if (item.length > 3 && (item.substr(0, 2) === '02' || !item.match(/^[A-Za-z0-9]{3}$/))) {
+                label += ` (${shortName(item)})`
+              }
             } else if (item.currency) {
               value = item.currency
+              label = niceCurrency(item.currency)
+              if (item.currency.length > 3 && (item.currency.substr(0, 2) === '02' || !item.currency.match(/^[A-Za-z0-9]{3}$/))) {
+                label += ` (${shortName(item.currency)})`
+              }
             } else if (item.code) {
               value = item.code
+              label = niceCurrency(item.code)
+              if (item.code.length > 3 && (item.code.substr(0, 2) === '02' || !item.code.match(/^[A-Za-z0-9]{3}$/))) {
+                label += ` (${shortName(item.code)})`
+              }
             }
             if (!value) return null
-            return { value, label: value }
+            return { value, label }
           })
           .filter(Boolean)
 
@@ -110,6 +125,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
             isLoading={searchingSuggestions}
             components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
             filterOption={() => true}
+            noOptionsMessage={() => (inputValue.length > 2 ? 'No results found' : 'Start typing to search for currencies')}
           />
           <div className="form-input__btns">
             <button className="form-input__clear" onClick={clearAll}>

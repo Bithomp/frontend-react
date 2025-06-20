@@ -9,7 +9,7 @@ import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
-import { AddressWithIcon, niceCurrency, shortAddress, shortNiceNumber } from '../utils/format'
+import { AddressWithIcon, niceCurrency, shortNiceNumber } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { useWidth } from '../utils'
@@ -91,6 +91,15 @@ export default function Tokens ({
       markerToUse = options.marker || marker
     }
 
+    // Check subscription for pagination beyond initial 100 items
+    if (markerToUse && markerToUse !== 'first') {
+      // do not load more if there is no session token or if Bithomp Pro is expired
+      if (!sessionToken || (sessionToken && subscriptionExpired)) {
+        setLoading(false)
+        return
+      }
+    }
+
     const response = await axios
       .get(apiUrl({ marker: markerToUse }), {
         signal: controller.signal
@@ -150,7 +159,7 @@ export default function Tokens ({
         {token.issuer && (
           <>
             <br />
-            {shortAddress(token.issuer)}
+            {token.issuer}
           </>
         )}
       </AddressWithIcon>

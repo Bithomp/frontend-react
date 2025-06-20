@@ -1,6 +1,4 @@
-@import '../variables';
-
-.account-settings {
+.accountSettings :global {
   .permission-item {
     display: flex;
     align-items: center;
@@ -32,6 +30,24 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 0.5rem;
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+
+      .flag-info {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+
+      button {
+        align-self: flex-end;
+        width: auto;
+      }
+    }
   }
 
   .flag-info {
@@ -48,6 +64,11 @@
   .flag-status {
     color: var(--text-secondary);
     font-size: 14px;
+    
+    &.orange {
+      color: var(--orange);
+      font-weight: 500;
+    }
   }
 
   .flag-description {
@@ -55,12 +76,23 @@
     font-size: 14px;
     margin-top: 0.5rem;
     line-height: 1.4;
+    white-space: pre-wrap;
+    
+    &.red {
+      color: var(--red);
+      font-weight: 500;
+    }
   }
 
   .disabled-reason {
     font-size: 12px;
     margin-top: 0.5rem;
     font-style: italic;
+    
+    &.red {
+      color: var(--red);
+      font-weight: 500;
+    }
   }
 
   .permanent-flag {
@@ -83,6 +115,13 @@
     small {
       color: var(--text-secondary);
       font-size: 12px;
+    }
+
+    .address-input {
+      &::placeholder {
+        font-style: italic;
+        opacity: 0.7;
+      }
     }
   }
 
@@ -143,21 +182,12 @@
 
   .set-minter {
     margin-top: 0.5rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    flex-wrap: wrap;
-    
-    .input-text {
-      flex: 1;
-      min-width: 250px;
-    }
     
     small {
       color: var(--text-secondary);
       font-size: 12px;
-      flex-basis: 100%;
-      margin-top: 4px;
+      display: block;
+      margin-top: 8px;
     }
   }
 
@@ -201,6 +231,49 @@
 
     .dark & {
       color: #fff;
+    }
+  }
+
+  .button-action {
+    &.thin {
+      &.orange {
+        background: var(--orange);
+        color: white;
+        border: 1px solid var(--orange);
+        
+        &:hover:not(:disabled) {
+          background: #e8941f;
+          border-color: #e8941f;
+        }
+      }
+    }
+  }
+
+  // Mobile responsive adjustments
+  @media (max-width: 600px) {
+    .flag-item {
+      padding: 0.75rem;
+    }
+
+    .flag-info {
+      gap: 0.5rem;
+    }
+
+    .flag-name {
+      font-size: 0.95rem;
+    }
+
+    .flag-status {
+      font-size: 13px;
+    }
+
+    .nft-minter-input {
+      .current-minter {
+        .minter-address {
+          font-size: 13px;
+          padding: 6px 8px;
+        }
+      }
     }
   }
 
