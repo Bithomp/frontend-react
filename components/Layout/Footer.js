@@ -74,13 +74,10 @@ export default function Footer() {
 
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
-          {!xahauNetwork && <Link href="/xrpl-article">XRP, XRPL, Ripple</Link>}
-          <Link href="/blackholed-address">Blackholed address</Link>
-          <Link href="/blacklisted-address">Blacklisted address</Link>
-          <Link href="/verified-domains">Verified domains</Link>
+          {!xahauNetwork && <Link href="/learn/what-is-xrp">What is XRP?</Link>}
+          {!xahauNetwork && <Link href="/learn/what-is-the-xrp-ledger">What is XRPL?</Link>}
           <Link href="/learn/the-bithomp-explorer-advantages">Why Our Explorer</Link>
-          {!xahauNetwork && <Link href="/rlusd">Ripple USD</Link>}
-          <Link href="/nft-minting">How to Mint NFT</Link>
+          <Link href="/learn">See our learn page</Link>
         </div>
 
         {!xahauNetwork && (
