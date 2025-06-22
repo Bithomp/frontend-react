@@ -1,18 +1,18 @@
-import { fullDateAndTime } from '../../utils/format'
+import { fullDateAndTime, addressUsernameOrServiceLink, niceNumber, amountFormat } from '../../utils/format'
+import { divide } from '../../utils/calc'
 
 export default function DexOrdersData({ offerList, ledgerTimestamp }) {
   //show the section only if there are dex orders to show
   if (!offerList?.length) return ''
+
+  // Sort offerList by sequence in ascending order
+  const sortedOfferList = [...offerList].sort((a, b) => a.Sequence - b.Sequence)
 
   const title = ledgerTimestamp ? (
     <span className="red bold">Historical DEX orders data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
     'DEX orders'
   )
-
-  const statusNode = !offerList ? 'Loading...' : <span>There are {offerList?.length} DEX orders</span>
-
-  //console.log(offerList) //delete
 
   /*
   [
@@ -53,6 +53,31 @@ export default function DexOrdersData({ offerList, ledgerTimestamp }) {
   ]
   */
 
+  const orderRows = sortedOfferList.map((offer, i) => {
+    return (
+      <tr key={i}>
+        <td className="center" style={{ width: 30 }}>{i + 1}</td>
+        <td>
+          {amountFormat(offer.TakerGets, { precise: true })}
+          {offer.TakerGets?.issuer && <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>}
+        </td>
+        <td>
+          {amountFormat(offer.TakerPays, { precise: true })}
+          {offer.TakerPays?.issuer && <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>}
+        </td>
+        <td className={offer.flags?.sell ? 'red' : 'green'}>{offer.flags?.sell ? 'Sell' : 'Buy'}</td>
+        {
+          offer.flags?.sell ? (
+            <td>{niceNumber(divide(offer.quality, 1000000), 0, null, 5)}</td>
+          ) : (
+            <td>{niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)}</td>
+          )
+        }
+        <td>#{offer.Sequence}</td>
+      </tr>
+    )
+  })
+
   return (
     <>
       <table className="table-details hide-on-small-w800">
@@ -60,20 +85,54 @@ export default function DexOrdersData({ offerList, ledgerTimestamp }) {
           <tr>
             <th colSpan="100">{title}</th>
           </tr>
+          <tr>
+            <th>#</th>
+            <th>Taker Gets</th>
+            <th>Taker Pays</th>
+            <th>Type</th>
+            <th>Exchange Rate</th>
+            <th>Sequence</th>
+          </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Status</td>
-            <td>{statusNode}</td>
-          </tr>
+          {orderRows}
         </tbody>
       </table>
       <div className="show-on-small-w800">
         <br />
         <center>{title}</center>
-        <p>
-          <span className="grey">Status</span> {statusNode}
-        </p>
+        {sortedOfferList.map((offer, i) => {
+          return (
+            <div key={i} style={{ marginBottom: '6px' }} suppressHydrationWarning>
+              <span className="grey">{i + 1}. </span>
+              <span className={`${offer.flags?.sell ? 'red' : 'green'} bold`}>{offer.flags?.sell ? 'Sell' : 'Buy'}</span>
+              <br />
+              <span className="grey">Taker Gets: </span>
+              {amountFormat(offer.TakerGets, { precise: true })}
+              {offer.TakerGets?.issuer && <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>}
+              <br />
+              <span className="grey">Taker Pays: </span>
+              {amountFormat(offer.TakerPays, { precise: true })}
+              {offer.TakerPays?.issuer && <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>}
+              <br />              
+              <span className="grey">Exchange Rate: </span>
+              {
+                offer.flags?.sell ? (
+                  <>
+                    {niceNumber(divide(offer.quality, 1000000), 0, null, 5)}
+                  </>
+                ) : (
+                  <>
+                    {niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)}
+                  </>
+                )
+              }
+              <br />
+              <span className="grey">Sequence: </span>
+              #{offer.Sequence}
+            </div>
+          )
+        })}
       </div>
       <style jsx>{``}</style>
     </>
