@@ -7,6 +7,7 @@ import { nativeCurrency, typeNumberOnly } from '../../../utils'
 import TokenSelector from '../../UI/TokenSelector'
 import { LinkAmm, LinkTx } from '../../../utils/links'
 import CopyButton from '../../UI/CopyButton'
+import { errorCodeDescription } from '../../../utils/transaction'
 
 export default function AMMCreateForm({ setSignRequest }) {
   const [asset1, setAsset1] = useState({ currency: nativeCurrency })
@@ -21,13 +22,10 @@ export default function AMMCreateForm({ setSignRequest }) {
   const [txResult, setTxResult] = useState(null)
 
   const onSubmit = () => {
+    setTxResult(null)
     setError('')
-    if (!asset1.currency || !asset2.currency) {
-      setError('Please select both assets')
-      return
-    }
     if (asset1.currency === asset2.currency) {
-      setError('Please select two different assets.')
+      setError('The selected assets cannot be the same. Please choose two different assets to proceed.')
       return
     }
     if (!asset1Amount || isNaN(parseFloat(asset1Amount)) || parseFloat(asset1Amount) <= 0) {
@@ -50,7 +48,7 @@ export default function AMMCreateForm({ setSignRequest }) {
       setError('Please agree to the terms and conditions.')
       return
     }
-    
+
     try {
       const ammCreate = {
         TransactionType: 'AMMCreate',
@@ -75,19 +73,35 @@ export default function AMMCreateForm({ setSignRequest }) {
         ammCreate.Amount2 = {
           currency: asset2.currency,
           issuer: asset2.issuer,
-          value: asset2Amount 
+          value: asset2Amount
         }
       }
 
       setSignRequest({
         request: ammCreate,
         callback: (result) => {
-          if (result.result) {
-            setTxResult({
-              status: result.result.meta?.TransactionResult,
-              hash: result.result.hash,
-              ammId: result.result.meta?.AmmID
-            })
+          if (result) {
+            const meta = result.meta || {}
+            let ammId = ''
+            for (let i = 0; i < meta?.AffectedNodes?.length; i++) {
+              const node = meta.AffectedNodes[i]
+              if (node.CreatedNode?.LedgerEntryType === 'AMM') {
+                ammId = node.CreatedNode?.LedgerIndex
+                break
+              }
+            }
+
+            const status = result.meta?.TransactionResult
+
+            if (status !== 'tesSUCCESS') {
+              setError(errorCodeDescription(status))
+            } else {
+              setTxResult({
+                status,
+                hash: result.hash,
+                ammId
+              })
+            }
           }
         }
       })
@@ -100,39 +114,39 @@ export default function AMMCreateForm({ setSignRequest }) {
     <div className="form-container">
       <div>
         <div className="flex flex-col sm:gap-4 sm:flex-row">
-            <div className="flex-1">
-              <FormInput
+          <div className="flex-1">
+            <FormInput
               title="Asset 1 Amount"
               placeholder="Amount"
               setInnerValue={setAsset1Amount}
               defaultValue={asset1Amount}
               onKeyPress={typeNumberOnly}
-              hideButton={true}            
-              />
-            </div>
-            <div  className="w-full sm:w-1/2">
-              <span className="input-title">Asset 1 Currency</span>
-              <TokenSelector value={asset1} onChange={setAsset1} />        
-            </div>        
+              hideButton={true}
+            />
+          </div>
+          <div className="w-full sm:w-1/2">
+            <span className="input-title">Asset 1 Currency</span>
+            <TokenSelector value={asset1} onChange={setAsset1} />
+          </div>
         </div>
         <br />
         <div className="flex flex-col sm:gap-4 sm:flex-row">
-            <div className="flex-1">
-                <FormInput
-                title="Asset 2 Amount"
-                placeholder="Amount"
-                setInnerValue={setAsset2Amount}
-                defaultValue={asset2Amount}
-                onKeyPress={typeNumberOnly}
-                hideButton={true}
-                />
-            </div>
-            <div  className="w-full sm:w-1/2">
-                <span className="input-title">Asset 2 Currency</span>
-                <TokenSelector value={asset2} onChange={setAsset2} />        
-            </div>        
+          <div className="flex-1">
+            <FormInput
+              title="Asset 2 Amount"
+              placeholder="Amount"
+              setInnerValue={setAsset2Amount}
+              defaultValue={asset2Amount}
+              onKeyPress={typeNumberOnly}
+              hideButton={true}
+            />
+          </div>
+          <div className="w-full sm:w-1/2">
+            <span className="input-title">Asset 2 Currency</span>
+            <TokenSelector value={asset2} onChange={setAsset2} />
+          </div>
         </div>
-        <br />   
+        <br />
         <FormInput
           title="Trading Fee (0 - 1%)"
           placeholder="Fee in percent (max 1)"
@@ -144,7 +158,9 @@ export default function AMMCreateForm({ setSignRequest }) {
         <br />
         <CheckBox checked={agreeToRisks} setChecked={setAgreeToRisks} name="amm-create-risks">
           <span className="orange bold">
-            I acknowledge and understand the risks associated with XRPL AMMs, including impermanent loss, fund withdrawal risks, market volatility, and the impact of creating unbalanced pools. I agree to participate at my own risk.
+            I acknowledge and understand the risks associated with XRPL AMMs, including impermanent loss, fund
+            withdrawal risks, market volatility, and the impact of creating unbalanced pools. I agree to participate at
+            my own risk.
           </span>
         </CheckBox>
         <CheckBox checked={agreeToTerms} setChecked={setAgreeToTerms} name="amm-create-terms">
@@ -165,22 +181,31 @@ export default function AMMCreateForm({ setSignRequest }) {
           <button className="button-action" onClick={onSubmit}>
             Create AMM
           </button>
-        </div>        
+        </div>
       </div>
 
-      {txResult?.status === 'tesSUCCESS' && (
-        <div className="center">
-          <h3>Transaction Successful</h3>
-          <p>
-            <strong>Hash: </strong>
-            <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
-          </p>
-          <p>
-            <strong>AMM ID: </strong>
-            <LinkAmm ammId={txResult.ammId} hash={true} icon={true} copy={true} />
-          </p>
-        </div>
+      {txResult?.status && (
+        <>
+          {txResult.status === 'tesSUCCESS' ? (
+            <div className="center">
+              <h4>Transaction Successful</h4>
+              <p>
+                Hash: <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
+              </p>
+              <p>
+                <strong>AMM ID: </strong>
+                <LinkAmm ammId={txResult.ammId} hash={true} copy={true} />
+              </p>
+            </div>
+          ) : (
+            <div className="center">
+              <p>
+                Hash: <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
+              </p>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
-} 
+}

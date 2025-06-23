@@ -33,10 +33,14 @@ export default function AMMService({ setSignRequest, initialTab }) {
 
   const handleTabChange = (newTab) => {
     setTab(newTab)
-    router.push({
-      pathname: router.pathname,
-      query: { ...router.query, tab: newTab }
-    }, undefined, { shallow: true })
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, tab: newTab }
+      },
+      undefined,
+      { shallow: true }
+    )
   }
 
   const tabList = [
@@ -48,10 +52,8 @@ export default function AMMService({ setSignRequest, initialTab }) {
     <>
       <SEO title="AMM Services" description="Create or vote on Automated Market Makers on XRPL" />
       <div className="page-services-amm content-center">
-        <h1 className="center">
-            { tab === 'create' ? 'AMM Create' : 'AMM Vote' }
-        </h1>
-        <div className="center" >
+        <h1 className="center">{tab === 'create' ? 'AMM Create' : 'AMM Vote'}</h1>
+        <div className="center">
           <Tabs tabList={tabList} tab={tab} setTab={handleTabChange} name="ammTabs" />
         </div>
         {tab === 'create' && <AMMCreateForm setSignRequest={setSignRequest} />}
@@ -59,4 +61,4 @@ export default function AMMService({ setSignRequest, initialTab }) {
       </div>
     </>
   )
-} 
+}
