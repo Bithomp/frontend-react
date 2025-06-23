@@ -195,6 +195,7 @@ export default function Header({
             <Link href="/services/send">Send Payment</Link>
             <Link href="/services/check">Issue Check</Link>
             <Link href="/services/escrow">Create Escrow</Link>
+            {!devNet && <Link href="/services/trustline">Create Trustline</Link>}
             <Link href="/services/account-settings/">Account Settings</Link>
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>

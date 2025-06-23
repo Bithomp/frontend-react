@@ -164,6 +164,11 @@ export default function MobileMenu({
           <Link href="/services/escrow" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Create Escrow
           </Link>
+          {!devNet && (
+            <Link href="/services/trustline" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              Create Trustline
+            </Link>
+          )}
           <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Account Settings
           </Link>
