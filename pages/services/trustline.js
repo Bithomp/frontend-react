@@ -72,7 +72,7 @@ export default function TrustSet({ setSignRequest }) {
       let trustSet = {
         TransactionType: 'TrustSet',
         LimitAmount: {
-          currency: "USD",
+          currency: currency.currency,
           issuer: issuer,
           value: limit.toString()
         }
