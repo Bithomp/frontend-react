@@ -41,6 +41,7 @@ import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
 import NftTransfer from './SignForms/NftTransfer'
 import { WalletConnect } from './Walletconnect'
 import NFTokenModify from './SignForms/NFTokenModify'
+import { errorCodeDescription } from '../utils/transaction'
 
 const qr = '/images/qr.gif'
 
@@ -58,7 +59,7 @@ const askInfoScreens = [
 ]
 const noCheckboxScreens = [...voteTxs, 'setDomain', 'setDid', 'setAvatar']
 
-let transactionFetched = false
+let transactionFetchTries = 0
 
 export default function SignForm({
   setSignRequest,
@@ -103,7 +104,8 @@ export default function SignForm({
     } else {
       //if mobile, but if loggedin as walletconnect
       if (account?.address) {
-        if (account?.wallet === 'walletconnect') {
+        // if xaman, but there is an additional screen, so user will click the button
+        if (account?.wallet === 'walletconnect' || (account?.wallet === 'xaman' && askInfoScreens.includes(screen))) {
           txSend()
           return
         }
@@ -462,7 +464,7 @@ export default function SignForm({
         app: server + router.asPath + (router.asPath.includes('?') ? '&' : '?') + 'uuid={id}'
       }
 
-      if (tx.TransactionType === 'Payment') {
+      if (signRequest.receipt) {
         //for username receipts
         signInPayload.options.return_url.app += '&receipt=true'
       }
@@ -521,75 +523,94 @@ export default function SignForm({
     }
   }
 
-  const checkTxInCrawler = async ({ txid, redirectName, txType }) => {
-    //TODO: Check the case for failed transactions.
-    setAwaiting(true)
+  const prepareForCrawlerCheck = ({ inLedger, meta, type }) => {
+    //if transaction is in ledger, but not indexed yet, prepare for crawler check
     setStatus(t('signin.status.awaiting-crawler'))
-    //txid can be in the ledger or not, so we need to check it in the ledger
-    if (txid && !transactionFetched) {
+
+    if (type === 'NFTokenMint') {
+      if (meta?.nftoken_id) {
+        checkCrawlerStatus({ inLedger, param: meta.nftoken_id, type })
+      } else {
+        //if no token found
+        closeSignInFormAndRefresh()
+      }
+      return
+    } else if (type === 'URITokenMint') {
+      let foundToken = false
+      for (let i = 0; i < meta?.AffectedNodes?.length; i++) {
+        const node = meta.AffectedNodes[i]
+        if (node.CreatedNode?.LedgerEntryType === 'URIToken') {
+          checkCrawlerStatus({
+            inLedger,
+            param: node.CreatedNode.LedgerIndex,
+            type
+          })
+          foundToken = true
+          break
+        }
+      }
+      if (!foundToken) {
+        closeSignInFormAndRefresh()
+      }
+      return
+    }
+    checkCrawlerStatus({ inLedger, type })
+  }
+
+  const validateTransactionOnLedger = async ({ txid, redirectName, txType, result }) => {
+    // if we have result of the transaction, and we don't need check crawler and if we don't need to return transaction results (no callback), no need to validate just redirect
+    if (
+      result &&
+      result === 'tesSUCCESS' &&
+      !(txType?.includes('NFToken') || txType?.includes('URIToken') || txType?.includes('DID')) &&
+      !signRequest?.callback
+    ) {
+      router.push('/tx/' + txid)
+      closeSignInFormAndRefresh()
+      return
+    }
+
+    setAwaiting(true)
+    setStatus('Validating the transaction on the ledger...')
+    //txid can be in the ledger or not, so we need to check if it in the ledger
+    if (txid && transactionFetchTries < 3) {
+      transactionFetchTries += 1
       const response = await axios('xrpl/transaction/' + txid)
 
       if (response.data) {
-        transactionFetched = true
         const { validated, inLedger, ledger_index, meta, TransactionType } = response.data
         const includedInLedger = inLedger || ledger_index
+        const txStatus = meta?.TransactionResult
         if (validated && includedInLedger) {
-          if (TransactionType === 'NFTokenMint') {
-            if (meta.nftoken_id) {
-              checkCrawlerStatus({ inLedger: includedInLedger, param: meta.nftoken_id, type: TransactionType })
-            } else {
-              //if no token found
-              closeSignInFormAndRefresh()
-            }
-            return
-          } else if (TransactionType === 'URITokenMint') {
-            let foundToken = false
-            for (let i = 0; i < meta.AffectedNodes.length; i++) {
-              const node = meta.AffectedNodes[i]
-              if (node.CreatedNode?.LedgerEntryType === 'URIToken') {
-                checkCrawlerStatus({
-                  inLedger: includedInLedger,
-                  param: node.CreatedNode.LedgerIndex,
-                  type: TransactionType
-                })
-                foundToken = true
-                break
-              }
-            }
-            if (!foundToken) {
-              closeSignInFormAndRefresh()
-            }
-            return
-          } else if (
-            TransactionType === 'Payment' ||
-            TransactionType === 'CheckCreate' ||
-            TransactionType === 'EscrowCreate' ||
-            TransactionType === 'TrustSet'
+          if (
+            txStatus === 'tesSUCCESS' &&
+            (txType?.includes('NFToken') || txType?.includes('URIToken') || txType?.includes('DID'))
           ) {
+            // for NFToken, URIToken and DID transactions wait for crawler to index the transaction
+            prepareForCrawlerCheck({
+              inLedger: includedInLedger,
+              meta,
+              type: TransactionType
+            })
+          } else {
+            //if failed or no need to wait for a crawler
             if (signRequest?.callback) {
-              signRequest.callback({
-                result: response.data
-              })
+              // if on desktop and there is a callback, call it with the result
+              signRequest.callback(response.data || {})
             } else {
               // For mobile, redirect to transaction page
-              router.push('/tx/' + response.data.hash)
-              return
+              router.push('/tx/' + txid)
             }
             closeSignInFormAndRefresh()
             return
           }
-          checkCrawlerStatus({ inLedger: includedInLedger, type: TransactionType })
         } else {
-          if (txType === 'Payment' || txType === 'CheckCreate' || txType === 'EscrowCreate' || txType === 'TrustSet') {
-            closeSignInFormAndRefresh()
-            return
-          }
           //if not validated or if no ledger info received, delay for 1.5 seconds
-          delay(1500, checkTxInCrawler, { txid, redirectName })
+          delay(1500, validateTransactionOnLedger, { txid, redirectName })
         }
       } else {
         //if no info on transaction, delay 1.5 sec and try again
-        delay(1500, checkTxInCrawler, { txid, redirectName })
+        delay(1500, validateTransactionOnLedger, { txid, redirectName })
       }
     } else {
       //if no tx data, delay 3 sec
@@ -637,7 +658,7 @@ export default function SignForm({
     }
   }
 
-  const afterSubmitExe = async ({ redirectName, broker, txHash, txType }) => {
+  const afterSubmitExe = async ({ redirectName, broker, txHash, txType, result }) => {
     //if broker, notify about the offer
     if (broker) {
       setStatus(t('signin.status.awaiting-broker', { serviceName: broker }))
@@ -670,7 +691,7 @@ export default function SignForm({
           const responseData = response.data
           if (responseData.status && responseData.data?.hash) {
             // hash of the offer accept transaction
-            checkTxInCrawler({ txid: responseData.data.hash, redirectName })
+            validateTransactionOnLedger({ txid: responseData.data.hash, redirectName })
           } else {
             setStatus(t('signin.status.failed-broker', { serviceName: broker }))
             delay(3000, closeSignInFormAndRefresh)
@@ -683,24 +704,17 @@ export default function SignForm({
       return
     }
 
-    // For NFT and DID transaction, lets wait for crawler to finish it's job
-    if (
-      txType?.includes('NFToken') ||
-      txType?.includes('URIToken') ||
-      txType?.includes('DID') ||
-      txType === 'Payment' ||
-      txType === 'CheckCreate' ||
-      txType === 'EscrowCreate' ||
-      txType === 'TrustSet'
-    ) {
-      checkTxInCrawler({ txid: txHash, redirectName, txType })
-      return
-    } else {
-      if (txType === 'AccountSet' && signRequest?.callback) {
-        signRequest.callback()
-      }
-      // no checks or delays for non NFT/DID transactions
+    if (txType === 'SignIn' || !txHash || signRequest?.receipt) {
       closeSignInFormAndRefresh()
+      return
+    }
+
+    if (result && result !== 'tesSUCCESS') {
+      //if we know the result already and if it's not succesfull
+      setAwaiting(false)
+      setStatus(errorCodeDescription(result))
+    } else {
+      validateTransactionOnLedger({ txid: txHash, redirectName, txType, result })
     }
   }
 
@@ -756,7 +770,7 @@ export default function SignForm({
     setSignRequest(null)
     setAwaiting(false)
     setStatus('')
-    transactionFetched = false
+    transactionFetchTries = 0
   }
 
   const buttonStyle = {
@@ -1202,19 +1216,17 @@ export default function SignForm({
                   <>
                     <div className="header">{t('signin.choose-app')}</div>
                     <div className="signin-apps">
-                      {signRequest?.wallet !== 'walletconnect' && (
-                        <div className="signin-app-logo">
-                          <Image
-                            alt="xaman"
-                            src="/images/wallets/xaman-large.svg"
-                            onClick={() => txSend({ wallet: 'xaman' })}
-                            width={169}
-                            height={80}
-                            style={{ maxWidth: '100%', maxHeight: '100%' }}
-                          />
-                        </div>
-                      )}
-                      {signRequest?.wallet !== 'xaman' && !isMobile && (
+                      <div className="signin-app-logo">
+                        <Image
+                          alt="xaman"
+                          src="/images/wallets/xaman-large.svg"
+                          onClick={() => txSend({ wallet: 'xaman' })}
+                          width={169}
+                          height={80}
+                          style={{ maxWidth: '100%', maxHeight: '100%' }}
+                        />
+                      </div>
+                      {!isMobile && (
                         <div className="signin-app-logo">
                           <Image
                             alt="Crossmark"
@@ -1225,7 +1237,7 @@ export default function SignForm({
                           />
                         </div>
                       )}
-                      {signRequest?.wallet !== 'xaman' && !isMobile && (
+                      {!isMobile && (
                         <div className="signin-app-logo">
                           <Image
                             alt="GemWallet"
@@ -1238,21 +1250,19 @@ export default function SignForm({
                         </div>
                       )}
                       {/* available only for mainnet and testnet */}
-                      {signRequest?.wallet !== 'xaman' &&
-                        !(account?.address && account.wallet === 'xaman') &&
-                        (networkId === 0 || networkId === 1) && (
-                          <div className="signin-app-logo">
-                            <Image
-                              alt="WalletConnect"
-                              src="/images/wallets/walletconnect-large.svg"
-                              onClick={() => txSend({ wallet: 'walletconnect' })}
-                              width={169}
-                              height={80}
-                              style={{ maxWidth: '100%', maxHeight: '100%' }}
-                            />
-                          </div>
-                        )}
-                      {signRequest?.wallet !== 'xaman' && !isMobile && (
+                      {(networkId === 0 || networkId === 1) && (
+                        <div className="signin-app-logo">
+                          <Image
+                            alt="WalletConnect"
+                            src="/images/wallets/walletconnect-large.svg"
+                            onClick={() => txSend({ wallet: 'walletconnect' })}
+                            width={169}
+                            height={80}
+                            style={{ maxWidth: '100%', maxHeight: '100%' }}
+                          />
+                        </div>
+                      )}
+                      {!isMobile && (
                         <>
                           <div className="signin-app-logo">
                             <Image
@@ -1286,7 +1296,7 @@ export default function SignForm({
                           </div>
                         </>
                       )}
-                      {/* signRequest?.wallet !== 'xaman' && '/images/wallets/ellipal-large.svg' */}
+                      {/* '/images/wallets/ellipal-large.svg' */}
                     </div>
                   </>
                 ) : (

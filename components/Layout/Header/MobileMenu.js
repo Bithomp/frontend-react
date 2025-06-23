@@ -169,6 +169,11 @@ export default function MobileMenu({
               Create Trustline
             </Link>
           )}
+          {!xahauNetwork && !devNet && (
+            <Link href="/services/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              AMM Services
+            </Link>
+          )}
           <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Account Settings
           </Link>
@@ -289,6 +294,16 @@ export default function MobileMenu({
               <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('menu.amm.explorer')}
               </Link>
+              {!devNet && (
+                <>
+                  <Link href="/services/amm?tab=create" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                    Create AMM
+                  </Link>
+                  <Link href="/services/amm?tab=vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                    AMM Vote
+                  </Link>
+                </>
+              )}
             </div>
           </>
         )}
