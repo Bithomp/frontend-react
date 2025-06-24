@@ -2,7 +2,6 @@ import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import {
-  useWidth,
   explorerName,
   isAddressValid,
   typeNumberOnly,
@@ -28,7 +27,6 @@ import { errorCodeDescription } from '../../utils/transaction'
 
 export default function IssueCheck({ setSignRequest }) {
   const { t } = useTranslation()
-  const width = useWidth()
   const [error, setError] = useState('')
   const [address, setAddress] = useState(null)
   const [destinationTag, setDestinationTag] = useState(null)
