@@ -1,4 +1,4 @@
-import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat, timeOrDate } from '../../utils/format'
+import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { avatarServer, timestampExpired } from '../../utils'
 import axios from 'axios'
@@ -8,23 +8,14 @@ import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
 
 export default function EscrowData({ account, setSignRequest, address, escrowList, ledgerTimestamp }) {
-  //show the section only if there are escrows to show
-  if (!escrowList?.length) return ''
 
-  const historicalTitle = ledgerTimestamp ? (
-    <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
-  ) : (
-    ''
-  )
-
-  console.log(escrowList)
   const [receivedEscrowList, setReceivedEscrowList] = useState([])
   const [sentEscrowList, setSentEscrowList] = useState([])
   const [escrowSequences, setEscrowSequences] = useState({})
 
   useEffect(() => {
-    setReceivedEscrowList(escrowList.filter((escrow) => escrow.Destination === address))
-    setSentEscrowList(escrowList.filter((escrow) => escrow.Account === address))
+    setReceivedEscrowList(escrowList?.filter((escrow) => escrow.Destination === address))
+    setSentEscrowList(escrowList?.filter((escrow) => escrow.Account === address))
   }, [escrowList, address])
 
   // Fetch escrow sequences for all escrows
@@ -44,10 +35,16 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
       setEscrowSequences(sequences)
     }
 
-    if (escrowList.length > 0 && !ledgerTimestamp) {
+    if (escrowList?.length > 0 && !ledgerTimestamp) {
       fetchEscrowSequences()
     }
   }, [escrowList, ledgerTimestamp])
+
+  const historicalTitle = ledgerTimestamp ? (
+    <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
+  ) : (
+    ''
+  )
 
   const escrowCountText = (escrow) => {
     if (!escrow) return ''
@@ -161,7 +158,7 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
 
   return (
     <>
-      {receivedEscrowList.length > 0 && (
+      {receivedEscrowList?.length > 0 && (
         <table className="table-details hide-on-small-w800">
           <thead>
             <tr>
@@ -185,7 +182,7 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
           </tbody>
         </table>        
       )}
-      {sentEscrowList.length > 0 && (
+      {sentEscrowList?.length > 0 && (
         <table className="table-details hide-on-small-w800">
           <thead>
             <tr>
