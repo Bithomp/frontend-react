@@ -391,10 +391,6 @@
     "No nfts information is found": "申し訳ありません、エラーが発生しました。別の方法で検索してください。",
     "Address is not valid": "アドレスが無効です。"
   },
-  "error-tx": {
-    "terNO_ACCOUNT": "トランザクションを送信するアドレスがまだレジャーに資金提供されていません。",
-    "tefMAX_LEDGER": "トランザクションが最新のレジャーを超えています。"
-  },
   "units": {
     "seconds-short": "秒",
     "minutes-short": "分",

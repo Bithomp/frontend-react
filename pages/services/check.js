@@ -1,10 +1,19 @@
 import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { useWidth, explorerName, isAddressValid, typeNumberOnly, nativeCurrency, isTagValid, isIdValid, decode } from '../../utils'
+import {
+  useWidth,
+  explorerName,
+  isAddressValid,
+  typeNumberOnly,
+  nativeCurrency,
+  isTagValid,
+  isIdValid,
+  decode
+} from '../../utils'
 import { multiply } from '../../utils/calc'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { useState } from 'react';
+import { useState } from 'react'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
@@ -16,9 +25,9 @@ import { LinkTx, LinkAccount } from '../../utils/links'
 import Link from 'next/link'
 
 export default function IssueCheck({ setSignRequest }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const width = useWidth()
-  const [error, setError] = useState('');
+  const [error, setError] = useState('')
   const [address, setAddress] = useState(null)
   const [destinationTag, setDestinationTag] = useState(null)
   const [amount, setAmount] = useState(null)
@@ -82,27 +91,24 @@ export default function IssueCheck({ setSignRequest }) {
       setSignRequest({
         request: checkCreate,
         callback: (result) => {
-          if (result.result) {
-            setTxResult({
-              status: result.result.meta?.TransactionResult,
-              date: result.result.date,
-              destination: result.result.Destination,
-              amount: amountFormat(result.result.SendMax),
-              destinationTag: result.result.DestinationTag,
-              sourceTag: result.result.SourceTag,
-              fee: amountFormat(result.result.Fee),
-              sequence: result.result.Sequence,
-              memo: result.result.Memos?.[0]?.Memo?.MemoData ? decode(result.result.Memos[0].Memo.MemoData) : undefined,
-              hash: result.result.hash,
-              invoiceID: result.result.InvoiceID,
-              expiration: result.result.Expiration,
-              ledgerIndex: result.result.ledger_index,
-              balanceChanges: result.result.balanceChanges
-            })
-          }
+          setTxResult({
+            status: result.meta?.TransactionResult,
+            date: result.date,
+            destination: result.Destination,
+            amount: amountFormat(result.SendMax),
+            destinationTag: result.DestinationTag,
+            sourceTag: result.SourceTag,
+            fee: amountFormat(result.Fee),
+            sequence: result.Sequence,
+            memo: result.Memos?.[0]?.Memo?.MemoData ? decode(result.Memos[0].Memo.MemoData) : undefined,
+            hash: result.hash,
+            invoiceID: result.InvoiceID,
+            expiration: result.Expiration,
+            ledgerIndex: result.ledger_index,
+            balanceChanges: result.balanceChanges
+          })
         }
       })
-
     } catch (error) {
       setError(error.message)
     }
@@ -110,12 +116,11 @@ export default function IssueCheck({ setSignRequest }) {
 
   return (
     <>
-      <SEO
-        title='Issue Check' description={'Create a deferred payment check on the ' + explorerName} />
+      <SEO title="Issue Check" description={'Create a deferred payment check on the ' + explorerName} />
       <div className="content-text content-center">
         <h1 className="center">Issue Check</h1>
-        <NetworkTabs />        
-        <div>           
+        <NetworkTabs />
+        <div>
           <AddressInput
             title={t('table.destination')}
             placeholder="Destination address"
@@ -125,7 +130,7 @@ export default function IssueCheck({ setSignRequest }) {
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
           />
-          {width > 1100 && <br />}              
+          {width > 1100 && <br />}
           <FormInput
             title={t('table.destination-tag')}
             placeholder={t('form.placeholder.destination-tag')}
@@ -179,7 +184,7 @@ export default function IssueCheck({ setSignRequest }) {
                   type="text"
                   defaultValue={invoiceID}
                 />
-              </div>   
+              </div>
             </>
           )}
           <br />
@@ -197,7 +202,7 @@ export default function IssueCheck({ setSignRequest }) {
             </>
           )}
           <br />
-          <div className="center">  
+          <div className="center">
             <button className="button-action" onClick={handleIssueCheck}>
               Issue Check
             </button>
@@ -246,12 +251,14 @@ export default function IssueCheck({ setSignRequest }) {
                   )}
                   {txResult.invoiceID && (
                     <p>
-                      <strong>Invoice ID:</strong> {shortHash(txResult.invoiceID)} <CopyButton text={txResult.invoiceID} />
+                      <strong>Invoice ID:</strong> {shortHash(txResult.invoiceID)}{' '}
+                      <CopyButton text={txResult.invoiceID} />
                     </p>
                   )}
                   {txResult.expiration && (
                     <p>
-                      <strong>Expiration:</strong> {timeFromNow(txResult.expiration, i18n, 'ripple')} ({fullDateAndTime(txResult.expiration, 'ripple')})
+                      <strong>Expiration:</strong> {timeFromNow(txResult.expiration, i18n, 'ripple')} (
+                      {fullDateAndTime(txResult.expiration, 'ripple')})
                     </p>
                   )}
                   <p>
@@ -265,7 +272,7 @@ export default function IssueCheck({ setSignRequest }) {
         </div>
       </div>
     </>
-  );
+  )
 }
 
 export const getServerSideProps = async (context) => {
@@ -273,7 +280,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
-      isSsrMobile: getIsSsrMobile(context),
-    },
-  };
-} 
+      isSsrMobile: getIsSsrMobile(context)
+    }
+  }
+}

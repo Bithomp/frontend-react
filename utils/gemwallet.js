@@ -1,9 +1,6 @@
-import { isInstalled, getAddress, signTransaction, submitTransaction } from '@gemwallet/api' //getNetwork
+import { isInstalled, getAddress, signTransaction, submitTransaction, getNetwork } from '@gemwallet/api'
 import { broadcastTransaction, getNextTransactionParams } from './user'
-
-//getNetwork().then((response) => {
-//alert(response.result?.network)
-//})
+import { networkId, xahauNetwork } from '.'
 
 const useOurServer = true
 
@@ -120,20 +117,75 @@ export const gemwalletTxSend = ({
 }) => {
   isInstalled().then((response) => {
     if (response.result.isInstalled) {
-      if (account?.address && account?.wallet === 'gemwallet') {
-        // gemwallet installed, account is known
-        const address = account.address
-        gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
-      } else {
-        //get address from gemwallet
-        getAddress().then((response) => {
-          const address = response.result?.address
-          if (!tx.Account) {
-            tx.Account = address
-          }
+      getNetwork().then((response) => {
+        /*
+        {
+          "chain": "XRPL",
+          "network": "Testnet",
+          "websocket": "wss://s.altnet.rippletest.net:51233"
+        }
+        {
+          "chain": "XAHAU",
+          "network": "Mainnet",
+          "websocket": "wss://xahau.network"
+        }
+        */
+
+        if (xahauNetwork && response.result?.chain !== 'XAHAU') {
+          setStatus('Please change the Network in your GemWallet to XAHAU')
+          setAwaiting(false)
+          return
+        }
+
+        if (!xahauNetwork && response.result?.chain !== 'XRPL') {
+          setStatus('Please change the Network in your GemWallet to XRPL')
+          setAwaiting(false)
+          return
+        }
+
+        if ((networkId === 0 || networkId === 21337) && response.result?.network !== 'Mainnet') {
+          setStatus('Please change the Network in your GemWallet to the Mainnet')
+          setAwaiting(false)
+          return
+        }
+
+        if ((networkId === 1 || networkId === 21338) && response.result?.network !== 'Testnet') {
+          setStatus('Please change the Network in your GemWallet to the Testnet')
+          setAwaiting(false)
+          return
+        }
+
+        if (networkId === 2 && response.result?.network !== 'Devnet') {
+          setStatus('Please change the Network in your GemWallet to the Devnet')
+          setAwaiting(false)
+          return
+        }
+
+        if (account?.address && account?.wallet === 'gemwallet') {
+          // gemwallet installed, account is known
+          const address = account.address
           gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
-        })
-      }
+        } else {
+          //get address from gemwallet
+          getAddress().then((response) => {
+            const address = response.result?.address
+            if (!tx.Account) {
+              tx.Account = address
+            }
+            gemwalletSign({
+              address,
+              tx,
+              signRequest,
+              afterSubmitExe,
+              afterSigning,
+              onSignIn,
+              setStatus,
+              setAwaiting,
+              t
+            })
+          })
+        }
+      })
     } else {
       setStatus('GemWallet is not installed')
     }
