@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { errorCodeDescription } from './transaction'
 
 export const broadcastTransaction = async ({
   blob,
@@ -21,7 +22,7 @@ export const broadcastTransaction = async ({
   const response = await axios.post('v2/transaction/submit', { signedTransaction: blob }).catch((error) => {
     setAwaiting(false)
     if (error.response?.data?.result) {
-      setStatus('Error: ' + t('error-tx.' + error.response.data.result))
+      setStatus(errorCodeDescription(error.response.data.result))
     } else if (error.response?.data?.message) {
       setStatus(error.response.data.message)
     } else {

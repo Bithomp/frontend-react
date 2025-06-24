@@ -19,6 +19,8 @@ import {
   ledgerName
 } from '../utils'
 
+let registrtaionCompleted = false
+
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
   const { address, username, receipt } = query
@@ -199,6 +201,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
   }
 
   const onSubmit = async () => {
+    registrtaionCompleted = false
     if (!address) {
       setErrorMessage(t('error.address-empty', { ns: 'username' }))
       addressRef?.focus()
@@ -304,11 +307,13 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
       if (data.completedAt) {
         setStep(2)
         setOnRegistration(false)
+        registrtaionCompleted = true
       } else {
         if (account?.wallet && (xamanUserToken || account.wallet !== 'xaman') && data.destinationAddress) {
           setOnRegistration(true)
           setSignRequest({
             wallet: account.wallet,
+            receipt: true,
             request: {
               TransactionType: 'Payment',
               Destination: data.destinationAddress,
@@ -418,6 +423,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
   }
 
   const checkPayment = async (username, address, destinationTag) => {
+    if (registrtaionCompleted) return
     const response = await axios(
       'v1/bithompid/' + username + '/status?address=' + address + '&dt=' + destinationTag
     ).catch((error) => {
@@ -430,7 +436,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
   }
 
   const checkPaymentWs = (bithompid, address, destinationTag) => {
-    if (!update) return
+    if (!update || registrtaionCompleted) return
     ws = new WebSocket(wssServer)
 
     function sendData() {

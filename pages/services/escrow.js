@@ -132,26 +132,22 @@ export default function CreateEscrow({ setSignRequest }) {
       setSignRequest({
         request: escrowCreate,
         callback: (result) => {
-          if (result.result) {
-            setTxResult({
-              status: result.result.meta?.TransactionResult,
-              date: result.result.date,
-              destination: result.result.Destination,
-              amount: amountFormat(result.result.Amount),
-              destinationTag: result.result.DestinationTag,
-              sourceTag: result.result.SourceTag,
-              fee: amountFormat(result.result.Fee),
-              sequence: result.result.Sequence,
-              hash: result.result.hash,
-              finishAfter: result.result.FinishAfter,
-              cancelAfter: result.result.CancelAfter,
-              condition: result.result.Condition,
-              ledgerIndex: result.result.ledger_index,
-              balanceChanges: result.result.balanceChanges
-            })
-          } else {
-            setError('Transaction failed')
-          }
+          setTxResult({
+            status: result.meta?.TransactionResult,
+            date: result.date,
+            destination: result.Destination,
+            amount: amountFormat(result.Amount),
+            destinationTag: result.DestinationTag,
+            sourceTag: result.SourceTag,
+            fee: amountFormat(result.Fee),
+            sequence: result.Sequence,
+            hash: result.hash,
+            finishAfter: result.FinishAfter,
+            cancelAfter: result.CancelAfter,
+            condition: result.Condition,
+            ledgerIndex: result.ledger_index,
+            balanceChanges: result.balanceChanges
+          })
         }
       })
     } catch (err) {
