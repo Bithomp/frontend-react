@@ -169,9 +169,6 @@ export default function UnderstandingTheBithompExplorer() {
           <h2>Related Articles</h2>
           <ul>
             <li>
-              <Link href="/learn/what-is-the-xrp-ledger">What is the XRP Ledger?</Link>
-            </li>
-            <li>
               <Link href="/learn/blackholed-address">What is a Blackholed Address?</Link>
             </li>
             <li>
