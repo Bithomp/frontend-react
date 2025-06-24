@@ -33,11 +33,17 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
   const [rawData, setRawData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [escrowMode, setEscrowMode] = useState('none') // 'none', 'short', 'locked'
 
   const controller = new AbortController()
 
   const checkApi = async () => {
     let apiUrl = 'v2/addresses/richlist'
+    
+    // Add escrow parameter if mode is selected
+    if (escrowMode !== 'none') {
+      apiUrl += `?escrow=${escrowMode}`
+    }
 
     setLoading(true)
     setRawData({})
@@ -101,7 +107,7 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
       controller.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady])
+  }, [isReady, escrowMode])
 
   return (
     <>
@@ -135,6 +141,45 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
             )}
           </div>
         </div>
+        
+        {/* Escrow Mode Selection */}
+        <div className="flex-container" style={{ marginTop: '20px', marginBottom: '20px' }}>
+          <div className="grey-box">
+            <div className="radio-options radio-options--block">
+              <div className="radio-input">
+                <input
+                  type="radio"
+                  name="escrowMode"
+                  value="none"
+                  checked={escrowMode === 'none'}
+                  onChange={(e) => setEscrowMode(e.target.value)}
+                />
+                <label htmlFor="escrowModeNone">Without Escrow (balance only)</label>
+              </div>
+              <div className="radio-input">
+                <input
+                  type="radio"
+                  name="escrowMode"
+                  value="short"
+                  checked={escrowMode === 'short'}
+                  onChange={(e) => setEscrowMode(e.target.value)}
+                />
+                <label htmlFor="escrowModeShort">With Escrow balances included (balance + escrow short)</label>
+              </div>
+              <div className="radio-input">
+                <input
+                  type="radio"
+                  name="escrowMode"
+                  value="locked"
+                  checked={escrowMode === 'locked'}
+                  onChange={(e) => setEscrowMode(e.target.value)}
+                />
+                <label htmlFor="escrowModeLocked">With Escrow balances included (balance + escrow locked)</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <br />
         {windowWidth > 1000 ? (
           <table className="table-large shrink no-hover">
