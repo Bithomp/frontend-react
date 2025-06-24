@@ -34,7 +34,9 @@ export default function Send({
   const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
   const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
   const [memo, setMemo] = useState(memoQuery)
-  const [showAdvanced, setShowAdvanced] = useState(Number(feeQuery) > 0 || isTagValid(sourceTagQuery) || isIdValid(invoiceIdQuery))
+  const [showAdvanced, setShowAdvanced] = useState(
+    Number(feeQuery) > 0 || isTagValid(sourceTagQuery) || isIdValid(invoiceIdQuery)
+  )
   const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 ? feeQuery : null)
   const [feeError, setFeeError] = useState('')
   const [sourceTag, setSourceTag] = useState(isTagValid(sourceTagQuery) ? sourceTagQuery : null)
@@ -226,27 +228,23 @@ export default function Send({
       setSignRequest({
         request: payment,
         callback: (result) => {
-          if (result.result) {
-            setTxResult({
-              status: result.result.meta?.TransactionResult,
-              date: result.result.date,
-              destination: result.result.Destination,
-              amount: amountFormat(result.result.Amount),
-              destinationTag: result.result.DestinationTag,
-              sourceTag: result.result.SourceTag,
-              fee: amountFormat(result.result.Fee),
-              sequence: result.result.Sequence,
-              memo: result.result.Memos?.[0]?.Memo?.MemoData ? decode(result.result.Memos[0].Memo.MemoData) : undefined,
-              hash: result.result.hash,
-              status: result.result.meta?.TransactionResult,
-              validated: result.result.validated,
-              ledgerIndex: result.result.ledger_index,
-              balanceChanges: result.result.balanceChanges,
-              invoiceId: result.result.InvoiceID
-            })
-          } else {
-            setError('Transaction failed')
-          }
+          setTxResult({
+            status: result.meta?.TransactionResult,
+            date: result.date,
+            destination: result.Destination,
+            amount: amountFormat(result.Amount),
+            destinationTag: result.DestinationTag,
+            sourceTag: result.SourceTag,
+            fee: amountFormat(result.Fee),
+            sequence: result.Sequence,
+            memo: result.Memos?.[0]?.Memo?.MemoData ? decode(result.Memos[0].Memo.MemoData) : undefined,
+            hash: result.hash,
+            status: result.meta?.TransactionResult,
+            validated: result.validated,
+            ledgerIndex: result.ledger_index,
+            balanceChanges: result.balanceChanges,
+            invoiceId: result.InvoiceID
+          })
         }
       })
     } catch (err) {
@@ -465,7 +463,8 @@ export default function Send({
                   </p>
                   {txResult.invoiceId && (
                     <p>
-                      <strong>Invoice ID:</strong> {shortHash(txResult.invoiceId)} <CopyButton text={txResult.invoiceId} />
+                      <strong>Invoice ID:</strong> {shortHash(txResult.invoiceId)}{' '}
+                      <CopyButton text={txResult.invoiceId} />
                     </p>
                   )}
                 </div>
