@@ -506,21 +506,7 @@ export default function Account({
                               <br />
                             </div>
                           )}
-
-                          <IOUData
-                            rippleStateList={objects?.rippleStateList}
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                            userData={userData}
-                          />
-                          {/* <EscrowData
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                            escrowList={objects?.escrowList}
-                          />
-                          <DexOrdersData
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                            offerList={objects?.offerList}
-                          /> */}
-
+                          
                           <LedgerData
                             data={data}
                             account={account}
@@ -543,15 +529,11 @@ export default function Account({
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             />
                           )}
-                          {/*
-                          We need to add here
-                          - assets // we show the link in LedgerData - IOUData
-                          - nfts xls-20 // we show the link in NFTs data
-                          - obligations // data need to be synced on the backend first, we don't show it yet
-                          - dex orders // we show the link in the Ledgerdata - DexOrdersData
-                          - escrows // we show the link in the Ledgerdata - EscrowData
-                          - xls-14 nfts // only when exists - show separately them - or forget =)
-                          */}
+                          <IOUData
+                            rippleStateList={objects?.rippleStateList}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            userData={userData}
+                          />
                           {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}

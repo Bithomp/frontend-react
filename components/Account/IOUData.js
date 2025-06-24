@@ -1,15 +1,96 @@
-import { fullDateAndTime, addressUsernameOrServiceLink, niceCurrency, shortNiceNumber, AddressWithIcon } from '../../utils/format'
+import { fullDateAndTime, niceCurrency, shortNiceNumber, AddressWithIcon } from '../../utils/format'
+import { LinkAccount } from '../../utils/links'
+import { useWidth } from '../../utils'
+import { 
+  FaSnowflake, 
+  FaBan, 
+  FaLock, 
+  FaCoins, 
+  FaExchangeAlt, 
+  FaIcicles 
+} from 'react-icons/fa'
+
+const tokensCountText = (rippleStateList) => {
+  if (!rippleStateList) return ''
+  let countList = rippleStateList.filter((p) => p !== undefined)
+  if (countList.length > 1) return countList.length + ' '
+  return ''
+}
+
+// Component to display flag icons with tooltips
+const FlagIcons = ({ flags }) => {
+  if (!flags) return null
+
+  const flagConfigs = [
+    {
+      key: 'freeze',
+      condition: flags.lowFreeze || flags.highFreeze,
+      icon: FaSnowflake,
+      tooltip: 'Freeze'
+    },
+    {
+      key: 'noRipple',
+      condition: flags.lowNoRipple || flags.highNoRipple,
+      icon: FaBan,
+      tooltip: 'No Ripple'
+    },
+    {
+      key: 'auth',
+      condition: flags.lowAuth || flags.highAuth,
+      icon: FaLock,
+      tooltip: 'Authorized'
+    },
+    {
+      key: 'reserve',
+      condition: flags.lowReserve || flags.highReserve,
+      icon: FaCoins,
+      tooltip: 'Reserve'
+    },
+    {
+      key: 'ammNode',
+      condition: flags.ammNode,
+      icon: FaExchangeAlt,
+      tooltip: 'AMM Node'
+    },
+    {
+      key: 'deepFreeze',
+      condition: flags.lowDeepFreeze || flags.highDeepFreeze,
+      icon: FaIcicles,
+      tooltip: 'Deep Freeze'
+    }
+  ]
+
+  const activeFlags = flagConfigs.filter(flag => flag.condition)
+
+  return (
+    <>
+      {activeFlags.length > 0 && (
+        <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
+          {activeFlags.map((flag) => {
+            const IconComponent = flag.icon
+            return (
+              <span key={flag.key} className="orange tooltip">
+                <IconComponent style={{ fontSize: 18, marginBottom: -4 }} />
+                <span className="tooltiptext">{flag.tooltip}</span>
+              </span>
+            )
+          })}
+        </div>
+      )}
+    </>
+  )
+}
 
 export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) {
+  const width = useWidth()
   //show the section only if there are tokens to show
   if (!rippleStateList?.length) return ''
 
-  const title = ledgerTimestamp ? (
-    <span className="red bold">Historical Token data ({fullDateAndTime(ledgerTimestamp)})</span>
+  const historicalTitle = ledgerTimestamp ? (
+    <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
-    'Tokens (IOUs)'
+    ''
   )
-
   /*
   [
     {
@@ -66,46 +147,81 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
   // amount / gateway details / trustline settings
   const tokenRows = rippleStateList.map((tl, i) => {
     const issuer = tl.HighLimit?.issuer === userData?.address ? tl.LowLimit : tl.HighLimit
-     // Build a simple string that lists the most important flags for quick visibility
-    // const activeFlags = []
-    // if (tl.flags?.lowFreeze || tl.flags?.highFreeze) activeFlags.push('Freeze')
-    // if (tl.flags?.lowNoRipple || tl.flags?.highNoRipple) activeFlags.push('NoRipple')
-    // if (tl.flags?.lowAuth || tl.flags?.highAuth) activeFlags.push('Auth')
-    // if (tl.flags?.lowReserve || tl.flags?.highReserve) activeFlags.push('Reserve')
+    const serviceOrUsername = () => {
+      if (issuer.issuerDetails.service) {
+        return (
+          <span className="bold green">
+            {issuer.issuerDetails.service}
+          </span>
+        )
+      } else if (issuer.issuerDetails.username) {
+        return (
+          <span className="bold blue">
+            {issuer.issuerDetails.username}
+          </span>
+        )
+      }
+      return ''
+    }
 
     return (
       <tr key={i}>
         <td className="center" style={{ width: 30 }}>{i + 1}</td>
-        <td>
+        <td className="left">
           <AddressWithIcon address={issuer.issuer}>
-            {niceCurrency(tl.Balance?.currency)}
+            {niceCurrency(tl.Balance?.currency)} {serviceOrUsername()}
             <br />
-            {addressUsernameOrServiceLink(issuer, 'issuer', { short: true })}
+            {width > 800 ? <LinkAccount address={issuer.issuerDetails.address} /> : <LinkAccount address={issuer.issuerDetails.address} short={6} />}
           </AddressWithIcon>
         </td>
-        <td>{shortNiceNumber(Math.abs(tl.Balance?.value))}</td>
+        <td className="right">{shortNiceNumber(Math.abs(tl.Balance?.value))}</td>
+        <td className="right">
+          <FlagIcons flags={tl.flags} />
+        </td>
       </tr>
     )
   })
 
   return (
     <>
-      <table className="table-details">
+      <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
-            <th colSpan="100">{title}</th>
-          </tr>
-          <tr>
-            <th>#</th>
-            <th>Currency</th>
-            <th>Balance</th>
-            {/* <th className="right">Flags</th> */}
-          </tr>
+            <th colSpan="100">{tokensCountText(rippleStateList)} Tokens (IOUs){historicalTitle}</th>
+          </tr>          
         </thead>
         <tbody>
+        <tr>
+          <th>#</th>
+          <th className="left">Currency</th>
+          <th className="right">Balance</th>
+          <th className="right">Flags</th>
+        </tr>
           {tokenRows}
         </tbody>
       </table>
+      <div className="show-on-small-w800">
+        <br />
+        <center>
+          {tokensCountText(rippleStateList)}
+          {'Tokens (IOUs)'.toUpperCase()}
+          {historicalTitle}
+        </center>
+        <br />
+        {rippleStateList.length > 0 && (
+          <table className="table-mobile wide">
+            <tbody>
+              <tr>
+                <th>#</th>
+                <th className="left">Currency</th>
+                <th className="right">Balance</th>
+                <th className="right">Flags</th>
+              </tr>
+              {tokenRows}
+            </tbody>
+          </table>
+        )}
+      </div>
     </>
   )
 }
