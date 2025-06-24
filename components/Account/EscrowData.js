@@ -116,7 +116,7 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
           {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
         </td>
         <td className="bold right">{amountFormat(escrow.Amount)}</td>
-        <td className="left">{typeof escrow.DestinationTag !== 'undefined' && escrow.DestinationTag}</td>
+        <td className="right">{typeof escrow.DestinationTag !== 'undefined' && escrow.DestinationTag}</td>
         <td className="right">
           {escrow.CancelAfter ? (
             <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>{fullDateAndTime(escrow.CancelAfter, 'ripple')}</span>
@@ -190,7 +190,7 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
           <th>#</th>
           <th className="left">{options?.type === 'received' ? 'From' : 'To'}</th>
           <th className="right">Amount</th>
-          <th className="left">DT</th>
+          <th className="right">DT</th>
           <th className="right" style={{ width: 100 }}>Cancel After</th>
           <th className="right" style={{ width: 100 }}>Finish After</th>
           {!ledgerTimestamp && <th>Actions</th>}
