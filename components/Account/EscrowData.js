@@ -12,6 +12,7 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
   const [receivedEscrowList, setReceivedEscrowList] = useState([])
   const [sentEscrowList, setSentEscrowList] = useState([])
   const [escrowSequences, setEscrowSequences] = useState({})
+  const [accountDetails, setAccountDetails] = useState({})
 
   useEffect(() => {
     setReceivedEscrowList(escrowList?.filter((escrow) => escrow.Destination === address))
@@ -40,6 +41,38 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
     }
   }, [escrowList, ledgerTimestamp])
 
+  // Fetch account details for all accounts involved in escrows
+  useEffect(() => {
+    const fetchAccountDetails = async () => {
+      const details = {}
+      const accountsToFetch = new Set()
+      
+      // Collect all unique account addresses from escrows
+      for (const escrow of escrowList || []) {
+        if (escrow.Account) accountsToFetch.add(escrow.Account)
+        if (escrow.Destination) accountsToFetch.add(escrow.Destination)
+      }
+      
+      // Fetch details for each account
+      for (const accountAddress of accountsToFetch) {
+        try {
+          const response = await axios(`v2/address/${accountAddress}?username=true&service=true&verifiedDomain=true`)
+          if (response?.data) {
+            details[accountAddress] = response.data
+          }
+        } catch (error) {
+          console.error(`Failed to fetch account details for ${accountAddress}:`, error)
+        }
+      }
+      
+      setAccountDetails(details)
+    }
+
+    if (escrowList?.length > 0) {
+      fetchAccountDetails()
+    }
+  }, [escrowList])
+
   const historicalTitle = ledgerTimestamp ? (
     <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
@@ -57,30 +90,41 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
     const adrLabel = options?.type === 'received' ? 'Account' : 'Destination'
 
     const rows = escrowList.map((escrow, i) => {
+      const accountAddress = escrow[adrLabel]
+      const accountInfo = accountDetails[accountAddress] || {}
+      
+      const formattedAccountInfo = {
+        address: accountAddress,
+        addressDetails: {
+          username: accountInfo.username,
+          service: accountInfo.service?.name
+        }
+      }
+      
       return <tr key={i}>
         <td className="center" style={{ width: 30 }}>{i + 1}</td>
         <td>
-          <Link href={'/account/' + escrow[adrLabel]}>
+          <Link href={'/account/' + accountAddress}>
             <Image
-              src={avatarServer + escrow[adrLabel]}
+              src={avatarServer + accountAddress}
               alt={'service logo'}
               height={20}
               width={20}
               style={{ marginRight: '5px', marginBottom: '-5px' }}
             />
           </Link>
-          {addressUsernameOrServiceLink(escrow, adrLabel, { short: true })}
+          {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
         </td>
         <td className="bold right">{amountFormat(escrow.Amount)}</td>
-        <td className="right">{typeof escrow.DestinationTag !== 'undefined' && escrow.DestinationTag}</td>
-        <td>
+        <td className="left">{typeof escrow.DestinationTag !== 'undefined' && escrow.DestinationTag}</td>
+        <td className="right">
           {escrow.CancelAfter ? (
             <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>{fullDateAndTime(escrow.CancelAfter, 'ripple')}</span>
           ) : (
             <span className="grey">does not cancel</span>
           )}
         </td>
-        <td>
+        <td className="right">
           {escrow.FinishAfter ? (
             <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'red' : ''}>{fullDateAndTime(escrow.FinishAfter, 'ripple')}</span>
           ) : (
@@ -146,7 +190,7 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
           <th>#</th>
           <th className="left">{options?.type === 'received' ? 'From' : 'To'}</th>
           <th className="right">Amount</th>
-          <th className="right">DT</th>
+          <th className="left">DT</th>
           <th className="right" style={{ width: 100 }}>Cancel After</th>
           <th className="right" style={{ width: 100 }}>Finish After</th>
           {!ledgerTimestamp && <th>Actions</th>}
