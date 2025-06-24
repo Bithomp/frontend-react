@@ -159,52 +159,80 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
   return (
     <>
       {receivedEscrowList?.length > 0 && (
-        <table className="table-details hide-on-small-w800">
-          <thead>
-            <tr>
-              <th colSpan="100">
-                {escrowCountText(receivedEscrowList)} Received Escrows {historicalTitle}
-                {!account?.address && !ledgerTimestamp && (
-                  <>
-                    {' '}
-                    [
-                    <a href="#" onClick={() => setSignRequest({})} className="bold">
-                      Sign in
-                    </a>{' '}
-                    to Redeem]
-                  </>
-                )}
-              </th>
-            </tr>          
-          </thead>
-          <tbody>
-            {escrowListNode(receivedEscrowList, { type: 'received' })}
-          </tbody>
-        </table>        
+        <>
+          <table className="table-details hide-on-small-w800">
+            <thead>
+              <tr>
+                <th colSpan="100">
+                  {escrowCountText(receivedEscrowList)} Received Escrows {historicalTitle}
+                  {!account?.address && !ledgerTimestamp && (
+                    <>
+                      {' '}
+                      [
+                      <a href="#" onClick={() => setSignRequest({})} className="bold">
+                        Sign in
+                      </a>{' '}
+                      to Redeem]
+                    </>
+                  )}
+                </th>
+              </tr>          
+            </thead>
+            <tbody>
+              {escrowListNode(receivedEscrowList, { type: 'received' })}
+            </tbody>
+          </table>
+          <div className="show-on-small-w800">
+            <br />
+            <center>
+              {escrowCountText(receivedEscrowList)}
+              {'Received Escrows'.toUpperCase()}
+              {historicalTitle}
+            </center>
+            <br />
+            <table className="table-mobile wide">
+              <tbody>{escrowListNode(receivedEscrowList, { type: 'received', mobile: true })}</tbody>
+            </table>
+          </div>
+        </>
       )}
       {sentEscrowList?.length > 0 && (
-        <table className="table-details hide-on-small-w800">
-          <thead>
-            <tr>
-              <th colSpan="100">
-                {escrowCountText(sentEscrowList)} Sent Escrows {historicalTitle}
-                {!account?.address && !ledgerTimestamp && (
-                  <>
-                    {' '}
-                    [
-                    <a href="#" onClick={() => setSignRequest({})} className="bold">
-                      Sign in
-                    </a>{' '}
-                    to Cancel]
-                  </>
-                )}
-              </th>
-            </tr>          
-          </thead>
-          <tbody>
-            {escrowListNode(sentEscrowList, { type: 'sent' })}
-          </tbody>
-        </table>        
+        <>
+          <table className="table-details hide-on-small-w800">
+            <thead>
+              <tr>
+                <th colSpan="100">
+                  {escrowCountText(sentEscrowList)} Sent Escrows {historicalTitle}
+                  {!account?.address && !ledgerTimestamp && (
+                    <>
+                      {' '}
+                      [
+                      <a href="#" onClick={() => setSignRequest({})} className="bold">
+                        Sign in
+                      </a>{' '}
+                      to Cancel]
+                    </>
+                  )}
+                </th>
+              </tr>          
+            </thead>
+            <tbody>
+              {escrowListNode(sentEscrowList, { type: 'sent' })}
+            </tbody>
+          </table>
+          <div className="show-on-small-w800">
+            <br />
+            <center>
+              {escrowCountText(sentEscrowList)}
+              {'Sent Escrows'.toUpperCase()}
+              {historicalTitle}
+            </center>
+            <br />
+            <table className="table-mobile wide">
+              <tbody>{escrowListNode(sentEscrowList, { type: 'sent', mobile: true })}</tbody>
+            </table>
+          </div>
+        </>
       )}
     </>
   )
