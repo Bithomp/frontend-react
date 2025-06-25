@@ -520,6 +520,11 @@ export default function Account({
                             gateway={gateway}
                           />
                           <PublicData data={data} />
+                          <IOUData
+                            rippleStateList={objects?.rippleStateList}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            userData={userData}
+                          />
                           {xahauNetwork ? (
                             <URITokenData data={data} uriTokenList={objects?.uriTokenList} />
                           ) : (
@@ -528,12 +533,7 @@ export default function Account({
                               objects={objects}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             />
-                          )}
-                          <IOUData
-                            rippleStateList={objects?.rippleStateList}
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                            userData={userData}
-                          />
+                          )}                          
                           {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}
