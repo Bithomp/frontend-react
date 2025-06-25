@@ -1,6 +1,6 @@
 import { i18n } from 'next-i18next'
 import { fullNiceNumber, nativeCurrencyToFiat, shortNiceNumber, timeFromNow } from '../../utils/format'
-import { avatarSrc, devNet, getCoinsUrl, nativeCurrency } from '../../utils'
+import { avatarSrc, devNet, getCoinsUrl, nativeCurrency, xahauNetwork } from '../../utils'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -85,10 +85,14 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
             ) : data?.ledgerInfo?.activated === false ? (
               <>
                 <span className="orange">Not activated</span>
-                <br />
-                <a href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')} target="_blank" rel="noreferrer">
-                  Get your first {nativeCurrency}
-                </a>
+                {!xahauNetwork && (
+                  <>
+                    <br />
+                    <a href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')} target="_blank" rel="noreferrer">
+                      Get your first {nativeCurrency}
+                    </a>
+                  </>
+                )}
               </>
             ) : (
               <>
