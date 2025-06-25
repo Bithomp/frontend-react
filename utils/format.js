@@ -626,7 +626,7 @@ export const lpTokenName = (data) => {
     } else {
       secondCurrency = nativeCurrency
     }
-    return 'LP ' + firstCurrency + '/' + secondCurrency
+    return firstCurrency + '/' + secondCurrency + ' LP'
   }
 }
 
