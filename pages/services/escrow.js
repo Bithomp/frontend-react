@@ -15,6 +15,7 @@ import { LinkTx, LinkAccount } from '../../utils/links'
 import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { generateConditionAndFulfillment } from '../../utils/escrow'
 
 const RIPPLE_EPOCH_OFFSET = 946684800 // Seconds between 1970-01-01 and 2000-01-01
 
@@ -28,6 +29,7 @@ export default function CreateEscrow({ setSignRequest }) {
   const [finishAfter, setFinishAfter] = useState(null)
   const [cancelAfter, setCancelAfter] = useState(null)
   const [condition, setCondition] = useState(null)
+  const [fulfillment, setFulfillment] = useState(null)
   const [sourceTag, setSourceTag] = useState(null)
   const [txResult, setTxResult] = useState(null)
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -145,6 +147,7 @@ export default function CreateEscrow({ setSignRequest }) {
             finishAfter: result.FinishAfter,
             cancelAfter: result.CancelAfter,
             condition: result.Condition,
+            fulfillment,
             ledgerIndex: result.ledger_index,
             balanceChanges: result.balanceChanges
           })
@@ -152,6 +155,18 @@ export default function CreateEscrow({ setSignRequest }) {
       })
     } catch (err) {
       setError(err.message)
+    }
+  }
+
+  const handleGenerateCondition = async () => {
+    setError('')
+    try {
+      const { condition: generatedCondition, fulfillment: generatedFulfillment } =
+        await generateConditionAndFulfillment()
+      setCondition(generatedCondition)
+      setFulfillment(generatedFulfillment)
+    } catch (err) {
+      setError('Failed to generate condition')
     }
   }
 
@@ -241,6 +256,7 @@ export default function CreateEscrow({ setSignRequest }) {
               if (!showAdvanced) {
                 setCondition(null)
                 setSourceTag(null)
+                setFulfillment(null)
               }
             }}
             name="advanced-escrow"
@@ -250,7 +266,7 @@ export default function CreateEscrow({ setSignRequest }) {
 
           {showAdvanced && (
             <>
-              {width > 1100 && <br />}
+              <br />
               <div className="form-input">
                 <span className="input-title">
                   Condition <span className="grey">(hex-encoded crypto-condition)</span>
@@ -261,12 +277,21 @@ export default function CreateEscrow({ setSignRequest }) {
                   className="input-text"
                   spellCheck="false"
                   type="text"
-                  defaultValue={condition}
+                  value={condition || ''}
                 />
-                <div className="grey" style={{ fontSize: '12px', marginTop: '5px' }}>
-                  A hex-encoded PREIMAGE-SHA-256 crypto-condition. Funds can only be released if this condition is
-                  fulfilled.
+                <div style={{ display: 'flex', alignItems: 'center', marginTop: '5px' }}>
+                  <button className="button-action thin narrow" onClick={handleGenerateCondition}>
+                    Generate Random Condition
+                  </button>
+                  <span className="grey" style={{ marginLeft: '10px' }}>
+                    Funds can only be released if this condition is fulfilled.
+                  </span>
                 </div>
+                {fulfillment && (
+                  <div className="grey" style={{ fontSize: '12px', marginTop: '5px' }}>
+                    Fulfillment (preimage): {shortHash(fulfillment)} <CopyButton text={fulfillment} />
+                  </div>
+                )}
               </div>
               {width > 1100 && <br />}
               <FormInput
@@ -349,6 +374,12 @@ export default function CreateEscrow({ setSignRequest }) {
                     <p>
                       <strong>Condition:</strong> {shortHash(txResult.condition)}{' '}
                       <CopyButton text={txResult.condition} />
+                    </p>
+                  )}
+                  {txResult.fulfillment && (
+                    <p>
+                      <strong>Fulfillment:</strong> {shortHash(txResult.fulfillment)}{' '}
+                      <CopyButton text={txResult.fulfillment} />
                     </p>
                   )}
                   <p>
