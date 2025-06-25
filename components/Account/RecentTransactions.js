@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat } from '../../utils/format'
-import { decode } from '../../utils'
+import { fullDateAndTime, timeOrDate } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import axios from 'axios'
 import CopyButton from '../UI/CopyButton'
@@ -12,10 +11,10 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
 
   const address = userData?.address
 
-  const title = ledgerTimestamp ? (
-    <span className="red bold">Recent transactions ({fullDateAndTime(ledgerTimestamp)})</span>
+  const historicalTitle = ledgerTimestamp ? (
+    <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
-    'Recent transactions'
+    ''
   )
 
   const fetchTransactions = async () => {
@@ -43,102 +42,86 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
-            <th colSpan="100">{title}</th>
-          </tr>
-          <tr>
-            <th>#</th>
-            <th></th>
+            <th colSpan="100">Recent transactions {historicalTitle}</th>
           </tr>
         </thead>
         <tbody>
           {loading && <tr><td colSpan="100">Loading recent transactions...</td></tr>}
           {error && <tr><td colSpan="100" className="red">Error: {error}</td></tr>}
-          {!loading && !error && transactions.map((tx, i) => (
-            <tr key={tx.txHash || tx.tx?.hash || i}>
-              <td className="center" style={{ width: 30 }}>{i + 1}</td>
-              <td>
-                <span className="grey">Date & Time: </span>
-                {tx.outcome?.timestamp ? fullDateAndTime(new Date(tx.outcome.timestamp)) : '-'}
-                <br />
-                <span className="grey">Transaction Type: </span>
-                {tx.tx?.TransactionType}
-                <br />
-                {
-                  tx.tx?.Amount && (
-                    <>
-                      <span className="grey">Amount: </span>
-                        {amountFormat(tx.tx.Amount)} from {addressUsernameOrServiceLink({ address: tx.tx.Account }, 'address', { short: true })} to {addressUsernameOrServiceLink({ address: tx.tx.Destination }, 'address', { short: true })}
-                      <br />
-                    </>
-                  )
-                }
-                {
-                  tx.tx.Memos && tx.tx.Memos.length > 0 && (
-                    <>
-                      <span className="grey">Memos: </span>
-                      {tx.tx.Memos.map((memo, i) => (
-                        <span key={i}>{memo.Memo.MemoData ? decode(memo.Memo.MemoData) : '-'}</span>
-                      ))}
-                      <br />
-                    </>
-                  )
-                }
-                <span className="grey">Transaction Hash: </span>
-                <LinkTx tx={tx.txHash || tx.tx?.hash}/> <CopyButton text={tx.txHash || tx.tx?.hash} />
-                <br />
-                <span className="grey">Status: </span>
-                <span className={tx.outcome?.result === 'tesSUCCESS' ? 'green' : 'red'}>
-                  {tx.outcome?.result === 'tesSUCCESS' ? 'Success' : 'Failed'}
-                </span>
-              </td>
-            </tr>
-          ))}
+          {!loading && !error && 
+            <>
+              <tr>
+                <th>#</th>
+                <th className="left">Time</th>
+                <th className="right">Type</th>
+                <th className="right">Hash</th>
+                <th className="center">Status</th>
+              </tr>
+              {transactions.map((tx, i) => (
+                <tr key={tx.txHash || tx.tx?.hash || i}>
+                  <td className="center" style={{ width: 30 }}>{i + 1}</td>
+                  <td className="left">
+                    {tx.tx?.date ? timeOrDate(tx.tx.date + 946684800) : '-'}
+                  </td>
+                  <td className="right">
+                    {tx.tx?.TransactionType}
+                  </td>
+                  <td className="right">
+                    <LinkTx tx={tx.txHash || tx.tx?.hash}/> <CopyButton text={tx.txHash || tx.tx?.hash} />                    
+                  </td>
+                  <td className="center">
+                    <span className={tx.outcome?.result === 'tesSUCCESS' ? 'green' : 'red'}>
+                      {tx.outcome?.result === 'tesSUCCESS' ? 'Success' : 'Failed'}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </>
+          }
         </tbody>
       </table>
       <div className="show-on-small-w800">
         <br />
-        <h4 className="center">Recent transactions</h4>
-        {loading && <div>Loading recent transactions...</div>}
-        {error && <div className="red">Error: {error}</div>}
-        {!loading && !error && transactions.map((tx, i) => (
-          <div key={tx.txHash || tx.tx?.hash || i} style={{ marginBottom: '6px' }} suppressHydrationWarning>
-            <span className="grey">{i + 1}. </span>
-            {tx.outcome?.timestamp ? fullDateAndTime(new Date(tx.outcome.timestamp)) : '-'}
-            <br />
-            <span className="grey">Transaction Type: </span>
-            {tx.tx?.TransactionType}
-            <br />
-            {
-              tx.tx?.Amount && (
-                <>
-                  <span className="grey">Amount: </span> <span className="bold">{amountFormat(tx.tx.Amount)}</span>
-                  <br />
-                  <span>from {addressUsernameOrServiceLink({ address: tx.tx.Account }, 'address', { short: true })} to {addressUsernameOrServiceLink({ address: tx.tx.Destination }, 'address', { short: true })}</span>
-                  <br />
-                </>
-              )
-            }
-            {
-              tx.tx?.Memos && tx.tx.Memos.length > 0 && (
-                <>
-                  <span className="grey">Memos: </span>
-                  {tx.tx.Memos.map((memo, i) => (
-                    <span key={i}>{memo.Memo.MemoData ? decode(memo.Memo.MemoData) : '-'}</span>
-                  ))}
-                </>
-              )
-            }            
-            <span className="grey">Transaction Hash: </span>
-            <LinkTx tx={tx.txHash || tx.tx?.hash}/> <CopyButton text={tx.txHash || tx.tx?.hash} />
-            <br />
-            <span className="grey">Status: </span>
-            <span className={tx.outcome?.result === 'tesSUCCESS' ? 'green' : 'red'}>
-              {tx.outcome?.result === 'tesSUCCESS' ? 'Success' : 'Failed'}
-            </span>
-          </div>
-        ))}
+        <center>
+          {'Recent Transactions'.toUpperCase()}
+          {historicalTitle}
+        </center>
+        <br />
+        {loading && <span className="grey">Loading recent transactions...</span>}
+        {error && <span className="red">Error: {error}</span>}        
+        {!loading && !error && transactions.length > 0 && (
+          <table className="table-mobile wide">
+            <tbody>
+              <tr>
+                <th>#</th>
+                <th className="left">Time</th>
+                <th className="right">Type</th>
+                <th className="right">Link</th>
+                <th className="center">Status</th>
+              </tr>
+              {transactions.map((tx, i) => (
+                <tr key={tx.txHash || tx.tx?.hash || i}>
+                  <td className="center" style={{ width: 30 }}>{i + 1}</td>
+                  <td className="left">
+                    {tx.tx?.date ? timeOrDate(tx.tx.date + 946684800) : '-'}
+                  </td>
+                  <td className="right">
+                    {tx.tx?.TransactionType}
+                  </td>
+                  <td className="right">
+                    <LinkTx tx={tx.txHash || tx.tx?.hash} icon={true}/>
+                  </td>
+                  <td className="center">
+                    <span className={tx.outcome?.result === 'tesSUCCESS' ? 'green' : 'red'}>
+                      {tx.outcome?.result === 'tesSUCCESS' ? 'Success' : 'Failed'}
+                    </span>
+                  </td>
+                </tr>              
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
-      <style jsx>{``}</style>
     </>
   )
 } 
