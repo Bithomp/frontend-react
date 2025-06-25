@@ -11,35 +11,12 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
 
   const [receivedEscrowList, setReceivedEscrowList] = useState([])
   const [sentEscrowList, setSentEscrowList] = useState([])
-  const [escrowSequences, setEscrowSequences] = useState({})
   const [accountDetails, setAccountDetails] = useState({})
 
   useEffect(() => {
     setReceivedEscrowList(escrowList?.filter((escrow) => escrow.Destination === address))
     setSentEscrowList(escrowList?.filter((escrow) => escrow.Account === address))
   }, [escrowList, address])
-
-  // Fetch escrow sequences for all escrows
-  useEffect(() => {
-    const fetchEscrowSequences = async () => {
-      const sequences = {}
-      for (const escrow of escrowList) {
-        try {
-          const response = await axios(`v2/escrow/${escrow.index}`)
-          if (response?.data?.escrowSequence) {
-              sequences[escrow.index] = response.data.escrowSequence
-          }
-        } catch (error) {
-          console.error(`Failed to fetch escrow sequence for ${escrow.index}:`, error)
-        }
-      }
-      setEscrowSequences(sequences)
-    }
-
-    if (escrowList?.length > 0 && !ledgerTimestamp) {
-      fetchEscrowSequences()
-    }
-  }, [escrowList, ledgerTimestamp])
 
   // Fetch account details for all accounts involved in escrows
   useEffect(() => {
@@ -72,6 +49,46 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
       fetchAccountDetails()
     }
   }, [escrowList])
+
+  // Function to handle escrow finish with lazy sequence fetching
+  const handleEscrowFinish = async (escrow) => {
+    try {
+      const response = await axios(`v2/escrow/${escrow.index}`)
+      if (response?.data?.escrowSequence) {
+        setSignRequest({
+          request: {
+            TransactionType: 'EscrowFinish',
+            Owner: escrow.Account,
+            OfferSequence: response.data.escrowSequence
+          }
+        })
+      } else {
+        console.error('Failed to get escrow sequence for finish')
+      }
+    } catch (error) {
+      console.error('Failed to fetch escrow sequence for finish:', error)
+    }
+  }
+
+  // Function to handle escrow cancel with lazy sequence fetching
+  const handleEscrowCancel = async (escrow) => {
+    try {
+      const response = await axios(`v2/escrow/${escrow.index}`)
+      if (response?.data?.escrowSequence) {
+        setSignRequest({
+          request: {
+            TransactionType: 'EscrowCancel',
+            Owner: escrow.Account,
+            OfferSequence: response.data.escrowSequence
+          }
+        })
+      } else {
+        console.error('Failed to get escrow sequence for cancel')
+      }
+    } catch (error) {
+      console.error('Failed to fetch escrow sequence for cancel:', error)
+    }
+  }
 
   const historicalTitle = ledgerTimestamp ? (
     <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
@@ -136,15 +153,10 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
             {escrow.Account === account?.address && escrow.FinishAfter && timestampExpired(escrow.FinishAfter, 'ripple') ? (
               <a
                 href="#"
-                onClick={() =>
-                  setSignRequest({
-                    request: {
-                      TransactionType: 'EscrowFinish',
-                      Owner: escrow.Account,
-                      OfferSequence: escrowSequences[escrow.index]
-                    }
-                  })
-                }
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleEscrowFinish(escrow)
+                }}
                 className="orange tooltip"
               >
                 <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
@@ -160,15 +172,10 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
             {escrow.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple') && escrow.Account === account?.address ? (
               <a
                 href="#"
-                onClick={() =>
-                  setSignRequest({
-                    request: {
-                      TransactionType: 'EscrowCancel',
-                      Owner: escrow.Account,
-                      OfferSequence: escrowSequences[escrow.index]
-                    }
-                  })
-                }
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleEscrowCancel(escrow)
+                }}
                 className="red tooltip"
               >
                 <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
