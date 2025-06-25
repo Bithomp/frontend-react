@@ -1,18 +1,26 @@
 import { fullDateAndTime, addressUsernameOrServiceLink, niceNumber, amountFormat } from '../../utils/format'
-import { divide } from '../../utils/calc'
+import { divide, multiply } from '../../utils/calc'
+import { MdMoneyOff } from 'react-icons/md'
 
-export default function DexOrdersData({ offerList, ledgerTimestamp }) {
+export default function DexOrdersData({ account, offerList, ledgerTimestamp, setSignRequest }) {
   //show the section only if there are dex orders to show
   if (!offerList?.length) return ''
 
   // Sort offerList by sequence in ascending order
   const sortedOfferList = [...offerList].sort((a, b) => a.Sequence - b.Sequence)
 
-  const title = ledgerTimestamp ? (
-    <span className="red bold">Historical DEX orders data ({fullDateAndTime(ledgerTimestamp)})</span>
+  const historicalTitle = ledgerTimestamp ? (
+    <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
-    'DEX orders'
+    ''
   )
+
+  const offerListCountText = (offerList) => {
+    if (!offerList) return ''
+    let countList = offerList.filter((p) => p !== undefined)
+    if (countList.length > 1) return countList.length + ' '
+    return ''
+  }
 
   /*
   [
@@ -52,28 +60,76 @@ export default function DexOrdersData({ offerList, ledgerTimestamp }) {
     }
   ]
   */
-
+ 
   const orderRows = sortedOfferList.map((offer, i) => {
     return (
       <tr key={i}>
         <td className="center" style={{ width: 30 }}>{i + 1}</td>
-        <td>
+        <td className={offer.flags?.sell ? 'red left' : 'green left'}>{offer.flags?.sell ? 'Sell' : 'Buy'}</td>
+        <td className="right bold">
           {amountFormat(offer.TakerGets, { precise: true })}
           {offer.TakerGets?.issuer && <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>}
         </td>
-        <td>
+        <td className="right bold">
           {amountFormat(offer.TakerPays, { precise: true })}
           {offer.TakerPays?.issuer && <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>}
         </td>
-        <td className={offer.flags?.sell ? 'red' : 'green'}>{offer.flags?.sell ? 'Sell' : 'Buy'}</td>
         {
           offer.flags?.sell ? (
-            <td>{niceNumber(divide(offer.quality, 1000000), 0, null, 5)}</td>
+            <td className="right">
+              {
+                typeof offer.TakerGets === 'string' ? (
+                  <>
+                    {niceNumber(multiply(offer.quality, 1000000), 0, null, 5)}
+                  </>  
+                ) : (
+                  <>
+                    {niceNumber(divide(offer.quality, 1000000), 0, null, 5)}
+                  </>
+                )
+              }
+            </td>
           ) : (
-            <td>{niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)}</td>
+            <td className="right">
+              {
+                typeof offer.TakerGets === 'string' ? (
+                  <>
+                    {niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)}
+                  </>
+                ) : (
+                  <>
+                    {niceNumber(divide(1, offer.quality), 0, null, 5)}
+                  </>
+                )
+              }
+            </td>
           )
         }
-        <td>#{offer.Sequence}</td>
+        <td className="right">#{offer.Sequence}</td>
+        <td className="center">
+          { offer.Account === account?.address ? (
+            <a
+              href="#"
+              onClick={() =>
+                setSignRequest({
+                  request: {
+                    TransactionType: 'OfferCancel',
+                    OfferSequence: offer.Sequence
+                  }
+                })
+              }
+              className="red tooltip"
+            >
+              <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
+              <span className="tooltiptext">Cancel</span>
+            </a>
+          ) : (
+            <span className="grey tooltip">
+              <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
+              <span className="tooltiptext">Cancel</span>
+            </span>
+          )}
+        </td>
       </tr>
     )
   })
@@ -83,58 +139,58 @@ export default function DexOrdersData({ offerList, ledgerTimestamp }) {
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
-            <th colSpan="100">{title}</th>
-          </tr>
-          <tr>
-            <th>#</th>
-            <th>Taker Gets</th>
-            <th>Taker Pays</th>
-            <th>Type</th>
-            <th>Exchange Rate</th>
-            <th>Sequence</th>
-          </tr>
+            <th colSpan="100">
+              {offerListCountText(offerList)} DEX orders{historicalTitle}
+              {!account?.address && !ledgerTimestamp && (
+                <>
+                  {' '}
+                  [
+                  <a href="#" onClick={() => setSignRequest({})} className="bold">
+                    Sign in
+                  </a>{' '}
+                  to Cancel]
+                </>
+              )}
+            </th>
+          </tr>          
         </thead>
         <tbody>
+          <tr>
+            <th>#</th>
+            <th className="left">Type</th>
+            <th className="right">Taker Gets</th>
+            <th className="right">Taker Pays</th>
+            <th className="right">Offer Rate</th>
+            <th className="right">Sequence</th>
+            <th className="center">Actions</th>
+          </tr>
           {orderRows}
         </tbody>
       </table>
       <div className="show-on-small-w800">
         <br />
-        <center>{title}</center>
-        {sortedOfferList.map((offer, i) => {
-          return (
-            <div key={i} style={{ marginBottom: '6px' }} suppressHydrationWarning>
-              <span className="grey">{i + 1}. </span>
-              <span className={`${offer.flags?.sell ? 'red' : 'green'} bold`}>{offer.flags?.sell ? 'Sell' : 'Buy'}</span>
-              <br />
-              <span className="grey">Taker Gets: </span>
-              {amountFormat(offer.TakerGets, { precise: true })}
-              {offer.TakerGets?.issuer && <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>}
-              <br />
-              <span className="grey">Taker Pays: </span>
-              {amountFormat(offer.TakerPays, { precise: true })}
-              {offer.TakerPays?.issuer && <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>}
-              <br />              
-              <span className="grey">Exchange Rate: </span>
-              {
-                offer.flags?.sell ? (
-                  <>
-                    {niceNumber(divide(offer.quality, 1000000), 0, null, 5)}
-                  </>
-                ) : (
-                  <>
-                    {niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)}
-                  </>
-                )
-              }
-              <br />
-              <span className="grey">Sequence: </span>
-              #{offer.Sequence}
-            </div>
-          )
-        })}
+        <center>
+          {offerListCountText(offerList)}
+          {'DEX Orders'.toUpperCase()}
+          {historicalTitle}
+        </center>
+        <br />
+        <table className="table-mobile wide">
+          <tbody>
+            <tr>
+              <th>#</th>
+              <th className="left">Type</th>
+              <th className="right">Taker Gets</th>
+              <th className="right">Taker Pays</th>
+              <th className="right">Offer Rate</th>
+              <th className="right">Sequence</th>
+              <th className="center">Actions</th>
+            </tr>
+            {orderRows}
+          </tbody>
+        </table>
+        <br />
       </div>
-      <style jsx>{``}</style>
     </>
   )
 }

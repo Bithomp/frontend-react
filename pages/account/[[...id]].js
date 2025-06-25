@@ -506,22 +506,6 @@ export default function Account({
                               <br />
                             </div>
                           )}
-
-                          {/* hide while its not ready
-                          <IOUData
-                            rippleStateList={objects?.rippleStateList}
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                          />
-                          <EscrowData
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                            escrowList={objects?.escrowList}
-                          /> */}
-                          <DexOrdersData
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                            offerList={objects?.offerList}
-                          />
-                         
-
                           <LedgerData
                             data={data}
                             account={account}
@@ -535,6 +519,12 @@ export default function Account({
                             gateway={gateway}
                           />
                           <PublicData data={data} />
+                          <DexOrdersData
+                            account={account}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            offerList={objects?.offerList}
+                            setSignRequest={setSignRequest}
+                          />
                           {xahauNetwork ? (
                             <URITokenData data={data} uriTokenList={objects?.uriTokenList} />
                           ) : (
