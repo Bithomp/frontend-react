@@ -13,6 +13,7 @@ import { AddressWithIcon, niceCurrency, shortNiceNumber } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { useWidth } from '../utils'
+import { LinkAccount } from '../utils/links'
 
 // Server side initial data fetch
 export async function getServerSideProps (context) {
@@ -45,7 +46,8 @@ export default function Tokens ({
   initialData,
   initialErrorMessage,
   subscriptionExpired,
-  sessionToken
+  sessionToken,
+  setSignRequest  
 }) {
   const { t } = useTranslation()
   const width = useWidth()
@@ -153,17 +155,55 @@ export default function Tokens ({
 
   // Helper component to render token with icon
   const TokenCell = ({ token }) => {
+    const issuerDetails = token.issuerDetails || {}
+    const serviceOrUsername = () => {
+      if (issuerDetails.service) {
+        return (
+          <>
+            <span className="green bold">{issuerDetails.service}</span>
+          </>
+        )
+      } else if (issuerDetails.username) {
+        return (
+          <>
+            <span className="blue bold">{issuerDetails.username}</span>
+          </>
+        )
+      } 
+    }
     return (
       <AddressWithIcon address={token?.issuer}>
-        {niceCurrency(token.currency)}
+        {niceCurrency(token.currency)} {serviceOrUsername()}
         {token.issuer && (
           <>
             <br />
-            {token.issuer}
+            <LinkAccount address={token.issuer} />
           </>
         )}
       </AddressWithIcon>
     )
+  }
+
+  const handleSetTrustline = (token) => {
+    
+    // Format supply to have at most 6 decimal places
+    const formatSupply = (supply) => {
+      if (!supply) return '1000000000'
+      const num = parseFloat(supply)
+      if (isNaN(num)) return '1000000000'
+      return num.toFixed(6)
+    }
+    
+    setSignRequest({
+      request: {
+        TransactionType: 'TrustSet',
+        LimitAmount: {
+          currency: token.currency,
+          issuer: token.issuer,
+          value: formatSupply(token.supply)
+        }
+      }
+    })
   }
 
   return (
@@ -176,8 +216,8 @@ export default function Tokens ({
         setOrder={setOrder}
         orderList={[
           { value: 'rating', label: 'Rating: High to Low' },
-          // { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
-          // { value: 'trustlinesLow', label: 'Trustlines: Low to High' }
+          { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
+          { value: 'holdersHigh', label: 'Holders: High to Low' }
         ]}
         count={data?.length}
         hasMore={marker}
@@ -208,13 +248,15 @@ export default function Tokens ({
         >
           {/* Desktop table */}
           {!width || width > 860 ? (
-            <table className="table-large">
+            <table className="table-large no-hover">
               <thead>
                 <tr>
                   <th className="center">#</th>
                   <th>Token</th>
+                  <th className="right">Marketcap</th>
                   <th className="right">Trustlines</th>
                   <th className="right">Holders</th>
+                  <th className="center">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -232,11 +274,21 @@ export default function Tokens ({
                         <td>
                           <TokenCell token={token} />
                         </td>
+                        <td className="right">
+                          {shortNiceNumber(token.statistics?.marketcap, 0)}
+                        </td>
                         <td className="right" suppressHydrationWarning>
                           {shortNiceNumber(token.trustlines, 0)}
                         </td>
                         <td className="right" suppressHydrationWarning>
                           {shortNiceNumber(token.holders, 0)}
+                        </td>
+                        <td>
+                          <button className="button-action thin" onClick={() => {
+                            handleSetTrustline(token)
+                          }}>
+                            Set trustline
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -277,9 +329,21 @@ export default function Tokens ({
                         <td>
                           <TokenCell token={token} />
                           <p>
+                            {token.statistics?.marketcap && (
+                              <>
+                                Marketcap: {shortNiceNumber(token.statistics?.marketcap, 0)}
+                                <br />
+                              </>
+                            )}
                             Trustlines: {shortNiceNumber(token.trustlines, 0)}
                             <br />
                             Holders: {shortNiceNumber(token.holders, 0)}
+                            <br />
+                            <button className="button-action thin" onClick={() => {
+                              handleSetTrustline(token)
+                            }}>
+                              Set trustline
+                            </button>
                           </p>
                         </td>
                       </tr>
