@@ -297,6 +297,12 @@ export default function MobileMenu({
                   <Link href="/services/amm?tab=vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
                     AMM Vote
                   </Link>
+                  <Link href="/services/amm?tab=withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                    AMM Withdraw
+                  </Link>
+                  <Link href="/services/amm?tab=deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                    AMM Deposit
+                  </Link>
                 </>
               )}
             </div>
