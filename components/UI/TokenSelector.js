@@ -7,7 +7,9 @@ import axios from 'axios'
 import { avatarServer, nativeCurrency, nativeCurrenciesImages, useWidth } from '../../utils'
 import { niceCurrency, shortAddress } from '../../utils/format'
 
-const TokenSelector = ({ value, onChange }) => {
+const limit = 100
+
+export default function TokenSelector({ value, onChange }) {
   const { t } = useTranslation()
   const width = useWidth()
   const [isOpen, setIsOpen] = useState(false)
@@ -19,7 +21,7 @@ const TokenSelector = ({ value, onChange }) => {
   // Handle search with debounce
   useEffect(() => {
     if (!isOpen) {
-      return;
+      return
     }
 
     if (searchTimeout) {
@@ -28,14 +30,23 @@ const TokenSelector = ({ value, onChange }) => {
 
     const timeout = setTimeout(async () => {
       if (!searchQuery) {
+        // do not reload default token list if it's already loaded
+        // when searched for native currency, we also add the native currency on top,
+        // so check that it's not that case before canceling the search
+        if (
+          searchResults[0]?.currency === nativeCurrency &&
+          !niceCurrency(searchResults[1]?.currency)?.toLowerCase().startsWith(nativeCurrency.toLowerCase())
+        )
+          return
+
         setIsLoading(true)
         try {
-          const response = await axios('v2/trustlines/tokens')
+          const response = await axios('v2/trustlines/tokens?limit=' + limit)
           const tokens = response.data?.tokens || []
-          setSearchResults([{currency: nativeCurrency}, ...tokens])
+          setSearchResults([{ currency: nativeCurrency }, ...tokens])
         } catch (error) {
           console.error('Error loading tokens:', error)
-          setSearchResults([{currency: nativeCurrency}])
+          setSearchResults([{ currency: nativeCurrency }])
         } finally {
           setIsLoading(false)
         }
@@ -44,8 +55,15 @@ const TokenSelector = ({ value, onChange }) => {
 
       setIsLoading(true)
       try {
-        const response = await axios(`v2/trustlines/tokens/search/${searchQuery}`)
+        //limit doesn't work with search..
+        const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}`)
         const tokens = response.data?.tokens || []
+
+        if (searchQuery.toUpperCase() === nativeCurrency.toUpperCase()) {
+          // If search for native currency, add it first
+          tokens.unshift({ currency: nativeCurrency })
+        }
+
         setSearchResults(tokens)
       } catch (error) {
         console.error('Error searching tokens:', error)
@@ -176,8 +194,10 @@ const TokenSelector = ({ value, onChange }) => {
                         </div>
                       </div>
                     ))}
-                    {searchResults.length >= 100 && (
-                      <p className="center orange">More than 100 results found. Please specify an issuer to narrow down the search.</p>
+                    {searchResults.length >= limit && (
+                      <p className="center orange">
+                        More than {limit} results found. Please specify an issuer to narrow down the search.
+                      </p>
                     )}
                   </div>
                 ) : searchQuery ? (
@@ -191,5 +211,3 @@ const TokenSelector = ({ value, onChange }) => {
     </div>
   )
 }
-
-export default TokenSelector
