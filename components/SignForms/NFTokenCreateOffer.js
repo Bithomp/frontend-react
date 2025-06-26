@@ -13,25 +13,25 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
   const width = useWidth()
 
   const [privateOffer, setPrivateOffer] = useState(false)
-  const [selectedToken, setSelectedToken] = useState({currency: nativeCurrency})
+  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
 
   // Update amount format when token changes
   useEffect(() => {
     if (signRequest.request.Amount && typeof signRequest.request.Amount === 'string') {
-      // If we have a string amount (XRP drops) but selected a token, convert it
+      // If we have a string amount (Native currency drops) but selected a token, convert it
       if (selectedToken.currency !== nativeCurrency) {
-          const xrpAmount = divide(signRequest.request.Amount, 1000000)
+        const tokenAmount = divide(signRequest.request.Amount, 1000000)
         let newRequest = signRequest
         newRequest.request.Amount = {
           currency: selectedToken.currency,
           issuer: selectedToken.issuer,
-          value: xrpAmount.toString()
+          value: tokenAmount.toString()
         }
         setSignRequest(newRequest)
       }
     } else if (signRequest.request.Amount && typeof signRequest.request.Amount === 'object') {
-      // If we have a token amount but selected XRP, convert it
-      if (selectedToken.currency === nativeCurrency) {
+      // If we have a token amount but selected a Native Currency, convert it
+      if (selectedToken.currency === nativeCurrency && !selectedToken.issuer) {
         let newRequest = signRequest
         newRequest.request.Amount = multiply(signRequest.request.Amount.value, 1000000)
         setSignRequest(newRequest)
@@ -72,11 +72,11 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
 
   const onAmountChange = (e) => {
     let newRequest = signRequest
-    const value = e.target.value    
+    const value = e.target.value
     // Only process if we have a valid number or empty string
     if (value === '' || (!isNaN(parseFloat(value)) && parseFloat(value) >= 0)) {
-      if (selectedToken.currency === nativeCurrency) {
-        // For XRP, convert to drops
+      if (selectedToken.currency === nativeCurrency && !selectedToken.issuer) {
+        // For Native currency, convert to drops
         if (value === '') {
           delete newRequest.request.Amount
         } else {
@@ -166,7 +166,7 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
         <div className="center">
           <br />
           <div className={width > 480 ? 'flex justify-center' : ''}>
-            <span className={xls35Sell ? 'halv xahOnly' : width > 480 ? 'quarter' : 'halv'}>
+            <span className={width > 480 ? 'quarter' : 'halv'}>
               <span className="input-title">{t('signin.amount.set-price')}</span>
               <input
                 placeholder={t('signin.amount.enter-amount')}
@@ -180,15 +180,10 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
                 inputMode="decimal"
               />
             </span>
-            {!xls35Sell && (
-              <span className={width > 480 ? 'quarter' : 'halv'}>
-                <span className="input-title">Currency</span>
-                <TokenSelector
-                  value={selectedToken}
-                  onChange={onTokenChange}
-                />
-              </span>
-            )}
+            <span className={width > 480 ? 'quarter' : 'halv'}>
+              <span className="input-title">Currency</span>
+              <TokenSelector value={selectedToken} onChange={onTokenChange} />
+            </span>
           </div>
           {!xls35Sell && (
             <span className="halv">
