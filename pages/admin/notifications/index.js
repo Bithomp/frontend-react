@@ -1,14 +1,15 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import AddChannelButton from '@/components/Admin/notifications/AddChannelButton'
+import ChannelCard from '@/components/Admin/notifications/ChannelCard'
 import EmptyState from '@/components/Admin/notifications/EmptyState'
 import ErrorState from '@/components/Admin/notifications/ErrorState'
-import ChannelCard from '@/components/Admin/notifications/ChannelCard'
 import RuleCard from '@/components/Admin/notifications/RuleCard'
 import AdminTabs from '@/components/Tabs/AdminTabs'
 import { useNotifications } from '@/hooks/useNotifications'
 
-export const getStaticProps = async (context) => {
+export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
@@ -51,7 +52,10 @@ export default function Notifications() {
       {channels.length > 0 && (
         <>
           <div className="h-8"></div>
-          <h2>Notification channels</h2>
+          <div className="flex justify-between items-center">
+            <h2>Notification channels</h2>
+            <AddChannelButton />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {channels.map((channel) => (
               <ChannelCard key={channel.id} channel={channel} />
