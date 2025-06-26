@@ -15,12 +15,9 @@ import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../uti
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-<<<<<<< feat/375/add-flagged-account-on-send-page
 import axios from 'axios'
-=======
 import { errorCodeDescription } from '../../utils/transaction'
 import TokenSelector from '../../components/UI/TokenSelector'
->>>>>>> main
 
 export default function Send({
   account,
@@ -49,16 +46,13 @@ export default function Send({
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
-<<<<<<< feat/375/add-flagged-account-on-send-page
   const [isDestinationFlagged, setIsDestinationFlagged] = useState(false)
   const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
-=======
-  const [selectedToken, setSelectedToken] = useState({currency: nativeCurrency})
+  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
 
   const onTokenChange = (token) => {
     setSelectedToken(token)
   }
->>>>>>> main
 
   useEffect(() => {
     let queryAddList = []
@@ -122,11 +116,11 @@ export default function Send({
       try {
         const response = await axios(`/v2/address/${address}?blacklist=true`)
         const data = response?.data
-        
+
         if (data?.address) {
           const isFlagged = data.blacklist?.blacklisted || false
           setIsDestinationFlagged(isFlagged)
-          
+
           // Reset agreement if account is no longer flagged
           if (!isFlagged) {
             setAgreeToSendToFlagged(false)
@@ -296,7 +290,7 @@ export default function Send({
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
           />
-          
+
           {/* Show warning if destination account is flagged */}
           {isDestinationFlagged && (
             <div>
@@ -308,7 +302,11 @@ export default function Send({
                 <br />
                 <strong>We strongly recommend proceeding with caution to ensure the safety of your assets.</strong>
                 <br />
-                <Link href="/blacklisted-address" target="_blank" style={{ color: '#ff6b6b', textDecoration: 'underline' }}>
+                <Link
+                  href="/blacklisted-address"
+                  target="_blank"
+                  style={{ color: '#ff6b6b', textDecoration: 'underline' }}
+                >
                   Learn more about flagged accounts
                 </Link>
               </div>
@@ -330,7 +328,7 @@ export default function Send({
               <div className="flex-1">
                 <span className="input-title">{t('table.amount')}</span>
                 <input
-                  placeholder='Enter amount'
+                  placeholder="Enter amount"
                   onChange={(e) => setAmount(e.target.value)}
                   onKeyPress={typeNumberOnly}
                   className="input-text"
@@ -344,10 +342,7 @@ export default function Send({
               </div>
               <div className="w-full sm:w-1/2">
                 <span className="input-title">Currency</span>
-                <TokenSelector
-                  value={selectedToken}
-                  onChange={onTokenChange}
-                />
+                <TokenSelector value={selectedToken} onChange={onTokenChange} />
               </div>
             </div>
           </div>
@@ -434,7 +429,7 @@ export default function Send({
             </Link>
             .
           </CheckBox>
-          
+
           {/* Show additional checkbox for flagged accounts */}
           {isDestinationFlagged && (
             <div>
@@ -443,7 +438,7 @@ export default function Send({
               </CheckBox>
             </div>
           )}
-          
+
           <br />
           {error && (
             <>
