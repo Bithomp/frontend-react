@@ -15,6 +15,7 @@ import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../uti
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
 import TokenSelector from '../../components/UI/TokenSelector'
 
@@ -45,7 +46,9 @@ export default function Send({
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
-  const [selectedToken, setSelectedToken] = useState({currency: nativeCurrency})
+  const [isDestinationFlagged, setIsDestinationFlagged] = useState(false)
+  const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
+  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
 
   const onTokenChange = (token) => {
     setSelectedToken(token)
@@ -101,6 +104,42 @@ export default function Send({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, destinationTag, amount, memo, fee, sourceTag, invoiceId])
 
+  // Fetch destination account data when address changes
+  useEffect(() => {
+    const fetchDestinationAccountData = async () => {
+      if (!address || !isAddressValid(address)) {
+        setIsDestinationFlagged(false)
+        setAgreeToSendToFlagged(false)
+        return
+      }
+
+      try {
+        const response = await axios(`/v2/address/${address}?blacklist=true`)
+        const data = response?.data
+
+        if (data?.address) {
+          const isFlagged = data.blacklist?.blacklisted || false
+          setIsDestinationFlagged(isFlagged)
+
+          // Reset agreement if account is no longer flagged
+          if (!isFlagged) {
+            setAgreeToSendToFlagged(false)
+          }
+        } else {
+          setIsDestinationFlagged(false)
+          setAgreeToSendToFlagged(false)
+        }
+      } catch (error) {
+        setError('Error fetching destination account data')
+        setIsDestinationFlagged(false)
+        setAgreeToSendToFlagged(false)
+      }
+    }
+
+    fetchDestinationAccountData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address])
+
   const handleFeeChange = (e) => {
     const value = e.target.value
     setFee(value)
@@ -148,6 +187,11 @@ export default function Send({
 
     if (!agreeToSiteTerms) {
       setError('Please agree to the Terms and conditions')
+      return
+    }
+
+    if (isDestinationFlagged && !agreeToSendToFlagged) {
+      setError('Please acknowledge that you understand the risks of sending to a flagged account')
       return
     }
 
@@ -242,9 +286,33 @@ export default function Send({
             name="destination"
             hideButton={true}
             setValue={setAddress}
+            setInnerValue={setAddress}
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
           />
+
+          {/* Show warning if destination account is flagged */}
+          {isDestinationFlagged && (
+            <div>
+              <div className="form-spacing" />
+              <div className="red center p-2 rounded-md bg-red-50 border border-red-200 mb-4 sm:mb-0">
+                <strong>⚠️ Fraud Alert</strong>
+                <br />
+                This account has been flagged as potentially involved in scams, phishing, or other malicious activities.
+                <br />
+                <strong>We strongly recommend proceeding with caution to ensure the safety of your assets.</strong>
+                <br />
+                <Link
+                  href="/blacklisted-address"
+                  target="_blank"
+                  style={{ color: '#ff6b6b', textDecoration: 'underline' }}
+                >
+                  Learn more about flagged accounts
+                </Link>
+              </div>
+            </div>
+          )}
+
           <div className="form-spacing" />
           <FormInput
             title={t('table.destination-tag')}
@@ -260,7 +328,7 @@ export default function Send({
               <div className="flex-1">
                 <span className="input-title">{t('table.amount')}</span>
                 <input
-                  placeholder='Enter amount'
+                  placeholder="Enter amount"
                   onChange={(e) => setAmount(e.target.value)}
                   onKeyPress={typeNumberOnly}
                   className="input-text"
@@ -274,10 +342,7 @@ export default function Send({
               </div>
               <div className="w-full sm:w-1/2">
                 <span className="input-title">Currency</span>
-                <TokenSelector
-                  value={selectedToken}
-                  onChange={onTokenChange}
-                />
+                <TokenSelector value={selectedToken} onChange={onTokenChange} />
               </div>
             </div>
           </div>
@@ -364,6 +429,16 @@ export default function Send({
             </Link>
             .
           </CheckBox>
+
+          {/* Show additional checkbox for flagged accounts */}
+          {isDestinationFlagged && (
+            <div className="orange">
+              <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
+                I understand the risks and I want to proceed with sending funds to this flagged account
+              </CheckBox>
+            </div>
+          )}
+
           <br />
           {error && (
             <>
