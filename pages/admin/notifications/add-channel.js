@@ -1,9 +1,11 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
 import { InputField } from '@/components/Admin/notifications/InputField'
 import AdminTabs from '@/components/Tabs/AdminTabs'
+import { useCreateNotificationChannel } from '@/hooks/useNotifications'
 import { NOTIFICATION_CHANNEL_TYPES } from '@/lib/constants'
 import {
   discordNotificationChannelSchema,
@@ -76,6 +78,20 @@ export default function AddChannel() {
   const [channelType, setChannelType] = useState(NOTIFICATION_CHANNEL_TYPES.SLACK)
   const [formData, setFormData] = useState({ name: '' })
   const [errors, setErrors] = useState({})
+  const createChannel = useCreateNotificationChannel()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (createChannel.data) {
+      router.push(`/admin/notifications/`)
+    }
+  }, [createChannel.data, router])
+
+  useEffect(() => {
+    if (createChannel.error) {
+      console.error(createChannel.error)
+    }
+  }, [createChannel.error])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -90,8 +106,13 @@ export default function AddChannel() {
       console.error(parsedData.error)
       return
     }
-    const finalData = { ...parsedData.data, type: channelType }
-    console.log(finalData)
+    const { name, ...settings } = parsedData.data
+    const finalData = {
+      name,
+      type: channelType,
+      settings
+    }
+    createChannel.mutate(finalData)
   }
 
   const handleInputChange = (e) => {
@@ -121,53 +142,56 @@ export default function AddChannel() {
           Add a new notification channel to get notified through Slack, Discord, Email, or X (Twitter).
         </p>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <InputField
+            id="name"
+            label="Channel Name"
+            placeholder="My new channel"
+            value={formData.name}
+            onChange={handleInputChange}
+            helpText="A descriptive name for your channel."
+            error={errors.name}
+            required
+            autoFocus
+          />
+          <div className="flex flex-col gap-2">
+            <label htmlFor="channel-type" className="font-bold">
+              Channel type
+            </label>
+            <select
+              id="channel-type"
+              className="simple-select select select-bordered"
+              value={channelType}
+              onChange={handleChannelTypeChange}
+            >
+              <option value={NOTIFICATION_CHANNEL_TYPES.SLACK}>Slack</option>
+              <option value={NOTIFICATION_CHANNEL_TYPES.DISCORD}>Discord</option>
+              <option value={NOTIFICATION_CHANNEL_TYPES.EMAIL}>Email</option>
+              <option value={NOTIFICATION_CHANNEL_TYPES.TWITTER}>Twitter</option>
+            </select>
+          </div>
+
+          {settingsFields.map((field) => (
             <InputField
-              id="name"
-              label="Channel Name"
-              placeholder="My new channel"
-              value={formData.name}
+              key={field.id}
+              id={field.id}
+              label={field.label}
+              type={field.type}
+              placeholder={field.placeholder}
+              value={formData[field.id] || ''}
               onChange={handleInputChange}
-              helpText="A descriptive name for your channel."
-              error={errors.name}
-              required
+              helpText={field.helpText}
+              error={errors[field.id]}
+              required={field.required}
             />
-            <div className="flex flex-col gap-2">
-              <label htmlFor="channel-type" className="font-bold">
-                Channel type
-              </label>
-              <select
-                id="channel-type"
-                className="simple-select select select-bordered"
-                value={channelType}
-                onChange={handleChannelTypeChange}
-              >
-                <option value={NOTIFICATION_CHANNEL_TYPES.SLACK}>Slack</option>
-                <option value={NOTIFICATION_CHANNEL_TYPES.DISCORD}>Discord</option>
-                <option value={NOTIFICATION_CHANNEL_TYPES.EMAIL}>Email</option>
-                <option value={NOTIFICATION_CHANNEL_TYPES.TWITTER}>Twitter</option>
-              </select>
-            </div>
+          ))}
 
-            {settingsFields.map((field) => (
-              <InputField
-                key={field.id}
-                id={field.id}
-                label={field.label}
-                type={field.type}
-                placeholder={field.placeholder}
-                value={formData[field.id] || ''}
-                onChange={handleInputChange}
-                helpText={field.helpText}
-                error={errors[field.id]}
-                required={field.required}
-              />
-            ))}
+          {channelType === NOTIFICATION_CHANNEL_TYPES.TWITTER && (
+            <p className="text-sm text-gray-500 -mt-2">Your Twitter application's credentials.</p>
+          )}
 
-            {channelType === NOTIFICATION_CHANNEL_TYPES.TWITTER && (
-              <p className="text-sm text-gray-500 -mt-2">Your Twitter application's credentials.</p>
-            )}
-
-          <button className="btn btn-primary w-full">Add Channel</button>
+          <button className="btn btn-primary w-full" disabled={createChannel.isLoading}>
+            {createChannel.isLoading ? 'Adding channel...' : 'Add Channel'}
+          </button>
         </form>
       </div>
     </main>
