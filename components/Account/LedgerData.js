@@ -500,8 +500,8 @@ export default function LedgerData({
           )}
           {data.ledgerInfo?.flags?.noFreeze && (
             <tr>
-              <td>Freeze</td>
-              <td className="bold">disabled</td>
+              <td>No freeze</td>
+              <td className="bold">enabled</td>
             </tr>
           )}
           {/* If set, this account must individually approve other users in order for those users to hold this account’s issuances. */}

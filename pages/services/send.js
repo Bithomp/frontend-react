@@ -15,7 +15,12 @@ import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../uti
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+<<<<<<< feat/375/add-flagged-account-on-send-page
 import axios from 'axios'
+=======
+import { errorCodeDescription } from '../../utils/transaction'
+import TokenSelector from '../../components/UI/TokenSelector'
+>>>>>>> main
 
 export default function Send({
   account,
@@ -44,8 +49,16 @@ export default function Send({
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
+<<<<<<< feat/375/add-flagged-account-on-send-page
   const [isDestinationFlagged, setIsDestinationFlagged] = useState(false)
   const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
+=======
+  const [selectedToken, setSelectedToken] = useState({currency: nativeCurrency})
+
+  const onTokenChange = (token) => {
+    setSelectedToken(token)
+  }
+>>>>>>> main
 
   useEffect(() => {
     let queryAddList = []
@@ -191,8 +204,17 @@ export default function Send({
     try {
       let payment = {
         TransactionType: 'Payment',
-        Destination: address,
-        Amount: multiply(amount, 1000000)
+        Destination: address
+      }
+
+      if (selectedToken.currency === nativeCurrency) {
+        payment.Amount = multiply(amount, 1000000)
+      } else {
+        payment.Amount = {
+          currency: selectedToken.currency,
+          issuer: selectedToken.issuer,
+          value: amount
+        }
       }
 
       if (account?.address) {
@@ -228,23 +250,27 @@ export default function Send({
       setSignRequest({
         request: payment,
         callback: (result) => {
-          setTxResult({
-            status: result.meta?.TransactionResult,
-            date: result.date,
-            destination: result.Destination,
-            amount: amountFormat(result.Amount),
-            destinationTag: result.DestinationTag,
-            sourceTag: result.SourceTag,
-            fee: amountFormat(result.Fee),
-            sequence: result.Sequence,
-            memo: result.Memos?.[0]?.Memo?.MemoData ? decode(result.Memos[0].Memo.MemoData) : undefined,
-            hash: result.hash,
-            status: result.meta?.TransactionResult,
-            validated: result.validated,
-            ledgerIndex: result.ledger_index,
-            balanceChanges: result.balanceChanges,
-            invoiceId: result.InvoiceID
-          })
+          const status = result.meta?.TransactionResult
+          if (status !== 'tesSUCCESS') {
+            setError(errorCodeDescription(status))
+          } else {
+            setTxResult({
+              status,
+              date: result.date,
+              destination: result.Destination,
+              amount: amountFormat(result.Amount),
+              destinationTag: result.DestinationTag,
+              sourceTag: result.SourceTag,
+              fee: amountFormat(result.Fee),
+              sequence: result.Sequence,
+              memo: result.Memos?.[0]?.Memo?.MemoData ? decode(result.Memos[0].Memo.MemoData) : undefined,
+              hash: result.hash,
+              validated: result.validated,
+              ledgerIndex: result.ledger_index,
+              balanceChanges: result.balanceChanges,
+              invoiceId: result.InvoiceID
+            })
+          }
         }
       })
     } catch (err) {
@@ -300,19 +326,30 @@ export default function Send({
           />
           <div className="form-input">
             <div className="form-spacing" />
-            <span className="input-title">{t('table.amount')}</span>
-            <input
-              placeholder={'Enter amount in ' + nativeCurrency}
-              onChange={(e) => setAmount(e.target.value)}
-              onKeyPress={typeNumberOnly}
-              className="input-text"
-              spellCheck="false"
-              maxLength="35"
-              min="0"
-              type="text"
-              inputMode="decimal"
-              defaultValue={amount}
-            />
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <div className="flex-1">
+                <span className="input-title">{t('table.amount')}</span>
+                <input
+                  placeholder='Enter amount'
+                  onChange={(e) => setAmount(e.target.value)}
+                  onKeyPress={typeNumberOnly}
+                  className="input-text"
+                  spellCheck="false"
+                  maxLength="35"
+                  min="0"
+                  type="text"
+                  inputMode="decimal"
+                  defaultValue={amount}
+                />
+              </div>
+              <div className="w-full sm:w-1/2">
+                <span className="input-title">Currency</span>
+                <TokenSelector
+                  value={selectedToken}
+                  onChange={onTokenChange}
+                />
+              </div>
+            </div>
           </div>
           <div className="form-input">
             <div className="form-spacing" />

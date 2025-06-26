@@ -464,7 +464,7 @@ export default function SignForm({
         app: server + router.asPath + (router.asPath.includes('?') ? '&' : '?') + 'uuid={id}'
       }
 
-      if (signRequest.receipt) {
+      if (tx.TransactionType === 'Payment' || signRequest?.receipt) {
         //for username receipts
         signInPayload.options.return_url.app += '&receipt=true'
       }

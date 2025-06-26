@@ -78,9 +78,12 @@
     line-height: 1.4;
     white-space: pre-wrap;
     
-    &.red {
-      color: var(--red);
-      font-weight: 500;
+    &.warning {
+      color: var(--orange);
+      font-weight: 600;
+      background: rgba(255, 165, 0, 0.08);
+      padding: 4px 6px;
+      border-radius: 4px;
     }
   }
 
@@ -89,9 +92,12 @@
     margin-top: 0.5rem;
     font-style: italic;
     
-    &.red {
-      color: var(--red);
-      font-weight: 500;
+    &.warning {
+      color: var(--orange);
+      font-weight: 600;
+      background: rgba(255, 165, 0, 0.08);
+      padding: 4px 6px;
+      border-radius: 4px;
     }
   }
 

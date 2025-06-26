@@ -38,35 +38,9 @@
         width: calc(100% - 80px);
       }
     }
-    .quarter {
-      &.xrpOnly {
-        input {
-          width: 132px;
-          padding-right: 40px;
-        }
-      }
-    }
     .halv,
     .quarter {
       position: relative;
-      &.xrpOnly,
-      &.xahOnly {
-        &:after {
-          position: absolute;
-          right: 10px;
-          bottom: 9px;
-        }
-      }
-      &.xrpOnly {
-        &:after {
-          content: "XRP";
-        }
-      }
-      &.xahOnly {
-        &:after {
-          content: "XAH";
-        }
-      }
     }
     .terms-checkbox {
       text-align: left;
