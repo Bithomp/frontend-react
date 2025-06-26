@@ -432,9 +432,9 @@ export default function Send({
 
           {/* Show additional checkbox for flagged accounts */}
           {isDestinationFlagged && (
-            <div>
+            <div className="orange">
               <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
-                I understand the risks and want to proceed with sending to this flagged account
+                I understand the risks and I want to proceed with sending funds to this flagged account
               </CheckBox>
             </div>
           )}
