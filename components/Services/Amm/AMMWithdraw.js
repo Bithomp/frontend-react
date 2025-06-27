@@ -20,6 +20,7 @@ export default function AMMWithdrawForm({ setSignRequest }) {
   const [withdrawMode, setWithdrawMode] = useState('tfTwoAsset') // Default to double-asset withdrawal
   const [error, setError] = useState('')
   const [agreeToTerms, setAgreeToTerms] = useState(false)
+  const [agreeToRisks, setAgreeToRisks] = useState(false)
   const [txResult, setTxResult] = useState(null)
 
   const withdrawModes = [
@@ -91,6 +92,11 @@ export default function AMMWithdrawForm({ setSignRequest }) {
       case 'tfWithdrawAll':
         // No validation needed for withdraw all
         break
+    }
+    
+    if (!agreeToRisks) {
+      setError('Please agree to the risks.')
+      return false
     }
 
     if (!agreeToTerms) {
@@ -478,6 +484,13 @@ export default function AMMWithdrawForm({ setSignRequest }) {
         <br />
         {renderModeSpecificFields()}
         <br />
+        <CheckBox checked={agreeToRisks} setChecked={setAgreeToRisks} name="amm-withdraw-risks">
+          <span className="orange bold">
+            I acknowledge and understand the risks associated with XRPL AMMs, including impermanent loss, fund
+            withdrawal risks, market volatility, and the impact of withdrawing from unbalanced pools. I agree to participate at
+            my own risk.
+          </span>
+        </CheckBox>
         <CheckBox checked={agreeToTerms} setChecked={setAgreeToTerms} name="amm-withdraw-terms">
           I agree with the{' '}
           <Link href="/terms-and-conditions" target="_blank">

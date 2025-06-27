@@ -21,6 +21,7 @@ export default function AMMDepositForm({ setSignRequest }) {
   const [depositMode, setDepositMode] = useState('tfTwoAsset') // Default to double-asset deposit
   const [error, setError] = useState('')
   const [agreeToTerms, setAgreeToTerms] = useState(false)
+  const [agreeToRisks, setAgreeToRisks] = useState(false)
   const [txResult, setTxResult] = useState(null)
 
   const depositModes = [
@@ -87,6 +88,11 @@ export default function AMMDepositForm({ setSignRequest }) {
 
     if (tradingFee && (isNaN(parseFloat(tradingFee)) || parseFloat(tradingFee) < 0 || parseFloat(tradingFee) > 1)) {
       setError('Please enter a valid trading fee between 0 and 1 (percent).')
+      return false
+    }
+
+    if (!agreeToRisks) {
+      setError('Please agree to the risks.')
       return false
     }
 
@@ -430,13 +436,20 @@ export default function AMMDepositForm({ setSignRequest }) {
           hideButton={true}
         />
         <br />
+        <CheckBox checked={agreeToRisks} setChecked={setAgreeToRisks} name="amm-deposit-risks">
+          <span className="orange bold">
+            I acknowledge and understand the risks associated with XRPL AMMs, including impermanent loss, fund
+            withdrawal risks, market volatility, and the impact of depositing into unbalanced pools. I agree to participate at
+            my own risk.
+          </span>
+        </CheckBox>
         <CheckBox checked={agreeToTerms} setChecked={setAgreeToTerms} name="amm-deposit-terms">
           I agree with the{' '}
           <Link href="/terms-and-conditions" target="_blank">
             Terms and conditions
           </Link>
           .
-        </CheckBox>
+        </CheckBox>        
         {error && (
           <>
             <br />
