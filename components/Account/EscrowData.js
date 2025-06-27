@@ -1,4 +1,4 @@
-import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat } from '../../utils/format'
+import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat, timeOrDate } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { avatarServer, timestampExpired } from '../../utils'
 import axios from 'axios'
@@ -131,26 +131,26 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
             />
           </Link>
           {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
-        </td>
-        <td className="bold right">{amountFormat(escrow.Amount)}</td>
+        </td>        
         <td className="right">{typeof escrow.DestinationTag !== 'undefined' && escrow.DestinationTag}</td>
         <td className="right">
           {escrow.CancelAfter ? (
-            <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>{fullDateAndTime(escrow.CancelAfter, 'ripple')}</span>
+            <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>{timeOrDate(escrow.CancelAfter, 'ripple')}</span>
           ) : (
-            <span className="grey">does not cancel</span>
+            <span className="grey">no expiration</span>
           )}
         </td>
         <td className="right">
           {escrow.FinishAfter ? (
-            <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'red' : ''}>{fullDateAndTime(escrow.FinishAfter, 'ripple')}</span>
+            <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'red' : ''}>{timeOrDate(escrow.FinishAfter, 'ripple')}</span>
           ) : (
-            <span className="grey">does not finish</span>
+            <span className="grey">no expiration</span>
           )}
         </td>
+        <td className="bold right">{amountFormat(escrow.Amount, { short: true })}</td>
         {!ledgerTimestamp && (
           <td className="center">
-            {escrow.Account === account?.address && escrow.FinishAfter && timestampExpired(escrow.FinishAfter, 'ripple') ? (
+            {escrow.FinishAfter && timestampExpired(escrow.FinishAfter, 'ripple') ? (
               <a
                 href="#"
                 onClick={(e) => {
@@ -169,14 +169,14 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
               </span>
             )}
             <span style={{ display: 'inline-block', width: options?.mobile ? 0 : 15 }}> </span>
-            {escrow.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple') && escrow.Account === account?.address ? (
+            {escrow.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple') ? (
               <a
                 href="#"
                 onClick={(e) => {
                   e.preventDefault()
                   handleEscrowCancel(escrow)
                 }}
-                className="red tooltip"
+                className="green tooltip"
               >
                 <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
                 <span className="tooltiptext">Cancel</span>
@@ -196,10 +196,10 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
         <tr>
           <th>#</th>
           <th className="left">{options?.type === 'received' ? 'From' : 'To'}</th>
-          <th className="right">Amount</th>
           <th className="right">DT</th>
-          <th className="right" style={{ width: 100 }}>Cancel After</th>
-          <th className="right" style={{ width: 100 }}>Finish After</th>
+          <th className="right">Expire</th>
+          <th className="right">Finish After</th>
+          <th className="right">Amount</th>
           {!ledgerTimestamp && <th>Actions</th>}
         </tr>
         {rows}
