@@ -3,7 +3,7 @@ import React from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-import { TbShield } from 'react-icons/tb'
+import { FaHandshake } from 'react-icons/fa'
 
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
@@ -17,7 +17,7 @@ import { useWidth } from '../utils'
 import { LinkAccount } from '../utils/links'
 
 // Server side initial data fetch
-export async function getServerSideProps (context) {
+export async function getServerSideProps(context) {
   const { locale, req } = context
   let initialData = null
   let initialErrorMessage = null
@@ -43,12 +43,12 @@ export async function getServerSideProps (context) {
   }
 }
 
-export default function Tokens ({
+export default function Tokens({
   initialData,
   initialErrorMessage,
   subscriptionExpired,
   sessionToken,
-  setSignRequest  
+  setSignRequest
 }) {
   const { t } = useTranslation()
   const width = useWidth()
@@ -62,6 +62,7 @@ export default function Tokens ({
   const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState('')
   const [currency, setCurrency] = useState('')
+  const [rendered, setRendered] = useState(false)
 
   const controller = new AbortController()
 
@@ -140,6 +141,7 @@ export default function Tokens ({
 
   // Cleanup on unmount
   useEffect(() => {
+    setRendered(true)
     return () => {
       controller.abort()
     }
@@ -160,7 +162,9 @@ export default function Tokens ({
 
     return (
       <AddressWithIcon address={token?.issuer}>
-        <span className="bold">{niceCurrency(token.currency)} {userOrServiceName(issuerDetails)}</span>
+        <b>
+          {niceCurrency(token.currency)} {userOrServiceName(issuerDetails)}
+        </b>
         {token.issuer && (
           <>
             <br />
@@ -172,7 +176,6 @@ export default function Tokens ({
   }
 
   const handleSetTrustline = (token) => {
-    
     // Format supply to have at most 6 decimal places
     const formatSupply = (supply) => {
       if (!supply) return '1000000000'
@@ -180,7 +183,7 @@ export default function Tokens ({
       if (isNaN(num)) return '1000000000'
       return num.toFixed(6)
     }
-    
+
     setSignRequest({
       request: {
         TransactionType: 'TrustSet',
@@ -216,10 +219,12 @@ export default function Tokens ({
       >
         {/* Left filters */}
         <>
-          <div className="flex flex-col sm:gap-4 md:h-[400px]">
-            <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
-            <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
-          </div>
+          {rendered && (
+            <div className="flex flex-col sm:gap-4 md:h-[400px]">
+              <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
+              <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
+            </div>
+          )}
         </>
         {/* Main content */}
         <InfiniteScrolling
@@ -262,9 +267,7 @@ export default function Tokens ({
                         <td>
                           <TokenCell token={token} />
                         </td>
-                        <td className="right">
-                          {shortNiceNumber(token.statistics?.marketcap, 0)}
-                        </td>
+                        <td className="right">{shortNiceNumber(token.statistics?.marketcap, 0)}</td>
                         <td className="right" suppressHydrationWarning>
                           {shortNiceNumber(token.trustlines, 0)}
                         </td>
@@ -274,14 +277,14 @@ export default function Tokens ({
                         <td className="center">
                           <a
                             href="#"
-                              onClick={(e) => {
-                                e.preventDefault()
+                            onClick={(e) => {
+                              e.preventDefault()
                               handleSetTrustline(token)
                             }}
                             className="orange tooltip"
                           >
-                            <TbShield style={{ fontSize: 18, marginBottom: -4 }} />
-                            <span className="tooltiptext">Set trust</span>
+                            <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
+                            <span className="tooltiptext no-brake">Set trust</span>
                           </a>
                         </td>
                       </tr>
@@ -333,17 +336,15 @@ export default function Tokens ({
                             <br />
                             Holders: {shortNiceNumber(token.holders, 0)}
                             <br />
-                            <a
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault()
+                            <br />
+                            <button
+                              className="button-action narrow thin"
+                              onClick={() => {
                                 handleSetTrustline(token)
                               }}
-                              className="orange tooltip"
                             >
-                              <TbShield style={{ fontSize: 18, marginBottom: -4 }} />
-                              <span className="tooltiptext">Set trust</span>
-                            </a>
+                              <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Set Trust
+                            </button>
                           </p>
                         </td>
                       </tr>
@@ -369,4 +370,4 @@ export default function Tokens ({
       </FiltersFrame>
     </>
   )
-} 
+}
