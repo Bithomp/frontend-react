@@ -3,13 +3,14 @@ import React from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
+import { TbShield } from 'react-icons/tb'
 
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
-import { AddressWithIcon, niceCurrency, shortNiceNumber } from '../utils/format'
+import { AddressWithIcon, niceCurrency, shortNiceNumber, userOrServiceName } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { useWidth } from '../utils'
@@ -156,24 +157,10 @@ export default function Tokens ({
   // Helper component to render token with icon
   const TokenCell = ({ token }) => {
     const issuerDetails = token.issuerDetails || {}
-    const serviceOrUsername = () => {
-      if (issuerDetails.service) {
-        return (
-          <>
-            <span className="green bold">{issuerDetails.service}</span>
-          </>
-        )
-      } else if (issuerDetails.username) {
-        return (
-          <>
-            <span className="blue bold">{issuerDetails.username}</span>
-          </>
-        )
-      } 
-    }
+
     return (
       <AddressWithIcon address={token?.issuer}>
-        {niceCurrency(token.currency)} {serviceOrUsername()}
+        <span className="bold">{niceCurrency(token.currency)} {userOrServiceName(issuerDetails)}</span>
         {token.issuer && (
           <>
             <br />
@@ -201,7 +188,8 @@ export default function Tokens ({
           currency: token.currency,
           issuer: token.issuer,
           value: formatSupply(token.supply)
-        }
+        },
+        Flags: 131072
       }
     })
   }
@@ -283,12 +271,18 @@ export default function Tokens ({
                         <td className="right" suppressHydrationWarning>
                           {shortNiceNumber(token.holders, 0)}
                         </td>
-                        <td>
-                          <button className="button-action thin" onClick={() => {
-                            handleSetTrustline(token)
-                          }}>
-                            Set trustline
-                          </button>
+                        <td className="center">
+                          <a
+                            href="#"
+                              onClick={(e) => {
+                                e.preventDefault()
+                              handleSetTrustline(token)
+                            }}
+                            className="orange tooltip"
+                          >
+                            <TbShield style={{ fontSize: 18, marginBottom: -4 }} />
+                            <span className="tooltiptext">Set trust</span>
+                          </a>
                         </td>
                       </tr>
                     ))}
@@ -339,11 +333,17 @@ export default function Tokens ({
                             <br />
                             Holders: {shortNiceNumber(token.holders, 0)}
                             <br />
-                            <button className="button-action thin" onClick={() => {
-                              handleSetTrustline(token)
-                            }}>
-                              Set trustline
-                            </button>
+                            <a
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                handleSetTrustline(token)
+                              }}
+                              className="orange tooltip"
+                            >
+                              <TbShield style={{ fontSize: 18, marginBottom: -4 }} />
+                              <span className="tooltiptext">Set trust</span>
+                            </a>
                           </p>
                         </td>
                       </tr>
