@@ -70,17 +70,35 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
           <span className={offer.flags?.sell ? 'red' : 'green'}>
             {offer.flags?.sell ? 'Selling ' : 'Buying '}            
           </span>
-          <span className="bold">
-            {amountFormat(offer.TakerGets, { short: true })}
-            {offer.TakerGets?.issuer && <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>}
-          </span>
-          <span className="grey">
-            {' for '}
-          </span>
-          <span className="bold">
-            {amountFormat(offer.TakerPays, { short: true })}
-            {offer.TakerPays?.issuer && <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>}
-          </span>
+          {offer.flags?.sell ? (
+            <>
+              <span className="bold">
+                {amountFormat(offer.TakerGets, { short: true })}
+                {offer.TakerGets?.issuer && <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>}
+              </span>
+              <span className="grey">
+                {' for '}
+              </span>
+              <span className="bold">
+                {amountFormat(offer.TakerPays, { short: true })}
+                {offer.TakerPays?.issuer && <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>}
+              </span>
+          </>
+          ) : (
+            <>
+              <span className="bold">
+                {amountFormat(offer.TakerPays, { short: true })}
+                {offer.TakerPays?.issuer && <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>}
+              </span>
+              <span className="grey">
+                {' for '}
+              </span>
+              <span className="bold">
+                {amountFormat(offer.TakerGets, { short: true })}
+                {offer.TakerGets?.issuer && <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>}
+              </span>
+            </>
+          )}
         </td>        
         {
           offer.flags?.sell ? (
@@ -90,9 +108,13 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
                   <>
                     1 {nativeCurrency} = {niceNumber(multiply(offer.quality, 1000000), 0, null, 5)} {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
                   </>  
+                ) : typeof offer.TakerPays === 'string' ? (
+                  <>
+                    1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(divide(offer.quality, 1000000), 0, null, 5)} {nativeCurrency}
+                  </>
                 ) : (
                   <>
-                    1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(divide(offer.quality, 1000000), 0, null, 5)} {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
+                    1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(offer.quality, 0, null, 5)} {niceCurrency(offer.TakerPays?.currency)}
                   </>
                 )
               }
@@ -102,11 +124,15 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
               {
                 typeof offer.TakerGets === 'string' ? (
                   <>
-                    1 {nativeCurrency} = {niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)} {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
+                    1 {niceCurrency(offer.TakerPays?.currency)} = {niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)} {nativeCurrency}
+                  </>
+                ) : typeof offer.TakerPays === 'string' ? (
+                  <>
+                    1 {nativeCurrency} = {niceNumber(divide(1000000, offer.quality), 0, null, 5)} {niceCurrency(offer.TakerGets?.currency)}
                   </>
                 ) : (
                   <>
-                    1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(divide(1, offer.quality), 0, null, 5)} {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
+                    1 {niceCurrency(offer.TakerPays?.currency)} = {niceNumber(divide(1, offer.quality), 0, null, 5)} {niceCurrency(offer.TakerGets?.currency)}
                   </>
                 )
               }
