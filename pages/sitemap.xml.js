@@ -1,6 +1,8 @@
 import { network, server, xahauNetwork } from '../utils'
 
 const pages = [
+  { loc: 'the-chain-of-blocks-summit', changefreq: 'monthly', priority: '1' },
+
   { loc: 'explorer/', changefreq: 'monthly', priority: '1' },
   { loc: '', changefreq: 'always', priority: '1' },
   { loc: 'faucet', changefreq: 'monthly', priority: '1' },
@@ -87,6 +89,7 @@ if (network === 'mainnet') {
 function generateSiteMap(posts) {
   const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr']
   const noTranslatedPages = [
+    'the-chain-of-blocks-summit',
     'admin',
     'advertise',
     'eaas',
@@ -109,7 +112,7 @@ function generateSiteMap(posts) {
     'learn/blacklisted-address',
     'learn/verified-domain',
     'learn/ripple-usd',
-    'learn/the-bithomp-explorer-advantages',
+    'learn/the-bithomp-explorer-advantages'
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
