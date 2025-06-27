@@ -37,7 +37,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, ledgerTimestamp])
 
-  if (!transactions || !transactions.length) {
+  if (!transactions?.length) {
     return null
   }
 
@@ -47,7 +47,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
         <thead>
           <tr>
             <th colSpan="100">
-              Last 5 transactions [<a href={'/explorer/' + address}>View all</a>] {historicalTitle}
+              Last 5 transactions [<a href={'/explorer/' + address}>View all</a>]{historicalTitle}
             </th>
           </tr>
         </thead>
@@ -73,19 +73,19 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                 <th className="right">Hash</th>
                 <th className="right">Status</th>
               </tr>
-              {transactions.map((tx, i) => (
-                <tr key={tx.txHash || tx.tx?.hash || i}>
+              {transactions.map((txdata, i) => (
+                <tr key={txdata.tx?.hash || i}>
                   <td className="center" style={{ width: 30 }}>
                     {i + 1}
                   </td>
-                  <td className="right">{tx.tx?.date ? timeOrDate(tx.tx.date + 946684800) : '-'}</td>
-                  <td className="right">{tx.tx?.TransactionType}</td>
+                  <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date + 946684800) : '-'}</td>
+                  <td className="right">{txdata.tx?.TransactionType}</td>
                   <td className="right">
-                    <LinkTx tx={tx.txHash || tx.tx?.hash} /> <CopyButton text={tx.txHash || tx.tx?.hash} />
+                    <LinkTx tx={txdata.tx?.hash} /> <CopyButton text={txdata.tx?.hash} />
                   </td>
                   <td className="right">
-                    <span className={tx.outcome?.result === 'tesSUCCESS' ? 'green' : 'red'}>
-                      {tx.outcome?.result === 'tesSUCCESS' ? 'Success' : 'Failed'}
+                    <span className={txdata.outcome?.result === 'tesSUCCESS' ? 'green' : 'red'}>
+                      {txdata.outcome?.result === 'tesSUCCESS' ? 'Success' : 'Failed'}
                     </span>
                   </td>
                 </tr>
@@ -112,19 +112,19 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                 <th className="center">Link</th>
                 <th className="left">Status</th>
               </tr>
-              {transactions.map((tx, i) => (
-                <tr key={tx.txHash || tx.tx?.hash || i}>
+              {transactions.map((txdata, i) => (
+                <tr key={txdata.tx?.hash || i}>
                   <td className="center" style={{ width: 30 }}>
                     {i + 1}
                   </td>
-                  <td className="right">{tx.tx?.date ? timeOrDate(tx.tx.date + 946684800) : '-'}</td>
-                  <td className="right">{tx.tx?.TransactionType}</td>
+                  <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date + 946684800) : '-'}</td>
+                  <td className="right">{txdata.tx?.TransactionType}</td>
                   <td className="center">
-                    <LinkTx tx={tx.txHash || tx.tx?.hash} icon={true} />
+                    <LinkTx tx={txdata.tx?.hash} icon={true} />
                   </td>
                   <td className="left">
-                    <span className={tx.outcome?.result === 'tesSUCCESS' ? 'green' : 'red'}>
-                      {tx.outcome?.result === 'tesSUCCESS' ? 'Success' : 'Failed'}
+                    <span className={txdata.outcome?.result === 'tesSUCCESS' ? 'green' : 'red'}>
+                      {txdata.outcome?.result === 'tesSUCCESS' ? 'Success' : 'Failed'}
                     </span>
                   </td>
                 </tr>
