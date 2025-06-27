@@ -10,15 +10,20 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import AMMWithdrawForm from '../../components/Services/Amm/AMMWithdraw'
 import AMMDepositForm from '../../components/Services/Amm/AMMDeposit'
 
+const tabList = [
+  { value: 'create', label: 'AMM Create' },
+  { value: 'vote', label: 'AMM Vote' },
+  { value: 'withdraw', label: 'AMM Withdraw' },
+  { value: 'deposit', label: 'AMM Deposit' }
+]
+
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
-
-  const initialTab = query?.tab === 'vote' ? 'vote' : query?.tab === 'withdraw' ? 'withdraw' : query?.tab === 'deposit' ? 'deposit' : 'create'
 
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      initialTab,
+      initialTab: tabList.some((tab) => tab.value === query?.tab) ? query.tab : 'create',
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -45,18 +50,11 @@ export default function AMMService({ setSignRequest, initialTab }) {
     )
   }
 
-  const tabList = [
-    { value: 'create', label: 'AMM Create' },
-    { value: 'vote', label: 'AMM Vote' },
-    { value: 'withdraw', label: 'AMM Withdraw' },
-    { value: 'deposit', label: 'AMM Deposit' }
-  ]
-
   return (
     <>
       <SEO title="AMM Services" description="Create or vote on Automated Market Makers on XRPL" />
       <div className="page-services-amm content-center">
-        <h1 className="center">{tab === 'create' ? 'AMM Create' : tab === 'vote' ? 'AMM Vote' : tab === 'withdraw' ? 'AMM Withdraw' : 'AMM Deposit'}</h1>
+        <h1 className="center">{tabList.find((t) => t.value === tab)?.label || ''}</h1>
         <div className="center">
           <Tabs tabList={tabList} tab={tab} setTab={handleTabChange} name="ammTabs" />
         </div>
