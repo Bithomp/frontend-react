@@ -1,10 +1,19 @@
 import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { useWidth, explorerName, isAddressValid, typeNumberOnly, nativeCurrency, isTagValid, isIdValid, decode } from '../../utils'
+import {
+  explorerName,
+  isAddressValid,
+  typeNumberOnly,
+  nativeCurrency,
+  isTagValid,
+  isIdValid,
+  decode,
+  encode
+} from '../../utils'
 import { multiply } from '../../utils/calc'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { useState } from 'react';
+import { useState } from 'react'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
@@ -14,11 +23,11 @@ import CopyButton from '../../components/UI/CopyButton'
 import { amountFormat, fullDateAndTime, timeFromNow, shortHash } from '../../utils/format'
 import { LinkTx, LinkAccount } from '../../utils/links'
 import Link from 'next/link'
+import { errorCodeDescription } from '../../utils/transaction'
 
 export default function IssueCheck({ setSignRequest }) {
-  const { t } = useTranslation();
-  const width = useWidth()
-  const [error, setError] = useState('');
+  const { t } = useTranslation()
+  const [error, setError] = useState('')
   const [address, setAddress] = useState(null)
   const [destinationTag, setDestinationTag] = useState(null)
   const [amount, setAmount] = useState(null)
@@ -27,6 +36,21 @@ export default function IssueCheck({ setSignRequest }) {
   const [txResult, setTxResult] = useState(null)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
+  const [memo, setMemo] = useState(null)
+  const [fee, setFee] = useState(null)
+  const [feeError, setFeeError] = useState(null)
+  const [sourceTag, setSourceTag] = useState(null)
+
+  const handleFeeChange = (e) => {
+    const value = e.target.value
+    setFee(value)
+
+    if (Number(value) > 1) {
+      setFeeError('Maximum fee is 1 ' + nativeCurrency)
+    } else {
+      setFeeError('')
+    }
+  }
 
   const onExpirationChange = (days) => {
     setExpiration(days)
@@ -47,6 +71,11 @@ export default function IssueCheck({ setSignRequest }) {
 
     if (destinationTag && !isTagValid(destinationTag)) {
       setError('Please enter a valid destination tag.')
+      return
+    }
+    
+    if (sourceTag && !isTagValid(sourceTag)) {
+      setError('Please enter a valid source tag.')
       return
     }
 
@@ -79,30 +108,50 @@ export default function IssueCheck({ setSignRequest }) {
         checkCreate.InvoiceID = invoiceID
       }
 
+      if (memo) {
+        checkCreate.Memos = [
+          {
+            Memo: {
+              MemoData: encode(memo)
+            }
+          }
+        ]
+      }
+
+      if (fee) {
+        checkCreate.Fee = multiply(fee, 1000000)
+      }
+
+      if (sourceTag) {
+        checkCreate.SourceTag = parseInt(sourceTag)
+      }
+
       setSignRequest({
         request: checkCreate,
         callback: (result) => {
-          if (result.result) {
+          const status = result.meta?.TransactionResult
+          if (status === 'tesSUCCESS') {
             setTxResult({
-              status: result.result.meta?.TransactionResult,
-              date: result.result.date,
-              destination: result.result.Destination,
-              amount: amountFormat(result.result.SendMax),
-              destinationTag: result.result.DestinationTag,
-              sourceTag: result.result.SourceTag,
-              fee: amountFormat(result.result.Fee),
-              sequence: result.result.Sequence,
-              memo: result.result.Memos?.[0]?.Memo?.MemoData ? decode(result.result.Memos[0].Memo.MemoData) : undefined,
-              hash: result.result.hash,
-              invoiceID: result.result.InvoiceID,
-              expiration: result.result.Expiration,
-              ledgerIndex: result.result.ledger_index,
-              balanceChanges: result.result.balanceChanges
+              status: status,
+              date: result.date,
+              destination: result.Destination,
+              amount: amountFormat(result.SendMax),
+              destinationTag: result.DestinationTag,
+              sourceTag: result.SourceTag,
+              fee: amountFormat(result.Fee),
+              sequence: result.Sequence,
+              memo: result.Memos?.[0]?.Memo?.MemoData ? decode(result.Memos[0].Memo.MemoData) : undefined,
+              hash: result.hash,
+              invoiceID: result.InvoiceID,
+              expiration: result.Expiration,
+              ledgerIndex: result.ledger_index,
+              balanceChanges: result.balanceChanges
             })
+          } else {
+            setError(errorCodeDescription(status))
           }
         }
       })
-
     } catch (error) {
       setError(error.message)
     }
@@ -110,12 +159,11 @@ export default function IssueCheck({ setSignRequest }) {
 
   return (
     <>
-      <SEO
-        title='Issue Check' description={'Create a deferred payment check on the ' + explorerName} />
+      <SEO title="Issue Check" description={'Create a deferred payment check on the ' + explorerName} />
       <div className="content-text content-center">
         <h1 className="center">Issue Check</h1>
-        <NetworkTabs />        
-        <div>           
+        <NetworkTabs />
+        <div>
           <AddressInput
             title={t('table.destination')}
             placeholder="Destination address"
@@ -125,7 +173,7 @@ export default function IssueCheck({ setSignRequest }) {
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
           />
-          {width > 1100 && <br />}              
+          <div className="form-spacing" />
           <FormInput
             title={t('table.destination-tag')}
             placeholder={t('form.placeholder.destination-tag')}
@@ -134,7 +182,7 @@ export default function IssueCheck({ setSignRequest }) {
             onKeyPress={typeNumberOnly}
             defaultValue={destinationTag}
           />
-          {width > 1100 && <br />}
+          <div className="form-spacing" />
           <div className="form-input">
             <span className="input-title">{t('table.amount')}</span>
             <input
@@ -150,7 +198,22 @@ export default function IssueCheck({ setSignRequest }) {
               defaultValue={amount}
             />
           </div>
-          {width > 1100 && <br />}
+          <div className="form-input">
+            <div className="form-spacing" />
+            <span className="input-title">
+              {t('table.memo')} (<span className="orange">It will be public</span>)
+            </span>
+            <input
+              placeholder="Enter a memo (optional)"
+              onChange={(e) => setMemo(e.target.value)}
+              className="input-text"
+              spellCheck="false"
+              maxLength="100"
+              type="text"
+              defaultValue={memo}
+            />
+          </div>
+          <div className="form-spacing" />
           <div>
             <span className="input-title">Expiration</span>
             <ExpirationSelect onChange={onExpirationChange} />
@@ -169,6 +232,37 @@ export default function IssueCheck({ setSignRequest }) {
             <>
               <br />
               <div className="form-input">
+                <span className="input-title">Fee</span>
+                <input
+                  placeholder={'Enter fee in ' + nativeCurrency}
+                  onChange={handleFeeChange}
+                  onKeyPress={typeNumberOnly}
+                  className={`input-text ${feeError ? 'error' : ''}`}
+                  spellCheck="false"
+                  maxLength="35"
+                  min="0"
+                  type="text"
+                  inputMode="decimal"
+                  defaultValue={fee}
+                />
+                {feeError && <div className="red">{feeError}</div>}
+              </div>
+              <div className="form-spacing" />
+              <div className="form-input">
+                <span className="input-title">Source Tag</span>
+                <input
+                  placeholder="Enter source tag"
+                  onChange={(e) => setSourceTag(e.target.value)}
+                  onKeyPress={typeNumberOnly}
+                  className="input-text"
+                  spellCheck="false"
+                  maxLength="35"
+                  type="text"
+                  defaultValue={sourceTag}
+                />
+              </div>
+              <div className="form-spacing" />
+              <div className="form-input">
                 <span className="input-title">Invoice ID</span>
                 <input
                   placeholder="Enter invoice ID"
@@ -179,7 +273,7 @@ export default function IssueCheck({ setSignRequest }) {
                   type="text"
                   defaultValue={invoiceID}
                 />
-              </div>   
+              </div>
             </>
           )}
           <br />
@@ -197,7 +291,7 @@ export default function IssueCheck({ setSignRequest }) {
             </>
           )}
           <br />
-          <div className="center">  
+          <div className="center">
             <button className="button-action" onClick={handleIssueCheck}>
               Issue Check
             </button>
@@ -246,12 +340,14 @@ export default function IssueCheck({ setSignRequest }) {
                   )}
                   {txResult.invoiceID && (
                     <p>
-                      <strong>Invoice ID:</strong> {shortHash(txResult.invoiceID)} <CopyButton text={txResult.invoiceID} />
+                      <strong>Invoice ID:</strong> {shortHash(txResult.invoiceID)}{' '}
+                      <CopyButton text={txResult.invoiceID} />
                     </p>
                   )}
                   {txResult.expiration && (
                     <p>
-                      <strong>Expiration:</strong> {timeFromNow(txResult.expiration, i18n, 'ripple')} ({fullDateAndTime(txResult.expiration, 'ripple')})
+                      <strong>Expiration:</strong> {timeFromNow(txResult.expiration, i18n, 'ripple')} (
+                      {fullDateAndTime(txResult.expiration, 'ripple')})
                     </p>
                   )}
                   <p>
@@ -265,7 +361,7 @@ export default function IssueCheck({ setSignRequest }) {
         </div>
       </div>
     </>
-  );
+  )
 }
 
 export const getServerSideProps = async (context) => {
@@ -273,7 +369,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
-      isSsrMobile: getIsSsrMobile(context),
-    },
-  };
-} 
+      isSsrMobile: getIsSsrMobile(context)
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { useWidth, explorerName, isAddressValid, typeNumberOnly, nativeCurrency, isTagValid } from '../../utils'
+import { explorerName, isAddressValid, typeNumberOnly, nativeCurrency, isTagValid, encode, decode } from '../../utils'
 import { multiply } from '../../utils/calc'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { useState } from 'react'
@@ -12,6 +12,7 @@ import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import CopyButton from '../../components/UI/CopyButton'
 import { amountFormat, fullDateAndTime, timeFromNow, shortHash } from '../../utils/format'
 import { LinkTx, LinkAccount } from '../../utils/links'
+import { errorCodeDescription } from '../../utils/transaction'
 import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -20,7 +21,6 @@ const RIPPLE_EPOCH_OFFSET = 946684800 // Seconds between 1970-01-01 and 2000-01-
 
 export default function CreateEscrow({ setSignRequest }) {
   const { t } = useTranslation()
-  const width = useWidth()
   const [error, setError] = useState('')
   const [address, setAddress] = useState(null)
   const [destinationTag, setDestinationTag] = useState(null)
@@ -32,6 +32,20 @@ export default function CreateEscrow({ setSignRequest }) {
   const [txResult, setTxResult] = useState(null)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
+  const [memo, setMemo] = useState(null)
+  const [fee, setFee] = useState(null)
+  const [feeError, setFeeError] = useState(null)
+
+  const handleFeeChange = (e) => {
+    const value = e.target.value
+    setFee(value)
+
+    if (Number(value) > 1) {
+      setFeeError('Maximum fee is 1 ' + nativeCurrency)
+    } else {
+      setFeeError('')
+    }
+  }
 
   const handleCreateEscrow = async () => {
     setError('')
@@ -129,28 +143,38 @@ export default function CreateEscrow({ setSignRequest }) {
         escrowCreate.SourceTag = parseInt(sourceTag)
       }
 
+      if (memo) {
+        escrowCreate.Memos = [{ Memo: { MemoData: encode(memo) } }]
+      }
+
+      if (fee) {
+        escrowCreate.Fee = multiply(fee, 1000000)
+      }
+
       setSignRequest({
         request: escrowCreate,
         callback: (result) => {
-          if (result.result) {
+          const status = result.meta?.TransactionResult
+          if (status === 'tesSUCCESS') {
             setTxResult({
-              status: result.result.meta?.TransactionResult,
-              date: result.result.date,
-              destination: result.result.Destination,
-              amount: amountFormat(result.result.Amount),
-              destinationTag: result.result.DestinationTag,
-              sourceTag: result.result.SourceTag,
-              fee: amountFormat(result.result.Fee),
-              sequence: result.result.Sequence,
-              hash: result.result.hash,
-              finishAfter: result.result.FinishAfter,
-              cancelAfter: result.result.CancelAfter,
-              condition: result.result.Condition,
-              ledgerIndex: result.result.ledger_index,
-              balanceChanges: result.result.balanceChanges
+              status: status,
+              date: result.date,
+              destination: result.Destination,
+              amount: amountFormat(result.Amount),
+              destinationTag: result.DestinationTag,
+              sourceTag: result.SourceTag,
+              fee: amountFormat(result.Fee),
+              sequence: result.Sequence,
+              memo: result.Memos?.[0]?.Memo?.MemoData ? decode(result.Memos[0].Memo.MemoData) : undefined,
+              hash: result.hash,
+              finishAfter: result.FinishAfter,
+              cancelAfter: result.CancelAfter,
+              condition: result.Condition,
+              ledgerIndex: result.ledger_index,
+              balanceChanges: result.balanceChanges
             })
           } else {
-            setError('Transaction failed')
+            setError(errorCodeDescription(status))
           }
         }
       })
@@ -176,7 +200,7 @@ export default function CreateEscrow({ setSignRequest }) {
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
           />
-          {width > 1100 && <br />}
+          <div className="form-spacing" />
           <FormInput
             title={t('table.destination-tag')}
             placeholder={t('form.placeholder.destination-tag')}
@@ -185,7 +209,7 @@ export default function CreateEscrow({ setSignRequest }) {
             onKeyPress={typeNumberOnly}
             defaultValue={destinationTag}
           />
-          {width > 1100 && <br />}
+          <div className="form-spacing" />
           <div className="form-input">
             <span className="input-title">{t('table.amount')}</span>
             <input
@@ -201,7 +225,22 @@ export default function CreateEscrow({ setSignRequest }) {
               defaultValue={amount}
             />
           </div>
-          {width > 1100 && <br />}
+          <div className="form-input">
+            <div className="form-spacing" />
+            <span className="input-title">
+              {t('table.memo')} (<span className="orange">It will be public</span>)
+            </span>
+            <input
+              placeholder="Enter a memo (optional)"
+              onChange={(e) => setMemo(e.target.value)}
+              className="input-text"
+              spellCheck="false"
+              maxLength="100"
+              type="text"
+              defaultValue={memo}
+            />
+          </div>
+          <div className="form-spacing" />
           <div className="form-input">
             <span className="input-title">
               Finish After <span className="grey">(when funds can be released)</span>
@@ -219,7 +258,7 @@ export default function CreateEscrow({ setSignRequest }) {
               showYearDropdown
             />
           </div>
-          {width > 1100 && <br />}
+          <div className="form-spacing" />
           <div className="form-input">
             <span className="input-title">
               Cancel After <span className="grey">(when escrow expires)</span>
@@ -254,7 +293,7 @@ export default function CreateEscrow({ setSignRequest }) {
 
           {showAdvanced && (
             <>
-              {width > 1100 && <br />}
+              <br />
               <div className="form-input">
                 <span className="input-title">
                   Condition <span className="grey">(hex-encoded crypto-condition)</span>
@@ -272,7 +311,7 @@ export default function CreateEscrow({ setSignRequest }) {
                   fulfilled.
                 </div>
               </div>
-              {width > 1100 && <br />}
+              <div className="form-spacing" />
               <FormInput
                 title="Source Tag"
                 placeholder="Enter source tag (optional)"
@@ -281,6 +320,23 @@ export default function CreateEscrow({ setSignRequest }) {
                 onKeyPress={typeNumberOnly}
                 defaultValue={sourceTag}
               />
+              <div className="form-spacing" />
+              <div className="form-input">
+                <span className="input-title">Fee</span>
+                <input
+                  placeholder={'Enter fee in ' + nativeCurrency}
+                  onChange={handleFeeChange}
+                  onKeyPress={typeNumberOnly}
+                  className={`input-text ${feeError ? 'error' : ''}`}
+                  spellCheck="false"
+                  maxLength="35"
+                  min="0"
+                  type="text"
+                  inputMode="decimal"
+                  defaultValue={fee}
+                />
+                {feeError && <div className="red">{feeError}</div>}
+              </div>
             </>
           )}
           <br />
@@ -353,6 +409,11 @@ export default function CreateEscrow({ setSignRequest }) {
                     <p>
                       <strong>Condition:</strong> {shortHash(txResult.condition)}{' '}
                       <CopyButton text={txResult.condition} />
+                    </p>
+                  )}
+                  {txResult.memo && (
+                    <p>
+                      <strong>{t('table.memo')}:</strong> {txResult.memo}
                     </p>
                   )}
                   <p>

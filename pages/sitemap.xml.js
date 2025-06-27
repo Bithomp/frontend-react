@@ -1,6 +1,8 @@
 import { network, server, xahauNetwork } from '../utils'
 
 const pages = [
+  { loc: 'the-chain-of-blocks-summit', changefreq: 'monthly', priority: '1' },
+
   { loc: 'explorer/', changefreq: 'monthly', priority: '1' },
   { loc: '', changefreq: 'always', priority: '1' },
   { loc: 'faucet', changefreq: 'monthly', priority: '1' },
@@ -56,7 +58,6 @@ const pages = [
   { loc: 'verified-domains', changefreq: 'monthly', priority: '0.5' },
   { loc: 'jobs', changefreq: 'monthly', priority: '0.5' },
 
-  { loc: 'nft-minting', changefreq: 'monthly', priority: '0.5' },
   { loc: 'explorer-advantages', changefreq: 'monthly', priority: '0.5' },
 
   { loc: 'learn', changefreq: 'weekly', priority: '0.5' },
@@ -68,7 +69,8 @@ const pages = [
   { loc: 'learn/blackholed-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'learn/blacklisted-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.5' }
+  { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/nft-minting', changefreq: 'monthly', priority: '0.5' },
 ]
 
 //network specific pages
@@ -94,6 +96,7 @@ if (network === 'mainnet') {
 function generateSiteMap(posts) {
   const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr']
   const noTranslatedPages = [
+    'the-chain-of-blocks-summit',
     'admin',
     'advertise',
     'eaas',
@@ -122,7 +125,7 @@ function generateSiteMap(posts) {
     'learn/ripple-usd',
     'learn/what-is-xrp',
     'learn/what-is-ripple',
-    'learn/the-bithomp-explorer-advantages',
+    'learn/the-bithomp-explorer-advantages'
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
