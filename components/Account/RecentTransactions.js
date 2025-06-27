@@ -78,7 +78,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                   <td className="center" style={{ width: 30 }}>
                     {i + 1}
                   </td>
-                  <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date + 946684800) : '-'}</td>
+                  <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
                   <td className="right">{txdata.tx?.TransactionType}</td>
                   <td className="right">
                     <LinkTx tx={txdata.tx?.hash} /> <CopyButton text={txdata.tx?.hash} />
@@ -117,7 +117,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                   <td className="center" style={{ width: 30 }}>
                     {i + 1}
                   </td>
-                  <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date + 946684800) : '-'}</td>
+                  <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
                   <td className="right">{txdata.tx?.TransactionType}</td>
                   <td className="center">
                     <LinkTx tx={txdata.tx?.hash} icon={true} />
