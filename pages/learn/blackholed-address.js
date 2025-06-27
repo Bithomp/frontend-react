@@ -33,18 +33,19 @@ export default function BlackholedAddress() {
         <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1>What Are Blackholed Addresses on {explorerName}?</h1>
+          <div className="flex justify-center">
+            <Image
+              src="/images/pages/blackholed-picture.png"
+              alt="Blackholed Accounts"
+              width={760}
+              height={500}
+              className="max-w-full h-auto object-contain"
+              priority
+            />
+          </div>
 
-        <Image
-          src="/images/pages/blackholed-picture.png"
-          alt="Blackholed Accounts"
-          width={760}
-          height={500}
-          className="max-w-full h-auto object-contain"
-          priority
-        />
-
-        <p>
-          Blackholed addresses are {explorerName} wallet addresses from which funds can never be retrieved or spent.
+          <p>
+            Blackholed addresses are {explorerName} wallet addresses from which funds can never be retrieved or spent.
           These addresses are <strong>permanently unmanageable</strong>, making it impossible to sign transactions from
           them. As a result, any {nativeCurrency} held in these addresses is permanently removed from circulation and{' '}
           <strong>no more tokens can be issued from them</strong>. Blackholed addresses can be created intentionally for
