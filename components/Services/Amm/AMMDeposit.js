@@ -327,7 +327,7 @@ export default function AMMDepositForm({ setSignRequest }) {
               </div>
             </div>
             <br />
-            <div className="w-full sm:w-1/2">
+            <div className="w-full">
               <span className="input-title">Other Asset in Pool</span>
               <TokenSelector value={asset2} onChange={setAsset2} />
             </div>
@@ -353,7 +353,7 @@ export default function AMMDepositForm({ setSignRequest }) {
               </div>
             </div>
             <br />
-            <div className="w-full sm:w-1/2">
+            <div className="w-full">
               <span className="input-title">Other Asset in Pool</span>
               <TokenSelector value={asset2} onChange={setAsset2} />
             </div>
@@ -388,7 +388,7 @@ export default function AMMDepositForm({ setSignRequest }) {
               </div>
             </div>
             <br />
-            <div className="w-full sm:w-1/2">
+            <div className="w-full">
               <span className="input-title">Other Asset in Pool</span>
               <TokenSelector value={asset2} onChange={setAsset2} />
             </div>

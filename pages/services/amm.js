@@ -11,10 +11,10 @@ import AMMWithdrawForm from '../../components/Services/Amm/AMMWithdraw'
 import AMMDepositForm from '../../components/Services/Amm/AMMDeposit'
 
 const tabList = [
-  { value: 'create', label: 'AMM Create' },
-  { value: 'vote', label: 'AMM Vote' },
+  { value: 'deposit', label: 'AMM Deposit' },
   { value: 'withdraw', label: 'AMM Withdraw' },
-  { value: 'deposit', label: 'AMM Deposit' }
+  { value: 'vote', label: 'AMM Vote' },
+  { value: 'create', label: 'AMM Create' }
 ]
 
 export const getServerSideProps = async (context) => {

@@ -259,10 +259,10 @@ export default function Header({
               <Link href="/amm">{t('menu.amm.explorer')}</Link>
               {!devNet && (
                 <>
-                  <Link href="/services/amm?tab=create">Create AMM</Link>
-                  <Link href="/services/amm?tab=vote">AMM Vote</Link>
-                  <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
                   <Link href="/services/amm?tab=deposit">AMM Deposit</Link>
+                  <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
+                  <Link href="/services/amm?tab=vote">AMM Vote</Link>
+                  <Link href="/services/amm?tab=create">AMM Create</Link>
                 </>
               )}
             </MenuDropDown>
