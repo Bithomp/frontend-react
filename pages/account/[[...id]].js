@@ -63,6 +63,7 @@ import URITokenData from '../../components/Account/URITokenData'
 //import IOUData from '../../components/Account/IOUData'
 //import EscrowData from '../../components/Account/EscrowData'
 //import DexOrdersData from '../../components/Account/DexOrdersData'
+import RecentTransactions from '../../components/Account/RecentTransactions'
 
 export default function Account({
   initialData,
@@ -553,6 +554,7 @@ export default function Account({
                           - escrows // we show the link in the Ledgerdata - EscrowData
                           - xls-14 nfts // only when exists - show separately them - or forget =)
                           */}
+                          <RecentTransactions userData={userData} ledgerTimestamp={ledgerTimestamp} />
                           {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}
