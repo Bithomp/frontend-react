@@ -80,7 +80,7 @@ export default function ChainOfBlocksSummit() {
           {' '}
           Co-organized by Bithomp and{' '}
           <Link href="https://x.com/SnwoManYClub">
-            <strong>Snwoman</strong>
+            <strong>SnwoMan</strong>
           </Link>{' '}
           — an XRPL-native project focused on NFTs, RWAs, and onboarding communities into Web3.
           <br />
