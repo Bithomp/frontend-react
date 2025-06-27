@@ -7,12 +7,7 @@ import { InputField } from '@/components/Admin/notifications/InputField'
 import AdminTabs from '@/components/Tabs/AdminTabs'
 import { useCreateNotificationChannel } from '@/hooks/useNotifications'
 import { NOTIFICATION_CHANNEL_TYPES } from '@/lib/constants'
-import {
-  discordNotificationChannelSchema,
-  emailNotificationChannelSchema,
-  slackNotificationChannelSchema,
-  twitterNotificationChannelSchema
-} from '@/lib/schemas'
+import { NOTIFICATION_CHANNELS } from '@/lib/notificationChannels'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -20,57 +15,6 @@ export async function getServerSideProps({ locale }) {
       ...(await serverSideTranslations(locale, ['common', 'admin']))
     }
   }
-}
-
-const channelSettingsConfig = {
-  [NOTIFICATION_CHANNEL_TYPES.SLACK]: [
-    {
-      id: 'webhook',
-      label: 'Webhook URL',
-      placeholder: 'https://hooks.slack.com/services/...',
-      helpText: 'Enter the Slack Incoming Webhook URL.',
-      required: true
-    }
-  ],
-  [NOTIFICATION_CHANNEL_TYPES.DISCORD]: [
-    {
-      id: 'webhook',
-      label: 'Webhook URL',
-      placeholder: 'https://discord.com/api/webhooks/...',
-      helpText: 'Enter the Discord Webhook URL.',
-      required: true
-    },
-    {
-      id: 'username',
-      label: 'Username',
-      placeholder: 'Bithomp Bot',
-      helpText: 'Enter the username for the bot.',
-      required: true
-    }
-  ],
-  [NOTIFICATION_CHANNEL_TYPES.EMAIL]: [
-    {
-      id: 'email',
-      label: 'Email Address',
-      type: 'email',
-      placeholder: 'your-email@example.com',
-      helpText: 'The email address to send notifications to.',
-      required: true
-    }
-  ],
-  [NOTIFICATION_CHANNEL_TYPES.TWITTER]: [
-    { id: 'consumer_key', label: 'Consumer Key', required: true },
-    { id: 'consumer_secret', label: 'Consumer Secret', type: 'password', required: true },
-    { id: 'access_token_key', label: 'Access Token Key', required: true },
-    { id: 'access_token_secret', label: 'Access Token Secret', type: 'password', required: true }
-  ]
-}
-
-const schema = {
-  [NOTIFICATION_CHANNEL_TYPES.SLACK]: slackNotificationChannelSchema,
-  [NOTIFICATION_CHANNEL_TYPES.DISCORD]: discordNotificationChannelSchema,
-  [NOTIFICATION_CHANNEL_TYPES.EMAIL]: emailNotificationChannelSchema,
-  [NOTIFICATION_CHANNEL_TYPES.TWITTER]: twitterNotificationChannelSchema
 }
 
 export default function AddChannel() {
@@ -96,7 +40,7 @@ export default function AddChannel() {
   const handleSubmit = (e) => {
     e.preventDefault()
     setErrors({})
-    const parsedData = schema[channelType].safeParse(formData)
+    const parsedData = NOTIFICATION_CHANNELS[channelType].schema.safeParse(formData)
     if (!parsedData.success) {
       const fieldErrors = {}
       for (const issue of parsedData.error.issues) {
@@ -131,7 +75,7 @@ export default function AddChannel() {
     setErrors({})
   }
 
-  const settingsFields = channelSettingsConfig[channelType]
+  const { fields: settingsFields, helpText } = NOTIFICATION_CHANNELS[channelType]
 
   return (
     <main className="page-admin content-center">
@@ -185,9 +129,7 @@ export default function AddChannel() {
             />
           ))}
 
-          {channelType === NOTIFICATION_CHANNEL_TYPES.TWITTER && (
-            <p className="text-sm text-gray-500 -mt-2">Your Twitter application's credentials.</p>
-          )}
+          {helpText && <p className="text-sm text-gray-500 -mt-2">{helpText}</p>}
 
           <button className="btn btn-primary w-full" disabled={createChannel.isLoading}>
             {createChannel.isLoading ? 'Adding channel...' : 'Add Channel'}
