@@ -611,6 +611,9 @@ export default function Account({
           .button-wide {
             width: calc(50% - 27px);
           }
+          .flex-container {
+            gap: 10px 10px;
+          }
         }
       `}</style>
     </>
