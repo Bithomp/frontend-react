@@ -1,4 +1,4 @@
-import { fullDateAndTime, niceCurrency, shortNiceNumber, AddressWithIcon } from '../../utils/format'
+import { fullDateAndTime, niceCurrency, shortNiceNumber, AddressWithIcon, amountFormat } from '../../utils/format'
 import { LinkAccount } from '../../utils/links'
 import { useWidth } from '../../utils'
 import { 
@@ -7,7 +7,9 @@ import {
   FaLock, 
   FaCoins, 
   FaExchangeAlt, 
-  FaIcicles 
+  FaIcicles,
+  FaShieldAlt,
+  FaChartLine
 } from 'react-icons/fa'
 
 const tokensCountText = (rippleStateList) => {
@@ -31,7 +33,7 @@ const FlagIcons = ({ flags }) => {
     {
       key: 'noRipple',
       condition: flags.lowNoRipple || flags.highNoRipple,
-      icon: FaBan,
+      icon: FaShieldAlt,
       tooltip: 'No Ripple'
     },
     {
@@ -78,6 +80,27 @@ const FlagIcons = ({ flags }) => {
         </div>
       )}
     </>
+  )
+}
+
+// Component to display limits icon with tooltip
+const LimitsIcon = ({ trustline, userData }) => {
+  if (!trustline) return null
+
+  // Determine which limit belongs to the current user vs the other party
+  const isUserHighLimit = trustline.HighLimit?.issuer === userData?.address
+  const userLimit = isUserHighLimit ? trustline.HighLimit : trustline.LowLimit
+  const otherPartyLimit = isUserHighLimit ? trustline.LowLimit : trustline.HighLimit
+
+  const tooltipText = `Trustline Limits:
+• User can hold up to: ${amountFormat(userLimit, { short: true })}
+• User trusts ${otherPartyLimit.issuerDetails?.service || otherPartyLimit.issuerDetails?.username || 'this issuer'} up to: ${amountFormat(otherPartyLimit, { short: true })}`
+
+  return (
+    <span className="blue tooltip">
+      <FaChartLine style={{ fontSize: 18, marginBottom: -4 }} />
+      <span className="tooltiptext" style={{ whiteSpace: 'pre-line', width: '300px' }}>{tooltipText}</span>
+    </span>
   )
 }
 
@@ -176,7 +199,10 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
         </td>
         <td className="right">{shortNiceNumber(Math.abs(tl.Balance?.value))}</td>
         <td className="right">
-          <FlagIcons flags={tl.flags} />
+          <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <LimitsIcon trustline={tl} userData={userData} />
+            <FlagIcons flags={tl.flags} />
+          </div>
         </td>
       </tr>
     )
@@ -195,7 +221,7 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
           <th>#</th>
           <th className="left">Currency</th>
           <th className="right">Balance</th>
-          <th className="right">Flags</th>
+          <th className="right">Params</th>
         </tr>
           {tokenRows}
         </tbody>
@@ -215,7 +241,7 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
                 <th>#</th>
                 <th className="left">Currency</th>
                 <th className="right">Balance</th>
-                <th className="right">Flags</th>
+                <th className="right">Params</th>
               </tr>
               {tokenRows}
             </tbody>
