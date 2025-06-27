@@ -7,7 +7,7 @@ import axios from 'axios'
 import { avatarServer, nativeCurrency, nativeCurrenciesImages, useWidth } from '../../utils'
 import { niceCurrency, shortAddress } from '../../utils/format'
 
-const limit = 100
+const limit = 20
 
 export default function TokenSelector({ value, onChange }) {
   const { t } = useTranslation()
