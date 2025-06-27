@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
       <SEO title={t('menu.terms-and-conditions')} noindex={true} />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: June 17, 2025</p>
+        <p>Last updated: June 27, 2025</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h2>Interpretation and Definitions</h2>
         <h2>Interpretation</h2>
@@ -174,7 +174,7 @@ export default function TermsAndConditions() {
           <li>
             Company reserves the right to change or modify these Terms at any time and in our sole discretion. If we
             make material changes to these Terms, we will use reasonable efforts to provide notice of such changes, such
-            as by providing notice through the Service or updating the “Last Updated” date at the beginning of these
+            as by providing notice through the Service or updating the "Last Updated" date at the beginning of these
             Terms. By continuing to access or use the Service, you confirm your acceptance of the revised Terms and all
             of the terms incorporated therein by reference effective as of the date these Terms are updated. It is your
             sole responsibility to review the Terms from time to time to view such changes and to ensure that you
@@ -199,9 +199,9 @@ export default function TermsAndConditions() {
         </p>
         <p>
           NFTs may be subject to terms directly between buyers and sellers with respect to the use of the NFT content
-          and benefits associated with a given NFT (“Purchase Terms”). For example, when you click on "External URL" to
+          and benefits associated with a given NFT ("Purchase Terms"). For example, when you click on "External URL" to
           get more details about any of the NFTs visible on our Service, you may notice a third party link to the
-          creator’s website. Such website may include Purchase Terms governing the use of the NFT that you will be
+          creator's website. Such website may include Purchase Terms governing the use of the NFT that you will be
           required to comply with. Company is not a party to any such Purchase Terms, which are solely between the buyer
           and the seller. The buyer and seller are entirely responsible for communicating, promulgating, agreeing to,
           and enforcing Purchase Terms. You are solely responsible for reviewing such Purchase Terms.
@@ -260,22 +260,6 @@ export default function TermsAndConditions() {
           We are not responsible for any issues or disruptions arising from the use of Cloudflare's services. Any claims
           or disputes related to Cloudflare's services should be directed to Cloudflare in accordance with their Terms
           of Service.
-        </p>
-        <h2>Use of Sentry for Error Monitoring and Performance Tracing</h2>
-        <p>
-          We use Sentry, a third-party service, for error monitoring and performance tracing. This means that certain
-          technical information about your visit (such as browser type, device information, IP address, visited pages,
-          and user interactions) may be automatically collected and sent to Sentry for the purpose of identifying bugs,
-          improving performance, and ensuring the stability of our website.
-        </p>
-        <p>
-          The data shared with Sentry is used strictly for diagnostic and analytical purposes and is handled in
-          accordance with Sentry’s own privacy policies. We do not use Sentry to collect personal information such as
-          your name, email, or financial data.
-        </p>
-        <p>
-          By continuing to use our website, you consent to this type of technical data collection for monitoring and
-          improvement purposes.
         </p>
         <h2>Use of Direct Registration System</h2>
         <p>
@@ -433,7 +417,7 @@ export default function TermsAndConditions() {
           such channels.
         </p>
         <p>
-          2.7 "Service(s)" encompasses Bithomp’s products and services, including but not limited to the Bithomp API,
+          2.7 "Service(s)" encompasses Bithomp's products and services, including but not limited to the Bithomp API,
           it's website {server} (the "Site"), and all software, applications, mobile applications, data, reports, text,
           images, messaging channels, message services, updates, content, newsletters, price alerts, merchandise,
           databases, forums, articles, guides, reports, and other information made available by or on behalf of Bithomp
@@ -472,7 +456,7 @@ export default function TermsAndConditions() {
         <p>
           <strong>4. Scope of Use</strong>
         </p>
-        <p>4.1 Your utilization of Bithomp’s API is subject to the following limitations:</p>
+        <p>4.1 Your utilization of Bithomp's API is subject to the following limitations:</p>
         <p>
           4.1.1 The extent of use permitted by our license is contingent upon the usage plan you select, as outlined in
           each plan's corresponding description available at{' '}
@@ -493,7 +477,7 @@ export default function TermsAndConditions() {
           4.1.3 The Bithomp API (and our other Property, if licensed to you herein) should not be used to access or
           utilize information beyond the limits specified in these API Terms (and/or Executed Agreements, if applicable)
           or the API Documentation. It must not change any aspect of, disrupt, interfere with, or degrade the
-          performance of the Services, or circumvent any of Bithomp’s security measures, operational, administrative, or
+          performance of the Services, or circumvent any of Bithomp's security measures, operational, administrative, or
           technical procedures. Attempting to hack or test the vulnerability of our Services, Bithomp API, or our
           systems and/or networks is strictly prohibited.
         </p>
@@ -574,7 +558,7 @@ export default function TermsAndConditions() {
           expire as calculated from the start date of your usage plan. Furthermore, Bithomp has the authority to charge
           late payment interest at a rate of 12% per annum for each day of delayed payment. Bithomp also reserves the
           right to terminate your account/use of the Bithomp API without notice, without any liability to you, and
-          without prejudicing Bithomp’s rights to any other available remedies in law, contract, tort, or equity.
+          without prejudicing Bithomp's rights to any other available remedies in law, contract, tort, or equity.
         </p>
         <p>
           5.2 You are accountable for all bank transfer charges, currency conversion losses, and any other associated
@@ -662,7 +646,7 @@ export default function TermsAndConditions() {
           It is clarified that any inventions you create that incorporate our Bithomp API do not transfer any ownership
           or interest in our Bithomp API to you, even though you may be considered the owner of such inventions under
           applicable law (excluding the Bithomp API). Additionally, you agree to undertake any necessary acts and
-          execute documents (without compensation) as Bithomp may request from you periodically to perfect Bithomp’s
+          execute documents (without compensation) as Bithomp may request from you periodically to perfect Bithomp's
           rights to our Property.
         </p>
         <p>
@@ -706,7 +690,7 @@ export default function TermsAndConditions() {
           11.1 By agreeing to this API Terms, you assert and guarantee to Bithomp that you (including any entity you
           represent) have the capacity to enter into and be fully bound by this API Terms. Additionally, you affirm your
           ability to use the Bithomp API in compliance with this API Terms without violating any applicable laws or
-          regulations, infringing upon any third party’s rights (including intellectual property rights), or breaching
+          regulations, infringing upon any third party's rights (including intellectual property rights), or breaching
           any other contracts to which you are bound.
         </p>
         <p>
