@@ -179,7 +179,7 @@ export default function Account({
       isFirstRender.current = false
       return
     }
-
+    setObjects({}) 
     checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, refreshPage, ledgerTimestamp])
@@ -521,13 +521,11 @@ export default function Account({
                             gateway={gateway}
                           />
                           <PublicData data={data} />
-                          {data?.ledgerInfo?.activated && !gateway && (
-                            <IOUData
-                              rippleStateList={objects?.rippleStateList}
+                          <IOUData
+                            rippleStateList={objects?.rippleStateList}
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                              userData={userData}
-                            />
-                          )}
+                            userData={userData}
+                          />
 
                           {xahauNetwork ? (
                             <URITokenData data={data} uriTokenList={objects?.uriTokenList} />
