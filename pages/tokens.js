@@ -16,6 +16,45 @@ import { getIsSsrMobile } from '../utils/mobile'
 import { useWidth } from '../utils'
 import { LinkAccount } from '../utils/links'
 
+/*
+  {
+    "token": "rL2sSC2eMm6xYyx1nqZ9MW4AP185mg7N9t:4150585800000000000000000000000000000000",
+    "issuer": "rL2sSC2eMm6xYyx1nqZ9MW4AP185mg7N9t",
+    "issuerDetails": {
+      "address": "rL2sSC2eMm6xYyx1nqZ9MW4AP185mg7N9t",
+      "username": null,
+      "service": null
+    },
+    "currency": "4150585800000000000000000000000000000000",
+    "supply": "98431923.34053394847447",
+    "trustlines": 9806,
+    "holders": 9183,
+    "rating": 0,
+    "statistics": {
+      "activeHolders": 675,
+      "sellVolume": "105342.5712484148477598",
+      "buyVolume": "162077.562673509980921282459",
+      "uniqueSellers": 75,
+      "uniqueBuyers": 116,
+      "dexes": 4519,
+      "dexTxs": 4299,
+      "mintVolume": "0.000000001555550273270893",
+      "burnVolume": "54.317077167655393322039993",
+      "transferVolume": "319729.5692719547508735106899",
+      "ripplingVolume": null,
+      "mintTxs": 14,
+      "burnTxs": 4833,
+      "transferTxs": 646,
+      "ripplingTxs": 0,
+      "uniqueAccounts": 730,
+      "uniqueDexAccounts": 178,
+      "priceXrp": "0.1146566270598530742",
+      "marketcap": "45723206.888776201217059311928860827119097212012795446"
+    }
+  }
+]
+*/
+
 // Server side initial data fetch
 export async function getServerSideProps(context) {
   const { locale, req } = context
@@ -162,9 +201,7 @@ export default function Tokens({
 
     return (
       <AddressWithIcon address={token?.issuer}>
-        <b>
-          {niceCurrency(token.currency)} {userOrServiceName(issuerDetails)}
-        </b>
+        <b>{niceCurrency(token.currency)}</b> {userOrServiceName(issuerDetails)}
         {token.issuer && (
           <>
             <br />
