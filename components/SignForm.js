@@ -606,11 +606,11 @@ export default function SignForm({
           }
         } else {
           //if not validated or if no ledger info received, delay for 1.5 seconds
-          delay(1500, validateTransactionOnLedger, { txid, redirectName })
+          delay(1500, validateTransactionOnLedger, { txid, redirectName, txType, result })
         }
       } else {
         //if no info on transaction, delay 1.5 sec and try again
-        delay(1500, validateTransactionOnLedger, { txid, redirectName })
+        delay(1500, validateTransactionOnLedger, { txid, redirectName, txType, result })
       }
     } else {
       //if no tx data, delay 3 sec
@@ -691,7 +691,7 @@ export default function SignForm({
           const responseData = response.data
           if (responseData.status && responseData.data?.hash) {
             // hash of the offer accept transaction
-            validateTransactionOnLedger({ txid: responseData.data.hash, redirectName })
+            validateTransactionOnLedger({ txid: responseData.data.hash, redirectName, txType, result })
           } else {
             setStatus(t('signin.status.failed-broker', { serviceName: broker }))
             delay(3000, closeSignInFormAndRefresh)

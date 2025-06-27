@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { encode, server, addAndRemoveQueryParams } from '../../../utils'
+import { encode, server, addAndRemoveQueryParams, nativeCurrency } from '../../../utils'
 import { isValidTaxon } from '../../../utils/nft'
 import CheckBox from '../../UI/CheckBox'
 import AddressInput from '../../UI/AddressInput'
 import ExpirationSelect from '../../UI/ExpirationSelect'
+import TokenSelector from '../../UI/TokenSelector'
 import { useRouter } from 'next/router'
 
 export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
@@ -26,6 +27,7 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
   const [transferFee, setTransferFee] = useState('')
   const [destination, setDestination] = useState('')
   const [amount, setAmount] = useState('')
+  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
   const [expiration, setExpiration] = useState(0)
   const [mintForOtherAccount, setMintForOtherAccount] = useState(false)
   const [createSellOffer, setCreateSellOffer] = useState(false)
@@ -63,6 +65,13 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taxon, uri])
+
+  // Reset selected token to XRP when tfOnlyXRP flag is enabled
+  useEffect(() => {
+    if (flags.tfOnlyXRP && selectedToken.currency !== nativeCurrency) {
+      setSelectedToken({ currency: nativeCurrency })
+    }
+  }, [flags.tfOnlyXRP, selectedToken.currency])
 
   const onUriChange = (e) => {
     let uriValue = e.target.value
@@ -114,6 +123,10 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
 
   const onExpirationChange = (days) => {
     setExpiration(days)
+  }
+
+  const onTokenChange = (token) => {
+    setSelectedToken(token)
   }
 
   const onSubmit = async () => {
@@ -177,7 +190,24 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
     }
 
     if (createSellOffer && amount !== '' && !isNaN(parseFloat(amount)) && parseFloat(amount) >= 0) {
-      request.Amount = String(Math.round(parseFloat(amount) * 1000000))
+      // Validate that if tfOnlyXRP flag is set, only XRP can be used
+      if (flags.tfOnlyXRP && selectedToken.currency !== nativeCurrency) {
+        setErrorMessage('Cannot create sell offer in tokens when "Only XRP" flag is enabled')
+        return
+      }
+      
+      // Handle amount based on selected token
+      if (selectedToken.currency === nativeCurrency) {
+        // For XRP, convert to drops
+        request.Amount = String(Math.round(parseFloat(amount) * 1000000))
+      } else {
+        // For tokens, use the token 
+        request.Amount = {
+          currency: selectedToken.currency,
+          issuer: selectedToken.issuer,
+          value: amount
+        }
+      }
       if (destination && destination.trim()) {
         request.Destination = destination.trim()
       }
@@ -299,7 +329,13 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
             <div>
               <CheckBox
                 checked={createSellOffer}
-                setChecked={() => setCreateSellOffer(!createSellOffer)}
+                setChecked={() => {
+                  if (!createSellOffer) {
+                    // Reset to XRP when enabling sell offer
+                    setSelectedToken({ currency: nativeCurrency })
+                  }
+                  setCreateSellOffer(!createSellOffer)
+                }}
                 name="create-sell-offer"
               >
                 Create a Sell offer
@@ -310,16 +346,29 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
             {createSellOffer && (
               <>
                 <br />
-                <span className="input-title">Initial listing price in XRP (Amount):</span>
-                <div className="input-validation">
-                  <input
-                    placeholder="0.0"
-                    value={amount}
-                    onChange={onAmountChange}
-                    className="input-text"
-                    spellCheck="false"
-                    name="amount"
-                  />
+                <div className="flex flex-col gap-4 sm:flex-row">
+                  <div className="flex-1">
+                    <span className="input-title">Initial listing price {flags.tfOnlyXRP ? 'in XRP' : ''} (Amount):</span>
+                    <div className="input-validation">
+                      <input
+                        placeholder="0.0"
+                        value={amount}
+                        onChange={onAmountChange}
+                        className="input-text"
+                        spellCheck="false"
+                        name="amount"
+                      />
+                    </div>
+                  </div>
+                  {!flags.tfOnlyXRP && (
+                    <div className="w-full sm:w-1/2">
+                      <span className="input-title">Currency</span>
+                      <TokenSelector 
+                        value={selectedToken} 
+                        onChange={onTokenChange}
+                      />                    
+                    </div>
+                  )}
                 </div>
                 <br />
                 <AddressInput
