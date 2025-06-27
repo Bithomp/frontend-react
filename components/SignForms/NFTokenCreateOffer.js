@@ -1,16 +1,56 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import ExpirationSelect from '../UI/ExpirationSelect'
 import CheckBox from '../UI/CheckBox'
-import { isAddressValid, typeNumberOnly, useWidth } from '../../utils'
+import { isAddressValid, typeNumberOnly, useWidth, nativeCurrency } from '../../utils'
+import { multiply, divide } from '../../utils/calc'
 import AddressInput from '../UI/AddressInput'
 import { amountFormat } from '../../utils/format'
+import TokenSelector from '../UI/TokenSelector'
 
 export default function NFTokenCreateOffer({ signRequest, setSignRequest, setStatus, setFormError }) {
   const { t } = useTranslation()
   const width = useWidth()
 
   const [privateOffer, setPrivateOffer] = useState(false)
+  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
+
+  // Update amount format when token changes
+  useEffect(() => {
+    if (signRequest.request.Amount && typeof signRequest.request.Amount === 'string') {
+      // If we have a string amount (Native currency drops) but selected a token, convert it
+      if (selectedToken.currency !== nativeCurrency) {
+        const tokenAmount = divide(signRequest.request.Amount, 1000000)
+        let newRequest = signRequest
+        newRequest.request.Amount = {
+          currency: selectedToken.currency,
+          issuer: selectedToken.issuer,
+          value: tokenAmount.toString()
+        }
+        setSignRequest(newRequest)
+      }
+    } else if (signRequest.request.Amount && typeof signRequest.request.Amount === 'object') {
+      // If we have a token amount but selected a Native Currency, convert it
+      if (selectedToken.currency === nativeCurrency && !selectedToken.issuer) {
+        let newRequest = signRequest
+        newRequest.request.Amount = multiply(signRequest.request.Amount.value, 1000000)
+        setSignRequest(newRequest)
+      } else {
+        // Update token info if issuer changed
+        let newRequest = signRequest
+        newRequest.request.Amount = {
+          currency: selectedToken.currency,
+          issuer: selectedToken.issuer,
+          value: signRequest.request.Amount.value
+        }
+        setSignRequest(newRequest)
+      }
+    }
+  }, [selectedToken])
+
+  const onTokenChange = (token) => {
+    setSelectedToken(token)
+  }
 
   const xls35Sell = signRequest?.request?.TransactionType === 'URITokenCreateSellOffer'
 
@@ -32,10 +72,32 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
 
   const onAmountChange = (e) => {
     let newRequest = signRequest
-    newRequest.request.Amount = (e.target.value * 1000000).toString()
-    setSignRequest(newRequest)
-    setFormError(false)
-    setStatus('')
+    const value = e.target.value
+    // Only process if we have a valid number or empty string
+    if (value === '' || (!isNaN(parseFloat(value)) && parseFloat(value) >= 0)) {
+      if (selectedToken.currency === nativeCurrency && !selectedToken.issuer) {
+        // For Native currency, convert to drops
+        if (value === '') {
+          delete newRequest.request.Amount
+        } else {
+          newRequest.request.Amount = multiply(value, 1000000)
+        }
+      } else {
+        // For tokens, use the token format
+        if (value === '') {
+          delete newRequest.request.Amount
+        } else {
+          newRequest.request.Amount = {
+            currency: selectedToken.currency,
+            issuer: selectedToken.issuer,
+            value: value
+          }
+        }
+      }
+      setSignRequest(newRequest)
+      setFormError(false)
+      setStatus('')
+    }
   }
 
   const onExpirationChange = (daysCount) => {
@@ -103,22 +165,28 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
       ) : (
         <div className="center">
           <br />
-          <span className={xls35Sell ? 'halv xahOnly' : width > 480 ? 'quarter xrpOnly' : 'halv xrpOnly'}>
-            <span className="input-title">{t('signin.amount.set-price')}</span>
-            <input
-              placeholder={t('signin.amount.enter-amount')}
-              onChange={onAmountChange}
-              onKeyPress={typeNumberOnly}
-              className="input-text"
-              spellCheck="false"
-              maxLength="35"
-              min="0"
-              type="text"
-              inputMode="decimal"
-            />
-          </span>
-          {!xls35Sell && (
+          <div className={width > 480 ? 'flex justify-center' : ''}>
             <span className={width > 480 ? 'quarter' : 'halv'}>
+              <span className="input-title">{t('signin.amount.set-price')}</span>
+              <input
+                placeholder={t('signin.amount.enter-amount')}
+                onChange={onAmountChange}
+                onKeyPress={typeNumberOnly}
+                className="input-text"
+                spellCheck="false"
+                maxLength="35"
+                min="0"
+                type="text"
+                inputMode="decimal"
+              />
+            </span>
+            <span className={width > 480 ? 'quarter' : 'halv'}>
+              <span className="input-title">Currency</span>
+              <TokenSelector value={selectedToken} onChange={onTokenChange} />
+            </span>
+          </div>
+          {!xls35Sell && (
+            <span className="halv">
               <span className="input-title">{t('signin.expiration')}</span>
               <ExpirationSelect onChange={onExpirationChange} />
             </span>

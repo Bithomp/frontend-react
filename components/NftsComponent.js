@@ -188,7 +188,7 @@ export default function NftsComponent({
     let mintAndBurnPart = ''
     let orderPart = ''
     let includeBurnedPart = includeBurned ? '&includeDeleted=true' : ''
-    let hasImagePart = !includeWithoutMediaData ? '&hasImage=true' : ''
+    let hasMediaPart = !includeWithoutMediaData ? '&hasMedia=true' : ''
     let collectionUrlPart = collectionQuery ? '&collection=' + collectionQuery : ''
 
     if (listTab === 'onSale') {
@@ -277,7 +277,7 @@ export default function NftsComponent({
         serialPart +
         mintAndBurnPart +
         orderPart +
-        hasImagePart +
+        hasMediaPart +
         includeBurnedPart,
       {
         signal: controller.signal
