@@ -800,7 +800,10 @@ export const dateFormat = (timestamp, stringParams = {}, params = {}) => {
   return ''
 }
 
-export const timeOrDate = (timestamp) => {
+export const timeOrDate = (timestamp, type) => {
+  if (type === 'ripple') {
+    timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+  }
   //if today - return time, otherwise date
   return new Date(timestamp * 1000).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
     ? timeFormat(timestamp)
