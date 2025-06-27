@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
       <SEO title={t('menu.terms-and-conditions')} noindex={true} />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: June 17, 2025</p>
+        <p>Last updated: June 27, 2025</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h2>Interpretation and Definitions</h2>
         <h2>Interpretation</h2>
