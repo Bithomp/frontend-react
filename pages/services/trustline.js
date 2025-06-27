@@ -1,9 +1,9 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { explorerName, isAddressValid, typeNumberOnly, nativeCurrency } from '../../utils'
+import { explorerName, isAddressValid, typeNumberOnly, xahauNetwork } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
@@ -13,13 +13,26 @@ import TokenSelector from '../../components/UI/TokenSelector'
 import { LinkTx } from '../../utils/links'
 import Link from 'next/link'
 import { multiply } from '../../utils/calc'
+import axios from 'axios'
+import { errorCodeDescription } from '../../utils/transaction'
+import { niceCurrency } from '../../utils/format'
+
 
 export default function TrustSet({ setSignRequest }) {
   const { t } = useTranslation()
   const [error, setError] = useState('')
-  const [issuer, setIssuer] = useState(null)
-  const [currency, setCurrency] = useState({currency: nativeCurrency})
-  const [limit, setLimit] = useState(null)
+  const [mode, setMode] = useState('simple') // 'simple' or 'advanced'
+  
+  // Simple mode state
+  const [selectedToken, setSelectedToken] = useState({currency: ''})
+  const [tokenSupply, setTokenSupply] = useState(null)
+  
+  // Advanced mode state
+  const [issuer, setIssuer] = useState('')
+  const [currency, setCurrency] = useState({currency: ''})
+  
+  // Common state
+  const [limit, setLimit] = useState('1000000')
   const [qualityIn, setQualityIn] = useState('')
   const [qualityOut, setQualityOut] = useState('')
   const [txResult, setTxResult] = useState(null)
@@ -30,15 +43,68 @@ export default function TrustSet({ setSignRequest }) {
   const [setFreeze, setSetFreeze] = useState(false)
   const [setNoRipple, setSetNoRipple] = useState(false)
   const [setAuthorized, setSetAuthorized] = useState(false)
-  // const [setDeepFreeze, setSetDeepFreeze] = useState(false)
+  const [setDeepFreeze, setSetDeepFreeze] = useState(false)
+
+  // Fetch token supply when token is selected in simple mode
+  useEffect(() => {
+    if (mode === 'simple' && selectedToken.currency && selectedToken.issuer) {
+      fetchTokenSupply()
+    } else {
+      setTokenSupply(null)
+    }
+  }, [selectedToken, mode])
+
+  // Sync currency between modes
+  useEffect(() => {
+    if (mode === 'simple' && selectedToken.currency) {
+      setCurrency({currency: selectedToken.currency})
+    }
+  }, [selectedToken.currency, mode])
+
+  // Sync limit when switching modes
+  useEffect(() => {
+    if (mode === 'advanced' && tokenSupply) {
+      setLimit(Math.round(tokenSupply * 1000000) / 1000000)
+    } 
+  }, [mode, tokenSupply])
+
+  const fetchTokenSupply = async () => {
+    try {
+      // Try to get token supply from API if available
+      const response = await axios(`v2/trustlines/tokens?currency=${selectedToken.currency}&issuer=${selectedToken.issuer}`)
+      const token = response.data?.tokens[0]
+      
+      if (token && token.supply) {
+        setTokenSupply(token.supply)
+        setLimit(Math.round(token.supply * 1000000) / 1000000)
+      } else {
+        // Default to 1M if no supply info available
+        setTokenSupply('1000000')
+        setLimit('1000000')
+      }
+    } catch (error) {
+      console.error('Error fetching token supply:', error)
+      // Default to 1M if API call fails
+      setTokenSupply('1000000')
+      setLimit('1000000')
+    }
+  }
 
   const handleTrustSet = async () => {
     setError('')
     setTxResult(null)
 
-    if (!issuer || !isAddressValid(issuer)) {
-      setError(t('form.error.address-invalid'))
-      return
+    // Validation based on mode
+    if (mode === 'advanced') {
+      if (!issuer || !isAddressValid(issuer)) {
+        setError(t('form.error.address-invalid'))
+        return
+      }
+    } else {
+      if (!selectedToken.issuer || !selectedToken.currency) {
+        setError('Please select a token.')
+        return
+      }
     }
 
     if (!currency.currency) {
@@ -46,10 +112,14 @@ export default function TrustSet({ setSignRequest }) {
       return
     }
 
-    if (!limit || isNaN(parseFloat(limit)) || parseFloat(limit) < 0) {
-      setError('Please enter a valid limit (must be 0 or positive).')
-      return
-    }    
+    // In simple mode, limit is automatically set to token supply
+    // In advanced mode, validate the manually entered limit
+    if (mode === 'advanced') {
+      if (!limit || isNaN(parseFloat(limit)) || parseFloat(limit) < 0) {
+        setError('Please enter a valid limit (must be 0 or positive).')
+        return
+      }
+    }
 
     // Validate QualityIn
     if (qualityIn && (isNaN(parseFloat(qualityIn)) || parseFloat(qualityIn) < 0)) {
@@ -73,7 +143,7 @@ export default function TrustSet({ setSignRequest }) {
         TransactionType: 'TrustSet',
         LimitAmount: {
           currency: currency.currency,
-          issuer: issuer,
+          issuer: mode === 'simple' ? selectedToken.issuer : issuer,
           value: limit.toString()
         }
       }
@@ -92,7 +162,7 @@ export default function TrustSet({ setSignRequest }) {
       if (setFreeze) flags |= 0x00100000 // tfSetFreeze
       if (setNoRipple) flags |= 0x00020000 // tfSetNoRipple
       if (setAuthorized) flags |= 0x00010000 // tfSetfAuth
-      // if (setDeepFreeze) flags |= 0x00400000 // tfSetDeepFreeze
+      if (!xahauNetwork && setDeepFreeze) flags |= 0x00400000 // tfSetDeepFreeze (XRP only)
 
       if (flags > 0) {
         trustSet.Flags = flags
@@ -101,13 +171,14 @@ export default function TrustSet({ setSignRequest }) {
       setSignRequest({
         request: trustSet,
         callback: (result) => {
-          if (result.result) {
-            setTxResult({
-              status: result.result.meta?.TransactionResult,
-              hash: result.result.hash,
-            })
+          const status = result.meta?.TransactionResult
+          if (status !== 'tesSUCCESS') {
+            setError(errorCodeDescription(status))
           } else {
-            setError('Transaction failed')
+            setTxResult({
+              status,
+              hash: result.hash
+            })
           }
         }
       })
@@ -120,35 +191,93 @@ export default function TrustSet({ setSignRequest }) {
     <>
       <SEO title="Set Trust Line" description={'Set a trust line on the ' + explorerName} />
       <div className="content-text content-center">
-        <h1 className="center">Create a Trustline</h1>
+        <h1 className="center">Trust Set (TrustLines)</h1>
+        <p className="center">
+          Create or modify a trust line linking two accounts.
+          <br />
+          Trust lines are structures in the {explorerName} for holding tokens. Trust lines enforce the rule that you cannot cause someone else to hold a token they don't want.
+        </p>
         <NetworkTabs />
 
         <div>
-          <AddressInput
-            title="LimitAmount Issuer"
-            placeholder="LimitAmount Issuer address"
-            name="issuer"
-            hideButton={true}
-            setValue={setIssuer}
-            type="address"
-          />
-          <div className="form-spacing" />
-          <div>
-            <span className="input-title">LimitAmount Currency</span>
-            <TokenSelector
-              value={currency}
-              onChange={setCurrency}
-            />
+          {/* Mode Selection */}
+          <div className="radio-options">
+            <div className="radio-input">
+              <input
+                type="radio"
+                name="trustlineMode"
+                checked={mode === 'simple'}
+                onChange={() => setMode('simple')}
+                id="trustlineModeSimple"
+              />
+              <label htmlFor="trustlineModeSimple">Simple</label>
+            </div>
+            <div className="radio-input" style={{ marginLeft: 20 }}>
+              <input
+                type="radio"
+                name="trustlineMode"
+                checked={mode === 'advanced'}
+                onChange={() => setMode('advanced')}
+                id="trustlineModeAdvanced"
+              />
+              <label htmlFor="trustlineModeAdvanced">Advanced</label>
+            </div>
           </div>
           <br />
-          <FormInput
-            title="LimitAmount Value"
-            placeholder="LimitAmount Value"
-            setInnerValue={setLimit}
-            hideButton={true}
-            onKeyPress={typeNumberOnly}
-            defaultValue={limit}
-          />
+
+          {mode === 'simple' ? (
+            // Simple Mode
+            <div>
+              <span className="input-title">Token</span>
+              <TokenSelector
+                value={selectedToken}
+                onChange={setSelectedToken}
+                excludeNative={true}
+              />
+              {tokenSupply && selectedToken.currency && (
+                <p className="grey">
+                  Trust line limit will be automatically set to: {Math.round(tokenSupply * 1000000) / 1000000} {niceCurrency(selectedToken.currency)}
+                </p>
+              )}
+            </div>
+          ) : (
+            // Advanced Mode
+            <div>
+              <AddressInput
+                title="Token Issuer (Address that issues the token)"
+                placeholder="Issuer address"
+                name="issuer"
+                hideButton={true}
+                setValue={setIssuer}
+                type="address"
+              />
+              <div className="form-spacing" />
+              <FormInput
+                title="Currency"
+                placeholder="Currency code (e.g., USD, EUR)"
+                setInnerValue={(value) => setCurrency({currency: value})}
+                hideButton={true}
+                defaultValue={currency.currency}
+              />
+            </div>
+          )}
+
+          {mode === 'advanced' && (
+            <>
+              <div className="form-spacing" />
+              <FormInput
+                title="Limit Amount"
+                placeholder="Limit Amount"
+                setInnerValue={setLimit}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={limit}                
+              />
+              <p className="grey">
+                Set the maximum amount of this token you want to trust from the issuer.
+              </p>
+            </>
+          )}
           <CheckBox
             checked={showAdvanced}
             setChecked={() => setShowAdvanced(!showAdvanced)}
@@ -156,7 +285,7 @@ export default function TrustSet({ setSignRequest }) {
           >
             Advanced Options
           </CheckBox>
-          <br />
+          <div className="form-spacing" />
 
           {showAdvanced && (
             <>
@@ -186,22 +315,24 @@ export default function TrustSet({ setSignRequest }) {
                 }}
               >
                 Set Freeze
-              </CheckBox>             
-              {/* <CheckBox
-                checked={setDeepFreeze}
-                setChecked={() => {
-                  setSetDeepFreeze(!setDeepFreeze)
-                }}
-              >
-                Set Deep Freeze
-              </CheckBox>               */}
+              </CheckBox>
+              {!xahauNetwork && (
+                <CheckBox
+                  checked={setDeepFreeze}
+                  setChecked={() => {
+                    setSetDeepFreeze(!setDeepFreeze)
+                  }}
+                >
+                  Set Deep Freeze
+                </CheckBox>
+              )}
               <CheckBox
                 checked={setNoRipple}
                 setChecked={() => {
                   setSetNoRipple(!setNoRipple)
                 }}
               >
-                Set No Ripple
+                Rippling
               </CheckBox>
               <CheckBox
                 checked={setAuthorized}
@@ -211,7 +342,7 @@ export default function TrustSet({ setSignRequest }) {
               >
                 Set Authorized
               </CheckBox>
-              <br />
+              <div className="form-spacing" />
             </> 
           )}
 
@@ -232,7 +363,6 @@ export default function TrustSet({ setSignRequest }) {
               <br />
             </>
           )}
-
           <div className="center">
             <button className="button-action" onClick={handleTrustSet}>
               Create Trustline
