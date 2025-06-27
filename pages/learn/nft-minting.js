@@ -1,8 +1,8 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import SEO from '../components/SEO'
-import { getIsSsrMobile } from '../utils/mobile'
-import { network } from '../utils'
-import { nativeCurrency, explorerName, xahauNetwork } from '../utils'
+import SEO from '../../components/SEO'
+import { getIsSsrMobile } from '../../utils/mobile'
+import { network } from '../../utils'
+import { nativeCurrency, explorerName, xahauNetwork } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -83,7 +83,7 @@ export default function NFTMinting() {
         <h2>How to Mint an NFT on {explorerName}</h2>
 
         <p>
-          1. Go to the <Link href="services/nft-mint">{explorerName} NFT Minting Tool:</Link>
+          1. Go to the <Link href="/services/nft-mint">{explorerName} NFT Minting Tool:</Link>
         </p>
 
         <figure>
@@ -167,7 +167,7 @@ export default function NFTMinting() {
         </p>
         <p>
           <strong>
-            <Link href="services/nft-mint">Start minting your first NFT today.</Link>
+            <Link href="/services/nft-mint">Start minting your first NFT today.</Link>
           </strong>
         </p>
       </article>
