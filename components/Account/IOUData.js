@@ -3,7 +3,6 @@ import { LinkAccount } from '../../utils/links'
 import { useWidth } from '../../utils'
 import { 
   FaSnowflake, 
-  FaBan, 
   FaLock, 
   FaCoins, 
   FaExchangeAlt, 
