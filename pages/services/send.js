@@ -15,6 +15,9 @@ import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../uti
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import axios from 'axios'
+import { errorCodeDescription } from '../../utils/transaction'
+import TokenSelector from '../../components/UI/TokenSelector'
 
 export default function Send({
   account,
@@ -43,6 +46,13 @@ export default function Send({
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
+  const [isDestinationFlagged, setIsDestinationFlagged] = useState(false)
+  const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
+  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
+
+  const onTokenChange = (token) => {
+    setSelectedToken(token)
+  }
 
   useEffect(() => {
     let queryAddList = []
@@ -94,6 +104,42 @@ export default function Send({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, destinationTag, amount, memo, fee, sourceTag, invoiceId])
 
+  // Fetch destination account data when address changes
+  useEffect(() => {
+    const fetchDestinationAccountData = async () => {
+      if (!address || !isAddressValid(address)) {
+        setIsDestinationFlagged(false)
+        setAgreeToSendToFlagged(false)
+        return
+      }
+
+      try {
+        const response = await axios(`/v2/address/${address}?blacklist=true`)
+        const data = response?.data
+
+        if (data?.address) {
+          const isFlagged = data.blacklist?.blacklisted || false
+          setIsDestinationFlagged(isFlagged)
+
+          // Reset agreement if account is no longer flagged
+          if (!isFlagged) {
+            setAgreeToSendToFlagged(false)
+          }
+        } else {
+          setIsDestinationFlagged(false)
+          setAgreeToSendToFlagged(false)
+        }
+      } catch (error) {
+        setError('Error fetching destination account data')
+        setIsDestinationFlagged(false)
+        setAgreeToSendToFlagged(false)
+      }
+    }
+
+    fetchDestinationAccountData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address])
+
   const handleFeeChange = (e) => {
     const value = e.target.value
     setFee(value)
@@ -144,11 +190,25 @@ export default function Send({
       return
     }
 
+    if (isDestinationFlagged && !agreeToSendToFlagged) {
+      setError('Please acknowledge that you understand the risks of sending to a flagged account')
+      return
+    }
+
     try {
       let payment = {
         TransactionType: 'Payment',
-        Destination: address,
-        Amount: multiply(amount, 1000000)
+        Destination: address
+      }
+
+      if (selectedToken.currency === nativeCurrency) {
+        payment.Amount = multiply(amount, 1000000)
+      } else {
+        payment.Amount = {
+          currency: selectedToken.currency,
+          issuer: selectedToken.issuer,
+          value: amount
+        }
       }
 
       if (account?.address) {
@@ -184,23 +244,27 @@ export default function Send({
       setSignRequest({
         request: payment,
         callback: (result) => {
-          setTxResult({
-            status: result.meta?.TransactionResult,
-            date: result.date,
-            destination: result.Destination,
-            amount: amountFormat(result.Amount),
-            destinationTag: result.DestinationTag,
-            sourceTag: result.SourceTag,
-            fee: amountFormat(result.Fee),
-            sequence: result.Sequence,
-            memo: result.Memos?.[0]?.Memo?.MemoData ? decode(result.Memos[0].Memo.MemoData) : undefined,
-            hash: result.hash,
-            status: result.meta?.TransactionResult,
-            validated: result.validated,
-            ledgerIndex: result.ledger_index,
-            balanceChanges: result.balanceChanges,
-            invoiceId: result.InvoiceID
-          })
+          const status = result.meta?.TransactionResult
+          if (status !== 'tesSUCCESS') {
+            setError(errorCodeDescription(status))
+          } else {
+            setTxResult({
+              status,
+              date: result.date,
+              destination: result.Destination,
+              amount: amountFormat(result.Amount),
+              destinationTag: result.DestinationTag,
+              sourceTag: result.SourceTag,
+              fee: amountFormat(result.Fee),
+              sequence: result.Sequence,
+              memo: result.Memos?.[0]?.Memo?.MemoData ? decode(result.Memos[0].Memo.MemoData) : undefined,
+              hash: result.hash,
+              validated: result.validated,
+              ledgerIndex: result.ledger_index,
+              balanceChanges: result.balanceChanges,
+              invoiceId: result.InvoiceID
+            })
+          }
         }
       })
     } catch (err) {
@@ -222,9 +286,33 @@ export default function Send({
             name="destination"
             hideButton={true}
             setValue={setAddress}
+            setInnerValue={setAddress}
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
           />
+
+          {/* Show warning if destination account is flagged */}
+          {isDestinationFlagged && (
+            <div>
+              <div className="form-spacing" />
+              <div className="red center p-2 rounded-md bg-red-50 border border-red-200 mb-4 sm:mb-0">
+                <strong>⚠️ Fraud Alert</strong>
+                <br />
+                This account has been flagged as potentially involved in scams, phishing, or other malicious activities.
+                <br />
+                <strong>We strongly recommend proceeding with caution to ensure the safety of your assets.</strong>
+                <br />
+                <Link
+                  href="/blacklisted-address"
+                  target="_blank"
+                  style={{ color: '#ff6b6b', textDecoration: 'underline' }}
+                >
+                  Learn more about flagged accounts
+                </Link>
+              </div>
+            </div>
+          )}
+
           <div className="form-spacing" />
           <FormInput
             title={t('table.destination-tag')}
@@ -236,19 +324,27 @@ export default function Send({
           />
           <div className="form-input">
             <div className="form-spacing" />
-            <span className="input-title">{t('table.amount')}</span>
-            <input
-              placeholder={'Enter amount in ' + nativeCurrency}
-              onChange={(e) => setAmount(e.target.value)}
-              onKeyPress={typeNumberOnly}
-              className="input-text"
-              spellCheck="false"
-              maxLength="35"
-              min="0"
-              type="text"
-              inputMode="decimal"
-              defaultValue={amount}
-            />
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <div className="flex-1">
+                <span className="input-title">{t('table.amount')}</span>
+                <input
+                  placeholder="Enter amount"
+                  onChange={(e) => setAmount(e.target.value)}
+                  onKeyPress={typeNumberOnly}
+                  className="input-text"
+                  spellCheck="false"
+                  maxLength="35"
+                  min="0"
+                  type="text"
+                  inputMode="decimal"
+                  defaultValue={amount}
+                />
+              </div>
+              <div className="w-full sm:w-1/2">
+                <span className="input-title">Currency</span>
+                <TokenSelector value={selectedToken} onChange={onTokenChange} />
+              </div>
+            </div>
           </div>
           <div className="form-input">
             <div className="form-spacing" />
@@ -333,6 +429,16 @@ export default function Send({
             </Link>
             .
           </CheckBox>
+
+          {/* Show additional checkbox for flagged accounts */}
+          {isDestinationFlagged && (
+            <div className="orange">
+              <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
+                I understand the risks and I want to proceed with sending funds to this flagged account
+              </CheckBox>
+            </div>
+          )}
+
           <br />
           {error && (
             <>

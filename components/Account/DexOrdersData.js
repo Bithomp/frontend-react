@@ -1,4 +1,5 @@
-import { fullDateAndTime, addressUsernameOrServiceLink, niceNumber, amountFormat } from '../../utils/format'
+import { fullDateAndTime, addressUsernameOrServiceLink, niceNumber, amountFormat, niceCurrency } from '../../utils/format'
+import { nativeCurrency } from '../../utils'
 import { divide, multiply } from '../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
 
@@ -64,27 +65,34 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
   const orderRows = sortedOfferList.map((offer, i) => {
     return (
       <tr key={i}>
-        <td className="center" style={{ width: 30 }}>{i + 1}</td>
-        <td className={offer.flags?.sell ? 'red left' : 'green left'}>{offer.flags?.sell ? 'Sell' : 'Buy'}</td>
-        <td className="right bold">
-          {amountFormat(offer.TakerGets, { precise: true })}
-          {offer.TakerGets?.issuer && <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>}
-        </td>
-        <td className="right bold">
-          {amountFormat(offer.TakerPays, { precise: true })}
-          {offer.TakerPays?.issuer && <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>}
-        </td>
+        <td className="center" style={{ width: 30 }}>#{offer.Sequence}</td>
+        <td className="left">
+          <span className={offer.flags?.sell ? 'red' : 'green'}>
+            {offer.flags?.sell ? 'Selling ' : 'Buying '}            
+          </span>
+          <span className="bold">
+            {amountFormat(offer.TakerGets, { short: true })}
+            {offer.TakerGets?.issuer && <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>}
+          </span>
+          <span className="grey">
+            {' for '}
+          </span>
+          <span className="bold">
+            {amountFormat(offer.TakerPays, { short: true })}
+            {offer.TakerPays?.issuer && <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>}
+          </span>
+        </td>        
         {
           offer.flags?.sell ? (
             <td className="right">
               {
                 typeof offer.TakerGets === 'string' ? (
                   <>
-                    {niceNumber(multiply(offer.quality, 1000000), 0, null, 5)}
+                    1 {nativeCurrency} = {niceNumber(multiply(offer.quality, 1000000), 0, null, 5)} {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
                   </>  
                 ) : (
                   <>
-                    {niceNumber(divide(offer.quality, 1000000), 0, null, 5)}
+                    1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(divide(offer.quality, 1000000), 0, null, 5)} {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
                   </>
                 )
               }
@@ -94,18 +102,17 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
               {
                 typeof offer.TakerGets === 'string' ? (
                   <>
-                    {niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)}
+                    1 {nativeCurrency} = {niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)} {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
                   </>
                 ) : (
                   <>
-                    {niceNumber(divide(1, offer.quality), 0, null, 5)}
+                    1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(divide(1, offer.quality), 0, null, 5)} {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
                   </>
                 )
               }
             </td>
           )
-        }
-        <td className="right">#{offer.Sequence}</td>
+        }        
         <td className="center">
           { offer.Account === account?.address ? (
             <a
@@ -157,12 +164,9 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         <tbody>
           <tr>
             <th>#</th>
-            <th className="left">Type</th>
-            <th className="right">Taker Gets</th>
-            <th className="right">Taker Pays</th>
-            <th className="right">Offer Rate</th>
-            <th className="right">Sequence</th>
-            <th className="center">Actions</th>
+            <th className="left">Offer</th>
+            <th className="right">Rate</th>
+            <th className="center">Action</th>
           </tr>
           {orderRows}
         </tbody>
@@ -179,12 +183,9 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
           <tbody>
             <tr>
               <th>#</th>
-              <th className="left">Type</th>
-              <th className="right">Taker Gets</th>
-              <th className="right">Taker Pays</th>
-              <th className="right">Offer Rate</th>
-              <th className="right">Sequence</th>
-              <th className="center">Actions</th>
+              <th className="left">Offer</th>
+              <th className="right">Rate</th>
+              <th className="center">Action</th>
             </tr>
             {orderRows}
           </tbody>

@@ -66,8 +66,8 @@ export default function AccountSettings({ account, setSignRequest }) {
     const commonAsfFlags = [
       'disallowIncomingCheck',
       'disallowIncomingPayChan',
-      'disallowIncomingTrustline'
-      //'asfDepositAuth' - status was shown incorrectly on the test
+      'disallowIncomingTrustline',
+      'asfDepositAuth'
     ]
 
     const advancedFlags = ['asfDefaultRipple', 'asfDisableMaster', 'globalFreeze', 'noFreeze']
@@ -90,7 +90,8 @@ export default function AccountSettings({ account, setSignRequest }) {
 
   // Map UI ASF flag keys to their corresponding keys returned by the ledger API
   const asfLedgerFlagMapping = {
-    asfDefaultRipple: 'defaultRipple'
+    asfDefaultRipple: 'defaultRipple',
+    asfDepositAuth: 'depositAuth'
   }
 
   // Flag display names and descriptions
@@ -155,8 +156,8 @@ export default function AccountSettings({ account, setSignRequest }) {
     asfDepositAuth: {
       name: 'Deposit Authorization',
       displayName: 'Deposit Authorization',
-      status: (value) => (value ? 'Required' : 'Not Required'),
-      actionText: (value) => (value ? "Don't Require" : 'Require'),
+      status: (value) => (value ? 'Enabled' : 'Disabled'),
+      actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
       description: 'If enabled, this account can only receive funds from accounts it has pre-authorized.',
       isDefault: (value) => !value
@@ -264,7 +265,7 @@ export default function AccountSettings({ account, setSignRequest }) {
           const allAsfFlags = [...flagGroups.basic, ...flagGroups.advanced]
           allAsfFlags.forEach((flag) => {
             const ledgerKey = asfLedgerFlagMapping[flag] || flag
-            newAsfFlags[flag] = ledgerFlags[ledgerKey] === true
+            newAsfFlags[flag] = !!ledgerFlags[ledgerKey]
           })
           setFlags(newAsfFlags)
 
@@ -276,7 +277,7 @@ export default function AccountSettings({ account, setSignRequest }) {
               requireAuth: 'requireAuth',
               disallowXRP: 'disallowXRP'
             }
-            newTfFlags[flag] = ledgerFlags[asfMapping[flag]] === true
+            newTfFlags[flag] = !!ledgerFlags[asfMapping[flag]]
           })
           setTfFlags(newTfFlags)
         } else {
@@ -498,7 +499,7 @@ export default function AccountSettings({ account, setSignRequest }) {
   const renderFlagItem = (flag, flagType) => {
     const flagData = flagDetails[flag]
     // Add null checks and safe access
-    const currentValue = flagType === 'tf' ? tfFlags?.[flag] || false : flags?.[flag] || false
+    const currentValue = flagType === 'tf' ? (tfFlags?.[flag] || false) : (flags?.[flag] || false)
     const isNonDefault = flagData && !flagData.isDefault(currentValue)
     const isHighRisk = flagData?.isHighRisk || false
 
@@ -551,7 +552,7 @@ export default function AccountSettings({ account, setSignRequest }) {
           )}
           {flagData.isPermanent && currentValue && <span className="permanent-flag">Permanent</span>}
         </div>
-        <div className={`flag-description ${isHighRisk ? 'red' : ''}`}>
+        <div className={`flag-description ${isHighRisk ? 'warning' : flagData.isPermanent ? 'warning' : ''}`}>
           {displayedDescription}
           {shouldTruncate && (
             <span
@@ -573,7 +574,7 @@ export default function AccountSettings({ account, setSignRequest }) {
             </span>
           )}
         </div>
-        {buttonDisabled && disabledReason && <div className="disabled-reason red">{disabledReason}</div>}
+        {buttonDisabled && disabledReason && <div className="disabled-reason warning">{disabledReason}</div>}
       </div>
     )
   }
@@ -605,138 +606,6 @@ export default function AccountSettings({ account, setSignRequest }) {
     tfFlagKeys.forEach((flag) => {
       defaultTfFlags[flag] = false
     })
-
-    return (
-      <>
-        <div className={accountSettings}>
-          <SEO title="Account Settings" description={`Manage your account settings on the ${explorerName}.`} />
-          <div className="content-center">
-            <h1 className="center">Account Settings</h1>
-            <p className="center">
-              Please{' '}
-              <span className="link" onClick={() => setSignRequest({})}>
-                sign in to your account
-              </span>{' '}
-              to manage your account settings.
-            </p>
-
-            {/* Show form preview when not logged in */}
-            <div>
-              <h4>Account Flags</h4>
-
-              {/* TF Flags */}
-              {tfFlagKeys.map((flag) => {
-                const flagData = flagDetails[flag]
-                return (
-                  <div key={flag} className="flag-item">
-                    <div className="flag-header">
-                      <div className="flag-info">
-                        <span className="flag-name">{flagData.displayName}</span>
-                      </div>
-                      <button className="button-action thin" disabled={true} style={{ minWidth: '120px' }}>
-                        {flagData.actionText(false)}
-                      </button>
-                    </div>
-                    <div className="flag-description">{flagData.description}</div>
-                  </div>
-                )
-              })}
-
-              {/* Basic ASF Flags */}
-              {flagGroups.basic.map((flag) => {
-                const flagData = flagDetails[flag]
-                return (
-                  <div key={flag} className="flag-item">
-                    <div className="flag-header">
-                      <div className="flag-info">
-                        <span className="flag-name">{flagData.displayName}</span>
-                      </div>
-                      <button className="button-action thin" disabled={true} style={{ minWidth: '120px' }}>
-                        {flagData.actionText(false)}
-                      </button>
-                    </div>
-                    <div className="flag-description">{flagData.description}</div>
-                  </div>
-                )
-              })}
-
-              {/* NFTokenMinter Section */}
-              {!xahauNetwork && (
-                <div className="flag-item">
-                  <div className="flag-header">
-                    <div className="flag-info">
-                      <span className="flag-name">Authorized NFToken Minter</span>
-                    </div>
-                  </div>
-                  <div className="flag-description">
-                    Allows another account to mint NFTokens on behalf of this account. Requires setting the
-                    asfAuthorizedNFTokenMinter flag and specifying the minter address.
-                  </div>
-                  <div className="nft-minter-input">
-                    <div className="set-minter">
-                      <AddressInput
-                        title="NFTokenMinter Address"
-                        placeholder="Enter NFTokenMinter address"
-                        disabled={true}
-                        hideButton={true}
-                        setInnerValue={() => {}}
-                        type="address"
-                      />
-                      <br />
-                      <div className="center">
-                        <button className="button-action thin" disabled={true} style={{ minWidth: '120px' }}>
-                          Set NFTokenMinter
-                        </button>
-                      </div>
-                      <small>Enter the address that will be authorized to mint NFTokens for this account</small>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Advanced Options */}
-              <div className="advanced-options">
-                <CheckBox
-                  checked={showAdvanced}
-                  setChecked={() => setShowAdvanced(!showAdvanced)}
-                  name="advanced-flags"
-                >
-                  Advanced Options (Use with caution)
-                </CheckBox>
-
-                {showAdvanced && (
-                  <div className="advanced-flags">
-                    {flagGroups.advanced.map((flag) => {
-                      const flagData = flagDetails[flag]
-                      return (
-                        <div key={flag} className="flag-item">
-                          <div className="flag-header">
-                            <div className="flag-info">
-                              <span className="flag-name">{flagData.displayName}</span>
-                            </div>
-                            <button className="button-action thin" disabled={true} style={{ minWidth: '120px' }}>
-                              {flagData.actionText(false)}
-                            </button>
-                          </div>
-                          <div className="flag-description">{flagData.description}</div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <br />
-            <div className="center">
-              <span className="link" onClick={() => setSignRequest({})}>
-                Sign in to your account
-              </span>
-            </div>
-          </div>
-        </div>
-      </>
-    )
   }
 
   return (
@@ -745,7 +614,23 @@ export default function AccountSettings({ account, setSignRequest }) {
         <SEO title="Account Settings" description={`Manage your account settings on the ${explorerName}.`} />
         <div className="content-center">
           <h1 className="center">Account Settings</h1>
-          <p className="center">Manage your account settings on the {explorerName}.</p>
+          <p className="center">
+            {account?.address ? (
+              `Manage your account settings on the ${explorerName}.`
+            ) : (
+              <>
+                Please{' '}
+                <span className="link" onClick={() => setSignRequest({})}>
+                  sign in to your account
+                </span>{' '}
+                to manage your account settings.
+              </>
+            )}
+          </p>
+
+          {/* Feedback messages (placed high for mobile visibility) */}
+          {errorMessage && <p className="red center">{errorMessage}</p>}
+          {successMessage && <p className="green center">{successMessage}</p>}
 
           {/* Account Flags Section */}
           <div>
@@ -821,9 +706,6 @@ export default function AccountSettings({ account, setSignRequest }) {
               )}
             </div>
           </div>
-
-          {errorMessage && <p className="red center">{errorMessage}</p>}
-          {successMessage && <p className="green center">{successMessage}</p>}
 
           <br />
           <div className="center">
