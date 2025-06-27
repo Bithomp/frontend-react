@@ -6,8 +6,7 @@ import { useEffect, useState } from 'react'
 import { InputField } from '@/components/Admin/notifications/InputField'
 import AdminTabs from '@/components/Tabs/AdminTabs'
 import { useCreateNotificationChannel } from '@/hooks/useNotifications'
-import { NOTIFICATION_CHANNEL_TYPES } from '@/lib/constants'
-import { NOTIFICATION_CHANNELS } from '@/lib/notificationChannels'
+import { NOTIFICATION_CHANNEL_TYPES, NOTIFICATION_CHANNELS } from '@/lib/notificationChannels'
 
 export async function getServerSideProps({ locale }) {
   return {

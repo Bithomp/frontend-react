@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { createPartnerConnection, getPartnerConnectionListeners, getPartnerConnections } from '@/api/partner'
+import {
+  createPartnerConnection,
+  deletePartnerConnection,
+  getPartnerConnectionListeners,
+  getPartnerConnections
+} from '@/api/partner'
 
 export const useGetNotifications = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -89,4 +94,23 @@ export const useCreateNotificationChannel = () => {
     error,
     mutate
   }
+}
+
+export const useDeleteNotificationChannel = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const mutate = async (channelId) => {
+    setIsLoading(true)
+    try {
+      await deletePartnerConnection(channelId)
+      // Optionally invalidate/refetch data
+    } catch (error) {
+      setError(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return { mutate, isLoading, error }
 }
