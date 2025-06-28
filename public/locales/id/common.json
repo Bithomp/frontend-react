@@ -207,8 +207,8 @@
     "proposers": "Pengusul",
     "validation-quorum": "Kuorum Validasi",
     "base-fee": "Biaya Dasar",
-    "base-reserve": "Cadangan Dasar",
-    "increment-reserve": "Penambahan Cadangan",
+    "base-reserve": "Cadangan akun",
+    "increment-reserve": "Cadangan objek",
     "total-supply": "Total Pasokan",
     "burned-by-hooks": "Dibakar oleh Hooks",
     "total-burned": "Total Dihapus"

@@ -208,7 +208,7 @@
     "validation-quorum": "Validation quorum",
     "base-fee": "Base fee",
     "base-reserve": "Base reserve",
-    "increment-reserve": "Increment reserve",
+    "increment-reserve": "Object reserve",
     "total-supply": "Total supply",
     "burned-by-hooks": "Burned by Hooks",
     "total-burned": "Total burned"

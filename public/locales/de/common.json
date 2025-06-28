@@ -207,8 +207,8 @@
     "proposers": "Antragsteller",
     "validation-quorum": "Quorum Validatoren",
     "base-fee": "Basisgebühr",
-    "base-reserve": "Basis Reserve",
-    "increment-reserve": "Zunahme Reserve",
+    "base-reserve": "Kontoreserve",
+    "increment-reserve": "Objektreserve",
     "total-supply": "Totales Angebot",
     "burned-by-hooks": "Von Hooks verbrannt",
     "total-burned": "Total vernichtet"
