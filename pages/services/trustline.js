@@ -17,20 +17,19 @@ import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
 import { niceCurrency } from '../../utils/format'
 
-
 export default function TrustSet({ setSignRequest }) {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const [mode, setMode] = useState('simple') // 'simple' or 'advanced'
-  
+
   // Simple mode state
-  const [selectedToken, setSelectedToken] = useState({currency: ''})
+  const [selectedToken, setSelectedToken] = useState({ currency: '' })
   const [tokenSupply, setTokenSupply] = useState(null)
-  
+
   // Advanced mode state
   const [issuer, setIssuer] = useState('')
-  const [currency, setCurrency] = useState({currency: ''})
-  
+  const [currency, setCurrency] = useState({ currency: '' })
+
   // Common state
   const [limit, setLimit] = useState('1000000')
   const [qualityIn, setQualityIn] = useState('')
@@ -38,7 +37,7 @@ export default function TrustSet({ setSignRequest }) {
   const [txResult, setTxResult] = useState(null)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
-  
+
   // TrustSet flags
   const [setFreeze, setSetFreeze] = useState(false)
   const [setNoRipple, setSetNoRipple] = useState(false)
@@ -57,7 +56,7 @@ export default function TrustSet({ setSignRequest }) {
   // Sync currency between modes
   useEffect(() => {
     if (mode === 'simple' && selectedToken.currency) {
-      setCurrency({currency: selectedToken.currency})
+      setCurrency({ currency: selectedToken.currency })
     }
   }, [selectedToken.currency, mode])
 
@@ -65,15 +64,17 @@ export default function TrustSet({ setSignRequest }) {
   useEffect(() => {
     if (mode === 'advanced' && tokenSupply) {
       setLimit(Math.round(tokenSupply * 1000000) / 1000000)
-    } 
+    }
   }, [mode, tokenSupply])
 
   const fetchTokenSupply = async () => {
     try {
       // Try to get token supply from API if available
-      const response = await axios(`v2/trustlines/tokens?currency=${selectedToken.currency}&issuer=${selectedToken.issuer}`)
+      const response = await axios(
+        `v2/trustlines/tokens?currency=${selectedToken.currency}&issuer=${selectedToken.issuer}`
+      )
       const token = response.data?.tokens[0]
-      
+
       if (token && token.supply) {
         setTokenSupply(token.supply)
         setLimit(Math.round(token.supply * 1000000) / 1000000)
@@ -195,13 +196,14 @@ export default function TrustSet({ setSignRequest }) {
         <p className="center">
           Create or modify a trust line linking two accounts.
           <br />
-          Trust lines are structures in the {explorerName} for holding tokens. Trust lines enforce the rule that you cannot cause someone else to hold a token they don't want.
+          Trust lines are structures in the {explorerName} for holding tokens. Trust lines enforce the rule that you
+          cannot cause someone else to hold a token they don't want.
         </p>
         <NetworkTabs />
 
         <div>
           {/* Mode Selection */}
-          <div className="radio-options">
+          <div className="radio-options" style={{ justifyContent: 'center' }}>
             <div className="radio-input">
               <input
                 type="radio"
@@ -223,20 +225,15 @@ export default function TrustSet({ setSignRequest }) {
               <label htmlFor="trustlineModeAdvanced">Advanced</label>
             </div>
           </div>
-          <br />
-
           {mode === 'simple' ? (
             // Simple Mode
             <div>
               <span className="input-title">Token</span>
-              <TokenSelector
-                value={selectedToken}
-                onChange={setSelectedToken}
-                excludeNative={true}
-              />
+              <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={true} />
               {tokenSupply && selectedToken.currency && (
                 <p className="grey">
-                  Trust line limit will be automatically set to: {Math.round(tokenSupply * 1000000) / 1000000} {niceCurrency(selectedToken.currency)}
+                  Trust line limit will be automatically set to: {Math.round(tokenSupply * 1000000) / 1000000}{' '}
+                  {niceCurrency(selectedToken.currency)}
                 </p>
               )}
             </div>
@@ -255,13 +252,12 @@ export default function TrustSet({ setSignRequest }) {
               <FormInput
                 title="Currency"
                 placeholder="Currency code (e.g., USD, EUR)"
-                setInnerValue={(value) => setCurrency({currency: value})}
+                setInnerValue={(value) => setCurrency({ currency: value })}
                 hideButton={true}
                 defaultValue={currency.currency}
               />
             </div>
           )}
-
           {mode === 'advanced' && (
             <>
               <div className="form-spacing" />
@@ -271,22 +267,15 @@ export default function TrustSet({ setSignRequest }) {
                 setInnerValue={setLimit}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
-                defaultValue={limit}                
+                defaultValue={limit}
               />
-              <p className="grey">
-                Set the maximum amount of this token you want to trust from the issuer.
-              </p>
+              <p className="grey">Set the maximum amount of this token you want to trust from the issuer.</p>
             </>
           )}
-          <CheckBox
-            checked={showAdvanced}
-            setChecked={() => setShowAdvanced(!showAdvanced)}
-            name="advanced-trustline"
-          >
+          <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-trustline">
             Advanced Options
           </CheckBox>
           <div className="form-spacing" />
-
           {showAdvanced && (
             <>
               <h4>Quality Settings</h4>
@@ -343,20 +332,15 @@ export default function TrustSet({ setSignRequest }) {
                 Set Authorized
               </CheckBox>
               <div className="form-spacing" />
-            </> 
+            </>
           )}
-
-          <CheckBox
-            checked={agreeToSiteTerms}
-            setChecked={() => setAgreeToSiteTerms(!agreeToSiteTerms)}
-          >
+          <CheckBox checked={agreeToSiteTerms} setChecked={() => setAgreeToSiteTerms(!agreeToSiteTerms)}>
             I agree to the{' '}
             <Link href="/terms-and-conditions" target="_blank">
               Terms and conditions
             </Link>
           </CheckBox>
           <br />
-
           {error && (
             <>
               <div className="red center">{error}</div>
@@ -368,14 +352,12 @@ export default function TrustSet({ setSignRequest }) {
               Create Trustline
             </button>
           </div>
-
           {txResult?.status === 'tesSUCCESS' && (
             <>
               <h3 className="center">Transaction Successful</h3>
-              <p> 
-                <strong>Transaction Hash:</strong>{' '}
-                <LinkTx tx={txResult.hash} short={12} />
-                <CopyButton text={txResult.hash} />  
+              <p>
+                <strong>Transaction Hash:</strong> <LinkTx tx={txResult.hash} short={12} />
+                <CopyButton text={txResult.hash} />
               </p>
             </>
           )}
@@ -393,4 +375,4 @@ export const getServerSideProps = async (context) => {
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
-} 
+}
