@@ -37,7 +37,6 @@ export default function TrustSet({ setSignRequest }) {
   const [qualityIn, setQualityIn] = useState('')
   const [qualityOut, setQualityOut] = useState('')
   const [txResult, setTxResult] = useState(null)
-  const [showAdvanced, setShowAdvanced] = useState(false)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
 
   // TrustSet flags
@@ -197,7 +196,7 @@ export default function TrustSet({ setSignRequest }) {
     <>
       <SEO title="Set Trustline" description={'Set a Trustline on the ' + explorerName} />
       <div className="content-text content-center">
-        <h1 className="center">Set Trust (Trustlines)</h1>
+        <h1 className="center">Set/Update Trust (Trustlines)</h1>
         <p className="center">Create or modify a Trustline linking two accounts.</p>
         <NetworkTabs />
 
@@ -249,7 +248,7 @@ export default function TrustSet({ setSignRequest }) {
             // Advanced Mode
             <div>
               <AddressInput
-                title="Address that issues the token"
+                title="Counterparty"
                 placeholder="Issuer address"
                 name="issuer"
                 hideButton={true}
@@ -280,15 +279,79 @@ export default function TrustSet({ setSignRequest }) {
               />
             </>
           )}
-          <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-trustline">
-            Quality settings and Flags (optional)
-          </CheckBox>
-          <div className="form-spacing" />
-          {showAdvanced && (
+          {mode === 'advanced' && (
             <>
+              <div className="form-spacing" />
+              <b>No Rippling</b> blocks indirect movement of your funds. (keep it checked unless you are a token issuer)
+              <CheckBox
+                checked={setNoRipple}
+                setChecked={() => {
+                  setSetNoRipple(!setNoRipple)
+                }}
+              >
+                No Rippling
+              </CheckBox>
+              <br />
+              <br />
+              <b>Authorize</b> - Authorizes the counterparty to hold currency issued by this account.{' '}
+              <span className="orange bold">Can not be unset.</span>
+              <CheckBox
+                checked={setAuthorized}
+                setChecked={() => {
+                  setSetAuthorized(!setAuthorized)
+                }}
+              >
+                Authorize
+              </CheckBox>
+              <br />
+              <br />
+              <b>Freeze</b> - Freezes the counterparty's ability to send the frozen currencies to others, but the
+              counterparty can still send them directly to the issuer.
+              <CheckBox
+                checked={setFreeze}
+                setChecked={() => {
+                  setSetFreeze(!setFreeze)
+                }}
+              >
+                Freeze
+              </CheckBox>
+              {!xahauNetwork && (
+                <>
+                  <br />
+                  <br />
+                  <b>Deep Freeze</b> - The counterparty can neither send nor receive from others, but can still send to
+                  the issuer.
+                  <CheckBox
+                    checked={setDeepFreeze}
+                    setChecked={() => {
+                      setSetDeepFreeze(!setDeepFreeze)
+                    }}
+                  >
+                    Deep Freeze
+                  </CheckBox>
+                </>
+              )}
+              <div className="form-spacing" />
+              <br />
+              <p>
+                <strong>Quality</strong> — the exchange rate for this trustline, expressed per 1,000,000,000 units.
+              </p>
+              <ul>
+                <li>
+                  <strong>QualityIn</strong>: % of incoming funds kept by the sender.
+                </li>
+                <li>
+                  <strong>QualityOut</strong>: % of outgoing funds kept by the issuer.
+                </li>
+              </ul>
+              <p>
+                <em>Example:</em> If QualityIn or QualityOut is set to 10,000,000 (1%), then for every 100 units sent, 1
+                unit is retained and 99 reach the recipient.
+              </p>
+              <p>These are separate from token transfer fees.</p>
               <FormInput
                 title="Quality in"
-                placeholder="Exchange rate for incoming balances (0 = face value)"
+                placeholder="Exchange rate (0 = face value)"
                 setInnerValue={setQualityIn}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -297,47 +360,12 @@ export default function TrustSet({ setSignRequest }) {
               <div className="form-spacing" />
               <FormInput
                 title="Quality out"
-                placeholder="Exchange rate for outgoing balances (0 = face value)"
+                placeholder="Exchange rate (0 = face value)"
                 setInnerValue={setQualityOut}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
                 defaultValue={qualityOut}
               />
-              <div className="form-spacing" />
-              <CheckBox
-                checked={setNoRipple}
-                setChecked={() => {
-                  setSetNoRipple(!setNoRipple)
-                }}
-              >
-                Set No Rippling
-              </CheckBox>
-              <CheckBox
-                checked={setAuthorized}
-                setChecked={() => {
-                  setSetAuthorized(!setAuthorized)
-                }}
-              >
-                Set Authorized
-              </CheckBox>
-              <CheckBox
-                checked={setFreeze}
-                setChecked={() => {
-                  setSetFreeze(!setFreeze)
-                }}
-              >
-                Set Freeze
-              </CheckBox>
-              {!xahauNetwork && (
-                <CheckBox
-                  checked={setDeepFreeze}
-                  setChecked={() => {
-                    setSetDeepFreeze(!setDeepFreeze)
-                  }}
-                >
-                  Set Deep Freeze
-                </CheckBox>
-              )}
               <div className="form-spacing" />
             </>
           )}
