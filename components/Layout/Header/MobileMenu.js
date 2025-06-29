@@ -158,6 +158,9 @@ export default function MobileMenu({
           <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Send Payment
           </Link>
+          <Link href="/services/trustline" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Set Trust (Trustline)
+          </Link>
           <Link href="/services/check" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Issue Check
           </Link>
