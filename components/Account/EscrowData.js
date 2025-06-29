@@ -8,47 +8,13 @@ import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
 
 export default function EscrowData({ account, setSignRequest, address, escrowList, ledgerTimestamp }) {
-
   const [receivedEscrowList, setReceivedEscrowList] = useState([])
   const [sentEscrowList, setSentEscrowList] = useState([])
-  const [accountDetails, setAccountDetails] = useState({})
 
   useEffect(() => {
     setReceivedEscrowList(escrowList?.filter((escrow) => escrow.Destination === address))
     setSentEscrowList(escrowList?.filter((escrow) => escrow.Account === address))
   }, [escrowList, address])
-
-  // Fetch account details for all accounts involved in escrows
-  useEffect(() => {
-    const fetchAccountDetails = async () => {
-      const details = {}
-      const accountsToFetch = new Set()
-      
-      // Collect all unique account addresses from escrows
-      for (const escrow of escrowList || []) {
-        if (escrow.Account) accountsToFetch.add(escrow.Account)
-        if (escrow.Destination) accountsToFetch.add(escrow.Destination)
-      }
-      
-      // Fetch details for each account
-      for (const accountAddress of accountsToFetch) {
-        try {
-          const response = await axios(`v2/address/${accountAddress}?username=true&service=true&verifiedDomain=true`)
-          if (response?.data) {
-            details[accountAddress] = response.data
-          }
-        } catch (error) {
-          console.error(`Failed to fetch account details for ${accountAddress}:`, error)
-        }
-      }
-      
-      setAccountDetails(details)
-    }
-
-    if (escrowList?.length > 0) {
-      fetchAccountDetails()
-    }
-  }, [escrowList])
 
   // Function to handle escrow finish with lazy sequence fetching
   const handleEscrowFinish = async (escrow) => {
@@ -108,88 +74,95 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
 
     const rows = escrowList.map((escrow, i) => {
       const accountAddress = escrow[adrLabel]
-      const accountInfo = accountDetails[accountAddress] || {}
-      
+
       const formattedAccountInfo = {
         address: accountAddress,
         addressDetails: {
-          username: accountInfo.username,
-          service: accountInfo.service?.name
+          username: escrow[adrLabel + 'Details']?.username,
+          service: escrow[adrLabel + 'Details']?.service?.name
         }
       }
-      
-      return <tr key={i}>
-        <td className="center" style={{ width: 30 }}>{i + 1}</td>
-        <td>
-          <Link href={'/account/' + accountAddress}>
-            <Image
-              src={avatarServer + accountAddress}
-              alt={'service logo'}
-              height={20}
-              width={20}
-              style={{ marginRight: '5px', marginBottom: '-5px' }}
-            />
-          </Link>
-          {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
-        </td>        
-        <td className="right">{typeof escrow.DestinationTag !== 'undefined' && escrow.DestinationTag}</td>
-        <td className="right">
-          {escrow.CancelAfter ? (
-            <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>{timeOrDate(escrow.CancelAfter, 'ripple')}</span>
-          ) : (
-            <span className="grey">no expiration</span>
-          )}
-        </td>
-        <td className="right">
-          {escrow.FinishAfter ? (
-            <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'red' : ''}>{timeOrDate(escrow.FinishAfter, 'ripple')}</span>
-          ) : (
-            <span className="grey">no expiration</span>
-          )}
-        </td>
-        <td className="bold right">{amountFormat(escrow.Amount, { short: true })}</td>
-        {!ledgerTimestamp && (
-          <td className="center">
-            {escrow.FinishAfter && timestampExpired(escrow.FinishAfter, 'ripple') ? (
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault()
-                  handleEscrowFinish(escrow)
-                }}
-                className="orange tooltip"
-              >
-                <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
-                <span className="tooltiptext">Finish</span>
-              </a>
-            ) : (
-              <span className="grey tooltip">
-                <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
-                <span className="tooltiptext">Finish</span>
+
+      return (
+        <tr key={i}>
+          <td className="center" style={{ width: 30 }}>
+            {i + 1}
+          </td>
+          <td>
+            <Link href={'/account/' + accountAddress}>
+              <Image
+                src={avatarServer + accountAddress}
+                alt={'service logo'}
+                height={20}
+                width={20}
+                style={{ marginRight: '5px', marginBottom: '-5px' }}
+              />
+            </Link>
+            {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
+          </td>
+          <td className="right">{typeof escrow.DestinationTag !== 'undefined' && escrow.DestinationTag}</td>
+          <td className="right">
+            {escrow.CancelAfter ? (
+              <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>
+                {timeOrDate(escrow.CancelAfter, 'ripple')}
               </span>
-            )}
-            <span style={{ display: 'inline-block', width: options?.mobile ? 0 : 15 }}> </span>
-            {escrow.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple') ? (
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault()
-                  handleEscrowCancel(escrow)
-                }}
-                className="green tooltip"
-              >
-                <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
-                <span className="tooltiptext">Cancel</span>
-              </a>
             ) : (
-              <span className="grey tooltip">
-                <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
-                <span className="tooltiptext">Cancel</span>
-              </span>
+              <span className="grey">no expiration</span>
             )}
           </td>
-        )}
-      </tr>
+          <td className="right">
+            {escrow.FinishAfter ? (
+              <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'red' : ''}>
+                {timeOrDate(escrow.FinishAfter, 'ripple')}
+              </span>
+            ) : (
+              <span className="grey">no expiration</span>
+            )}
+          </td>
+          <td className="bold right">{amountFormat(escrow.Amount, { short: true })}</td>
+          {!ledgerTimestamp && (
+            <td className="center">
+              {escrow.FinishAfter && timestampExpired(escrow.FinishAfter, 'ripple') ? (
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleEscrowFinish(escrow)
+                  }}
+                  className="orange tooltip"
+                >
+                  <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
+                  <span className="tooltiptext">Finish</span>
+                </a>
+              ) : (
+                <span className="grey tooltip">
+                  <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
+                  <span className="tooltiptext">Finish</span>
+                </span>
+              )}
+              <span style={{ display: 'inline-block', width: options?.mobile ? 0 : 15 }}> </span>
+              {escrow.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple') ? (
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleEscrowCancel(escrow)
+                  }}
+                  className="green tooltip"
+                >
+                  <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
+                  <span className="tooltiptext">Cancel</span>
+                </a>
+              ) : (
+                <span className="grey tooltip">
+                  <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
+                  <span className="tooltiptext">Cancel</span>
+                </span>
+              )}
+            </td>
+          )}
+        </tr>
+      )
     })
     return (
       <>
@@ -227,11 +200,9 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
                     </>
                   )}
                 </th>
-              </tr>          
+              </tr>
             </thead>
-            <tbody>
-              {escrowListNode(receivedEscrowList, { type: 'received' })}
-            </tbody>
+            <tbody>{escrowListNode(receivedEscrowList, { type: 'received' })}</tbody>
           </table>
           <div className="show-on-small-w800">
             <br />
@@ -265,11 +236,9 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
                     </>
                   )}
                 </th>
-              </tr>          
+              </tr>
             </thead>
-            <tbody>
-              {escrowListNode(sentEscrowList, { type: 'sent' })}
-            </tbody>
+            <tbody>{escrowListNode(sentEscrowList, { type: 'sent' })}</tbody>
           </table>
           <div className="show-on-small-w800">
             <br />
