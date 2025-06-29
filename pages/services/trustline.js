@@ -60,6 +60,7 @@ export default function TrustSet({ setSignRequest }) {
       }
       if (selectedToken.issuer) {
         setSelectedTokenData(selectedToken)
+        setIssuer(selectedToken.issuer)
       }
     }
   }, [selectedToken, mode])
@@ -154,12 +155,12 @@ export default function TrustSet({ setSignRequest }) {
       }
       // Add QualityIn if provided
       if (qualityIn && qualityIn.trim() !== '') {
-        trustSet.QualityIn = Number(multiply(qualityIn, 1000000000))
+        trustSet.QualityIn = Number(multiply(qualityIn, 10000000))
       }
 
       // Add QualityOut if provided
       if (qualityOut && qualityOut.trim() !== '') {
-        trustSet.QualityOut = Number(multiply(qualityOut, 1000000000))
+        trustSet.QualityOut = Number(multiply(qualityOut, 10000000))
       }
 
       // Add flags
@@ -319,8 +320,9 @@ export default function TrustSet({ setSignRequest }) {
                 <>
                   <br />
                   <br />
-                  <b>Deep Freeze</b> - The counterparty can neither send nor receive from others, but can still send to
-                  the issuer.
+                  <b>Deep Freeze</b> - The counterparty cannot receive funds until or unless their Trustline is
+                  unfrozen. It requires that the issuer implement a standard freeze on the Trustline before enacting a
+                  Deep Freeze. The issuer cannot enact a Deep Freeze if they have enabled No Freeze on their account.
                   <CheckBox
                     checked={setDeepFreeze}
                     setChecked={() => {
@@ -331,10 +333,9 @@ export default function TrustSet({ setSignRequest }) {
                   </CheckBox>
                 </>
               )}
-              <div className="form-spacing" />
               <br />
               <p>
-                <strong>Quality</strong> — the exchange rate for this trustline, expressed per 1,000,000,000 units.
+                <strong>Quality</strong> — the exchange rate for this trustline.
               </p>
               <ul>
                 <li>
@@ -345,12 +346,12 @@ export default function TrustSet({ setSignRequest }) {
                 </li>
               </ul>
               <p>
-                <em>Example:</em> If QualityIn or QualityOut is set to 10,000,000 (1%), then for every 100 units sent, 1
-                unit is retained and 99 reach the recipient.
+                <em>Example:</em> If QualityIn or QualityOut is set to 1%, then for every 100 units sent, 1 unit is
+                retained and 99 reach the recipient.
               </p>
               <p>These are separate from token transfer fees.</p>
               <FormInput
-                title="Quality in"
+                title="Quality in (%)"
                 placeholder="Exchange rate (0 = face value)"
                 setInnerValue={setQualityIn}
                 hideButton={true}
@@ -359,7 +360,7 @@ export default function TrustSet({ setSignRequest }) {
               />
               <div className="form-spacing" />
               <FormInput
-                title="Quality out"
+                title="Quality out (%)"
                 placeholder="Exchange rate (0 = face value)"
                 setInnerValue={setQualityOut}
                 hideButton={true}
