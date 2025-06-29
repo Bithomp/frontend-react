@@ -40,7 +40,7 @@ export default function TrustSet({ setSignRequest }) {
 
   // TrustSet flags
   const [setFreeze, setSetFreeze] = useState(false)
-  const [setNoRipple, setSetNoRipple] = useState(false)
+  const [setNoRipple, setSetNoRipple] = useState(true) // Default to true for simple mode
   const [setAuthorized, setSetAuthorized] = useState(false)
   const [setDeepFreeze, setSetDeepFreeze] = useState(false)
 
@@ -321,7 +321,7 @@ export default function TrustSet({ setSignRequest }) {
                   setSetNoRipple(!setNoRipple)
                 }}
               >
-                Rippling
+                Set No Rippling
               </CheckBox>
               <CheckBox
                 checked={setAuthorized}
