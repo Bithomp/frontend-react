@@ -17,6 +17,7 @@ export const getServerSideProps = async (context) => {
 }
 
 import SEO from '../components/SEO'
+import FiltersFrame from '../components/Layout/FiltersFrame'
 
 import { useWidth, nativeCurrency, devNet } from '../utils'
 import { amountFormat, niceNumber, percentFormat, nativeCurrencyToFiat, AddressWithIconFilled } from '../utils/format'
@@ -33,11 +34,24 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
   const [rawData, setRawData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [escrowMode, setEscrowMode] = useState('none') // 'none', 'short', 'locked'
+  const [filtersHide, setFiltersHide] = useState(false)
 
   const controller = new AbortController()
 
+  const escrowModeList = [
+    { value: 'none', label: 'Without Escrow (balance only)' },
+    { value: 'short', label: 'With Escrow balances included (balance + escrow short)' },
+    { value: 'locked', label: 'With Escrow balances included (balance + escrow locked)' }
+  ]
+
   const checkApi = async () => {
     let apiUrl = 'v2/addresses/richlist'
+
+    // Add escrow parameter if mode is selected
+    if (escrowMode !== 'none') {
+      apiUrl += `?escrow=${escrowMode}`
+    }
 
     setLoading(true)
     setRawData({})
@@ -54,7 +68,6 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
         }
       })
     const newdata = response?.data
-
     if (newdata) {
       setRawData(newdata)
       setLoading(false) //keep here for fast tab clickers
@@ -101,7 +114,7 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
       controller.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady])
+  }, [isReady, escrowMode])
 
   return (
     <>
@@ -135,110 +148,191 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
             )}
           </div>
         </div>
-        <br />
-        {windowWidth > 1000 ? (
-          <table className="table-large shrink no-hover">
-            <thead>
-              <tr>
-                <th className="center">{t('table.index')}</th>
-                <th>{t('table.address')}</th>
-                <th className="right">{t('table.balance')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr className="center">
-                  <td colSpan="100">
-                    <br />
-                    <span className="waiting"></span>
-                    <br />
-                    {t('general.loading')}
-                    <br />
-                    <br />
-                  </td>
+      </div>
+      <FiltersFrame filtersHide={filtersHide} setFiltersHide={setFiltersHide} data={data || []}>
+        <>
+          <div>
+            <span>Escrow Mode</span>
+            <div
+              className="radio-options radio-options--large"
+              style={{ flexDirection: 'column', alignItems: 'flex-start' }}
+            >
+              {escrowModeList.map((tabItem) => (
+                <div className="radio-input" key={tabItem.value}>
+                  <input
+                    type="radio"
+                    name="escrowMode"
+                    value={tabItem.value}
+                    checked={tabItem.value === escrowMode}
+                    onChange={() => setEscrowMode(tabItem.value)}
+                    id={tabItem.value}
+                  />
+                  <label htmlFor={tabItem.value}>{tabItem.label}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+        <>
+          <br />
+          {windowWidth > 1000 ? (
+            <table className="table-large shrink no-hover">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('table.address')}</th>
+                  <th className="right">{t('table.balance')}</th>
+                  {escrowMode === 'short' && <th className="right">Escrow Short</th>}
+                  {escrowMode === 'locked' && <th className="right">Escrow Locked</th>}
                 </tr>
-              ) : (
-                <>
-                  {!errorMessage && data ? (
-                    <>
-                      {data.length > 0 &&
-                        data.map((r, i) => (
-                          <tr key={i}>
-                            <td className="center">{i + 1}</td>
-                            <td>
-                              <AddressWithIconFilled data={r} />
-                            </td>
-                            <td className="right">
-                              {amountFormat(r.balance)} {percentFormat(r.balance, rawData.summary?.totalCoins)}
-                              <br />
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr className="center">
+                    <td colSpan="100">
+                      <br />
+                      <span className="waiting"></span>
+                      <br />
+                      {t('general.loading')}
+                      <br />
+                      <br />
+                    </td>
+                  </tr>
+                ) : (
+                  <>
+                    {!errorMessage && data ? (
+                      <>
+                        {data.length > 0 &&
+                          data.map((r, i) => (
+                            <tr key={i}>
+                              <td className="center">{i + 1}</td>
+                              <td>
+                                <AddressWithIconFilled data={r} />
+                              </td>
+                              <td className="right">
+                                {amountFormat(r.balance)} {percentFormat(r.balance, rawData.summary?.totalCoins)}
+                                <br />
+                                {devNet
+                                  ? t('table.no-value')
+                                  : fiatRate > 0 &&
+                                    nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
+                              </td>
+                              {escrowMode === 'short' && r.escrowShortBalance && (
+                                <td className="right">
+                                  {amountFormat(r.escrowShortBalance)}{' '}
+                                  {percentFormat(r.escrowShortBalance, rawData.summary?.totalCoins)}
+                                  <br />
+                                  {devNet
+                                    ? t('table.no-value')
+                                    : fiatRate > 0 &&
+                                      nativeCurrencyToFiat({
+                                        amount: r.escrowShortBalance,
+                                        selectedCurrency,
+                                        fiatRate
+                                      })}
+                                </td>
+                              )}
+                              {escrowMode === 'locked' && r.escrowLockedBalance && (
+                                <td className="right">
+                                  {amountFormat(r.escrowLockedBalance)}{' '}
+                                  {percentFormat(r.escrowLockedBalance, rawData.summary?.totalCoins)}
+                                  <br />
+                                  {devNet
+                                    ? t('table.no-value')
+                                    : fiatRate > 0 &&
+                                      nativeCurrencyToFiat({
+                                        amount: r.escrowLockedBalance,
+                                        selectedCurrency,
+                                        fiatRate
+                                      })}
+                                </td>
+                              )}
+                            </tr>
+                          ))}
+                      </>
+                    ) : (
+                      <tr>
+                        <td colSpan="100" className="center orange bold">
+                          {errorMessage}
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )}
+              </tbody>
+            </table>
+          ) : (
+            <table className="table-mobile">
+              <thead></thead>
+              <tbody>
+                {loading ? (
+                  <tr className="center">
+                    <td colSpan="100">
+                      <br />
+                      <span className="waiting"></span>
+                      <br />
+                      {t('general.loading')}
+                      <br />
+                      <br />
+                    </td>
+                  </tr>
+                ) : (
+                  <>
+                    {!errorMessage ? (
+                      data.map((r, i) => (
+                        <tr key={i}>
+                          <td style={{ padding: '5px' }} className="center">
+                            <b>{i + 1}</b>
+                          </td>
+                          <td>
+                            <br />
+                            <AddressWithIconFilled data={r} />
+                            <p>
+                              {t('table.balance')}: {amountFormat(r.balance)}{' '}
+                              {percentFormat(r.balance, rawData.summary?.totalCoins)}{' '}
                               {devNet
                                 ? t('table.no-value')
                                 : fiatRate > 0 &&
                                   nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
-                            </td>
-                          </tr>
-                        ))}
-                    </>
-                  ) : (
-                    <tr>
-                      <td colSpan="100" className="center orange bold">
-                        {errorMessage}
-                      </td>
-                    </tr>
-                  )}
-                </>
-              )}
-            </tbody>
-          </table>
-        ) : (
-          <table className="table-mobile">
-            <thead></thead>
-            <tbody>
-              {loading ? (
-                <tr className="center">
-                  <td colSpan="100">
-                    <br />
-                    <span className="waiting"></span>
-                    <br />
-                    {t('general.loading')}
-                    <br />
-                    <br />
-                  </td>
-                </tr>
-              ) : (
-                <>
-                  {!errorMessage ? (
-                    data.map((r, i) => (
-                      <tr key={i}>
-                        <td style={{ padding: '5px' }} className="center">
-                          <b>{i + 1}</b>
-                        </td>
-                        <td>
-                          <br />
-                          <AddressWithIconFilled data={r} />
-                          <p>
-                            {amountFormat(r.balance)} {percentFormat(r.balance, rawData.summary?.totalCoins)}
-                            <br />
-                            {devNet
-                              ? t('table.no-value')
-                              : fiatRate > 0 && nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
-                          </p>
+                            </p>
+                            {escrowMode === 'short' && r.escrowShortBalance && (
+                              <p>
+                                Escrow Short: {amountFormat(r.escrowShortBalance)}{' '}
+                                {percentFormat(r.escrowShortBalance, rawData.summary?.totalCoins)}{' '}
+                                {devNet
+                                  ? t('table.no-value')
+                                  : fiatRate > 0 &&
+                                    nativeCurrencyToFiat({ amount: r.escrowShortBalance, selectedCurrency, fiatRate })}
+                              </p>
+                            )}
+                            {escrowMode === 'locked' && r.escrowLockedBalance && (
+                              <p>
+                                Escrow Locked: {amountFormat(r.escrowLockedBalance)}{' '}
+                                {percentFormat(r.escrowLockedBalance, rawData.summary?.totalCoins)}
+                                <br />
+                                {devNet
+                                  ? t('table.no-value')
+                                  : fiatRate > 0 &&
+                                    nativeCurrencyToFiat({ amount: r.escrowLockedBalance, selectedCurrency, fiatRate })}
+                              </p>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="100" className="center orange bold">
+                          {errorMessage}
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="100" className="center orange bold">
-                        {errorMessage}
-                      </td>
-                    </tr>
-                  )}
-                </>
-              )}
-            </tbody>
-          </table>
-        )}
-      </div>
+                    )}
+                  </>
+                )}
+              </tbody>
+            </table>
+          )}
+        </>
+      </FiltersFrame>
     </>
   )
 }
