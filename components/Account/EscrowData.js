@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
 
-export default function EscrowData({ account, setSignRequest, address, escrowList, ledgerTimestamp }) {
+export default function EscrowData({ setSignRequest, address, escrowList, ledgerTimestamp }) {
   const [receivedEscrowList, setReceivedEscrowList] = useState([])
   const [sentEscrowList, setSentEscrowList] = useState([])
 
@@ -189,16 +189,6 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
               <tr>
                 <th colSpan="100">
                   {escrowCountText(receivedEscrowList)} Received Escrows {historicalTitle}
-                  {!account?.address && !ledgerTimestamp && (
-                    <>
-                      {' '}
-                      [
-                      <a href="#" onClick={() => setSignRequest({})} className="bold">
-                        Sign in
-                      </a>{' '}
-                      to Redeem]
-                    </>
-                  )}
                 </th>
               </tr>
             </thead>
@@ -225,16 +215,6 @@ export default function EscrowData({ account, setSignRequest, address, escrowLis
               <tr>
                 <th colSpan="100">
                   {escrowCountText(sentEscrowList)} Sent Escrows {historicalTitle}
-                  {!account?.address && !ledgerTimestamp && (
-                    <>
-                      {' '}
-                      [
-                      <a href="#" onClick={() => setSignRequest({})} className="bold">
-                        Sign in
-                      </a>{' '}
-                      to Cancel]
-                    </>
-                  )}
                 </th>
               </tr>
             </thead>
