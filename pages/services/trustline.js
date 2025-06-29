@@ -15,12 +15,14 @@ import Link from 'next/link'
 import { multiply } from '../../utils/calc'
 import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
-import { niceCurrency } from '../../utils/format'
+import { amountFormat } from '../../utils/format'
 
 export default function TrustSet({ setSignRequest }) {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const [mode, setMode] = useState('simple') // 'simple' or 'advanced'
+
+  const [selectedTokenData, setSelectedTokenData] = useState({})
 
   // Simple mode state
   const [selectedToken, setSelectedToken] = useState({ currency: '' })
@@ -51,14 +53,17 @@ export default function TrustSet({ setSignRequest }) {
     } else {
       setTokenSupply(null)
     }
-  }, [selectedToken, mode])
 
-  // Sync currency between modes
-  useEffect(() => {
-    if (mode === 'simple' && selectedToken.currency) {
-      setCurrency({ currency: selectedToken.currency })
+    if (mode === 'simple') {
+      // Sync currency between modes
+      if (selectedToken.currency) {
+        setCurrency({ currency: selectedToken.currency })
+      }
+      if (selectedToken.issuer) {
+        setSelectedTokenData(selectedToken)
+      }
     }
-  }, [selectedToken.currency, mode])
+  }, [selectedToken, mode])
 
   // Sync limit when switching modes
   useEffect(() => {
@@ -79,15 +84,15 @@ export default function TrustSet({ setSignRequest }) {
         setTokenSupply(token.supply)
         setLimit(Math.round(token.supply * 1000000) / 1000000)
       } else {
-        // Default to 1M if no supply info available
-        setTokenSupply('1000000')
-        setLimit('1000000')
+        // Default to 1B if no supply info available
+        setTokenSupply('1000000000')
+        setLimit('1000000000')
       }
     } catch (error) {
       console.error('Error fetching token supply:', error)
-      // Default to 1M if API call fails
-      setTokenSupply('1000000')
-      setLimit('1000000')
+      // Default to 1B if API call fails
+      setTokenSupply('1000000000')
+      setLimit('1000000000')
     }
   }
 
@@ -190,10 +195,10 @@ export default function TrustSet({ setSignRequest }) {
 
   return (
     <>
-      <SEO title="Set Trust Line" description={'Set a trust line on the ' + explorerName} />
+      <SEO title="Set Trustline" description={'Set a Trustline on the ' + explorerName} />
       <div className="content-text content-center">
-        <h1 className="center">Trust Set (Trustlines)</h1>
-        <p className="center">Create or modify a trust line linking two accounts.</p>
+        <h1 className="center">Set Trust (Trustlines)</h1>
+        <p className="center">Create or modify a Trustline linking two accounts.</p>
         <NetworkTabs />
 
         <p className="center">
@@ -228,30 +233,34 @@ export default function TrustSet({ setSignRequest }) {
           {mode === 'simple' ? (
             // Simple Mode
             <div>
-              <span className="input-title">Token</span>
-              <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={true} />
-              {tokenSupply && selectedToken.currency && (
-                <p className="grey">
-                  Trust line limit will be automatically set to: {Math.round(tokenSupply * 1000000) / 1000000}{' '}
-                  {niceCurrency(selectedToken.currency)}
-                </p>
-              )}
+              <span className="input-title">
+                Token
+                {tokenSupply && selectedToken.currency && (
+                  <span className="grey">
+                    {' '}
+                    - the Limit will be set to the total supply:{' '}
+                    {amountFormat({ value: tokenSupply, currency: selectedToken.currency })}
+                  </span>
+                )}
+              </span>
+              <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={true} inTitle={<></>} />
             </div>
           ) : (
             // Advanced Mode
             <div>
               <AddressInput
-                title="Token Issuer (Address that issues the token)"
+                title="Address that issues the token"
                 placeholder="Issuer address"
                 name="issuer"
                 hideButton={true}
                 setValue={setIssuer}
-                type="address"
+                type="issuer"
+                rawData={selectedTokenData}
               />
               <div className="form-spacing" />
               <FormInput
-                title="Currency"
-                placeholder="Currency code (e.g., USD, EUR)"
+                title="Currency code"
+                placeholder="Currency code (e.g., USD, EUR or HEX)"
                 setInnerValue={(value) => setCurrency({ currency: value })}
                 hideButton={true}
                 defaultValue={currency.currency}
@@ -262,25 +271,23 @@ export default function TrustSet({ setSignRequest }) {
             <>
               <div className="form-spacing" />
               <FormInput
-                title="Limit Amount"
-                placeholder="Limit Amount"
+                title="Limit (The maximum amount you want to trust)"
+                placeholder="Enter the maximum amount you want to trust"
                 setInnerValue={setLimit}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
                 defaultValue={limit}
               />
-              <p className="grey">Set the maximum amount of this token you want to trust from the issuer.</p>
             </>
           )}
           <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-trustline">
-            Advanced Options
+            Quality settings and Flags (optional)
           </CheckBox>
           <div className="form-spacing" />
           {showAdvanced && (
             <>
-              <h4>Quality Settings</h4>
               <FormInput
-                title="Quality In"
+                title="Quality in"
                 placeholder="Exchange rate for incoming balances (0 = face value)"
                 setInnerValue={setQualityIn}
                 hideButton={true}
@@ -289,7 +296,7 @@ export default function TrustSet({ setSignRequest }) {
               />
               <div className="form-spacing" />
               <FormInput
-                title="Quality Out"
+                title="Quality out"
                 placeholder="Exchange rate for outgoing balances (0 = face value)"
                 setInnerValue={setQualityOut}
                 hideButton={true}
@@ -297,6 +304,22 @@ export default function TrustSet({ setSignRequest }) {
                 defaultValue={qualityOut}
               />
               <div className="form-spacing" />
+              <CheckBox
+                checked={setNoRipple}
+                setChecked={() => {
+                  setSetNoRipple(!setNoRipple)
+                }}
+              >
+                Set No Rippling
+              </CheckBox>
+              <CheckBox
+                checked={setAuthorized}
+                setChecked={() => {
+                  setSetAuthorized(!setAuthorized)
+                }}
+              >
+                Set Authorized
+              </CheckBox>
               <CheckBox
                 checked={setFreeze}
                 setChecked={() => {
@@ -315,22 +338,6 @@ export default function TrustSet({ setSignRequest }) {
                   Set Deep Freeze
                 </CheckBox>
               )}
-              <CheckBox
-                checked={setNoRipple}
-                setChecked={() => {
-                  setSetNoRipple(!setNoRipple)
-                }}
-              >
-                Set No Rippling
-              </CheckBox>
-              <CheckBox
-                checked={setAuthorized}
-                setChecked={() => {
-                  setSetAuthorized(!setAuthorized)
-                }}
-              >
-                Set Authorized
-              </CheckBox>
               <div className="form-spacing" />
             </>
           )}
