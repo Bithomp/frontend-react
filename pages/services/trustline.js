@@ -192,14 +192,14 @@ export default function TrustSet({ setSignRequest }) {
     <>
       <SEO title="Set Trust Line" description={'Set a trust line on the ' + explorerName} />
       <div className="content-text content-center">
-        <h1 className="center">Trust Set (TrustLines)</h1>
+        <h1 className="center">Trust Set (Trustlines)</h1>
+        <p className="center">Create or modify a trust line linking two accounts.</p>
+        <NetworkTabs />
+
         <p className="center">
-          Create or modify a trust line linking two accounts.
-          <br />
-          Trust lines are structures in the {explorerName} for holding tokens. Trust lines enforce the rule that you
+          Trustlines are structures in the {explorerName} for holding tokens. Trustlines enforce the rule that you
           cannot cause someone else to hold a token they don't want.
         </p>
-        <NetworkTabs />
 
         <div>
           {/* Mode Selection */}
