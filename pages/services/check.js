@@ -73,7 +73,7 @@ export default function IssueCheck({ setSignRequest }) {
       setError('Please enter a valid destination tag.')
       return
     }
-    
+
     if (sourceTag && !isTagValid(sourceTag)) {
       setError('Please enter a valid source tag.')
       return
@@ -226,7 +226,7 @@ export default function IssueCheck({ setSignRequest }) {
             }}
             name="advanced-check"
           >
-            Advanced Options
+            Advanced options
           </CheckBox>
           {showAdvanced && (
             <>

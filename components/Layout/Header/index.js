@@ -193,6 +193,7 @@ export default function Header({
           >
             <Link href="/faucet">{t('menu.developers.faucet')}</Link>
             <Link href="/services/send">Send Payment</Link>
+            <Link href="/services/trustline">Set Trust (Trustline)</Link>
             <Link href="/services/check">Issue Check</Link>
             <Link href="/services/escrow">Create Escrow</Link>
             {!xahauNetwork && !devNet && <Link href="/services/amm">AMM Services</Link>}

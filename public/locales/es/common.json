@@ -207,8 +207,8 @@
     "proposers": "Validadores",
     "validation-quorum": "Cuórum de validación",
     "base-fee": "Comisión mínima",
-    "base-reserve": "Reserva inicial",
-    "increment-reserve": "Reserva incremental",
+    "base-reserve": "Reserva de cuenta",
+    "increment-reserve": "Reserva de objeto",
     "total-supply": "Distribución total",
     "burned-by-hooks": "Quemado por Hooks",
     "total-burned": "Quemado en total"

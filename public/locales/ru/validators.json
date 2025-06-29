@@ -7,7 +7,7 @@
     "network-asn": "Сеть ASN",
     "owner-country": "Страна владельца",
     "votes-for": "Голосует за",
-    "last-seen": "Видили",
+    "last-seen": "Видели",
     "text": {
       "domain-verified-toml": "Верифицированный домен (TOML файл)",
       "unl": "в UNL (Unique Node List)",

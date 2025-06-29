@@ -85,10 +85,14 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
             ) : data?.ledgerInfo?.activated === false ? (
               <>
                 <span className="orange">Not activated</span>
-                <br />
-                <a href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')} target="_blank" rel="noreferrer">
-                  Get your first {nativeCurrency}
-                </a>
+                {getCoinsUrl && (
+                  <>
+                    <br />
+                    <a href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')} target="_blank" rel="noreferrer">
+                      Get your first {nativeCurrency}
+                    </a>
+                  </>
+                )}
               </>
             ) : (
               <>

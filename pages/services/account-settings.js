@@ -499,7 +499,7 @@ export default function AccountSettings({ account, setSignRequest }) {
   const renderFlagItem = (flag, flagType) => {
     const flagData = flagDetails[flag]
     // Add null checks and safe access
-    const currentValue = flagType === 'tf' ? (tfFlags?.[flag] || false) : (flags?.[flag] || false)
+    const currentValue = flagType === 'tf' ? tfFlags?.[flag] || false : flags?.[flag] || false
     const isNonDefault = flagData && !flagData.isDefault(currentValue)
     const isHighRisk = flagData?.isHighRisk || false
 
@@ -695,10 +695,10 @@ export default function AccountSettings({ account, setSignRequest }) {
               </div>
             )}
 
-            {/* Advanced Options */}
+            {/* Advanced options */}
             <div className="advanced-options">
               <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-flags">
-                Advanced Options (Use with caution)
+                Advanced options (Use with caution)
               </CheckBox>
 
               {showAdvanced && (
