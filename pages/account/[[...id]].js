@@ -520,7 +520,7 @@ export default function Account({
                             objects={objects}
                             gateway={gateway}
                           />
-                          <PublicData data={data} />                          
+                          <PublicData data={data} />
                           {xahauNetwork ? (
                             <URITokenData data={data} uriTokenList={objects?.uriTokenList} />
                           ) : (
@@ -532,7 +532,6 @@ export default function Account({
                           )}
 
                           <EscrowData
-                            account={account}
                             setSignRequest={setSignRequest}
                             address={data?.address}
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
