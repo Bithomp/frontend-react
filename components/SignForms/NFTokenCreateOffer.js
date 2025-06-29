@@ -46,6 +46,7 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
         setSignRequest(newRequest)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedToken])
 
   const onTokenChange = (token) => {

@@ -303,7 +303,7 @@ export default function CreateEscrow({ setSignRequest }) {
             }}
             name="advanced-escrow"
           >
-            Advanced Options
+            Advanced options
           </CheckBox>
 
           {showAdvanced && (

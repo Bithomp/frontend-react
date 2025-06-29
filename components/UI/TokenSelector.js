@@ -7,9 +7,9 @@ import axios from 'axios'
 import { avatarServer, nativeCurrency, nativeCurrenciesImages, useWidth } from '../../utils'
 import { niceCurrency, shortAddress } from '../../utils/format'
 
-const limit = 100
+const limit = 20
 
-export default function TokenSelector({ value, onChange }) {
+export default function TokenSelector({ value, onChange, excludeNative = false }) {
   const { t } = useTranslation()
   const width = useWidth()
   const [isOpen, setIsOpen] = useState(false)
@@ -43,10 +43,18 @@ export default function TokenSelector({ value, onChange }) {
         try {
           const response = await axios('v2/trustlines/tokens?limit=' + limit)
           const tokens = response.data?.tokens || []
-          setSearchResults([{ currency: nativeCurrency }, ...tokens])
+          if (excludeNative) {
+            setSearchResults(tokens)
+          } else {
+            setSearchResults([{ currency: nativeCurrency }, ...tokens])
+          }
         } catch (error) {
           console.error('Error loading tokens:', error)
-          setSearchResults([{ currency: nativeCurrency }])
+          if (excludeNative) {
+            setSearchResults([])
+          } else {
+            setSearchResults([{ currency: nativeCurrency }])
+          }
         } finally {
           setIsLoading(false)
         }
@@ -59,7 +67,7 @@ export default function TokenSelector({ value, onChange }) {
         const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}`)
         const tokens = response.data?.tokens || []
 
-        if (searchQuery.toUpperCase() === nativeCurrency.toUpperCase()) {
+        if (!excludeNative && searchQuery.toUpperCase() === nativeCurrency.toUpperCase()) {
           // If search for native currency, add it first
           tokens.unshift({ currency: nativeCurrency })
         }
@@ -100,7 +108,7 @@ export default function TokenSelector({ value, onChange }) {
 
   // Helper to get token display name
   const getTokenDisplayName = (token) => {
-    if (!token) return nativeCurrency
+    if (!token || !token.currency) return 'Select Token'
     if (!token.issuer) return nativeCurrency
 
     const issuerDetails = token.issuerDetails || {}
@@ -120,16 +128,16 @@ export default function TokenSelector({ value, onChange }) {
         style={{ outline: 'none' }}
       >
         {/* Icon */}
-        <div className="token-selector-icon">
-          {value ? (
+        {value && value.currency && (
+          <div className="token-selector-icon">
             <img src={getTokenIcon(value)} alt={niceCurrency(value.currency)} />
-          ) : (
-            <img src={nativeCurrenciesImages[nativeCurrency]} alt={nativeCurrency} />
-          )}
-        </div>
+          </div>
+        )}
         {/* Text */}
         <div className="token-selector-label">
-          <span className="token-selector-code">{getTokenDisplayName(value)}</span>
+          <span className="token-selector-code">
+            {value && value.currency ? getTokenDisplayName(value) : 'Select Token'}
+          </span>
         </div>
         {/* Chevron */}
         <div className="token-selector-chevron">

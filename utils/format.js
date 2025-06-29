@@ -588,18 +588,26 @@ export const amountFormat = (amount, options = {}) => {
   }
 
   //add issued by (issuerDetails.service / username)
-  if (type !== nativeCurrency && options.tooltip) {
-    return (
-      <span suppressHydrationWarning>
-        {showValue} {valuePrefix}{' '}
-        <span className="tooltip">
-          <Link href={'/account/' + issuer}>{currency}</Link>
-          <span className={'tooltiptext ' + options.tooltip}>
-            {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
+  if (type !== nativeCurrency) {
+    if (options.tooltip) {
+      return (
+        <span suppressHydrationWarning>
+          {showValue} {valuePrefix}{' '}
+          <span className="tooltip">
+            <Link href={'/account/' + issuer}>{currency}</Link>
+            <span className={'tooltiptext ' + options.tooltip}>
+              {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
+            </span>
           </span>
         </span>
-      </span>
-    )
+      )
+    } else if (options.withIssuer) {
+      return (
+        <span>
+          {showValue} {valuePrefix} {currency} ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})
+        </span>
+      )
+    }
   } else {
     //type: ['IOU', 'IOU demurraging', 'NFT']
     return showValue + ' ' + valuePrefix + ' ' + textCurrency
@@ -800,7 +808,10 @@ export const dateFormat = (timestamp, stringParams = {}, params = {}) => {
   return ''
 }
 
-export const timeOrDate = (timestamp) => {
+export const timeOrDate = (timestamp, type) => {
+  if (type === 'ripple') {
+    timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+  }
   //if today - return time, otherwise date
   return new Date(timestamp * 1000).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
     ? timeFormat(timestamp)

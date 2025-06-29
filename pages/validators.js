@@ -61,6 +61,20 @@ const fixCountry = (country) => {
   return country?.toUpperCase() === 'UK' ? 'GB' : country
 }
 
+const compareVersions = (a, b) => {
+  if (a.count > b.count) return -1
+  if (a.count < b.count) return 1
+  return 0
+}
+
+const compareReserves = (a, b) => {
+  const aValue = parseFloat(a.fee || a.reserve || a.increment)
+  const bValue = parseFloat(b.fee || b.reserve || b.increment)
+  if (aValue > bValue) return 1
+  if (aValue < bValue) return -1
+  return 0
+}
+
 export default function Validators({ amendment, initialData, initialErrorMessage }) {
   const [validators, setValidators] = useState(null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
@@ -188,12 +202,6 @@ export default function Validators({ amendment, initialData, initialErrorMessage
 
     //by lasSeenTime, serverVersion, publicKey
     return a.publicKey > b.publicKey ? 1 : -1
-  }
-
-  const compareVersions = (a, b) => {
-    if (a.count > b.count) return -1
-    if (a.count < b.count) return 1
-    return 0
   }
 
   const twitterLink = (twitter) => {
@@ -357,38 +365,38 @@ export default function Validators({ amendment, initialData, initialErrorMessage
       for (let v in countBaseFees.validators) {
         countBaseFeesArray.push({ fee: v, count: countBaseFees.validators[v] })
       }
-      countBaseFees.validators = countBaseFeesArray.sort(compareVersions)
+      countBaseFees.validators = countBaseFeesArray.sort(compareReserves)
       countBaseFeesArray = []
       for (let v in countBaseFees.unl) {
         countBaseFeesArray.push({ fee: v, count: countBaseFees.unl[v] })
       }
-      countBaseFees.unl = countBaseFeesArray.sort(compareVersions)
+      countBaseFees.unl = countBaseFeesArray.sort(compareReserves)
       setBaseFees(countBaseFees)
 
-      //Base Reserves
+      //Account Reserves
       let countBaseReservesArray = []
       for (let v in countBaseReserves.validators) {
         countBaseReservesArray.push({ reserve: v, count: countBaseReserves.validators[v] })
       }
-      countBaseReserves.validators = countBaseReservesArray.sort(compareVersions)
+      countBaseReserves.validators = countBaseReservesArray.sort(compareReserves)
       countBaseReservesArray = []
       for (let v in countBaseReserves.unl) {
         countBaseReservesArray.push({ reserve: v, count: countBaseReserves.unl[v] })
       }
-      countBaseReserves.unl = countBaseReservesArray.sort(compareVersions)
+      countBaseReserves.unl = countBaseReservesArray.sort(compareReserves)
       setBaseReserves(countBaseReserves)
 
-      //Reserve increments
+      //Object Reserve
       let countReserveIncrementsArray = []
       for (let v in countReserveIncrements.validators) {
         countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.validators[v] })
       }
-      countReserveIncrements.validators = countReserveIncrementsArray.sort(compareVersions)
+      countReserveIncrements.validators = countReserveIncrementsArray.sort(compareReserves)
       countReserveIncrementsArray = []
       for (let v in countReserveIncrements.unl) {
         countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.unl[v] })
       }
-      countReserveIncrements.unl = countReserveIncrementsArray.sort(compareVersions)
+      countReserveIncrements.unl = countReserveIncrementsArray.sort(compareReserves)
       setReserveIncrements(countReserveIncrements)
     }
   }
@@ -541,7 +549,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                   <tr>
                     <th className="center">{t('table.index')}</th>
                     <th>{t('table.version')}</th>
-                    <th className="right">{t('table.count')}</th>
+                    <th className="right">Votes</th>
                     <th className="right">%%</th>
                   </tr>
                 </thead>
@@ -569,139 +577,40 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 <tr>
                   <th className="center">{t('table.index')}</th>
                   <th>{t('table.version')}</th>
-                  <th className="right">{t('table.count')}</th>
+                  <th className="right">Votes</th>
                   <th className="right">%%</th>
                 </tr>
               </thead>
               <tbody>
                 {serverVersions?.count?.unl
-                  ? serverVersions.unl.map((v, i) => (
-                      <tr key={i}>
-                        <td className="center">{i + 1}</td>
-                        <td>{v.version}</td>
-                        <td className="right">{v.count}</td>
-                        <td className="right">{Math.ceil((v.count / serverVersions.count.unl) * 10000) / 100}%</td>
-                      </tr>
-                    ))
-                  : ''}
-              </tbody>
-            </table>
-          </div>
-          {developerMode && (
-            <div className="div-with-table">
-              <h4 className="center">Base Fees</h4>
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    <th>{t('last-ledger-information.base-fee')}</th>
-                    <th className="right">{t('table.count')}</th>
-                    <th className="right">%%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {baseFees?.count?.validators
-                    ? baseFees.validators.map((v, i) => (
-                        <tr key={i}>
+                  ? (() => {
+                      const maxCount = Math.max(...serverVersions.unl.map((v) => v.count))
+                      return serverVersions.unl.map((v, i) => (
+                        <tr
+                          key={i}
+                          style={{ fontWeight: v.count === maxCount ? 'bold' : 'normal' }}
+                          className={v.count === maxCount ? 'green' : ''}
+                        >
                           <td className="center">{i + 1}</td>
-                          <td>{amountFormat(v.fee)}</td>
+                          <td>{v.version}</td>
                           <td className="right">{v.count}</td>
-                          <td className="right">{Math.ceil((v.count / baseFees.count.validators) * 10000) / 100}%</td>
+                          <td className="right">{Math.ceil((v.count / serverVersions.count.unl) * 10000) / 100}%</td>
                         </tr>
                       ))
-                    : ''}
-                </tbody>
-              </table>
-            </div>
-          )}
-          <div className="div-with-table">
-            <h4 className="center">Base Fees (UNL)</h4>
-            <table className="table-large shrink">
-              <thead>
-                <tr>
-                  <th className="center">{t('table.index')}</th>
-                  <th>{t('last-ledger-information.base-reserve')}</th>
-                  <th className="right">{t('table.count')}</th>
-                  <th className="right">%%</th>
-                </tr>
-              </thead>
-              <tbody>
-                {baseFees?.count?.unl
-                  ? baseFees.unl.map((v, i) => (
-                      <tr key={i}>
-                        <td className="center">{i + 1}</td>
-                        <td>{amountFormat(v.fee)}</td>
-                        <td className="right">{v.count}</td>
-                        <td className="right">{Math.ceil((v.count / baseFees.count.unl) * 10000) / 100}%</td>
-                      </tr>
-                    ))
+                    })()
                   : ''}
               </tbody>
             </table>
           </div>
           {developerMode && (
             <div className="div-with-table">
-              <h4 className="center">Reserve Increments</h4>
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    <th>{t('last-ledger-information.increment-reserve')}</th>
-                    <th className="right">{t('table.count')}</th>
-                    <th className="right">%%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reserveIncrements?.count?.validators
-                    ? reserveIncrements.validators.map((v, i) => (
-                        <tr key={i}>
-                          <td className="center">{i + 1}</td>
-                          <td>{amountFormat(v.increment)}</td>
-                          <td className="right">{v.count}</td>
-                          <td className="right">
-                            {Math.ceil((v.count / reserveIncrements.count.validators) * 10000) / 100}%
-                          </td>
-                        </tr>
-                      ))
-                    : ''}
-                </tbody>
-              </table>
-            </div>
-          )}
-          <div className="div-with-table">
-            <h4 className="center">Reserve Increments (UNL)</h4>
-            <table className="table-large shrink">
-              <thead>
-                <tr>
-                  <th className="center">{t('table.index')}</th>
-                  <th>{t('last-ledger-information.increment-reserve')}</th>
-                  <th className="right">{t('table.count')}</th>
-                  <th className="right">%%</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reserveIncrements?.count?.unl
-                  ? reserveIncrements.unl.map((v, i) => (
-                      <tr key={i}>
-                        <td className="center">{i + 1}</td>
-                        <td>{amountFormat(v.increment)}</td>
-                        <td className="right">{v.count}</td>
-                        <td className="right">{Math.ceil((v.count / reserveIncrements.count.unl) * 10000) / 100}%</td>
-                      </tr>
-                    ))
-                  : ''}
-              </tbody>
-            </table>
-          </div>
-          {developerMode && (
-            <div className="div-with-table">
-              <h4 className="center">Base Reserves</h4>
+              <h4 className="center">{t('last-ledger-information.base-reserve')}</h4>
               <table className="table-large shrink">
                 <thead>
                   <tr>
                     <th className="center">{t('table.index')}</th>
                     <th>{t('last-ledger-information.base-reserve')}</th>
-                    <th className="right">{t('table.count')}</th>
+                    <th className="right">Votes</th>
                     <th className="right">%%</th>
                   </tr>
                 </thead>
@@ -723,26 +632,153 @@ export default function Validators({ amendment, initialData, initialErrorMessage
             </div>
           )}
           <div className="div-with-table">
-            <h4 className="center">Base Reserves (UNL)</h4>
+            <h4 className="center">{t('last-ledger-information.base-reserve')} (UNL)</h4>
             <table className="table-large shrink">
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
                   <th>{t('last-ledger-information.base-reserve')}</th>
-                  <th className="right">{t('table.count')}</th>
+                  <th className="right">Votes</th>
                   <th className="right">%%</th>
                 </tr>
               </thead>
               <tbody>
                 {baseReserves?.count?.unl
-                  ? baseReserves.unl.map((v, i) => (
-                      <tr key={i}>
-                        <td className="center">{i + 1}</td>
-                        <td>{amountFormat(v.reserve)}</td>
-                        <td className="right">{v.count}</td>
-                        <td className="right">{Math.ceil((v.count / baseReserves.count.unl) * 10000) / 100}%</td>
-                      </tr>
-                    ))
+                  ? (() => {
+                      const maxCount = Math.max(...baseReserves.unl.map((v) => v.count))
+                      return baseReserves.unl.map((v, i) => (
+                        <tr
+                          key={i}
+                          style={{ fontWeight: v.count === maxCount ? 'bold' : 'normal' }}
+                          className={v.count === maxCount ? 'green' : ''}
+                        >
+                          <td className="center">{i + 1}</td>
+                          <td>{amountFormat(v.reserve)}</td>
+                          <td className="right">{v.count}</td>
+                          <td className="right">{Math.ceil((v.count / baseReserves.count.unl) * 10000) / 100}%</td>
+                        </tr>
+                      ))
+                    })()
+                  : ''}
+              </tbody>
+            </table>
+          </div>
+          {developerMode && (
+            <div className="div-with-table">
+              <h4 className="center">{t('last-ledger-information.increment-reserve')}</h4>
+              <table className="table-large shrink">
+                <thead>
+                  <tr>
+                    <th className="center">{t('table.index')}</th>
+                    <th>{t('last-ledger-information.increment-reserve')}</th>
+                    <th className="right">Votes</th>
+                    <th className="right">%%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reserveIncrements?.count?.validators
+                    ? reserveIncrements.validators.map((v, i) => (
+                        <tr key={i}>
+                          <td className="center">{i + 1}</td>
+                          <td>{amountFormat(v.increment)}</td>
+                          <td className="right">{v.count}</td>
+                          <td className="right">
+                            {Math.ceil((v.count / reserveIncrements.count.validators) * 10000) / 100}%
+                          </td>
+                        </tr>
+                      ))
+                    : ''}
+                </tbody>
+              </table>
+            </div>
+          )}
+          <div className="div-with-table">
+            <h4 className="center">{t('last-ledger-information.increment-reserve')} (UNL)</h4>
+            <table className="table-large shrink">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('last-ledger-information.increment-reserve')}</th>
+                  <th className="right">Votes</th>
+                  <th className="right">%%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reserveIncrements?.count?.unl
+                  ? (() => {
+                      const maxCount = Math.max(...reserveIncrements.unl.map((v) => v.count))
+                      return reserveIncrements.unl.map((v, i) => (
+                        <tr
+                          key={i}
+                          style={{ fontWeight: v.count === maxCount ? 'bold' : 'normal' }}
+                          className={v.count === maxCount ? 'green' : ''}
+                        >
+                          <td className="center">{i + 1}</td>
+                          <td>{amountFormat(v.increment)}</td>
+                          <td className="right">{v.count}</td>
+                          <td className="right">{Math.ceil((v.count / reserveIncrements.count.unl) * 10000) / 100}%</td>
+                        </tr>
+                      ))
+                    })()
+                  : ''}
+              </tbody>
+            </table>
+          </div>
+          {developerMode && (
+            <div className="div-with-table">
+              <h4 className="center">{t('last-ledger-information.base-fee')}</h4>
+              <table className="table-large shrink">
+                <thead>
+                  <tr>
+                    <th className="center">{t('table.index')}</th>
+                    <th>{t('last-ledger-information.base-fee')}</th>
+                    <th className="right">Votes</th>
+                    <th className="right">%%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {baseFees?.count?.validators
+                    ? baseFees.validators.map((v, i) => (
+                        <tr key={i}>
+                          <td className="center">{i + 1}</td>
+                          <td>{amountFormat(v.fee)}</td>
+                          <td className="right">{v.count}</td>
+                          <td className="right">{Math.ceil((v.count / baseFees.count.validators) * 10000) / 100}%</td>
+                        </tr>
+                      ))
+                    : ''}
+                </tbody>
+              </table>
+            </div>
+          )}
+          <div className="div-with-table">
+            <h4 className="center">{t('last-ledger-information.base-fee')} (UNL)</h4>
+            <table className="table-large shrink">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('last-ledger-information.base-fee')}</th>
+                  <th className="right">Votes</th>
+                  <th className="right">%%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {baseFees?.count?.unl
+                  ? (() => {
+                      const maxCount = Math.max(...baseFees.unl.map((v) => v.count))
+                      return baseFees.unl.map((v, i) => (
+                        <tr
+                          key={i}
+                          style={{ fontWeight: v.count === maxCount ? 'bold' : 'normal' }}
+                          className={v.count === maxCount ? 'green' : ''}
+                        >
+                          <td className="center">{i + 1}</td>
+                          <td>{amountFormat(v.fee)}</td>
+                          <td className="right">{v.count}</td>
+                          <td className="right">{Math.ceil((v.count / baseFees.count.unl) * 10000) / 100}%</td>
+                        </tr>
+                      ))
+                    })()
                   : ''}
               </tbody>
             </table>
