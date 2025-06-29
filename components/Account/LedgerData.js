@@ -337,13 +337,9 @@ export default function LedgerData({
   const escrowNode = !objects?.escrowList ? (
     'Loading...'
   ) : objects?.escrowList?.length > 0 ? (
-    data?.ledgerInfo?.ledgerTimestamp ? (
-      <span className="orange bold">{objects?.escrowList?.length}</span>
-    ) : (
-      <a href={server + '/explorer/' + data.address} className="bold">
-        View Escrows ({objects?.escrowList?.length})
-      </a>
-    )
+    <>
+      <span className="bold">{objects?.escrowList?.length}</span> (view below)
+    </>
   ) : (
     "This account doesn't have Escrows."
   )
