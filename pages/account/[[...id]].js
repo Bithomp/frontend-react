@@ -61,7 +61,7 @@ import ObjectsData from '../../components/Account/ObjectsData'
 import NFTokenData from '../../components/Account/NFTokenData'
 import URITokenData from '../../components/Account/URITokenData'
 //import IOUData from '../../components/Account/IOUData'
-//import EscrowData from '../../components/Account/EscrowData'
+import EscrowData from '../../components/Account/EscrowData'
 //import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
 
@@ -508,21 +508,6 @@ export default function Account({
                             </div>
                           )}
 
-                          {/* hide while its not ready
-                          <IOUData
-                            rippleStateList={objects?.rippleStateList}
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                          />
-                          <EscrowData
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                            escrowList={objects?.escrowList}
-                          />
-                          <DexOrdersData
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                            offerList={objects?.offerList}
-                          />
-                          */}
-
                           <LedgerData
                             data={data}
                             account={account}
@@ -535,7 +520,7 @@ export default function Account({
                             objects={objects}
                             gateway={gateway}
                           />
-                          <PublicData data={data} />
+                          <PublicData data={data} />                          
                           {xahauNetwork ? (
                             <URITokenData data={data} uriTokenList={objects?.uriTokenList} />
                           ) : (
@@ -545,15 +530,15 @@ export default function Account({
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             />
                           )}
-                          {/*
-                          We need to add here
-                          - assets // we show the link in LedgerData - IOUData
-                          - nfts xls-20 // we show the link in NFTs data
-                          - obligations // data need to be synced on the backend first, we don't show it yet
-                          - dex orders // we show the link in the Ledgerdata - DexOrdersData
-                          - escrows // we show the link in the Ledgerdata - EscrowData
-                          - xls-14 nfts // only when exists - show separately them - or forget =)
-                          */}
+
+                          <EscrowData
+                            account={account}
+                            setSignRequest={setSignRequest}
+                            address={data?.address}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            escrowList={objects?.escrowList}
+                          />
+
                           <RecentTransactions userData={userData} ledgerTimestamp={ledgerTimestamp} />
                           {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
