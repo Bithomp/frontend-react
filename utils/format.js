@@ -607,9 +607,10 @@ export const amountFormat = (amount, options = {}) => {
           {showValue} {valuePrefix} {currency} ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})
         </span>
       )
+    } else {
+      return showValue + ' ' + valuePrefix + ' ' + textCurrency
     }
   } else {
-    //type: ['IOU', 'IOU demurraging', 'NFT']
     return showValue + ' ' + valuePrefix + ' ' + textCurrency
   }
 }

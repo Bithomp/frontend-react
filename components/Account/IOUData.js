@@ -83,22 +83,19 @@ const FlagIcons = ({ flags }) => {
 }
 
 // Component to display limits icon with tooltip
-const LimitsIcon = ({ trustline, userData }) => {
+const LimitsIcon = ({ trustline }) => {
   if (!trustline) return null
 
-  // Determine which limit belongs to the current user vs the other party
-  const isUserHighLimit = trustline.HighLimit?.issuer === userData?.address
-  const userLimit = isUserHighLimit ? trustline.HighLimit : trustline.LowLimit
-  const otherPartyLimit = isUserHighLimit ? trustline.LowLimit : trustline.HighLimit
+  const highLimit = trustline.HighLimit.value
+  const lowLimit = trustline.LowLimit.value
 
-  const tooltipText = `Trustline Limits:
-• User can hold up to: ${amountFormat(userLimit, { short: true })}
-• User trusts ${otherPartyLimit.issuerDetails?.service || otherPartyLimit.issuerDetails?.username || 'this issuer'} up to: ${amountFormat(otherPartyLimit, { short: true })}`
+  const biggerLimit = Math.max(highLimit, lowLimit).toString()
+  const tooltipText = `Limit: ${biggerLimit === highLimit ? amountFormat(trustline?.HighLimit, { short: true }) : amountFormat(trustline?.LowLimit, { short: true })}`
 
   return (
     <span className="blue tooltip">
       <FaChartLine style={{ fontSize: 18, marginBottom: -4 }} />
-      <span className="tooltiptext" style={{ whiteSpace: 'pre-line', width: '300px' }}>{tooltipText}</span>
+      <span className="tooltiptext">{tooltipText}</span>
     </span>
   )
 }
@@ -199,7 +196,7 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
         <td className="right">{shortNiceNumber(Math.abs(tl.Balance?.value))}</td>
         <td className="right">
           <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
-            <LimitsIcon trustline={tl} userData={userData} />
+            <LimitsIcon trustline={tl} />
             <FlagIcons flags={tl.flags} />
           </div>
         </td>
