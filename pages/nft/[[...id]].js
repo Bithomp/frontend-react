@@ -448,7 +448,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           </tr>
           <tr>
             <td>{t('table.amount')}</td>
-            <td>{amountFormat(offer.amount, { tooltip: 'right' })}</td>
+            <td>{amountFormat(offer.amount, { withIssuer: true })}</td>
           </tr>
           {offer.createdAt && (
             <tr>

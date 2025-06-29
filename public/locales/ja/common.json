@@ -207,8 +207,8 @@
     "proposers": "提出者数",
     "validation-quorum": "定足数",
     "base-fee": "基本手数料",
-    "base-reserve": "基本準備金",
-    "increment-reserve": "所有者準備金",
+    "base-reserve": "アカウントリザーブ",
+    "increment-reserve": "オブジェクトリザーブ",
     "total-supply": "供給量",
     "burned-by-hooks": "Hooksによって焼却された",
     "total-burned": "合計バーン"

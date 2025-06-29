@@ -207,8 +207,8 @@
     "proposers": "Колличество предлагающих валидаторов",
     "validation-quorum": "Кворум валидаторов",
     "base-fee": "Базовая комиссия",
-    "base-reserve": "Базовый резерв",
-    "increment-reserve": "Резерв трастлайна и др.",
+    "base-reserve": "Резерв аккаунта",
+    "increment-reserve": "Резерв объектов",
     "total-supply": "Всего существует",
     "burned-by-hooks": "Сожжено Хуками",
     "total-burned": "Всего сожжено (комиссией)"
