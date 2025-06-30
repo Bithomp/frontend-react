@@ -485,10 +485,10 @@ export const userOrServiceName = (data) => {
   if (data) {
     const { service, username } = data
     if (service) {
-      return <b className="green">{service}</b>
+      return <span className="green bold">{service}</span>
     }
     if (username) {
-      return <b className="blue">{username}</b>
+      return <span className="blue bold">{username}</span>
     }
   }
   return ''

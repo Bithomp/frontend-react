@@ -1,15 +1,15 @@
-import { fullDateAndTime, niceCurrency, shortNiceNumber, AddressWithIcon, amountFormat } from '../../utils/format'
+import {
+  fullDateAndTime,
+  niceCurrency,
+  shortNiceNumber,
+  AddressWithIcon,
+  amountFormat,
+  userOrServiceName,
+  fullNiceNumber
+} from '../../utils/format'
 import { LinkAccount } from '../../utils/links'
 import { useWidth } from '../../utils'
-import { 
-  FaSnowflake, 
-  FaLock, 
-  FaCoins, 
-  FaExchangeAlt, 
-  FaIcicles,
-  FaShieldAlt,
-  FaChartLine
-} from 'react-icons/fa'
+import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaChartLine } from 'react-icons/fa' //FaCoins,
 
 const tokensCountText = (rippleStateList) => {
   if (!rippleStateList) return ''
@@ -33,7 +33,7 @@ const FlagIcons = ({ flags }) => {
       key: 'noRipple',
       condition: flags.lowNoRipple || flags.highNoRipple,
       icon: FaShieldAlt,
-      tooltip: 'No Ripple'
+      tooltip: 'No Rippling'
     },
     {
       key: 'auth',
@@ -41,12 +41,14 @@ const FlagIcons = ({ flags }) => {
       icon: FaLock,
       tooltip: 'Authorized'
     },
+    /*
     {
       key: 'reserve',
       condition: flags.lowReserve || flags.highReserve,
       icon: FaCoins,
       tooltip: 'Reserve'
     },
+    */
     {
       key: 'ammNode',
       condition: flags.ammNode,
@@ -61,7 +63,7 @@ const FlagIcons = ({ flags }) => {
     }
   ]
 
-  const activeFlags = flagConfigs.filter(flag => flag.condition)
+  const activeFlags = flagConfigs.filter((flag) => flag.condition)
 
   return (
     <>
@@ -70,7 +72,7 @@ const FlagIcons = ({ flags }) => {
           {activeFlags.map((flag) => {
             const IconComponent = flag.icon
             return (
-              <span key={flag.key} className="orange tooltip">
+              <span key={flag.key} className="tooltip no-brake">
                 <IconComponent style={{ fontSize: 18, marginBottom: -4 }} />
                 <span className="tooltiptext">{flag.tooltip}</span>
               </span>
@@ -90,12 +92,16 @@ const LimitsIcon = ({ trustline }) => {
   const lowLimit = trustline.LowLimit.value
 
   const biggerLimit = Math.max(highLimit, lowLimit).toString()
-  const tooltipText = `Limit: ${biggerLimit === highLimit ? amountFormat(trustline?.HighLimit, { short: true }) : amountFormat(trustline?.LowLimit, { short: true })}`
+  const tooltipText = `Limit: ${
+    biggerLimit === highLimit
+      ? amountFormat(trustline?.HighLimit, { short: true })
+      : amountFormat(trustline?.LowLimit, { short: true })
+  }`
 
   return (
-    <span className="blue tooltip">
+    <span className="tooltip">
       <FaChartLine style={{ fontSize: 18, marginBottom: -4 }} />
-      <span className="tooltiptext">{tooltipText}</span>
+      <span className="tooltiptext no-brake">{tooltipText}</span>
     </span>
   )
 }
@@ -166,34 +172,28 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
   // amount / gateway details / trustline settings
   const tokenRows = rippleStateList.map((tl, i) => {
     const issuer = tl.HighLimit?.issuer === userData?.address ? tl.LowLimit : tl.HighLimit
-    const serviceOrUsername = () => {
-      if (issuer.issuerDetails.service) {
-        return (
-          <span className="bold green">
-            {issuer.issuerDetails.service}
-          </span>
-        )
-      } else if (issuer.issuerDetails.username) {
-        return (
-          <span className="bold blue">
-            {issuer.issuerDetails.username}
-          </span>
-        )
-      }
-      return ''
-    }
 
     return (
       <tr key={i}>
-        <td className="center" style={{ width: 30 }}>{i + 1}</td>
+        <td className="center" style={{ width: 30 }}>
+          {i + 1}
+        </td>
         <td className="left">
           <AddressWithIcon address={issuer.issuer}>
-            {niceCurrency(tl.Balance?.currency)} {serviceOrUsername()}
+            <span className="bold">{niceCurrency(tl.Balance?.currency)}</span> (
+            {userOrServiceName(issuer.issuerDetails, 'address')})
             <br />
-            {width > 800 ? <LinkAccount address={issuer.issuerDetails.address} /> : <LinkAccount address={issuer.issuerDetails.address} short={6} />}
+            {width > 800 ? (
+              <LinkAccount address={issuer.issuerDetails.address} />
+            ) : (
+              <LinkAccount address={issuer.issuerDetails.address} short={6} />
+            )}
           </AddressWithIcon>
         </td>
-        <td className="right">{shortNiceNumber(Math.abs(tl.Balance?.value))}</td>
+        <td className="bold tooltip" style={{ float: 'right' }}>
+          {shortNiceNumber(Math.abs(tl.Balance?.value))}
+          <span className="tooltiptext">{fullNiceNumber(Math.abs(tl.Balance?.value))}</span>
+        </td>
         <td className="right">
           <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
             <LimitsIcon trustline={tl} />
@@ -209,16 +209,18 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
-            <th colSpan="100">{tokensCountText(rippleStateList)} Tokens (IOUs){historicalTitle}</th>
-          </tr>          
+            <th colSpan="100">
+              {tokensCountText(rippleStateList)} Tokens (IOUs){historicalTitle}
+            </th>
+          </tr>
         </thead>
         <tbody>
-        <tr>
-          <th>#</th>
-          <th className="left">Currency</th>
-          <th className="right">Balance</th>
-          <th className="right">Params</th>
-        </tr>
+          <tr>
+            <th>#</th>
+            <th className="left">Currency</th>
+            <th className="right">Balance</th>
+            <th className="right">Params</th>
+          </tr>
           {tokenRows}
         </tbody>
       </table>
