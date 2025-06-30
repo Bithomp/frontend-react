@@ -1,5 +1,5 @@
 import { useWidth, xahauNetwork } from '../../utils'
-import { useTheme } from '../Layout/ThemeContext'
+import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { brandsBlock } from '../../styles/components/ads.module.scss'
 

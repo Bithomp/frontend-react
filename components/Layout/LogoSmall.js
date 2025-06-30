@@ -1,9 +1,15 @@
 import Logo from '../../public/images/logo-small.svg'
 import { server, xahauNetwork } from '../../utils'
-import { useTheme } from './ThemeContext'
+import { useTheme } from 'next-themes'
+import { useState, useEffect } from 'react'
 
 export default function LogoSmall({ width, height, color, dependOnTheme }) {
   const { theme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   if (server.includes('bithomp')) {
     return (
@@ -44,7 +50,7 @@ export default function LogoSmall({ width, height, color, dependOnTheme }) {
   }
 
   let fill = color || xahauNetwork ? '#ffcc53' : '#4ba8b6'
-  if (dependOnTheme && theme === 'light' && xahauNetwork) {
+  if (dependOnTheme && mounted && theme === 'light' && xahauNetwork) {
     fill = '#0E233F'
   }
   return <Logo width={width} height={height} fill={fill} />

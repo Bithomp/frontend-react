@@ -24,7 +24,7 @@ import '../styles/globals.css'
 import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
 
-import { ThemeProvider } from '../components/Layout/ThemeContext'
+import { ThemeProvider } from 'next-themes'
 import { fetchCurrentFiatRate } from '../utils/common'
 
 const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
@@ -164,7 +164,7 @@ const MyApp = ({ Component, pageProps }) => {
         <meta charSet="utf-8" />
       </Head>
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
-        <ThemeProvider>
+        <ThemeProvider attribute="class" storageKey="theme" enableSystem={false} defaultTheme="light">
           <div
             className="body"
             data-network={network}

@@ -1,8 +1,7 @@
 import { useTranslation } from 'next-i18next'
+import { useTheme } from 'next-themes'
 
 import { fullDateAndTime } from '../utils/format'
-
-import { useTheme } from './Layout/ThemeContext'
 
 import XahauExplorerLogo from '../public/images/xahauexplorer/longDark.svg'
 import XrplExplorerLogo from '../public/images/xrplexplorer/longDark.svg'
@@ -11,7 +10,7 @@ import { nativeCurrency, xahauNetwork } from '../utils'
 
 export default function Receipt({ item, details }) {
   const { t } = useTranslation()
-  const { theme } = useTheme()
+  const { theme, setTheme } = useTheme()
 
   if (!details) {
     return
@@ -19,9 +18,11 @@ export default function Receipt({ item, details }) {
 
   const onPrint = () => {
     if (theme === 'dark') {
-      global.window.__setPreferredTheme('light')
-      window.print()
-      global.window.__setPreferredTheme('dark')
+      setTheme('light')
+      setTimeout(() => {
+        window.print()
+        setTheme('dark')
+      }, 100)
     } else {
       window.print()
     }
