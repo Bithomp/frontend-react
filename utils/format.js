@@ -611,6 +611,7 @@ export const amountFormat = (amount, options = {}) => {
       return showValue + ' ' + valuePrefix + ' ' + textCurrency
     }
   } else {
+    //type: ['IOU', 'IOU demurraging', 'NFT']
     return showValue + ' ' + valuePrefix + ' ' + textCurrency
   }
 }
