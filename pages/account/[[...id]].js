@@ -60,7 +60,7 @@ import XamanData from '../../components/Account/XamanData'
 import ObjectsData from '../../components/Account/ObjectsData'
 import NFTokenData from '../../components/Account/NFTokenData'
 import URITokenData from '../../components/Account/URITokenData'
-//import IOUData from '../../components/Account/IOUData'
+import IOUData from '../../components/Account/IOUData'
 import EscrowData from '../../components/Account/EscrowData'
 import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
@@ -179,7 +179,7 @@ export default function Account({
       isFirstRender.current = false
       return
     }
-
+    setObjects({})
     checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, refreshPage, ledgerTimestamp])
@@ -521,12 +521,18 @@ export default function Account({
                             gateway={gateway}
                           />
                           <PublicData data={data} />
+                          <IOUData
+                            rippleStateList={objects?.rippleStateList}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            address={data?.address}
+                          />
                           <DexOrdersData
                             account={account}
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             offerList={objects?.offerList}
                             setSignRequest={setSignRequest}
                           />
+
                           {xahauNetwork ? (
                             <URITokenData data={data} uriTokenList={objects?.uriTokenList} />
                           ) : (
