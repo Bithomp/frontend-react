@@ -13,7 +13,7 @@ import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import { AddressWithIcon, niceCurrency, shortNiceNumber, userOrServiceName } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
-import { useWidth } from '../utils'
+import { nativeCurrency, useWidth } from '../utils'
 import { LinkAccount } from '../utils/links'
 
 /*
@@ -304,7 +304,9 @@ export default function Tokens({
                         <td>
                           <TokenCell token={token} />
                         </td>
-                        <td className="right">{shortNiceNumber(token.statistics?.marketcap, 0)}</td>
+                        <td className="right">
+                          {shortNiceNumber(token.statistics?.marketcap, 0)} {nativeCurrency}
+                        </td>
                         <td className="right" suppressHydrationWarning>
                           {shortNiceNumber(token.trustlines, 0)}
                         </td>
@@ -365,7 +367,7 @@ export default function Tokens({
                           <p>
                             {token.statistics?.marketcap && (
                               <>
-                                Marketcap: {shortNiceNumber(token.statistics?.marketcap, 0)}
+                                Marketcap: {shortNiceNumber(token.statistics?.marketcap, 0)} {nativeCurrency}
                                 <br />
                               </>
                             )}
