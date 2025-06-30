@@ -106,7 +106,7 @@ const LimitsIcon = ({ trustline }) => {
   )
 }
 
-export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) {
+export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
   const width = useWidth()
   //show the section only if there are tokens to show
   if (!rippleStateList?.length) return ''
@@ -171,7 +171,7 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
 
   // amount / gateway details / trustline settings
   const tokenRows = rippleStateList.map((tl, i) => {
-    const issuer = tl.HighLimit?.issuer === userData?.address ? tl.LowLimit : tl.HighLimit
+    const issuer = tl.HighLimit?.issuer === address ? tl.LowLimit : tl.HighLimit
 
     return (
       <tr key={i}>
@@ -180,8 +180,8 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
         </td>
         <td className="left">
           <AddressWithIcon address={issuer.issuer}>
-            <span className="bold">{niceCurrency(tl.Balance?.currency)}</span> (
-            {userOrServiceName(issuer.issuerDetails, 'address')})
+            <span className="bold">{niceCurrency(tl.Balance?.currency)}</span>{' '}
+            {userOrServiceName(issuer.issuerDetails, 'address')}
             <br />
             {width > 800 ? (
               <LinkAccount address={issuer.issuerDetails.address} />
@@ -210,7 +210,8 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
         <thead>
           <tr>
             <th colSpan="100">
-              {tokensCountText(rippleStateList)} Tokens (IOUs){historicalTitle}
+              {tokensCountText(rippleStateList)} Tokens (IOUs){historicalTitle} [
+              <a href={'/explorer/' + address}>Old View</a>]
             </th>
           </tr>
         </thead>
@@ -229,7 +230,7 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
         <center>
           {tokensCountText(rippleStateList)}
           {'Tokens (IOUs)'.toUpperCase()}
-          {historicalTitle}
+          {historicalTitle} [<a href={'/explorer/' + address}>Old View</a>]
         </center>
         <br />
         {rippleStateList.length > 0 && (
@@ -245,6 +246,7 @@ export default function IOUData({ rippleStateList, ledgerTimestamp, userData }) 
             </tbody>
           </table>
         )}
+        <br />
       </div>
     </>
   )
