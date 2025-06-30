@@ -49,12 +49,28 @@ export default function Send({
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
   const [isDestinationFlagged, setIsDestinationFlagged] = useState(false)
+  const [isNonActive, setIsNonActive] = useState(false)
   const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
+  const [agreeToSendToNonActive, setAgreeToSendToNonActive] = useState(false)
   const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
+  const [networkInfo, setNetworkInfo] = useState({})
 
   const onTokenChange = (token) => {
     setSelectedToken(token)
   }
+
+  // Fetch network info for reserve amounts
+  useEffect(() => {
+    const fetchNetworkInfo = async () => {
+      try {
+        const response = await axios('/v2/server')
+        setNetworkInfo(response?.data || {})
+      } catch (error) {
+        console.error('Error fetching network info:', error)
+      }
+    }
+    fetchNetworkInfo()
+  }, [])
 
   useEffect(() => {
     let queryAddList = []
@@ -112,29 +128,41 @@ export default function Send({
       if (!address || !isAddressValid(address)) {
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setIsNonActive(false)
+        setAgreeToSendToNonActive(false)
         return
       }
 
       try {
-        const response = await axios(`/v2/address/${address}?blacklist=true`)
+        const response = await axios(`/v2/address/${address}?blacklist=true&ledgerInfo=true`)
         const data = response?.data
-
+        
         if (data?.address) {
           const isFlagged = data.blacklist?.blacklisted || false
+          const isNonActivated = !data.ledgerInfo?.activated || false
+          
           setIsDestinationFlagged(isFlagged)
-
-          // Reset agreement if account is no longer flagged
+          setIsNonActive(isNonActivated)
+          
+          // Reset agreements if account status changes
           if (!isFlagged) {
             setAgreeToSendToFlagged(false)
+          }
+          if (!isNonActivated) {
+            setAgreeToSendToNonActive(false)
           }
         } else {
           setIsDestinationFlagged(false)
           setAgreeToSendToFlagged(false)
+          setIsNonActive(false)
+          setAgreeToSendToNonActive(false)
         }
       } catch (error) {
         setError('Error fetching destination account data')
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setIsNonActive(false)
+        setAgreeToSendToNonActive(false)
       }
     }
 
@@ -200,6 +228,11 @@ export default function Send({
 
     if (isDestinationFlagged && !agreeToSendToFlagged) {
       setError('Please acknowledge that you understand the risks of sending to a flagged account')
+      return
+    }
+
+    if (isNonActive && !agreeToSendToNonActive) {
+      setError('Please acknowledge that you understand the risks of sending to a non-activated account')
       return
     }
 
@@ -317,6 +350,24 @@ export default function Send({
                 >
                   Learn more about flagged accounts
                 </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Show warning if destination account is non-activated */}
+          {isNonActive && (
+            <div>
+              <div className="form-spacing" />
+              <div className="orange center p-2 rounded-md bg-orange-50 border border-orange-200 mb-4 sm:mb-0">
+                <strong>⚠️ Non-Activated Account</strong>
+                <br />
+                You are attempting to send funds to a non-activated account.
+                <br />
+                This account has never been used and currently has a zero balance.
+                <br />
+                <strong>Proceed with caution.</strong>
+                <br />
+                If you continue, {amountFormat(networkInfo?.reserveBase || '1000000')} ({networkInfo?.reserveBase ? (Number(networkInfo.reserveBase) / 1000000) : 1} {nativeCurrency}) will be used to activate the account on the ledger.
               </div>
             </div>
           )}
@@ -465,6 +516,15 @@ export default function Send({
             <div className="orange">
               <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
                 I understand the risks and I want to proceed with sending funds to this flagged account
+              </CheckBox>
+            </div>
+          )}
+
+          {/* Show additional checkbox for non-activated accounts */}
+          {isNonActive && (
+            <div className="orange">
+              <CheckBox checked={agreeToSendToNonActive} setChecked={setAgreeToSendToNonActive} name="agree-to-non-active">
+                I understand that {amountFormat(networkInfo?.reserveBase || '1000000')} ({networkInfo?.reserveBase ? (Number(networkInfo.reserveBase) / 1000000) : 1} {nativeCurrency}) will be used to activate this account and I want to proceed
               </CheckBox>
             </div>
           )}
