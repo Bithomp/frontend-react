@@ -419,6 +419,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
                         placeholder="0.0"
                         value={amount}
                         onChange={onAmountChange}
+                        onKeyPress={typeNumberOnly}
                         className="input-text"
                         spellCheck="false"
                         maxLength="35"
