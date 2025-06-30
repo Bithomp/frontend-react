@@ -11,12 +11,14 @@ import {
   isValidJson,
   server,
   xahauNetwork,
-  typeNumberOnly
+  typeNumberOnly,
+  nativeCurrency
 } from '../../../utils'
 import { multiply } from '../../../utils/calc'
 const checkmark = '/images/checkmark.svg'
 import CheckBox from '../../UI/CheckBox'
 import AddressInput from '../../UI/AddressInput'
+import TokenSelector from '../../UI/TokenSelector'
 
 let interval
 let startTime
@@ -41,6 +43,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
   const [createSellOffer, setCreateSellOffer] = useState(false)
   const [amount, setAmount] = useState('')
   const [destination, setDestination] = useState('')
+  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
   const [flags, setFlags] = useState({
     tfBurnable: false
   })
@@ -141,6 +144,10 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
     }
   }
 
+  const onTokenChange = (token) => {
+    setSelectedToken(token)
+  }
+
   const handleFlagChange = (flag) => {
     setFlags((prev) => ({ ...prev, [flag]: !prev[flag] }))
   }
@@ -165,6 +172,11 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
 
     if (!agreeToPrivacyPolicy) {
       setErrorMessage('Please agree to the Privacy policy')
+      return
+    }
+
+    if (createSellOffer && amount !== '' && !isNaN(parseFloat(amount)) && parseFloat(amount) < 0) {
+      setErrorMessage('Please enter a valid Amount')
       return
     }
 
@@ -195,7 +207,18 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
           return
         }
       } else if (parseFloat(amount) > 0) {
-        request.Amount = multiply(amount, 1000000)
+        // Handle amount based on selected token
+        if (selectedToken.currency === nativeCurrency && selectedToken.issuer === null) {
+          // For XAH, convert to drops
+          request.Amount = multiply(amount, 1000000)
+        } else {
+          // For tokens, use the token object
+          request.Amount = {
+            currency: selectedToken.currency,
+            issuer: selectedToken.issuer,
+            value: amount
+          }
+        }
       } else {
         setErrorMessage('Please enter a valid Amount')
         return
@@ -371,7 +394,13 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
             <div>
               <CheckBox
                 checked={createSellOffer}
-                setChecked={() => setCreateSellOffer(!createSellOffer)}
+                setChecked={() => {
+                  if (!createSellOffer) {
+                    // Reset to XAH when enabling sell offer
+                    setSelectedToken({ currency: nativeCurrency })
+                  }
+                  setCreateSellOffer(!createSellOffer)
+                }}
                 name="create-sell-offer"
               >
                 Create a Sell offer
@@ -382,21 +411,31 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
             {createSellOffer && (
               <>
                 <br />
-                <span className="input-title">Initial listing price in XAH (Amount):</span>
-                <div className="input-validation">
-                  <input
-                    placeholder="0.0"
-                    value={amount}
-                    onChange={onAmountChange}
-                    onKeyPress={typeNumberOnly}
-                    className="input-text"
-                    spellCheck="false"
-                    maxLength="35"
-                    min="0"
-                    type="text"
-                    inputMode="decimal"
-                    name="amount"
-                  />
+                <div className="flex flex-col gap-4 sm:flex-row">
+                  <div className="flex-1">
+                    <span className="input-title">Initial listing price (Amount):</span>
+                    <div className="input-validation">
+                      <input
+                        placeholder="0.0"
+                        value={amount}
+                        onChange={onAmountChange}
+                        className="input-text"
+                        spellCheck="false"
+                        maxLength="35"
+                        min="0"
+                        type="text"
+                        inputMode="decimal"
+                        name="amount"
+                      />
+                    </div>
+                  </div>
+                  <div className="w-full sm:w-1/2">
+                    <span className="input-title">Currency</span>
+                    <TokenSelector 
+                      value={selectedToken} 
+                      onChange={onTokenChange}
+                    />                    
+                  </div>
                 </div>
                 <br />
                 <AddressInput
