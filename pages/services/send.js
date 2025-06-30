@@ -28,7 +28,9 @@ export default function Send({
   memoQuery,
   feeQuery,
   sourceTagQuery,
-  invoiceIdQuery
+  invoiceIdQuery,
+  sessionToken,
+  subscriptionExpired
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -39,10 +41,10 @@ export default function Send({
   const [showAdvanced, setShowAdvanced] = useState(
     Number(feeQuery) > 0 || isTagValid(sourceTagQuery) || isIdValid(invoiceIdQuery)
   )
-  const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 ? feeQuery : null)
+  const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 && sessionToken && !subscriptionExpired ? feeQuery : null)
   const [feeError, setFeeError] = useState('')
-  const [sourceTag, setSourceTag] = useState(isTagValid(sourceTagQuery) ? sourceTagQuery : null)
-  const [invoiceId, setInvoiceId] = useState(isIdValid(invoiceIdQuery) ? invoiceIdQuery : null)
+  const [sourceTag, setSourceTag] = useState(isTagValid(sourceTagQuery) && sessionToken && !subscriptionExpired ? sourceTagQuery : null)
+  const [invoiceId, setInvoiceId] = useState(isIdValid(invoiceIdQuery) && sessionToken && !subscriptionExpired ? invoiceIdQuery : null)
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
@@ -82,7 +84,7 @@ export default function Send({
       queryRemoveList.push('memo')
     }
 
-    if (fee && Number(amount) > 0) {
+    if (fee && Number(fee) > 0 && Number(fee) <= 1) {
       queryAddList.push({ name: 'fee', value: fee })
     } else {
       queryRemoveList.push('fee')
@@ -167,6 +169,12 @@ export default function Send({
 
     if (destinationTag && !isTagValid(destinationTag)) {
       setError('Please enter a valid destination tag.')
+      return
+    }
+
+    // Check if advanced options are being used without proper subscription
+    if ((fee || sourceTag || invoiceId) && (!sessionToken || subscriptionExpired)) {
+      setError('Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.')
       return
     }
 
@@ -374,7 +382,7 @@ export default function Send({
             Advanced Payment Options
           </CheckBox>
           {showAdvanced && (
-            <>
+            <>              
               <br />
               <div className="form-input">
                 <span className="input-title">Fee</span>
@@ -389,6 +397,7 @@ export default function Send({
                   type="text"
                   inputMode="decimal"
                   defaultValue={fee}
+                  disabled={!sessionToken || subscriptionExpired}
                 />
                 {feeError && <div className="red">{feeError}</div>}
               </div>
@@ -404,6 +413,7 @@ export default function Send({
                   maxLength="35"
                   type="text"
                   defaultValue={sourceTag}
+                  disabled={!sessionToken || subscriptionExpired}
                 />
               </div>
               <div className="form-spacing" />
@@ -417,10 +427,33 @@ export default function Send({
                   maxLength="64"
                   type="text"
                   defaultValue={invoiceId}
+                  disabled={!sessionToken || subscriptionExpired}
                 />
               </div>
+              {!sessionToken ? (
+                <>
+                <br />
+                <div className="center">
+                  Advanced options available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers.
+                </div>
+                </>
+              ) : (
+              subscriptionExpired ? (
+                <>
+                <br />
+                <div className="center">
+                  Your Bithomp Pro subscription has expired.
+                  <Link href="/admin/subscriptions">Renew your subscription</Link>.
+                </div>
+                </>
+              ) : (
+                <>
+                </>
+              )
+              )}
             </>
           )}
+
           <br />
           <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
             I agree with the{' '}
