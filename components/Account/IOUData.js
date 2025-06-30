@@ -10,6 +10,7 @@ import {
 import { LinkAccount } from '../../utils/links'
 import { useWidth } from '../../utils'
 import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaChartLine } from 'react-icons/fa' //FaCoins,
+import { subtract } from '../../utils/calc'
 
 const tokensCountText = (rippleStateList) => {
   if (!rippleStateList) return ''
@@ -172,6 +173,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
   // amount / gateway details / trustline settings
   const tokenRows = rippleStateList.map((tl, i) => {
     const issuer = tl.HighLimit?.issuer === address ? tl.LowLimit : tl.HighLimit
+    const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
 
     return (
       <tr key={i}>
@@ -191,8 +193,8 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
           </AddressWithIcon>
         </td>
         <td className="bold tooltip" style={{ float: 'right' }}>
-          {shortNiceNumber(Math.abs(tl.Balance?.value - (tl.LockedBalance?.value ? tl.LockedBalance?.value : 0)))}
-          <span className="tooltiptext">{fullNiceNumber(Math.abs(tl.Balance?.value))}</span>
+          {shortNiceNumber(balance)}
+          <span className="tooltiptext">{fullNiceNumber(balance)}</span>
         </td>
         <td className="right">
           <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
