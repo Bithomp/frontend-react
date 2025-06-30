@@ -438,16 +438,13 @@ export default function Send({
                 </div>
                 </>
               ) : (
-              subscriptionExpired ? (
+              subscriptionExpired && (
                 <>
                 <br />
                 <div className="center">
                   Your Bithomp Pro subscription has expired.
                   <Link href="/admin/subscriptions">Renew your subscription</Link>.
                 </div>
-                </>
-              ) : (
-                <>
                 </>
               )
               )}
