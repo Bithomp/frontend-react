@@ -191,7 +191,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
           </AddressWithIcon>
         </td>
         <td className="bold tooltip" style={{ float: 'right' }}>
-          {shortNiceNumber(Math.abs(tl.Balance?.value))}
+          {shortNiceNumber(Math.abs(tl.Balance?.value - (tl.LockedBalance?.value ? tl.LockedBalance?.value : 0)))}
           <span className="tooltiptext">{fullNiceNumber(Math.abs(tl.Balance?.value))}</span>
         </td>
         <td className="right">
