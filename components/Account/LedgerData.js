@@ -309,13 +309,9 @@ export default function LedgerData({
   const tokensNode = !objects?.rippleStateList ? (
     'Loading...'
   ) : objects?.rippleStateList?.length > 0 ? (
-    data?.ledgerInfo?.ledgerTimestamp ? (
-      <span className="orange bold">{objects?.rippleStateList?.length}</span>
-    ) : (
-      <a href={server + '/explorer/' + data.address} className="bold">
-        View tokens ({objects?.rippleStateList?.length})
-      </a>
-    )
+    <>
+      <span className="bold">{objects?.rippleStateList?.length}</span> (view below)
+    </>
   ) : (
     "This account doesn't hold Tokens."
   )
