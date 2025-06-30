@@ -77,7 +77,7 @@ export default function Notifications() {
             <h2>Notification channels</h2>
             <AddChannelButton />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {notifications.data.channels.map((channel) => (
               <ChannelCard key={channel.id} channel={channel} />
             ))}

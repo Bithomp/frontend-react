@@ -36,14 +36,15 @@ export default function ChannelCard({ channel }) {
           })}{' '}
         {channel.name || `Channel #${channel.id}`}
       </div>
-      <div className="flex justify-end">
-        <button className="btn btn-error" onClick={() => setIsDeleteDialogOpen(true)}>
-          Delete
-        </button>
-      </div>
+
       <ChannelSpecificDetails channel={channel} />
       <div className="text-sm text-gray-600 dark:text-gray-400 mb-2 w-full">
         Used in {channel.rules.length} {channel.rules.length === 1 ? 'rule' : 'rules'}
+      </div>
+      <div className="flex justify-start">
+        <button className="btn btn-error" onClick={() => setIsDeleteDialogOpen(true)}>
+          Delete
+        </button>
       </div>
       <ChannelDeleteDialog
         isOpen={isDeleteDialogOpen}
