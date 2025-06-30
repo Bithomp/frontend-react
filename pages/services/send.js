@@ -367,7 +367,7 @@ export default function Send({
                 <br />
                 <strong>Proceed with caution.</strong>
                 <br />
-                If you continue, {amountFormat(networkInfo?.reserveBase || '1000000')} ({networkInfo?.reserveBase ? (Number(networkInfo.reserveBase) / 1000000) : 1} {nativeCurrency}) will be used to activate the account on the ledger.
+                If you continue, {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate the account on the ledger.
               </div>
             </div>
           )}
@@ -524,7 +524,7 @@ export default function Send({
           {isNonActive && (
             <div className="orange">
               <CheckBox checked={agreeToSendToNonActive} setChecked={setAgreeToSendToNonActive} name="agree-to-non-active">
-                I understand that {amountFormat(networkInfo?.reserveBase || '1000000')} ({networkInfo?.reserveBase ? (Number(networkInfo.reserveBase) / 1000000) : 1} {nativeCurrency}) will be used to activate this account and I want to proceed
+                I understand that {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate this account and I want to proceed
               </CheckBox>
             </div>
           )}
