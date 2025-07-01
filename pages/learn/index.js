@@ -25,21 +25,6 @@ const learnPageXAHAU = {
 
 const learnContentXRP = [
   {
-    category: 'XRP Basics',
-    description: 'Learn about the basics of XRP, its purpose, and how it differs from other cryptocurrencies.',
-    items: [
-      { title: 'What is XRP?', description: 'Understand the basics of XRP, its purpose, and how it differs from other cryptocurrencies.', slug: 'what-is-xrp' },
-      { title: 'What is Ripple? (the company)', description: 'Learn about the company behind XRP, and how it is related.', slug: 'what-is-ripple' },
-    ],
-  },
-  {
-    category: 'XRP Ledger (XRPL)',
-    description: 'Understand how XRPL works and what makes it unique.',
-    items: [
-      { title: 'What is the XRP Ledger?', description: 'Learn about the XRP Ledger and its purpose.', slug: 'what-is-the-xrp-ledger' },
-    ],
-  },
-  {
     category: 'XRPL Features & Concepts',
     description: 'Dive deeper into the features and concepts of the XRP Ledger.',
     items: [
@@ -54,6 +39,7 @@ const learnContentXRP = [
     description: 'Learn how to get the most out of Bithomp’s powerful explorer.',
     items: [
       { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
+      { title: 'How to Mint NFTs on XRPL', slug: 'nft-minting' },
     ],
   },
 ]
@@ -73,6 +59,7 @@ const learnContentXAHAU = [
     description: 'Learn how to get the most out of Bithomp’s powerful explorer.',
     items: [
       { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
+      { title: 'How to mint NFTs on Xahau', slug: 'nft-minting' },
     ],
   },
 ]

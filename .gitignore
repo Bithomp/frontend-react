@@ -23,6 +23,3 @@ yarn-debug.log*
 yarn-error.log*
 
 .next
-
-# Sentry Config File
-.env.sentry-build-plugin

@@ -207,8 +207,8 @@
     "proposers": "제안자",
     "validation-quorum": "유효한 쿼럼",
     "base-fee": "기본 비용",
-    "base-reserve": "기본 준비금",
-    "increment-reserve": "준비금 증가",
+    "base-reserve": "계정 리저브",
+    "increment-reserve": "오브젝트 리저브",
     "total-supply": "전체 공급",
     "burned-by-hooks":"Hooks에 의해 소각됨",
     "total-burned": "전체 소각량"
@@ -390,10 +390,6 @@
     "Token information is not found": "해당 ID에 대한 정보를 찾을 수 없습니다",
     "No nfts information is found": "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요",
     "Address is not valid": "유효하지 않은 주소입니다"
-  },
-  "error-tx": {
-    "terNO_ACCOUNT": "거래를 전송하는 주소가 아직 원장에 자금이 충전되지 않았습니다",
-    "tefMAX_LEDGER": "The transaction has expired."
   },
   "units": {
     "seconds-short": "초",

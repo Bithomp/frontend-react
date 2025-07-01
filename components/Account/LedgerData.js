@@ -309,13 +309,9 @@ export default function LedgerData({
   const tokensNode = !objects?.rippleStateList ? (
     'Loading...'
   ) : objects?.rippleStateList?.length > 0 ? (
-    data?.ledgerInfo?.ledgerTimestamp ? (
-      <span className="orange bold">{objects?.rippleStateList?.length}</span>
-    ) : (
-      <a href={server + '/explorer/' + data.address} className="bold">
-        View tokens ({objects?.rippleStateList?.length})
-      </a>
-    )
+    <>
+      <span className="bold">{objects?.rippleStateList?.length}</span> (view below)
+    </>
   ) : (
     "This account doesn't hold Tokens."
   )
@@ -337,13 +333,9 @@ export default function LedgerData({
   const escrowNode = !objects?.escrowList ? (
     'Loading...'
   ) : objects?.escrowList?.length > 0 ? (
-    data?.ledgerInfo?.ledgerTimestamp ? (
-      <span className="orange bold">{objects?.escrowList?.length}</span>
-    ) : (
-      <a href={server + '/explorer/' + data.address} className="bold">
-        View Escrows ({objects?.escrowList?.length})
-      </a>
-    )
+    <>
+      <span className="bold">{objects?.escrowList?.length}</span> (view below)
+    </>
   ) : (
     "This account doesn't have Escrows."
   )
@@ -500,8 +492,8 @@ export default function LedgerData({
           )}
           {data.ledgerInfo?.flags?.noFreeze && (
             <tr>
-              <td>Freeze</td>
-              <td className="bold">disabled</td>
+              <td>No freeze</td>
+              <td className="bold">enabled</td>
             </tr>
           )}
           {/* If set, this account must individually approve other users in order for those users to hold this account’s issuances. */}

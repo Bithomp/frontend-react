@@ -3,19 +3,60 @@ import React from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
+import { FaHandshake } from 'react-icons/fa'
 
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
-import { AddressWithIcon, niceCurrency, shortNiceNumber } from '../utils/format'
+import { AddressWithIcon, niceCurrency, shortNiceNumber, userOrServiceName } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
-import { useWidth } from '../utils'
+import { nativeCurrency, useWidth } from '../utils'
+import { LinkAccount } from '../utils/links'
+
+/*
+  {
+    "token": "rL2sSC2eMm6xYyx1nqZ9MW4AP185mg7N9t:4150585800000000000000000000000000000000",
+    "issuer": "rL2sSC2eMm6xYyx1nqZ9MW4AP185mg7N9t",
+    "issuerDetails": {
+      "address": "rL2sSC2eMm6xYyx1nqZ9MW4AP185mg7N9t",
+      "username": null,
+      "service": null
+    },
+    "currency": "4150585800000000000000000000000000000000",
+    "supply": "98431923.34053394847447",
+    "trustlines": 9806,
+    "holders": 9183,
+    "rating": 0,
+    "statistics": {
+      "activeHolders": 675,
+      "sellVolume": "105342.5712484148477598",
+      "buyVolume": "162077.562673509980921282459",
+      "uniqueSellers": 75,
+      "uniqueBuyers": 116,
+      "dexes": 4519,
+      "dexTxs": 4299,
+      "mintVolume": "0.000000001555550273270893",
+      "burnVolume": "54.317077167655393322039993",
+      "transferVolume": "319729.5692719547508735106899",
+      "ripplingVolume": null,
+      "mintTxs": 14,
+      "burnTxs": 4833,
+      "transferTxs": 646,
+      "ripplingTxs": 0,
+      "uniqueAccounts": 730,
+      "uniqueDexAccounts": 178,
+      "priceXrp": "0.1146566270598530742",
+      "marketcap": "45723206.888776201217059311928860827119097212012795446"
+    }
+  }
+]
+*/
 
 // Server side initial data fetch
-export async function getServerSideProps (context) {
+export async function getServerSideProps(context) {
   const { locale, req } = context
   let initialData = null
   let initialErrorMessage = null
@@ -41,11 +82,12 @@ export async function getServerSideProps (context) {
   }
 }
 
-export default function Tokens ({
+export default function Tokens({
   initialData,
   initialErrorMessage,
   subscriptionExpired,
-  sessionToken
+  sessionToken,
+  setSignRequest
 }) {
   const { t } = useTranslation()
   const width = useWidth()
@@ -59,6 +101,7 @@ export default function Tokens ({
   const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState('')
   const [currency, setCurrency] = useState('')
+  const [rendered, setRendered] = useState(false)
 
   const controller = new AbortController()
 
@@ -137,6 +180,7 @@ export default function Tokens ({
 
   // Cleanup on unmount
   useEffect(() => {
+    setRendered(true)
     return () => {
       controller.abort()
     }
@@ -153,17 +197,41 @@ export default function Tokens ({
 
   // Helper component to render token with icon
   const TokenCell = ({ token }) => {
+    const issuerDetails = token.issuerDetails || {}
+
     return (
       <AddressWithIcon address={token?.issuer}>
-        {niceCurrency(token.currency)}
+        <b>{niceCurrency(token.currency)}</b> {userOrServiceName(issuerDetails)}
         {token.issuer && (
           <>
             <br />
-            {token.issuer}
+            <LinkAccount address={token.issuer} />
           </>
         )}
       </AddressWithIcon>
     )
+  }
+
+  const handleSetTrustline = (token) => {
+    // Format supply to have at most 6 decimal places
+    const formatSupply = (supply) => {
+      if (!supply) return '1000000000'
+      const num = parseFloat(supply)
+      if (isNaN(num)) return '1000000000'
+      return num.toFixed(6)
+    }
+
+    setSignRequest({
+      request: {
+        TransactionType: 'TrustSet',
+        LimitAmount: {
+          currency: token.currency,
+          issuer: token.issuer,
+          value: formatSupply(token.supply)
+        },
+        Flags: 131072
+      }
+    })
   }
 
   return (
@@ -176,8 +244,8 @@ export default function Tokens ({
         setOrder={setOrder}
         orderList={[
           { value: 'rating', label: 'Rating: High to Low' },
-          // { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
-          // { value: 'trustlinesLow', label: 'Trustlines: Low to High' }
+          { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
+          { value: 'holdersHigh', label: 'Holders: High to Low' }
         ]}
         count={data?.length}
         hasMore={marker}
@@ -188,10 +256,12 @@ export default function Tokens ({
       >
         {/* Left filters */}
         <>
-          <div className="flex flex-col sm:gap-4 md:h-[400px]">
-            <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
-            <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
-          </div>
+          {rendered && (
+            <div className="flex flex-col sm:gap-4 md:h-[400px]">
+              <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
+              <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
+            </div>
+          )}
         </>
         {/* Main content */}
         <InfiniteScrolling
@@ -208,13 +278,15 @@ export default function Tokens ({
         >
           {/* Desktop table */}
           {!width || width > 860 ? (
-            <table className="table-large">
+            <table className="table-large no-hover">
               <thead>
                 <tr>
                   <th className="center">#</th>
                   <th>Token</th>
+                  <th className="right">Marketcap</th>
                   <th className="right">Trustlines</th>
                   <th className="right">Holders</th>
+                  <th className="center">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -232,11 +304,27 @@ export default function Tokens ({
                         <td>
                           <TokenCell token={token} />
                         </td>
+                        <td className="right">
+                          {shortNiceNumber(token.statistics?.marketcap, 0)} {nativeCurrency}
+                        </td>
                         <td className="right" suppressHydrationWarning>
                           {shortNiceNumber(token.trustlines, 0)}
                         </td>
                         <td className="right" suppressHydrationWarning>
                           {shortNiceNumber(token.holders, 0)}
+                        </td>
+                        <td className="center">
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              handleSetTrustline(token)
+                            }}
+                            className="orange tooltip"
+                          >
+                            <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
+                            <span className="tooltiptext no-brake">Set trust</span>
+                          </a>
                         </td>
                       </tr>
                     ))}
@@ -277,9 +365,25 @@ export default function Tokens ({
                         <td>
                           <TokenCell token={token} />
                           <p>
+                            {token.statistics?.marketcap && (
+                              <>
+                                Marketcap: {shortNiceNumber(token.statistics?.marketcap, 0)} {nativeCurrency}
+                                <br />
+                              </>
+                            )}
                             Trustlines: {shortNiceNumber(token.trustlines, 0)}
                             <br />
                             Holders: {shortNiceNumber(token.holders, 0)}
+                            <br />
+                            <br />
+                            <button
+                              className="button-action narrow thin"
+                              onClick={() => {
+                                handleSetTrustline(token)
+                              }}
+                            >
+                              <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Set Trust
+                            </button>
                           </p>
                         </td>
                       </tr>
@@ -305,4 +409,4 @@ export default function Tokens ({
       </FiltersFrame>
     </>
   )
-} 
+}

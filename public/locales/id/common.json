@@ -207,8 +207,8 @@
     "proposers": "Pengusul",
     "validation-quorum": "Kuorum Validasi",
     "base-fee": "Biaya Dasar",
-    "base-reserve": "Cadangan Dasar",
-    "increment-reserve": "Penambahan Cadangan",
+    "base-reserve": "Cadangan akun",
+    "increment-reserve": "Cadangan objek",
     "total-supply": "Total Pasokan",
     "burned-by-hooks": "Dibakar oleh Hooks",
     "total-burned": "Total Dihapus"
@@ -390,10 +390,6 @@
     "Token information is not found": "Kami tidak dapat menemukan informasi apa pun untuk ID tersebut",
     "No nfts information is found": "Maaf, terjadi kesalahan, silakan cari yang lain.",
     "Address is not valid": "Invalid address"
-  },
-  "error-tx": {
-    "terNO_ACCOUNT": "Alamat yang mengirimkan transaksi belum didanai di ledger (belum).",
-    "tefMAX_LEDGER": "Transaksi tidak dapat dimasukkan ke ledger tertutup ter"
   },
   "units": {
     "seconds-short": "d",

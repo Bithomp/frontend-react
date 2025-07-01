@@ -60,9 +60,10 @@ import XamanData from '../../components/Account/XamanData'
 import ObjectsData from '../../components/Account/ObjectsData'
 import NFTokenData from '../../components/Account/NFTokenData'
 import URITokenData from '../../components/Account/URITokenData'
-//import IOUData from '../../components/Account/IOUData'
-//import EscrowData from '../../components/Account/EscrowData'
+import IOUData from '../../components/Account/IOUData'
+import EscrowData from '../../components/Account/EscrowData'
 //import DexOrdersData from '../../components/Account/DexOrdersData'
+import RecentTransactions from '../../components/Account/RecentTransactions'
 
 export default function Account({
   initialData,
@@ -178,7 +179,7 @@ export default function Account({
       isFirstRender.current = false
       return
     }
-
+    setObjects({})
     checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, refreshPage, ledgerTimestamp])
@@ -507,21 +508,6 @@ export default function Account({
                             </div>
                           )}
 
-                          {/* hide while its not ready
-                          <IOUData
-                            rippleStateList={objects?.rippleStateList}
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                          />
-                          <EscrowData
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                            escrowList={objects?.escrowList}
-                          />
-                          <DexOrdersData
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                            offerList={objects?.offerList}
-                          />
-                          */}
-
                           <LedgerData
                             data={data}
                             account={account}
@@ -535,6 +521,12 @@ export default function Account({
                             gateway={gateway}
                           />
                           <PublicData data={data} />
+                          <IOUData
+                            rippleStateList={objects?.rippleStateList}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            address={data?.address}
+                          />
+
                           {xahauNetwork ? (
                             <URITokenData data={data} uriTokenList={objects?.uriTokenList} />
                           ) : (
@@ -544,15 +536,15 @@ export default function Account({
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             />
                           )}
-                          {/*
-                          We need to add here
-                          - assets // we show the link in LedgerData - IOUData
-                          - nfts xls-20 // we show the link in NFTs data
-                          - obligations // data need to be synced on the backend first, we don't show it yet
-                          - dex orders // we show the link in the Ledgerdata - DexOrdersData
-                          - escrows // we show the link in the Ledgerdata - EscrowData
-                          - xls-14 nfts // only when exists - show separately them - or forget =)
-                          */}
+
+                          <EscrowData
+                            setSignRequest={setSignRequest}
+                            address={data?.address}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            escrowList={objects?.escrowList}
+                          />
+
+                          <RecentTransactions userData={userData} ledgerTimestamp={ledgerTimestamp} />
                           {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}
@@ -608,6 +600,9 @@ export default function Account({
         @media (max-width: 800px) {
           .button-wide {
             width: calc(50% - 27px);
+          }
+          .flex-container {
+            gap: 10px 10px;
           }
         }
       `}</style>
