@@ -49,9 +49,16 @@ export default function Send({
   const [isDestinationFlagged, setIsDestinationFlagged] = useState(false)
   const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
   const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
+  const [addressDetails, setAddressDetails] = useState(null)
 
   const onTokenChange = (token) => {
     setSelectedToken(token)
+  }
+
+  const handleAddressChange = (newAddress) => {
+    setAddress(newAddress)
+    // Clear address details when address changes
+    setAddressDetails(null)
   }
 
   useEffect(() => {
@@ -110,11 +117,12 @@ export default function Send({
       if (!address || !isAddressValid(address)) {
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setAddressDetails(null)
         return
       }
 
       try {
-        const response = await axios(`/v2/address/${address}?blacklist=true`)
+        const response = await axios(`/v2/address/${address}?blacklist=true&username=true&service=true`)
         const data = response?.data
 
         if (data?.address) {
@@ -125,14 +133,21 @@ export default function Send({
           if (!isFlagged) {
             setAgreeToSendToFlagged(false)
           }
+          // Set address details for display
+          setAddressDetails({
+            username: data.username,
+            service: data.service?.name
+          })
         } else {
           setIsDestinationFlagged(false)
           setAgreeToSendToFlagged(false)
+          setAddressDetails(null)
         }
       } catch (error) {
         setError('Error fetching destination account data')
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setAddressDetails(null)
       }
     }
 
@@ -285,9 +300,12 @@ export default function Send({
             placeholder="Destination address"
             name="destination"
             hideButton={true}
-            setValue={setAddress}
-            setInnerValue={setAddress}
-            rawData={isAddressValid(address) ? { address } : {}}
+            setValue={handleAddressChange}
+            setInnerValue={handleAddressChange}
+            rawData={isAddressValid(address) ? { 
+              address,
+              addressDetails 
+            } : {}}
             type="address"
           />
 
