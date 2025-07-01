@@ -30,7 +30,7 @@ body {
   --card-bg: #fff;
   --card-text: #000;
   }
-  body.dark {
+.dark body {
   --background-header: #031B21;
   --background-block: #031B21;
   --background-main: #090909;
@@ -63,12 +63,13 @@ body {
   --card-text: #fff;
   }
   
-  body[data-networkname*="xahau"] {
+body[data-networkname*="xahau"] {
   --background-header: #0E233F;
   --background-block: #0E233F;
   --background-footer: #061322;
-  &.dark {
+}
+
+.dark body[data-networkname*="xahau"] {
   --background-header: #061322;
   --background-block: #061322;
-  }
-  }
+}

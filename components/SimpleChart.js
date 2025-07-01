@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
+import { useTheme } from 'next-themes'
 
-import { useTheme } from './Layout/ThemeContext'
 import { niceNumber } from '../utils/format'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
@@ -22,7 +22,7 @@ const locales = {
   }
 }
 
-export default function PriceChart({ data, combined, currency }) {
+export default function SimpleChart({ data, combined, currency }) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
 

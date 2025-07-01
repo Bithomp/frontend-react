@@ -15,7 +15,7 @@ import {
   removeQueryParams,
   addQueryParams
 } from '../utils'
-import { useTheme } from './Layout/ThemeContext'
+import { useTheme } from 'next-themes'
 import { useRouter } from 'next/router'
 
 import AddressInput from './UI/AddressInput'

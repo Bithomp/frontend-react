@@ -1,19 +1,18 @@
 import { useState, useEffect } from 'react'
-import { useTheme } from '../ThemeContext'
+import { useTheme } from 'next-themes'
 import Image from 'next/image'
 
 export default function Switch() {
-  const [rendered, setRendered] = useState(false)
-  const { theme, toggleTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme()
 
-  useEffect(() => {
-    setRendered(true)
-  }, [])
+  // When mounted on client, now we can show the UI
+  useEffect(() => setMounted(true), [])
 
-  if (!rendered) return null
+  if (!mounted) return null
 
   const switchOnClick = () => {
-    toggleTheme()
+    setTheme(theme === 'dark' ? 'light' : 'dark')
   }
 
   return (

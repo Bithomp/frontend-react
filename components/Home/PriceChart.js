@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
 
-import { useTheme } from '../Layout/ThemeContext'
+import { useTheme } from 'next-themes'
 import { nativeCurrency } from '../../utils'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
