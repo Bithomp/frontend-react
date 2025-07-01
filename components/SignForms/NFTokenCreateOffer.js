@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import ExpirationSelect from '../UI/ExpirationSelect'
 import CheckBox from '../UI/CheckBox'
-import { isAddressValid, typeNumberOnly, useWidth, nativeCurrency } from '../../utils'
+import { isAddressValid, typeNumberOnly, useWidth, nativeCurrency, isNativeCurrency } from '../../utils'
 import { multiply, divide } from '../../utils/calc'
 import AddressInput from '../UI/AddressInput'
 import { amountFormat } from '../../utils/format'
@@ -19,7 +19,7 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
   useEffect(() => {
     if (signRequest.request.Amount && typeof signRequest.request.Amount === 'string') {
       // If we have a string amount (Native currency drops) but selected a token, convert it
-      if (selectedToken.currency !== nativeCurrency) {
+      if (!isNativeCurrency(selectedToken)) {
         const tokenAmount = divide(signRequest.request.Amount, 1000000)
         let newRequest = signRequest
         newRequest.request.Amount = {
@@ -31,7 +31,7 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
       }
     } else if (signRequest.request.Amount && typeof signRequest.request.Amount === 'object') {
       // If we have a token amount but selected a Native Currency, convert it
-      if (selectedToken.currency === nativeCurrency && !selectedToken.issuer) {
+      if (isNativeCurrency(selectedToken)) {
         let newRequest = signRequest
         newRequest.request.Amount = multiply(signRequest.request.Amount.value, 1000000)
         setSignRequest(newRequest)
@@ -76,7 +76,7 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
     const value = e.target.value
     // Only process if we have a valid number or empty string
     if (value === '' || (!isNaN(parseFloat(value)) && parseFloat(value) >= 0)) {
-      if (selectedToken.currency === nativeCurrency && !selectedToken.issuer) {
+      if (isNativeCurrency(selectedToken)) {
         // For Native currency, convert to drops
         if (value === '') {
           delete newRequest.request.Amount

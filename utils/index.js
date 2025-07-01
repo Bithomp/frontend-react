@@ -785,6 +785,19 @@ export const isAmountInNativeCurrency = (amount) => {
   return !amount?.issuer && !amount?.mpt_issuance_id
 }
 
+export const isNativeCurrency = (currencyObj) => {
+  if (!currencyObj) return false
+  if (!currencyObj.currency) return false
+  
+  // Check that currency matches the native currency for this network
+  if (currencyObj.currency !== nativeCurrency) return false
+  
+  // Check that there's no issuer (native currency has no issuer)
+  if (currencyObj.issuer) return false
+  
+  return true
+}
+
 export const xls14NftValue = (value) => {
   if (!value) return value
   value = value.toString()
