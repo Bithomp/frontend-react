@@ -63,6 +63,7 @@ export default function TrustSet({ setSignRequest }) {
         setIssuer(selectedToken.issuer)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedToken, mode])
 
   // Sync limit when switching modes
