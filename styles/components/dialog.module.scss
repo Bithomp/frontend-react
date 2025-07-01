@@ -48,7 +48,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 1.25rem 0 1.25rem;
+  padding: 1.25rem;
   border-bottom: 1px solid var(--card-border);
   margin-bottom: 1rem;
 }
@@ -133,7 +133,7 @@
   }
 
   .header {
-    padding: 1rem 1rem 0 1rem;
+    padding: 0.5rem;
   }
 
   .content {
@@ -142,6 +142,21 @@
 
   .title {
     font-size: 1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .backdrop,
+    .dialog,
+    .header,
+    .content,
+    .title,
+    .closeButton {
+      transition: none;
+    }
+
+    .dialog {
+      animation: none;
+    }
   }
 }
 

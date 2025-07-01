@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import styles from '@/styles/components/dialog.module.scss';
 
 const Dialog = ({ 
@@ -65,7 +66,7 @@ const Dialog = ({
 
   if (!isOpen) return null;
 
-  return (
+  const dialogContent = (
     <div 
       className={styles.backdrop}
       onClick={handleBackdropClick}
@@ -114,6 +115,8 @@ const Dialog = ({
       </div>
     </div>
   );
+
+  return createPortal(dialogContent, document.body);
 };
 
 export default Dialog;
