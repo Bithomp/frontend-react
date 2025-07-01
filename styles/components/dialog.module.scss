@@ -4,19 +4,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
   padding: 1rem;
   animation: fadeIn 0.2s ease-out;
 }
 
 .dialog {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  background: var(--card-bg);
+  color: var(--card-text);
+  border: 2px solid var(--card-border);
+  box-shadow: 4px 4px 0px var(--card-shadow);
+  border-radius: 4px;
   max-width: 90vw;
   max-height: 90vh;
   overflow: hidden;
@@ -31,31 +33,31 @@
 }
 
 .medium {
-  width: 600px;
+  width: 500px;
 }
 
 .large {
-  width: 800px;
+  width: 700px;
 }
 
 .xlarge {
-  width: 1000px;
+  width: 900px;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 1.5rem 0 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 1.25rem 1.25rem 0 1.25rem;
+  border-bottom: 1px solid var(--card-border);
   margin-bottom: 1rem;
 }
 
 .title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--card-text);
   flex: 1;
 }
 
@@ -65,7 +67,7 @@
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 4px;
-  color: #6b7280;
+  color: var(--text-secondary);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -73,18 +75,18 @@
   margin-left: 0.5rem;
 
   &:hover {
-    background-color: #f3f4f6;
-    color: #374151;
+    background-color: var(--background-secondary);
+    color: var(--text-main);
   }
 
   &:focus {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid var(--accent-link);
     outline-offset: 2px;
   }
 }
 
 .content {
-  padding: 0 1.5rem 1.5rem 1.5rem;
+  padding: 0 1.25rem 1.25rem 1.25rem;
   overflow-y: auto;
   flex: 1;
 }
@@ -102,7 +104,7 @@
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: scale(0.95) translateY(-10px);
+    transform: scale(0.95) translateY(-20px);
   }
   to {
     opacity: 1;
@@ -120,6 +122,7 @@
     width: 100%;
     max-width: 100%;
     max-height: 95vh;
+    margin: 0.5rem;
   }
 
   .small,
@@ -138,31 +141,8 @@
   }
 
   .title {
-    font-size: 1.125rem;
+    font-size: 1rem;
   }
 }
 
-// Dark mode support (if your app supports it)
-@media (prefers-color-scheme: dark) {
-  .dialog {
-    background: #1f2937;
-    color: #f9fafb;
-  }
-
-  .header {
-    border-bottom-color: #374151;
-  }
-
-  .title {
-    color: #f9fafb;
-  }
-
-  .closeButton {
-    color: #9ca3af;
-
-    &:hover {
-      background-color: #374151;
-      color: #d1d5db;
-    }
-  }
-} 
+ 
