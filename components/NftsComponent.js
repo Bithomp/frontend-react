@@ -109,7 +109,9 @@ export default function NftsComponent({
         currency: nativeCurrency
       }
     }
-    return null
+    return {
+      currency: nativeCurrency
+    }
   })
 
   const controller = new AbortController()
