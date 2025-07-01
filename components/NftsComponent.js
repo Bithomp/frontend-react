@@ -21,6 +21,7 @@ import Tiles from './Tiles'
 import IssuerSelect from './UI/IssuerSelect'
 import CheckBox from './UI/CheckBox'
 import DateAndTimeRange from './UI/DateAndTimeRange'
+import TokenSelector from './UI/TokenSelector'
 
 import RadioOptions from './UI/RadioOptions'
 import FormInput from './UI/FormInput'
@@ -97,6 +98,19 @@ export default function NftsComponent({
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
   const [filtersHide, setFiltersHide] = useState(false)
+  const [selectedToken, setSelectedToken] = useState(() => {
+    if (saleCurrencyIssuer && saleCurrency) {
+      return {
+        currency: saleCurrency,
+        issuer: saleCurrencyIssuer
+      }
+    } else if (saleCurrency === nativeCurrency && !saleCurrencyIssuer) {
+      return {
+        currency: nativeCurrency
+      }
+    }
+    return null
+  })
 
   const controller = new AbortController()
 
@@ -121,7 +135,7 @@ export default function NftsComponent({
 
   const listTabList = [
     { value: 'nfts', label: t('tabs.all') },
-    { value: 'onSale', label: t('tabs.onSale', { nativeCurrency }) }
+    { value: 'onSale', label: 'On sale for tokens' }
   ]
 
   let saleDestinationTabList = []
@@ -194,8 +208,11 @@ export default function NftsComponent({
     if (listTab === 'onSale') {
       //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all", "buyNow"
       listUrlPart = '?list=onSale&destination=' + saleDestinationTab
-      if (saleCurrencyIssuer && saleCurrency) {
-        listUrlPart = listUrlPart + '&currency=' + saleCurrency + '&currencyIssuer=' + saleCurrencyIssuer
+      if (selectedToken?.currency) {
+        listUrlPart = listUrlPart + '&currency=' + selectedToken.currency
+        if (selectedToken.issuer) {
+          listUrlPart = listUrlPart + '&currencyIssuer=' + selectedToken.issuer
+        }
       } else {
         listUrlPart = listUrlPart + '&currency=' + nativeCurrency?.toLowerCase()
       }
@@ -437,7 +454,8 @@ export default function NftsComponent({
     includeBurned,
     includeWithoutMediaData,
     mintedPeriod,
-    burnedPeriod
+    burnedPeriod,
+    selectedToken
   ])
 
   useEffect(() => {
@@ -519,6 +537,25 @@ export default function NftsComponent({
         setTab: setOrder,
         paramName: 'order'
       })
+      
+      // Add token parameters
+      if (selectedToken?.currency) {
+        queryAddList.push({
+          name: 'saleCurrency',
+          value: selectedToken.currency
+        })
+        if (selectedToken.issuer) {
+          queryAddList.push({
+            name: 'saleCurrencyIssuer',
+            value: selectedToken.issuer
+          })
+        } else {
+          queryRemoveList.push('saleCurrencyIssuer')
+        }
+      } else {
+        queryRemoveList.push('saleCurrency')
+        queryRemoveList.push('saleCurrencyIssuer')
+      }
     } else {
       queryRemoveList.push('saleDestination')
       queryRemoveList.push('saleCurrency')
@@ -552,7 +589,7 @@ export default function NftsComponent({
 
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
+  }, [order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData, selectedToken])
 
   const onTaxonInput = (value) => {
     if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
@@ -638,7 +675,7 @@ export default function NftsComponent({
             (isValidTaxon(taxonQuery) ? ' ' + taxonQuery : '') +
             (ownerQuery ? ', ' + t('table.owner') + ': ' + ownerQuery : '') +
             (activeView === 'list' ? ' ' + t('tabs.list') : '') +
-            (listTab === 'onSale' ? ' ' + t('tabs.onSale', { nativeCurrency }) : '') +
+            (listTab === 'onSale' ? ' ' + 'On sale for tokens': '') +
             (listTab === 'onSale' && (saleDestinationTab === 'buyNow' || saleDestinationTab === 'public')
               ? ', ' + t('tabs.buyNow')
               : '') +
@@ -708,7 +745,16 @@ export default function NftsComponent({
                 setTab={setSaleDestinationTab}
                 name="saleDestination"
               />
-              {saleCurrencyIssuer && saleCurrency && (
+              {nftExplorer && (
+                <div>
+                  {t('table.currency')}
+                  <TokenSelector
+                    value={selectedToken}
+                    onChange={setSelectedToken}
+                  />
+                </div>
+              )}
+              {!nftExplorer && saleCurrencyIssuer && saleCurrency && (
                 <>
                   <FormInput
                     title={t('table.currency')}
