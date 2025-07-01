@@ -5,7 +5,7 @@ import { IoMdClose } from 'react-icons/io'
 import { IoChevronDown } from 'react-icons/io5'
 import axios from 'axios'
 import { avatarServer, nativeCurrency, nativeCurrenciesImages, useWidth } from '../../utils'
-import { niceCurrency, shortAddress } from '../../utils/format'
+import { niceCurrency, shortAddress, shortNiceNumber } from '../../utils/format'
 
 const limit = 20
 
@@ -196,7 +196,14 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
                             />
                           </div>
                           <div className="token-selector-modal-item-name">
-                            <span>{getTokenDisplayName(token)}</span>
+                            <span>
+                              {getTokenDisplayName(token)}
+                              {token.trustlines !== undefined && token.holders !== undefined && (
+                                <span style={{ marginLeft: '8px', fontSize: '0.85em', color: 'var(--text-secondary)' }}>
+                                  ({shortNiceNumber(token.trustlines, 0)} trustlines, {shortNiceNumber(token.holders, 0)} holders)
+                                </span>
+                              )}
+                            </span>
                             {width > 1100 ? <span>{token.issuer}</span> : <span>{shortAddress(token.issuer)}</span>}
                           </div>
                         </div>
