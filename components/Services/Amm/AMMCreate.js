@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { multiply } from '../../../utils/calc'
 import CheckBox from '../../UI/CheckBox'
 import FormInput from '../../UI/FormInput'
-import { nativeCurrency, typeNumberOnly } from '../../../utils'
+import { nativeCurrency, typeNumberOnly, isNativeCurrency } from '../../../utils'
 import TokenSelector from '../../UI/TokenSelector'
 import { LinkAmm, LinkTx } from '../../../utils/links'
 import CopyButton from '../../UI/CopyButton'
@@ -56,7 +56,7 @@ export default function AMMCreateForm({ setSignRequest }) {
       }
 
       // Asset 1 amount formatting
-      if (asset1.currency === nativeCurrency) {
+      if (isNativeCurrency(asset1)) {
         ammCreate.Amount = multiply(asset1Amount, 1000000)
       } else {
         ammCreate.Amount = {
@@ -67,7 +67,7 @@ export default function AMMCreateForm({ setSignRequest }) {
       }
 
       // Asset 2 amount formatting
-      if (asset2.currency === nativeCurrency) {
+      if (isNativeCurrency(asset2)) {
         ammCreate.Amount2 = multiply(asset2Amount, 1000000)
       } else {
         ammCreate.Amount2 = {

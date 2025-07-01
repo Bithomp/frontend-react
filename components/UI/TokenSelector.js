@@ -4,7 +4,7 @@ import { IoSearch } from 'react-icons/io5'
 import { IoMdClose } from 'react-icons/io'
 import { IoChevronDown } from 'react-icons/io5'
 import axios from 'axios'
-import { avatarServer, nativeCurrency, nativeCurrenciesImages, useWidth } from '../../utils'
+import { avatarServer, nativeCurrency, isNativeCurrency, nativeCurrenciesImages, useWidth } from '../../utils'
 import { niceCurrency, shortAddress } from '../../utils/format'
 
 const limit = 20
@@ -34,7 +34,7 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
         // when searched for native currency, we also add the native currency on top,
         // so check that it's not that case before canceling the search
         if (
-          searchResults[0]?.currency === nativeCurrency &&
+          isNativeCurrency(searchResults[0]) &&
           !niceCurrency(searchResults[1]?.currency)?.toLowerCase().startsWith(nativeCurrency.toLowerCase())
         )
           return
