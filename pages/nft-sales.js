@@ -266,7 +266,7 @@ export default function NftSales({
     let buyerUrlPart = buyer ? '&buyer=' + buyer : ''
     let sellerUrlPart = seller ? '&seller=' + seller : ''
     let searchPart = ''
-    let hasImagePart = !includeWithoutMediaData ? '&hasImage=true' : ''
+    let hasMediaPart = !includeWithoutMediaData ? '&hasMedia=true' : ''
     let issuerTaxonUrlPart = ''
     let collectionUrlPart = collectionQuery ? '&collection=' + collectionQuery : ''
 
@@ -313,7 +313,7 @@ export default function NftSales({
         buyerUrlPart +
         sellerUrlPart +
         searchPart +
-        hasImagePart,
+        hasMediaPart,
       {
         signal: controller.signal
       }

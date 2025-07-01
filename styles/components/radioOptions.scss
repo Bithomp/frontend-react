@@ -72,4 +72,12 @@
             margin-left: 0 !important;
         }
     }
+
+    &--block {
+        @media(max-width: 1024px) {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
 }

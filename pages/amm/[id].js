@@ -317,11 +317,13 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                               {' ' + lpToken + ' '}
                             </td>
                           </tr>
-                          {data.auctionSlot.timeInterval && (
+                          {data.auctionSlot?.timeInterval ? (
                             <tr>
                               <td>Time interval</td>
-                              <td>{data.auctionSlot.timeInterval + 1 + '/20'}</td>
+                              <td>{data.auctionSlot?.timeInterval + 1 + '/20'}</td>
                             </tr>
+                          ) : (
+                            ''
                           )}
                           <tr>
                             <td>Expiration</td>

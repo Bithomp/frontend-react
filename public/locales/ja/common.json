@@ -207,8 +207,8 @@
     "proposers": "提出者数",
     "validation-quorum": "定足数",
     "base-fee": "基本手数料",
-    "base-reserve": "基本準備金",
-    "increment-reserve": "所有者準備金",
+    "base-reserve": "アカウントリザーブ",
+    "increment-reserve": "オブジェクトリザーブ",
     "total-supply": "供給量",
     "burned-by-hooks": "Hooksによって焼却された",
     "total-burned": "合計バーン"
@@ -390,10 +390,6 @@
     "Token information is not found": "IDに関する情報は見つかりませんでした",
     "No nfts information is found": "申し訳ありません、エラーが発生しました。別の方法で検索してください。",
     "Address is not valid": "アドレスが無効です。"
-  },
-  "error-tx": {
-    "terNO_ACCOUNT": "トランザクションを送信するアドレスがまだレジャーに資金提供されていません。",
-    "tefMAX_LEDGER": "トランザクションが最新のレジャーを超えています。"
   },
   "units": {
     "seconds-short": "秒",

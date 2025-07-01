@@ -53,7 +53,7 @@ export default function Footer() {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
-          <Link href="/jobs">Join our team 🧑‍💻</Link>
+          <Link href="/jobs">Join our team</Link>
           <Link href="/about-us">{t('menu.company.about-us')}</Link>
           <Link href="/advertise">{t('menu.business.advertise')}</Link>
           <a href="https://xrplmerch.com/product-category/bithomp/?wpam_id=22" target="_blank" rel="noreferrer">
@@ -61,9 +61,7 @@ export default function Footer() {
           </a>
           <Link href="/customer-support">{t('menu.customer-support')}</Link>
           <Link href="/press">{t('menu.press')}</Link>
-          <Link href="/donate">
-            {t('menu.donate')} <span className="red">❤</span>
-          </Link>
+          <Link href="/donate">{t('menu.donate')}</Link>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.legal')}</span>
@@ -75,17 +73,21 @@ export default function Footer() {
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
           {!xahauNetwork && <Link href="/xrpl-article">XRP, XRPL, Ripple</Link>}
-          <Link href="/blackholed-address">Blackholed address</Link>
-          <Link href="/blacklisted-address">Blacklisted address</Link>
-          <Link href="/verified-domains">Verified domains</Link>
+          <Link href="/learn/blackholed-address">Blackholed address</Link>
+          <Link href="/learn/blacklisted-address">Blacklisted address</Link>
+          <Link href="/learn/verified-domain">Verified domains</Link>
           <Link href="/learn/the-bithomp-explorer-advantages">Why Our Explorer</Link>
-          {!xahauNetwork && <Link href="/rlusd">Ripple USD</Link>}
-          <Link href="/nft-minting">How to Mint NFT</Link>
+          {!xahauNetwork && <Link href="/learn/ripple-usd">Ripple USD</Link>}
+          <Link href="/learn/nft-minting">How to Mint NFT</Link>
+          <Link href="/learn">See our learn page</Link>
         </div>
 
         {!xahauNetwork && (
           <div className="footer-menu-column">
             <span className="footer-menu-header">{t('menu.sponsored.title')}</span>
+            <Link href="/the-chain-of-blocks-summit">
+              XRPL Summit 2025 <span className="red">❤</span>
+            </Link>
             <a href="/go/fm-buy" target="_blank" rel="noreferrer">
               {t('menu.sponsored.buy')}
             </a>

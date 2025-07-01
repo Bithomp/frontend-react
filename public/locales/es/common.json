@@ -207,8 +207,8 @@
     "proposers": "Validadores",
     "validation-quorum": "Cuórum de validación",
     "base-fee": "Comisión mínima",
-    "base-reserve": "Reserva inicial",
-    "increment-reserve": "Reserva incremental",
+    "base-reserve": "Reserva de cuenta",
+    "increment-reserve": "Reserva de objeto",
     "total-supply": "Distribución total",
     "burned-by-hooks": "Quemado por Hooks",
     "total-burned": "Quemado en total"
@@ -390,10 +390,6 @@
     "Token information is not found": "No pudimos encontrar ninguna información para este ID",
     "No nfts information is found": "Lo senstimos, ha ocurrido un error, por favor, busca algo más.",
     "Address is not valid": "Dirección inválida"
-  },
-  "error-tx": {
-    "terNO_ACCOUNT": "La dirección que envía la transacción no está financiada en el libro contable (aún).",
-    "tefMAX_LEDGER": "La transacción no se ha incluido en el libro contable debido a la antigüedad de la transacción."
   },
   "units": {
     "seconds-short": "s",

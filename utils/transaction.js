@@ -162,7 +162,127 @@ export const errorCodeDescription = (code) => {
       nativeCurrency +
       ' than it holds, not counting the reserve.',
     tecUNFUNDED_OFFER:
-      'The OfferCreate transaction failed because the account creating the offer does not have any of the TakerGets currency.'
+      'The OfferCreate transaction failed because the account creating the offer does not have any of the TakerGets currency.',
+    terINSUF_FEE_B:
+      'The account sending the transaction does not have enough XRP to pay the Fee specified in the transaction.',
+    terLAST: 'Used internally only. This code should never be returned.',
+    terNO_ACCOUNT: 'The address sending the transaction is not funded in the ledger (yet).',
+    terNO_AMM:
+      'The AMM-related transaction specifies an asset pair that does not currently have an AMM instance. (Added by the AMM amendment)',
+    terNO_AUTH:
+      "The transaction would involve adding currency issued by an account with lsfRequireAuth enabled to a trust line that is not authorized. For example, you placed an offer to buy a currency you aren't authorized to hold.",
+    terNO_LINE: 'Used internally only. This code should never be returned.',
+    terNO_RIPPLE:
+      "The transaction can't succeed because of rippling settings. For example, the transaction tried to create an AMM even though the issuer of at least one of the tokens has not enabled the Default Ripple flag.",
+    terOWNERS:
+      "The transaction requires that account sending it has a nonzero 'owners count', so the transaction cannot succeed. For example, an account cannot enable the lsfRequireAuth flag if it has any trust lines or available offers.",
+    terPRE_SEQ:
+      'The Sequence number of the current transaction is higher than the current sequence number of the account sending the transaction.',
+    terPRE_TICKET:
+      'The transaction attempted to use a Ticket, but the specified TicketSequence number does not exist in the ledger. However, the Ticket could still be created by another transaction.',
+    terQUEUED:
+      'The transaction met the load-scaled transaction cost but did not meet the open ledger requirement, so the transaction has been queued for a future ledger.',
+    terRETRY: 'Unspecified retriable error.',
+    terSUBMITTED: 'Transaction has been submitted, but not yet applied.',
+    tefALREADY: 'The same exact transaction has already been applied.',
+    tefBAD_ADD_AUTH: 'DEPRECATED.',
+    tefBAD_AUTH:
+      'The key used to sign this account is not authorized to modify this account. (It could be authorized if the account had the same key set as the Regular Key.)',
+    tefBAD_AUTH_MASTER:
+      'The single signature provided to authorize this transaction does not match the master key, but no regular key is associated with this address.',
+    tefBAD_LEDGER:
+      'While processing the transaction, the ledger was discovered in an unexpected state. If you can reproduce this error, please report an issue to get it fixed.',
+    tefBAD_QUORUM:
+      'The transaction was multi-signed, but the total weights of all included signatures did not meet the quorum.',
+    tefBAD_SIGNATURE:
+      'The transaction was multi-signed, but contained a signature for an address not part of a SignerList associated with the sending account.',
+    tefCREATED: 'DEPRECATED.',
+    tefEXCEPTION:
+      'While processing the transaction, the server entered an unexpected state. This may be caused by unexpected inputs, for example if the binary data for the transaction is grossly malformed. If you can reproduce this error, please report an issue to get it fixed.',
+    tefFAILURE: 'Unspecified failure in applying the transaction.',
+    tefINTERNAL:
+      'When trying to apply the transaction, the server entered an unexpected state. If you can reproduce this error, please report an issue to get it fixed.',
+    tefINVARIANT_FAILED:
+      'An invariant check failed when trying to claim the transaction cost. Added by the EnforceInvariants amendment. If you can reproduce this error, please report an issue.',
+    tefMASTER_DISABLED:
+      "The transaction was signed with the account's master key, but the account has the lsfDisableMaster field set.",
+    tefMAX_LEDGER:
+      "The transaction included a LastLedgerSequence parameter, but the current ledger's sequence number is already higher than the specified value.",
+    tefNFTOKEN_IS_NOT_TRANSFERABLE:
+      'The transaction attempted to send a non-fungible token to another account, but the NFToken has the lsfTransferable flag disabled and the transfer would not be to or from the issuer. (Added by the NonFungibleTokensV1_1 amendment.)',
+    tefNO_AUTH_REQUIRED:
+      'The TrustSet transaction tried to mark a trust line as authorized, but the lsfRequireAuth flag is not enabled for the corresponding account, so authorization is not necessary.',
+    tefNO_TICKET:
+      "The transaction attempted to use a Ticket, but the specified TicketSequence number does not exist in the ledger, and cannot be created in the future because it is earlier than the sender's current sequence number.",
+    tefNOT_MULTI_SIGNING: 'The transaction was multi-signed, but the sending account has no SignerList defined.',
+    tefPAST_SEQ:
+      'The sequence number of the transaction is lower than the current sequence number of the account sending the transaction.',
+    tefTOO_BIG:
+      'The transaction would affect too many objects in the ledger. For example, this was an AccountDelete transaction but the account to be deleted owns over 1000 objects in the ledger.',
+    tefWRONG_PRIOR:
+      "The transaction contained an AccountTxnID field (or the deprecated PreviousTxnID field), but the transaction specified there does not match the account's previous transaction.",
+    temBAD_AMM_TOKENS:
+      "The transaction incorrectly specified one or more assets. For example, the asset's issuer does not match the corresponding asset in the AMM's pool, or the transaction specified the same asset twice.",
+    temBAD_AMOUNT:
+      'An amount specified by the transaction (for example the destination Amount or SendMax values of a Payment) was invalid, possibly because it was a negative number.',
+    temBAD_AUTH_MASTER:
+      'The key used to sign this transaction does not match the master key for the account sending it, and the account does not have a Regular Key set.',
+    temBAD_CURRENCY: 'The transaction improperly specified a currency field.',
+    temBAD_EXPIRATION:
+      'The transaction improperly specified an expiration value, or did not specify a required expiration value.',
+    temBAD_FEE:
+      'The transaction improperly specified its Fee value, for example by listing a non-XRP currency or some negative amount of XRP.',
+    temBAD_ISSUER: 'The transaction improperly specified the issuer field of some currency included in the request.',
+    temBAD_LIMIT: 'The TrustSet transaction improperly specified the LimitAmount value of a trust line.',
+    temBAD_NFTOKEN_TRANSFER_FEE:
+      'The NFTokenMint transaction improperly specified the TransferFee field of the transaction.',
+    temBAD_OFFER:
+      'The OfferCreate transaction specifies an invalid offer, such as offering to trade XRP for itself, or offering a negative amount.',
+    temBAD_PATH:
+      'The Payment transaction specifies one or more Paths improperly, for example including an issuer for XRP, or specifying an account differently.',
+    temBAD_PATH_LOOP:
+      'One of the Paths in the Payment transaction was flagged as a loop, so it cannot be processed in a bounded amount of time.',
+    temBAD_SEND_XRP_LIMIT:
+      'The Payment transaction used the tfLimitQuality flag in a direct XRP-to-XRP payment, even though XRP-to-XRP payments do not involve any conversions.',
+    temBAD_SEND_XRP_MAX:
+      'The Payment transaction included a SendMax field in a direct XRP-to-XRP payment, even though sending XRP should never require SendMax.',
+    temBAD_SEND_XRP_NO_DIRECT:
+      'The Payment transaction used the tfNoDirectRipple flag for a direct XRP-to-XRP payment, even though XRP-to-XRP payments are always direct.',
+    temBAD_SEND_XRP_PARTIAL:
+      'The Payment transaction used the tfPartialPayment flag for a direct XRP-to-XRP payment, even though XRP-to-XRP payments should always deliver the full amount.',
+    temBAD_SEND_XRP_PATHS:
+      'The Payment transaction included Paths while sending XRP, even though XRP-to-XRP payments should always be direct.',
+    temBAD_SEQUENCE:
+      'The transaction references a sequence number that is higher than its own Sequence number, for example trying to cancel an offer that would have to be placed after the transaction that cancels it.',
+    temBAD_SIGNATURE: 'The signature to authorize this transaction is either missing or improperly formed.',
+    temBAD_SRC_ACCOUNT:
+      'The Account on whose behalf this transaction is being sent is not a properly-formed account address.',
+    temBAD_TRANSFER_RATE:
+      'The TransferRate field of an AccountSet transaction is not properly formatted or is out of the acceptable range.',
+    temCANNOT_PREAUTH_SELF:
+      'The sender of the DepositPreauth transaction was also specified as the account to preauthorize. You cannot preauthorize yourself.',
+    temDST_IS_SRC: 'The transaction improperly specified a destination address as the Account sending the transaction.',
+    temDST_NEEDED: 'The transaction improperly omitted a destination.',
+    temINVALID: 'The transaction is otherwise invalid, for example incorrect transaction ID or malformed signature.',
+    temINVALID_COUNT: 'The transaction includes a TicketCount field, but the number of Tickets specified is invalid.',
+    temINVALID_FLAG:
+      'The transaction includes a Flag that does not exist, or includes a contradictory combination of flags.',
+    temMALFORMED: 'Unspecified problem with the format of the transaction.',
+    temREDUNDANT: 'The transaction would do nothing, for example sending a payment to the same account.',
+    temREDUNDANT_SEND_MAX: 'Removed in: rippled 0.28.0.',
+    temRIPPLE_EMPTY:
+      'The Payment transaction includes an empty Paths field, but paths are necessary to complete this payment.',
+    temSEQ_AND_TICKET:
+      'The transaction contains both a TicketSequence field and a non-zero Sequence value, which is not allowed.',
+    temBAD_WEIGHT:
+      'The SignerListSet transaction includes a SignerWeight that is invalid, for example a zero or negative value.',
+    temBAD_SIGNER:
+      'The SignerListSet transaction includes a signer who is invalid, for example duplicate entries or the owner of the SignerList also being a member.',
+    temBAD_QUORUM: 'The SignerListSet transaction has an invalid SignerQuorum value.',
+    temUNCERTAIN: 'Used internally only. This code should never be returned.',
+    temUNKNOWN: 'Used internally only. This code should never be returned.',
+    temDISABLED:
+      'The transaction requires logic that is disabled, typically meaning an amendment is not enabled for the current ledger.'
   }
   return codes[code] || code
 }

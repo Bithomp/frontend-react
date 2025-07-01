@@ -25,6 +25,7 @@ export const xamanProcessSignedData = async ({ uuid, afterSigning, onSignIn, aft
 
     const signRequestData = data.custom_meta?.blob?.data
     const address = data.response?.account
+    const result = data.response?.dispatched_result //ter - no tx on the ledger
 
     if (signRequestData?.signOnly) {
       afterSigning({ signRequestData, blob: data.response?.hex, address })
@@ -35,7 +36,8 @@ export const xamanProcessSignedData = async ({ uuid, afterSigning, onSignIn, aft
         redirectName,
         broker: data.custom_meta?.blob?.broker,
         txHash: data.response?.txid,
-        txType: data.payload?.tx_type
+        txType: data.payload?.tx_type,
+        result
       })
     }
 
@@ -102,7 +104,7 @@ export const xamanWsConnect = (wsUri, callback) => {
   }
   xamanWs.onmessage = function (evt) {
     const obj = JSON.parse(evt.data)
-    if (obj.opened) {
+    if (obj.opened || obj.pre_signed || obj.dispatched) {
       //nothing
     } else if (obj.signed) {
       xamanWs.close()

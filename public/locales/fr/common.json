@@ -207,8 +207,8 @@
     "proposers": "Proposeurs",
     "validation-quorum": "Quorum de validation",
     "base-fee": "Frais de base",
-    "base-reserve": "Réserve de base",
-    "increment-reserve": "Réserve d'incrément",
+    "base-reserve": "Réserve de compte",
+    "increment-reserve": "Réserve d'objet",
     "total-supply": "Offre totale",
     "burned-by-hooks": "Brûlé par Hooks",
     "total-burned": "Total brûlé"
@@ -390,10 +390,6 @@
     "Token information is not found": "Nous n'avons trouvé aucune information pour cet ID",
     "No nfts information is found": "Désolé, une erreur est survenue, veuillez rechercher autre chose.",
     "Address is not valid": "Adresse invalide"
-  },
-  "error-tx": {
-    "terNO_ACCOUNT": "L'adresse envoyant la transaction n'est pas financée dans le registre (encore).",
-    "tefMAX_LEDGER": "La transaction a expiré."
   },
   "units": {
     "seconds-short": "s",
