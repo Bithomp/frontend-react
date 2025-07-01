@@ -4,7 +4,7 @@ import styles from '@/styles/components/card.module.scss'
 
 export default function Card({ 
     children, 
-    className,
+    className = '',
     as,
     href,
     ...rest
@@ -17,7 +17,7 @@ export default function Card({
 
     return (
         <Component 
-            className={`${styles.card} ${className || ''}`.trim()}
+            className={`${styles.card} ${className}`.trim()}
             href={href}
             type={type}
             // An interactive card should be focusable.
@@ -39,10 +39,4 @@ Card.propTypes = {
 
     // If provided, the card will render as an `<a>` tag.
     href: PropTypes.string,
-}
-
-Card.defaultProps = {
-    className: '',
-    as: undefined,
-    href: undefined
 }
