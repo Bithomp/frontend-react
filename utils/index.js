@@ -421,6 +421,21 @@ export const encode = (code) => {
   return Buffer.from(code).toString('hex').toUpperCase()
 }
 
+export const encodeCurrencyCode = (code) => {
+  // Convert to hex and pad/truncate to exactly 40 characters (160 bits)
+  const hex = Buffer.from(code).toString('hex').toUpperCase()
+  
+  if (hex.length > 40) {
+    // Truncate to 40 characters
+    return hex.substring(0, 40)
+  } else if (hex.length < 40) {
+    // Pad with zeros to 40 characters
+    return hex.padEnd(40, '0')
+  }
+  
+  return hex
+}
+
 export const nativeCurrenciesImages = {
   XRP: '/images/currencies/xrp.svg',
   XAH: '/images/currencies/xah.png'
