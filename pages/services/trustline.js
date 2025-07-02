@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { explorerName, isAddressValid, typeNumberOnly, xahauNetwork } from '../../utils'
+import { explorerName, isAddressValid, typeNumberOnly, xahauNetwork, encodeCurrencyCode } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { useState, useEffect } from 'react'
 import AddressInput from '../../components/UI/AddressInput'
@@ -115,6 +115,11 @@ export default function TrustSet({ setSignRequest }) {
 
     if (!currency.currency) {
       setError('Please enter a valid currency.')
+      return
+    }
+
+    if (currency.currency.length > 3 && !/^[0-9A-F]{40}$/i.test(currency.currency)) {
+      setError('Please enter a valid currency code (40 hex characters).')
       return
     }
 
@@ -258,13 +263,40 @@ export default function TrustSet({ setSignRequest }) {
                 rawData={selectedTokenData}
               />
               <div className="form-spacing" />
-              <FormInput
-                title="Currency code"
-                placeholder="Currency code (e.g., USD, EUR or HEX)"
-                setInnerValue={(value) => setCurrency({ currency: value })}
-                hideButton={true}
-                defaultValue={currency.currency}
-              />
+              <div>
+                <span className="input-title">Currency code</span>
+                <div className="form-input">
+                  <div className="form-input__wrap">
+                    <input
+                      className="simple-input"
+                      placeholder="Currency code (e.g., USD, EUR or HEX)"
+                      value={currency.currency}
+                      onChange={(e) => setCurrency({ currency: e.target.value })}
+                      spellCheck="false"
+                    />
+                    <div className="form-input__btns">
+                      <div 
+                        className="button-action"
+                        style={{                          
+                          height: '36px',
+                          minWidth: '60px'
+                        }}
+                        onClick={() => {
+                          if (currency.currency && currency.currency.length > 3 && !/^[0-9A-F]{40}$/i.test(currency.currency)) {
+                            const hexCurrency = encodeCurrencyCode(currency.currency.toUpperCase())
+                            setCurrency({ currency: hexCurrency })
+                          }
+                        }}
+                      >
+                        Convert
+                      </div>
+                    </div>
+                  </div>
+                  <span className="orange">
+                    <b>Note:</b> If currency more than 3 characters, it should be converted to HEX.
+                  </span>
+                </div>
+              </div>
             </div>
           )}
           {mode === 'advanced' && (
