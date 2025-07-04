@@ -1,18 +1,27 @@
-import { fullDateAndTime } from '../../utils/format'
+import { fullDateAndTime, niceNumber, amountFormat, niceCurrency } from '../../utils/format'
+import { nativeCurrency } from '../../utils'
+import { divide, multiply } from '../../utils/calc'
+import { MdMoneyOff } from 'react-icons/md'
 
-export default function DexOrdersData({ offerList, ledgerTimestamp }) {
+export default function DexOrdersData({ account, offerList, ledgerTimestamp, setSignRequest }) {
   //show the section only if there are dex orders to show
   if (!offerList?.length) return ''
 
-  const title = ledgerTimestamp ? (
-    <span className="red bold">Historical DEX orders data ({fullDateAndTime(ledgerTimestamp)})</span>
+  // Sort offerList by sequence in ascending order
+  const sortedOfferList = [...offerList].sort((a, b) => a.Sequence - b.Sequence)
+
+  const historicalTitle = ledgerTimestamp ? (
+    <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
-    'DEX orders'
+    ''
   )
 
-  const statusNode = !offerList ? 'Loading...' : <span>There are {offerList?.length} DEX orders</span>
-
-  //console.log(offerList) //delete
+  const offerListCountText = (offerList) => {
+    if (!offerList) return ''
+    let countList = offerList.filter((p) => p !== undefined)
+    if (countList.length > 1) return countList.length + ' '
+    return ''
+  }
 
   /*
   [
@@ -53,29 +62,137 @@ export default function DexOrdersData({ offerList, ledgerTimestamp }) {
   ]
   */
 
+  const orderRows = sortedOfferList.map((offer, i) => {
+    const sell = offer.flags?.sell
+    return (
+      <tr key={i}>
+        <td className="center" style={{ width: 30 }}>
+          {offer.Sequence}
+        </td>
+        <td className="left">
+          <span className={sell ? 'red' : 'green'}>{sell ? 'Selling ' : 'Buying '}</span>
+          <span className="bold">{amountFormat(sell ? offer.TakerGets : offer.TakerPays, { withIssuer: true })}</span>
+          <span className="grey">{' for '}</span>
+          <span className="bold">{amountFormat(sell ? offer.TakerPays : offer.TakerGets, { withIssuer: true })}</span>
+        </td>
+        {sell ? (
+          <td className="right">
+            {typeof offer.TakerGets === 'string' ? (
+              <>
+                1 {nativeCurrency} = {niceNumber(multiply(offer.quality, 1000000), 0, null, 5)}{' '}
+                {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
+              </>
+            ) : typeof offer.TakerPays === 'string' ? (
+              <>
+                1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(divide(offer.quality, 1000000), 0, null, 5)}{' '}
+                {nativeCurrency}
+              </>
+            ) : (
+              <>
+                1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(offer.quality, 0, null, 5)}{' '}
+                {niceCurrency(offer.TakerPays?.currency)}
+              </>
+            )}
+          </td>
+        ) : (
+          <td className="right">
+            {typeof offer.TakerGets === 'string' ? (
+              <>
+                1 {niceCurrency(offer.TakerPays?.currency)} ={' '}
+                {niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)} {nativeCurrency}
+              </>
+            ) : typeof offer.TakerPays === 'string' ? (
+              <>
+                1 {nativeCurrency} = {niceNumber(divide(1000000, offer.quality), 0, null, 5)}{' '}
+                {niceCurrency(offer.TakerGets?.currency)}
+              </>
+            ) : (
+              <>
+                1 {niceCurrency(offer.TakerPays?.currency)} = {niceNumber(divide(1, offer.quality), 0, null, 5)}{' '}
+                {niceCurrency(offer.TakerGets?.currency)}
+              </>
+            )}
+          </td>
+        )}
+        <td className="center">
+          {offer.Account === account?.address ? (
+            <a
+              href="#"
+              onClick={() =>
+                setSignRequest({
+                  request: {
+                    TransactionType: 'OfferCancel',
+                    OfferSequence: offer.Sequence
+                  }
+                })
+              }
+              className="red tooltip"
+            >
+              <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
+              <span className="tooltiptext">Cancel</span>
+            </a>
+          ) : (
+            <span className="grey tooltip">
+              <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
+              <span className="tooltiptext">Cancel</span>
+            </span>
+          )}
+        </td>
+      </tr>
+    )
+  })
+
   return (
     <>
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
-            <th colSpan="100">{title}</th>
+            <th colSpan="100">
+              {offerListCountText(offerList)} DEX orders{historicalTitle}
+              {!account?.address && !ledgerTimestamp && (
+                <>
+                  {' '}
+                  [
+                  <span onClick={() => setSignRequest({})} className="link bold">
+                    Sign in
+                  </span>{' '}
+                  to Cancel]
+                </>
+              )}
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Status</td>
-            <td>{statusNode}</td>
+            <th>#</th>
+            <th className="left">Offer</th>
+            <th className="right">Rate</th>
+            <th className="center">Action</th>
           </tr>
+          {orderRows}
         </tbody>
       </table>
       <div className="show-on-small-w800">
         <br />
-        <center>{title}</center>
-        <p>
-          <span className="grey">Status</span> {statusNode}
-        </p>
+        <center>
+          {offerListCountText(offerList)}
+          {'DEX Orders'.toUpperCase()}
+          {historicalTitle}
+        </center>
+        <br />
+        <table className="table-mobile wide">
+          <tbody>
+            <tr>
+              <th>#</th>
+              <th className="left">Offer</th>
+              <th className="right">Rate</th>
+              <th className="center">Action</th>
+            </tr>
+            {orderRows}
+          </tbody>
+        </table>
+        <br />
       </div>
-      <style jsx>{``}</style>
     </>
   )
 }
