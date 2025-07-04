@@ -63,28 +63,19 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
   */
 
   const orderRows = sortedOfferList.map((offer, i) => {
+    const sell = offer.flags?.sell
     return (
       <tr key={i}>
         <td className="center" style={{ width: 30 }}>
           {offer.Sequence}
         </td>
         <td className="left">
-          <span className={offer.flags?.sell ? 'red' : 'green'}>{offer.flags?.sell ? 'Selling ' : 'Buying '}</span>
-          {offer.flags?.sell ? (
-            <>
-              <span className="bold">{amountFormat(offer.TakerGets, { withIssuer: true })}</span>
-              <span className="grey">{' for '}</span>
-              <span className="bold">{amountFormat(offer.TakerPays, { withIssuer: true })}</span>
-            </>
-          ) : (
-            <>
-              <span className="bold">{amountFormat(offer.TakerPays, { withIssuer: true })}</span>
-              <span className="grey">{' for '}</span>
-              <span className="bold">{amountFormat(offer.TakerGets, { withIssuer: true })}</span>
-            </>
-          )}
+          <span className={sell ? 'red' : 'green'}>{sell ? 'Selling ' : 'Buying '}</span>
+          <span className="bold">{amountFormat(sell ? offer.TakerGets : offer.TakerPays, { withIssuer: true })}</span>
+          <span className="grey">{' for '}</span>
+          <span className="bold">{amountFormat(sell ? offer.TakerPays : offer.TakerGets, { withIssuer: true })}</span>
         </td>
-        {offer.flags?.sell ? (
+        {sell ? (
           <td className="right">
             {typeof offer.TakerGets === 'string' ? (
               <>
