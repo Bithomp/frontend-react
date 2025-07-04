@@ -1,4 +1,10 @@
-import { fullDateAndTime, addressUsernameOrServiceLink, niceNumber, amountFormat, niceCurrency } from '../../utils/format'
+import {
+  fullDateAndTime,
+  addressUsernameOrServiceLink,
+  niceNumber,
+  amountFormat,
+  niceCurrency
+} from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 import { divide, multiply } from '../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
@@ -61,86 +67,90 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
     }
   ]
   */
- 
+
   const orderRows = sortedOfferList.map((offer, i) => {
     return (
       <tr key={i}>
-        <td className="center" style={{ width: 30 }}>#{offer.Sequence}</td>
+        <td className="center" style={{ width: 30 }}>
+          {offer.Sequence}
+        </td>
         <td className="left">
-          <span className={offer.flags?.sell ? 'red' : 'green'}>
-            {offer.flags?.sell ? 'Selling ' : 'Buying '}            
-          </span>
+          <span className={offer.flags?.sell ? 'red' : 'green'}>{offer.flags?.sell ? 'Selling ' : 'Buying '}</span>
           {offer.flags?.sell ? (
             <>
               <span className="bold">
                 {amountFormat(offer.TakerGets, { short: true })}
-                {offer.TakerGets?.issuer && <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>}
+                {offer.TakerGets?.issuer && (
+                  <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>
+                )}
               </span>
-              <span className="grey">
-                {' for '}
-              </span>
+              <span className="grey">{' for '}</span>
               <span className="bold">
                 {amountFormat(offer.TakerPays, { short: true })}
-                {offer.TakerPays?.issuer && <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>}
+                {offer.TakerPays?.issuer && (
+                  <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>
+                )}
               </span>
-          </>
+            </>
           ) : (
             <>
               <span className="bold">
                 {amountFormat(offer.TakerPays, { short: true })}
-                {offer.TakerPays?.issuer && <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>}
+                {offer.TakerPays?.issuer && (
+                  <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>
+                )}
               </span>
-              <span className="grey">
-                {' for '}
-              </span>
+              <span className="grey">{' for '}</span>
               <span className="bold">
                 {amountFormat(offer.TakerGets, { short: true })}
-                {offer.TakerGets?.issuer && <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>}
+                {offer.TakerGets?.issuer && (
+                  <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>
+                )}
               </span>
             </>
           )}
-        </td>        
-        {
-          offer.flags?.sell ? (
-            <td className="right">
-              {
-                typeof offer.TakerGets === 'string' ? (
-                  <>
-                    1 {nativeCurrency} = {niceNumber(multiply(offer.quality, 1000000), 0, null, 5)} {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
-                  </>  
-                ) : typeof offer.TakerPays === 'string' ? (
-                  <>
-                    1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(divide(offer.quality, 1000000), 0, null, 5)} {nativeCurrency}
-                  </>
-                ) : (
-                  <>
-                    1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(offer.quality, 0, null, 5)} {niceCurrency(offer.TakerPays?.currency)}
-                  </>
-                )
-              }
-            </td>
-          ) : (
-            <td className="right">
-              {
-                typeof offer.TakerGets === 'string' ? (
-                  <>
-                    1 {niceCurrency(offer.TakerPays?.currency)} = {niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)} {nativeCurrency}
-                  </>
-                ) : typeof offer.TakerPays === 'string' ? (
-                  <>
-                    1 {nativeCurrency} = {niceNumber(divide(1000000, offer.quality), 0, null, 5)} {niceCurrency(offer.TakerGets?.currency)}
-                  </>
-                ) : (
-                  <>
-                    1 {niceCurrency(offer.TakerPays?.currency)} = {niceNumber(divide(1, offer.quality), 0, null, 5)} {niceCurrency(offer.TakerGets?.currency)}
-                  </>
-                )
-              }
-            </td>
-          )
-        }        
+        </td>
+        {offer.flags?.sell ? (
+          <td className="right">
+            {typeof offer.TakerGets === 'string' ? (
+              <>
+                1 {nativeCurrency} = {niceNumber(multiply(offer.quality, 1000000), 0, null, 5)}{' '}
+                {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
+              </>
+            ) : typeof offer.TakerPays === 'string' ? (
+              <>
+                1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(divide(offer.quality, 1000000), 0, null, 5)}{' '}
+                {nativeCurrency}
+              </>
+            ) : (
+              <>
+                1 {niceCurrency(offer.TakerGets?.currency)} = {niceNumber(offer.quality, 0, null, 5)}{' '}
+                {niceCurrency(offer.TakerPays?.currency)}
+              </>
+            )}
+          </td>
+        ) : (
+          <td className="right">
+            {typeof offer.TakerGets === 'string' ? (
+              <>
+                1 {niceCurrency(offer.TakerPays?.currency)} ={' '}
+                {niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)} {nativeCurrency}
+              </>
+            ) : typeof offer.TakerPays === 'string' ? (
+              <>
+                1 {nativeCurrency} = {niceNumber(divide(1000000, offer.quality), 0, null, 5)}{' '}
+                {niceCurrency(offer.TakerGets?.currency)}
+              </>
+            ) : (
+              <>
+                1 {niceCurrency(offer.TakerPays?.currency)} = {niceNumber(divide(1, offer.quality), 0, null, 5)}{' '}
+                {niceCurrency(offer.TakerGets?.currency)}
+              </>
+            )}
+          </td>
+        )}
         <td className="center">
-          { offer.Account === account?.address ? (
+          {offer.Account === account?.address ? (
             <a
               href="#"
               onClick={() =>
@@ -178,14 +188,14 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
                 <>
                   {' '}
                   [
-                  <a href="#" onClick={() => setSignRequest({})} className="bold">
+                  <span onClick={() => setSignRequest({})} className="link bold">
                     Sign in
-                  </a>{' '}
+                  </span>{' '}
                   to Cancel]
                 </>
               )}
             </th>
-          </tr>          
+          </tr>
         </thead>
         <tbody>
           <tr>
