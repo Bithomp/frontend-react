@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { fullDateAndTime, timeOrDate } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
-import axios from 'axios'
 import CopyButton from '../UI/CopyButton'
 
-export default function RecentTransactions({ userData, ledgerTimestamp }) {
+export default function RecentTransactions({ userData, ledgerTimestamp, transactionsData }) {
   const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -17,25 +16,15 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     ''
   )
 
-  const fetchTransactions = async () => {
-    if (!address) return
-    setLoading(true)
-    setError(null)
-    const res = await axios(
-      `/v3/transactions/${address}?limit=5` +
-        (ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : '')
-    ).catch((error) => {
-      setError(error.message)
-      setLoading(false)
-    })
-    setTransactions(res?.data || [])
-    setLoading(false)
-  }
-
   useEffect(() => {
-    fetchTransactions()
+    // Use transactionsData from parent component
+    if (transactionsData) {
+      setTransactions(transactionsData)
+      setLoading(false)
+      setError(null)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, ledgerTimestamp])
+  }, [transactionsData])
 
   if (!transactions?.length) {
     return null

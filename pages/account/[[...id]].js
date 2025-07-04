@@ -102,6 +102,7 @@ export default function Account({
   const [objects, setObjects] = useState({})
   //const [obligations, setObligations] = useState({})
   const [gateway, setGateway] = useState(false)
+  const [transactionsData, setTransactionsData] = useState(null)
 
   useEffect(() => {
     if (!initialData?.address) return
@@ -110,6 +111,11 @@ export default function Account({
       service: initialData.service?.name,
       address: initialData.address
     })
+
+    // Fetch transactions data for the initial load
+    if (initialData.address) {
+      fetchTransactionsData(initialData.address, ledgerTimestampQuery)
+    }
 
     if (initialData?.obligations) {
       //setObligations(initialData.obligations)
@@ -123,7 +129,7 @@ export default function Account({
       //keep it here for cases when address changes without refreshing the page
       setGateway(false)
     }
-  }, [initialData])
+  }, [initialData, ledgerTimestampQuery])
 
   useEffect(() => {
     async function fetchData() {
@@ -162,6 +168,13 @@ export default function Account({
           service: newdata.service?.name,
           address: newdata.address
         })
+        
+        // Fetch transactions data when using time machine
+        if (ledgerTimestamp) {
+          fetchTransactionsData(newdata.address, ledgerTimestamp)
+        } else {
+          fetchTransactionsData(newdata.address, null)
+        }
       } else {
         if (newdata.error) {
           setErrorMessage(t('error-api.' + newdata.error))
@@ -169,6 +182,20 @@ export default function Account({
           setErrorMessage('Error')
         }
       }
+    }
+  }
+
+  const fetchTransactionsData = async (address, timestamp) => {
+    if (!address) return
+    
+    try {
+      const url = `/v3/transactions/${address}?limit=5` + 
+        (timestamp ? `&toDate=${new Date(timestamp).toISOString()}` : '')
+      const response = await axios(url)
+      setTransactionsData(response?.data || [])
+    } catch (error) {
+      console.error('Error fetching transactions:', error)
+      setTransactionsData([])
     }
   }
 
@@ -223,6 +250,7 @@ export default function Account({
   const resetTimeMachine = () => {
     setLedgerTimestampInput(null)
     setLedgerTimestamp(null)
+    setTransactionsData(null)
   }
 
   return (
@@ -550,7 +578,7 @@ export default function Account({
                             escrowList={objects?.escrowList}
                           />
 
-                          <RecentTransactions userData={userData} ledgerTimestamp={ledgerTimestamp} />
+                          <RecentTransactions userData={userData} ledgerTimestamp={ledgerTimestamp} transactionsData={transactionsData} />
                           {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}
