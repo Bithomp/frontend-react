@@ -7,16 +7,23 @@ import Tabs from '../../components/Tabs'
 import AMMCreateForm from '../../components/Services/Amm/AMMCreate'
 import AMMVoteForm from '../../components/Services/Amm/AMMVote'
 import { getIsSsrMobile } from '../../utils/mobile'
+import AMMWithdrawForm from '../../components/Services/Amm/AMMWithdraw'
+import AMMDepositForm from '../../components/Services/Amm/AMMDeposit'
+
+const tabList = [
+  { value: 'deposit', label: 'AMM Deposit' },
+  { value: 'withdraw', label: 'AMM Withdraw' },
+  { value: 'vote', label: 'AMM Vote' },
+  { value: 'create', label: 'AMM Create' }
+]
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
 
-  const initialTab = query?.tab === 'vote' ? 'vote' : 'create'
-
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      initialTab,
+      initialTab: tabList.some((tab) => tab.value === query?.tab) ? query.tab : 'create',
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -43,21 +50,18 @@ export default function AMMService({ setSignRequest, initialTab }) {
     )
   }
 
-  const tabList = [
-    { value: 'create', label: 'AMM Create' },
-    { value: 'vote', label: 'AMM Vote' }
-  ]
-
   return (
     <>
       <SEO title="AMM Services" description="Create or vote on Automated Market Makers on XRPL" />
       <div className="page-services-amm content-center">
-        <h1 className="center">{tab === 'create' ? 'AMM Create' : 'AMM Vote'}</h1>
+        <h1 className="center">{tabList.find((t) => t.value === tab)?.label || ''}</h1>
         <div className="center">
           <Tabs tabList={tabList} tab={tab} setTab={handleTabChange} name="ammTabs" />
         </div>
         {tab === 'create' && <AMMCreateForm setSignRequest={setSignRequest} />}
         {tab === 'vote' && <AMMVoteForm setSignRequest={setSignRequest} />}
+        {tab === 'withdraw' && <AMMWithdrawForm setSignRequest={setSignRequest} />}
+        {tab === 'deposit' && <AMMDepositForm setSignRequest={setSignRequest} />}
       </div>
     </>
   )
