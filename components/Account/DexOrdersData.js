@@ -1,10 +1,4 @@
-import {
-  fullDateAndTime,
-  addressUsernameOrServiceLink,
-  niceNumber,
-  amountFormat,
-  niceCurrency
-} from '../../utils/format'
+import { fullDateAndTime, niceNumber, amountFormat, niceCurrency } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 import { divide, multiply } from '../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
@@ -78,35 +72,15 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
           <span className={offer.flags?.sell ? 'red' : 'green'}>{offer.flags?.sell ? 'Selling ' : 'Buying '}</span>
           {offer.flags?.sell ? (
             <>
-              <span className="bold">
-                {amountFormat(offer.TakerGets, { short: true })}
-                {offer.TakerGets?.issuer && (
-                  <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>
-                )}
-              </span>
+              <span className="bold">{amountFormat(offer.TakerGets, { withIssuer: true })}</span>
               <span className="grey">{' for '}</span>
-              <span className="bold">
-                {amountFormat(offer.TakerPays, { short: true })}
-                {offer.TakerPays?.issuer && (
-                  <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>
-                )}
-              </span>
+              <span className="bold">{amountFormat(offer.TakerPays, { withIssuer: true })}</span>
             </>
           ) : (
             <>
-              <span className="bold">
-                {amountFormat(offer.TakerPays, { short: true })}
-                {offer.TakerPays?.issuer && (
-                  <>({addressUsernameOrServiceLink(offer.TakerPays, 'issuer', { short: true })})</>
-                )}
-              </span>
+              <span className="bold">{amountFormat(offer.TakerPays, { withIssuer: true })}</span>
               <span className="grey">{' for '}</span>
-              <span className="bold">
-                {amountFormat(offer.TakerGets, { short: true })}
-                {offer.TakerGets?.issuer && (
-                  <>({addressUsernameOrServiceLink(offer.TakerGets, 'issuer', { short: true })})</>
-                )}
-              </span>
+              <span className="bold">{amountFormat(offer.TakerGets, { withIssuer: true })}</span>
             </>
           )}
         </td>
