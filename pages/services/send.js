@@ -139,7 +139,7 @@ export default function Send({
         
         if (data?.address) {
           const isFlagged = data.blacklist?.blacklisted || false
-          const isNonActivated = !data.ledgerInfo?.activated || false
+          const isNonActivated =  data.ledgerInfo && data.ledgerInfo.activated === false
           
           setIsDestinationFlagged(isFlagged)
           setIsNonActive(isNonActivated)
@@ -336,7 +336,7 @@ export default function Send({
           {isDestinationFlagged && (
             <div>
               <div className="form-spacing" />
-              <div className="red center p-2 rounded-md bg-red-50 border border-red-200 mb-4 sm:mb-0">
+              <div className="red center p-2 rounded-md border border-red-200 mb-4 sm:mb-0">
                 <strong>⚠️ Fraud Alert</strong>
                 <br />
                 This account has been flagged as potentially involved in scams, phishing, or other malicious activities.
@@ -358,7 +358,7 @@ export default function Send({
           {isNonActive && (
             <div>
               <div className="form-spacing" />
-              <div className="orange center p-2 rounded-md bg-orange-50 border border-orange-200 mb-4 sm:mb-0">
+              <div className="orange center p-2 rounded-md border border-orange-200 mb-4 sm:mb-0">
                 <strong>⚠️ Non-Activated Account</strong>
                 <br />
                 You are attempting to send funds to a non-activated account.
@@ -431,6 +431,17 @@ export default function Send({
             name="advanced-payment"
           >
             Advanced Payment Options
+            {!sessionToken ? (
+                <>
+                 <span className="orange"> (available to <Link href="/admin" style={{ color: '#00808E !important' }}>logged-in</Link> Bithomp Pro subscribers)</span>
+                </>
+              ) : (
+              subscriptionExpired && (
+                <>
+                  <span className="orange"> Your Bithomp Pro subscription has expired. <Link href="/admin/subscriptions" style={{ color: '#00808E !important' }}>Renew your subscription</Link></span>
+                </>
+              )
+              )}
           </CheckBox>
           {showAdvanced && (
             <>              
@@ -480,25 +491,7 @@ export default function Send({
                   defaultValue={invoiceId}
                   disabled={!sessionToken || subscriptionExpired}
                 />
-              </div>
-              {!sessionToken ? (
-                <>
-                <br />
-                <div className="center">
-                  Advanced options available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers.
-                </div>
-                </>
-              ) : (
-              subscriptionExpired && (
-                <>
-                <br />
-                <div className="center">
-                  Your Bithomp Pro subscription has expired.
-                  <Link href="/admin/subscriptions">Renew your subscription</Link>.
-                </div>
-                </>
-              )
-              )}
+              </div>              
             </>
           )}
 
