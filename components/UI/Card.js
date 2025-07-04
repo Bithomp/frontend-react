@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 
-import styles from '@/styles/components/card.module.scss'
+import styles from '@/styles/components/card.module.css'
 
 export default function Card({ 
     children, 
