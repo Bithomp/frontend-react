@@ -59,7 +59,7 @@ export default function Send({
     setSelectedToken(token)
   }
 
-  // Fetch network info for reserve amounts
+  // Fetch network info for reserve amounts only when account is not activated
   useEffect(() => {
     const fetchNetworkInfo = async () => {
       try {
@@ -69,8 +69,12 @@ export default function Send({
         console.error('Error fetching network info:', error)
       }
     }
-    fetchNetworkInfo()
-  }, [])
+
+    // Only fetch network info if the destination account is not activated
+    if (isNonActive) {
+      fetchNetworkInfo()
+    }
+  }, [isNonActive])
 
   useEffect(() => {
     let queryAddList = []
