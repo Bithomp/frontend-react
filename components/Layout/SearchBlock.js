@@ -295,6 +295,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         return
       }
 
+      if (tab === 'transactions') {
+        router.push('/transactions/' + encodeURI(searchFor) + addParams)
+        return
+      }
+
       router.push('/account/' + encodeURI(searchFor) + addParams)
       return
     }
@@ -331,7 +336,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const explorerHeader = (tab) => {
     if (
-      ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object'].includes(tab)
+      ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object', 'transactions'].includes(tab)
     ) {
       return t('explorer.header.' + tab)
     }
