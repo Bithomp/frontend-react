@@ -215,6 +215,16 @@ export default function Admin({
     }
   }
 
+  const onChangeEmail = async () => {
+    setStep(0)
+    setEmail('')
+    setPassword('')
+    setRememberMe(false)
+    setTermsAccepted(false)
+    setToken('')
+    setErrorMessage('')
+  }
+
   const onLogin = async () => {
     if (!email) {
       setErrorMessage(t('form.error.email-empty'))
@@ -471,6 +481,13 @@ export default function Admin({
                 disabled={!termsAccepted || !token || !email || !isEmailValid(email)}
               >
                 Submit
+              </button>
+            </>
+          )}
+          {step === 1 && (
+            <>
+              <button className="button-action" onClick={onChangeEmail} style={{ marginLeft: '20px' }}>
+                Change email
               </button>
             </>
           )}
