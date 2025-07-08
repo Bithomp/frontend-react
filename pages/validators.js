@@ -2,7 +2,7 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect, memo } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import ReactCountryFlag from 'react-country-flag'
-import { useTheme } from '../components/Layout/ThemeContext'
+import { useTheme } from 'next-themes'
 
 import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
