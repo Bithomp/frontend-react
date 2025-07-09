@@ -436,16 +436,16 @@ export default function Send({
           >
             Advanced Payment Options
             {!sessionToken ? (
-                <>
-                 <span className="orange"> (available to <Link href="/admin" style={{ color: '#00808E !important' }}>logged-in</Link> Bithomp Pro subscribers)</span>
-                </>
-              ) : (
-              subscriptionExpired && (
-                <>
-                  <span className="orange"> Your Bithomp Pro subscription has expired. <Link href="/admin/subscriptions" style={{ color: '#00808E !important' }}>Renew your subscription</Link></span>
-                </>
-              )
-              )}
+              <>
+                <span className="orange"> (available to <Link href="/admin" style={{ color: '#00808E !important' }}>logged-in</Link> Bithomp Pro subscribers)</span>
+              </>
+            ) : (
+            subscriptionExpired && (
+              <>
+                <span className="orange"> Your Bithomp Pro subscription has expired. <Link href="/admin/subscriptions" style={{ color: '#00808E !important' }}>Renew your subscription</Link></span>
+              </>
+            )
+            )}
           </CheckBox>
           {showAdvanced && (
             <>              

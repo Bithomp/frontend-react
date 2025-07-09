@@ -295,6 +295,17 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
             name="advanced-escrow"
           >
             Advanced options
+            {!sessionToken ? (
+              <>
+                <span className="orange"> (available to <Link href="/admin" style={{ color: '#00808E !important' }}>logged-in</Link> Bithomp Pro subscribers)</span>
+              </>
+            ) : (
+            subscriptionExpired && (
+              <>
+                <span className="orange"> Your Bithomp Pro subscription has expired. <Link href="/admin/subscriptions" style={{ color: '#00808E !important' }}> Renew your subscription</Link></span>
+              </>
+            )
+            )}
           </CheckBox>
 
           {showAdvanced && (
@@ -345,25 +356,7 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
                   disabled={!sessionToken || subscriptionExpired}
                 />
                 {feeError && <div className="red">{feeError}</div>}
-              </div>
-              {!sessionToken ? (
-                <>
-                <br />
-                <div className="center">
-                  Advanced options available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers.
-                </div>
-                </>
-              ) : (
-              subscriptionExpired && (
-                <>
-                <br />
-                <div className="center">
-                  Your Bithomp Pro subscription has expired.
-                  <Link href="/admin/subscriptions">Renew your subscription</Link>.
-                </div>
-                </>
-              )
-              )}
+              </div>              
             </>
           )}
           <br />
