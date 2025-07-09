@@ -6,6 +6,7 @@ import {
   addAndRemoveQueryParams,
   addQueryParams,
   nativeCurrency,
+  isNativeCurrency,
   removeQueryParams,
   useWidth,
   xahauNetwork
@@ -116,12 +117,12 @@ export default function Amms({
   const [marker, setMarker] = useState(initialData?.marker)
   const [filtersHide, setFiltersHide] = useState(false)
   const [token, setToken] = useState(() => {
-    if (currencyQuery && currencyQuery !== nativeCurrency) {
+    if (currencyQuery && currencyIssuerQuery) {
       return {
         currency: currencyQuery,
         issuer: currencyIssuerQuery
       }
-    } else if (currencyQuery === nativeCurrency) {
+    } else if (currencyQuery === nativeCurrency && !currencyIssuerQuery) {
       return {
         currency: nativeCurrency
       }
@@ -136,7 +137,7 @@ export default function Amms({
 
   useEffect(() => {
     if (token?.currency && order === 'currencyHigh') {
-      if (token.currency === nativeCurrency) {
+      if (isNativeCurrency(token)) {
         addAndRemoveQueryParams(router, [{ name: 'currency', value: nativeCurrency }], ['currencyIssuer'])
       } else if (token.issuer) {
         const params = [

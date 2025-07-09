@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import FormInput from '../../UI/FormInput'
-import { nativeCurrency, typeNumberOnly } from '../../../utils'
+import { nativeCurrency, typeNumberOnly, isNativeCurrency } from '../../../utils'
 import TokenSelector from '../../UI/TokenSelector'
 import { LinkAmm, LinkTx } from '../../../utils/links'
 import CopyButton from '../../UI/CopyButton'
@@ -35,7 +35,7 @@ export default function AMMVoteForm({ setSignRequest }) {
       }
 
       // Asset 1 amount formatting
-      if (asset1.currency === nativeCurrency) {
+      if (isNativeCurrency(asset1)) {
         ammVote.Asset = {
           currency: asset1.currency
         }
@@ -47,7 +47,7 @@ export default function AMMVoteForm({ setSignRequest }) {
       }
 
       // Asset 2 amount formatting
-      if (asset2.currency === nativeCurrency) {
+      if (isNativeCurrency(asset2)) {
         ammVote.Asset2 = {
           currency: asset2.currency
         }

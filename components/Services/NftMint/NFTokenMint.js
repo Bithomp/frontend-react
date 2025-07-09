@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { encode, server, addAndRemoveQueryParams, nativeCurrency } from '../../../utils'
+import { encode, server, addAndRemoveQueryParams, nativeCurrency, isNativeCurrency } from '../../../utils'
 import { isValidTaxon } from '../../../utils/nft'
 import CheckBox from '../../UI/CheckBox'
 import AddressInput from '../../UI/AddressInput'
@@ -197,7 +197,7 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
       }
       
       // Handle amount based on selected token
-      if (selectedToken.currency === nativeCurrency) {
+      if (isNativeCurrency(selectedToken)) {
         // For XRP, convert to drops
         request.Amount = String(Math.round(parseFloat(amount) * 1000000))
       } else {
