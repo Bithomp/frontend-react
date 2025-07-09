@@ -200,7 +200,7 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
                               {getTokenDisplayName(token)}
                               {token.trustlines !== undefined && token.holders !== undefined && (
                                 <span style={{ marginLeft: '8px', fontSize: '0.85em', color: 'var(--text-secondary)' }}>
-                                  ({shortNiceNumber(token.trustlines, 0)} trustlines, {shortNiceNumber(token.holders, 0)} holders)
+                                  {shortNiceNumber(token.holders, 0, 0, null, true)} holders
                                 </span>
                               )}
                             </span>

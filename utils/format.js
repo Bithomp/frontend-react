@@ -898,7 +898,7 @@ export const fullNiceNumber = (n, currency = null) => {
   }
 }
 
-export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 3, currency = null) => {
+export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 3, currency = null, compact = false) => {
   if (n !== 0 && !n) return null
   n = Number(n)
   let beforeNumber = ''
@@ -906,6 +906,36 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     beforeNumber = '-'
     n = -1 * n
   }
+  
+  if (compact) {
+    // Compact mode: shorter numbers
+    let output = ''
+    if (n > 999999999999) {
+      output = niceNumber(n / 1000000000000, 1, currency) + 'T'
+    } else if (n > 999999999) {
+      output = niceNumber(n / 1000000000, 1, currency) + 'B'
+    } else if (n > 999999) {
+      output = niceNumber(n / 1000000, 1, currency) + 'M'
+    } else if (n > 9999) {
+      // For numbers over 10K, show as 99K or 99.9K
+      const thousands = n / 1000
+      if (thousands >= 100) {
+        // For 100K+, show as 999K (no decimal)
+        output = Math.floor(thousands) + 'K'
+      } else {
+        // For 10K-99.9K, show as 99.9K (one decimal)
+        output = niceNumber(thousands, 1, currency) + 'K'
+      }
+    } else if (n === 0) {
+      output = niceNumber(0, 0, currency)
+    } else {
+      // For numbers less than 10K, show as full number (9999)
+      output = niceNumber(n, 0, currency)
+    }
+    return beforeNumber + output
+  }
+  
+  // Original mode
   if (smallNumberFractionDigits > 2) {
     if (n > 99.99) {
       smallNumberFractionDigits = 2
