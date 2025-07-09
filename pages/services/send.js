@@ -48,6 +48,7 @@ export default function Send({
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
   const [isDestinationFlagged, setIsDestinationFlagged] = useState(false)
   const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
+  const [requireDestTag, setRequireDestTag] = useState(false)
   const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
 
   const onTokenChange = (token) => {
@@ -110,17 +111,18 @@ export default function Send({
       if (!address || !isAddressValid(address)) {
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setRequireDestTag(false)
         return
       }
 
       try {
-        const response = await axios(`/v2/address/${address}?blacklist=true`)
-        const data = response?.data
+        // Fetch flagged status from original endpoint
+        const flaggedResponse = await axios(`/v2/address/${address}?blacklist=true`)
+        const flaggedData = flaggedResponse?.data
 
-        if (data?.address) {
-          const isFlagged = data.blacklist?.blacklisted || false
+        if (flaggedData?.address) {
+          const isFlagged = flaggedData.blacklist?.blacklisted || false
           setIsDestinationFlagged(isFlagged)
-
           // Reset agreement if account is no longer flagged
           if (!isFlagged) {
             setAgreeToSendToFlagged(false)
@@ -129,10 +131,20 @@ export default function Send({
           setIsDestinationFlagged(false)
           setAgreeToSendToFlagged(false)
         }
+
+        // Fetch destination tag requirement from new endpoint
+        const accountResponse = await axios(`/xrpl/accounts/${address}`)
+        const accountData = accountResponse?.data
+        if (accountData?.account) {
+          setRequireDestTag(accountData?.account_data?.require_dest_tag || false)
+        } else {
+          setRequireDestTag(false)
+        }
       } catch (error) {
         setError('Error fetching destination account data')
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setRequireDestTag(false)
       }
     }
 
@@ -162,6 +174,12 @@ export default function Send({
 
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
       setError('Please enter a valid amount.')
+      return
+    }
+
+    // Check if destination requires a tag but none is provided
+    if (requireDestTag && !destinationTag) {
+      setError('This destination account requires a destination tag. Please enter a destination tag.')
       return
     }
 
@@ -322,6 +340,7 @@ export default function Send({
             onKeyPress={typeNumberOnly}
             defaultValue={destinationTag}
           />
+          {requireDestTag && <span className="orange">This destination account requires a destination tag</span>}
           <div className="form-input">
             <div className="form-spacing" />
             <div className="flex flex-col gap-4 sm:flex-row">
