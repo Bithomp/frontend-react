@@ -111,17 +111,18 @@ export default function Send({
       if (!address || !isAddressValid(address)) {
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setRequireDestTag(false)
         return
       }
 
       try {
-        const response = await axios(`/v2/address/${address}?blacklist=true&ledgerInfo=true`)
-        const data = response?.data
+        // Fetch flagged status from original endpoint
+        const flaggedResponse = await axios(`/v2/address/${address}?blacklist=true`)
+        const flaggedData = flaggedResponse?.data
 
-        if (data?.address) {
-          const isFlagged = data.blacklist?.blacklisted || false
+        if (flaggedData?.address) {
+          const isFlagged = flaggedData.blacklist?.blacklisted || false
           setIsDestinationFlagged(isFlagged)
-          setRequireDestTag(data.ledgerInfo?.flags?.requireDestTag || false)
           // Reset agreement if account is no longer flagged
           if (!isFlagged) {
             setAgreeToSendToFlagged(false)
@@ -130,10 +131,20 @@ export default function Send({
           setIsDestinationFlagged(false)
           setAgreeToSendToFlagged(false)
         }
+
+        // Fetch destination tag requirement from new endpoint
+        const accountResponse = await axios(`/xrpl/accounts/${address}`)
+        const accountData = accountResponse?.data
+        if (accountData?.account) {
+          setRequireDestTag(accountData?.account_data?.require_dest_tag || false)
+        } else {
+          setRequireDestTag(false)
+        }
       } catch (error) {
         setError('Error fetching destination account data')
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setRequireDestTag(false)
       }
     }
 
