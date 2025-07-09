@@ -9,6 +9,56 @@ import { niceCurrency, shortAddress, amountFormat } from '../../utils/format'
 
 const limit = 20
 
+// Helper function to fetch and process trustlines for a destination address
+const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '') => {
+  const response = await axios(`v2/objects/${destinationAddress}?limit=1000`)
+  const objects = response.data?.objects || []
+  
+  // Filter RippleState objects to get trustlines where destination can hold tokens
+  const trustlines = objects.filter(obj => {
+    if (obj.LedgerEntryType !== 'RippleState') return false
+    if (parseFloat(obj.LowLimit.value) <= 0 && parseFloat(obj.HighLimit.value) <= 0) return false
+    
+    // If search query is provided, filter by it
+    if (searchQuery) {
+      const currency = obj.Balance.currency
+      const issuerDetails = obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuerDetails : obj.HighLimit.issuerDetails || {}
+      const serviceOrUsername = issuerDetails.service || issuerDetails.username || ''
+      const issuer = obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuer : obj.HighLimit.issuer || ''
+      
+      const searchLower = searchQuery.toLowerCase()
+      return (
+        currency.toLowerCase().includes(searchLower) ||
+        serviceOrUsername.toLowerCase().includes(searchLower) ||
+        issuer.toLowerCase().includes(searchLower)
+      )
+    }
+    
+    return true
+  })
+  
+  // Convert trustlines to token format
+  return trustlines.map(tl => ({
+    currency: tl.Balance.currency,
+    issuer: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuer : tl.HighLimit.issuer,
+    issuerDetails: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuerDetails : tl.HighLimit.issuerDetails,
+    limit: Math.max(parseFloat(tl.LowLimit.value), parseFloat(tl.HighLimit.value)),
+    balance: tl.Balance.value
+  }))
+}
+
+// Helper function to add native currency to tokens array if needed
+const addNativeCurrencyIfNeeded = (tokens, excludeNative, searchQuery = '') => {
+  if (excludeNative) return tokens
+  
+  const shouldAddNative = !searchQuery || searchQuery.toUpperCase() === nativeCurrency.toUpperCase()
+  if (shouldAddNative) {
+    tokens.unshift({ currency: nativeCurrency, limit: null })
+  }
+  
+  return tokens
+}
+
 export default function TokenSelector({ value, onChange, excludeNative = false, destinationAddress = null }) {
   const { t } = useTranslation()
   const width = useWidth()
@@ -55,33 +105,8 @@ export default function TokenSelector({ value, onChange, excludeNative = false, 
           
           if (destinationAddress) {
             // Fetch tokens that destination can hold based on trustlines
-            const response = await axios(`v2/objects/${destinationAddress}?limit=100`)
-            const objects = response.data?.objects || []
-            
-            // Filter RippleState objects to get trustlines where destination can hold tokens
-            const trustlines = objects.filter(obj => {
-              if (obj.LedgerEntryType !== 'RippleState') return false
-              
-              if (parseFloat(obj.LowLimit.value) <= 0 && parseFloat(obj.HighLimit.value) <= 0 ) {
-                return false
-              }
-
-              return true
-            })
-            
-            // Convert trustlines to token format
-            tokens = trustlines.map(tl => ({
-              currency: tl.Balance.currency,
-              issuer: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuer : tl.HighLimit.issuer,
-              issuerDetails: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuerDetails : tl.HighLimit.issuerDetails,
-              limit: Math.max(parseFloat(tl.LowLimit.value), parseFloat(tl.HighLimit.value)),
-              balance: tl.Balance.value
-            }))
-            
-            // Add native currency if not excluded
-            if (!excludeNative) {
-              tokens.unshift({ currency: nativeCurrency, limit: null })
-            }
+            tokens = await fetchTrustlinesForDestination(destinationAddress)
+            tokens = addNativeCurrencyIfNeeded(tokens, excludeNative)
           } else {
             // Fallback to original behavior if no destination address
             const response = await axios('v2/trustlines/tokens?limit=' + limit)
@@ -112,53 +137,16 @@ export default function TokenSelector({ value, onChange, excludeNative = false, 
       setIsLoading(true)
       try {
         if (destinationAddress) {
-          // For destination-specific search, we need to filter the existing trustlines
-          // This is a simplified approach - in a real implementation you might want to
-          // implement server-side search for trustlines
-          const response = await axios(`v2/objects/${destinationAddress}?limit=1000`)
-          const objects = response.data?.objects || []
-          
-          const trustlines = objects.filter(obj => {
-            if (obj.LedgerEntryType !== 'RippleState') return false
-            if (parseFloat(obj.LowLimit.value) <= 0 && parseFloat(obj.HighLimit.value) <= 0) return false
-            
-            // Filter by search query
-            const currency = obj.Balance.currency
-            const issuerDetails = obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuerDetails : obj.HighLimit.issuerDetails || {}
-            const serviceOrUsername = issuerDetails.service || issuerDetails.username || ''
-            const issuer = obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuer : obj.HighLimit.issuer || ''
-            
-            const searchLower = searchQuery.toLowerCase()
-            return (
-              currency.toLowerCase().includes(searchLower) ||
-              serviceOrUsername.toLowerCase().includes(searchLower) ||
-              issuer.toLowerCase().includes(searchLower)
-            )
-          })
-          
-          const tokens = trustlines.map(tl => ({
-            currency: tl.Balance.currency,
-            issuer: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuer : tl.HighLimit.issuer,
-            issuerDetails: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuerDetails : tl.HighLimit.issuerDetails,
-            limit: Math.max(parseFloat(tl.LowLimit.value), parseFloat(tl.HighLimit.value)),
-            balance: tl.Balance.value
-          }))
-          
-          if (!excludeNative && searchQuery.toUpperCase() === nativeCurrency.toUpperCase()) {
-            tokens.unshift({ currency: nativeCurrency, limit: null })
-          }
-          
-          setSearchResults(tokens)
+          // For destination-specific search, filter the existing trustlines
+          const tokens = await fetchTrustlinesForDestination(destinationAddress, searchQuery)
+          const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
+          setSearchResults(tokensWithNative)
         } else {
           // Fallback to original search behavior
           const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}`)
           const tokens = response.data?.tokens || []
-
-          if (!excludeNative && searchQuery.toUpperCase() === nativeCurrency.toUpperCase()) {
-            tokens.unshift({ currency: nativeCurrency })
-          }
-
-          setSearchResults(tokens)
+          const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
+          setSearchResults(tokensWithNative)
         }
       } catch (error) {
         console.error('Error searching tokens:', error)
@@ -286,7 +274,7 @@ export default function TokenSelector({ value, onChange, excludeNative = false, 
                   <div className="token-selector-modal-items">
                     {searchResults.map((token, index) => (
                       <div
-                        key={`${token.token}-${index}`}
+                        key={`${token.currency}-${token.issuer}-${index}`}
                         className="token-selector-modal-item"
                         onClick={() => handleSelect(token)}
                       >
