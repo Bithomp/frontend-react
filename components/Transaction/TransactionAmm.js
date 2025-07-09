@@ -2,6 +2,7 @@ import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled } from '../../utils/format'
+import { divide } from '../../utils/calc'
 
 const formatAMMFlags = (flags) => {
   if (!flags || typeof flags !== 'object') return 'None'
@@ -29,8 +30,9 @@ const formatAMMFlags = (flags) => {
 
 export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification, tx } = data
+  const { specification, tx, outcome } = data
   const txType = tx.TransactionType
+  const tradingFee = outcome?.ammChanges?.tradingFee
   // Only show flags for AMM deposit and withdraw transactions
   const showFlags = txType === 'AMMDeposit' || txType === 'AMMWithdraw'
   
@@ -46,6 +48,12 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData>Flags</TData>
           <TData>{formatAMMFlags(specification.flags)}</TData>
+        </tr>
+      )}
+      {tradingFee && (
+        <tr>
+          <TData>Trading Fee</TData>
+          <TData>{divide(tradingFee, 100000)}%</TData>
         </tr>
       )}
     </TransactionCard>
