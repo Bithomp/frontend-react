@@ -787,6 +787,19 @@ export const isAmountInNativeCurrency = (amount) => {
 
 export const isNativeCurrency = (currencyObj) => {
   if (!currencyObj) return false
+  
+  // Handle case where currencyObj is a string representing drops (native currency amount)
+  if (typeof currencyObj === 'string') {
+    const drops = currencyObj
+    // Check if it's a valid drops amount (1 to 100000000000000000)
+    if (/^\d+$/.test(drops)) {
+      const dropsNum = BigInt(drops)
+      return dropsNum >= 1n && dropsNum <= 100000000000000000n
+    }
+    return false
+  }
+  
+  // Handle case where currencyObj is an object
   if (!currencyObj.currency) return false
   
   // Check that currency matches the native currency for this network
