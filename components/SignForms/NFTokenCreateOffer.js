@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import ExpirationSelect from '../UI/ExpirationSelect'
 import CheckBox from '../UI/CheckBox'
-import { isAddressValid, typeNumberOnly, useWidth, nativeCurrency } from '../../utils'
+import { isAddressValid, typeNumberOnly, nativeCurrency } from '../../utils'
 import { multiply, divide } from '../../utils/calc'
 import AddressInput from '../UI/AddressInput'
 import { amountFormat } from '../../utils/format'
@@ -10,7 +10,6 @@ import TokenSelector from '../UI/TokenSelector'
 
 export default function NFTokenCreateOffer({ signRequest, setSignRequest, setStatus, setFormError }) {
   const { t } = useTranslation()
-  const width = useWidth()
 
   const [privateOffer, setPrivateOffer] = useState(false)
   const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
@@ -166,8 +165,8 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
       ) : (
         <div className="center">
           <br />
-          <div className={width > 480 ? 'flex justify-center' : ''}>
-            <span className={width > 480 ? 'quarter' : 'halv'}>
+          <div>
+            <span className="halv">
               <span className="input-title">{t('signin.amount.set-price')}</span>
               <input
                 placeholder={t('signin.amount.enter-amount')}
@@ -181,7 +180,7 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
                 inputMode="decimal"
               />
             </span>
-            <span className={width > 480 ? 'quarter' : 'halv'}>
+            <span className="halv">
               <span className="input-title">Currency</span>
               <TokenSelector value={selectedToken} onChange={onTokenChange} />
             </span>
