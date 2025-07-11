@@ -3,9 +3,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
-import { timeOrDate, amountFormat } from '../../utils/format'
+import { amountFormat } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
-import { addressBalanceChanges } from '../../utils/transaction'
+import { txTypeToText, processTransactions } from '../../utils/transaction'
 import { useWidth } from '../../utils'
 
 import SEO from '../../components/SEO'
@@ -14,6 +14,12 @@ import FiltersFrame from '../../components/Layout/FiltersFrame'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import SimpleSelect from '../../components/UI/SimpleSelect'
+import { FiDownload, FiUpload } from "react-icons/fi";
+import { FaCalendarAlt, FaClock } from "react-icons/fa";
+import { FaArrowRightArrowLeft } from "react-icons/fa6";
+
+
+
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -59,6 +65,7 @@ export default function TransactionsAddress({
 
   // State management
   const [transactions, setTransactions] = useState(initialTransactions || [])
+  const [processedTransactions, setProcessedTransactions] = useState([])
   const [marker, setMarker] = useState(initialMarker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
@@ -70,6 +77,16 @@ export default function TransactionsAddress({
   const [counterparty, setCounterparty] = useState('')
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
+
+  // Process transactions whenever they change
+  useEffect(() => {
+    if (!transactions || transactions.length === 0) {
+      setProcessedTransactions([])
+      return
+    }
+    const processed = processTransactions(transactions, address)
+    setProcessedTransactions(processed)
+  }, [transactions, address])
 
   // Sort transactions whenever order changes or new data comes in
   useEffect(() => {
@@ -195,34 +212,56 @@ export default function TransactionsAddress({
   // CSV headers (basic)
   const csvHeaders = [
     { label: 'Date', key: 'date' },
+    { label: 'Time', key: 'time' },
     { label: 'Type', key: 'type' },
     { label: 'Hash', key: 'hash' },
-    { label: 'Status', key: 'status' }
+    { label: 'Status', key: 'status' },
+    { label: 'Direction', key: 'direction' },
+    { label: 'Address', key: 'address' },
+    { label: 'Fee', key: 'fee' }
   ]
-
+  console.log(processedTransactions)
+  console.log(transactions)
   // Render helpers
   const renderTableRows = () => {
-    return transactions.map((txdata, index) => {
-      const dateText = txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'
-      const type = txdata.type ? (txdata.type.charAt(0).toUpperCase() + txdata.type.slice(1)) : (txdata.tx?.TransactionType || '-')
-      const statusSuccess = txdata.outcome?.result === 'tesSUCCESS'
-
-      // Balance change for the current address
-      const balanceChanges = addressBalanceChanges(txdata, address) || []
-      const firstChange = balanceChanges[0]
-      const amountNode = firstChange ? amountFormat(firstChange) : ''
+    return processedTransactions.map((txdata, index) => {
+      const dateText = txdata.date || '-'
+      const timeText = txdata.time || '-'
 
       return (
-        <tr key={txdata.tx?.hash || index}>
-          <td className="center" style={{ width: 30 }}>{index + 1}</td>
-          <td className="right">{dateText}</td>
-          <td className="right">{type}</td>
-          <td className="right">{amountNode}</td>
-          <td className="right">
-            <LinkTx tx={txdata.tx?.hash} />
+        <tr key={txdata.hash || index}>
+          <td className="center bold" style={{ width: 10 }}>{index + 1}.</td>
+          <td className="gray" style={{ width: 100 }}>
+            <FaCalendarAlt /> {dateText} <br />
+            <FaClock /> {timeText}
           </td>
-          <td className="right">
-            <span className={statusSuccess ? 'green' : 'red'}>{statusSuccess ? 'Success' : 'Failed'}</span>
+          <td>
+            <div>
+              <span className="gray" style={{ marginRight: 5 }}><FaArrowRightArrowLeft /></span>
+              <LinkTx tx={txdata.hash}> {txdata.hash} </LinkTx>
+            </div>
+            <span className="bold">{txTypeToText(null, txdata.type, true)}</span>
+            <br />
+            <span className="gray">
+              Fee: {amountFormat(txdata.fee)}
+            </span>
+            <br />
+
+            {txdata.direction && (
+              <>
+                <span className="gray">Direction: </span>
+                <span className={txdata.direction === 'incoming' ? 'green' : 'orange'}>
+                  {txdata.direction === 'incoming' ? <FiDownload /> : <FiUpload />} {txdata.direction}
+                </span>
+                <br />
+              </>
+            )}
+            {txdata.address && (
+              <>
+                <span className="gray">Address: {txdata.address}</span>
+                <br />
+              </>
+            )}
           </td>
         </tr>
       )
@@ -244,9 +283,9 @@ export default function TransactionsAddress({
         order={order}
         setOrder={setOrder}
         orderList={orderList}
-        count={transactions.length}
+        count={processedTransactions.length}
         hasMore={marker}
-        data={transactions || []}
+        data={processedTransactions || []}
         csvHeaders={csvHeaders}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
@@ -307,23 +346,15 @@ export default function TransactionsAddress({
         <>
           {errorMessage && <div className="center orange bold">{errorMessage}</div>}
           <InfiniteScrolling
-            dataLength={transactions.length}
+            dataLength={processedTransactions.length}
             loadMore={loadMore}
             hasMore={marker}
             errorMessage={errorMessage}
             height={!filtersHide ? '1300px' : '100vh'}
           >
             {width > 600 ? (
-              <table className="table-large">
+              <table className="table-large no-hover">
                 <thead>
-                  <tr>
-                    <th>#</th>
-                    <th className="right">{t('table.validated', { defaultValue: 'Validated' })}</th>
-                    <th className="right">{t('table.type', { defaultValue: 'Type' })}</th>
-                    <th className="right">{t('table.amount', { defaultValue: 'Amount' })}</th>
-                    <th className="right">Tx</th>
-                    <th className="right">{t('table.status', { defaultValue: 'Status' })}</th>
-                  </tr>
                 </thead>
                 <tbody>{renderTableRows()}</tbody>
               </table>
