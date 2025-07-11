@@ -105,7 +105,9 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
               {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
             </td>
           )}
-          <td className="right">{typeof escrow.DestinationTag !== 'undefined' && escrow.DestinationTag}</td>
+          <td className="right">
+            {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : <span className="grey">none</span>}
+          </td>
           <td className="right">
             {escrow.CancelAfter ? (
               <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>
@@ -127,7 +129,9 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           <td className="bold right">{amountFormat(escrow.Amount, { short: true })}</td>
           {!ledgerTimestamp && (
             <td className="center">
-              {escrow.FinishAfter && timestampExpired(escrow.FinishAfter, 'ripple') && !timestampExpired(escrow.CancelAfter, 'ripple') ? (
+              {escrow.FinishAfter &&
+              timestampExpired(escrow.FinishAfter, 'ripple') &&
+              !timestampExpired(escrow.CancelAfter, 'ripple') ? (
                 <a
                   href="#"
                   onClick={(e) => {
@@ -174,9 +178,9 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
         <tr>
           <th>#</th>
           {options?.type !== 'self' && <th className="left">{options?.type === 'received' ? 'From' : 'To'}</th>}
-          <th className="right">DT</th>
+          <th className="right">Dest. tag</th>
           <th className="right">Expire</th>
-          <th className="right">Finish After</th>
+          <th className="right">Unlock</th>
           <th className="right">Amount</th>
           {!ledgerTimestamp && <th>Actions</th>}
         </tr>

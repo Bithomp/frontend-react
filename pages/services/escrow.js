@@ -243,7 +243,7 @@ export default function CreateEscrow({ setSignRequest }) {
           <div className="form-spacing" />
           <div className="form-input">
             <span className="input-title">
-              Finish After <span className="grey">(when funds can be released)</span>
+              Unlock after <span className="grey">(when funds can be released)</span>
             </span>
             <DatePicker
               selected={finishAfter ? new Date(finishAfter * 1000) : null}
@@ -395,7 +395,7 @@ export default function CreateEscrow({ setSignRequest }) {
                   </p>
                   {txResult.finishAfter && (
                     <p>
-                      <strong>Finish After:</strong> {timeFromNow(txResult.finishAfter, i18n, 'ripple')} (
+                      <strong>Unlock:</strong> {timeFromNow(txResult.finishAfter, i18n, 'ripple')} (
                       {fullDateAndTime(txResult.finishAfter, 'ripple')})
                     </p>
                   )}
