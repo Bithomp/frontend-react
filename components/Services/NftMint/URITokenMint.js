@@ -414,7 +414,10 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
               </CheckBox>
               {!account?.address && (
                 <div className="orange" style={{ marginTop: '5px', fontSize: '14px' }}>
-                  Login first if you want to add the sell offer in the same transaction.
+                  <span className="link" onClick={() => setSignRequest({})}>
+                    Login first
+                  </span>{' '}
+                  if you want to add the sell offer in the same transaction.
                 </div>
               )}
             </div>
