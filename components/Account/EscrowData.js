@@ -119,7 +119,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           </td>
           <td className="right">
             {escrow.FinishAfter ? (
-              <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'red' : ''}>
+              <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green' : ''}>
                 {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
               </span>
             ) : (
@@ -157,7 +157,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
                     e.preventDefault()
                     handleEscrowCancel(escrow)
                   }}
-                  className="green tooltip"
+                  className="red tooltip"
                 >
                   <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
                   <span className="tooltiptext">Cancel</span>
