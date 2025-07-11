@@ -257,7 +257,7 @@ export default function ObjectsData({
         </td>
         {!ledgerTimestamp && (
           <td className="center">
-            {c.Destination === account?.address ? (
+            {c.Destination === account?.address && !timestampExpired(c.expiration) ? (
               <a
                 href="#"
                 onClick={() =>
