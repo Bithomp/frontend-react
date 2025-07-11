@@ -215,16 +215,6 @@ export default function Admin({
     }
   }
 
-  const onChangeEmail = async () => {
-    setStep(0)
-    setEmail('')
-    setPassword('')
-    setRememberMe(false)
-    setTermsAccepted(false)
-    setToken('')
-    setErrorMessage('')
-  }
-
   const onLogin = async () => {
     if (!email) {
       setErrorMessage(t('form.error.email-empty'))
@@ -470,7 +460,23 @@ export default function Admin({
             </>
           )}
           <br />
-          {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+          <br />
+          {errorMessage ? (
+            <div className="center ">
+              <span className="orange bold">{errorMessage}</span>
+              {step === 1 && (
+                <>
+                  {' '}
+                  <span className="link" onClick={onLogOut}>
+                    Change email
+                  </span>
+                  .
+                </>
+              )}
+            </div>
+          ) : (
+            <br />
+          )}
 
           {(step === 0 || step === 1) && (
             <>
@@ -481,13 +487,6 @@ export default function Admin({
                 disabled={!termsAccepted || !token || !email || !isEmailValid(email)}
               >
                 Submit
-              </button>
-            </>
-          )}
-          {step === 1 && (
-            <>
-              <button className="button-action" onClick={onChangeEmail} style={{ marginLeft: '20px' }}>
-                Change email
               </button>
             </>
           )}
