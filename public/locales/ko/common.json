@@ -557,7 +557,7 @@
     "sell": "판매",
     "buyNow": "Buy now",
     "publicAndKnownBrokers": "공공 & MP",
-    "onSale": "{{nativeCurrency}}로 판매 중",
+    "onSale": "토큰으로 판매 중",
     "all-tokens": "모든 토큰",
     "native-currency-only": "{{nativeCurrency}}만",
     "mintedNew": "최신", 

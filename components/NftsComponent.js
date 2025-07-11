@@ -13,7 +13,7 @@ import {
   nativeCurrency
 } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink, ipfsUrl, nftPriceData } from '../utils/nft'
-import { nftLink, usernameOrAddress, timeOrDate, fullDateAndTime, niceCurrency, capitalize } from '../utils/format'
+import { nftLink, usernameOrAddress, timeOrDate, fullDateAndTime, capitalize } from '../utils/format'
 
 import SEO from './SEO'
 import SearchBlock from './Layout/SearchBlock'
@@ -137,7 +137,7 @@ export default function NftsComponent({
 
   const listTabList = [
     { value: 'nfts', label: t('tabs.all') },
-    { value: 'onSale', label: 'On sale for tokens' }
+    { value: 'onSale', label: t('tabs.onSale') }
   ]
 
   let saleDestinationTabList = []
@@ -677,7 +677,7 @@ export default function NftsComponent({
             (isValidTaxon(taxonQuery) ? ' ' + taxonQuery : '') +
             (ownerQuery ? ', ' + t('table.owner') + ': ' + ownerQuery : '') +
             (activeView === 'list' ? ' ' + t('tabs.list') : '') +
-            (listTab === 'onSale' ? ' ' + 'On sale for tokens': '') +
+            (listTab === 'onSale' ? ' ' + t('tabs.onSale') : '') + 
             (listTab === 'onSale' && (saleDestinationTab === 'buyNow' || saleDestinationTab === 'public')
               ? ', ' + t('tabs.buyNow')
               : '') +
@@ -746,32 +746,14 @@ export default function NftsComponent({
                 tab={saleDestinationTab}
                 setTab={setSaleDestinationTab}
                 name="saleDestination"
-              />
-              {nftExplorer && (
-                <div>
-                  {t('table.currency')}
-                  <TokenSelector
-                    value={selectedToken}
-                    onChange={setSelectedToken}
-                  />
-                </div>
-              )}
-              {!nftExplorer && saleCurrencyIssuer && saleCurrency && (
-                <>
-                  <FormInput
-                    title={t('table.currency')}
-                    defaultValue={niceCurrency(saleCurrency)}
-                    disabled={true}
-                    hideButton={true}
-                  />
-                  <FormInput
-                    title={t('table.currency-issuer')}
-                    defaultValue={saleCurrencyIssuer}
-                    disabled={true}
-                    hideButton={true}
-                  />
-                </>
-              )}
+              />              
+              <div>
+                {t('table.currency')}
+                <TokenSelector
+                  value={selectedToken}
+                  onChange={setSelectedToken}
+                />
+              </div>
             </div>
           )}
           {nftExplorer && (
