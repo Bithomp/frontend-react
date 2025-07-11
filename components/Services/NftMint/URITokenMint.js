@@ -23,7 +23,7 @@ import TokenSelector from '../../UI/TokenSelector'
 let interval
 let startTime
 
-export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) {
+export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, account }) {
   const { i18n } = useTranslation()
   const router = useRouter()
 
@@ -71,6 +71,12 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
   useEffect(() => {
     setErrorMessage('')
   }, [i18n.language])
+
+  useEffect(() => {
+    if (!account?.address) {
+      setCreateSellOffer(false)
+    }
+  }, [account?.address])
 
   const onUriChange = (e) => {
     let uri = e.target.value
@@ -402,9 +408,18 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
                   setCreateSellOffer(!createSellOffer)
                 }}
                 name="create-sell-offer"
+                disabled={!account?.address}
               >
                 Create a Sell offer
               </CheckBox>
+              {!account?.address && (
+                <div className="orange" style={{ marginTop: '5px', fontSize: '14px' }}>
+                  <span className="link" onClick={() => setSignRequest({})}>
+                    Login first
+                  </span>{' '}
+                  if you want to add the sell offer in the same transaction.
+                </div>
+              )}
             </div>
 
             {/* Sell Offer Fields */}
