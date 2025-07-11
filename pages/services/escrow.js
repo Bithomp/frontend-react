@@ -16,6 +16,7 @@ import { errorCodeDescription } from '../../utils/transaction'
 import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { generateConditionAndFulfillment } from '../../utils/escrow'
 
 const RIPPLE_EPOCH_OFFSET = 946684800 // Seconds between 1970-01-01 and 2000-01-01
 
@@ -28,6 +29,7 @@ export default function CreateEscrow({ setSignRequest }) {
   const [finishAfter, setFinishAfter] = useState(null)
   const [cancelAfter, setCancelAfter] = useState(null)
   const [condition, setCondition] = useState(null)
+  const [fulfillment, setFulfillment] = useState(null)
   const [sourceTag, setSourceTag] = useState(null)
   const [txResult, setTxResult] = useState(null)
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -183,6 +185,18 @@ export default function CreateEscrow({ setSignRequest }) {
     }
   }
 
+  const handleGenerateCondition = async () => {
+    setError('')
+    try {
+      const { condition: generatedCondition, fulfillment: generatedFulfillment } =
+        await generateConditionAndFulfillment()
+      setCondition(generatedCondition)
+      setFulfillment(generatedFulfillment)
+    } catch (err) {
+      setError('Failed to generate condition')
+    }
+  }
+
   return (
     <>
       <SEO title="Create Escrow" description={'Create an escrow transaction on the ' + explorerName} />
@@ -284,6 +298,7 @@ export default function CreateEscrow({ setSignRequest }) {
               if (!showAdvanced) {
                 setCondition(null)
                 setSourceTag(null)
+                setFulfillment(null)
               }
             }}
             name="advanced-escrow"
@@ -304,12 +319,21 @@ export default function CreateEscrow({ setSignRequest }) {
                   className="input-text"
                   spellCheck="false"
                   type="text"
-                  defaultValue={condition}
+                  value={condition || ''}
                 />
-                <div className="grey" style={{ fontSize: '12px', marginTop: '5px' }}>
-                  A hex-encoded PREIMAGE-SHA-256 crypto-condition. Funds can only be released if this condition is
-                  fulfilled.
+                <div style={{ display: 'flex', alignItems: 'center', marginTop: '5px' }}>
+                  <button className="button-action thin narrow" onClick={handleGenerateCondition}>
+                    Generate Random Condition
+                  </button>
+                  <span className="grey" style={{ marginLeft: '10px' }}>
+                    Funds can only be released if this condition is fulfilled.
+                  </span>
                 </div>
+                {fulfillment && (
+                  <div className="grey" style={{ fontSize: '12px', marginTop: '5px' }}>
+                    Fulfillment (preimage): {shortHash(fulfillment)} <CopyButton text={fulfillment} />
+                  </div>
+                )}
               </div>
               <div className="form-spacing" />
               <FormInput
@@ -409,6 +433,12 @@ export default function CreateEscrow({ setSignRequest }) {
                     <p>
                       <strong>Condition:</strong> {shortHash(txResult.condition)}{' '}
                       <CopyButton text={txResult.condition} />
+                    </p>
+                  )}
+                  {txResult.fulfillment && (
+                    <p>
+                      <strong>Fulfillment:</strong> {shortHash(txResult.fulfillment)}{' '}
+                      <CopyButton text={txResult.fulfillment} />
                     </p>
                   )}
                   {txResult.memo && (
