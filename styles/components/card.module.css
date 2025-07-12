@@ -1,0 +1,31 @@
+@reference 'tailwindcss';
+
+.card {
+    @apply shadow p-4 transition-all duration-200;
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    padding: 1rem;
+
+    &:active {
+        @apply shadow-md;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--accent-icon);
+        outline-offset: 2px;
+    }
+
+    &:hover {
+        @apply shadow-md;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+   
+        &:hover {
+            @apply shadow-md;
+            transform: none;
+        }
+    }
+}
