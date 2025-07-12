@@ -75,7 +75,9 @@ export default function IssueCheck({ setSignRequest, sessionToken, subscriptionE
     }
 
     if ((fee || sourceTag || invoiceID) && (!sessionToken || subscriptionExpired)) {
-      setError('Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.')
+      setError(
+        'Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.'
+      )
       return
     }
 
@@ -236,14 +238,21 @@ export default function IssueCheck({ setSignRequest, sessionToken, subscriptionE
             Advanced options
             {!sessionToken ? (
               <>
-                <span className="orange"> (available to <Link href="/admin" style={{ color: '#00808E !important' }}>logged-in</Link> Bithomp Pro subscribers)</span>
+                {' '}
+                <span className="orange">
+                  (available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers)
+                </span>
               </>
             ) : (
-            subscriptionExpired && (
-              <>
-                <span className="orange"> Your Bithomp Pro subscription has expired. <Link href="/admin/subscriptions" style={{ color: '#00808E !important' }}> Renew your subscription</Link></span>
-              </>
-            )
+              subscriptionExpired && (
+                <>
+                  {' '}
+                  <span className="orange">
+                    Your Bithomp Pro subscription has expired.{' '}
+                    <Link href="/admin/subscriptions">Renew your subscription</Link>
+                  </span>
+                </>
+              )
             )}
           </CheckBox>
           {showAdvanced && (
@@ -294,7 +303,7 @@ export default function IssueCheck({ setSignRequest, sessionToken, subscriptionE
                   defaultValue={invoiceID}
                   disabled={!sessionToken || subscriptionExpired}
                 />
-              </div>              
+              </div>
             </>
           )}
           <br />

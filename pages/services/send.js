@@ -41,10 +41,16 @@ export default function Send({
   const [showAdvanced, setShowAdvanced] = useState(
     Number(feeQuery) > 0 || isTagValid(sourceTagQuery) || isIdValid(invoiceIdQuery)
   )
-  const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 && sessionToken && !subscriptionExpired ? feeQuery : null)
+  const [fee, setFee] = useState(
+    Number(feeQuery) > 0 && Number(feeQuery) <= 1 && sessionToken && !subscriptionExpired ? feeQuery : null
+  )
   const [feeError, setFeeError] = useState('')
-  const [sourceTag, setSourceTag] = useState(isTagValid(sourceTagQuery) && sessionToken && !subscriptionExpired ? sourceTagQuery : null)
-  const [invoiceId, setInvoiceId] = useState(isIdValid(invoiceIdQuery) && sessionToken && !subscriptionExpired ? invoiceIdQuery : null)
+  const [sourceTag, setSourceTag] = useState(
+    isTagValid(sourceTagQuery) && sessionToken && !subscriptionExpired ? sourceTagQuery : null
+  )
+  const [invoiceId, setInvoiceId] = useState(
+    isIdValid(invoiceIdQuery) && sessionToken && !subscriptionExpired ? invoiceIdQuery : null
+  )
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
@@ -140,14 +146,14 @@ export default function Send({
       try {
         const response = await axios(`/v2/address/${address}?blacklist=true&ledgerInfo=true`)
         const data = response?.data
-        
+
         if (data?.address) {
           const isFlagged = data.blacklist?.blacklisted || false
-          const isNonActivated =  data.ledgerInfo && data.ledgerInfo.activated === false
-          
+          const isNonActivated = data.ledgerInfo && data.ledgerInfo.activated === false
+
           setIsDestinationFlagged(isFlagged)
           setIsNonActive(isNonActivated)
-          
+
           // Reset agreements if account status changes
           if (!isFlagged) {
             setAgreeToSendToFlagged(false)
@@ -206,7 +212,9 @@ export default function Send({
 
     // Check if advanced options are being used without proper subscription
     if ((fee || sourceTag || invoiceId) && (!sessionToken || subscriptionExpired)) {
-      setError('Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.')
+      setError(
+        'Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.'
+      )
       return
     }
 
@@ -371,7 +379,8 @@ export default function Send({
                 <br />
                 <strong>Proceed with caution.</strong>
                 <br />
-                If you continue, {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate the account on the ledger.
+                If you continue, {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate the
+                account on the ledger.
               </div>
             </div>
           )}
@@ -437,18 +446,25 @@ export default function Send({
             Advanced Payment Options
             {!sessionToken ? (
               <>
-                <span className="orange"> (available to <Link href="/admin" style={{ color: '#00808E !important' }}>logged-in</Link> Bithomp Pro subscribers)</span>
+                {' '}
+                <span className="orange">
+                  (available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers)
+                </span>
               </>
             ) : (
-            subscriptionExpired && (
-              <>
-                <span className="orange"> Your Bithomp Pro subscription has expired. <Link href="/admin/subscriptions" style={{ color: '#00808E !important' }}>Renew your subscription</Link></span>
-              </>
-            )
+              subscriptionExpired && (
+                <>
+                  {' '}
+                  <span className="orange">
+                    Your Bithomp Pro subscription has expired.{' '}
+                    <Link href="/admin/subscriptions">Renew your subscription</Link>
+                  </span>
+                </>
+              )
             )}
           </CheckBox>
           {showAdvanced && (
-            <>              
+            <>
               <br />
               <div className="form-input">
                 <span className="input-title">Fee</span>
@@ -495,7 +511,7 @@ export default function Send({
                   defaultValue={invoiceId}
                   disabled={!sessionToken || subscriptionExpired}
                 />
-              </div>              
+              </div>
             </>
           )}
 
@@ -520,8 +536,13 @@ export default function Send({
           {/* Show additional checkbox for non-activated accounts */}
           {isNonActive && (
             <div className="orange">
-              <CheckBox checked={agreeToSendToNonActive} setChecked={setAgreeToSendToNonActive} name="agree-to-non-active">
-                I understand that {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate this account and I want to proceed
+              <CheckBox
+                checked={agreeToSendToNonActive}
+                setChecked={setAgreeToSendToNonActive}
+                name="agree-to-non-active"
+              >
+                I understand that {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate this
+                account and I want to proceed
               </CheckBox>
             </div>
           )}
