@@ -65,6 +65,27 @@ export default function Send({
     setSelectedToken(token)
   }
 
+  // Helper to get maximum amount that can be sent for the selected token
+  const getMaxAmount = () => {
+    if (!selectedToken || selectedToken.currency === nativeCurrency) return null
+    return selectedToken.limit
+  }
+
+  // Helper to format max amount display
+  const getMaxAmountDisplay = () => {
+    const maxAmount = getMaxAmount()
+    if (!maxAmount) return null
+    
+    return (
+      <div className="max-amount-display">
+        <span className="max-amount-label">Max amount:</span>
+        <span className="max-amount-value">
+          {amountFormat({ value: maxAmount, currency: selectedToken.currency, issuer: selectedToken.issuer }, { short: true })}
+        </span>
+      </div>
+    )
+  }
+
   // Fetch network info for reserve amounts only when account is not activated
   useEffect(() => {
     const fetchNetworkInfo = async () => {
@@ -338,7 +359,10 @@ export default function Send({
             placeholder="Destination address"
             name="destination"
             hideButton={true}
-            setValue={setAddress}
+            setValue={(value) => {
+              setAddress(value)
+              setSelectedToken({ currency: nativeCurrency })
+            }}
             setInnerValue={setAddress}
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
@@ -414,7 +438,8 @@ export default function Send({
               </div>
               <div className="w-full sm:w-1/2">
                 <span className="input-title">Currency</span>
-                <TokenSelector value={selectedToken} onChange={onTokenChange} />
+                <TokenSelector value={selectedToken} onChange={onTokenChange} destinationAddress={address} />
+                {getMaxAmountDisplay()}
               </div>
             </div>
           </div>
