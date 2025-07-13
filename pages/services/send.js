@@ -10,7 +10,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../../utils/links'
 import { multiply } from '../../utils/calc'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
-import { typeNumberOnly, isAddressValid, isTagValid, isIdValid, nativeCurrency, encode, decode } from '../../utils'
+import { typeNumberOnly, isAddressValid, isTagValid, isIdValid, nativeCurrency, isNativeCurrency, encode, decode } from '../../utils'
 import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -319,7 +319,7 @@ export default function Send({
         Destination: address
       }
 
-      if (selectedToken.currency === nativeCurrency) {
+      if (isNativeCurrency(selectedToken)) {
         payment.Amount = multiply(amount, 1000000)
       } else {
         payment.Amount = {
