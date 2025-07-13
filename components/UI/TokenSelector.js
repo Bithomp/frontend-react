@@ -13,19 +13,20 @@ const limit = 20
 const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '') => {
   const response = await axios(`v2/objects/${destinationAddress}?limit=1000`)
   const objects = response.data?.objects || []
-  
+
   // Filter RippleState objects to get trustlines where destination can hold tokens
-  const trustlines = objects.filter(obj => {
+  const trustlines = objects.filter((obj) => {
     if (obj.LedgerEntryType !== 'RippleState') return false
     if (parseFloat(obj.LowLimit.value) <= 0 && parseFloat(obj.HighLimit.value) <= 0) return false
-    
+
     // If search query is provided, filter by it
     if (searchQuery) {
       const currency = obj.Balance.currency
-      const issuerDetails = obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuerDetails : obj.HighLimit.issuerDetails || {}
+      const issuerDetails =
+        obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuerDetails : obj.HighLimit.issuerDetails || {}
       const serviceOrUsername = issuerDetails.service || issuerDetails.username || ''
       const issuer = obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuer : obj.HighLimit.issuer || ''
-      
+
       const searchLower = searchQuery.toLowerCase()
       return (
         currency.toLowerCase().includes(searchLower) ||
@@ -33,12 +34,12 @@ const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '
         issuer.toLowerCase().includes(searchLower)
       )
     }
-    
+
     return true
   })
-  
+
   // Convert trustlines to token format
-  return trustlines.map(tl => ({
+  return trustlines.map((tl) => ({
     currency: tl.Balance.currency,
     issuer: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuer : tl.HighLimit.issuer,
     issuerDetails: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuerDetails : tl.HighLimit.issuerDetails,
@@ -50,12 +51,12 @@ const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '
 // Helper function to add native currency to tokens array if needed
 const addNativeCurrencyIfNeeded = (tokens, excludeNative, searchQuery = '') => {
   if (excludeNative) return tokens
-  
+
   const shouldAddNative = !searchQuery || searchQuery.toUpperCase() === nativeCurrency.toUpperCase()
   if (shouldAddNative) {
     tokens.unshift({ currency: nativeCurrency, limit: null })
   }
-  
+
   return tokens
 }
 
@@ -102,7 +103,7 @@ export default function TokenSelector({ value, onChange, excludeNative = false, 
         setIsLoading(true)
         try {
           let tokens = []
-          
+
           if (destinationAddress) {
             // Fetch tokens that destination can hold based on trustlines
             tokens = await fetchTrustlinesForDestination(destinationAddress)
@@ -119,7 +120,7 @@ export default function TokenSelector({ value, onChange, excludeNative = false, 
             setIsLoading(false)
             return
           }
-          
+
           setSearchResults(tokens)
         } catch (error) {
           console.error('Error loading tokens:', error)
@@ -197,7 +198,7 @@ export default function TokenSelector({ value, onChange, excludeNative = false, 
   // Helper to get token limit display
   const getTokenLimitDisplay = (token) => {
     if (!token.limit || token.currency === nativeCurrency) return null
-    
+
     return (
       <div className="token-selector-modal-item-limit">
         <span className="token-selector-modal-item-limit-label">Max:</span>
@@ -289,7 +290,7 @@ export default function TokenSelector({ value, onChange, excludeNative = false, 
                           <div className="token-selector-modal-item-name">
                             <span>
                               {getTokenDisplayName(token)}
-                              {token.trustlines !== undefined && token.holders !== undefined && (
+                              {token.holders !== undefined && (
                                 <span style={{ marginLeft: '8px', fontSize: '0.85em', color: 'var(--text-secondary)' }}>
                                   {shortNiceNumber(token.holders, 0)} holders
                                 </span>
@@ -310,9 +311,7 @@ export default function TokenSelector({ value, onChange, excludeNative = false, 
                 ) : searchQuery ? (
                   <div className="token-selector-modal-empty">{t('general.no-data')}</div>
                 ) : destinationAddress ? (
-                  <div className="token-selector-modal-empty">
-                    No trustlines found for this destination address.
-                  </div>
+                  <div className="token-selector-modal-empty">No trustlines found for this destination address.</div>
                 ) : null}
               </div>
             </div>
