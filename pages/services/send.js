@@ -220,8 +220,8 @@ export default function Send({
         // Fetch destination tag requirement from new endpoint
         const accountResponse = await axios(`/xrpl/accounts/${address}`)
         const accountData = accountResponse?.data
-        if (accountData?.account) {
-          setRequireDestTag(accountData?.account_data?.require_dest_tag || false)
+        if (accountData?.account_data?.require_dest_tag) {
+          setRequireDestTag(accountData?.account_data?.require_dest_tag)
         } else {
           setRequireDestTag(false)
         }
