@@ -5,11 +5,62 @@ import { IoMdClose } from 'react-icons/io'
 import { IoChevronDown } from 'react-icons/io5'
 import axios from 'axios'
 import { avatarServer, nativeCurrency, nativeCurrenciesImages, useWidth } from '../../utils'
-import { niceCurrency, shortAddress } from '../../utils/format'
+import { niceCurrency, shortAddress, shortNiceNumber, amountFormat } from '../../utils/format'
 
 const limit = 20
 
-export default function TokenSelector({ value, onChange, excludeNative = false }) {
+// Helper function to fetch and process trustlines for a destination address
+const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '') => {
+  const response = await axios(`v2/objects/${destinationAddress}?limit=1000`)
+  const objects = response.data?.objects || []
+
+  // Filter RippleState objects to get trustlines where destination can hold tokens
+  const trustlines = objects.filter((obj) => {
+    if (obj.LedgerEntryType !== 'RippleState') return false
+    if (parseFloat(obj.LowLimit.value) <= 0 && parseFloat(obj.HighLimit.value) <= 0) return false
+
+    // If search query is provided, filter by it
+    if (searchQuery) {
+      const currency = obj.Balance.currency
+      const issuerDetails =
+        obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuerDetails : obj.HighLimit.issuerDetails || {}
+      const serviceOrUsername = issuerDetails.service || issuerDetails.username || ''
+      const issuer = obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuer : obj.HighLimit.issuer || ''
+
+      const searchLower = searchQuery.toLowerCase()
+      return (
+        currency.toLowerCase().includes(searchLower) ||
+        serviceOrUsername.toLowerCase().includes(searchLower) ||
+        issuer.toLowerCase().includes(searchLower)
+      )
+    }
+
+    return true
+  })
+
+  // Convert trustlines to token format
+  return trustlines.map((tl) => ({
+    currency: tl.Balance.currency,
+    issuer: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuer : tl.HighLimit.issuer,
+    issuerDetails: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuerDetails : tl.HighLimit.issuerDetails,
+    limit: Math.max(parseFloat(tl.LowLimit.value), parseFloat(tl.HighLimit.value)),
+    balance: tl.Balance.value
+  }))
+}
+
+// Helper function to add native currency to tokens array if needed
+const addNativeCurrencyIfNeeded = (tokens, excludeNative, searchQuery = '') => {
+  if (excludeNative) return tokens
+
+  const shouldAddNative = !searchQuery || searchQuery.toUpperCase() === nativeCurrency.toUpperCase()
+  if (shouldAddNative) {
+    tokens.unshift({ currency: nativeCurrency, limit: null })
+  }
+
+  return tokens
+}
+
+export default function TokenSelector({ value, onChange, excludeNative = false, destinationAddress = null }) {
   const { t } = useTranslation()
   const width = useWidth()
   const [isOpen, setIsOpen] = useState(false)
@@ -17,6 +68,12 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
   const [searchResults, setSearchResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [searchTimeout, setSearchTimeout] = useState(null)
+
+  // Clear search results when destination address changes
+  useEffect(() => {
+    setSearchResults([])
+    setSearchQuery('')
+  }, [destinationAddress])
 
   // Handle search with debounce
   useEffect(() => {
@@ -30,24 +87,41 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
 
     const timeout = setTimeout(async () => {
       if (!searchQuery) {
-        // do not reload default token list if it's already loaded
-        // when searched for native currency, we also add the native currency on top,
-        // so check that it's not that case before canceling the search
-        if (
-          searchResults[0]?.currency === nativeCurrency &&
-          !niceCurrency(searchResults[1]?.currency)?.toLowerCase().startsWith(nativeCurrency.toLowerCase())
-        )
-          return
+        // Only apply the early return logic when there's no destination address
+        // When destination address is provided, we always want to fetch fresh data
+        if (!destinationAddress) {
+          // do not reload default token list if it's already loaded
+          // when searched for native currency, we also add the native currency on top,
+          // so check that it's not that case before canceling the search
+          if (
+            searchResults[0]?.currency === nativeCurrency &&
+            !niceCurrency(searchResults[1]?.currency)?.toLowerCase().startsWith(nativeCurrency.toLowerCase())
+          )
+            return
+        }
 
         setIsLoading(true)
         try {
-          const response = await axios('v2/trustlines/tokens?limit=' + limit)
-          const tokens = response.data?.tokens || []
-          if (excludeNative) {
-            setSearchResults(tokens)
+          let tokens = []
+
+          if (destinationAddress) {
+            // Fetch tokens that destination can hold based on trustlines
+            tokens = await fetchTrustlinesForDestination(destinationAddress)
+            tokens = addNativeCurrencyIfNeeded(tokens, excludeNative)
           } else {
-            setSearchResults([{ currency: nativeCurrency }, ...tokens])
+            // Fallback to original behavior if no destination address
+            const response = await axios('v2/trustlines/tokens?limit=' + limit)
+            tokens = response.data?.tokens || []
+            if (!excludeNative) {
+              setSearchResults([{ currency: nativeCurrency }, ...tokens])
+            } else {
+              setSearchResults(tokens)
+            }
+            setIsLoading(false)
+            return
           }
+
+          setSearchResults(tokens)
         } catch (error) {
           console.error('Error loading tokens:', error)
           if (excludeNative) {
@@ -63,16 +137,18 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
 
       setIsLoading(true)
       try {
-        //limit doesn't work with search..
-        const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}`)
-        const tokens = response.data?.tokens || []
-
-        if (!excludeNative && searchQuery.toUpperCase() === nativeCurrency.toUpperCase()) {
-          // If search for native currency, add it first
-          tokens.unshift({ currency: nativeCurrency })
+        if (destinationAddress) {
+          // For destination-specific search, filter the existing trustlines
+          const tokens = await fetchTrustlinesForDestination(destinationAddress, searchQuery)
+          const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
+          setSearchResults(tokensWithNative)
+        } else {
+          // Fallback to original search behavior
+          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}`)
+          const tokens = response.data?.tokens || []
+          const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
+          setSearchResults(tokensWithNative)
         }
-
-        setSearchResults(tokens)
       } catch (error) {
         console.error('Error searching tokens:', error)
         setSearchResults([])
@@ -89,7 +165,7 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, isOpen])
+  }, [searchQuery, isOpen, destinationAddress])
 
   const handleSelect = (token) => {
     onChange(token)
@@ -117,6 +193,20 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
       return `${niceCurrency(token.currency)} (${serviceOrUsername})`
     }
     return niceCurrency(token.currency)
+  }
+
+  // Helper to get token limit display
+  const getTokenLimitDisplay = (token) => {
+    if (!token.limit || token.currency === nativeCurrency) return null
+
+    return (
+      <div className="token-selector-modal-item-limit">
+        <span className="token-selector-modal-item-limit-label">Max:</span>
+        <span className="token-selector-modal-item-limit-value">
+          {amountFormat({ value: token.limit, currency: token.currency, issuer: token.issuer }, { short: true })}
+        </span>
+      </div>
+    )
   }
 
   return (
@@ -154,7 +244,9 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
             {/* Modal */}
             <div className="token-selector-modal-container">
               <div className="token-selector-modal-header">
-                <h3 className="token-selector-modal-title">Select Token</h3>
+                <h3 className="token-selector-modal-title">
+                  {destinationAddress ? 'Select Token (Destination can hold)' : 'Select Token'}
+                </h3>
                 <IoMdClose className="token-selector-modal-close" onClick={() => setIsOpen(false)} />
               </div>
 
@@ -183,7 +275,7 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
                   <div className="token-selector-modal-items">
                     {searchResults.map((token, index) => (
                       <div
-                        key={`${token.token}-${index}`}
+                        key={`${token.currency}-${token.issuer}-${index}`}
                         className="token-selector-modal-item"
                         onClick={() => handleSelect(token)}
                       >
@@ -196,8 +288,16 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
                             />
                           </div>
                           <div className="token-selector-modal-item-name">
-                            <span>{getTokenDisplayName(token)}</span>
+                            <span>
+                              {getTokenDisplayName(token)}
+                              {token.holders !== undefined && (
+                                <span style={{ marginLeft: '8px', fontSize: '0.85em', color: 'var(--text-secondary)' }}>
+                                  {shortNiceNumber(token.holders, 0)} holders
+                                </span>
+                              )}
+                            </span>
                             {width > 1100 ? <span>{token.issuer}</span> : <span>{shortAddress(token.issuer)}</span>}
+                            {getTokenLimitDisplay(token)}
                           </div>
                         </div>
                       </div>
@@ -210,6 +310,8 @@ export default function TokenSelector({ value, onChange, excludeNative = false }
                   </div>
                 ) : searchQuery ? (
                   <div className="token-selector-modal-empty">{t('general.no-data')}</div>
+                ) : destinationAddress ? (
+                  <div className="token-selector-modal-empty">No trustlines found for this destination address.</div>
                 ) : null}
               </div>
             </div>
