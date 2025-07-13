@@ -455,14 +455,25 @@ export default function Send({
 
           <div className="form-spacing" />
           <FormInput
-            title={t('table.destination-tag')}
+            title={
+              <>
+                {t('table.destination-tag')}{' '}
+                {requireDestTag ? (
+                  <>
+                    {' '}
+                    (<span className="orange bold">required</span>)
+                  </>
+                ) : (
+                  ''
+                )}
+              </>
+            }
             placeholder={t('form.placeholder.destination-tag')}
             setInnerValue={setDestinationTag}
             hideButton={true}
             onKeyPress={typeNumberOnly}
             defaultValue={destinationTag}
           />
-          {requireDestTag && <span className="orange">This destination account requires a destination tag</span>}
           <div className="form-input">
             <div className="form-spacing" />
             <div className="flex flex-col gap-4 sm:flex-row">
