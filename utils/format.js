@@ -907,7 +907,6 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     n = -1 * n
   }
 
-  // Original mode
   if (smallNumberFractionDigits > 2) {
     if (n > 99.99) {
       smallNumberFractionDigits = 2
