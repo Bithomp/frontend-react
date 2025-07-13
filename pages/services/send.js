@@ -57,6 +57,7 @@ export default function Send({
   const [isDestinationFlagged, setIsDestinationFlagged] = useState(false)
   const [isNonActive, setIsNonActive] = useState(false)
   const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
+  const [requireDestTag, setRequireDestTag] = useState(false)
   const [agreeToSendToNonActive, setAgreeToSendToNonActive] = useState(false)
   const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
   const [networkInfo, setNetworkInfo] = useState({})
@@ -185,6 +186,7 @@ export default function Send({
       if (!address || !isAddressValid(address)) {
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setRequireDestTag(false)
         setIsNonActive(false)
         setAgreeToSendToNonActive(false)
         return
@@ -214,10 +216,20 @@ export default function Send({
           setIsNonActive(false)
           setAgreeToSendToNonActive(false)
         }
+
+        // Fetch destination tag requirement from new endpoint
+        const accountResponse = await axios(`/xrpl/accounts/${address}`)
+        const accountData = accountResponse?.data
+        if (accountData?.account_data?.require_dest_tag) {
+          setRequireDestTag(accountData?.account_data?.require_dest_tag)
+        } else {
+          setRequireDestTag(false)
+        }
       } catch (error) {
         setError('Error fetching destination account data')
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setRequireDestTag(false)
         setIsNonActive(false)
         setAgreeToSendToNonActive(false)
       }
@@ -249,6 +261,12 @@ export default function Send({
 
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
       setError('Please enter a valid amount.')
+      return
+    }
+
+    // Check if destination requires a tag but none is provided
+    if (requireDestTag && !destinationTag) {
+      setError('This destination account requires a destination tag. Please enter a destination tag.')
       return
     }
 
@@ -437,7 +455,19 @@ export default function Send({
 
           <div className="form-spacing" />
           <FormInput
-            title={t('table.destination-tag')}
+            title={
+              <>
+                {t('table.destination-tag')}{' '}
+                {requireDestTag ? (
+                  <>
+                    {' '}
+                    (<span className="orange bold">required</span>)
+                  </>
+                ) : (
+                  ''
+                )}
+              </>
+            }
             placeholder={t('form.placeholder.destination-tag')}
             setInnerValue={setDestinationTag}
             hideButton={true}
