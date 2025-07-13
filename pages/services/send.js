@@ -75,14 +75,40 @@ export default function Send({
   const getMaxAmountDisplay = () => {
     const maxAmount = getMaxAmount()
     if (!maxAmount) return null
-    
+
     return (
-      <div className="max-amount-display">
-        <span className="max-amount-label">Max amount:</span>
-        <span className="max-amount-value">
-          {amountFormat({ value: maxAmount, currency: selectedToken.currency, issuer: selectedToken.issuer }, { short: true })}
+      <>
+        <span className="max-amount-display">
+          (<span className="max-amount-label">Dest. can accept max</span>{' '}
+          <span className="max-amount-value">
+            {amountFormat(
+              { value: maxAmount, currency: selectedToken.currency, issuer: selectedToken.issuer },
+              { short: true }
+            )}
+          </span>
+          )
         </span>
-      </div>
+        <style jsx>{`
+          .max-amount-display {
+            align-items: center;
+            margin-top: 4px;
+            font-size: 12px;
+
+            .max-amount-label {
+              color: #6b7280;
+              font-weight: 500;
+              .dark & {
+                color: #9ca3af;
+              }
+            }
+
+            .max-amount-value {
+              color: var(--accent-link);
+              font-weight: 500;
+            }
+          }
+        `}</style>
+      </>
     )
   }
 
@@ -422,7 +448,9 @@ export default function Send({
             <div className="form-spacing" />
             <div className="flex flex-col gap-4 sm:flex-row">
               <div className="flex-1">
-                <span className="input-title">{t('table.amount')}</span>
+                <span className="input-title">
+                  {t('table.amount')} {getMaxAmountDisplay()}
+                </span>
                 <input
                   placeholder="Enter amount"
                   onChange={(e) => setAmount(e.target.value)}
@@ -439,7 +467,6 @@ export default function Send({
               <div className="w-full sm:w-1/2">
                 <span className="input-title">Currency</span>
                 <TokenSelector value={selectedToken} onChange={onTokenChange} destinationAddress={address} />
-                {getMaxAmountDisplay()}
               </div>
             </div>
           </div>

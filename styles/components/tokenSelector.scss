@@ -240,25 +240,3 @@
     }
   }
 }
-
-// Max amount display styles for send page
-.max-amount-display {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 4px;
-  font-size: 12px;
-  
-  .max-amount-label {
-    color: #6b7280;
-    font-weight: 500;
-    .dark & {
-      color: #9ca3af;
-    }
-  }
-  
-  .max-amount-value {
-    color: var(--accent-link);
-    font-weight: 500;
-  }
-}
