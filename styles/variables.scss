@@ -1,7 +1,9 @@
+@use './colors' as *;
+
 body {
   --background-header: #002C37;
   --background-block: #002C37;
-  --background-main: white;
+  --background-main: var(--color-gray-50);
   --background-footer: #333333;
   --background-menu: #005460;
   --background-secondary: #F9F9F9;
@@ -25,15 +27,15 @@ body {
   --orange: #FCAC45;
   --purple: #800080;
   // Card variables
-  --card-shadow: #000;
-  --card-border: #000;
-  --card-bg: #fff;
-  --card-text: #000;
+  --card-shadow: var(--color-gray-800);
+  --card-border: var(--color-gray-200);
+  --card-bg: white;
+  --card-text: var(--color-gray-950);
   }
   body.dark {
   --background-header: #031B21;
   --background-block: #031B21;
-  --background-main: #090909;
+  --background-main: var(--color-gray-950);
   --background-footer: #1C1C1C;
   --background-menu: black;
   --background-secondary: #101010;
@@ -57,10 +59,10 @@ body {
   --orange: #FAD29E;
   --purple: #EE82EE;
   // Card variables
-  --card-shadow: #787878;
-  --card-border: #787878;
-  --card-bg: #1a1a1a;
-  --card-text: #fff;
+  --card-shadow: var(--color-gray-800);
+  --card-border: var(--color-gray-800);
+  --card-bg: black;
+  --card-text: var(--color-gray-100);
   }
   
   body[data-networkname*="xahau"] {

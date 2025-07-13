@@ -8,7 +8,7 @@ import ExpirationSelect from '../../UI/ExpirationSelect'
 import TokenSelector from '../../UI/TokenSelector'
 import { useRouter } from 'next/router'
 
-export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
+export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery, account }) {
   const router = useRouter()
   const [uri, setUri] = useState(uriQuery)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
@@ -40,6 +40,13 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
       setErrorMessage('')
     }
   }, [agreeToSiteTerms, agreeToPrivacyPolicy])
+
+
+  useEffect(() => {
+    if (!account?.address) {
+      setCreateSellOffer(false)
+    }
+  }, [account?.address])
 
   useEffect(() => {
     let queryAddList = []
@@ -337,9 +344,18 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery }) {
                   setCreateSellOffer(!createSellOffer)
                 }}
                 name="create-sell-offer"
+                disabled={!account?.address}
               >
                 Create a Sell offer
               </CheckBox>
+              {!account?.address && (
+                <div className="orange" style={{ marginTop: '5px', fontSize: '14px' }}>
+                  <span className="link" onClick={() => setSignRequest({})}>
+                    Login first
+                  </span>{' '}
+                  if you want to add the sell offer in the same transaction.
+                </div>
+              )}
             </div>
 
             {/* Sell Offer Fields */}

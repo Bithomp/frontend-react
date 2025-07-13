@@ -62,7 +62,7 @@ import NFTokenData from '../../components/Account/NFTokenData'
 import URITokenData from '../../components/Account/URITokenData'
 import IOUData from '../../components/Account/IOUData'
 import EscrowData from '../../components/Account/EscrowData'
-//import DexOrdersData from '../../components/Account/DexOrdersData'
+import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
 
 export default function Account({
@@ -525,6 +525,12 @@ export default function Account({
                             rippleStateList={objects?.rippleStateList}
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             address={data?.address}
+                          />
+                          <DexOrdersData
+                            account={account}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            offerList={objects?.offerList}
+                            setSignRequest={setSignRequest}
                           />
 
                           {xahauNetwork ? (
