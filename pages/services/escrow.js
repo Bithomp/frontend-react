@@ -17,6 +17,7 @@ import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from 'axios'
+
 const RIPPLE_EPOCH_OFFSET = 946684800 // Seconds between 1970-01-01 and 2000-01-01
 
 export default function CreateEscrow({ setSignRequest, sessionToken, subscriptionExpired }) {
@@ -192,8 +193,13 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
   const handleGenerateCondition = async () => {
     setError('')
     try {
-      const response = await axios(`/v2/escrows/generate-condition`)
-      const { condition: generatedCondition, fulfillment: generatedFulfillment } = response.data
+      // Generate a random preimage
+      const preimage = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('')
+
+      const response = await axios.post('/v2/escrows/generate-condition', { preimage })
+      const { condition: generatedCondition, preimageHex: generatedFulfillment } = response.data
       setCondition(generatedCondition)
       setFulfillment(generatedFulfillment)
     } catch (err) {
@@ -346,7 +352,11 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
                   disabled={!sessionToken || subscriptionExpired}
                 />
                 <div style={{ display: 'flex', alignItems: 'center', marginTop: '5px' }}>
-                  <button className="button-action thin narrow" onClick={handleGenerateCondition}>
+                  <button 
+                    className="button-action thin narrow" 
+                    onClick={handleGenerateCondition}
+                    disabled={!sessionToken || subscriptionExpired}
+                  >
                     Generate Random Condition
                   </button>
                   <span className="grey" style={{ marginLeft: '10px' }}>
