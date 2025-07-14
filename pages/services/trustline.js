@@ -271,7 +271,20 @@ export default function TrustSet({ setSignRequest }) {
                       className="simple-input"
                       placeholder="Currency code (e.g., USD, EUR or HEX)"
                       value={currency.currency}
-                      onChange={(e) => setCurrency({ currency: e.target.value })}
+                      onChange={(e) => {
+                        const value = e.target.value
+                        const isHexString = /^[0-9A-F]*$/i.test(value)                        
+                        if (isHexString) {
+                          if (value.length > 40) {
+                            return
+                          }
+                        } else {
+                          if (value.length > 20) {
+                            return
+                          }
+                        }
+                        setCurrency({ currency: value })
+                      }}
                       spellCheck="false"
                     />
                     <div className="form-input__btns">
@@ -293,7 +306,7 @@ export default function TrustSet({ setSignRequest }) {
                     </div>
                   </div>
                   <span className="orange">
-                    <b>Note:</b> If currency more than 3 characters, it should be converted to HEX.
+                    <b>Note:</b> If currency more than 3 characters, it should be converted to HEX. Max 20 characters for non-HEX codes.
                   </span>
                 </div>
               </div>
