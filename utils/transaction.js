@@ -519,7 +519,7 @@ export const processTransactions = (transactions, currentAddress) => {
       date: null,
       time: null,
       fullTime: null,
-      fee: transaction.outcome?.fee || transaction.tx?.Fee,
+      fee: transaction.tx?.Fee,
       specification: transaction.specification || {},
       outcome: transaction.outcome || {},
       balanceChanges: transaction.outcome?.balanceChanges || [],
