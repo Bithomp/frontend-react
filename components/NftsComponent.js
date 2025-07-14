@@ -539,7 +539,7 @@ export default function NftsComponent({
         setTab: setOrder,
         paramName: 'order'
       })
-      
+
       // Add token parameters
       if (selectedToken?.currency) {
         queryAddList.push({
@@ -677,7 +677,7 @@ export default function NftsComponent({
             (isValidTaxon(taxonQuery) ? ' ' + taxonQuery : '') +
             (ownerQuery ? ', ' + t('table.owner') + ': ' + ownerQuery : '') +
             (activeView === 'list' ? ' ' + t('tabs.list') : '') +
-            (listTab === 'onSale' ? ' ' + t('tabs.onSale') : '') + 
+            (listTab === 'onSale' ? ' ' + t('tabs.onSale') : '') +
             (listTab === 'onSale' && (saleDestinationTab === 'buyNow' || saleDestinationTab === 'public')
               ? ', ' + t('tabs.buyNow')
               : '') +
@@ -740,20 +740,17 @@ export default function NftsComponent({
           )}
           {!burnedPeriod && listTab === 'onSale' && (
             <div>
-              {t('table.on-sale')}
+              <div>
+                {t('table.currency')}
+                <TokenSelector value={selectedToken} onChange={setSelectedToken} />
+              </div>
+              <br />
               <RadioOptions
                 tabList={saleDestinationTabList}
                 tab={saleDestinationTab}
                 setTab={setSaleDestinationTab}
                 name="saleDestination"
-              />              
-              <div>
-                {t('table.currency')}
-                <TokenSelector
-                  value={selectedToken}
-                  onChange={setSelectedToken}
-                />
-              </div>
+              />
             </div>
           )}
           {nftExplorer && (

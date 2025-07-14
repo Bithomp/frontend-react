@@ -557,7 +557,7 @@
     "sell": "Venta",
     "buyNow": "Comprar ya",
     "publicAndKnownBrokers": "Público Y Mercado",
-    "onSale": "En venta por tokens",
+    "onSale": "Listado",
     "all-tokens": "Todos los tokens",
     "native-currency-only": "Solo {{nativeCurrency}}",
     "mintedNew": "Latest",
