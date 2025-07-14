@@ -557,7 +557,7 @@
     "sell": "Jual",
     "buyNow": "Buy now",
     "publicAndKnownBrokers": "Publik & Broker Terkenal",
-    "onSale": "Dijual dengan {{nativeCurrency}}",
+    "onSale": "Sedang dijual",
     "all-tokens": "Semua Token",
     "native-currency-only": "Hanya {{nativeCurrency}}",
     "mintedNew": "Latest",

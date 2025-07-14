@@ -557,7 +557,7 @@
     "sell": "売却",
     "buyNow": "今すぐ購入",
     "publicAndKnownBrokers": "パブリック & MP",
-    "onSale": "{{nativeCurrency}}で販売中",
+    "onSale": "販売中です",
     "all-tokens": "全トークン",
     "native-currency-only": "{{nativeCurrency}}のみ",
     "mintedNew": "新しい",

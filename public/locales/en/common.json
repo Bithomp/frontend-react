@@ -557,7 +557,7 @@
     "sell": "Sell",
     "buyNow": "Buy now",
     "publicAndKnownBrokers": "Public & MP",
-    "onSale": "On sale for {{nativeCurrency}}",
+    "onSale": "Listed",
     "all-tokens": "All tokens",
     "native-currency-only": "{{nativeCurrency}} only",
     "mintedNew": "Latest",
