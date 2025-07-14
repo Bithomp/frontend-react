@@ -16,8 +16,7 @@ import { errorCodeDescription } from '../../utils/transaction'
 import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { generateConditionAndFulfillment } from '../../utils/escrow'
-
+import axios from 'axios'
 const RIPPLE_EPOCH_OFFSET = 946684800 // Seconds between 1970-01-01 and 2000-01-01
 
 export default function CreateEscrow({ setSignRequest, sessionToken, subscriptionExpired }) {
@@ -193,8 +192,8 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
   const handleGenerateCondition = async () => {
     setError('')
     try {
-      const { condition: generatedCondition, fulfillment: generatedFulfillment } =
-        await generateConditionAndFulfillment()
+      const response = await axios(`/v2/escrows/generate-condition`)
+      const { condition: generatedCondition, fulfillment: generatedFulfillment } = response.data
       setCondition(generatedCondition)
       setFulfillment(generatedFulfillment)
     } catch (err) {
