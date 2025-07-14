@@ -35,6 +35,7 @@ export default function Send({
   const { t } = useTranslation()
   const router = useRouter()
   const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
+  const [addressDetails, setAddressDetails] = useState(null)
   const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
   const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
   const [memo, setMemo] = useState(memoQuery)
@@ -111,6 +112,13 @@ export default function Send({
         `}</style>
       </>
     )
+  }
+
+  // Custom setValue handler for AddressInput that also stores address details
+  const handleAddressChange = (selectedAddress, details) => {
+    setAddress(selectedAddress)
+    setAddressDetails(details && (details.username || details.service) ? details : null)
+    setSelectedToken({ currency: nativeCurrency })
   }
 
   // Fetch network info for reserve amounts only when account is not activated
@@ -403,12 +411,16 @@ export default function Send({
             placeholder="Destination address"
             name="destination"
             hideButton={true}
-            setValue={(value) => {
-              setAddress(value)
-              setSelectedToken({ currency: nativeCurrency })
-            }}
+            setValue={handleAddressChange}
             setInnerValue={setAddress}
-            rawData={isAddressValid(address) ? { address } : {}}
+            rawData={
+              isAddressValid(address) 
+                ? { 
+                    address,
+                    ...(addressDetails && { addressDetails })
+                  } 
+                : {}
+            }
             type="address"
           />
 
