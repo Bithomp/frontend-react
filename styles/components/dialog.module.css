@@ -1,0 +1,219 @@
+/* Backdrop */
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+    animation: fadeIn 0.2s ease-out;
+    /* Prevent any pointer events from bubbling through */
+    pointer-events: auto;
+    /* Ensure backdrop is above everything */
+    isolation: isolate;
+}
+
+/* Dialog container */
+.dialog {
+    background: var(--card-bg);
+    /* border-radius: 8px; */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.3s ease-out;
+    /* Prevent any layout shifts */
+    transform: translateZ(0);
+    /* Ensure dialog is above backdrop */
+    position: relative;
+    z-index: 1;
+}
+
+/* Size variants */
+.small {
+    width: 400px;
+}
+
+.medium {
+    width: 600px;
+}
+
+.large {
+    width: 800px;
+}
+
+.xlarge {
+    width: 1000px;
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.25rem 0 1.25rem;
+    border-bottom: 1px solid var(--card-border);
+    /* min-height: 60px; */
+    /* Prevent layout shifts */
+    flex-shrink: 0;
+}
+
+.title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--card-text);
+    line-height: 1.5;
+}
+
+/* Close button */
+.closeButton {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 6px;
+    color: var(--card-text);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    /* Prevent button from causing layout shifts */
+    flex-shrink: 0;
+}
+
+.closeButton:hover {
+    background-color: var(--card-bg);
+    color: var(--card-text);
+}
+
+.closeButton:focus {
+    outline: 2px solid var(--accent-icon);
+    outline-offset: 2px;
+}
+
+/* Content area */
+.content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+    /* Prevent content from causing layout shifts */
+    min-height: 0;
+}
+
+/* Animations - optimized to prevent blinking */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95) translateZ(0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1) translateZ(0);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+    .backdrop {
+        padding: 0.5rem;
+    }
+    
+    .dialog {
+        width: 100%;
+        max-width: 100%;
+        max-height: 95vh;
+    }
+    
+    .header {
+        padding: 1rem 1rem 0 1rem;
+        min-height: 50px;
+    }
+    
+    .content {
+        padding: 1rem;
+    }
+    
+    .title {
+        font-size: 1.125rem;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .dialog {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+    }
+    
+    .title {
+        color: var(--card-text);
+    }
+    
+    .header {
+        border-bottom-color: var(--card-border);
+    }
+    
+    .closeButton {
+        color: var(--card-text);
+    }
+    
+    .closeButton:hover {
+        background-color: var(--card-bg);
+        color: var(--card-text);
+    }
+}
+
+/* Focus management */
+.dialog:focus {
+    outline: none;
+}
+
+/* Scrollbar styling for content */
+.content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: var(--card-bg);
+    border-radius: 3px;
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: var(--card-text);
+    border-radius: 3px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+    background: var(--card-text);
+}
+
+/* Additional fixes to prevent blinking */
+.backdrop * {
+    /* Prevent any child elements from causing reflows */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Ensure dialog stays in place during animations */
+.dialog {
+    will-change: transform, opacity;
+}
