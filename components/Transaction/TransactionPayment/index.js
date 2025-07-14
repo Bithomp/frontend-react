@@ -9,7 +9,7 @@ import {
 } from '../../../utils/format'
 
 import { TransactionCard } from '../TransactionCard'
-import { nativeCurrency, xls14NftValue } from '../../../utils'
+import { isNativeCurrency, xls14NftValue } from '../../../utils'
 import CopyButton from '../../UI/CopyButton'
 import { addressBalanceChanges, dappBySourceTag } from '../../../utils/transaction'
 import DestinationTagProblemSolving from './DestinationTagProblemSolving'
@@ -139,8 +139,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         !isConvertion &&
         (!outcome.deliveredAmount ||
           outcome.deliveredAmount.issuer ||
-          (!outcome.deliveredAmount.issuer &&
-            outcome.deliveredAmount.currency === nativeCurrency &&
+          (!isNativeCurrency(outcome.deliveredAmount) &&
             Number(outcome.deliveredAmount.value) < 100000)) && (
           <DestinationTagProblemSolving specification={specification} pageFiatRate={pageFiatRate} />
         )}

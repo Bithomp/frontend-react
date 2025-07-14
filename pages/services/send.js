@@ -10,7 +10,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../../utils/links'
 import { multiply } from '../../utils/calc'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
-import { typeNumberOnly, isAddressValid, isTagValid, isIdValid, nativeCurrency, encode, decode } from '../../utils'
+import { typeNumberOnly, isAddressValid, isTagValid, isIdValid, nativeCurrency, isNativeCurrency, encode, decode } from '../../utils'
 import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -28,7 +28,9 @@ export default function Send({
   memoQuery,
   feeQuery,
   sourceTagQuery,
-  invoiceIdQuery
+  invoiceIdQuery,
+  sessionToken,
+  subscriptionExpired
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -39,20 +41,94 @@ export default function Send({
   const [showAdvanced, setShowAdvanced] = useState(
     Number(feeQuery) > 0 || isTagValid(sourceTagQuery) || isIdValid(invoiceIdQuery)
   )
-  const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 ? feeQuery : null)
+  const [fee, setFee] = useState(
+    Number(feeQuery) > 0 && Number(feeQuery) <= 1 && sessionToken && !subscriptionExpired ? feeQuery : null
+  )
   const [feeError, setFeeError] = useState('')
-  const [sourceTag, setSourceTag] = useState(isTagValid(sourceTagQuery) ? sourceTagQuery : null)
-  const [invoiceId, setInvoiceId] = useState(isIdValid(invoiceIdQuery) ? invoiceIdQuery : null)
+  const [sourceTag, setSourceTag] = useState(
+    isTagValid(sourceTagQuery) && sessionToken && !subscriptionExpired ? sourceTagQuery : null
+  )
+  const [invoiceId, setInvoiceId] = useState(
+    isIdValid(invoiceIdQuery) && sessionToken && !subscriptionExpired ? invoiceIdQuery : null
+  )
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
   const [isDestinationFlagged, setIsDestinationFlagged] = useState(false)
+  const [isNonActive, setIsNonActive] = useState(false)
   const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
+  const [requireDestTag, setRequireDestTag] = useState(false)
+  const [agreeToSendToNonActive, setAgreeToSendToNonActive] = useState(false)
   const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
+  const [networkInfo, setNetworkInfo] = useState({})
 
   const onTokenChange = (token) => {
     setSelectedToken(token)
   }
+
+  // Helper to get maximum amount that can be sent for the selected token
+  const getMaxAmount = () => {
+    if (!selectedToken || selectedToken.currency === nativeCurrency) return null
+    return selectedToken.limit
+  }
+
+  // Helper to format max amount display
+  const getMaxAmountDisplay = () => {
+    const maxAmount = getMaxAmount()
+    if (!maxAmount) return null
+
+    return (
+      <>
+        <span className="max-amount-display">
+          (<span className="max-amount-label">Dest. can accept max</span>{' '}
+          <span className="max-amount-value">
+            {amountFormat(
+              { value: maxAmount, currency: selectedToken.currency, issuer: selectedToken.issuer },
+              { short: true }
+            )}
+          </span>
+          )
+        </span>
+        <style jsx>{`
+          .max-amount-display {
+            align-items: center;
+            margin-top: 4px;
+            font-size: 12px;
+
+            .max-amount-label {
+              color: #6b7280;
+              font-weight: 500;
+              .dark & {
+                color: #9ca3af;
+              }
+            }
+
+            .max-amount-value {
+              color: var(--accent-link);
+              font-weight: 500;
+            }
+          }
+        `}</style>
+      </>
+    )
+  }
+
+  // Fetch network info for reserve amounts only when account is not activated
+  useEffect(() => {
+    const fetchNetworkInfo = async () => {
+      try {
+        const response = await axios('/v2/server')
+        setNetworkInfo(response?.data || {})
+      } catch (error) {
+        console.error('Error fetching network info:', error)
+      }
+    }
+
+    // Only fetch network info if the destination account is not activated
+    if (isNonActive) {
+      fetchNetworkInfo()
+    }
+  }, [isNonActive])
 
   useEffect(() => {
     let queryAddList = []
@@ -82,7 +158,7 @@ export default function Send({
       queryRemoveList.push('memo')
     }
 
-    if (fee && Number(amount) > 0) {
+    if (fee && Number(fee) > 0 && Number(fee) <= 1) {
       queryAddList.push({ name: 'fee', value: fee })
     } else {
       queryRemoveList.push('fee')
@@ -110,29 +186,52 @@ export default function Send({
       if (!address || !isAddressValid(address)) {
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setRequireDestTag(false)
+        setIsNonActive(false)
+        setAgreeToSendToNonActive(false)
         return
       }
 
       try {
-        const response = await axios(`/v2/address/${address}?blacklist=true`)
+        const response = await axios(`/v2/address/${address}?blacklist=true&ledgerInfo=true`)
         const data = response?.data
 
         if (data?.address) {
           const isFlagged = data.blacklist?.blacklisted || false
-          setIsDestinationFlagged(isFlagged)
+          const isNonActivated = data.ledgerInfo && data.ledgerInfo.activated === false
 
-          // Reset agreement if account is no longer flagged
+          setIsDestinationFlagged(isFlagged)
+          setIsNonActive(isNonActivated)
+
+          // Reset agreements if account status changes
           if (!isFlagged) {
             setAgreeToSendToFlagged(false)
+          }
+          if (!isNonActivated) {
+            setAgreeToSendToNonActive(false)
           }
         } else {
           setIsDestinationFlagged(false)
           setAgreeToSendToFlagged(false)
+          setIsNonActive(false)
+          setAgreeToSendToNonActive(false)
+        }
+
+        // Fetch destination tag requirement from new endpoint
+        const accountResponse = await axios(`/xrpl/accounts/${address}`)
+        const accountData = accountResponse?.data
+        if (accountData?.account_data?.require_dest_tag) {
+          setRequireDestTag(accountData?.account_data?.require_dest_tag)
+        } else {
+          setRequireDestTag(false)
         }
       } catch (error) {
         setError('Error fetching destination account data')
         setIsDestinationFlagged(false)
         setAgreeToSendToFlagged(false)
+        setRequireDestTag(false)
+        setIsNonActive(false)
+        setAgreeToSendToNonActive(false)
       }
     }
 
@@ -165,8 +264,22 @@ export default function Send({
       return
     }
 
+    // Check if destination requires a tag but none is provided
+    if (requireDestTag && !destinationTag) {
+      setError('This destination account requires a destination tag. Please enter a destination tag.')
+      return
+    }
+
     if (destinationTag && !isTagValid(destinationTag)) {
       setError('Please enter a valid destination tag.')
+      return
+    }
+
+    // Check if advanced options are being used without proper subscription
+    if ((fee || sourceTag || invoiceId) && (!sessionToken || subscriptionExpired)) {
+      setError(
+        'Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.'
+      )
       return
     }
 
@@ -195,13 +308,18 @@ export default function Send({
       return
     }
 
+    if (isNonActive && !agreeToSendToNonActive) {
+      setError('Please acknowledge that you understand the risks of sending to a non-activated account')
+      return
+    }
+
     try {
       let payment = {
         TransactionType: 'Payment',
         Destination: address
       }
 
-      if (selectedToken.currency === nativeCurrency) {
+      if (isNativeCurrency(selectedToken)) {
         payment.Amount = multiply(amount, 1000000)
       } else {
         payment.Amount = {
@@ -285,7 +403,10 @@ export default function Send({
             placeholder="Destination address"
             name="destination"
             hideButton={true}
-            setValue={setAddress}
+            setValue={(value) => {
+              setAddress(value)
+              setSelectedToken({ currency: nativeCurrency })
+            }}
             setInnerValue={setAddress}
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
@@ -295,7 +416,7 @@ export default function Send({
           {isDestinationFlagged && (
             <div>
               <div className="form-spacing" />
-              <div className="red center p-2 rounded-md bg-red-50 border border-red-200 mb-4 sm:mb-0">
+              <div className="red center p-2 rounded-md border border-red-200 mb-4 sm:mb-0">
                 <strong>⚠️ Fraud Alert</strong>
                 <br />
                 This account has been flagged as potentially involved in scams, phishing, or other malicious activities.
@@ -313,9 +434,40 @@ export default function Send({
             </div>
           )}
 
+          {/* Show warning if destination account is non-activated */}
+          {isNonActive && (
+            <div>
+              <div className="form-spacing" />
+              <div className="orange center p-2 rounded-md border border-orange-200 mb-4 sm:mb-0">
+                <strong>⚠️ Non-Activated Account</strong>
+                <br />
+                You are attempting to send funds to a non-activated account.
+                <br />
+                This account has never been used and currently has a zero balance.
+                <br />
+                <strong>Proceed with caution.</strong>
+                <br />
+                If you continue, {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate the
+                account on the ledger.
+              </div>
+            </div>
+          )}
+
           <div className="form-spacing" />
           <FormInput
-            title={t('table.destination-tag')}
+            title={
+              <>
+                {t('table.destination-tag')}{' '}
+                {requireDestTag ? (
+                  <>
+                    {' '}
+                    (<span className="orange bold">required</span>)
+                  </>
+                ) : (
+                  ''
+                )}
+              </>
+            }
             placeholder={t('form.placeholder.destination-tag')}
             setInnerValue={setDestinationTag}
             hideButton={true}
@@ -326,7 +478,9 @@ export default function Send({
             <div className="form-spacing" />
             <div className="flex flex-col gap-4 sm:flex-row">
               <div className="flex-1">
-                <span className="input-title">{t('table.amount')}</span>
+                <span className="input-title">
+                  {t('table.amount')} {getMaxAmountDisplay()}
+                </span>
                 <input
                   placeholder="Enter amount"
                   onChange={(e) => setAmount(e.target.value)}
@@ -342,7 +496,7 @@ export default function Send({
               </div>
               <div className="w-full sm:w-1/2">
                 <span className="input-title">Currency</span>
-                <TokenSelector value={selectedToken} onChange={onTokenChange} />
+                <TokenSelector value={selectedToken} onChange={onTokenChange} destinationAddress={address} />
               </div>
             </div>
           </div>
@@ -372,6 +526,24 @@ export default function Send({
             name="advanced-payment"
           >
             Advanced Payment Options
+            {!sessionToken ? (
+              <>
+                {' '}
+                <span className="orange">
+                  (available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers)
+                </span>
+              </>
+            ) : (
+              subscriptionExpired && (
+                <>
+                  {' '}
+                  <span className="orange">
+                    Your Bithomp Pro subscription has expired.{' '}
+                    <Link href="/admin/subscriptions">Renew your subscription</Link>
+                  </span>
+                </>
+              )
+            )}
           </CheckBox>
           {showAdvanced && (
             <>
@@ -389,6 +561,7 @@ export default function Send({
                   type="text"
                   inputMode="decimal"
                   defaultValue={fee}
+                  disabled={!sessionToken || subscriptionExpired}
                 />
                 {feeError && <div className="red">{feeError}</div>}
               </div>
@@ -404,6 +577,7 @@ export default function Send({
                   maxLength="35"
                   type="text"
                   defaultValue={sourceTag}
+                  disabled={!sessionToken || subscriptionExpired}
                 />
               </div>
               <div className="form-spacing" />
@@ -417,10 +591,12 @@ export default function Send({
                   maxLength="64"
                   type="text"
                   defaultValue={invoiceId}
+                  disabled={!sessionToken || subscriptionExpired}
                 />
               </div>
             </>
           )}
+
           <br />
           <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
             I agree with the{' '}
@@ -435,6 +611,20 @@ export default function Send({
             <div className="orange">
               <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
                 I understand the risks and I want to proceed with sending funds to this flagged account
+              </CheckBox>
+            </div>
+          )}
+
+          {/* Show additional checkbox for non-activated accounts */}
+          {isNonActive && (
+            <div className="orange">
+              <CheckBox
+                checked={agreeToSendToNonActive}
+                setChecked={setAgreeToSendToNonActive}
+                name="agree-to-non-active"
+              >
+                I understand that {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate this
+                account and I want to proceed
               </CheckBox>
             </div>
           )}
