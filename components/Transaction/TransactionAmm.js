@@ -46,26 +46,50 @@ const AMMFlags = ({ flags, txType }) => {
   }
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-      {activeFlags.map((flag) => (
-        <span key={flag.name} className="tooltip no-brake">
-          <span
-            style={{
-              backgroundColor: '#e6f4ea',
-              color: '#008000',
-              padding: '2px 6px',
-              borderRadius: '4px',
-              fontSize: '12px',
-              fontWeight: '500',
-              border: '1px solid #008000'
-            }}
-          >
-            {flag.name}
-          </span>
-          <span className="tooltiptext right no-brake">{flag.description}</span>
-        </span>
-      ))}
-    </div>
+    <>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {activeFlags.map((flag) => (
+          <div key={flag.name}>
+            {/* Desktop version with tooltip */}
+            <span className="tooltip no-brake desktop-only">
+              <span
+                style={{
+                  backgroundColor: '#e6f4ea',
+                  color: '#008000',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  border: '1px solid #008000'
+                }}
+              >
+                {flag.name}
+              </span>
+              <span className="tooltiptext right no-brake">{flag.description}</span>
+            </span>
+            
+            {/* Mobile version with inline description */}
+            <div className="mobile-only">
+              <span className="bold">{flag.name} </span>
+              <span className="grey">({flag.description})</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <style jsx>{`
+          .mobile-only {
+            display: none;
+          }
+          @media only screen and (max-width: 800px) {
+            .mobile-only {
+              display: block;
+            }
+            .desktop-only {
+              display: none;
+            }
+          }
+        `}</style>
+    </>
   )
 }
 
