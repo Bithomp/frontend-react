@@ -71,13 +71,11 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
     <>
       {amountFormat(amount)} {percentFormat(amount, totalCoins)}
       <br />
-      {devNet
-        ? t('table.no-value')
-        : fiatRate > 0 && nativeCurrencyToFiat({ amount, selectedCurrency, fiatRate })}
+      {devNet ? t('table.no-value') : fiatRate > 0 && nativeCurrencyToFiat({ amount, selectedCurrency, fiatRate })}
     </>
   )
 
-  const renderLoadingState = (colSpan = "100") => (
+  const renderLoadingState = (colSpan = '100') => (
     <tr className="center">
       <td colSpan={colSpan}>
         <br />
@@ -90,7 +88,7 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
     </tr>
   )
 
-  const renderErrorState = (colSpan = "100") => (
+  const renderErrorState = (colSpan = '100') => (
     <tr>
       <td colSpan={colSpan} className="center orange bold">
         {errorMessage}
@@ -284,50 +282,60 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
                   renderLoadingState()
                 ) : (
                   <>
-                    {!errorMessage ? (
-                      data.map((r, i) => (
-                        <tr key={i}>
-                          <td style={{ padding: '5px' }} className="center">
-                            <b>{i + 1}</b>
-                          </td>
-                          <td>
-                            <br />
-                            <AddressWithIconFilled data={r} />
-                            <p>
-                              {t('table.balance')}: {amountFormat(calculateTotalBalance(r))}{' '}
-                              {percentFormat(calculateTotalBalance(r), rawData.summary?.totalCoins)}{' '}
-                              {devNet
-                                ? t('table.no-value')
-                                : fiatRate > 0 &&
-                                  nativeCurrencyToFiat({ amount: calculateTotalBalance(r), selectedCurrency, fiatRate })}
-                            </p>
-                            {escrowMode === 'short' && r.escrowShortBalance && (
+                    {!errorMessage
+                      ? data.map((r, i) => (
+                          <tr key={i}>
+                            <td style={{ padding: '5px' }} className="center">
+                              <b>{i + 1}</b>
+                            </td>
+                            <td>
+                              <br />
+                              <AddressWithIconFilled data={r} />
                               <p>
-                                Escrow Short: {amountFormat(getEscrowAmount(r, 'short'))}{' '}
-                                {percentFormat(getEscrowAmount(r, 'short'), rawData.summary?.totalCoins)}{' '}
+                                {t('table.balance')}: {amountFormat(calculateTotalBalance(r))}{' '}
+                                {percentFormat(calculateTotalBalance(r), rawData.summary?.totalCoins)}{' '}
                                 {devNet
                                   ? t('table.no-value')
                                   : fiatRate > 0 &&
-                                    nativeCurrencyToFiat({ amount: getEscrowAmount(r, 'short'), selectedCurrency, fiatRate })}
+                                    nativeCurrencyToFiat({
+                                      amount: calculateTotalBalance(r),
+                                      selectedCurrency,
+                                      fiatRate
+                                    })}
                               </p>
-                            )}
-                            {escrowMode === 'locked' && r.escrowLockedBalance && (
-                              <p>
-                                Escrow Locked: {amountFormat(getEscrowAmount(r, 'locked'))}{' '}
-                                {percentFormat(getEscrowAmount(r, 'locked'), rawData.summary?.totalCoins)}
-                                <br />
-                                {devNet
-                                  ? t('table.no-value')
-                                  : fiatRate > 0 &&
-                                    nativeCurrencyToFiat({ amount: getEscrowAmount(r, 'locked'), selectedCurrency, fiatRate })}
-                              </p>
-                            )}
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      renderErrorState()
-                    )}
+                              {escrowMode === 'short' && r.escrowShortBalance && (
+                                <p>
+                                  Escrow Short: {amountFormat(getEscrowAmount(r, 'short'))}{' '}
+                                  {percentFormat(getEscrowAmount(r, 'short'), rawData.summary?.totalCoins)}{' '}
+                                  {devNet
+                                    ? t('table.no-value')
+                                    : fiatRate > 0 &&
+                                      nativeCurrencyToFiat({
+                                        amount: getEscrowAmount(r, 'short'),
+                                        selectedCurrency,
+                                        fiatRate
+                                      })}
+                                </p>
+                              )}
+                              {escrowMode === 'locked' && r.escrowLockedBalance && (
+                                <p>
+                                  Escrow Locked: {amountFormat(getEscrowAmount(r, 'locked'))}{' '}
+                                  {percentFormat(getEscrowAmount(r, 'locked'), rawData.summary?.totalCoins)}
+                                  <br />
+                                  {devNet
+                                    ? t('table.no-value')
+                                    : fiatRate > 0 &&
+                                      nativeCurrencyToFiat({
+                                        amount: getEscrowAmount(r, 'locked'),
+                                        selectedCurrency,
+                                        fiatRate
+                                      })}
+                                </p>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      : renderErrorState()}
                   </>
                 )}
               </tbody>
