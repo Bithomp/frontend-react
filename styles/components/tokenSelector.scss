@@ -218,4 +218,25 @@
     justify-content: center;
     overflow: hidden;
   }
+
+  &-modal-item-limit {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+    font-size: 12px;
+    
+    &-label {
+      color: #6b7280;
+      font-weight: 500;
+      .dark & {
+        color: #9ca3af;
+      }
+    }
+    
+    &-value {
+      color: var(--accent-link);
+      font-weight: 500;
+    }
+  }
 }
