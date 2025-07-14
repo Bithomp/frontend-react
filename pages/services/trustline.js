@@ -71,6 +71,7 @@ export default function TrustSet({ setSignRequest }) {
     if (mode === 'advanced' && tokenSupply) {
       setLimit(Math.round(tokenSupply * 1000000) / 1000000)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, tokenSupply])
 
   const fetchTokenSupply = async () => {
