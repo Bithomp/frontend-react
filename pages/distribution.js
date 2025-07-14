@@ -233,6 +233,7 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
                   <th className="right">{t('table.balance')}</th>
                   {escrowMode === 'short' && <th className="right">Escrow Short</th>}
                   {escrowMode === 'locked' && <th className="right">Escrow Locked</th>}
+                  {(escrowMode === 'short' || escrowMode === 'locked') && <th className="right">Total</th>}
                 </tr>
               </thead>
               <tbody>
@@ -250,7 +251,7 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
                                 <AddressWithIconFilled data={r} />
                               </td>
                               <td className="right">
-                                {renderBalance(calculateTotalBalance(r), rawData.summary?.totalCoins)}
+                                {renderBalance(r.balance, rawData.summary?.totalCoins)}
                               </td>
                               {escrowMode === 'short' && r.escrowShortBalance && (
                                 <td className="right">
@@ -260,6 +261,11 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
                               {escrowMode === 'locked' && r.escrowLockedBalance && (
                                 <td className="right">
                                   {renderBalance(getEscrowAmount(r, 'locked'), rawData.summary?.totalCoins, true)}
+                                </td>
+                              )}
+                              {(escrowMode === 'short' || escrowMode === 'locked') && (
+                                <td className="right">
+                                  {renderBalance(calculateTotalBalance(r), rawData.summary?.totalCoins, true)}
                                 </td>
                               )}
                             </tr>
@@ -290,13 +296,13 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
                               <br />
                               <AddressWithIconFilled data={r} />
                               <p>
-                                {t('table.balance')}: {amountFormat(calculateTotalBalance(r))}{' '}
-                                {percentFormat(calculateTotalBalance(r), rawData.summary?.totalCoins)}{' '}
+                                {t('table.balance')}: {amountFormat(r.balance)}{' '}
+                                {percentFormat(r.balance, rawData.summary?.totalCoins)}{' '}
                                 {devNet
                                   ? t('table.no-value')
                                   : fiatRate > 0 &&
                                     nativeCurrencyToFiat({
-                                      amount: calculateTotalBalance(r),
+                                      amount: r.balance,
                                       selectedCurrency,
                                       fiatRate
                                     })}
@@ -328,6 +334,12 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
                                         selectedCurrency,
                                         fiatRate
                                       })}
+                                </p>
+                              )}
+                              {(escrowMode === 'short' || escrowMode === 'locked') && (
+                                <p>
+                                  Total: {amountFormat(calculateTotalBalance(r))}{' '}
+                                  {percentFormat(calculateTotalBalance(r), rawData.summary?.totalCoins)}
                                 </p>
                               )}
                             </td>
