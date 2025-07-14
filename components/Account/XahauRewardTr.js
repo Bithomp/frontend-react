@@ -55,9 +55,9 @@ export default function XahauRewardTr({ data, setSignRequest, account, mobile, s
               Claim now
             </a>
           ) : (
-            <a href="#" onClick={() => setSignRequest({})}>
+            <span onClick={() => setSignRequest({})} className="link">
               Sign in to claim
-            </a>
+            </span>
           )}
         </span>
       )}

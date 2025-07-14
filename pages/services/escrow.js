@@ -19,7 +19,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 const RIPPLE_EPOCH_OFFSET = 946684800 // Seconds between 1970-01-01 and 2000-01-01
 
-export default function CreateEscrow({ setSignRequest }) {
+export default function CreateEscrow({ setSignRequest, sessionToken, subscriptionExpired }) {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const [address, setAddress] = useState(null)
@@ -63,6 +63,11 @@ export default function CreateEscrow({ setSignRequest }) {
 
     if (destinationTag && !isTagValid(destinationTag)) {
       setError('Please enter a valid destination tag.')
+      return
+    }
+
+    if ((fee || sourceTag || condition) && (!sessionToken || subscriptionExpired)) {
+      setError('Advanced options (fee, source tag, condition) are available only to logged-in Bithomp Pro subscribers.')
       return
     }
 
@@ -243,7 +248,7 @@ export default function CreateEscrow({ setSignRequest }) {
           <div className="form-spacing" />
           <div className="form-input">
             <span className="input-title">
-              Finish After <span className="grey">(when funds can be released)</span>
+              Unlock after <span className="grey">(when funds can be released)</span>
             </span>
             <DatePicker
               selected={finishAfter ? new Date(finishAfter * 1000) : null}
@@ -284,11 +289,30 @@ export default function CreateEscrow({ setSignRequest }) {
               if (!showAdvanced) {
                 setCondition(null)
                 setSourceTag(null)
+                setFee(null)
               }
             }}
             name="advanced-escrow"
           >
             Advanced options
+            {!sessionToken ? (
+              <>
+                {' '}
+                <span className="orange">
+                  (available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers)
+                </span>
+              </>
+            ) : (
+              subscriptionExpired && (
+                <>
+                  {' '}
+                  <span className="orange">
+                    Your Bithomp Pro subscription has expired.{' '}
+                    <Link href="/admin/subscriptions"> Renew your subscription</Link>
+                  </span>
+                </>
+              )
+            )}
           </CheckBox>
 
           {showAdvanced && (
@@ -305,6 +329,7 @@ export default function CreateEscrow({ setSignRequest }) {
                   spellCheck="false"
                   type="text"
                   defaultValue={condition}
+                  disabled={!sessionToken || subscriptionExpired}
                 />
                 <div className="grey" style={{ fontSize: '12px', marginTop: '5px' }}>
                   A hex-encoded PREIMAGE-SHA-256 crypto-condition. Funds can only be released if this condition is
@@ -319,6 +344,7 @@ export default function CreateEscrow({ setSignRequest }) {
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
                 defaultValue={sourceTag}
+                disabled={!sessionToken || subscriptionExpired}
               />
               <div className="form-spacing" />
               <div className="form-input">
@@ -334,6 +360,7 @@ export default function CreateEscrow({ setSignRequest }) {
                   type="text"
                   inputMode="decimal"
                   defaultValue={fee}
+                  disabled={!sessionToken || subscriptionExpired}
                 />
                 {feeError && <div className="red">{feeError}</div>}
               </div>
@@ -395,7 +422,7 @@ export default function CreateEscrow({ setSignRequest }) {
                   </p>
                   {txResult.finishAfter && (
                     <p>
-                      <strong>Finish After:</strong> {timeFromNow(txResult.finishAfter, i18n, 'ripple')} (
+                      <strong>Unlock:</strong> {timeFromNow(txResult.finishAfter, i18n, 'ripple')} (
                       {fullDateAndTime(txResult.finishAfter, 'ripple')})
                     </p>
                   )}

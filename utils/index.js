@@ -800,6 +800,32 @@ export const isAmountInNativeCurrency = (amount) => {
   return !amount?.issuer && !amount?.mpt_issuance_id
 }
 
+export const isNativeCurrency = (currencyObj) => {
+  if (!currencyObj) return false
+  
+  // Handle case where currencyObj is a string representing drops (native currency amount)
+  if (typeof currencyObj === 'string') {
+    const drops = currencyObj
+    // Check if it's a valid drops amount (1 to 100000000000000000)
+    if (/^\d+$/.test(drops)) {
+      const dropsNum = BigInt(drops)
+      return dropsNum >= 1n && dropsNum <= 100000000000000000n
+    }
+    return false
+  }
+  
+  // Handle case where currencyObj is an object
+  if (!currencyObj.currency) return false
+  
+  // Check that currency matches the native currency for this network
+  if (currencyObj.currency !== nativeCurrency) return false
+  
+  // Check that there's no issuer (native currency has no issuer)
+  if (currencyObj.issuer) return false
+  
+  return true
+}
+
 export const xls14NftValue = (value) => {
   if (!value) return value
   value = value.toString()
