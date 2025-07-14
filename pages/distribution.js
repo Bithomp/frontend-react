@@ -75,9 +75,9 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
     </>
   )
 
-  const renderLoadingState = (colSpan = '100') => (
+  const renderLoadingState = () => (
     <tr className="center">
-      <td colSpan={colSpan}>
+      <td colSpan="100">
         <br />
         <span className="waiting"></span>
         <br />
@@ -88,9 +88,9 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
     </tr>
   )
 
-  const renderErrorState = (colSpan = '100') => (
+  const renderErrorState = () => (
     <tr>
-      <td colSpan={colSpan} className="center orange bold">
+      <td colSpan="100" className="center orange bold">
         {errorMessage}
       </td>
     </tr>
