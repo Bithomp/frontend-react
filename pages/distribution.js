@@ -41,8 +41,8 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
 
   const escrowModeList = [
     { value: 'none', label: 'Without Escrow (balance only)' },
-    { value: 'short', label: 'With Escrow balances included (balance + escrow short)' },
-    { value: 'locked', label: 'With Escrow balances included (balance + escrow locked)' }
+    { value: 'short', label: 'With Escrow (balance + escrow short)' },
+    { value: 'locked', label: 'With Escrow (balance + escrow locked)' }
   ]
 
   // calculate total balance including escrow
@@ -203,7 +203,6 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
       <FiltersFrame filtersHide={filtersHide} setFiltersHide={setFiltersHide} data={data || []}>
         <>
           <div>
-            <span>Escrow Mode</span>
             <div
               className="radio-options radio-options--large"
               style={{ flexDirection: 'column', alignItems: 'flex-start' }}
@@ -225,9 +224,8 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
           </div>
         </>
         <>
-          <br />
           {windowWidth > 1000 ? (
-            <table className="table-large shrink no-hover">
+            <table className="table-large no-hover">
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
