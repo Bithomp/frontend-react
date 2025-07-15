@@ -77,7 +77,7 @@ export default function TrustSet({ setSignRequest }) {
     try {
       // Try to get token supply from API if available
       const response = await axios(
-        `v2/trustlines/tokens?currency=${selectedToken.currency}&issuer=${selectedToken.issuer}`
+        `v2/trustlines/tokens?currency=${selectedToken.currency}&issuer=${selectedToken.issuer}&currencyDetails=true`
       )
       const token = response.data?.tokens[0]
 
