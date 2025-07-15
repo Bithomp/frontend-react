@@ -26,17 +26,23 @@ const AMMDepositFlags = {
 
 // Component to display AMM flags with tooltips
 const AMMFlags = ({ flags, txType }) => {
-  if (!flags || typeof flags !== 'object') return <span className="grey">None</span>
+  if (!flags || typeof flags !== 'object') return ''
 
-  const flagDefinitions = txType === 'AMMWithdraw' ? AMMWithdrawFlags : AMMDepositFlags
+  const flagDefinitions = {}
+  if (txType === 'AMMWithdraw') {
+    Object.assign(flagDefinitions, AMMWithdrawFlags)
+  } else if (txType === 'AMMDeposit') {
+    Object.assign(flagDefinitions, AMMDepositFlags)
+  }
+
   const activeFlags = []
 
   // Check each flag in the specification.flags object
   Object.entries(flags).forEach(([flagName, isActive]) => {
-    if (isActive === true && flagDefinitions[flagName]) {
+    if (isActive === true) {
       activeFlags.push({
         name: flagName,
-        description: flagDefinitions[flagName]
+        description: flagDefinitions[flagName] || ''
       })
     }
   })
@@ -65,30 +71,30 @@ const AMMFlags = ({ flags, txType }) => {
               >
                 {flag.name}
               </span>
-              <span className="tooltiptext right no-brake">{flag.description}</span>
+              {flag.description && <span className="tooltiptext right no-brake">{flag.description}</span>}
             </span>
-            
+
             {/* Mobile version with inline description */}
             <div className="mobile-only">
               <span className="bold">{flag.name} </span>
-              <span className="grey">({flag.description})</span>
+              {flag.description && <span className="grey">({flag.description})</span>}
             </div>
           </div>
         ))}
       </div>
       <style jsx>{`
+        .mobile-only {
+          display: none;
+        }
+        @media only screen and (max-width: 800px) {
           .mobile-only {
+            display: block;
+          }
+          .desktop-only {
             display: none;
           }
-          @media only screen and (max-width: 800px) {
-            .mobile-only {
-              display: block;
-            }
-            .desktop-only {
-              display: none;
-            }
-          }
-        `}</style>
+        }
+      `}</style>
     </>
   )
 }
@@ -98,29 +104,32 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   const { specification, tx, outcome } = data
   const txType = tx.TransactionType
   const tradingFee = outcome?.ammChanges?.tradingFee
-  // Only show flags for AMM deposit and withdraw transactions
-  const showFlags = txType === 'AMMDeposit' || txType === 'AMMWithdraw'
-  
+
   return (
-    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
+    <TransactionCard
+      data={data}
+      pageFiatRate={pageFiatRate}
+      selectedCurrency={selectedCurrency}
+      notFullySupported={true}
+    >
       <tr>
         <TData>Initiated by</TData>
         <TData>
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
-      {showFlags && (
+      {tradingFee && (
+        <tr>
+          <TData>Trading fee</TData>
+          <TData className="bold">{divide(tradingFee, 100000)}%</TData>
+        </tr>
+      )}
+      {Object.entries(specification?.flags).length > 0 && (
         <tr>
           <TData>Flags</TData>
           <TData>
             <AMMFlags flags={specification.flags} txType={txType} />
           </TData>
-        </tr>
-      )}
-      {tradingFee && (
-        <tr>
-          <TData>Trading Fee</TData>
-          <TData>{divide(tradingFee, 100000)}%</TData>
         </tr>
       )}
     </TransactionCard>
