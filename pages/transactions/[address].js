@@ -3,10 +3,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
-import { amountFormat } from '../../utils/format'
+import { amountFormat, addressUsernameOrServiceLink } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import { txTypeToText, processTransactions } from '../../utils/transaction'
-import { useWidth } from '../../utils'
+import { useWidth, decode, avatarServer, nativeCurrenciesImages, nativeCurrency } from '../../utils'
 
 import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
@@ -17,6 +17,7 @@ import SimpleSelect from '../../components/UI/SimpleSelect'
 import { FiDownload, FiUpload } from "react-icons/fi";
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
 import { FaArrowRightArrowLeft } from "react-icons/fa6";
+import Image from 'next/image'
 
 
 
@@ -241,27 +242,69 @@ export default function TransactionsAddress({
               <LinkTx tx={txdata.hash}> {txdata.hash} </LinkTx>
             </div>
             <span className="bold">{txTypeToText(null, txdata.type, true)}</span>
-            <br />
-            <span className="gray">
-              Fee: {amountFormat(txdata.fee)}
-            </span>
-            <br />
-
-            {txdata.direction && (
+            <br />            
+            {txdata.address && (
               <>
-                <span className="gray">Direction: </span>
-                <span className={txdata.direction === 'incoming' ? 'green' : 'orange'}>
-                  {txdata.direction === 'incoming' ? <FiDownload /> : <FiUpload />} {txdata.direction}
+                {txdata.direction && (
+                  <>
+                    <span className={txdata.direction === 'incoming' ? 'green' : 'red'} style={{ marginRight: 5 }}>
+                      {txdata.direction === 'incoming' ? <FiDownload /> : <FiUpload />}
+                    </span>
+                  </>
+                )}
+                <span className="gray">
+                  {addressUsernameOrServiceLink(txdata.address, 'address')}
                 </span>
                 <br />
               </>
             )}
-            {txdata.address && (
+            {txdata.destination_tag && (
               <>
-                <span className="gray">Address: {txdata.address}</span>
+                <span className="gray">Destination tag: {txdata.destination_tag}</span>
                 <br />
               </>
             )}
+            {txdata.source_tag && (
+              <>
+                <span className="gray">Source tag: {txdata.source_tag}</span>
+                <br />
+              </>
+            )}
+            {txdata.memos && (
+              <>
+                {txdata.memos.map((memo, index) => (
+                  <>
+                  <span key={index} className="bold">Memo {txdata.memos.length > 1 ? index + 1 : ''}:</span>
+                  <span className="gray">{decode(memo.Memo?.MemoData)}</span>
+                  </>
+                ))}
+                <br />
+              </>
+            )}
+          </td>
+          <td>
+            {txdata.type === 'payment' && txdata.deliveredAmount && (
+              <>                
+                <span className={txdata.direction === 'incoming' ? 'green bold tooltip' : 'red bold tooltip'}>
+                  <span className="inline-flex gap-1">
+                    {amountFormat(txdata.deliveredAmount, { short: true, maxFractionDigits: 2 })} 
+                    {txdata.deliveredAmount?.currency?.issuer ? (
+                      <Image src={avatarServer + txdata.deliveredAmount?.currency?.issuer} alt={txdata.deliveredAmount.currency.issuer} width={20} height={20} />
+                    ) : (
+                      <Image src={nativeCurrenciesImages[nativeCurrency]} alt={nativeCurrency} width={20} height={20} />
+                    )}
+                  </span>
+                  <span className="tooltiptext no-brake">
+                    {amountFormat(txdata.deliveredAmount)}
+                  </span>
+                </span>
+              <br />
+              </>
+            )}
+            <span className="gray">
+              Fee: {amountFormat(txdata.fee)}
+            </span>
+            <br />
           </td>
         </tr>
       )

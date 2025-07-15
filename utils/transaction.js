@@ -520,6 +520,7 @@ export const processTransactions = (transactions, currentAddress) => {
       time: null,
       fullTime: null,
       fee: transaction.tx?.Fee,
+      memos: transaction.tx?.Memos || [],
       specification: transaction.specification || {},
       outcome: transaction.outcome || {},
       balanceChanges: transaction.outcome?.balanceChanges || [],
@@ -555,29 +556,31 @@ export const processTransactions = (transactions, currentAddress) => {
     }
 
     // Check if transaction involves current address
-    // if (transaction.outcome?.balanceChanges?.[currentAddress]) {
-    //   output.myBalanceChanges = transaction.outcome.balanceChanges[currentAddress]
-    // } else {
-    //   output.alien = true
-    //   processedTransactions.push(output)
-    //   return
-    // }
+    const currentAddressBalanceChange = transaction.outcome?.balanceChanges?.find(change => change.address === currentAddress)
+    if (currentAddressBalanceChange) {
+      output.myBalanceChanges = currentAddressBalanceChange.balanceChanges
+    } else {
+      output.alien = true
+      processedTransactions.push(output)
+      return
+    }
     
     // Process different transaction types
     if (output.type === 'payment') {
-      const destination = transaction.specification?.destination?.address
-      const source = transaction.specification?.source?.address
-      console.log(destination, source)
-      if (destination === currentAddress && source === currentAddress) {
+      const destination = transaction.specification?.destination
+      const source = transaction.specification?.source
+      if (destination?.address === currentAddress && source?.address === currentAddress) {
         output.type = 'exchange'
-      } else if (destination === currentAddress) {
+      } else if (destination?.address === currentAddress) {
         output.direction = 'incoming'
         output.address = source
-        output.yourBalanceChanges = transaction.outcome?.balanceChanges?.[source] || []
-      } else if (source === currentAddress) {
+        const sourceBalanceChange = transaction.outcome?.balanceChanges?.find(change => change.address === source?.address)
+        output.yourBalanceChanges = sourceBalanceChange?.balanceChanges || []
+      } else if (source?.address === currentAddress) {
         output.direction = 'outgoing'
         output.address = destination
-        output.yourBalanceChanges = transaction.outcome?.balanceChanges?.[destination] || []
+        const destinationBalanceChange = transaction.outcome?.balanceChanges?.find(change => change.address === destination?.address)
+        output.yourBalanceChanges = destinationBalanceChange?.balanceChanges || []
       } else if (
         output.myBalanceChanges?.[1]?.currency && 
         output.myBalanceChanges?.[0]?.currency === output.myBalanceChanges?.[1]?.currency
@@ -595,8 +598,9 @@ export const processTransactions = (transactions, currentAddress) => {
         if (transaction.specification?.destination?.tag) {
           output.destination_tag = transaction.specification.destination.tag
         }
-        if (transaction.outcome?.balanceChanges?.[destination]?.[0]) {
-          output.deliveredAmount = transaction.outcome.balanceChanges[destination][0]
+        const destinationBalanceChange = transaction.outcome?.balanceChanges?.find(change => change.address === destination?.address)
+        if (destinationBalanceChange?.balanceChanges?.[0]) {
+          output.deliveredAmount = destinationBalanceChange.balanceChanges[0]
         }
       }
     } else if (output.type === 'orderCancellation') {
@@ -608,12 +612,15 @@ export const processTransactions = (transactions, currentAddress) => {
       }
     } else if (output.type === 'escrowExecution' || output.type === 'escrowCancellation') {
       const owner = transaction.specification?.owner
-      if (owner && transaction.outcome?.balanceChanges?.[owner]) {
-        output.ownerBalanceChanges = transaction.outcome.balanceChanges[owner]
+      if (owner) {
+        const ownerBalanceChange = transaction.outcome?.balanceChanges?.find(change => change.address === owner)
+        if (ownerBalanceChange) {
+          output.ownerBalanceChanges = ownerBalanceChange.balanceChanges
+        }
       }
     } else if (output.type === 'accountDelete') {
-      const destination = transaction.specification?.destination?.address
-      if (destination === currentAddress) {
+      const destination = transaction.specification?.destination
+      if (destination?.address === currentAddress) {
         output.direction = 'incoming'
         output.address = transaction.address
       } else if (output.myBalanceChanges?.[0]?.value < 0) {
