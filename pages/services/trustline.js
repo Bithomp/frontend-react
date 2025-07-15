@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { explorerName, isAddressValid, typeNumberOnly, xahauNetwork, encodeCurrencyCode } from '../../utils'
+import { explorerName, isAddressValid, typeNumberOnly, xahauNetwork, encodeCurrencyCode, validateCurrencyCode } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { useState, useEffect } from 'react'
 import AddressInput from '../../components/UI/AddressInput'
@@ -115,13 +115,10 @@ export default function TrustSet({ setSignRequest }) {
       }
     }
 
-    if (!currency.currency) {
-      setError('Please enter a valid currency.')
-      return
-    }
-
-    if (currency.currency.length > 3 && !/^[0-9A-F]{40}$/i.test(currency.currency)) {
-      setError('Please enter a valid currency code (40 hex characters).')
+    // Validate currency code
+    const currencyValidation = validateCurrencyCode(currency.currency)
+    if (!currencyValidation.valid) {
+      setError(currencyValidation.error)
       return
     }
 
@@ -152,10 +149,19 @@ export default function TrustSet({ setSignRequest }) {
     }
 
     try {
+      // Auto-convert currency codes from 4-20 characters to hex
+      let currencyCode = currency.currency
+      if (currencyCode.length >= 4 && currencyCode.length <= 20) {
+        const hexCurrency = encodeCurrencyCode(currencyCode.toUpperCase())
+        if (hexCurrency) {
+          currencyCode = hexCurrency
+        }
+      }
+
       let trustSet = {
         TransactionType: 'TrustSet',
         LimitAmount: {
-          currency: currency.currency,
+          currency: currencyCode,
           issuer: mode === 'simple' ? selectedToken.issuer : issuer,
           value: limit.toString()
         }
@@ -265,52 +271,21 @@ export default function TrustSet({ setSignRequest }) {
                 rawData={selectedTokenData}
               />
               <div className="form-spacing" />
-              <div>
+              <div className="form-input">
                 <span className="input-title">Currency code</span>
-                <div className="form-input">
-                  <div className="form-input__wrap">
-                    <input
-                      className="simple-input"
-                      placeholder="Currency code (e.g., USD, EUR or HEX)"
-                      value={currency.currency}
-                      onChange={(e) => {
-                        const value = e.target.value
-                        const isHexString = /^[0-9A-F]*$/i.test(value)                        
-                        if (isHexString) {
-                          if (value.length > 40) {
-                            return
-                          }
-                        } else {
-                          if (value.length > 20) {
-                            return
-                          }
-                        }
-                        setCurrency({ currency: value })
-                      }}
-                      spellCheck="false"
-                    />
-                    <div className="form-input__btns">
-                      <div 
-                        className="button-action"
-                        style={{                          
-                          height: '36px',
-                          minWidth: '60px'
-                        }}
-                        onClick={() => {
-                          if (currency.currency && currency.currency.length > 3 && !/^[0-9A-F]{40}$/i.test(currency.currency)) {
-                            const hexCurrency = encodeCurrencyCode(currency.currency.toUpperCase())
-                            setCurrency({ currency: hexCurrency })
-                          }
-                        }}
-                      >
-                        Convert
-                      </div>
-                    </div>
-                  </div>
-                  <span className="orange">
-                    <b>Note:</b> If currency more than 3 characters, it should be converted to HEX. Max 20 characters for non-HEX codes.
-                  </span>
-                </div>
+                <input
+                  className="input-text"
+                  placeholder="Currency code (e.g., USD, EUR or HEX)"
+                  value={currency.currency}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    // Allow any input up to 40 characters
+                    if (value.length <= 40) {
+                      setCurrency({ currency: value })
+                    }
+                  }}
+                  spellCheck="false"
+                />
               </div>
             </div>
           )}

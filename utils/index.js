@@ -422,12 +422,12 @@ export const encode = (code) => {
 }
 
 export const encodeCurrencyCode = (code) => {
-  // Convert to hex and pad/truncate to exactly 40 characters (160 bits)
+  // Convert to hex and pad to exactly 40 characters (160 bits)
   const hex = Buffer.from(code).toString('hex').toUpperCase()
   
   if (hex.length > 40) {
-    // Truncate to 40 characters
-    return hex.substring(0, 40)
+    // Return null if too long - don't truncate as it would change the meaning
+    return null
   } else if (hex.length < 40) {
     // Pad with zeros to 40 characters
     return hex.padEnd(40, '0')
@@ -844,4 +844,52 @@ export const xls14NftValue = (value) => {
     return value.replace(/^0+/, '')
   }
   return false
+}
+
+// Currency validation utilities
+export const isHexString = (str) => {
+  return /^[0-9A-F]*$/i.test(str)
+}
+
+export const isValidHexCurrencyCode = (str) => {
+  return /^[0-9A-F]{40}$/i.test(str)
+}
+
+export const validateCurrencyCode = (currencyCode) => {
+  if (!currencyCode) {
+    return { valid: false, error: 'Currency code is required' }
+  }
+  
+  const length = currencyCode.length
+  
+  // Too short
+  if (length < 3) {
+    return { valid: false, error: 'The currency code is too short' }
+  }
+  
+  // Too long
+  if (length > 40) {
+    return { valid: false, error: 'The currency is too long' }
+  }
+  
+  // Exactly 40 characters - must be valid hex
+  if (length === 40) {
+    if (!isValidHexCurrencyCode(currencyCode)) {
+      return { valid: false, error: 'Invalid hex currency code' }
+    }
+    return { valid: true }
+  }
+  
+  // 21-39 characters
+  if (length > 20 && length < 40) {
+    const isHex = isHexString(currencyCode)
+    if (isHex) {
+      return { valid: false, error: 'Invalid hex currency code' }
+    } else {
+      return { valid: false, error: 'The currency name is too long' }
+    }
+  }
+  
+  // 3-20 characters are valid (3 chars stay as-is, 4-20 chars will be converted to hex)
+  return { valid: true }
 }
