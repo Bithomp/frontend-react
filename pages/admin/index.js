@@ -1,17 +1,18 @@
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
-import { Turnstile } from '@marsidev/react-turnstile'
-import { useTheme } from '../../components/Layout/ThemeContext'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useState, useEffect } from 'react'
+import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import Mailto from 'react-protected-mailto'
+import { Turnstile } from '@marsidev/react-turnstile'
 
 import SEO from '../../components/SEO'
+import AdminTabs from '../../components/Tabs/AdminTabs'
 import CheckBox from '../../components/UI/CheckBox'
 
-import { isEmailValid, turnstileSupportedLanguages, useWidth } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
-import AdminTabs from '../../components/Tabs/AdminTabs'
+
+import { isEmailValid, turnstileSupportedLanguages, useWidth } from '../../utils'
 import { axiosAdmin } from '../../utils/axios'
 
 export const getServerSideProps = async (context) => {

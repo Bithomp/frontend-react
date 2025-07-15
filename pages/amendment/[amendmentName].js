@@ -9,7 +9,7 @@ import Image from 'next/image'
 import SEO from '../../components/SEO'
 import CopyButton from '../../components/UI/CopyButton'
 import ReactCountryFlag from 'react-country-flag'
-import { useTheme } from '../../components/Layout/ThemeContext'
+import { useTheme } from 'next-themes'
 import VerifiedIcon from '../../public/images/verified.svg'
 
 export async function getServerSideProps(context) {
