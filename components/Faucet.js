@@ -57,9 +57,6 @@ export default function Faucet({ account, type, sessionTokenData }) {
   const testPayment = type === 'testPayment'
 
   useEffect(() => {
-    //do not add query params if it is a test payment
-    if (testPayment) return
-
     let queryAddList = []
     let queryRemoveList = []
 
@@ -244,8 +241,7 @@ export default function Faucet({ account, type, sessionTokenData }) {
       setAddress(value)
     } else if (!isAddressValid(value)) {
       removeQueryParams(router, ['address'])
-    } else if (!testPayment) {
-      // do not add on the landing page where we have the test payment
+    } else {
       addQueryParams(router, [{ name: 'address', value }])
     }
   }

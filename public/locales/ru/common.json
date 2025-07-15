@@ -557,7 +557,7 @@
     "sell": "Продажа",
     "buyNow": "Купить сейчас",
     "publicAndKnownBrokers": "Публичные и на MП",
-    "onSale": "На продаже за {{nativeCurrency}}",
+    "onSale": "На продаже",
     "all-tokens": "Все токены",
     "native-currency-only": "Только {{nativeCurrency}}",
     "mintedNew": "Новые",
