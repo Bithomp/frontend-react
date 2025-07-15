@@ -193,14 +193,8 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
   const handleGenerateCondition = async () => {
     setError('')
     try {
-      // Generate a random preimage as UTF-8 string
-      const randomBytes = crypto.getRandomValues(new Uint8Array(32))
-      const preimage = Array.from(randomBytes)
-        .map(b => String.fromCharCode(b))
-        .join('')
-
-      const response = await axios.post('/v2/escrows/generate-condition', { preimage })
-      const { condition: generatedCondition, preimageHex: generatedFulfillment } = response.data
+      const response = await axios('/v2/escrows/generate-condition')
+      const { condition: generatedCondition, fulfillment: generatedFulfillment } = response.data
       setCondition(generatedCondition)
       setFulfillment(generatedFulfillment)
     } catch (err) {
