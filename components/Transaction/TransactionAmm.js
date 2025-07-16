@@ -101,9 +101,9 @@ const AMMFlags = ({ flags, txType }) => {
 
 export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification, tx, outcome } = data
+  const { specification, tx } = data
   const txType = tx.TransactionType
-  const tradingFee = outcome?.ammChanges?.tradingFee
+  const tradingFee = tx?.TradingFee
 
   return (
     <TransactionCard
