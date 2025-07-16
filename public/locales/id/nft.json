@@ -18,5 +18,6 @@
     "warnings": {
       "nft-crawler-delay": "Beberapa data sudah usang, pembaruan terakhir: {{lastUpdate}}. Server kami sedang mengejar, cek nanti untuk data yang lebih akurat."
     }
-  }
+  },
+  "set-avatar-description": "Untuk menggunakan NFT ini sebagai avatar Anda, masuklah dengan dompet yang memilikinya."
 }

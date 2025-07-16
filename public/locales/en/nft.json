@@ -18,5 +18,6 @@
     "warnings": {
       "nft-crawler-delay": "Some data is outdated, the last update: {{lastUpdate}}. Our servers are catching up, check later for more accurate data."
     }
-  }
+  },
+  "set-avatar-description": "To use this NFT as your avatar, log in with the wallet that owns it."
 }
