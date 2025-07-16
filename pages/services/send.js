@@ -30,7 +30,8 @@ export default function Send({
   sourceTagQuery,
   invoiceIdQuery,
   sessionToken,
-  subscriptionExpired
+  subscriptionExpired,
+  openEmailLogin
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -518,6 +519,12 @@ export default function Send({
           <CheckBox
             checked={showAdvanced}
             setChecked={() => {
+              if (!sessionToken || subscriptionExpired) {
+                openEmailLogin(() => {
+                  setShowAdvanced(true)
+                })
+                return
+              }
               setShowAdvanced(!showAdvanced)
               setFee(null)
               setSourceTag(null)
@@ -530,7 +537,7 @@ export default function Send({
               <>
                 {' '}
                 <span className="orange">
-                  (available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers)
+                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
                 </span>
               </>
             ) : (
