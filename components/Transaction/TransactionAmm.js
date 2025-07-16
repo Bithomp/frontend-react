@@ -124,7 +124,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           <TData className="bold">{divide(tradingFee, 100000)}%</TData>
         </tr>
       )}
-      {Object.entries(specification?.flags).length > 0 && (
+      {specification?.flags && Object.entries(specification?.flags).length > 0 && (
         <tr>
           <TData>Flags</TData>
           <TData>
