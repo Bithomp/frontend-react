@@ -70,7 +70,7 @@ const MyApp = ({ Component, pageProps }) => {
 
   useEffect(() => {
     //pages where we need to show the latest fiat price
-    const allowedRoutes = ['/', '/account/[[...id]]', '/amms', '/distribution', '/admin/watchlist']
+    const allowedRoutes = ['/', '/account/[[...id]]', '/amms', '/distribution', '/admin/watchlist', '/tokens']
     if (allowedRoutes.includes(router.pathname)) {
       fetchCurrentFiatRate(selectedCurrency, setFiatRate)
     }

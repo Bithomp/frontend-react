@@ -10,10 +10,10 @@ import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
-import { AddressWithIcon, niceCurrency, shortNiceNumber, userOrServiceName } from '../utils/format'
+import { AddressWithIcon, fullNiceNumber, niceCurrency, shortNiceNumber, userOrServiceName } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
-import { nativeCurrency, useWidth } from '../utils'
+import { useWidth } from '../utils'
 import { LinkAccount } from '../utils/links'
 
 /*
@@ -87,7 +87,9 @@ export default function Tokens({
   initialErrorMessage,
   subscriptionExpired,
   sessionToken,
-  setSignRequest
+  setSignRequest,
+  selectedCurrency,
+  fiatRate
 }) {
   const { t } = useTranslation()
   const width = useWidth()
@@ -234,6 +236,17 @@ export default function Tokens({
     })
   }
 
+  const prictOrMarketcapToFiat = (price) => {
+    return price ? (
+      <span className="tooltip">
+        {shortNiceNumber(price * fiatRate, 2, 1, selectedCurrency)}
+        <span className="tooltiptext right no-brake">
+          {fullNiceNumber(price * fiatRate, selectedCurrency)}
+        </span>
+      </span>
+    ) : null
+  }
+
   return (
     <>
       <SEO title="Tokens" />
@@ -283,6 +296,10 @@ export default function Tokens({
                 <tr>
                   <th className="center">#</th>
                   <th>Token</th>
+                  <th className="right">Price</th>
+                  <th className="right">24h %</th>
+                  <th className="right">7d %</th>
+                  <th className="right">Volume (24h)</th>
                   <th className="right">Marketcap</th>
                   <th className="right">Trustlines</th>
                   <th className="right">Holders</th>
@@ -298,48 +315,61 @@ export default function Tokens({
                   </tr>
                 ) : (
                   <>
-                    {data.map((token, i) => (
-                      <tr key={i}>
-                        <td className="center">{i + 1}</td>
-                        <td>
-                          <TokenCell token={token} />
-                        </td>
-                        <td className="right">
-                          {shortNiceNumber(token.statistics?.marketcap, 0)} {nativeCurrency}
-                        </td>
-                        <td className="right" suppressHydrationWarning>
-                          {shortNiceNumber(token.trustlines, 0)}
-                        </td>
-                        <td className="right" suppressHydrationWarning>
-                          {shortNiceNumber(token.holders, 0)}
-                        </td>
-                        <td className="center">
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              handleSetTrustline(token)
-                            }}
-                            className="orange tooltip"
-                          >
-                            <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
-                            <span className="tooltiptext no-brake">Set trust</span>
-                          </a>
-                        </td>
-                      </tr>
-                    ))}
-                    {loading && (
-                      <tr className="center">
-                        <td colSpan="100">
-                          <br />
-                          <span className="waiting"></span>
-                          <br />
-                          {t('general.loading')}
-                          <br />
-                          <br />
-                        </td>
-                      </tr>
-                    )}
+                    {data.map((token, i) => {
+                      const volume = Number(token.statistics?.buyVolume || 0) + Number(token.statistics?.sellVolume || 0)
+                      return (
+                        <tr key={i}>
+                          <td className="center">{i + 1}</td>
+                          <td>
+                            <TokenCell token={token} />
+                          </td>
+                          <td className="right">
+                            {prictOrMarketcapToFiat(token.statistics?.priceXrp)}
+                          </td>
+                          <td className="right">
+                            
+                          </td>
+                          <td className="right">
+                            
+                          </td>
+                          <td className="right">
+                            {volume ? prictOrMarketcapToFiat(volume) : '-'}
+                          </td>
+                          <td className="right">
+                            {prictOrMarketcapToFiat(token.statistics?.marketcap)}
+                          </td>
+                          <td className="right" suppressHydrationWarning>
+                            <span className="tooltip">
+                              {shortNiceNumber(token.trustlines, 2, 1)}
+                              <span className="tooltiptext no-brake">
+                                {fullNiceNumber(token.trustlines)}
+                              </span>
+                            </span>
+                          </td>
+                          <td className="right" suppressHydrationWarning>
+                            <span className="tooltip">
+                              {shortNiceNumber(token.holders, 2, 1)}
+                              <span className="tooltiptext no-brake">
+                                {fullNiceNumber(token.holders)}
+                              </span>
+                            </span>
+                          </td>
+                          <td className="center">
+                            <a
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                handleSetTrustline(token)
+                              }}
+                              className="orange tooltip"
+                            >
+                              <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
+                              <span className="tooltiptext no-brake">Set trust</span>
+                            </a>
+                          </td>
+                        </tr>
+                      )
+                    })}
                   </>
                 )}
               </tbody>
@@ -357,49 +387,41 @@ export default function Tokens({
                   </tr>
                 ) : (
                   <>
-                    {data.map((token, i) => (
-                      <tr key={i}>
-                        <td style={{ padding: '5px' }} className="center">
-                          <b>{i + 1}</b>
-                        </td>
-                        <td>
-                          <TokenCell token={token} />
-                          <p>
-                            {token.statistics?.marketcap && (
-                              <>
-                                Marketcap: {shortNiceNumber(token.statistics?.marketcap, 0)} {nativeCurrency}
-                                <br />
-                              </>
-                            )}
-                            Trustlines: {shortNiceNumber(token.trustlines, 0)}
-                            <br />
-                            Holders: {shortNiceNumber(token.holders, 0)}
-                            <br />
-                            <br />
-                            <button
-                              className="button-action narrow thin"
-                              onClick={() => {
-                                handleSetTrustline(token)
-                              }}
-                            >
-                              <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Set Trust
-                            </button>
-                          </p>
-                        </td>
-                      </tr>
-                    ))}
-                    {loading && marker === 'first' && (
-                      <tr className="center">
-                        <td colSpan="100">
-                          <br />
-                          <span className="waiting"></span>
-                          <br />
-                          {t('general.loading')}
-                          <br />
-                          <br />
-                        </td>
-                      </tr>
-                    )}
+                    {data.map((token, i) => {
+                      return (
+                        <tr key={i}>
+                          <td style={{ padding: '5px' }} className="center">
+                            <b>{i + 1}</b>
+                          </td>
+                          <td>
+                            <TokenCell token={token} />
+                            <p>
+                              Price: {prictOrMarketcapToFiat(token.statistics?.priceXrp)}
+                              <br />
+                              {token.statistics?.marketcap && (
+                                <>
+                                  Marketcap: {prictOrMarketcapToFiat(token.statistics?.marketcap)}
+                                  <br />
+                                </>
+                              )}
+                              Trustlines: {shortNiceNumber(token.trustlines, 2, 1)}
+                              <br />
+                              Holders: {shortNiceNumber(token.holders, 2, 1)}
+                              <br />
+                              <br />
+                              <button
+                                className="button-action narrow thin"
+                                onClick={() => {
+                                  handleSetTrustline(token)
+                                }}
+                              >
+                                <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Set Trust
+                              </button>
+                            </p>
+                          </td>
+                        </tr>
+                      )
+                    })}
                   </>
                 )}
               </tbody>
