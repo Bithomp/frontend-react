@@ -1,7 +1,14 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { explorerName, isAddressValid, typeNumberOnly, xahauNetwork, encodeCurrencyCode, validateCurrencyCode } from '../../utils'
+import {
+  explorerName,
+  isAddressValid,
+  typeNumberOnly,
+  xahauNetwork,
+  encodeCurrencyCode,
+  validateCurrencyCode
+} from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { useState, useEffect } from 'react'
 import AddressInput from '../../components/UI/AddressInput'
@@ -149,19 +156,10 @@ export default function TrustSet({ setSignRequest }) {
     }
 
     try {
-      // Auto-convert currency codes from 4-20 characters to hex
-      let currencyCode = currency.currency
-      if (currencyCode.length >= 4 && currencyCode.length <= 20) {
-        const hexCurrency = encodeCurrencyCode(currencyCode.toUpperCase())
-        if (hexCurrency) {
-          currencyCode = hexCurrency
-        }
-      }
-
       let trustSet = {
         TransactionType: 'TrustSet',
         LimitAmount: {
-          currency: currencyCode,
+          currency: encodeCurrencyCode(currency.currency),
           issuer: mode === 'simple' ? selectedToken.issuer : issuer,
           value: limit.toString()
         }
