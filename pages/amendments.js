@@ -166,18 +166,12 @@ export default function Amendment() {
     <>
       <SEO
         title={t('menu.network.amendments')}
-        images={[
-          {
-            width: 1200,
-            height: 630,
-            file: 'previews/1200x630/amendments.png'
-          },
-          {
-            width: 630,
-            height: 630,
-            file: 'previews/630x630/amendments.png'
-          }
-        ]}
+        image={{
+          width: 1200,
+          height: 630,
+          file: 'previews/1200x630/amendments.png'
+        }}
+        twitterImage={{ file: 'previews/630x630/amendments.png' }}
       />
       <div className="content-text">
         <h1 className="center">{t('menu.network.amendments')}</h1>

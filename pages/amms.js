@@ -245,7 +245,10 @@ export default function Amms({
   }
 
   useEffect(() => {
-    if (order && (rawData.order !== order || rawData.currency !== token?.currency || rawData.currencyIssuer !== token?.issuer)) {
+    if (
+      order &&
+      (rawData.order !== order || rawData.currency !== token?.currency || rawData.currencyIssuer !== token?.issuer)
+    ) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -281,22 +284,16 @@ export default function Amms({
     <>
       <SEO
         title={t('menu.amm.pools')}
-        images={
+        image={
           xahauNetwork
-            ? []
-            : [
-                {
-                  width: 1200,
-                  height: 630,
-                  file: 'previews/1200x630/amms.png'
-                },
-                {
-                  width: 630,
-                  height: 630,
-                  file: 'previews/630x630/amms.png'
-                }
-              ]
+            ? null
+            : {
+                width: 1200,
+                height: 630,
+                file: 'previews/1200x630/amms.png'
+              }
         }
+        twitterImage={xahauNetwork ? null : { file: 'previews/630x630/amms.png' }}
       />
       <h1 className="center">{t('menu.amm.pools')}</h1>
       <FiltersFrame
@@ -350,10 +347,7 @@ export default function Amms({
           {filterMode === 'single' && (
             <div>
               <p>{t('table.currency')}</p>
-              <TokenSelector
-                value={token}
-                onChange={setToken}
-              />
+              <TokenSelector value={token} onChange={setToken} />
             </div>
           )}
         </>
