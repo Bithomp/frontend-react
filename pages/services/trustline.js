@@ -273,7 +273,7 @@ export default function TrustSet({ setSignRequest }) {
                 <span className="input-title">Currency code</span>
                 <input
                   className="input-text"
-                  placeholder="Currency code (e.g., USD, EUR or HEX)"
+                  placeholder="Currency code (e.g., USD, myCurrency or HEX)"
                   value={currency.currency}
                   onChange={(e) => {
                     const value = e.target.value
