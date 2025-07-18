@@ -217,19 +217,21 @@ export const TransactionCard = ({
             <p className="center orange">{errorMessage}</p>
           ) : (
             <>
-              <p className="center">
-                {isSuccessful ? (
-                  <>
-                    The transaction was <b className="green">successful</b> and validated in the ledger{' '}
-                    <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
-                  </>
-                ) : (
-                  <>
-                    The transaction <b className="red">FAILED</b> and included to the ledger{' '}
-                    <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
-                  </>
-                )}
-              </p>
+              {outcome && (
+                <p className="center">
+                  {isSuccessful ? (
+                    <>
+                      The transaction was <b className="green">successful</b> and validated in the ledger{' '}
+                      <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
+                    </>
+                  ) : (
+                    <>
+                      The transaction <b className="red">FAILED</b> and included to the ledger{' '}
+                      <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
+                    </>
+                  )}
+                </p>
+              )}
               <table>
                 <tbody>
                   {id === tx.ctid && (
@@ -252,7 +254,7 @@ export const TransactionCard = ({
                       <TData className="orange bold">{hr.returnString}</TData>
                     </tr>
                   ))}
-                  {!isSuccessful && (
+                  {outcome && !isSuccessful && (
                     <>
                       <tr>
                         <TData className="bold">Failure</TData>

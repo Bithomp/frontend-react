@@ -42,7 +42,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
     //check if iou involved (pathfinding or iou with fee)
     if (
       !outcome?.deliveredAmount?.mpt_issuance_id &&
-      sourceBalanceChangesList[0]?.value !== '-' + outcome?.deliveredAmount?.value
+      sourceBalanceChangesList?.[0]?.value !== '-' + outcome?.deliveredAmount?.value
     ) {
       iouPayment = true
     }
@@ -176,7 +176,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           </TData>
         </tr>
       )}
-      {(isConvertion || iouPayment) && sourceBalanceChangesList.length > 0 && (
+      {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
         <>
           <tr>
             <TData>
