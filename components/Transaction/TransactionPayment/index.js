@@ -41,14 +41,14 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
   } else {
     //check if iou involved (pathfinding or iou with fee)
     if (
-      !outcome.deliveredAmount?.mpt_issuance_id &&
-      sourceBalanceChangesList[0]?.value !== '-' + outcome.deliveredAmount?.value
+      !outcome?.deliveredAmount?.mpt_issuance_id &&
+      sourceBalanceChangesList[0]?.value !== '-' + outcome?.deliveredAmount?.value
     ) {
       iouPayment = true
     }
   }
 
-  if (xls14NftValue(outcome.deliveredAmount?.value)) {
+  if (xls14NftValue(outcome?.deliveredAmount?.value)) {
     txTypeSpecial = 'NFT transfer (XLS-14)'
   }
 
@@ -137,10 +137,9 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
       )}
       {isSuccessful &&
         !isConvertion &&
-        (!outcome.deliveredAmount ||
-          outcome.deliveredAmount.issuer ||
-          (!isNativeCurrency(outcome.deliveredAmount) &&
-            Number(outcome.deliveredAmount.value) < 100000)) && (
+        (!outcome?.deliveredAmount ||
+          outcome?.deliveredAmount.issuer ||
+          (!isNativeCurrency(outcome?.deliveredAmount) && Number(outcome?.deliveredAmount.value) < 100000)) && (
           <DestinationTagProblemSolving specification={specification} pageFiatRate={pageFiatRate} />
         )}
       <tr>
@@ -224,16 +223,16 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           )}
         </>
       )}
-      {!isConvertion && outcome.deliveredAmount && (
+      {!isConvertion && outcome?.deliveredAmount && (
         <tr>
           <TData>Delivered amount</TData>
           <TData>
-            <span className="bold green">{amountFormat(outcome.deliveredAmount, { precise: 'nice' })}</span>
-            {outcome.deliveredAmount?.issuer && (
-              <>({addressUsernameOrServiceLink(outcome.deliveredAmount, 'issuer', { short: true })})</>
+            <span className="bold green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice' })}</span>
+            {outcome?.deliveredAmount?.issuer && (
+              <>({addressUsernameOrServiceLink(outcome?.deliveredAmount, 'issuer', { short: true })})</>
             )}
             {nativeCurrencyToFiat({
-              amount: outcome.deliveredAmount,
+              amount: outcome?.deliveredAmount,
               selectedCurrency,
               fiatRate: pageFiatRate
             })}
