@@ -60,7 +60,7 @@ export const TransactionCard = ({
 
   if (!data) return null
 
-  const { id, error_message, tx, outcome, meta, specification, error } = data
+  const { id, error_message, tx, outcome, meta, specification, error, validated } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
   /*
@@ -73,7 +73,7 @@ export const TransactionCard = ({
   }
   */
 
-  const waitLedgers = tx?.LastLedgerSequence - outcome?.ledgerIndex
+  const waitLedgers = outcome ? tx?.LastLedgerSequence - outcome?.ledgerIndex : null
 
   const txLink = server + '/tx/' + (tx?.ctid || tx?.hash)
 
@@ -217,7 +217,7 @@ export const TransactionCard = ({
             <p className="center orange">{errorMessage}</p>
           ) : (
             <>
-              {outcome && (
+              {outcome ? (
                 <p className="center">
                   {isSuccessful ? (
                     <>
@@ -231,6 +231,18 @@ export const TransactionCard = ({
                     </>
                   )}
                 </p>
+              ) : (
+                !validated && (
+                  <p className="center red bold">
+                    The transaction is not yet validated.
+                    {tx?.LastLedgerSequence && (
+                      <>
+                        <br />
+                        It won't be validated if Ledger already passed the Ledger #{tx.LastLedgerSequence}.
+                      </>
+                    )}
+                  </p>
+                )
               )}
               <table>
                 <tbody>
@@ -266,12 +278,14 @@ export const TransactionCard = ({
                       </tr>
                     </>
                   )}
-                  <tr>
-                    <TData>{isSuccessful ? 'Validated' : 'Rejected'}</TData>
-                    <TData>
-                      {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
-                    </TData>
-                  </tr>
+                  {validated && (
+                    <tr>
+                      <TData>{isSuccessful ? 'Validated' : 'Rejected'}</TData>
+                      <TData>
+                        {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
+                      </TData>
+                    </tr>
+                  )}
                   {children}
                   <tr>
                     <TData>Ledger fee</TData>
@@ -516,7 +530,13 @@ export const TransactionCard = ({
                             Last ledger
                           </TData>
                           <TData>
-                            #{tx.LastLedgerSequence} ({waitLedgers} {waitLedgers === 1 ? 'ledger' : 'ledgers'})
+                            #{tx.LastLedgerSequence}
+                            {waitLedgers && (
+                              <>
+                                {' '}
+                                ({waitLedgers} {waitLedgers === 1 ? 'ledger' : 'ledgers'})
+                              </>
+                            )}
                           </TData>
                         </tr>
                       )}
