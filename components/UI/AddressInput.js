@@ -99,19 +99,21 @@ export default function AddressInput({
       const data = response?.data
 
       if (data?.address) {
+        const addressDetails = {
+          username: data.username,
+          service: data.service?.name
+        }
+
         setLink(
           userOrServiceLink(
             {
               address: data.address,
-              addressDetails: {
-                username: data.username,
-                service: data.service?.name
-              }
+              addressDetails
             },
             'address'
           )
         )
-        if (setValue) setValue(data.address)
+        if (setValue) setValue(data.address, addressDetails)
         setInputValue(data.address)
       } else {
         setErrorMessage('No address found')
@@ -147,23 +149,25 @@ export default function AddressInput({
 
   const searchOnChange = (option) => {
     if (!option) {
-      if (setValue) setValue('')
+      if (setValue) setValue('', null)
       setInputValue('')
       setLink('')
       setErrorMessage('')
       return
     }
 
-    if (setValue) setValue(option.address)
+    const addressDetails = {
+      username: option.username,
+      service: option.service
+    }
+
+    if (setValue) setValue(option.address, addressDetails)
     setInputValue(option.address)
     setLink(
       userOrServiceLink(
         {
           address: option.address || option.issuer,
-          addressDetails: {
-            username: option.username,
-            service: option.service
-          }
+          addressDetails
         },
         'address'
       )
@@ -173,7 +177,7 @@ export default function AddressInput({
   }
 
   const onSearchClick = () => {
-    if (setValue) setValue(inputValue)
+    if (setValue) setValue(inputValue, null)
     setInputValue(inputValue)
   }
 
@@ -185,7 +189,7 @@ export default function AddressInput({
   }
 
   const clearAll = () => {
-    if (setValue) setValue('')
+    if (setValue) setValue('', null)
     setInputValue('')
     setLink('')
     setNotEmpty(false)

@@ -16,6 +16,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import axios from 'axios'
+import { axiosServer } from '../../utils/axios'
 import { errorCodeDescription } from '../../utils/transaction'
 import TokenSelector from '../../components/UI/TokenSelector'
 
@@ -30,11 +31,13 @@ export default function Send({
   sourceTagQuery,
   invoiceIdQuery,
   sessionToken,
-  subscriptionExpired
+  subscriptionExpired,
+  initialAddressDetails
 }) {
   const { t } = useTranslation()
   const router = useRouter()
   const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
+  const [addressDetails, setAddressDetails] = useState(initialAddressDetails || null)
   const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
   const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
   const [memo, setMemo] = useState(memoQuery)
@@ -111,6 +114,13 @@ export default function Send({
         `}</style>
       </>
     )
+  }
+
+  // Custom setValue handler for AddressInput that also stores address details
+  const handleAddressChange = (selectedAddress, details) => {
+    setAddress(selectedAddress)
+    setAddressDetails(details && (details.username || details.service) ? details : null)
+    setSelectedToken({ currency: nativeCurrency })
   }
 
   // Fetch network info for reserve amounts only when account is not activated
@@ -403,12 +413,16 @@ export default function Send({
             placeholder="Destination address"
             name="destination"
             hideButton={true}
-            setValue={(value) => {
-              setAddress(value)
-              setSelectedToken({ currency: nativeCurrency })
-            }}
+            setValue={handleAddressChange}
             setInnerValue={setAddress}
-            rawData={isAddressValid(address) ? { address } : {}}
+            rawData={
+              isAddressValid(address) 
+                ? { 
+                    address,
+                    ...(addressDetails && { addressDetails })
+                  } 
+                : {}
+            }
             type="address"
           />
 
@@ -702,6 +716,14 @@ export default function Send({
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
   const { address, amount, destinationTag, memo, fee, sourceTag, invoiceId } = query
+  let addressDetails = {}
+  if (address && isAddressValid(address)) {
+    const response = await axiosServer(`/v2/address/${address}?username=true&service=true`)
+    addressDetails = {
+      username: response?.data?.username,
+      service: response?.data?.service?.name || null
+    }
+  }
 
   return {
     props: {
@@ -713,6 +735,7 @@ export const getServerSideProps = async (context) => {
       sourceTagQuery: sourceTag || '',
       invoiceIdQuery: invoiceId || '',
       isSsrMobile: getIsSsrMobile(context),
+      initialAddressDetails: addressDetails,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
