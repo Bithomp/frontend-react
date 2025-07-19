@@ -12,7 +12,8 @@ class ErrorBoundary extends React.Component {
     return { hasError: true }
   }
 
-  componentDidCatch(error, errorInfo) {
+  componentDidCatch(error) {
+    //componentDidCatch(error, errorInfo)
     const knownErrorMessages = [
       "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
       "Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.",
@@ -28,8 +29,8 @@ class ErrorBoundary extends React.Component {
     axios
       .post('/client/ntf', {
         message: error.message,
-        stack: error.stack,
-        componentStack: errorInfo.componentStack,
+        //stack: error.stack,
+        //componentStack: errorInfo.componentStack,
         url: window.location.href,
         userAgent: navigator.userAgent
       })
