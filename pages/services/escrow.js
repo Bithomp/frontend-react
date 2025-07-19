@@ -260,41 +260,38 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
             />
           </div>
           <div className="form-spacing" />
-          <div className="form-input">
-            <span className="input-title">
-              Unlock after <span className="grey">(when funds can be released)</span>
-            </span>
-            <DatePicker
-              selected={finishAfter ? new Date(finishAfter * 1000) : null}
-              onChange={(date) => setFinishAfter(date ? Math.floor(date.getTime() / 1000) : null)}
-              selectsStart
-              showTimeInput
-              timeInputLabel={t('table.time')}
-              dateFormat="yyyy/MM/dd HH:mm:ss"
-              className="dateAndTimeRange"
-              minDate={new Date()}
-              showMonthDropdown
-              showYearDropdown
-            />
-          </div>
-          <div className="form-spacing" />
-          <div className="form-input">
-            <span className="input-title">
-              Cancel After <span className="grey">(when escrow expires)</span>
-            </span>
-            <DatePicker
-              selected={cancelAfter ? new Date(cancelAfter * 1000) : null}
-              onChange={(date) => setCancelAfter(date ? Math.floor(date.getTime() / 1000) : null)}
-              selectsStart
-              showTimeInput
-              timeInputLabel={t('table.time')}
-              dateFormat="yyyy/MM/dd HH:mm:ss"
-              className="dateAndTimeRange"
-              minDate={new Date()}
-              showMonthDropdown
-              showYearDropdown
-            />
-          </div>
+
+          <span className="input-title">
+            Unlock after <span className="grey">(when funds can be released)</span>
+          </span>
+          <DatePicker
+            selected={finishAfter ? new Date(finishAfter * 1000) : null}
+            onChange={(date) => setFinishAfter(date ? Math.floor(date.getTime() / 1000) : null)}
+            selectsStart
+            showTimeInput
+            timeInputLabel={t('table.time')}
+            dateFormat="yyyy/MM/dd HH:mm:ss"
+            className="dateAndTimeRange"
+            minDate={new Date()}
+            showMonthDropdown
+            showYearDropdown
+          />
+
+          <span className="input-title">
+            Cancel after <span className="grey">(when escrow expires)</span>
+          </span>
+          <DatePicker
+            selected={cancelAfter ? new Date(cancelAfter * 1000) : null}
+            onChange={(date) => setCancelAfter(date ? Math.floor(date.getTime() / 1000) : null)}
+            selectsStart
+            showTimeInput
+            timeInputLabel={t('table.time')}
+            dateFormat="yyyy/MM/dd HH:mm:ss"
+            className="dateAndTimeRange"
+            minDate={new Date()}
+            showMonthDropdown
+            showYearDropdown
+          />
 
           <CheckBox
             checked={showAdvanced}
@@ -333,41 +330,50 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
           {showAdvanced && (
             <>
               <br />
-              <div className="form-input">
-                <span className="input-title">
-                  Condition <span className="grey">(hex-encoded crypto-condition)</span>
-                </span>
-                <input
-                  placeholder="Enter PREIMAGE-SHA-256 condition (optional)"
-                  onChange={(e) => setCondition(e.target.value)}
-                  className="input-text"
-                  spellCheck="false"
-                  type="text"
-                  value={condition || ''}
-                  disabled={!sessionToken || subscriptionExpired}
-                />
-                <div style={{ display: 'flex', alignItems: 'center', marginTop: '5px' }}>
-                  <button 
-                    className="button-action thin narrow" 
-                    onClick={handleGenerateCondition}
-                    disabled={!sessionToken || subscriptionExpired}
-                  >
-                    Generate Random Condition
-                  </button>
-                  <span className="grey" style={{ marginLeft: '10px' }}>
-                    Funds can only be released if this condition is fulfilled.
-                  </span>
-                </div>
-                {fulfillment && (
-                  <div className="grey" style={{ fontSize: '12px', marginTop: '5px' }}>
-                    Fulfillment (preimage): {shortHash(fulfillment)} <CopyButton text={fulfillment} />
+              <span className="input-title">
+                Condition{' '}
+                <span className="grey">(If specified, funds can only be released if this condition is fulfilled.)</span>
+              </span>
+              <input
+                placeholder="PREIMAGE-SHA-256"
+                onChange={(e) => setCondition(e.target.value)}
+                className="input-text"
+                spellCheck="false"
+                type="text"
+                value={condition || ''}
+                disabled={!sessionToken || subscriptionExpired}
+              />
+              <br />
+              <br />
+              <button
+                className="button-action"
+                onClick={handleGenerateCondition}
+                disabled={!sessionToken || subscriptionExpired}
+              >
+                Generate a random Condition
+              </button>
+              <br />
+              <br />
+              {fulfillment && (
+                <>
+                  <div>
+                    Fulfillment:
+                    <div className="form-spacing" />
+                    <span className="brake bold">{fulfillment}</span> <CopyButton text={fulfillment} />
                   </div>
-                )}
-              </div>
-              <div className="form-spacing" />
+                  <br />
+                  <div className="red bold">
+                    We do not save/keep the Fulfillment. Please copy and save it securely.
+                    <br />
+                    <br />
+                    <b>If you lose it, you won't be able to relase the funds.</b>
+                  </div>
+                  <br />
+                </>
+              )}
               <FormInput
                 title="Source Tag"
-                placeholder="Enter source tag (optional)"
+                placeholder="Enter source tag"
                 setInnerValue={setSourceTag}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
@@ -394,7 +400,6 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
               </div>
             </>
           )}
-          <br />
           <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
             I agree with the{' '}
             <Link href="/terms-and-conditions" target="_blank">
