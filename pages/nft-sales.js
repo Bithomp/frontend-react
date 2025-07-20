@@ -15,7 +15,6 @@ import {
   timeOrDate,
   fullDateAndTime,
   niceNumber,
-  shortHash,
   shortNiceNumber,
   addressUsernameOrServiceLink
 } from '../utils/format'
@@ -30,10 +29,10 @@ import DateAndTimeRange from '../components/UI/DateAndTimeRange'
 import AddressInput from '../components/UI/AddressInput'
 import NftTabs from '../components/Tabs/NftTabs'
 
-import LinkIcon from '../public/images/link.svg'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import TokenSelector from '../components/UI/TokenSelector'
+import { LinkTx } from '../utils/links'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -737,9 +736,7 @@ export default function NftSales({
                                   </>
                                 )}
                                 <td className="center">
-                                  <a href={'/explorer/' + nft.acceptedTxHash}>
-                                    <LinkIcon />
-                                  </a>
+                                  <LinkTx tx={nft.acceptedTxHash} icon={true} />
                                 </td>
                                 {saleTab !== 'primary' && (
                                   <td className="right">{nftLink(nft, 'seller', { address: 'short' })}</td>
@@ -803,10 +800,7 @@ export default function NftSales({
                                     </>
                                   )}
                                   <div>
-                                    {t('table.transaction')}:{' '}
-                                    <a href={'/explorer/' + nft.acceptedTxHash}>
-                                      {shortHash(nft.acceptedTxHash)} <LinkIcon />
-                                    </a>
+                                    {t('table.transaction')}: <LinkTx tx={nft.acceptedTxHash} icon={true} />
                                   </div>
                                   {saleTab !== 'primary' && (
                                     <div>

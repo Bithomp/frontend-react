@@ -66,7 +66,7 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 import NftPreview from '../../components/NftPreview'
 
-import LinkIcon from '../../public/images/link.svg'
+import { LinkTx } from '../../utils/links'
 
 const ProjectMetadata = dynamic(() => import('../../components/Nft/ProjectMetadata'), { ssr: false })
 const EvernodeLease = dynamic(() => import('../../components/Nft/EvernodeLease'), { ssr: false })
@@ -356,9 +356,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             <td className="bold">{eventType(nftEvent)}</td>
             <td>
               {timeFromNow(nftEvent.changedAt, i18n)} ({fullDateAndTime(nftEvent.changedAt)}){' '}
-              <a href={'/explorer/' + nftEvent.txHash}>
-                <LinkIcon />
-              </a>
+              <LinkTx tx={nftEvent.txHash} icon={true} />
             </td>
           </tr>
           {nftEvent.uri && (
@@ -454,10 +452,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             <tr>
               <td>{t('table.placed')}</td>
               <td>
-                {fullDateAndTime(offer.createdAt)}{' '}
-                <a href={'/explorer/' + offer.createdTxHash}>
-                  <LinkIcon />
-                </a>
+                {fullDateAndTime(offer.createdAt)} <LinkTx tx={offer.createdTxHash} icon={true} />
               </td>
             </tr>
           )}
@@ -465,10 +460,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             <tr>
               <td>{t('table.accepted')}</td>
               <td>
-                {fullDateAndTime(offer.acceptedAt)}{' '}
-                <a href={'/explorer/' + offer.acceptedTxHash}>
-                  <LinkIcon />
-                </a>
+                {fullDateAndTime(offer.acceptedAt)} <LinkTx tx={offer.acceptedTxHash} icon={true} />
               </td>
             </tr>
           )}
@@ -476,10 +468,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             <tr>
               <td>{t('table.canceled')}</td>
               <td>
-                {fullDateAndTime(offer.canceledAt)}{' '}
-                <a href={'/explorer/' + offer.canceledTxHash}>
-                  <LinkIcon />
-                </a>
+                {fullDateAndTime(offer.canceledAt)} <LinkTx tx={offer.canceledTxHash} icon={true} />
               </td>
             </tr>
           )}
