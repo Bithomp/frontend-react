@@ -1,7 +1,14 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { explorerName, isAddressValid, typeNumberOnly, xahauNetwork } from '../../utils'
+import {
+  explorerName,
+  isAddressValid,
+  typeNumberOnly,
+  xahauNetwork,
+  encodeCurrencyCode,
+  validateCurrencyCode
+} from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { useState, useEffect } from 'react'
 import AddressInput from '../../components/UI/AddressInput'
@@ -71,6 +78,7 @@ export default function TrustSet({ setSignRequest }) {
     if (mode === 'advanced' && tokenSupply) {
       setLimit(Math.round(tokenSupply * 1000000) / 1000000)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, tokenSupply])
 
   const fetchTokenSupply = async () => {
@@ -114,8 +122,10 @@ export default function TrustSet({ setSignRequest }) {
       }
     }
 
-    if (!currency.currency) {
-      setError('Please enter a valid currency.')
+    // Validate currency code
+    const currencyValidation = validateCurrencyCode(currency.currency)
+    if (!currencyValidation.valid) {
+      setError(currencyValidation.error)
       return
     }
 
@@ -149,7 +159,7 @@ export default function TrustSet({ setSignRequest }) {
       let trustSet = {
         TransactionType: 'TrustSet',
         LimitAmount: {
-          currency: currency.currency,
+          currency: encodeCurrencyCode(currency.currency),
           issuer: mode === 'simple' ? selectedToken.issuer : issuer,
           value: limit.toString()
         }
@@ -259,13 +269,22 @@ export default function TrustSet({ setSignRequest }) {
                 rawData={selectedTokenData}
               />
               <div className="form-spacing" />
-              <FormInput
-                title="Currency code"
-                placeholder="Currency code (e.g., USD, EUR or HEX)"
-                setInnerValue={(value) => setCurrency({ currency: value })}
-                hideButton={true}
-                defaultValue={currency.currency}
-              />
+              <div className="form-input">
+                <span className="input-title">Currency code</span>
+                <input
+                  className="input-text"
+                  placeholder="Currency code (e.g., USD, myCurrency or HEX)"
+                  value={currency.currency}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    // Allow any input up to 40 characters
+                    if (value.length <= 40) {
+                      setCurrency({ currency: value })
+                    }
+                  }}
+                  spellCheck="false"
+                />
+              </div>
             </div>
           )}
           {mode === 'advanced' && (

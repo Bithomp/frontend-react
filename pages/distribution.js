@@ -171,18 +171,14 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
     <>
       <SEO
         title={t('menu.network.distribution', { nativeCurrency })}
-        images={[
-          {
-            width: 1200,
-            height: 630,
-            file: 'previews/1200x630/distribution.png'
-          },
-          {
-            width: 630,
-            height: 630,
-            file: 'previews/630x630/distribution.png'
-          }
-        ]}
+        image={{
+          width: 1200,
+          height: 630,
+          file: 'previews/1200x630/distribution.png'
+        }}
+        twitterImage={{
+          file: 'previews/630x630/distribution.png'
+        }}
       />
       <div className="content-center">
         <h1 className="center">{t('menu.network.distribution', { nativeCurrency })}</h1>
@@ -250,9 +246,7 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
                               <td>
                                 <AddressWithIconFilled data={r} />
                               </td>
-                              <td className="right">
-                                {renderBalance(r.balance, rawData.summary?.totalCoins)}
-                              </td>
+                              <td className="right">{renderBalance(r.balance, rawData.summary?.totalCoins)}</td>
                               {escrowMode === 'short' && r.escrowShortBalance && (
                                 <td className="right">
                                   {renderBalance(getEscrowAmount(r, 'short'), rawData.summary?.totalCoins, true)}

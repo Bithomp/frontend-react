@@ -503,18 +503,12 @@ export default function Validators({ amendment, initialData, initialErrorMessage
     <>
       <SEO
         title={t('menu.network.validators')}
-        images={[
-          {
-            width: 1200,
-            height: 630,
-            file: 'previews/1200x630/validators.png'
-          },
-          {
-            width: 630,
-            height: 630,
-            file: 'previews/630x630/validators.png'
-          }
-        ]}
+        image={{
+          width: 1200,
+          height: 630,
+          file: 'previews/1200x630/validators.png'
+        }}
+        twitterImage={{ file: 'previews/630x630/validators.png' }}
       />
       <div className="content-text">
         <h1 className="center">{t('menu.network.validators')}</h1>

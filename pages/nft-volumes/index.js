@@ -981,22 +981,18 @@ export default function NftVolumes({
           (listTab === 'list' ? ' ' + t('tabs.list') : '') +
           (period ? ' ' + period : '')
         }
-        images={
+        image={
           xahauNetwork
-            ? []
-            : [
-                {
-                  width: 1200,
-                  height: 630,
-                  file: 'previews/1200x630/nft-volumes.png'
-                },
-                {
-                  width: 630,
-                  height: 630,
-                  file: 'previews/630x630/nft-volumes.png'
-                }
-              ]
+            ? {}
+            : {
+                width: 1200,
+                height: 630,
+                file: 'previews/1200x630/nft-volumes.png'
+              }
         }
+        twitterImage={{
+          file: 'previews/630x630/nft-volumes.png'
+        }}
       />
 
       <h1 className="center">{t('header', { ns: 'nft-volumes' }) + ' '}</h1>
