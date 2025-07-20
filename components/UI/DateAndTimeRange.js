@@ -10,11 +10,15 @@ import RadioOptions from './RadioOptions'
 import Tabs from '../Tabs'
 import { useWidth, setTabParams, networkMinimumDate } from '../../utils'
 
-export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defaultPeriod, style, periodQueryName }) {
-  if (!periodQueryName) {
-    periodQueryName = 'period'
-  }
-
+export default function DateAndTimeRange({
+  setPeriod,
+  minDate,
+  tabs,
+  radio,
+  defaultPeriod,
+  style,
+  periodQueryName = 'period'
+}) {
   const { i18n, t } = useTranslation()
   const windowWidth = useWidth()
   const router = useRouter()

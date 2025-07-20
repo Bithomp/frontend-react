@@ -2,15 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import {
-  addAndRemoveQueryParams,
-  addQueryParams,
-  nativeCurrency,
-  isNativeCurrency,
-  removeQueryParams,
-  useWidth,
-  xahauNetwork
-} from '../utils'
+import { nativeCurrency, stripText, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -116,43 +108,12 @@ export default function Amms({
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [marker, setMarker] = useState(initialData?.marker)
   const [filtersHide, setFiltersHide] = useState(false)
-  const [token, setToken] = useState(() => {
-    if (currencyQuery && currencyIssuerQuery) {
-      return {
-        currency: currencyQuery,
-        issuer: currencyIssuerQuery
-      }
-    } else if (currencyQuery === nativeCurrency && !currencyIssuerQuery) {
-      return {
-        currency: nativeCurrency
-      }
-    }
-    return null
+  const [token, setToken] = useState({
+    currency: stripText(currencyQuery),
+    issuer: stripText(currencyIssuerQuery)
   })
 
   const controller = new AbortController()
-
-  useEffect(() => {
-    if (token?.currency && order === 'currencyHigh') {
-      if (isNativeCurrency(token)) {
-        addAndRemoveQueryParams(router, [{ name: 'currency', value: nativeCurrency }], ['currencyIssuer'])
-      } else if (token.issuer) {
-        const params = [
-          { name: 'currency', value: token.currency },
-          { name: 'currencyIssuer', value: token.issuer }
-        ]
-        addQueryParams(router, params)
-      } else {
-        removeQueryParams(router, ['currencyIssuer', 'currency'])
-      }
-    } else {
-      removeQueryParams(router, ['currencyIssuer', 'currency'])
-      if (order === 'currencyHigh') {
-        setToken({ currency: nativeCurrency }) // default to native currency if no token selected
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, order])
 
   useEffect(() => {
     if (initialData?.amms?.length > 0) {
@@ -316,7 +277,12 @@ export default function Amms({
         setFiltersHide={setFiltersHide}
       >
         <>
-          <TokenSelector value={token} onChange={setToken} allOrOne={order !== 'currencyHigh'} />
+          <TokenSelector
+            value={token}
+            onChange={setToken}
+            allOrOne={order !== 'currencyHigh'}
+            currencyQueryName="currency"
+          />
         </>
         <InfiniteScrolling
           dataLength={data.length}

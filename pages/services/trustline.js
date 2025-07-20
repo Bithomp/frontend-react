@@ -7,7 +7,8 @@ import {
   typeNumberOnly,
   xahauNetwork,
   encodeCurrencyCode,
-  validateCurrencyCode
+  validateCurrencyCode,
+  nativeCurrency
 } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { useState, useEffect } from 'react'
@@ -24,7 +25,20 @@ import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
 import { amountFormat } from '../../utils/format'
 
-export default function TrustSet({ setSignRequest }) {
+export const getServerSideProps = async (context) => {
+  const { query, locale } = context
+  const { currency, currencyIssuer } = query
+  return {
+    props: {
+      currencyQuery: currency || nativeCurrency,
+      currencyIssuerQuery: currencyIssuer || '',
+      isSsrMobile: getIsSsrMobile(context),
+      ...(await serverSideTranslations(locale, ['common']))
+    }
+  }
+}
+
+export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuerQuery }) {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const [mode, setMode] = useState('simple') // 'simple' or 'advanced'
@@ -32,12 +46,12 @@ export default function TrustSet({ setSignRequest }) {
   const [selectedTokenData, setSelectedTokenData] = useState({})
 
   // Simple mode state
-  const [selectedToken, setSelectedToken] = useState({ currency: '' })
+  const [selectedToken, setSelectedToken] = useState({ currency: currencyQuery, issuer: currencyIssuerQuery })
   const [tokenSupply, setTokenSupply] = useState(null)
 
   // Advanced mode state
-  const [issuer, setIssuer] = useState('')
-  const [currency, setCurrency] = useState({ currency: '' })
+  const [issuer, setIssuer] = useState(currencyIssuerQuery)
+  const [currency, setCurrency] = useState({ currency: currencyQuery })
 
   // Common state
   const [limit, setLimit] = useState('1000000')
@@ -254,7 +268,12 @@ export default function TrustSet({ setSignRequest }) {
                   </span>
                 )}
               </span>
-              <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={true} inTitle={<></>} />
+              <TokenSelector
+                value={selectedToken}
+                onChange={setSelectedToken}
+                excludeNative={true}
+                currencyQueryName="currency"
+              />
             </div>
           ) : (
             // Advanced Mode
@@ -421,14 +440,4 @@ export default function TrustSet({ setSignRequest }) {
       </div>
     </>
   )
-}
-
-export const getServerSideProps = async (context) => {
-  const { locale } = context
-  return {
-    props: {
-      isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
-    }
-  }
 }

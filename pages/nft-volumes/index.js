@@ -8,16 +8,7 @@ import Link from 'next/link'
 
 import { getIsSsrMobile } from '../../utils/mobile'
 
-import {
-  setTabParams,
-  stripText,
-  isAddressOrUsername,
-  useWidth,
-  chartSpan,
-  xahauNetwork,
-  nativeCurrency,
-  explorerName
-} from '../../utils'
+import { setTabParams, stripText, useWidth, chartSpan, xahauNetwork, nativeCurrency, explorerName } from '../../utils'
 import TokenSelector from '../../components/UI/TokenSelector'
 
 export const getServerSideProps = async (context) => {
@@ -91,18 +82,10 @@ export default function NftVolumes({
   const [filtersHide, setFiltersHide] = useState(false)
   const [hasMore, setHasMore] = useState('first')
   const [csvHeaders, setCsvHeaders] = useState([])
-  const [selectedToken, setSelectedToken] = useState(
-    currencyIssuerQuery && currencyQuery
-      ? {
-          currency: stripText(currencyQuery),
-          issuer: stripText(currencyIssuerQuery)
-        }
-      : currencyQuery === nativeCurrency && !currencyIssuerQuery
-      ? {
-          currency: nativeCurrency
-        }
-      : null
-  )
+  const [selectedToken, setSelectedToken] = useState({
+    currency: stripText(currencyQuery),
+    issuer: stripText(currencyIssuerQuery)
+  })
 
   useEffect(() => {
     setListTab(list)
@@ -562,6 +545,17 @@ export default function NftVolumes({
   useEffect(() => {
     if (!convertCurrency) return
     checkApi()
+    setSortConfig({})
+
+    return () => {
+      controller.abort()
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [saleTab, period, listTab, convertCurrency, extendedStats, selectedToken])
+
+  useEffect(() => {
+    if (!convertCurrency) return
 
     let queryAddList = []
     let queryRemoveList = []
@@ -581,22 +575,6 @@ export default function NftVolumes({
         paramName: 'sale'
       }
     ]
-    if (
-      !selectedToken?.currency ||
-      (selectedToken.currency.toUpperCase() !== nativeCurrency && !isAddressOrUsername(selectedToken?.issuer)) ||
-      listTab === 'currencies'
-    ) {
-      queryRemoveList = ['currency', 'currencyIssuer']
-    }
-
-    if (!selectedToken || selectedToken?.currency === '') {
-      queryRemoveList = ['currency', 'currencyIssuer']
-    } else if (selectedToken?.currency === nativeCurrency) {
-      queryAddList.push({
-        name: 'currency',
-        value: nativeCurrency
-      })
-    }
 
     if (!extendedStats) {
       queryAddList.push({
@@ -609,14 +587,8 @@ export default function NftVolumes({
 
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
 
-    setSortConfig({})
-
-    return () => {
-      controller.abort()
-    }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, period, listTab, convertCurrency, extendedStats, selectedToken])
+  }, [saleTab, listTab, convertCurrency, extendedStats])
 
   const urlParams = (volume, options) => {
     let urlPart = '?period=' + period + '&sale=' + (saleTab === 'primaryAndSecondary' ? 'all' : saleTab)
@@ -1033,7 +1005,12 @@ export default function NftVolumes({
             <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
           </div>
           {listTab !== 'currencies' && (
-            <TokenSelector value={selectedToken} onChange={setSelectedToken} allOrOne={true} />
+            <TokenSelector
+              value={selectedToken}
+              onChange={setSelectedToken}
+              allOrOne={true}
+              currencyQueryName="currency"
+            />
           )}
         </>
         <>
@@ -1054,26 +1031,26 @@ export default function NftVolumes({
                     )}
                   </>
                 ) : (
-                  <>
-                    {chartIssuers.length > 0 && chartVolumes.length > 0 && (
-                      <div className="flex-container" style={{ marginLeft: '10px', justifyContent: 'center' }}>
-                        <div style={chartDivStyle}>
-                          <h3>
-                            {t('sales-chart', { ns: 'nft-volumes' })} / {t('volumes-chart', { ns: 'nft-volumes' })} (
-                            {convertCurrency?.toUpperCase()})
-                          </h3>
-                          <SimpleChart
-                            currency={selectedCurrency}
-                            data={[
-                              { name: t('table.sales'), data: chartIssuers },
-                              { name: t('table.volume'), data: chartVolumes }
-                            ]}
-                            combined={true}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </>
+                  <div className="flex-container" style={{ marginLeft: '10px', justifyContent: 'center' }}>
+                    <div style={chartDivStyle}>
+                      <h3>
+                        {t('sales-chart', { ns: 'nft-volumes' })} / {t('volumes-chart', { ns: 'nft-volumes' })} (
+                        {convertCurrency?.toUpperCase()})
+                      </h3>
+                      {chartIssuers.length > 0 && chartVolumes.length > 0 ? (
+                        <SimpleChart
+                          currency={selectedCurrency}
+                          data={[
+                            { name: t('table.sales'), data: chartIssuers },
+                            { name: t('table.volume'), data: chartVolumes }
+                          ]}
+                          combined={true}
+                        />
+                      ) : (
+                        <p className="center">{t('general.no-data')}</p>
+                      )}
+                    </div>
+                  </div>
                 )}
               </center>
             </>

@@ -137,7 +137,10 @@ export default function NftSales({
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
   const [filtersHide, setFiltersHide] = useState(false)
-  const [selectedToken, setSelectedToken] = useState()
+  const [selectedToken, setSelectedToken] = useState({
+    currency: currency,
+    issuer: currencyIssuer
+  })
 
   const controller = new AbortController()
 
@@ -191,17 +194,6 @@ export default function NftSales({
 
     if (includeWithoutMediaDataQuery) {
       setIncludeWithoutMediaData(includeWithoutMediaDataQuery)
-    }
-
-    if (currencyIssuer && currency) {
-      setSelectedToken({
-        currency,
-        issuer: currencyIssuer
-      })
-    } else if (currency === nativeCurrency && !currencyIssuer) {
-      setSelectedToken({
-        currency: nativeCurrency
-      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -390,6 +382,31 @@ export default function NftSales({
   }
 
   useEffect(() => {
+    if (sortCurrency) {
+      checkApi({ restart: true })
+    }
+
+    return () => {
+      if (controller) {
+        controller.abort()
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    saleTab,
+    issuer,
+    taxon,
+    order,
+    sortCurrency,
+    period,
+    buyer,
+    seller,
+    search,
+    includeWithoutMediaData,
+    selectedToken
+  ])
+
+  useEffect(() => {
     let queryAddList = []
     let queryRemoveList = []
 
@@ -444,24 +461,6 @@ export default function NftSales({
       queryRemoveList.push('includeWithoutMediaData')
     }
 
-    if (selectedToken) {
-      queryAddList.push({
-        name: 'currency',
-        value: selectedToken.currency
-      })
-      if (selectedToken.issuer) {
-        queryAddList.push({
-          name: 'currencyIssuer',
-          value: selectedToken.issuer
-        })
-      } else {
-        queryRemoveList.push('currencyIssuer')
-      }
-    } else {
-      queryRemoveList.push('currency')
-      queryRemoveList.push('currencyIssuer')
-    }
-
     setTabParams(
       router,
       [
@@ -483,30 +482,8 @@ export default function NftSales({
       queryAddList,
       queryRemoveList
     )
-
-    if (sortCurrency) {
-      checkApi({ restart: true })
-    }
-
-    return () => {
-      if (controller) {
-        controller.abort()
-      }
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    saleTab,
-    issuer,
-    taxon,
-    order,
-    sortCurrency,
-    period,
-    buyer,
-    seller,
-    search,
-    includeWithoutMediaData,
-    selectedToken
-  ])
+  }, [saleTab, issuer, taxon, order, buyer, seller, search, includeWithoutMediaData])
 
   useEffect(() => {
     if (data) {
@@ -680,7 +657,12 @@ export default function NftSales({
             <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
           </div>
 
-          <TokenSelector value={selectedToken} onChange={setSelectedToken} allOrOne={true} />
+          <TokenSelector
+            value={selectedToken}
+            onChange={setSelectedToken}
+            allOrOne={true}
+            currencyQueryName="currency"
+          />
 
           <div className="filters-check-box">
             <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>

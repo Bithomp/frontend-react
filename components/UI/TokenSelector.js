@@ -4,9 +4,17 @@ import { IoSearch } from 'react-icons/io5'
 import { IoMdClose } from 'react-icons/io'
 import { IoChevronDown } from 'react-icons/io5'
 import axios from 'axios'
-import { avatarServer, nativeCurrency, isNativeCurrency, nativeCurrenciesImages, useWidth } from '../../utils'
+import {
+  avatarServer,
+  nativeCurrency,
+  isNativeCurrency,
+  nativeCurrenciesImages,
+  useWidth,
+  setTabParams
+} from '../../utils'
 import { niceCurrency, shortAddress, shortNiceNumber, amountFormat } from '../../utils/format'
 import RadioOptions from './RadioOptions'
+import { useRouter } from 'next/router'
 
 const limit = 20
 
@@ -66,9 +74,11 @@ export default function TokenSelector({
   onChange,
   excludeNative = false,
   destinationAddress = null,
-  allOrOne = false
+  allOrOne,
+  currencyQueryName
 }) {
   const { t } = useTranslation()
+  const router = useRouter()
   const width = useWidth()
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -78,6 +88,23 @@ export default function TokenSelector({
 
   // control radio selection: 'all' | 'single'
   const [filterMode, setFilterMode] = useState(() => (value?.currency ? 'single' : 'all'))
+
+  useEffect(() => {
+    if (!currencyQueryName) return
+    let queryAddList = []
+    let queryRemoveList = []
+    if (value?.currency) {
+      queryAddList.push({ name: currencyQueryName, value: value.currency })
+    } else {
+      queryRemoveList.push(currencyQueryName)
+    }
+    if (value?.issuer) {
+      queryAddList.push({ name: currencyQueryName + 'Issuer', value: value.issuer })
+    } else {
+      queryRemoveList.push(currencyQueryName + 'Issuer')
+    }
+    setTabParams(router, [], queryAddList, queryRemoveList)
+  }, [value, currencyQueryName])
 
   useEffect(() => {
     if (!allOrOne) return
