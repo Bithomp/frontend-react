@@ -17,9 +17,9 @@ import {
   niceNumber,
   shortHash,
   shortNiceNumber,
-  niceCurrency,
   addressUsernameOrServiceLink
 } from '../utils/format'
+import { isNativeCurrency } from '../utils'
 
 import SEO from '../components/SEO'
 import Tiles from '../components/Tiles'
@@ -33,6 +33,7 @@ import NftTabs from '../components/Tabs/NftTabs'
 import LinkIcon from '../public/images/link.svg'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
+import TokenSelector from '../components/UI/TokenSelector'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -136,6 +137,7 @@ export default function NftSales({
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
   const [filtersHide, setFiltersHide] = useState(false)
+  const [selectedToken, setSelectedToken] = useState()
 
   const controller = new AbortController()
 
@@ -191,6 +193,16 @@ export default function NftSales({
       setIncludeWithoutMediaData(includeWithoutMediaDataQuery)
     }
 
+    if (currencyIssuer && currency) {
+      setSelectedToken({
+        currency,
+        issuer: currencyIssuer
+      })
+    } else if (currency === nativeCurrency && !currencyIssuer) {
+      setSelectedToken({
+        currency: nativeCurrency
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -229,8 +241,7 @@ export default function NftSales({
       (period && period !== 'all') ||
       saleTab !== 'primaryAndSecondary' ||
       !includeWithoutMediaData ||
-      currency ||
-      currencyIssuer
+      selectedToken
     )
   }
 
@@ -433,7 +444,20 @@ export default function NftSales({
       queryRemoveList.push('includeWithoutMediaData')
     }
 
-    if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
+    if (selectedToken) {
+      queryAddList.push({
+        name: 'currency',
+        value: selectedToken.currency
+      })
+      if (selectedToken.issuer) {
+        queryAddList.push({
+          name: 'currencyIssuer',
+          value: selectedToken.issuer
+        })
+      } else {
+        queryRemoveList.push('currencyIssuer')
+      }
+    } else {
       queryRemoveList.push('currency')
       queryRemoveList.push('currencyIssuer')
     }
@@ -481,8 +505,7 @@ export default function NftSales({
     seller,
     search,
     includeWithoutMediaData,
-    currency,
-    currencyIssuer
+    selectedToken
   ])
 
   useEffect(() => {
@@ -529,13 +552,13 @@ export default function NftSales({
   }
 
   const currencyUrlPart = () => {
-    if (!currency) return ''
+    if (!selectedToken?.currency) return ''
 
-    if (currency.toLowerCase() === nativeCurrency.toLowerCase()) {
+    if (isNativeCurrency(selectedToken)) {
       return '&currency=' + nativeCurrency.toLowerCase()
     } else {
-      if (isAddressOrUsername(currencyIssuer)) {
-        return '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer)
+      if (selectedToken.issuer && isAddressOrUsername(selectedToken.issuer)) {
+        return '&currency=' + stripText(selectedToken.currency) + '&currencyIssuer=' + stripText(selectedToken.issuer)
       }
     }
     return ''
@@ -569,8 +592,8 @@ export default function NftSales({
           (buyerQuery ? ' ' + t('table.buyer') + ': ' + buyerQuery : '') +
           (sellerQuery ? ' ' + t('table.seller') + ': ' + sellerQuery : '') +
           (isValidTaxon(taxonQuery) ? ' ' + taxonQuery : '') +
-          (currency ? ' ' + currency : '') +
-          (currencyIssuer ? ' ' + currencyIssuer : '') +
+          (selectedToken?.currency ? ' ' + selectedToken.currency : '') +
+          (selectedToken?.issuer ? ' ' + selectedToken.issuer : '') +
           (activeView === 'list' ? ' ' + t('tabs.list') : '') +
           (periodQuery ? ' ' + periodQuery : '') +
           (searchQuery ? ', ' + t('table.name') + ': ' + searchQuery : '')
@@ -657,22 +680,7 @@ export default function NftSales({
             <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
           </div>
 
-          {currencyIssuer && currency && (
-            <>
-              <FormInput
-                title={t('table.currency')}
-                defaultValue={niceCurrency(currency)}
-                disabled={true}
-                hideButton={true}
-              />
-              <FormInput
-                title={t('table.currency-issuer')}
-                defaultValue={currencyIssuer}
-                disabled={true}
-                hideButton={true}
-              />
-            </>
-          )}
+          <TokenSelector value={selectedToken} onChange={setSelectedToken} allOrOne={true} />
 
           <div className="filters-check-box">
             <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
