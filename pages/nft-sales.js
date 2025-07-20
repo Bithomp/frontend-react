@@ -195,7 +195,7 @@ export default function NftSales({
 
     if (currencyIssuer && currency) {
       setSelectedToken({
-        currency: currency,
+        currency,
         issuer: currencyIssuer
       })
     } else if (currency === nativeCurrency && !currencyIssuer) {
@@ -686,10 +686,7 @@ export default function NftSales({
             <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
           </div>
 
-          <div>
-            <span className="input-title">{t('table.currency')}</span>
-            <TokenSelector value={selectedToken} onChange={setSelectedToken} />
-          </div>
+          <TokenSelector value={selectedToken} onChange={setSelectedToken} allOrOne={true} />
 
           <div className="filters-check-box">
             <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>

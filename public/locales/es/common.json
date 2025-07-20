@@ -559,7 +559,7 @@
     "publicAndKnownBrokers": "Público Y Mercado",
     "onSale": "Listado",
     "all-tokens": "Todos los tokens",
-    "native-currency-only": "Solo {{nativeCurrency}}",
+    "single-token": "Token único",
     "mintedNew": "Latest",
     "mintedOld": "Oldest",
     "existing": "Existing",

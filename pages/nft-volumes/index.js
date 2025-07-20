@@ -18,6 +18,7 @@ import {
   nativeCurrency,
   explorerName
 } from '../../utils'
+import TokenSelector from '../../components/UI/TokenSelector'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -28,8 +29,8 @@ export const getServerSideProps = async (context) => {
       periodQuery: period || 'month',
       sale: sale || 'secondary',
       list: list || (xahauNetwork ? 'issuers' : 'collections'),
-      currency: currency || '',
-      currencyIssuer: currencyIssuer || '',
+      currencyQuery: currency || '',
+      currencyIssuerQuery: currencyIssuer || '',
       sortCurrency: sortCurrency || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft-volumes']))
@@ -55,7 +56,6 @@ import {
 
 import LinkIcon from '../../public/images/link.svg'
 import RadioOptions from '../../components/UI/RadioOptions'
-import FormInput from '../../components/UI/FormInput'
 import { collectionThumbnail } from '../../utils/nft'
 import FiltersFrame from '../../components/Layout/FiltersFrame'
 
@@ -64,8 +64,8 @@ export default function NftVolumes({
   periodQuery,
   sale,
   list,
-  currency,
-  currencyIssuer,
+  currencyQuery,
+  currencyIssuerQuery,
   selectedCurrency,
   sortCurrency,
   subscriptionExpired,
@@ -83,7 +83,6 @@ export default function NftVolumes({
   const [period, setPeriod] = useState(periodQuery)
   const [saleTab, setSaleTab] = useState(sale)
   const [listTab, setListTab] = useState(list)
-  const [currencyTab, setCurrencyTab] = useState(currency?.toUpperCase())
   const [sortConfig, setSortConfig] = useState({})
   const [extendedStats, setExtendedStats] = useState(extendedStatsQuery)
   const [chartIssuers, setChartIssuers] = useState([])
@@ -92,6 +91,18 @@ export default function NftVolumes({
   const [filtersHide, setFiltersHide] = useState(false)
   const [hasMore, setHasMore] = useState('first')
   const [csvHeaders, setCsvHeaders] = useState([])
+  const [selectedToken, setSelectedToken] = useState(
+    currencyIssuerQuery && currencyQuery
+      ? {
+          currency: stripText(currencyQuery),
+          issuer: stripText(currencyIssuerQuery)
+        }
+      : currencyQuery === nativeCurrency && !currencyIssuerQuery
+      ? {
+          currency: nativeCurrency
+        }
+      : null
+  )
 
   useEffect(() => {
     setListTab(list)
@@ -116,11 +127,6 @@ export default function NftVolumes({
     { value: 'primaryAndSecondary', label: t('tabs.primaryAndSecondary-sales') },
     { value: 'secondary', label: t('tabs.secondary-sales') },
     { value: 'primary', label: t('tabs.primary-sales') }
-  ]
-
-  const currencyTabList = [
-    { value: '', label: t('tabs.all-tokens') },
-    { value: nativeCurrency, label: t('tabs.native-currency-only', { nativeCurrency }) }
   ]
 
   const controller = new AbortController()
@@ -178,7 +184,7 @@ export default function NftVolumes({
         : rawData.saleType
       : false
     const oldCurrency = rawData?.currency
-    //const oldCurrencyIssuer = rawData?.currencyIssuer
+    const oldCurrencyIssuer = rawData?.currencyIssuer
     const oldExtendedStats = rawData?.statistics && rawData?.floorPrice
     const loadMoreRequest =
       hasMore !== 'first' &&
@@ -186,8 +192,8 @@ export default function NftVolumes({
       (convertCurrency ? oldConvertCurrency === convertCurrency : !oldConvertCurrency) &&
       (period ? oldPeriod === period : !oldPeriod) &&
       (saleTab ? oldSaleType === saleTab : !oldSaleType) &&
-      (currencyTab ? oldCurrency === currencyTab : !oldCurrency) &&
-      //(currencyIssuer ? oldCurrencyIssuer === currencyIssuer : !oldCurrencyIssuer) &&
+      (selectedToken?.currency ? oldCurrency === selectedToken.currency : !oldCurrency) &&
+      (selectedToken?.issuer ? oldCurrencyIssuer === selectedToken.issuer : !oldCurrencyIssuer) &&
       (extendedStats ? oldExtendedStats === extendedStats : !oldExtendedStats)
 
     // do not load more if there is no session token or if Bithomp Pro is expired
@@ -207,9 +213,10 @@ export default function NftVolumes({
 
     let currencyUrlPart = ''
     if (listTab !== 'currencies') {
-      if (currency && currencyIssuer) {
-        currencyUrlPart = '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer)
-      } else if (currencyTab === nativeCurrency) {
+      if (selectedToken?.issuer && selectedToken?.currency) {
+        currencyUrlPart =
+          '&currency=' + stripText(selectedToken.currency) + '&currencyIssuer=' + stripText(selectedToken.issuer)
+      } else if (selectedToken?.currency === nativeCurrency) {
         currencyUrlPart = '&currency=' + nativeCurrency
       }
     }
@@ -575,16 +582,16 @@ export default function NftVolumes({
       }
     ]
     if (
-      !currencyTab ||
-      (currencyTab.toUpperCase() !== nativeCurrency && !isAddressOrUsername(currencyIssuer)) ||
+      !selectedToken?.currency ||
+      (selectedToken.currency.toUpperCase() !== nativeCurrency && !isAddressOrUsername(selectedToken?.issuer)) ||
       listTab === 'currencies'
     ) {
       queryRemoveList = ['currency', 'currencyIssuer']
     }
 
-    if (currencyTab === '') {
+    if (!selectedToken || selectedToken?.currency === '') {
       queryRemoveList = ['currency', 'currencyIssuer']
-    } else if (currencyTab === nativeCurrency) {
+    } else if (selectedToken?.currency === nativeCurrency) {
       queryAddList.push({
         name: 'currency',
         value: nativeCurrency
@@ -609,7 +616,7 @@ export default function NftVolumes({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, period, listTab, currencyIssuer, convertCurrency, extendedStats, currencyTab])
+  }, [saleTab, period, listTab, convertCurrency, extendedStats, selectedToken])
 
   const urlParams = (volume, options) => {
     let urlPart = '?period=' + period + '&sale=' + (saleTab === 'primaryAndSecondary' ? 'all' : saleTab)
@@ -969,8 +976,8 @@ export default function NftVolumes({
           ' ' +
           (saleTab === 'secondary' ? t('tabs.secondary-sales') : '') +
           (saleTab === 'primary' ? t('tabs.primary-sales') : '') +
-          (currencyTab ? ' ' + currencyTab : '') +
-          (currencyIssuer ? ' ' + currencyIssuer : '') +
+          (selectedToken?.currency ? ' ' + selectedToken.currency : '') +
+          (selectedToken?.issuer ? ' ' + selectedToken?.issuer : '') +
           (listTab === 'list' ? ' ' + t('tabs.list') : '') +
           (period ? ' ' + period : '')
         }
@@ -1029,27 +1036,8 @@ export default function NftVolumes({
             {t('table.sales')}
             <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
           </div>
-          {!currencyIssuer && listTab !== 'currencies' && (
-            <div>
-              {t('tabs.currencies')}
-              <RadioOptions tabList={currencyTabList} tab={currencyTab} setTab={setCurrencyTab} name="currency" />
-            </div>
-          )}
-          {currencyIssuer && currency && (
-            <>
-              <FormInput
-                title={t('table.currency')}
-                defaultValue={niceCurrency(currency)}
-                disabled={true}
-                hideButton={true}
-              />
-              <FormInput
-                title={t('table.currency-issuer')}
-                defaultValue={currencyIssuer}
-                disabled={true}
-                hideButton={true}
-              />
-            </>
+          {listTab !== 'currencies' && (
+            <TokenSelector value={selectedToken} onChange={setSelectedToken} allOrOne={true} />
           )}
         </>
         <>
@@ -1108,10 +1096,7 @@ export default function NftVolumes({
                             {listTab === 'brokers' ? (
                               <Trans i18nKey="brokers.text0" ns="nft-volumes">
                                 XRPL had {{ allSales: shortNiceNumber(rawDataSummary.all.sales, 0) }}{' '}
-                                <b>
-                                  {{ currency: currencyIssuer ? niceCurrency(currency) : currencyTab.toUpperCase() }}
-                                </b>{' '}
-                                NFT{' '}
+                                <b>{{ currency: niceCurrency(selectedToken.currency) }}</b> NFT{' '}
                                 {{
                                   saleType:
                                     saleTab === 'primaryAndSecondary'
@@ -1154,7 +1139,7 @@ export default function NftVolumes({
                             ) : (
                               <Trans i18nKey="text0" ns="nft-volumes">
                                 {{ explorerName }} had {{ allSales: shortNiceNumber(rawDataSummary.all.sales, 0) }}{' '}
-                                {{ currency: currencyIssuer ? niceCurrency(currency) : currencyTab.toUpperCase() }} NFT{' '}
+                                {{ currency: niceCurrency(selectedToken?.currency) }} NFT{' '}
                                 {{
                                   saleType:
                                     saleTab === 'primaryAndSecondary'
@@ -1281,9 +1266,7 @@ export default function NftVolumes({
                             </b>
                           </th>
                         )}
-                        {(listTab === 'currencies' ||
-                          (currency && currencyIssuer) ||
-                          currencyTab === nativeCurrency) && <th className="right">{t('table.volume')}</th>}
+                        {(listTab === 'currencies' || selectedToken) && <th className="right">{t('table.volume')}</th>}
                         <th className="right">
                           {t('table.volume')} ({convertCurrency?.toUpperCase()}){' '}
                           <b
@@ -1385,9 +1368,7 @@ export default function NftVolumes({
                                         {shortNiceNumber(volume.statistics?.buyers, 0)}
                                       </td>
                                     )}
-                                    {(listTab === 'currencies' ||
-                                      (currency && currencyIssuer) ||
-                                      currencyTab === nativeCurrency) && (
+                                    {(listTab === 'currencies' || selectedToken) && (
                                       <td className="right">
                                         {amountFormat(volume.volumes?.[0]?.amount, { maxFractionDigits: 2 })}
                                       </td>

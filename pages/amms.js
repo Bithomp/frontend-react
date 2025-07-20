@@ -51,7 +51,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/amms?order=currencyHigh&limit=50&voteSlots=false&auctionSlot=false' + currencyPart,
+      url: 'v2/amms?order=currencyHigh&limit=100&voteSlots=false&auctionSlot=false' + currencyPart,
       headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -127,11 +127,8 @@ export default function Amms({
         currency: nativeCurrency
       }
     }
-    return ''
+    return null
   })
-
-  // control radio selection: 'all' | 'single'
-  const [filterMode, setFilterMode] = useState(() => (token?.currency ? 'single' : 'all'))
 
   const controller = new AbortController()
 
@@ -150,6 +147,9 @@ export default function Amms({
       }
     } else {
       removeQueryParams(router, ['currencyIssuer', 'currency'])
+      if (order === 'currencyHigh') {
+        setToken({ currency: nativeCurrency }) // default to native currency if no token selected
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, order])
@@ -198,7 +198,7 @@ export default function Amms({
       currencyPart = '&sortCurrency=' + nativeCurrency
     }
 
-    let apiUrl = 'v2/amms?order=' + order + '&limit=50&voteSlots=false&auctionSlot=false' + markerPart + currencyPart
+    let apiUrl = 'v2/amms?order=' + order + '&limit=100&voteSlots=false&auctionSlot=false' + markerPart + currencyPart
 
     if (!markerPart) {
       setLoading(true)
@@ -245,7 +245,10 @@ export default function Amms({
   }
 
   useEffect(() => {
-    if (order && (rawData.order !== order || rawData.currency !== token?.currency || rawData.currencyIssuer !== token?.issuer)) {
+    if (
+      order &&
+      (rawData.order !== order || rawData.currency !== token?.currency || rawData.currencyIssuer !== token?.issuer)
+    ) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -319,43 +322,7 @@ export default function Amms({
         setFiltersHide={setFiltersHide}
       >
         <>
-          <div className="radio-options">
-            <div className="radio-input">
-              <input
-                type="radio"
-                name="tokenFilterMode"
-                checked={filterMode === 'all'}
-                onChange={() => {
-                  setFilterMode('all')
-                  setToken({}) // clear any selected token
-                }}
-                id={'tokenFilterAll'}
-              />
-              <label htmlFor={'tokenFilterAll'}>{t('tabs.all-tokens', { defaultValue: 'All tokens' })}</label>
-            </div>
-            <div className="radio-input" style={{ marginLeft: 20 }}>
-              <input
-                type="radio"
-                name="tokenFilterMode"
-                checked={filterMode === 'single'}
-                onChange={() => {
-                  setFilterMode('single')
-                }}
-                id={'tokenFilterSingle'}
-              />
-              <label htmlFor={'tokenFilterSingle'}>{t('tabs.single-token', { defaultValue: 'Single token' })}</label>
-            </div>
-          </div>
-
-          {filterMode === 'single' && (
-            <div>
-              <p>{t('table.currency')}</p>
-              <TokenSelector
-                value={token}
-                onChange={setToken}
-              />
-            </div>
-          )}
+          <TokenSelector value={token} onChange={setToken} allOrOne={order !== 'currencyHigh'} />
         </>
         <InfiniteScrolling
           dataLength={data.length}

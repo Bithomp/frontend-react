@@ -559,7 +559,7 @@
     "publicAndKnownBrokers": "Public & MP",
     "onSale": "Listed",
     "all-tokens": "All tokens",
-    "native-currency-only": "{{nativeCurrency}} only",
+    "single-token": "Single token",
     "mintedNew": "Latest",
     "mintedOld": "Oldest",
     "existing": "Existing",
