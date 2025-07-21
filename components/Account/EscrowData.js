@@ -117,14 +117,20 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           {!ledgerTimestamp && (
             <td className="center">
               {(() => {
-                const canFinish = escrow.FinishAfter && timestampExpired(escrow.FinishAfter, 'ripple') && !timestampExpired(escrow.CancelAfter, 'ripple')
+                const canFinish =
+                  escrow.FinishAfter &&
+                  timestampExpired(escrow.FinishAfter, 'ripple') &&
+                  !timestampExpired(escrow.CancelAfter, 'ripple')
                 const canCancel = escrow.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple')
-                
-                if (canFinish && canCancel) {
-                  return (
-                    <>
-                      <a
-                        href="#"
+
+                if (!canFinish && !canCancel) {
+                  return <span className="grey">none</span>
+                }
+
+                return (
+                  <>
+                    {canFinish && (
+                      <span
                         onClick={(e) => {
                           e.preventDefault()
                           handleEscrowFinish(escrow)
@@ -133,10 +139,11 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
                       >
                         <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
                         <span className="tooltiptext">Finish</span>
-                      </a>
-                      <span style={{ display: 'inline-block', width: 15 }}> </span>
-                      <a
-                        href="#"
+                      </span>
+                    )}
+                    {canFinish && canCancel && <span style={{ display: 'inline-block', width: 15 }}> </span>}
+                    {canCancel && (
+                      <span
                         onClick={(e) => {
                           e.preventDefault()
                           handleEscrowCancel(escrow)
@@ -145,40 +152,10 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
                       >
                         <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
                         <span className="tooltiptext">Cancel</span>
-                      </a>
-                    </>
-                  )
-                } else if (canFinish) {
-                  return (
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        handleEscrowFinish(escrow)
-                      }}
-                      className="orange tooltip"
-                    >
-                      <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
-                      <span className="tooltiptext">Finish</span>
-                    </a>
-                  )
-                } else if (canCancel) {
-                  return (
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        handleEscrowCancel(escrow)
-                      }}
-                      className="red tooltip"
-                    >
-                      <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
-                      <span className="tooltiptext">Cancel</span>
-                    </a>
-                  )
-                } else {
-                  return <span className="grey">none</span>
-                }
+                      </span>
+                    )}
+                  </>
+                )
               })()}
             </td>
           )}
