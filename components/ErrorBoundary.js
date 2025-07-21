@@ -19,7 +19,8 @@ class ErrorBoundary extends React.Component {
       "Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.",
       "Failed to read the 'localStorage' property from 'Window': Access is denied for this document.",
       'The operation is insecure.',
-      'The object can not be found here.'
+      'The object can not be found here.',
+      "null is not an object (evaluating 'localStorage.getItem')"
     ]
     if (knownErrorMessages.includes(error.message)) {
       // Ignore known errors
