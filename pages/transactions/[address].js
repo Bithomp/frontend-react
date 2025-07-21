@@ -3,24 +3,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
-import { amountFormat, addressUsernameOrServiceLink } from '../../utils/format'
-import { LinkTx } from '../../utils/links'
-import { txTypeToText, processTransactions } from '../../utils/transaction'
-import { useWidth, decode, avatarServer, nativeCurrenciesImages, nativeCurrency } from '../../utils'
+import { processTransactionBlocks } from '../../utils/transactionBlock'
+import { useWidth } from '../../utils'
 
 import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
 import FiltersFrame from '../../components/Layout/FiltersFrame'
+import TransactionBlock from '../../components/UI/TransactionBlock'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import SimpleSelect from '../../components/UI/SimpleSelect'
-import { FiDownload, FiUpload } from "react-icons/fi";
-import { FaCalendarAlt, FaClock } from "react-icons/fa";
-import { FaArrowRightArrowLeft } from "react-icons/fa6";
-import Image from 'next/image'
-
-
-
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -54,7 +46,6 @@ export async function getServerSideProps(context) {
   }
 }
 
-// ---------- Component ----------
 export default function TransactionsAddress({
   address,
   initialTransactions,
@@ -85,10 +76,9 @@ export default function TransactionsAddress({
       setProcessedTransactions([])
       return
     }
-    const processed = processTransactions(transactions, address)
+    const processed = processTransactionBlocks(transactions, address)
     setProcessedTransactions(processed)
   }, [transactions, address])
-
   // Sort transactions whenever order changes or new data comes in
   useEffect(() => {
     if (!transactions || transactions.length === 0) return
@@ -135,7 +125,7 @@ export default function TransactionsAddress({
 
   // Build API url
   const apiUrl = (opts = {}) => {
-    const limit = 25
+    const limit = 100
     let url = `v3/transactions/${address}?limit=${limit}`
     // pagination marker
     if (opts.marker) {
@@ -221,95 +211,6 @@ export default function TransactionsAddress({
     { label: 'Address', key: 'address' },
     { label: 'Fee', key: 'fee' }
   ]
-  console.log(processedTransactions)
-  console.log(transactions)
-  // Render helpers
-  const renderTableRows = () => {
-    return processedTransactions.map((txdata, index) => {
-      const dateText = txdata.date || '-'
-      const timeText = txdata.time || '-'
-
-      return (
-        <tr key={txdata.hash || index}>
-          <td className="center bold" style={{ width: 10 }}>{index + 1}.</td>
-          <td className="gray" style={{ width: 100 }}>
-            <FaCalendarAlt /> {dateText} <br />
-            <FaClock /> {timeText}
-          </td>
-          <td>
-            <div>
-              <span className="gray" style={{ marginRight: 5 }}><FaArrowRightArrowLeft /></span>
-              <LinkTx tx={txdata.hash}> {txdata.hash} </LinkTx>
-            </div>
-            <span className="bold">{txTypeToText(null, txdata.type, true)}</span>
-            <br />            
-            {txdata.address && (
-              <>
-                {txdata.direction && (
-                  <>
-                    <span className={txdata.direction === 'incoming' ? 'green' : 'red'} style={{ marginRight: 5 }}>
-                      {txdata.direction === 'incoming' ? <FiDownload /> : <FiUpload />}
-                    </span>
-                  </>
-                )}
-                <span className="gray">
-                  {addressUsernameOrServiceLink(txdata.address, 'address')}
-                </span>
-                <br />
-              </>
-            )}
-            {txdata.destination_tag && (
-              <>
-                <span className="gray">Destination tag: {txdata.destination_tag}</span>
-                <br />
-              </>
-            )}
-            {txdata.source_tag && (
-              <>
-                <span className="gray">Source tag: {txdata.source_tag}</span>
-                <br />
-              </>
-            )}
-            {txdata.memos && (
-              <>
-                {txdata.memos.map((memo, index) => (
-                  <>
-                  <span key={index} className="bold">Memo {txdata.memos.length > 1 ? index + 1 : ''}:</span>
-                  <span className="gray">{decode(memo.Memo?.MemoData)}</span>
-                  </>
-                ))}
-                <br />
-              </>
-            )}
-          </td>
-          <td>
-            {txdata.type === 'payment' && txdata.deliveredAmount && (
-              <>                
-                <span className={txdata.direction === 'incoming' ? 'green bold tooltip' : 'red bold tooltip'}>
-                  <span className="inline-flex gap-1">
-                    {amountFormat(txdata.deliveredAmount, { short: true, maxFractionDigits: 2 })} 
-                    {txdata.deliveredAmount?.currency?.issuer ? (
-                      <Image src={avatarServer + txdata.deliveredAmount?.currency?.issuer} alt={txdata.deliveredAmount.currency.issuer} width={20} height={20} />
-                    ) : (
-                      <Image src={nativeCurrenciesImages[nativeCurrency]} alt={nativeCurrency} width={20} height={20} />
-                    )}
-                  </span>
-                  <span className="tooltiptext no-brake">
-                    {amountFormat(txdata.deliveredAmount)}
-                  </span>
-                </span>
-              <br />
-              </>
-            )}
-            <span className="gray">
-              Fee: {amountFormat(txdata.fee)}
-            </span>
-            <br />
-          </td>
-        </tr>
-      )
-    })
-  }
 
   const applyFilters = () => {
     setTransactions([])
@@ -399,13 +300,22 @@ export default function TransactionsAddress({
               <table className="table-large no-hover">
                 <thead>
                 </thead>
-                <tbody>{renderTableRows()}</tbody>
+                <tbody>
+                  {processedTransactions.map((tx, index) => (
+                    <TransactionBlock
+                      key={tx.hash || index}
+                      tx={tx}
+                      address={address}
+                      index={index}
+                    />
+                  ))}
+                </tbody>
               </table>
             ) : (
               <table className="table-mobile wide">
                 {/* <tbody>{renderTableRows()}</tbody> */}
               </table>
-            )}
+            )}              
             {loading && (
               <p className="center" style={{ marginTop: 10 }}>{t('general.loading', { defaultValue: 'Loading' })}</p>
             )}
