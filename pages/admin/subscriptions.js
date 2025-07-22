@@ -13,12 +13,12 @@ import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Tabs/AdminTabs'
 import BillingCountry from '../../components/Admin/BillingCountry'
 import CopyButton from '../../components/UI/CopyButton'
-import LinkIcon from '../../public/images/link.svg'
 import Receipt from '../../components/Receipt'
 import Tabs from '../../components/Tabs'
 import Pro from '../../components/Admin/subscriptions/BithompPro'
 import Api from '../../components/Admin/subscriptions/Api'
 import ListTransactions from '../../components/ListTransactions'
+import { LinkTx } from '../../utils/links'
 
 //PayPal option starts
 /*
@@ -715,9 +715,7 @@ export default function Subscriptions({
                                     </td>
                                     <td>{amountFormat(payment.amount * 1000000)}</td>
                                     <td>
-                                      <a href={'/explorer/' + payment.hash}>
-                                        <LinkIcon />
-                                      </a>
+                                      <LinkTx tx={payment.hash} icon={true} />
                                     </td>
                                   </tr>
                                 )
@@ -742,10 +740,7 @@ export default function Subscriptions({
                                       <p>Amount: {amountFormat(payment.amount)}</p>
                                       <p>Fiat equivalent: {payment.fiatAmount}</p>
                                       <p>
-                                        Transaction:{' '}
-                                        <a href={'/explorer/' + payment.hash}>
-                                          <LinkIcon />
-                                        </a>
+                                        Transaction: <LinkTx tx={payment.hash} icon={true} />
                                       </p>
                                     </td>
                                   </tr>

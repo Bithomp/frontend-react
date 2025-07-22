@@ -98,20 +98,9 @@ export default function NftsComponent({
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
   const [filtersHide, setFiltersHide] = useState(false)
-  const [selectedToken, setSelectedToken] = useState(() => {
-    if (saleCurrencyIssuer && saleCurrency) {
-      return {
-        currency: saleCurrency,
-        issuer: saleCurrencyIssuer
-      }
-    } else if (saleCurrency === nativeCurrency && !saleCurrencyIssuer) {
-      return {
-        currency: nativeCurrency
-      }
-    }
-    return {
-      currency: nativeCurrency
-    }
+  const [selectedToken, setSelectedToken] = useState({
+    currency: saleCurrency,
+    issuer: saleCurrencyIssuer
   })
 
   const controller = new AbortController()
@@ -539,25 +528,6 @@ export default function NftsComponent({
         setTab: setOrder,
         paramName: 'order'
       })
-
-      // Add token parameters
-      if (selectedToken?.currency) {
-        queryAddList.push({
-          name: 'saleCurrency',
-          value: selectedToken.currency
-        })
-        if (selectedToken.issuer) {
-          queryAddList.push({
-            name: 'saleCurrencyIssuer',
-            value: selectedToken.issuer
-          })
-        } else {
-          queryRemoveList.push('saleCurrencyIssuer')
-        }
-      } else {
-        queryRemoveList.push('saleCurrency')
-        queryRemoveList.push('saleCurrencyIssuer')
-      }
     } else {
       queryRemoveList.push('saleDestination')
       queryRemoveList.push('saleCurrency')
@@ -591,7 +561,7 @@ export default function NftsComponent({
 
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData, selectedToken])
+  }, [order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
 
   const onTaxonInput = (value) => {
     if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
@@ -691,18 +661,12 @@ export default function NftsComponent({
             (issuerQuery || searchQuery || t('nft-explorer.header')) +
             (rendered && mintedPeriod ? ', ' + t('table.mint-period') + ': ' + periodDescription(mintedPeriod) : '')
           }
-          images={[
-            {
-              width: 1200,
-              height: 630,
-              file: 'previews/1200x630/nft-explorer.png'
-            },
-            {
-              width: 630,
-              height: 630,
-              file: 'previews/630x630/nft-explorer.png'
-            }
-          ]}
+          image={{
+            width: 1200,
+            height: 630,
+            file: 'previews/1200x630/nft-explorer.png'
+          }}
+          twitterImage={{ file: 'previews/630x630/nft-explorer.png' }}
         />
       ) : (
         <>
@@ -742,7 +706,7 @@ export default function NftsComponent({
             <div>
               <div>
                 {t('table.currency')}
-                <TokenSelector value={selectedToken} onChange={setSelectedToken} />
+                <TokenSelector value={selectedToken} onChange={setSelectedToken} currencyQueryName="saleCurrency" />
               </div>
               <br />
               <RadioOptions
@@ -896,7 +860,7 @@ export default function NftsComponent({
               endMessage={t('nfts.end')}
               loadMoreMessage={t('nfts.load-more')}
               noSessionTokenMessage={t('nfts.change-filters')}
-              //height={!filtersHide ? '1300px' : '100vh'}
+              height={!filtersHide ? '1300px' : '100vh'}
             >
               {activeView === 'list' && (
                 <>
