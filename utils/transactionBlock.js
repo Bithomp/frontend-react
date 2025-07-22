@@ -202,11 +202,11 @@ function formatOrderDetails(tx, address) {
   
   if (submitter === address) {
     if (specification?.direction === 'sell') {
-      mainList.push(formatAmount(specification.quantity));
-      mainList.push(formatAmount(specification.totalPrice));
+      mainList.push(formatAmount(specification.takerGets));
+      mainList.push(formatAmount(specification.takerPays));
     } else {
-      mainList.push(formatAmount(specification.totalPrice));
-      mainList.push(formatAmount(specification.quantity));
+      mainList.push(formatAmount(specification.takerPays));
+      mainList.push(formatAmount(specification.takerGets));
     }
     
     if (mainList[0]) {
@@ -222,15 +222,15 @@ function formatOrderDetails(tx, address) {
   if (tx.myBalanceChanges?.length === 1 && 
       tx.myBalanceChanges[0].currency === nativeCurrency && 
       tx.myBalanceChanges[0].value === -fee) {
-    orderType = specification?.direction === 'sell' ? 'sell order placed' : 'buy order placed';
+    orderType = specification?.direction === 'sell' ? 'Sell order placed' : 'Buy order placed';
   } else {
     if (submitter !== address) {
-      orderType = specification?.direction === 'sell' ? 'sell order fulfilled' : 'buy order fulfilled';
+      orderType = specification?.direction === 'sell' ? 'Sell order fulfilled' : 'Buy order fulfilled';
       if (specification?.sequence) {
         orderType += ` #${specification.sequence}`;
       }
     } else {
-      orderType = specification?.direction === 'sell' ? 'sell order placed and fulfilled' : 'buy order placed and fulfilled';
+      orderType = specification?.direction === 'sell' ? 'Sell order placed and fulfilled' : 'Buy order placed and fulfilled';
     }
   }
   
@@ -243,8 +243,8 @@ function formatOrderDetails(tx, address) {
     specification: {
       direction: specification?.direction,
       sequence: specification?.sequence,
-      quantity: specification?.quantity ? formatAmount(specification.quantity) : null,
-      totalPrice: specification?.totalPrice ? formatAmount(specification.totalPrice) : null
+      takerGets: specification?.takerGets ? formatAmount(specification.takerGets) : null,
+      takerPays: specification?.takerPays ? formatAmount(specification.takerPays) : null
     },
     counterparty: null
   };
@@ -747,7 +747,7 @@ export function processTransactionBlock(tx, address) {
 
   const detailFormatters = {
     payment: formatPaymentDetails,
-    order: formatOrderDetails,
+    offercreate: formatOrderDetails,
     ordercancellation: formatOrderCancellationDetails,
     escrowcreation: formatEscrowDetails,
     escrowexecution: formatEscrowDetails,

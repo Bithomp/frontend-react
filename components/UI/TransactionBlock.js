@@ -36,7 +36,7 @@ const TransactionBlock = ({ tx, index, address }) => {
   const timeText = timeFormat(tx.date + 946684800) || '-';
 
   const renderNftDetails = () => {
-    if (tx.nftType && tx.mainList && tx.mainList.length > 0) {
+    if (tx.nftType && tx.nftType !== 'nftokenacceptoffer' && tx.mainList && tx.mainList.length > 0) {
       return (
         <>
           {tx.mainList.map((nft, idx) => (
@@ -112,12 +112,83 @@ const TransactionBlock = ({ tx, index, address }) => {
           ))}
         </>
       );
+    } else if (tx.nftType === 'nftokenacceptoffer') {
+      return (
+        <>
+          {tx.specification.nftokenBuyOffer && (
+            <>
+              <span>Buy offer: </span>
+              <Link href={`/nft-offer/${tx.specification.nftokenBuyOffer}`}>
+                {shortAddress(tx.specification.nftokenBuyOffer)}
+              </Link>
+              <br />
+            </>
+          )}
+          {tx.specification.nftokenSellOffer && (
+            <>
+              <span>Sell offer: </span>
+              <Link href={`/nft-offer/${tx.specification.nftokenSellOffer}`}>
+                {shortAddress(tx.specification.nftokenSellOffer)}
+              </Link>
+              <br />
+            </>
+          )}
+          {tx.specification.nftokenBrokerFee && (
+            <>
+              <span>Broker fee: </span>
+              <span className="bold tooltip">
+                {amountFormat(tx.specification.nftokenBrokerFee, { short: true, maxFractionDigits: 2 })}
+                <span className="tooltiptext no-brake">
+                  {amountFormat(tx.specification.nftokenBrokerFee)}
+                </span>
+              </span>
+              <br />
+            </>
+          )}
+          {tx.mainList && tx.mainList.length > 0 && (
+            <>
+              <span className="bold">NFT transfer</span>
+              <br />
+              {tx.mainList.filter((nft) => nft.status === 'removed').map((nft, idx) => (
+                <div key={idx}>
+                  <span>From: </span>
+                  <span>{addressUsernameOrServiceLink(nft, 'address')}</span>
+                  <br />
+                </div>
+              ))}
+              {tx.mainList.filter((nft) => nft.status === 'added').map((nft, idx) => (
+                <div key={idx}>
+                  <span>To: </span>
+                  <span>{addressUsernameOrServiceLink(nft, 'address')}</span>
+                  <br />
+                </div>
+              ))}
+              {tx.mainList.filter((nft) => nft.status === 'removed' && nft.flags && Object.entries(nft.flags).filter(([, value]) => value === true).length > 0).map((nft, idx) => (
+                <div key={idx}>
+                  <span>Flags: </span>
+                  <span>{nft.flags && Object.entries(nft.flags).filter(([, value]) => value === true).map(([flag]) => flag).join(', ')}</span>
+                  <br />
+                </div>
+              ))}
+              {tx.mainList.filter((nft) => nft.status === 'added' && nft.nftokenID).map((nft, idx) => (
+                <div key={idx}>
+                  <span>NFT: </span>
+                  <Link href={`/nft/${nft.nftokenID}`}>
+                    {shortAddress(nft.nftokenID)}
+                  </Link>
+                  <br />
+                </div>
+              ))}
+            </>
+          )}
+        </>
+      );
     }
     return null;
   };
 
   const renderTxType = () => {
-    if (tx?.arrow === 'exchange') {
+    if (tx?.type === 'Payment' && tx?.arrow === 'exchange') {
       return 'Exchange';
     }
     if (tx.nftType === 'NFT Sell Offer Creation') {
@@ -128,6 +199,9 @@ const TransactionBlock = ({ tx, index, address }) => {
     }
     if (tx.specification?.source && tx.specification.source?.address !== address) {
       return <span>{tx.type} by {addressUsernameOrServiceLink(tx.specification.source, 'address')}</span>;
+    }
+    if (tx.type === 'Offercreate') {
+      return tx.orderType;
     }
     return tx.type;
   };
@@ -187,14 +261,14 @@ const TransactionBlock = ({ tx, index, address }) => {
           </>
         )}
       </td>
-      <td>
+      <td className="right">
         {tx.deliveredAmount && (
           <>                
             <span className={tx.direction === 'incoming' ? 'green bold tooltip' : 'red bold tooltip'}>
               <span className="inline-flex gap-1">
                 {amountFormat(tx.deliveredAmount, { short: true, maxFractionDigits: 2 })} 
                 {tx.deliveredAmount?.issuer ? (
-                  <Image src={avatarServer + tx.deliveredAmount.issuer} alt={tx.deliveredAmount.issuer} width={20} height={20} />
+                  <Image src={avatarServer + tx.deliveredAmount.issuer} alt={tx.deliveredAmount.issuer} width={20} height={20} className="rounded-full" />
                 ) : (
                   <Image src={nativeCurrenciesImages[nativeCurrency]} alt={nativeCurrency} width={20} height={20} />
                 )}
@@ -211,10 +285,10 @@ const TransactionBlock = ({ tx, index, address }) => {
             {tx.lowList.map((amount, index) => (
               <>
                 <span key={index} className={amount.colorClass === 'red' ? 'red bold tooltip' : 'green bold tooltip'}>
-                  <span className="inline-flex gap-1">
+                  <span className="inline-flex gap-1 pb-1">
                     {amount.formatted}
                     {amount.issuer ? (
-                      <Image src={avatarServer + amount.issuer} alt={amount.issuer} width={20} height={20} />
+                      <Image src={avatarServer + amount.issuer} alt={amount.issuer} width={20} height={20} className="rounded-full" />
                     ) : (
                       <Image src={nativeCurrenciesImages[nativeCurrency]} alt={nativeCurrency} width={20} height={20} />
                     )}
