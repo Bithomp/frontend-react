@@ -104,7 +104,7 @@ export default function TokenSelector({
       queryRemoveList.push(currencyQueryName + 'Issuer')
     }
     setTabParams(router, [], queryAddList, queryRemoveList)
-  }, [value, currencyQueryName])
+  }, [router, value, currencyQueryName])
 
   useEffect(() => {
     if (!allOrOne) return
@@ -113,7 +113,7 @@ export default function TokenSelector({
     } else if (filterMode === 'single' && !value?.currency) {
       onChange({ currency: nativeCurrency }) // default to native currency if no token selected
     }
-  }, [allOrOne, filterMode])
+  }, [onChange, value?.currency, allOrOne, filterMode])
 
   // Clear search results when destination address changes
   useEffect(() => {
