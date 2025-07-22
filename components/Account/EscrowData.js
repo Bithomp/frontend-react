@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
+import axios from 'axios'
 
 export default function EscrowData({ setSignRequest, address, escrowList, ledgerTimestamp }) {
   const [receivedEscrowList, setReceivedEscrowList] = useState([])
@@ -18,6 +19,11 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
     setSelfEscrowList(escrowList?.filter((escrow) => escrow.Account === address && escrow.Destination === address))
   }, [escrowList, address])
 
+  const getEscrowSequence = async (escrow) => {
+    const response = await axios(`v2/escrow/${escrow.index}`)
+    return response?.data?.escrowSequence
+  }
+
   const handleEscrowFinish = (escrow) => {
     if (escrow.escrowSequence) {
       setSignRequest({
@@ -28,7 +34,18 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
         }
       })
     } else {
-      console.error('Escrow sequence not available for finish')
+      const escrowSequence = getEscrowSequence(escrow)
+      if (escrowSequence) {
+      setSignRequest({
+        request: {
+          TransactionType: 'EscrowFinish',
+          Owner: escrow.Account,
+          OfferSequence: escrowSequence
+          }
+        })
+      } else {
+        console.error('Escrow sequence not available for finish')
+      }
     }
   }
 
@@ -42,7 +59,18 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
         }
       })
     } else {
-      console.error('Escrow sequence not available for cancel')
+      const escrowSequence = getEscrowSequence(escrow)
+      if (escrowSequence) {
+        setSignRequest({
+          request: {
+            TransactionType: 'EscrowCancel',
+            Owner: escrow.Account,
+            OfferSequence: escrowSequence
+          }
+        })
+      } else {
+        console.error('Escrow sequence not available for cancel')
+      }
     }
   }
 
