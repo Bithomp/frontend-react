@@ -421,6 +421,84 @@ export const encode = (code) => {
   return Buffer.from(code).toString('hex').toUpperCase()
 }
 
+// Currency validation utilities
+export const isHexString = (str) => {
+  return /^[0-9A-F]*$/i.test(str)
+}
+
+export const isValidHexCurrencyCode = (str) => {
+  return /^[0-9A-F]{40}$/i.test(str)
+}
+
+export const validateCurrencyCode = (currencyCode) => {
+  if (!currencyCode) {
+    return { valid: false, error: 'Currency code is required' }
+  }
+
+  const length = currencyCode.length
+
+  // Too short
+  if (length < 3) {
+    return { valid: false, error: 'The currency code is too short' }
+  }
+
+  // Too long
+  if (length > 40) {
+    return { valid: false, error: 'The currency is too long' }
+  }
+
+  // Exactly 40 characters - must be valid hex
+  if (length === 40) {
+    if (!isValidHexCurrencyCode(currencyCode)) {
+      return { valid: false, error: 'Invalid hex currency code' }
+    }
+    return { valid: true }
+  }
+
+  // 21-39 characters
+  if (length > 20 && length < 40) {
+    const isHex = isHexString(currencyCode)
+    if (isHex) {
+      return { valid: false, error: 'Invalid hex currency code' }
+    } else {
+      return { valid: false, error: 'The currency name is too long' }
+    }
+  }
+
+  // 3-20 characters are valid (3 chars stay as-is, 4-20 chars will be converted to hex)
+  return { valid: true }
+}
+
+export const encodeCurrencyCode = (code) => {
+  if (!code || typeof code !== 'string' || code.length < 3 || code.length > 40) {
+    // Invalid input
+    return null
+  }
+
+  if (code.length === 3 || isValidHexCurrencyCode(code)) {
+    // If it's already a valid return as is
+    return code.toUpperCase()
+  }
+
+  if (code.length > 20) {
+    // If the code is longer than 20 characters, it cannot be a valid currency code
+    return null
+  }
+
+  // Convert to hex and pad to exactly 40 characters (160 bits)
+  const hex = Buffer.from(code).toString('hex').toUpperCase()
+
+  if (hex.length > 40) {
+    // Return null if too long - don't truncate as it would change the meaning
+    return null
+  } else if (hex.length < 40) {
+    // Pad with zeros to 40 characters
+    return hex.padEnd(40, '0')
+  }
+
+  return hex
+}
+
 export const nativeCurrenciesImages = {
   XRP: '/images/currencies/xrp.svg',
   XAH: '/images/currencies/xah.png'
@@ -787,7 +865,7 @@ export const isAmountInNativeCurrency = (amount) => {
 
 export const isNativeCurrency = (currencyObj) => {
   if (!currencyObj) return false
-  
+
   // Handle case where currencyObj is a string representing drops (native currency amount)
   if (typeof currencyObj === 'string') {
     const drops = currencyObj
@@ -798,16 +876,16 @@ export const isNativeCurrency = (currencyObj) => {
     }
     return false
   }
-  
+
   // Handle case where currencyObj is an object
   if (!currencyObj.currency) return false
-  
+
   // Check that currency matches the native currency for this network
   if (currencyObj.currency !== nativeCurrency) return false
-  
+
   // Check that there's no issuer (native currency has no issuer)
   if (currencyObj.issuer) return false
-  
+
   return true
 }
 

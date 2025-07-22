@@ -4,7 +4,7 @@ import { amountFormat, fullDateAndTime, addressLink, AddressWithIconFilled } fro
 import { niceNumber } from '../utils/format'
 import axios from 'axios'
 
-import LinkIcon from '../public/images/link.svg'
+import { LinkTx } from '../utils/links'
 
 /*
   [
@@ -90,9 +90,7 @@ export default function ListTransactions({ transactions }) {
                       <td>{payment.fiatAmount}</td>
                       <td>{payment.memos?.[0]?.data}</td>
                       <td>
-                        <a href={'/explorer/' + payment.hash}>
-                          <LinkIcon />
-                        </a>
+                        <LinkTx tx={payment.hash} icon={true} />
                       </td>
                     </tr>
                   )
@@ -118,10 +116,7 @@ export default function ListTransactions({ transactions }) {
                         <p>Fiat equivalent: {payment.fiatAmount}</p>
                         <p>Memo: {payment.memos?.[0]?.data}</p>
                         <p>
-                          Transaction:{' '}
-                          <a href={'/explorer/' + payment.hash}>
-                            <LinkIcon />
-                          </a>
+                          Transaction: <LinkTx tx={payment.hash} icon={true} />
                         </p>
                       </td>
                     </tr>

@@ -10,7 +10,16 @@ import CopyButton from '../../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../../utils/links'
 import { multiply } from '../../utils/calc'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
-import { typeNumberOnly, isAddressValid, isTagValid, isIdValid, nativeCurrency, isNativeCurrency, encode, decode } from '../../utils'
+import {
+  typeNumberOnly,
+  isAddressValid,
+  isTagValid,
+  isIdValid,
+  nativeCurrency,
+  isNativeCurrency,
+  encode,
+  decode
+} from '../../utils'
 import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -19,6 +28,36 @@ import axios from 'axios'
 import { axiosServer } from '../../utils/axios'
 import { errorCodeDescription } from '../../utils/transaction'
 import TokenSelector from '../../components/UI/TokenSelector'
+
+export const getServerSideProps = async (context) => {
+  const { query, locale } = context
+  const { address, amount, destinationTag, memo, fee, sourceTag, invoiceId, currency, currencyIssuer } = query
+  let addressDetails = {}
+  if (address && isAddressValid(address)) {
+    const response = await axiosServer(`/v2/address/${address}?username=true&service=true`)
+    addressDetails = {
+      username: response?.data?.username,
+      service: response?.data?.service?.name || null
+    }
+  }
+
+  return {
+    props: {
+      addressQuery: address || '',
+      amountQuery: amount || '',
+      destinationTagQuery: destinationTag || '',
+      memoQuery: memo || '',
+      feeQuery: fee || '',
+      sourceTagQuery: sourceTag || '',
+      invoiceIdQuery: invoiceId || '',
+      isSsrMobile: getIsSsrMobile(context),
+      currencyQuery: currency || nativeCurrency,
+      currencyIssuerQuery: currencyIssuer || '',
+      initialAddressDetails: addressDetails,
+      ...(await serverSideTranslations(locale, ['common']))
+    }
+  }
+}
 
 export default function Send({
   account,
@@ -32,7 +71,9 @@ export default function Send({
   invoiceIdQuery,
   sessionToken,
   subscriptionExpired,
-  initialAddressDetails
+  initialAddressDetails,
+  currencyQuery,
+  currencyIssuerQuery
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -62,7 +103,7 @@ export default function Send({
   const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
   const [requireDestTag, setRequireDestTag] = useState(false)
   const [agreeToSendToNonActive, setAgreeToSendToNonActive] = useState(false)
-  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
+  const [selectedToken, setSelectedToken] = useState({ currency: currencyQuery, issuer: currencyIssuerQuery })
   const [networkInfo, setNetworkInfo] = useState({})
 
   const onTokenChange = (token) => {
@@ -510,7 +551,12 @@ export default function Send({
               </div>
               <div className="w-full sm:w-1/2">
                 <span className="input-title">Currency</span>
-                <TokenSelector value={selectedToken} onChange={onTokenChange} destinationAddress={address} />
+                <TokenSelector
+                  value={selectedToken}
+                  onChange={onTokenChange}
+                  destinationAddress={address}
+                  currencyQueryName="currency"
+                />
               </div>
             </div>
           </div>
@@ -711,32 +757,4 @@ export default function Send({
       </div>
     </>
   )
-}
-
-export const getServerSideProps = async (context) => {
-  const { query, locale } = context
-  const { address, amount, destinationTag, memo, fee, sourceTag, invoiceId } = query
-  let addressDetails = {}
-  if (address && isAddressValid(address)) {
-    const response = await axiosServer(`/v2/address/${address}?username=true&service=true`)
-    addressDetails = {
-      username: response?.data?.username,
-      service: response?.data?.service?.name || null
-    }
-  }
-
-  return {
-    props: {
-      addressQuery: address || '',
-      amountQuery: amount || '',
-      destinationTagQuery: destinationTag || '',
-      memoQuery: memo || '',
-      feeQuery: fee || '',
-      sourceTagQuery: sourceTag || '',
-      invoiceIdQuery: invoiceId || '',
-      isSsrMobile: getIsSsrMobile(context),
-      initialAddressDetails: addressDetails,
-      ...(await serverSideTranslations(locale, ['common']))
-    }
-  }
 }
