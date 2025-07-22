@@ -238,6 +238,9 @@ export default function TokenSelector({
     if (serviceOrUsername) {
       return `${niceCurrency(token.currency)} (${serviceOrUsername})`
     }
+    if (token.currencyDetails) {
+      return token.currencyDetails.currency
+    }
     return niceCurrency(token.currency)
   }
 

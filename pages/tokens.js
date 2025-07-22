@@ -202,7 +202,16 @@ export default function Tokens({
 
     return (
       <AddressWithIcon address={token?.issuer}>
-        <b>{niceCurrency(token.currency)}</b> {userOrServiceName(issuerDetails)}
+        {!token.lp_token && (
+          <>
+            <b>{niceCurrency(token.currency)}</b> {userOrServiceName(issuerDetails)}
+          </>
+        )}
+        {token.lp_token && (
+          <>
+            <b>{token.currencyDetails.currency}</b>
+          </>
+        )}
         {token.issuer && (
           <>
             <br />
