@@ -43,10 +43,11 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <>
-          <h1 className="center">Something went wrong, contact our support.</h1>
+        <div className="center">
+          <br />
+          <h1>Something went wrong, contact our support.</h1>
           <Mailto email="support@bithomp.com" headers={{ subject: 'Front-end error' }} />
-        </>
+        </div>
       )
     }
 
