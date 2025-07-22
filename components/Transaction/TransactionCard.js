@@ -370,7 +370,7 @@ export const TransactionCard = ({
                   {specification?.signer && (
                     <tr>
                       <TData>
-                        {specification.delegate.address === specification.signer.address && (
+                        {specification.delegate?.address === specification.signer.address && (
                           <span className="bold orange">Delegate </span>
                         )}
                         Signer
