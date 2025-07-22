@@ -296,12 +296,6 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
           <CheckBox
             checked={showAdvanced}
             setChecked={() => {
-              if (!sessionToken || subscriptionExpired) {
-                openEmailLogin(() => {
-                  setShowAdvanced(true)
-                })
-                return
-              }
               setShowAdvanced(!showAdvanced)
               if (!showAdvanced) {
                 setCondition(null)
