@@ -118,11 +118,13 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
-      {tradingFee && (
+      {tradingFee ? (
         <tr>
           <TData>Trading fee</TData>
           <TData className="bold">{divide(tradingFee, 100000)}%</TData>
         </tr>
+      ) : (
+        ''
       )}
       {specification?.flags && Object.entries(specification?.flags).length > 0 && (
         <tr>
