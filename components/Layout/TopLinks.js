@@ -204,6 +204,7 @@ export default function TopLinks() {
           width="16"
           height="16"
           style={{ marginBottom: -3 }}
+          unoptimized
         />
       </div>
     )
@@ -232,6 +233,7 @@ export default function TopLinks() {
         width="16"
         height="16"
         style={{ marginBottom: -3 }}
+        unoptimized
       />
     </div>
   )

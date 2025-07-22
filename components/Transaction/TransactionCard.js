@@ -60,7 +60,7 @@ export const TransactionCard = ({
 
   if (!data) return null
 
-  const { id, error_message, tx, outcome, meta, specification, error } = data
+  const { id, error_message, tx, outcome, meta, specification, error, validated } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
   /*
@@ -73,7 +73,7 @@ export const TransactionCard = ({
   }
   */
 
-  const waitLedgers = tx?.LastLedgerSequence - outcome?.ledgerIndex
+  const waitLedgers = outcome ? tx?.LastLedgerSequence - outcome?.ledgerIndex : null
 
   const txLink = server + '/tx/' + (tx?.ctid || tx?.hash)
 
@@ -217,19 +217,33 @@ export const TransactionCard = ({
             <p className="center orange">{errorMessage}</p>
           ) : (
             <>
-              <p className="center">
-                {isSuccessful ? (
-                  <>
-                    The transaction was <b className="green">successful</b> and validated in the ledger{' '}
-                    <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
-                  </>
-                ) : (
-                  <>
-                    The transaction <b className="red">FAILED</b> and included to the ledger{' '}
-                    <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
-                  </>
-                )}
-              </p>
+              {outcome ? (
+                <p className="center">
+                  {isSuccessful ? (
+                    <>
+                      The transaction was <b className="green">successful</b> and validated in the ledger{' '}
+                      <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
+                    </>
+                  ) : (
+                    <>
+                      The transaction <b className="red">FAILED</b> and included to the ledger{' '}
+                      <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
+                    </>
+                  )}
+                </p>
+              ) : (
+                !validated && (
+                  <p className="center red bold">
+                    The transaction is not yet validated.
+                    {tx?.LastLedgerSequence && (
+                      <>
+                        <br />
+                        It won't be validated if Ledger already passed the Ledger #{tx.LastLedgerSequence}.
+                      </>
+                    )}
+                  </p>
+                )
+              )}
               <table>
                 <tbody>
                   {id === tx.ctid && (
@@ -252,7 +266,7 @@ export const TransactionCard = ({
                       <TData className="orange bold">{hr.returnString}</TData>
                     </tr>
                   ))}
-                  {!isSuccessful && (
+                  {outcome && !isSuccessful && (
                     <>
                       <tr>
                         <TData className="bold">Failure</TData>
@@ -264,12 +278,14 @@ export const TransactionCard = ({
                       </tr>
                     </>
                   )}
-                  <tr>
-                    <TData>{isSuccessful ? 'Validated' : 'Rejected'}</TData>
-                    <TData>
-                      {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
-                    </TData>
-                  </tr>
+                  {validated && (
+                    <tr>
+                      <TData>{isSuccessful ? 'Validated' : 'Rejected'}</TData>
+                      <TData>
+                        {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
+                      </TData>
+                    </tr>
+                  )}
                   {children}
                   <tr>
                     <TData>Ledger fee</TData>
@@ -353,7 +369,12 @@ export const TransactionCard = ({
                   )}
                   {specification?.signer && (
                     <tr>
-                      <TData>Signer</TData>
+                      <TData>
+                        {specification.delegate.address === specification.signer.address && (
+                          <span className="bold orange">Delegate </span>
+                        )}
+                        Signer
+                      </TData>
                       <TData>
                         <AddressWithIconFilled data={specification.signer} name="address" />
                       </TData>
@@ -514,7 +535,13 @@ export const TransactionCard = ({
                             Last ledger
                           </TData>
                           <TData>
-                            #{tx.LastLedgerSequence} ({waitLedgers} {waitLedgers === 1 ? 'ledger' : 'ledgers'})
+                            #{tx.LastLedgerSequence}
+                            {waitLedgers && (
+                              <>
+                                {' '}
+                                ({waitLedgers} {waitLedgers === 1 ? 'ledger' : 'ledgers'})
+                              </>
+                            )}
                           </TData>
                         </tr>
                       )}

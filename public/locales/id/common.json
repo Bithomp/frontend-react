@@ -559,7 +559,7 @@
     "publicAndKnownBrokers": "Publik & Broker Terkenal",
     "onSale": "Sedang dijual",
     "all-tokens": "Semua Token",
-    "native-currency-only": "Hanya {{nativeCurrency}}",
+    "single-token": "Token Tunggal",
     "mintedNew": "Latest",
     "mintedOld": "Oldest",
     "existing": "Existing",

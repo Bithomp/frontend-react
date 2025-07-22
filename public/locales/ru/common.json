@@ -559,7 +559,7 @@
     "publicAndKnownBrokers": "Публичные и на MП",
     "onSale": "На продаже",
     "all-tokens": "Все токены",
-    "native-currency-only": "Только {{nativeCurrency}}",
+    "single-token": "Один токен",
     "mintedNew": "Новые",
     "mintedOld": "Старые",
     "existing": "Существующие",

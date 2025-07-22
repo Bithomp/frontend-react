@@ -25,12 +25,42 @@ export default function AMMDepositForm({ setSignRequest }) {
   const [txResult, setTxResult] = useState(null)
 
   const depositModes = [
-    { value: 'tfTwoAsset', label: 'Double Asset Deposit (Amount + Amount2)', description: 'Deposit both of this AMM\'s assets, up to the specified amounts. The actual amounts deposited must maintain the same balance of assets as the AMM already holds, so the amount of either one deposited MAY be less than specified. The amount of LP Tokens you get in return is based on the total value deposited.' },
-    { value: 'tfTwoAssetIfEmpty', label: 'Empty AMM Deposit', description: 'Deposit both of this AMM\'s assets, in exactly the specified amounts, to an AMM with an empty asset pool. The amount of LP Tokens you get in return is based on the total value deposited.' },
-    { value: 'tfLPToken', label: 'LP Token Target', description: 'Deposit both of this AMM\'s assets, in amounts calculated so that you receive the specified amount of LP Tokens in return. The amounts deposited maintain the relative proportions of the two assets the AMM already holds. The amount of LP Tokens you get in return is based on the total value deposited.' },
-    { value: 'tfSingleAsset', label: 'Single Asset Deposit', description: 'Deposit exactly the specified amount of one asset, and receive an amount of LP Tokens based on the resulting share of the pool (minus fees).' },
-    { value: 'tfOneAssetLPToken', label: 'Single Asset + LP Target', description: 'Deposit up to the specified amount of one asset, so that you receive exactly the specified amount of LP Tokens in return (after fees).' },
-    { value: 'tfLimitLPToken', label: 'Single Asset + Price Limit', description: 'Deposit up to the specified amount of one asset, but pay no more than the specified effective price per LP Token (after fees).' }
+    {
+      value: 'tfTwoAsset',
+      label: 'Double Asset Deposit (Amount + Amount2)',
+      description:
+        "Deposit both of this AMM's assets, up to the specified amounts. The actual amounts deposited must maintain the same balance of assets as the AMM already holds, so the amount of either one deposited MAY be less than specified. The amount of LP Tokens you get in return is based on the total value deposited."
+    },
+    {
+      value: 'tfTwoAssetIfEmpty',
+      label: 'Empty AMM Deposit',
+      description:
+        "Deposit both of this AMM's assets, in exactly the specified amounts, to an AMM with an empty asset pool. The amount of LP Tokens you get in return is based on the total value deposited."
+    },
+    {
+      value: 'tfLPToken',
+      label: 'LP Token Target',
+      description:
+        "Deposit both of this AMM's assets, in amounts calculated so that you receive the specified amount of LP Tokens in return. The amounts deposited maintain the relative proportions of the two assets the AMM already holds. The amount of LP Tokens you get in return is based on the total value deposited."
+    },
+    {
+      value: 'tfSingleAsset',
+      label: 'Single Asset Deposit',
+      description:
+        'Deposit exactly the specified amount of one asset, and receive an amount of LP Tokens based on the resulting share of the pool (minus fees).'
+    },
+    {
+      value: 'tfOneAssetLPToken',
+      label: 'Single Asset + LP Target',
+      description:
+        'Deposit up to the specified amount of one asset, so that you receive exactly the specified amount of LP Tokens in return (after fees).'
+    },
+    {
+      value: 'tfLimitLPToken',
+      label: 'Single Asset + Price Limit',
+      description:
+        'Deposit up to the specified amount of one asset, but pay no more than the specified effective price per LP Token (after fees).'
+    }
   ]
 
   const validateForm = () => {
@@ -107,7 +137,7 @@ export default function AMMDepositForm({ setSignRequest }) {
   const onSubmit = () => {
     setTxResult(null)
     setError('')
-    
+
     if (!validateForm()) {
       return
     }
@@ -115,14 +145,20 @@ export default function AMMDepositForm({ setSignRequest }) {
     try {
       const ammDeposit = {
         TransactionType: 'AMMDeposit',
-        Asset: asset1.currency === nativeCurrency ? { currency: nativeCurrency } : {
-          currency: asset1.currency,
-          issuer: asset1.issuer
-        },
-        Asset2: asset2.currency === nativeCurrency ? { currency: nativeCurrency } : {
-          currency: asset2.currency,
-          issuer: asset2.issuer
-        }
+        Asset:
+          asset1.currency === nativeCurrency
+            ? { currency: nativeCurrency }
+            : {
+                currency: asset1.currency,
+                issuer: asset1.issuer
+              },
+        Asset2:
+          asset2.currency === nativeCurrency
+            ? { currency: nativeCurrency }
+            : {
+                currency: asset2.currency,
+                issuer: asset2.issuer
+              }
       }
 
       // Add fields based on deposit mode
@@ -206,13 +242,13 @@ export default function AMMDepositForm({ setSignRequest }) {
               issuer: asset1.issuer,
               value: ePrice
             }
-          }          
+          }
           break
       }
 
       // Add trading fee if specified
       if (tradingFee) {
-        ammDeposit.TradingFee = Math.round(parseFloat(tradingFee) * 100000) // Convert to units of 1/100,000
+        ammDeposit.TradingFee = Math.round(parseFloat(tradingFee) * 1000) // Convert to units of 1/1000
       }
 
       // Add flags
@@ -420,9 +456,7 @@ export default function AMMDepositForm({ setSignRequest }) {
         <div className="mb-4">
           <span className="input-title">Deposit Mode</span>
           <SimpleSelect value={depositMode} setValue={setDepositMode} optionsList={depositModes} />
-          <p className="text-sm text-gray-600 mt-1">
-            {depositModes.find(m => m.value === depositMode)?.description}
-          </p>
+          <p className="text-sm text-gray-600 mt-1">{depositModes.find((m) => m.value === depositMode)?.description}</p>
         </div>
         <br />
         {renderModeSpecificFields()}
@@ -439,8 +473,8 @@ export default function AMMDepositForm({ setSignRequest }) {
         <CheckBox checked={agreeToRisks} setChecked={setAgreeToRisks} name="amm-deposit-risks">
           <span className="orange bold">
             I acknowledge and understand the risks associated with XRPL AMMs, including impermanent loss, fund
-            withdrawal risks, market volatility, and the impact of depositing into unbalanced pools. I agree to participate at
-            my own risk.
+            withdrawal risks, market volatility, and the impact of depositing into unbalanced pools. I agree to
+            participate at my own risk.
           </span>
         </CheckBox>
         <CheckBox checked={agreeToTerms} setChecked={setAgreeToTerms} name="amm-deposit-terms">
@@ -449,7 +483,7 @@ export default function AMMDepositForm({ setSignRequest }) {
             Terms and conditions
           </Link>
           .
-        </CheckBox>        
+        </CheckBox>
         {error && (
           <>
             <br />

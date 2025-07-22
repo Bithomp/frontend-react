@@ -22,7 +22,8 @@ import {
   TransactionTrustSet,
   TransactionURIToken,
   TransactionRemit,
-  TransactionEnableAmendment
+  TransactionEnableAmendment,
+  TransactionDelegateSet
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
@@ -105,6 +106,8 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionPayment
   } else if (txType === 'SetRegularKey') {
     TransactionComponent = TransactionSetRegularKey
+  } else if (txType === 'DelegateSet') {
+    TransactionComponent = TransactionDelegateSet
   } else if (txType === 'TrustSet') {
     TransactionComponent = TransactionTrustSet
   } else if (txType?.includes('DID')) {
