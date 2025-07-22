@@ -144,6 +144,11 @@ export default function TokenSelector({
             !niceCurrency(searchResults[1]?.currency)?.toLowerCase().startsWith(nativeCurrency.toLowerCase())
           )
             return
+        } else {
+          // For destination address case, check if we already have results loaded
+          if (searchResults.length > 0) {
+            return
+          }
         }
 
         setIsLoading(true)
