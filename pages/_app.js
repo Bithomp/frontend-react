@@ -7,14 +7,12 @@ import dynamic from 'next/dynamic'
 import { GoogleAnalytics } from '@next/third-parties/google'
 
 const SignForm = dynamic(() => import('../components/SignForm'), { ssr: false })
-const EmailLoginPopup = dynamic(() => import('../components/EmailLoginPopup'), { ssr: false })
 import TopLinks from '../components/Layout/TopLinks'
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
 import { IsSsrMobileContext } from '@/utils/mobile'
 import { getBackgroundImage } from '@/utils/backgroundImage'
 import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork, networkId } from '@/utils'
-import { useEmailLogin } from '@/hooks/useEmailLogin'
 
 import { getAppMetadata } from '@walletconnect/utils'
 const WalletConnectModalSign = dynamic(
@@ -25,7 +23,6 @@ const WalletConnectModalSign = dynamic(
 import '../styles/globals.css'
 import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
-
 
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
@@ -63,8 +60,6 @@ const MyApp = ({ Component, pageProps }) => {
   const [wcSession, setWcSession] = useState(null)
   const [isClient, setIsClient] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
-  
-  const { isEmailLoginOpen, openEmailLogin, closeEmailLogin, handleLoginSuccess } = useEmailLogin()
 
   useEffect(() => {
     setIsClient(true)
@@ -199,16 +194,6 @@ const MyApp = ({ Component, pageProps }) => {
                   setWcSession={setWcSession}
                 />
               )}
-              {isEmailLoginOpen && (
-                <EmailLoginPopup
-                  isOpen={isEmailLoginOpen}
-                  onClose={closeEmailLogin}
-                  onSuccess={handleLoginSuccess}
-                  setAccount={setAccount}
-                  setProExpire={setProExpire}
-                  setSessionToken={setSessionToken}
-                />
-              )}
               <div className="content">
                 <TopProgressBar />
                 {showTopAds && <TopLinks />}
@@ -229,7 +214,6 @@ const MyApp = ({ Component, pageProps }) => {
                   sessionToken={sessionToken}
                   setSessionToken={setSessionToken}
                   fiatRate={fiatRate}
-                  openEmailLogin={openEmailLogin}
                 />
               </div>
               <Footer setSignRequest={setSignRequest} account={account} />
