@@ -389,14 +389,6 @@ export const TransactionCard = ({
                         </TData>
                       </tr>
                     ))}
-                  {specification?.delegate && (
-                    <tr>
-                      <TData>Delegate</TData>
-                      <TData>
-                        <AddressWithIconFilled data={specification.delegate} name="address" />
-                      </TData>
-                    </tr>
-                  )}
                   {/* keep here outcome?.balanceChanges.length, to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
                   {tx.TransactionType !== 'UNLReport' && (outcome?.balanceChanges?.length > 2 || notFullySupported) && (
                     <>
