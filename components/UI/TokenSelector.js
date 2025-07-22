@@ -104,6 +104,7 @@ export default function TokenSelector({
       queryRemoveList.push(currencyQueryName + 'Issuer')
     }
     setTabParams(router, [], queryAddList, queryRemoveList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, currencyQueryName])
 
   useEffect(() => {
@@ -113,6 +114,7 @@ export default function TokenSelector({
     } else if (filterMode === 'single' && !value?.currency) {
       onChange({ currency: nativeCurrency }) // default to native currency if no token selected
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allOrOne, filterMode])
 
   // Clear search results when destination address changes
