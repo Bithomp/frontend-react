@@ -37,6 +37,7 @@ export default function Ads({ showAds, heightNoAds }) {
             <div className="brand-item-text">Deposit XRP and earn XRP native yields.</div>
           </div>
         </a>
+        {/*
         <a href="/go/play-xrp" target="_blank" rel="noreferrer">
           <div className="brand-item xbit">
             <img
@@ -48,6 +49,7 @@ export default function Ads({ showAds, heightNoAds }) {
             <div className="brand-item-text">Get bonus up to 7BTC+250FS with no KYC.</div>
           </div>
         </a>
+        */}
         {/*
         <a href="/go/main-exchange" target="_blank" rel="noreferrer">
           <div className="brand-item easybit">
