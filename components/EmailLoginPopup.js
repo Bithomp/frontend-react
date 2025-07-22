@@ -4,7 +4,7 @@ import { Turnstile } from '@marsidev/react-turnstile'
 import { useTheme } from './Layout/ThemeContext'
 import Link from 'next/link'
 import { axiosAdmin } from '../utils/axios'
-import { isEmailValid, turnstileSupportedLanguages, useWidth } from '../utils'
+import { isEmailValid, turnstileSupportedLanguages } from '../utils'
 import CheckBox from './UI/CheckBox'
 
 const checkmark = '/images/checkmark.svg'
@@ -12,7 +12,6 @@ const checkmark = '/images/checkmark.svg'
 export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount, setProExpire, setSessionToken }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation()
-  const width = useWidth()
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [token, setToken] = useState('') // CL token
@@ -177,26 +176,17 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
     onClose()
   }
 
-  const flexWidth = (minus = 0) => {
-    return width > 480 ? 400 - minus + 'px' : '100%'
-  }
-
   if (!isOpen) return null
 
   return (
     <div className="sign-in-form">
-      <div className="sign-in-body center">
+      <div className="sign-in-body center loginform">
         <div className="close-button" onClick={handleClose}></div>
 
-        <div className="header">{step < 1 ? 'Welcome to Bithomp Pro' : 'Admin'}</div>
+        <div className="header">Bithomp Pro</div>
 
         {step === 0 && (
           <div>
-            <br />
-            <div style={{ maxWidth: flexWidth(), margin: 'auto', padding: '0 20px' }}>
-              - Access advanced features with Bithomp Pro subscription.
-              <br />- Manage your API keys and view your API statistics.
-            </div>
             <br />
             <center>
               <b>Register</b> or <b>Sign In</b> to get started.
@@ -205,7 +195,7 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
         )}
 
         <br />
-        <div className="center" style={{ maxWidth: flexWidth(), margin: 'auto', padding: '0 20px' }}>
+        <div className="center" style={{ maxWidth: 300, margin: 'auto', padding: '0 20px' }}>
           {(step === 0 || step === 1) && (
             <div className="input-validation">
               <input
@@ -238,7 +228,6 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
                     passwordRef = node
                   }}
                   spellCheck="false"
-                  type="password"
                 />
                 {password?.length > 8 && <img src={checkmark} className="validation-icon" alt="validated" />}
               </div>
@@ -283,39 +272,46 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
               </div>
             </>
           )}
-
-          <br />
-          <br />
-          {errorMessage ? (
-            <div className="center">
-              <span className="orange bold">{errorMessage}</span>
-              {step === 1 && (
-                <>
-                  {' '}
-                  <span className="link" onClick={() => setStep(0)}>
-                    Change email
-                  </span>
-                  .
-                </>
-              )}
-            </div>
-          ) : (
-            <br />
-          )}
-
-          {(step === 0 || step === 1) && (
-            <>
-              <br />
-              <button
-                className="button-action"
-                onClick={onLogin}
-                disabled={!termsAccepted || !token || !email || !isEmailValid(email)}
-              >
-                Submit
-              </button>
-            </>
-          )}
         </div>
+
+        <br />
+        {errorMessage ? (
+          <div className="center">
+            <span className="orange bold">{errorMessage}</span>
+            {step === 1 && (
+              <>
+                <br />
+                <br />
+                <span className="link" onClick={() => setStep(0)}>
+                  Change email.
+                </span>
+              </>
+            )}
+          </div>
+        ) : (
+          <>
+            {step === 1 && (
+              <>
+                <br />
+                <br />
+                <br />
+              </>
+            )}
+          </>
+        )}
+
+        {(step === 0 || step === 1) && (
+          <>
+            <br />
+            <button
+              className="button-action"
+              onClick={onLogin}
+              disabled={!termsAccepted || !token || !email || !isEmailValid(email)}
+            >
+              Submit
+            </button>
+          </>
+        )}
         <br />
         <br />
       </div>
