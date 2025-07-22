@@ -1,6 +1,6 @@
 import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled } from '../../utils/format'
+import { AddressWithIconFilled, shortHash } from '../../utils/format'
 import Link from 'next/link'
 
 export const TransactionDelegateSet = ({ data, pageFiatRate, selectedCurrency }) => {
@@ -22,24 +22,12 @@ export const TransactionDelegateSet = ({ data, pageFiatRate, selectedCurrency })
           </TData>
         </tr>
       )}
-      {outcome.delegateChanges.permissions && outcome.delegateChanges.permissions.length > 0 && (
+      {outcome.delegateChanges?.permissions?.length > 0 && (
         <tr>
           <TData>Permissions</TData>
           <TData>
             {outcome.delegateChanges.permissions.map((permission, index) => (
-              <span
-                key={index}
-                style={{
-                  backgroundColor: '#e6f4ea',
-                  color: '#008000',
-                  padding: '2px 6px',
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  border: '1px solid #008000',
-                  marginRight: '4px'
-                }}
-              >
+              <span key={index} className="flag">
                 {permission}
               </span>
             ))}
@@ -52,12 +40,16 @@ export const TransactionDelegateSet = ({ data, pageFiatRate, selectedCurrency })
           <TData className="bold">{outcome.delegateChanges.status}</TData>
         </tr>
       )}
-      {outcome.delegateChanges.delegateIndex && (
+      {outcome.delegateChanges?.delegateIndex && (
         <tr>
           <TData>Delegate index</TData>
-          <TData><Link href={`/object/${outcome.delegateChanges.delegateIndex}`}>{outcome.delegateChanges.delegateIndex}</Link></TData>
+          <TData>
+            <Link href={`/object/${outcome.delegateChanges.delegateIndex}`}>
+              {shortHash(outcome.delegateChanges.delegateIndex)}
+            </Link>
+          </TData>
         </tr>
       )}
     </TransactionCard>
   )
-} 
+}
