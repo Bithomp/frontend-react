@@ -46,6 +46,7 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
       setToken('')
       setTermsAccepted(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
   const getLoggedUserData = async () => {

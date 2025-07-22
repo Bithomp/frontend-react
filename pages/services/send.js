@@ -556,12 +556,6 @@ export default function Send({
           <CheckBox
             checked={showAdvanced}
             setChecked={() => {
-              if (!sessionToken || subscriptionExpired) {
-                openEmailLogin(() => {
-                  setShowAdvanced(true)
-                })
-                return
-              }
               setShowAdvanced(!showAdvanced)
               setFee(null)
               setSourceTag(null)
