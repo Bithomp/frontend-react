@@ -161,7 +161,7 @@ export default function TokenSelector({
             tokens = addNativeCurrencyIfNeeded(tokens, excludeNative)
           } else {
             // Fallback to original behavior if no destination address
-            const response = await axios('v2/trustlines/tokens?limit=' + limit)
+            const response = await axios('v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true')
             tokens = response.data?.tokens || []
             if (!excludeNative) {
               setSearchResults([{ currency: nativeCurrency }, ...tokens])
@@ -195,7 +195,7 @@ export default function TokenSelector({
           setSearchResults(tokensWithNative)
         } else {
           // Fallback to original search behavior
-          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}`)
+          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}&currencyDetails=true`)
           const tokens = response.data?.tokens || []
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
@@ -242,6 +242,9 @@ export default function TokenSelector({
     const serviceOrUsername = issuerDetails.service || issuerDetails.username
     if (serviceOrUsername) {
       return `${niceCurrency(token.currency)} (${serviceOrUsername})`
+    }
+    if (token.currencyDetails) {
+      return token.currencyDetails.currency
     }
     return niceCurrency(token.currency)
   }
