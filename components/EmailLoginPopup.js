@@ -9,14 +9,7 @@ import CheckBox from './UI/CheckBox'
 
 const checkmark = '/images/checkmark.svg'
 
-export default function EmailLoginPopup({
-  isOpen,
-  onClose,
-  onSuccess,
-  setAccount,
-  setProExpire,
-  setSessionToken
-}) {
+export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount, setProExpire, setSessionToken }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation()
   const width = useWidth()
@@ -78,7 +71,6 @@ export default function EmailLoginPopup({
     })
 
     if (partnerDataRaw?.data) {
-
       if (partnerDataRaw.data.bithompProPackageID) {
         const packageData = await axiosAdmin
           .get('partner/package/' + partnerDataRaw.data.bithompProPackageID)
@@ -195,10 +187,8 @@ export default function EmailLoginPopup({
     <div className="sign-in-form">
       <div className="sign-in-body center">
         <div className="close-button" onClick={handleClose}></div>
-        
-        <div className="header">
-          {step < 1 ? 'Welcome to Bithomp Pro' : 'Admin'}
-        </div>
+
+        <div className="header">{step < 1 ? 'Welcome to Bithomp Pro' : 'Admin'}</div>
 
         {step === 0 && (
           <div>
@@ -331,4 +321,4 @@ export default function EmailLoginPopup({
       </div>
     </div>
   )
-} 
+}
