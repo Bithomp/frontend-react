@@ -1519,7 +1519,7 @@ export default function NftVolumes({
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        {volume.volumes.map((vol, j) => (
+                                        {volume?.volumes?.map((vol, j) => (
                                           <tr key={j}>
                                             <td className="center">{j + 1}</td>
                                             <td className="right">{vol.sales}</td>
