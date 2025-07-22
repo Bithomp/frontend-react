@@ -58,19 +58,7 @@ const AMMFlags = ({ flags, txType }) => {
           <div key={flag.name}>
             {/* Desktop version with tooltip */}
             <span className="tooltip no-brake desktop-only">
-              <span
-                style={{
-                  backgroundColor: '#e6f4ea',
-                  color: '#008000',
-                  padding: '2px 6px',
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  border: '1px solid #008000'
-                }}
-              >
-                {flag.name}
-              </span>
+              <span className="flag">{flag.name}</span>
               {flag.description && <span className="tooltiptext right no-brake">{flag.description}</span>}
             </span>
 
@@ -118,11 +106,13 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
-      {tradingFee && (
+      {tradingFee ? (
         <tr>
           <TData>Trading fee</TData>
           <TData className="bold">{divide(tradingFee, 100000)}%</TData>
         </tr>
+      ) : (
+        ''
       )}
       {specification?.flags && Object.entries(specification?.flags).length > 0 && (
         <tr>
