@@ -5,7 +5,6 @@ import {
   explorerName,
   ledgerName,
   turnstileSupportedLanguages,
-  server,
   isTagValid,
   useWidth,
   typeNumberOnly,
@@ -22,8 +21,8 @@ import AddressInput from './UI/AddressInput'
 import FormInput from './UI/FormInput'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
-import { addressLink, amountFormat, capitalize, duration, fullNiceNumber, shortHash } from '../utils/format'
-import { LedgerLink } from '../utils/links'
+import { addressLink, amountFormat, capitalize, duration, fullNiceNumber } from '../utils/format'
+import { LedgerLink, LinkTx } from '../utils/links'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -451,8 +450,7 @@ export default function Faucet({ account, type, sessionTokenData }) {
               )}
               {data.hash && (
                 <p>
-                  {t('table.transaction-hash', { ns: 'faucet' })}:{' '}
-                  <a href={server + '/explorer/' + data.hash}>{shortHash(data.hash)}</a>
+                  {t('table.transaction-hash', { ns: 'faucet' })}: <LinkTx tx={data.hash} />
                 </p>
               )}
               {address && (

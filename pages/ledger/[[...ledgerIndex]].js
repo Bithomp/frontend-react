@@ -206,7 +206,7 @@ export default function Ledger({ pageMeta, ledgerIndexQuery }) {
             </table>
             {ledgerNavigation}
             <br />
-            {data.close_time && (
+            {data?.close_time && (
               <div>
                 Ledger Unix close time: <b>{data.close_time}</b>
                 <br />

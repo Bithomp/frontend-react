@@ -79,7 +79,6 @@ $width: 340px;
 
       .content-cols:not(.is-filters-hide) & {
         overflow-y: scroll;
-        max-height: calc(100vh - 81px);
 
         &::-webkit-scrollbar {
           display: none;
