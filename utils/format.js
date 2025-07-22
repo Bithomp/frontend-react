@@ -898,7 +898,7 @@ export const fullNiceNumber = (n, currency = null) => {
   }
 }
 
-export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 3, currency = null) => {
+export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 1, currency = null) => {
   if (n !== 0 && !n) return null
   n = Number(n)
   let beforeNumber = ''
@@ -906,6 +906,7 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     beforeNumber = '-'
     n = -1 * n
   }
+
   if (smallNumberFractionDigits > 2) {
     if (n > 99.99) {
       smallNumberFractionDigits = 2
@@ -920,10 +921,10 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     output = niceNumber(n / 1000000000, largeNumberFractionDigits, currency) + 'B'
   } else if (n > 999999) {
     output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M'
-    //} else if (n > 99999) {
-    //output = niceNumber(Math.floor(n), 0, currency)
-  } else if (n > 999) {
+  } else if (n > 9999) {
     output = niceNumber(n / 1000, largeNumberFractionDigits, currency) + 'K'
+  } else if (n > 999) {
+    output = niceNumber(Math.floor(n), 0, currency)
   } else if (n === 0) {
     output = niceNumber(0, 0, currency)
   } else {

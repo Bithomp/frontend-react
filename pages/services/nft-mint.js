@@ -21,7 +21,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function NftMint({ setSignRequest, uriQuery, digestQuery, taxonQuery }) {
+export default function NftMint({ setSignRequest, uriQuery, digestQuery, taxonQuery, account }) {
   const { t } = useTranslation()
 
   return (
@@ -45,9 +45,9 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery, taxonQu
 
         <div className="form-container">
           {xahauNetwork ? (
-            <URITokenMint setSignRequest={setSignRequest} uriQuery={uriQuery} digestQuery={digestQuery} />
+            <URITokenMint setSignRequest={setSignRequest} uriQuery={uriQuery} digestQuery={digestQuery} account={account} />
           ) : (
-            <NFTokenMint setSignRequest={setSignRequest} uriQuery={uriQuery} taxonQuery={taxonQuery} />
+            <NFTokenMint setSignRequest={setSignRequest} uriQuery={uriQuery} taxonQuery={taxonQuery} account={account} />
           )}
         </div>
       </div>

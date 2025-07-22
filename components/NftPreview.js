@@ -21,8 +21,8 @@ const isPanorama = (metadata) => {
 
   // Check name and description for panorama keywords
   const panoramaKeywords = ['360', 'panorama', 'panoramic', 'equirectangular']
-  const name = metadata.name?.toLowerCase() || ''
-  const description = metadata.description?.toLowerCase() || ''
+  const name = metadata.name?.toString().toLowerCase() || ''
+  const description = metadata.description?.toString().toLowerCase() || ''
 
   // Check if name or description contains panorama keywords
   const hasPanoramaKeyword = panoramaKeywords.some((keyword) => name.includes(keyword) || description.includes(keyword))

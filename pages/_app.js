@@ -26,6 +26,7 @@ import '../styles/components/nprogress.css'
 
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
+import ErrorBoundary from '../components/ErrorBoundary'
 
 const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
@@ -165,61 +166,59 @@ const MyApp = ({ Component, pageProps }) => {
       </Head>
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
         <ThemeProvider>
-          <div
-            className="body"
-            data-network={network}
-            style={{ backgroundImage: getBackgroundImage() }}
-          >
-            <Header
-              setSignRequest={setSignRequest}
-              account={account}
-              signOut={signOut}
-              signOutPro={signOutPro}
-              selectedCurrency={selectedCurrency}
-              setSelectedCurrency={setSelectedCurrency}
-            />
-            <ScrollToTop />
-            {/* available only on the mainnet and testnet, only on the client side, only when online */}
-            {(networkId === 0 || networkId === 1) && isClient && isOnline && !isBot && (
-              <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
-            )}
-            {(signRequest || isValidUUID(uuid)) && (
-              <SignForm
+          <ErrorBoundary>
+            <div className="body" data-network={network} style={{ backgroundImage: getBackgroundImage() }}>
+              <Header
                 setSignRequest={setSignRequest}
                 account={account}
-                setAccount={setAccount}
-                signRequest={signRequest}
-                uuid={uuid}
-                setRefreshPage={setRefreshPage}
-                saveAddressData={saveAddressData}
-                wcSession={wcSession}
-                setWcSession={setWcSession}
-              />
-            )}
-            <div className="content">
-              <TopProgressBar />
-              {showTopAds && <TopLinks />}
-              <Component
-                {...pageProps}
-                refreshPage={refreshPage}
-                setSignRequest={setSignRequest}
-                account={account}
-                setAccount={setAccount}
                 signOut={signOut}
+                signOutPro={signOutPro}
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
-                showAds={showAds}
-                setProExpire={setProExpire}
-                signOutPro={signOutPro}
-                subscriptionExpired={subscriptionExpired}
-                setSubscriptionExpired={setSubscriptionExpired}
-                sessionToken={sessionToken}
-                setSessionToken={setSessionToken}
-                fiatRate={fiatRate}
               />
+              <ScrollToTop />
+              {/* available only on the mainnet and testnet, only on the client side, only when online */}
+              {(networkId === 0 || networkId === 1) && isClient && isOnline && !isBot && (
+                <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
+              )}
+              {(signRequest || isValidUUID(uuid)) && (
+                <SignForm
+                  setSignRequest={setSignRequest}
+                  account={account}
+                  setAccount={setAccount}
+                  signRequest={signRequest}
+                  uuid={uuid}
+                  setRefreshPage={setRefreshPage}
+                  saveAddressData={saveAddressData}
+                  wcSession={wcSession}
+                  setWcSession={setWcSession}
+                />
+              )}
+              <div className="content">
+                <TopProgressBar />
+                {showTopAds && <TopLinks />}
+                <Component
+                  {...pageProps}
+                  refreshPage={refreshPage}
+                  setSignRequest={setSignRequest}
+                  account={account}
+                  setAccount={setAccount}
+                  signOut={signOut}
+                  selectedCurrency={selectedCurrency}
+                  setSelectedCurrency={setSelectedCurrency}
+                  showAds={showAds}
+                  setProExpire={setProExpire}
+                  signOutPro={signOutPro}
+                  subscriptionExpired={subscriptionExpired}
+                  setSubscriptionExpired={setSubscriptionExpired}
+                  sessionToken={sessionToken}
+                  setSessionToken={setSessionToken}
+                  fiatRate={fiatRate}
+                />
+              </div>
+              <Footer setSignRequest={setSignRequest} account={account} />
             </div>
-            <Footer setSignRequest={setSignRequest} account={account} />
-          </div>
+          </ErrorBoundary>
         </ThemeProvider>
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />

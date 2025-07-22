@@ -9,7 +9,7 @@ export default function PaymentInstructions({ data, sourceBalanceChanges }) {
     specification?.noDirectRipple ||
     specification?.limitQuality ||
     (specification?.source?.maxAmount &&
-      Math.abs(specification?.source?.maxAmount?.value) !== Math.abs(sourceBalanceChanges[0]?.value)) ||
+      Math.abs(specification?.source?.maxAmount?.value) !== Math.abs(sourceBalanceChanges?.[0]?.value)) ||
     (specification?.destination?.minAmount &&
       specification?.destination?.minAmount?.value !== outcome?.deliveredAmount?.value)
   ) {
