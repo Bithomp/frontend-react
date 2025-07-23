@@ -248,11 +248,9 @@ export default function Tokens({
 
   const prictOrMarketcapToFiat = (price) => {
     return price ? (
-      <span className="tooltip">
+      <span className="tooltip" suppressHydrationWarning>
         {shortNiceNumber(price * fiatRate, 2, 1, selectedCurrency)}
-        <span className="tooltiptext right no-brake">
-          {fullNiceNumber(price * fiatRate, selectedCurrency)}
-        </span>
+        <span className="tooltiptext right no-brake">{fullNiceNumber(price * fiatRate, selectedCurrency)}</span>
       </span>
     ) : null
   }
@@ -326,42 +324,29 @@ export default function Tokens({
                 ) : (
                   <>
                     {data.map((token, i) => {
-                      const volume = Number(token.statistics?.buyVolume || 0) + Number(token.statistics?.sellVolume || 0)
+                      const volume =
+                        Number(token.statistics?.buyVolume || 0) + Number(token.statistics?.sellVolume || 0)
                       return (
                         <tr key={i}>
                           <td className="center">{i + 1}</td>
                           <td>
                             <TokenCell token={token} />
                           </td>
-                          <td className="right">
-                            {prictOrMarketcapToFiat(token.statistics?.priceXrp)}
-                          </td>
-                          <td className="right">
-                            
-                          </td>
-                          <td className="right">
-                            
-                          </td>
-                          <td className="right">
-                            {volume ? prictOrMarketcapToFiat(volume) : '-'}
-                          </td>
-                          <td className="right">
-                            {prictOrMarketcapToFiat(token.statistics?.marketcap)}
-                          </td>
+                          <td className="right">{prictOrMarketcapToFiat(token.statistics?.priceXrp)}</td>
+                          <td className="right"></td>
+                          <td className="right"></td>
+                          <td className="right">{volume ? prictOrMarketcapToFiat(volume) : '-'}</td>
+                          <td className="right">{prictOrMarketcapToFiat(token.statistics?.marketcap)}</td>
                           <td className="right" suppressHydrationWarning>
                             <span className="tooltip">
                               {shortNiceNumber(token.trustlines, 2, 1)}
-                              <span className="tooltiptext no-brake">
-                                {fullNiceNumber(token.trustlines)}
-                              </span>
+                              <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
                             </span>
                           </td>
                           <td className="right" suppressHydrationWarning>
                             <span className="tooltip">
                               {shortNiceNumber(token.holders, 2, 1)}
-                              <span className="tooltiptext no-brake">
-                                {fullNiceNumber(token.holders)}
-                              </span>
+                              <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
                             </span>
                           </td>
                           <td className="center">
