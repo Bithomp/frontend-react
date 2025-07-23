@@ -2,7 +2,6 @@ import { i18n } from 'next-i18next'
 import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat, timeFromNow } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { avatarServer, timestampExpired } from '../../utils'
-import axios from 'axios'
 import Image from 'next/image'
 import Link from 'next/link'
 import { TbPigMoney } from 'react-icons/tb'
@@ -19,43 +18,31 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
     setSelfEscrowList(escrowList?.filter((escrow) => escrow.Account === address && escrow.Destination === address))
   }, [escrowList, address])
 
-  // Function to handle escrow finish with lazy sequence fetching
-  const handleEscrowFinish = async (escrow) => {
-    try {
-      const response = await axios(`v2/escrow/${escrow.index}`)
-      if (response?.data?.escrowSequence) {
-        setSignRequest({
-          request: {
-            TransactionType: 'EscrowFinish',
-            Owner: escrow.Account,
-            OfferSequence: response.data.escrowSequence
-          }
-        })
-      } else {
-        console.error('Failed to get escrow sequence for finish')
-      }
-    } catch (error) {
-      console.error('Failed to fetch escrow sequence for finish:', error)
+  const handleEscrowFinish = (escrow) => {
+    if (escrow.escrowSequence) {
+      setSignRequest({
+        request: {
+          TransactionType: 'EscrowFinish',
+          Owner: escrow.Account,
+          OfferSequence: escrow.escrowSequence
+        }
+      })
+    } else {
+      console.error('Escrow sequence not available for finish')
     }
   }
 
-  // Function to handle escrow cancel with lazy sequence fetching
-  const handleEscrowCancel = async (escrow) => {
-    try {
-      const response = await axios(`v2/escrow/${escrow.index}`)
-      if (response?.data?.escrowSequence) {
-        setSignRequest({
-          request: {
-            TransactionType: 'EscrowCancel',
-            Owner: escrow.Account,
-            OfferSequence: response.data.escrowSequence
-          }
-        })
-      } else {
-        console.error('Failed to get escrow sequence for cancel')
-      }
-    } catch (error) {
-      console.error('Failed to fetch escrow sequence for cancel:', error)
+  const handleEscrowCancel = (escrow) => {
+    if (escrow.escrowSequence) {
+      setSignRequest({
+        request: {
+          TransactionType: 'EscrowCancel',
+          Owner: escrow.Account,
+          OfferSequence: escrow.escrowSequence
+        }
+      })
+    } else {
+      console.error('Escrow sequence not available for cancel')
     }
   }
 
@@ -135,45 +122,47 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           <td className="bold right">{amountFormat(escrow.Amount, { short: true })}</td>
           {!ledgerTimestamp && (
             <td className="center">
-              {escrow.FinishAfter &&
-              timestampExpired(escrow.FinishAfter, 'ripple') &&
-              !timestampExpired(escrow.CancelAfter, 'ripple') ? (
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handleEscrowFinish(escrow)
-                  }}
-                  className="orange tooltip"
-                >
-                  <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
-                  <span className="tooltiptext">Finish</span>
-                </a>
-              ) : (
-                <span className="grey tooltip">
-                  <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
-                  <span className="tooltiptext">Finish</span>
-                </span>
-              )}
-              <span style={{ display: 'inline-block', width: options?.mobile ? 0 : 15 }}> </span>
-              {escrow.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple') ? (
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handleEscrowCancel(escrow)
-                  }}
-                  className="red tooltip"
-                >
-                  <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
-                  <span className="tooltiptext">Cancel</span>
-                </a>
-              ) : (
-                <span className="grey tooltip">
-                  <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
-                  <span className="tooltiptext">Cancel</span>
-                </span>
-              )}
+              {(() => {
+                const canFinish =
+                  escrow.FinishAfter &&
+                  timestampExpired(escrow.FinishAfter, 'ripple') &&
+                  !timestampExpired(escrow.CancelAfter, 'ripple')
+                const canCancel = escrow.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple')
+
+                if (!canFinish && !canCancel) {
+                  return <span className="grey">none</span>
+                }
+
+                return (
+                  <>
+                    {canFinish && (
+                      <span
+                        onClick={(e) => {
+                          e.preventDefault()
+                          handleEscrowFinish(escrow)
+                        }}
+                        className="orange tooltip"
+                      >
+                        <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
+                        <span className="tooltiptext">Finish</span>
+                      </span>
+                    )}
+                    {canFinish && canCancel && <span style={{ display: 'inline-block', width: 15 }}> </span>}
+                    {canCancel && (
+                      <span
+                        onClick={(e) => {
+                          e.preventDefault()
+                          handleEscrowCancel(escrow)
+                        }}
+                        className="red tooltip"
+                      >
+                        <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
+                        <span className="tooltiptext">Cancel</span>
+                      </span>
+                    )}
+                  </>
+                )
+              })()}
             </td>
           )}
         </tr>
