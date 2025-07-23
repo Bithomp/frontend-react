@@ -67,7 +67,7 @@ function sendData() {
   }
 }
 
-export default function Home({ selectedCurrency, setSelectedCurrency, showAds, fiatRate }) {
+export default function Home({ selectedCurrency, setSelectedCurrency, showAds, fiatRate, isSsrMobile }) {
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
@@ -152,7 +152,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
       <section className="home-section">
         <h1 className="center">{t('explorer.header.main', { explorerName })}</h1>
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
-        <SearchBlock tab="explorer" />
+        <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} />
         <Ads showAds={showAds} heightNoAds={30} />
       </section>
 
