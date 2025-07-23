@@ -10,7 +10,6 @@ import { getIsSsrMobile } from '../utils/mobile'
 import SEO from '../components/SEO'
 import SearchBlock from '../components/Layout/SearchBlock'
 import Ads from '../components/Layout/Ads'
-import Products from '../components/Home/Products'
 import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 
@@ -156,8 +155,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
         <SearchBlock tab="explorer" />
         <Ads showAds={showAds} heightNoAds={30} />
       </section>
-
-      <Products />
 
       {!devNet && (
         <section className="home-section">
