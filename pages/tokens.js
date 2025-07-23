@@ -210,7 +210,7 @@ export default function Tokens({
     const issuerDetails = token.issuerDetails || {}
 
     return (
-      <AddressWithIcon address={token?.issuer}>
+      <AddressWithIcon address={token?.issuer} currency={token?.currency}>
         {!token.lp_token && (
           <>
             <b>{niceCurrency(token.currency)}</b> {userOrServiceName(issuerDetails)}
