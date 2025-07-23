@@ -72,6 +72,7 @@ export default function Send({
   sessionToken,
   subscriptionExpired,
   initialAddressDetails,
+  openEmailLogin,
   currencyQuery,
   currencyIssuerQuery
 }) {
@@ -590,7 +591,7 @@ export default function Send({
               <>
                 {' '}
                 <span className="orange">
-                  (available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers)
+                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
                 </span>
               </>
             ) : (

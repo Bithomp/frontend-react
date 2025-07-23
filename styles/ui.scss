@@ -827,6 +827,17 @@ body.dark {
   }
 }
 
+.flag {
+  background-color: #e6f4ea;
+  color: #008000;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #008000;
+  margin-right: 4px;
+}
+
 //common ui
 @include meta.load-css("components/header.scss");
 @include meta.load-css("components/switch.scss");

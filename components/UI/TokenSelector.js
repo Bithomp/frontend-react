@@ -104,6 +104,7 @@ export default function TokenSelector({
       queryRemoveList.push(currencyQueryName + 'Issuer')
     }
     setTabParams(router, [], queryAddList, queryRemoveList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, currencyQueryName])
 
   useEffect(() => {
@@ -113,6 +114,7 @@ export default function TokenSelector({
     } else if (filterMode === 'single' && !value?.currency) {
       onChange({ currency: nativeCurrency }) // default to native currency if no token selected
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allOrOne, filterMode])
 
   // Clear search results when destination address changes
@@ -144,6 +146,11 @@ export default function TokenSelector({
             !niceCurrency(searchResults[1]?.currency)?.toLowerCase().startsWith(nativeCurrency.toLowerCase())
           )
             return
+        } else {
+          // For destination address case, check if we already have results loaded
+          if (searchResults.length > 0) {
+            return
+          }
         }
 
         setIsLoading(true)
@@ -156,7 +163,7 @@ export default function TokenSelector({
             tokens = addNativeCurrencyIfNeeded(tokens, excludeNative)
           } else {
             // Fallback to original behavior if no destination address
-            const response = await axios('v2/trustlines/tokens?limit=' + limit)
+            const response = await axios('v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true')
             tokens = response.data?.tokens || []
             if (!excludeNative) {
               setSearchResults([{ currency: nativeCurrency }, ...tokens])
@@ -190,7 +197,7 @@ export default function TokenSelector({
           setSearchResults(tokensWithNative)
         } else {
           // Fallback to original search behavior
-          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}`)
+          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}&currencyDetails=true`)
           const tokens = response.data?.tokens || []
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
@@ -237,6 +244,9 @@ export default function TokenSelector({
     const serviceOrUsername = issuerDetails.service || issuerDetails.username
     if (serviceOrUsername) {
       return `${niceCurrency(token.currency)} (${serviceOrUsername})`
+    }
+    if (token.currencyDetails) {
+      return token.currencyDetails.currency
     }
     return niceCurrency(token.currency)
   }

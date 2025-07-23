@@ -193,7 +193,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                   {Object.entries(value)
                     .filter(([, flagValue]) => flagValue === true)
                     .map(([flag]) => (
-                      <span key={flag} className="badge badge-active">
+                      <span key={flag} className="flag">
                         {flag}
                       </span>
                     ))}
@@ -212,12 +212,14 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
       })
 
     return (
-      <>        
+      <>
         <table className="table-details">
           <thead>
             <tr>
               {router.query.ledgerIndex || router.query.previousTxHash || router.query.date ? (
-                <th colSpan="2" className="red bold">Historical Data {router.query.date ? `(${router.query.date})` : ''}</th>
+                <th colSpan="2" className="red bold">
+                  Historical Data {router.query.date ? `(${router.query.date})` : ''}
+                </th>
               ) : (
                 <th colSpan="2">Ledger Entry Details</th>
               )}
@@ -369,8 +371,14 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                         router.push(`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`)
                       }
                     }}
-                    className={`button-action center ${!(data?.node?.PreviousTxnLgrSeq || data?.node?.PreviousTxnID) ? 'disabled' : ''}`}
-                    style={!(data?.node?.PreviousTxnLgrSeq || data?.node?.PreviousTxnID) ? { pointerEvents: 'none', opacity: 0.5 } : {}}
+                    className={`button-action center ${
+                      !(data?.node?.PreviousTxnLgrSeq || data?.node?.PreviousTxnID) ? 'disabled' : ''
+                    }`}
+                    style={
+                      !(data?.node?.PreviousTxnLgrSeq || data?.node?.PreviousTxnID)
+                        ? { pointerEvents: 'none', opacity: 0.5 }
+                        : {}
+                    }
                   >
                     Previous version
                   </button>
@@ -400,24 +408,26 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                         <td>
                           <Link
                             href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`}
-                            className={router.query.ledgerIndex === data.node.PreviousTxnLgrSeq?.toString() ? 'active' : ''}
+                            className={
+                              router.query.ledgerIndex === data.node.PreviousTxnLgrSeq?.toString() ? 'active' : ''
+                            }
                           >
                             {data.node.PreviousTxnLgrSeq}
                           </Link>
                         </td>
                       </tr>
                     )}
-                    
+
                     {router.query.previousTxHash && (
                       <tr>
                         <td>Current Transaction</td>
                         <td>
-                            <Link
-                              href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
-                              className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
-                            >
-                              {shortAddress(router.query.previousTxHash)}
-                            </Link>
+                          <Link
+                            href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
+                            className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
+                          >
+                            {shortAddress(router.query.previousTxHash)}
+                          </Link>
                         </td>
                       </tr>
                     )}
@@ -466,19 +476,14 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                     <tr>
                       <td>Raw JSON</td>
                       <td>
-                        <span
-                          className="link"
-                          onClick={() => setShowRaw(!showRaw)}
-                        >
+                        <span className="link" onClick={() => setShowRaw(!showRaw)}>
                           {showRaw ? 'hide' : 'show'}
                         </span>
                       </td>
                     </tr>
                   </tbody>
                 </table>
-                <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>
-                  {showRaw && codeHighlight(data)}
-                </div>
+                <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>{showRaw && codeHighlight(data)}</div>
               </div>
             </>
           )}

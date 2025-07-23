@@ -25,7 +25,7 @@ import { LinkTx, LinkAccount } from '../../utils/links'
 import Link from 'next/link'
 import { errorCodeDescription } from '../../utils/transaction'
 
-export default function IssueCheck({ setSignRequest, sessionToken, subscriptionExpired }) {
+export default function IssueCheck({ setSignRequest, sessionToken, subscriptionExpired, openEmailLogin }) {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const [address, setAddress] = useState(null)
@@ -240,7 +240,7 @@ export default function IssueCheck({ setSignRequest, sessionToken, subscriptionE
               <>
                 {' '}
                 <span className="orange">
-                  (available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers)
+                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
                 </span>
               </>
             ) : (
