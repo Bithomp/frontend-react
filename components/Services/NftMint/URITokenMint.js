@@ -47,6 +47,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
   const [flags, setFlags] = useState({
     tfBurnable: false
   })
+  const [mintAndSend, setMintAndSend] = useState(false)
 
   let uriRef
   let digestRef
@@ -183,6 +184,34 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
 
     if (createSellOffer && amount !== '' && !isNaN(parseFloat(amount)) && parseFloat(amount) < 0) {
       setErrorMessage('Please enter a valid Amount')
+      return
+    }
+
+    // Remit: Mint and Send
+    if (mintAndSend) {
+      if (!destination?.trim()) {
+        setErrorMessage('Destination is required for Mint and Send (Remit)')
+        return
+      }
+      // Remit transaction (per Xahau docs)
+      let request = {
+        TransactionType: 'Remit',
+        Account: account?.address,
+        Destination: destination.trim(),
+        MintURIToken: {
+          URI: encode(uri)
+        }
+      }
+      if (digest) {
+        request.MintURIToken.Digest = digest
+      }
+      if (flags.tfBurnable) {
+        request.MintURIToken.Flags = 1
+      }
+      setSignRequest({
+        request,
+        callback: afterSubmit
+      })
       return
     }
 
@@ -396,6 +425,39 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
               Burnable
             </CheckBox>
 
+            {/* Mint and Send (Remit) Option */}
+            <CheckBox
+              checked={mintAndSend}
+              setChecked={() => {
+                setMintAndSend(!mintAndSend)
+                if (!mintAndSend) {
+                  setCreateSellOffer(false)
+                }
+              }}
+              name="mint-and-send-remit"
+              disabled={!account?.address}
+            >
+              Mint and Send (Remit)
+            </CheckBox>
+            {mintAndSend && (
+              <div className="orange" style={{ marginTop: '5px', fontSize: '14px' }}>
+                You will pay the Object Reserve in XAH for the NFT to be held on the Destination account.
+              </div>
+            )}
+            {/* Remit Destination Field */}
+            {mintAndSend && (
+              <>
+                <br />
+                <AddressInput
+                  title="Destination (required - account to receive the NFT):"
+                  placeholder="Destination address"
+                  setValue={onDestinationChange}
+                  name="destination-remit"
+                  hideButton={true}
+                />
+              </>
+            )}
+
             {/* Create Sell Offer */}
             <div>
               <CheckBox
@@ -408,7 +470,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
                   setCreateSellOffer(!createSellOffer)
                 }}
                 name="create-sell-offer"
-                disabled={!account?.address}
+                disabled={!account?.address || mintAndSend}
               >
                 Create a Sell offer
               </CheckBox>
@@ -423,7 +485,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
             </div>
 
             {/* Sell Offer Fields */}
-            {createSellOffer && (
+            {createSellOffer && !mintAndSend && (
               <>
                 <br />
                 <div className="flex flex-col gap-4 sm:flex-row">
@@ -462,7 +524,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
                   hideButton={true}
                 />
               </>
-            )}
+            )}           
 
             <br />
 
