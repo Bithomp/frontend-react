@@ -20,12 +20,11 @@ const limit = 20
 
 // Helper function to fetch and process trustlines for a destination address
 const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '') => {
-  const response = await axios(`v2/objects/${destinationAddress}?limit=1000`)
+  const response = await axios(`v2/objects/${destinationAddress}?limit=1000&type=state`)
   const objects = response.data?.objects || []
 
   // Filter RippleState objects to get trustlines where destination can hold tokens
   const trustlines = objects.filter((obj) => {
-    if (obj.LedgerEntryType !== 'RippleState') return false
     if (parseFloat(obj.LowLimit.value) <= 0 && parseFloat(obj.HighLimit.value) <= 0) return false
 
     // If search query is provided, filter by it

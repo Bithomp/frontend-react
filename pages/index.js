@@ -10,7 +10,6 @@ import { getIsSsrMobile } from '../utils/mobile'
 import SEO from '../components/SEO'
 import SearchBlock from '../components/Layout/SearchBlock'
 import Ads from '../components/Layout/Ads'
-import Products from '../components/Home/Products'
 import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 
@@ -68,7 +67,7 @@ function sendData() {
   }
 }
 
-export default function Home({ selectedCurrency, setSelectedCurrency, showAds, fiatRate }) {
+export default function Home({ selectedCurrency, setSelectedCurrency, showAds, fiatRate, isSsrMobile }) {
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
@@ -153,11 +152,9 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
       <section className="home-section">
         <h1 className="center">{t('explorer.header.main', { explorerName })}</h1>
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
-        <SearchBlock tab="explorer" />
-        <Ads showAds={showAds} heightNoAds={30} />
+        <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} />
+        {showAds && <Ads />}
       </section>
-
-      <Products />
 
       {!devNet && (
         <section className="home-section">

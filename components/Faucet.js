@@ -260,11 +260,13 @@ export default function Faucet({ account, type, sessionTokenData }) {
               placeholder={t('form.placeholder.enter-address', { ns: 'faucet', ledgerName })}
               setInnerValue={setAddressValue}
               rawData={
-                address === account?.address || (address === queryAddress && isAddressValid(queryAddress))
+                address === account?.address
                   ? {
                       address,
                       addressDetails: { username: account?.username, service: account?.service }
                     }
+                  : address === queryAddress && isAddressValid(queryAddress)
+                  ? { address }
                   : {}
               }
               type="address"
