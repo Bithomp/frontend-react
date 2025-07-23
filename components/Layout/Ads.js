@@ -6,12 +6,8 @@ import BtcBit from '../../public/images/sponsored/btcbit.svg'
 import Nexo from '../../public/images/sponsored/nexo.svg'
 import Doppler from '../../public/images/sponsored/doppler.svg'
 
-export default function Ads({ showAds, heightNoAds }) {
+export default function Ads() {
   const { theme } = useTheme()
-
-  if (!showAds) {
-    return <div style={{ height: heightNoAds }} />
-  }
 
   if (!xahauNetwork) {
     return (

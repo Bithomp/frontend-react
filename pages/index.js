@@ -153,7 +153,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
         <h1 className="center">{t('explorer.header.main', { explorerName })}</h1>
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
         <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} />
-        <Ads showAds={showAds} heightNoAds={30} />
+        {showAds && <Ads />}
       </section>
 
       {!devNet && (
