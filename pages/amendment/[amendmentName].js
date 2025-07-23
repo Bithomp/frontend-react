@@ -1,10 +1,10 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useState, memo } from 'react'
+import { useEffect, useState } from 'react'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { shortHash, fullDateAndTime, timeFromNow } from '../../utils/format'
-import { avatarServer, xahauNetwork, useWidth, countriesTranslated, devNet } from '../../utils'
+import { shortHash, fullDateAndTime } from '../../utils/format'
+import { avatarServer, xahauNetwork, useWidth, countriesTranslated, explorerName } from '../../utils'
 import Image from 'next/image'
 import SEO from '../../components/SEO'
 import CopyButton from '../../components/UI/CopyButton'
@@ -32,7 +32,9 @@ export async function getServerSideProps(context) {
     const amendments = res?.data
     // Find the amendment by name or hash
     amendmentData = amendments.find(
-      (a) => a.name === amendmentName || a.amendment === amendmentName
+      (a) =>
+        (String(a.name || '').toLowerCase() === String(amendmentName || '').toLowerCase()) ||
+        (String(a.amendment || '').toLowerCase() === String(amendmentName || '').toLowerCase())
     )
     // Get features for more details
     const res2 = await axiosServer({
@@ -106,11 +108,12 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
 
   useEffect(() => {
     if (validators) {
+      const amendmentName = amendmentData?.name || amendmentData?.amendment
       const { yeas, nays } = splitValidatorsByAmendment(validators, amendmentName)
       setYeas(yeas)
       setNays(nays)
     }
-  }, [validators, amendmentName])
+  }, [validators, amendmentData])
 
   const amendmentId = amendmentData?.amendment || '-'
   const introduced = amendmentData?.introduced || '-'
@@ -183,16 +186,6 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
       </>
     )
   }
-  const showTime = ({ time }) => {
-    if (!time) return 'N/A'
-    return (
-      <span className={Math.floor(Date.now() / 1000) - (devNet ? 40 : 10) > time ? 'red bold' : ''}>
-        {timeFromNow(time - 1, i18n)}
-      </span>
-    )
-  }
-
-  const ShowTimeMemo = memo(showTime)
 
   const verifiedSign = (domainVerified, domain, options) => {
     if (!domainVerified || !domain) return ''
@@ -218,10 +211,13 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
     <>
       <SEO title={`Amendment: ${amendmentName}`} />
       <div className="content-text">
-        <h1 className="center">Amendment summary</h1>
+        <h1 className="center">Amendment highlights</h1>
+        <p className="center">
+          This page shows validator votes for the '{amendmentData?.name || amendmentName}' amendment on the {explorerName}.
+        </p>
         {!initialErrorMessage ? (
           <>
-            <table className="table-large">
+            <table className="table-large no-hover">
               <tbody>
                 <tr>
                   <td><b>Name:</b></td>
@@ -232,26 +228,26 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
                 <tr>
                   <td><b>Amendment ID:</b></td>
                   <td>{showHash(amendmentId)} <CopyButton text={amendmentId} /></td>
-                  <td><b>Yeas:</b></td>
+                  <td><b>Voted Yes:</b></td>
                   <td>{status !== 'ENABLED' ? yeas.length : '-'}</td>
                 </tr>
                 <tr>
-                  <td><b>Introduced in:</b></td>
+                  <td><b>Introduced in Version:</b></td>
                   <td>{introduced}</td>
-                  <td><b>Nays:</b></td>
+                  <td><b>Voted No (or haven't voted yet):</b></td>
                   <td>{status !== 'ENABLED' ? nays.length : '-'}</td>
                 </tr>
                 <tr>
-                  <td><b>Threshold:</b></td>
+                  <td><b>Quorum:</b></td>
                   <td>{threshold}</td>
                   <td><b>ETA:</b></td>
                   <td>{eta}</td>
                 </tr>
                 <tr>
-                  <td><b>Details:</b></td>
+                  <td><b>More info:</b></td>
                   <td><a href={detailsUrl} target="_blank" rel="noreferrer">{showHash(detailsUrl)} <CopyButton text={detailsUrl} /></a></td>
-                  <td><b>Consensus:</b></td>
-                  <td>{status !== 'ENABLED' ? <span style={{ background: '#e6f4ea', padding: '2px 8px', borderRadius: 4 }}>{consensus}%</span> : '-'}</td>
+                  <td><b>Consensus level:</b></td>
+                  <td>{status !== 'ENABLED' ? <span className="flag">{consensus}%</span> : '-'}</td>
                 </tr>
               </tbody>
             </table>
@@ -259,125 +255,10 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
               status !== 'ENABLED' && (
                 <>
                   <br />
-                  {windowWidth > 1100 ? (
-                    <div className="grid grid-cols-2 gap-4">
+                  {windowWidth > 768 ? (
+                    <div className="grid grid-cols-2 gap-4 max-w-screen-lg mx-auto">
                       <div className="div-with-table">
-                        <h4 className="center green">Yeas</h4>
-                        <table className="table-large" style={{ minWidth: '100%' }}>
-                          <thead>
-                            <tr>
-                              <th className="center">Index</th>
-                              <th>Validator</th>
-                              <th>Server</th>
-                              <th>Last seen</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {yeas.map((v, i) => (
-                              <tr key={v.publicKey}>
-                                <td className="center">
-                                  <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
-                                  <br />
-                                  {i + 1}
-                                </td>
-                                <td>
-                                  {displayFlag(v.ownerCountry, 'owner-country')}
-                                  {v.principals?.map((p, i) => (
-                                    <span key={i}>
-                                      {p.name && <b> {p.name}</b>}
-                                      {twitterLink(p.twitter || p.x)} 
-                                      <br />
-                                    </span>
-                                  ))}
-                                  {v.domain ? (
-                                    <>
-                                      <a href={`https://${v.domain}`}>{v.domain}</a>
-                                      {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
-                                    </>
-                                  ) : v.domainLegacy ? (
-                                    <>
-                                      <a href={`https://${v.domainLegacy}`}>{v.domainLegacy}</a>
-                                      {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
-                                    </>
-                                  ) : (
-                                    shortHash(v.publicKey)
-                                  )}
-                                </td>
-                                <td>
-                                  {displayFlag(v.serverCountry, 'server-country')} {v.serverVersion}
-                                </td>
-                                <td>
-                                  <ShowTimeMemo time={v.lastSeenTime} />
-                                </td>
-                              </tr>
-                            ))}
-                            {yeas.length === 0 && (
-                              <tr><td colSpan={2} className="center grey">No validators voting for this amendment.</td></tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                      <div className="div-with-table">
-                        <h4 className="center red">Nays</h4>
-                        <table className="table-large" style={{ minWidth: '100%' }}>
-                          <thead>
-                            <tr>
-                              <th className="center">Index</th>
-                              <th>Validator</th>
-                              <th>Server</th>
-                              <th>Last seen</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {nays.map((v, i) => (
-                              <tr key={v.publicKey}>
-                                <td className="center">
-                                  <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
-                                  <br />
-                                  {i + 1}
-                                </td>
-                                <td>
-                                  {displayFlag(v.ownerCountry, 'owner-country')} {v.ownerCountry && ' '}
-                                  {v.principals?.map((p, i) => (
-                                    <span key={i}>
-                                      {p.name && <b> {p.name}</b>}
-                                      {twitterLink(p.twitter || p.x)}
-                                      <br />
-                                    </span>
-                                  ))}
-                                  {v.domain ? (
-                                    <>
-                                      <a href={`https://${v.domain}`}>{v.domain}</a>
-                                      {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
-                                    </>
-                                  ) : v.domainLegacy ? (
-                                    <>
-                                      <a href={`https://${v.domainLegacy}`}>{v.domainLegacy}</a>
-                                      {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
-                                    </>
-                                  ) : (
-                                    shortHash(v.publicKey)
-                                  )}
-                                </td>
-                                <td>
-                                  {displayFlag(v.serverCountry, 'server-country')} {v.serverVersion}
-                                </td>
-                                <td>
-                                  <ShowTimeMemo time={v.lastSeenTime} />
-                                </td>
-                              </tr>
-                            ))}
-                            {nays.length === 0 && (
-                              <tr><td colSpan={2} className="center grey">No validators voting against or not voting.</td></tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  ) : windowWidth > 768 ? (
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="div-with-table">
-                        <h4 className="center green">Yeas</h4>
+                        <h4 className="center green">Voted Yes</h4>
                         <table className="table-large" style={{ minWidth: '100%' }}>
                           <thead>
                             <tr>
@@ -404,7 +285,6 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
                                   ))}
                                   {v.domain ? (
                                     <>
-                                      Domain: 
                                       <a href={`https://${v.domain}`}>{v.domain}</a>
                                       {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
                                     </>
@@ -416,10 +296,6 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
                                   ) : (
                                     shortHash(v.publicKey)
                                   )}
-                                  <br />
-                                  Server: {displayFlag(v.serverCountry, 'server-country')} {v.serverVersion}
-                                  <br />
-                                  Last seen: <ShowTimeMemo time={v.lastSeenTime} />
                                 </td>
                               </tr>
                             ))}
@@ -430,7 +306,7 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
                         </table>
                       </div>
                       <div className="div-with-table">
-                        <h4 className="center red">Nays</h4>
+                        <h4 className="center red">Voted No (or haven't voted yet)</h4>
                         <table className="table-large" style={{ minWidth: '100%' }}>
                           <thead>
                             <tr>
@@ -468,10 +344,6 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
                                   ) : (
                                     shortHash(v.publicKey)
                                   )}
-                                  <br />
-                                  Server: {displayFlag(v.serverCountry, 'server-country')} {v.serverVersion}
-                                  <br />
-                                  Last seen: <ShowTimeMemo time={v.lastSeenTime} />
                                 </td>
                               </tr>
                             ))}
@@ -483,112 +355,104 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
                       </div>
                     </div>
                   ) : (
-                      <div className="grid grid-cols-1 gap-4">
-                        <div className="div-with-table">
-                          <h4 className="center green">Yeas</h4>
-                          <table className="table-mobile w-full">
-                            <thead>
-                              <tr>
-                                <th className="center">Index</th>
-                                <th className="left">Validator</th>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="div-with-table">
+                        <h4 className="center green">Voted Yes</h4>
+                        <table className="table-mobile w-full">
+                          <thead>
+                            <tr>
+                              <th className="center">Index</th>
+                              <th className="left">Validator</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {yeas.map((v, i) => (
+                              <tr key={v.publicKey} className="py-2">
+                                <td className="center">
+                                  <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
+                                  <br />
+                                  {i + 1}
+                                </td>
+                                <td>
+                                  {displayFlag(v.ownerCountry, 'owner-country')}
+                                  {v.principals?.map((p, i) => (
+                                    <span key={i}>
+                                      {p.name && <b> {p.name}</b>}
+                                      {twitterLink(p.twitter || p.x)} 
+                                      <br />
+                                    </span>
+                                  ))}
+                                  {v.domain ? (
+                                    <>
+                                      <a href={`https://${v.domain}`}>{v.domain}</a>
+                                      {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
+                                    </>
+                                  ) : v.domainLegacy ? (
+                                    <>
+                                      <a href={`https://${v.domainLegacy}`}>{v.domainLegacy}</a>
+                                      {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
+                                    </>
+                                  ) : (
+                                    shortHash(v.publicKey)
+                                  )}
+                                </td>                                 
                               </tr>
-                            </thead>
-                            <tbody>
-                              {yeas.map((v, i) => (
-                                <tr key={v.publicKey} className="py-2">
-                                  <td className="center">
-                                    <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
-                                    <br />
-                                    {i + 1}
-                                  </td>
-                                  <td>
-                                    {displayFlag(v.ownerCountry, 'owner-country')}
-                                    {v.principals?.map((p, i) => (
-                                      <span key={i}>
-                                        {p.name && <b> {p.name}</b>}
-                                        {twitterLink(p.twitter || p.x)} 
-                                        <br />
-                                      </span>
-                                    ))}
-                                    {v.domain ? (
-                                      <>
-                                        <a href={`https://${v.domain}`}>{v.domain}</a>
-                                        {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
-                                      </>
-                                    ) : v.domainLegacy ? (
-                                      <>
-                                        <a href={`https://${v.domainLegacy}`}>{v.domainLegacy}</a>
-                                        {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
-                                      </>
-                                    ) : (
-                                      shortHash(v.publicKey)
-                                    )}
-                                    <br />
-                                    Server: {displayFlag(v.serverCountry, 'server-country')} {v.serverVersion}
-                                    <br />
-                                    Last seen: <ShowTimeMemo time={v.lastSeenTime} />
-                                  </td>                                 
-                                </tr>
-                              ))}
-                              {yeas.length === 0 && (
-                                <tr><td colSpan={2} className="center grey">No validators voting for this amendment.</td></tr>
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                        <div className="div-with-table">
-                          <h4 className="center red">Nays</h4>
-                          <table className="table-mobile w-full">
-                            <thead>
-                              <tr>
-                                <th className="center">Index</th>
-                                <th className="left">Validator</th>
+                            ))}
+                            {yeas.length === 0 && (
+                              <tr><td colSpan={2} className="center grey">No validators voting for this amendment.</td></tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="div-with-table">
+                        <h4 className="center red">Voted No (or haven't voted yet)</h4>
+                        <table className="table-mobile w-full">
+                          <thead>
+                            <tr>
+                              <th className="center">Index</th>
+                              <th className="left">Validator</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {nays.map((v, i) => (
+                              <tr key={v.publicKey}>
+                                <td className="center">
+                                  <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
+                                  <br />
+                                  {i + 1}
+                                </td>
+                                <td>
+                                  {displayFlag(v.ownerCountry, 'owner-country')} {v.ownerCountry && ' '}
+                                  {v.principals?.map((p, i) => (
+                                    <span key={i}>
+                                      {p.name && <b> {p.name}</b>}
+                                      {twitterLink(p.twitter || p.x)}
+                                      <br />
+                                    </span>
+                                  ))}
+                                  {v.domain ? (
+                                    <>
+                                      <a href={`https://${v.domain}`}>{v.domain}</a>
+                                      {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
+                                    </>
+                                  ) : v.domainLegacy ? (
+                                    <>
+                                      <a href={`https://${v.domainLegacy}`}>{v.domainLegacy}</a>
+                                      {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
+                                    </>
+                                  ) : (
+                                    shortHash(v.publicKey)
+                                  )}
+                                </td>
                               </tr>
-                            </thead>
-                            <tbody>
-                              {nays.map((v, i) => (
-                                <tr key={v.publicKey}>
-                                  <td className="center">
-                                    <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
-                                    <br />
-                                    {i + 1}
-                                  </td>
-                                  <td>
-                                    {displayFlag(v.ownerCountry, 'owner-country')} {v.ownerCountry && ' '}
-                                    {v.principals?.map((p, i) => (
-                                      <span key={i}>
-                                        {p.name && <b> {p.name}</b>}
-                                        {twitterLink(p.twitter || p.x)}
-                                        <br />
-                                      </span>
-                                    ))}
-                                    {v.domain ? (
-                                      <>
-                                        <a href={`https://${v.domain}`}>{v.domain}</a>
-                                        {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
-                                      </>
-                                    ) : v.domainLegacy ? (
-                                      <>
-                                        <a href={`https://${v.domainLegacy}`}>{v.domainLegacy}</a>
-                                        {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
-                                      </>
-                                    ) : (
-                                      shortHash(v.publicKey)
-                                    )}
-                                    <br />
-                                    Server: {displayFlag(v.serverCountry, 'server-country')} {v.serverVersion}
-                                    <br />
-                                    Last seen: <ShowTimeMemo time={v.lastSeenTime} />
-                                  </td>
-                                </tr>
-                              ))}
-                              {nays.length === 0 && (
-                                <tr><td colSpan={2} className="center grey">No validators voting against or not voting.</td></tr>
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>                      
+                            ))}
+                            {nays.length === 0 && (
+                              <tr><td colSpan={2} className="center grey">No validators voting against or not voting.</td></tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>                      
                   )}                  
                 </>
               )
