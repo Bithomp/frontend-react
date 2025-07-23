@@ -253,7 +253,10 @@ export default function Tokens({
     })
   }
 
-  const priceToFiat = (price) => {
+  const priceToFiat = ({ price, mobile }) => {
+    if (mobile && price) {
+      return fullNiceNumber(price * fiatRate, selectedCurrency)
+    }
     return price ? (
       <span className="tooltip" suppressHydrationWarning>
         {shortNiceNumber(price * fiatRate, 2, 1, selectedCurrency)}
@@ -262,13 +265,36 @@ export default function Tokens({
     ) : null
   }
 
-  const marketcapToFiat = (price) => {
-    return price ? (
+  const marketcapToFiat = ({ marketcap, mobile }) => {
+    if (mobile && marketcap) {
+      return niceNumber(marketcap * fiatRate, 0, selectedCurrency)
+    }
+    return marketcap ? (
       <span className="tooltip" suppressHydrationWarning>
-        {shortNiceNumber(price * fiatRate, 2, 1, selectedCurrency)}
-        <span className="tooltiptext right no-brake">{niceNumber(price * fiatRate, 0, selectedCurrency)}</span>
+        {shortNiceNumber(marketcap * fiatRate, 2, 1, selectedCurrency)}
+        <span className="tooltiptext right no-brake">{niceNumber(marketcap * fiatRate, 0, selectedCurrency)}</span>
       </span>
     ) : null
+  }
+
+  const volumeToFiat = ({ statistics, mobile }) => {
+    const volume =
+      (Number(statistics?.buyVolume || 0) + Number(statistics?.sellVolume || 0)) *
+      (statistics?.priceXrp || 0) *
+      fiatRate
+
+    if (mobile && volume) {
+      return niceNumber(volume, 0, selectedCurrency)
+    }
+
+    return volume ? (
+      <span className="tooltip" suppressHydrationWarning>
+        {shortNiceNumber(volume, 2, 1, selectedCurrency)}
+        <span className="tooltiptext right no-brake">{niceNumber(volume * fiatRate, 0, selectedCurrency)}</span>
+      </span>
+    ) : (
+      '-'
+    )
   }
 
   return (
@@ -342,21 +368,19 @@ export default function Tokens({
                 ) : (
                   <>
                     {data.map((token, i) => {
-                      const volume =
-                        Number(token.statistics?.buyVolume || 0) + Number(token.statistics?.sellVolume || 0)
                       return (
                         <tr key={i}>
                           <td className="center">{i + 1}</td>
                           <td>
                             <TokenCell token={token} />
                           </td>
-                          <td className="right">{priceToFiat(token.statistics?.priceXrp)}</td>
+                          <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
                           {/*
                           <td className="right"></td>
                           <td className="right"></td>
                           */}
-                          <td className="right">{volume ? marketcapToFiat(volume) : '-'}</td>
-                          <td className="right">{marketcapToFiat(token.statistics?.marketcap)}</td>
+                          <td className="right">{volumeToFiat({ statistics: token.statistics })}</td>
+                          <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
                           <td className="right" suppressHydrationWarning>
                             <span className="tooltip">
                               {shortNiceNumber(token.trustlines, 2, 1)}
@@ -411,28 +435,15 @@ export default function Tokens({
                           <td>
                             <TokenCell token={token} />
                             <p>
-                              Price: {fullNiceNumber(token.statistics?.priceXrp * fiatRate, selectedCurrency)}
+                              Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
                               <br />
-                              Volume (24h):{' '}
-                              {token.statistics?.buyVolume || token.statistics?.sellVolume
-                                ? niceNumber(
-                                    (Number(token.statistics.buyVolume || 0) +
-                                      Number(token.statistics.sellVolume || 0)) *
-                                      fiatRate,
-                                    0,
-                                    selectedCurrency
-                                  )
-                                : '-'}
+                              Volume (24h): {volumeToFiat({ statistics: token.statistics, mobile: true })}
                               <br />
-                              {token.statistics?.marketcap && (
-                                <>
-                                  Marketcap: {niceNumber(token.statistics.marketcap * fiatRate, 0, selectedCurrency)}
-                                  <br />
-                                </>
-                              )}
-                              Trustlines: {shortNiceNumber(token.trustlines, 2, 1)}
+                              Marketcap: {marketcapToFiat({ marketcap: token.statistics.marketcap, mobile: true })}
                               <br />
-                              Holders: {shortNiceNumber(token.holders, 2, 1)}
+                              Trustlines: {niceNumber(token.trustlines)}
+                              <br />
+                              Holders: {niceNumber(token.holders)}
                               <br />
                               <br />
                               <button
