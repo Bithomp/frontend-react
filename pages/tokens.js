@@ -246,7 +246,7 @@ export default function Tokens({
     })
   }
 
-  const prictOrMarketcapToFiat = (price) => {
+  const priceOrMarketcapToFiat = (price) => {
     return price ? (
       <span className="tooltip" suppressHydrationWarning>
         {shortNiceNumber(price * fiatRate, 2, 1, selectedCurrency)}
@@ -305,8 +305,10 @@ export default function Tokens({
                   <th className="center">#</th>
                   <th>Token</th>
                   <th className="right">Price</th>
+                  {/*
                   <th className="right">24h %</th>
                   <th className="right">7d %</th>
+                  */}
                   <th className="right">Volume (24h)</th>
                   <th className="right">Marketcap</th>
                   <th className="right">Trustlines</th>
@@ -332,11 +334,13 @@ export default function Tokens({
                           <td>
                             <TokenCell token={token} />
                           </td>
-                          <td className="right">{prictOrMarketcapToFiat(token.statistics?.priceXrp)}</td>
+                          <td className="right">{priceOrMarketcapToFiat(token.statistics?.priceXrp)}</td>
+                          {/*
                           <td className="right"></td>
                           <td className="right"></td>
-                          <td className="right">{volume ? prictOrMarketcapToFiat(volume) : '-'}</td>
-                          <td className="right">{prictOrMarketcapToFiat(token.statistics?.marketcap)}</td>
+                          */}
+                          <td className="right">{volume ? priceOrMarketcapToFiat(volume) : '-'}</td>
+                          <td className="right">{priceOrMarketcapToFiat(token.statistics?.marketcap)}</td>
                           <td className="right" suppressHydrationWarning>
                             <span className="tooltip">
                               {shortNiceNumber(token.trustlines, 2, 1)}
@@ -391,11 +395,11 @@ export default function Tokens({
                           <td>
                             <TokenCell token={token} />
                             <p>
-                              Price: {prictOrMarketcapToFiat(token.statistics?.priceXrp)}
+                              Price: {priceOrMarketcapToFiat(token.statistics?.priceXrp)}
                               <br />
                               {token.statistics?.marketcap && (
                                 <>
-                                  Marketcap: {prictOrMarketcapToFiat(token.statistics?.marketcap)}
+                                  Marketcap: {priceOrMarketcapToFiat(token.statistics?.marketcap)}
                                   <br />
                                 </>
                               )}
