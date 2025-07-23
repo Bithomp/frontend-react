@@ -18,8 +18,12 @@
 
   &__wrap {
     position: relative;
+    background-color: var(--background-input);
     border: 1px solid var(--unaccent-icon);
     text-align: left;
+    &:hover {
+      box-shadow: 0 0 5px var(--unaccent-icon);
+    }
   }
 
   &.disabled {

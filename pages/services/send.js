@@ -272,8 +272,7 @@ export default function Send({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address])
 
-  const handleFeeChange = (e) => {
-    const value = e.target.value
+  const handleFeeChange = (value) => {
     setFee(value)
 
     if (Number(value) > 1) {
@@ -511,20 +510,21 @@ export default function Send({
             <div className="form-spacing" />
             <div className="flex flex-col gap-4 sm:flex-row">
               <div className="flex-1">
-                <span className="input-title">
-                  {t('table.amount')} {getMaxAmountDisplay()}
-                </span>
-                <input
+                <FormInput
+                  title={
+                    <>
+                      {t('table.amount')} {getMaxAmountDisplay()}
+                    </>
+                  }
                   placeholder="Enter amount"
-                  onChange={(e) => setAmount(e.target.value)}
+                  setInnerValue={setAmount}
+                  hideButton={true}
                   onKeyPress={typeNumberOnly}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="35"
-                  min="0"
-                  type="text"
-                  inputMode="decimal"
                   defaultValue={amount}
+                  maxLength={35}
+                  min={0}
+                  inputMode="decimal"
+                  type="text"
                 />
               </div>
               <div className="w-full sm:w-1/2">
@@ -540,17 +540,18 @@ export default function Send({
           </div>
           <div className="form-input">
             <div className="form-spacing" />
-            <span className="input-title">
-              {t('table.memo')} (<span className="orange">It will be public</span>)
-            </span>
-            <input
+            <FormInput
+              title={
+                <>
+                  {t('table.memo')} (<span className="orange">It will be public</span>)
+                </>
+              }
               placeholder="Enter a memo (optional)"
-              onChange={(e) => setMemo(e.target.value)}
-              className="input-text"
-              spellCheck="false"
-              maxLength="100"
-              type="text"
+              setInnerValue={setMemo}
+              hideButton={true}
               defaultValue={memo}
+              maxLength={100}
+              type="text"
             />
           </div>
           <CheckBox
@@ -587,48 +588,46 @@ export default function Send({
             <>
               <br />
               <div className="form-input">
-                <span className="input-title">Fee</span>
-                <input
+                <FormInput
+                  title="Fee"
                   placeholder={'Enter fee in ' + nativeCurrency}
-                  onChange={handleFeeChange}
+                  setInnerValue={handleFeeChange}
+                  hideButton={true}
                   onKeyPress={typeNumberOnly}
-                  className={`input-text ${feeError ? 'error' : ''}`}
-                  spellCheck="false"
-                  maxLength="35"
-                  min="0"
-                  type="text"
-                  inputMode="decimal"
                   defaultValue={fee}
+                  maxLength={35}
+                  min={0}
+                  inputMode="decimal"
+                  type="text"
                   disabled={!sessionToken || subscriptionExpired}
+                  className={feeError ? 'error' : ''}
                 />
                 {feeError && <div className="red">{feeError}</div>}
               </div>
               <div className="form-spacing" />
               <div className="form-input">
-                <span className="input-title">Source Tag</span>
-                <input
+                <FormInput
+                  title="Source Tag"
                   placeholder="Enter source tag"
-                  onChange={(e) => setSourceTag(e.target.value)}
+                  setInnerValue={setSourceTag}
+                  hideButton={true}
                   onKeyPress={typeNumberOnly}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="35"
-                  type="text"
                   defaultValue={sourceTag}
+                  maxLength={35}
+                  type="text"
                   disabled={!sessionToken || subscriptionExpired}
                 />
               </div>
               <div className="form-spacing" />
               <div className="form-input">
-                <span className="input-title">Invoice ID</span>
-                <input
+                <FormInput
+                  title="Invoice ID"
                   placeholder="Enter invoice ID"
-                  onChange={(e) => setInvoiceId(e.target.value)}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="64"
-                  type="text"
+                  setInnerValue={setInvoiceId}
+                  hideButton={true}
                   defaultValue={invoiceId}
+                  maxLength={64}
+                  type="text"
                   disabled={!sessionToken || subscriptionExpired}
                 />
               </div>
