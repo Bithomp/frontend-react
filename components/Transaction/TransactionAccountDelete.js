@@ -29,9 +29,9 @@ export const TransactionAccountDelete = ({ data, pageFiatRate, selectedCurrency 
       <tr>
         <TData>Delivered amount</TData>
         <TData className="bold">
-          <span className="green">{amountFormat(outcome.deliveredAmount, { precise: 'nice' })}</span>
+          <span className="green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice' })}</span>
           {nativeCurrencyToFiat({
-            amount: outcome.deliveredAmount,
+            amount: outcome?.deliveredAmount,
             selectedCurrency,
             fiatRate: pageFiatRate
           })}

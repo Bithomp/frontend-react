@@ -25,7 +25,7 @@ import { LinkTx, LinkAccount } from '../../utils/links'
 import Link from 'next/link'
 import { errorCodeDescription } from '../../utils/transaction'
 
-export default function IssueCheck({ setSignRequest }) {
+export default function IssueCheck({ setSignRequest, sessionToken, subscriptionExpired, openEmailLogin }) {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const [address, setAddress] = useState(null)
@@ -71,6 +71,13 @@ export default function IssueCheck({ setSignRequest }) {
 
     if (destinationTag && !isTagValid(destinationTag)) {
       setError('Please enter a valid destination tag.')
+      return
+    }
+
+    if ((fee || sourceTag || invoiceID) && (!sessionToken || subscriptionExpired)) {
+      setError(
+        'Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.'
+      )
       return
     }
 
@@ -222,11 +229,31 @@ export default function IssueCheck({ setSignRequest }) {
             checked={showAdvanced}
             setChecked={() => {
               setShowAdvanced(!showAdvanced)
+              setFee(null)
+              setSourceTag(null)
               setInvoiceID(null)
             }}
             name="advanced-check"
           >
             Advanced options
+            {!sessionToken ? (
+              <>
+                {' '}
+                <span className="orange">
+                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
+                </span>
+              </>
+            ) : (
+              subscriptionExpired && (
+                <>
+                  {' '}
+                  <span className="orange">
+                    Your Bithomp Pro subscription has expired.{' '}
+                    <Link href="/admin/subscriptions">Renew your subscription</Link>
+                  </span>
+                </>
+              )
+            )}
           </CheckBox>
           {showAdvanced && (
             <>
@@ -244,6 +271,7 @@ export default function IssueCheck({ setSignRequest }) {
                   type="text"
                   inputMode="decimal"
                   defaultValue={fee}
+                  disabled={!sessionToken || subscriptionExpired}
                 />
                 {feeError && <div className="red">{feeError}</div>}
               </div>
@@ -259,6 +287,7 @@ export default function IssueCheck({ setSignRequest }) {
                   maxLength="35"
                   type="text"
                   defaultValue={sourceTag}
+                  disabled={!sessionToken || subscriptionExpired}
                 />
               </div>
               <div className="form-spacing" />
@@ -272,6 +301,7 @@ export default function IssueCheck({ setSignRequest }) {
                   maxLength="64"
                   type="text"
                   defaultValue={invoiceID}
+                  disabled={!sessionToken || subscriptionExpired}
                 />
               </div>
             </>

@@ -13,7 +13,7 @@ import {
   nativeCurrency
 } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink, ipfsUrl, nftPriceData } from '../utils/nft'
-import { nftLink, usernameOrAddress, timeOrDate, fullDateAndTime, niceCurrency, capitalize } from '../utils/format'
+import { nftLink, usernameOrAddress, timeOrDate, fullDateAndTime, capitalize } from '../utils/format'
 
 import SEO from './SEO'
 import SearchBlock from './Layout/SearchBlock'
@@ -21,6 +21,7 @@ import Tiles from './Tiles'
 import IssuerSelect from './UI/IssuerSelect'
 import CheckBox from './UI/CheckBox'
 import DateAndTimeRange from './UI/DateAndTimeRange'
+import TokenSelector from './UI/TokenSelector'
 
 import RadioOptions from './UI/RadioOptions'
 import FormInput from './UI/FormInput'
@@ -97,6 +98,10 @@ export default function NftsComponent({
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
   const [filtersHide, setFiltersHide] = useState(false)
+  const [selectedToken, setSelectedToken] = useState({
+    currency: saleCurrency,
+    issuer: saleCurrencyIssuer
+  })
 
   const controller = new AbortController()
 
@@ -121,7 +126,7 @@ export default function NftsComponent({
 
   const listTabList = [
     { value: 'nfts', label: t('tabs.all') },
-    { value: 'onSale', label: t('tabs.onSale', { nativeCurrency }) }
+    { value: 'onSale', label: t('tabs.onSale') }
   ]
 
   let saleDestinationTabList = []
@@ -194,8 +199,11 @@ export default function NftsComponent({
     if (listTab === 'onSale') {
       //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all", "buyNow"
       listUrlPart = '?list=onSale&destination=' + saleDestinationTab
-      if (saleCurrencyIssuer && saleCurrency) {
-        listUrlPart = listUrlPart + '&currency=' + saleCurrency + '&currencyIssuer=' + saleCurrencyIssuer
+      if (selectedToken?.currency) {
+        listUrlPart = listUrlPart + '&currency=' + selectedToken.currency
+        if (selectedToken.issuer) {
+          listUrlPart = listUrlPart + '&currencyIssuer=' + selectedToken.issuer
+        }
       } else {
         listUrlPart = listUrlPart + '&currency=' + nativeCurrency?.toLowerCase()
       }
@@ -437,7 +445,8 @@ export default function NftsComponent({
     includeBurned,
     includeWithoutMediaData,
     mintedPeriod,
-    burnedPeriod
+    burnedPeriod,
+    selectedToken
   ])
 
   useEffect(() => {
@@ -638,7 +647,7 @@ export default function NftsComponent({
             (isValidTaxon(taxonQuery) ? ' ' + taxonQuery : '') +
             (ownerQuery ? ', ' + t('table.owner') + ': ' + ownerQuery : '') +
             (activeView === 'list' ? ' ' + t('tabs.list') : '') +
-            (listTab === 'onSale' ? ' ' + t('tabs.onSale', { nativeCurrency }) : '') +
+            (listTab === 'onSale' ? ' ' + t('tabs.onSale') : '') +
             (listTab === 'onSale' && (saleDestinationTab === 'buyNow' || saleDestinationTab === 'public')
               ? ', ' + t('tabs.buyNow')
               : '') +
@@ -652,18 +661,12 @@ export default function NftsComponent({
             (issuerQuery || searchQuery || t('nft-explorer.header')) +
             (rendered && mintedPeriod ? ', ' + t('table.mint-period') + ': ' + periodDescription(mintedPeriod) : '')
           }
-          images={[
-            {
-              width: 1200,
-              height: 630,
-              file: 'previews/1200x630/nft-explorer.png'
-            },
-            {
-              width: 630,
-              height: 630,
-              file: 'previews/630x630/nft-explorer.png'
-            }
-          ]}
+          image={{
+            width: 1200,
+            height: 630,
+            file: 'previews/1200x630/nft-explorer.png'
+          }}
+          twitterImage={{ file: 'previews/630x630/nft-explorer.png' }}
         />
       ) : (
         <>
@@ -701,29 +704,17 @@ export default function NftsComponent({
           )}
           {!burnedPeriod && listTab === 'onSale' && (
             <div>
-              {t('table.on-sale')}
+              <div>
+                {t('table.currency')}
+                <TokenSelector value={selectedToken} onChange={setSelectedToken} currencyQueryName="saleCurrency" />
+              </div>
+              <br />
               <RadioOptions
                 tabList={saleDestinationTabList}
                 tab={saleDestinationTab}
                 setTab={setSaleDestinationTab}
                 name="saleDestination"
               />
-              {saleCurrencyIssuer && saleCurrency && (
-                <>
-                  <FormInput
-                    title={t('table.currency')}
-                    defaultValue={niceCurrency(saleCurrency)}
-                    disabled={true}
-                    hideButton={true}
-                  />
-                  <FormInput
-                    title={t('table.currency-issuer')}
-                    defaultValue={saleCurrencyIssuer}
-                    disabled={true}
-                    hideButton={true}
-                  />
-                </>
-              )}
             </div>
           )}
           {nftExplorer && (
@@ -869,7 +860,7 @@ export default function NftsComponent({
               endMessage={t('nfts.end')}
               loadMoreMessage={t('nfts.load-more')}
               noSessionTokenMessage={t('nfts.change-filters')}
-              //height={!filtersHide ? '1300px' : '100vh'}
+              height={!filtersHide ? '1300px' : '100vh'}
             >
               {activeView === 'list' && (
                 <>

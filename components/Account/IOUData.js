@@ -192,9 +192,11 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
             )}
           </AddressWithIcon>
         </td>
-        <td className="bold tooltip" style={{ float: 'right' }}>
-          {shortNiceNumber(balance)}
-          <span className="tooltiptext">{fullNiceNumber(balance)}</span>
+        <td className="right">
+          <span className="bold tooltip">
+            {shortNiceNumber(balance)}
+            <span className="tooltiptext">{fullNiceNumber(balance)}</span>
+          </span>
         </td>
         <td className="right">
           <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>

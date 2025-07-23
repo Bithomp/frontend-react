@@ -126,6 +126,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
     setInputValue('')
     setNotEmpty(false)
     setSearchSuggestions([])
+    setSelectedOption(null)
     if (setCurrency) setCurrency('')
   }
 
@@ -138,28 +139,9 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
       <span className="input-title">
         Currency
         {selectedOption && selectedOption.item && (
-          (() => {
-            const item = selectedOption.item;
-            let currencyName = '';
-            let issuerName = '';
-            if (item.currencyDetails && item.currencyDetails.currency) {
-              currencyName = item.currencyDetails.currency;
-            } else if (item.currency) {
-              currencyName = niceCurrency(item.currency);
-            } else if (item.code) {
-              currencyName = niceCurrency(item.code);
-            } else if (typeof item === 'string') {
-              currencyName = niceCurrency(item);
-            }
-            if (item.currencyDetails && (item.currencyDetails.service || item.currencyDetails.username)) {
-              issuerName = item.currencyDetails.service || item.currencyDetails.username;
-            } else if (item.issuerDetails && (item.issuerDetails.service || item.issuerDetails.username)) {
-              issuerName = item.issuerDetails.service || item.issuerDetails.username;
-            } else if (item.issuer) {
-              issuerName = item.issuer;
-            }
-            return `: ${currencyName}${issuerName ? ` (${issuerName})` : ''}`;
-          })()
+          <>
+            : <b>{selectedOption.item.currencyDetails.currency}</b>
+          </>
         )}
       </span>
       <div className="form-input">

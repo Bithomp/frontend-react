@@ -4,14 +4,14 @@ import { useTranslation } from 'next-i18next'
 import { useIsMobile } from '../../utils/mobile'
 //import axios from 'axios'
 import { useRouter } from 'next/router'
-import { useWidth } from '../../utils'
-import Image from 'next/image'
+//import { useWidth } from '../../utils'
+//import Image from 'next/image'
 
 export default function TopLinks() {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
   const router = useRouter()
-  const width = useWidth()
+  //const width = useWidth()
 
   //const [countryCode, setCountryCode] = useState('')
 
@@ -190,6 +190,7 @@ export default function TopLinks() {
           <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
         </span>{' '}
         💵
+        {/*
         {isMobile ? <br /> : ' | '}
         <span className="tooltip">
           <a href="/go/playxrp" target="_blank" rel="noreferrer" className="top-link orange">
@@ -204,7 +205,8 @@ export default function TopLinks() {
           width="16"
           height="16"
           style={{ marginBottom: -3 }}
-        />
+          unoptimized
+        />*/}
       </div>
     )
   }
@@ -219,6 +221,7 @@ export default function TopLinks() {
             : 'Earn up to 14%'}
         </a>
       </span>
+      {/*
       {width > 1200 || isMobile ? <span style={{ padding: '0 10px' }}>|</span> : ''}
       <span className="tooltip">
         <a href="/go/top-play" target="_blank" rel="noreferrer" className="top-link orange">
@@ -232,7 +235,9 @@ export default function TopLinks() {
         width="16"
         height="16"
         style={{ marginBottom: -3 }}
+        unoptimized
       />
+      */}
     </div>
   )
 }
