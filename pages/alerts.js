@@ -60,18 +60,12 @@ export default function Alerts() {
     <>
       <SEO
         title={t('menu.price-alerts', { nativeCurrency })}
-        images={[
-          {
-            width: 1200,
-            height: 630,
-            file: 'previews/1200x630/alerts.png'
-          },
-          {
-            width: 630,
-            height: 630,
-            file: 'previews/630x630/alerts.png'
-          }
-        ]}
+        image={{
+          width: 1200,
+          height: 630,
+          file: 'previews/1200x630/alerts.png'
+        }}
+        twitterImage={{ file: 'previews/630x630/alerts.png' }}
       />
       <div className="page-alerts content-center">
         <h1 className="center">{t('menu.price-alerts', { nativeCurrency })}</h1>

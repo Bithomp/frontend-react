@@ -559,7 +559,7 @@
     "publicAndKnownBrokers": "공공 & MP",
     "onSale": "판매되고 있습니다",
     "all-tokens": "모든 토큰",
-    "native-currency-only": "{{nativeCurrency}}만",
+    "single-token": "단일 토큰",
     "mintedNew": "최신", 
     "mintedOld": "가장 오래된", 
     "existing": "기존", 

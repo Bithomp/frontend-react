@@ -559,7 +559,7 @@
     "publicAndKnownBrokers": "Öffentlich & MP",
     "onSale": "Gelistet",
     "all-tokens": "Alle Tokens",
-    "native-currency-only": "Nur {{nativeCurrency}}",
+    "single-token": "Einzelner Token",
     "mintedNew": "Neuste",
     "mintedOld": "Älteste",
     "existing": "Existierende",

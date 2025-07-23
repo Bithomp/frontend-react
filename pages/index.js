@@ -10,7 +10,6 @@ import { getIsSsrMobile } from '../utils/mobile'
 import SEO from '../components/SEO'
 import SearchBlock from '../components/Layout/SearchBlock'
 import Ads from '../components/Layout/Ads'
-import Products from '../components/Home/Products'
 import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 
@@ -137,18 +136,14 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
         title={t('home.title', { explorerName, nativeCurrency })}
         titleWithNetwork="true"
         description={t('home.description', { explorerName, nativeCurrency })}
-        images={[
-          {
-            width: 1200,
-            height: 630,
-            file: 'previews/1200x630/index.png'
-          },
-          {
-            width: 630,
-            height: 630,
-            file: 'previews/630x630/index.png'
-          }
-        ]}
+        image={{
+          width: 1200,
+          height: 630,
+          file: 'previews/1200x630/index.png'
+        }}
+        twitterImage={{
+          file: 'previews/630x630/index.png'
+        }}
       />
       <Head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }} />
@@ -160,8 +155,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
         <SearchBlock tab="explorer" />
         <Ads showAds={showAds} heightNoAds={30} />
       </section>
-
-      <Products />
 
       {!devNet && (
         <section className="home-section">
@@ -196,7 +189,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
           <Statistics data={statistics} setData={setStatistics} />
         </div>
       </section>
-
     </>
   )
 }

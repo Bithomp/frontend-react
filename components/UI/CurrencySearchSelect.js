@@ -29,7 +29,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
 
       setSearchingSuggestions(true)
       try {
-        const res = await axios(`/v2/trustlines/currencies/search/${encodeURIComponent(inputValue)}`)
+        const res = await axios(`/v2/trustlines/currencies/search/${encodeURIComponent(inputValue)}?currencyDetails=true`)
         let list = res?.data
         if (list && list.currencies) list = list.currencies
         if (!Array.isArray(list)) list = []
@@ -46,7 +46,11 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
               }
             } else if (item.currency) {
               value = item.currency
-              label = niceCurrency(item.currency)
+              if (item.currencyDetails) {
+                label = item.currencyDetails.currency
+              } else {
+                label = niceCurrency(item.currency)
+              }
               if (item.currency.length > 3 && (item.currency.substr(0, 2) === '02' || !item.currency.match(/^[A-Za-z0-9]{3}$/))) {
                 label += ` (${shortName(item.currency)})`
               }

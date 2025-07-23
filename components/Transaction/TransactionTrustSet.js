@@ -4,7 +4,7 @@ import { AddressWithIconFilled, amountFormat } from '../../utils/format'
 
 export const TransactionTrustSet = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification } = data
+  const { specification, tx } = data
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
@@ -34,6 +34,18 @@ export const TransactionTrustSet = ({ data, pageFiatRate, selectedCurrency }) =>
         <TData>Rippling</TData>
         <TData>{specification.ripplingDisabled ? 'disabled' : 'enabled'}</TData>
       </tr>
+      {tx?.QualityIn && (
+        <tr>
+          <TData>Quality in</TData>
+          <TData className="bold">{tx.QualityIn / 10000000}%</TData>
+        </tr>
+      )}
+      {tx?.QualityOut && (
+        <tr>
+          <TData>Quality out</TData>
+          <TData className="bold">{tx.QualityOut / 10000000}%</TData>
+        </tr>
+      )}
       <tr>
         <TData>Frozen</TData>
         <TData>{specification.frozen ? 'yes' : 'no'}</TData>
