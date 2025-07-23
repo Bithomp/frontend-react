@@ -61,6 +61,9 @@
       height: 40px;
       width: 154px;
       margin: 5px;
+      .hideOnsmall {
+        display: none;
+      }
       .brand-item-icon {
         height: 30px;
       }

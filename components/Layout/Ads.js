@@ -1,6 +1,5 @@
-import { useWidth, xahauNetwork } from '../../utils'
+import { xahauNetwork } from '../../utils'
 import { useTheme } from '../Layout/ThemeContext'
-import { useEffect, useState } from 'react'
 import { brandsBlock } from '../../styles/components/ads.module.scss'
 
 import BtcBit from '../../public/images/sponsored/btcbit.svg'
@@ -9,19 +8,6 @@ import Doppler from '../../public/images/sponsored/doppler.svg'
 
 export default function Ads({ showAds, heightNoAds }) {
   const { theme } = useTheme()
-  const [rendered, setRendered] = useState(false)
-
-  const width = useWidth()
-
-  useEffect(() => {
-    setRendered(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  if (!rendered) {
-    //keep it here to avoid hydaration error when ads are not rendered for subsribers
-    return <div className={brandsBlock}></div>
-  }
 
   if (!showAds) {
     return <div style={{ height: heightNoAds }} />
@@ -33,7 +19,9 @@ export default function Ads({ showAds, heightNoAds }) {
         <a href="/go/xrp-yield" target="_blank" rel="noreferrer">
           <div className="brand-item doppler">
             <Doppler className="brand-item-icon" fill={theme === 'dark' ? 'white' : '#1C1F21'} />
-            <div className="brand-item-title">{(width > 1279 ? 'Earn ' : '') + 'XRP Yields'}</div>
+            <div className="brand-item-title">
+              <span className="hideOnsmall">Earn </span>XRP Yields
+            </div>
             <div className="brand-item-text">Deposit XRP and earn XRP native yields.</div>
           </div>
         </a>
