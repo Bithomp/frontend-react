@@ -10,7 +10,14 @@ import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
-import { AddressWithIcon, fullNiceNumber, niceCurrency, shortNiceNumber, userOrServiceName } from '../utils/format'
+import {
+  AddressWithIcon,
+  fullNiceNumber,
+  niceCurrency,
+  niceNumber,
+  shortNiceNumber,
+  userOrServiceName
+} from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { useWidth } from '../utils'
@@ -246,11 +253,20 @@ export default function Tokens({
     })
   }
 
-  const priceOrMarketcapToFiat = (price) => {
+  const priceToFiat = (price) => {
     return price ? (
       <span className="tooltip" suppressHydrationWarning>
         {shortNiceNumber(price * fiatRate, 2, 1, selectedCurrency)}
         <span className="tooltiptext right no-brake">{fullNiceNumber(price * fiatRate, selectedCurrency)}</span>
+      </span>
+    ) : null
+  }
+
+  const marketcapToFiat = (price) => {
+    return price ? (
+      <span className="tooltip" suppressHydrationWarning>
+        {shortNiceNumber(price * fiatRate, 2, 1, selectedCurrency)}
+        <span className="tooltiptext right no-brake">{niceNumber(price * fiatRate, 0, selectedCurrency)}</span>
       </span>
     ) : null
   }
@@ -334,13 +350,13 @@ export default function Tokens({
                           <td>
                             <TokenCell token={token} />
                           </td>
-                          <td className="right">{priceOrMarketcapToFiat(token.statistics?.priceXrp)}</td>
+                          <td className="right">{priceToFiat(token.statistics?.priceXrp)}</td>
                           {/*
                           <td className="right"></td>
                           <td className="right"></td>
                           */}
-                          <td className="right">{volume ? priceOrMarketcapToFiat(volume) : '-'}</td>
-                          <td className="right">{priceOrMarketcapToFiat(token.statistics?.marketcap)}</td>
+                          <td className="right">{volume ? marketcapToFiat(volume) : '-'}</td>
+                          <td className="right">{marketcapToFiat(token.statistics?.marketcap)}</td>
                           <td className="right" suppressHydrationWarning>
                             <span className="tooltip">
                               {shortNiceNumber(token.trustlines, 2, 1)}
@@ -395,11 +411,11 @@ export default function Tokens({
                           <td>
                             <TokenCell token={token} />
                             <p>
-                              Price: {priceOrMarketcapToFiat(token.statistics?.priceXrp)}
+                              Price: {priceToFiat(token.statistics?.priceXrp)}
                               <br />
                               {token.statistics?.marketcap && (
                                 <>
-                                  Marketcap: {priceOrMarketcapToFiat(token.statistics?.marketcap)}
+                                  Marketcap: {marketcapToFiat(token.statistics?.marketcap)}
                                   <br />
                                 </>
                               )}
