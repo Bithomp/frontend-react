@@ -411,11 +411,22 @@ export default function Tokens({
                           <td>
                             <TokenCell token={token} />
                             <p>
-                              Price: {priceToFiat(token.statistics?.priceXrp)}
+                              Price: {fullNiceNumber(token.statistics?.priceXrp * fiatRate, selectedCurrency)}
+                              <br />
+                              Volume (24h):{' '}
+                              {token.statistics?.buyVolume || token.statistics?.sellVolume
+                                ? niceNumber(
+                                    (Number(token.statistics.buyVolume || 0) +
+                                      Number(token.statistics.sellVolume || 0)) *
+                                      fiatRate,
+                                    0,
+                                    selectedCurrency
+                                  )
+                                : '-'}
                               <br />
                               {token.statistics?.marketcap && (
                                 <>
-                                  Marketcap: {marketcapToFiat(token.statistics?.marketcap)}
+                                  Marketcap: {niceNumber(token.statistics.marketcap * fiatRate, 0, selectedCurrency)}
                                   <br />
                                 </>
                               )}
