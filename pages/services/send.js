@@ -506,54 +506,50 @@ export default function Send({
             onKeyPress={typeNumberOnly}
             defaultValue={destinationTag}
           />
-          <div className="form-input">
-            <div className="form-spacing" />
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <div className="flex-1">
-                <FormInput
-                  title={
-                    <>
-                      {t('table.amount')} {getMaxAmountDisplay()}
-                    </>
-                  }
-                  placeholder="Enter amount"
-                  setInnerValue={setAmount}
-                  hideButton={true}
-                  onKeyPress={typeNumberOnly}
-                  defaultValue={amount}
-                  maxLength={35}
-                  min={0}
-                  inputMode="decimal"
-                  type="text"
-                />
-              </div>
-              <div className="w-full sm:w-1/2">
-                <span className="input-title">Currency</span>
-                <TokenSelector
-                  value={selectedToken}
-                  onChange={onTokenChange}
-                  destinationAddress={address}
-                  currencyQueryName="currency"
-                />
-              </div>
+          <div className="form-spacing" />
+          <div className="flex flex-col gap-x-4 sm:flex-row">
+            <div className="flex-1">
+              <FormInput
+                title={
+                  <>
+                    {t('table.amount')} {getMaxAmountDisplay()}
+                  </>
+                }
+                placeholder="Enter amount"
+                setInnerValue={setAmount}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={amount}
+                maxLength={35}
+                min={0}
+                inputMode="decimal"
+                type="text"
+              />
+            </div>
+            <div className="w-full sm:w-1/2">
+              <span className="input-title">Currency</span>
+              <TokenSelector
+                value={selectedToken}
+                onChange={onTokenChange}
+                destinationAddress={address}
+                currencyQueryName="currency"
+              />
             </div>
           </div>
-          <div className="form-input">
-            <div className="form-spacing" />
-            <FormInput
-              title={
-                <>
-                  {t('table.memo')} (<span className="orange">It will be public</span>)
-                </>
-              }
-              placeholder="Enter a memo (optional)"
-              setInnerValue={setMemo}
-              hideButton={true}
-              defaultValue={memo}
-              maxLength={100}
-              type="text"
-            />
-          </div>
+          <br />
+          <FormInput
+            title={
+              <>
+                {t('table.memo')} (<span className="orange">It will be public</span>)
+              </>
+            }
+            placeholder="Enter a memo (optional)"
+            setInnerValue={setMemo}
+            hideButton={true}
+            defaultValue={memo}
+            maxLength={100}
+            type="text"
+          />
           <CheckBox
             checked={showAdvanced}
             setChecked={() => {
@@ -587,50 +583,44 @@ export default function Send({
           {showAdvanced && (
             <>
               <br />
-              <div className="form-input">
-                <FormInput
-                  title="Fee"
-                  placeholder={'Enter fee in ' + nativeCurrency}
-                  setInnerValue={handleFeeChange}
-                  hideButton={true}
-                  onKeyPress={typeNumberOnly}
-                  defaultValue={fee}
-                  maxLength={35}
-                  min={0}
-                  inputMode="decimal"
-                  type="text"
-                  disabled={!sessionToken || subscriptionExpired}
-                  className={feeError ? 'error' : ''}
-                />
-                {feeError && <div className="red">{feeError}</div>}
-              </div>
+              <FormInput
+                title="Fee"
+                placeholder={'Enter fee in ' + nativeCurrency}
+                setInnerValue={handleFeeChange}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={fee}
+                maxLength={35}
+                min={0}
+                inputMode="decimal"
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+                className={feeError ? 'error' : ''}
+              />
+              {feeError && <div className="red">{feeError}</div>}
               <div className="form-spacing" />
-              <div className="form-input">
-                <FormInput
-                  title="Source Tag"
-                  placeholder="Enter source tag"
-                  setInnerValue={setSourceTag}
-                  hideButton={true}
-                  onKeyPress={typeNumberOnly}
-                  defaultValue={sourceTag}
-                  maxLength={35}
-                  type="text"
-                  disabled={!sessionToken || subscriptionExpired}
-                />
-              </div>
+              <FormInput
+                title="Source Tag"
+                placeholder="Enter source tag"
+                setInnerValue={setSourceTag}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={sourceTag}
+                maxLength={35}
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+              />
               <div className="form-spacing" />
-              <div className="form-input">
-                <FormInput
-                  title="Invoice ID"
-                  placeholder="Enter invoice ID"
-                  setInnerValue={setInvoiceId}
-                  hideButton={true}
-                  defaultValue={invoiceId}
-                  maxLength={64}
-                  type="text"
-                  disabled={!sessionToken || subscriptionExpired}
-                />
-              </div>
+              <FormInput
+                title="Invoice ID"
+                placeholder="Enter invoice ID"
+                setInnerValue={setInvoiceId}
+                hideButton={true}
+                defaultValue={invoiceId}
+                maxLength={64}
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+              />
             </>
           )}
 
