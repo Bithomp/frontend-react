@@ -182,7 +182,11 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
             </span>
             <span className="halv">
               <span className="input-title">Currency</span>
-              <TokenSelector value={selectedToken} onChange={onTokenChange} destinationAddress={account?.address} />
+              <TokenSelector 
+                value={selectedToken} 
+                onChange={onTokenChange} 
+                destinationAddress={signRequest.request.Flags === 1 || xls35Sell ? account?.address : signRequest.request.Owner} 
+              />
             </span>
           </div>
           {!xls35Sell && (
