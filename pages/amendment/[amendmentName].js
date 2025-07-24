@@ -33,8 +33,8 @@ export async function getServerSideProps(context) {
     // Find the amendment by name or hash
     amendmentData = amendments.find(
       (a) =>
-        (String(a.name || '').toLowerCase() === String(amendmentName || '').toLowerCase()) ||
-        (String(a.amendment || '').toLowerCase() === String(amendmentName || '').toLowerCase())
+        String(a.name || '').toLowerCase() === String(amendmentName || '').toLowerCase() ||
+        String(a.amendment || '').toLowerCase() === String(amendmentName || '').toLowerCase()
     )
     // Get features for more details
     const res2 = await axiosServer({
@@ -59,8 +59,10 @@ export async function getServerSideProps(context) {
     })
     const unlValidators = unlRes.data?.validators || []
     const validatorMap = {}
-    validators.forEach(v => { validatorMap[v.publicKey] = v })
-    unlValidators.forEach(u => {
+    validators.forEach((v) => {
+      validatorMap[v.publicKey] = v
+    })
+    unlValidators.forEach((u) => {
       if (validatorMap[u.publicKey]) {
         validatorMap[u.publicKey].unl = true
       }
@@ -98,7 +100,13 @@ function splitValidatorsByAmendment(validators, amendmentName) {
   return { yeas, nays }
 }
 
-export default function AmendmentSummary({ amendmentName, amendmentData, featureData, validators, initialErrorMessage }) {
+export default function AmendmentSummary({
+  amendmentName,
+  amendmentData,
+  featureData,
+  validators,
+  initialErrorMessage
+}) {
   const windowWidth = useWidth()
   const { t, i18n } = useTranslation()
   const theme = useTheme()
@@ -125,11 +133,9 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
   const status = amendmentData?.enabled ? 'ENABLED' : 'NOT ENABLED'
   const activationDays = xahauNetwork ? 5 : 14
   const eta = amendmentData?.majority ? fullDateAndTime(amendmentData.majority + activationDays * 86400 + 903) : '-'
-  const consensus = yeas.length + nays.length > 0 ? ((yeas.length / (yeas.length + nays.length)) * 100).toFixed(2) : '0.00'
+  const consensus =
+    yeas.length + nays.length > 0 ? ((yeas.length / (yeas.length + nays.length)) * 100).toFixed(2) : '0.00'
 
-  const showHash = (hash) => {
-    return windowWidth > 1140 ? <>{hash} </> : <>{shortHash(hash)} </> 
-  }
   const fixCountry = (country) => {
     //accept UK as a country code for GB
     return country?.toUpperCase() === 'UK' ? 'GB' : country
@@ -207,256 +213,203 @@ export default function AmendmentSummary({ amendmentName, amendmentData, feature
     )
   }
 
+  const tableWithVotes = (votes) => {
+    return (
+      <tbody>
+        {votes.map((v, i) => (
+          <tr key={v.publicKey}>
+            <td className="center">{i + 1}</td>
+            <td>
+              <table style={{ minWidth: 130 }}>
+                <tbody>
+                  <tr className="no-border">
+                    <td style={{ width: 40, height: 35, padding: 0 }}>
+                      <Image
+                        alt="avatar"
+                        src={avatarServer + v.publicKey}
+                        width="35"
+                        height="35"
+                        style={{ verticalAlign: 'middle' }}
+                      />
+                    </td>
+                    <td style={{ padding: 0 }}>
+                      {v.principals?.map((p, i) => (
+                        <span key={i}>
+                          {p.name && <b> {p.name}</b>}
+                          {twitterLink(p.twitter || p.x)}
+                          {i < v.principals.length - 1 && ', '}
+                        </span>
+                      ))}{' '}
+                      {!v.principals?.length && shortHash(v.publicKey)} {displayFlag(v.ownerCountry, 'country')}
+                      <br />
+                      {v.domain ? (
+                        <>
+                          <a href={`https://${v.domain}`}>{v.domain}</a>
+                          {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
+                        </>
+                      ) : v.domainLegacy ? (
+                        <>
+                          <a href={`https://${v.domainLegacy}`}>{v.domainLegacy}</a>
+                          {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
+                        </>
+                      ) : (
+                        shortHash(v.publicKey)
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        ))}
+        {votes.length === 0 && (
+          <tr>
+            <td colSpan={2} className="center grey">
+              No validators voting for this amendment.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    )
+  }
+
   return (
     <>
       <SEO title={`Amendment: ${amendmentName}`} />
       <div className="content-text">
-        <h1 className="center">Amendment highlights</h1>
+        <h1 className="center">{amendmentData?.name || amendmentName} amendment</h1>
         <p className="center">
-          This page shows validator votes for the '{amendmentData?.name || amendmentName}' amendment on the {explorerName}.
+          This page shows validator votes for the <span className="bold">{amendmentData?.name || amendmentName}</span>{' '}
+          amendment on the {explorerName}.
         </p>
         {!initialErrorMessage ? (
           <>
             <table className="table-large no-hover">
               <tbody>
                 <tr>
-                  <td><b>Name:</b></td>
-                  <td>{amendmentData?.name || amendmentName}</td>
-                  <td><b>Status:</b></td>
-                  <td><span className={status === 'ENABLED' ? 'green bold' : 'red bold'}>{status}</span></td>
-                </tr>
-                <tr>
-                  <td><b>Amendment ID:</b></td>
-                  <td>{showHash(amendmentId)} <CopyButton text={amendmentId} /></td>
-                  <td><b>Voted Yes:</b></td>
-                  <td>{status !== 'ENABLED' ? yeas.length : '-'}</td>
-                </tr>
-                <tr>
-                  <td><b>Introduced in Version:</b></td>
-                  <td>{introduced}</td>
-                  <td><b>Voted No (or haven't voted yet):</b></td>
-                  <td>{status !== 'ENABLED' ? nays.length : '-'}</td>
-                </tr>
-                <tr>
-                  <td><b>Quorum:</b></td>
+                  <td>
+                    <b>Name:</b>
+                  </td>
+                  <td>
+                    {amendmentData?.name || amendmentName} (
+                    <a href={detailsUrl} target="_blank" rel="noreferrer">
+                      read more
+                    </a>
+                    )
+                  </td>
+                  <td>
+                    <b>Quorum:</b>
+                  </td>
                   <td>{threshold}</td>
-                  <td><b>ETA:</b></td>
-                  <td>{eta}</td>
                 </tr>
                 <tr>
-                  <td><b>More info:</b></td>
-                  <td><a href={detailsUrl} target="_blank" rel="noreferrer">{showHash(detailsUrl)} <CopyButton text={detailsUrl} /></a></td>
-                  <td><b>Consensus level:</b></td>
-                  <td>{status !== 'ENABLED' ? <span className="flag">{consensus}%</span> : '-'}</td>
+                  <td>
+                    <b>Amendment ID:</b>
+                  </td>
+                  <td>
+                    {shortHash(amendmentId)} <CopyButton text={amendmentId} />
+                  </td>
+                  <td>
+                    <b>Voted Yes:</b>
+                  </td>
+                  <td>{status !== 'ENABLED' ? <b className="green">{yeas.length}</b> : '-'}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <b>Introduced in Version:</b>
+                  </td>
+                  <td>{introduced}</td>
+                  <td>
+                    <b>Voted No (or haven't voted yet):</b>
+                  </td>
+                  <td>{status !== 'ENABLED' ? <b className="red">{nays.length}</b> : '-'}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <b>ETA:</b>
+                  </td>
+                  <td>{eta}</td>
+                  <td>{status !== 'ENABLED' ? <b>Consensus level:</b> : <b>Status</b>}</td>
+                  <td>
+                    {status !== 'ENABLED' ? (
+                      <>
+                        <span className="bold">{consensus}%</span> / 80%
+                      </>
+                    ) : (
+                      <span className={status === 'ENABLED' ? 'green bold' : 'red bold'}>{status}</span>
+                    )}
+                  </td>
                 </tr>
               </tbody>
             </table>
-            {
-              status !== 'ENABLED' && (
-                <>
-                  <br />
-                  {windowWidth > 768 ? (
-                    <div className="grid grid-cols-2 gap-4 max-w-screen-lg mx-auto">
-                      <div className="div-with-table">
-                        <h4 className="center green">Voted Yes</h4>
-                        <table className="table-large" style={{ minWidth: '100%' }}>
-                          <thead>
-                            <tr>
-                              <th className="center">Index</th>
-                              <th>Validator</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {yeas.map((v, i) => (
-                              <tr key={v.publicKey}>
-                                <td className="center">
-                                  <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
-                                  <br />
-                                  {i + 1}
-                                </td>
-                                <td>
-                                  {displayFlag(v.ownerCountry, 'owner-country')}
-                                  {v.principals?.map((p, i) => (
-                                    <span key={i}>
-                                      {p.name && <b> {p.name}</b>}
-                                      {twitterLink(p.twitter || p.x)} 
-                                      <br />
-                                    </span>
-                                  ))}
-                                  {v.domain ? (
-                                    <>
-                                      <a href={`https://${v.domain}`}>{v.domain}</a>
-                                      {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
-                                    </>
-                                  ) : v.domainLegacy ? (
-                                    <>
-                                      <a href={`https://${v.domainLegacy}`}>{v.domainLegacy}</a>
-                                      {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
-                                    </>
-                                  ) : (
-                                    shortHash(v.publicKey)
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                            {yeas.length === 0 && (
-                              <tr><td colSpan={2} className="center grey">No validators voting for this amendment.</td></tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                      <div className="div-with-table">
-                        <h4 className="center red">Voted No (or haven't voted yet)</h4>
-                        <table className="table-large" style={{ minWidth: '100%' }}>
-                          <thead>
-                            <tr>
-                              <th className="center">Index</th>
-                              <th>Validator</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {nays.map((v, i) => (
-                              <tr key={v.publicKey}>
-                                <td className="center">
-                                  <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
-                                  <br />
-                                  {i + 1}
-                                </td>
-                                <td>
-                                  {displayFlag(v.ownerCountry, 'owner-country')} {v.ownerCountry && ' '}
-                                  {v.principals?.map((p, i) => (
-                                    <span key={i}>
-                                      {p.name && <b> {p.name}</b>}
-                                      {twitterLink(p.twitter || p.x)}
-                                      <br />
-                                    </span>
-                                  ))}
-                                  {v.domain ? (
-                                    <>
-                                      <a href={`https://${v.domain}`}>{v.domain}</a>
-                                      {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
-                                    </>
-                                  ) : v.domainLegacy ? (
-                                    <>
-                                      <a href={`https://${v.domainLegacy}`}>{v.domainLegacy}</a>
-                                      {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
-                                    </>
-                                  ) : (
-                                    shortHash(v.publicKey)
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                            {nays.length === 0 && (
-                              <tr><td colSpan={2} className="center grey">No validators voting against or not voting.</td></tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
+            {status !== 'ENABLED' && (
+              <>
+                <br />
+                {windowWidth > 768 ? (
+                  <div className="grid grid-cols-2 gap-4 max-w-screen-lg mx-auto">
+                    <div className="div-with-table">
+                      <h4 className="center">
+                        Voted <span className="green">Yes</span>
+                      </h4>
+                      <table className="table-large no-hover" style={{ minWidth: '100%' }}>
+                        <thead>
+                          <tr>
+                            <th className="center">Index</th>
+                            <th>Validator</th>
+                          </tr>
+                        </thead>
+                        {tableWithVotes(yeas)}
+                      </table>
                     </div>
-                  ) : (
-                    <div className="grid grid-cols-1 gap-4">
-                      <div className="div-with-table">
-                        <h4 className="center green">Voted Yes</h4>
-                        <table className="table-mobile w-full">
-                          <thead>
-                            <tr>
-                              <th className="center">Index</th>
-                              <th className="left">Validator</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {yeas.map((v, i) => (
-                              <tr key={v.publicKey} className="py-2">
-                                <td className="center">
-                                  <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
-                                  <br />
-                                  {i + 1}
-                                </td>
-                                <td>
-                                  {displayFlag(v.ownerCountry, 'owner-country')}
-                                  {v.principals?.map((p, i) => (
-                                    <span key={i}>
-                                      {p.name && <b> {p.name}</b>}
-                                      {twitterLink(p.twitter || p.x)} 
-                                      <br />
-                                    </span>
-                                  ))}
-                                  {v.domain ? (
-                                    <>
-                                      <a href={`https://${v.domain}`}>{v.domain}</a>
-                                      {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
-                                    </>
-                                  ) : v.domainLegacy ? (
-                                    <>
-                                      <a href={`https://${v.domainLegacy}`}>{v.domainLegacy}</a>
-                                      {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
-                                    </>
-                                  ) : (
-                                    shortHash(v.publicKey)
-                                  )}
-                                </td>                                 
-                              </tr>
-                            ))}
-                            {yeas.length === 0 && (
-                              <tr><td colSpan={2} className="center grey">No validators voting for this amendment.</td></tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                      <div className="div-with-table">
-                        <h4 className="center red">Voted No (or haven't voted yet)</h4>
-                        <table className="table-mobile w-full">
-                          <thead>
-                            <tr>
-                              <th className="center">Index</th>
-                              <th className="left">Validator</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {nays.map((v, i) => (
-                              <tr key={v.publicKey}>
-                                <td className="center">
-                                  <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
-                                  <br />
-                                  {i + 1}
-                                </td>
-                                <td>
-                                  {displayFlag(v.ownerCountry, 'owner-country')} {v.ownerCountry && ' '}
-                                  {v.principals?.map((p, i) => (
-                                    <span key={i}>
-                                      {p.name && <b> {p.name}</b>}
-                                      {twitterLink(p.twitter || p.x)}
-                                      <br />
-                                    </span>
-                                  ))}
-                                  {v.domain ? (
-                                    <>
-                                      <a href={`https://${v.domain}`}>{v.domain}</a>
-                                      {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
-                                    </>
-                                  ) : v.domainLegacy ? (
-                                    <>
-                                      <a href={`https://${v.domainLegacy}`}>{v.domainLegacy}</a>
-                                      {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
-                                    </>
-                                  ) : (
-                                    shortHash(v.publicKey)
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                            {nays.length === 0 && (
-                              <tr><td colSpan={2} className="center grey">No validators voting against or not voting.</td></tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>                      
-                  )}                  
-                </>
-              )
-            }
+                    <div className="div-with-table">
+                      <h4 className="center">
+                        Voted <span className="red">No</span> (or haven't voted yet)
+                      </h4>
+                      <table className="table-large" style={{ minWidth: '100%' }}>
+                        <thead>
+                          <tr>
+                            <th className="center">Index</th>
+                            <th>Validator</th>
+                          </tr>
+                        </thead>
+                        {tableWithVotes(nays)}
+                      </table>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="div-with-table">
+                      <h4 className="center">
+                        Voted <span className="green">Yes</span>
+                      </h4>
+                      <table className="table-mobile w-full">
+                        <thead>
+                          <tr>
+                            <th className="center">Index</th>
+                            <th className="left">Validator</th>
+                          </tr>
+                        </thead>
+                        {tableWithVotes(yeas)}
+                      </table>
+                    </div>
+                    <div className="div-with-table">
+                      <h4 className="center">
+                        Voted <span className="red">No</span> (or haven't voted yet)
+                      </h4>
+                      <table className="table-mobile w-full">
+                        <thead>
+                          <tr>
+                            <th className="center">Index</th>
+                            <th className="left">Validator</th>
+                          </tr>
+                        </thead>
+                        {tableWithVotes(nays)}
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
           </>
         ) : (
           <div className="center">
