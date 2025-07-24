@@ -962,9 +962,13 @@ export default function NftVolumes({
                 file: 'previews/1200x630/nft-volumes.png'
               }
         }
-        twitterImage={{
-          file: 'previews/630x630/nft-volumes.png'
-        }}
+        twitterImage={
+          xahauNetwork
+            ? {}
+            : {
+                file: 'previews/630x630/nft-volumes.png'
+              }
+        }
       />
 
       <h1 className="center">{t('header', { ns: 'nft-volumes' }) + ' '}</h1>

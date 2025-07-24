@@ -7,11 +7,6 @@
     background-color: var(--background-input);
     transition: background-color .5s, border-color 0.5s;
 
-    &:hover {
-      border-color: var(--accent-link);
-      box-shadow: 0 0 5px var(--unaccent-icon);
-    }
-
     .react-select__value-container {
       text-align: left;
       .react-select__input-container {
