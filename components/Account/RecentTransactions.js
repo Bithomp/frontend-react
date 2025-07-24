@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { fullDateAndTime, timeOrDate } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import axios from 'axios'
 import CopyButton from '../UI/CopyButton'
 
-export default function RecentTransactions({ userData, ledgerTimestamp }) {
+export default function RecentTransactions({ userData, ledgerTimestamp, parentLoading }) {
   const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const previousParentLoadingRef = useRef(parentLoading)
 
   const address = userData?.address
 
@@ -19,23 +20,42 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
 
   const fetchTransactions = async () => {
     if (!address) return
+
     setLoading(true)
     setError(null)
-    const res = await axios(
-      `/v3/transactions/${address}?limit=5` +
-        (ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : '')
-    ).catch((error) => {
+    
+    try {
+      const res = await axios(
+        `/v3/transactions/${address}?limit=5` +
+          (ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : '')
+      )
+      setTransactions(res?.data || [])
+    } catch (error) {
       setError(error.message)
+    } finally {
       setLoading(false)
-    })
-    setTransactions(res?.data || [])
-    setLoading(false)
+    }
   }
 
+  // Effect for initial load and address changes
   useEffect(() => {
-    fetchTransactions()
+    if (!parentLoading) {
+      fetchTransactions()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, ledgerTimestamp])
+  }, [address])
+
+  // Effect to handle parent loading state changes
+  useEffect(() => {
+    const wasParentLoading = previousParentLoadingRef.current
+    previousParentLoadingRef.current = parentLoading
+
+    // If parent just finished loading, now fetch transactions
+    if (wasParentLoading && !parentLoading) {
+      fetchTransactions()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parentLoading, ledgerTimestamp])
 
   if (!transactions?.length) {
     return null

@@ -550,7 +550,11 @@ export default function Account({
                             escrowList={objects?.escrowList}
                           />
 
-                          <RecentTransactions userData={userData} ledgerTimestamp={ledgerTimestamp} />
+                          <RecentTransactions 
+                            userData={userData} 
+                            ledgerTimestamp={ledgerTimestamp}
+                            parentLoading={loading}
+                          />
                           {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}
