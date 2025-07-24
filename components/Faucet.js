@@ -88,6 +88,8 @@ export default function Faucet({ account, type, sessionTokenData }) {
       } else {
         queryRemoveList.push('amount')
       }
+    } else {
+      queryRemoveList.push('amount')
     }
 
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
