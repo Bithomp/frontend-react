@@ -1,5 +1,5 @@
 import { IoMdClose } from 'react-icons/io'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Select from 'react-select'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
@@ -24,6 +24,8 @@ export default function AddressInput({
 }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
+  const hasRun = useRef(false)
+  const initialRawData = useRef(rawData)
 
   const [inputValue, setInputValue] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -49,10 +51,48 @@ export default function AddressInput({
 
   useEffect(() => {
     setErrorMessage('')
+
+    const fetchData = async (valueInp) => {
+      let url = 'v2/username/' + valueInp
+      if (isAddressValid(valueInp)) {
+        url = 'v2/address/' + valueInp
+      }
+
+      const response = await axios(url + '?username=true&service=true').catch((error) => {
+        console.log(error.message)
+        setErrorMessage(t('error.' + error.message))
+      })
+
+      const data = response?.data
+      if (data?.address) {
+        setLink(
+          userOrServiceLink(
+            {
+              address: data.address,
+              addressDetails: {
+                username: data.username,
+                service: data.service?.name
+              }
+            },
+            'address'
+          )
+        )
+      }
+    }
+
     if (rawData && rawData[type]) {
       setNotEmpty(true)
       setInputValue(rawData[type])
-      setLink(userOrServiceLink(rawData, type))
+
+      if (!hasRun.current && rawData !== initialRawData.current) {
+        hasRun.current = true
+        if (!rawData?.[type + 'Details']?.service && !rawData[type + 'Details']?.username) {
+          //if no details (like when address is specified in url)
+          fetchData(rawData[type])
+        } else if (rawData[type + 'Details']?.service || rawData[type + 'Details']?.username) {
+          setLink(userOrServiceLink(rawData, type))
+        }
+      }
 
       if (disabled) {
         clearAll()

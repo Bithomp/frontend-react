@@ -202,11 +202,11 @@ input, textarea {
       transition: background-color 0s 600000s, color 0s 600000s !important; // a style trick for chrome autofill, otherwise it's white in the dark scheme
     }
     &:hover, &:focus {
-      border: 1px solid var(--accent-icon);
       transition: border-color 0.5s;
+      box-shadow: 0 0 5px var(--unaccent-icon);
     }
     &:focus {
-      box-shadow: 0 0 10px var(--accent-icon);
+      box-shadow: 0 0 5px var(--unaccent-icon);
     }
     &:read-only {
       background-color: var(--background-input-readonly);
@@ -825,6 +825,17 @@ body.dark {
   @media only screen and (max-width: 1100px) {
     height: 0;
   }
+}
+
+.flag {
+  background-color: #e6f4ea;
+  color: #008000;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #008000;
+  margin-right: 4px;
 }
 
 //common ui

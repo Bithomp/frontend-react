@@ -369,7 +369,12 @@ export const TransactionCard = ({
                   )}
                   {specification?.signer && (
                     <tr>
-                      <TData>Signer</TData>
+                      <TData>
+                        {specification.delegate?.address === specification.signer.address && (
+                          <span className="bold orange">Delegate </span>
+                        )}
+                        Signer
+                      </TData>
                       <TData>
                         <AddressWithIconFilled data={specification.signer} name="address" />
                       </TData>

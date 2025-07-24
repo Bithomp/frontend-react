@@ -962,9 +962,13 @@ export default function NftVolumes({
                 file: 'previews/1200x630/nft-volumes.png'
               }
         }
-        twitterImage={{
-          file: 'previews/630x630/nft-volumes.png'
-        }}
+        twitterImage={
+          xahauNetwork
+            ? {}
+            : {
+                file: 'previews/630x630/nft-volumes.png'
+              }
+        }
       />
 
       <h1 className="center">{t('header', { ns: 'nft-volumes' }) + ' '}</h1>
@@ -1519,7 +1523,7 @@ export default function NftVolumes({
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        {volume.volumes.map((vol, j) => (
+                                        {volume?.volumes?.map((vol, j) => (
                                           <tr key={j}>
                                             <td className="center">{j + 1}</td>
                                             <td className="right">{vol.sales}</td>

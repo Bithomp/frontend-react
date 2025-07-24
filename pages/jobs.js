@@ -3,6 +3,7 @@ import SEO from '../components/SEO'
 import { getIsSsrMobile } from '../utils/mobile'
 import { explorerName, network } from '../utils'
 import Mailto from 'react-protected-mailto'
+import Image from 'next/image'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -21,14 +22,17 @@ export default function Jobs() {
         title="We are hiring"
         description="we are looking for the Next.js Developer"
         noindex={network !== 'mainnet'}
-        image={{ file: 'pages/jobs', width: 'auto', height: 'auto', allNetworks: true }}
+        image={{ file: 'pages/jobs.png', width: 1520, height: 855, allNetworks: true }}
+        twitterImage={{ file: 'pages/jobs.png', allNetworks: true }}
       />
       <div className="content-center">
         <center>
-          <img
+          <Image
             src="/images/pages/jobs.png"
             alt="We are hiring"
-            style={{ width: '100%', height: 'auto', maxHeight: 500 }}
+            width="1520"
+            height="855"
+            className="max-w-full h-auto object-contain"
           />
         </center>
         <h1>We Are Hiring: Developer - Next.js</h1>

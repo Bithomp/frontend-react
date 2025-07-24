@@ -18,5 +18,6 @@
     "warnings": {
       "nft-crawler-delay": "Alguna información está desactualizada, última actualización: {{lastUpdate}}. Nuestros servidores están poniéndose al día, comprueba más tarde para tener información más actualizada."
     }
-  }
+  },
+  "set-avatar-description": "Para usar este NFT como tu avatar, inicia sesión con la billetera que lo posee."
 }

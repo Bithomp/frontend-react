@@ -65,7 +65,7 @@ const CustomIndicatorsContainer = (props) => {
     </div>
   )
 }
-export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {} }) {
+export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {}, isSsrMobile }) {
   const { t, i18n } = useTranslation()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -81,7 +81,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const [isMounted, setIsMounted] = useState(false)
 
   if (!searchPlaceholderText) {
-    searchPlaceholderText = windowWidth < 730 ? t('home.search-placeholder-short') : t('home.search-placeholder')
+    searchPlaceholderText =
+      isSsrMobile || (windowWidth && windowWidth < 730)
+        ? t('home.search-placeholder-short')
+        : t('home.search-placeholder')
   }
 
   useEffect(() => setIsMounted(true), [])
@@ -223,7 +226,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         router.push('/object/' + searchFor)
         return
       }
-      
+
       if (data.type === 'unknown') {
         setErrorMessage(data.error)
         return
