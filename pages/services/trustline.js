@@ -288,22 +288,19 @@ export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuer
                 rawData={selectedTokenData}
               />
               <div className="form-spacing" />
-              <div className="form-input">
-                <span className="input-title">Currency code</span>
-                <input
-                  className="input-text"
-                  placeholder="Currency code (e.g., USD, myCurrency or HEX)"
-                  value={currency.currency}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    // Allow any input up to 40 characters
-                    if (value.length <= 40) {
-                      setCurrency({ currency: value })
-                    }
-                  }}
-                  spellCheck="false"
-                />
-              </div>
+              <FormInput
+                title="Currency code"
+                placeholder="Currency code (e.g., USD, myCurrency or HEX)"
+                setInnerValue={(value) => {
+                  if (value.length <= 40) {
+                    setCurrency({ currency: value })
+                  }
+                }}
+                hideButton={true}
+                defaultValue={currency.currency}
+                maxLength={40}
+                type="text"
+              />
             </div>
           )}
           {mode === 'advanced' && (
