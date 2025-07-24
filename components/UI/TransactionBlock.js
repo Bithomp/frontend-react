@@ -31,7 +31,7 @@ import { FaArrowRightArrowLeft } from "react-icons/fa6";
 
 const TransactionBlock = ({ tx, index, address }) => {
   if (!tx) return null;
-  console.log(tx)
+  // console.log(tx)
   const dateText = dateFormat(tx.date + 946684800) || '-';
   const timeText = timeFormat(tx.date + 946684800) || '-';
 

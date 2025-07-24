@@ -339,9 +339,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const explorerHeader = (tab) => {
     if (
-      ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object', 'transactions'].includes(tab)
+      ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object'].includes(tab)
     ) {
       return t('explorer.header.' + tab)
+    } else if (tab === 'transactions') {
+      return t('Transactions information')
     }
     return ''
   }

@@ -16,16 +16,31 @@ import SimpleSelect from '../../components/UI/SimpleSelect'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  const { address } = query
+  const { id } = query
 
   let initialTransactions = []
   let initialErrorMessage = ''
   let initialMarker = null
+  let initialUserData = null 
 
   try {
+    // Fetch user data (username, service name) for the address
+    const userRes = await axiosServer({
+      method: 'get',
+      url: `v2/address/${id}?username=true&service=true&verifiedDomain=true`,
+      headers: passHeaders(req)
+    })
+    initialUserData = userRes?.data
+  } catch (e) {
+    // If user data fetch fails, continue without it
+    console.error('Failed to fetch user data:', e?.message)
+  }
+
+  try {
+    // Fetch transactions
     const res = await axiosServer({
       method: 'get',
-      url: `v3/transactions/${address}?limit=25`,
+      url: `v3/transactions/${initialUserData?.address}?limit=25`,
       headers: passHeaders(req)
     })
     initialTransactions = res?.data?.transactions || res?.data || []
@@ -36,10 +51,11 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      address,
+      id,
       initialTransactions,
       initialErrorMessage,
       initialMarker,
+      initialUserData: initialUserData || {},
       ...(await serverSideTranslations(locale, ['common'])),
       isSsrMobile: getIsSsrMobile(context)
     }
@@ -47,13 +63,21 @@ export async function getServerSideProps(context) {
 }
 
 export default function TransactionsAddress({
-  address,
+  id,
   initialTransactions,
   initialErrorMessage,
-  initialMarker
+  initialMarker,
+  initialUserData
 }) {
   const { t } = useTranslation()
   const width = useWidth()
+
+  // User data for SearchBlock
+  const [userData, setUserData] = useState({
+    username: initialUserData?.username,
+    service: initialUserData?.service?.name,
+    address: initialUserData?.address || id
+  })
 
   // State management
   const [transactions, setTransactions] = useState(initialTransactions || [])
@@ -70,26 +94,29 @@ export default function TransactionsAddress({
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
 
+  // Update userData when initialUserData changes
+  useEffect(() => {
+    if (!initialUserData?.address) return
+    setUserData({
+      username: initialUserData.username,
+      service: initialUserData.service?.name,
+      address: initialUserData.address
+    })
+  }, [initialUserData])
+
+  useEffect(() => {
+    setTransactions(initialTransactions)
+  }, [initialTransactions])
+
   // Process transactions whenever they change
   useEffect(() => {
     if (!transactions || transactions.length === 0) {
       setProcessedTransactions([])
       return
     }
-    const processed = processTransactionBlocks(transactions, address)
+    const processed = processTransactionBlocks(transactions, id)
     setProcessedTransactions(processed)
-  }, [transactions, address])
-  // Sort transactions whenever order changes or new data comes in
-  useEffect(() => {
-    if (!transactions || transactions.length === 0) return
-    const sorted = [...transactions].sort((a, b) => {
-      const aDate = a.tx?.date || 0
-      const bDate = b.tx?.date || 0
-      return order === 'oldest' ? aDate - bDate : bDate - aDate
-    })
-    setTransactions(sorted)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order])
+  }, [transactions, id])
 
   // Helpers
   const orderList = [
@@ -126,7 +153,7 @@ export default function TransactionsAddress({
   // Build API url
   const apiUrl = (opts = {}) => {
     const limit = 100
-    let url = `v3/transactions/${address}?limit=${limit}`
+    let url = `v3/transactions/${id}?limit=${limit}`
     // pagination marker
     if (opts.marker) {
       url += `&marker=${encodeURIComponent(opts.marker)}`
@@ -170,20 +197,9 @@ export default function TransactionsAddress({
       if (markerToUse && transactions.length > 0) {
         // pagination – append
         const combined = [...transactions, ...newData]
-        const sortedCombined = combined.sort((a, b) => {
-          const aDate = a.tx?.date || 0
-          const bDate = b.tx?.date || 0
-          return order === 'oldest' ? aDate - bDate : bDate - aDate
-        })
-        setTransactions(sortedCombined)
+        setTransactions(combined)
       } else {
-        // first load / restart
-        const sorted = newData.sort((a, b) => {
-          const aDate = a.tx?.date || 0
-          const bDate = b.tx?.date || 0
-          return order === 'oldest' ? aDate - bDate : bDate - aDate
-        })
-        setTransactions(sorted)
+        setTransactions(newData)
       }
 
       setMarker(newMarker)
@@ -220,8 +236,8 @@ export default function TransactionsAddress({
 
   return (
     <>
-      <SEO page="Explorer" title={`Transactions of ${address}`} description={`All transactions for address ${address}`} />
-      <SearchBlock tab="transactions" searchPlaceholderText={t('explorer.enter-address')} />
+      <SEO page="Explorer" title={`Transactions of ${id}`} description={`All transactions for address ${id}`} />
+      <SearchBlock tab="transactions" searchPlaceholderText={t('explorer.enter-address')} userData={userData} />
 
       <FiltersFrame
         order={order}
@@ -305,7 +321,7 @@ export default function TransactionsAddress({
                     <TransactionBlock
                       key={tx.hash || index}
                       tx={tx}
-                      address={address}
+                      address={id}
                       index={index}
                     />
                   ))}
