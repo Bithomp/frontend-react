@@ -139,7 +139,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         !isConvertion &&
         (!outcome?.deliveredAmount ||
           outcome?.deliveredAmount.issuer ||
-          (!isNativeCurrency(outcome?.deliveredAmount) && Number(outcome?.deliveredAmount.value) < 100000)) && (
+          (isNativeCurrency(outcome?.deliveredAmount) && Number(outcome?.deliveredAmount.value) < 100000)) && (
           <DestinationTagProblemSolving specification={specification} pageFiatRate={pageFiatRate} />
         )}
       <tr>

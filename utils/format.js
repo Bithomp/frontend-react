@@ -34,8 +34,19 @@ export const NiceNativeBalance = ({ amount }) => {
   )
 }
 
-export const AddressWithIcon = ({ children, address }) => {
-  let imageUrl = avatarServer + address
+export const AddressWithIcon = ({ children, address, currency }) => {
+  let imageUrl = avatarServer
+
+  if (currency) {
+    imageUrl = avatarServer.replace('/avatar/', '/issued-token/')
+  }
+
+  imageUrl += address
+
+  if (currency) {
+    imageUrl += '/' + currency
+  }
+
   if (!address) {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }

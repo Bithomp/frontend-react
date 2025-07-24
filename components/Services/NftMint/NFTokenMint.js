@@ -382,7 +382,8 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery, acco
                       <TokenSelector 
                         value={selectedToken} 
                         onChange={onTokenChange}
-                      />                    
+                        destinationAddress={account?.address}
+                      />
                     </div>
                   )}
                 </div>

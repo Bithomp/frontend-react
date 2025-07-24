@@ -12,8 +12,6 @@ import CopyButton from '../components/UI/CopyButton'
 import Link from 'next/link'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 
-import LinkIcon from '../public/images/link.svg'
-
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
@@ -25,13 +23,7 @@ export const getServerSideProps = async (context) => {
 }
 
 const amendmentLink = (a) => {
-  if (a.name) {
-    if (a.introduced && !xahauNetwork) {
-      return <a href={'https://xrpl.org/known-amendments.html#' + a.name.toLowerCase()}>{a.name}</a>
-    }
-    return a.name
-  }
-  return shortHash(a.amendment)
+  return <Link href={'amendment/' + a.name || a.amendment}>{a.name || shortHash(a.amendment)}</Link>
 }
 
 export default function Amendment() {
@@ -200,12 +192,7 @@ export default function Amendment() {
                     <td className="brake">{amendmentLink(a)}</td>
                     <td>{fullDateAndTime(a.majority)}</td>
                     <td>{fullDateAndTime(a.majority + activationDays * 86400 + 903)}</td>
-                    <td className="right">
-                      {a.count > threshold ? <b className="green">{a.count}</b> : a.count}{' '}
-                      <Link href={'/validators?amendment=' + a.name}>
-                        <LinkIcon />
-                      </Link>
-                    </td>
+                    <td className="right">{a.count > threshold ? <b className="green">{a.count}</b> : a.count}</td>
                     <td className="right">{a.introduced}</td>
                     <td className="right">
                       {showHash(a.amendment)}
@@ -237,12 +224,7 @@ export default function Amendment() {
                   <tr key={a.amendment}>
                     <td className="center">{i + 1}</td>
                     <td>{amendmentLink(a)}</td>
-                    <td className="right">
-                      {a.count > threshold ? <b className="green">{a.count}</b> : a.count}{' '}
-                      <Link href={'/validators?amendment=' + a.name}>
-                        <LinkIcon />
-                      </Link>
-                    </td>
+                    <td className="right">{a.count > threshold ? <b className="green">{a.count}</b> : a.count}</td>
                     <td className="right">{a.introduced}</td>
                     <td className="right">
                       {showHash(a.amendment)}

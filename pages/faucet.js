@@ -72,7 +72,7 @@ export default function FaucetPage({ account, showAds, sessionTokenData }) {
         <NetworkTabs />
         <Faucet account={account} type={devNet ? 'faucet' : 'testPayment'} sessionTokenData={sessionTokenData} />
       </div>
-      <Ads showAds={showAds} />
+      {showAds && <Ads />}
       <br />
     </>
   )

@@ -450,6 +450,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
                     <TokenSelector 
                       value={selectedToken} 
                       onChange={onTokenChange}
+                      destinationAddress={account?.address}
                     />                    
                   </div>
                 </div>
