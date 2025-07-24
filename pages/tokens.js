@@ -267,12 +267,14 @@ export default function Tokens({
 
   const marketcapToFiat = ({ marketcap, mobile }) => {
     if (mobile && marketcap) {
-      return niceNumber(marketcap * fiatRate, 0, selectedCurrency)
+      return <span suppressHydrationWarning>{niceNumber(marketcap * fiatRate, 0, selectedCurrency)}</span>
     }
     return marketcap ? (
       <span className="tooltip" suppressHydrationWarning>
         {shortNiceNumber(marketcap * fiatRate, 2, 1, selectedCurrency)}
-        <span className="tooltiptext right no-brake">{niceNumber(marketcap * fiatRate, 0, selectedCurrency)}</span>
+        <span className="tooltiptext right no-brake" suppressHydrationWarning>
+          {niceNumber(marketcap * fiatRate, 0, selectedCurrency)}
+        </span>
       </span>
     ) : null
   }
@@ -284,13 +286,15 @@ export default function Tokens({
       fiatRate
 
     if (mobile && volume) {
-      return niceNumber(volume, 0, selectedCurrency)
+      return <span suppressHydrationWarning>{niceNumber(volume, 0, selectedCurrency)}</span>
     }
 
     return volume ? (
       <span className="tooltip" suppressHydrationWarning>
         {shortNiceNumber(volume, 2, 1, selectedCurrency)}
-        <span className="tooltiptext right no-brake">{niceNumber(volume * fiatRate, 0, selectedCurrency)}</span>
+        <span className="tooltiptext right no-brake" suppressHydrationWarning>
+          {niceNumber(volume * fiatRate, 0, selectedCurrency)}
+        </span>
       </span>
     ) : (
       '-'
