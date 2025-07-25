@@ -28,7 +28,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       setError(error.message)
       setLoading(false)
     })
-    setTransactions(res?.data || [])
+    setTransactions(res?.data?.transactions || [])
     setLoading(false)
   }
 
