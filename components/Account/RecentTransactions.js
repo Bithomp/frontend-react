@@ -36,7 +36,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
   useEffect(() => {
     fetchTransactions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, ledgerTimestamp])
+  }, [])
 
   if (!transactions?.length) {
     return null
