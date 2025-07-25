@@ -11,19 +11,19 @@ const limit = 20
 
 // Custom MenuList to show limit message
 function MenuList(props) {
-  const { children } = props;
-  const { options } = props;
+  const { children } = props
+  const { options } = props
   // limit is in closure
   return (
     <selectComponents.MenuList {...props}>
       {children}
       {options.length >= limit && (
-        <div style={{ padding: '8px', textAlign: 'center', color: 'orange', fontSize: 13 }}>
-          More than {limit} results found. Please specify more characters to narrow down the search.
+        <div style={{ color: 'orange', padding: '6px 12px 12px 12px' }}>
+          More than {limit} results. Please type more to narrow your search.
         </div>
       )}
     </selectComponents.MenuList>
-  );
+  )
 }
 
 export default function CurrencySearchSelect({ setCurrency, defaultValue = '' }) {
@@ -50,11 +50,13 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
 
       setSearchingSuggestions(true)
       try {
-        const res = await axios(`/v2/trustlines/currencies/search/${encodeURIComponent(inputValue)}?limit=${limit}&currencyDetails=true`)
+        const res = await axios(
+          `/v2/trustlines/currencies/search/${encodeURIComponent(inputValue)}?limit=${limit}&currencyDetails=true`
+        )
         let list = res?.data
         if (list && list.currencies) list = list.currencies
         if (!Array.isArray(list)) list = []
-        
+
         const opts = list
           .map((item) => {
             let value = null
@@ -72,7 +74,10 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
               } else {
                 label = niceCurrency(item.currency)
               }
-              if (item.currency.length > 3 && (item.currency.substr(0, 2) === '02' || !item.currency.match(/^[A-Za-z0-9]{3}$/))) {
+              if (
+                item.currency.length > 3 &&
+                (item.currency.substr(0, 2) === '02' || !item.currency.match(/^[A-Za-z0-9]{3}$/))
+              ) {
                 label += ` (${shortName(item.currency)})`
               }
             } else if (item.code) {
@@ -160,7 +165,9 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
             isLoading={searchingSuggestions}
             components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null, MenuList }}
             filterOption={() => true}
-            noOptionsMessage={() => (inputValue.length > 2 ? 'No results found' : 'Start typing to search for currencies')}
+            noOptionsMessage={() =>
+              inputValue.length > 2 ? 'No results found' : 'Start typing to search for currencies'
+            }
           />
           <div className="form-input__btns">
             <button className="form-input__clear" onClick={clearAll}>
@@ -174,4 +181,4 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
       </div>
     </div>
   )
-} 
+}
