@@ -28,7 +28,7 @@ import '../styles/components/nprogress.css'
 
 
 import { ThemeProvider } from '../components/Layout/ThemeContext'
-import { fetchCurrentFiatRate } from '../utils/common'
+import { useRates } from '../hooks/useRates'
 import ErrorBoundary from '../components/ErrorBoundary'
 
 const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
@@ -53,7 +53,6 @@ const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
   const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
-  const [fiatRate, setFiatRate] = useState(0)
   const [proExpire, setProExpire] = useCookie('pro-expire')
   const [subscriptionExpired, setSubscriptionExpired] = useState(
     proExpire ? Number(proExpire) < new Date().getTime() : true
@@ -65,6 +64,9 @@ const MyApp = ({ Component, pageProps }) => {
   const [isOnline, setIsOnline] = useState(true)
   
   const { isEmailLoginOpen, openEmailLogin, closeEmailLogin, handleLoginSuccess } = useEmailLogin()
+  
+  // Use live rates via WebSocket
+  const { fiatRate } = useRates(selectedCurrency)
 
   useEffect(() => {
     setIsClient(true)
@@ -74,14 +76,7 @@ const MyApp = ({ Component, pageProps }) => {
   const router = useRouter()
   const isBot = useIsBot()
 
-  useEffect(() => {
-    //pages where we need to show the latest fiat price
-    const allowedRoutes = ['/', '/account/[[...id]]', '/amms', '/distribution', '/admin/watchlist', '/tokens']
-    if (allowedRoutes.includes(router.pathname)) {
-      fetchCurrentFiatRate(selectedCurrency, setFiatRate)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, router.pathname])
+
 
   useEffect(() => {
     setSubscriptionExpired(proExpire ? Number(proExpire) < new Date().getTime() : true)
