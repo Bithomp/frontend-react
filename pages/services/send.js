@@ -87,13 +87,13 @@ export default function Send({
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
-  const [isDestinationFlagged, setIsDestinationFlagged] = useState(false)
   const [isNonActive, setIsNonActive] = useState(false)
   const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
   const [requireDestTag, setRequireDestTag] = useState(false)
   const [agreeToSendToNonActive, setAgreeToSendToNonActive] = useState(false)
   const [selectedToken, setSelectedToken] = useState({ currency: currencyQuery, issuer: currencyIssuerQuery })
   const [networkInfo, setNetworkInfo] = useState({})
+  const [destinationStatus, setDestinationStatus] = useState(0)
 
   const onTokenChange = (token) => {
     setSelectedToken(token)
@@ -217,7 +217,7 @@ export default function Send({
   useEffect(() => {
     const fetchDestinationAccountData = async () => {
       if (!address || !isAddressValid(address)) {
-        setIsDestinationFlagged(false)
+        setDestinationStatus(0)
         setAgreeToSendToFlagged(false)
         setRequireDestTag(false)
         setIsNonActive(false)
@@ -230,21 +230,19 @@ export default function Send({
         const data = response?.data
 
         if (data?.address) {
-          const isFlagged = data.blacklist?.blacklisted || false
+          const status = data.blacklist?.status ?? 0
+          setDestinationStatus(status)
           const isNonActivated = data.ledgerInfo && data.ledgerInfo.activated === false
-
-          setIsDestinationFlagged(isFlagged)
           setIsNonActive(isNonActivated)
-
           // Reset agreements if account status changes
-          if (!isFlagged) {
+          if (status === 0) {
             setAgreeToSendToFlagged(false)
           }
           if (!isNonActivated) {
             setAgreeToSendToNonActive(false)
           }
         } else {
-          setIsDestinationFlagged(false)
+          setDestinationStatus(0)
           setAgreeToSendToFlagged(false)
           setIsNonActive(false)
           setAgreeToSendToNonActive(false)
@@ -260,7 +258,7 @@ export default function Send({
         }
       } catch (error) {
         setError('Error fetching destination account data')
-        setIsDestinationFlagged(false)
+        setDestinationStatus(0)
         setAgreeToSendToFlagged(false)
         setRequireDestTag(false)
         setIsNonActive(false)
@@ -335,13 +333,13 @@ export default function Send({
       return
     }
 
-    if (isDestinationFlagged && !agreeToSendToFlagged) {
-      setError('Please acknowledge that you understand the risks of sending to a flagged account')
+    if (isNonActive && !agreeToSendToNonActive) {
+      setError('Please acknowledge that you understand the risks of sending to a non-activated account')
       return
     }
 
-    if (isNonActive && !agreeToSendToNonActive) {
-      setError('Please acknowledge that you understand the risks of sending to a non-activated account')
+    if (destinationStatus === 3) {
+      setError('This account has been flagged as FRAUD. Sending is not allowed.')
       return
     }
 
@@ -444,17 +442,39 @@ export default function Send({
             type="address"
           />
 
-          {/* Show warning if destination account is flagged */}
-          {isDestinationFlagged && (
+          {/* Show warning if destination account is flagged (status 1,2,3) */}
+          {(destinationStatus === 1 || destinationStatus === 2 || destinationStatus === 3) && (
             <div>
               <div className="form-spacing" />
               <div className="red center p-2 rounded-md border border-red-200 mb-4 sm:mb-0">
-                <strong>⚠️ Fraud Alert</strong>
+                <strong>
+                  ⚠️{' '}
+                  {destinationStatus === 1
+                    ? 'Spam Alert'
+                    : destinationStatus === 2
+                    ? 'Potential Fraud Alert'
+                    : 'Fraud Alert'}
+                </strong>
                 <br />
-                This account has been flagged as potentially involved in scams, phishing, or other malicious activities.
-                <br />
-                <strong>We strongly recommend proceeding with caution to ensure the safety of your assets.</strong>
-                <br />
+                {destinationStatus === 1 && (
+                  <>
+                    This account has been flagged for spam. Proceed with caution.
+                    <br />
+                  </>
+                )}
+                {destinationStatus === 2 && (
+                  <>
+                    This account has been flagged as potentially involved in fraud, scams, or phishing.{' '}
+                    <strong>Proceed with caution.</strong>
+                    <br />
+                  </>
+                )}
+                {destinationStatus === 3 && (
+                  <>
+                    <strong>This account has been flagged as FRAUD. Sending is not allowed.</strong>
+                    <br />
+                  </>
+                )}
                 <Link
                   href="/blacklisted-address"
                   target="_blank"
@@ -565,7 +585,11 @@ export default function Send({
               <>
                 {' '}
                 <span className="orange">
-                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
+                  (available to{' '}
+                  <span className="link" onClick={() => openEmailLogin()}>
+                    logged-in
+                  </span>{' '}
+                  Bithomp Pro subscribers)
                 </span>
               </>
             ) : (
@@ -633,8 +657,8 @@ export default function Send({
             .
           </CheckBox>
 
-          {/* Show additional checkbox for flagged accounts */}
-          {isDestinationFlagged && (
+          {/* Show additional checkbox for flagged accounts (only for status 1 and 2) */}
+          {(destinationStatus === 1 || destinationStatus === 2) && (
             <div className="orange">
               <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
                 I understand the risks and I want to proceed with sending funds to this flagged account
@@ -664,7 +688,7 @@ export default function Send({
             </>
           )}
           <div className="center">
-            <button className="button-action" onClick={handleSend}>
+            <button className="button-action" onClick={handleSend} disabled={destinationStatus === 3}>
               Send Payment
             </button>
           </div>
