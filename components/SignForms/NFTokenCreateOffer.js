@@ -8,7 +8,7 @@ import AddressInput from '../UI/AddressInput'
 import { amountFormat } from '../../utils/format'
 import TokenSelector from '../UI/TokenSelector'
 
-export default function NFTokenCreateOffer({ signRequest, setSignRequest, setStatus, setFormError }) {
+export default function NFTokenCreateOffer({ signRequest, setSignRequest, setStatus, setFormError, account }) {
   const { t } = useTranslation()
 
   const [privateOffer, setPrivateOffer] = useState(false)
@@ -182,7 +182,11 @@ export default function NFTokenCreateOffer({ signRequest, setSignRequest, setSta
             </span>
             <span className="halv">
               <span className="input-title">Currency</span>
-              <TokenSelector value={selectedToken} onChange={onTokenChange} />
+              <TokenSelector 
+                value={selectedToken} 
+                onChange={onTokenChange} 
+                destinationAddress={signRequest.request.Flags === 1 || xls35Sell ? account?.address : signRequest.request.Owner} 
+              />
             </span>
           </div>
           {!xls35Sell && (

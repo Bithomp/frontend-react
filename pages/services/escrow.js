@@ -80,12 +80,12 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
     // Valid combinations: FinishAfter only, FinishAfter+CancelAfter, FinishAfter+Condition,
     // FinishAfter+Condition+CancelAfter, or Condition+CancelAfter
     if (!finishAfter && !condition) {
-      setError('You must specify either a finish time or a condition (or both).')
+      setError('You must specify either a unlock time or a condition (or both).')
       return
     }
 
     if (condition && !finishAfter && !cancelAfter) {
-      setError('A conditional escrow must have either a finish time or an expiration time (or both).')
+      setError('A conditional escrow must have either a unlock time or an expiration time (or both).')
       return
     }
 
@@ -102,7 +102,7 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
     const now = Math.floor(Date.now() / 1000)
 
     if (finishAfter && finishAfter <= now) {
-      setError('Finish time must be in the future.')
+      setError('Unlock time must be in the future.')
       return
     }
 
@@ -112,7 +112,7 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
     }
 
     if (finishAfter && cancelAfter && cancelAfter <= finishAfter) {
-      setError('Cancel time must be after finish time.')
+      setError('Cancel time must be after unlock time.')
       return
     }
 
@@ -241,7 +241,11 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
           />
           <div className="form-spacing" />
           <FormInput
-            title={<>{t('table.memo')} (<span className="orange">It will be public</span>)</>}
+            title={
+              <>
+                {t('table.memo')} (<span className="orange">It will be public</span>)
+              </>
+            }
             placeholder="Enter a memo (optional)"
             setInnerValue={setMemo}
             hideButton={true}
@@ -301,7 +305,11 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
               <>
                 {' '}
                 <span className="orange">
-                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
+                  (available to{' '}
+                  <span className="link" onClick={() => openEmailLogin()}>
+                    logged-in
+                  </span>{' '}
+                  Bithomp Pro subscribers)
                 </span>
               </>
             ) : (
@@ -383,7 +391,7 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
               {feeError && <div className="red">{feeError}</div>}
             </>
           )}
-          
+
           <br />
           <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
             I agree with the{' '}
