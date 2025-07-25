@@ -230,7 +230,7 @@ export default function Send({
         const data = response?.data
 
         if (data?.address) {
-          const status = data.blacklist?.status ?? (data.blacklist?.blacklisted ? 3 : 0)
+          const status = data.blacklist?.status ?? 0
           setDestinationStatus(status)
           const isNonActivated = data.ledgerInfo && data.ledgerInfo.activated === false
           setIsNonActive(isNonActivated)
@@ -447,16 +447,33 @@ export default function Send({
             <div>
               <div className="form-spacing" />
               <div className="red center p-2 rounded-md border border-red-200 mb-4 sm:mb-0">
-                <strong>⚠️ {destinationStatus === 1 ? 'Spam Alert' : destinationStatus === 2 ? 'Potential Fraud Alert' : 'Fraud Alert'}</strong>
+                <strong>
+                  ⚠️{' '}
+                  {destinationStatus === 1
+                    ? 'Spam Alert'
+                    : destinationStatus === 2
+                    ? 'Potential Fraud Alert'
+                    : 'Fraud Alert'}
+                </strong>
                 <br />
                 {destinationStatus === 1 && (
-                  <>This account has been flagged for spam. Proceed with caution.<br /></>
+                  <>
+                    This account has been flagged for spam. Proceed with caution.
+                    <br />
+                  </>
                 )}
                 {destinationStatus === 2 && (
-                  <>This account has been flagged as potentially involved in fraud, scams, or phishing. <strong>Proceed with caution.</strong><br /></>
+                  <>
+                    This account has been flagged as potentially involved in fraud, scams, or phishing.{' '}
+                    <strong>Proceed with caution.</strong>
+                    <br />
+                  </>
                 )}
                 {destinationStatus === 3 && (
-                  <><strong>This account has been flagged as FRAUD. Sending is not allowed.</strong><br /></>
+                  <>
+                    <strong>This account has been flagged as FRAUD. Sending is not allowed.</strong>
+                    <br />
+                  </>
                 )}
                 <Link
                   href="/blacklisted-address"
@@ -568,7 +585,11 @@ export default function Send({
               <>
                 {' '}
                 <span className="orange">
-                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
+                  (available to{' '}
+                  <span className="link" onClick={() => openEmailLogin()}>
+                    logged-in
+                  </span>{' '}
+                  Bithomp Pro subscribers)
                 </span>
               </>
             ) : (
