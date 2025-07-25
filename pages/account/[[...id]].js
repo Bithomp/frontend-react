@@ -63,7 +63,7 @@ import URITokenData from '../../components/Account/URITokenData'
 import IOUData from '../../components/Account/IOUData'
 import EscrowData from '../../components/Account/EscrowData'
 import DexOrdersData from '../../components/Account/DexOrdersData'
-//import RecentTransactions from '../../components/Account/RecentTransactions'
+import RecentTransactions from '../../components/Account/RecentTransactions'
 
 export default function Account({
   initialData,
@@ -550,7 +550,7 @@ export default function Account({
                             escrowList={objects?.escrowList}
                           />
 
-                          {/* <RecentTransactions userData={userData} ledgerTimestamp={ledgerTimestamp} /> */}
+                          <RecentTransactions userData={userData} ledgerTimestamp={ledgerTimestamp} />
                           {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}

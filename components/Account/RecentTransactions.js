@@ -28,7 +28,8 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       setError(error.message)
       setLoading(false)
     })
-    setTransactions(res?.data?.transactions || [])
+    const transactions = Array.isArray(res?.data) ? res.data : res?.data?.transactions
+    setTransactions(transactions || [])
     setLoading(false)
   }
 
