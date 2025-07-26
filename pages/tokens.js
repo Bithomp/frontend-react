@@ -405,7 +405,7 @@ export default function Tokens({
                   <th className="right">
                     Buyers/Sellers
                     <br />
-                    Total (24h)
+                    Traders (24h)
                   </th>
                   <th className="right">
                     Trades
@@ -443,15 +443,17 @@ export default function Tokens({
                           <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
                           <td className="right">{volumeToFiat({ token })}</td>
                           <td className="right">
-                            <span className="tooltip">
-                              <span className="green">{shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1)}</span> /{' '}
-                              <span className="red">{shortNiceNumber(token.statistics?.uniqueSellers, 0, 1)}</span>
-                              <br />
-                              {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1)}
-                              <span className="tooltiptext no-brake">
-                                {fullNiceNumber(token.statistics?.uniqueDexAccounts)}
+                            {token.statistics?.uniqueBuyers !== undefined && (
+                              <span className="tooltip">
+                                <span className="green">{shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1)}</span> /{' '}
+                                <span className="red">{shortNiceNumber(token.statistics?.uniqueSellers, 0, 1)}</span>
+                                <br />
+                                {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1)}
+                                <span className="tooltiptext no-brake">
+                                  {fullNiceNumber(token.statistics?.uniqueDexAccounts)}
+                                </span>
                               </span>
-                            </span>
+                            )}
                           </td>
                           <td className="right">
                             <span className="tooltip">
