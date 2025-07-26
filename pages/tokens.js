@@ -247,6 +247,7 @@ export default function Tokens({
   }
 
   const priceToFiat = ({ price, mobile }) => {
+    if (!price || !fiatRate) return null
     if (mobile && price) {
       return (
         <span suppressHydrationWarning>
@@ -256,7 +257,7 @@ export default function Tokens({
         </span>
       )
     }
-    return price ? (
+    return (
       <>
         <span className="tooltip" suppressHydrationWarning>
           {shortNiceNumber(price * fiatRate, 4, 1, selectedCurrency)}
@@ -270,42 +271,65 @@ export default function Tokens({
           </span>
         </span>
       </>
-    ) : null
+    )
   }
 
   const marketcapToFiat = ({ marketcap, mobile }) => {
+    if (!marketcap || !fiatRate) return null
+
     if (mobile && marketcap) {
       return <span suppressHydrationWarning>{niceNumber(marketcap * fiatRate, 0, selectedCurrency)}</span>
     }
-    return marketcap ? (
+    return (
       <span className="tooltip" suppressHydrationWarning>
         {shortNiceNumber(marketcap * fiatRate, 2, 1, selectedCurrency)}
         <span className="tooltiptext right no-brake" suppressHydrationWarning>
           {niceNumber(marketcap * fiatRate, 0, selectedCurrency)}
         </span>
       </span>
-    ) : null
+    )
   }
 
-  const volumeToFiat = ({ statistics, mobile }) => {
-    const volume =
-      (Number(statistics?.buyVolume || 0) + Number(statistics?.sellVolume || 0)) *
-      (statistics?.priceXrp || 0) *
-      fiatRate
+  const volumeToFiat = ({ token, mobile, type }) => {
+    const { statistics, currency } = token
+    if (!statistics || !fiatRate) return null
+    let volume
+    if (!type || type === 'total') {
+      volume = Number(statistics?.buyVolume || 0) + Number(statistics?.sellVolume || 0)
+    } else if (type === 'buy') {
+      volume = statistics?.buyVolume
+    } else if (type === 'sell') {
+      volume = statistics?.sellVolume
+    }
+    const volumeFiat = volume * statistics?.priceXrp * fiatRate
 
     if (mobile && volume) {
-      return <span suppressHydrationWarning>{niceNumber(volume, 0, selectedCurrency)}</span>
+      return (
+        <>
+          <span suppressHydrationWarning>{niceNumber(volumeFiat, 0, selectedCurrency)}</span>
+          <br />
+          {type === 'buy' ? 'Buy' : type === 'sell' ? 'Sell' : ''} Volume (24h) token: {niceNumber(volume, 0)}{' '}
+          {niceCurrency(currency)}
+        </>
+      )
     }
 
-    return volume ? (
-      <span className="tooltip" suppressHydrationWarning>
-        {shortNiceNumber(volume, 2, 1, selectedCurrency)}
-        <span className="tooltiptext right no-brake" suppressHydrationWarning>
-          {niceNumber(volume * fiatRate, 0, selectedCurrency)}
+    return (
+      <>
+        <span className="tooltip" suppressHydrationWarning>
+          {shortNiceNumber(volumeFiat, 2, 1, selectedCurrency)}
+          <span className="tooltiptext right no-brake" suppressHydrationWarning>
+            {niceNumber(volumeFiat, 0, selectedCurrency)}
+          </span>
         </span>
-      </span>
-    ) : (
-      '-'
+        <br />
+        <span className="tooltip grey" suppressHydrationWarning>
+          {shortNiceNumber(volume, 2, 1)} {niceCurrency(currency)}
+          <span className="tooltiptext right no-brake" suppressHydrationWarning>
+            {niceNumber(volume, 0)} {niceCurrency(currency)}
+          </span>
+        </span>
+      </>
     )
   }
 
@@ -319,7 +343,7 @@ export default function Tokens({
         setOrder={setOrder}
         orderList={[
           { value: 'rating', label: 'Rating: High to Low' },
-          { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
+          //{ value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
           { value: 'holdersHigh', label: 'Holders: High to Low' }
         ]}
         count={data?.length}
@@ -363,9 +387,33 @@ export default function Tokens({
                   <th className="right">24h %</th>
                   <th className="right">7d %</th>
                   */}
-                  <th className="right">Volume (24h)</th>
+                  <th className="right">
+                    Buy volume
+                    <br />
+                    (24h)
+                  </th>
+                  <th className="right">
+                    Sell volume
+                    <br />
+                    (24h)
+                  </th>
+                  <th className="right">
+                    Total volume
+                    <br />
+                    (24h)
+                  </th>
+                  <th className="right">
+                    Buyers/Sellers
+                    <br />
+                    Total (24h)
+                  </th>
+                  <th className="right">
+                    Trades
+                    <br />
+                    (24h)
+                  </th>
                   <th className="right">Marketcap</th>
-                  <th className="right">Trustlines</th>
+                  {/* <th className="right">Trustlines</th>*/}
                   <th className="right">Holders</th>
                   <th className="center">Action</th>
                 </tr>
@@ -391,15 +439,34 @@ export default function Tokens({
                           <td className="right"></td>
                           <td className="right"></td>
                           */}
-                          <td className="right">{volumeToFiat({ statistics: token.statistics })}</td>
+                          <td className="right">{volumeToFiat({ token, type: 'buy' })}</td>
+                          <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
+                          <td className="right">{volumeToFiat({ token })}</td>
+                          <td className="right">
+                            <span className="tooltip">
+                              <span className="green">{shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1)}</span> /{' '}
+                              <span className="red">{shortNiceNumber(token.statistics?.uniqueSellers, 0, 1)}</span>
+                              <br />
+                              {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1)}
+                              <span className="tooltiptext no-brake">
+                                {fullNiceNumber(token.statistics?.uniqueDexAccounts)}
+                              </span>
+                            </span>
+                          </td>
+                          <td className="right">
+                            <span className="tooltip">
+                              {shortNiceNumber(token.statistics?.dexes, 0, 1)}
+                              <span className="tooltiptext no-brake">{fullNiceNumber(token.statistics?.dexes)}</span>
+                            </span>
+                          </td>
                           <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
-                          <td className="right" suppressHydrationWarning>
+                          {/* <td className="right">
                             <span className="tooltip">
                               {shortNiceNumber(token.trustlines, 0, 1)}
                               <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
                             </span>
-                          </td>
-                          <td className="right" suppressHydrationWarning>
+                          </td> */}
+                          <td className="right">
                             <span className="tooltip">
                               {shortNiceNumber(token.holders, 0, 1)}
                               <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
@@ -449,7 +516,21 @@ export default function Tokens({
                             <p>
                               Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
                               <br />
-                              Volume (24h): {volumeToFiat({ statistics: token.statistics, mobile: true })}
+                              Buy volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
+                              <br />
+                              Sell volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
+                              <br />
+                              {/* 24h %: {token.statistics?.priceChange24h} */}
+                              {/* 7d %: {token.statistics?.priceChange7d} */}
+                              Total volume (24h): {volumeToFiat({ token, mobile: true })}
+                              <br />
+                              Trades (24h): {niceNumber(token.statistics?.dexes)}
+                              <br />
+                              Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts)}
+                              <br />
+                              Sellers (24h): {niceNumber(token.statistics?.uniqueSellers)}
+                              <br />
+                              Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers)}
                               <br />
                               Marketcap: {marketcapToFiat({ marketcap: token.statistics.marketcap, mobile: true })}
                               <br />
