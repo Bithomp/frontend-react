@@ -248,8 +248,9 @@ export default function Tokens({
   }
 
   const priceToFiat = ({ price, mobile }) => {
-    if (!price || !fiatRate) return null
-    if (mobile && price) {
+    if (!fiatRate) return null
+    price = price || 0
+    if (mobile) {
       return (
         <span suppressHydrationWarning>
           {fullNiceNumber(price * fiatRate, selectedCurrency)}
@@ -276,9 +277,11 @@ export default function Tokens({
   }
 
   const marketcapToFiat = ({ marketcap, mobile }) => {
-    if (!marketcap || !fiatRate) return null
+    if (!fiatRate) return null
 
-    if (mobile && marketcap) {
+    marketcap = marketcap || 0
+
+    if (mobile) {
       return <span suppressHydrationWarning>{niceNumber(marketcap * fiatRate, 0, selectedCurrency)}</span>
     }
     return (
@@ -293,18 +296,18 @@ export default function Tokens({
 
   const volumeToFiat = ({ token, mobile, type }) => {
     const { statistics, currency } = token
-    if (!statistics || !fiatRate) return null
+    if (!fiatRate) return null
     let volume
     if (!type || type === 'total') {
       volume = Number(statistics?.buyVolume || 0) + Number(statistics?.sellVolume || 0)
     } else if (type === 'buy') {
-      volume = statistics?.buyVolume
+      volume = statistics?.buyVolume || 0
     } else if (type === 'sell') {
-      volume = statistics?.sellVolume
+      volume = statistics?.sellVolume || 0
     }
-    const volumeFiat = volume * statistics?.priceXrp * fiatRate
+    const volumeFiat = volume * statistics?.priceXrp * fiatRate || 0
 
-    if (mobile && volume) {
+    if (mobile) {
       return (
         <>
           <span suppressHydrationWarning>{niceNumber(volumeFiat, 0, selectedCurrency)}</span>
@@ -450,17 +453,18 @@ export default function Tokens({
                           <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
                           <td className="right">{volumeToFiat({ token })}</td>
                           <td className="right">
-                            {token.statistics?.uniqueBuyers !== undefined && (
-                              <span className="tooltip">
-                                <span className="green">{shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1)}</span> /{' '}
-                                <span className="red">{shortNiceNumber(token.statistics?.uniqueSellers, 0, 1)}</span>
-                                <br />
-                                {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1)}
-                                <span className="tooltiptext no-brake">
-                                  {fullNiceNumber(token.statistics?.uniqueDexAccounts)}
-                                </span>
+                            <span className="tooltip">
+                              <span className="green">
+                                {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
+                              </span>{' '}
+                              /{' '}
+                              <span className="red">{shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}</span>
+                              <br />
+                              {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
+                              <span className="tooltiptext no-brake">
+                                {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
                               </span>
-                            )}
+                            </span>
                           </td>
                           <td className="right">
                             <span className="tooltip">
@@ -469,16 +473,18 @@ export default function Tokens({
                             </span>
                             <br />
                             <span className="tooltip green">
-                              {shortNiceNumber(token.statistics?.activeHolders, 0, 1)}
+                              {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
                               <span className="tooltiptext no-brake">
-                                {fullNiceNumber(token.statistics?.activeHolders)}
+                                {fullNiceNumber(token.statistics?.activeHolders) || 0}
                               </span>
                             </span>
                           </td>
                           <td className="right">
                             <span className="tooltip">
-                              {shortNiceNumber(token.statistics?.dexes, 0, 1)}
-                              <span className="tooltiptext no-brake">{fullNiceNumber(token.statistics?.dexes)}</span>
+                              {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
+                              <span className="tooltiptext no-brake">
+                                {fullNiceNumber(token.statistics?.dexes) || 0}
+                              </span>
                             </span>
                           </td>
                           <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
@@ -540,22 +546,22 @@ export default function Tokens({
                               {/* 7d %: {token.statistics?.priceChange7d} */}
                               Total volume (24h): {volumeToFiat({ token, mobile: true })}
                               <br />
-                              Trades (24h): {niceNumber(token.statistics?.dexes)}
+                              Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
                               <br />
-                              Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts)}
+                              Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
                               <br />
-                              Sellers (24h): {niceNumber(token.statistics?.uniqueSellers)}
+                              Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
                               <br />
-                              Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers)}
+                              Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
                               <br />
-                              Marketcap: {marketcapToFiat({ marketcap: token.statistics.marketcap, mobile: true })}
+                              Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
                               <br />
                               Trustlines: {niceNumber(token.trustlines)}
                               <br />
                               Holders: {niceNumber(token.holders)}
                               <br />
                               Active holders (Used the token in the last 24h):{' '}
-                              {niceNumber(token.statistics?.activeHolders)}
+                              {niceNumber(token.statistics?.activeHolders) || 0}
                               <br />
                               <br />
                               <button
