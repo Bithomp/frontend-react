@@ -20,7 +20,7 @@ import {
 } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
-import { useWidth } from '../utils'
+import { nativeCurrency, useWidth } from '../utils'
 import { LinkAccount } from '../utils/links'
 
 /*
@@ -255,13 +255,28 @@ export default function Tokens({
 
   const priceToFiat = ({ price, mobile }) => {
     if (mobile && price) {
-      return fullNiceNumber(price * fiatRate, selectedCurrency)
+      return (
+        <span suppressHydrationWarning>
+          {fullNiceNumber(price * fiatRate, selectedCurrency)}
+          <br />
+          Price in {nativeCurrency}: {niceNumber(price, 6)} {nativeCurrency}
+        </span>
+      )
     }
     return price ? (
-      <span className="tooltip" suppressHydrationWarning>
-        {shortNiceNumber(price * fiatRate, 2, 1, selectedCurrency)}
-        <span className="tooltiptext right no-brake">{fullNiceNumber(price * fiatRate, selectedCurrency)}</span>
-      </span>
+      <>
+        <span className="tooltip" suppressHydrationWarning>
+          {shortNiceNumber(price * fiatRate, 4, 1, selectedCurrency)}
+          <span className="tooltiptext right no-brake">{fullNiceNumber(price * fiatRate, selectedCurrency)}</span>
+        </span>
+        <br />
+        <span className="tooltip grey" suppressHydrationWarning>
+          {shortNiceNumber(price, 4, 1)} {nativeCurrency}
+          <span className="tooltiptext right no-brake">
+            {niceNumber(price, 6)} {nativeCurrency}
+          </span>
+        </span>
+      </>
     ) : null
   }
 
