@@ -73,7 +73,8 @@ export default function Account({
   ledgerTimestampQuery,
   account,
   setSignRequest,
-  fiatRate
+  fiatRate,
+  setActivatedAccount
 }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
@@ -110,6 +111,8 @@ export default function Account({
       service: initialData.service?.name,
       address: initialData.address
     })
+
+    setActivatedAccount(initialData?.ledgerInfo?.activated)
 
     if (initialData?.obligations) {
       //setObligations(initialData.obligations)
@@ -162,6 +165,7 @@ export default function Account({
           service: newdata.service?.name,
           address: newdata.address
         })
+        setActivatedAccount(newdata.ledgerInfo?.activated)
       } else {
         if (newdata.error) {
           setErrorMessage(t('error-api.' + newdata.error))
