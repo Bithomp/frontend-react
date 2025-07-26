@@ -1,5 +1,4 @@
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
@@ -11,17 +10,16 @@ import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import {
+  addressUsernameOrServiceLink,
   AddressWithIcon,
   fullNiceNumber,
   niceCurrency,
   niceNumber,
-  shortNiceNumber,
-  userOrServiceName
+  shortNiceNumber
 } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { nativeCurrency, useWidth } from '../utils'
-import { LinkAccount } from '../utils/links'
 
 /*
   {
@@ -207,24 +205,19 @@ export default function Tokens({
 
   // Helper component to render token with icon
   const TokenCell = ({ token }) => {
-    const issuerDetails = token.issuerDetails || {}
-
     return (
       <AddressWithIcon address={token?.issuer} currency={token?.currency}>
-        {!token.lp_token && (
+        {token.lp_token ? (
+          <b>{token.currencyDetails.currency}</b>
+        ) : (
           <>
-            <b>{niceCurrency(token.currency)}</b> {userOrServiceName(issuerDetails)}
-          </>
-        )}
-        {token.lp_token && (
-          <>
-            <b>{token.currencyDetails.currency}</b>
+            <b>{niceCurrency(token.currency)}</b>
           </>
         )}
         {token.issuer && (
           <>
             <br />
-            <LinkAccount address={token.issuer} />
+            {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
           </>
         )}
       </AddressWithIcon>
