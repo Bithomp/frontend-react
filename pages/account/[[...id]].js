@@ -126,6 +126,7 @@ export default function Account({
       //keep it here for cases when address changes without refreshing the page
       setGateway(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialData])
 
   useEffect(() => {
