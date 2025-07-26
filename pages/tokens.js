@@ -387,13 +387,13 @@ export default function Tokens({
                           <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
                           <td className="right" suppressHydrationWarning>
                             <span className="tooltip">
-                              {shortNiceNumber(token.trustlines, 2, 1)}
+                              {shortNiceNumber(token.trustlines, 0, 1)}
                               <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
                             </span>
                           </td>
                           <td className="right" suppressHydrationWarning>
                             <span className="tooltip">
-                              {shortNiceNumber(token.holders, 2, 1)}
+                              {shortNiceNumber(token.holders, 0, 1)}
                               <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
                             </span>
                           </td>
