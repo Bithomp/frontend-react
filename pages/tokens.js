@@ -94,6 +94,7 @@ export default function Tokens({
   sessionToken,
   setSignRequest,
   selectedCurrency,
+  setSelectedCurrency,
   fiatRate
 }) {
   const { t } = useTranslation()
@@ -352,6 +353,8 @@ export default function Tokens({
         csvHeaders={csvHeaders}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
+        setSelectedCurrency={setSelectedCurrency}
+        selectedCurrency={selectedCurrency}
       >
         {/* Left filters */}
         <>
