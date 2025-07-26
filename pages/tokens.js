@@ -408,13 +408,17 @@ export default function Tokens({
                     Traders (24h)
                   </th>
                   <th className="right">
+                    Holders,
+                    <br />
+                    Active (24h)
+                  </th>
+                  <th className="right">
                     Trades
                     <br />
                     (24h)
                   </th>
                   <th className="right">Marketcap</th>
                   {/* <th className="right">Trustlines</th>*/}
-                  <th className="right">Holders</th>
                   <th className="center">Action</th>
                 </tr>
               </thead>
@@ -457,6 +461,19 @@ export default function Tokens({
                           </td>
                           <td className="right">
                             <span className="tooltip">
+                              {shortNiceNumber(token.holders, 0, 1)}
+                              <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+                            </span>
+                            <br />
+                            <span className="tooltip green">
+                              {shortNiceNumber(token.statistics?.activeHolders, 0, 1)}
+                              <span className="tooltiptext no-brake">
+                                {fullNiceNumber(token.statistics?.activeHolders)}
+                              </span>
+                            </span>
+                          </td>
+                          <td className="right">
+                            <span className="tooltip">
                               {shortNiceNumber(token.statistics?.dexes, 0, 1)}
                               <span className="tooltiptext no-brake">{fullNiceNumber(token.statistics?.dexes)}</span>
                             </span>
@@ -468,12 +485,6 @@ export default function Tokens({
                               <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
                             </span>
                           </td> */}
-                          <td className="right">
-                            <span className="tooltip">
-                              {shortNiceNumber(token.holders, 0, 1)}
-                              <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
-                            </span>
-                          </td>
                           <td className="center">
                             <a
                               href="#"
@@ -539,6 +550,9 @@ export default function Tokens({
                               Trustlines: {niceNumber(token.trustlines)}
                               <br />
                               Holders: {niceNumber(token.holders)}
+                              <br />
+                              Active holders (Used the token in the last 24h):{' '}
+                              {niceNumber(token.statistics?.activeHolders)}
                               <br />
                               <br />
                               <button
