@@ -105,6 +105,9 @@ export function txTypeToText(type, capitalize = false) {
     case 'balance change':
       formattedType = 'balance change';
       break;
+    case 'trustset':
+      formattedType = 'trustline';
+      break;
     default:
       formattedType = type || 'unknown';
       break;

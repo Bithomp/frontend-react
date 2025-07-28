@@ -44,7 +44,7 @@ export async function getServerSideProps(context) {
     // Fetch transactions
     const res = await axiosServer({
       method: 'get',
-      url: `v3/transactions/${initialUserData?.address}?limit=${limit}&currencyDetails=true`,
+      url: `v3/transactions/${initialUserData?.address}?limit=${limit}`,
       headers: passHeaders(req)
     })
     initialTransactions = res?.data?.transactions || res?.data || []
@@ -121,9 +121,9 @@ export default function TransactionsAddress({
       setProcessedTransactions([])
       return
     }
-    const processed = processTransactionBlocks(transactions, id)
+    const processed = processTransactionBlocks(transactions, userData?.address)
     setProcessedTransactions(processed)
-  }, [transactions, id])
+  }, [transactions, userData?.address])
 
   // Helpers
   const orderList = [
@@ -160,7 +160,7 @@ export default function TransactionsAddress({
   // Build API url
   const apiUrl = (opts = {}) => {
     const limit = 20
-    let url = `v3/transactions/${userData?.address}?limit=${limit}&currencyDetails=true`
+    let url = `v3/transactions/${userData?.address}?limit=${limit}`
     // pagination marker
     if (opts.marker) {
       const markerString = typeof opts.marker === 'object' ? JSON.stringify(opts.marker) : opts.marker

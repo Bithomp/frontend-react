@@ -36,7 +36,6 @@ const renderFormattedAmount = (amount, key) => (
 
 const TransactionBlock = ({ tx, index, address, isMobile }) => {
   if (!tx) return null;
-  console.log(tx)
   const dateText = dateFormat(tx.date + 946684800) || '-';
   const timeText = timeFormat(tx.date + 946684800) || '-';
 
