@@ -199,11 +199,14 @@ const TransactionBlock = ({ tx, index, address, isMobile }) => {
     if (tx.type === 'Offercreate' || tx.type === 'Offercancel') {
       return tx.orderType;
     }
+    if (tx.direction === 'escrow') {
+      return tx.escrowType;
+    }
     return tx.type;
   };
 
   return (
-    <tr key={tx.hash || index}>
+    <tr key={tx.hash || index} style={{ background: tx.failed ? 'repeating-linear-gradient(45deg, #f9e3b9, #f9e3b9 10px, #fff 10px, #fff 20px)' : '' }}>
       <td className="center bold" style={{ width: 10 }}>{index + 1}.</td>
       <td className="gray" style={{ width: 100 }}>
         <FaCalendarAlt /> {dateText} <br />
@@ -257,6 +260,41 @@ const TransactionBlock = ({ tx, index, address, isMobile }) => {
             {tx.flags.map((flag, idx) => (
               <span key={idx} className="flag">{flag}</span>
             ))}
+            <br />
+          </>
+        )}
+        {tx.direction === 'escrow' && tx.destination && (
+          <>
+            <span className="gray">Destination: </span>
+            <span className="gray">{addressUsernameOrServiceLink(tx.destination, 'address') || tx.destination}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'escrow' && tx.allowExecuteAfter && (
+           <>
+             <span className="gray">Execute after: </span>
+             <span className="gray">{new Date(tx.allowExecuteAfter).toLocaleString()}</span>
+             <br />
+           </>
+         )}        
+         {tx.direction === 'escrow' && tx.allowCancelAfter && (
+           <>
+             <span className="gray">Cancel after: </span>
+             <span className="gray">{new Date(tx.allowCancelAfter).toLocaleString()}</span>
+             <br />
+           </>
+         )}
+        {tx.direction === 'escrow' && tx.sequence && (
+          <>
+            <span className="gray">Sequence: </span>
+            <span className="gray">#{tx.sequence}</span>
+            <br />
+          </>
+        )}
+        {tx.failed && (
+          <>
+            <span className="red bold">Failed: </span>
+            <span className="red">{tx.statusText}</span>
             <br />
           </>
         )}
@@ -318,7 +356,7 @@ const TransactionBlock = ({ tx, index, address, isMobile }) => {
             <br />
           </>
         )}
-        {(tx?.arrow === 'exchange' || tx?.arrow === 'amm') && tx.lowList && tx.lowList.length > 0 && (
+        {(tx?.arrow === 'exchange' || tx?.arrow === 'amm' || tx?.direction === 'check') && tx.lowList && tx.lowList.length > 0 && (
           <>
             {tx.lowList.map((amount, index) => (
               <>

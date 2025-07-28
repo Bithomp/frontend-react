@@ -12,16 +12,16 @@ export function txTypeToText(type, capitalize = false) {
     case 'ticketcreate':
       formattedType = 'ticket creation';
       break;
-    case 'ordercancellation':
-      formattedType = 'order cancelation';
+    case 'offercancel':
+      formattedType = 'order cancellation';
       break;
-    case 'escrowcreation':
+    case 'escrowcreate':
       formattedType = 'escrow creation';
       break;
-    case 'escrowcancellation':
+    case 'escrowcancel':
       formattedType = 'escrow cancellation';
       break;
-    case 'escrowexecution':
+    case 'escrowfinish':
       formattedType = 'escrow execution';
       break;
     case 'checkcreate':
@@ -549,7 +549,7 @@ function formatNftDetails(tx, address) {
 function formatEscrowDetails(tx, address) {
   const type = tx.type;
   const submitter = tx.submitter;
-  const sequence = tx.sequence;
+  const escrowSequence = tx.outcome?.escrowChanges?.escrowSequence;
   const specification = tx.specification;
   const fee = tx.fee;
   
@@ -558,11 +558,9 @@ function formatEscrowDetails(tx, address) {
   let arrow = null;
   let escrowType = type;
   
-  if (type === 'escrowcreation') {
-    if (submitter === address) {
-      escrowType += ` #${sequence}`;
-    }
-    
+  if (type === 'escrowcreate') {
+    escrowType = `Escrow creation #${escrowSequence || tx.sequence}`;
+     
     if (tx.rawTransaction?.Amount) {
       if (typeof tx.rawTransaction.Amount === 'object') {
         // IOU
@@ -580,7 +578,7 @@ function formatEscrowDetails(tx, address) {
       }
     }
     
-    const destination = specification?.destination?.address;
+    const destination = specification?.destination;
     if (destination) {
       return {
         direction: 'escrow',
@@ -594,7 +592,7 @@ function formatEscrowDetails(tx, address) {
         counterparty: null
       };
     }
-  } else if (type === 'escrowexecution' || type === 'escrowcancellation') {
+  } else if (type === 'escrowfinish' || type === 'escrowcancel') {
     if (submitter !== address) {
       return {
         direction: 'escrow',
@@ -609,9 +607,11 @@ function formatEscrowDetails(tx, address) {
       };
     }
     
-    if (type === 'escrowcancellation') {
+    if (type === 'escrowcancel') {
       lowList = tx.myBalanceChanges ? tx.myBalanceChanges.map(change => formatAmount(change)) : [];
+      escrowType = `Escrow cancellation #${escrowSequence || tx.sequence}`;
     } else {
+      escrowType = `Escrow execution #${escrowSequence || tx.sequence}`;
       if (tx.balanceChanges) {
         const balanceKeys = Object.keys(tx.balanceChanges);
         if (balanceKeys.length > 1) {
@@ -702,6 +702,30 @@ function formatFailedStatus(status) {
   return status && status !== 'tesSUCCESS';
 }
 
+function formatCheckDetails(tx, address) {
+  const type = tx.type;
+  const specification = tx.specification; 
+  
+  
+  let mainList = [];
+  let lowList = [];
+  let arrow = null;
+  let checkType = type; 
+
+  lowList = tx.outcome?.checkChanges?.sendMax ? [formatAmount(tx.outcome?.checkChanges?.sendMax)] : [];
+ 
+
+  return {
+    direction: 'check',
+    arrow,
+    mainList,
+    lowList,
+    checkType,
+    specification,
+    counterparty: null
+  };
+}
+
 function getTransactionStatus(status) {
   const statusMap = {
     'tesSUCCESS': 'Success',
@@ -774,9 +798,12 @@ export function processTransactionBlock(tx, address) {
     payment: formatPaymentDetails,
     offercreate: formatOrderDetails,
     offercancel: formatOrderCancellationDetails,
-    escrowcreation: formatEscrowDetails,
-    escrowexecution: formatEscrowDetails,
-    escrowcancellation: formatEscrowDetails,
+    escrowcreate: formatEscrowDetails,
+    escrowfinish: formatEscrowDetails,
+    escrowcancel: formatEscrowDetails,
+    checkcreate: formatCheckDetails,
+    checkcash: formatCheckDetails,
+    checkcancel: formatCheckDetails,
     trustset: formatTrustlineDetails
   };
 

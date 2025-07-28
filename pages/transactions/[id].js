@@ -360,7 +360,7 @@ export default function TransactionsAddress({
                   <TransactionBlock
                     key={tx.hash || index}
                     tx={tx}
-                    address={id}
+                    address={userData?.address}
                     index={index}
                     isMobile={width < 600}
                   />
