@@ -13,6 +13,8 @@ import TransactionBlock from '../../components/UI/TransactionBlock'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import SimpleSelect from '../../components/UI/SimpleSelect'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -279,21 +281,33 @@ export default function TransactionsAddress({
 
             <div>
               <span className="input-title">From</span>
-              <input
-                type="datetime-local"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                className="input-text"
+              <DatePicker
+                selected={fromDate ? new Date(fromDate * 1000) : null}
+                onChange={(date) => setFromDate(date ? Math.floor(date.getTime() / 1000) : null)}
+                selectsStart
+                showTimeInput
+                timeInputLabel={t('table.time')}
+                dateFormat="yyyy/MM/dd HH:mm:ss"
+                className="dateAndTimeRange"
+                maxDate={new Date()}
+                showMonthDropdown
+                showYearDropdown
               />
             </div>
 
             <div>
               <span className="input-title">To</span>
-              <input
-              type="datetime-local"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              className="input-text"
+              <DatePicker
+                selected={toDate ? new Date(toDate * 1000) : null}
+                onChange={(date) => setToDate(date ? Math.floor(date.getTime() / 1000) : null)}
+                selectsEnd
+                showTimeInput
+                timeInputLabel={t('table.time')}
+                dateFormat="yyyy/MM/dd HH:mm:ss"
+                className="dateAndTimeRange"
+                maxDate={new Date()}
+                showMonthDropdown
+                showYearDropdown
               />
             </div>
 
