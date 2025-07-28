@@ -291,6 +291,124 @@ const TransactionBlock = ({ tx, index, address, isMobile }) => {
             <br />
           </>
         )}
+        {tx.direction === 'accountset' && tx.defaultRipple !== undefined && (
+          <>
+            <span className="bold">Default ripple: </span>
+            <span className="bold">{tx.defaultRipple ? 'enabled' : 'disabled'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.disallowXRP !== undefined && (
+          <>
+            <span className="bold">Incoming {nativeCurrency}: </span>
+            <span className="bold">{tx.disallowXRP ? 'disallow' : 'allow'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.requireDestTag !== undefined && (
+          <>
+            <span className="bold">Destination tag: </span>
+            <span className="bold">{tx.requireDestTag ? 'require' : "don't require"}</span>
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.disableMaster !== undefined && (
+          <>
+            <span className="bold">Master key: </span>
+            <span className="bold">{tx.disableMaster ? 'disabled' : 'enabled'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.noFreeze && (
+          <>
+            <span className="bold">No freeze: </span>
+            <span className="bold">enabled</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.depositAuth !== undefined && (
+          <>
+            <span className="bold">Deposit authorization: </span>
+            <span className="bold">{tx.depositAuth ? 'enabled' : 'disabled'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.requireAuth !== undefined && (
+          <>
+            <span className="bold">Require authorization: </span>
+            <span className="bold">{tx.requireAuth ? 'enabled' : 'disabled'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.disallowIncomingCheck !== undefined && (
+          <>
+            <span className="bold">Incoming check: </span>
+            <span className="bold">{tx.disallowIncomingCheck ? 'disallow' : 'allow'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.disallowIncomingPayChan !== undefined && (
+          <>
+            <span className="bold">Incoming payment channel: </span>
+            <span className="bold">{tx.disallowIncomingPayChan ? 'disallow' : 'allow'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.disallowIncomingNFTokenOffer !== undefined && (
+          <>
+            <span className="bold">Incoming NFT offer: </span>
+            <span className="bold">{tx.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.disallowIncomingTrustline !== undefined && (
+          <>
+            <span className="bold">Incoming trust line: </span>
+            <span className="bold">{tx.disallowIncomingTrustline ? 'disallow' : 'allow'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.enableTransactionIDTracking !== undefined && (
+          <>
+            <span className="bold">Transaction ID tracking: </span>
+            <span className="bold">{tx.enableTransactionIDTracking ? 'enabled' : 'disabled'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.globalFreeze !== undefined && (
+          <>
+            <span className="bold">Global freeze: </span>
+            <span className="bold">{tx.globalFreeze ? 'enabled' : 'disabled'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.authorizedMinter !== undefined && (
+          <>
+            <span className="bold">Authorized minter: </span>
+            <span className="bold">{tx.authorizedMinter ? 'enabled' : 'disabled'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.nftokenMinter !== undefined && (
+          <>
+            <span className="bold">NFT minter: </span>
+            <span className="bold">{tx.nftokenMinter || <span className="orange">removed</span>}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.allowTrustLineClawback !== undefined && (
+          <>
+            <span className="bold">Trust line Clawback: </span>
+            <span className="bold">{tx.allowTrustLineClawback ? 'allowed' : 'disallow'}</span>
+            <br />
+          </>
+        )}
+        {tx.direction === 'accountset' && tx.disallowIncomingRemit !== undefined && (
+          <>
+            <span className="bold">Incoming Remit: </span>
+            <span className="bold">{tx.disallowIncomingRemit ? 'disallow' : 'allow'}</span>
+            <br />
+          </>
+        )}
         {tx.failed && (
           <>
             <span className="red bold">Failed: </span>

@@ -33,7 +33,7 @@ export function txTypeToText(type, capitalize = false) {
     case 'checkcash':
       formattedType = 'check cashing';
       break;
-    case 'settings':
+    case 'accountset':
       formattedType = 'settings change';
       break;
     case 'accountdelete':
@@ -726,6 +726,57 @@ function formatCheckDetails(tx, address) {
   };
 }
 
+function formatAccountSetDetails(tx, address) {
+  const specification = tx.specification;
+  const defaultRipple = specification?.defaultRipple;
+  const disallowXRP = specification?.disallowXRP;
+  const requireDestTag = specification?.requireDestTag;
+  const disableMaster = specification?.disableMaster;
+  const noFreeze = specification?.noFreeze;
+  const depositAuth = specification?.depositAuth;
+  const requireAuth = specification?.requireAuth;
+  const disallowIncomingCheck = specification?.disallowIncomingCheck;
+  const disallowIncomingPayChan = specification?.disallowIncomingPayChan;
+  const disallowIncomingNFTokenOffer = specification?.disallowIncomingNFTokenOffer;
+  const disallowIncomingTrustline = specification?.disallowIncomingTrustline;
+  const enableTransactionIDTracking = specification?.enableTransactionIDTracking;
+  const globalFreeze = specification?.globalFreeze;
+  const authorizedMinter = specification?.authorizedMinter;
+  const nftokenMinter = specification?.nftokenMinter;
+  const allowTrustLineClawback = specification?.allowTrustLineClawback;
+  const disallowIncomingRemit = specification?.disallowIncomingRemit;
+
+  const mainList = [];
+  const lowList = [];
+  const arrow = null;
+
+    return {
+      direction: 'accountset',
+      arrow,
+      mainList,
+      lowList,
+      specification,
+      defaultRipple,
+      disallowXRP,
+      requireDestTag,
+      disableMaster,
+      noFreeze,
+      depositAuth,
+      requireAuth,
+      disallowIncomingCheck,
+      disallowIncomingPayChan,
+      disallowIncomingNFTokenOffer,
+      disallowIncomingTrustline,
+      enableTransactionIDTracking,
+      globalFreeze,
+      authorizedMinter,
+      nftokenMinter,
+      allowTrustLineClawback,
+      disallowIncomingRemit,
+      counterparty: null
+    };
+}
+
 function getTransactionStatus(status) {
   const statusMap = {
     'tesSUCCESS': 'Success',
@@ -804,6 +855,7 @@ export function processTransactionBlock(tx, address) {
     checkcreate: formatCheckDetails,
     checkcash: formatCheckDetails,
     checkcancel: formatCheckDetails,
+    accountset: formatAccountSetDetails,
     trustset: formatTrustlineDetails
   };
 
