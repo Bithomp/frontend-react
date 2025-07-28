@@ -68,7 +68,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/trustlines/tokens?limit=100&order=rating&currencyDetails=true',
+      url: 'v2/trustlines/tokens?limit=100&order=rating&currencyDetails=true&statistics=true',
       headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -120,7 +120,7 @@ export default function Tokens({
     parts.push('v2/trustlines/tokens')
     parts.push(`?limit=${limit}`)
     parts.push(`&order=${order}`)
-    parts.push(`&currencyDetails=true`)
+    parts.push(`&currencyDetails=true&statistics=true`)
     if (issuer) {
       parts.push(`&issuer=${encodeURIComponent(issuer)}`)
     }
