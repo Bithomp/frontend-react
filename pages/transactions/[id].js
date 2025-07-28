@@ -160,7 +160,7 @@ export default function TransactionsAddress({
   // Build API url
   const apiUrl = (opts = {}) => {
     const limit = 20
-    let url = `v3/transactions/${id}?limit=${limit}&currencyDetails=true`
+    let url = `v3/transactions/${userData?.address}?limit=${limit}&currencyDetails=true`
     // pagination marker
     if (opts.marker) {
       const markerString = typeof opts.marker === 'object' ? JSON.stringify(opts.marker) : opts.marker

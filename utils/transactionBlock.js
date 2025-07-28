@@ -195,44 +195,42 @@ function formatPaymentDetails(tx, address) {
 function formatOrderDetails(tx, address) {
   const specification = tx.specification;
   const submitter = tx.submitter;
-  const fee = tx.fee;
+  const fee = tx.outcome?.fee;
+  const flags = specification?.flags;
+  const trueFlags = flags ? Object.keys(flags).filter(key => flags[key]) : [];
   
-  let mainList = [];
-  let lowList = [];
   let arrow = 'exchange';
   let orderType = 'order';
+  let lowList = [];
   
-  if (submitter === address) {
-    if (specification?.direction === 'sell') {
-      mainList.push(formatAmount(specification.takerGets));
-      mainList.push(formatAmount(specification.takerPays));
-    } else {
-      mainList.push(formatAmount(specification.takerPays));
-      mainList.push(formatAmount(specification.takerGets));
-    }
-    
-    if (mainList[0]) {
-      mainList[0].value = -mainList[0].value;
-      mainList[0].colorClass = 'red';
-    }
-    
-    lowList = tx.myBalanceChanges ? tx.myBalanceChanges.map(change => formatAmount(change)) : [];
-  } else {
-    mainList = tx.myBalanceChanges ? tx.myBalanceChanges.map(change => formatAmount(change)) : [];
+  if (tx.outcome?.orderbookChanges?.find(change => change.address === address)?.orderbookChanges[0]?.takerGets) {
+    const takerGets = tx.outcome?.orderbookChanges?.find(change => change.address === address)?.orderbookChanges[0]?.takerGets;
+    const negativeAmount = typeof takerGets === 'object' 
+      ? { ...takerGets, value: -takerGets.value }
+      : -takerGets;
+    lowList.push(formatAmount(negativeAmount));
   }
+  if (tx.outcome?.orderbookChanges?.find(change => change.address === address)?.orderbookChanges[0]?.takerPays) {
+    lowList.push(formatAmount(tx.outcome?.orderbookChanges?.find(change => change.address === address)?.orderbookChanges[0]?.takerPays));
+  }
+  
+  const mainList = tx.myBalanceChanges?.filter(change => !(change.currency === nativeCurrency && change.value.toString() === fee.toString()))
+    ?.map(change => formatAmount(change));
+  
+  const isSellOrder = trueFlags.includes('sell');
   
   if (tx.myBalanceChanges?.length === 1 && 
       tx.myBalanceChanges[0].currency === nativeCurrency && 
-      tx.myBalanceChanges[0].value === -fee) {
-    orderType = specification?.direction === 'sell' ? 'Sell order placed' : 'Buy order placed';
+      tx.myBalanceChanges[0].value.toString() === (-fee).toString()) {
+    orderType = isSellOrder ? 'Sell order placed' : 'Buy order placed';
   } else {
     if (submitter !== address) {
-      orderType = specification?.direction === 'sell' ? 'Sell order fulfilled' : 'Buy order fulfilled';
+      orderType = isSellOrder ? 'Sell order fulfilled' : 'Buy order fulfilled';
       if (specification?.sequence) {
         orderType += ` #${specification.sequence}`;
       }
     } else {
-      orderType = specification?.direction === 'sell' ? 'Sell order placed and fulfilled' : 'Buy order placed and fulfilled';
+      orderType = isSellOrder ? 'Sell order placed and fulfilled' : 'Buy order placed and fulfilled';
     }
   }
   
@@ -243,11 +241,12 @@ function formatOrderDetails(tx, address) {
     lowList,
     orderType,
     specification: {
-      direction: specification?.direction,
+      direction: isSellOrder ? 'sell' : 'buy',
       sequence: specification?.sequence,
       takerGets: specification?.takerGets ? formatAmount(specification.takerGets) : null,
-      takerPays: specification?.takerPays ? formatAmount(specification.takerPays) : null
+      takerPays: specification?.takerPays ? formatAmount(specification.takerPays) : null      
     },
+    flags: trueFlags,
     counterparty: null
   };
 }
@@ -255,36 +254,36 @@ function formatOrderDetails(tx, address) {
 function formatOrderCancellationDetails(tx, address) {
   const specification = tx.specification;
   const orderSequence = specification?.orderSequence;
+  const flags = tx.outcome?.orderbookChanges?.find(change => change.address === address)?.orderbookChanges[0]?.flags;
+  const trueFlags = flags ? Object.keys(flags).filter(key => flags[key]) : [];
   
   let mainList = [];
+  let lowList = [];
   let arrow = 'exchange';
   
-  if (specification?.direction === 'sell') {
-    mainList.push(formatAmount(specification.quantity));
-    mainList.push(formatAmount(specification.totalPrice));
-  } else {
-    mainList.push(formatAmount(specification.totalPrice));
-    mainList.push(formatAmount(specification.quantity));
+  if (tx.outcome?.orderbookChanges?.find(change => change.address === address)?.orderbookChanges[0]?.takerGets) {
+    const takerGets = tx.outcome?.orderbookChanges?.find(change => change.address === address)?.orderbookChanges[0]?.takerGets;
+    const negativeAmount = typeof takerGets === 'object' 
+      ? { ...takerGets, value: -takerGets.value }
+      : -takerGets;
+    lowList.push(formatAmount(negativeAmount));
+  }
+  if (tx.outcome?.orderbookChanges?.find(change => change.address === address)?.orderbookChanges[0]?.takerPays) {
+    lowList.push(formatAmount(tx.outcome?.orderbookChanges?.find(change => change.address === address)?.orderbookChanges[0]?.takerPays));
   }
   
-  if (mainList[0]) {
-    mainList[0].value = -mainList[0].value;
-    mainList[0].colorClass = 'red';
-  }
-  
-  const orderType = `${specification?.direction} order cancellation #${orderSequence}`;
+  const orderType = `${trueFlags.includes('sell') ? 'Sell' : 'Buy'} order cancellation #${orderSequence}`;
   
   return {
     direction: 'orderCancellation',
     arrow,
     mainList,
-    lowList: [],
+    lowList,
     orderType,
+    flags: trueFlags,
     specification: {
-      direction: specification?.direction,
-      orderSequence,
-      quantity: specification?.quantity ? formatAmount(specification.quantity) : null,
-      totalPrice: specification?.totalPrice ? formatAmount(specification.totalPrice) : null
+      direction: trueFlags.includes('sell') ? 'sell' : 'buy',
+      orderSequence
     },
     counterparty: null
   };
@@ -774,7 +773,7 @@ export function processTransactionBlock(tx, address) {
   const detailFormatters = {
     payment: formatPaymentDetails,
     offercreate: formatOrderDetails,
-    ordercancellation: formatOrderCancellationDetails,
+    offercancel: formatOrderCancellationDetails,
     escrowcreation: formatEscrowDetails,
     escrowexecution: formatEscrowDetails,
     escrowcancellation: formatEscrowDetails,

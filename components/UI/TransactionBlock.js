@@ -9,6 +9,31 @@ import { FiDownload, FiUpload } from 'react-icons/fi';
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
 import { FaArrowRightArrowLeft } from "react-icons/fa6";
 
+const renderFormattedAmount = (amount, key) => (
+  <span key={key} className={amount.colorClass === 'red' ? 'red bold' : 'green bold'}>
+    <span className="inline-flex gap-1 pb-1">
+      <span className="tooltip">
+        {amount.formatted}
+        <span className="tooltiptext no-brake">
+          {amount.fullFormatted}
+        </span>
+      </span>
+      <span className="tooltip">
+        {amount.issuer ? (
+          <Image src={avatarServer + amount.issuer} alt={amount.issuer} width={20} height={20} className="rounded-full" />
+        ) : (
+          <Image src={nativeCurrenciesImages[nativeCurrency]} alt={nativeCurrency} width={20} height={20} />
+        )}
+        {amount.issuer && (
+          <span className="tooltiptext no-brake">
+            {addressUsernameOrServiceLink(amount, 'issuer')}
+          </span>
+        )}
+      </span>
+    </span>
+  </span>
+);
+
 const TransactionBlock = ({ tx, index, address, isMobile }) => {
   if (!tx) return null;
   console.log(tx)
@@ -171,7 +196,7 @@ const TransactionBlock = ({ tx, index, address, isMobile }) => {
     if (tx.specification?.source && tx.specification.source?.address !== address) {
       return <span>{tx.type} by {addressUsernameOrServiceLink(tx.specification.source, 'address')}</span>;
     }
-    if (tx.type === 'Offercreate') {
+    if (tx.type === 'Offercreate' || tx.type === 'Offercancel') {
       return tx.orderType;
     }
     return tx.type;
@@ -184,7 +209,7 @@ const TransactionBlock = ({ tx, index, address, isMobile }) => {
         <FaCalendarAlt /> {dateText} <br />
         <FaClock /> {timeText}
       </td>
-      <td style={{ maxWidth: isMobile ? '100%' : 600 }}>
+      <td style={{ maxWidth: isMobile ? '100%' : 600, wordBreak: 'break-word' }}>
         <div>
           <span className="gray" style={{ marginRight: 5 }}><FaArrowRightArrowLeft /></span>
           <LinkTx tx={tx.hash}> {tx.hash} </LinkTx>
@@ -209,7 +234,7 @@ const TransactionBlock = ({ tx, index, address, isMobile }) => {
           </>
         )}
         {renderNftDetails()}
-        {tx.arrow === 'amm' && (
+        {(tx.arrow === 'amm') && (
           <>
             {tx.flag && (
               <>
@@ -224,6 +249,15 @@ const TransactionBlock = ({ tx, index, address, isMobile }) => {
                 <br />
               </>
             )}
+          </>
+        )}
+        {(tx.arrow === 'exchange' && tx.orderType && tx.flags && tx.flags.length > 0) && (
+          <>
+            <span>Flags: </span>
+            {tx.flags.map((flag, idx) => (
+              <span key={idx} className="flag">{flag}</span>
+            ))}
+            <br />
           </>
         )}
         {tx.destinationTag && (
@@ -288,33 +322,23 @@ const TransactionBlock = ({ tx, index, address, isMobile }) => {
           <>
             {tx.lowList.map((amount, index) => (
               <>
-                <span key={index} className={amount.colorClass === 'red' ? 'red bold' : 'green bold'}>
-                  <span className="inline-flex gap-1 pb-1">
-                    <span className="tooltip">
-                      {amount.formatted}
-                      <span className="tooltiptext no-brake">
-                        {amount.fullFormatted}
-                      </span>
-                    </span>
-                    <span className="tooltip">
-                      {amount.issuer ? (
-                        <Image src={avatarServer + amount.issuer} alt={amount.issuer} width={20} height={20} className="rounded-full" />
-                      ) : (
-                        <Image src={nativeCurrenciesImages[nativeCurrency]} alt={nativeCurrency} width={20} height={20} />
-                      )}
-                      {amount.issuer && (
-                        <span className="tooltiptext no-brake">
-                          {addressUsernameOrServiceLink(amount, 'issuer')}
-                        </span>
-                      )}
-                    </span>
-                  </span>
-                </span>
+                {renderFormattedAmount(amount, index)}
                 <br />
               </>
             ))}
           </>
         )}
+        {tx?.arrow === 'exchange' && tx.lowList.length === 0 && tx.mainList && tx.mainList.length > 0 && (
+          <>
+            {tx.mainList.map((amount, index) => (
+              <>
+                {renderFormattedAmount(amount, index)}
+                <br />
+              </>
+            ))}
+          </>
+        )}
+
         <span className="gray">
           Fee: {amountFormat(tx.fee)}
         </span>
