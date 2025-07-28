@@ -254,20 +254,22 @@ export default function TransactionsAddress({
       >
         {/* Left filters placeholder – can be extended later */}
         <>
-          <div className="filters-body-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="filters-body-inner">
             <div>
               <span className="input-title">Type</span>
-              <SimpleSelect value={txType} setValue={setTxType} optionsList={txTypeOptions} />
+              <SimpleSelect value={txType} setValue={setTxType} optionsList={txTypeOptions} className="dropdown--filters" />
             </div>
+            <br />
             <div>
               <span className="input-title">Direction</span>
-              <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} />
+              <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} className="dropdown--filters" />
             </div>
+            <br />
             <div>
               <span className="input-title">Failures</span>
-              <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
+              <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} className="dropdown--filters" />
             </div>
-
+            <br />
             <div>
               <span className="input-title">Counterparty</span>
               <input
@@ -278,7 +280,7 @@ export default function TransactionsAddress({
                 className="input-text"
               />
             </div>
-
+            <br />
             <div>
               <span className="input-title">From</span>
               <DatePicker
@@ -294,7 +296,6 @@ export default function TransactionsAddress({
                 showYearDropdown
               />
             </div>
-
             <div>
               <span className="input-title">To</span>
               <DatePicker
@@ -351,7 +352,7 @@ export default function TransactionsAddress({
             )}
           </InfiniteScrolling>
         </>
-      </FiltersFrame>
+      </FiltersFrame>      
     </>
   )
 }
