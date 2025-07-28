@@ -777,7 +777,30 @@ function formatAccountSetDetails(tx, address) {
     };
 }
 
-function getTransactionStatus(status) {
+function formatAccountDeleteDetails(tx, address) {
+  const specification = tx.specification;
+  const destination = specification?.destination;
+  const destinationTag = specification?.destinationTag;
+  const deliveredAmount = tx.outcome?.deliveredAmount;
+
+  const mainList = [];
+  const lowList = [];
+  const arrow = null;
+
+  return {
+    direction: 'accountdelete',
+    arrow,
+    mainList,
+    lowList,
+    specification,
+    destination,
+    destinationTag: destinationTag || null,
+    deliveredAmount: deliveredAmount || null,
+    counterparty: null
+  };
+} 
+
+  function getTransactionStatus(status) {
   const statusMap = {
     'tesSUCCESS': 'Success',
     'tecPATH_DRY': 'Path dry',
@@ -856,6 +879,7 @@ export function processTransactionBlock(tx, address) {
     checkcash: formatCheckDetails,
     checkcancel: formatCheckDetails,
     accountset: formatAccountSetDetails,
+    accountdelete: formatAccountDeleteDetails,
     trustset: formatTrustlineDetails
   };
 
