@@ -5,12 +5,33 @@ import { IoMdClose } from 'react-icons/io'
 import { IoSearch } from 'react-icons/io5'
 import { niceCurrency } from '../../utils/format'
 import { shortName } from '../../utils'
+import { components as selectComponents } from 'react-select'
+
+const limit = 20
+
+// Custom MenuList to show limit message
+function MenuList(props) {
+  const { children } = props
+  const { options } = props
+  // limit is in closure
+  return (
+    <selectComponents.MenuList {...props}>
+      {children}
+      {options.length >= limit && (
+        <div style={{ color: 'orange', padding: '6px 12px 12px 12px' }}>
+          More than {limit} results. Please type more to narrow your search.
+        </div>
+      )}
+    </selectComponents.MenuList>
+  )
+}
 
 export default function CurrencySearchSelect({ setCurrency, defaultValue = '' }) {
   const [inputValue, setInputValue] = useState(defaultValue || '')
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
   const [notEmpty, setNotEmpty] = useState(!!defaultValue)
+  const [selectedOption, setSelectedOption] = useState(null)
   const debounceRef = useRef(null)
 
   useEffect(() => {
@@ -29,11 +50,13 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
 
       setSearchingSuggestions(true)
       try {
-        const res = await axios(`/v2/trustlines/currencies/search/${encodeURIComponent(inputValue)}?currencyDetails=true`)
+        const res = await axios(
+          `/v2/trustlines/currencies/search/${encodeURIComponent(inputValue)}?limit=${limit}&currencyDetails=true`
+        )
         let list = res?.data
         if (list && list.currencies) list = list.currencies
         if (!Array.isArray(list)) list = []
-        
+
         const opts = list
           .map((item) => {
             let value = null
@@ -51,7 +74,10 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
               } else {
                 label = niceCurrency(item.currency)
               }
-              if (item.currency.length > 3 && (item.currency.substr(0, 2) === '02' || !item.currency.match(/^[A-Za-z0-9]{3}$/))) {
+              if (
+                item.currency.length > 3 &&
+                (item.currency.substr(0, 2) === '02' || !item.currency.match(/^[A-Za-z0-9]{3}$/))
+              ) {
                 label += ` (${shortName(item.currency)})`
               }
             } else if (item.code) {
@@ -62,7 +88,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
               }
             }
             if (!value) return null
-            return { value, label }
+            return { value, label, item }
           })
           .filter(Boolean)
 
@@ -83,11 +109,13 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
     if (!option) {
       setInputValue('')
       setNotEmpty(false)
+      setSelectedOption(null)
       if (setCurrency) setCurrency('')
       return
     }
     setInputValue(option.value)
     setNotEmpty(true)
+    setSelectedOption(option)
     if (setCurrency) setCurrency(option.value)
   }
 
@@ -103,6 +131,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
     setInputValue('')
     setNotEmpty(false)
     setSearchSuggestions([])
+    setSelectedOption(null)
     if (setCurrency) setCurrency('')
   }
 
@@ -112,7 +141,14 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
 
   return (
     <div className="center">
-      <span className="input-title">Currency</span>
+      <span className="input-title">
+        Currency
+        {selectedOption && selectedOption.item && (
+          <>
+            : <b>{selectedOption.item.currencyDetails.currency}</b>
+          </>
+        )}
+      </span>
       <div className="form-input">
         <div className="form-input__wrap">
           <Select
@@ -127,9 +163,11 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
             inputValue={inputValue}
             value={null}
             isLoading={searchingSuggestions}
-            components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+            components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null, MenuList }}
             filterOption={() => true}
-            noOptionsMessage={() => (inputValue.length > 2 ? 'No results found' : 'Start typing to search for currencies')}
+            noOptionsMessage={() =>
+              inputValue.length > 2 ? 'No results found' : 'Start typing to search for currencies'
+            }
           />
           <div className="form-input__btns">
             <button className="form-input__clear" onClick={clearAll}>
@@ -143,4 +181,4 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
       </div>
     </div>
   )
-} 
+}

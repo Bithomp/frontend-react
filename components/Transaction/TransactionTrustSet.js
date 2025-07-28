@@ -51,6 +51,10 @@ export const TransactionTrustSet = ({ data, pageFiatRate, selectedCurrency }) =>
         <TData>{specification.frozen ? 'yes' : 'no'}</TData>
       </tr>
       <tr>
+        <TData>Deep frozen</TData>
+        <TData>{specification.deepFrozen ? 'yes' : 'no'}</TData>
+      </tr>
+      <tr>
         <TData>Authorized</TData>
         <TData>{specification.authorized ? 'yes' : 'no'}</TData>
       </tr>

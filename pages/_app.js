@@ -26,7 +26,6 @@ import '../styles/globals.css'
 import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
 
-
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { useRates } from '../hooks/useRates'
 import ErrorBoundary from '../components/ErrorBoundary'
@@ -62,7 +61,9 @@ const MyApp = ({ Component, pageProps }) => {
   const [wcSession, setWcSession] = useState(null)
   const [isClient, setIsClient] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
-  
+
+  const [activatedAccount, setActivatedAccount] = useState(false)
+
   const { isEmailLoginOpen, openEmailLogin, closeEmailLogin, handleLoginSuccess } = useEmailLogin()
   
   // Use live rates via WebSocket
@@ -206,7 +207,7 @@ const MyApp = ({ Component, pageProps }) => {
               )}
               <div className="content">
                 <TopProgressBar />
-                {showTopAds && <TopLinks />}
+                {showTopAds && <TopLinks activatedAccount={activatedAccount} />}
                 <Component
                   {...pageProps}
                   refreshPage={refreshPage}
@@ -225,6 +226,7 @@ const MyApp = ({ Component, pageProps }) => {
                   setSessionToken={setSessionToken}
                   fiatRate={fiatRate}
                   openEmailLogin={openEmailLogin}
+                  setActivatedAccount={setActivatedAccount}
                 />
               </div>
               <Footer setSignRequest={setSignRequest} account={account} />

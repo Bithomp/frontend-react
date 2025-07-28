@@ -73,7 +73,8 @@ export default function Account({
   ledgerTimestampQuery,
   account,
   setSignRequest,
-  fiatRate
+  fiatRate,
+  setActivatedAccount
 }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
@@ -111,6 +112,8 @@ export default function Account({
       address: initialData.address
     })
 
+    setActivatedAccount(initialData?.ledgerInfo?.activated)
+
     if (initialData?.obligations) {
       //setObligations(initialData.obligations)
       if (initialData.obligations?.trustlines > 200) {
@@ -123,6 +126,7 @@ export default function Account({
       //keep it here for cases when address changes without refreshing the page
       setGateway(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialData])
 
   useEffect(() => {
@@ -162,6 +166,7 @@ export default function Account({
           service: newdata.service?.name,
           address: newdata.address
         })
+        setActivatedAccount(newdata.ledgerInfo?.activated)
       } else {
         if (newdata.error) {
           setErrorMessage(t('error-api.' + newdata.error))
