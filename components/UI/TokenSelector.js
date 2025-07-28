@@ -21,21 +21,21 @@ const limit = 20
 // Helper function to fetch and process trustlines for a destination address
 const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '') => {
   const response = await axios(`v2/trustlines/tokens?trustline=${destinationAddress}&limit=${limit}`)
-  const objects = response.data?.objects || []
-
-  // Filter RippleState objects to get trustlines where destination can hold tokens
-  const trustlines = objects.filter((obj) => {
-    if (parseFloat(obj.LowLimit.value) <= 0 && parseFloat(obj.HighLimit.value) <= 0) return false
+  const tokens = response.data?.tokens || []
+  
+  // Trim the search query to handle whitespace
+  const trimmedQuery = searchQuery.trim()
+  
+  const trustlines = tokens.filter((token) => {    
 
     // If search query is provided, filter by it
-    if (searchQuery) {
-      const currency = obj.Balance.currency
-      const issuerDetails =
-        obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuerDetails : obj.HighLimit.issuerDetails || {}
+    if (trimmedQuery) {
+      const currency = token.currency
+      const issuerDetails = token.issuerDetails || {}
       const serviceOrUsername = issuerDetails.service || issuerDetails.username || ''
-      const issuer = obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuer : obj.HighLimit.issuer || ''
+      const issuer = token.issuer || ''
 
-      const searchLower = searchQuery.toLowerCase()
+      const searchLower = trimmedQuery.toLowerCase()
       return (
         currency.toLowerCase().includes(searchLower) ||
         serviceOrUsername.toLowerCase().includes(searchLower) ||
@@ -46,21 +46,15 @@ const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '
     return true
   })
 
-  // Convert trustlines to token format
-  return trustlines.map((tl) => ({
-    currency: tl.Balance.currency,
-    issuer: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuer : tl.HighLimit.issuer,
-    issuerDetails: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuerDetails : tl.HighLimit.issuerDetails,
-    limit: Math.max(parseFloat(tl.LowLimit.value), parseFloat(tl.HighLimit.value)),
-    balance: tl.Balance.value
-  }))
+  return trustlines
 }
 
 // Helper function to add native currency to tokens array if needed
 const addNativeCurrencyIfNeeded = (tokens, excludeNative, searchQuery = '') => {
   if (excludeNative) return tokens
 
-  const shouldAddNative = !searchQuery || searchQuery.toUpperCase() === nativeCurrency.toUpperCase()
+  const trimmedQuery = searchQuery.trim()
+  const shouldAddNative = !trimmedQuery || trimmedQuery.toUpperCase() === nativeCurrency.toUpperCase()
   if (shouldAddNative) {
     tokens.unshift({ currency: nativeCurrency, limit: null })
   }
@@ -133,7 +127,7 @@ export default function TokenSelector({
     }
 
     const timeout = setTimeout(async () => {
-      if (!searchQuery) {
+      if (!searchQuery.trim()) {
         // Only apply the early return logic when there's no destination address
         // When destination address is provided, we always want to fetch fresh data
         if (!destinationAddress) {
@@ -145,12 +139,9 @@ export default function TokenSelector({
             !niceCurrency(searchResults[1]?.currency)?.toLowerCase().startsWith(nativeCurrency.toLowerCase())
           )
             return
-        } else {
-          // For destination address case, check if we already have results loaded
-          if (searchResults.length > 0) {
-            return
-          }
         }
+        // Removed the early return for destination address case when search is cleared
+        // This ensures we always reload the full list when search is cleared
 
         setIsLoading(true)
         try {
