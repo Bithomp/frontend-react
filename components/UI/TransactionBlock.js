@@ -5,33 +5,13 @@ import { amountFormat, addressUsernameOrServiceLink, shortAddress, timeFormat, d
 import { LinkAccount, LinkTx } from '../../utils/links';
 import { avatarServer, nativeCurrenciesImages, nativeCurrency } from '../../utils';
 import { divide } from '../../utils/calc';
-import { 
-  FiDownload, 
-  FiUpload, 
-  // FiArrowRight, 
-  // FiArrowDown, 
-  // FiArrowUp,
-  // FiRefreshCw,
-  // FiCalendar,
-  // FiClock,
-  // FiHash,
-  // FiTag,
-  // FiMessageSquare,
-  // FiDollarSign,
-  // FiUser,
-  // FiSettings,
-  // FiShield,
-  // FiLock,
-  // FiUnlock,
-  // FiCheck,
-  // FiX
-} from 'react-icons/fi';
+import { FiDownload, FiUpload } from 'react-icons/fi';
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
 import { FaArrowRightArrowLeft } from "react-icons/fa6";
 
-const TransactionBlock = ({ tx, index, address }) => {
+const TransactionBlock = ({ tx, index, address, isMobile }) => {
   if (!tx) return null;
-  // console.log(tx)
+  console.log(tx)
   const dateText = dateFormat(tx.date + 946684800) || '-';
   const timeText = timeFormat(tx.date + 946684800) || '-';
 
@@ -57,16 +37,7 @@ const TransactionBlock = ({ tx, index, address }) => {
                       .map(([flag]) => (
                         <span 
                           key={flag} 
-                          style={{ 
-                            color: '#008000',
-                            padding: '2px 8px',
-                            borderRadius: '4px',
-                            fontSize: '12px',
-                            fontWeight: '500',
-                            letterSpacing: '0.05em',
-                            border: '1px solid #008000',
-                            marginRight: '5px'
-                          }}
+                          className="flag"
                         >
                           {flag}
                         </span>
@@ -213,7 +184,7 @@ const TransactionBlock = ({ tx, index, address }) => {
         <FaCalendarAlt /> {dateText} <br />
         <FaClock /> {timeText}
       </td>
-      <td>
+      <td style={{ maxWidth: isMobile ? '100%' : 600 }}>
         <div>
           <span className="gray" style={{ marginRight: 5 }}><FaArrowRightArrowLeft /></span>
           <LinkTx tx={tx.hash}> {tx.hash} </LinkTx>
@@ -238,6 +209,23 @@ const TransactionBlock = ({ tx, index, address }) => {
           </>
         )}
         {renderNftDetails()}
+        {tx.arrow === 'amm' && (
+          <>
+            {tx.flag && (
+              <>
+                <span>Flag: </span>
+                <span className="flag">{tx.flag}</span>
+                <br />
+              </>
+            )}
+            {tx.tradingFee && (
+              <>
+                <span>Trading fee: {divide(tx.tradingFee, 100000)}%</span>
+                <br />
+              </>
+            )}
+          </>
+        )}
         {tx.destinationTag && (
           <>
             <span className="gray">Destination tag: {tx.destinationTag}</span>
@@ -254,8 +242,17 @@ const TransactionBlock = ({ tx, index, address }) => {
           <>
             {tx.memos.map((memo, idx) => (
               <div key={idx}>
-                <span className="bold">Memo{tx.memos.length > 1 ? ` (${idx + 1})` : ''}:</span>
-                <span className="gray"> {memo.data}</span>                
+                {memo.data? (
+                  <>
+                  <span className="bold">Memo{tx.memos.length > 1 ? ` (${idx + 1})` : ''}:</span>
+                  <span className="gray"> {memo.data}</span>                                  
+                  </>
+                ) : (
+                  <>
+                     <span className="bold">{memo.type}{tx.memos.length > 1 ? ` (${idx + 1})` : ''}:</span>
+                     <span className="gray"> {memo.format}</span>                
+                  </>
+                )}
               </div>
             ))}
           </>
@@ -264,37 +261,53 @@ const TransactionBlock = ({ tx, index, address }) => {
       <td className="right">
         {tx.deliveredAmount && (
           <>                
-            <span className={tx.direction === 'incoming' ? 'green bold tooltip' : 'red bold tooltip'}>
+            <span className={tx.direction === 'incoming' ? 'green bold' : 'red bold'}>
               <span className="inline-flex gap-1">
-                {amountFormat(tx.deliveredAmount, { short: true, maxFractionDigits: 2 })} 
-                {tx.deliveredAmount?.issuer ? (
-                  <Image src={avatarServer + tx.deliveredAmount.issuer} alt={tx.deliveredAmount.issuer} width={20} height={20} className="rounded-full" />
-                ) : (
-                  <Image src={nativeCurrenciesImages[nativeCurrency]} alt={nativeCurrency} width={20} height={20} />
-                )}
-              </span>
-              <span className="tooltiptext no-brake">
-                {amountFormat(tx.deliveredAmount)}
-              </span>
+                <span className="tooltip">
+                  {amountFormat(tx.deliveredAmount, { short: true, maxFractionDigits: 2 })}
+                  <span className="tooltiptext no-brake">
+                    {amountFormat(tx.deliveredAmount)}
+                  </span>
+                </span>
+                <span className="tooltip">
+                  {tx.deliveredAmount?.issuer ? (
+                    <Image src={avatarServer + tx.deliveredAmount.issuer} alt={tx.deliveredAmount.issuer} width={20} height={20} className="rounded-full" />
+                  ) : (
+                    <Image src={nativeCurrenciesImages[nativeCurrency]} alt={nativeCurrency} width={20} height={20} />
+                  )}
+                  <span className="tooltiptext no-brake">
+                    {addressUsernameOrServiceLink(tx.deliveredAmount, 'issuer')}
+                  </span>
+                </span>
+              </span>              
             </span>
             <br />
           </>
         )}
-        {tx?.arrow === 'exchange' && tx.lowList && tx.lowList.length > 0 && (
+        {(tx?.arrow === 'exchange' || tx?.arrow === 'amm') && tx.lowList && tx.lowList.length > 0 && (
           <>
             {tx.lowList.map((amount, index) => (
               <>
-                <span key={index} className={amount.colorClass === 'red' ? 'red bold tooltip' : 'green bold tooltip'}>
+                <span key={index} className={amount.colorClass === 'red' ? 'red bold' : 'green bold'}>
                   <span className="inline-flex gap-1 pb-1">
-                    {amount.formatted}
-                    {amount.issuer ? (
-                      <Image src={avatarServer + amount.issuer} alt={amount.issuer} width={20} height={20} className="rounded-full" />
-                    ) : (
-                      <Image src={nativeCurrenciesImages[nativeCurrency]} alt={nativeCurrency} width={20} height={20} />
-                    )}
-                  </span>
-                  <span className="tooltiptext no-brake">
-                    {amount.fullFormatted}
+                    <span className="tooltip">
+                      {amount.formatted}
+                      <span className="tooltiptext no-brake">
+                        {amount.fullFormatted}
+                      </span>
+                    </span>
+                    <span className="tooltip">
+                      {amount.issuer ? (
+                        <Image src={avatarServer + amount.issuer} alt={amount.issuer} width={20} height={20} className="rounded-full" />
+                      ) : (
+                        <Image src={nativeCurrenciesImages[nativeCurrency]} alt={nativeCurrency} width={20} height={20} />
+                      )}
+                      {amount.issuer && (
+                        <span className="tooltiptext no-brake">
+                          {addressUsernameOrServiceLink(amount, 'issuer')}
+                        </span>
+                      )}
+                    </span>
                   </span>
                 </span>
                 <br />

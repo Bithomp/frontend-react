@@ -123,6 +123,7 @@ function formatAmount(amount, currency = nativeCurrency) {
   const value = typeof amount === 'object' ? amount.value : amount;
   const currencyCode = typeof amount === 'object' ? amount.currency : currency;
   const issuer = typeof amount === 'object' ? amount.issuer : null;
+  const issuerDetails = typeof amount === 'object' ? amount.issuerDetails : null;
   
   let colorClass = 'green';
   if (value < 0) {
@@ -135,6 +136,7 @@ function formatAmount(amount, currency = nativeCurrency) {
     value,
     currency: currencyCode,
     issuer,
+    issuerDetails,
     formatted: amountFormat(amount, { short: true, maxFractionDigits: 2 }),
     fullFormatted: amountFormat(amount),
     colorClass
@@ -673,6 +675,30 @@ function formatTrustlineDetails(tx, address) {
   };
 }
 
+function formatAmmsDetails(tx, address) {
+  const specification = tx.specification;
+  const flags = specification?.flags;
+  const tradingFlag = specification?.tradingFee;
+  const arrow = 'amm';
+  const mainList = [];
+  // Get only the true flag
+  const trueFlag = flags ? Object.keys(flags).find(key => flags[key] === true) : null;
+  const lowList = tx.outcome?.balanceChanges?.find(bc => bc.address === address)?.balanceChanges
+    ?.filter(change => !(change.currency === nativeCurrency && change.value.toString() === (-tx.outcome?.fee).toString()))
+    ?.map(change => formatAmount(change));
+  
+  return {
+    direction: 'amm',
+    arrow,
+    specification,
+    flag: trueFlag || null,
+    tradingFee: tradingFlag || null,
+    mainList,
+    lowList,
+    counterparty: null
+  }
+}
+
 function formatFailedStatus(status) {
   return status && status !== 'tesSUCCESS';
 }
@@ -759,7 +785,9 @@ export function processTransactionBlock(tx, address) {
     ? detailFormatters[normalizedTx.type](normalizedTx, address)
     : (normalizedTx.type?.startsWith('nftoken') || normalizedTx.type?.startsWith('uritoken'))
       ? formatNftDetails(normalizedTx, address)
-      : {};
+      : (normalizedTx.type?.startsWith('amm'))
+        ? formatAmmsDetails(normalizedTx, address)
+        : {};
 
   return {
     type: txTypeToText(normalizedTx.type, true),

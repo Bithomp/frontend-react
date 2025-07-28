@@ -20,6 +20,8 @@ export async function getServerSideProps(context) {
   const { locale, query, req } = context
   const { id } = query
 
+  const limit = 20
+
   let initialTransactions = []
   let initialErrorMessage = ''
   let initialMarker = null
@@ -42,7 +44,7 @@ export async function getServerSideProps(context) {
     // Fetch transactions
     const res = await axiosServer({
       method: 'get',
-      url: `v3/transactions/${initialUserData?.address}?limit=25`,
+      url: `v3/transactions/${initialUserData?.address}?limit=${limit}&currencyDetails=true`,
       headers: passHeaders(req)
     })
     initialTransactions = res?.data?.transactions || res?.data || []
@@ -69,7 +71,9 @@ export default function TransactionsAddress({
   initialTransactions,
   initialErrorMessage,
   initialMarker,
-  initialUserData
+  initialUserData,
+  subscriptionExpired,
+  sessionToken
 }) {
   const { t } = useTranslation()
   const width = useWidth()
@@ -95,6 +99,7 @@ export default function TransactionsAddress({
   const [counterparty, setCounterparty] = useState('')
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
+  
 
   // Update userData when initialUserData changes
   useEffect(() => {
@@ -154,11 +159,12 @@ export default function TransactionsAddress({
 
   // Build API url
   const apiUrl = (opts = {}) => {
-    const limit = 100
-    let url = `v3/transactions/${id}?limit=${limit}`
+    const limit = 20
+    let url = `v3/transactions/${id}?limit=${limit}&currencyDetails=true`
     // pagination marker
     if (opts.marker) {
-      url += `&marker=${encodeURIComponent(opts.marker)}`
+      const markerString = typeof opts.marker === 'object' ? JSON.stringify(opts.marker) : opts.marker
+      url += `&marker=${encodeURIComponent(markerString)}`
     }
     // sorting
     if (order === 'oldest') {
@@ -188,8 +194,19 @@ export default function TransactionsAddress({
 
   const fetchTransactions = async (opts = {}) => {
     if (loading) return
-    setLoading(true)
-    const markerToUse = opts.marker || marker
+    // setLoading(true)
+
+    let markerToUse = undefined
+    if (!opts.restart) {
+      markerToUse = opts.marker || marker
+    }
+
+    if (markerToUse && markerToUse !== 'first') {
+      if (!sessionToken || (sessionToken && subscriptionExpired)) {
+        setLoading(false)
+        return
+      }
+    }
 
     try {
       const response = await axios.get(apiUrl({ marker: markerToUse }))
@@ -212,12 +229,6 @@ export default function TransactionsAddress({
     setLoading(false)
   }
 
-  // Load more handler for InfiniteScrolling
-  const loadMore = () => {
-    if (!marker) return
-    fetchTransactions({ marker })
-  }
-
   // CSV headers (basic)
   const csvHeaders = [
     { label: 'Date', key: 'date' },
@@ -232,8 +243,9 @@ export default function TransactionsAddress({
 
   const applyFilters = () => {
     setTransactions([])
-    setMarker(null)
-    fetchTransactions({ marker: null })
+    setMarker('first')
+    setLoading(true)
+    fetchTransactions({ restart: true })
   }
 
   return (
@@ -311,10 +323,11 @@ export default function TransactionsAddress({
                 showYearDropdown
               />
             </div>
-
-            <button className="button-action" onClick={applyFilters} style={{ marginTop: '10px' }}>
-              Search
-            </button>
+            <div className="center">
+              <button className="button-action" onClick={applyFilters} style={{ marginTop: '10px' }}>
+                Search
+              </button>
+            </div>
           </div>
         </>
         {/* Main content */}
@@ -322,34 +335,39 @@ export default function TransactionsAddress({
           {errorMessage && <div className="center orange bold">{errorMessage}</div>}
           <InfiniteScrolling
             dataLength={processedTransactions.length}
-            loadMore={loadMore}
+            loadMore={() => {
+              if (marker && marker !== 'first') {
+                fetchTransactions({ marker })
+              }
+            }}
             hasMore={marker}
             errorMessage={errorMessage}
-            height={!filtersHide ? '1300px' : '100vh'}
+            subscriptionExpired={subscriptionExpired}
+            sessionToken={sessionToken}
           >
-            {width > 600 ? (
-              <table className="table-large no-hover">
-                <thead>
-                </thead>
-                <tbody>
-                  {processedTransactions.map((tx, index) => (
-                    <TransactionBlock
-                      key={tx.hash || index}
-                      tx={tx}
-                      address={id}
-                      index={index}
-                    />
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <table className="table-mobile wide">
-                {/* <tbody>{renderTableRows()}</tbody> */}
-              </table>
-            )}              
-            {loading && (
-              <p className="center" style={{ marginTop: 10 }}>{t('general.loading', { defaultValue: 'Loading' })}</p>
-            )}
+            <table className={width > 600 ? 'table-large no-hover' : 'table-mobile wide'}>
+              <tbody>
+                {loading ? (
+                  <tr className="center">
+                    <td colSpan="100">
+                      <span className="waiting"></span>
+                      <br />
+                      {t('general.loading')}
+                    </td>
+                  </tr>
+                ) : (
+                  processedTransactions.map((tx, index) => (
+                  <TransactionBlock
+                    key={tx.hash || index}
+                    tx={tx}
+                    address={id}
+                    index={index}
+                    isMobile={width < 600}
+                  />
+                ))
+              )}
+              </tbody>
+            </table>            
           </InfiniteScrolling>
         </>
       </FiltersFrame>      
