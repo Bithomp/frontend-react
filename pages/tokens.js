@@ -445,6 +445,7 @@ export default function Tokens({
                   </th>
                   <th className="right">Marketcap</th>
                   {/* <th className="right">Trustlines</th>*/}
+                  <th className="center">AMMs</th>
                   <th className="center">Action</th>
                 </tr>
               </thead>
@@ -519,23 +520,32 @@ export default function Tokens({
                               </td>
                               <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
                               {/* <td className="right">
-                            <span className="tooltip">
-                              {shortNiceNumber(token.trustlines, 0, 1)}
-                              <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
-                            </span>
-                          </td> */}
+                                <span className="tooltip">
+                                  {shortNiceNumber(token.trustlines, 0, 1)}
+                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
+                                </span>
+                              </td> */}
+
                               <td className="center">
                                 <a
-                                  href="#"
-                                  onClick={(e) => {
-                                    e.preventDefault()
+                                  href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                  className="tooltip"
+                                >
+                                  {token.statistics?.ammPools || 0}
+                                  <span className="tooltiptext no-brake">View AMMs</span>
+                                </a>
+                              </td>
+
+                              <td className="center">
+                                <span
+                                  onClick={() => {
                                     handleSetTrustline(token)
                                   }}
                                   className="orange tooltip"
                                 >
                                   <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
                                   <span className="tooltiptext no-brake">Set trust</span>
-                                </a>
+                                </span>
                               </td>
                             </tr>
                           )
@@ -602,6 +612,15 @@ export default function Tokens({
                                   <br />
                                   Active holders (Used the token in the last 24h):{' '}
                                   {niceNumber(token.statistics?.activeHolders) || 0}
+                                  <br />
+                                  AMM Pools:{' '}
+                                  <a
+                                    href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                    className="tooltip"
+                                  >
+                                    {' '}
+                                    {token.statistics?.ammPools || 0}
+                                  </a>
                                   <br />
                                   <br />
                                   <button
