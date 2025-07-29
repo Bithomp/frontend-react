@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { FaHandshake } from 'react-icons/fa'
 
 import SEO from '../components/SEO'
@@ -99,6 +99,7 @@ export default function Tokens({
 }) {
   const { t } = useTranslation()
   const width = useWidth()
+  const isFirstRender = useRef(true)
 
   // States
   const [data, setData] = useState(initialData?.tokens || [])
@@ -182,8 +183,12 @@ export default function Tokens({
 
   // Effect: refetch when order or search changes
   useEffect(() => {
-    setMarker('first')
-    checkApi({ restart: true })
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+    } else {
+      setMarker('first')
+      checkApi({ restart: true })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, issuer, currency])
 
@@ -429,87 +434,99 @@ export default function Tokens({
                 </tr>
               </thead>
               <tbody>
-                {errorMessage ? (
-                  <tr>
-                    <td colSpan="100" className="center orange bold">
-                      {errorMessage}
+                {loading ? (
+                  <tr className="center">
+                    <td colSpan="100">
+                      <span className="waiting"></span>
                     </td>
                   </tr>
                 ) : (
                   <>
-                    {data.map((token, i) => {
-                      return (
-                        <tr key={i}>
-                          <td className="center">{i + 1}</td>
-                          <td>
-                            <TokenCell token={token} />
-                          </td>
-                          <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
-                          {/*
+                    {errorMessage ? (
+                      <tr>
+                        <td colSpan="100" className="center orange bold">
+                          {errorMessage}
+                        </td>
+                      </tr>
+                    ) : (
+                      <>
+                        {data.map((token, i) => {
+                          return (
+                            <tr key={i}>
+                              <td className="center">{i + 1}</td>
+                              <td>
+                                <TokenCell token={token} />
+                              </td>
+                              <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
+                              {/*
                           <td className="right"></td>
                           <td className="right"></td>
                           */}
-                          <td className="right">{volumeToFiat({ token, type: 'buy' })}</td>
-                          <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
-                          <td className="right">{volumeToFiat({ token })}</td>
-                          <td className="right">
-                            <span className="tooltip">
-                              <span className="green">
-                                {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
-                              </span>{' '}
-                              /{' '}
-                              <span className="red">{shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}</span>
-                              <br />
-                              {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
-                              <span className="tooltiptext no-brake">
-                                {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
-                              </span>
-                            </span>
-                          </td>
-                          <td className="right">
-                            <span className="tooltip">
-                              {shortNiceNumber(token.holders, 0, 1)}
-                              <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
-                            </span>
-                            <br />
-                            <span className="tooltip green">
-                              {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
-                              <span className="tooltiptext no-brake">
-                                {fullNiceNumber(token.statistics?.activeHolders) || 0}
-                              </span>
-                            </span>
-                          </td>
-                          <td className="right">
-                            <span className="tooltip">
-                              {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
-                              <span className="tooltiptext no-brake">
-                                {fullNiceNumber(token.statistics?.dexes) || 0}
-                              </span>
-                            </span>
-                          </td>
-                          <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
-                          {/* <td className="right">
+                              <td className="right">{volumeToFiat({ token, type: 'buy' })}</td>
+                              <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
+                              <td className="right">{volumeToFiat({ token })}</td>
+                              <td className="right">
+                                <span className="tooltip">
+                                  <span className="green">
+                                    {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
+                                  </span>{' '}
+                                  /{' '}
+                                  <span className="red">
+                                    {shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}
+                                  </span>
+                                  <br />
+                                  {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
+                                  <span className="tooltiptext no-brake">
+                                    {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
+                                  </span>
+                                </span>
+                              </td>
+                              <td className="right">
+                                <span className="tooltip">
+                                  {shortNiceNumber(token.holders, 0, 1)}
+                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+                                </span>
+                                <br />
+                                <span className="tooltip green">
+                                  {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
+                                  <span className="tooltiptext no-brake">
+                                    {fullNiceNumber(token.statistics?.activeHolders) || 0}
+                                  </span>
+                                </span>
+                              </td>
+                              <td className="right">
+                                <span className="tooltip">
+                                  {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
+                                  <span className="tooltiptext no-brake">
+                                    {fullNiceNumber(token.statistics?.dexes) || 0}
+                                  </span>
+                                </span>
+                              </td>
+                              <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
+                              {/* <td className="right">
                             <span className="tooltip">
                               {shortNiceNumber(token.trustlines, 0, 1)}
                               <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
                             </span>
                           </td> */}
-                          <td className="center">
-                            <a
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault()
-                                handleSetTrustline(token)
-                              }}
-                              className="orange tooltip"
-                            >
-                              <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
-                              <span className="tooltiptext no-brake">Set trust</span>
-                            </a>
-                          </td>
-                        </tr>
-                      )
-                    })}
+                              <td className="center">
+                                <a
+                                  href="#"
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    handleSetTrustline(token)
+                                  }}
+                                  className="orange tooltip"
+                                >
+                                  <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
+                                  <span className="tooltiptext no-brake">Set trust</span>
+                                </a>
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </>
+                    )}
                   </>
                 )}
               </tbody>
@@ -519,64 +536,74 @@ export default function Tokens({
             <table className="table-mobile">
               <thead></thead>
               <tbody>
-                {errorMessage ? (
-                  <tr>
-                    <td colSpan="100" className="center orange bold">
-                      {errorMessage}
+                {loading ? (
+                  <tr className="center">
+                    <td colSpan="100">
+                      <span className="waiting"></span>
                     </td>
                   </tr>
                 ) : (
                   <>
-                    {data.map((token, i) => {
-                      return (
-                        <tr key={i}>
-                          <td style={{ padding: '5px' }} className="center">
-                            <b>{i + 1}</b>
-                          </td>
-                          <td>
-                            <TokenCell token={token} />
-                            <p>
-                              Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
-                              <br />
-                              Buy volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
-                              <br />
-                              Sell volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
-                              <br />
-                              {/* 24h %: {token.statistics?.priceChange24h} */}
-                              {/* 7d %: {token.statistics?.priceChange7d} */}
-                              Total volume (24h): {volumeToFiat({ token, mobile: true })}
-                              <br />
-                              Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
-                              <br />
-                              Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
-                              <br />
-                              Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
-                              <br />
-                              Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
-                              <br />
-                              Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
-                              <br />
-                              Trustlines: {niceNumber(token.trustlines)}
-                              <br />
-                              Holders: {niceNumber(token.holders)}
-                              <br />
-                              Active holders (Used the token in the last 24h):{' '}
-                              {niceNumber(token.statistics?.activeHolders) || 0}
-                              <br />
-                              <br />
-                              <button
-                                className="button-action narrow thin"
-                                onClick={() => {
-                                  handleSetTrustline(token)
-                                }}
-                              >
-                                <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Set Trust
-                              </button>
-                            </p>
-                          </td>
-                        </tr>
-                      )
-                    })}
+                    {errorMessage ? (
+                      <tr>
+                        <td colSpan="100" className="center orange bold">
+                          {errorMessage}
+                        </td>
+                      </tr>
+                    ) : (
+                      <>
+                        {data.map((token, i) => {
+                          return (
+                            <tr key={i}>
+                              <td style={{ padding: '5px' }} className="center">
+                                <b>{i + 1}</b>
+                              </td>
+                              <td>
+                                <TokenCell token={token} />
+                                <p>
+                                  Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
+                                  <br />
+                                  Buy volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
+                                  <br />
+                                  Sell volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
+                                  <br />
+                                  {/* 24h %: {token.statistics?.priceChange24h} */}
+                                  {/* 7d %: {token.statistics?.priceChange7d} */}
+                                  Total volume (24h): {volumeToFiat({ token, mobile: true })}
+                                  <br />
+                                  Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
+                                  <br />
+                                  Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
+                                  <br />
+                                  Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
+                                  <br />
+                                  Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
+                                  <br />
+                                  Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
+                                  <br />
+                                  Trustlines: {niceNumber(token.trustlines)}
+                                  <br />
+                                  Holders: {niceNumber(token.holders)}
+                                  <br />
+                                  Active holders (Used the token in the last 24h):{' '}
+                                  {niceNumber(token.statistics?.activeHolders) || 0}
+                                  <br />
+                                  <br />
+                                  <button
+                                    className="button-action narrow thin"
+                                    onClick={() => {
+                                      handleSetTrustline(token)
+                                    }}
+                                  >
+                                    <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Set Trust
+                                  </button>
+                                </p>
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </>
+                    )}
                   </>
                 )}
               </tbody>
