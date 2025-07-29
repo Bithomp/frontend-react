@@ -134,6 +134,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
       setWhaleTransactions(null)
       if (ws) ws.close()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Update rates subscription when currency changes
@@ -151,6 +152,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
     if (ws && ws.readyState === WebSocket.OPEN) {
       sendData(selectedCurrency)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency])
 
   return (
