@@ -12,7 +12,7 @@ import {
   useWidth,
   setTabParams
 } from '../../utils'
-import { niceCurrency, shortAddress, shortNiceNumber, amountFormat } from '../../utils/format'
+import { niceCurrency, shortAddress, shortNiceNumber } from '../../utils/format'
 import RadioOptions from './RadioOptions'
 import { useRouter } from 'next/router'
 
@@ -241,20 +241,6 @@ export default function TokenSelector({
     return niceCurrency(token.currency)
   }
 
-  // Helper to get token limit display
-  const getTokenLimitDisplay = (token) => {
-    if (!token.limit || token.currency === nativeCurrency) return null
-
-    return (
-      <div className="token-selector-modal-item-limit">
-        <span className="token-selector-modal-item-limit-label">Max:</span>
-        <span className="token-selector-modal-item-limit-value">
-          {amountFormat({ value: token.limit, currency: token.currency, issuer: token.issuer }, { short: true })}
-        </span>
-      </div>
-    )
-  }
-
   return (
     <>
       {allOrOne && (
@@ -364,7 +350,6 @@ export default function TokenSelector({
                                   )}
                                 </span>
                                 {width > 1100 ? <span>{token.issuer}</span> : <span>{shortAddress(token.issuer)}</span>}
-                                {getTokenLimitDisplay(token)}
                               </div>
                             </div>
                           </div>
