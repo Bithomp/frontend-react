@@ -202,6 +202,48 @@ export default function MobileMenu({
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
+          Tokens
+        </div>
+        <div className="mobile-menu__submenu">
+          <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            TOP Tokens
+          </Link>
+        </div>
+
+        {/* Hide AMM for XAHAU */}
+        {!xahauNetwork && (
+          <>
+            <div className="mobile-menu-directory" data-expanded="false">
+              {t('menu.amm.amm')}
+            </div>
+            <div className="mobile-menu__submenu">
+              <Link href="/amms" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t('menu.amm.pools')}
+              </Link>
+              <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t('menu.amm.explorer')}
+              </Link>
+              {!devNet && (
+                <>
+                  <Link href="/services/amm?tab=deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                    AMM Deposit
+                  </Link>
+                  <Link href="/services/amm?tab=withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                    AMM Withdraw
+                  </Link>
+                  <Link href="/services/amm?tab=vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                    AMM Vote
+                  </Link>
+                  <Link href="/services/amm?tab=create" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                    AMM Create
+                  </Link>
+                </>
+              )}
+            </div>
+          </>
+        )}
+
+        <div className="mobile-menu-directory" data-expanded="false">
           NFT
         </div>
         <div className="mobile-menu__submenu">
@@ -278,39 +320,6 @@ export default function MobileMenu({
             {t('menu.services.nft-mint')}
           </Link>
         </div>
-
-        {/* Hide AMM for XAHAU */}
-        {!xahauNetwork && (
-          <>
-            <div className="mobile-menu-directory" data-expanded="false">
-              {t('menu.amm.amm')}
-            </div>
-            <div className="mobile-menu__submenu">
-              <Link href="/amms" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('menu.amm.pools')}
-              </Link>
-              <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('menu.amm.explorer')}
-              </Link>
-              {!devNet && (
-                <>
-                  <Link href="/services/amm?tab=deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                    AMM Deposit
-                  </Link>
-                  <Link href="/services/amm?tab=withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                    AMM Withdraw
-                  </Link>
-                  <Link href="/services/amm?tab=vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                    AMM Vote
-                  </Link>
-                  <Link href="/services/amm?tab=create" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                    AMM Create
-                  </Link>
-                </>
-              )}
-            </div>
-          </>
-        )}
 
         <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.network.blockchain')}
