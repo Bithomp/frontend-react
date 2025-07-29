@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { server } from '.'
+import { devNet, server } from '.'
 
 export const axiosServer = axios.create({
   headers: {
@@ -37,4 +37,29 @@ export const passHeaders = (req) => {
     headers['user-agent'] = req.headers['user-agent']
   }
   return headers
+}
+
+export const currencyServer = (req) => {
+  const reqCookieCurrency = req?.headers?.cookie || ''
+  const parsedcookieCurrency = Object.fromEntries(reqCookieCurrency.split('; ').map((c) => c.split('=')))
+  return parsedcookieCurrency['currency'] || 'usd'
+}
+
+export const getFiatRateServer = async (req) => {
+  let fiatRateServer = null
+  let selectedCurrencyServer = 'usd'
+  try {
+    selectedCurrencyServer = currencyServer(req)
+    if (!devNet) {
+      const rateServer = await axiosServer({
+        method: 'get',
+        url: 'v2/rates/current/' + selectedCurrencyServer,
+        headers: passHeaders(req)
+      })
+      fiatRateServer = rateServer?.data[selectedCurrencyServer] || null
+    }
+  } catch (e) {
+    console.error(e)
+  }
+  return { fiatRateServer, selectedCurrencyServer }
 }

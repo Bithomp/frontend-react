@@ -17,7 +17,7 @@ import {
   niceNumber,
   shortNiceNumber
 } from '../utils/format'
-import { axiosServer, passHeaders } from '../utils/axios'
+import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { nativeCurrency, useWidth } from '../utils'
 
@@ -77,11 +77,16 @@ export async function getServerSideProps(context) {
   } catch (e) {
     console.error(e)
   }
+
+  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
+
   return {
     props: {
       initialData: initialData || null,
       initialErrorMessage: initialErrorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
+      fiatRateServer,
+      selectedCurrencyServer,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -93,13 +98,23 @@ export default function Tokens({
   subscriptionExpired,
   sessionToken,
   setSignRequest,
-  selectedCurrency,
+  selectedCurrency: selectedCurrencyApp,
+  selectedCurrencyServer,
   setSelectedCurrency,
-  fiatRate
+  fiatRate: fiatRateApp,
+  fiatRateServer
 }) {
   const { t } = useTranslation()
   const width = useWidth()
   const isFirstRender = useRef(true)
+
+  let selectedCurrency = selectedCurrencyServer
+  let fiatRate = fiatRateServer
+
+  if (fiatRateApp) {
+    fiatRate = fiatRateApp
+    selectedCurrency = selectedCurrencyApp
+  }
 
   // States
   const [data, setData] = useState(initialData?.tokens || [])
