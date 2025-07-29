@@ -435,7 +435,6 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
                 }
               }}
               name="mint-and-send-remit"
-              disabled={!account?.address}
             >
               Mint and Send (Remit)
             </CheckBox>
