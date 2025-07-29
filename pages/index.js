@@ -1,6 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 
@@ -51,13 +51,14 @@ const ldJsonWebsite = {
   }
 }
 
-function sendData() {
+function sendData(selectedCurrency) {
   if (ws.readyState) {
     //{ command: "subscribe", streams: ["whale_transactions"], currency: true, service: true, id: 1 }
     ws.send(
       JSON.stringify({
         command: 'subscribe',
-        streams: ['statistics', 'whale_transactions'],
+        streams: ['statistics', 'whale_transactions', 'rates'],
+        currency: selectedCurrency,
         id: 1,
         limit: 3
       })
@@ -67,26 +68,47 @@ function sendData() {
   }
 }
 
+function unsubscribeRates(currency) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(
+      JSON.stringify({
+        command: 'unsubscribe',
+        streams: ['rates'],
+        currency: currency,
+        id: 2
+      })
+    )
+  }
+}
+
 export default function Home({ selectedCurrency, setSelectedCurrency, showAds, fiatRate, isSsrMobile }) {
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
   const [whaleTransactions, setWhaleTransactions] = useState(null)
   const [statistics, setStatistics] = useState(null)
-
+  const [liveFiatRate, setLiveFiatRate] = useState(fiatRate)
+  
+  // Use ref to always get current currency in WebSocket message handler
+  const selectedCurrencyRef = useRef(selectedCurrency)
+  const previousCurrencyRef = useRef(null)
+  
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
 
   const connect = () => {
     ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
-      sendData()
+      sendData(selectedCurrency)
     }
 
     ws.onmessage = (evt) => {
       const message = JSON.parse(evt.data)
       if (message.type === 'statistics') {
         setStatistics(message)
+      } else if (message.type === 'rates') {
+        const currentCurrency = selectedCurrencyRef.current
+        setLiveFiatRate(message[currentCurrency])
       } else {
         //type === 'WhaleTransactions'
         setWhaleTransactions(message.transactions)
@@ -99,6 +121,12 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
   }
 
   useEffect(() => {
+    setLiveFiatRate(fiatRate)
+  }, [fiatRate])
+
+  useEffect(() => {
+    selectedCurrencyRef.current = selectedCurrency
+    previousCurrencyRef.current = selectedCurrency
     if (navigator.onLine) {
       connect()
     }
@@ -106,8 +134,24 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
       setWhaleTransactions(null)
       if (ws) ws.close()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Update rates subscription when currency changes
+  useEffect(() => {
+    // Unsubscribe from previous currency if it exists
+    if (previousCurrencyRef.current && previousCurrencyRef.current !== selectedCurrency) {
+      unsubscribeRates(previousCurrencyRef.current)
+    }
+    
+    // Update refs
+    selectedCurrencyRef.current = selectedCurrency
+    previousCurrencyRef.current = selectedCurrency
+    
+    // Subscribe to new currency
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      sendData(selectedCurrency)
+    }
+  }, [selectedCurrency])
 
   return (
     <>
@@ -165,7 +209,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
                 chartPeriod={chartPeriod}
-                fiatRate={fiatRate}
+                fiatRate={liveFiatRate}
               />
             </div>
             <div className="home-price-chart">
