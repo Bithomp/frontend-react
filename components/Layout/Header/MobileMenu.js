@@ -202,11 +202,11 @@ export default function MobileMenu({
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
-          Tokens
+          {t('menu.tokens')}
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            TOP Tokens
+            TOP {t('menu.tokens')}
           </Link>
         </div>
 

@@ -209,7 +209,7 @@ export default function Header({
 
           <div className="menu-dropdown">
             <Link href="/tokens" className="menu-dropdown-button" style={{ textDecoration: 'none' }}>
-              Tokens <MdNewReleases className="chevron orange" />
+              {t('menu.tokens')} <MdNewReleases className="chevron orange" />
             </Link>
           </div>
 

@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "토큰",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",

@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "Jetons",
     "amm": {
       "amm": "AMM",
       "pools": "Pools AMM",
