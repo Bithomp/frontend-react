@@ -1,7 +1,7 @@
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled } from '../../utils/format'
+import { AddressWithIconFilled, addressUsernameOrServiceLink, amountFormat, niceCurrency } from '../../utils/format'
 import { divide } from '../../utils/calc'
 
 // AMM Flag definitions based on XRPL documentation
@@ -23,6 +23,34 @@ const AMMDepositFlags = {
   limitLPToken: 'Perform a single-asset deposit with a specified effective price',
   twoAssetIfEmpty: 'Perform a special double-asset deposit to an AMM with an empty pool'
 }
+
+// Helper function to render amount with issuer
+const renderAmountWithIssuer = (amountData) => (
+  <>
+    {amountFormat(amountData)}
+    {amountData.issuer && (
+      <>
+        {'('}
+        {addressUsernameOrServiceLink(amountData, 'issuer', { short: true })}
+        {')'}
+      </>
+    )}
+  </>
+)
+
+// Helper function to render asset with issuer
+const renderAssetWithIssuer = (assetData) => (
+  <>
+    {niceCurrency(assetData.currency)}
+    {assetData.issuer && (
+      <>
+        {'('}
+        {addressUsernameOrServiceLink(assetData, 'issuer', { short: true })}
+        {')'}
+      </>
+    )}
+  </>
+)
 
 // Component to display AMM flags with tooltips
 const AMMFlags = ({ flags, txType }) => {
@@ -89,10 +117,41 @@ const AMMFlags = ({ flags, txType }) => {
 
 export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification, tx } = data
+  const { specification, tx, outcome } = data
   const txType = tx.TransactionType
   const tradingFee = tx?.TradingFee
-
+  const amount = {
+    currency: specification?.amount?.currency,
+    issuer: specification?.amount?.issuer,
+    issuerDetails: outcome?.balanceChanges?.find((change) => change.address === specification.source.address)?.balanceChanges?.find((change) => change.currency === specification?.amount?.currency)?.issuerDetails,
+    value: specification?.amount?.value
+  }
+  const amount2 = {
+    currency: specification?.amount2?.currency,
+    issuer: specification?.amount2?.issuer,
+    issuerDetails: outcome?.balanceChanges?.find((change) => change.address === specification.source.address)?.balanceChanges?.find((change) => change.currency === specification?.amount2?.currency)?.issuerDetails,
+    value: specification?.amount2?.value
+  }
+  const asset = specification?.asset
+  const asset2 = specification?.asset2
+  const ePrice = specification?.EPrice
+  const lpTokenOut = specification?.LPTokenOut
+  const lpTokenIn = specification?.LPTokenIn
+  const bidMax = {
+    counterparty: specification?.bidMax?.counterparty,
+    currency: specification?.bidMax?.currency,
+    issuer: specification?.bidMax?.issuer,
+    issuerDetails: outcome?.balanceChanges?.find((change) => change.address === specification.source.address)?.balanceChanges?.find((change) => change.currency === specification?.bidMax?.currency)?.issuerDetails,
+    value: specification?.bidMax?.value
+  }
+  const bidMin = {
+    counterparty: specification?.bidMin?.counterparty,
+    currency: specification?.bidMin?.currency,
+    issuer: specification?.bidMin?.issuer,
+    issuerDetails: outcome?.balanceChanges?.find((change) => change.address === specification.source.address)?.balanceChanges?.find((change) => change.currency === specification?.bidMin?.currency)?.issuerDetails,
+    value: specification?.bidMin?.value
+  }
+  console.log(data)
   return (
     <TransactionCard
       data={data}
@@ -106,6 +165,72 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
+      {asset && (
+        <tr>
+          <TData>Asset</TData>
+          <TData className="bold">
+            {renderAssetWithIssuer(asset)}
+          </TData>
+        </tr>
+      )}
+      {asset2 && (
+        <tr>
+          <TData>Asset 2</TData>
+          <TData className="bold">
+            {renderAssetWithIssuer(asset2)}
+          </TData>
+        </tr>
+      )}
+      {amount?.currency && amount?.value && (
+        <tr>
+          <TData>Amount</TData>
+          <TData className="bold">
+            {renderAmountWithIssuer(amount)}
+          </TData>
+        </tr>
+      )}
+      {amount2?.currency && amount2?.value && (
+        <tr>
+          <TData>Amount 2</TData>
+          <TData className="bold">
+            {renderAmountWithIssuer(amount2)}
+          </TData>
+        </tr>
+      )}
+      {ePrice && (
+        <tr>
+          <TData>EPrice</TData>
+          <TData className="bold">{ePrice}</TData>
+        </tr>
+      )}
+      {lpTokenIn && (
+        <tr>
+          <TData>LP Token In</TData>
+          <TData className="bold">{lpTokenIn}</TData>
+        </tr>
+      )}
+      {lpTokenOut && (
+        <tr>
+          <TData>LP Token Out</TData>
+          <TData className="bold">{lpTokenOut}</TData>
+        </tr>
+      )}
+      {bidMax?.currency && bidMax?.value && (
+        <tr>
+          <TData>Bid Max</TData>
+          <TData className="bold">
+            {renderAmountWithIssuer(bidMax)}
+          </TData>
+        </tr>
+      )}
+      {bidMin?.currency && bidMin?.value && (
+        <tr>
+          <TData>Bid Min</TData>
+          <TData className="bold">
+            {renderAmountWithIssuer(bidMin)}
+          </TData>
+        </tr>
+      )}
       {tradingFee ? (
         <tr>
           <TData>Trading fee</TData>
