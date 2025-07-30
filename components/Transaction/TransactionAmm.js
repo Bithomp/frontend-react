@@ -24,6 +24,10 @@ const AMMDepositFlags = {
   twoAssetIfEmpty: 'Perform a special double-asset deposit to an AMM with an empty pool'
 }
 
+const AMMClawbackFlags = {
+  tfClawTwoAssets: 'Claw back the specified amount of Asset, and a corresponding amount of Asset2 based on the AMM pool\'s asset proportion',
+}
+
 // Helper function to render amount with issuer
 const renderAmountWithIssuer = (amountData) => (
   <>
@@ -61,6 +65,8 @@ const AMMFlags = ({ flags, txType }) => {
     Object.assign(flagDefinitions, AMMWithdrawFlags)
   } else if (txType === 'AMMDeposit') {
     Object.assign(flagDefinitions, AMMDepositFlags)
+  } else if (txType === 'AMMClawback') {
+    Object.assign(flagDefinitions, AMMClawbackFlags)
   }
 
   const activeFlags = []
@@ -151,7 +157,11 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
     issuerDetails: outcome?.balanceChanges?.find((change) => change.address === specification.source.address)?.balanceChanges?.find((change) => change.currency === specification?.bidMin?.currency)?.issuerDetails,
     value: specification?.bidMin?.value
   }
-  console.log(data)
+  const holder = {
+    address: specification?.holder,
+    addressDetails: outcome?.balanceChanges?.find((change) => change.address === specification.holder)?.addressDetails,
+  }
+
   return (
     <TransactionCard
       data={data}
@@ -229,6 +239,12 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           <TData className="bold">
             {renderAmountWithIssuer(bidMin)}
           </TData>
+        </tr>
+      )}
+      {holder?.address && (
+        <tr>
+          <TData>Holder</TData>
+          <TData className="bold"><AddressWithIconFilled data={holder} name="address" /></TData>
         </tr>
       )}
       {tradingFee ? (
