@@ -184,7 +184,9 @@ export default function Subscriptions({
   receiptQuery,
   tabQuery,
   setSubscriptionExpired,
-  setProExpire
+  setProExpire,
+  sessionToken,
+  openEmailLogin
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -207,10 +209,12 @@ export default function Subscriptions({
   const [transactions, setTransactions] = useState([])
 
   useEffect(() => {
-    getApiData()
-    getTransactions
+    if (sessionToken) {
+      getApiData()
+      getTransactions()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   useEffect(() => {
     let queryAddList = []
@@ -232,7 +236,7 @@ export default function Subscriptions({
       if (error && error.message !== 'canceled') {
         console.log("ERROR: can't get partner's transactions")
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          openEmailLogin()
         }
       }
     })
@@ -250,7 +254,7 @@ export default function Subscriptions({
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response.data.error || 'error.' + error.message))
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          openEmailLogin()
         }
       }
       setLoading(false)
@@ -317,7 +321,7 @@ export default function Subscriptions({
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response.data.error || 'error.' + error.message))
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          openEmailLogin()
         }
       }
     })
@@ -503,17 +507,19 @@ export default function Subscriptions({
         <AdminTabs name="mainTabs" tab="subscriptions" />
 
         <div className="center">
-          <BillingCountry
-            billingCountry={billingCountry}
-            setBillingCountry={setBillingCountry}
-            choosingCountry={choosingCountry}
-            setChoosingCountry={setChoosingCountry}
-          />
-          <br />
-          <br />
-
-          {!choosingCountry && (
+          {sessionToken ? (
             <>
+              <BillingCountry
+                billingCountry={billingCountry}
+                setBillingCountry={setBillingCountry}
+                choosingCountry={choosingCountry}
+                setChoosingCountry={setChoosingCountry}
+              />
+              <br />
+              <br />
+
+              {!choosingCountry && (
+                <>
               {loading && (
                 <div className="center">
                   <br />
@@ -768,6 +774,24 @@ export default function Subscriptions({
                   <ListTransactions transactions={transactions} />
                 </div>
               )}
+                </>
+              )}
+            </>
+          ) : (
+            <>
+              <br />
+              <div className="center">
+                <div style={{ maxWidth: '440px', margin: 'auto' }}>
+                  <p>Access subscription management and billing features.</p>
+                  <p>Manage your Bithomp Pro and API subscriptions.</p>
+                </div>
+                <br />
+                <center>
+                  <button className="button-action" onClick={() => openEmailLogin()}>
+                    Register or Sign In
+                  </button>
+                </center>
+              </div>
             </>
           )}
         </div>

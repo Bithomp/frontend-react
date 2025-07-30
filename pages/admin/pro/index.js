@@ -1,6 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import { getIsSsrMobile } from '../../../utils/mobile'
@@ -73,8 +72,7 @@ const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired }) => {
   )
 }
 
-export default function Pro({ account, setSignRequest, refreshPage, subscriptionExpired }) {
-  const router = useRouter()
+export default function Pro({ account, setSignRequest, refreshPage, subscriptionExpired, sessionToken, openEmailLogin }) {
   const width = useWidth()
 
   const { t } = useTranslation(['common', 'admin'])
@@ -112,7 +110,7 @@ export default function Pro({ account, setSignRequest, refreshPage, subscription
     const response = await axiosAdmin.get('user/addresses').catch((error) => {
       setLoadingVerifiedAddresses(false)
       if (error.response?.data?.error === 'errors.token.required') {
-        router.push('/admin')
+        openEmailLogin()
         return
       }
       if (error && error.message !== 'canceled') {
@@ -161,9 +159,11 @@ export default function Pro({ account, setSignRequest, refreshPage, subscription
   }, [account])
 
   useEffect(() => {
-    getVerifiedAddresses()
+    if (sessionToken) {
+      getVerifiedAddresses()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshPage])
+  }, [refreshPage, sessionToken])
 
   const addAddressClicked = () => {
     if (!account?.pro) {
@@ -240,7 +240,9 @@ export default function Pro({ account, setSignRequest, refreshPage, subscription
 
         <ProTabs tab="addresses" />
 
-        <h4 className="center">Verified addresses</h4>
+        {sessionToken ? (
+          <>
+            <h4 className="center">Verified addresses</h4>
         <div>
           Pro accounts can use the following features:
           <ul>
@@ -481,6 +483,24 @@ export default function Pro({ account, setSignRequest, refreshPage, subscription
         )}
         <br />
         {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+          </>
+        ) : (
+          <>
+            <br />
+            <div className="center">
+              <div style={{ maxWidth: '440px', margin: 'auto' }}>
+                <p>Verify your XRPL addresses to access Pro features.</p>
+                <p>View historical balances and manage automation settings.</p>
+              </div>
+              <br />
+              <center>
+                <button className="button-action" onClick={() => openEmailLogin()}>
+                  Register or Sign In
+                </button>
+              </center>
+            </div>
+          </>
+        )}
       </div>
     </>
   )

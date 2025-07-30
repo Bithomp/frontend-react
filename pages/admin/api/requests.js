@@ -1,7 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 
 import SEO from '../../../components/SEO'
 import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
@@ -27,9 +26,8 @@ const now = new Date()
 let minDate = now.setDate(now.getDate() - 5) // 5 days ago
 minDate = new Date(minDate)
 
-export default function Requests() {
+export default function Requests({ sessionToken, openEmailLogin }) {
   const { t } = useTranslation()
-  const router = useRouter()
   const width = useWidth()
 
   const [errorMessage, setErrorMessage] = useState('')
@@ -38,9 +36,11 @@ export default function Requests() {
   const [period, setPeriod] = useState('')
 
   useEffect(() => {
-    getData()
+    if (sessionToken) {
+      getData()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   const getData = async () => {
     setApiRequests({})
@@ -52,7 +52,7 @@ export default function Requests() {
         if (error && error.message !== 'canceled') {
           setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
           if (error.response?.data?.error === 'errors.token.required') {
-            router.push('/admin')
+            openEmailLogin()
           }
         }
         setLoading(false)
@@ -60,6 +60,8 @@ export default function Requests() {
     setLoading(false)
     setApiRequests(apiRequests?.data)
   }
+
+
 
   return (
     <>
@@ -70,7 +72,9 @@ export default function Requests() {
         <AdminTabs name="mainTabs" tab="api" />
         <AdminTabs name="apiTabs" tab="api-requests" />
 
-        <center>
+        {sessionToken ? (
+          <>
+            <center>
           <DateAndTimeRange setPeriod={setPeriod} minDate={minDate} />
           {width < 500 && <br />}
           <button className="button-action narrow thin" onClick={getData}>
@@ -188,6 +192,24 @@ export default function Requests() {
           <br />
           {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
         </div>
+          </>
+        ) : (
+          <>
+            <br />
+            <div className="center">
+              <div style={{ maxWidth: '440px', margin: 'auto' }}>
+                <p>View detailed API request logs and information.</p>
+                <p>Monitor recent API calls and their performance.</p>
+              </div>
+              <br />
+              <center>
+                <button className="button-action" onClick={() => openEmailLogin()}>
+                  Register or Sign In
+                </button>
+              </center>
+            </div>
+          </>
+        )}
       </div>
     </>
   )

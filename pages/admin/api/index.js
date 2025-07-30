@@ -1,7 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../../utils/axios'
 import Link from 'next/link'
 
@@ -22,19 +21,20 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Api() {
+export default function Api({ sessionToken, openEmailLogin }) {
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
   const [apiData, setApiData] = useState(null)
   const [domain, setDomain] = useState('')
   const [apiDescription, setApiDescription] = useState('')
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
 
   useEffect(() => {
-    getApiData()
+    if (sessionToken) {
+      getApiData()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   const getApiData = async () => {
     setLoading(true)
@@ -43,7 +43,7 @@ export default function Api() {
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          openEmailLogin()
         }
       }
       setLoading(false)
@@ -106,6 +106,8 @@ export default function Api() {
   const now = new Date()
   const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
+
+
   return (
     <>
       <SEO title="API" />
@@ -115,7 +117,8 @@ export default function Api() {
         <AdminTabs name="mainTabs" tab="api" />
         <AdminTabs name="apiTabs" tab="api-info" />
 
-        <div className="center">
+        {sessionToken ? (
+          <div className="center">
           <h4 className="center">API data</h4>
           Documentation:{' '}
           <a href="https://docs.bithomp.com" target="_blank" rel="noreferrer">
@@ -235,6 +238,23 @@ export default function Api() {
           <br />
           {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
         </div>
+        ) : (
+          <>
+            <br />
+            <div className="center">
+              <div style={{ maxWidth: '440px', margin: 'auto' }}>
+                <p>Access and manage your API keys and settings.</p>
+                <p>View API documentation and usage statistics.</p>
+              </div>
+              <br />
+              <center>
+                <button className="button-action" onClick={() => openEmailLogin()}>
+                  Register or Sign In
+                </button>
+              </center>
+            </div>
+          </>
+        )}
       </div>
     </>
   )

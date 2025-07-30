@@ -195,7 +195,7 @@ const platformList = [
   { value: 'CryptoTax', label: 'CryptoTax' }
 ]
 
-export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
+export default function History({ queryAddress, selectedCurrency, setSelectedCurrency, sessionToken, openEmailLogin }) {
   const router = useRouter()
   const width = useWidth()
 
@@ -461,7 +461,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
       .catch((error) => {
         setLoading(false)
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          openEmailLogin()
           return
         }
         if (error && error.message !== 'canceled') {
@@ -579,14 +579,18 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   }
 
   useEffect(() => {
-    getVerifiedAddresses()
+    if (sessionToken) {
+      getVerifiedAddresses()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   useEffect(() => {
-    getProAddressHistory()
+    if (sessionToken) {
+      getProAddressHistory()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressesToCheck, selectedCurrency, period, order])
+  }, [addressesToCheck, selectedCurrency, period, order, sessionToken])
 
   const addressName = (address) => {
     for (let a of verifiedAddresses) {
@@ -595,6 +599,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
       }
     }
   }
+
+
 
   return (
     <>
@@ -605,7 +611,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         <AdminTabs name="mainTabs" tab="pro" />
         <ProTabs tab="balance-changes" />
 
-        <FiltersFrame
+        {sessionToken ? (
+          <>
+            <FiltersFrame
           order={order}
           setOrder={setOrder}
           orderList={[
@@ -857,6 +865,25 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
             {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
           </>
         </FiltersFrame>
+          </>
+        ) : (
+          <>
+            <br />
+            <div className="center">
+              <div style={{ maxWidth: '440px', margin: 'auto' }}>
+                <p>View detailed balance history for your verified addresses.</p>
+                <p>Export data for tax reporting and analysis.</p>
+              </div>
+              <br />
+              <center>
+                <button className="button-action" onClick={() => openEmailLogin()}>
+                  Register or Sign In
+                </button>
+              </center>
+            </div>
+            <br />
+          </>
+        )}
       </div>
     </>
   )

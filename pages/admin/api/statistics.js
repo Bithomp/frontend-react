@@ -1,7 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
@@ -20,18 +19,19 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Statistics() {
+export default function Statistics({ sessionToken, openEmailLogin }) {
   const { t } = useTranslation()
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
   const width = useWidth()
   const [statistics, setStatistics] = useState({})
 
   useEffect(() => {
-    getData()
+    if (sessionToken) {
+      getData()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   const getData = async () => {
     setLoading(true)
@@ -41,7 +41,7 @@ export default function Statistics() {
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response.data.error || 'error.' + error.message))
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          openEmailLogin()
         }
       }
       setLoading(false)
@@ -50,6 +50,8 @@ export default function Statistics() {
 
     setStatistics(requestStats?.data)
   }
+
+
 
   return (
     <>
@@ -60,7 +62,8 @@ export default function Statistics() {
         <AdminTabs name="mainTabs" tab="api" />
         <AdminTabs name="apiTabs" tab="api-statistics" />
 
-        <div className="center">
+        {sessionToken ? (
+          <div className="center">
           <div style={{ marginTop: '20px', textAlign: 'left' }}>
             <h4 className="center">20 most common URLs in the last 24h</h4>
             {width > 750 ? (
@@ -186,6 +189,23 @@ export default function Statistics() {
           <br />
           {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
         </div>
+        ) : (
+          <>
+            <br />
+            <div className="center">
+              <div style={{ maxWidth: '440px', margin: 'auto' }}>
+                <p>View API usage statistics and analytics.</p>
+                <p>Monitor endpoint performance and usage patterns.</p>
+              </div>
+              <br />
+              <center>
+                <button className="button-action" onClick={() => openEmailLogin()}>
+                  Register or Sign In
+                </button>
+              </center>
+            </div>
+          </>
+        )}
       </div>
     </>
   )

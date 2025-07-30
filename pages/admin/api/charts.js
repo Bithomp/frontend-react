@@ -1,7 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import { chartSpan, useWidth } from '../../../utils'
 import { getIsSsrMobile } from '../../../utils/mobile'
 import { axiosAdmin } from '../../../utils/axios'
@@ -21,9 +20,8 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Charts() {
+export default function Charts({ sessionToken, openEmailLogin }) {
   const { t } = useTranslation()
-  const router = useRouter()
   const width = useWidth()
 
   const [errorMessage, setErrorMessage] = useState('')
@@ -32,11 +30,11 @@ export default function Charts() {
   const [period, setPeriod] = useState('')
 
   useEffect(() => {
-    if (period) {
+    if (sessionToken && period) {
       getData(period)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period])
+  }, [period, sessionToken])
 
   const getData = async (period) => {
     setLoading(true)
@@ -48,7 +46,7 @@ export default function Charts() {
         if (error && error.message !== 'canceled') {
           setErrorMessage(t(error.response.data.error || 'error.' + error.message))
           if (error.response?.data?.error === 'errors.token.required') {
-            router.push('/admin')
+            openEmailLogin()
           }
         }
         setLoading(false)
@@ -63,6 +61,8 @@ export default function Charts() {
     }
   }
 
+
+
   return (
     <>
       <SEO title="API charts" />
@@ -72,7 +72,9 @@ export default function Charts() {
         <AdminTabs name="mainTabs" tab="api" />
         <AdminTabs name="apiTabs" tab="api-charts" />
 
-        <center>
+        {sessionToken ? (
+          <>
+            <center>
           <DateAndTimeRange defaultPeriod="day" setPeriod={setPeriod} tabs={true} />
           {width < 500 && <br />}
         </center>
@@ -102,6 +104,24 @@ export default function Charts() {
           <br />
           {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
         </div>
+          </>
+        ) : (
+          <>
+            <br />
+            <div className="center">
+              <div style={{ maxWidth: '440px', margin: 'auto' }}>
+                <p>View API usage charts and analytics.</p>
+                <p>Monitor request patterns and performance metrics.</p>
+              </div>
+              <br />
+              <center>
+                <button className="button-action" onClick={() => openEmailLogin()}>
+                  Register or Sign In
+                </button>
+              </center>
+            </div>
+          </>
+        )}
       </div>
     </>
   )

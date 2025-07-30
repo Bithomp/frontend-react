@@ -1,7 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../utils/axios'
 
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -29,9 +28,8 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Watchlist({ selectedCurrency, account, subscriptionExpired, fiatRate }) {
+export default function Watchlist({ selectedCurrency, account, subscriptionExpired, fiatRate, sessionToken, openEmailLogin }) {
   const { t, i18n } = useTranslation()
-  const router = useRouter()
   const width = useWidth()
 
   const [errorMessage, setErrorMessage] = useState('')
@@ -44,10 +42,12 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
   const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
-    getFavorites()
+    if (sessionToken) {
+      getFavorites()
+    }
     setRendered(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   /*
     .delete("/user/favorite/1");
@@ -59,7 +59,7 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
       if (error && error.message !== 'canceled') {
         console.log("ERROR: can't get favorites")
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          openEmailLogin()
         } else {
           setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
         }
@@ -239,7 +239,9 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
 
         <AdminTabs name="mainTabs" tab="watchlist" />
 
-        {rendered ? (
+        {sessionToken ? (
+          <>
+            {rendered ? (
           <p>
             You can add up to {subscriptionExpired ? 20 : 100} favorite addresses or NFTs to the watchlist.
             {subscriptionExpired && (
@@ -474,9 +476,27 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
               </>
             )}
           </div>
+            <br />
+            {!loading && errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+          </div>
+        </>
+      ) : (
+        <>
           <br />
-          {!loading && errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
-        </div>
+          <div className="center">
+            <div style={{ maxWidth: '440px', margin: 'auto' }}>
+              <p>Manage your favorite addresses and NFTs.</p>
+              <p>Keep track of balances and recent activity.</p>
+            </div>
+            <br />
+            <center>
+              <button className="button-action" onClick={() => openEmailLogin()}>
+                Register or Sign In
+              </button>
+            </center>
+          </div>
+        </>
+      )}
       </div>
     </>
   )
