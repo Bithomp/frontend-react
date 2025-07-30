@@ -489,7 +489,7 @@ export default function Pro({ account, setSignRequest, refreshPage, subscription
             <br />
             <div className="center">
               <div style={{ maxWidth: '440px', margin: 'auto' }}>
-                <p>Verify your XRPL addresses to access Pro features.</p>
+                <p>Verify your addresses to access Pro features.</p>
                 <p>View historical balances and manage automation settings.</p>
               </div>
               <br />
