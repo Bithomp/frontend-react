@@ -123,18 +123,18 @@ export default function AmendmentSummary({
     }
   }, [validators, amendmentData])
 
-  const amendmentId = amendmentData?.amendment || '-'
-  const introduced = amendmentData?.introduced || '-'
-  let threshold = '-'
+  const amendmentId = amendmentData?.amendment
+  const introduced = amendmentData?.introduced
+  let threshold = ''
   if (featureData && typeof featureData.threshold !== 'undefined' && typeof featureData.validations !== 'undefined') {
     threshold = `${featureData.threshold} / ${featureData.validations} votes`
   }
   const detailsUrl = `https://xrpl.org/known-amendments.html#${amendmentName.toLowerCase()}`
   const status = amendmentData?.enabled ? 'ENABLED' : 'NOT ENABLED'
   const activationDays = xahauNetwork ? 5 : 14
-  const eta = amendmentData?.majority ? fullDateAndTime(amendmentData.majority + activationDays * 86400 + 903) : '-'
+  const eta = amendmentData?.majority ? fullDateAndTime(amendmentData.majority + activationDays * 86400 + 903) : 'Currently undefined'
   const consensus =
-    yeas.length + nays.length > 0 ? ((yeas.length / (yeas.length + nays.length)) * 100).toFixed(2) : '0.00'
+    yeas.length + nays.length > 0 ? ((yeas.length / (yeas.length + nays.length)) * 100).toFixed(2) : ''
 
   const fixCountry = (country) => {
     //accept UK as a country code for GB
@@ -149,7 +149,7 @@ export default function AmendmentSummary({
     loadCountries()
   }, [i18n.language])
 
-  const displayFlag = (country, typeName, em = 1.5) => {
+  const displayFlag = (country, typeName, em = 1) => {
     if (!country) return ''
     if (country.length === 2) {
       country = fixCountry(country)
@@ -284,65 +284,137 @@ export default function AmendmentSummary({
         </p>
         {!initialErrorMessage ? (
           <>
-            <table className="table-large no-hover">
-              <tbody>
-                <tr>
-                  <td>
-                    <b>Name:</b>
-                  </td>
-                  <td>
-                    {amendmentData?.name || amendmentName} (
-                    <a href={detailsUrl} target="_blank" rel="noreferrer">
-                      read more
-                    </a>
-                    )
-                  </td>
-                  <td>
-                    <b>Quorum:</b>
-                  </td>
-                  <td>{threshold}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <b>Amendment ID:</b>
-                  </td>
-                  <td>
-                    {shortHash(amendmentId)} <CopyButton text={amendmentId} />
-                  </td>
-                  <td>
-                    <b>Voted Yes:</b>
-                  </td>
-                  <td>{status !== 'ENABLED' ? <b className="green">{yeas.length}</b> : '-'}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <b>Introduced in Version:</b>
-                  </td>
-                  <td>{introduced}</td>
-                  <td>
-                    <b>Voted No (or haven't voted yet):</b>
-                  </td>
-                  <td>{status !== 'ENABLED' ? <b className="red">{nays.length}</b> : '-'}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <b>ETA:</b>
-                  </td>
-                  <td>{eta}</td>
-                  <td>{status !== 'ENABLED' ? <b>Consensus level:</b> : <b>Status</b>}</td>
-                  <td>
-                    {status !== 'ENABLED' ? (
+            {windowWidth > 768 ? (
+              <table className="table-large no-hover">
+                <tbody>
+                  <tr>
+                    <td>
+                      <b>Name:</b>
+                    </td>
+                    <td>
+                      {amendmentData?.name || amendmentName} (
+                      <a href={detailsUrl} target="_blank" rel="noreferrer">
+                        read more
+                      </a>
+                      )
+                    </td>
+                    {threshold && (
                       <>
-                        <span className="bold">{consensus}%</span> / 80%
+                        <td>
+                          <b>Quorum:</b>
+                        </td>
+                        <td>{threshold}</td>
                       </>
-                    ) : (
-                      <span className={status === 'ENABLED' ? 'green bold' : 'red bold'}>{status}</span>
                     )}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            {status !== 'ENABLED' && (
+                  </tr>
+                  <tr>
+                    {amendmentId && (
+                      <>
+                        <td>
+                          <b>Amendment ID:</b>
+                        </td>
+                        <td>
+                          {shortHash(amendmentId)} <CopyButton text={amendmentId} />
+                        </td>
+                      </>
+                    )}
+                    {status !== 'ENABLED' && (
+                      <>
+                        <td>
+                          <b>Voted Yes:</b>
+                        </td>
+                        <td><b className="green">{yeas.length}</b></td>
+                      </>
+                    )}                    
+                  </tr>
+                  <tr>
+                    {introduced && (
+                      <>
+                        <td>
+                          <b>Introduced in Version:</b>
+                        </td>
+                        <td>{introduced}</td>
+                      </>
+                    )}
+                    {status !== 'ENABLED' && (
+                      <>
+                        <td>
+                          <b>Voted No (or haven't voted yet):</b>
+                        </td>
+                        <td><b className="red">{nays.length}</b></td>
+                      </>
+                    )}
+                  </tr>
+                  <tr>
+                    {eta && (
+                      <>
+                        <td>
+                          <b>Activation ETA:</b>
+                        </td>
+                        <td>{eta}</td>
+                      </>
+                    )}
+                    <td>{status !== 'ENABLED' ? <b>Consensus level:</b> : <b>Status</b>}</td>
+                    <td>
+                      {status !== 'ENABLED' ? (
+                        <>
+                          <span className="bold">{consensus}%</span> / 80%
+                        </>
+                      ) : (
+                        <span className={status === 'ENABLED' ? 'green bold' : 'red bold'}>{status}</span>
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            ) : (
+              <table className="table-large no-hover">
+                <tbody>
+                  <tr>
+                    <td><b>Name:</b></td>
+                    <td>
+                      {amendmentData?.name || amendmentName} (
+                      <a href={detailsUrl} target="_blank" rel="noreferrer">
+                        read more
+                      </a>
+                      )
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>Amendment ID:</b></td>
+                    <td>{shortHash(amendmentId)} <CopyButton text={amendmentId} /></td>
+                  </tr>
+                  <tr>
+                    <td><b>Introduced in Version:</b></td>
+                    <td>{introduced}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Activation ETA:</b></td>
+                    <td>{eta}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Quorum:</b></td>
+                    <td>{threshold}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Voted Yes:</b></td>
+                    <td>{status !== 'ENABLED' ? <b className="green">{yeas.length}</b> : '-'}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Voted No (or haven't voted yet):</b></td>
+                    <td>{status !== 'ENABLED' ? <b className="red">{nays.length}</b> : '-'}</td>
+                  </tr>
+                  <tr>
+                    <td><b>{status !== 'ENABLED' ? 'Consensus level:' : 'Status:'}</b></td>
+                    <td>{status !== 'ENABLED' ? <span className="bold">{consensus}% / 80%</span> : <span className={status === 'ENABLED' ? 'green bold' : 'red bold'}>{status}</span>}</td>
+                  </tr>
+                </tbody>
+              </table>         
+            )}
+            {(featureData?.vetoed === 'Obsolete' || status === 'ENABLED' ) ? (
+              <>
+              </>
+            ) : (
               <>
                 <br />
                 {windowWidth > 768 ? (
