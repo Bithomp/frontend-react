@@ -102,7 +102,8 @@ export default function Tokens({
   selectedCurrencyServer,
   setSelectedCurrency,
   fiatRate: fiatRateApp,
-  fiatRateServer
+  fiatRateServer,
+  isSsrMobile
 }) {
   const { t } = useTranslation()
   const width = useWidth()
@@ -402,7 +403,7 @@ export default function Tokens({
           sessionToken={sessionToken}
         >
           {/* Desktop table */}
-          {!width || width > 860 ? (
+          {!isSsrMobile || width > 860 ? (
             <table className="table-large no-hover">
               <thead>
                 <tr>
