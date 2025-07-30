@@ -19,7 +19,7 @@ import {
 } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
-import { nativeCurrency, useWidth } from '../utils'
+import { nativeCurrency, useWidth, xahauNetwork } from '../utils'
 
 /*
   {
@@ -446,7 +446,7 @@ export default function Tokens({
                   </th>
                   <th className="right">Marketcap</th>
                   {/* <th className="right">Trustlines</th>*/}
-                  <th className="center">AMMs</th>
+                  {!xahauNetwork && <th className="center">AMMs</th>}
                   <th className="center">Action</th>
                 </tr>
               </thead>
@@ -526,16 +526,17 @@ export default function Tokens({
                                   <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
                                 </span>
                               </td> */}
-
-                              <td className="center">
-                                <a
-                                  href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                  className="tooltip"
-                                >
-                                  {token.statistics?.ammPools || 0}
-                                  <span className="tooltiptext no-brake">View AMMs</span>
-                                </a>
-                              </td>
+                              {!xahauNetwork && (
+                                <td className="center">
+                                  <a
+                                    href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                    className="tooltip"
+                                  >
+                                    {token.statistics?.ammPools || 0}
+                                    <span className="tooltiptext no-brake">View AMMs</span>
+                                  </a>
+                                </td>
+                              )}
 
                               <td className="center">
                                 <span
@@ -614,15 +615,19 @@ export default function Tokens({
                                   Active holders (Used the token in the last 24h):{' '}
                                   {niceNumber(token.statistics?.activeHolders) || 0}
                                   <br />
-                                  AMM Pools:{' '}
-                                  <a
-                                    href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                    className="tooltip"
-                                  >
-                                    {' '}
-                                    {token.statistics?.ammPools || 0}
-                                  </a>
-                                  <br />
+                                  {!xahauNetwork && (
+                                    <>
+                                      AMM Pools:{' '}
+                                      <a
+                                        href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                        className="tooltip"
+                                      >
+                                        {' '}
+                                        {token.statistics?.ammPools || 0}
+                                      </a>
+                                      <br />
+                                    </>
+                                  )}
                                   <br />
                                   <button
                                     className="button-action narrow thin"
