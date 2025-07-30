@@ -76,7 +76,8 @@ export default function Nfts({
   account,
   sessionToken,
   subscriptionExpired,
-  signOutPro
+  signOutPro,
+  openEmailLogin
 }) {
   return (
     <NftsComponent
@@ -103,6 +104,7 @@ export default function Nfts({
       sessionToken={sessionToken}
       subscriptionExpired={subscriptionExpired}
       signOutPro={signOutPro}
+      openEmailLogin={openEmailLogin}
     />
   )
 }
