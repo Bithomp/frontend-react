@@ -60,7 +60,8 @@ export default function NftVolumes({
   selectedCurrency,
   sortCurrency,
   subscriptionExpired,
-  sessionToken
+  sessionToken,
+  openEmailLogin
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -544,7 +545,7 @@ export default function NftVolumes({
 
   useEffect(() => {
     if (!convertCurrency) return
-    checkApi()
+    checkApi()  
     setSortConfig({})
 
     return () => {
@@ -552,7 +553,7 @@ export default function NftVolumes({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, period, listTab, convertCurrency, extendedStats, selectedToken])
+  }, [saleTab, period, listTab, convertCurrency, extendedStats, selectedToken, sessionToken])
 
   useEffect(() => {
     if (!convertCurrency) return
@@ -1175,6 +1176,7 @@ export default function NftVolumes({
                   )
                 }
                 endMessage={<p className="center">End of list</p>}
+                openEmailLogin={openEmailLogin}
               >
                 {windowWidth > 1000 || !['issuers', 'collections', 'marketplaces'].includes(listTab) ? (
                   <table className="table-large expand">
