@@ -380,7 +380,7 @@ export default function LedgerData({
           {data?.ledgerInfo?.activated && !gateway && (
             <>
               <tr>
-                <td>{t('explorer.menu.tokens')}</td>
+                <td>{t('menu.tokens')}</td>
                 <td>{tokensNode}</td>
               </tr>
               <tr>
