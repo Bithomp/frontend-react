@@ -10,11 +10,14 @@ import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import {
+  addressLink,
   addressUsernameOrServiceLink,
   AddressWithIcon,
+  capitalize,
   fullNiceNumber,
   niceCurrency,
   niceNumber,
+  shortHash,
   shortNiceNumber
 } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
@@ -28,6 +31,7 @@ import {
   xahauNetwork
 } from '../utils'
 import { useRouter } from 'next/router'
+import CopyButton from '../components/UI/CopyButton'
 
 /*
   {
@@ -400,10 +404,8 @@ export default function Tokens({
     let volume
     if (!type || type === 'total') {
       volume = Number(statistics?.buyVolume || 0) + Number(statistics?.sellVolume || 0)
-    } else if (type === 'buy') {
-      volume = statistics?.buyVolume || 0
-    } else if (type === 'sell') {
-      volume = statistics?.sellVolume || 0
+    } else {
+      volume = statistics?.[type + 'Volume'] || 0
     }
     const volumeFiat = volume * statistics?.priceXrp * fiatRate || 0
 
@@ -412,7 +414,7 @@ export default function Tokens({
         <>
           <span suppressHydrationWarning>{niceNumber(volumeFiat, 0, selectedCurrency)}</span>
           <br />
-          {type === 'buy' ? 'Buy' : type === 'sell' ? 'Sell' : ''} Volume (24h) token: {niceNumber(volume, 0)}{' '}
+          {type !== 'total' ? capitalize(type) : ''} Volume (24h) token: {niceNumber(volume, 0)}{' '}
           {niceCurrency(currency)}
         </>
       )
@@ -514,6 +516,13 @@ export default function Tokens({
                     <br />
                     Active (24h)
                   </th>
+                  {!xahauNetwork && (
+                    <th className="center">
+                      AMMs,
+                      <br />
+                      Active (24h)
+                    </th>
+                  )}
                   <th className="right">
                     Trades
                     <br />
@@ -521,7 +530,6 @@ export default function Tokens({
                   </th>
                   <th className="right">Marketcap</th>
                   <th className="right">Trustlines</th>
-                  {!xahauNetwork && <th className="center">AMMs</th>}
                   <th className="center">Action</th>
                 </tr>
               </thead>
@@ -551,9 +559,9 @@ export default function Tokens({
                               </td>
                               <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
                               {/*
-                          <td className="right"></td>
-                          <td className="right"></td>
-                          */}
+                              <td className="right"></td>
+                              <td className="right"></td>
+                              */}
                               <td className="right">{volumeToFiat({ token, type: 'buy' })}</td>
                               <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
                               <td className="right">{volumeToFiat({ token })}</td>
@@ -586,6 +594,21 @@ export default function Tokens({
                                   </span>
                                 </span>
                               </td>
+                              {!xahauNetwork && (
+                                <td className="center">
+                                  <a
+                                    href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                    className="tooltip"
+                                  >
+                                    {token.statistics?.ammPools || 0}
+                                    <span className="tooltiptext no-brake">View AMMs</span>
+                                  </a>
+                                  <br />
+                                  <span className="tooltip green">
+                                    {shortNiceNumber(token.statistics?.activeAmmPools, 0, 1) || 0}
+                                  </span>
+                                </td>
+                              )}
                               <td className="right">
                                 <span className="tooltip">
                                   {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
@@ -601,17 +624,6 @@ export default function Tokens({
                                   <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
                                 </span>
                               </td>
-                              {!xahauNetwork && (
-                                <td className="center">
-                                  <a
-                                    href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                    className="tooltip"
-                                  >
-                                    {token.statistics?.ammPools || 0}
-                                    <span className="tooltiptext no-brake">View AMMs</span>
-                                  </a>
-                                </td>
-                              )}
 
                               <td className="center">
                                 <span
@@ -663,32 +675,55 @@ export default function Tokens({
                               <td>
                                 <TokenCell token={token} />
                                 <p>
+                                  Issuer address: {addressLink(token.issuer, { short: true })}{' '}
+                                  <CopyButton text={token.issuer} />
+                                  <br />
+                                  Currency code: {shortHash(token.currency)} <CopyButton text={token.currency} />
+                                  <br />
                                   Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
                                   <br />
-                                  Buy volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
+                                  Price in {nativeCurrency} 5m ago: {niceNumber(token.statistics?.priceXrp5m, 6)}
                                   <br />
-                                  Sell volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
+                                  Price in {nativeCurrency} 1h ago: {niceNumber(token.statistics?.priceXrp1h, 6)}
+                                  <br />
+                                  Price in {nativeCurrency} 24h ago: {niceNumber(token.statistics?.priceXrp24h, 6)}
+                                  <br />
+                                  Price in {nativeCurrency} 7d ago: {niceNumber(token.statistics?.priceXrp7d, 6)}
+                                  <br />
+                                  Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
+                                  <br />
+                                  Sell Volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
                                   <br />
                                   {/* 24h %: {token.statistics?.priceChange24h} */}
                                   {/* 7d %: {token.statistics?.priceChange7d} */}
-                                  Total volume (24h): {volumeToFiat({ token, mobile: true })}
+                                  Total Volume (24h): {volumeToFiat({ token, mobile: true })}
                                   <br />
                                   Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
                                   <br />
-                                  Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
+                                  DEX txs (24h): {niceNumber(token.statistics?.dexTxs) || 0}
                                   <br />
-                                  Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
+                                  Unique Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
                                   <br />
-                                  Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
+                                  Unique Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
+                                  <br />
+                                  Unique Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
+                                  <br />
+                                  Supply: {niceNumber(token.supply, 0)} {niceCurrency(token.currency)}
                                   <br />
                                   Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
                                   <br />
                                   Trustlines: {niceNumber(token.trustlines)}
                                   <br />
-                                  Holders: {niceNumber(token.holders)}
+                                  Holders (the last closed day): {niceNumber(token.holders)}
                                   <br />
-                                  Active holders (Used the token in the last 24h):{' '}
+                                  Active holders (Account that used the token in the last closed day):{' '}
                                   {niceNumber(token.statistics?.activeHolders) || 0}
+                                  <br />
+                                  Active offers (Count of used offers in the last closed day):{' '}
+                                  {niceNumber(token.statistics?.activeOffers) || 0}
+                                  <br />
+                                  Trading pairs (in the last closed day):{' '}
+                                  {niceNumber(token.statistics?.activeCounters) || 0}
                                   <br />
                                   {!xahauNetwork && (
                                     <>
@@ -701,8 +736,34 @@ export default function Tokens({
                                         {token.statistics?.ammPools || 0}
                                       </a>
                                       <br />
+                                      Active AMM pools (the last closed day):{' '}
+                                      {niceNumber(token.statistics?.activeAmmPools) || 0}
                                     </>
                                   )}
+                                  <br />
+                                  Transfer txs (24h): {niceNumber(token.statistics?.transferTxs) || 0}
+                                  <br />
+                                  {token.statistics?.transferTxs > 0 && (
+                                    <>
+                                      Transfer Volume (24h): {volumeToFiat({ token, type: 'transfer', mobile: true })}
+                                      <br />
+                                    </>
+                                  )}
+                                  Rippling txs (24h): {niceNumber(token.statistics?.ripplingTxs) || 0}
+                                  <br />
+                                  {token.statistics?.ripplingTxs > 0 && (
+                                    <>
+                                      Rippling Volume (24h): {volumeToFiat({ token, type: 'rippling', mobile: true })}
+                                      <br />
+                                    </>
+                                  )}
+                                  Mint Volume (24h): {volumeToFiat({ token, type: 'mint', mobile: true })}
+                                  <br />
+                                  Burn Volume (24h): {volumeToFiat({ token, type: 'burn', mobile: true })}
+                                  <br />
+                                  Unique accounts (used the token in the last 24h):{' '}
+                                  {niceNumber(token.statistics?.uniqueAccounts) || 0}
+                                  <br />
                                   <br />
                                   <button
                                     className="button-action narrow thin"
