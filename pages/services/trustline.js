@@ -217,6 +217,7 @@ export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuer
       setError(err.message)
     }
   }
+  console.log(selectedToken)
 
   return (
     <>
@@ -274,6 +275,15 @@ export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuer
                 excludeNative={true}
                 currencyQueryName="currency"
               />
+              {selectedToken.description && (
+                <div>
+                  <span className="grey">{selectedToken.description}</span>
+                  <br />
+                  <span className="orange">
+                    We do not take responsibility for the accuracy of the token descriptions or related information. Users should always do their own research (DYOR). The content is for informational purposes only, not financial advice.
+                  </span>
+                </div>
+              )}
             </div>
           ) : (
             // Advanced Mode
