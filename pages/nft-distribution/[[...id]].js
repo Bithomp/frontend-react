@@ -51,7 +51,8 @@ export default function NftDistribution({
   orderQuery,
   subscriptionExpired,
   sessionToken,
-  signOutPro
+  signOutPro,
+  openEmailLogin
 }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
@@ -194,7 +195,7 @@ export default function NftDistribution({
   useEffect(() => {
     checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [issuer, taxon, order])
+  }, [issuer, taxon, order, sessionToken])
 
   let csvHeaders = [
     { label: t('table.owner'), key: 'address' },
@@ -329,6 +330,7 @@ export default function NftDistribution({
           errorMessage={errorMessage}
           subscriptionExpired={subscriptionExpired}
           sessionToken={sessionToken}
+          openEmailLogin={openEmailLogin}
           //height={!filtersHide ? '1300px' : '100vh'}
         >
           {!windowWidth || windowWidth >= 960 ? (

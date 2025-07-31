@@ -1153,7 +1153,7 @@ export default function NftVolumes({
                         <>
                           {!sessionToken ? (
                             <Trans i18nKey="general.login-to-bithomp-pro">
-                              Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro
+                              Loading more data is available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro
                               subscribers.
                             </Trans>
                           ) : (
@@ -1176,7 +1176,6 @@ export default function NftVolumes({
                   )
                 }
                 endMessage={<p className="center">End of list</p>}
-                openEmailLogin={openEmailLogin}
               >
                 {windowWidth > 1000 || !['issuers', 'collections', 'marketplaces'].includes(listTab) ? (
                   <table className="table-large expand">

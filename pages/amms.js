@@ -101,7 +101,8 @@ export default function Amms({
   currencyIssuerQuery,
   fiatRateServer,
   selectedCurrencyServer,
-  setSelectedCurrency
+  setSelectedCurrency,
+  openEmailLogin
 }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -228,7 +229,7 @@ export default function Amms({
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, token])
+  }, [order, token, sessionToken])
 
   const csvHeaders = [
     { label: 'Asset 1', key: 'amountFormated' },
@@ -308,6 +309,7 @@ export default function Amms({
           errorMessage={errorMessage}
           subscriptionExpired={subscriptionExpired}
           sessionToken={sessionToken}
+          openEmailLogin={openEmailLogin}
         >
           {!windowWidth || windowWidth > 860 ? (
             <table className="table-large">
