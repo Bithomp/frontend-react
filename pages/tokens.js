@@ -19,7 +19,15 @@ import {
 } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
-import { nativeCurrency, useWidth, xahauNetwork } from '../utils'
+import {
+  isAddressOrUsername,
+  isValidHexCurrencyCode,
+  nativeCurrency,
+  setTabParams,
+  useWidth,
+  xahauNetwork
+} from '../utils'
+import { useRouter } from 'next/router'
 
 /*
   {
@@ -62,13 +70,32 @@ import { nativeCurrency, useWidth, xahauNetwork } from '../utils'
 
 // Server side initial data fetch
 export async function getServerSideProps(context) {
-  const { locale, req } = context
+  const { locale, req, query } = context
+  const { currency, issuer } = query
+
   let initialData = null
   let initialErrorMessage = null
+
+  let url = `v2/trustlines/tokens?limit=100&order=rating&currencyDetails=true&statistics=true`
+  if (currency) {
+    if (isValidHexCurrencyCode(currency)) {
+      url += `&currency=${currency}`
+    } else {
+      initialErrorMessage = 'Invalid currency code'
+    }
+  }
+  if (issuer) {
+    if (isAddressOrUsername(issuer)) {
+      url += `&issuer=${issuer}`
+    } else {
+      initialErrorMessage = 'Invalid issuer address or issuer username'
+    }
+  }
+
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/trustlines/tokens?limit=100&order=rating&currencyDetails=true&statistics=true',
+      url,
       headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -87,10 +114,18 @@ export async function getServerSideProps(context) {
       isSsrMobile: getIsSsrMobile(context),
       fiatRateServer,
       selectedCurrencyServer,
+      currencyQuery: currency || initialData?.currency || null,
+      issuerQuery: issuer || initialData?.issuer || null,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
+
+const orderList = [
+  { value: 'rating', label: 'Rating: High to Low' },
+  { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
+  { value: 'holdersHigh', label: 'Holders: High to Low' }
+]
 
 export default function Tokens({
   initialData,
@@ -103,11 +138,14 @@ export default function Tokens({
   setSelectedCurrency,
   fiatRate: fiatRateApp,
   fiatRateServer,
-  isSsrMobile
+  isSsrMobile,
+  currencyQuery,
+  issuerQuery
 }) {
   const { t } = useTranslation()
   const width = useWidth()
   const isFirstRender = useRef(true)
+  const router = useRouter()
 
   let selectedCurrency = selectedCurrencyServer
   let fiatRate = fiatRateServer
@@ -123,9 +161,9 @@ export default function Tokens({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState('rating')
-  const [filtersHide, setFiltersHide] = useState(false)
-  const [issuer, setIssuer] = useState('')
-  const [currency, setCurrency] = useState('')
+  const [filtersHide, setFiltersHide] = useState(true)
+  const [issuer, setIssuer] = useState(issuerQuery)
+  const [currency, setCurrency] = useState(currencyQuery)
   const [rendered, setRendered] = useState(false)
 
   const controller = new AbortController()
@@ -207,6 +245,45 @@ export default function Tokens({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, issuer, currency])
+
+  useEffect(() => {
+    let queryAddList = []
+    let queryRemoveList = []
+
+    if (isAddressOrUsername(issuer)) {
+      queryAddList.push({
+        name: 'issuer',
+        value: issuer
+      })
+    } else {
+      queryRemoveList.push('issuer')
+    }
+
+    if (isValidHexCurrencyCode(currency)) {
+      queryAddList.push({
+        name: 'currency',
+        value: currency
+      })
+    } else {
+      queryRemoveList.push('currency')
+    }
+
+    setTabParams(
+      router,
+      [
+        {
+          tabList: orderList,
+          tab: order,
+          defaultTab: 'rating',
+          setTab: setOrder,
+          paramName: 'order'
+        }
+      ],
+      queryAddList,
+      queryRemoveList
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [issuer, order, currency])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -366,11 +443,7 @@ export default function Tokens({
       <FiltersFrame
         order={order}
         setOrder={setOrder}
-        orderList={[
-          { value: 'rating', label: 'Rating: High to Low' },
-          //{ value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
-          { value: 'holdersHigh', label: 'Holders: High to Low' }
-        ]}
+        orderList={orderList}
         count={data?.length}
         hasMore={marker}
         data={data || []}
@@ -445,7 +518,7 @@ export default function Tokens({
                     (24h)
                   </th>
                   <th className="right">Marketcap</th>
-                  {/* <th className="right">Trustlines</th>*/}
+                  <th className="right">Trustlines</th>
                   {!xahauNetwork && <th className="center">AMMs</th>}
                   <th className="center">Action</th>
                 </tr>
@@ -520,12 +593,12 @@ export default function Tokens({
                                 </span>
                               </td>
                               <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
-                              {/* <td className="right">
+                              <td className="right">
                                 <span className="tooltip">
                                   {shortNiceNumber(token.trustlines, 0, 1)}
                                   <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
                                 </span>
-                              </td> */}
+                              </td>
                               {!xahauNetwork && (
                                 <td className="center">
                                   <a
