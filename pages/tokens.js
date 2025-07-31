@@ -21,10 +21,10 @@ import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import {
   isAddressOrUsername,
-  isValidHexCurrencyCode,
   nativeCurrency,
   setTabParams,
   useWidth,
+  validateCurrencyCode,
   xahauNetwork
 } from '../utils'
 import { useRouter } from 'next/router'
@@ -78,8 +78,9 @@ export async function getServerSideProps(context) {
 
   let url = `v2/trustlines/tokens?limit=100&order=rating&currencyDetails=true&statistics=true`
   if (currency) {
-    if (isValidHexCurrencyCode(currency)) {
-      url += `&currency=${currency}`
+    const { valid, currencyCode } = validateCurrencyCode(currency)
+    if (valid) {
+      url += `&currency=${currencyCode}`
     } else {
       initialErrorMessage = 'Invalid currency code'
     }
@@ -259,10 +260,11 @@ export default function Tokens({
       queryRemoveList.push('issuer')
     }
 
-    if (isValidHexCurrencyCode(currency)) {
+    const { valid, currencyCode } = validateCurrencyCode(currency)
+    if (valid) {
       queryAddList.push({
         name: 'currency',
-        value: currency
+        value: currencyCode
       })
     } else {
       queryRemoveList.push('currency')
