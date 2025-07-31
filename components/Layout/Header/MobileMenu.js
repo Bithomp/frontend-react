@@ -420,14 +420,6 @@ export default function MobileMenu({
           <Link href="/advertise" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.business.advertise')}
           </Link>
-          <a
-            href="https://xrplmerch.com/product-category/bithomp/?wpam_id=22"
-            target="_blank"
-            rel="noreferrer"
-            className="mobile-menu-item"
-          >
-            {t('menu.merch')}
-          </a>
           <Link href="/customer-support" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.customer-support')}
           </Link>
