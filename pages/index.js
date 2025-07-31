@@ -14,6 +14,7 @@ import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 
 import dynamic from 'next/dynamic'
+import { getFiatRateServer } from '../utils/axios'
 //not indexed
 const Whales = dynamic(() => import('../components/Home/Whales'), { ssr: false })
 const Statistics = dynamic(() => import('../components/Home/Statistics'), { ssr: false })
@@ -21,9 +22,12 @@ const Statistics = dynamic(() => import('../components/Home/Statistics'), { ssr:
 let ws = null
 
 export async function getServerSideProps(context) {
-  const { locale } = context
+  const { locale, req } = context
+  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
   return {
     props: {
+      fiatRateServer,
+      selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'faucet', 'products']))
     }
@@ -81,8 +85,24 @@ function unsubscribeRates(currency) {
   }
 }
 
-export default function Home({ selectedCurrency, setSelectedCurrency, showAds, fiatRate, isSsrMobile }) {
+export default function Home({
+  selectedCurrency: selectedCurrencyApp,
+  setSelectedCurrency,
+  showAds,
+  fiatRate: fiatRateApp,
+  isSsrMobile,
+  selectedCurrencyServer,
+  fiatRateServer
+}) {
   const { t } = useTranslation()
+
+  let selectedCurrency = selectedCurrencyServer
+  let fiatRate = fiatRateServer
+
+  if (fiatRateApp) {
+    fiatRate = fiatRateApp
+    selectedCurrency = selectedCurrencyApp
+  }
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
   const [whaleTransactions, setWhaleTransactions] = useState(null)

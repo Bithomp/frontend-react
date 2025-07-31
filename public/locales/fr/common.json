@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "Jetons",
     "amm": {
       "amm": "AMM",
       "pools": "Pools AMM",
@@ -63,7 +64,6 @@
     "terms-and-conditions": "Conditions générales",
     "customer-support": "Support client",
     "press": "Presse",
-    "merch": "Magasin de marchandises",
     "donate": "Faire un don",
     "sponsored": {
       "title": "Sponsorisé",

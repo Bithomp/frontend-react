@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "トークン",
     "amm": {
       "amm": "AMM",
       "pools": "AMMプール",
@@ -63,7 +64,6 @@
     "terms-and-conditions": "利用規約",
     "customer-support": "カスタマサポート",
     "press": "プレス",
-    "merch": "グッズ販売",
     "donate": "寄付",
     "sponsored": {
       "title": "スポンサー",
