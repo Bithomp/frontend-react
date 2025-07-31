@@ -56,7 +56,7 @@ const ldJsonWebsite = {
 }
 
 function sendData(selectedCurrency) {
-  if (ws.readyState) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
     //{ command: "subscribe", streams: ["whale_transactions"], currency: true, service: true, id: 1 }
     ws.send(
       JSON.stringify({
@@ -68,7 +68,7 @@ function sendData(selectedCurrency) {
       })
     )
   } else {
-    setTimeout(sendData, 1000)
+    setTimeout(() => sendData(selectedCurrency), 1000)
   }
 }
 
@@ -116,27 +116,42 @@ export default function Home({
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
 
   const connect = () => {
-    ws = new WebSocket(wssServer)
+    try {
+      ws = new WebSocket(wssServer)
 
-    ws.onopen = () => {
-      sendData(selectedCurrency)
-    }
-
-    ws.onmessage = (evt) => {
-      const message = JSON.parse(evt.data)
-      if (message.type === 'statistics') {
-        setStatistics(message)
-      } else if (message.type === 'rates') {
-        const currentCurrency = selectedCurrencyRef.current
-        setLiveFiatRate(message[currentCurrency])
-      } else {
-        //type === 'WhaleTransactions'
-        setWhaleTransactions(message.transactions)
+      ws.onopen = () => {
+        sendData(selectedCurrency)
       }
-    }
 
-    ws.onclose = () => {
-      connect()
+      ws.onmessage = (evt) => {
+        const message = JSON.parse(evt.data)
+        if (message.type === 'statistics') {
+          setStatistics(message)
+        } else if (message.type === 'rates') {
+          const currentCurrency = selectedCurrencyRef.current
+          setLiveFiatRate(message[currentCurrency])
+        } else {
+          //type === 'WhaleTransactions'
+          setWhaleTransactions(message.transactions)
+        }
+      }
+
+      ws.onclose = () => {
+        // Reconnect after a short delay to avoid rapid reconnection attempts
+        setTimeout(connect, 3000)
+      }
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error)
+        // Close the connection to trigger onclose and reconnection
+        if (ws) {
+          ws.close()
+        }
+      }
+    } catch (error) {
+      console.error('Failed to create WebSocket connection:', error)
+      // Retry connection after delay
+      setTimeout(connect, 3000)
     }
   }
 
