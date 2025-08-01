@@ -443,19 +443,6 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
                 You will pay the Object Reserve in XAH for the NFT to be held on the Destination account.
               </div>
             )}
-            {/* Remit Destination Field */}
-            {mintAndSend && (
-              <>
-                <br />
-                <AddressInput
-                  title="Destination (required - account to receive the NFT):"
-                  placeholder="Destination address"
-                  setValue={onDestinationChange}
-                  name="destination-remit"
-                  hideButton={true}
-                />
-              </>
-            )}
 
             {/* Create Sell Offer */}
             <div>
@@ -508,22 +495,25 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
                   </div>
                   <div className="w-full sm:w-1/2">
                     <span className="input-title">Currency</span>
-                    <TokenSelector 
-                      value={selectedToken} 
-                      onChange={onTokenChange}
-                    />                    
+                    <TokenSelector value={selectedToken} onChange={onTokenChange} />
                   </div>
                 </div>
+              </>
+            )}
+
+            {/* Remit Destination Field */}
+            {(mintAndSend || createSellOffer) && (
+              <>
                 <br />
                 <AddressInput
-                  title="Destination (optional - account to receive the NFT):"
+                  title={'Destination (' + (mintAndSend ? 'required' : 'optional') + ' - account to receive the NFT):'}
                   placeholder="Destination address"
                   setValue={onDestinationChange}
                   name="destination"
                   hideButton={true}
                 />
               </>
-            )}           
+            )}
 
             <br />
 
