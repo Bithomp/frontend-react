@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "Tokens",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
@@ -63,7 +64,6 @@
     "terms-and-conditions": "Terms and conditions",
     "customer-support": "Customer support",
     "press": "Press",
-    "merch": "Merch shop",
     "donate": "Donate",
     "sponsored": {
       "title": "Sponsored",

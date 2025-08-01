@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import { axiosServer, passHeaders } from '../utils/axios'
+import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { nativeCurrency, stripText, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -53,6 +53,8 @@ export async function getServerSideProps(context) {
     console.error(error)
   }
 
+  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
+
   return {
     props: {
       initialData: initialData || null,
@@ -60,6 +62,8 @@ export async function getServerSideProps(context) {
       currencyQuery: currency || initialData?.currency || nativeCurrency,
       currencyIssuerQuery: currencyIssuer || initialData?.currencyIssuer || '',
       initialErrorMessage: initialErrorMessage || '',
+      fiatRateServer,
+      selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
@@ -89,15 +93,26 @@ export default function Amms({
   initialData,
   initialErrorMessage,
   orderQuery,
-  selectedCurrency,
+  selectedCurrency: selectedCurrencyApp,
   sessionToken,
   subscriptionExpired,
-  fiatRate,
+  fiatRate: fiatRateApp,
   currencyQuery,
-  currencyIssuerQuery
+  currencyIssuerQuery,
+  fiatRateServer,
+  selectedCurrencyServer,
+  setSelectedCurrency
 }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
+
+  let fiatRate = fiatRateServer
+  let selectedCurrency = selectedCurrencyServer
+
+  if (fiatRateApp) {
+    fiatRate = fiatRateApp
+    selectedCurrency = selectedCurrencyApp
+  }
 
   const windowWidth = useWidth()
 
@@ -275,6 +290,8 @@ export default function Amms({
         csvHeaders={csvHeaders}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
+        selectedCurrency={selectedCurrency}
+        setSelectedCurrency={setSelectedCurrency}
       >
         <>
           <TokenSelector

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
@@ -49,6 +49,7 @@ function useIsBot() {
 }
 
 const MyApp = ({ Component, pageProps }) => {
+  const firstRenderRef = useRef(true)
   const [account, setAccount] = useLocalStorage('account')
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
   const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
@@ -78,6 +79,14 @@ const MyApp = ({ Component, pageProps }) => {
   useEffect(() => {
     //pages where we need to show the latest fiat price
     const allowedRoutes = ['/', '/account/[[...id]]', '/amms', '/distribution', '/admin/watchlist', '/tokens']
+    const skipOnFirstRender = ['/', '/account/[[...id]]', '/amms', '/tokens']
+
+    // Skip fetch on first render for pages that get on the server side
+    if (firstRenderRef.current && skipOnFirstRender.includes(router.pathname)) {
+      firstRenderRef.current = false
+      return
+    }
+
     if (allowedRoutes.includes(router.pathname)) {
       fetchCurrentFiatRate(selectedCurrency, setFiatRate)
     }
