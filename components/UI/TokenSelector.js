@@ -139,6 +139,11 @@ export default function TokenSelector({
             !niceCurrency(searchResults[1]?.currency)?.toLowerCase().startsWith(nativeCurrency.toLowerCase())
           )
             return
+        }else {
+          // For destination address case, check if we already have results loaded
+          if (searchResults.length > 0) {
+            return
+          }
         }
         // Removed the early return for destination address case when search is cleared
         // This ensures we always reload the full list when search is cleared
