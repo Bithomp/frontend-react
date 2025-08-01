@@ -495,8 +495,8 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
                   </div>
                   <div className="w-full sm:w-1/2">
                     <span className="input-title">Currency</span>
-                    <TokenSelector 
-                      value={selectedToken} 
+                    <TokenSelector
+                      value={selectedToken}
                       onChange={onTokenChange}
                       destinationAddress={account?.address}
                     />
@@ -510,7 +510,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
               <>
                 <br />
                 <AddressInput
-                  title={'Destination (' + (mintAndSend ? 'required' : 'optional') + ' - account to receive the NFT):'}
+                  title={'Destination (' + (mintAndSend ? 'required' : 'optional') + ' - account to receive the NFT)'}
                   placeholder="Destination address"
                   setValue={onDestinationChange}
                   name="destination"
