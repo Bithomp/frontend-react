@@ -714,7 +714,7 @@ export default function Tokens({
                                   <br />
                                   Trustlines: {niceNumber(token.trustlines)}
                                   <br />
-                                  Holders (the last closed day): {niceNumber(token.holders)}
+                                  Holders: {niceNumber(token.holders)}
                                   <br />
                                   Active holders (Account that used the token in the last closed day):{' '}
                                   {niceNumber(token.statistics?.activeHolders) || 0}
