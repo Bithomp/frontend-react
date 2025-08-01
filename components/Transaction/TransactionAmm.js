@@ -28,6 +28,20 @@ const AMMClawbackFlags = {
   tfClawTwoAssets: 'Claw back the specified amount of Asset, and a corresponding amount of Asset2 based on the AMM pool\'s asset proportion',
 }
 
+// Helper function to create amount object with issuer details
+const createAmountWithIssuer = (specification, outcome, sourceAddress, amountKey) => {
+  const amountData = specification?.[amountKey]
+  if (!amountData) return null
+  
+  return {
+    currency: amountData.currency,
+    issuer: amountData.issuer,
+    counterparty: amountData.counterparty,
+    issuerDetails: outcome?.balanceChanges?.find((change) => change.address === sourceAddress)?.balanceChanges?.find((change) => change.currency === amountData.currency)?.issuerDetails,
+    value: amountData.value
+  }
+}
+
 // Helper function to render amount with issuer
 const renderAmountWithIssuer = (amountData) => (
   <>
@@ -126,37 +140,15 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   const { specification, tx, outcome } = data
   const txType = tx.TransactionType
   const tradingFee = tx?.TradingFee
-  const amount = {
-    currency: specification?.amount?.currency,
-    issuer: specification?.amount?.issuer,
-    issuerDetails: outcome?.balanceChanges?.find((change) => change.address === specification.source.address)?.balanceChanges?.find((change) => change.currency === specification?.amount?.currency)?.issuerDetails,
-    value: specification?.amount?.value
-  }
-  const amount2 = {
-    currency: specification?.amount2?.currency,
-    issuer: specification?.amount2?.issuer,
-    issuerDetails: outcome?.balanceChanges?.find((change) => change.address === specification.source.address)?.balanceChanges?.find((change) => change.currency === specification?.amount2?.currency)?.issuerDetails,
-    value: specification?.amount2?.value
-  }
+  const amount = createAmountWithIssuer(specification, outcome, specification.source.address, 'amount')
+  const amount2 = createAmountWithIssuer(specification, outcome, specification.source.address, 'amount2')
   const asset = specification?.asset
   const asset2 = specification?.asset2
   const ePrice = specification?.EPrice
   const lpTokenOut = specification?.LPTokenOut
   const lpTokenIn = specification?.LPTokenIn
-  const bidMax = {
-    counterparty: specification?.bidMax?.counterparty,
-    currency: specification?.bidMax?.currency,
-    issuer: specification?.bidMax?.issuer,
-    issuerDetails: outcome?.balanceChanges?.find((change) => change.address === specification.source.address)?.balanceChanges?.find((change) => change.currency === specification?.bidMax?.currency)?.issuerDetails,
-    value: specification?.bidMax?.value
-  }
-  const bidMin = {
-    counterparty: specification?.bidMin?.counterparty,
-    currency: specification?.bidMin?.currency,
-    issuer: specification?.bidMin?.issuer,
-    issuerDetails: outcome?.balanceChanges?.find((change) => change.address === specification.source.address)?.balanceChanges?.find((change) => change.currency === specification?.bidMin?.currency)?.issuerDetails,
-    value: specification?.bidMin?.value
-  }
+  const bidMax = createAmountWithIssuer(specification, outcome, specification.source.address, 'bidMax')
+  const bidMin = createAmountWithIssuer(specification, outcome, specification.source.address, 'bidMin')
   const holder = {
     address: specification?.holder,
     addressDetails: outcome?.balanceChanges?.find((change) => change.address === specification.holder)?.addressDetails,
