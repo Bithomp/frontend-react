@@ -276,8 +276,11 @@ export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuer
                 currencyQueryName="currency"
               />
               {selectedToken.description && (
-                <div>
-                  <span className="grey">{selectedToken.description}</span>
+                <div style={{ marginTop: 10 }}>
+                  <span className="grey">
+                    <b>Description:</b> {selectedToken.description}
+                  </span>
+                  <br />
                   <br />
                   <span className="orange">
                     We do not take responsibility for the accuracy of the token descriptions or related information. Users should always do their own research (DYOR). The content is for informational purposes only, not financial advice.
