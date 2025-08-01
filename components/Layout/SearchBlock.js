@@ -299,7 +299,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       }
 
       if (tab === 'transactions') {
-        router.push('/transactions/' + encodeURI(searchFor) + addParams)
+        router.push('/account/' + encodeURI(searchFor) + '/transactions' + addParams)
         return
       }
 
@@ -343,7 +343,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     ) {
       return t('explorer.header.' + tab)
     } else if (tab === 'transactions') {
-      return t('Transactions information')
+      return t('Transactions')
     }
     return ''
   }

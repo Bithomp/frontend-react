@@ -1,77 +1,24 @@
 import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
-import { processTransactionBlocks } from '../../utils/transactionBlock'
-import { useWidth } from '../../utils'
-
-import SEO from '../../components/SEO'
-import SearchBlock from '../../components/Layout/SearchBlock'
-import FiltersFrame from '../../components/Layout/FiltersFrame'
-import TransactionBlock from '../../components/UI/TransactionBlock'
-import { axiosServer, passHeaders } from '../../utils/axios'
-import { getIsSsrMobile } from '../../utils/mobile'
-import SimpleSelect from '../../components/UI/SimpleSelect'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-export async function getServerSideProps(context) {
-  const { locale, query, req } = context
-  const { id } = query
+import InfiniteScrolling from '../../Layout/InfiniteScrolling'
+import { processTransactionBlocks } from '../../../utils/transactionBlock'
+import { useWidth } from '../../../utils'
+import SEO from '../../SEO'
+import SearchBlock from '../../Layout/SearchBlock'
+import FiltersFrame from '../../Layout/FiltersFrame'
+import TransactionBlock from '../../UI/TransactionBlock'
+import SimpleSelect from '../../UI/SimpleSelect'
 
-  const limit = 20
-
-  let initialTransactions = []
-  let initialErrorMessage = ''
-  let initialMarker = null
-  let initialUserData = null 
-
-  try {
-    // Fetch user data (username, service name) for the address
-    const userRes = await axiosServer({
-      method: 'get',
-      url: `v2/address/${id}?username=true&service=true&verifiedDomain=true`,
-      headers: passHeaders(req)
-    })
-    initialUserData = userRes?.data
-  } catch (e) {
-    // If user data fetch fails, continue without it
-    console.error('Failed to fetch user data:', e?.message)
-  }
-
-  try {
-    // Fetch transactions
-    const res = await axiosServer({
-      method: 'get',
-      url: `v3/transactions/${initialUserData?.address}?limit=${limit}`,
-      headers: passHeaders(req)
-    })
-    initialTransactions = res?.data?.transactions || res?.data || []
-    initialMarker = res?.data?.marker || null
-  } catch (e) {
-    initialErrorMessage = e?.message || 'Failed to load transactions'
-  }
-
-  return {
-    props: {
-      id,
-      initialTransactions,
-      initialErrorMessage,
-      initialMarker,
-      initialUserData: initialUserData || {},
-      ...(await serverSideTranslations(locale, ['common'])),
-      isSsrMobile: getIsSsrMobile(context)
-    }
-  }
-}
-
-export default function TransactionsAddress({
+export default function Transactions({
   id,
-  initialTransactions,
-  initialErrorMessage,
-  initialMarker,
-  initialUserData,
+  initialTransactions = [],
+  initialErrorMessage = '',
+  initialMarker = null,
+  initialUserData = {},
   subscriptionExpired,
   sessionToken
 }) {
@@ -99,7 +46,6 @@ export default function TransactionsAddress({
   const [counterparty, setCounterparty] = useState('')
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
-  
 
   // Update userData when initialUserData changes
   useEffect(() => {
@@ -250,7 +196,7 @@ export default function TransactionsAddress({
 
   return (
     <>
-      <SEO page="Explorer" title={`Transactions of ${id}`} description={`All transactions for address ${id}`} />
+      <SEO page="Transactions" title={`Transactions of ${id}`} description={`All transactions for address ${id}`} />
       <SearchBlock tab="transactions" searchPlaceholderText={t('explorer.enter-address')} userData={userData} />
 
       <FiltersFrame
