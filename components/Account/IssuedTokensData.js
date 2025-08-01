@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
-import { useWidth } from '../../utils'
+// import { useWidth } from '../../utils'
 import { AddressWithIcon, fullDateAndTime, niceCurrency, shortNiceNumber, fullNiceNumber, addressUsernameOrServiceLink } from '../../utils/format'
 
 export default function IssuedTokensData({ address, ledgerTimestamp }) {
   const { t } = useTranslation()
-  const width = useWidth()
+  // const width = useWidth()
   const [issuedTokens, setIssuedTokens] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -19,7 +19,7 @@ export default function IssuedTokensData({ address, ledgerTimestamp }) {
       setError('')
       
       try {
-        const response = await axios(`v2/trustlines/tokens?issuer=${address}&limit=100&currencyDetails=true${ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : ''}`)
+        const response = await axios(`v2/trustlines/tokens?issuer=${address}&limit=100&currencyDetails=true&statistics=true${ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : ''}`)
         setIssuedTokens(response.data?.tokens || [])
       } catch (err) {
         console.error('Error fetching issued tokens:', err)
@@ -44,7 +44,6 @@ export default function IssuedTokensData({ address, ledgerTimestamp }) {
     ''
   )
 
-  console.log(issuedTokens)
   const issuedTokensRows = issuedTokens.map((token, i) => {
     const supply = parseFloat(token.supply || 0)
     
@@ -104,8 +103,7 @@ export default function IssuedTokensData({ address, ledgerTimestamp }) {
         <thead>
           <tr>
             <th colSpan="100">
-              {tokensCountText(issuedTokens)} Issued Tokens{historicalTitle} [
-              <a href={'/tokens?issuer=' + address}>View All</a>]
+              {tokensCountText(issuedTokens)} Issued Tokens{historicalTitle}
             </th>
           </tr>
         </thead>
