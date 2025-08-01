@@ -58,8 +58,7 @@ export default function SEO({
   let twitter = {
     handle: '@bithomp',
     site: '@xrplexplorer',
-    cardType: 'summary',
-    image: imagePath + 'previews/630x630/index.png'
+    cardType: 'summary'
   }
 
   let twitterImageUrl = null
@@ -69,6 +68,8 @@ export default function SEO({
     if (twitterImage.file?.indexOf('http') !== 0) {
       twitterImageUrl = (allNetworks ? server + '/images/' : imagePath) + twitterImage.file
     }
+  } else {
+    twitterImageUrl = imagePath + 'previews/630x630/index.png'
   }
 
   if (xahauNetwork) {
