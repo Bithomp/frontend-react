@@ -452,7 +452,7 @@ export const validateCurrencyCode = (currencyCode) => {
     if (!isValidHexCurrencyCode(currencyCode)) {
       return { valid: false, error: 'Invalid hex currency code' }
     }
-    return { valid: true }
+    return { valid: true, currencyCode }
   }
 
   // 21-39 characters
@@ -466,7 +466,7 @@ export const validateCurrencyCode = (currencyCode) => {
   }
 
   // 3-20 characters are valid (3 chars stay as-is, 4-20 chars will be converted to hex)
-  return { valid: true }
+  return { valid: true, currencyCode: encodeCurrencyCode(currencyCode) }
 }
 
 export const encodeCurrencyCode = (code) => {

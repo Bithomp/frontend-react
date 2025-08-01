@@ -56,9 +56,6 @@ export default function Footer() {
           <Link href="/jobs">Join our team</Link>
           <Link href="/about-us">{t('menu.company.about-us')}</Link>
           <Link href="/advertise">{t('menu.business.advertise')}</Link>
-          <a href="https://xrplmerch.com/product-category/bithomp/?wpam_id=22" target="_blank" rel="noreferrer">
-            {t('menu.merch')}
-          </a>
           <Link href="/customer-support">{t('menu.customer-support')}</Link>
           <Link href="/press">{t('menu.press')}</Link>
           <Link href="/donate">{t('menu.donate')}</Link>
