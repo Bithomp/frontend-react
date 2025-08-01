@@ -22,27 +22,27 @@ const limit = 20
 const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '') => {
   const response = await axios(`v2/trustlines/tokens?trustline=${destinationAddress}&limit=${limit}`)
   const tokens = response.data?.tokens || []
-  
+
   // Trim the search query to handle whitespace
   const trimmedQuery = searchQuery.trim()
-  
-  const trustlines = tokens.filter((token) => {    
 
+  const trustlines = tokens.filter((token) => {
     // If search query is provided, filter by it
     if (trimmedQuery) {
       const currency = token.currency
       const issuerDetails = token.issuerDetails || {}
-      const serviceOrUsername = issuerDetails.service || issuerDetails.username || ''
+      const service = issuerDetails.service || ''
+      const username = issuerDetails.username || ''
       const issuer = token.issuer || ''
 
       const searchLower = trimmedQuery.toLowerCase()
       return (
         currency.toLowerCase().includes(searchLower) ||
-        serviceOrUsername.toLowerCase().includes(searchLower) ||
+        service.toLowerCase().includes(searchLower) ||
+        username.toLowerCase().includes(searchLower) ||
         issuer.toLowerCase().includes(searchLower)
       )
     }
-
     return true
   })
 
