@@ -57,7 +57,6 @@ const ldJsonWebsite = {
 
 function sendData(selectedCurrency) {
   if (ws && ws.readyState === WebSocket.OPEN) {
-    //{ command: "subscribe", streams: ["whale_transactions"], currency: true, service: true, id: 1 }
     ws.send(
       JSON.stringify({
         command: 'subscribe',
@@ -108,11 +107,11 @@ export default function Home({
   const [whaleTransactions, setWhaleTransactions] = useState(null)
   const [statistics, setStatistics] = useState(null)
   const [liveFiatRate, setLiveFiatRate] = useState(fiatRate)
-  
+
   // Use ref to always get current currency in WebSocket message handler
   const selectedCurrencyRef = useRef(selectedCurrency)
   const previousCurrencyRef = useRef(null)
-  
+
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
 
   const connect = () => {
@@ -178,11 +177,11 @@ export default function Home({
     if (previousCurrencyRef.current && previousCurrencyRef.current !== selectedCurrency) {
       unsubscribeRates(previousCurrencyRef.current)
     }
-    
+
     // Update refs
     selectedCurrencyRef.current = selectedCurrency
     previousCurrencyRef.current = selectedCurrency
-    
+
     // Subscribe to new currency
     if (ws && ws.readyState === WebSocket.OPEN) {
       sendData(selectedCurrency)
