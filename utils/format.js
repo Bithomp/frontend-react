@@ -100,10 +100,10 @@ export const nativeCurrencyToFiat = (params) => {
   }
 
   return (
-    <span className="tooltip">
+    <span className="tooltip" suppressHydrationWarning>
       {' '}
       ≈ {calculatedAmount}
-      <span className="tooltiptext no-brake">
+      <span className="tooltiptext no-brake" suppressHydrationWarning>
         1 {nativeCurrency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
       </span>
     </span>

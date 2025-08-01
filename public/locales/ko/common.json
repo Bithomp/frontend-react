@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "토큰",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
@@ -63,7 +64,6 @@
     "terms-and-conditions": "이용약관",
     "customer-support": "고객지원",
     "press": "언론",
-    "merch": "MD샵",
     "donate": "기부",
     "sponsored": {
       "title": "지원받음",
