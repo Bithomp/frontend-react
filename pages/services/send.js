@@ -87,13 +87,13 @@ export default function Send({
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
-  const [isDestinationFlagged, setIsDestinationFlagged] = useState(false)
   const [isNonActive, setIsNonActive] = useState(false)
   const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
   const [requireDestTag, setRequireDestTag] = useState(false)
   const [agreeToSendToNonActive, setAgreeToSendToNonActive] = useState(false)
   const [selectedToken, setSelectedToken] = useState({ currency: currencyQuery, issuer: currencyIssuerQuery })
   const [networkInfo, setNetworkInfo] = useState({})
+  const [destinationStatus, setDestinationStatus] = useState(0)
 
   const onTokenChange = (token) => {
     setSelectedToken(token)
@@ -217,7 +217,7 @@ export default function Send({
   useEffect(() => {
     const fetchDestinationAccountData = async () => {
       if (!address || !isAddressValid(address)) {
-        setIsDestinationFlagged(false)
+        setDestinationStatus(0)
         setAgreeToSendToFlagged(false)
         setRequireDestTag(false)
         setIsNonActive(false)
@@ -230,21 +230,19 @@ export default function Send({
         const data = response?.data
 
         if (data?.address) {
-          const isFlagged = data.blacklist?.blacklisted || false
+          const status = data.blacklist?.status ?? 0
+          setDestinationStatus(status)
           const isNonActivated = data.ledgerInfo && data.ledgerInfo.activated === false
-
-          setIsDestinationFlagged(isFlagged)
           setIsNonActive(isNonActivated)
-
           // Reset agreements if account status changes
-          if (!isFlagged) {
+          if (status === 0) {
             setAgreeToSendToFlagged(false)
           }
           if (!isNonActivated) {
             setAgreeToSendToNonActive(false)
           }
         } else {
-          setIsDestinationFlagged(false)
+          setDestinationStatus(0)
           setAgreeToSendToFlagged(false)
           setIsNonActive(false)
           setAgreeToSendToNonActive(false)
@@ -260,7 +258,7 @@ export default function Send({
         }
       } catch (error) {
         setError('Error fetching destination account data')
-        setIsDestinationFlagged(false)
+        setDestinationStatus(0)
         setAgreeToSendToFlagged(false)
         setRequireDestTag(false)
         setIsNonActive(false)
@@ -272,8 +270,7 @@ export default function Send({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address])
 
-  const handleFeeChange = (e) => {
-    const value = e.target.value
+  const handleFeeChange = (value) => {
     setFee(value)
 
     if (Number(value) > 1) {
@@ -336,13 +333,13 @@ export default function Send({
       return
     }
 
-    if (isDestinationFlagged && !agreeToSendToFlagged) {
-      setError('Please acknowledge that you understand the risks of sending to a flagged account')
+    if (isNonActive && !agreeToSendToNonActive) {
+      setError('Please acknowledge that you understand the risks of sending to a non-activated account')
       return
     }
 
-    if (isNonActive && !agreeToSendToNonActive) {
-      setError('Please acknowledge that you understand the risks of sending to a non-activated account')
+    if (destinationStatus === 3) {
+      setError('This account has been flagged as FRAUD. Sending is not allowed.')
       return
     }
 
@@ -445,17 +442,39 @@ export default function Send({
             type="address"
           />
 
-          {/* Show warning if destination account is flagged */}
-          {isDestinationFlagged && (
+          {/* Show warning if destination account is flagged (status 1,2,3) */}
+          {(destinationStatus === 1 || destinationStatus === 2 || destinationStatus === 3) && (
             <div>
               <div className="form-spacing" />
               <div className="red center p-2 rounded-md border border-red-200 mb-4 sm:mb-0">
-                <strong>⚠️ Fraud Alert</strong>
+                <strong>
+                  ⚠️{' '}
+                  {destinationStatus === 1
+                    ? 'Spam Alert'
+                    : destinationStatus === 2
+                    ? 'Potential Fraud Alert'
+                    : 'Fraud Alert'}
+                </strong>
                 <br />
-                This account has been flagged as potentially involved in scams, phishing, or other malicious activities.
-                <br />
-                <strong>We strongly recommend proceeding with caution to ensure the safety of your assets.</strong>
-                <br />
+                {destinationStatus === 1 && (
+                  <>
+                    This account has been flagged for spam. Proceed with caution.
+                    <br />
+                  </>
+                )}
+                {destinationStatus === 2 && (
+                  <>
+                    This account has been flagged as potentially involved in fraud, scams, or phishing.{' '}
+                    <strong>Proceed with caution.</strong>
+                    <br />
+                  </>
+                )}
+                {destinationStatus === 3 && (
+                  <>
+                    <strong>This account has been flagged as FRAUD. Sending is not allowed.</strong>
+                    <br />
+                  </>
+                )}
                 <Link
                   href="/blacklisted-address"
                   target="_blank"
@@ -507,52 +526,50 @@ export default function Send({
             onKeyPress={typeNumberOnly}
             defaultValue={destinationTag}
           />
-          <div className="form-input">
-            <div className="form-spacing" />
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <div className="flex-1">
-                <span className="input-title">
-                  {t('table.amount')} {getMaxAmountDisplay()}
-                </span>
-                <input
-                  placeholder="Enter amount"
-                  onChange={(e) => setAmount(e.target.value)}
-                  onKeyPress={typeNumberOnly}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="35"
-                  min="0"
-                  type="text"
-                  inputMode="decimal"
-                  defaultValue={amount}
-                />
-              </div>
-              <div className="w-full sm:w-1/2">
-                <span className="input-title">Currency</span>
-                <TokenSelector
-                  value={selectedToken}
-                  onChange={onTokenChange}
-                  destinationAddress={address}
-                  currencyQueryName="currency"
-                />
-              </div>
+          <div className="form-spacing" />
+          <div className="flex flex-col gap-x-4 sm:flex-row">
+            <div className="flex-1">
+              <FormInput
+                title={
+                  <>
+                    {t('table.amount')} {getMaxAmountDisplay()}
+                  </>
+                }
+                placeholder="Enter amount"
+                setInnerValue={setAmount}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={amount}
+                maxLength={35}
+                min={0}
+                inputMode="decimal"
+                type="text"
+              />
+            </div>
+            <div className="w-full sm:w-1/2">
+              <span className="input-title">Currency</span>
+              <TokenSelector
+                value={selectedToken}
+                onChange={onTokenChange}
+                destinationAddress={address}
+                currencyQueryName="currency"
+              />
             </div>
           </div>
-          <div className="form-input">
-            <div className="form-spacing" />
-            <span className="input-title">
-              {t('table.memo')} (<span className="orange">It will be public</span>)
-            </span>
-            <input
-              placeholder="Enter a memo (optional)"
-              onChange={(e) => setMemo(e.target.value)}
-              className="input-text"
-              spellCheck="false"
-              maxLength="100"
-              type="text"
-              defaultValue={memo}
-            />
-          </div>
+          <br />
+          <FormInput
+            title={
+              <>
+                {t('table.memo')} (<span className="orange">It will be public</span>)
+              </>
+            }
+            placeholder="Enter a memo (optional)"
+            setInnerValue={setMemo}
+            hideButton={true}
+            defaultValue={memo}
+            maxLength={100}
+            type="text"
+          />
           <CheckBox
             checked={showAdvanced}
             setChecked={() => {
@@ -568,7 +585,11 @@ export default function Send({
               <>
                 {' '}
                 <span className="orange">
-                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
+                  (available to{' '}
+                  <span className="link" onClick={() => openEmailLogin()}>
+                    logged-in
+                  </span>{' '}
+                  Bithomp Pro subscribers)
                 </span>
               </>
             ) : (
@@ -586,52 +607,44 @@ export default function Send({
           {showAdvanced && (
             <>
               <br />
-              <div className="form-input">
-                <span className="input-title">Fee</span>
-                <input
-                  placeholder={'Enter fee in ' + nativeCurrency}
-                  onChange={handleFeeChange}
-                  onKeyPress={typeNumberOnly}
-                  className={`input-text ${feeError ? 'error' : ''}`}
-                  spellCheck="false"
-                  maxLength="35"
-                  min="0"
-                  type="text"
-                  inputMode="decimal"
-                  defaultValue={fee}
-                  disabled={!sessionToken || subscriptionExpired}
-                />
-                {feeError && <div className="red">{feeError}</div>}
-              </div>
+              <FormInput
+                title="Fee"
+                placeholder={'Enter fee in ' + nativeCurrency}
+                setInnerValue={handleFeeChange}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={fee}
+                maxLength={35}
+                min={0}
+                inputMode="decimal"
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+                className={feeError ? 'error' : ''}
+              />
+              {feeError && <div className="red">{feeError}</div>}
               <div className="form-spacing" />
-              <div className="form-input">
-                <span className="input-title">Source Tag</span>
-                <input
-                  placeholder="Enter source tag"
-                  onChange={(e) => setSourceTag(e.target.value)}
-                  onKeyPress={typeNumberOnly}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="35"
-                  type="text"
-                  defaultValue={sourceTag}
-                  disabled={!sessionToken || subscriptionExpired}
-                />
-              </div>
+              <FormInput
+                title="Source Tag"
+                placeholder="Enter source tag"
+                setInnerValue={setSourceTag}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={sourceTag}
+                maxLength={35}
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+              />
               <div className="form-spacing" />
-              <div className="form-input">
-                <span className="input-title">Invoice ID</span>
-                <input
-                  placeholder="Enter invoice ID"
-                  onChange={(e) => setInvoiceId(e.target.value)}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="64"
-                  type="text"
-                  defaultValue={invoiceId}
-                  disabled={!sessionToken || subscriptionExpired}
-                />
-              </div>
+              <FormInput
+                title="Invoice ID"
+                placeholder="Enter invoice ID"
+                setInnerValue={setInvoiceId}
+                hideButton={true}
+                defaultValue={invoiceId}
+                maxLength={64}
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+              />
             </>
           )}
 
@@ -644,8 +657,8 @@ export default function Send({
             .
           </CheckBox>
 
-          {/* Show additional checkbox for flagged accounts */}
-          {isDestinationFlagged && (
+          {/* Show additional checkbox for flagged accounts (only for status 1 and 2) */}
+          {(destinationStatus === 1 || destinationStatus === 2) && (
             <div className="orange">
               <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
                 I understand the risks and I want to proceed with sending funds to this flagged account
@@ -675,7 +688,7 @@ export default function Send({
             </>
           )}
           <div className="center">
-            <button className="button-action" onClick={handleSend}>
+            <button className="button-action" onClick={handleSend} disabled={destinationStatus === 3}>
               Send Payment
             </button>
           </div>

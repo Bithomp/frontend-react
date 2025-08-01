@@ -12,6 +12,14 @@ export default function Ads() {
   if (!xahauNetwork) {
     return (
       <div className={brandsBlock}>
+        <a href="/go/main-buy-swap" target="_blank" rel="noreferrer">
+          <div className="brand-item nexo">
+            <Nexo className="brand-item-icon" fill={theme === 'dark' ? 'white' : '#1C1F21'} />
+            <div className="brand-item-title">XRP: 5% back</div>
+            <div className="brand-item-text">Buy, transfer, or swap to XRP by August 4 and get 5% back.</div>
+          </div>
+        </a>
+
         <a href="/go/xrp-yield" target="_blank" rel="noreferrer">
           <div className="brand-item doppler">
             <Doppler className="brand-item-icon" fill={theme === 'dark' ? 'white' : '#1C1F21'} />

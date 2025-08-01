@@ -6,7 +6,6 @@ import {
   ledgerName,
   turnstileSupportedLanguages,
   isTagValid,
-  useWidth,
   typeNumberOnly,
   devNet,
   isAddressValid,
@@ -51,7 +50,6 @@ export default function Faucet({ account, type, sessionTokenData }) {
 
   const { t, i18n } = useTranslation()
   const { theme } = useTheme()
-  const width = useWidth()
 
   const testPayment = type === 'testPayment'
 
@@ -90,6 +88,8 @@ export default function Faucet({ account, type, sessionTokenData }) {
       } else {
         queryRemoveList.push('amount')
       }
+    } else {
+      queryRemoveList.push('amount')
     }
 
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
@@ -212,24 +212,15 @@ export default function Faucet({ account, type, sessionTokenData }) {
     }
   }
 
-  const onAmountChange = (e) => {
+  const onAmountChange = (value) => {
     setErrorMessage('')
-    let amountString = e.target.value
+    let amountString = value
     if (!amountString || amountString < 0) return
     if (amountString > maxAmount) {
       setErrorMessage("The amount can't be more than " + maxAmount + ' ' + nativeCurrency)
     }
     amountString = convertToDrops(amountString)
     setAmount(amountString)
-  }
-
-  const onLastLedgerChange = (e) => {
-    setErrorMessage('')
-    let amountString = e.target.value
-    if (!amountString || amountString < 0) {
-      setErrorMessage('Please enter a latest ledger index, you can find the number on the landing page')
-    }
-    setLastLedgerIndex(amountString)
   }
 
   const setAddressValue = (value) => {
@@ -272,7 +263,7 @@ export default function Faucet({ account, type, sessionTokenData }) {
               type="address"
               hideButton={true}
             />
-            {width > 1100 && <br />}
+            <div className="form-spacing" />
             <FormInput
               title={t('table.destination-tag')}
               placeholder={t('form.placeholder.destination-tag')}
@@ -283,48 +274,45 @@ export default function Faucet({ account, type, sessionTokenData }) {
             />
             {testPayment ? (
               <div>
-                {width > 1100 && <br />}
-                <span className="input-title">
-                  <Image src="/images/pages/faucet/lastLedgerIndex.png" alt="Ledger" width={141} height={55} />{' '}
-                  <Trans
-                    i18nKey="last-ledger-index-find-on-landing-page"
-                    ns="faucet"
-                    components={[
-                      <strong key="strong" />,
-                      <Link key="link" href="/" passHref>
-                        <a />
-                      </Link>
-                    ]}
-                  />
-                </span>
-                <input
+                <div className="form-spacing" />
+                <FormInput
+                  title={
+                    <>
+                      <Image src="/images/pages/faucet/lastLedgerIndex.png" alt="Ledger" width={141} height={55} />{' '}
+                      <Trans
+                        i18nKey="last-ledger-index-find-on-landing-page"
+                        ns="faucet"
+                        components={[
+                          <strong key="strong" />,
+                          <Link key="link" href="/" passHref>
+                            <a />
+                          </Link>
+                        ]}
+                      />
+                    </>
+                  }
                   placeholder={t('form.placeholder.enter-latest-ledger-index', { ns: 'faucet' })}
-                  onChange={onLastLedgerChange}
+                  setInnerValue={setLastLedgerIndex}
+                  hideButton={true}
                   onKeyPress={typeNumberOnly}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="10"
-                  min="0"
+                  maxLength={10}
+                  min={0}
                   type="text"
                 />
               </div>
             ) : (
               <div>
-                {width > 1100 && <br />}
-                <span className="input-title">
-                  {capitalize(t('enter-amount', { ns: 'faucet', nativeCurrency, devNet, maxAmount }))}
-                </span>
-                <input
+                <div className="form-spacing" />
+                <FormInput
+                  title={capitalize(t('enter-amount', { ns: 'faucet', nativeCurrency, devNet, maxAmount }))}
                   placeholder={'Enter amount in ' + nativeCurrency}
-                  onChange={onAmountChange}
+                  setInnerValue={onAmountChange}
+                  hideButton={true}
                   onKeyPress={typeNumberOnly}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="35"
-                  min="0"
-                  type="text"
-                  inputMode="decimal"
                   defaultValue={amount / 1000000}
+                  maxLength={35}
+                  min={0}
+                  type="text"
                 />
               </div>
             )}

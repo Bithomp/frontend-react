@@ -40,9 +40,9 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
   const controller = new AbortController()
 
   const escrowModeList = [
-    { value: 'none', label: 'Without Escrow (balance only)' },
-    { value: 'short', label: 'With Escrow (balance + escrow short)' },
-    { value: 'locked', label: 'With Escrow (balance + escrow locked)' }
+    { value: 'none', label: 'Available balance', description: `${nativeCurrency} excluding escrows. Only currently spendable funds` },
+    { value: 'short', label: 'Balance + expected escrows', description: `Includes ${nativeCurrency} that will likely be received from escrows by this account (this account = destination)` },
+    { value: 'locked', label: 'Balance + locked escrows', description: `Includes ${nativeCurrency} currently locked in escrows created by this account (this account = current owner)` }
   ]
 
   // calculate total balance including escrow
@@ -213,7 +213,11 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
                     onChange={() => setEscrowMode(tabItem.value)}
                     id={tabItem.value}
                   />
-                  <label htmlFor={tabItem.value}>{tabItem.label}</label>
+                  <label htmlFor={tabItem.value}>
+                    {tabItem.label}
+                    <br />
+                    <span className="grey">{tabItem.description}</span>
+                  </label>
                 </div>
               ))}
             </div>

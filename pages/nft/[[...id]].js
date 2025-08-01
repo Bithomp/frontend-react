@@ -1037,6 +1037,12 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         >
           Set as Avatar 😎
         </button>
+        {data.owner !== account?.address && (
+          <>
+            <br />
+            <span className="grey">{t('set-avatar-description', { ns: 'nft' })}</span>
+          </>
+        )}
         <br />
         <br />
       </>

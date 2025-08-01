@@ -34,8 +34,19 @@ export const NiceNativeBalance = ({ amount }) => {
   )
 }
 
-export const AddressWithIcon = ({ children, address }) => {
-  let imageUrl = avatarServer + address
+export const AddressWithIcon = ({ children, address, currency }) => {
+  let imageUrl = avatarServer
+
+  if (currency) {
+    imageUrl = avatarServer.replace('/avatar/', '/issued-token/')
+  }
+
+  imageUrl += address
+
+  if (currency) {
+    imageUrl += '/' + currency
+  }
+
   if (!address) {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }
@@ -89,10 +100,10 @@ export const nativeCurrencyToFiat = (params) => {
   }
 
   return (
-    <span className="tooltip">
+    <span className="tooltip" suppressHydrationWarning>
       {' '}
       ≈ {calculatedAmount}
-      <span className="tooltiptext no-brake">
+      <span className="tooltiptext no-brake" suppressHydrationWarning>
         1 {nativeCurrency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
       </span>
     </span>

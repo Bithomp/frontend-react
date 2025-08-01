@@ -38,10 +38,8 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
   const [fee, setFee] = useState(null)
   const [feeError, setFeeError] = useState(null)
 
-  const handleFeeChange = (e) => {
-    const value = e.target.value
+  const handleFeeChange = (value) => {
     setFee(value)
-
     if (Number(value) > 1) {
       setFeeError('Maximum fee is 1 ' + nativeCurrency)
     } else {
@@ -82,12 +80,12 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
     // Valid combinations: FinishAfter only, FinishAfter+CancelAfter, FinishAfter+Condition,
     // FinishAfter+Condition+CancelAfter, or Condition+CancelAfter
     if (!finishAfter && !condition) {
-      setError('You must specify either a finish time or a condition (or both).')
+      setError('You must specify either a unlock time or a condition (or both).')
       return
     }
 
     if (condition && !finishAfter && !cancelAfter) {
-      setError('A conditional escrow must have either a finish time or an expiration time (or both).')
+      setError('A conditional escrow must have either a unlock time or an expiration time (or both).')
       return
     }
 
@@ -104,7 +102,7 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
     const now = Math.floor(Date.now() / 1000)
 
     if (finishAfter && finishAfter <= now) {
-      setError('Finish time must be in the future.')
+      setError('Unlock time must be in the future.')
       return
     }
 
@@ -114,7 +112,7 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
     }
 
     if (finishAfter && cancelAfter && cancelAfter <= finishAfter) {
-      setError('Cancel time must be after finish time.')
+      setError('Cancel time must be after unlock time.')
       return
     }
 
@@ -229,36 +227,32 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
             defaultValue={destinationTag}
           />
           <div className="form-spacing" />
-          <div className="form-input">
-            <span className="input-title">{t('table.amount')}</span>
-            <input
-              placeholder={'Enter amount in ' + nativeCurrency}
-              onChange={(e) => setAmount(e.target.value)}
-              onKeyPress={typeNumberOnly}
-              className="input-text"
-              spellCheck="false"
-              maxLength="35"
-              min="0"
-              type="text"
-              inputMode="decimal"
-              defaultValue={amount}
-            />
-          </div>
-          <div className="form-input">
-            <div className="form-spacing" />
-            <span className="input-title">
-              {t('table.memo')} (<span className="orange">It will be public</span>)
-            </span>
-            <input
-              placeholder="Enter a memo (optional)"
-              onChange={(e) => setMemo(e.target.value)}
-              className="input-text"
-              spellCheck="false"
-              maxLength="100"
-              type="text"
-              defaultValue={memo}
-            />
-          </div>
+          <FormInput
+            title={t('table.amount')}
+            placeholder={'Enter amount in ' + nativeCurrency}
+            setInnerValue={setAmount}
+            hideButton={true}
+            onKeyPress={typeNumberOnly}
+            defaultValue={amount}
+            maxLength={35}
+            min={0}
+            inputMode="decimal"
+            type="text"
+          />
+          <div className="form-spacing" />
+          <FormInput
+            title={
+              <>
+                {t('table.memo')} (<span className="orange">It will be public</span>)
+              </>
+            }
+            placeholder="Enter a memo (optional)"
+            setInnerValue={setMemo}
+            hideButton={true}
+            defaultValue={memo}
+            maxLength={100}
+            type="text"
+          />
           <div className="form-spacing" />
 
           <span className="input-title">
@@ -311,7 +305,11 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
               <>
                 {' '}
                 <span className="orange">
-                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
+                  (available to{' '}
+                  <span className="link" onClick={() => openEmailLogin()}>
+                    logged-in
+                  </span>{' '}
+                  Bithomp Pro subscribers)
                 </span>
               </>
             ) : (
@@ -330,20 +328,15 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
           {showAdvanced && (
             <>
               <br />
-              <span className="input-title">
-                Condition{' '}
-                <span className="grey">(If specified, funds can only be released if this condition is fulfilled.)</span>
-              </span>
-              <input
+              <FormInput
+                title="Condition"
                 placeholder="PREIMAGE-SHA-256"
-                onChange={(e) => setCondition(e.target.value)}
-                className="input-text"
-                spellCheck="false"
+                setInnerValue={setCondition}
+                hideButton={true}
+                defaultValue={condition}
                 type="text"
-                value={condition || ''}
                 disabled={!sessionToken || subscriptionExpired}
               />
-              <br />
               <br />
               <button
                 className="button-action"
@@ -381,25 +374,25 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
                 disabled={!sessionToken || subscriptionExpired}
               />
               <div className="form-spacing" />
-              <div className="form-input">
-                <span className="input-title">Fee</span>
-                <input
-                  placeholder={'Enter fee in ' + nativeCurrency}
-                  onChange={handleFeeChange}
-                  onKeyPress={typeNumberOnly}
-                  className={`input-text ${feeError ? 'error' : ''}`}
-                  spellCheck="false"
-                  maxLength="35"
-                  min="0"
-                  type="text"
-                  inputMode="decimal"
-                  defaultValue={fee}
-                  disabled={!sessionToken || subscriptionExpired}
-                />
-                {feeError && <div className="red">{feeError}</div>}
-              </div>
+              <FormInput
+                title="Fee"
+                placeholder={'Enter fee in ' + nativeCurrency}
+                setInnerValue={handleFeeChange}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={fee}
+                maxLength={35}
+                min={0}
+                inputMode="decimal"
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+                className={feeError ? 'error' : ''}
+              />
+              {feeError && <div className="red">{feeError}</div>}
             </>
           )}
+
+          <br />
           <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
             I agree with the{' '}
             <Link href="/terms-and-conditions" target="_blank">

@@ -495,7 +495,11 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
                   </div>
                   <div className="w-full sm:w-1/2">
                     <span className="input-title">Currency</span>
-                    <TokenSelector value={selectedToken} onChange={onTokenChange} />
+                    <TokenSelector 
+                      value={selectedToken} 
+                      onChange={onTokenChange}
+                      destinationAddress={account?.address}
+                    />
                   </div>
                 </div>
               </>

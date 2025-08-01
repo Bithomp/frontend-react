@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
@@ -26,7 +26,6 @@ import '../styles/globals.css'
 import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
 
-
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
 import ErrorBoundary from '../components/ErrorBoundary'
@@ -50,6 +49,7 @@ function useIsBot() {
 }
 
 const MyApp = ({ Component, pageProps }) => {
+  const firstRenderRef = useRef(true)
   const [account, setAccount] = useLocalStorage('account')
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
   const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
@@ -63,7 +63,9 @@ const MyApp = ({ Component, pageProps }) => {
   const [wcSession, setWcSession] = useState(null)
   const [isClient, setIsClient] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
-  
+
+  const [activatedAccount, setActivatedAccount] = useState(false)
+
   const { isEmailLoginOpen, openEmailLogin, closeEmailLogin, handleLoginSuccess } = useEmailLogin()
 
   useEffect(() => {
@@ -76,7 +78,15 @@ const MyApp = ({ Component, pageProps }) => {
 
   useEffect(() => {
     //pages where we need to show the latest fiat price
-    const allowedRoutes = ['/', '/account/[[...id]]', '/amms', '/distribution', '/admin/watchlist']
+    const allowedRoutes = ['/', '/account/[[...id]]', '/amms', '/distribution', '/admin/watchlist', '/tokens']
+    const skipOnFirstRender = ['/', '/account/[[...id]]', '/amms', '/tokens']
+
+    // Skip fetch on first render for pages that get on the server side
+    if (firstRenderRef.current && skipOnFirstRender.includes(router.pathname)) {
+      firstRenderRef.current = false
+      return
+    }
+
     if (allowedRoutes.includes(router.pathname)) {
       fetchCurrentFiatRate(selectedCurrency, setFiatRate)
     }
@@ -211,7 +221,7 @@ const MyApp = ({ Component, pageProps }) => {
               )}
               <div className="content">
                 <TopProgressBar />
-                {showTopAds && <TopLinks />}
+                {showTopAds && <TopLinks activatedAccount={activatedAccount} />}
                 <Component
                   {...pageProps}
                   refreshPage={refreshPage}
@@ -230,6 +240,7 @@ const MyApp = ({ Component, pageProps }) => {
                   setSessionToken={setSessionToken}
                   fiatRate={fiatRate}
                   openEmailLogin={openEmailLogin}
+                  setActivatedAccount={setActivatedAccount}
                 />
               </div>
               <Footer setSignRequest={setSignRequest} account={account} />

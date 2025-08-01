@@ -22,6 +22,12 @@ class ErrorBoundary extends React.Component {
       'The object can not be found here.',
       "null is not an object (evaluating 'localStorage.getItem')"
     ]
+
+    if (process.env.NODE_ENV === 'development') {
+      // do not report errors on localhost
+      return
+    }
+
     if (knownErrorMessages.includes(error.message)) {
       // Ignore known errors
       return

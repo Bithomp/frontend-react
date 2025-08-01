@@ -982,6 +982,7 @@ export default function SignForm({
                     setSignRequest={setSignRequest}
                     setStatus={setStatus}
                     setFormError={setFormError}
+                    account={account}
                   />
                 )}
 

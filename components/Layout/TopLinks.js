@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 //import { useWidth } from '../../utils'
 //import Image from 'next/image'
 
-export default function TopLinks() {
+export default function TopLinks({ activatedAccount }) {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
   const router = useRouter()
@@ -168,13 +168,24 @@ export default function TopLinks() {
   if (pathname.includes('transaction') || pathname.includes('/account')) {
     return (
       <div className="top-links">
+        {pathname.includes('/account') && activatedAccount && (
+          <>
+            <span className="tooltip">
+              <a href="/go/acc-buy-swap" target="_blank" rel="noreferrer" className="top-link orange">
+                XRP: 5% back
+              </a>
+              <span className="tooltiptext right small">{t('sponsored.sponsored')}</span>
+            </span>{' '}
+            💸 |{' '}
+          </>
+        )}
         <span className="tooltip">
           <a href="/go/earn-on-xrp" target="_blank" rel="noreferrer" className="top-link orange">
             Earn on XRP
           </a>
           <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
         </span>{' '}
-        💰 |{' '}
+        💰{isMobile ? <br /> : ' | '}
         <span className="tooltip">
           <a href="/go/play-slots" target="_blank" rel="noreferrer" className="top-link orange">
             Play Slots and win 70,000 XRP

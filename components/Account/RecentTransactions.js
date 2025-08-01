@@ -28,14 +28,15 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       setError(error.message)
       setLoading(false)
     })
-    setTransactions(res?.data || [])
+    const transactions = Array.isArray(res?.data) ? res.data : res?.data?.transactions
+    setTransactions(transactions || [])
     setLoading(false)
   }
 
   useEffect(() => {
     fetchTransactions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, ledgerTimestamp])
+  }, [])
 
   if (!transactions?.length) {
     return null
