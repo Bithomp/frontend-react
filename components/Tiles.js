@@ -9,6 +9,7 @@ import { amountFormat, timeOrDate, convertedAmount } from '../utils/format'
 import NftImageOrVideo from './NftImageOrVideo'
 import AgeCheck from './UI/AgeCheck'
 import { tiles } from '../styles/components/tiles.module.scss'
+import axios from 'axios'
 
 const addressName = (details, name) => {
   if (!details) return ''
@@ -81,11 +82,38 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     return !isOver18 && isNftExplicit(nft)
   }
 
-  const clickOnTile = (e, nft) => {
+  const clickOnTile = async (e, nft) => {
     e.preventDefault()
     if (needAgeCheck(nft)) {
-      setShowAgeCheck(true)
-      return
+      //check if we have a saved country for teh user
+      let savedCountry = localStorage.getItem('country')
+      if (savedCountry) {
+        savedCountry = savedCountry.replace(/"/g, '')
+      }
+
+      if (savedCountry) {
+        if (savedCountry === 'GB') {
+          return
+        }
+        //if we have a saved country and it's not UK then ask for the age.
+        setShowAgeCheck(true)
+        return
+      } else {
+        //check the country
+        const response = await axios('client/info')
+        const json = response.data
+        if (json && json.country) {
+          const countryCode = json.country.toUpperCase()
+          localStorage.setItem('country', countryCode)
+          if (countryCode !== 'GB') {
+            //if we have a saved country and it's not UK then ask for the age.
+            setShowAgeCheck(true)
+            return
+          } else {
+            return
+          }
+        }
+      }
     }
     router.push('/nft/' + nft.nftokenID)
   }
