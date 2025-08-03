@@ -144,7 +144,7 @@ export default function Tokens({
   fiatRate: fiatRateApp,
   fiatRateServer,
   isSsrMobile,
-  openEmailLogin
+  openEmailLogin,
   currencyQuery,
   issuerQuery
 }) {
