@@ -78,12 +78,12 @@ export const payloadXamanPost = async (payload, callback) => {
       callback(data)
     } else {
       if (data?.error?.message) {
-        console.log('payloadXamanPost error:', data.error.message)
+        console.error('payloadXamanPost error:', data.error.message)
         callback({ error: data.error.message })
       } else {
-        console.log('payloadXamanPost error: no data or no refs in data')
+        console.error('payloadXamanPost error: no data or no refs in data')
         callback({ error: 'no data or no refs in data' })
-        console.log(data)
+        console.error(data)
       }
     }
   }
