@@ -12,7 +12,8 @@ import {
   server,
   xahauNetwork,
   typeNumberOnly,
-  nativeCurrency
+  nativeCurrency,
+  isNativeCurrency
 } from '../../../utils'
 import { multiply } from '../../../utils/calc'
 const checkmark = '/images/checkmark.svg'
@@ -238,12 +239,12 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
         if (destination?.trim()) {
           request.Amount = '0'
         } else {
-          setErrorMessage('Please specify a Destination or change Amount')
+          setErrorMessage('Please specify a Destination or change the Amount')
           return
         }
       } else if (parseFloat(amount) > 0) {
         // Handle amount based on selected token
-        if (selectedToken.currency === nativeCurrency && selectedToken.issuer === null) {
+        if (isNativeCurrency(selectedToken)) {
           // For XAH, convert to drops
           request.Amount = multiply(amount, 1000000)
         } else {
