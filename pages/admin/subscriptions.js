@@ -184,7 +184,9 @@ export default function Subscriptions({
   receiptQuery,
   tabQuery,
   setSubscriptionExpired,
-  setProExpire
+  setProExpire,
+  sessionToken,
+  openEmailLogin
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -207,10 +209,12 @@ export default function Subscriptions({
   const [transactions, setTransactions] = useState([])
 
   useEffect(() => {
-    getApiData()
-    getTransactions
+    if (sessionToken) {
+      getApiData()
+      getTransactions()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   useEffect(() => {
     let queryAddList = []
@@ -232,7 +236,7 @@ export default function Subscriptions({
       if (error && error.message !== 'canceled') {
         console.log("ERROR: can't get partner's transactions")
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          openEmailLogin()
         }
       }
     })
@@ -250,7 +254,7 @@ export default function Subscriptions({
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response.data.error || 'error.' + error.message))
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          openEmailLogin()
         }
       }
       setLoading(false)
@@ -317,7 +321,7 @@ export default function Subscriptions({
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response.data.error || 'error.' + error.message))
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          openEmailLogin()
         }
       }
     })
@@ -503,43 +507,284 @@ export default function Subscriptions({
         <AdminTabs name="mainTabs" tab="subscriptions" />
 
         <div className="center">
-          <BillingCountry
-            billingCountry={billingCountry}
-            setBillingCountry={setBillingCountry}
-            choosingCountry={choosingCountry}
-            setChoosingCountry={setChoosingCountry}
-          />
-          <br />
-          <br />
-
-          {!choosingCountry && (
+          {sessionToken ? (
             <>
-              {loading && (
-                <div className="center">
-                  <br />
-                  <br />
-                  <span className="waiting"></span>
-                  <br />
-                  {t('general.loading')}
-                  <br />
-                  <br />
-                </div>
-              )}
+              <BillingCountry
+                billingCountry={billingCountry}
+                setBillingCountry={setBillingCountry}
+                choosingCountry={choosingCountry}
+                setChoosingCountry={setChoosingCountry}
+              />
+              <br />
+              <br />
 
-              {newAndActivePackages?.length > 0 && (
+              {!choosingCountry && (
                 <>
-                  <h4 className="center">Your active subscriptions</h4>
-                  {packageList(newAndActivePackages, width)}
+                  {loading && (
+                    <div className="center">
+                      <br />
+                      <br />
+                      <span className="waiting"></span>
+                      <br />
+                      {t('general.loading')}
+                      <br />
+                      <br />
+                    </div>
+                  )}
+
+                  {newAndActivePackages?.length > 0 && (
+                    <>
+                      <h4 className="center">Your active subscriptions</h4>
+                      {packageList(newAndActivePackages, width)}
+                    </>
+                  )}
+
+                  {errorMessage && (
+                    <div className="center orange bold">
+                      <br />
+                      {errorMessage}
+                    </div>
+                  )}
+
+                  <Tabs
+                    tabList={subscriptionsTabList}
+                    tab={subscriptionsTab}
+                    setTab={setSubscriptionsTab}
+                    name="subscriptions"
+                    style={{ marginTop: '20px' }}
+                  />
+
+                  {!(!billingCountry || loading) && (
+                    <>
+                      {step < 2 && (
+                        <>
+                          {subscriptionsTab === 'pro' && <Pro setPayPeriod={setPayPeriod} />}
+                          {subscriptionsTab === 'api' && (
+                            <Api setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />
+                          )}
+
+                          <button
+                            className="button-action narrow"
+                            onClick={onPurchaseClick}
+                            style={{ height: '37px', marginLeft: '10px', marginTop: '20px' }}
+                          >
+                            Purchase
+                          </button>
+
+                          {/*
+                            <h4>
+                              Pay with PayPal - 1 Year, 100 EUR
+                            </h4>
+
+                            <div className='center' style={{ width: "350px", margin: "auto" }}>
+                              <PayPalScriptProvider
+                                options={{
+                                  clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
+                                  components: "buttons",
+                                  intent: "subscription",
+                                  vault: true,
+                                  locale: 'en_US'
+                                }}
+                              >
+                                <ButtonWrapper type="subscription" />
+                              </PayPalScriptProvider>
+                            </div>
+                          */}
+                        </>
+                      )}
+
+                      <div className="center">
+                        {payData && step === 1 && (
+                          <>
+                            <h4 className="center">Subscription payment details</h4>
+                            {width > 600 ? (
+                              <table className="table-large shrink">
+                                <tbody>
+                                  <tr>
+                                    <td className="right">Address</td>
+                                    <td className="left">
+                                      {payData.bid.destinationAddress}{' '}
+                                      <CopyButton text={payData.bid.destinationAddress} />
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="right">Destination tag</td>
+                                    <td className="left bold">
+                                      {payData.bid.destinationTag} <CopyButton text={payData.bid.destinationTag} />
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className="right">Amount</td>
+                                    <td className="left">
+                                      {shortNiceNumber(Math.ceil(payData.bid.price * 100) / 100, 2, 2)}{' '}
+                                      {payData.bid.currency} <CopyButton text={payData.bid.price} />
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            ) : (
+                              <div className="left">
+                                <p>
+                                  Address: <br />
+                                  {payData.bid.destinationAddress} <CopyButton text={payData.bid.destinationAddress} />
+                                </p>
+                                <p>
+                                  Destination tag:
+                                  <br />
+                                  <b>{payData.bid.destinationTag}</b> <CopyButton text={payData.bid.destinationTag} />
+                                </p>
+                                <p>
+                                  Amount:
+                                  <br />
+                                  {shortNiceNumber(Math.ceil(payData.bid.price * 100) / 100, 2, 2)}{' '}
+                                  {payData.bid.currency} <CopyButton text={payData.bid.price} />
+                                </p>
+                                <table className="table-mobile">
+                                  <tbody></tbody>
+                                </table>
+                              </div>
+                            )}
+                            <p className="center">
+                              <input
+                                type="button"
+                                value={t('button.cancel')}
+                                className="button-action"
+                                onClick={onCancel}
+                              />
+
+                              <button
+                                className="button-action"
+                                style={{ margin: '10px 10px 20px' }}
+                                onClick={() =>
+                                  setSignRequest({
+                                    request: {
+                                      TransactionType: 'Payment',
+                                      Destination: payData.bid.destinationAddress,
+                                      DestinationTag: payData.bid.destinationTag,
+                                      Amount: (Math.ceil(payData.bid.price * 100) * 10000).toString(),
+                                      Memos: [
+                                        {
+                                          Memo: {
+                                            MemoData: encode(
+                                              'Payment for ' +
+                                                typeName(payData.bid.type) +
+                                                (payData.bid.tier ? ' ' + payData.bid.tier.toUpperCase() : '') +
+                                                ' (' +
+                                                payData.bid.periodCount +
+                                                ' ' +
+                                                payData.bid.period +
+                                                (payData.bid.periodCount > 1 ? 's' : '') +
+                                                ')'
+                                            )
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  })
+                                }
+                              >
+                                Pay
+                              </button>
+                            </p>
+                            <br />
+                            Your Pro account will be activated when the payment is received.
+                          </>
+                        )}
+
+                        {(receiptQuery === 'true' || step === 2) && (
+                          <>
+                            <p className="center orange">We have received your payment.</p>
+                            {receiptQuery === 'false' && <Receipt item="subscription" details={bidData.bid} />}
+                          </>
+                        )}
+                        {paymentErrorMessage && (
+                          <p
+                            className="red center"
+                            dangerouslySetInnerHTML={{ __html: paymentErrorMessage || '&nbsp;' }}
+                          />
+                        )}
+
+                        {bidData?.transactions?.length > 0 && (
+                          <div style={{ marginTop: '20px', textAlign: 'left' }}>
+                            <h4 className="center">Transactions</h4>
+                            {width > 600 ? (
+                              <table className="table-large shrink">
+                                <thead>
+                                  <tr>
+                                    <th>Date & Time</th>
+                                    <th>From</th>
+                                    <th>Amount</th>
+                                    <th>Tx</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {bidData?.transactions?.map((payment, index) => {
+                                    return (
+                                      <tr key={index}>
+                                        <td>{fullDateAndTime(payment.processedAt)}</td>
+                                        <td>
+                                          <AddressWithIconFilled data={payment} name="sourceAddress" />
+                                        </td>
+                                        <td>{amountFormat(payment.amount * 1000000)}</td>
+                                        <td>
+                                          <LinkTx tx={payment.hash} icon={true} />
+                                        </td>
+                                      </tr>
+                                    )
+                                  })}
+                                </tbody>
+                              </table>
+                            ) : (
+                              <table className="table-mobile">
+                                <tbody>
+                                  {bidData?.transactions?.map((payment, index) => {
+                                    return (
+                                      <tr key={index}>
+                                        <td style={{ padding: '5px' }} className="center">
+                                          <b>{index + 1}</b>
+                                        </td>
+                                        <td>
+                                          <p>{fullDateAndTime(payment.processedAt)}</p>
+                                          <p>
+                                            From: <br />
+                                            {addressLink(payment.sourceAddress)}
+                                          </p>
+                                          <p>Amount: {amountFormat(payment.amount)}</p>
+                                          <p>Fiat equivalent: {payment.fiatAmount}</p>
+                                          <p>
+                                            Transaction: <LinkTx tx={payment.hash} icon={true} />
+                                          </p>
+                                        </td>
+                                      </tr>
+                                    )
+                                  })}
+                                </tbody>
+                              </table>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  {expiredPackages?.length > 0 && (
+                    <>
+                      <h4 className="center">Your expired subscriptions</h4>
+                      {packageList(expiredPackages, width)}
+                    </>
+                  )}
+
+                  {transactions?.length > 0 && (
+                    <div style={{ marginTop: '20px', textAlign: 'left' }}>
+                      <h4 className="center">Your last payments</h4>
+                      <ListTransactions transactions={transactions} />
+                    </div>
+                  )}
                 </>
               )}
-
-              {errorMessage && (
-                <div className="center orange bold">
-                  <br />
-                  {errorMessage}
-                </div>
-              )}
-
+            </>
+          ) : (
+            <div className="center">
               <Tabs
                 tabList={subscriptionsTabList}
                 tab={subscriptionsTab}
@@ -548,227 +793,17 @@ export default function Subscriptions({
                 style={{ marginTop: '20px' }}
               />
 
-              {!(!billingCountry || loading) && (
-                <>
-                  {step < 2 && (
-                    <>
-                      {subscriptionsTab === 'pro' && <Pro setPayPeriod={setPayPeriod} />}
-                      {subscriptionsTab === 'api' && <Api setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />}
+              {subscriptionsTab === 'pro' && <Pro setPayPeriod={setPayPeriod} />}
+              {subscriptionsTab === 'api' && <Api setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />}
 
-                      <button
-                        className="button-action narrow"
-                        onClick={onPurchaseClick}
-                        style={{ height: '37px', marginLeft: '10px', marginTop: '20px' }}
-                      >
-                        Purchase
-                      </button>
+              <br />
 
-                      {/*
-                    <h4>
-                      Pay with PayPal - 1 Year, 100 EUR
-                    </h4>
-
-                    <div className='center' style={{ width: "350px", margin: "auto" }}>
-                      <PayPalScriptProvider
-                        options={{
-                          clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
-                          components: "buttons",
-                          intent: "subscription",
-                          vault: true,
-                          locale: 'en_US'
-                        }}
-                      >
-                        <ButtonWrapper type="subscription" />
-                      </PayPalScriptProvider>
-                    </div>
-                  */}
-                    </>
-                  )}
-
-                  <div className="center">
-                    {payData && step === 1 && (
-                      <>
-                        <h4 className="center">Subscription payment details</h4>
-                        {width > 600 ? (
-                          <table className="table-large shrink">
-                            <tbody>
-                              <tr>
-                                <td className="right">Address</td>
-                                <td className="left">
-                                  {payData.bid.destinationAddress} <CopyButton text={payData.bid.destinationAddress} />
-                                </td>
-                              </tr>
-                              <tr>
-                                <td className="right">Destination tag</td>
-                                <td className="left bold">
-                                  {payData.bid.destinationTag} <CopyButton text={payData.bid.destinationTag} />
-                                </td>
-                              </tr>
-                              <tr>
-                                <td className="right">Amount</td>
-                                <td className="left">
-                                  {shortNiceNumber(Math.ceil(payData.bid.price * 100) / 100, 2, 2)}{' '}
-                                  {payData.bid.currency} <CopyButton text={payData.bid.price} />
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        ) : (
-                          <div className="left">
-                            <p>
-                              Address: <br />
-                              {payData.bid.destinationAddress} <CopyButton text={payData.bid.destinationAddress} />
-                            </p>
-                            <p>
-                              Destination tag:
-                              <br />
-                              <b>{payData.bid.destinationTag}</b> <CopyButton text={payData.bid.destinationTag} />
-                            </p>
-                            <p>
-                              Amount:
-                              <br />
-                              {shortNiceNumber(Math.ceil(payData.bid.price * 100) / 100, 2, 2)} {payData.bid.currency}{' '}
-                              <CopyButton text={payData.bid.price} />
-                            </p>
-                            <table className="table-mobile">
-                              <tbody></tbody>
-                            </table>
-                          </div>
-                        )}
-                        <p className="center">
-                          <input
-                            type="button"
-                            value={t('button.cancel')}
-                            className="button-action"
-                            onClick={onCancel}
-                          />
-
-                          <button
-                            className="button-action"
-                            style={{ margin: '10px 10px 20px' }}
-                            onClick={() =>
-                              setSignRequest({
-                                request: {
-                                  TransactionType: 'Payment',
-                                  Destination: payData.bid.destinationAddress,
-                                  DestinationTag: payData.bid.destinationTag,
-                                  Amount: (Math.ceil(payData.bid.price * 100) * 10000).toString(),
-                                  Memos: [
-                                    {
-                                      Memo: {
-                                        MemoData: encode(
-                                          'Payment for ' +
-                                            typeName(payData.bid.type) +
-                                            (payData.bid.tier ? ' ' + payData.bid.tier.toUpperCase() : '') +
-                                            ' (' +
-                                            payData.bid.periodCount +
-                                            ' ' +
-                                            payData.bid.period +
-                                            (payData.bid.periodCount > 1 ? 's' : '') +
-                                            ')'
-                                        )
-                                      }
-                                    }
-                                  ]
-                                }
-                              })
-                            }
-                          >
-                            Pay
-                          </button>
-                        </p>
-                        <br />
-                        Your Pro account will be activated when the payment is received.
-                      </>
-                    )}
-
-                    {(receiptQuery === 'true' || step === 2) && (
-                      <>
-                        <p className="center orange">We have received your payment.</p>
-                        {receiptQuery === 'false' && <Receipt item="subscription" details={bidData.bid} />}
-                      </>
-                    )}
-                    {paymentErrorMessage && (
-                      <p className="red center" dangerouslySetInnerHTML={{ __html: paymentErrorMessage || '&nbsp;' }} />
-                    )}
-
-                    {bidData?.transactions?.length > 0 && (
-                      <div style={{ marginTop: '20px', textAlign: 'left' }}>
-                        <h4 className="center">Transactions</h4>
-                        {width > 600 ? (
-                          <table className="table-large shrink">
-                            <thead>
-                              <tr>
-                                <th>Date & Time</th>
-                                <th>From</th>
-                                <th>Amount</th>
-                                <th>Tx</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {bidData?.transactions?.map((payment, index) => {
-                                return (
-                                  <tr key={index}>
-                                    <td>{fullDateAndTime(payment.processedAt)}</td>
-                                    <td>
-                                      <AddressWithIconFilled data={payment} name="sourceAddress" />
-                                    </td>
-                                    <td>{amountFormat(payment.amount * 1000000)}</td>
-                                    <td>
-                                      <LinkTx tx={payment.hash} icon={true} />
-                                    </td>
-                                  </tr>
-                                )
-                              })}
-                            </tbody>
-                          </table>
-                        ) : (
-                          <table className="table-mobile">
-                            <tbody>
-                              {bidData?.transactions?.map((payment, index) => {
-                                return (
-                                  <tr key={index}>
-                                    <td style={{ padding: '5px' }} className="center">
-                                      <b>{index + 1}</b>
-                                    </td>
-                                    <td>
-                                      <p>{fullDateAndTime(payment.processedAt)}</p>
-                                      <p>
-                                        From: <br />
-                                        {addressLink(payment.sourceAddress)}
-                                      </p>
-                                      <p>Amount: {amountFormat(payment.amount)}</p>
-                                      <p>Fiat equivalent: {payment.fiatAmount}</p>
-                                      <p>
-                                        Transaction: <LinkTx tx={payment.hash} icon={true} />
-                                      </p>
-                                    </td>
-                                  </tr>
-                                )
-                              })}
-                            </tbody>
-                          </table>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-
-              {expiredPackages?.length > 0 && (
-                <>
-                  <h4 className="center">Your expired subscriptions</h4>
-                  {packageList(expiredPackages, width)}
-                </>
-              )}
-
-              {transactions?.length > 0 && (
-                <div style={{ marginTop: '20px', textAlign: 'left' }}>
-                  <h4 className="center">Your last payments</h4>
-                  <ListTransactions transactions={transactions} />
-                </div>
-              )}
-            </>
+              <center>
+                <button className="button-action" onClick={() => openEmailLogin()}>
+                  Register or Sign In
+                </button>
+              </center>
+            </div>
           )}
         </div>
       </div>
