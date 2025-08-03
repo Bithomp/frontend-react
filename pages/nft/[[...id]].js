@@ -10,7 +10,7 @@ import dynamic from 'next/dynamic'
 import { stripText, decode, network, isValidJson, xahauNetwork, devNet, encode } from '../../utils'
 import { AddressWithIconFilled, convertedAmount, timeFromNow, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl } from '../../utils/nft'
+import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl, isNftExplicit } from '../../utils/nft'
 import {
   shortHash,
   trWithFlags,
@@ -56,7 +56,7 @@ export async function getServerSideProps(context) {
       id: nftId,
       pageMeta: pageMeta || {},
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'nft']))
+      ...(await serverSideTranslations(locale, ['common', 'nft', 'popups']))
     }
   }
 }
@@ -994,8 +994,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     )
   }
 
-  const setAsAvatarButton = () => {
+  const setAsAvatarButton = (data) => {
     if (!id || data.deletedAt) return '' //if it is already burned do not offer to burn
+
+    if (isNftExplicit(data)) return '' //if it is explicit, do not offer to set as avatar
 
     //if devnet, or signed, but not an owner or issuer - do not show set as avatar button
     if (devNet || (account?.address && account.address !== data.owner && account.address !== data.issuer)) return ''
@@ -1114,7 +1116,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                           {!notFoundInTheNetwork ? (
                             <>
                               {rendered && <NftPreview nft={data} />}
-                              {setAsAvatarButton()}
+                              {setAsAvatarButton(data)}
                               {sellButton(data.buyOffers)}
                               {buyButton(data.sellOffers)}
                               {cancelNftOfferButtons(t, setSignRequest, account?.address, data)}

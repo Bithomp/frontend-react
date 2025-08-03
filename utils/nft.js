@@ -454,13 +454,17 @@ export const isNftExplicit = (nft) => {
   return false
 }
 
+export const needNftAgeCheck = (nft) => {
+  const isOver18 = localStorage.getItem('isOver18')
+  return !isOver18 && isNftExplicit(nft)
+}
+
 export const nftImageStyle = (nft, style = {}) => {
   if (!nft) {
     return {}
   }
 
-  const isOver18 = localStorage.getItem('isOver18')
-  if (isNftExplicit(nft) && !isOver18) {
+  if (needNftAgeCheck(nft)) {
     return { backgroundImage: "url('/images/nft/18plus.jpg')" }
   }
 

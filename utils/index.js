@@ -2,6 +2,29 @@ import { useCallback, useEffect, useState } from 'react'
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import Cookies from 'universal-cookie'
+import axios from 'axios'
+
+export const forbid18Plus = async () => {
+  //check if we have a saved country for teh user
+  let savedCountry = localStorage.getItem('country')
+  if (savedCountry) {
+    savedCountry = savedCountry.replace(/"/g, '')
+  }
+
+  if (savedCountry) {
+    return savedCountry === 'GB'
+  } else {
+    //check the country
+    const response = await axios('client/info')
+    const json = response.data
+    if (json && json.country) {
+      const countryCode = json.country.toUpperCase()
+      localStorage.setItem('country', countryCode)
+      return countryCode === 'GB'
+    }
+    return false
+  }
+}
 
 export const safeClone = (obj) => {
   if (typeof structuredClone === 'function') {

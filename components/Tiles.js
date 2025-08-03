@@ -3,13 +3,12 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
-import { xahauNetwork } from '../utils'
-import { bestNftOffer, isNftExplicit, mpUrl, nftName, partnerMarketplaces } from '../utils/nft'
+import { forbid18Plus, xahauNetwork } from '../utils'
+import { bestNftOffer, mpUrl, needNftAgeCheck, nftName, partnerMarketplaces } from '../utils/nft'
 import { amountFormat, timeOrDate, convertedAmount } from '../utils/format'
 import NftImageOrVideo from './NftImageOrVideo'
 import AgeCheck from './UI/AgeCheck'
 import { tiles } from '../styles/components/tiles.module.scss'
-import axios from 'axios'
 
 const addressName = (details, name) => {
   if (!details) return ''
@@ -32,7 +31,7 @@ const addressName = (details, name) => {
 }
 
 export default function Tiles({ nftList, type = 'name', convertCurrency, account }) {
-  const { t } = useTranslation(['common', 'popups'])
+  const { t } = useTranslation()
   const router = useRouter()
 
   const [showAgeCheck, setShowAgeCheck] = useState(false)
@@ -77,43 +76,12 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     return t('table.text.private-offer') //shouldn't be the case
   }
 
-  const needAgeCheck = (nft) => {
-    const isOver18 = localStorage.getItem('isOver18')
-    return !isOver18 && isNftExplicit(nft)
-  }
-
   const clickOnTile = async (e, nft) => {
     e.preventDefault()
-    if (needAgeCheck(nft)) {
-      //check if we have a saved country for teh user
-      let savedCountry = localStorage.getItem('country')
-      if (savedCountry) {
-        savedCountry = savedCountry.replace(/"/g, '')
-      }
-
-      if (savedCountry) {
-        if (savedCountry === 'GB') {
-          return
-        }
-        //if we have a saved country and it's not UK then ask for the age.
-        setShowAgeCheck(true)
-        return
-      } else {
-        //check the country
-        const response = await axios('client/info')
-        const json = response.data
-        if (json && json.country) {
-          const countryCode = json.country.toUpperCase()
-          localStorage.setItem('country', countryCode)
-          if (countryCode !== 'GB') {
-            //if we have a saved country and it's not UK then ask for the age.
-            setShowAgeCheck(true)
-            return
-          } else {
-            return
-          }
-        }
-      }
+    if (needNftAgeCheck(nft)) {
+      const forbid = await forbid18Plus()
+      if (forbid) return
+      setShowAgeCheck(true)
     }
     router.push('/nft/' + nft.nftokenID)
   }
@@ -128,7 +96,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                 <li className="hex" key={i}>
                   <div className="hexIn">
                     <Link
-                      href={needAgeCheck(nft) ? '#' : '/nft/' + nft.nftokenID}
+                      href={needNftAgeCheck(nft) ? '#' : '/nft/' + nft.nftokenID}
                       className="hexLink"
                       onClick={(e) => clickOnTile(e, nft)}
                     >
@@ -179,7 +147,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                 <li className="hex" key={i}>
                   <div className="hexIn">
                     <Link
-                      href={needAgeCheck(nft.nftoken) ? '#' : '/nft/' + nft.nftoken.nftokenID}
+                      href={needNftAgeCheck(nft.nftoken) ? '#' : '/nft/' + nft.nftoken.nftokenID}
                       className="hexLink"
                       onClick={(e) => clickOnTile(e, nft.nftoken)}
                     >
