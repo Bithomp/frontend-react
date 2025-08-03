@@ -493,21 +493,18 @@ export default function Pro({
             {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
           </>
         ) : (
-          <>
-            <br />
-            <div className="center">
-              <div style={{ maxWidth: '440px', margin: 'auto' }}>
-                <p>Verify your addresses to access Pro features.</p>
-                <p>View historical balances and manage automation settings.</p>
-              </div>
-              <br />
-              <center>
-                <button className="button-action" onClick={() => openEmailLogin()}>
-                  Register or Sign In
-                </button>
-              </center>
+          <div className="center">
+            <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
+              <p>- Verify your addresses to access Pro features.</p>
+              <p>- View historical balances and manage automation settings.</p>
             </div>
-          </>
+            <br />
+            <center>
+              <button className="button-action" onClick={() => openEmailLogin()}>
+                Register or Sign In
+              </button>
+            </center>
+          </div>
         )}
       </div>
     </>

@@ -237,21 +237,18 @@ export default function Api({ sessionToken, openEmailLogin }) {
             {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
           </div>
         ) : (
-          <>
-            <br />
-            <div className="center">
-              <div style={{ maxWidth: '440px', margin: 'auto' }}>
-                <p>Access and manage your API keys and settings.</p>
-                <p>View API documentation and usage statistics.</p>
-              </div>
-              <br />
-              <center>
-                <button className="button-action" onClick={() => openEmailLogin()}>
-                  Register or Sign In
-                </button>
-              </center>
+          <div className="center">
+            <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
+              <p>- Access and manage your API keys and settings.</p>
+              <p>- View API documentation and usage statistics.</p>
             </div>
-          </>
+            <br />
+            <center>
+              <button className="button-action" onClick={() => openEmailLogin()}>
+                Register or Sign In
+              </button>
+            </center>
+          </div>
         )}
       </div>
     </>

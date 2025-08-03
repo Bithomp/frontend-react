@@ -572,24 +572,24 @@ export default function Subscriptions({
                           </button>
 
                           {/*
-                    <h4>
-                      Pay with PayPal - 1 Year, 100 EUR
-                    </h4>
+                            <h4>
+                              Pay with PayPal - 1 Year, 100 EUR
+                            </h4>
 
-                    <div className='center' style={{ width: "350px", margin: "auto" }}>
-                      <PayPalScriptProvider
-                        options={{
-                          clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
-                          components: "buttons",
-                          intent: "subscription",
-                          vault: true,
-                          locale: 'en_US'
-                        }}
-                      >
-                        <ButtonWrapper type="subscription" />
-                      </PayPalScriptProvider>
-                    </div>
-                  */}
+                            <div className='center' style={{ width: "350px", margin: "auto" }}>
+                              <PayPalScriptProvider
+                                options={{
+                                  clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
+                                  components: "buttons",
+                                  intent: "subscription",
+                                  vault: true,
+                                  locale: 'en_US'
+                                }}
+                              >
+                                <ButtonWrapper type="subscription" />
+                              </PayPalScriptProvider>
+                            </div>
+                          */}
                         </>
                       )}
 
@@ -784,21 +784,26 @@ export default function Subscriptions({
               )}
             </>
           ) : (
-            <>
+            <div className="center">
+              <Tabs
+                tabList={subscriptionsTabList}
+                tab={subscriptionsTab}
+                setTab={setSubscriptionsTab}
+                name="subscriptions"
+                style={{ marginTop: '20px' }}
+              />
+
+              {subscriptionsTab === 'pro' && <Pro setPayPeriod={setPayPeriod} />}
+              {subscriptionsTab === 'api' && <Api setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />}
+
               <br />
-              <div className="center">
-                <div style={{ maxWidth: '440px', margin: 'auto' }}>
-                  <p>Access subscription management and billing features.</p>
-                  <p>Manage your Bithomp Pro and API subscriptions.</p>
-                </div>
-                <br />
-                <center>
-                  <button className="button-action" onClick={() => openEmailLogin()}>
-                    Register or Sign In
-                  </button>
-                </center>
-              </div>
-            </>
+
+              <center>
+                <button className="button-action" onClick={() => openEmailLogin()}>
+                  Register or Sign In
+                </button>
+              </center>
+            </div>
           )}
         </div>
       </div>

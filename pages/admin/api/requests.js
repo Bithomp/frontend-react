@@ -64,7 +64,7 @@ export default function Requests({ sessionToken, openEmailLogin }) {
   return (
     <>
       <SEO title="API requests" />
-      <div className="page-admin content-text">
+      <div className="page-admin content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
         <AdminTabs name="mainTabs" tab="api" />
@@ -192,21 +192,18 @@ export default function Requests({ sessionToken, openEmailLogin }) {
             </div>
           </>
         ) : (
-          <>
-            <br />
-            <div className="center">
-              <div style={{ maxWidth: '440px', margin: 'auto' }}>
-                <p>View detailed API request logs and information.</p>
-                <p>Monitor recent API calls and their performance.</p>
-              </div>
-              <br />
-              <center>
-                <button className="button-action" onClick={() => openEmailLogin()}>
-                  Register or Sign In
-                </button>
-              </center>
+          <div className="center">
+            <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
+              <p>- View detailed API request logs and information.</p>
+              <p>- Monitor recent API calls and their performance.</p>
             </div>
-          </>
+            <br />
+            <center>
+              <button className="button-action" onClick={() => openEmailLogin()}>
+                Register or Sign In
+              </button>
+            </center>
+          </div>
         )}
       </div>
     </>

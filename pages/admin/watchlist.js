@@ -497,21 +497,18 @@ export default function Watchlist({
             </div>
           </>
         ) : (
-          <>
-            <br />
-            <div className="center">
-              <div style={{ maxWidth: '440px', margin: 'auto' }}>
-                <p>Manage your favorite addresses and NFTs.</p>
-                <p>Keep track of balances and recent activity.</p>
-              </div>
-              <br />
-              <center>
-                <button className="button-action" onClick={() => openEmailLogin()}>
-                  Register or Sign In
-                </button>
-              </center>
+          <div className="center">
+            <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
+              <p>- Manage your favorite addresses and NFTs.</p>
+              <p>- Keep track of balances and recent activity.</p>
             </div>
-          </>
+            <br />
+            <center>
+              <button className="button-action" onClick={() => openEmailLogin()}>
+                Register or Sign In
+              </button>
+            </center>
+          </div>
         )}
       </div>
     </>

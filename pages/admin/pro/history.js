@@ -868,11 +868,10 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           </>
         ) : (
           <>
-            <br />
             <div className="center">
-              <div style={{ maxWidth: '440px', margin: 'auto' }}>
-                <p>View detailed balance history for your verified addresses.</p>
-                <p>Export data for tax reporting and analysis.</p>
+              <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
+                <p>- View detailed balance history for your verified addresses.</p>
+                <p>- Export data for tax reporting and analysis.</p>
               </div>
               <br />
               <center>

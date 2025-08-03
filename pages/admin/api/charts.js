@@ -64,7 +64,7 @@ export default function Charts({ sessionToken, openEmailLogin }) {
   return (
     <>
       <SEO title="API charts" />
-      <div className="page-admin content-text">
+      <div className="page-admin content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
         <AdminTabs name="mainTabs" tab="api" />
@@ -104,21 +104,18 @@ export default function Charts({ sessionToken, openEmailLogin }) {
             </div>
           </>
         ) : (
-          <>
-            <br />
-            <div className="center">
-              <div style={{ maxWidth: '440px', margin: 'auto' }}>
-                <p>View API usage charts and analytics.</p>
-                <p>Monitor request patterns and performance metrics.</p>
-              </div>
-              <br />
-              <center>
-                <button className="button-action" onClick={() => openEmailLogin()}>
-                  Register or Sign In
-                </button>
-              </center>
+          <div className="center">
+            <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
+              <p>- View API usage charts and analytics.</p>
+              <p>- Monitor request patterns and performance metrics.</p>
             </div>
-          </>
+            <br />
+            <center>
+              <button className="button-action" onClick={() => openEmailLogin()}>
+                Register or Sign In
+              </button>
+            </center>
+          </div>
         )}
       </div>
     </>

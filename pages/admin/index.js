@@ -176,7 +176,6 @@ export default function Admin({
 
         <AdminTabs name="mainTabs" tab="profile" />
 
-        <br />
         <div className="center">
           {sessionToken && loggedUserData ? (
             <>
@@ -229,9 +228,12 @@ export default function Admin({
             </>
           ) : (
             <>
-              <div style={{ maxWidth: '440px', margin: 'auto' }}>
-                <p>Access advanced features with Bithomp Pro subscription.</p>
-                <p>Manage your API keys and view your API statistics.</p>
+              <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
+                <p>– Manage your Bithomp Pro subscription.</p>
+                <p>– Search your account history and export data as CSV, including for tax purposes.</p>
+                <p>– Manage your API keys and view detailed API statistics.</p>
+                <p>– Access and organize your Watchlist.</p>
+                <p>– Set avatars and manage bots for your accounts.</p>
               </div>
               <br />
               <center>
