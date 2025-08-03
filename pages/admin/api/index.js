@@ -106,8 +106,6 @@ export default function Api({ sessionToken, openEmailLogin }) {
   const now = new Date()
   const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
-
-
   return (
     <>
       <SEO title="API" />
@@ -119,125 +117,125 @@ export default function Api({ sessionToken, openEmailLogin }) {
 
         {sessionToken ? (
           <div className="center">
-          <h4 className="center">API data</h4>
-          Documentation:{' '}
-          <a href="https://docs.bithomp.com" target="_blank" rel="noreferrer">
-            https://docs.bithomp.com
-          </a>
-          <br />
-          <br />
-          {loading ? (
-            <table className="table-large">
-              <tbody>
-                <tr>
-                  <td className="center" colSpan="2">
-                    <span className="waiting"></span>
+            <h4 className="center">API data</h4>
+            Documentation:{' '}
+            <a href="https://docs.bithomp.com" target="_blank" rel="noreferrer">
+              https://docs.bithomp.com
+            </a>
+            <br />
+            <br />
+            {loading ? (
+              <table className="table-large">
+                <tbody>
+                  <tr>
+                    <td className="center" colSpan="2">
+                      <span className="waiting"></span>
+                      <br />
+                      {t('general.loading')}
+                      <br />
+                      <br />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            ) : (
+              <>
+                {apiData ? (
+                  <>
+                    <table className="table-large no-hover">
+                      <tbody>
+                        <tr>
+                          <td className="right">Token</td>
+                          <td className="left">
+                            {apiData.token} <CopyButton text={apiData.token} />{' '}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="right">Status</td>
+                          <td className="left">
+                            {apiData.locked ? (
+                              <b className="red">locked</b>
+                            ) : (
+                              <>
+                                {apiData.tier === 'free' ? (
+                                  <b className="green">active</b>
+                                ) : (
+                                  <>
+                                    {apiData.expirationAt ? (
+                                      <>
+                                        {new Date(apiData.expirationAt) > nowDate ? (
+                                          <>
+                                            <b className="green">active</b> until
+                                          </>
+                                        ) : (
+                                          <b className="red">expired</b>
+                                        )}
+                                        <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
+                                      </>
+                                    ) : (
+                                      <b className="green">active</b>
+                                    )}
+                                  </>
+                                )}
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="right">{t('table.domain')}</td>
+                          <td className="left">
+                            <b>{apiData.domain}</b>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="right">Tier</td>
+                          <td className="left">{apiData.tier}</td>
+                        </tr>
+                      </tbody>
+                    </table>
                     <br />
-                    {t('general.loading')}
                     <br />
+                    <Link className="button-action" href="/admin/subscriptions?tab=api">
+                      Manage your API subscription
+                    </Link>
+                  </>
+                ) : (
+                  <div>
+                    <h4>API registration</h4>
+                    <p>
+                      <input
+                        placeholder='Your website domain or "localhost" for a local project'
+                        value={domain}
+                        onChange={(e) => {
+                          setDomain(e.target.value)
+                        }}
+                        className="input-text"
+                        spellCheck="false"
+                        maxLength="30"
+                      />
+                    </p>
+                    <p>
+                      <input
+                        placeholder="Description how API will be used"
+                        value={apiDescription}
+                        onChange={(e) => {
+                          setApiDescription(e.target.value)
+                        }}
+                        className="input-text"
+                        maxLength="60"
+                      />
+                    </p>
+                    <button className="button-action" onClick={requestApiKey}>
+                      Request API key
+                    </button>
                     <br />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          ) : (
-            <>
-              {apiData ? (
-                <>
-                  <table className="table-large no-hover">
-                    <tbody>
-                      <tr>
-                        <td className="right">Token</td>
-                        <td className="left">
-                          {apiData.token} <CopyButton text={apiData.token} />{' '}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="right">Status</td>
-                        <td className="left">
-                          {apiData.locked ? (
-                            <b className="red">locked</b>
-                          ) : (
-                            <>
-                              {apiData.tier === 'free' ? (
-                                <b className="green">active</b>
-                              ) : (
-                                <>
-                                  {apiData.expirationAt ? (
-                                    <>
-                                      {new Date(apiData.expirationAt) > nowDate ? (
-                                        <>
-                                          <b className="green">active</b> until
-                                        </>
-                                      ) : (
-                                        <b className="red">expired</b>
-                                      )}
-                                      <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
-                                    </>
-                                  ) : (
-                                    <b className="green">active</b>
-                                  )}
-                                </>
-                              )}
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="right">{t('table.domain')}</td>
-                        <td className="left">
-                          <b>{apiData.domain}</b>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="right">Tier</td>
-                        <td className="left">{apiData.tier}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <br />
-                  <br />
-                  <Link className="button-action" href="/admin/subscriptions?tab=api">
-                    Manage your API subscription
-                  </Link>
-                </>
-              ) : (
-                <div>
-                  <h4>API registration</h4>
-                  <p>
-                    <input
-                      placeholder='Your website domain or "localhost" for a local project'
-                      value={domain}
-                      onChange={(e) => {
-                        setDomain(e.target.value)
-                      }}
-                      className="input-text"
-                      spellCheck="false"
-                      maxLength="30"
-                    />
-                  </p>
-                  <p>
-                    <input
-                      placeholder="Description how API will be used"
-                      value={apiDescription}
-                      onChange={(e) => {
-                        setApiDescription(e.target.value)
-                      }}
-                      className="input-text"
-                      maxLength="60"
-                    />
-                  </p>
-                  <button className="button-action" onClick={requestApiKey}>
-                    Request API key
-                  </button>
-                  <br />
-                </div>
-              )}
-            </>
-          )}
-          <br />
-          {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
-        </div>
+                  </div>
+                )}
+              </>
+            )}
+            <br />
+            {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+          </div>
         ) : (
           <>
             <br />

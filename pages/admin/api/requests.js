@@ -61,8 +61,6 @@ export default function Requests({ sessionToken, openEmailLogin }) {
     setApiRequests(apiRequests?.data)
   }
 
-
-
   return (
     <>
       <SEO title="API requests" />
@@ -75,123 +73,123 @@ export default function Requests({ sessionToken, openEmailLogin }) {
         {sessionToken ? (
           <>
             <center>
-          <DateAndTimeRange setPeriod={setPeriod} minDate={minDate} />
-          {width < 500 && <br />}
-          <button className="button-action narrow thin" onClick={getData}>
-            Search
-          </button>
-        </center>
+              <DateAndTimeRange setPeriod={setPeriod} minDate={minDate} />
+              {width < 500 && <br />}
+              <button className="button-action narrow thin" onClick={getData}>
+                Search
+              </button>
+            </center>
 
-        <div className="center">
-          <div style={{ marginTop: '20px', textAlign: 'left' }}>
-            <h4 className="center">The last 50 API requests (the last 5 days)</h4>
-            {width > 1240 ? (
-              <table className="table-large">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Timestamp</th>
-                    <th>Response</th>
-                    <th>IP</th>
-                    <th className="center">Country</th>
-                    <th>URL</th>
-                    <th className="right">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading && (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <span className="waiting"></span>
-                        <br />
-                        {t('general.loading')}
-                      </td>
-                    </tr>
-                  )}
-                  {apiRequests?.requests?.map((req, index) => {
-                    return (
-                      <tr key={index}>
-                        <td>{index}</td>
-                        <td>{fullDateAndTime(req.createdAt / 1000)}</td>
-                        <td>{req.completedAt - req.createdAt} ms</td>
-                        <td>{req.ip}</td>
-                        <td className="center">
-                          {req.country}{' '}
-                          <ReactCountryFlag
-                            countryCode={req.country}
-                            style={{
-                              fontSize: '1.5em',
-                              lineHeight: '1.5em'
-                            }}
-                          />
-                        </td>
-                        <td className="brake">{req.url}</td>
-                        <td className="right">{req.status}</td>
+            <div className="center">
+              <div style={{ marginTop: '20px', textAlign: 'left' }}>
+                <h4 className="center">The last 50 API requests (the last 5 days)</h4>
+                {width > 1240 ? (
+                  <table className="table-large">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Timestamp</th>
+                        <th>Response</th>
+                        <th>IP</th>
+                        <th className="center">Country</th>
+                        <th>URL</th>
+                        <th className="right">Status</th>
                       </tr>
-                    )
-                  })}
-                  {apiRequests?.requests?.length === 0 && (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <b>no data available</b>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            ) : (
-              <table className="table-mobile">
-                <tbody>
-                  {loading && (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <br />
-                        <span className="waiting"></span>
-                        <br />
-                        {t('general.loading')}
-                        <br />
-                        <br />
-                      </td>
-                    </tr>
-                  )}
-                  {apiRequests?.requests?.map((req, index) => {
-                    return (
-                      <tr key={index}>
-                        <td style={{ padding: '5px' }} className="center">
-                          <b>{index + 1}</b>
-                        </td>
-                        <td>
-                          <p>{fullDateAndTime(req.createdAt / 1000)}</p>
-                          <p>Response: {req.completedAt - req.createdAt} ms</p>
-                          <p>IP: {req.ip}</p>
-                          <p>
-                            Country: {req.country}{' '}
-                            <ReactCountryFlag
-                              countryCode={req.country}
-                              style={{
-                                fontSize: '1.5em',
-                                lineHeight: '1.5em'
-                              }}
-                            />
-                          </p>
-                          <p>
-                            URL:
+                    </thead>
+                    <tbody>
+                      {loading && (
+                        <tr className="center">
+                          <td colSpan="100">
+                            <span className="waiting"></span>
                             <br />
-                            <span style={{ wordBreak: 'break-all' }}>{req.url}</span>
-                          </p>
-                          <p>Status: {req.status}</p>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            )}
-          </div>
+                            {t('general.loading')}
+                          </td>
+                        </tr>
+                      )}
+                      {apiRequests?.requests?.map((req, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>{index}</td>
+                            <td>{fullDateAndTime(req.createdAt / 1000)}</td>
+                            <td>{req.completedAt - req.createdAt} ms</td>
+                            <td>{req.ip}</td>
+                            <td className="center">
+                              {req.country}{' '}
+                              <ReactCountryFlag
+                                countryCode={req.country}
+                                style={{
+                                  fontSize: '1.5em',
+                                  lineHeight: '1.5em'
+                                }}
+                              />
+                            </td>
+                            <td className="brake">{req.url}</td>
+                            <td className="right">{req.status}</td>
+                          </tr>
+                        )
+                      })}
+                      {apiRequests?.requests?.length === 0 && (
+                        <tr className="center">
+                          <td colSpan="100">
+                            <b>no data available</b>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                ) : (
+                  <table className="table-mobile">
+                    <tbody>
+                      {loading && (
+                        <tr className="center">
+                          <td colSpan="100">
+                            <br />
+                            <span className="waiting"></span>
+                            <br />
+                            {t('general.loading')}
+                            <br />
+                            <br />
+                          </td>
+                        </tr>
+                      )}
+                      {apiRequests?.requests?.map((req, index) => {
+                        return (
+                          <tr key={index}>
+                            <td style={{ padding: '5px' }} className="center">
+                              <b>{index + 1}</b>
+                            </td>
+                            <td>
+                              <p>{fullDateAndTime(req.createdAt / 1000)}</p>
+                              <p>Response: {req.completedAt - req.createdAt} ms</p>
+                              <p>IP: {req.ip}</p>
+                              <p>
+                                Country: {req.country}{' '}
+                                <ReactCountryFlag
+                                  countryCode={req.country}
+                                  style={{
+                                    fontSize: '1.5em',
+                                    lineHeight: '1.5em'
+                                  }}
+                                />
+                              </p>
+                              <p>
+                                URL:
+                                <br />
+                                <span style={{ wordBreak: 'break-all' }}>{req.url}</span>
+                              </p>
+                              <p>Status: {req.status}</p>
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                )}
+              </div>
 
-          <br />
-          {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
-        </div>
+              <br />
+              {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+            </div>
           </>
         ) : (
           <>

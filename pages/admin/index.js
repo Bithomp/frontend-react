@@ -168,8 +168,6 @@ export default function Admin({
     setCheckedPackageData(false)
   }
 
-
-
   return (
     <>
       <SEO title={t('header', { ns: 'admin' })} />
@@ -216,8 +214,7 @@ export default function Admin({
               {packageData && partnerData && (
                 <span>
                   <br />
-                  For priority support, please use subject <b>PRO user {partnerData.id}</b> when sending us an
-                  e-mail to{' '}
+                  For priority support, please use subject <b>PRO user {partnerData.id}</b> when sending us an e-mail to{' '}
                   <b>
                     <Mailto email="pro@bithomp.com" headers={{ subject: 'PRO user ' + partnerData.id }} />
                   </b>

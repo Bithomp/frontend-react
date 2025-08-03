@@ -21,8 +21,6 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
   const { t } = useTranslation('admin')
   const { rules, channels, isLoading, error } = useNotifications()
 
-
-
   if (sessionToken && isLoading) {
     return <div>Loading...</div>
   }
@@ -35,12 +33,12 @@ export default function Notifications({ sessionToken, openEmailLogin }) {
       <main className="page-admin content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
         <AdminTabs name="mainTabs" tab="notifications" />
-        
+
         {sessionToken ? (
           <>
             <p className="text-left mb-8">
-              Set up custom rules to get notified about blockchain events - like NFT listings or high-value sales - through
-              Slack, Discord, Email, and more.
+              Set up custom rules to get notified about blockchain events - like NFT listings or high-value sales -
+              through Slack, Discord, Email, and more.
             </p>
             {rules.length === 0 && channels.length === 0 && <EmptyState />}
 

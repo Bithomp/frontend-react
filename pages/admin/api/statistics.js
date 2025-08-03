@@ -51,8 +51,6 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
     setStatistics(requestStats?.data)
   }
 
-
-
   return (
     <>
       <SEO title="API statistics" />
@@ -64,15 +62,95 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
 
         {sessionToken ? (
           <div className="center">
-          <div style={{ marginTop: '20px', textAlign: 'left' }}>
-            <h4 className="center">20 most common URLs in the last 24h</h4>
-            {width > 750 ? (
+            <div style={{ marginTop: '20px', textAlign: 'left' }}>
+              <h4 className="center">20 most common URLs in the last 24h</h4>
+              {width > 750 ? (
+                <table className="table-large">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th className="right">Count</th>
+                      <th>URL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading && (
+                      <tr className="center">
+                        <td colSpan="100">
+                          <span className="waiting"></span>
+                          <br />
+                          {t('general.loading')}
+                        </td>
+                      </tr>
+                    )}
+                    {statistics?.urls?.map((item, i) => {
+                      return (
+                        <tr key={i}>
+                          <td>{i + 1}</td>
+                          <td className="right">{item.count}</td>
+                          <td className="brake">{item.url}</td>
+                        </tr>
+                      )
+                    })}
+                    {!statistics?.urls?.[0] && (
+                      <tr>
+                        <td colSpan="100" className="center">
+                          <b>no data available</b>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              ) : (
+                <table className="table-mobile">
+                  <tbody>
+                    {loading && (
+                      <tr className="center">
+                        <td colSpan="100">
+                          <span className="waiting"></span>
+                          <br />
+                          {t('general.loading')}
+                        </td>
+                      </tr>
+                    )}
+                    {statistics?.urls?.map((item, i) => {
+                      return (
+                        <tr key={i}>
+                          <td style={{ padding: '5px' }} className="center">
+                            <b>{i + 1}</b>
+                          </td>
+                          <td>
+                            <p>Count: {item.count}</p>
+                            <p>
+                              URL:
+                              <br />
+                              <span style={{ wordBreak: 'break-all' }}>{item.url}</span>
+                            </p>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                    {!statistics?.urls?.[0] && (
+                      <tr>
+                        <td colSpan="100" className="center">
+                          <b>no data available</b>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            <div style={{ marginTop: '20px', textAlign: 'left' }}>
+              <h4 className="center">The most common IPs in the last 24h</h4>
               <table className="table-large">
                 <thead>
                   <tr>
                     <th></th>
                     <th className="right">Count</th>
-                    <th>URL</th>
+                    <th className="right">IP</th>
+                    <th className="right">Country</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -85,16 +163,17 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
                       </td>
                     </tr>
                   )}
-                  {statistics?.urls?.map((item, i) => {
+                  {statistics?.ips?.map((item, i) => {
                     return (
                       <tr key={i}>
                         <td>{i + 1}</td>
                         <td className="right">{item.count}</td>
-                        <td className="brake">{item.url}</td>
+                        <td className="right">{item.ip}</td>
+                        <td className="right">{item.country}</td>
                       </tr>
                     )
                   })}
-                  {!statistics?.urls?.[0] && (
+                  {!statistics?.ips?.[0] && (
                     <tr>
                       <td colSpan="100" className="center">
                         <b>no data available</b>
@@ -103,92 +182,11 @@ export default function Statistics({ sessionToken, openEmailLogin }) {
                   )}
                 </tbody>
               </table>
-            ) : (
-              <table className="table-mobile">
-                <tbody>
-                  {loading && (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <span className="waiting"></span>
-                        <br />
-                        {t('general.loading')}
-                      </td>
-                    </tr>
-                  )}
-                  {statistics?.urls?.map((item, i) => {
-                    return (
-                      <tr key={i}>
-                        <td style={{ padding: '5px' }} className="center">
-                          <b>{i + 1}</b>
-                        </td>
-                        <td>
-                          <p>Count: {item.count}</p>
-                          <p>
-                            URL:
-                            <br />
-                            <span style={{ wordBreak: 'break-all' }}>{item.url}</span>
-                          </p>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                  {!statistics?.urls?.[0] && (
-                    <tr>
-                      <td colSpan="100" className="center">
-                        <b>no data available</b>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            )}
-          </div>
+            </div>
 
-          <div style={{ marginTop: '20px', textAlign: 'left' }}>
-            <h4 className="center">The most common IPs in the last 24h</h4>
-            <table className="table-large">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th className="right">Count</th>
-                  <th className="right">IP</th>
-                  <th className="right">Country</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading && (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                      <br />
-                      {t('general.loading')}
-                    </td>
-                  </tr>
-                )}
-                {statistics?.ips?.map((item, i) => {
-                  return (
-                    <tr key={i}>
-                      <td>{i + 1}</td>
-                      <td className="right">{item.count}</td>
-                      <td className="right">{item.ip}</td>
-                      <td className="right">{item.country}</td>
-                    </tr>
-                  )
-                })}
-                {!statistics?.ips?.[0] && (
-                  <tr>
-                    <td colSpan="100" className="center">
-                      <b>no data available</b>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+            <br />
+            {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
           </div>
-
-          <br />
-          {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
-        </div>
         ) : (
           <>
             <br />
