@@ -44,6 +44,9 @@ export default function Pro({ setPayPeriod }) {
           ✅ <b>Higher Limits:</b> 100 Addresses or NFTs in your <Link href="/admin/watchlist">Watchlist</Link>.
         </p>
         <p>
+          ✅ <b>Animated avatars:</b> Set .gif avatars in <Link href="/admin/pro">My addresses</Link>.
+        </p>
+        <p>
           ✅ <b>Fewer Ads</b>: Focus on what matters most.
         </p>
         <p>
