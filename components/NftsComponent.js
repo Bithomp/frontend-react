@@ -661,7 +661,7 @@ export default function NftsComponent({
           }
           description={
             (issuerQuery || searchQuery || t('nft-explorer.header')) +
-            (rendered && mintedPeriod ? ', ' + t('table.mint-period') + ': ' + periodDescription(mintedPeriod) : '')
+            (mintedPeriodQuery ? ', ' + t('table.mint-period') + ': ' + periodDescription(mintedPeriodQuery) : '')
           }
           image={{
             width: 1200,
