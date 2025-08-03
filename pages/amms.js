@@ -229,7 +229,7 @@ export default function Amms({
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, token, sessionToken])
+  }, [order, token, subscriptionExpired])
 
   const csvHeaders = [
     { label: 'Asset 1', key: 'amountFormated' },

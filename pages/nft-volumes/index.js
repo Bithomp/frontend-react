@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -49,6 +48,7 @@ import LinkIcon from '../../public/images/link.svg'
 import RadioOptions from '../../components/UI/RadioOptions'
 import { collectionThumbnail } from '../../utils/nft'
 import FiltersFrame from '../../components/Layout/FiltersFrame'
+import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 
 export default function NftVolumes({
   extendedStatsQuery,
@@ -545,7 +545,7 @@ export default function NftVolumes({
 
   useEffect(() => {
     if (!convertCurrency) return
-    checkApi()  
+    checkApi()
     setSortConfig({})
 
     return () => {
@@ -553,7 +553,7 @@ export default function NftVolumes({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, period, listTab, convertCurrency, extendedStats, selectedToken, sessionToken])
+  }, [saleTab, period, listTab, convertCurrency, extendedStats, selectedToken, subscriptionExpired])
 
   useEffect(() => {
     if (!convertCurrency) return
@@ -1142,40 +1142,16 @@ export default function NftVolumes({
                   </p>
                 </div>
               )}
-              <InfiniteScroll
+
+              <InfiniteScrolling
                 dataLength={data.length}
-                next={checkApi}
+                loadMore={checkApi}
                 hasMore={hasMore}
-                loader={
-                  !errorMessage && (
-                    <p className="center">
-                      {hasMore !== 'first' ? (
-                        <>
-                          {!sessionToken ? (
-                            <Trans i18nKey="general.login-to-bithomp-pro">
-                              Loading more data is available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro
-                              subscribers.
-                            </Trans>
-                          ) : (
-                            <>
-                              {!subscriptionExpired ? (
-                                t('general.loading')
-                              ) : (
-                                <Trans i18nKey="general.renew-bithomp-pro">
-                                  Your Bithomp Pro subscription has expired.
-                                  <Link href="/admin/subscriptions">Renew your subscription</Link>.
-                                </Trans>
-                              )}
-                            </>
-                          )}
-                        </>
-                      ) : (
-                        t('general.loading')
-                      )}
-                    </p>
-                  )
-                }
-                endMessage={<p className="center">End of list</p>}
+                errorMessage={errorMessage}
+                subscriptionExpired={subscriptionExpired}
+                sessionToken={sessionToken}
+                openEmailLogin={openEmailLogin}
+                //height={!filtersHide ? '1300px' : '100vh'}
               >
                 {windowWidth > 1000 || !['issuers', 'collections', 'marketplaces'].includes(listTab) ? (
                   <table className="table-large expand">
@@ -1558,7 +1534,7 @@ export default function NftVolumes({
                     </tbody>
                   </table>
                 )}
-              </InfiniteScroll>
+              </InfiniteScrolling>
             </>
           )}
         </>

@@ -195,7 +195,7 @@ export default function NftDistribution({
   useEffect(() => {
     checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [issuer, taxon, order, sessionToken])
+  }, [issuer, taxon, order, subscriptionExpired])
 
   let csvHeaders = [
     { label: t('table.owner'), key: 'address' },
