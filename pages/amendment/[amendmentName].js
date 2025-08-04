@@ -346,7 +346,7 @@ export default function AmendmentSummary({
                     )}
                   </tr>
                   <tr>
-                    {eta && (
+                    {eta && status !== 'ENABLED' && (
                       <>
                         <td>
                           <b>Activation ETA:</b>
@@ -380,30 +380,42 @@ export default function AmendmentSummary({
                       )
                     </td>
                   </tr>
+                  {amendmentId && (
                   <tr>
                     <td><b>Amendment ID:</b></td>
                     <td>{shortHash(amendmentId)} <CopyButton text={amendmentId} /></td>
                   </tr>
+                  )}
+                  {introduced && (
                   <tr>
                     <td><b>Introduced in Version:</b></td>
                     <td>{introduced}</td>
                   </tr>
+                  )}
+                  {eta && status !== 'ENABLED' && (
                   <tr>
                     <td><b>Activation ETA:</b></td>
                     <td>{eta}</td>
                   </tr>
+                  )}
+                  {threshold && (
                   <tr>
                     <td><b>Quorum:</b></td>
                     <td>{threshold}</td>
                   </tr>
+                  )}
+                  {status !== 'ENABLED' && (
                   <tr>
                     <td><b>Voted Yes:</b></td>
-                    <td>{status !== 'ENABLED' ? <b className="green">{yeas.length}</b> : '-'}</td>
+                    <td><b className="green">{yeas.length}</b></td>
                   </tr>
+                  )}
+                  {status !== 'ENABLED' && (
                   <tr>
                     <td><b>Voted No (or haven't voted yet):</b></td>
-                    <td>{status !== 'ENABLED' ? <b className="red">{nays.length}</b> : '-'}</td>
+                    <td><b className="red">{nays.length}</b></td>
                   </tr>
+                  )}
                   <tr>
                     <td><b>{status !== 'ENABLED' ? 'Consensus level:' : 'Status:'}</b></td>
                     <td>{status !== 'ENABLED' ? <span className="bold">{consensus}% / 80%</span> : <span className={status === 'ENABLED' ? 'green bold' : 'red bold'}>{status}</span>}</td>
