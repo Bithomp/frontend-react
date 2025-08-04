@@ -935,10 +935,20 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         URITokenID: id
       }
     } else {
-      request = {
-        TransactionType: 'NFTokenBurn',
-        Account: data.owner,
-        NFTokenID: id
+      if (account.address === data.owner) {
+        request = {
+          TransactionType: 'NFTokenBurn',
+          Account: data.owner,
+          NFTokenID: id
+        }
+      }
+      if (account.address === data.issuer) {
+        request = {
+          TransactionType: 'NFTokenBurn',
+          Account: data.issuer,
+          Owner: data.owner,
+          NFTokenID: id
+        }
       }
     }
 
