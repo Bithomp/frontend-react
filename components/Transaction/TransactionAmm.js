@@ -25,19 +25,22 @@ const AMMDepositFlags = {
 }
 
 const AMMClawbackFlags = {
-  tfClawTwoAssets: 'Claw back the specified amount of Asset, and a corresponding amount of Asset2 based on the AMM pool\'s asset proportion',
+  tfClawTwoAssets:
+    "Claw back the specified amount of Asset, and a corresponding amount of Asset2 based on the AMM pool's asset proportion"
 }
 
 // Helper function to create amount object with issuer details
 const createAmountWithIssuer = (specification, outcome, sourceAddress, amountKey) => {
   const amountData = specification?.[amountKey]
   if (!amountData) return null
-  
+
   return {
     currency: amountData.currency,
     issuer: amountData.issuer,
     counterparty: amountData.counterparty,
-    issuerDetails: outcome?.balanceChanges?.find((change) => change.address === sourceAddress)?.balanceChanges?.find((change) => change.currency === amountData.currency)?.issuerDetails,
+    issuerDetails: outcome?.balanceChanges
+      ?.find((change) => change.address === sourceAddress)
+      ?.balanceChanges?.find((change) => change.currency === amountData.currency)?.issuerDetails,
     value: amountData.value
   }
 }
@@ -151,7 +154,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   const bidMin = createAmountWithIssuer(specification, outcome, specification.source.address, 'bidMin')
   const holder = {
     address: specification?.holder,
-    addressDetails: outcome?.balanceChanges?.find((change) => change.address === specification.holder)?.addressDetails,
+    addressDetails: outcome?.balanceChanges?.find((change) => change.address === specification.holder)?.addressDetails
   }
 
   return (
@@ -170,33 +173,25 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
       {asset && (
         <tr>
           <TData>Asset</TData>
-          <TData className="bold">
-            {renderAssetWithIssuer(asset)}
-          </TData>
+          <TData className="bold">{renderAssetWithIssuer(asset)}</TData>
         </tr>
       )}
       {asset2 && (
         <tr>
           <TData>Asset 2</TData>
-          <TData className="bold">
-            {renderAssetWithIssuer(asset2)}
-          </TData>
+          <TData className="bold">{renderAssetWithIssuer(asset2)}</TData>
         </tr>
       )}
       {amount?.currency && amount?.value && (
         <tr>
           <TData>Amount</TData>
-          <TData className="bold">
-            {renderAmountWithIssuer(amount)}
-          </TData>
+          <TData className="bold">{renderAmountWithIssuer(amount)}</TData>
         </tr>
       )}
       {amount2?.currency && amount2?.value && (
         <tr>
           <TData>Amount 2</TData>
-          <TData className="bold">
-            {renderAmountWithIssuer(amount2)}
-          </TData>
+          <TData className="bold">{renderAmountWithIssuer(amount2)}</TData>
         </tr>
       )}
       {ePrice && (
@@ -220,23 +215,21 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
       {bidMax?.currency && bidMax?.value && (
         <tr>
           <TData>Bid Max</TData>
-          <TData className="bold">
-            {renderAmountWithIssuer(bidMax)}
-          </TData>
+          <TData className="bold">{renderAmountWithIssuer(bidMax)}</TData>
         </tr>
       )}
       {bidMin?.currency && bidMin?.value && (
         <tr>
           <TData>Bid Min</TData>
-          <TData className="bold">
-            {renderAmountWithIssuer(bidMin)}
-          </TData>
+          <TData className="bold">{renderAmountWithIssuer(bidMin)}</TData>
         </tr>
       )}
       {holder?.address && (
         <tr>
           <TData>Holder</TData>
-          <TData className="bold"><AddressWithIconFilled data={holder} name="address" /></TData>
+          <TData className="bold">
+            <AddressWithIconFilled data={holder} name="address" />
+          </TData>
         </tr>
       )}
       {tradingFee ? (
