@@ -7,6 +7,7 @@ import axios from 'axios'
 import {
   avatarServer,
   nativeCurrency,
+  isNativeCurrency,
   nativeCurrenciesImages,
   useWidth,
   setTabParams
@@ -133,8 +134,22 @@ export default function TokenSelector({
 
     const timeout = setTimeout(async () => {
       if (!searchQuery) {
-        if (searchResults.length > 0) {
-          return
+        // Only apply the early return logic when there's no destination address
+        // When destination address is provided, we always want to fetch fresh data
+        if (!destinationAddress) {
+          // do not reload default token list if it's already loaded
+          // when searched for native currency, we also add the native currency on top,
+          // so check that it's not that case before canceling the search
+          if (
+            isNativeCurrency(searchResults[0]) &&
+            !niceCurrency(searchResults[1]?.currency)?.toLowerCase().startsWith(nativeCurrency.toLowerCase())
+          )
+            return
+        } else {
+          // For destination address case, check if we already have results loaded
+          if (searchResults.length > 0) {
+            return
+          }
         }
 
         setIsLoading(true)
