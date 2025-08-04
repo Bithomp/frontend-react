@@ -32,12 +32,15 @@ export default function SEO({
 
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
 
+  let noImagePage = false
+
   if (!image) {
     image = {
       width: 1200,
       height: 630,
       file: imagePath + 'previews/1200x630/index.png'
     }
+    noImagePage = true
   }
 
   const { file, width, height, allNetworks } = image
@@ -68,7 +71,7 @@ export default function SEO({
     if (twitterImage.file?.indexOf('http') !== 0) {
       twitterImageUrl = (allNetworks ? server + '/images/' : imagePath) + twitterImage.file
     }
-  } else {
+  } else if (noImagePage) {
     twitterImageUrl = imagePath + 'previews/630x630/index.png'
   }
 
