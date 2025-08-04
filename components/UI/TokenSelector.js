@@ -77,6 +77,10 @@ export default function TokenSelector({
   const [searchResults, setSearchResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [searchTimeout, setSearchTimeout] = useState(null)
+  
+  // Cache for search results to prevent unnecessary reloads
+  const [lastSearchQuery, setLastSearchQuery] = useState('')
+  const [cachedSearchResults, setCachedSearchResults] = useState([])
 
   // control radio selection: 'all' | 'single'
   const [filterMode, setFilterMode] = useState(() => (value?.currency ? 'single' : 'all'))
@@ -113,6 +117,8 @@ export default function TokenSelector({
   useEffect(() => {
     setSearchResults([])
     setSearchQuery('')
+    setLastSearchQuery('')
+    setCachedSearchResults([])
   }, [destinationAddress])
 
   // Handle search with debounce
@@ -127,11 +133,12 @@ export default function TokenSelector({
 
     const timeout = setTimeout(async () => {
       if (!searchQuery.trim()) {
-        // do not reload default token list if it's already loaded
-        if (searchResults.length > 0) {
+        // Check if we have cached results for empty search query
+        if (lastSearchQuery === '' && cachedSearchResults.length > 0) {
+          setSearchResults(cachedSearchResults)
           return
         }
-
+        
         setIsLoading(true)
         try {
           let tokens = []
@@ -145,25 +152,45 @@ export default function TokenSelector({
             const response = await axios('v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true')
             tokens = response.data?.tokens || []
             if (!excludeNative) {
-              setSearchResults([{ currency: nativeCurrency }, ...tokens])
+              const defaultTokens = [{ currency: nativeCurrency }, ...tokens]
+              setSearchResults(defaultTokens)
+              // Cache the default token list
+              setLastSearchQuery('')
+              setCachedSearchResults(defaultTokens)
             } else {
               setSearchResults(tokens)
+              // Cache the default token list
+              setLastSearchQuery('')
+              setCachedSearchResults(tokens)
             }
             setIsLoading(false)
             return
           }
 
           setSearchResults(tokens)
+          // Cache the default token list for destination address case
+          setLastSearchQuery('')
+          setCachedSearchResults(tokens)
         } catch (error) {
           console.error('Error loading tokens:', error)
           if (excludeNative) {
             setSearchResults([])
+            setLastSearchQuery('')
+            setCachedSearchResults([])
           } else {
             setSearchResults([{ currency: nativeCurrency }])
+            setLastSearchQuery('')
+            setCachedSearchResults([{ currency: nativeCurrency }])
           }
         } finally {
           setIsLoading(false)
         }
+        return
+      }
+
+      // Check if we have cached results for this search query
+      if (lastSearchQuery === searchQuery) {
+        setSearchResults(cachedSearchResults)
         return
       }
 
@@ -174,16 +201,23 @@ export default function TokenSelector({
           const tokens = await fetchTrustlinesForDestination(destinationAddress, searchQuery)
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
+          // Cache the results
+          setLastSearchQuery(searchQuery)
+          setCachedSearchResults(tokensWithNative)
         } else {
           // Fallback to original search behavior
           const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}&currencyDetails=true`)
           const tokens = response.data?.tokens || []
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
+          // Cache the results
+          setLastSearchQuery(searchQuery)
+          setCachedSearchResults(tokensWithNative)
         }
       } catch (error) {
         console.error('Error searching tokens:', error)
         setSearchResults([])
+        setCachedSearchResults([])
       } finally {
         setIsLoading(false)
       }
@@ -203,6 +237,9 @@ export default function TokenSelector({
     onChange(token)
     setIsOpen(false)
     setSearchQuery('')
+    // Clear cache when closing
+    setLastSearchQuery('')
+    setCachedSearchResults([])
   }
 
   // Helper to get icon url if available
