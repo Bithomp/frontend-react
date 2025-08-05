@@ -283,7 +283,7 @@ export default function NftPreview({ nft }) {
               {modelState !== 'ready' && (
                 <>
                   <Head>
-                    <script type="module" src="/js/model-viewer.min.js" defer />
+                    <script type="module" src="/js/model-viewer.min.js?v=2" defer />
                   </Head>
                   <model-viewer
                     className="model-viewer"
@@ -293,6 +293,7 @@ export default function NftPreview({ nft }) {
                     ar
                     poster={LoadingGif}
                     autoplay
+                    ar-modes="webxr scene-viewer quick-look"
                     {...modelAttr?.reduce((prev, curr) => {
                       prev[curr.attribute] = curr.value
                       return prev
