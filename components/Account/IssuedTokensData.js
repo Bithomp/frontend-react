@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 // import { useWidth } from '../../utils'
-import { AddressWithIcon, fullDateAndTime, niceCurrency, shortNiceNumber, fullNiceNumber, addressUsernameOrServiceLink } from '../../utils/format'
+import { AddressWithIcon, fullDateAndTime, niceCurrency, shortNiceNumber, fullNiceNumber   } from '../../utils/format'
 
 export default function IssuedTokensData({ address, ledgerTimestamp }) {
   const { t } = useTranslation()
@@ -19,7 +19,7 @@ export default function IssuedTokensData({ address, ledgerTimestamp }) {
       setError('')
       
       try {
-        const response = await axios(`v2/trustlines/tokens?issuer=${address}&limit=100&currencyDetails=true&statistics=true${ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : ''}`)
+        const response = await axios(`v2/trustlines/tokens?issuer=${address}&limit=100&currencyDetails=true&statistics=true&order=holdersHigh${ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : ''}`)
         setIssuedTokens(response.data?.tokens || [])
       } catch (err) {
         console.error('Error fetching issued tokens:', err)
@@ -61,12 +61,6 @@ export default function IssuedTokensData({ address, ledgerTimestamp }) {
                 <b>{niceCurrency(token.currency)}</b>
               </>
             )}
-            {token.issuer && (
-              <>
-                <br />
-                {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
-              </>
-            )}
           </AddressWithIcon>
         </td>
         <td className="right">
@@ -77,13 +71,13 @@ export default function IssuedTokensData({ address, ledgerTimestamp }) {
         </td>
         <td className="right">
           <span className="tooltip">
-            {shortNiceNumber(token.holders || 0)}
+            {shortNiceNumber(token.holders || 0, 0, 0)}
             <span className="tooltiptext">{fullNiceNumber(token.holders || 0)}</span>
           </span>
         </td>
         <td className="right">
           <span className="tooltip">
-            {shortNiceNumber(token.trustlines || 0)}
+            {shortNiceNumber(token.trustlines || 0, 0, 0)}
             <span className="tooltiptext">{fullNiceNumber(token.trustlines || 0)}</span>
           </span>
         </td>
