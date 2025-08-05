@@ -14,7 +14,7 @@ export default function RelatedLinks({ data }) {
       )}
       {network !== 'testnet' && (
         <>
-          <a href={'https://test.xrplexplorer.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+          <a href={'https://test.bithomp.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
             XRPL Testnet
           </a>{' '}
           |{' '}
@@ -92,7 +92,7 @@ export default function RelatedLinks({ data }) {
       )}
       {network === 'testnet' && (
         <>
-          <a href={'https://test.xrplexplorer.com/explorer/' + data?.address} rel="nofollow">
+          <a href={'https://test.bithomp.com/explorer/' + data?.address} rel="nofollow">
             Bithomp
           </a>{' '}
           (old view) |{' '}

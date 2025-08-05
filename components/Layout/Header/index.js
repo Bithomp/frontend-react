@@ -306,9 +306,9 @@ export default function Header({
           >
             {network === 'mainnet' && (
               <>
-                <a href={'https://test.xrplexplorer.com/create/'}>{t('menu.developers.account-generation')}</a>
-                <a href={'https://test.xrplexplorer.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
-                <a href={'https://test.xrplexplorer.com/tools/'}>Bithomp tools</a>
+                <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
+                <a href={'https://test.bithomp.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
+                <a href={'https://test.bithomp.com/tools/'}>Bithomp tools</a>
               </>
             )}
             {devNet && (

@@ -5,12 +5,11 @@ import Cookies from 'universal-cookie'
 import axios from 'axios'
 
 export const forbid18Plus = async () => {
-  //check if we have a saved country for teh user
+  //check if we have a saved country for the user
   let savedCountry = localStorage.getItem('country')
   if (savedCountry) {
     savedCountry = savedCountry.replace(/"/g, '')
   }
-
   if (savedCountry) {
     return savedCountry === 'GB'
   } else {
@@ -555,7 +554,7 @@ export const networks = {
   },
   testnet: {
     id: 1,
-    server: 'https://test.xrplexplorer.com',
+    server: 'https://test.bithomp.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/faucet',
     explorerName: 'XRPL Testnet',
