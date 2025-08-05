@@ -236,10 +236,6 @@ export default function TokenSelector({
   const handleSelect = (token) => {
     onChange(token)
     setIsOpen(false)
-    setSearchQuery('')
-    // Clear cache when closing
-    setLastSearchQuery('')
-    setCachedSearchResults([])
   }
 
   // Helper to get icon url if available
