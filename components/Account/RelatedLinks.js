@@ -22,7 +22,7 @@ export default function RelatedLinks({ data }) {
       )}
       {network !== 'devnet' && (
         <>
-          <a href={'https://dev.xrplexplorer.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+          <a href={'https://dev.bithomp.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
             XRPL Devnet
           </a>{' '}
           |{' '}
@@ -107,7 +107,7 @@ export default function RelatedLinks({ data }) {
       )}
       {network === 'devnet' && (
         <>
-          <a href={'https://dev.xrplexplorer.com/explorer/' + data?.address} rel="nofollow">
+          <a href={'https://dev.bithomp.com/explorer/' + data?.address} rel="nofollow">
             Bithomp
           </a>{' '}
           (old view) |{' '}

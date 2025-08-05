@@ -146,7 +146,7 @@ export default function UnderstandingTheBithompExplorer() {
               </a>
             </li>
             <li>
-              <a href={'https://dev.xrplexplorer.com/'} target="_blank" rel="noreferrer">
+              <a href={'https://dev.bithomp.com/'} target="_blank" rel="noreferrer">
                 XRPL Devnet
               </a>
             </li>
