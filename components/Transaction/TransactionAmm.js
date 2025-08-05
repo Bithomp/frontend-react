@@ -145,6 +145,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   const tradingFee = tx?.TradingFee
   const amount = createAmountWithIssuer(specification, outcome, specification.source.address, 'amount')
   const amount2 = createAmountWithIssuer(specification, outcome, specification.source.address, 'amount2')
+  const lpTokenBalance = createAmountWithIssuer(outcome?.ammChanges, outcome, specification.source.address, 'lpTokenBalance')
   const asset = specification?.asset
   const asset2 = specification?.asset2
   const ePrice = specification?.EPrice
@@ -169,29 +170,29 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
         <TData>
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
-      </tr>
-      {asset && (
+      </tr>      
+      {(txType === 'AMMVote' || txType === 'AMMBid' || txType === 'AMMDelete') && asset && asset2 && (
         <tr>
-          <TData>Asset</TData>
-          <TData className="bold">{renderAssetWithIssuer(asset)}</TData>
-        </tr>
-      )}
-      {asset2 && (
-        <tr>
-          <TData>Asset 2</TData>
-          <TData className="bold">{renderAssetWithIssuer(asset2)}</TData>
+          <TData>Liquidity pool</TData>
+          <TData className="bold">{renderAssetWithIssuer(asset)} / {renderAssetWithIssuer(asset2)}</TData>
         </tr>
       )}
       {amount?.currency && amount?.value && (
         <tr>
-          <TData>Amount</TData>
+          <TData>Asset 1</TData>
           <TData className="bold">{renderAmountWithIssuer(amount)}</TData>
         </tr>
       )}
       {amount2?.currency && amount2?.value && (
         <tr>
-          <TData>Amount 2</TData>
+          <TData>Asset 2</TData>
           <TData className="bold">{renderAmountWithIssuer(amount2)}</TData>
+        </tr>
+      )}
+      {(txType === 'AMMCreat' || txType === 'AMMDeposit' || txType === 'AMMWithdraw') && lpTokenBalance?.currency && lpTokenBalance?.value && (
+        <tr>
+          <TData>LP Token Balance</TData>
+          <TData className="bold">{renderAmountWithIssuer(lpTokenBalance)}</TData>
         </tr>
       )}
       {ePrice && (
@@ -212,17 +213,26 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           <TData className="bold">{lpTokenOut}</TData>
         </tr>
       )}
-      {bidMax?.currency && bidMax?.value && (
+      {bidMax?.currency && bidMax?.value && bidMin?.currency && bidMin?.value && bidMax.value === bidMin.value ? (
         <tr>
-          <TData>Bid Max</TData>
+          <TData>Bid</TData>
           <TData className="bold">{renderAmountWithIssuer(bidMax)}</TData>
         </tr>
-      )}
-      {bidMin?.currency && bidMin?.value && (
-        <tr>
-          <TData>Bid Min</TData>
-          <TData className="bold">{renderAmountWithIssuer(bidMin)}</TData>
-        </tr>
+      ) : (
+        <>
+          {bidMax?.currency && bidMax?.value && (
+            <tr>
+              <TData>Bid Max</TData>
+              <TData className="bold">{renderAmountWithIssuer(bidMax)}</TData>
+            </tr>
+          )}
+          {bidMin?.currency && bidMin?.value && (
+            <tr>
+              <TData>Bid Min</TData>
+              <TData className="bold">{renderAmountWithIssuer(bidMin)}</TData>
+            </tr>
+          )}
+        </>
       )}
       {holder?.address && (
         <tr>
