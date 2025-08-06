@@ -65,6 +65,8 @@ const pages = [
   { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' },
   { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.5' },
   { loc: 'learn/nft-minting', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/the-bithomp-api', changefreq: 'monthly', priority: '0.5' },
+
 ]
 
 //network specific pages
