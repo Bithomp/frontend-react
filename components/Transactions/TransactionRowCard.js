@@ -1,14 +1,23 @@
-import { amountFormat, dateFormat, timeFormat } from '../../utils/format'
+import { amountFormat, dateFormat, nativeCurrencyToFiat, timeFormat } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import { FiCalendar, FiClock } from 'react-icons/fi'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 
-export const TransactionRowCard = ({ data, address, index, children}) => {
+export const TransactionRowCard = ({
+  data, 
+  address, 
+  index, 
+  txTypeSpecial, 
+  children, 
+  selectedCurrency, 
+  pageFiatRate
+}) => {
   const { specification, tx } = data
   console.log(data, address)
   const date = dateFormat(tx.date + 946684800)
   const time = timeFormat(tx.date + 946684800)
   const memos = specification.memos
+
   return (
     <tr index={index}>
       <td className="bold center" style={{width: 15}}>{index + 1}</td>      
@@ -21,6 +30,9 @@ export const TransactionRowCard = ({ data, address, index, children}) => {
           <FaArrowRightArrowLeft style={{ stroke: '#666', color: '#666' }} /> 
           <LinkTx tx={tx.hash}>{tx.hash}</LinkTx>
         </span>
+        <span>Type: </span>
+        <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
+        <br />
         {children}
         {tx.DestinationTag && (
           <>
@@ -56,7 +68,15 @@ export const TransactionRowCard = ({ data, address, index, children}) => {
 
       </td>
       <td className="right">
-        Fee: {amountFormat(tx.Fee)}
+        <span>Fee:</span> 
+        <span className="bold">{amountFormat(tx.Fee)}</span>
+        <span>
+          {nativeCurrencyToFiat({
+            amount: tx.Fee,
+            selectedCurrency,
+            fiatRate: pageFiatRate
+          })}
+        </span>
       </td>
     </tr>
   )

@@ -94,7 +94,8 @@ export default function AccountTransactions({
   initialMarker,
   initialUserData,
   subscriptionExpired,
-  sessionToken
+  sessionToken,
+  selectedCurrency
 }) {
 
   const { t } = useTranslation()
@@ -412,6 +413,7 @@ export default function AccountTransactions({
                         tx={tx}
                         address={userData?.address}
                         index={index}
+                        selectedCurrency={selectedCurrency}
                       />
                     )
                    })
