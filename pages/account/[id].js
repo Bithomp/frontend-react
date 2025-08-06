@@ -217,6 +217,7 @@ export default function Account({
     }
     setObjects({})
     checkApi({ noCache: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, refreshPage, ledgerTimestamp, selectedCurrency, t])
 
   useEffect(() => {
