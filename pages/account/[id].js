@@ -19,7 +19,7 @@ const setBalancesFunction = (networkInfo, data) => {
   if (!data?.ledgerInfo || !networkInfo) return null
   let balanceList = {
     total: {
-      native: data.ledgerInfo.balance
+      native: data.ledgerInfo.balance || 0
     },
     reserved: {
       native: Number(networkInfo.reserveBase) + data.ledgerInfo.ownerCount * networkInfo.reserveIncrement
@@ -45,59 +45,8 @@ export async function getServerSideProps(context) {
   let initialData = null
   let networkInfo = {}
   const { id, ledgerTimestamp } = query
-  //keep it from query instead of params, anyway it is an array sometimes
-  const account = id ? (Array.isArray(id) ? id[0] : id) : ''
-  const pageType = Array.isArray(id) && id[1] ? id[1] : 'account'
+  const account = id || ''
 
-  // Check if this is a transactions page
-  if (pageType === 'transactions') {
-    const limit = 20
-    let initialTransactions = []
-    let initialErrorMessage = ''
-    let initialMarker = null
-    let initialUserData = null 
-
-    try {
-      // Fetch user data (username, service name) for the address
-      const userRes = await axiosServer({
-        method: 'get',
-        url: `v2/address/${account}?username=true&service=true&verifiedDomain=true`,
-        headers: passHeaders(req)
-      })
-      initialUserData = userRes?.data
-    } catch (e) {
-      // If user data fetch fails, continue without it
-      console.error('Failed to fetch user data:', e?.message)
-    }
-
-    try {
-      // Fetch transactions
-      const res = await axiosServer({
-        method: 'get',
-        url: `v3/transactions/${initialUserData?.address || account}?limit=${limit}`,
-        headers: passHeaders(req)
-      })
-      initialTransactions = res?.data?.transactions || res?.data || []
-      initialMarker = res?.data?.marker || null
-    } catch (e) {
-      initialErrorMessage = e?.message || 'Failed to load transactions'
-    }
-
-    return {
-      props: {
-        id: account,
-        pageType,
-        initialTransactions,
-        initialErrorMessage,
-        initialMarker,
-        initialUserData: initialUserData || {},
-        ...(await serverSideTranslations(locale, ['common'])),
-        isSsrMobile: getIsSsrMobile(context)
-      }
-    }
-  }
-
-  // Regular account page logic
   if (account) {
     try {
       const res = await axiosServer({
@@ -129,7 +78,6 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id: account,
-      pageType,
       fiatRateServer,
       selectedCurrencyServer,
       ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
@@ -158,9 +106,6 @@ import EscrowData from '../../components/Account/EscrowData'
 import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
 
-// Transactions page component
-import { TransactionsContainer } from '../../components/Account/Transactions'
-
 export default function Account({
   initialData,
   refreshPage,
@@ -175,13 +120,6 @@ export default function Account({
   selectedCurrencyServer,
   networkInfo,
   balanceListServer,
-  pageType,
-  initialTransactions,
-  initialErrorMessage,
-  initialMarker,
-  initialUserData,
-  subscriptionExpired,
-  sessionToken
 }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
@@ -193,13 +131,6 @@ export default function Account({
     selectedCurrency = selectedCurrencyApp
   }
 
-  /*
-  obligations: {
-    "trustlines": 44799,
-    "holders": 12131,
-    "tokens": 7
-  }
-  */
   const [data, setData] = useState(initialData)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -214,7 +145,6 @@ export default function Account({
   const [balances, setBalances] = useState(balanceListServer || {})
   const [shownOnSmall, setShownOnSmall] = useState(null)
   const [objects, setObjects] = useState({})
-  //const [obligations, setObligations] = useState({})
   const [gateway, setGateway] = useState(false)
 
   useEffect(() => {
@@ -228,19 +158,15 @@ export default function Account({
     setActivatedAccount(initialData?.ledgerInfo?.activated)
 
     if (initialData?.obligations) {
-      //setObligations(initialData.obligations)
       if (initialData.obligations?.trustlines > 200) {
         setGateway(true)
       } else {
-        //keep it here for cases when address changes without refreshing the page
         setGateway(false)
       }
     } else {
-      //keep it here for cases when address changes without refreshing the page
       setGateway(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialData])
+  }, [initialData, setActivatedAccount])
 
   const checkApi = async (opts) => {
     if (!id) return
@@ -291,19 +217,16 @@ export default function Account({
     }
     setObjects({})
     checkApi({ noCache: true })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, refreshPage, ledgerTimestamp])
+  }, [id, refreshPage, ledgerTimestamp, selectedCurrency, t])
 
   useEffect(() => {
     if (!selectedCurrency) return
     if (!ledgerTimestamp) {
       setPageFiatRate(fiatRate)
     } else {
-      //if there is ledgerTimestamp then we need a historical rate
       fetchHistoricalRate({ timestamp: ledgerTimestamp, selectedCurrency, setPageFiatRate })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fiatRate, ledgerTimestamp])
+  }, [fiatRate, ledgerTimestamp, selectedCurrency])
 
   useEffect(() => {
     if (!data?.ledgerInfo || !networkInfo) return
@@ -333,21 +256,6 @@ export default function Account({
   const resetTimeMachine = () => {
     setLedgerTimestampInput(null)
     setLedgerTimestamp(null)
-  }
-
-  // If this is a transactions page, render the transactions component
-  if (pageType === 'transactions') {
-    return (
-      <TransactionsContainer
-        id={id}
-        initialTransactions={initialTransactions}
-        initialErrorMessage={initialErrorMessage}
-        initialMarker={initialMarker}
-        initialUserData={initialUserData}
-        subscriptionExpired={subscriptionExpired}
-        sessionToken={sessionToken}
-      />
-    )
   }
 
   return (
@@ -586,7 +494,6 @@ export default function Account({
                             <tbody>
                               <tr>
                                 <td colSpan="2" className="no-padding">
-                                  {/*  (info) Check account balance and settings in any Time in the past. */}
                                   <div className="time-machine">
                                     <DatePicker
                                       selected={ledgerTimestampInput || new Date()}
@@ -739,4 +646,4 @@ export default function Account({
       `}</style>
     </>
   )
-}
+} 

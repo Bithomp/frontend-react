@@ -1,27 +1,102 @@
-import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import InfiniteScrolling from '../../Layout/InfiniteScrolling'
-import { processTransactionBlocks } from '../../../utils/transactionBlock'
+import { getIsSsrMobile } from '../../../utils/mobile'
+import { axiosServer, passHeaders } from '../../../utils/axios'
 import { useWidth } from '../../../utils'
-import SEO from '../../SEO'
-import SearchBlock from '../../Layout/SearchBlock'
-import FiltersFrame from '../../Layout/FiltersFrame'
-import TransactionBlock from '../../UI/TransactionBlock'
-import SimpleSelect from '../../UI/SimpleSelect'
 
-export default function Transactions({
+import SEO from '../../../components/SEO'
+import SearchBlock from '../../../components/Layout/SearchBlock'
+import FiltersFrame from '../../../components/Layout/FiltersFrame'
+import InfiniteScrolling from '../../../components/Layout/InfiniteScrolling'
+import SimpleSelect from '../../../components/UI/SimpleSelect'
+
+import {
+  TransactionRowDetails,
+  TransactionRowAccountDelete,
+  TransactionRowAccountSet,
+  TransactionRowAMM,
+  TransactionRowCheck,
+  TransactionRowDID,
+  TransactionRowEscrow,
+  TransactionRowImport,
+  TransactionRowNFToken,
+  TransactionRowOffer,
+  TransactionRowPayment,
+  TransactionRowSetRegularKey,
+  TransactionRowTrustSet,
+  TransactionRowURIToken,
+  TransactionRowRemit,
+  TransactionRowEnableAmendment,
+  TransactionRowDelegateSet
+} from '../../../components/Transactions'
+
+export async function getServerSideProps(context) {
+  const { locale, query, req } = context
+  const { id } = query
+  const account = id || ''
+  const limit = 20
+  let initialTransactions = []
+  let initialErrorMessage = ''
+  let initialMarker = null
+  let initialUserData = null 
+
+  if (account) {
+    try {
+      // Fetch user data (username, service name) for the address
+      const userRes = await axiosServer({
+        method: 'get',
+        url: `v2/address/${account}?username=true&service=true&verifiedDomain=true`,
+        headers: passHeaders(req)
+      })
+      initialUserData = userRes?.data
+    } catch (e) {
+      // If user data fetch fails, continue without it
+      console.error('Failed to fetch user data:', e?.message)
+    }
+
+    try {
+      // Fetch transactions
+      const res = await axiosServer({
+        method: 'get',
+        url: `v3/transactions/${initialUserData?.address || account}?limit=${limit}`,
+        headers: passHeaders(req)
+      })
+      initialTransactions = res?.data?.transactions || res?.data || []
+      initialMarker = res?.data?.marker || null
+    } catch (e) {
+      initialErrorMessage = e?.message || 'Failed to load transactions'
+    }
+  }
+
+  return {
+    props: {
+      id: account,
+      initialTransactions,
+      initialErrorMessage,
+      initialMarker,
+      initialUserData: initialUserData || {},
+      isSsrMobile: getIsSsrMobile(context),
+      ...(await serverSideTranslations(locale, ['common']))
+    }
+  }
+}
+
+export default function AccountTransactions({
   id,
-  initialTransactions = [],
-  initialErrorMessage = '',
-  initialMarker = null,
-  initialUserData = {},
+  initialTransactions,
+  initialErrorMessage,
+  initialMarker,
+  initialUserData,
   subscriptionExpired,
   sessionToken
 }) {
+
   const { t } = useTranslation()
   const width = useWidth()
 
@@ -34,7 +109,6 @@ export default function Transactions({
 
   // State management
   const [transactions, setTransactions] = useState(initialTransactions || [])
-  const [processedTransactions, setProcessedTransactions] = useState([])
   const [marker, setMarker] = useState(initialMarker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
@@ -60,16 +134,6 @@ export default function Transactions({
   useEffect(() => {
     setTransactions(initialTransactions)
   }, [initialTransactions])
-
-  // Process transactions whenever they change
-  useEffect(() => {
-    if (!transactions || transactions.length === 0) {
-      setProcessedTransactions([])
-      return
-    }
-    const processed = processTransactionBlocks(transactions, userData?.address)
-    setProcessedTransactions(processed)
-  }, [transactions, userData?.address])
 
   // Helpers
   const orderList = [
@@ -203,9 +267,9 @@ export default function Transactions({
         order={order}
         setOrder={setOrder}
         orderList={orderList}
-        count={processedTransactions.length}
+        count={transactions.length}
         hasMore={marker}
-        data={processedTransactions || []}
+        data={transactions || []}
         csvHeaders={csvHeaders}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
@@ -280,7 +344,7 @@ export default function Transactions({
         <>
           {errorMessage && <div className="center orange bold">{errorMessage}</div>}
           <InfiniteScrolling
-            dataLength={processedTransactions.length}
+            dataLength={transactions.length}
             loadMore={() => {
               if (marker && marker !== 'first') {
                 fetchTransactions({ marker })
@@ -302,21 +366,61 @@ export default function Transactions({
                     </td>
                   </tr>
                 ) : (
-                  processedTransactions.map((tx, index) => (
-                  <TransactionBlock
-                    key={tx.hash || index}
-                    tx={tx}
-                    address={userData?.address}
-                    index={index}
-                    isMobile={width < 600}
-                  />
-                ))
-              )}
-              </tbody>
-            </table>            
+                  transactions.map((tx, index) => {
+                    let TransactionRowComponent = null
+                    const txType = tx?.TransactionType
+
+                    if (txType === 'AccountDelete') {
+                      TransactionRowComponent = TransactionRowAccountDelete
+                    } else if (txType === 'AccountSet') {
+                      TransactionRowComponent = TransactionRowAccountSet
+                    } else if (txType?.includes('AMM')) {
+                      TransactionRowComponent = TransactionRowAMM
+                    } else if (txType?.includes('Check')) {
+                      TransactionRowComponent = TransactionRowCheck
+                    } else if (txType?.includes('Escrow')) {
+                      TransactionRowComponent = TransactionRowEscrow
+                    } else if (txType === 'Import') {
+                      TransactionRowComponent = TransactionRowImport
+                    } else if (txType?.includes('NFToken')) {
+                      TransactionRowComponent = TransactionRowNFToken
+                    } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
+                      TransactionRowComponent = TransactionRowOffer
+                    } else if (txType === 'Payment') {
+                      TransactionRowComponent = TransactionRowPayment
+                    } else if (txType === 'SetRegularKey') {
+                      TransactionRowComponent = TransactionRowSetRegularKey
+                    } else if (txType === 'DelegateSet') {
+                      TransactionRowComponent = TransactionRowDelegateSet
+                    } else if (txType === 'TrustSet') {
+                      TransactionRowComponent = TransactionRowTrustSet
+                    } else if (txType?.includes('DID')) {
+                      TransactionRowComponent = TransactionRowDID
+                    } else if (txType?.includes('URIToken')) {
+                      TransactionRowComponent = TransactionRowURIToken
+                    } else if (txType === 'Remit') {
+                      TransactionRowComponent = TransactionRowRemit
+                    } else if (txType === 'EnableAmendment') {
+                      TransactionRowComponent = TransactionRowEnableAmendment
+                    } else {
+                      TransactionRowComponent = TransactionRowDetails
+                    }
+
+                    return (
+                      <TransactionRowComponent
+                        key={tx.hash || index}
+                        tx={tx}
+                        address={userData?.address}
+                        index={index}
+                      />
+                    )
+                   })
+                 )}
+                </tbody>
+              </table>                        
           </InfiniteScrolling>
         </>
       </FiltersFrame>      
     </>
   )
-}
+} 
