@@ -153,7 +153,6 @@ export default function Account({
   const [balances, setBalances] = useState(balanceListServer || {})
   const [shownOnSmall, setShownOnSmall] = useState(null)
   const [objects, setObjects] = useState({})
-  //const [obligations, setObligations] = useState({})
   const [gateway, setGateway] = useState(false)
 
   useEffect(() => {
@@ -167,7 +166,6 @@ export default function Account({
     setActivatedAccount(initialData?.ledgerInfo?.activated)
 
     if (initialData?.obligations) {
-      //setObligations(initialData.obligations)
       if (initialData.obligations?.trustlines > 200) {
         setGateway(true)
       } else {
@@ -194,7 +192,7 @@ export default function Account({
     const response = await axios(
       '/v2/address/' +
         id +
-        '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true' +
+        '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true&obligations=true' +
         noCache +
         (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
@@ -575,10 +573,11 @@ export default function Account({
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             address={data?.address}
                           />
-                          <IssuedTokensData
-                            address={data?.address}
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                          />
+                          {/* don't show yet obligations historically */}
+                          {data?.obligations?.trustlines > 0 && !data?.ledgerInfo?.ledgerTimestamp && (
+                            <IssuedTokensData data={data} />
+                          )}
+
                           <DexOrdersData
                             account={account}
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
@@ -611,6 +610,7 @@ export default function Account({
                               address={data?.address}
                               setObjects={setObjects}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              ledgerIndex={data?.ledgerInfo?.ledgerIndex}
                               selectedCurrency={selectedCurrency}
                               pageFiatRate={pageFiatRate}
                             />

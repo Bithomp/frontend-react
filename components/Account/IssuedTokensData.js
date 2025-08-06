@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
-// import { useWidth } from '../../utils'
-import { AddressWithIcon, fullDateAndTime, niceCurrency, shortNiceNumber, fullNiceNumber   } from '../../utils/format'
+import { fullDateAndTime, shortNiceNumber, fullNiceNumber, CurrencyWithIcon } from '../../utils/format'
 
-export default function IssuedTokensData({ address, ledgerTimestamp }) {
+export default function IssuedTokensData({ data }) {
+  const { address, ledgerInfo } = data || {}
+  const { ledgerTimestamp, ledgerIndex } = ledgerInfo || {}
+
   const { t } = useTranslation()
-  // const width = useWidth()
   const [issuedTokens, setIssuedTokens] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -17,9 +18,16 @@ export default function IssuedTokensData({ address, ledgerTimestamp }) {
     const fetchIssuedTokens = async () => {
       setLoading(true)
       setError('')
-      
+
+      let url = `v2/trustlines/tokens?issuer=${address}&limit=100&currencyDetails=true&statistics=true&order=holdersHigh`
+
+      if (ledgerTimestamp) {
+        //the endpoint is under development
+        url = `v2/obligations/${address}?&ledgerIndex=${ledgerIndex}`
+      }
+
       try {
-        const response = await axios(`v2/trustlines/tokens?issuer=${address}&limit=100&currencyDetails=true&statistics=true&order=holdersHigh${ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : ''}`)
+        const response = await axios(url)
         setIssuedTokens(response.data?.tokens || [])
       } catch (err) {
         console.error('Error fetching issued tokens:', err)
@@ -46,22 +54,14 @@ export default function IssuedTokensData({ address, ledgerTimestamp }) {
 
   const issuedTokensRows = issuedTokens.map((token, i) => {
     const supply = parseFloat(token.supply || 0)
-    
+
     return (
       <tr key={i}>
         <td className="center" style={{ width: 30 }}>
           {i + 1}
         </td>
         <td className="left">
-          <AddressWithIcon address={token?.issuer} currency={token?.currency}>
-            {token.lp_token ? (
-              <b>{token.currencyDetails.currency}</b>
-            ) : (
-              <>
-                <b>{niceCurrency(token.currency)}</b>
-              </>
-            )}
-          </AddressWithIcon>
+          <CurrencyWithIcon token={token} />
         </td>
         <td className="right">
           <span className="bold tooltip">
@@ -128,11 +128,11 @@ export default function IssuedTokensData({ address, ledgerTimestamp }) {
           )}
         </tbody>
       </table>
-      
+
       <div className="show-on-small-w800">
         <br />
         <center>
-          {tokensCountText(issuedTokens)} Issued Tokens{historicalTitle} 
+          {tokensCountText(issuedTokens)} Issued Tokens{historicalTitle}
         </center>
         <br />
         {loading ? (
@@ -163,4 +163,4 @@ export default function IssuedTokensData({ address, ledgerTimestamp }) {
       </div>
     </>
   )
-} 
+}
