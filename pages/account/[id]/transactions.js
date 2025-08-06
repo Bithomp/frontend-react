@@ -369,7 +369,7 @@ export default function AccountTransactions({
                 ) : (
                   transactions.map((tx, index) => {
                     let TransactionRowComponent = null
-                    const txType = tx?.TransactionType
+                    const txType = tx?.tx?.TransactionType
 
                     if (txType === 'AccountDelete') {
                       TransactionRowComponent = TransactionRowAccountDelete

@@ -1,6 +1,6 @@
 import { amountFormat, dateFormat, nativeCurrencyToFiat, timeFormat, addressUsernameOrServiceLink } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
-import { dappBySourceTag, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
+import { errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import { nativeCurrency } from '../../utils'
 import { FiCalendar, FiClock } from 'react-icons/fi'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
@@ -15,13 +15,11 @@ export const TransactionRowCard = ({
   pageFiatRate
 }) => {
   const { specification, tx, outcome } = data
-  console.log(data, address)
   const date = dateFormat(tx.date + 946684800)
   const time = timeFormat(tx.date + 946684800)
   const memos = specification.memos
   const myBalanceChanges = outcome?.balanceChanges?.find((change) => change.address === address)?.balanceChanges?.filter((change) => !(change.currency === nativeCurrency && change.value == -outcome.fee))
   const isSuccessful = outcome?.result == 'tesSUCCESS'
-  console.log(myBalanceChanges)
 
   return (
     <tr index={index} style={{ background: !isSuccessful ? 'repeating-linear-gradient(45deg, #f9e3b9, #f9e3b9 10px, #fff 10px, #fff 20px)' : '' }}>
@@ -56,7 +54,7 @@ export const TransactionRowCard = ({
         )}
         {tx.SourceTag && (
           <>
-            <span className="gray">Source tag: {dappBySourceTag(tx.SourceTag)}</span>
+            <span className="gray">Source tag: {tx.SourceTag}</span>
             <br />
           </>
         )}
