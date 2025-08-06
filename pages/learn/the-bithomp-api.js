@@ -94,7 +94,7 @@ export default function TheBithompAPI() {
           </p>
           For detailed limits and pricing, please refer to{' '}
           <>
-            <Link href="https://docs.bithomp.com/#price-and-limits">our full pricing table:</Link>
+            <Link href="https://docs.bithomp.com/#price-and-limits">our full pricing table</Link>
           </>
           <h3>NFT Content Plans</h3>
           <p>
@@ -106,6 +106,7 @@ export default function TheBithompAPI() {
             <li>Previews (360×360px)</li>
             <li> Thumbnails (64×64px)</li>
             <li>Video snippets (first 15 seconds)</li>
+            </ul>
             <p>
               Each API tier includes a specific volume of NFT media delivery per day and per month, depending on the
               selected plan.{' '}
@@ -114,7 +115,7 @@ export default function TheBithompAPI() {
               If you are using our CDN server and would like to learn how to pay for the NFT Content Plan, please
               contact us at <a href="mailto:partner@bithomp.com">partner@bithomp.com</a>.
             </p>
-          </ul>
+         
           <p>
             <>
               <Link href="https://docs.bithomp.com/#nft-content-plans ">
