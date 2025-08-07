@@ -95,7 +95,8 @@ export default function AccountTransactions({
   initialUserData,
   subscriptionExpired,
   sessionToken,
-  selectedCurrency
+  selectedCurrency,
+  openEmailLogin,
 }) {
 
   const { t } = useTranslation()
@@ -355,6 +356,7 @@ export default function AccountTransactions({
             errorMessage={errorMessage}
             subscriptionExpired={subscriptionExpired}
             sessionToken={sessionToken}
+            openEmailLogin={openEmailLogin}
           >
             <table className={width > 600 ? 'table-large no-hover' : 'table-mobile'}>
               <tbody>

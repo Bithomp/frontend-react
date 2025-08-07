@@ -7,7 +7,6 @@ import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 
 export const TransactionRowCard = ({
   data, 
-  address, 
   index, 
   txTypeSpecial, 
   children, 
@@ -16,11 +15,9 @@ export const TransactionRowCard = ({
 }) => {
   const width = useWidth()
   const { specification, tx, outcome } = data
-  console.log(data, address)
   const date = dateFormat(tx.date + 946684800)
   const time = timeFormat(tx.date + 946684800)
-  const memos = specification.memos
-  // const myBalanceChanges = outcome?.balanceChanges?.find((change) => change.address === address)?.balanceChanges?.filter((change) => !(change.currency === nativeCurrency && change.value == -outcome.fee))
+  const memos = specification?.memos
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
   return (
@@ -49,24 +46,6 @@ export const TransactionRowCard = ({
             <br />
           </>
         )}
-        {/* {myBalanceChanges?.map((c, i) => {
-          return (
-            <div key={i}>
-              <span className={'bold tooltip ' + (Number(c.value) > 0 ? 'green' : 'red')}>
-                {amountFormat(c, { short: true, maxFractionDigits: 2 })}
-                <span className="tooltiptext">{amountFormat(c, { precise: true })}</span>
-              </span>
-              {c.issuer && (
-                <>({addressUsernameOrServiceLink(c, 'issuer', { short: true })})</>
-              )}
-              {nativeCurrencyToFiat({
-                amount: c,
-                selectedCurrency,
-                fiatRate: pageFiatRate
-              })}
-            </div>
-          )
-        })} */}
         <span>Fee:</span> 
         <span className="bold">{amountFormat(tx.Fee)}</span>
         <span>
