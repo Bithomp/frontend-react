@@ -42,13 +42,13 @@ export default function AboutUs() {
             ,
           </li>
           <li>
-            <a href={'https://test.xrplexplorer.com/' + i18n.language} target="_blank" rel="noreferrer">
+            <a href={'https://test.bithomp.com/' + i18n.language} target="_blank" rel="noreferrer">
               XRPL Testnet
             </a>
             ,
           </li>
           <li>
-            <a href={'https://dev.xrplexplorer.com/' + i18n.language} target="_blank" rel="noreferrer">
+            <a href={'https://dev.bithomp.com/' + i18n.language} target="_blank" rel="noreferrer">
               XRPL Devnet
             </a>
             ,
@@ -112,11 +112,11 @@ export default function AboutUs() {
           <li>
             <b>
               Explorers and Faucets for{' '}
-              <a href={'https://test.xrplexplorer.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
+              <a href={'https://test.bithomp.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
                 XRPL Testnet
               </a>
               ,{' '}
-              <a href={'https://dev.xrplexplorer.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
+              <a href={'https://dev.bithomp.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
                 XRPL Devnet
               </a>
               , and{' '}

@@ -223,14 +223,10 @@ export default function Header({
             >
               <Link href="/amms">{t('menu.amm.pools')}</Link>
               <Link href="/amm">{t('menu.amm.explorer')}</Link>
-              {!devNet && (
-                <>
-                  <Link href="/services/amm?tab=deposit">AMM Deposit</Link>
-                  <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
-                  <Link href="/services/amm?tab=vote">AMM Vote</Link>
-                  <Link href="/services/amm?tab=create">AMM Create</Link>
-                </>
-              )}
+              <Link href="/services/amm?tab=deposit">AMM Deposit</Link>
+              <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
+              <Link href="/services/amm?tab=vote">AMM Vote</Link>
+              <Link href="/services/amm?tab=create">AMM Create</Link>
             </MenuDropDown>
           )}
 
@@ -306,9 +302,9 @@ export default function Header({
           >
             {network === 'mainnet' && (
               <>
-                <a href={'https://test.xrplexplorer.com/create/'}>{t('menu.developers.account-generation')}</a>
-                <a href={'https://test.xrplexplorer.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
-                <a href={'https://test.xrplexplorer.com/tools/'}>Bithomp tools</a>
+                <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
+                <a href={'https://test.bithomp.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
+                <a href={'https://test.bithomp.com/tools/'}>Bithomp tools</a>
               </>
             )}
             {devNet && (

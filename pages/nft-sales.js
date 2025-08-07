@@ -97,7 +97,8 @@ export default function NftSales({
   includeWithoutMediaDataQuery,
   subscriptionExpired,
   sessionToken,
-  signOutPro
+  signOutPro,
+  openEmailLogin
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -402,7 +403,8 @@ export default function NftSales({
     seller,
     search,
     includeWithoutMediaData,
-    selectedToken
+    selectedToken,
+    sessionToken,
   ])
 
   useEffect(() => {
@@ -681,6 +683,7 @@ export default function NftSales({
             loadMoreMessage={t('nft-sales.load-more')}
             noSessionTokenMessage={t('nfts.change-filters')}
             height={!filtersHide ? '1300px' : '100vh'}
+            openEmailLogin={openEmailLogin}
           >
             {activeView === 'list' && (
               <>

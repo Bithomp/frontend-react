@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 
-import { stripText } from '../utils'
-import { nftName, nftUrl } from '../utils/nft'
+import { forbid18Plus, stripText } from '../utils'
+import { needNftAgeCheck, nftName, nftUrl } from '../utils/nft'
 
 import Tabs from './Tabs'
 import LoadingGif from '../public/images/loading.gif'
 import { FaCloudDownloadAlt } from 'react-icons/fa'
 import ReactPannellum from 'react-pannellum'
+import AgeCheck from './UI/AgeCheck'
 
 const downloadIcon = (
   <div style={{ display: 'inline-block', verticalAlign: 'bottom', height: '19px' }}>
@@ -40,6 +41,7 @@ export default function NftPreview({ nft }) {
   const [loaded, setLoaded] = useState(false)
   const [errored, setErrored] = useState(false)
   const [isPanoramic, setIsPanoramic] = useState(false)
+  const [showAgeCheck, setShowAgeCheck] = useState(false)
 
   const style = {
     textAlign: 'center',
@@ -178,6 +180,12 @@ export default function NftPreview({ nft }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUrl, videoUrl])
 
+  const clickOn18PlusImage = async () => {
+    const forbid = await forbid18Plus()
+    if (forbid) return
+    setShowAgeCheck(true)
+  }
+
   return (
     <>
       {contentTabList.length > 1 && (
@@ -198,101 +206,114 @@ export default function NftPreview({ nft }) {
           </span>
         </div>
       )}
-      {imageUrl && contentTab === 'image' && (
+
+      {needNftAgeCheck(nft) ? (
+        <img
+          src="/images/nft/18plus.jpg"
+          style={{ width: '100%', height: 'auto' }}
+          onClick={clickOn18PlusImage}
+          alt="18 plus content"
+        />
+      ) : (
         <>
-          {loadingImage(nft)}
-          {isPanoramic ? (
-            <ReactPannellum
-              id="1"
-              sceneId="firstScene"
-              imageSource={defaultUrl}
-              config={{
-                autoLoad: true,
-                autoRotate: -2
-              }}
-              style={{ width: '100%', aspectRatio: '2/1', display: loaded ? 'inline-block' : 'none' }}
-            />
-          ) : (
-            <img
-              style={{ ...imageStyle, display: loaded ? 'inline-block' : 'none' }}
-              src={imageUrl}
-              onLoad={() => {
-                setLoaded(true)
-                setErrored(false)
-              }}
-              onError={({ currentTarget }) => {
-                if (currentTarget.src === imageUrl && imageUrl !== clUrl.image) {
-                  currentTarget.src = clUrl.image
-                } else {
-                  setErrored(true)
-                }
-              }}
-              alt={nftName(nft)}
-            />
-          )}
-        </>
-      )}
-      {videoUrl && defaultTab === 'video' && (
-        <>
-          {loadingImage(nft)}
-          {isPanoramic ? (
-            <ReactPannellum
-              id="2"
-              sceneId="videoScene"
-              imageSource={videoUrl}
-              config={{
-                autoLoad: true,
-                autoRotate: 0
-              }}
-              style={{ width: '100%', aspectRatio: '2/1', display: loaded ? 'inline-block' : 'none' }}
-            />
-          ) : (
-            <video autoPlay playsInline muted loop controls style={{ width: '100%', height: 'auto' }}>
-              <source src={videoUrl} type="video/mp4" />
-            </video>
-          )}
-        </>
-      )}
-      {modelUrl && defaultTab === 'model' && (
-        <>
-          {modelState === 'loading' && (
-            <div style={style}>
-              <span className="waiting"></span>
-              <br />
-              {t('general.loading')}
-            </div>
-          )}
-          {modelState !== 'ready' && (
+          {imageUrl && contentTab === 'image' && (
             <>
-              <Head>
-                <script type="module" src="/js/model-viewer.min.js" defer />
-              </Head>
-              <model-viewer
-                className="model-viewer"
-                src={modelUrl}
-                camera-controls
-                auto-rotate
-                ar
-                poster={LoadingGif}
-                autoplay
-                {...modelAttr?.reduce((prev, curr) => {
-                  prev[curr.attribute] = curr.value
-                  return prev
-                }, {})}
-              ></model-viewer>
+              {loadingImage(nft)}
+              {isPanoramic ? (
+                <ReactPannellum
+                  id="1"
+                  sceneId="firstScene"
+                  imageSource={defaultUrl}
+                  config={{
+                    autoLoad: true,
+                    autoRotate: -2
+                  }}
+                  style={{ width: '100%', aspectRatio: '2/1', display: loaded ? 'inline-block' : 'none' }}
+                />
+              ) : (
+                <img
+                  style={{ ...imageStyle, display: loaded ? 'inline-block' : 'none' }}
+                  src={imageUrl}
+                  onLoad={() => {
+                    setLoaded(true)
+                    setErrored(false)
+                  }}
+                  onError={({ currentTarget }) => {
+                    if (currentTarget.src === imageUrl && imageUrl !== clUrl.image) {
+                      currentTarget.src = clUrl.image
+                    } else {
+                      setErrored(true)
+                    }
+                  }}
+                  alt={nftName(nft)}
+                />
+              )}
             </>
           )}
+          {videoUrl && defaultTab === 'video' && (
+            <>
+              {loadingImage(nft)}
+              {isPanoramic ? (
+                <ReactPannellum
+                  id="2"
+                  sceneId="videoScene"
+                  imageSource={videoUrl}
+                  config={{
+                    autoLoad: true,
+                    autoRotate: 0
+                  }}
+                  style={{ width: '100%', aspectRatio: '2/1', display: loaded ? 'inline-block' : 'none' }}
+                />
+              ) : (
+                <video autoPlay playsInline muted loop controls style={{ width: '100%', height: 'auto' }}>
+                  <source src={videoUrl} type="video/mp4" />
+                </video>
+              )}
+            </>
+          )}
+          {modelUrl && defaultTab === 'model' && (
+            <>
+              {modelState === 'loading' && (
+                <div style={style}>
+                  <span className="waiting"></span>
+                  <br />
+                  {t('general.loading')}
+                </div>
+              )}
+              {modelState !== 'ready' && (
+                <>
+                  <Head>
+                    <script type="module" src="/js/model-viewer.min.js?v=2" defer />
+                  </Head>
+                  <model-viewer
+                    className="model-viewer"
+                    src={modelUrl}
+                    camera-controls
+                    auto-rotate
+                    ar
+                    poster={LoadingGif}
+                    autoplay
+                    ar-modes="webxr scene-viewer quick-look"
+                    {...modelAttr?.reduce((prev, curr) => {
+                      prev[curr.attribute] = curr.value
+                      return prev
+                    }, {})}
+                  ></model-viewer>
+                </>
+              )}
+            </>
+          )}
+          {contentTabList.length < 2 && defaultUrl && (
+            <span style={{ padding: '4px 0px' }}>
+              <a href={defaultUrl} target="_blank" rel="noreferrer">
+                {t('tabs.' + defaultTab)}
+              </a>{' '}
+              <a href={defaultUrl} target="_blank" rel="noreferrer">
+                {downloadIcon}
+              </a>
+            </span>
+          )}
         </>
-      )}
-      {contentTabList.length < 2 && defaultUrl && (
-        <span style={{ padding: '4px 0px' }}>
-          <a href={defaultUrl} target="_blank" rel="noreferrer">
-            {t('tabs.' + defaultTab)}
-          </a>{' '}
-          <a href={defaultUrl} target="_blank" rel="noreferrer">
-            {downloadIcon}
-          </a>
-        </span>
       )}
 
       {defaultTab !== 'model' && defaultTab !== 'video' && audioUrl && (
@@ -326,6 +347,7 @@ export default function NftPreview({ nft }) {
         </>
       )}
       <div style={{ height: '15px' }}></div>
+      {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} />}
     </>
   )
 }
