@@ -222,6 +222,11 @@ export default function AccountTransactions({
 
     try {
       const response = await axios.get(apiUrl({ marker: markerToUse }))
+      if (response?.data?.status === 'error') {
+        setErrorMessage(response?.data?.error)
+        setLoading(false)
+        return
+      }
       const newData = response?.data?.transactions || response?.data || []
       const newMarker = response?.data?.marker || null
 
@@ -369,7 +374,7 @@ export default function AccountTransactions({
                     </td>
                   </tr>
                 ) : (
-                  transactions.map((tx, index) => {
+                  transactions?.map((tx, index) => {
                     let TransactionRowComponent = null
                     const txType = tx?.tx?.TransactionType
 
