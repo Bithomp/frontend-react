@@ -300,6 +300,7 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
+            <Link href="/learn/the-bithomp-api">{t('menu.developers.api')}</Link>
             {network === 'mainnet' && (
               <>
                 <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
@@ -314,8 +315,6 @@ export default function Header({
                 <a href={'/tools/'}>Bithomp tools</a>
               </>
             )}
-            <a href="https://docs.bithomp.com">{t('menu.developers.api')}</a>
-            <Link href="/admin">{t('menu.developers.api-admin')}</Link>
             <a href="https://github.com/Bithomp">Github</a>
             <Link href="/eaas">{t('menu.business.eaas')}</Link>
             <Link href="/build-unl">{t('menu.business.build-unl')}</Link>

@@ -370,6 +370,9 @@ export default function MobileMenu({
           {t('menu.developers.developers')}
         </div>
         <div className="mobile-menu__submenu">
+          <Link href="/learn/the-bithomp-api" className="mobile-menu-item">
+            {t('menu.developers.api')}
+          </Link>
           {devNet && (
             <>
               <a href={'/create/'} className="mobile-menu-item">
@@ -389,12 +392,6 @@ export default function MobileMenu({
               </Link>
             </>
           )}
-          <Link href="https://docs.bithomp.com" className="mobile-menu-item">
-            {t('menu.developers.api')}
-          </Link>
-          <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t('menu.developers.api-admin')}
-          </Link>
           <a href="https://github.com/Bithomp" className="mobile-menu-item">
             Github
           </a>

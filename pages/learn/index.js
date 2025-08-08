@@ -40,6 +40,7 @@ const learnContentXRP = [
     items: [
       { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
       { title: 'How to Mint NFTs on XRPL', slug: 'nft-minting' },
+      { title: 'The Bithomp API', slug: 'the-bithomp-api' },
     ],
   },
 ]
@@ -60,6 +61,7 @@ const learnContentXAHAU = [
     items: [
       { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
       { title: 'How to mint NFTs on Xahau', slug: 'nft-minting' },
+      { title: 'The Bithomp API', slug: 'the-bithomp-api' },
     ],
   },
 ]
