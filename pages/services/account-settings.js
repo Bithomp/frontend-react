@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { xahauNetwork, explorerName, nativeCurrency, isAddressValid } from '../../utils'
+import { xahauNetwork, explorerName, nativeCurrency, isAddressValid, encode } from '../../utils'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -431,17 +431,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     })
   }
 
-  const asciiToHex = (text) => {
-    if (!text) return ''
-    const encoder = new TextEncoder()
-    const bytes = encoder.encode(text)
-    let hex = ''
-    for (const b of bytes) {
-      hex += b.toString(16).padStart(2, '0')
-    }
-    return hex
-  }
-
   const handleSetDomain = () => {
     if (!account?.address) {
       setErrorMessage('Please sign in to your account.')
@@ -450,7 +439,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     const tx = {
       TransactionType: 'AccountSet',
       Account: account.address,
-      Domain: asciiToHex(domainInput.trim())
+      Domain: encode(domainInput.trim())
     }
     setSignRequest({
       request: tx,
@@ -1130,7 +1119,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 </div>
                 <div className="nft-minter-input">
                   <FormInput
-                    title="Domain"
                     placeholder="example.com"
                     setInnerValue={setDomainInput}
                     hideButton={true}
@@ -1173,7 +1161,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 </div>
                 <div className="nft-minter-input">
                   <FormInput
-                    title="EmailHash"
                     placeholder="32 hex characters (MD5)"
                     setInnerValue={setEmailHashInput}
                     hideButton={true}
@@ -1217,7 +1204,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 </div>
                 <div className="nft-minter-input">
                   <FormInput
-                    title="MessageKey (hex)"
                     placeholder="Hex-encoded public key"
                     setInnerValue={setMessageKeyInput}
                     hideButton={true}
@@ -1264,7 +1250,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 </div>
                 <div className="nft-minter-input">
                   <FormInput
-                    title="TransferRate (%)"
                     placeholder="Percentage 0-100"
                     setInnerValue={setTransferRateInput}
                     hideButton={true}
@@ -1298,7 +1283,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 </div>
                 <div className="nft-minter-input">
                   <FormInput
-                    title="TickSize (0 or 3-15)"
                     placeholder="0 to clear, or 3-15"
                     setInnerValue={setTickSizeInput}
                     hideButton={true}
@@ -1342,7 +1326,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 </div>
                 <div className="nft-minter-input">
                   <FormInput
-                    title="WalletLocator"
                     placeholder="64 hex characters"
                     setInnerValue={setWalletLocatorInput}
                     hideButton={true}
