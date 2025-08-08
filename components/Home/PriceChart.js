@@ -13,7 +13,7 @@ const zoominicon = '/images/chart/zoom-in.svg'
 const zoomouticon = '/images/chart/zoom-out.svg'
 const panicon = '/images/chart/panning.svg'
 
-export default function PriceChart({ currency, chartPeriod, setChartPeriod, hideToolbar }) {
+export default function PriceChart({ currency, chartPeriod, setChartPeriod, hideToolbar, liveFiatRate }) {
   const showToolbar = !hideToolbar
   const { i18n } = useTranslation()
   const { theme } = useTheme()
@@ -326,6 +326,31 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currency, chartPeriod, theme, detailedDayAndWeekChartAvailable])
+
+  // Append live price points to the series when liveFiatRate changes
+  useEffect(() => {
+    if (!liveFiatRate) return
+    setData((prev) => {
+      const prevSeries = Array.isArray(prev?.data) ? prev.data : []
+      const nowTs = Date.now()
+      const lastPoint = prevSeries[prevSeries.length - 1]
+      // Avoid overgrowing with identical timestamps; replace if very recent
+      if (lastPoint && nowTs - lastPoint[0] < 500) {
+        const updated = prevSeries.slice(0, -1)
+        updated.push([nowTs, liveFiatRate])
+        return { ...prev, data: updated }
+      }
+      return { ...prev, data: [...prevSeries, [nowTs, liveFiatRate]] }
+    })
+    // Keep x-axis max pinned to now so the viewport grows live
+    setOptions((prev) => ({
+      ...prev,
+      xaxis: {
+        ...prev.xaxis,
+        max: Date.now()
+      }
+    }))
+  }, [liveFiatRate])
 
   const series = [
     {
