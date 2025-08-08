@@ -133,9 +133,10 @@ export default function AmendmentSummary({
   const detailsUrl = `https://xrpl.org/known-amendments.html#${amendmentName.toLowerCase()}`
   const status = amendmentData?.enabled ? 'ENABLED' : 'NOT ENABLED'
   const activationDays = xahauNetwork ? 5 : 14
-  const eta = amendmentData?.majority ? fullDateAndTime(amendmentData.majority + activationDays * 86400 + 903) : 'Currently undefined'
-  const consensus =
-    yeas.length + nays.length > 0 ? ((yeas.length / (yeas.length + nays.length)) * 100).toFixed(2) : ''
+  const eta = amendmentData?.majority
+    ? fullDateAndTime(amendmentData.majority + activationDays * 86400 + 903)
+    : 'Currently undefined'
+  const consensus = yeas.length + nays.length > 0 ? ((yeas.length / (yeas.length + nays.length)) * 100).toFixed(2) : ''
 
   const fixCountry = (country) => {
     //accept UK as a country code for GB
@@ -274,6 +275,9 @@ export default function AmendmentSummary({
     )
   }
 
+  const obsolete = featureData?.vetoed === 'Obsolete'
+  const showVotingData = !obsolete && status !== 'ENABLED'
+
   return (
     <>
       <SEO title={`Amendment: ${amendmentName}`} />
@@ -300,7 +304,7 @@ export default function AmendmentSummary({
                       </a>
                       )
                     </td>
-                    {featureData?.vetoed !== 'Obsolete' && threshold && (
+                    {!obsolete && threshold && (
                       <>
                         <td>
                           <b>Quorum:</b>
@@ -320,14 +324,16 @@ export default function AmendmentSummary({
                         </td>
                       </>
                     )}
-                    {status !== 'ENABLED' && featureData?.vetoed !== 'Obsolete' && (
+                    {showVotingData && (
                       <>
                         <td>
                           <b>Voted Yes:</b>
                         </td>
-                        <td><b className="green">{yeas.length}</b></td>
+                        <td>
+                          <b className="green">{yeas.length}</b>
+                        </td>
                       </>
-                    )}                    
+                    )}
                   </tr>
                   <tr>
                     {introduced && (
@@ -338,17 +344,19 @@ export default function AmendmentSummary({
                         <td>{introduced}</td>
                       </>
                     )}
-                    {status !== 'ENABLED' && featureData?.vetoed !== 'Obsolete' && (
+                    {showVotingData && (
                       <>
                         <td>
                           <b>Voted No (or haven't voted yet):</b>
                         </td>
-                        <td><b className="red">{nays.length}</b></td>
+                        <td>
+                          <b className="red">{nays.length}</b>
+                        </td>
                       </>
                     )}
                   </tr>
                   <tr>
-                    {eta && status !== 'ENABLED' && featureData?.vetoed !== 'Obsolete' && (
+                    {eta && showVotingData && (
                       <>
                         <td>
                           <b>Activation ETA:</b>
@@ -356,14 +364,16 @@ export default function AmendmentSummary({
                         <td>{eta}</td>
                       </>
                     )}
-                    <td>{status !== 'ENABLED' && featureData?.vetoed !== 'Obsolete' ? <b>Consensus level:</b> : <b>Status</b>}</td>
+                    <td>{showVotingData ? <b>Consensus level:</b> : <b>Status</b>}</td>
                     <td>
-                      {status !== 'ENABLED' && featureData?.vetoed !== 'Obsolete' ? (
+                      {showVotingData ? (
                         <>
                           <span className="bold">{consensus}%</span> / 80%
                         </>
                       ) : (
-                        <span className={status === 'ENABLED' && featureData?.vetoed !== 'Obsolete' ? 'green bold' : 'red bold'}>{featureData?.vetoed === 'Obsolete' ? 'Obsolete' : status}</span>
+                        <span className={status === 'ENABLED' && !obsolete ? 'green bold' : 'red bold'}>
+                          {obsolete ? 'Obsolete' : status}
+                        </span>
                       )}
                     </td>
                   </tr>
@@ -373,7 +383,9 @@ export default function AmendmentSummary({
               <table className="table-large no-hover">
                 <tbody>
                   <tr>
-                    <td><b>Name:</b></td>
+                    <td>
+                      <b>Name:</b>
+                    </td>
                     <td>
                       {amendmentData?.name || amendmentName} (
                       <a href={detailsUrl} target="_blank" rel="noreferrer">
@@ -383,51 +395,78 @@ export default function AmendmentSummary({
                     </td>
                   </tr>
                   {amendmentId && (
-                  <tr>
-                    <td><b>Amendment ID:</b></td>
-                    <td>{shortHash(amendmentId)} <CopyButton text={amendmentId} /></td>
-                  </tr>
+                    <tr>
+                      <td>
+                        <b>Amendment ID:</b>
+                      </td>
+                      <td>
+                        {shortHash(amendmentId)} <CopyButton text={amendmentId} />
+                      </td>
+                    </tr>
                   )}
                   {introduced && (
-                  <tr>
-                    <td><b>Introduced in Version:</b></td>
-                    <td>{introduced}</td>
-                  </tr>
+                    <tr>
+                      <td>
+                        <b>Introduced in Version:</b>
+                      </td>
+                      <td>{introduced}</td>
+                    </tr>
                   )}
-                  {eta && status !== 'ENABLED' && featureData?.vetoed !== 'Obsolete' && (
-                  <tr>
-                    <td><b>Activation ETA:</b></td>
-                    <td>{eta}</td>
-                  </tr>
+                  {eta && showVotingData && (
+                    <tr>
+                      <td>
+                        <b>Activation ETA:</b>
+                      </td>
+                      <td>{eta}</td>
+                    </tr>
                   )}
-                  {featureData?.vetoed !== 'Obsolete' && threshold && (
-                  <tr>
-                    <td><b>Quorum:</b></td>
-                    <td>{threshold}</td>
-                  </tr>
+                  {!obsolete && threshold && (
+                    <tr>
+                      <td>
+                        <b>Quorum:</b>
+                      </td>
+                      <td>{threshold}</td>
+                    </tr>
                   )}
-                  {status !== 'ENABLED' && featureData?.vetoed !== 'Obsolete' && (
-                  <tr>
-                    <td><b>Voted Yes:</b></td>
-                    <td><b className="green">{yeas.length}</b></td>
-                  </tr>
+                  {showVotingData && (
+                    <tr>
+                      <td>
+                        <b>Voted Yes:</b>
+                      </td>
+                      <td>
+                        <b className="green">{yeas.length}</b>
+                      </td>
+                    </tr>
                   )}
-                  {status !== 'ENABLED' && featureData?.vetoed !== 'Obsolete' && (
-                  <tr>
-                    <td><b>Voted No (or haven't voted yet):</b></td>
-                    <td><b className="red">{nays.length}</b></td>
-                  </tr>
+                  {showVotingData && (
+                    <tr>
+                      <td>
+                        <b>Voted No (or haven't voted yet):</b>
+                      </td>
+                      <td>
+                        <b className="red">{nays.length}</b>
+                      </td>
+                    </tr>
                   )}
                   <tr>
-                    <td><b>{status !== 'ENABLED' && featureData?.vetoed !== 'Obsolete' ? 'Consensus level:' : 'Status:'}</b></td>
-                    <td>{status !== 'ENABLED' && featureData?.vetoed !== 'Obsolete' ? <span className="bold">{consensus}% / 80%</span> : <span className={status === 'ENABLED' ? 'green bold' : 'red bold'}>{featureData?.vetoed === 'Obsolete' ? 'Obsolete' : status}</span>}</td>
+                    <td>
+                      <b>{showVotingData ? 'Consensus level:' : 'Status:'}</b>
+                    </td>
+                    <td>
+                      {showVotingData ? (
+                        <span className="bold">{consensus}% / 80%</span>
+                      ) : (
+                        <span className={status === 'ENABLED' ? 'green bold' : 'red bold'}>
+                          {obsolete ? 'Obsolete' : status}
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 </tbody>
-              </table>         
+              </table>
             )}
-            {(featureData?.vetoed === 'Obsolete' || status === 'ENABLED' ) ? (
-              <>
-              </>
+            {!showVotingData ? (
+              <></>
             ) : (
               <>
                 <br />
