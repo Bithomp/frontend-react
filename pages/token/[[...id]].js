@@ -1,6 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect } from 'react'
-import { Link, useRouter } from 'next/router'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import SEO from '../../components/SEO'
 import { TData } from '../../components/Table'
@@ -256,8 +257,6 @@ export default function TokenPage({
   }
 
   const { statistics } = token
-
-  console.log(token)
 
   return (
     <>
