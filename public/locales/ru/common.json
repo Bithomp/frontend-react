@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "Токены",
     "amm": {
       "amm": "АММ",
       "pools": "АММ пулы",
@@ -54,8 +55,7 @@
       "developers": "Разработчикам",
       "account-generation": "Генерация аккаунта",
       "faucet": "Раздача тестовых монет",
-      "api": "API документация",
-      "api-admin": "API - панель управления"
+      "api": "API"
     },
     "legal": "Документы",
     "disclaimer": "Отказ от ответственности",
@@ -63,7 +63,6 @@
     "terms-and-conditions": "Условия использования",
     "customer-support": "Контакты",
     "press": "Для прессы",
-    "merch": "Магазин мерча",
     "donate": "Донаты",
     "sponsored": {
       "title": "Реклама",

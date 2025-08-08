@@ -12,7 +12,8 @@ import {
   server,
   xahauNetwork,
   typeNumberOnly,
-  nativeCurrency
+  nativeCurrency,
+  isNativeCurrency
 } from '../../../utils'
 import { multiply } from '../../../utils/calc'
 const checkmark = '/images/checkmark.svg'
@@ -61,6 +62,7 @@ export default function URITokenMint({
   const [flags, setFlags] = useState({
     tfBurnable: burnableQuery === 'true'
   })
+  const [mintAndSend, setMintAndSend] = useState(false)
 
   let uriRef
   let digestRef
@@ -196,6 +198,34 @@ export default function URITokenMint({
       return
     }
 
+    // Remit: Mint and Send
+    if (mintAndSend) {
+      if (!destination?.trim()) {
+        setErrorMessage('Destination is required for Mint and Send (Remit)')
+        return
+      }
+      // Remit transaction (per Xahau docs)
+      let request = {
+        TransactionType: 'Remit',
+        Account: account?.address,
+        Destination: destination.trim(),
+        MintURIToken: {
+          URI: encode(uri)
+        }
+      }
+      if (digest) {
+        request.MintURIToken.Digest = digest
+      }
+      if (flags.tfBurnable) {
+        request.MintURIToken.Flags = 1
+      }
+      setSignRequest({
+        request,
+        callback: afterSubmit
+      })
+      return
+    }
+
     setErrorMessage('')
 
     let request = {
@@ -219,12 +249,12 @@ export default function URITokenMint({
         if (destination?.trim()) {
           request.Amount = '0'
         } else {
-          setErrorMessage('Please specify a Destination or change Amount')
+          setErrorMessage('Please specify a Destination or change the Amount')
           return
         }
       } else if (parseFloat(amount) > 0) {
         // Handle amount based on selected token
-        if (selectedToken.currency === nativeCurrency && selectedToken.issuer === null) {
+        if (isNativeCurrency(selectedToken)) {
           // For XAH, convert to drops
           request.Amount = multiply(amount, 1000000)
         } else {
@@ -418,6 +448,25 @@ export default function URITokenMint({
               Burnable
             </CheckBox>
 
+            {/* Mint and Send (Remit) Option */}
+            <CheckBox
+              checked={mintAndSend}
+              setChecked={() => {
+                setMintAndSend(!mintAndSend)
+                if (!mintAndSend) {
+                  setCreateSellOffer(false)
+                }
+              }}
+              name="mint-and-send-remit"
+            >
+              Mint and Send (Remit)
+            </CheckBox>
+            {mintAndSend && (
+              <div className="orange" style={{ marginTop: '5px', fontSize: '14px' }}>
+                You will pay the Object Reserve in XAH for the NFT to be held on the Destination account.
+              </div>
+            )}
+
             {/* Create Sell Offer */}
             <div>
               <CheckBox
@@ -430,7 +479,7 @@ export default function URITokenMint({
                   setCreateSellOffer(!createSellOffer)
                 }}
                 name="create-sell-offer"
-                disabled={!account?.address}
+                disabled={!account?.address || mintAndSend}
               >
                 Create a Sell offer
               </CheckBox>
@@ -445,7 +494,7 @@ export default function URITokenMint({
             </div>
 
             {/* Sell Offer Fields */}
-            {createSellOffer && (
+            {createSellOffer && !mintAndSend && (
               <>
                 <br />
                 <div className="flex flex-col gap-4 sm:flex-row">
@@ -469,16 +518,22 @@ export default function URITokenMint({
                   </div>
                   <div className="w-full sm:w-1/2">
                     <span className="input-title">Currency</span>
-                    <TokenSelector 
-                      value={selectedToken} 
+                    <TokenSelector
+                      value={selectedToken}
                       onChange={onTokenChange}
                       destinationAddress={account?.address}
-                    />                    
+                    />
                   </div>
                 </div>
+              </>
+            )}
+
+            {/* Remit Destination Field */}
+            {(mintAndSend || createSellOffer) && (
+              <>
                 <br />
                 <AddressInput
-                  title="Destination (optional - account to receive the NFT):"
+                  title={'Destination (' + (mintAndSend ? 'required' : 'optional') + ' - account to receive the NFT)'}
                   placeholder="Destination address"
                   setValue={onDestinationChange}
                   name="destination"

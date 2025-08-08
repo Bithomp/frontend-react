@@ -2,6 +2,28 @@ import { useCallback, useEffect, useState } from 'react'
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import Cookies from 'universal-cookie'
+import axios from 'axios'
+
+export const forbid18Plus = async () => {
+  //check if we have a saved country for the user
+  let savedCountry = localStorage.getItem('country')
+  if (savedCountry) {
+    savedCountry = savedCountry.replace(/"/g, '')
+  }
+  if (savedCountry) {
+    return savedCountry === 'GB'
+  } else {
+    //check the country
+    const response = await axios('client/info')
+    const json = response.data
+    if (json && json.country) {
+      const countryCode = json.country.toUpperCase()
+      localStorage.setItem('country', countryCode)
+      return countryCode === 'GB'
+    }
+    return false
+  }
+}
 
 export const safeClone = (obj) => {
   if (typeof structuredClone === 'function') {
@@ -452,7 +474,7 @@ export const validateCurrencyCode = (currencyCode) => {
     if (!isValidHexCurrencyCode(currencyCode)) {
       return { valid: false, error: 'Invalid hex currency code' }
     }
-    return { valid: true }
+    return { valid: true, currencyCode }
   }
 
   // 21-39 characters
@@ -466,7 +488,7 @@ export const validateCurrencyCode = (currencyCode) => {
   }
 
   // 3-20 characters are valid (3 chars stay as-is, 4-20 chars will be converted to hex)
-  return { valid: true }
+  return { valid: true, currencyCode: encodeCurrencyCode(currencyCode) }
 }
 
 export const encodeCurrencyCode = (code) => {
@@ -532,7 +554,7 @@ export const networks = {
   },
   testnet: {
     id: 1,
-    server: 'https://test.xrplexplorer.com',
+    server: 'https://test.bithomp.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/faucet',
     explorerName: 'XRPL Testnet',
@@ -542,7 +564,7 @@ export const networks = {
   },
   devnet: {
     id: 2,
-    server: 'https://dev.xrplexplorer.com',
+    server: 'https://dev.bithomp.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/faucet',
     explorerName: 'XRPL Devnet',
@@ -620,8 +642,8 @@ export const avatarSrc = (address, refreshPage) => {
 
 export const networksIds = {
   0: { server: 'https://bithomp.com', name: 'mainnet' },
-  1: { server: 'https://test.xrplexplorer.com', name: 'testnet' },
-  2: { server: 'https://dev.xrplexplorer.com', name: 'devnet' },
+  1: { server: 'https://test.bithomp.com', name: 'testnet' },
+  2: { server: 'https://dev.bithomp.com', name: 'devnet' },
   21337: { server: 'https://xahauexplorer.com', name: 'xahau' },
   21338: { server: 'https://test.xahauexplorer.com', name: 'xahau-testnet' },
   31338: { server: 'https://jshooks.xahauexplorer.com', name: 'xahau-jshooks' }

@@ -202,6 +202,44 @@ export default function MobileMenu({
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
+          {t('menu.tokens')}
+        </div>
+        <div className="mobile-menu__submenu">
+          <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            TOP {t('menu.tokens')}
+          </Link>
+        </div>
+
+        {/* Hide AMM for XAHAU */}
+        {!xahauNetwork && (
+          <>
+            <div className="mobile-menu-directory" data-expanded="false">
+              {t('menu.amm.amm')}
+            </div>
+            <div className="mobile-menu__submenu">
+              <Link href="/amms" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t('menu.amm.pools')}
+              </Link>
+              <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t('menu.amm.explorer')}
+              </Link>
+              <Link href="/services/amm?tab=deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                AMM Deposit
+              </Link>
+              <Link href="/services/amm?tab=withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                AMM Withdraw
+              </Link>
+              <Link href="/services/amm?tab=vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                AMM Vote
+              </Link>
+              <Link href="/services/amm?tab=create" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                AMM Create
+              </Link>
+            </div>
+          </>
+        )}
+
+        <div className="mobile-menu-directory" data-expanded="false">
           NFT
         </div>
         <div className="mobile-menu__submenu">
@@ -279,39 +317,6 @@ export default function MobileMenu({
           </Link>
         </div>
 
-        {/* Hide AMM for XAHAU */}
-        {!xahauNetwork && (
-          <>
-            <div className="mobile-menu-directory" data-expanded="false">
-              {t('menu.amm.amm')}
-            </div>
-            <div className="mobile-menu__submenu">
-              <Link href="/amms" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('menu.amm.pools')}
-              </Link>
-              <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('menu.amm.explorer')}
-              </Link>
-              {!devNet && (
-                <>
-                  <Link href="/services/amm?tab=deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                    AMM Deposit
-                  </Link>
-                  <Link href="/services/amm?tab=withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                    AMM Withdraw
-                  </Link>
-                  <Link href="/services/amm?tab=vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                    AMM Vote
-                  </Link>
-                  <Link href="/services/amm?tab=create" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                    AMM Create
-                  </Link>
-                </>
-              )}
-            </div>
-          </>
-        )}
-
         <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.network.blockchain')}
         </div>
@@ -365,6 +370,9 @@ export default function MobileMenu({
           {t('menu.developers.developers')}
         </div>
         <div className="mobile-menu__submenu">
+          <Link href="/learn/the-bithomp-api" className="mobile-menu-item">
+            {t('menu.developers.api')}
+          </Link>
           {devNet && (
             <>
               <a href={'/create/'} className="mobile-menu-item">
@@ -384,12 +392,6 @@ export default function MobileMenu({
               </Link>
             </>
           )}
-          <Link href="https://docs.bithomp.com" className="mobile-menu-item">
-            {t('menu.developers.api')}
-          </Link>
-          <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t('menu.developers.api-admin')}
-          </Link>
           <a href="https://github.com/Bithomp" className="mobile-menu-item">
             Github
           </a>
@@ -411,14 +413,6 @@ export default function MobileMenu({
           <Link href="/advertise" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.business.advertise')}
           </Link>
-          <a
-            href="https://xrplmerch.com/product-category/bithomp/?wpam_id=22"
-            target="_blank"
-            rel="noreferrer"
-            className="mobile-menu-item"
-          >
-            {t('menu.merch')}
-          </a>
           <Link href="/customer-support" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.customer-support')}
           </Link>

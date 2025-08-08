@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
-import { xahauNetwork } from '../utils'
-import { bestNftOffer, isNftExplicit, mpUrl, nftName, partnerMarketplaces } from '../utils/nft'
+import { forbid18Plus, xahauNetwork } from '../utils'
+import { bestNftOffer, mpUrl, needNftAgeCheck, nftName, partnerMarketplaces } from '../utils/nft'
 import { amountFormat, timeOrDate, convertedAmount } from '../utils/format'
 import NftImageOrVideo from './NftImageOrVideo'
 import AgeCheck from './UI/AgeCheck'
@@ -31,7 +31,7 @@ const addressName = (details, name) => {
 }
 
 export default function Tiles({ nftList, type = 'name', convertCurrency, account }) {
-  const { t } = useTranslation(['common', 'popups'])
+  const { t } = useTranslation()
   const router = useRouter()
 
   const [showAgeCheck, setShowAgeCheck] = useState(false)
@@ -76,16 +76,12 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     return t('table.text.private-offer') //shouldn't be the case
   }
 
-  const needAgeCheck = (nft) => {
-    const isOver18 = localStorage.getItem('isOver18')
-    return !isOver18 && isNftExplicit(nft)
-  }
-
-  const clickOnTile = (e, nft) => {
+  const clickOnTile = async (e, nft) => {
     e.preventDefault()
-    if (needAgeCheck(nft)) {
+    if (needNftAgeCheck(nft)) {
+      const forbid = await forbid18Plus()
+      if (forbid) return
       setShowAgeCheck(true)
-      return
     }
     router.push('/nft/' + nft.nftokenID)
   }
@@ -100,7 +96,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                 <li className="hex" key={i}>
                   <div className="hexIn">
                     <Link
-                      href={needAgeCheck(nft) ? '#' : '/nft/' + nft.nftokenID}
+                      href={needNftAgeCheck(nft) ? '#' : '/nft/' + nft.nftokenID}
                       className="hexLink"
                       onClick={(e) => clickOnTile(e, nft)}
                     >
@@ -151,7 +147,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                 <li className="hex" key={i}>
                   <div className="hexIn">
                     <Link
-                      href={needAgeCheck(nft.nftoken) ? '#' : '/nft/' + nft.nftoken.nftokenID}
+                      href={needNftAgeCheck(nft.nftoken) ? '#' : '/nft/' + nft.nftoken.nftokenID}
                       className="hexLink"
                       onClick={(e) => clickOnTile(e, nft.nftoken)}
                     >

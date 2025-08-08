@@ -31,11 +31,12 @@ export default function Footer() {
 
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.developers.developers')}</span>
+          <Link href="/learn/the-bithomp-api">{t('menu.developers.api')}</Link>
           {network === 'mainnet' && (
             <>
-              <a href={'https://test.xrplexplorer.com/create/'}>{t('menu.developers.account-generation')}</a>
-              <a href={'https://test.xrplexplorer.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
-              <a href={'https://test.xrplexplorer.com/tools/'}>Bithomp tools</a>
+              <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
+              <a href={'https://test.bithomp.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
+              <a href={'https://test.bithomp.com/tools/'}>Bithomp tools</a>
             </>
           )}
           {devNet && (
@@ -45,8 +46,6 @@ export default function Footer() {
               <a href={'/tools/'}>Bithomp tools</a>
             </>
           )}
-          <a href="https://docs.bithomp.com">{t('menu.developers.api')}</a>
-          <Link href="/admin">{t('menu.developers.api-admin')}</Link>
           <a href="https://github.com/Bithomp">Github</a>
           <Link href="/eaas">{t('menu.business.eaas')}</Link>
           <Link href="/build-unl">{t('menu.business.build-unl')}</Link>
@@ -56,9 +55,6 @@ export default function Footer() {
           <Link href="/jobs">Join our team</Link>
           <Link href="/about-us">{t('menu.company.about-us')}</Link>
           <Link href="/advertise">{t('menu.business.advertise')}</Link>
-          <a href="https://xrplmerch.com/product-category/bithomp/?wpam_id=22" target="_blank" rel="noreferrer">
-            {t('menu.merch')}
-          </a>
           <Link href="/customer-support">{t('menu.customer-support')}</Link>
           <Link href="/press">{t('menu.press')}</Link>
           <Link href="/donate">{t('menu.donate')}</Link>

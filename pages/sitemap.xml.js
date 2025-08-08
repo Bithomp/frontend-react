@@ -57,14 +57,15 @@ const pages = [
 
   { loc: 'explorer-advantages', changefreq: 'monthly', priority: '0.5' },
 
-  { loc: 'learn', changefreq: 'weekly', priority: '0.5' },
-  { loc: 'learn/understanding-the-bithomp-explorer', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn', changefreq: 'weekly', priority: '0.7' },
+  { loc: 'learn/understanding-the-bithomp-explorer', changefreq: 'monthly', priority: '0.8' },
   { loc: 'learn/verified-domain', changefreq: 'monthly', priority: '0.5' },
   { loc: 'learn/blackholed-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'learn/blacklisted-address', changefreq: 'monthly', priority: '0.5' },
   { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'learn/nft-minting', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.9' },
+  { loc: 'learn/nft-minting', changefreq: 'monthly', priority: '1' },
+  { loc: 'learn/the-bithomp-api', changefreq: 'monthly', priority: '1' }
 ]
 
 //network specific pages

@@ -454,18 +454,23 @@ export const isNftExplicit = (nft) => {
   return false
 }
 
+export const needNftAgeCheck = (nft) => {
+  const isOver18 = localStorage.getItem('isOver18')
+  return !isOver18 && isNftExplicit(nft)
+}
+
 export const nftImageStyle = (nft, style = {}) => {
   if (!nft) {
     return {}
   }
+
+  if (needNftAgeCheck(nft)) {
+    return { backgroundImage: "url('/images/nft/18plus.jpg')" }
+  }
+
   const imageUrl = nftUrl(nft, 'image')
   if (imageUrl) {
-    const isOver18 = localStorage.getItem('isOver18')
-    if (isNftExplicit(nft) && !isOver18) {
-      style.backgroundImage = "url('/images/nft/18plus.jpg')"
-    } else {
-      style.backgroundImage = "url('" + imageUrl.replace(/'/g, "\\'") + "')"
-    }
+    style.backgroundImage = "url('" + imageUrl.replace(/'/g, "\\'") + "')"
     if (imageUrl.slice(0, 10) === 'data:image') {
       style.imageRendering = 'pixelated'
     }

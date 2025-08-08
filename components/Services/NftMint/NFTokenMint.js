@@ -7,6 +7,7 @@ import AddressInput from '../../UI/AddressInput'
 import ExpirationSelect from '../../UI/ExpirationSelect'
 import TokenSelector from '../../UI/TokenSelector'
 import { useRouter } from 'next/router'
+import { multiply } from '../../../utils/calc'
 
 export default function NFTokenMint({
   setSignRequest,
@@ -61,7 +62,6 @@ export default function NFTokenMint({
       setErrorMessage('')
     }
   }, [agreeToSiteTerms, agreeToPrivacyPolicy])
-
 
   useEffect(() => {
     let queryAddList = []
@@ -274,13 +274,13 @@ export default function NFTokenMint({
         setErrorMessage('Cannot create sell offer in tokens when "Only XRP" flag is enabled')
         return
       }
-      
+
       // Handle amount based on selected token
       if (isNativeCurrency(selectedToken)) {
         // For XRP, convert to drops
-        request.Amount = String(Math.round(parseFloat(amount) * 1000000))
+        request.Amount = multiply(amount, 1000000)
       } else {
-        // For tokens, use the token 
+        // For tokens, use the token
         request.Amount = {
           currency: selectedToken.currency,
           issuer: selectedToken.issuer,
@@ -436,7 +436,9 @@ export default function NFTokenMint({
                 <br />
                 <div className="flex flex-col gap-4 sm:flex-row">
                   <div className="flex-1">
-                    <span className="input-title">Initial listing price {flags.tfOnlyXRP ? 'in XRP' : ''} (Amount):</span>
+                    <span className="input-title">
+                      Initial listing price {flags.tfOnlyXRP ? 'in XRP' : ''} (Amount):
+                    </span>
                     <div className="input-validation">
                       <input
                         placeholder="0.0"
@@ -451,8 +453,8 @@ export default function NFTokenMint({
                   {!flags.tfOnlyXRP && (
                     <div className="w-full sm:w-1/2">
                       <span className="input-title">Currency</span>
-                      <TokenSelector 
-                        value={selectedToken} 
+                      <TokenSelector
+                        value={selectedToken}
                         onChange={onTokenChange}
                         destinationAddress={account?.address}
                       />

@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "Token",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
@@ -54,8 +55,7 @@
       "developers": "Pengembang",
       "account-generation": "Generasi Akun",
       "faucet": "Faucet",
-      "api": "Dokumentasi API",
-      "api-admin": "Akun API"
+      "api": "API"
     },
     "legal": "Hukum",
     "disclaimer": "Penyangkalan",
@@ -63,7 +63,6 @@
     "terms-and-conditions": "Syarat dan Ketentuan",
     "customer-support": "Dukungan Pelanggan",
     "press": "Pers",
-    "merch": "Toko Merchandise",
     "donate": "Donasi",
     "sponsored": {
       "title": "Disponsori",

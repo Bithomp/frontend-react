@@ -5,7 +5,6 @@ import * as relativeTimePlugin from 'dayjs/plugin/relativeTime'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Trans } from 'next-i18next'
-import React from 'react'
 
 import CopyButton from '../components/UI/CopyButton'
 import LinkIcon from '../public/images/link.svg'
@@ -34,6 +33,20 @@ export const NiceNativeBalance = ({ amount }) => {
   )
 }
 
+export const CurrencyWithIcon = ({ token }) => {
+  if (!token) return ''
+  const { currency, issuer, lp_token, currencyDetails } = token
+  let imageUrl = avatarServer.replace('/avatar/', '/issued-token/')
+  imageUrl += issuer + '/' + currency
+
+  return (
+    <>
+      <Image src={imageUrl} alt="avatar" height={20} width={20} style={{ marginRight: '5px', marginBottom: '-5px' }} />
+      {lp_token ? currencyDetails?.currency : niceCurrency(token.currency)}
+    </>
+  )
+}
+
 export const AddressWithIcon = ({ children, address, currency }) => {
   let imageUrl = avatarServer
 
@@ -50,6 +63,7 @@ export const AddressWithIcon = ({ children, address, currency }) => {
   if (!address) {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }
+
   return (
     <table style={{ minWidth: 126 }}>
       <tbody>
@@ -100,10 +114,10 @@ export const nativeCurrencyToFiat = (params) => {
   }
 
   return (
-    <span className="tooltip">
+    <span className="tooltip" suppressHydrationWarning>
       {' '}
       ≈ {calculatedAmount}
-      <span className="tooltiptext no-brake">
+      <span className="tooltiptext no-brake" suppressHydrationWarning>
         1 {nativeCurrency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
       </span>
     </span>
