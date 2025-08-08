@@ -8,7 +8,25 @@ import ExpirationSelect from '../../UI/ExpirationSelect'
 import TokenSelector from '../../UI/TokenSelector'
 import { useRouter } from 'next/router'
 
-export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery, account }) {
+export default function NFTokenMint({
+  setSignRequest,
+  uriQuery,
+  taxonQuery,
+  account,
+  burnableQuery,
+  onlyXrpQuery,
+  transferableQuery,
+  mutableQuery,
+  royaltyQuery,
+  sellQuery,
+  amountQuery,
+  currencyQuery,
+  currencyIssuerQuery,
+  destinationQuery,
+  expirationQuery,
+  issuerQuery,
+  mintForOtherQuery
+}) {
   const router = useRouter()
   const [uri, setUri] = useState(uriQuery)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
@@ -17,20 +35,23 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery, acco
   const [minted, setMinted] = useState('')
   const [taxon, setTaxon] = useState(taxonQuery || '0')
   const [flags, setFlags] = useState({
-    tfBurnable: false,
-    tfOnlyXRP: false,
-    tfTransferable: true,
-    tfMutable: false
+    tfBurnable: burnableQuery === 'true',
+    tfOnlyXRP: onlyXrpQuery === 'true',
+    tfTransferable: transferableQuery === '' ? true : transferableQuery === 'true',
+    tfMutable: mutableQuery === 'true'
   })
 
-  const [issuer, setIssuer] = useState('')
-  const [transferFee, setTransferFee] = useState('')
-  const [destination, setDestination] = useState('')
-  const [amount, setAmount] = useState('')
-  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
-  const [expiration, setExpiration] = useState(0)
-  const [mintForOtherAccount, setMintForOtherAccount] = useState(false)
-  const [createSellOffer, setCreateSellOffer] = useState(false)
+  const [issuer, setIssuer] = useState(issuerQuery || '')
+  const [transferFee, setTransferFee] = useState(royaltyQuery || '')
+  const [destination, setDestination] = useState(destinationQuery || '')
+  const [amount, setAmount] = useState(amountQuery || '')
+  const [selectedToken, setSelectedToken] = useState({
+    currency: currencyQuery || nativeCurrency,
+    issuer: currencyIssuerQuery || null
+  })
+  const [expiration, setExpiration] = useState(Number(expirationQuery) > 0 ? Number(expirationQuery) : 0)
+  const [mintForOtherAccount, setMintForOtherAccount] = useState(mintForOtherQuery === 'true')
+  const [createSellOffer, setCreateSellOffer] = useState(sellQuery === 'true')
 
   let uriRef
   let taxonRef
@@ -41,12 +62,6 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery, acco
     }
   }, [agreeToSiteTerms, agreeToPrivacyPolicy])
 
-
-  useEffect(() => {
-    if (!account?.address) {
-      setCreateSellOffer(false)
-    }
-  }, [account?.address])
 
   useEffect(() => {
     let queryAddList = []
@@ -69,9 +84,66 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery, acco
     } else {
       queryRemoveList.push('uri')
     }
+    // reflect flags
+    if (flags.tfBurnable) {
+      queryAddList.push({ name: 'burnable', value: 'true' })
+    } else {
+      queryRemoveList.push('burnable')
+    }
+    if (flags.tfOnlyXRP) {
+      queryAddList.push({ name: 'onlyXrp', value: 'true' })
+    } else {
+      queryRemoveList.push('onlyXrp')
+    }
+    if (flags.tfTransferable) {
+      queryAddList.push({ name: 'transferable', value: 'true' })
+    } else {
+      queryRemoveList.push('transferable')
+    }
+    if (flags.tfMutable) {
+      queryAddList.push({ name: 'mutable', value: 'true' })
+    } else {
+      queryRemoveList.push('mutable')
+    }
+    // royalty (transferFee)
+    if (transferFee !== '') {
+      queryAddList.push({ name: 'royalty', value: transferFee })
+    } else {
+      queryRemoveList.push('royalty')
+    }
+    // create sell offer fields
+    if (createSellOffer) {
+      queryAddList.push({ name: 'sell', value: 'true' })
+      if (amount) queryAddList.push({ name: 'amount', value: amount })
+      else queryRemoveList.push('amount')
+      if (selectedToken?.currency) queryAddList.push({ name: 'currency', value: selectedToken.currency })
+      else queryRemoveList.push('currency')
+      if (selectedToken?.issuer) queryAddList.push({ name: 'currencyIssuer', value: selectedToken.issuer })
+      else queryRemoveList.push('currencyIssuer')
+      if (destination) queryAddList.push({ name: 'destination', value: destination })
+      else queryRemoveList.push('destination')
+      if (expiration > 0) queryAddList.push({ name: 'expiration', value: String(expiration) })
+      else queryRemoveList.push('expiration')
+    } else {
+      queryRemoveList.push('sell')
+      queryRemoveList.push('amount')
+      queryRemoveList.push('currency')
+      queryRemoveList.push('currencyIssuer')
+      queryRemoveList.push('destination')
+      queryRemoveList.push('expiration')
+    }
+    // mint for other
+    if (mintForOtherAccount) {
+      queryAddList.push({ name: 'mintForOther', value: 'true' })
+      if (issuer) queryAddList.push({ name: 'issuer', value: issuer })
+      else queryRemoveList.push('issuer')
+    } else {
+      queryRemoveList.push('mintForOther')
+      queryRemoveList.push('issuer')
+    }
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taxon, uri])
+  }, [taxon, uri, flags, transferFee, createSellOffer, amount, selectedToken?.currency, selectedToken?.issuer, destination, issuer, mintForOtherAccount, expiration])
 
   // Reset selected token to XRP when tfOnlyXRP flag is enabled
   useEffect(() => {
@@ -394,6 +466,8 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery, acco
                   setValue={onDestinationChange}
                   name="destination"
                   hideButton={true}
+                  rawData={destination ? { address: destination } : {}}
+                  type="address"
                 />
                 <br />
                 <div>
@@ -426,8 +500,10 @@ export default function NFTokenMint({ setSignRequest, uriQuery, taxonQuery, acco
                   title="Issuer address (account you're minting for):"
                   placeholder="Issuer address"
                   setValue={onIssuerChange}
+                  rawData={issuer ? { address: issuer } : {}}
                   name="issuer"
                   hideButton={true}
+                  type="address"
                 />
                 <span className="orange">
                   Note: You must be authorized as a minter for this account, or the transaction will fail.
