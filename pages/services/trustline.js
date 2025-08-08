@@ -24,24 +24,61 @@ import { multiply } from '../../utils/calc'
 import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
 import { amountFormat } from '../../utils/format'
+import { addAndRemoveQueryParams } from '../../utils'
+import { useRouter } from 'next/router'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
-  const { currency, currencyIssuer } = query
+  const {
+    currency,
+    currencyIssuer,
+    mode,
+    issuer,
+    limit,
+    qualityIn,
+    qualityOut,
+    freeze,
+    noRipple,
+    authorized,
+    deepFreeze
+  } = query
   return {
     props: {
       currencyQuery: currency || nativeCurrency,
       currencyIssuerQuery: currencyIssuer || '',
+      modeQuery: mode || 'simple',
+      issuerQuery: issuer || '',
+      limitQuery: limit || '',
+      qualityInQuery: qualityIn || '',
+      qualityOutQuery: qualityOut || '',
+      freezeQuery: freeze || '',
+      noRippleQuery: noRipple || '',
+      authorizedQuery: authorized || '',
+      deepFreezeQuery: deepFreeze || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
 
-export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuerQuery }) {
+export default function TrustSet({
+  setSignRequest,
+  currencyQuery,
+  currencyIssuerQuery,
+  modeQuery,
+  issuerQuery,
+  limitQuery,
+  qualityInQuery,
+  qualityOutQuery,
+  freezeQuery,
+  noRippleQuery,
+  authorizedQuery,
+  deepFreezeQuery
+}) {
   const { t } = useTranslation()
+  const router = useRouter()
   const [error, setError] = useState('')
-  const [mode, setMode] = useState('simple') // 'simple' or 'advanced'
+  const [mode, setMode] = useState(modeQuery === 'advanced' ? 'advanced' : 'simple') // 'simple' or 'advanced'
 
   const [selectedTokenData, setSelectedTokenData] = useState({})
 
@@ -50,21 +87,22 @@ export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuer
   const [tokenSupply, setTokenSupply] = useState(null)
 
   // Advanced mode state
-  const [issuer, setIssuer] = useState(currencyIssuerQuery)
+  const [issuer, setIssuer] = useState(issuerQuery || currencyIssuerQuery)
   const [currency, setCurrency] = useState({ currency: currencyQuery })
 
   // Common state
-  const [limit, setLimit] = useState('1000000')
-  const [qualityIn, setQualityIn] = useState('')
-  const [qualityOut, setQualityOut] = useState('')
+  const [limit, setLimit] = useState(limitQuery || '1000000')
+  const [qualityIn, setQualityIn] = useState(qualityInQuery || '')
+  const [qualityOut, setQualityOut] = useState(qualityOutQuery || '')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
 
   // TrustSet flags
-  const [setFreeze, setSetFreeze] = useState(false)
-  const [setNoRipple, setSetNoRipple] = useState(true) // Default to true for simple mode
-  const [setAuthorized, setSetAuthorized] = useState(false)
-  const [setDeepFreeze, setSetDeepFreeze] = useState(false)
+  const toBool = (v) => v === '1' || v === 'true'
+  const [setFreeze, setSetFreeze] = useState(freezeQuery ? toBool(freezeQuery) : false)
+  const [setNoRipple, setSetNoRipple] = useState(noRippleQuery ? toBool(noRippleQuery) : true)
+  const [setAuthorized, setSetAuthorized] = useState(authorizedQuery ? toBool(authorizedQuery) : false)
+  const [setDeepFreeze, setSetDeepFreeze] = useState(deepFreezeQuery ? toBool(deepFreezeQuery) : false)
 
   // Fetch token supply when token is selected in simple mode
   useEffect(() => {
@@ -86,6 +124,108 @@ export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuer
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedToken, mode])
+
+  // Sync URL query params with current form state for shareable links
+  useEffect(() => {
+    const addList = []
+    const removeList = []
+
+    // mode
+    if (mode) {
+      addList.push({ name: 'mode', value: mode })
+    }
+
+    if (mode === 'simple') {
+      if (selectedToken.currency) {
+        addList.push({ name: 'currency', value: selectedToken.currency })
+      } else {
+        removeList.push('currency')
+      }
+      if (selectedToken.issuer) {
+        addList.push({ name: 'currencyIssuer', value: selectedToken.issuer })
+      } else {
+        removeList.push('currencyIssuer')
+      }
+      // Remove advanced-only params
+      removeList.push('issuer')
+      removeList.push('limit')
+      removeList.push('qualityIn')
+      removeList.push('qualityOut')
+    } else {
+      // advanced mode
+      if (issuer && isAddressValid(issuer)) {
+        addList.push({ name: 'issuer', value: issuer })
+      } else {
+        removeList.push('issuer')
+      }
+      if (currency.currency) {
+        addList.push({ name: 'currency', value: currency.currency })
+      } else {
+        removeList.push('currency')
+      }
+      if (limit && !isNaN(parseFloat(limit))) {
+        addList.push({ name: 'limit', value: String(limit) })
+      } else {
+        removeList.push('limit')
+      }
+      if (qualityIn) {
+        addList.push({ name: 'qualityIn', value: String(qualityIn) })
+      } else {
+        removeList.push('qualityIn')
+      }
+      if (qualityOut) {
+        addList.push({ name: 'qualityOut', value: String(qualityOut) })
+      } else {
+        removeList.push('qualityOut')
+      }
+    }
+
+    // flags (always include explicitly to fully capture state)
+    addList.push({ name: 'freeze', value: setFreeze ? '1' : '0' })
+    addList.push({ name: 'noRipple', value: setNoRipple ? '1' : '0' })
+    addList.push({ name: 'authorized', value: setAuthorized ? '1' : '0' })
+    if (!xahauNetwork) {
+      addList.push({ name: 'deepFreeze', value: setDeepFreeze ? '1' : '0' })
+    } else {
+      removeList.push('deepFreeze')
+    }
+
+    addAndRemoveQueryParams(router, addList, removeList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, selectedToken, issuer, currency, limit, qualityIn, qualityOut, setFreeze, setNoRipple, setAuthorized, setDeepFreeze])
+
+  const buildShareUrl = () => {
+    if (typeof window === 'undefined') return ''
+    const params = new URLSearchParams()
+    params.set('mode', mode)
+    if (mode === 'simple') {
+      if (selectedToken.currency) params.set('currency', selectedToken.currency)
+      if (selectedToken.issuer) params.set('currencyIssuer', selectedToken.issuer)
+    } else {
+      if (issuer) params.set('issuer', issuer)
+      if (currency.currency) params.set('currency', currency.currency)
+      if (limit) params.set('limit', String(limit))
+      if (qualityIn) params.set('qualityIn', String(qualityIn))
+      if (qualityOut) params.set('qualityOut', String(qualityOut))
+    }
+    params.set('freeze', setFreeze ? '1' : '0')
+    params.set('noRipple', setNoRipple ? '1' : '0')
+    params.set('authorized', setAuthorized ? '1' : '0')
+    if (!xahauNetwork) params.set('deepFreeze', setDeepFreeze ? '1' : '0')
+    return `${window.location.origin}${router.pathname}?${params.toString()}`
+  }
+
+  const [shareCopied, setShareCopied] = useState(false)
+  const handleShare = async () => {
+    try {
+      const url = buildShareUrl()
+      await navigator.clipboard.writeText(url)
+      setShareCopied(true)
+      setTimeout(() => setShareCopied(false), 2000)
+    } catch (e) {
+      setError('Failed to copy the link')
+    }
+  }
 
   // Sync limit when switching modes
   useEffect(() => {
@@ -223,6 +363,16 @@ export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuer
       <SEO title="Set Trustline" description={'Set a Trustline on the ' + explorerName} />
       <div className="content-text content-center">
         <h1 className="center">Set/Update Trust (Trustlines)</h1>
+        <div className="center" style={{ marginTop: 8 }}>
+          <button className="button-action thin" onClick={handleShare} style={{ minWidth: '120px' }}>
+            Share
+          </button>
+          {shareCopied && (
+            <span className="green" style={{ marginLeft: 10 }}>
+              Link copied to clipboard
+            </span>
+          )}
+        </div>
         <p className="center">Create or modify a Trustline linking two accounts.</p>
         <NetworkTabs />
 
