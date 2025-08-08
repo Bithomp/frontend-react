@@ -5,14 +5,7 @@ import { useWidth } from '../../utils'
 import { FiCalendar, FiClock } from 'react-icons/fi'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 
-export const TransactionRowCard = ({
-  data, 
-  index, 
-  txTypeSpecial, 
-  children, 
-  selectedCurrency, 
-  pageFiatRate
-}) => {
+export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selectedCurrency, pageFiatRate }) => {
   const width = useWidth()
   const { specification, tx, outcome } = data
   const date = dateFormat(tx.date + 946684800)
@@ -21,15 +14,26 @@ export const TransactionRowCard = ({
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
   return (
-    <tr index={index} style={{ background: !isSuccessful ? 'repeating-linear-gradient(45deg, #f9e3b9, #f9e3b9 10px, #fff 10px, #fff 20px)' : '' }}>
-      <td className="bold center" style={{width: 10}}>{index + 1}</td>      
-      <td className="left" style={{width: 70}}>
-        <span className="flex items-center gap-1"><FiCalendar style={{ stroke: '#666' }} /> {date}</span>
-        <span className="flex items-center gap-1"><FiClock style={{ stroke: '#666' }} /> {time}</span>
+    <tr
+      index={index}
+      style={{
+        background: !isSuccessful ? 'repeating-linear-gradient(45deg, #f9e3b9, #f9e3b9 10px, #fff 10px, #fff 20px)' : ''
+      }}
+    >
+      <td className="bold center" style={{ width: 10 }}>
+        {index + 1}
+      </td>
+      <td className="left" style={{ width: 70 }}>
+        <span className="flex items-center gap-1" suppressHydrationWarning>
+          <FiCalendar style={{ stroke: '#666' }} /> {date}
+        </span>
+        <span className="flex items-center gap-1" suppressHydrationWarning>
+          <FiClock style={{ stroke: '#666' }} /> {time}
+        </span>
       </td>
       <td className="left" style={{ maxWidth: width > 600 ? 600 : '100%', wordBreak: 'break-word' }}>
         <span className="flex items-center gap-1">
-          <FaArrowRightArrowLeft style={{ stroke: '#666', color: '#666' }} /> 
+          <FaArrowRightArrowLeft style={{ stroke: '#666', color: '#666' }} />
           {width > 600 ? <LinkTx tx={tx.hash}>{tx.hash}</LinkTx> : <LinkTx tx={tx.hash} short={10} />}
         </span>
         <span>Type: </span>
@@ -46,7 +50,7 @@ export const TransactionRowCard = ({
             <br />
           </>
         )}
-        <span>Fee:</span> 
+        <span>Fee:</span>
         <span className="bold">{amountFormat(tx.Fee)}</span>
         <span>
           {nativeCurrencyToFiat({
@@ -72,15 +76,18 @@ export const TransactionRowCard = ({
           <>
             {memos.map((memo, idx) => (
               <div key={idx}>
-                {memo.data? (
+                {memo.data ? (
                   <>
-                  <span className="bold">Memo{memos.length > 1 ? ` (${idx + 1})` : ''}:</span>
-                  <span className="gray"> {memo.data}</span>                                  
+                    <span className="bold">Memo{memos.length > 1 ? ` (${idx + 1})` : ''}:</span>
+                    <span className="gray"> {memo.data}</span>
                   </>
                 ) : (
                   <>
-                     <span className="bold">{memo.type}{memos.length > 1 ? ` (${idx + 1})` : ''}:</span>
-                     <span className="gray"> {memo.format}</span>                
+                    <span className="bold">
+                      {memo.type}
+                      {memos.length > 1 ? ` (${idx + 1})` : ''}:
+                    </span>
+                    <span className="gray"> {memo.format}</span>
                   </>
                 )}
               </div>
