@@ -327,30 +327,55 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currency, chartPeriod, theme, detailedDayAndWeekChartAvailable])
 
-  // Append live price points to the series when liveFiatRate changes
+  // Append/update live price points with time bucketing (15m/30m/1h max resolution)
   useEffect(() => {
     if (!liveFiatRate) return
-    setData((prev) => {
-      const prevSeries = Array.isArray(prev?.data) ? prev.data : []
-      const nowTs = Date.now()
-      const lastPoint = prevSeries[prevSeries.length - 1]
-      // Avoid overgrowing with identical timestamps; replace if very recent
-      if (lastPoint && nowTs - lastPoint[0] < 500) {
-        const updated = prevSeries.slice(0, -1)
-        updated.push([nowTs, liveFiatRate])
-        return { ...prev, data: updated }
+
+    // Determine bucket size based on selected period
+    const getBucketMs = (period) => {
+      switch (period) {
+        case 'one_day':
+          return 15 * 60 * 1000 // 15 minutes → max 4 points/hour
+        case 'one_week':
+          return 30 * 60 * 1000 // 30 minutes → max 2 points/hour
+        default:
+          return 60 * 60 * 1000 // 1 hour → max 1 point/hour
       }
-      return { ...prev, data: [...prevSeries, [nowTs, liveFiatRate]] }
+    }
+
+    const bucketMs = getBucketMs(chartPeriod)
+
+    setData((previousData) => {
+      const previousSeries = Array.isArray(previousData?.data) ? previousData.data : []
+      const nowTimestamp = Date.now()
+
+      if (previousSeries.length === 0) {
+        return { ...previousData, data: [[nowTimestamp, liveFiatRate]] }
+      }
+
+      const lastPoint = previousSeries[previousSeries.length - 1]
+      const lastTimestamp = Array.isArray(lastPoint) ? lastPoint[0] : null
+
+      // If within the same bucket window, update the last point (keep only one point per bucket)
+      if (lastTimestamp && nowTimestamp - lastTimestamp < bucketMs) {
+        const updated = previousSeries.slice(0, -1)
+        updated.push([nowTimestamp, liveFiatRate])
+        return { ...previousData, data: updated }
+      }
+
+      // Outside the bucket window → append a new point
+      return { ...previousData, data: [...previousSeries, [nowTimestamp, liveFiatRate]] }
     })
+
     // Keep x-axis max pinned to now so the viewport grows live
-    setOptions((prev) => ({
-      ...prev,
+    setOptions((previousOptions) => ({
+      ...previousOptions,
       xaxis: {
-        ...prev.xaxis,
+        ...previousOptions.xaxis,
         max: Date.now()
       }
     }))
-  }, [liveFiatRate])
+  }, [liveFiatRate, chartPeriod])
 
   const series = [
     {
