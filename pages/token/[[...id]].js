@@ -4,15 +4,16 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import SEO from '../../components/SEO'
-import { TData } from '../../components/Table'
+import { tokenClass } from '../../styles/pages/token.module.scss'
 import {
   capitalize,
   niceNumber,
   shortNiceNumber,
   fullNiceNumber,
-  CurrencyWithIcon,
-  AddressWithIconFilled
+  AddressWithIconFilled,
+  fullDateAndTime
 } from '../../utils/format'
+import { avatarSrc } from '../../utils'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import {
@@ -100,6 +101,7 @@ export default function TokenPage({
   selectedCurrencyServer,
   fiatRate: fiatRateApp,
   fiatRateServer,
+  setSignRequest,
 }) {
   const router = useRouter()
   const token = initialData
@@ -120,7 +122,6 @@ export default function TokenPage({
       router.push('/tokens')
     }
   }, [initialData, initialErrorMessage, router])
-
 
   // Helper functions for formatting
   const priceToFiat = ({ price, mobile }) => {
@@ -258,181 +259,295 @@ export default function TokenPage({
 
   const { statistics } = token
 
+  // Helper function to format supply for trustline
+  const formatSupply = (supply) => {
+    if (!supply) return '1000000000'
+    const num = parseFloat(supply)
+    if (isNaN(num)) return '1000000000'
+    return num.toFixed(6)
+  }
+
+  // Handle set trustline
+  const handleSetTrustline = () => {
+    if (!setSignRequest) return
+    
+    setSignRequest({
+      request: {
+        TransactionType: 'TrustSet',
+        LimitAmount: {
+          currency: token.currency,
+          issuer: token.issuer,
+          value: formatSupply(token.supply)
+        },
+        Flags: 131072
+      }
+    })
+  }
+
   return (
     <>
       <SEO title={`${token?.currencyDetails?.currency} Token - ${token.issuerDetails?.service || token.issuerDetails?.username || 'Token Details'}`} />
       
-      <div className="tx-body">
-        <h1 className="tx-header">{token?.currencyDetails?.currency} token</h1>
-        <div className="card-block">
-          <table className="base">
-            <tbody>
-              <tr>
-                <TData>Token</TData>
-                <TData>
-                  <CurrencyWithIcon token={token} />
-                </TData>
-              </tr>
-              <tr>
-                <TData>Issuer</TData>
-                <TData>
-                  <AddressWithIconFilled data={token} name="issuer" copyButton={true} />
-                </TData>
-              </tr>              
-              <tr>
-                <TData>Currency code</TData>
-                <TData>
-                  {token.currencyDetails.currencyCode} <CopyButton text={token.currencyDetails.currencyCode} />
-                </TData>
-              </tr>
-              <tr>
-                <TData>Description</TData>
-                <TData>
-                  {token?.description}
-                </TData>
-              </tr>
-              <tr>
-                <TData>Price</TData>
-                <TData>{priceToFiat({ price: statistics?.priceXrp })}</TData>
-              </tr>
-              <tr>
-                <TData>Market cap</TData>
-                <TData>{marketcapToFiat({ marketcap: statistics?.marketcap })}</TData>
-              </tr>
-              <tr>
-                <TData>Supply</TData>
-                <TData>
-                  <span className="tooltip">
-                    {shortNiceNumber(token.supply, 2, 1)} {token.currencyDetails.currency}
-                    <span className="tooltiptext">{fullNiceNumber(token.supply)} {token.currencyDetails.currency}</span>
-                  </span>
-                </TData>
-              </tr>
-              <tr>
-                <TData>Holders</TData>
-                <TData>
-                  <span className="tooltip">
-                    {shortNiceNumber(token.holders, 0, 1)}
-                    <span className="tooltiptext">{fullNiceNumber(token.holders)}</span>
-                  </span>
-                  <br />
-                  Active (24h): {niceNumber(statistics?.activeHolders || 0)}
-                </TData>
-              </tr>
-              <tr>
-                <TData>Trustlines</TData>
-                <TData>
-                  <span className="tooltip">
-                    {shortNiceNumber(token.trustlines, 0, 1)}
-                    <span className="tooltiptext">{fullNiceNumber(token.trustlines)}</span>
-                  </span>
-                </TData>
-              </tr>
-              <tr>
-                <TData>Volume (24h)</TData>
-                <TData>
-                  Total: {volumeToFiat({ token, type: 'total' })}
-                  <br />
-                  Buy: {volumeToFiat({ token, type: 'buy', mobile: true })}
-                  <br />
-                  Sell: {volumeToFiat({ token, type: 'sell', mobile: true })}
-                </TData>
-              </tr>
-              <tr>
-                <TData>Trading activity</TData>
-                <TData>
-                  Trades (24h): {shortNiceNumber(statistics?.dexes || 0, 0, 1)}
-                  <br />
-                  Buyers: {niceNumber(statistics?.uniqueBuyers || 0)} | Sellers: {niceNumber(statistics?.uniqueSellers || 0)} | Traders: {niceNumber(statistics?.uniqueDexAccounts || 0)}
-                </TData>
-              </tr>
-              {!xahauNetwork && statistics?.ammPools > 0 && (
+      <div className={tokenClass}>
+        <div className="content-profile">
+          <div className="column-left">
+            {/* Big Token Icon */}
+            <img
+              alt="token"
+              src={avatarSrc(token?.issuer, null)}
+              style={{ width: '100%', height: 'auto' }}
+            />
+            <h1>{token?.currencyDetails?.currency}</h1>
+            {token?.description && <p>{token?.description}</p>}            
+
+            {/* Action Buttons */}
+            <button className="button-action wide center" onClick={handleSetTrustline}>
+              Set Trustline
+            </button>
+          </div>
+
+          <div className="column-right">
+            {/* Token Information */}
+            <table className="table-details">
+              <thead>
                 <tr>
-                  <TData>AMM Pools</TData>
-                  <TData>
-                    <a href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}>
-                      {statistics?.ammPools || 0}
-                    </a>
-                    <br />
-                    Active AMM pools (last closed day): {niceNumber(statistics?.activeAmmPools || 0)}
-                  </TData>
+                  <th colSpan="100">Token Information</th>
                 </tr>
-              )}
-              <tr>
-                <TData>Transfer activity</TData>
-                <TData>
-                  Txs (24h): {niceNumber(statistics?.transferTxs || 0)}
-                  {statistics?.transferTxs > 0 && (
-                    <>
-                      <br />
-                      Volume (24h): {volumeToFiat({ token, type: 'transfer', mobile: true })}
-                    </>
-                  )}
-                </TData>
-              </tr>
-              {statistics?.mintTxs > 0 && (
+              </thead>
+              <tbody>
                 <tr>
-                  <TData>Mint activity</TData>
-                  <TData>
-                    Txs: {shortNiceNumber(statistics?.mintTxs || 0, 0, 1)}
-                    <br />
-                    Volume: {volumeToFiat({ token, type: 'mint', mobile: true })}
-                  </TData>
+                  <td>Currency</td>
+                  <td>{token?.currencyDetails?.currency}</td>
                 </tr>
-              )}
-              {statistics?.burnTxs > 0 && (
+                {token?.name && (
+                  <tr>
+                    <td>Name</td>
+                    <td>{token.name}</td>
+                  </tr>
+                )}
+                {token?.description && (
+                  <tr>
+                    <td>Description</td>
+                    <td>{token.description}</td>
+                  </tr>
+                )}
                 <tr>
-                  <TData>Burn activity</TData>
-                  <TData>
-                    Txs: {shortNiceNumber(statistics?.burnTxs || 0, 0, 1)}
-                    <br />
-                    Volume: {volumeToFiat({ token, type: 'burn', mobile: true })}
-                  </TData>
+                  <td>Issuer</td>
+                  <td>
+                    <AddressWithIconFilled data={token} name="issuer" copyButton={true} />
+                  </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        <div className="back-link">
-          <Link href="/tokens" className="button-action">Back to All Tokens</Link>
+                <tr>
+                  <td>Currency Code</td>
+                  <td>
+                    {token.currencyDetails.currencyCode} <CopyButton text={token.currencyDetails.currencyCode} />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Supply</td>
+                  <td>
+                    <span className="tooltip">
+                      {shortNiceNumber(token.supply, 2, 1)} {token.currencyDetails.currency}
+                      <span className="tooltiptext">{fullNiceNumber(token.supply)} {token.currencyDetails.currency}</span>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Holders</td>
+                  <td>
+                    <span className="tooltip">
+                      {shortNiceNumber(token.holders, 0, 1)}
+                      <span className="tooltiptext">{fullNiceNumber(token.holders)}</span>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Trustlines</td>
+                  <td>
+                    <span className="tooltip">
+                      {shortNiceNumber(token.trustlines, 0, 1)}
+                      <span className="tooltiptext">{fullNiceNumber(token.trustlines)}</span>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>KYC Status</td>
+                  <td>{token.kyc ? 'Verified' : 'Not Verified'}</td>
+                </tr>
+                <tr>
+                  <td>Token Type</td>
+                  <td>
+                    {token.lp_token ? 'LP Token' : 'Standard Token'}
+                    {token.stablecoin && ' (Stablecoin)'}
+                    {token.fiat && ` (${token.fiat})`}
+                  </td>
+                </tr>
+                {token.statistics?.timeAt && (
+                  <tr>
+                    <td>Last Updated</td>
+                    <td>{fullDateAndTime(token.statistics?.timeAt)}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            {/* Price Information */}
+            <table className="table-details">
+              <thead>
+                <tr>
+                  <th colSpan="100">Price Information</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Current Price</td>
+                  <td>{priceToFiat({ price: statistics?.priceXrp })}</td>
+                </tr>
+                <tr>
+                  <td>Market Cap</td>
+                  <td>{marketcapToFiat({ marketcap: statistics?.marketcap })}</td>
+                </tr>
+                {statistics?.priceXrpSpot && (
+                  <tr>
+                    <td>Spot Price</td>
+                    <td>{priceToFiat({ price: statistics?.priceXrpSpot })}</td>
+                  </tr>
+                )}
+                {statistics?.priceXrp1h && (
+                  <tr>
+                    <td>1 Hour Ago</td>
+                    <td>{priceToFiat({ price: statistics?.priceXrp1h })}</td>
+                  </tr>
+                )}
+                {statistics?.priceXrp5m && (
+                  <tr>
+                    <td>5 Minutes Ago</td>
+                    <td>{priceToFiat({ price: statistics?.priceXrp5m })}</td>
+                  </tr>
+                )}
+                {statistics?.priceXrp24h && (
+                  <tr>
+                    <td>24 Hours Ago</td>
+                    <td>{priceToFiat({ price: statistics?.priceXrp24h })}</td>
+                  </tr>
+                )}
+                {statistics?.priceXrp7d && (
+                  <tr>
+                    <td>7 Days Ago</td>
+                    <td>{priceToFiat({ price: statistics?.priceXrp7d })}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            {/* Stats for the last 24h */}
+            <table className="table-details">
+              <thead>
+                <tr>
+                  <th colSpan="100">Stats for the last 24h</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Volume (Total)</td>
+                  <td>{volumeToFiat({ token, type: 'total' })}</td>
+                </tr>
+                <tr>
+                  <td>Volume (Buy)</td>
+                  <td>{volumeToFiat({ token, type: 'buy' })}</td>
+                </tr>
+                <tr>
+                  <td>Volume (Sell)</td>
+                  <td>{volumeToFiat({ token, type: 'sell' })}</td>
+                </tr>
+                <tr>
+                  <td>Trades</td>
+                  <td>{shortNiceNumber(statistics?.dexes || 0, 0, 1)}</td>
+                </tr>
+                <tr>
+                  <td>Active Holders</td>
+                  <td>{niceNumber(statistics?.activeHolders || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Buyers</td>
+                  <td>{niceNumber(statistics?.uniqueBuyers || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Sellers</td>
+                  <td>{niceNumber(statistics?.uniqueSellers || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Traders</td>
+                  <td>{niceNumber(statistics?.uniqueDexAccounts || 0)}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Stats for the last closed day */}
+            <table className="table-details">
+              <thead>
+                <tr>
+                  <th colSpan="100">Stats for the last closed day</th>
+                </tr>
+              </thead>
+              <tbody>
+                {!xahauNetwork && statistics?.ammPools > 0 && (
+                  <tr>
+                    <td>AMM Pools</td>
+                    <td>
+                      <Link href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}>
+                        {statistics?.ammPools || 0}
+                      </Link>
+                    </td>
+                  </tr>
+                )}
+                {!xahauNetwork && statistics?.ammPools > 0 && (
+                  <tr>
+                    <td>Active AMM Pools</td>
+                    <td>{niceNumber(statistics?.activeAmmPools || 0)}</td>
+                  </tr>
+                )}
+                <tr>
+                  <td>Transfer Transactions</td>
+                  <td>{niceNumber(statistics?.transferTxs || 0)}</td>
+                </tr>
+                {statistics?.transferTxs > 0 && (
+                  <tr>
+                    <td>Transfer Volume</td>
+                    <td>{volumeToFiat({ token, type: 'transfer' })}</td>
+                  </tr>
+                )}
+                {statistics?.mintTxs > 0 && (
+                  <tr>
+                    <td>Mint Transactions</td>
+                    <td>{shortNiceNumber(statistics?.mintTxs || 0, 0, 1)}</td>
+                  </tr>
+                )}
+                {statistics?.mintTxs > 0 && (
+                  <tr>
+                    <td>Mint Volume</td>
+                    <td>{volumeToFiat({ token, type: 'mint' })}</td>
+                  </tr>
+                )}
+                {statistics?.burnTxs > 0 && (
+                  <tr>
+                    <td>Burn Transactions</td>
+                    <td>{shortNiceNumber(statistics?.burnTxs || 0, 0, 1)}</td>
+                  </tr>
+                )}
+                {statistics?.burnTxs > 0 && (
+                  <tr>
+                    <td>Burn Volume</td>
+                    <td>{volumeToFiat({ token, type: 'burn' })}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            
+          </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .card-block {
-          border-top: 4px solid var(--accent-link);
-          box-shadow: 0 1px 3px 0 var(--shadow);
-          padding: 8px;
-          background: var(--card-bg);
-        }
-        .tx-body {
-          margin: 40px auto;
-          width: calc(100% - 40px);
-          max-width: 760px;
-          z-index: 1;
-          position: relative;
-        }
-        .tx-header {
-          margin: 24px 0;
-          color: var(--text-main);
-          font-size: 16px;
-          font-weight: 700;
-          text-align: left;
-          text-transform: uppercase;
-        }
-
-        .back-link {
-          text-align: center;
-          margin-top: 30px;
-        }
-
-        @media (max-width: 768px) {
-          .tx-body {
-            width: calc(100% - 20px);
-            margin: 20px auto;
-          }
-        }
-      `}</style>
     </>
   )
 }
