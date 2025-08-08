@@ -45,7 +45,8 @@ export async function getServerSideProps(context) {
   let initialData = null
   let networkInfo = {}
   const { id, ledgerTimestamp } = query
-  const account = id || ''
+  //keep it from query instead of params, anyway it is an array sometimes
+  const account = id ? (Array.isArray(id) ? id[0] : id) : ''
 
   if (account) {
     try {
@@ -120,7 +121,7 @@ export default function Account({
   fiatRateServer,
   selectedCurrencyServer,
   networkInfo,
-  balanceListServer,
+  balanceListServer
 }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
@@ -131,6 +132,14 @@ export default function Account({
     fiatRate = fiatRateApp
     selectedCurrency = selectedCurrencyApp
   }
+
+  /*
+  obligations: {
+    "trustlines": 44799,
+    "holders": 12131,
+    "tokens": 7
+  }
+  */
 
   const [data, setData] = useState(initialData)
   const [loading, setLoading] = useState(false)
@@ -162,12 +171,15 @@ export default function Account({
       if (initialData.obligations?.trustlines > 200) {
         setGateway(true)
       } else {
+        //keep it here for cases when address changes without refreshing the page
         setGateway(false)
       }
     } else {
+      //keep it here for cases when address changes without refreshing the page
       setGateway(false)
     }
-  }, [initialData, setActivatedAccount])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialData])
 
   const checkApi = async (opts) => {
     if (!id) return
@@ -219,15 +231,17 @@ export default function Account({
     setObjects({})
     checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, refreshPage, ledgerTimestamp, selectedCurrency, t])
+  }, [id, refreshPage, ledgerTimestamp, selectedCurrency])
 
   useEffect(() => {
     if (!selectedCurrency) return
     if (!ledgerTimestamp) {
       setPageFiatRate(fiatRate)
     } else {
+      //if there is ledgerTimestamp then we need a historical rate
       fetchHistoricalRate({ timestamp: ledgerTimestamp, selectedCurrency, setPageFiatRate })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fiatRate, ledgerTimestamp, selectedCurrency])
 
   useEffect(() => {
@@ -496,6 +510,7 @@ export default function Account({
                             <tbody>
                               <tr>
                                 <td colSpan="2" className="no-padding">
+                                  {/*  (info) Check account balance and settings in any Time in the past. */}
                                   <div className="time-machine">
                                     <DatePicker
                                       selected={ledgerTimestampInput || new Date()}
