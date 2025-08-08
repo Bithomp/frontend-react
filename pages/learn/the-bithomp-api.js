@@ -6,6 +6,7 @@ import Breadcrumbs from '../../components/Breadcrumbs'
 import SEO from '../../components/SEO'
 import { network } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
+import AboutApiTabs from '../../components/Tabs/AboutApiTabs'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -27,6 +28,9 @@ export default function TheBithompAPI() {
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
+
+        <AboutApiTabs tab="about" />
+
         <article className="prose sm:prose-lg dark:prose-invert mx-auto max-w-4xl my-10">
           <h1>How to Use the Bithomp API – And Why It’s Unique Among XRPL and Xahau APIs</h1>
           <Image
@@ -106,16 +110,15 @@ export default function TheBithompAPI() {
             <li>Previews (360×360px)</li>
             <li> Thumbnails (64×64px)</li>
             <li>Video snippets (first 15 seconds)</li>
-            </ul>
-            <p>
-              Each API tier includes a specific volume of NFT media delivery per day and per month, depending on the
-              selected plan.{' '}
-            </p>
-            <p>
-              If you are using our CDN server and would like to learn how to pay for the NFT Content Plan, please
-              contact us at <a href="mailto:partner@bithomp.com">partner@bithomp.com</a>.
-            </p>
-         
+          </ul>
+          <p>
+            Each API tier includes a specific volume of NFT media delivery per day and per month, depending on the
+            selected plan.{' '}
+          </p>
+          <p>
+            If you are using our CDN server and would like to learn how to pay for the NFT Content Plan, please contact
+            us at <a href="mailto:partner@bithomp.com">partner@bithomp.com</a>.
+          </p>
           <p>
             <>
               <Link href="https://docs.bithomp.com/#nft-content-plans ">
