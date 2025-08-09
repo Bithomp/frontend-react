@@ -24,7 +24,18 @@ import TokenSelector from '../../UI/TokenSelector'
 let interval
 let startTime
 
-export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, account }) {
+export default function URITokenMint({
+  setSignRequest,
+  uriQuery,
+  digestQuery,
+  account,
+  burnableQuery,
+  sellQuery,
+  amountQuery,
+  currencyQuery,
+  currencyIssuerQuery,
+  destinationQuery
+}) {
   const { i18n } = useTranslation()
   const router = useRouter()
 
@@ -41,12 +52,15 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
   const [update, setUpdate] = useState(false)
   const [minted, setMinted] = useState('')
   const [uriValidDigest, setUriValidDigest] = useState(isIdValid(digestQuery))
-  const [createSellOffer, setCreateSellOffer] = useState(false)
-  const [amount, setAmount] = useState('')
-  const [destination, setDestination] = useState('')
-  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
+  const [createSellOffer, setCreateSellOffer] = useState(sellQuery === 'true')
+  const [amount, setAmount] = useState(amountQuery || '')
+  const [destination, setDestination] = useState(destinationQuery || '')
+  const [selectedToken, setSelectedToken] = useState({
+    currency: currencyQuery || nativeCurrency,
+    issuer: currencyIssuerQuery || null
+  })
   const [flags, setFlags] = useState({
-    tfBurnable: false
+    tfBurnable: burnableQuery === 'true'
   })
   const [mintAndSend, setMintAndSend] = useState(false)
 
@@ -74,11 +88,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
     setErrorMessage('')
   }, [i18n.language])
 
-  useEffect(() => {
-    if (!account?.address) {
-      setCreateSellOffer(false)
-    }
-  }, [account?.address])
+  // Do not auto-reset createSellOffer so sell=true in URL survives refresh
 
   const onUriChange = (e) => {
     let uri = e.target.value
@@ -291,26 +301,38 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
     let queryAddList = []
     let queryRemoveList = []
     if (digest) {
-      queryAddList.push({
-        name: 'digest',
-        value: digest
-      })
+      queryAddList.push({ name: 'digest', value: digest })
       setErrorMessage('')
     } else {
       queryRemoveList.push('digest')
     }
     if (uri) {
-      queryAddList.push({
-        name: 'uri',
-        value: uri
-      })
+      queryAddList.push({ name: 'uri', value: uri })
       setErrorMessage('')
     } else {
       queryRemoveList.push('uri')
     }
+    // reflect sell offer related params
+    if (createSellOffer) {
+      queryAddList.push({ name: 'sell', value: 'true' })
+      if (amount) queryAddList.push({ name: 'amount', value: amount })
+      else queryRemoveList.push('amount')
+      if (selectedToken?.currency) queryAddList.push({ name: 'currency', value: selectedToken.currency })
+      else queryRemoveList.push('currency')
+      if (selectedToken?.issuer) queryAddList.push({ name: 'currencyIssuer', value: selectedToken.issuer })
+      else queryRemoveList.push('currencyIssuer')
+      if (destination) queryAddList.push({ name: 'destination', value: destination })
+      else queryRemoveList.push('destination')
+    } else {
+      queryRemoveList.push('sell')
+      queryRemoveList.push('amount')
+      queryRemoveList.push('currency')
+      queryRemoveList.push('currencyIssuer')
+      queryRemoveList.push('destination')
+    }
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [digest, uri])
+  }, [digest, uri, createSellOffer, amount, selectedToken?.currency, selectedToken?.issuer, destination])
 
   const onMetadataChange = (e) => {
     setDigest('')
