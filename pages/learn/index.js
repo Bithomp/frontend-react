@@ -28,6 +28,7 @@ const learnContentXRP = [
     category: 'XRPL Features & Concepts',
     description: 'Dive deeper into the features and concepts of the XRP Ledger.',
     items: [
+      { title: 'XRP, Ripple, XRP Ledger: Key Differencies', slug: 'xrpl-article' },
       { title: 'Blackholed Address', slug: 'blackholed-address' },
       { title: 'Blacklisted Address', slug: 'blacklisted-address' },
       { title: 'Ripple USD', slug: 'ripple-usd' },
