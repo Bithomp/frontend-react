@@ -102,7 +102,6 @@ export default function TheBithompAPI() {
           </>
           <h3>NFT Content Plans</h3>
           <p>
-            The NFT Content Plans are included as part of the main API subscription.{' '}
             <strong>
               NFT Content Plans are intended only for those who want to display NFT images and videos using our CDN
               servers.
@@ -112,7 +111,7 @@ export default function TheBithompAPI() {
           <ul>
             <li>Images(700×700px)</li>
             <li>Previews (image, otherwise a frame from a video, 360×360px)</li>
-            <li> Thumbnails (image, otherwise a frame from a video, 64×64px)</li>
+            <li>Thumbnails (image, otherwise a frame from a video, 64×64px)</li>
             <li>Video snippets (first 15 seconds)</li>
           </ul>
           <p>
@@ -138,20 +137,17 @@ export default function TheBithompAPI() {
             offering a more developer-friendly experience.
           </p>
           <ol>
-            {' '}
             <li>
               <strong>Enhanced Metadata</strong>
             </li>
             Bithomp parses memos, decodes NFT metadata, and enriches transactions with context like token names, images,
             and user-friendly tags.
             <li>
-              {' '}
               <strong> Historical Price Calculations</strong>
             </li>
             You can get historical fiat prices and even historical token price data — used in features like tax reports.
             This is crucial for apps dealing with compliance, accounting, and reporting.
             <li>
-              {' '}
               <strong>NFT-Focused Endpoints</strong>
             </li>
             With deep NFT support (including issuer metadata, offer history, and cached media), it goes beyond standard
