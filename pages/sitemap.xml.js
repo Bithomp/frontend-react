@@ -65,8 +65,7 @@ const pages = [
   { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' },
   { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.9' },
   { loc: 'learn/nft-minting', changefreq: 'monthly', priority: '1' },
-  { loc: 'learn/the-bithomp-api', changefreq: 'monthly', priority: '1' },
-  { loc: 'learn/xrpl-article', changefreq: 'monthly', priority: '0.4' }
+  { loc: 'learn/the-bithomp-api', changefreq: 'monthly', priority: '1' }
 ]
 
 //network specific pages
@@ -114,8 +113,7 @@ function generateSiteMap(posts) {
     'learn/verified-domain',
     'learn/ripple-usd',
     'learn/the-bithomp-explorer-advantages',
-    'learn/xrpl-article',
-
+    'learn/xrpl-article'
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
