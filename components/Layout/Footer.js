@@ -52,11 +52,12 @@ export default function Footer() {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
-          <Link href="/jobs">Join our team</Link>
+          <Link href="/learn/the-bithomp-explorer-advantages">Why Our Explorer</Link>
           <Link href="/about-us">{t('menu.company.about-us')}</Link>
           <Link href="/advertise">{t('menu.business.advertise')}</Link>
           <Link href="/customer-support">{t('menu.customer-support')}</Link>
           <Link href="/press">{t('menu.press')}</Link>
+          <Link href="/jobs">Join our team</Link>
           <Link href="/donate">{t('menu.donate')}</Link>
         </div>
         <div className="footer-menu-column">
@@ -69,10 +70,7 @@ export default function Footer() {
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
           {!xahauNetwork && <Link href="/learn/xrpl-article">XRP, XRPL, Ripple</Link>}
-          <Link href="/learn/blackholed-address">Blackholed address</Link>
-          <Link href="/learn/blacklisted-address">Blacklisted address</Link>
           <Link href="/learn/verified-domain">Verified domains</Link>
-          <Link href="/learn/the-bithomp-explorer-advantages">Why Our Explorer</Link>
           {!xahauNetwork && <Link href="/learn/ripple-usd">Ripple USD</Link>}
           <Link href="/learn/nft-minting">How to Mint NFT</Link>
           <Link href="/learn">See our learn page</Link>
