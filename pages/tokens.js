@@ -558,7 +558,11 @@ export default function Tokens({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr key={i}>
+                            <tr 
+                              key={i} 
+                              className="clickable-row"
+                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                            >
                               <td className="center">{i + 1}</td>
                               <td>
                                 <TokenCell token={token} />
@@ -633,7 +637,8 @@ export default function Tokens({
 
                               <td className="center">
                                 <span
-                                  onClick={() => {
+                                  onClick={(e) => {
+                                    e.stopPropagation()
                                     handleSetTrustline(token)
                                   }}
                                   className="orange tooltip"
@@ -674,7 +679,11 @@ export default function Tokens({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr key={i}>
+                            <tr 
+                              key={i} 
+                              className="clickable-row"
+                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                            >
                               <td style={{ padding: '5px' }} className="center">
                                 <b>{i + 1}</b>
                               </td>
@@ -773,7 +782,8 @@ export default function Tokens({
                                   <br />
                                   <button
                                     className="button-action narrow thin"
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                      e.stopPropagation()
                                       handleSetTrustline(token)
                                     }}
                                   >
@@ -793,6 +803,21 @@ export default function Tokens({
           )}
         </InfiniteScrolling>
       </FiltersFrame>
+
+      <style jsx>{`
+        .clickable-row {
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+        
+        .clickable-row:hover {
+          background-color: var(--unaccent-icon);
+        }
+        
+        .clickable-row td {
+          position: relative;
+        }
+      `}</style>
     </>
   )
 }
