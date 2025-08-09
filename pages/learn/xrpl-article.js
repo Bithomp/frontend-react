@@ -50,11 +50,11 @@ export default function XrplArticle() {
           <h2>What is Ripple?</h2>
           <p>
             Ripple is a blockchain technology company that primarily focuses on providing cross-border payment
-            solutions. Ripple Labs is widely known for its contributions to the XRP Ledger (XRPL) and for promoting the
-            use of XRP in global finance.
+            solutions. Ripple is widely known for its contributions to the XRP Ledger (XRPL) and for promoting the use
+            of XRP in global finance.
           </p>
           <p>
-            While Ripple Labs plays a significant role in the development and promotion of XRP, the company itself also
+            While Ripple plays a significant role in the development and promotion of XRP, the company itself also
             offers RippleNet — a decentralized global payments network used by banks, financial institutions, and
             payment providers to facilitate real-time, low-cost international money transfers.
           </p>
@@ -123,7 +123,7 @@ export default function XrplArticle() {
           <h2>What is XRP?</h2>
           <p>
             XRP is the native digital asset of the XRP Ledger (XRPL), an open-source, decentralized blockchain developed
-            by Ripple Labs Inc. Unlike cryptocurrencies like Bitcoin that aim to replace traditional finance, XRP was
+            by Ripple Inc. Unlike cryptocurrencies like Bitcoin that aim to replace traditional finance, XRP was
             designed to work with financial institutions and support global money transfers.
           </p>
 
@@ -165,7 +165,7 @@ export default function XrplArticle() {
               <strong>Low Fees:</strong> Typical transaction costs are a fraction of a cent.
             </li>
             <li>
-              <strong>Decentralized:</strong> Maintained by independent validators, not Ripple Labs.
+              <strong>Decentralized:</strong> Maintained by independent validators, not Ripple.
             </li>
           </ul>
 
@@ -190,7 +190,7 @@ export default function XrplArticle() {
 
           <h3>Creating and Distributing XRP</h3>
           <p>
-            XRP was pre-mined, meaning all 100 billion tokens were created at launch. Ripple Labs holds a portion and
+            XRP was pre-mined, meaning all 100 billion tokens were created at launch. Ripple holds a portion and
             distributes it to support ecosystem growth.
           </p>
           <p>
