@@ -121,11 +121,7 @@ export default function XrplArticle() {
           </dl>
 
           <h2>What is XRP?</h2>
-          <p>
-            XRP is the native digital asset of the XRP Ledger (XRPL), an open-source, decentralized blockchain developed
-            by Ripple Inc. Unlike cryptocurrencies like Bitcoin that aim to replace traditional finance, XRP was
-            designed to work with financial institutions and support global money transfers.
-          </p>
+          <p>XRP is the native digital asset of the XRP Ledger (XRPL), an open-source, decentralized blockchain.</p>
 
           <h3>The Basics of XRP</h3>
           <ul>
@@ -171,7 +167,7 @@ export default function XrplArticle() {
 
           <h3>The Role of Validators and Nodes</h3>
           <p>
-            Validators reach consensus on transaction validity. Anyone can run a validator that follows network rules.
+            Validators reach consensus on transaction sequence. Anyone can run a validator that follows network rules.
             XRP Ledger does not require mining.
           </p>
           <p>
@@ -190,8 +186,8 @@ export default function XrplArticle() {
 
           <h3>Creating and Distributing XRP</h3>
           <p>
-            XRP was pre-mined, meaning all 100 billion tokens were created at launch. Ripple holds a portion and
-            distributes it to support ecosystem growth.
+            All 100 billion tokens were created at launch. Ripple holds a portion and distributes it to support
+            ecosystem growth.
           </p>
           <p>
             <Link href="/distribution" className="bold">
@@ -200,13 +196,13 @@ export default function XrplArticle() {
             .
           </p>
 
-          <h3>Key Features of XRP</h3>
+          <h3>Key Features of XRPL</h3>
           <ul>
             <li>
-              <strong>Liquidity:</strong> XRP acts as a bridge currency between fiat currencies.
+              <strong>Liquidity:</strong> XRP is perfect as a bridge currency between fiat currencies.
             </li>
             <li>
-              <strong>Scalability:</strong> Can handle thousands of transactions per second.
+              <strong>Scalability:</strong> With Pay Channels it can handle thousands of transactions per second.
             </li>
             <li>
               <strong>Energy Efficient:</strong> No mining, low environmental impact.
@@ -214,20 +210,16 @@ export default function XrplArticle() {
           </ul>
 
           <h3>Market Position and Outlook</h3>
+          <p>XRP has faced volatility and legal scrutiny, notably from the U.S. SEC.</p>
           <p>
-            XRP has faced volatility and legal scrutiny, notably from the U.S. SEC. Despite this, it remains popular
-            among financial institutions and developers.
-          </p>
-          <p>
-            Its use cases, partnerships, and low-cost, high-speed performance have helped maintain its relevance in the
-            evolving crypto landscape.
+            Its use cases, low-cost, and high-speed performance have helped maintain its relevance in the evolving
+            crypto landscape.
           </p>
 
           <h3>Conclusion</h3>
           <p>
-            XRP and the XRP Ledger present innovative solutions for cross-border payments and global liquidity. Ripple's
-            ongoing development of the XRPL and XRP ecosystem will be critical to the adoption of blockchain in
-            traditional finance.
+            XRP and the XRP Ledger present innovative solutions for cross-border payments, Real World Assets and global
+            liquidity.
           </p>
         </article>
       </div>
