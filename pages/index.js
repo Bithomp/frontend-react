@@ -254,6 +254,7 @@ export default function Home({
                 chartPeriod={chartPeriod}
                 setChartPeriod={setChartPeriod}
                 hideToolbar={true}
+                liveFiatRate={liveFiatRate}
               />
             </div>
           </div>

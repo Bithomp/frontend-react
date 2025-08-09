@@ -13,7 +13,7 @@ const zoominicon = '/images/chart/zoom-in.svg'
 const zoomouticon = '/images/chart/zoom-out.svg'
 const panicon = '/images/chart/panning.svg'
 
-export default function PriceChart({ currency, chartPeriod, setChartPeriod, hideToolbar }) {
+export default function PriceChart({ currency, chartPeriod, setChartPeriod, hideToolbar, liveFiatRate }) {
   const showToolbar = !hideToolbar
   const { i18n } = useTranslation()
   const { theme } = useTheme()
@@ -326,6 +326,56 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currency, chartPeriod, theme, detailedDayAndWeekChartAvailable])
+
+  // Append/update live price points with time bucketing (15m/30m/1h max resolution)
+  useEffect(() => {
+    if (!liveFiatRate) return
+
+    // Determine bucket size based on selected period
+    const getBucketMs = (period) => {
+      switch (period) {
+        case 'one_day':
+          return 15 * 60 * 1000 // 15 minutes → max 4 points/hour
+        case 'one_week':
+          return 30 * 60 * 1000 // 30 minutes → max 2 points/hour
+        default:
+          return 60 * 60 * 1000 // 1 hour → max 1 point/hour
+      }
+    }
+
+    const bucketMs = getBucketMs(chartPeriod)
+
+    setData((previousData) => {
+      const previousSeries = Array.isArray(previousData?.data) ? previousData.data : []
+      const nowTimestamp = Date.now()
+
+      if (previousSeries.length === 0) {
+        return { ...previousData, data: [[nowTimestamp, liveFiatRate]] }
+      }
+
+      const lastPoint = previousSeries[previousSeries.length - 1]
+      const lastTimestamp = Array.isArray(lastPoint) ? lastPoint[0] : null
+
+      // If within the same bucket window, update the last point (keep only one point per bucket)
+      if (lastTimestamp && nowTimestamp - lastTimestamp < bucketMs) {
+        const updated = previousSeries.slice(0, -1)
+        updated.push([nowTimestamp, liveFiatRate])
+        return { ...previousData, data: updated }
+      }
+
+      // Outside the bucket window → append a new point
+      return { ...previousData, data: [...previousSeries, [nowTimestamp, liveFiatRate]] }
+    })
+
+    // Keep x-axis max pinned to now so the viewport grows live
+    setOptions((previousOptions) => ({
+      ...previousOptions,
+      xaxis: {
+        ...previousOptions.xaxis,
+        max: Date.now()
+      }
+    }))
+  }, [liveFiatRate, chartPeriod])
 
   const series = [
     {
