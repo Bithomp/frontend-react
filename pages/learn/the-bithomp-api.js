@@ -55,7 +55,7 @@ export default function TheBithompAPI() {
           <h2>Getting Started with the Bithomp API</h2>
           <strong> Step 1: Request Access</strong>
           <ul>
-            <li>Visit https://bithomp.com/en/admin/api and sign in</li>
+            <li>Sign in <Link href="https://bithomp.com/en/admin/api">HERE</Link></li>
             <li>Request your API key</li>
             <p>If you need to purchase or extend the paid plan:</p>
             <li>Press “Manage API Subscriptions”</li>
