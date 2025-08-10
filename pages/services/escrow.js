@@ -16,10 +16,11 @@ import { errorCodeDescription } from '../../utils/transaction'
 import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import axios from 'axios'
 
 const RIPPLE_EPOCH_OFFSET = 946684800 // Seconds between 1970-01-01 and 2000-01-01
 
-export default function CreateEscrow({ setSignRequest }) {
+export default function CreateEscrow({ setSignRequest, sessionToken, subscriptionExpired, openEmailLogin }) {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const [address, setAddress] = useState(null)
@@ -28,6 +29,7 @@ export default function CreateEscrow({ setSignRequest }) {
   const [finishAfter, setFinishAfter] = useState(null)
   const [cancelAfter, setCancelAfter] = useState(null)
   const [condition, setCondition] = useState(null)
+  const [fulfillment, setFulfillment] = useState(null)
   const [sourceTag, setSourceTag] = useState(null)
   const [txResult, setTxResult] = useState(null)
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -36,10 +38,8 @@ export default function CreateEscrow({ setSignRequest }) {
   const [fee, setFee] = useState(null)
   const [feeError, setFeeError] = useState(null)
 
-  const handleFeeChange = (e) => {
-    const value = e.target.value
+  const handleFeeChange = (value) => {
     setFee(value)
-
     if (Number(value) > 1) {
       setFeeError('Maximum fee is 1 ' + nativeCurrency)
     } else {
@@ -66,6 +66,11 @@ export default function CreateEscrow({ setSignRequest }) {
       return
     }
 
+    if ((fee || sourceTag || condition) && (!sessionToken || subscriptionExpired)) {
+      setError('Advanced options (fee, source tag, condition) are available only to logged-in Bithomp Pro subscribers.')
+      return
+    }
+
     if (sourceTag && !isTagValid(sourceTag)) {
       setError('Please enter a valid source tag.')
       return
@@ -75,12 +80,12 @@ export default function CreateEscrow({ setSignRequest }) {
     // Valid combinations: FinishAfter only, FinishAfter+CancelAfter, FinishAfter+Condition,
     // FinishAfter+Condition+CancelAfter, or Condition+CancelAfter
     if (!finishAfter && !condition) {
-      setError('You must specify either a finish time or a condition (or both).')
+      setError('You must specify either a unlock time or a condition (or both).')
       return
     }
 
     if (condition && !finishAfter && !cancelAfter) {
-      setError('A conditional escrow must have either a finish time or an expiration time (or both).')
+      setError('A conditional escrow must have either a unlock time or an expiration time (or both).')
       return
     }
 
@@ -97,7 +102,7 @@ export default function CreateEscrow({ setSignRequest }) {
     const now = Math.floor(Date.now() / 1000)
 
     if (finishAfter && finishAfter <= now) {
-      setError('Finish time must be in the future.')
+      setError('Unlock time must be in the future.')
       return
     }
 
@@ -107,7 +112,7 @@ export default function CreateEscrow({ setSignRequest }) {
     }
 
     if (finishAfter && cancelAfter && cancelAfter <= finishAfter) {
-      setError('Cancel time must be after finish time.')
+      setError('Cancel time must be after unlock time.')
       return
     }
 
@@ -183,6 +188,18 @@ export default function CreateEscrow({ setSignRequest }) {
     }
   }
 
+  const handleGenerateCondition = async () => {
+    setError('')
+    try {
+      const response = await axios('/v2/escrows/generate-condition')
+      const { condition: generatedCondition, fulfillment: generatedFulfillment } = response.data
+      setCondition(generatedCondition)
+      setFulfillment(generatedFulfillment)
+    } catch (err) {
+      setError('Failed to generate condition')
+    }
+  }
+
   return (
     <>
       <SEO title="Create Escrow" description={'Create an escrow transaction on the ' + explorerName} />
@@ -210,72 +227,65 @@ export default function CreateEscrow({ setSignRequest }) {
             defaultValue={destinationTag}
           />
           <div className="form-spacing" />
-          <div className="form-input">
-            <span className="input-title">{t('table.amount')}</span>
-            <input
-              placeholder={'Enter amount in ' + nativeCurrency}
-              onChange={(e) => setAmount(e.target.value)}
-              onKeyPress={typeNumberOnly}
-              className="input-text"
-              spellCheck="false"
-              maxLength="35"
-              min="0"
-              type="text"
-              inputMode="decimal"
-              defaultValue={amount}
-            />
-          </div>
-          <div className="form-input">
-            <div className="form-spacing" />
-            <span className="input-title">
-              {t('table.memo')} (<span className="orange">It will be public</span>)
-            </span>
-            <input
-              placeholder="Enter a memo (optional)"
-              onChange={(e) => setMemo(e.target.value)}
-              className="input-text"
-              spellCheck="false"
-              maxLength="100"
-              type="text"
-              defaultValue={memo}
-            />
-          </div>
+          <FormInput
+            title={t('table.amount')}
+            placeholder={'Enter amount in ' + nativeCurrency}
+            setInnerValue={setAmount}
+            hideButton={true}
+            onKeyPress={typeNumberOnly}
+            defaultValue={amount}
+            maxLength={35}
+            min={0}
+            inputMode="decimal"
+            type="text"
+          />
           <div className="form-spacing" />
-          <div className="form-input">
-            <span className="input-title">
-              Finish After <span className="grey">(when funds can be released)</span>
-            </span>
-            <DatePicker
-              selected={finishAfter ? new Date(finishAfter * 1000) : null}
-              onChange={(date) => setFinishAfter(date ? Math.floor(date.getTime() / 1000) : null)}
-              selectsStart
-              showTimeInput
-              timeInputLabel={t('table.time')}
-              dateFormat="yyyy/MM/dd HH:mm:ss"
-              className="dateAndTimeRange"
-              minDate={new Date()}
-              showMonthDropdown
-              showYearDropdown
-            />
-          </div>
+          <FormInput
+            title={
+              <>
+                {t('table.memo')} (<span className="orange">It will be public</span>)
+              </>
+            }
+            placeholder="Enter a memo (optional)"
+            setInnerValue={setMemo}
+            hideButton={true}
+            defaultValue={memo}
+            maxLength={100}
+            type="text"
+          />
           <div className="form-spacing" />
-          <div className="form-input">
-            <span className="input-title">
-              Cancel After <span className="grey">(when escrow expires)</span>
-            </span>
-            <DatePicker
-              selected={cancelAfter ? new Date(cancelAfter * 1000) : null}
-              onChange={(date) => setCancelAfter(date ? Math.floor(date.getTime() / 1000) : null)}
-              selectsStart
-              showTimeInput
-              timeInputLabel={t('table.time')}
-              dateFormat="yyyy/MM/dd HH:mm:ss"
-              className="dateAndTimeRange"
-              minDate={new Date()}
-              showMonthDropdown
-              showYearDropdown
-            />
-          </div>
+
+          <span className="input-title">
+            Unlock after <span className="grey">(when funds can be released)</span>
+          </span>
+          <DatePicker
+            selected={finishAfter ? new Date(finishAfter * 1000) : null}
+            onChange={(date) => setFinishAfter(date ? Math.floor(date.getTime() / 1000) : null)}
+            selectsStart
+            showTimeInput
+            timeInputLabel={t('table.time')}
+            dateFormat="yyyy/MM/dd HH:mm:ss"
+            className="dateAndTimeRange"
+            minDate={new Date()}
+            showMonthDropdown
+            showYearDropdown
+          />
+
+          <span className="input-title">
+            Cancel after <span className="grey">(when escrow expires)</span>
+          </span>
+          <DatePicker
+            selected={cancelAfter ? new Date(cancelAfter * 1000) : null}
+            onChange={(date) => setCancelAfter(date ? Math.floor(date.getTime() / 1000) : null)}
+            selectsStart
+            showTimeInput
+            timeInputLabel={t('table.time')}
+            dateFormat="yyyy/MM/dd HH:mm:ss"
+            className="dateAndTimeRange"
+            minDate={new Date()}
+            showMonthDropdown
+            showYearDropdown
+          />
 
           <CheckBox
             checked={showAdvanced}
@@ -284,61 +294,104 @@ export default function CreateEscrow({ setSignRequest }) {
               if (!showAdvanced) {
                 setCondition(null)
                 setSourceTag(null)
+                setFulfillment(null)
+                setFee(null)
               }
             }}
             name="advanced-escrow"
           >
             Advanced options
+            {!sessionToken ? (
+              <>
+                {' '}
+                <span className="orange">
+                  (available to{' '}
+                  <span className="link" onClick={() => openEmailLogin()}>
+                    logged-in
+                  </span>{' '}
+                  Bithomp Pro subscribers)
+                </span>
+              </>
+            ) : (
+              subscriptionExpired && (
+                <>
+                  {' '}
+                  <span className="orange">
+                    Your Bithomp Pro subscription has expired.{' '}
+                    <Link href="/admin/subscriptions"> Renew your subscription</Link>
+                  </span>
+                </>
+              )
+            )}
           </CheckBox>
 
           {showAdvanced && (
             <>
               <br />
-              <div className="form-input">
-                <span className="input-title">
-                  Condition <span className="grey">(hex-encoded crypto-condition)</span>
-                </span>
-                <input
-                  placeholder="Enter PREIMAGE-SHA-256 condition (optional)"
-                  onChange={(e) => setCondition(e.target.value)}
-                  className="input-text"
-                  spellCheck="false"
-                  type="text"
-                  defaultValue={condition}
-                />
-                <div className="grey" style={{ fontSize: '12px', marginTop: '5px' }}>
-                  A hex-encoded PREIMAGE-SHA-256 crypto-condition. Funds can only be released if this condition is
-                  fulfilled.
-                </div>
-              </div>
-              <div className="form-spacing" />
+              <FormInput
+                title="Condition"
+                placeholder="PREIMAGE-SHA-256"
+                setInnerValue={setCondition}
+                hideButton={true}
+                defaultValue={condition}
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+              />
+              <br />
+              <button
+                className="button-action"
+                onClick={handleGenerateCondition}
+                disabled={!sessionToken || subscriptionExpired}
+              >
+                Generate a random Condition
+              </button>
+              <br />
+              <br />
+              {fulfillment && (
+                <>
+                  <div>
+                    Fulfillment:
+                    <div className="form-spacing" />
+                    <span className="brake bold">{fulfillment}</span> <CopyButton text={fulfillment} />
+                  </div>
+                  <br />
+                  <div className="red bold">
+                    We do not save/keep the Fulfillment. Please copy and save it securely.
+                    <br />
+                    <br />
+                    <b>If you lose it, you won't be able to relase the funds.</b>
+                  </div>
+                  <br />
+                </>
+              )}
               <FormInput
                 title="Source Tag"
-                placeholder="Enter source tag (optional)"
+                placeholder="Enter source tag"
                 setInnerValue={setSourceTag}
                 hideButton={true}
                 onKeyPress={typeNumberOnly}
                 defaultValue={sourceTag}
+                disabled={!sessionToken || subscriptionExpired}
               />
               <div className="form-spacing" />
-              <div className="form-input">
-                <span className="input-title">Fee</span>
-                <input
-                  placeholder={'Enter fee in ' + nativeCurrency}
-                  onChange={handleFeeChange}
-                  onKeyPress={typeNumberOnly}
-                  className={`input-text ${feeError ? 'error' : ''}`}
-                  spellCheck="false"
-                  maxLength="35"
-                  min="0"
-                  type="text"
-                  inputMode="decimal"
-                  defaultValue={fee}
-                />
-                {feeError && <div className="red">{feeError}</div>}
-              </div>
+              <FormInput
+                title="Fee"
+                placeholder={'Enter fee in ' + nativeCurrency}
+                setInnerValue={handleFeeChange}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={fee}
+                maxLength={35}
+                min={0}
+                inputMode="decimal"
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+                className={feeError ? 'error' : ''}
+              />
+              {feeError && <div className="red">{feeError}</div>}
             </>
           )}
+
           <br />
           <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
             I agree with the{' '}
@@ -395,7 +448,7 @@ export default function CreateEscrow({ setSignRequest }) {
                   </p>
                   {txResult.finishAfter && (
                     <p>
-                      <strong>Finish After:</strong> {timeFromNow(txResult.finishAfter, i18n, 'ripple')} (
+                      <strong>Unlock:</strong> {timeFromNow(txResult.finishAfter, i18n, 'ripple')} (
                       {fullDateAndTime(txResult.finishAfter, 'ripple')})
                     </p>
                   )}
@@ -409,6 +462,12 @@ export default function CreateEscrow({ setSignRequest }) {
                     <p>
                       <strong>Condition:</strong> {shortHash(txResult.condition)}{' '}
                       <CopyButton text={txResult.condition} />
+                    </p>
+                  )}
+                  {txResult.fulfillment && (
+                    <p>
+                      <strong>Fulfillment:</strong> {shortHash(txResult.fulfillment)}{' '}
+                      <CopyButton text={txResult.fulfillment} />
                     </p>
                   )}
                   {txResult.memo && (

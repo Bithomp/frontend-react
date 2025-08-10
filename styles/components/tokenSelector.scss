@@ -14,7 +14,6 @@
     position: relative;
     &:focus,
     &:hover {
-      border: 1px solid var(--accent-link);
       box-shadow: 0 0 5px var(--unaccent-icon);
     }
   }
@@ -53,7 +52,7 @@
     font-weight: 500;
     color: var(--accent-link);
     margin-right: 4px;
-    white-space: nowrap;
+    text-align: left;
     
     &:empty::before {
       content: 'Select Token';
@@ -217,5 +216,26 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+  }
+
+  &-modal-item-limit {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+    font-size: 12px;
+    
+    &-label {
+      color: #6b7280;
+      font-weight: 500;
+      .dark & {
+        color: #9ca3af;
+      }
+    }
+    
+    &-value {
+      color: var(--accent-link);
+      font-weight: 500;
+    }
   }
 }

@@ -19,14 +19,14 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Notifications() {
+export default function Notifications({ sessionToken, openEmailLogin }) {
   const { t } = useTranslation('admin')
   const notifications = useGetNotifications()
 
-  if (notifications.isLoading) {
+  if (sessionToken && notifications.isLoading) {
     return <div>Loading...</div>
   }
-  if (notifications.error) {
+  if (sessionToken && notifications.error) {
     return <ErrorState />
   }
 
@@ -34,6 +34,10 @@ export default function Notifications() {
     <main className="page-admin content-center">
       <h1 className="center">{t('header', { ns: 'admin' })}</h1>
       <AdminTabs name="mainTabs" tab="notifications" />
+        
+        {sessionToken ? (
+          <>
+        
       <p className="text-left mb-8">
         Set up custom rules to get notified about blockchain events - like NFT listings or high-value sales - through
         Slack, Discord, Email, and more.
@@ -84,6 +88,26 @@ export default function Notifications() {
           </div>
         </>
       )}
+      
+                </>
+        ) : (
+          <>
+            <br />
+            <div className="center">
+              <div style={{ maxWidth: '440px', margin: 'auto' }}>
+                <p>Set up custom notification rules for blockchain events.</p>
+                <p>Get notified via Slack, Discord, Email and more.</p>
+              </div>
+              <br />
+              <center>
+                <button className="button-action" onClick={() => openEmailLogin()}>
+                  Register or Sign In
+                </button>
+              </center>
+            </div>
+          </>
+        )}
+      
     </main>
   )
 }

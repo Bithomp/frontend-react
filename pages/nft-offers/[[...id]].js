@@ -36,6 +36,7 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import Tabs from '../../components/Tabs'
 
 import LinkIcon from '../../public/images/link.svg'
+import { LinkTx } from '../../utils/links'
 
 export default function NftOffers({ setSignRequest, refreshPage, account, offerList, id }) {
   const { t } = useTranslation()
@@ -340,10 +341,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
                             )}
                             <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
                             <td>
-                              {fullDateAndTime(offer.createdAt)}{' '}
-                              <a href={'/explorer/' + offer.createdTxHash}>
-                                <LinkIcon />
-                              </a>
+                              {fullDateAndTime(offer.createdAt)} <LinkTx tx={offer.createdTxHash} icon={true} />
                             </td>
                             {showExpirationColumn && (
                               <td>
@@ -422,9 +420,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
                               </p>
                               <p>
                                 {t('table.placed')}: {fullDateAndTime(offer.createdAt)}{' '}
-                                <a href={'/explorer/' + offer.createdTxHash}>
-                                  <LinkIcon />
-                                </a>
+                                <LinkTx tx={offer.createdTxHash} icon={true} />
                               </p>
                               {offer.expiration && (
                                 <p>

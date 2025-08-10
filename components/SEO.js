@@ -1,4 +1,5 @@
 import { NextSeo } from 'next-seo'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { server, explorerName, xahauNetwork } from '../utils'
@@ -9,8 +10,8 @@ export default function SEO({
   description,
   descriptionWithNetwork,
   image,
+  twitterImage,
   page,
-  images,
   websiteName,
   noindex
 }) {
@@ -31,45 +32,47 @@ export default function SEO({
 
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
 
-  if (image) {
-    images = [image]
-  } else if (!images) {
-    images = [
-      {
-        width: 1200,
-        height: 630,
-        file: imagePath + 'previews/1200x630/index.png'
-      },
-      {
-        width: 630,
-        height: 630,
-        file: imagePath + 'previews/630x630/index.png'
-      }
-    ]
+  let noImagePage = false
+
+  if (!image) {
+    image = {
+      width: 1200,
+      height: 630,
+      file: imagePath + 'previews/1200x630/index.png'
+    }
+    noImagePage = true
   }
 
-  if (images) {
-    //nft previews and avatars starts wuth https
-    openGraph.images = []
-    for (let i = 0; i < images.length; i++) {
-      const { file, width, height, allNetworks } = images[i]
-      let url = file
-      if (file?.indexOf('http') !== 0) {
-        url = (allNetworks ? server + '/images/' : imagePath) + file
-      }
-      openGraph.images.push({
-        url,
-        width,
-        height,
-        alt: `Image for ${title} ${i > 0 ? i : ''}`
-      })
-    }
+  const { file, width, height, allNetworks } = image
+  let url = file
+  if (file?.indexOf('http') !== 0) {
+    url = (allNetworks ? server + '/images/' : imagePath) + file
   }
+
+  openGraph.images = [
+    {
+      url,
+      width,
+      height,
+      alt: `Image for ${title}`
+    }
+  ]
 
   let twitter = {
     handle: '@bithomp',
     site: '@xrplexplorer',
     cardType: 'summary'
+  }
+
+  let twitterImageUrl = null
+
+  if (twitterImage) {
+    twitterImageUrl = twitterImage.file
+    if (twitterImage.file?.indexOf('http') !== 0) {
+      twitterImageUrl = (allNetworks ? server + '/images/' : imagePath) + twitterImage.file
+    }
+  } else if (noImagePage) {
+    twitterImageUrl = imagePath + 'previews/630x630/index.png'
   }
 
   if (xahauNetwork) {
@@ -92,14 +95,21 @@ export default function SEO({
   ]
 
   return (
-    <NextSeo
-      title={titleWithNetwork ? title : explorerName + ' ' + title}
-      description={descriptionWithNetwork ? description : description + ' ' + explorerName}
-      openGraph={openGraph}
-      twitter={twitter}
-      languageAlternates={languageAlternates}
-      canonical={canonical}
-      noindex={noindex ? true : false}
-    />
+    <>
+      <NextSeo
+        title={titleWithNetwork ? title : explorerName + ' ' + title}
+        description={descriptionWithNetwork ? description : description + ' ' + explorerName}
+        openGraph={openGraph}
+        twitter={twitter}
+        languageAlternates={languageAlternates}
+        canonical={canonical}
+        noindex={noindex ? true : false}
+      />
+      {twitterImageUrl && (
+        <Head>
+          <meta name="twitter:image" content={twitterImageUrl} />
+        </Head>
+      )}
+    </>
   )
 }

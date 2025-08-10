@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
@@ -7,12 +7,14 @@ import dynamic from 'next/dynamic'
 import { GoogleAnalytics } from '@next/third-parties/google'
 
 const SignForm = dynamic(() => import('../components/SignForm'), { ssr: false })
+const EmailLoginPopup = dynamic(() => import('../components/EmailLoginPopup'), { ssr: false })
 import TopLinks from '../components/Layout/TopLinks'
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
 import { IsSsrMobileContext } from '@/utils/mobile'
 import { getBackgroundImage } from '@/utils/backgroundImage'
 import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork, networkId } from '@/utils'
+import { useEmailLogin } from '@/hooks/useEmailLogin'
 
 import { getAppMetadata } from '@walletconnect/utils'
 const WalletConnectModalSign = dynamic(
@@ -26,6 +28,7 @@ import '../styles/components/nprogress.css'
 
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
+import ErrorBoundary from '../components/ErrorBoundary'
 
 const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
@@ -46,6 +49,7 @@ function useIsBot() {
 }
 
 const MyApp = ({ Component, pageProps }) => {
+  const firstRenderRef = useRef(true)
   const [account, setAccount] = useLocalStorage('account')
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
   const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
@@ -60,6 +64,10 @@ const MyApp = ({ Component, pageProps }) => {
   const [isClient, setIsClient] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
 
+  const [activatedAccount, setActivatedAccount] = useState(false)
+
+  const { isEmailLoginOpen, openEmailLogin, closeEmailLogin, handleLoginSuccess } = useEmailLogin()
+
   useEffect(() => {
     setIsClient(true)
     setIsOnline(navigator.onLine)
@@ -70,7 +78,15 @@ const MyApp = ({ Component, pageProps }) => {
 
   useEffect(() => {
     //pages where we need to show the latest fiat price
-    const allowedRoutes = ['/', '/account/[[...id]]', '/amms', '/distribution', '/admin/watchlist']
+    const allowedRoutes = ['/', '/account/[[...id]]', '/amms', '/distribution', '/admin/watchlist', '/tokens']
+    const skipOnFirstRender = ['/', '/account/[[...id]]', '/amms', '/tokens']
+
+    // Skip fetch on first render for pages that get on the server side
+    if (firstRenderRef.current && skipOnFirstRender.includes(router.pathname)) {
+      firstRenderRef.current = false
+      return
+    }
+
     if (allowedRoutes.includes(router.pathname)) {
       fetchCurrentFiatRate(selectedCurrency, setFiatRate)
     }
@@ -165,61 +181,71 @@ const MyApp = ({ Component, pageProps }) => {
       </Head>
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
         <ThemeProvider>
-          <div
-            className="body"
-            data-network={network}
-            style={{ backgroundImage: getBackgroundImage() }}
-          >
-            <Header
-              setSignRequest={setSignRequest}
-              account={account}
-              signOut={signOut}
-              signOutPro={signOutPro}
-              selectedCurrency={selectedCurrency}
-              setSelectedCurrency={setSelectedCurrency}
-            />
-            <ScrollToTop />
-            {/* available only on the mainnet and testnet, only on the client side, only when online */}
-            {(networkId === 0 || networkId === 1) && isClient && isOnline && !isBot && (
-              <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
-            )}
-            {(signRequest || isValidUUID(uuid)) && (
-              <SignForm
+          <ErrorBoundary>
+            <div className="body" data-network={network} style={{ backgroundImage: getBackgroundImage() }}>
+              <Header
                 setSignRequest={setSignRequest}
                 account={account}
-                setAccount={setAccount}
-                signRequest={signRequest}
-                uuid={uuid}
-                setRefreshPage={setRefreshPage}
-                saveAddressData={saveAddressData}
-                wcSession={wcSession}
-                setWcSession={setWcSession}
-              />
-            )}
-            <div className="content">
-              <TopProgressBar />
-              {showTopAds && <TopLinks />}
-              <Component
-                {...pageProps}
-                refreshPage={refreshPage}
-                setSignRequest={setSignRequest}
-                account={account}
-                setAccount={setAccount}
                 signOut={signOut}
+                signOutPro={signOutPro}
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
-                showAds={showAds}
-                setProExpire={setProExpire}
-                signOutPro={signOutPro}
-                subscriptionExpired={subscriptionExpired}
-                setSubscriptionExpired={setSubscriptionExpired}
-                sessionToken={sessionToken}
-                setSessionToken={setSessionToken}
-                fiatRate={fiatRate}
               />
+              <ScrollToTop />
+              {/* available only on the mainnet and testnet, only on the client side, only when online */}
+              {(networkId === 0 || networkId === 1) && isClient && isOnline && !isBot && (
+                <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
+              )}
+              {(signRequest || isValidUUID(uuid)) && (
+                <SignForm
+                  setSignRequest={setSignRequest}
+                  account={account}
+                  setAccount={setAccount}
+                  signRequest={signRequest}
+                  uuid={uuid}
+                  setRefreshPage={setRefreshPage}
+                  saveAddressData={saveAddressData}
+                  wcSession={wcSession}
+                  setWcSession={setWcSession}
+                />
+              )}
+              {isEmailLoginOpen && (
+                <EmailLoginPopup
+                  isOpen={isEmailLoginOpen}
+                  onClose={closeEmailLogin}
+                  onSuccess={handleLoginSuccess}
+                  setAccount={setAccount}
+                  setProExpire={setProExpire}
+                  setSessionToken={setSessionToken}
+                />
+              )}
+              <div className="content">
+                <TopProgressBar />
+                {showTopAds && <TopLinks activatedAccount={activatedAccount} />}
+                <Component
+                  {...pageProps}
+                  refreshPage={refreshPage}
+                  setSignRequest={setSignRequest}
+                  account={account}
+                  setAccount={setAccount}
+                  signOut={signOut}
+                  selectedCurrency={selectedCurrency}
+                  setSelectedCurrency={setSelectedCurrency}
+                  showAds={showAds}
+                  setProExpire={setProExpire}
+                  signOutPro={signOutPro}
+                  subscriptionExpired={subscriptionExpired}
+                  setSubscriptionExpired={setSubscriptionExpired}
+                  sessionToken={sessionToken}
+                  setSessionToken={setSessionToken}
+                  fiatRate={fiatRate}
+                  openEmailLogin={openEmailLogin}
+                  setActivatedAccount={setActivatedAccount}
+                />
+              </div>
+              <Footer setSignRequest={setSignRequest} account={account} />
             </div>
-            <Footer setSignRequest={setSignRequest} account={account} />
-          </div>
+          </ErrorBoundary>
         </ThemeProvider>
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />

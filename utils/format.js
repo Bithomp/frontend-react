@@ -5,7 +5,6 @@ import * as relativeTimePlugin from 'dayjs/plugin/relativeTime'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Trans } from 'next-i18next'
-import React from 'react'
 
 import CopyButton from '../components/UI/CopyButton'
 import LinkIcon from '../public/images/link.svg'
@@ -34,11 +33,37 @@ export const NiceNativeBalance = ({ amount }) => {
   )
 }
 
-export const AddressWithIcon = ({ children, address }) => {
-  let imageUrl = avatarServer + address
+export const CurrencyWithIcon = ({ token }) => {
+  if (!token) return ''
+  const { currency, issuer, lp_token, currencyDetails } = token
+  let imageUrl = avatarServer.replace('/avatar/', '/issued-token/')
+  imageUrl += issuer + '/' + currency
+
+  return (
+    <>
+      <Image src={imageUrl} alt="avatar" height={20} width={20} style={{ marginRight: '5px', marginBottom: '-5px' }} />
+      {lp_token ? currencyDetails?.currency : niceCurrency(token.currency)}
+    </>
+  )
+}
+
+export const AddressWithIcon = ({ children, address, currency }) => {
+  let imageUrl = avatarServer
+
+  if (currency) {
+    imageUrl = avatarServer.replace('/avatar/', '/issued-token/')
+  }
+
+  imageUrl += address
+
+  if (currency) {
+    imageUrl += '/' + currency
+  }
+
   if (!address) {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }
+
   return (
     <table style={{ minWidth: 126 }}>
       <tbody>
@@ -89,10 +114,10 @@ export const nativeCurrencyToFiat = (params) => {
   }
 
   return (
-    <span className="tooltip">
+    <span className="tooltip" suppressHydrationWarning>
       {' '}
       ≈ {calculatedAmount}
-      <span className="tooltiptext no-brake">
+      <span className="tooltiptext no-brake" suppressHydrationWarning>
         1 {nativeCurrency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
       </span>
     </span>
@@ -898,7 +923,7 @@ export const fullNiceNumber = (n, currency = null) => {
   }
 }
 
-export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 3, currency = null) => {
+export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 1, currency = null) => {
   if (n !== 0 && !n) return null
   n = Number(n)
   let beforeNumber = ''
@@ -906,6 +931,7 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     beforeNumber = '-'
     n = -1 * n
   }
+
   if (smallNumberFractionDigits > 2) {
     if (n > 99.99) {
       smallNumberFractionDigits = 2
@@ -920,10 +946,10 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     output = niceNumber(n / 1000000000, largeNumberFractionDigits, currency) + 'B'
   } else if (n > 999999) {
     output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M'
-    //} else if (n > 99999) {
-    //output = niceNumber(Math.floor(n), 0, currency)
-  } else if (n > 999) {
+  } else if (n > 9999) {
     output = niceNumber(n / 1000, largeNumberFractionDigits, currency) + 'K'
+  } else if (n > 999) {
+    output = niceNumber(Math.floor(n), 0, currency)
   } else if (n === 0) {
     output = niceNumber(0, 0, currency)
   } else {

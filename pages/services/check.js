@@ -25,7 +25,7 @@ import { LinkTx, LinkAccount } from '../../utils/links'
 import Link from 'next/link'
 import { errorCodeDescription } from '../../utils/transaction'
 
-export default function IssueCheck({ setSignRequest }) {
+export default function IssueCheck({ setSignRequest, sessionToken, subscriptionExpired, openEmailLogin }) {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const [address, setAddress] = useState(null)
@@ -41,10 +41,8 @@ export default function IssueCheck({ setSignRequest }) {
   const [feeError, setFeeError] = useState(null)
   const [sourceTag, setSourceTag] = useState(null)
 
-  const handleFeeChange = (e) => {
-    const value = e.target.value
+  const handleFeeChange = (value) => {
     setFee(value)
-
     if (Number(value) > 1) {
       setFeeError('Maximum fee is 1 ' + nativeCurrency)
     } else {
@@ -71,6 +69,13 @@ export default function IssueCheck({ setSignRequest }) {
 
     if (destinationTag && !isTagValid(destinationTag)) {
       setError('Please enter a valid destination tag.')
+      return
+    }
+
+    if ((fee || sourceTag || invoiceID) && (!sessionToken || subscriptionExpired)) {
+      setError(
+        'Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.'
+      )
       return
     }
 
@@ -183,36 +188,28 @@ export default function IssueCheck({ setSignRequest }) {
             defaultValue={destinationTag}
           />
           <div className="form-spacing" />
-          <div className="form-input">
-            <span className="input-title">{t('table.amount')}</span>
-            <input
-              placeholder={'Enter amount in ' + nativeCurrency}
-              onChange={(e) => setAmount(e.target.value)}
-              onKeyPress={typeNumberOnly}
-              className="input-text"
-              spellCheck="false"
-              maxLength="35"
-              min="0"
-              type="text"
-              inputMode="decimal"
-              defaultValue={amount}
-            />
-          </div>
-          <div className="form-input">
-            <div className="form-spacing" />
-            <span className="input-title">
-              {t('table.memo')} (<span className="orange">It will be public</span>)
-            </span>
-            <input
-              placeholder="Enter a memo (optional)"
-              onChange={(e) => setMemo(e.target.value)}
-              className="input-text"
-              spellCheck="false"
-              maxLength="100"
-              type="text"
-              defaultValue={memo}
-            />
-          </div>
+          <FormInput
+            title={t('table.amount')}
+            placeholder={'Enter amount in ' + nativeCurrency}
+            setInnerValue={setAmount}
+            hideButton={true}
+            onKeyPress={typeNumberOnly}
+            defaultValue={amount}
+            maxLength={35}
+            min={0}
+            inputMode="decimal"
+            type="text"
+          />
+          <div className="form-spacing" />
+          <FormInput
+            title={<>{t('table.memo')} (<span className="orange">It will be public</span>)</>}
+            placeholder="Enter a memo (optional)"
+            setInnerValue={setMemo}
+            hideButton={true}
+            defaultValue={memo}
+            maxLength={100}
+            type="text"
+          />
           <div className="form-spacing" />
           <div>
             <span className="input-title">Expiration</span>
@@ -222,58 +219,73 @@ export default function IssueCheck({ setSignRequest }) {
             checked={showAdvanced}
             setChecked={() => {
               setShowAdvanced(!showAdvanced)
+              setFee(null)
+              setSourceTag(null)
               setInvoiceID(null)
             }}
             name="advanced-check"
           >
             Advanced options
+            {!sessionToken ? (
+              <>
+                {' '}
+                <span className="orange">
+                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
+                </span>
+              </>
+            ) : (
+              subscriptionExpired && (
+                <>
+                  {' '}
+                  <span className="orange">
+                    Your Bithomp Pro subscription has expired.{' '}
+                    <Link href="/admin/subscriptions">Renew your subscription</Link>
+                  </span>
+                </>
+              )
+            )}
           </CheckBox>
           {showAdvanced && (
             <>
               <br />
-              <div className="form-input">
-                <span className="input-title">Fee</span>
-                <input
-                  placeholder={'Enter fee in ' + nativeCurrency}
-                  onChange={handleFeeChange}
-                  onKeyPress={typeNumberOnly}
-                  className={`input-text ${feeError ? 'error' : ''}`}
-                  spellCheck="false"
-                  maxLength="35"
-                  min="0"
-                  type="text"
-                  inputMode="decimal"
-                  defaultValue={fee}
-                />
-                {feeError && <div className="red">{feeError}</div>}
-              </div>
+              <FormInput
+                title="Fee"
+                placeholder={'Enter fee in ' + nativeCurrency}
+                setInnerValue={handleFeeChange}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={fee}
+                maxLength={35}
+                min={0}
+                inputMode="decimal"
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+                className={feeError ? 'error' : ''}
+              />
+              {feeError && <div className="red">{feeError}</div>}
               <div className="form-spacing" />
-              <div className="form-input">
-                <span className="input-title">Source Tag</span>
-                <input
-                  placeholder="Enter source tag"
-                  onChange={(e) => setSourceTag(e.target.value)}
-                  onKeyPress={typeNumberOnly}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="35"
-                  type="text"
-                  defaultValue={sourceTag}
-                />
-              </div>
+              <FormInput
+                title="Source Tag"
+                placeholder="Enter source tag"
+                setInnerValue={setSourceTag}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={sourceTag}
+                maxLength={35}
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+              />
               <div className="form-spacing" />
-              <div className="form-input">
-                <span className="input-title">Invoice ID</span>
-                <input
-                  placeholder="Enter invoice ID"
-                  onChange={(e) => setInvoiceID(e.target.value)}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="64"
-                  type="text"
-                  defaultValue={invoiceID}
-                />
-              </div>
+              <FormInput
+                title="Invoice ID"
+                placeholder="Enter invoice ID"
+                setInnerValue={setInvoiceID}
+                hideButton={true}
+                defaultValue={invoiceID}
+                maxLength={64}
+                type="text"
+                disabled={!sessionToken || subscriptionExpired}
+              />
             </>
           )}
           <br />

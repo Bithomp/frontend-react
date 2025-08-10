@@ -11,17 +11,20 @@ import {
   isValidJson,
   server,
   xahauNetwork,
-  typeNumberOnly
+  typeNumberOnly,
+  nativeCurrency,
+  isNativeCurrency
 } from '../../../utils'
 import { multiply } from '../../../utils/calc'
 const checkmark = '/images/checkmark.svg'
 import CheckBox from '../../UI/CheckBox'
 import AddressInput from '../../UI/AddressInput'
+import TokenSelector from '../../UI/TokenSelector'
 
 let interval
 let startTime
 
-export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) {
+export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, account }) {
   const { i18n } = useTranslation()
   const router = useRouter()
 
@@ -41,9 +44,11 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
   const [createSellOffer, setCreateSellOffer] = useState(false)
   const [amount, setAmount] = useState('')
   const [destination, setDestination] = useState('')
+  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
   const [flags, setFlags] = useState({
     tfBurnable: false
   })
+  const [mintAndSend, setMintAndSend] = useState(false)
 
   let uriRef
   let digestRef
@@ -68,6 +73,12 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
   useEffect(() => {
     setErrorMessage('')
   }, [i18n.language])
+
+  useEffect(() => {
+    if (!account?.address) {
+      setCreateSellOffer(false)
+    }
+  }, [account?.address])
 
   const onUriChange = (e) => {
     let uri = e.target.value
@@ -141,6 +152,10 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
     }
   }
 
+  const onTokenChange = (token) => {
+    setSelectedToken(token)
+  }
+
   const handleFlagChange = (flag) => {
     setFlags((prev) => ({ ...prev, [flag]: !prev[flag] }))
   }
@@ -168,6 +183,39 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
       return
     }
 
+    if (createSellOffer && amount !== '' && !isNaN(parseFloat(amount)) && parseFloat(amount) < 0) {
+      setErrorMessage('Please enter a valid Amount')
+      return
+    }
+
+    // Remit: Mint and Send
+    if (mintAndSend) {
+      if (!destination?.trim()) {
+        setErrorMessage('Destination is required for Mint and Send (Remit)')
+        return
+      }
+      // Remit transaction (per Xahau docs)
+      let request = {
+        TransactionType: 'Remit',
+        Account: account?.address,
+        Destination: destination.trim(),
+        MintURIToken: {
+          URI: encode(uri)
+        }
+      }
+      if (digest) {
+        request.MintURIToken.Digest = digest
+      }
+      if (flags.tfBurnable) {
+        request.MintURIToken.Flags = 1
+      }
+      setSignRequest({
+        request,
+        callback: afterSubmit
+      })
+      return
+    }
+
     setErrorMessage('')
 
     let request = {
@@ -191,11 +239,22 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
         if (destination?.trim()) {
           request.Amount = '0'
         } else {
-          setErrorMessage('Please specify a Destination or change Amount')
+          setErrorMessage('Please specify a Destination or change the Amount')
           return
         }
       } else if (parseFloat(amount) > 0) {
-        request.Amount = multiply(amount, 1000000)
+        // Handle amount based on selected token
+        if (isNativeCurrency(selectedToken)) {
+          // For XAH, convert to drops
+          request.Amount = multiply(amount, 1000000)
+        } else {
+          // For tokens, use the token object
+          request.Amount = {
+            currency: selectedToken.currency,
+            issuer: selectedToken.issuer,
+            value: amount
+          }
+        }
       } else {
         setErrorMessage('Please enter a valid Amount')
         return
@@ -367,40 +426,92 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery }) 
               Burnable
             </CheckBox>
 
+            {/* Mint and Send (Remit) Option */}
+            <CheckBox
+              checked={mintAndSend}
+              setChecked={() => {
+                setMintAndSend(!mintAndSend)
+                if (!mintAndSend) {
+                  setCreateSellOffer(false)
+                }
+              }}
+              name="mint-and-send-remit"
+            >
+              Mint and Send (Remit)
+            </CheckBox>
+            {mintAndSend && (
+              <div className="orange" style={{ marginTop: '5px', fontSize: '14px' }}>
+                You will pay the Object Reserve in XAH for the NFT to be held on the Destination account.
+              </div>
+            )}
+
             {/* Create Sell Offer */}
             <div>
               <CheckBox
                 checked={createSellOffer}
-                setChecked={() => setCreateSellOffer(!createSellOffer)}
+                setChecked={() => {
+                  if (!createSellOffer) {
+                    // Reset to XAH when enabling sell offer
+                    setSelectedToken({ currency: nativeCurrency })
+                  }
+                  setCreateSellOffer(!createSellOffer)
+                }}
                 name="create-sell-offer"
+                disabled={!account?.address || mintAndSend}
               >
                 Create a Sell offer
               </CheckBox>
+              {!account?.address && (
+                <div className="orange" style={{ marginTop: '5px', fontSize: '14px' }}>
+                  <span className="link" onClick={() => setSignRequest({})}>
+                    Login first
+                  </span>{' '}
+                  if you want to add the sell offer in the same transaction.
+                </div>
+              )}
             </div>
 
             {/* Sell Offer Fields */}
-            {createSellOffer && (
+            {createSellOffer && !mintAndSend && (
               <>
                 <br />
-                <span className="input-title">Initial listing price in XAH (Amount):</span>
-                <div className="input-validation">
-                  <input
-                    placeholder="0.0"
-                    value={amount}
-                    onChange={onAmountChange}
-                    onKeyPress={typeNumberOnly}
-                    className="input-text"
-                    spellCheck="false"
-                    maxLength="35"
-                    min="0"
-                    type="text"
-                    inputMode="decimal"
-                    name="amount"
-                  />
+                <div className="flex flex-col gap-4 sm:flex-row">
+                  <div className="flex-1">
+                    <span className="input-title">Initial listing price (Amount):</span>
+                    <div className="input-validation">
+                      <input
+                        placeholder="0.0"
+                        value={amount}
+                        onChange={onAmountChange}
+                        onKeyPress={typeNumberOnly}
+                        className="input-text"
+                        spellCheck="false"
+                        maxLength="35"
+                        min="0"
+                        type="text"
+                        inputMode="decimal"
+                        name="amount"
+                      />
+                    </div>
+                  </div>
+                  <div className="w-full sm:w-1/2">
+                    <span className="input-title">Currency</span>
+                    <TokenSelector
+                      value={selectedToken}
+                      onChange={onTokenChange}
+                      destinationAddress={account?.address}
+                    />
+                  </div>
                 </div>
+              </>
+            )}
+
+            {/* Remit Destination Field */}
+            {(mintAndSend || createSellOffer) && (
+              <>
                 <br />
                 <AddressInput
-                  title="Destination (optional - account to receive the NFT):"
+                  title={'Destination (' + (mintAndSend ? 'required' : 'optional') + ' - account to receive the NFT)'}
                   placeholder="Destination address"
                   setValue={onDestinationChange}
                   name="destination"

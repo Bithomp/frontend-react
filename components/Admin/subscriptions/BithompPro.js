@@ -18,11 +18,19 @@ export default function Pro({ setPayPeriod }) {
 
         <p>
           ✅ <b>Balance changes reports:</b> <Link href="/admin/pro">Up to 5 addresses</Link>, <b>40 FIAT</b>{' '}
-          currencies, historical token value calculations, CSV Export
+          currencies, historical token value calculations, CSV Export.
         </p>
         <p>
-          ✅ <b>Exclusive Access to Advanced Tools:</b> 100 Addresses or NFTs in your{' '}
-          <Link href="/admin/watchlist">Watchlist</Link>, Infinite scroll in the <Link href="/amms">AMM Explorer</Link>,{' '}
+          ✅ <b>Advanced Options in Services:</b> <Link href="/services/send">Send Payment</Link>,{' '}
+          <Link href="/services/check">Issuer Check</Link>, <Link href="/services/escrow">Create Escrow</Link>.
+        </p>
+        <p>
+          ✅ <b>Infinite scroll:</b> Enable infinite scroll in the <Link href="/tokens">Tokens</Link>,{' '}
+          {!xahauNetwork && (
+            <>
+              <Link href="/amms">AMM Explorer</Link>,{' '}
+            </>
+          )}
           <Link href="/nft-explorer">NFT Explorer</Link>, <Link href="/nft-sales">NFT Sales</Link>,{' '}
           <Link href="/nft-distribution">NFT holders</Link>,{' '}
           {!xahauNetwork && (
@@ -31,6 +39,12 @@ export default function Pro({ setPayPeriod }) {
             </>
           )}
           <Link href="/nft-volumes?list=issuers">NFT Issuers</Link>.
+        </p>
+        <p>
+          ✅ <b>Higher Limits:</b> 100 Addresses or NFTs in your <Link href="/admin/watchlist">Watchlist</Link>.
+        </p>
+        <p>
+          ✅ <b>Animated avatars:</b> Set .gif avatars in <Link href="/admin/pro">My addresses</Link>.
         </p>
         <p>
           ✅ <b>Fewer Ads</b>: Focus on what matters most.

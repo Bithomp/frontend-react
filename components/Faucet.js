@@ -5,9 +5,7 @@ import {
   explorerName,
   ledgerName,
   turnstileSupportedLanguages,
-  server,
   isTagValid,
-  useWidth,
   typeNumberOnly,
   devNet,
   isAddressValid,
@@ -22,8 +20,8 @@ import AddressInput from './UI/AddressInput'
 import FormInput from './UI/FormInput'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
-import { addressLink, amountFormat, capitalize, duration, fullNiceNumber, shortHash } from '../utils/format'
-import { LedgerLink } from '../utils/links'
+import { addressLink, amountFormat, capitalize, duration, fullNiceNumber } from '../utils/format'
+import { LedgerLink, LinkTx } from '../utils/links'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -52,14 +50,10 @@ export default function Faucet({ account, type, sessionTokenData }) {
 
   const { t, i18n } = useTranslation()
   const { theme } = useTheme()
-  const width = useWidth()
 
   const testPayment = type === 'testPayment'
 
   useEffect(() => {
-    //do not add query params if it is a test payment
-    if (testPayment) return
-
     let queryAddList = []
     let queryRemoveList = []
 
@@ -94,6 +88,8 @@ export default function Faucet({ account, type, sessionTokenData }) {
       } else {
         queryRemoveList.push('amount')
       }
+    } else {
+      queryRemoveList.push('amount')
     }
 
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
@@ -216,24 +212,15 @@ export default function Faucet({ account, type, sessionTokenData }) {
     }
   }
 
-  const onAmountChange = (e) => {
+  const onAmountChange = (value) => {
     setErrorMessage('')
-    let amountString = e.target.value
+    let amountString = value
     if (!amountString || amountString < 0) return
     if (amountString > maxAmount) {
       setErrorMessage("The amount can't be more than " + maxAmount + ' ' + nativeCurrency)
     }
     amountString = convertToDrops(amountString)
     setAmount(amountString)
-  }
-
-  const onLastLedgerChange = (e) => {
-    setErrorMessage('')
-    let amountString = e.target.value
-    if (!amountString || amountString < 0) {
-      setErrorMessage('Please enter a latest ledger index, you can find the number on the landing page')
-    }
-    setLastLedgerIndex(amountString)
   }
 
   const setAddressValue = (value) => {
@@ -244,8 +231,7 @@ export default function Faucet({ account, type, sessionTokenData }) {
       setAddress(value)
     } else if (!isAddressValid(value)) {
       removeQueryParams(router, ['address'])
-    } else if (!testPayment) {
-      // do not add on the landing page where we have the test payment
+    } else {
       addQueryParams(router, [{ name: 'address', value }])
     }
   }
@@ -265,17 +251,19 @@ export default function Faucet({ account, type, sessionTokenData }) {
               placeholder={t('form.placeholder.enter-address', { ns: 'faucet', ledgerName })}
               setInnerValue={setAddressValue}
               rawData={
-                address === account?.address || (address === queryAddress && isAddressValid(queryAddress))
+                address === account?.address
                   ? {
                       address,
                       addressDetails: { username: account?.username, service: account?.service }
                     }
+                  : address === queryAddress && isAddressValid(queryAddress)
+                  ? { address }
                   : {}
               }
               type="address"
               hideButton={true}
             />
-            {width > 1100 && <br />}
+            <div className="form-spacing" />
             <FormInput
               title={t('table.destination-tag')}
               placeholder={t('form.placeholder.destination-tag')}
@@ -286,48 +274,45 @@ export default function Faucet({ account, type, sessionTokenData }) {
             />
             {testPayment ? (
               <div>
-                {width > 1100 && <br />}
-                <span className="input-title">
-                  <Image src="/images/pages/faucet/lastLedgerIndex.png" alt="Ledger" width={141} height={55} />{' '}
-                  <Trans
-                    i18nKey="last-ledger-index-find-on-landing-page"
-                    ns="faucet"
-                    components={[
-                      <strong key="strong" />,
-                      <Link key="link" href="/" passHref>
-                        <a />
-                      </Link>
-                    ]}
-                  />
-                </span>
-                <input
+                <div className="form-spacing" />
+                <FormInput
+                  title={
+                    <>
+                      <Image src="/images/pages/faucet/lastLedgerIndex.png" alt="Ledger" width={141} height={55} />{' '}
+                      <Trans
+                        i18nKey="last-ledger-index-find-on-landing-page"
+                        ns="faucet"
+                        components={[
+                          <strong key="strong" />,
+                          <Link key="link" href="/" passHref>
+                            <a />
+                          </Link>
+                        ]}
+                      />
+                    </>
+                  }
                   placeholder={t('form.placeholder.enter-latest-ledger-index', { ns: 'faucet' })}
-                  onChange={onLastLedgerChange}
+                  setInnerValue={setLastLedgerIndex}
+                  hideButton={true}
                   onKeyPress={typeNumberOnly}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="10"
-                  min="0"
+                  maxLength={10}
+                  min={0}
                   type="text"
                 />
               </div>
             ) : (
               <div>
-                {width > 1100 && <br />}
-                <span className="input-title">
-                  {capitalize(t('enter-amount', { ns: 'faucet', nativeCurrency, devNet, maxAmount }))}
-                </span>
-                <input
+                <div className="form-spacing" />
+                <FormInput
+                  title={capitalize(t('enter-amount', { ns: 'faucet', nativeCurrency, devNet, maxAmount }))}
                   placeholder={'Enter amount in ' + nativeCurrency}
-                  onChange={onAmountChange}
+                  setInnerValue={onAmountChange}
+                  hideButton={true}
                   onKeyPress={typeNumberOnly}
-                  className="input-text"
-                  spellCheck="false"
-                  maxLength="35"
-                  min="0"
-                  type="text"
-                  inputMode="decimal"
                   defaultValue={amount / 1000000}
+                  maxLength={35}
+                  min={0}
+                  type="text"
                 />
               </div>
             )}
@@ -455,8 +440,7 @@ export default function Faucet({ account, type, sessionTokenData }) {
               )}
               {data.hash && (
                 <p>
-                  {t('table.transaction-hash', { ns: 'faucet' })}:{' '}
-                  <a href={server + '/explorer/' + data.hash}>{shortHash(data.hash)}</a>
+                  {t('table.transaction-hash', { ns: 'faucet' })}: <LinkTx tx={data.hash} />
                 </p>
               )}
               {address && (

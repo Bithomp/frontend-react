@@ -79,7 +79,6 @@ $width: 340px;
 
       .content-cols:not(.is-filters-hide) & {
         overflow-y: scroll;
-        max-height: calc(100vh - 81px);
 
         &::-webkit-scrollbar {
           display: none;
@@ -115,11 +114,15 @@ $width: 340px;
   }
 
   & + .content-text {
-    margin: 64px 0 25px 0;
+    margin: 10px 0 25px 0;
     width: 100%;
 
+    @media (max-width: 1300px) {
+      margin-top: 20px;
+    }
+
     @media (max-width: 920px) {
-      margin: 128px 0 25px 0;
+      margin-top: 128px;
     }
 
     @media (max-width: 440px) {
@@ -246,9 +249,11 @@ $width: 340px;
       pointer-events: all;
     }
   }
+  
+}
 
-  .react-datepicker-wrapper input:hover {
-    border-color: var(--accent-link);
-    box-shadow: 0 0 5px var(--unaccent-icon);
+.filters-nav {
+  & ~ .content-text {
+    margin-top: 64px;
   }
 }

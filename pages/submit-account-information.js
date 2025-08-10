@@ -263,7 +263,6 @@ export default function SubmitAccountInformation() {
   return (
     <>
       <SEO title={t('menu.project-registration')} />
-
       <div className="content-text content-center short-top short-bottom">
         <h1 className="center">{t('heading', { ns: 'submit-account-information' })}</h1>
 

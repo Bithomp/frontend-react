@@ -17,7 +17,7 @@ import {
   shortHash,
   timeFromNow
 } from '../../utils/format'
-import { server, xahauNetwork } from '../../utils'
+import { decodeCTID, isValidCTID, networksIds, server, xahauNetwork } from '../../utils'
 import { dappBySourceTag, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import { add } from '../../utils/calc'
 
@@ -60,8 +60,33 @@ export const TransactionCard = ({
 
   if (!data) return null
 
-  const { id, error_message, tx, outcome, meta, specification, error } = data
+  const { id, error_message, tx, outcome, meta, specification, error, validated, message } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
+  let errorMessage = error_message || error
+
+  if (message && message === 'Invalid Network ID' && id) {
+    if (isValidCTID(id)) {
+      try {
+        const { networkId: CTIDnetworkId } = decodeCTID(id)
+        if (networksIds[CTIDnetworkId]) {
+          errorMessage =
+            'This transaction is from the ' +
+            networksIds[CTIDnetworkId].name +
+            ' network, check the details: ' +
+            networksIds[CTIDnetworkId].server +
+            '/' +
+            i18n.language +
+            '/tx/' +
+            id
+        } else {
+          errorMessage =
+            'This transaction is from the ' + CTIDnetworkId + ' network, ' + t('explorer.not-supported-network')
+        }
+      } catch (e) {
+        return
+      }
+    }
+  }
 
   /*
   {
@@ -73,7 +98,7 @@ export const TransactionCard = ({
   }
   */
 
-  const waitLedgers = tx?.LastLedgerSequence - outcome?.ledgerIndex
+  const waitLedgers = outcome ? tx?.LastLedgerSequence - outcome?.ledgerIndex : null
 
   const txLink = server + '/tx/' + (tx?.ctid || tx?.hash)
 
@@ -191,8 +216,6 @@ export const TransactionCard = ({
     return output
   }
 
-  const errorMessage = error_message || error
-
   const filteredBalanceChanges = outcome?.balanceChanges?.filter((change) => !noBalanceChange(change))
 
   let emitTX = null
@@ -217,22 +240,37 @@ export const TransactionCard = ({
             <p className="center orange">{errorMessage}</p>
           ) : (
             <>
-              <p className="center">
-                {isSuccessful ? (
-                  <>
-                    The transaction was <b className="green">successful</b> and validated in the ledger{' '}
-                    <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
-                  </>
-                ) : (
-                  <>
-                    The transaction <b className="red">FAILED</b> and included to the ledger{' '}
-                    <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
-                  </>
-                )}
-              </p>
+              {outcome ? (
+                <p className="center">
+                  {isSuccessful ? (
+                    <>
+                      The transaction was <b className="green">successful</b> and validated in the ledger{' '}
+                      <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
+                    </>
+                  ) : (
+                    <>
+                      The transaction <b className="red">FAILED</b> and included to the ledger{' '}
+                      <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
+                    </>
+                  )}
+                </p>
+              ) : (
+                !validated &&
+                tx && (
+                  <p className="center red bold">
+                    The transaction is not yet validated.
+                    {tx?.LastLedgerSequence && (
+                      <>
+                        <br />
+                        It won't be validated if Ledger already passed the Ledger #{tx.LastLedgerSequence}.
+                      </>
+                    )}
+                  </p>
+                )
+              )}
               <table>
                 <tbody>
-                  {id === tx.ctid && (
+                  {tx?.ctid && id === tx.ctid && (
                     <tr>
                       <TData>Compact Tx ID</TData>
                       <TData>
@@ -243,7 +281,7 @@ export const TransactionCard = ({
                   <tr>
                     <TData>{t('table.type')}</TData>
                     <TData>
-                      <span className="bold">{txTypeSpecial || tx.TransactionType}</span>
+                      <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
                     </TData>
                   </tr>
                   {outcome?.hooksExecutions?.map((hr, i) => (
@@ -252,7 +290,7 @@ export const TransactionCard = ({
                       <TData className="orange bold">{hr.returnString}</TData>
                     </tr>
                   ))}
-                  {!isSuccessful && (
+                  {outcome && !isSuccessful && (
                     <>
                       <tr>
                         <TData className="bold">Failure</TData>
@@ -264,19 +302,21 @@ export const TransactionCard = ({
                       </tr>
                     </>
                   )}
-                  <tr>
-                    <TData>{isSuccessful ? 'Validated' : 'Rejected'}</TData>
-                    <TData>
-                      {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
-                    </TData>
-                  </tr>
+                  {validated && (
+                    <tr>
+                      <TData>{isSuccessful ? 'Validated' : 'Rejected'}</TData>
+                      <TData>
+                        {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
+                      </TData>
+                    </tr>
+                  )}
                   {children}
                   <tr>
                     <TData>Ledger fee</TData>
                     <TData>
-                      <span className="bold">{amountFormat(tx.Fee)}</span>
+                      <span className="bold">{amountFormat(tx?.Fee)}</span>
                       {nativeCurrencyToFiat({
-                        amount: tx.Fee,
+                        amount: tx?.Fee,
                         selectedCurrency,
                         fiatRate: pageFiatRate
                       })}
@@ -322,7 +362,7 @@ export const TransactionCard = ({
                     </tr>
                   )}
 
-                  {(tx.TransactionType === 'EscrowFinish' || tx.TransactionType === 'EscrowCancel') &&
+                  {(tx?.TransactionType === 'EscrowFinish' || tx?.TransactionType === 'EscrowCancel') &&
                     specification?.source?.address !== outcome?.escrowChanges?.source?.address &&
                     specification?.source?.address !== outcome?.escrowChanges?.destination?.address && (
                       <tr>
@@ -353,7 +393,12 @@ export const TransactionCard = ({
                   )}
                   {specification?.signer && (
                     <tr>
-                      <TData>Signer</TData>
+                      <TData>
+                        {specification.delegate?.address === specification.signer.address && (
+                          <span className="bold orange">Delegate </span>
+                        )}
+                        Signer
+                      </TData>
                       <TData>
                         <AddressWithIconFilled data={specification.signer} name="address" />
                       </TData>
@@ -369,65 +414,69 @@ export const TransactionCard = ({
                       </tr>
                     ))}
                   {/* keep here outcome?.balanceChanges.length, to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
-                  {tx.TransactionType !== 'UNLReport' && (outcome?.balanceChanges?.length > 2 || notFullySupported) && (
-                    <>
-                      {filteredBalanceChanges?.length > 1 && (
-                        <tr>
-                          <TData>Affected accounts</TData>
-                          <TData>
-                            There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
-                            affected by this transaction.
-                          </TData>
-                        </tr>
-                      )}
-                      {filteredBalanceChanges?.map((change, index) => {
-                        return (
-                          <tr key={index}>
+                  {tx?.TransactionType !== 'UNLReport' &&
+                    (outcome?.balanceChanges?.length > 2 || notFullySupported) && (
+                      <>
+                        {filteredBalanceChanges?.length > 1 && (
+                          <tr>
+                            <TData>Affected accounts</TData>
                             <TData>
-                              Account {index + 1}
-                              {change.address === tx.Account && (
-                                <span className="bold">
-                                  <br />
-                                  Initiator
-                                </span>
-                              )}
-                              {change?.balanceChanges?.[0]?.issuer === change.address && (
-                                <span className="bold">
-                                  <br />
-                                  {niceCurrency(change.balanceChanges[0].currency)} issuer
-                                </span>
-                              )}
-                            </TData>
-                            <TData>
-                              <div style={{ height: '10px' }}></div>
-                              <AddressWithIconFilled data={change} name="address" />
-                              {change?.balanceChanges?.[0]?.issuer === change.address
-                                ? gatewayChanges(change.balanceChanges)
-                                : change.balanceChanges?.map((c, i) => {
-                                    return (
-                                      <div key={i}>
-                                        <span className={'bold ' + (Number(c.value) > 0 ? 'green' : 'red')}>
-                                          {Number(c.value) > 0 ? '+' : ''}
-                                          {amountFormat(c, { precise: true })}
-                                        </span>
-                                        {c.issuer && (
-                                          <>({addressUsernameOrServiceLink(c, 'issuer', { short: true })})</>
-                                        )}
-                                        {nativeCurrencyToFiat({
-                                          amount: c,
-                                          selectedCurrency,
-                                          fiatRate: pageFiatRate
-                                        })}
-                                      </div>
-                                    )
-                                  })}
-                              <div style={{ height: '10px' }}></div>
+                              There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
+                              affected by this transaction.
                             </TData>
                           </tr>
-                        )
-                      })}
-                    </>
-                  )}
+                        )}
+                        {filteredBalanceChanges?.map((change, index) => {
+                          let gateway = change?.balanceChanges?.every(
+                            (changeItem) => changeItem.issuer === change.address
+                          )
+                          return (
+                            <tr key={index}>
+                              <TData>
+                                Account {index + 1}
+                                {change.address === tx.Account && (
+                                  <span className="bold">
+                                    <br />
+                                    Initiator
+                                  </span>
+                                )}
+                                {gateway && (
+                                  <span className="bold">
+                                    <br />
+                                    {niceCurrency(change.balanceChanges[0].currency)} issuer
+                                  </span>
+                                )}
+                              </TData>
+                              <TData>
+                                <div style={{ height: '10px' }}></div>
+                                <AddressWithIconFilled data={change} name="address" />
+                                {gateway
+                                  ? gatewayChanges(change.balanceChanges)
+                                  : change.balanceChanges?.map((c, i) => {
+                                      return (
+                                        <div key={i}>
+                                          <span className={'bold ' + (Number(c.value) > 0 ? 'green' : 'red')}>
+                                            {Number(c.value) > 0 ? '+' : ''}
+                                            {amountFormat(c, { precise: true })}
+                                          </span>
+                                          {c.issuer && (
+                                            <>({addressUsernameOrServiceLink(c, 'issuer', { short: true })})</>
+                                          )}
+                                          {nativeCurrencyToFiat({
+                                            amount: c,
+                                            selectedCurrency,
+                                            fiatRate: pageFiatRate
+                                          })}
+                                        </div>
+                                      )
+                                    })}
+                                <div style={{ height: '10px' }}></div>
+                              </TData>
+                            </tr>
+                          )
+                        })}
+                      </>
+                    )}
                   <tr>
                     <TData>Transaction link</TData>
                     <TData>
@@ -514,7 +563,13 @@ export const TransactionCard = ({
                             Last ledger
                           </TData>
                           <TData>
-                            #{tx.LastLedgerSequence} ({waitLedgers} {waitLedgers === 1 ? 'ledger' : 'ledgers'})
+                            #{tx.LastLedgerSequence}
+                            {waitLedgers && (
+                              <>
+                                {' '}
+                                ({waitLedgers} {waitLedgers === 1 ? 'ledger' : 'ledgers'})
+                              </>
+                            )}
                           </TData>
                         </tr>
                       )}

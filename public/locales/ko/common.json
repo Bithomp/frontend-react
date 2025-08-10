@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "토큰",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
@@ -54,8 +55,7 @@
       "developers": "개발자",
       "account-generation": "계정 일반화",
       "faucet": "퍼셋",
-      "api": "API 문서화",
-      "api-admin": "API 계정"
+      "api": "API"
     },
     "legal": "정책",
     "disclaimer": "면책조항",
@@ -63,7 +63,6 @@
     "terms-and-conditions": "이용약관",
     "customer-support": "고객지원",
     "press": "언론",
-    "merch": "MD샵",
     "donate": "기부",
     "sponsored": {
       "title": "지원받음",
@@ -557,9 +556,9 @@
     "sell": "판매",
     "buyNow": "Buy now",
     "publicAndKnownBrokers": "공공 & MP",
-    "onSale": "{{nativeCurrency}}로 판매 중",
+    "onSale": "판매되고 있습니다",
     "all-tokens": "모든 토큰",
-    "native-currency-only": "{{nativeCurrency}}만",
+    "single-token": "단일 토큰",
     "mintedNew": "최신", 
     "mintedOld": "가장 오래된", 
     "existing": "기존", 

@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
-import { axiosServer, passHeaders } from '../../utils/axios'
+import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 
 import { devNet, xahauNetwork, avatarSrc, nativeCurrency } from '../../utils'
 import { shortNiceNumber } from '../../utils/format'
@@ -15,9 +15,35 @@ const RelatedLinks = dynamic(() => import('../../components/Account/RelatedLinks
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
+const setBalancesFunction = (networkInfo, data) => {
+  if (!data?.ledgerInfo || !networkInfo) return null
+  let balanceList = {
+    total: {
+      native: data.ledgerInfo.balance
+    },
+    reserved: {
+      native: Number(networkInfo.reserveBase) + data.ledgerInfo.ownerCount * networkInfo.reserveIncrement
+    },
+    available: {}
+  }
+
+  if (balanceList.reserved.native > balanceList.total.native) {
+    balanceList.reserved.native = balanceList.total.native
+  }
+
+  balanceList.available.native = balanceList.total.native - balanceList.reserved.native
+
+  if (balanceList.available.native < 0) {
+    balanceList.available.native = 0
+  }
+
+  return balanceList
+}
+
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let initialData = null
+  let networkInfo = {}
   const { id, ledgerTimestamp } = query
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ''
@@ -33,15 +59,30 @@ export async function getServerSideProps(context) {
         headers: passHeaders(req)
       })
       initialData = res?.data
+
+      const networkData = await axiosServer({
+        method: 'get',
+        url: 'v2/server',
+        headers: passHeaders(req)
+      })
+      networkInfo = networkData?.data
     } catch (error) {
       console.error(error)
     }
   }
 
+  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
+
+  const balanceList = setBalancesFunction(networkInfo, initialData)
+
   return {
     props: {
       id: account,
+      fiatRateServer,
+      selectedCurrencyServer,
       ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
+      networkInfo,
+      balanceListServer: balanceList || {},
       isSsrMobile: getIsSsrMobile(context),
       initialData: initialData || {},
       ...(await serverSideTranslations(locale, ['common', 'account']))
@@ -61,22 +102,35 @@ import ObjectsData from '../../components/Account/ObjectsData'
 import NFTokenData from '../../components/Account/NFTokenData'
 import URITokenData from '../../components/Account/URITokenData'
 import IOUData from '../../components/Account/IOUData'
+import IssuedTokensData from '../../components/Account/IssuedTokensData'
 import EscrowData from '../../components/Account/EscrowData'
-//import DexOrdersData from '../../components/Account/DexOrdersData'
+import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
 
 export default function Account({
   initialData,
   refreshPage,
   id,
-  selectedCurrency,
+  selectedCurrency: selectedCurrencyApp,
   ledgerTimestampQuery,
   account,
   setSignRequest,
-  fiatRate
+  fiatRate: fiatRateApp,
+  setActivatedAccount,
+  fiatRateServer,
+  selectedCurrencyServer,
+  networkInfo,
+  balanceListServer
 }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
+
+  let fiatRate = fiatRateServer
+  let selectedCurrency = selectedCurrencyServer
+  if (fiatRateApp) {
+    fiatRate = fiatRateApp
+    selectedCurrency = selectedCurrencyApp
+  }
 
   /*
   obligations: {
@@ -90,17 +144,15 @@ export default function Account({
   const [errorMessage, setErrorMessage] = useState('')
   const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(ledgerTimestampQuery)
-  const [pageFiatRate, setPageFiatRate] = useState(0)
+  const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRate : 0)
   const [userData, setUserData] = useState({
     username: initialData?.username,
     service: initialData?.service?.name,
     address: initialData?.address || id
   })
-  const [networkInfo, setNetworkInfo] = useState({})
-  const [balances, setBalances] = useState({})
+  const [balances, setBalances] = useState(balanceListServer || {})
   const [shownOnSmall, setShownOnSmall] = useState(null)
   const [objects, setObjects] = useState({})
-  //const [obligations, setObligations] = useState({})
   const [gateway, setGateway] = useState(false)
 
   useEffect(() => {
@@ -111,8 +163,9 @@ export default function Account({
       address: initialData.address
     })
 
+    setActivatedAccount(initialData?.ledgerInfo?.activated)
+
     if (initialData?.obligations) {
-      //setObligations(initialData.obligations)
       if (initialData.obligations?.trustlines > 200) {
         setGateway(true)
       } else {
@@ -123,15 +176,8 @@ export default function Account({
       //keep it here for cases when address changes without refreshing the page
       setGateway(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialData])
-
-  useEffect(() => {
-    async function fetchData() {
-      const networkInfoData = await axios('v2/server')
-      setNetworkInfo(networkInfoData?.data)
-    }
-    fetchData()
-  }, [])
 
   const checkApi = async (opts) => {
     if (!id) return
@@ -146,7 +192,7 @@ export default function Account({
     const response = await axios(
       '/v2/address/' +
         id +
-        '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true' +
+        '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true&obligations=true' +
         noCache +
         (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
@@ -162,6 +208,7 @@ export default function Account({
           service: newdata.service?.name,
           address: newdata.address
         })
+        setActivatedAccount(newdata.ledgerInfo?.activated)
       } else {
         if (newdata.error) {
           setErrorMessage(t('error-api.' + newdata.error))
@@ -526,6 +573,17 @@ export default function Account({
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             address={data?.address}
                           />
+                          {/* don't show yet obligations historically */}
+                          {data?.obligations?.trustlines > 0 && !data?.ledgerInfo?.ledgerTimestamp && (
+                            <IssuedTokensData data={data} />
+                          )}
+
+                          <DexOrdersData
+                            account={account}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            offerList={objects?.offerList}
+                            setSignRequest={setSignRequest}
+                          />
 
                           {xahauNetwork ? (
                             <URITokenData data={data} uriTokenList={objects?.uriTokenList} />
@@ -552,6 +610,7 @@ export default function Account({
                               address={data?.address}
                               setObjects={setObjects}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              ledgerIndex={data?.ledgerInfo?.ledgerIndex}
                               selectedCurrency={selectedCurrency}
                               pageFiatRate={pageFiatRate}
                             />

@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "Jetons",
     "amm": {
       "amm": "AMM",
       "pools": "Pools AMM",
@@ -54,8 +55,7 @@
       "developers": "Développeurs",
       "account-generation": "Génération de compte",
       "faucet": "Robinet",
-      "api": "Documentation de l'API",
-      "api-admin": "Compte API"
+      "api": "API"
     },
     "legal": "Légal",
     "disclaimer": "Avertissement",
@@ -63,7 +63,6 @@
     "terms-and-conditions": "Conditions générales",
     "customer-support": "Support client",
     "press": "Presse",
-    "merch": "Magasin de marchandises",
     "donate": "Faire un don",
     "sponsored": {
       "title": "Sponsorisé",
@@ -557,9 +556,9 @@
     "sell": "Vendre",
     "buyNow": "Acheter maintenant",
     "publicAndKnownBrokers": "Public & MP",
-    "onSale": "En vente pour {{nativeCurrency}}",
+    "onSale": "Sont en vente",
     "all-tokens": "Tous les tokens",
-    "native-currency-only": "Uniquement {{nativeCurrency}}",
+    "single-token": "Token unique",
     "mintedNew": "Derniers",
     "mintedOld": "Les plus anciens",
     "existing": "Existants",

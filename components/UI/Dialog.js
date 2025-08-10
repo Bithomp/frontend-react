@@ -1,122 +1,97 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import styles from '@/styles/components/dialog.module.scss';
+import styles from '../../styles/components/dialog.module.css';
 
-const Dialog = ({ 
-  isOpen, 
-  onClose, 
-  title, 
-  children, 
-  size = 'medium',
-  showCloseButton = true,
-  closeOnBackdropClick = true,
-  closeOnEscape = true
-}) => {
-  const dialogRef = useRef(null);
-  const previousActiveElement = useRef(null);
+export default function Dialog({ 
+    isOpen, 
+    onClose, 
+    title, 
+    children, 
+    size = 'medium',
+    showCloseButton = true 
+}) {
+    const dialogRef = useRef(null);
+    const [portalTarget, setPortalTarget] = useState(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      // Store the currently focused element
-      previousActiveElement.current = document.activeElement;
-      
-      // Focus the dialog
-      if (dialogRef.current) {
-        dialogRef.current.focus();
-      }
-      
-      // Prevent body scroll
-      document.body.style.overflow = 'hidden';
-    } else {
-      // Restore body scroll
-      document.body.style.overflow = 'unset';
-      
-      // Restore focus to the previous element
-      if (previousActiveElement.current) {
-        previousActiveElement.current.focus();
-      }
-    }
+    // Set up portal target after component mounts (client-side only)
+    useEffect(() => {
+        setPortalTarget(document.body);
+    }, []);
 
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+    // Handle escape key to close dialog
+    useEffect(() => {
+        const handleEscape = (event) => {
+            if (event.key === 'Escape' && isOpen) {
+                onClose();
+            }
+        };
 
-  useEffect(() => {
-    const handleEscape = (event) => {
-      if (event.key === 'Escape' && isOpen && closeOnEscape) {
-        onClose();
-      }
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+            // Prevent body scroll when dialog is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen, onClose]);
+
+    // Handle click outside to close dialog
+    const handleBackdropClick = (event) => {
+        if (event.target === event.currentTarget) {
+            onClose();
+        }
     };
 
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-    }
+    if (!isOpen || !portalTarget) return null;
 
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [isOpen, onClose, closeOnEscape]);
-
-  const handleBackdropClick = (event) => {
-    if (event.target === event.currentTarget && closeOnBackdropClick) {
-      onClose();
-    }
-  };
-
-  if (!isOpen) return null;
-
-  const dialogContent = (
-    <div 
-      className={styles.backdrop}
-      onClick={handleBackdropClick}
-      role="presentation"
-    >
-      <div
-        ref={dialogRef}
-        className={`${styles.dialog} ${styles[size]}`}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={title ? 'dialog-title' : undefined}
-        tabIndex={-1}
-      >
-        <div className={styles.header}>
-          {title && (
-            <h2 id="dialog-title" className={styles.title}>
-              {title}
-            </h2>
-          )}
-          {showCloseButton && (
-            <button
-              type="button"
-              className={styles.closeButton}
-              onClick={onClose}
-              aria-label="Close dialog"
+    const dialogContent = (
+        <div className={styles.backdrop} onClick={handleBackdropClick}>
+            <div 
+                ref={dialogRef}
+                className={`${styles.dialog} ${styles[size]}`}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={title ? "dialog-title" : undefined}
             >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          )}
+                <div className={styles.header}>
+                    {title && (
+                        <h2 id="dialog-title" className={styles.title}>
+                            {title}
+                        </h2>
+                    )}
+                    {showCloseButton && (
+                        <button
+                            type="button"
+                            className={styles.closeButton}
+                            onClick={onClose}
+                            aria-label="Close dialog"
+                        >
+                            <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    )}
+                </div>
+                <div className={styles.content}>
+                    {children}
+                </div>
+            </div>
         </div>
-        <div className={styles.content}>
-          {children}
-        </div>
-      </div>
-    </div>
-  );
+    );
 
-  return createPortal(dialogContent, document.body);
-};
-
-export default Dialog;
+    // Use portal to render dialog at document root level
+    return createPortal(dialogContent, portalTarget);
+}

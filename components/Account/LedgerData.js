@@ -12,7 +12,7 @@ import {
   nativeCurrencyToFiat,
   timeFromNow
 } from '../../utils/format'
-import { devNet, getCoinsUrl, isDomainValid, nativeCurrency, server, stripDomain, xahauNetwork } from '../../utils'
+import { devNet, getCoinsUrl, isDomainValid, nativeCurrency, stripDomain, xahauNetwork } from '../../utils'
 
 import CopyButton from '../UI/CopyButton'
 import { LinkAmm, LinkTx } from '../../utils/links'
@@ -319,13 +319,9 @@ export default function LedgerData({
   const dexOrdersNode = !objects?.offerList ? (
     'Loading...'
   ) : objects?.offerList?.length > 0 ? (
-    data?.ledgerInfo?.ledgerTimestamp ? (
-      <span className="orange bold">{objects?.offerList?.length}</span>
-    ) : (
-      <a href={server + '/explorer/' + data.address} className="bold">
-        View orders ({objects?.offerList?.length})
-      </a>
-    )
+    <>
+      <span className="bold">{objects?.offerList?.length}</span> (view below)
+    </>
   ) : (
     "This account doesn't have DEX orders."
   )
@@ -384,7 +380,7 @@ export default function LedgerData({
           {data?.ledgerInfo?.activated && !gateway && (
             <>
               <tr>
-                <td>{t('explorer.menu.tokens')}</td>
+                <td>{t('menu.tokens')}</td>
                 <td>{tokensNode}</td>
               </tr>
               <tr>

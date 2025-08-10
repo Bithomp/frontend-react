@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "トークン",
     "amm": {
       "amm": "AMM",
       "pools": "AMMプール",
@@ -54,8 +55,7 @@
       "developers": "開発者",
       "account-generation": "アカウントの作成",
       "faucet": "Faucet",
-      "api": "APIドキュメント",
-      "api-admin": "APIアカウント"
+      "api": "API"
     },
     "legal": "Legal",
     "disclaimer": "免責事項",
@@ -63,7 +63,6 @@
     "terms-and-conditions": "利用規約",
     "customer-support": "カスタマサポート",
     "press": "プレス",
-    "merch": "グッズ販売",
     "donate": "寄付",
     "sponsored": {
       "title": "スポンサー",
@@ -557,9 +556,9 @@
     "sell": "売却",
     "buyNow": "今すぐ購入",
     "publicAndKnownBrokers": "パブリック & MP",
-    "onSale": "{{nativeCurrency}}で販売中",
+    "onSale": "販売中です",
     "all-tokens": "全トークン",
-    "native-currency-only": "{{nativeCurrency}}のみ",
+    "single-token": "単一トークン",
     "mintedNew": "新しい",
     "mintedOld": "古い",
     "existing": "既存",

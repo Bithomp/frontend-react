@@ -68,6 +68,7 @@ export default function ObjectsData({
   setSignRequest,
   setObjects,
   ledgerTimestamp,
+  ledgerIndex,
   selectedCurrency,
   pageFiatRate
 }) {
@@ -97,7 +98,7 @@ export default function ObjectsData({
     async function checkObjects() {
       setLoadingObjects(true)
       const accountObjectsData = await axios
-        .get('v2/objects/' + address + '?limit=1000' + (ledgerTimestamp ? '&ledgerTimestamp=' + ledgerTimestamp : ''), {
+        .get('v2/objects/' + address + '?limit=1000' + (ledgerIndex ? '&ledgerIndex=' + ledgerIndex : ''), {
           signal: controller.signal
         })
         .catch((error) => {
@@ -257,7 +258,7 @@ export default function ObjectsData({
         </td>
         {!ledgerTimestamp && (
           <td className="center">
-            {c.Destination === account?.address ? (
+            {c.Destination === account?.address && !timestampExpired(c.expiration) ? (
               <a
                 href="#"
                 onClick={() =>
@@ -470,9 +471,9 @@ export default function ObjectsData({
                         <>
                           {' '}
                           [
-                          <a href="#" onClick={() => setSignRequest({})} className="bold">
+                          <span onClick={() => setSignRequest({})} className="link bold">
                             Sign in
-                          </a>{' '}
+                          </span>{' '}
                           to Redeem]
                         </>
                       )}
@@ -508,9 +509,9 @@ export default function ObjectsData({
                         <>
                           {' '}
                           [
-                          <a href="#" onClick={() => setSignRequest({})} className="bold">
+                          <span onClick={() => setSignRequest({})} className="link bold">
                             Sign in
-                          </a>{' '}
+                          </span>{' '}
                           to Cancel]
                         </>
                       )}

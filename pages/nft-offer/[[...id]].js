@@ -52,8 +52,8 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 import NftImageAndVideo from '../../components/NftPreview'
 
-import LinkIcon from '../../public/images/link.svg'
 import { nftName } from '../../utils/nft'
+import { LinkTx } from '../../utils/links'
 
 export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
   const { t } = useTranslation()
@@ -285,10 +285,7 @@ export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
                               <tr>
                                 <td>{t('table.placed')}</td>
                                 <td>
-                                  {fullDateAndTime(data.createdAt)}{' '}
-                                  <a href={'/explorer/' + data.createdTxHash}>
-                                    <LinkIcon />
-                                  </a>
+                                  {fullDateAndTime(data.createdAt)} <LinkTx tx={data.createdTxHash} icon={true} />
                                 </td>
                               </tr>
                               {data.expiration && (
@@ -302,10 +299,7 @@ export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
                                   <tr>
                                     <td>{t('table.accepted')}</td>
                                     <td>
-                                      {fullDateAndTime(data.acceptedAt)}{' '}
-                                      <a href={'/explorer/' + data.acceptedTxHash}>
-                                        <LinkIcon />
-                                      </a>
+                                      {fullDateAndTime(data.acceptedAt)} <LinkTx tx={data.acceptedTxHash} icon={true} />
                                     </td>
                                   </tr>
                                   {data.acceptedAccount && (
@@ -322,10 +316,7 @@ export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
                                 <tr>
                                   <td>{t('table.canceled')}</td>
                                   <td>
-                                    {fullDateAndTime(data.canceledAt)}{' '}
-                                    <a href={'/explorer/' + data.canceledTxHash}>
-                                      <LinkIcon />
-                                    </a>
+                                    {fullDateAndTime(data.canceledAt)} <LinkTx tx={data.canceledTxHash} icon={true} />
                                   </td>
                                 </tr>
                               )}

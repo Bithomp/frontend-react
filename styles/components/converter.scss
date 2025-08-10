@@ -42,7 +42,7 @@
   transition: background-color, border-color 0.5s;
 }
 .converter-amount:hover, .converter-xrp:hover {
-  border: 1px solid var(--accent-icon);
+  box-shadow: 0 0 5px var(--unaccent-icon);
   transition: border-color 0.5s;
 }
 .converter-xrp-text {

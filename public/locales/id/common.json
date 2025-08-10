@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "Token",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
@@ -54,8 +55,7 @@
       "developers": "Pengembang",
       "account-generation": "Generasi Akun",
       "faucet": "Faucet",
-      "api": "Dokumentasi API",
-      "api-admin": "Akun API"
+      "api": "API"
     },
     "legal": "Hukum",
     "disclaimer": "Penyangkalan",
@@ -63,7 +63,6 @@
     "terms-and-conditions": "Syarat dan Ketentuan",
     "customer-support": "Dukungan Pelanggan",
     "press": "Pers",
-    "merch": "Toko Merchandise",
     "donate": "Donasi",
     "sponsored": {
       "title": "Disponsori",
@@ -557,9 +556,9 @@
     "sell": "Jual",
     "buyNow": "Buy now",
     "publicAndKnownBrokers": "Publik & Broker Terkenal",
-    "onSale": "Dijual dengan {{nativeCurrency}}",
+    "onSale": "Sedang dijual",
     "all-tokens": "Semua Token",
-    "native-currency-only": "Hanya {{nativeCurrency}}",
+    "single-token": "Token Tunggal",
     "mintedNew": "Latest",
     "mintedOld": "Oldest",
     "existing": "Existing",

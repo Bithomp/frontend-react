@@ -10,6 +10,8 @@ import {
 import { LinkAccount } from '../../utils/links'
 import { useWidth } from '../../utils'
 import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaChartLine } from 'react-icons/fa' //FaCoins,
+import { subtract } from '../../utils/calc'
+import { useTranslation } from 'next-i18next'
 
 const tokensCountText = (rippleStateList) => {
   if (!rippleStateList) return ''
@@ -108,6 +110,7 @@ const LimitsIcon = ({ trustline }) => {
 
 export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
   const width = useWidth()
+  const { t } = useTranslation()
   //show the section only if there are tokens to show
   if (!rippleStateList?.length) return ''
 
@@ -172,6 +175,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
   // amount / gateway details / trustline settings
   const tokenRows = rippleStateList.map((tl, i) => {
     const issuer = tl.HighLimit?.issuer === address ? tl.LowLimit : tl.HighLimit
+    const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
 
     return (
       <tr key={i}>
@@ -190,9 +194,11 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
             )}
           </AddressWithIcon>
         </td>
-        <td className="bold tooltip" style={{ float: 'right' }}>
-          {shortNiceNumber(Math.abs(tl.Balance?.value))}
-          <span className="tooltiptext">{fullNiceNumber(Math.abs(tl.Balance?.value))}</span>
+        <td className="right">
+          <span className="bold tooltip">
+            {shortNiceNumber(balance)}
+            <span className="tooltiptext">{fullNiceNumber(balance)}</span>
+          </span>
         </td>
         <td className="right">
           <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
@@ -210,7 +216,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
         <thead>
           <tr>
             <th colSpan="100">
-              {tokensCountText(rippleStateList)} Tokens (IOUs){historicalTitle} [
+              {tokensCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle} [
               <a href={'/explorer/' + address}>Old View</a>]
             </th>
           </tr>
@@ -229,7 +235,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
         <br />
         <center>
           {tokensCountText(rippleStateList)}
-          {'Tokens (IOUs)'.toUpperCase()}
+          {t('menu.tokens').toUpperCase()}
           {historicalTitle} [<a href={'/explorer/' + address}>Old View</a>]
         </center>
         <br />

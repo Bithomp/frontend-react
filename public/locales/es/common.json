@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "Tokens",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
@@ -54,8 +55,7 @@
       "developers": "Desarrolladores",
       "account-generation": "Generación de cuenta",
       "faucet": "Grifo",
-      "api": "Documentación API",
-      "api-admin": "Cuenta API"
+      "api": "API"
     },
     "legal": "Legal",
     "disclaimer": "Advertencia",
@@ -63,7 +63,6 @@
     "terms-and-conditions": "Términos y condiciones",
     "customer-support": "Soporte de cliente",
     "press": "Prensa",
-    "merch": "Tienda de Merch",
     "donate": "Donaciones",
     "sponsored": {
       "title": "Patrocinado",
@@ -557,9 +556,9 @@
     "sell": "Venta",
     "buyNow": "Comprar ya",
     "publicAndKnownBrokers": "Público Y Mercado",
-    "onSale": "En venta por {{nativeCurrency}}",
+    "onSale": "Listado",
     "all-tokens": "Todos los tokens",
-    "native-currency-only": "Solo {{nativeCurrency}}",
+    "single-token": "Token único",
     "mintedNew": "Latest",
     "mintedOld": "Oldest",
     "existing": "Existing",

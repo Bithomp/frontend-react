@@ -1,6 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 
@@ -10,11 +10,11 @@ import { getIsSsrMobile } from '../utils/mobile'
 import SEO from '../components/SEO'
 import SearchBlock from '../components/Layout/SearchBlock'
 import Ads from '../components/Layout/Ads'
-import Products from '../components/Home/Products'
 import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 
 import dynamic from 'next/dynamic'
+import { getFiatRateServer } from '../utils/axios'
 //not indexed
 const Whales = dynamic(() => import('../components/Home/Whales'), { ssr: false })
 const Statistics = dynamic(() => import('../components/Home/Statistics'), { ssr: false })
@@ -22,9 +22,12 @@ const Statistics = dynamic(() => import('../components/Home/Statistics'), { ssr:
 let ws = null
 
 export async function getServerSideProps(context) {
-  const { locale } = context
+  const { locale, req } = context
+  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
   return {
     props: {
+      fiatRateServer,
+      selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'faucet', 'products']))
     }
@@ -52,54 +55,112 @@ const ldJsonWebsite = {
   }
 }
 
-function sendData() {
-  if (ws.readyState) {
-    //{ command: "subscribe", streams: ["whale_transactions"], currency: true, service: true, id: 1 }
+function sendData(selectedCurrency) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
     ws.send(
       JSON.stringify({
         command: 'subscribe',
-        streams: ['statistics', 'whale_transactions'],
+        streams: ['statistics', 'whale_transactions', 'rates'],
+        currency: selectedCurrency,
         id: 1,
         limit: 3
       })
     )
   } else {
-    setTimeout(sendData, 1000)
+    setTimeout(() => sendData(selectedCurrency), 1000)
   }
 }
 
-export default function Home({ selectedCurrency, setSelectedCurrency, showAds, fiatRate }) {
+function unsubscribeRates(currency) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(
+      JSON.stringify({
+        command: 'unsubscribe',
+        streams: ['rates'],
+        currency: currency,
+        id: 2
+      })
+    )
+  }
+}
+
+export default function Home({
+  selectedCurrency: selectedCurrencyApp,
+  setSelectedCurrency,
+  showAds,
+  fiatRate: fiatRateApp,
+  isSsrMobile,
+  selectedCurrencyServer,
+  fiatRateServer
+}) {
   const { t } = useTranslation()
+
+  let selectedCurrency = selectedCurrencyServer
+  let fiatRate = fiatRateServer
+
+  if (fiatRateApp) {
+    fiatRate = fiatRateApp
+    selectedCurrency = selectedCurrencyApp
+  }
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
   const [whaleTransactions, setWhaleTransactions] = useState(null)
   const [statistics, setStatistics] = useState(null)
+  const [liveFiatRate, setLiveFiatRate] = useState(fiatRate)
+
+  // Use ref to always get current currency in WebSocket message handler
+  const selectedCurrencyRef = useRef(selectedCurrency)
+  const previousCurrencyRef = useRef(null)
 
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
 
   const connect = () => {
-    ws = new WebSocket(wssServer)
+    try {
+      ws = new WebSocket(wssServer)
 
-    ws.onopen = () => {
-      sendData()
-    }
-
-    ws.onmessage = (evt) => {
-      const message = JSON.parse(evt.data)
-      if (message.type === 'statistics') {
-        setStatistics(message)
-      } else {
-        //type === 'WhaleTransactions'
-        setWhaleTransactions(message.transactions)
+      ws.onopen = () => {
+        sendData(selectedCurrency)
       }
-    }
 
-    ws.onclose = () => {
-      connect()
+      ws.onmessage = (evt) => {
+        const message = JSON.parse(evt.data)
+        if (message.type === 'statistics') {
+          setStatistics(message)
+        } else if (message.type === 'rates') {
+          const currentCurrency = selectedCurrencyRef.current
+          setLiveFiatRate(message[currentCurrency])
+        } else {
+          //type === 'WhaleTransactions'
+          setWhaleTransactions(message.transactions)
+        }
+      }
+
+      ws.onclose = () => {
+        // Reconnect after a short delay to avoid rapid reconnection attempts
+        setTimeout(connect, 3000)
+      }
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error)
+        // Close the connection to trigger onclose and reconnection
+        if (ws) {
+          ws.close()
+        }
+      }
+    } catch (error) {
+      console.error('Failed to create WebSocket connection:', error)
+      // Retry connection after delay
+      setTimeout(connect, 3000)
     }
   }
 
   useEffect(() => {
+    setLiveFiatRate(fiatRate)
+  }, [fiatRate])
+
+  useEffect(() => {
+    selectedCurrencyRef.current = selectedCurrency
+    previousCurrencyRef.current = selectedCurrency
     if (navigator.onLine) {
       connect()
     }
@@ -109,6 +170,24 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Update rates subscription when currency changes
+  useEffect(() => {
+    // Unsubscribe from previous currency if it exists
+    if (previousCurrencyRef.current && previousCurrencyRef.current !== selectedCurrency) {
+      unsubscribeRates(previousCurrencyRef.current)
+    }
+
+    // Update refs
+    selectedCurrencyRef.current = selectedCurrency
+    previousCurrencyRef.current = selectedCurrency
+
+    // Subscribe to new currency
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      sendData(selectedCurrency)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency])
 
   return (
     <>
@@ -137,18 +216,14 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
         title={t('home.title', { explorerName, nativeCurrency })}
         titleWithNetwork="true"
         description={t('home.description', { explorerName, nativeCurrency })}
-        images={[
-          {
-            width: 1200,
-            height: 630,
-            file: 'previews/1200x630/index.png'
-          },
-          {
-            width: 630,
-            height: 630,
-            file: 'previews/630x630/index.png'
-          }
-        ]}
+        image={{
+          width: 1200,
+          height: 630,
+          file: 'previews/1200x630/index.png'
+        }}
+        twitterImage={{
+          file: 'previews/630x630/index.png'
+        }}
       />
       <Head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }} />
@@ -157,11 +232,9 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
       <section className="home-section">
         <h1 className="center">{t('explorer.header.main', { explorerName })}</h1>
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
-        <SearchBlock tab="explorer" />
-        <Ads showAds={showAds} heightNoAds={30} />
+        <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} />
+        {showAds && <Ads />}
       </section>
-
-      <Products />
 
       {!devNet && (
         <section className="home-section">
@@ -172,7 +245,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
                 chartPeriod={chartPeriod}
-                fiatRate={fiatRate}
+                fiatRate={liveFiatRate}
               />
             </div>
             <div className="home-price-chart">
@@ -196,7 +269,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
           <Statistics data={statistics} setData={setStatistics} />
         </div>
       </section>
-
     </>
   )
 }

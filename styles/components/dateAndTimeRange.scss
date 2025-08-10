@@ -62,6 +62,9 @@ input {
     padding-left: 5px;
     margin-bottom: 10px;
     padding-top: 0;
+    &:hover {
+      box-shadow: 0 0 5px var(--unaccent-icon);
+    }
   }
 }
 

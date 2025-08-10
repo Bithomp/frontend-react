@@ -24,6 +24,7 @@ import NetworkTable from './NetworkTable'
 import MobileMenu from './MobileMenu'
 import { FaAngleDown } from 'react-icons/fa'
 import { IoIosRocket } from 'react-icons/io'
+import { MdNewReleases } from 'react-icons/md'
 
 import LogoSmall from '../LogoSmall'
 import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
@@ -206,6 +207,29 @@ export default function Header({
             <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a>
           </MenuDropDown>
 
+          <div className="menu-dropdown">
+            <Link href="/tokens" className="menu-dropdown-button" style={{ textDecoration: 'none' }}>
+              {t('menu.tokens')} <MdNewReleases className="chevron orange" />
+            </Link>
+          </div>
+
+          {/* Hide AMM for XAHAU */}
+          {!xahauNetwork && (
+            <MenuDropDown
+              id="dropdown4"
+              title={t('menu.amm.amm')}
+              setHoverStates={setHoverStates}
+              hoverStates={hoverStates}
+            >
+              <Link href="/amms">{t('menu.amm.pools')}</Link>
+              <Link href="/amm">{t('menu.amm.explorer')}</Link>
+              <Link href="/services/amm?tab=deposit">AMM Deposit</Link>
+              <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
+              <Link href="/services/amm?tab=vote">AMM Vote</Link>
+              <Link href="/services/amm?tab=create">AMM Create</Link>
+            </MenuDropDown>
+          )}
+
           <MenuDropDown id="dropdown3" title="NFT" setHoverStates={setHoverStates} hoverStates={hoverStates}>
             {displayName ? (
               <>
@@ -248,25 +272,6 @@ export default function Header({
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
           </MenuDropDown>
 
-          {/* Hide AMM for XAHAU */}
-          {!xahauNetwork && (
-            <MenuDropDown
-              id="dropdown4"
-              title={t('menu.amm.amm')}
-              setHoverStates={setHoverStates}
-              hoverStates={hoverStates}
-            >
-              <Link href="/amms">{t('menu.amm.pools')}</Link>
-              <Link href="/amm">{t('menu.amm.explorer')}</Link>
-              {!devNet && (
-                <>
-                  <Link href="/services/amm?tab=create">Create AMM</Link>
-                  <Link href="/services/amm?tab=vote">AMM Vote</Link>
-                </>
-              )}
-            </MenuDropDown>
-          )}
-
           <MenuDropDown
             id="dropdown5"
             title={t('menu.network.blockchain')}
@@ -295,11 +300,12 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
+            <Link href="/learn/the-bithomp-api">{t('menu.developers.api')}</Link>
             {network === 'mainnet' && (
               <>
-                <a href={'https://test.xrplexplorer.com/create/'}>{t('menu.developers.account-generation')}</a>
-                <a href={'https://test.xrplexplorer.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
-                <a href={'https://test.xrplexplorer.com/tools/'}>Bithomp tools</a>
+                <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
+                <a href={'https://test.bithomp.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
+                <a href={'https://test.bithomp.com/tools/'}>Bithomp tools</a>
               </>
             )}
             {devNet && (
@@ -309,8 +315,6 @@ export default function Header({
                 <a href={'/tools/'}>Bithomp tools</a>
               </>
             )}
-            <a href="https://docs.bithomp.com">{t('menu.developers.api')}</a>
-            <Link href="/admin">{t('menu.developers.api-admin')}</Link>
             <a href="https://github.com/Bithomp">Github</a>
             <Link href="/eaas">{t('menu.business.eaas')}</Link>
             <Link href="/build-unl">{t('menu.business.build-unl')}</Link>

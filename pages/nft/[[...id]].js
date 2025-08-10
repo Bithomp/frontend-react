@@ -10,7 +10,7 @@ import dynamic from 'next/dynamic'
 import { stripText, decode, network, isValidJson, xahauNetwork, devNet, encode } from '../../utils'
 import { AddressWithIconFilled, convertedAmount, timeFromNow, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl } from '../../utils/nft'
+import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl, isNftExplicit } from '../../utils/nft'
 import {
   shortHash,
   trWithFlags,
@@ -56,7 +56,7 @@ export async function getServerSideProps(context) {
       id: nftId,
       pageMeta: pageMeta || {},
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'nft']))
+      ...(await serverSideTranslations(locale, ['common', 'nft', 'popups']))
     }
   }
 }
@@ -66,7 +66,7 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 import NftPreview from '../../components/NftPreview'
 
-import LinkIcon from '../../public/images/link.svg'
+import { LinkTx } from '../../utils/links'
 
 const ProjectMetadata = dynamic(() => import('../../components/Nft/ProjectMetadata'), { ssr: false })
 const EvernodeLease = dynamic(() => import('../../components/Nft/EvernodeLease'), { ssr: false })
@@ -356,9 +356,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             <td className="bold">{eventType(nftEvent)}</td>
             <td>
               {timeFromNow(nftEvent.changedAt, i18n)} ({fullDateAndTime(nftEvent.changedAt)}){' '}
-              <a href={'/explorer/' + nftEvent.txHash}>
-                <LinkIcon />
-              </a>
+              <LinkTx tx={nftEvent.txHash} icon={true} />
             </td>
           </tr>
           {nftEvent.uri && (
@@ -454,10 +452,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             <tr>
               <td>{t('table.placed')}</td>
               <td>
-                {fullDateAndTime(offer.createdAt)}{' '}
-                <a href={'/explorer/' + offer.createdTxHash}>
-                  <LinkIcon />
-                </a>
+                {fullDateAndTime(offer.createdAt)} <LinkTx tx={offer.createdTxHash} icon={true} />
               </td>
             </tr>
           )}
@@ -465,10 +460,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             <tr>
               <td>{t('table.accepted')}</td>
               <td>
-                {fullDateAndTime(offer.acceptedAt)}{' '}
-                <a href={'/explorer/' + offer.acceptedTxHash}>
-                  <LinkIcon />
-                </a>
+                {fullDateAndTime(offer.acceptedAt)} <LinkTx tx={offer.acceptedTxHash} icon={true} />
               </td>
             </tr>
           )}
@@ -476,10 +468,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             <tr>
               <td>{t('table.canceled')}</td>
               <td>
-                {fullDateAndTime(offer.canceledAt)}{' '}
-                <a href={'/explorer/' + offer.canceledTxHash}>
-                  <LinkIcon />
-                </a>
+                {fullDateAndTime(offer.canceledAt)} <LinkTx tx={offer.canceledTxHash} icon={true} />
               </td>
             </tr>
           )}
@@ -946,10 +935,20 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         URITokenID: id
       }
     } else {
-      request = {
-        TransactionType: 'NFTokenBurn',
-        Account: data.owner,
-        NFTokenID: id
+      if (account.address === data.owner) {
+        request = {
+          TransactionType: 'NFTokenBurn',
+          Account: data.owner,
+          NFTokenID: id
+        }
+      }
+      if (account.address === data.issuer) {
+        request = {
+          TransactionType: 'NFTokenBurn',
+          Account: data.issuer,
+          Owner: data.owner,
+          NFTokenID: id
+        }
       }
     }
 
@@ -1005,8 +1004,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     )
   }
 
-  const setAsAvatarButton = () => {
+  const setAsAvatarButton = (data) => {
     if (!id || data.deletedAt) return '' //if it is already burned do not offer to burn
+
+    if (isNftExplicit(data)) return '' //if it is explicit, do not offer to set as avatar
 
     //if devnet, or signed, but not an owner or issuer - do not show set as avatar button
     if (devNet || (account?.address && account.address !== data.owner && account.address !== data.issuer)) return ''
@@ -1048,6 +1049,12 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         >
           Set as Avatar 😎
         </button>
+        {data.owner !== account?.address && (
+          <>
+            <br />
+            <span className="grey">{t('set-avatar-description', { ns: 'nft' })}</span>
+          </>
+        )}
         <br />
         <br />
       </>
@@ -1119,7 +1126,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                           {!notFoundInTheNetwork ? (
                             <>
                               {rendered && <NftPreview nft={data} />}
-                              {setAsAvatarButton()}
+                              {setAsAvatarButton(data)}
                               {sellButton(data.buyOffers)}
                               {buyButton(data.sellOffers)}
                               {cancelNftOfferButtons(t, setSignRequest, account?.address, data)}

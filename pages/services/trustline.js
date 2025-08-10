@@ -1,7 +1,15 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { explorerName, isAddressValid, typeNumberOnly, xahauNetwork } from '../../utils'
+import {
+  explorerName,
+  isAddressValid,
+  typeNumberOnly,
+  xahauNetwork,
+  encodeCurrencyCode,
+  validateCurrencyCode,
+  nativeCurrency
+} from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { useState, useEffect } from 'react'
 import AddressInput from '../../components/UI/AddressInput'
@@ -17,7 +25,20 @@ import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
 import { amountFormat } from '../../utils/format'
 
-export default function TrustSet({ setSignRequest }) {
+export const getServerSideProps = async (context) => {
+  const { query, locale } = context
+  const { currency, currencyIssuer } = query
+  return {
+    props: {
+      currencyQuery: currency || nativeCurrency,
+      currencyIssuerQuery: currencyIssuer || '',
+      isSsrMobile: getIsSsrMobile(context),
+      ...(await serverSideTranslations(locale, ['common']))
+    }
+  }
+}
+
+export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuerQuery }) {
   const { t } = useTranslation()
   const [error, setError] = useState('')
   const [mode, setMode] = useState('simple') // 'simple' or 'advanced'
@@ -25,12 +46,12 @@ export default function TrustSet({ setSignRequest }) {
   const [selectedTokenData, setSelectedTokenData] = useState({})
 
   // Simple mode state
-  const [selectedToken, setSelectedToken] = useState({ currency: '' })
+  const [selectedToken, setSelectedToken] = useState({ currency: currencyQuery, issuer: currencyIssuerQuery })
   const [tokenSupply, setTokenSupply] = useState(null)
 
   // Advanced mode state
-  const [issuer, setIssuer] = useState('')
-  const [currency, setCurrency] = useState({ currency: '' })
+  const [issuer, setIssuer] = useState(currencyIssuerQuery)
+  const [currency, setCurrency] = useState({ currency: currencyQuery })
 
   // Common state
   const [limit, setLimit] = useState('1000000')
@@ -63,6 +84,7 @@ export default function TrustSet({ setSignRequest }) {
         setIssuer(selectedToken.issuer)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedToken, mode])
 
   // Sync limit when switching modes
@@ -70,6 +92,7 @@ export default function TrustSet({ setSignRequest }) {
     if (mode === 'advanced' && tokenSupply) {
       setLimit(Math.round(tokenSupply * 1000000) / 1000000)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, tokenSupply])
 
   const fetchTokenSupply = async () => {
@@ -113,8 +136,10 @@ export default function TrustSet({ setSignRequest }) {
       }
     }
 
-    if (!currency.currency) {
-      setError('Please enter a valid currency.')
+    // Validate currency code
+    const currencyValidation = validateCurrencyCode(currency.currency)
+    if (!currencyValidation.valid) {
+      setError(currencyValidation.error)
       return
     }
 
@@ -148,7 +173,7 @@ export default function TrustSet({ setSignRequest }) {
       let trustSet = {
         TransactionType: 'TrustSet',
         LimitAmount: {
-          currency: currency.currency,
+          currency: encodeCurrencyCode(currency.currency),
           issuer: mode === 'simple' ? selectedToken.issuer : issuer,
           value: limit.toString()
         }
@@ -243,7 +268,26 @@ export default function TrustSet({ setSignRequest }) {
                   </span>
                 )}
               </span>
-              <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={true} inTitle={<></>} />
+              <TokenSelector
+                value={selectedToken}
+                onChange={setSelectedToken}
+                excludeNative={true}
+                currencyQueryName="currency"
+              />
+              {selectedToken.description && (
+                <div style={{ marginTop: 10 }}>
+                  <span className="grey">
+                    <b>Description (by the Token issuer):</b> {selectedToken.description}
+                  </span>
+                  <br />
+                  <br />
+                  <span className="orange">
+                    We do not take responsibility for the accuracy of the token descriptions or related information.
+                    Users should always do their own research (DYOR). The content is for informational purposes only,
+                    not financial advice.
+                  </span>
+                </div>
+              )}
             </div>
           ) : (
             // Advanced Mode
@@ -260,10 +304,16 @@ export default function TrustSet({ setSignRequest }) {
               <div className="form-spacing" />
               <FormInput
                 title="Currency code"
-                placeholder="Currency code (e.g., USD, EUR or HEX)"
-                setInnerValue={(value) => setCurrency({ currency: value })}
+                placeholder="Currency code (e.g., USD, myCurrency or HEX)"
+                setInnerValue={(value) => {
+                  if (value.length <= 40) {
+                    setCurrency({ currency: value })
+                  }
+                }}
                 hideButton={true}
                 defaultValue={currency.currency}
+                maxLength={40}
+                type="text"
               />
             </div>
           )}
@@ -401,14 +451,4 @@ export default function TrustSet({ setSignRequest }) {
       </div>
     </>
   )
-}
-
-export const getServerSideProps = async (context) => {
-  const { locale } = context
-  return {
-    props: {
-      isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
-    }
-  }
 }

@@ -1,5 +1,6 @@
 {
   "menu": {
+    "tokens": "Token",
     "amm": {
       "amm": "AMM",
       "pools": "AMM pools",
@@ -54,8 +55,7 @@
       "developers": "Entwickler",
       "account-generation": "Wallet erstellen",
       "faucet": "Wasserhahn",
-      "api": "API Dokumentation",
-      "api-admin": "API Konto"
+      "api": "API"
     },
     "legal": "Rechtliches",
     "disclaimer": "Haftungsausschluss",
@@ -63,7 +63,6 @@
     "terms-and-conditions": "AGB",
     "customer-support": "Kundensupport",
     "press": "Presse",
-    "merch": "Merch Shop",
     "donate": "Spenden",
     "sponsored": {
       "title": "Gesponsert",
@@ -557,9 +556,9 @@
     "sell": "Verkaufen",
     "buyNow": "Jetzt kaufen",
     "publicAndKnownBrokers": "Öffentlich & MP",
-    "onSale": "Zum Verkauf für {{nativeCurrency}}",
+    "onSale": "Gelistet",
     "all-tokens": "Alle Tokens",
-    "native-currency-only": "Nur {{nativeCurrency}}",
+    "single-token": "Einzelner Token",
     "mintedNew": "Neuste",
     "mintedOld": "Älteste",
     "existing": "Existierende",

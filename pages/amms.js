@@ -1,15 +1,8 @@
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import { axiosServer, passHeaders } from '../utils/axios'
+import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import {
-  addAndRemoveQueryParams,
-  addQueryParams,
-  nativeCurrency,
-  removeQueryParams,
-  useWidth,
-  xahauNetwork
-} from '../utils'
+import { nativeCurrency, stripText, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -50,7 +43,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/amms?order=currencyHigh&limit=50&voteSlots=false&auctionSlot=false' + currencyPart,
+      url: 'v2/amms?order=currencyHigh&limit=100&voteSlots=false&auctionSlot=false' + currencyPart,
       headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -60,6 +53,8 @@ export async function getServerSideProps(context) {
     console.error(error)
   }
 
+  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
+
   return {
     props: {
       initialData: initialData || null,
@@ -67,6 +62,8 @@ export async function getServerSideProps(context) {
       currencyQuery: currency || initialData?.currency || nativeCurrency,
       currencyIssuerQuery: currencyIssuer || initialData?.currencyIssuer || '',
       initialErrorMessage: initialErrorMessage || '',
+      fiatRateServer,
+      selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
@@ -96,15 +93,27 @@ export default function Amms({
   initialData,
   initialErrorMessage,
   orderQuery,
-  selectedCurrency,
+  selectedCurrency: selectedCurrencyApp,
   sessionToken,
   subscriptionExpired,
-  fiatRate,
+  fiatRate: fiatRateApp,
   currencyQuery,
-  currencyIssuerQuery
+  currencyIssuerQuery,
+  fiatRateServer,
+  selectedCurrencyServer,
+  setSelectedCurrency,
+  openEmailLogin
 }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
+
+  let fiatRate = fiatRateServer
+  let selectedCurrency = selectedCurrencyServer
+
+  if (fiatRateApp) {
+    fiatRate = fiatRateApp
+    selectedCurrency = selectedCurrencyApp
+  }
 
   const windowWidth = useWidth()
 
@@ -115,43 +124,12 @@ export default function Amms({
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [marker, setMarker] = useState(initialData?.marker)
   const [filtersHide, setFiltersHide] = useState(false)
-  const [token, setToken] = useState(() => {
-    if (currencyQuery && currencyQuery !== nativeCurrency) {
-      return {
-        currency: currencyQuery,
-        issuer: currencyIssuerQuery
-      }
-    } else if (currencyQuery === nativeCurrency) {
-      return {
-        currency: nativeCurrency
-      }
-    }
-    return ''
+  const [token, setToken] = useState({
+    currency: stripText(currencyQuery),
+    issuer: stripText(currencyIssuerQuery)
   })
 
-  // control radio selection: 'all' | 'single'
-  const [filterMode, setFilterMode] = useState(() => (token?.currency ? 'single' : 'all'))
-
   const controller = new AbortController()
-
-  useEffect(() => {
-    if (token?.currency && order === 'currencyHigh') {
-      if (token.currency === nativeCurrency) {
-        addAndRemoveQueryParams(router, [{ name: 'currency', value: nativeCurrency }], ['currencyIssuer'])
-      } else if (token.issuer) {
-        const params = [
-          { name: 'currency', value: token.currency },
-          { name: 'currencyIssuer', value: token.issuer }
-        ]
-        addQueryParams(router, params)
-      } else {
-        removeQueryParams(router, ['currencyIssuer', 'currency'])
-      }
-    } else {
-      removeQueryParams(router, ['currencyIssuer', 'currency'])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, order])
 
   useEffect(() => {
     if (initialData?.amms?.length > 0) {
@@ -197,7 +175,7 @@ export default function Amms({
       currencyPart = '&sortCurrency=' + nativeCurrency
     }
 
-    let apiUrl = 'v2/amms?order=' + order + '&limit=50&voteSlots=false&auctionSlot=false' + markerPart + currencyPart
+    let apiUrl = 'v2/amms?order=' + order + '&limit=100&voteSlots=false&auctionSlot=false' + markerPart + currencyPart
 
     if (!markerPart) {
       setLoading(true)
@@ -244,11 +222,14 @@ export default function Amms({
   }
 
   useEffect(() => {
-    if (order && (rawData.order !== order || rawData.currency !== token?.currency || rawData.currencyIssuer !== token?.issuer)) {
+    if (
+      order &&
+      (rawData.order !== order || rawData.currency !== token?.currency || rawData.currencyIssuer !== token?.issuer)
+    ) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, token])
+  }, [order, token, subscriptionExpired])
 
   const csvHeaders = [
     { label: 'Asset 1', key: 'amountFormated' },
@@ -280,22 +261,16 @@ export default function Amms({
     <>
       <SEO
         title={t('menu.amm.pools')}
-        images={
+        image={
           xahauNetwork
-            ? []
-            : [
-                {
-                  width: 1200,
-                  height: 630,
-                  file: 'previews/1200x630/amms.png'
-                },
-                {
-                  width: 630,
-                  height: 630,
-                  file: 'previews/630x630/amms.png'
-                }
-              ]
+            ? null
+            : {
+                width: 1200,
+                height: 630,
+                file: 'previews/1200x630/amms.png'
+              }
         }
+        twitterImage={xahauNetwork ? null : { file: 'previews/630x630/amms.png' }}
       />
       <h1 className="center">{t('menu.amm.pools')}</h1>
       <FiltersFrame
@@ -316,45 +291,16 @@ export default function Amms({
         csvHeaders={csvHeaders}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
+        selectedCurrency={selectedCurrency}
+        setSelectedCurrency={setSelectedCurrency}
       >
         <>
-          <div className="radio-options">
-            <div className="radio-input">
-              <input
-                type="radio"
-                name="tokenFilterMode"
-                checked={filterMode === 'all'}
-                onChange={() => {
-                  setFilterMode('all')
-                  setToken({}) // clear any selected token
-                }}
-                id={'tokenFilterAll'}
-              />
-              <label htmlFor={'tokenFilterAll'}>{t('tabs.all-tokens', { defaultValue: 'All tokens' })}</label>
-            </div>
-            <div className="radio-input" style={{ marginLeft: 20 }}>
-              <input
-                type="radio"
-                name="tokenFilterMode"
-                checked={filterMode === 'single'}
-                onChange={() => {
-                  setFilterMode('single')
-                }}
-                id={'tokenFilterSingle'}
-              />
-              <label htmlFor={'tokenFilterSingle'}>{t('tabs.single-token', { defaultValue: 'Single token' })}</label>
-            </div>
-          </div>
-
-          {filterMode === 'single' && (
-            <div>
-              <p>{t('table.currency')}</p>
-              <TokenSelector
-                value={token}
-                onChange={setToken}
-              />
-            </div>
-          )}
+          <TokenSelector
+            value={token}
+            onChange={setToken}
+            allOrOne={order !== 'currencyHigh'}
+            currencyQueryName="currency"
+          />
         </>
         <InfiniteScrolling
           dataLength={data.length}
@@ -363,6 +309,7 @@ export default function Amms({
           errorMessage={errorMessage}
           subscriptionExpired={subscriptionExpired}
           sessionToken={sessionToken}
+          openEmailLogin={openEmailLogin}
         >
           {!windowWidth || windowWidth > 860 ? (
             <table className="table-large">
