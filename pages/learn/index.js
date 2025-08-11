@@ -41,6 +41,7 @@ const learnContentXRP = [
       { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
       { title: 'How to Mint NFTs on XRPL', slug: 'nft-minting' },
       { title: 'The Bithomp API', slug: 'the-bithomp-api' },
+      { title: 'XRP and XAH Taxes - get SCV exports for your report', slug: 'xrp-xah-taxes' },
     ],
   },
 ]

@@ -96,6 +96,11 @@ module.exports = withBundleAnalyzer({
         source: '/rlusd',
         destination: '/learn/ripple-usd',
         permanent: true
+      },
+      {
+        source: '/xrp-xah-taxes',
+        destination: '/learn/xrp-xah-taxes',
+        permanent: true
       }
     ]
   },
