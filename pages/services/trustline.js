@@ -374,11 +374,6 @@ export default function TrustSet({
       <SEO title="Set Trustline" description={'Set a Trustline on the ' + explorerName} />
       <div className="content-text content-center">
         <h1 className="center">Set/Update Trust (Trustlines)</h1>
-        <div className="center" style={{ marginTop: 8 }}>
-          <button className="button-action thin" onClick={handleShare} style={{ minWidth: '120px' }}>
-            {shareCopied ? 'Link copied' : 'Share'}
-          </button>
-        </div>
         <p className="center">Create or modify a Trustline linking two accounts.</p>
         <NetworkTabs />
 
@@ -590,6 +585,9 @@ export default function TrustSet({
             </>
           )}
           <div className="center">
+            <button className="button-action" onClick={handleShare} style={{ minWidth: '120px', marginRight: 10 }}>
+              {shareCopied ? 'Link copied' : 'Share'}
+            </button>
             <button className="button-action" onClick={handleTrustSet}>
               Create Trustline
             </button>
