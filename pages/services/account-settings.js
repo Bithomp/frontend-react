@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { xahauNetwork, explorerName, nativeCurrency, isAddressValid, encode } from '../../utils'
+import { xahauNetwork, explorerName, nativeCurrency, isAddressValid, encode, isEmailValid, md5 } from '../../utils'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -490,28 +490,36 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
       setErrorMessage('Please sign in to your account.')
       return
     }
-    const value = emailHashInput.trim()
-    const isValid = /^[0-9a-fA-F]{32}$/.test(value)
-    if (!isValid) {
-      setErrorMessage('Please enter a valid EmailHash (32 hexadecimal characters).')
+    const input = emailHashInput.trim()
+    let valueHex = ''
+    if (!input) {
+      setErrorMessage('Please enter an email or a 32-character hex MD5 hash.')
+      return
+    }
+    if (/^[0-9a-fA-F]{32}$/.test(input)) {
+      valueHex = input.toUpperCase()
+    } else if (isEmailValid(input)) {
+      valueHex = md5(input).toUpperCase()
+    } else {
+      setErrorMessage('Enter a valid email or a 32-character hex MD5 hash.')
       return
     }
     const tx = {
       TransactionType: 'AccountSet',
       Account: account.address,
-      EmailHash: value.toUpperCase()
+      EmailHash: valueHex
     }
     setSignRequest({
       request: tx,
       callback: () => {
         setSuccessMessage('EmailHash set successfully.')
         setErrorMessage('')
-        setCurrentEmailHash(value.toUpperCase())
+        setCurrentEmailHash(valueHex)
         setAccountData((prev) => {
           if (prev && prev.ledgerInfo) {
             return {
               ...prev,
-              ledgerInfo: { ...prev.ledgerInfo, emailHash: value.toUpperCase() }
+              ledgerInfo: { ...prev.ledgerInfo, emailHash: valueHex }
             }
           }
           return prev
@@ -1161,15 +1169,14 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 </div>
                 <div className="nft-minter-input">
                   <FormInput
-                    placeholder="32 hex characters (MD5)"
+                    placeholder="Email or 32 hex characters (MD5)"
                     setInnerValue={setEmailHashInput}
                     hideButton={true}
                     defaultValue={emailHashInput}
                     type="text"
                     disabled={!account?.address}
-                    maxLength={32}
                   />
-                  <small>Provide MD5 hash of your email in hex. Leave empty and press Clear to remove.</small>
+                  <small>Enter an email or a 32-character hex MD5. Leave empty and press Clear to remove.</small>
                 </div>
               </div>
 
