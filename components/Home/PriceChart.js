@@ -344,6 +344,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
     }
 
     const bucketMs = getBucketMs(chartPeriod)
+    const bucketStart = (timestamp) => Math.floor(timestamp / bucketMs) * bucketMs
 
     setData((previousData) => {
       const previousSeries = Array.isArray(previousData?.data) ? previousData.data : []
@@ -356,15 +357,31 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
       const lastPoint = previousSeries[previousSeries.length - 1]
       const lastTimestamp = Array.isArray(lastPoint) ? lastPoint[0] : null
 
-      // If within the same bucket window, update the last point (keep only one point per bucket)
-      if (lastTimestamp && nowTimestamp - lastTimestamp < bucketMs) {
+      const lastBucket = lastTimestamp != null ? Math.floor(lastTimestamp / bucketMs) : null
+      const currentBucket = Math.floor(nowTimestamp / bucketMs)
+      const currentBucketStart = bucketStart(nowTimestamp)
+
+      if (lastBucket === null) {
+        return { ...previousData, data: [[nowTimestamp, liveFiatRate]] }
+      }
+
+      // Same bucket as last point
+      if (currentBucket === lastBucket) {
+        // Preserve boundary point if the last point is exactly at the bucket boundary.
+        if (lastTimestamp === currentBucketStart) {
+          // Keep the boundary point, add a live point in the same bucket
+          return { ...previousData, data: [...previousSeries, [nowTimestamp, liveFiatRate]] }
+        }
+        // Otherwise update the last point within the same bucket
         const updated = previousSeries.slice(0, -1)
         updated.push([nowTimestamp, liveFiatRate])
         return { ...previousData, data: updated }
       }
 
-      // Outside the bucket window → append a new point
-      return { ...previousData, data: [...previousSeries, [nowTimestamp, liveFiatRate]] }
+      // Crossed into a new bucket: append the bucket boundary point, then the live point
+      const boundaryTs = currentBucketStart
+      const appended = [...previousSeries, [boundaryTs, liveFiatRate], [nowTimestamp, liveFiatRate]]
+      return { ...previousData, data: appended }
     })
 
     // Keep x-axis max pinned to now so the viewport grows live
