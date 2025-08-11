@@ -38,7 +38,7 @@ export default function NFTokenMint({
   const [flags, setFlags] = useState({
     tfBurnable: burnableQuery === 'true',
     tfOnlyXRP: onlyXrpQuery === 'true',
-    tfTransferable: transferableQuery === '' ? true : transferableQuery === 'true',
+    tfTransferable: transferableQuery === 'false' ? false : true,
     tfMutable: mutableQuery === 'true'
   })
 
@@ -95,8 +95,8 @@ export default function NFTokenMint({
     } else {
       queryRemoveList.push('onlyXrp')
     }
-    if (flags.tfTransferable) {
-      queryAddList.push({ name: 'transferable', value: 'true' })
+    if (flags.tfTransferable === false) {
+      queryAddList.push({ name: 'transferable', value: 'false' })
     } else {
       queryRemoveList.push('transferable')
     }
