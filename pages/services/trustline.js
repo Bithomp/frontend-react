@@ -130,13 +130,14 @@ export default function TrustSet({
     const addList = []
     const removeList = []
 
-    // mode
-    if (mode) {
+    if (mode && mode !== 'simple') {
       addList.push({ name: 'mode', value: mode })
+    } else {
+      removeList.push('mode')
     }
 
     if (mode === 'simple') {
-      if (selectedToken.currency) {
+      if (selectedToken.currency && selectedToken.currency !== nativeCurrency) {
         addList.push({ name: 'currency', value: selectedToken.currency })
       } else {
         removeList.push('currency')
@@ -163,7 +164,7 @@ export default function TrustSet({
       } else {
         removeList.push('currency')
       }
-      if (limit && !isNaN(parseFloat(limit))) {
+      if (limit && !isNaN(parseFloat(limit)) && String(limit) !== '1000000') {
         addList.push({ name: 'limit', value: String(limit) })
       } else {
         removeList.push('limit')
@@ -180,12 +181,11 @@ export default function TrustSet({
       }
     }
 
-    // flags (always include explicitly to fully capture state)
-    addList.push({ name: 'freeze', value: setFreeze ? '1' : '0' })
-    addList.push({ name: 'noRipple', value: setNoRipple ? '1' : '0' })
-    addList.push({ name: 'authorized', value: setAuthorized ? '1' : '0' })
+    if (setFreeze) addList.push({ name: 'freeze', value: '1' }); else removeList.push('freeze')
+    if (!setNoRipple) addList.push({ name: 'noRipple', value: '0' }); else removeList.push('noRipple')
+    if (setAuthorized) addList.push({ name: 'authorized', value: '1' }); else removeList.push('authorized')
     if (!xahauNetwork) {
-      addList.push({ name: 'deepFreeze', value: setDeepFreeze ? '1' : '0' })
+      if (setDeepFreeze) addList.push({ name: 'deepFreeze', value: '1' }); else removeList.push('deepFreeze')
     } else {
       removeList.push('deepFreeze')
     }
@@ -197,22 +197,33 @@ export default function TrustSet({
   const buildShareUrl = () => {
     if (typeof window === 'undefined') return ''
     const params = new URLSearchParams()
-    params.set('mode', mode)
+
+    if (mode && mode !== 'simple') params.set('mode', mode)
+
     if (mode === 'simple') {
-      if (selectedToken.currency) params.set('currency', selectedToken.currency)
+      if (selectedToken.currency && selectedToken.currency !== nativeCurrency) {
+        params.set('currency', selectedToken.currency)
+      }
       if (selectedToken.issuer) params.set('currencyIssuer', selectedToken.issuer)
     } else {
-      if (issuer) params.set('issuer', issuer)
+      if (issuer && isAddressValid(issuer)) params.set('issuer', issuer)
       if (currency.currency) params.set('currency', currency.currency)
-      if (limit) params.set('limit', String(limit))
+      if (limit && !isNaN(parseFloat(limit)) && String(limit) !== '1000000') {
+        params.set('limit', String(limit))
+      }
       if (qualityIn) params.set('qualityIn', String(qualityIn))
       if (qualityOut) params.set('qualityOut', String(qualityOut))
     }
-    params.set('freeze', setFreeze ? '1' : '0')
-    params.set('noRipple', setNoRipple ? '1' : '0')
-    params.set('authorized', setAuthorized ? '1' : '0')
-    if (!xahauNetwork) params.set('deepFreeze', setDeepFreeze ? '1' : '0')
-    return `${window.location.origin}${router.pathname}?${params.toString()}`
+
+    if (setFreeze) params.set('freeze', '1')
+    if (!setNoRipple) params.set('noRipple', '0')
+    if (setAuthorized) params.set('authorized', '1')
+    if (!xahauNetwork && setDeepFreeze) params.set('deepFreeze', '1')
+
+    const qs = params.toString()
+    return qs
+      ? `${window.location.origin}${router.pathname}?${qs}`
+      : `${window.location.origin}${router.pathname}`
   }
 
   const [shareCopied, setShareCopied] = useState(false)
@@ -365,13 +376,8 @@ export default function TrustSet({
         <h1 className="center">Set/Update Trust (Trustlines)</h1>
         <div className="center" style={{ marginTop: 8 }}>
           <button className="button-action thin" onClick={handleShare} style={{ minWidth: '120px' }}>
-            Share
+            {shareCopied ? 'Link copied' : 'Share'}
           </button>
-          {shareCopied && (
-            <span className="green" style={{ marginLeft: 10 }}>
-              Link copied to clipboard
-            </span>
-          )}
         </div>
         <p className="center">Create or modify a Trustline linking two accounts.</p>
         <NetworkTabs />
