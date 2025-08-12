@@ -370,6 +370,9 @@ export default function MobileMenu({
           {t('menu.developers.developers')}
         </div>
         <div className="mobile-menu__submenu">
+          <Link href="/learn/the-bithomp-api" className="mobile-menu-item">
+            {t('menu.developers.api')}
+          </Link>
           {devNet && (
             <>
               <a href={'/create/'} className="mobile-menu-item">
@@ -389,12 +392,6 @@ export default function MobileMenu({
               </Link>
             </>
           )}
-          <Link href="https://docs.bithomp.com" className="mobile-menu-item">
-            {t('menu.developers.api')}
-          </Link>
-          <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t('menu.developers.api-admin')}
-          </Link>
           <a href="https://github.com/Bithomp" className="mobile-menu-item">
             Github
           </a>
@@ -410,6 +407,9 @@ export default function MobileMenu({
           Bithomp
         </div>
         <div className="mobile-menu__submenu">
+          <Link href="/learn/the-bithomp-explorer-advantages" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Why Our Explorer
+          </Link>
           <Link href="/about-us" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.company.about-us')}
           </Link>
@@ -442,6 +442,31 @@ export default function MobileMenu({
           </Link>
           <Link href="/terms-and-conditions" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.terms-and-conditions')}
+          </Link>
+        </div>
+
+        <div className="mobile-menu-directory" data-expanded="false">
+          {t('menu.learn-more.title')}
+        </div>
+        <div className="mobile-menu__submenu">
+          {!xahauNetwork && (
+            <Link href="/learn/xrpl-article" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              XRP, XRPL, Ripple
+            </Link>
+          )}
+          <Link href="/learn/verified-domain" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Verified domains
+          </Link>
+          {!xahauNetwork && (
+            <Link href="/learn/ripple-usd" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              Ripple USD
+            </Link>
+          )}
+          <Link href="/learn/nft-minting" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            How to Mint NFT
+          </Link>
+          <Link href="/learn" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            See our learn page
           </Link>
         </div>
 

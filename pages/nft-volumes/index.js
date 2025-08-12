@@ -41,7 +41,8 @@ import {
   usernameOrAddress,
   percentFormat,
   niceNumber,
-  niceCurrency
+  niceCurrency,
+  shortHash
 } from '../../utils/format'
 
 import LinkIcon from '../../public/images/link.svg'
@@ -866,6 +867,10 @@ export default function NftVolumes({
     const { service, username } = data.collectionDetails.issuerDetails
     if (service || username) {
       return service || username // + ' (' + data.collectionDetails.taxon + ')'
+    }
+    if (nonSologenic(data)) {
+      const { issuer, taxon } = data.collectionDetails
+      return shortHash(issuer) + (taxon ? ' (' + taxon + ')' : '')
     }
     return data.collection
   }

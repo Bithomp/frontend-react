@@ -28,6 +28,7 @@ const learnContentXRP = [
     category: 'XRPL Features & Concepts',
     description: 'Dive deeper into the features and concepts of the XRP Ledger.',
     items: [
+      { title: 'XRP, Ripple, XRP Ledger: Key Differencies', slug: 'xrpl-article' },
       { title: 'Blackholed Address', slug: 'blackholed-address' },
       { title: 'Blacklisted Address', slug: 'blacklisted-address' },
       { title: 'Ripple USD', slug: 'ripple-usd' },
@@ -40,6 +41,7 @@ const learnContentXRP = [
     items: [
       { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
       { title: 'How to Mint NFTs on XRPL', slug: 'nft-minting' },
+      { title: 'The Bithomp API', slug: 'the-bithomp-api' },
     ],
   },
 ]
@@ -60,6 +62,7 @@ const learnContentXAHAU = [
     items: [
       { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
       { title: 'How to mint NFTs on Xahau', slug: 'nft-minting' },
+      { title: 'The Bithomp API', slug: 'the-bithomp-api' },
     ],
   },
 ]

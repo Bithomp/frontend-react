@@ -31,6 +31,7 @@ export default function Footer() {
 
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.developers.developers')}</span>
+          <Link href="/learn/the-bithomp-api">{t('menu.developers.api')}</Link>
           {network === 'mainnet' && (
             <>
               <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
@@ -45,19 +46,18 @@ export default function Footer() {
               <a href={'/tools/'}>Bithomp tools</a>
             </>
           )}
-          <a href="https://docs.bithomp.com">{t('menu.developers.api')}</a>
-          <Link href="/admin">{t('menu.developers.api-admin')}</Link>
           <a href="https://github.com/Bithomp">Github</a>
           <Link href="/eaas">{t('menu.business.eaas')}</Link>
           <Link href="/build-unl">{t('menu.business.build-unl')}</Link>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
-          <Link href="/jobs">Join our team</Link>
+          <Link href="/learn/the-bithomp-explorer-advantages">Why Our Explorer</Link>
           <Link href="/about-us">{t('menu.company.about-us')}</Link>
           <Link href="/advertise">{t('menu.business.advertise')}</Link>
           <Link href="/customer-support">{t('menu.customer-support')}</Link>
           <Link href="/press">{t('menu.press')}</Link>
+          <Link href="/jobs">Join our team</Link>
           <Link href="/donate">{t('menu.donate')}</Link>
         </div>
         <div className="footer-menu-column">
@@ -69,11 +69,8 @@ export default function Footer() {
 
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
-          {!xahauNetwork && <Link href="/xrpl-article">XRP, XRPL, Ripple</Link>}
-          <Link href="/learn/blackholed-address">Blackholed address</Link>
-          <Link href="/learn/blacklisted-address">Blacklisted address</Link>
+          {!xahauNetwork && <Link href="/learn/xrpl-article">XRP, XRPL, Ripple</Link>}
           <Link href="/learn/verified-domain">Verified domains</Link>
-          <Link href="/learn/the-bithomp-explorer-advantages">Why Our Explorer</Link>
           {!xahauNetwork && <Link href="/learn/ripple-usd">Ripple USD</Link>}
           <Link href="/learn/nft-minting">How to Mint NFT</Link>
           <Link href="/learn">See our learn page</Link>
