@@ -32,6 +32,7 @@ import {
 } from '../utils'
 import { useRouter } from 'next/router'
 import CopyButton from '../components/UI/CopyButton'
+import { fetchHistoricalRate } from '../utils/common'
 
 /*
   {
@@ -172,6 +173,11 @@ export default function Tokens({
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
   const [rendered, setRendered] = useState(false)
+  const [sortConfig, setSortConfig] = useState({ key: 'rating', direction: 'descending' })
+  const [fiatRate5m, setFiatRate5m] = useState(null)
+  const [fiatRate24h, setFiatRate24h] = useState(null)
+  const [fiatRate7d, setFiatRate7d] = useState(null)
+  const [fiatRate1h, setFiatRate1h] = useState(null)
 
   const controller = new AbortController()
 
@@ -265,20 +271,14 @@ export default function Tokens({
     let queryRemoveList = []
 
     if (isAddressOrUsername(issuer)) {
-      queryAddList.push({
-        name: 'issuer',
-        value: issuer
-      })
+      queryAddList.push({ name: 'issuer', value: issuer })
     } else {
       queryRemoveList.push('issuer')
     }
 
     const { valid, currencyCode } = validateCurrencyCode(currency)
     if (valid) {
-      queryAddList.push({
-        name: 'currency',
-        value: currencyCode
-      })
+      queryAddList.push({ name: 'currency', value: currencyCode })
     } else {
       queryRemoveList.push('currency')
     }
@@ -298,16 +298,43 @@ export default function Tokens({
       queryRemoveList
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [issuer, order, currency])
+  }, [issuer, currency])
 
   // Cleanup on unmount
   useEffect(() => {
     setRendered(true)
+    // fetch historical fiat rates for percent columns
+    if (selectedCurrency) {
+      const now = Date.now()
+      const t5m = now - 5 * 60 * 1000
+      const t1h = now - 1 * 60 * 60 * 1000
+      const t24h = now - 24 * 60 * 60 * 1000
+      const t7d = now - 7 * 24 * 60 * 60 * 1000
+      fetchHistoricalRate({ timestamp: t5m, selectedCurrency, setPageFiatRate: setFiatRate5m })
+      fetchHistoricalRate({ timestamp: t1h, selectedCurrency, setPageFiatRate: setFiatRate1h })
+      fetchHistoricalRate({ timestamp: t24h, selectedCurrency, setPageFiatRate: setFiatRate24h })
+      fetchHistoricalRate({ timestamp: t7d, selectedCurrency, setPageFiatRate: setFiatRate7d })
+    }
     return () => {
       controller.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Refetch historical fiat rates if currency changes
+  useEffect(() => {
+    if (!selectedCurrency) return
+    const now = Date.now()
+    const t5m = now - 5 * 60 * 1000
+    const t1h = now - 1 * 60 * 60 * 1000
+    const t24h = now - 24 * 60 * 60 * 1000
+    const t7d = now - 7 * 24 * 60 * 60 * 1000
+    fetchHistoricalRate({ timestamp: t5m, selectedCurrency, setPageFiatRate: setFiatRate5m })
+    fetchHistoricalRate({ timestamp: t1h, selectedCurrency, setPageFiatRate: setFiatRate1h })
+    fetchHistoricalRate({ timestamp: t24h, selectedCurrency, setPageFiatRate: setFiatRate24h })
+    fetchHistoricalRate({ timestamp: t7d, selectedCurrency, setPageFiatRate: setFiatRate7d })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency])
 
   // CSV headers for export
   const csvHeaders = [
@@ -407,6 +434,41 @@ export default function Tokens({
     )
   }
 
+  const renderPercentCell = ({ currentXrp, pastXrp, pastFiatRate }) => {
+    const current = Number(currentXrp || 0)
+    const past = Number(pastXrp || 0)
+    if (!current || !past) return <span className="grey">-</span>
+    if (past === 0) return <span className="grey">-</span>
+    const useFiat = fiatRate && pastFiatRate
+    const currentVal = useFiat ? current * fiatRate : current
+    const pastVal = useFiat ? past * pastFiatRate : past
+    const change = currentVal / pastVal - 1
+    const colorClass = change >= 0 ? 'green' : 'red'
+    const percentText = niceNumber(Math.abs(change * 100), 2) + '%'
+    const currentFiat = fiatRate ? current * fiatRate : null
+    const pastFiat = pastFiatRate ? past * pastFiatRate : null
+    return (
+      <span className={`tooltip ${colorClass}`} suppressHydrationWarning>
+        {change >= 0 ? '+' : '-'}{percentText}
+        <span className="tooltiptext right no-brake" suppressHydrationWarning>
+          {fiatRate && pastFiatRate ? (
+            <>
+              Now: {fullNiceNumber(currentFiat, selectedCurrency)}
+              <br />
+              Then: {fullNiceNumber(pastFiat, selectedCurrency)}
+            </>
+          ) : (
+            <>
+              Now: {niceNumber(current, 6)} {nativeCurrency}
+              <br />
+              Then: {niceNumber(past, 6)} {nativeCurrency}
+            </>
+          )}
+        </span>
+      </span>
+    )
+  }
+
   const volumeToFiat = ({ token, mobile, type }) => {
     const { statistics, currency } = token
     if (!fiatRate) return null
@@ -448,15 +510,47 @@ export default function Tokens({
     )
   }
 
+  const sortTable = (key) => {
+    if (!data || data.length === 0) return
+    let direction = 'descending'
+    if (sortConfig.key === key && sortConfig.direction === direction) {
+      direction = 'ascending'
+    }
+    setSortConfig({ key, direction })
+
+    const apiOrderFor = (k, dir) => {
+      const suffix = dir === 'descending' ? 'High' : 'Low'
+      switch (k) {
+        case 'rating':
+        case 'index':
+          return 'rating'
+        case 'trustlines':
+          return 'trustlines' + suffix
+        case 'holders':
+          return 'holders' + suffix
+        case 'price':
+          return 'price' + suffix
+        case 'marketcap':
+          return 'marketcap' + suffix
+        case 'token':
+          return null
+        default:
+          return null
+      }
+    }
+
+    const newApiOrder = apiOrderFor(key, direction)
+    if (newApiOrder) {
+      setOrder(newApiOrder)
+    }
+  }
+
   return (
     <>
       <SEO title="Tokens" />
       <h1 className="center">Tokens</h1>
 
       <FiltersFrame
-        order={order}
-        setOrder={setOrder}
-        orderList={orderList}
         count={data?.length}
         hasMore={marker}
         data={data || []}
@@ -490,13 +584,16 @@ export default function Tokens({
             <table className="table-large no-hover">
               <thead>
                 <tr>
-                  <th className="center">#</th>
+                  <th className="center">                    
+                    <b className={'link' + (sortConfig.key === 'rating' ? ' orange' : '')} onClick={() => sortTable('rating')}> #</b>
+                  </th>
                   <th>Token</th>
-                  <th className="right">Price</th>
-                  {/*
-                  <th className="right">24h %</th>
-                  <th className="right">7d %</th>
-                  */}
+                  <th className="right">
+                    Price
+                    <b className={'link' + (sortConfig.key === 'price' ? ' orange' : '')} onClick={() => sortTable('price')}> ⇅</b>
+                  </th>
+                  <th className="right">5m % / 1h % <br /> 24h % / 7d %</th>
+                 
                   <th className="right">
                     Buy volume
                     <br />
@@ -521,6 +618,7 @@ export default function Tokens({
                     Holders,
                     <br />
                     Active (24h)
+                    <b className={'link' + (sortConfig.key === 'holders' ? ' orange' : '')} onClick={() => sortTable('holders')}> ⇅</b>
                   </th>
                   {!xahauNetwork && (
                     <th className="center">
@@ -534,8 +632,14 @@ export default function Tokens({
                     <br />
                     (24h)
                   </th>
-                  <th className="right">Marketcap</th>
-                  <th className="right">Trustlines</th>
+                  <th className="right">
+                    Marketcap
+                    <b className={'link' + (sortConfig.key === 'marketcap' ? ' orange' : '')} onClick={() => sortTable('marketcap')}> ⇅</b>
+                  </th>
+                  <th className="right">
+                    Trustlines
+                    <b className={'link' + (sortConfig.key === 'trustlines' ? ' orange' : '')} onClick={() => sortTable('trustlines')}> ⇅</b>
+                  </th>
                   <th className="center">Action</th>
                 </tr>
               </thead>
@@ -564,10 +668,31 @@ export default function Tokens({
                                 <TokenCell token={token} />
                               </td>
                               <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
-                              {/*
-                              <td className="right"></td>
-                              <td className="right"></td>
-                              */}
+                              
+                              <td className="right">
+                                {renderPercentCell({
+                                  currentXrp: token.statistics?.priceXrp,
+                                  pastXrp: token.statistics?.priceXrp5m,
+                                  pastFiatRate: fiatRate5m
+                                })} / {' '}
+                                {renderPercentCell({
+                                  currentXrp: token.statistics?.priceXrp,
+                                  pastXrp: token.statistics?.priceXrp1h,
+                                  pastFiatRate: fiatRate1h
+                                })}
+                                <br />
+                                {renderPercentCell({
+                                  currentXrp: token.statistics?.priceXrp,
+                                  pastXrp: token.statistics?.priceXrp24h,
+                                  pastFiatRate: fiatRate24h
+                                })} / {' '}
+                                {renderPercentCell({
+                                  currentXrp: token.statistics?.priceXrp,
+                                  pastXrp: token.statistics?.priceXrp7d,
+                                  pastFiatRate: fiatRate7d
+                                })}
+                              </td>                              
+                             
                               <td className="right">{volumeToFiat({ token, type: 'buy' })}</td>
                               <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
                               <td className="right">{volumeToFiat({ token })}</td>
@@ -695,6 +820,30 @@ export default function Tokens({
                                   Price in {nativeCurrency} 24h ago: {niceNumber(token.statistics?.priceXrp24h, 6)}
                                   <br />
                                   Price in {nativeCurrency} 7d ago: {niceNumber(token.statistics?.priceXrp7d, 6)}
+                                  <br />
+                                  5m %: {renderPercentCell({
+                                    currentXrp: token.statistics?.priceXrp,
+                                    pastXrp: token.statistics?.priceXrp5m,
+                                    pastFiatRate: fiatRate5m
+                                  })}
+                                  <br />
+                                  1h %: {renderPercentCell({
+                                    currentXrp: token.statistics?.priceXrp,
+                                    pastXrp: token.statistics?.priceXrp1h,
+                                    pastFiatRate: fiatRate1h
+                                  })}
+                                  <br />
+                                  24h %: {renderPercentCell({
+                                    currentXrp: token.statistics?.priceXrp,
+                                    pastXrp: token.statistics?.priceXrp24h,
+                                    pastFiatRate: fiatRate24h
+                                  })}
+                                  <br />
+                                  7d %: {renderPercentCell({
+                                    currentXrp: token.statistics?.priceXrp,
+                                    pastXrp: token.statistics?.priceXrp7d,
+                                    pastFiatRate: fiatRate7d
+                                  })}
                                   <br />
                                   Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
                                   <br />
