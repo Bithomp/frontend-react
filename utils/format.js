@@ -1018,3 +1018,7 @@ export const showAmmPercents = (x) => {
   x = x ? x / 1000 : '0'
   return x + '%'
 }
+
+export const tokenImageUrl = (token) => {
+  return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
+}

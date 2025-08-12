@@ -1,20 +1,20 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import SEO from '../../components/SEO'
 import { tokenClass } from '../../styles/pages/token.module.scss'
 import {
-  capitalize,
   niceNumber,
   shortNiceNumber,
   fullNiceNumber,
   AddressWithIconFilled,
-  fullDateAndTime
+  fullDateAndTime,
+  tokenImageUrl
 } from '../../utils/format'
-import { avatarSrc } from '../../utils'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
+import { fetchHistoricalRate } from '../../utils/common'
 import { getIsSsrMobile } from '../../utils/mobile'
 import {
   isAddressOrUsername,
@@ -123,74 +123,64 @@ export default function TokenPage({
     }
   }, [initialData, initialErrorMessage, router])
 
-  // Helper functions for formatting
-  const priceToFiat = ({ price, mobile }) => {
-    if (!fiatRate || !price) return null
-    const priceFiat = price * fiatRate
+  // Historical fiat rates for price points
+  const [historicalRates, setHistoricalRates] = useState({})
 
-    if (mobile) {
-      return (
-        <>
-          <span suppressHydrationWarning>{niceNumber(priceFiat, 0, selectedCurrency)}</span>
-          <br />
-          Price in {nativeCurrency}: {niceNumber(price, 6)}
-        </>
-      )
+  useEffect(() => {
+    const cur = (selectedCurrency || selectedCurrencyServer)?.toLowerCase()
+    if (!cur) return
+    const baseSeconds = token?.statistics?.timeAt || Math.floor(Date.now() / 1000)
+    const baseMs = baseSeconds * 1000
+    const points = [
+      ['spot', baseMs],
+      ['5m', baseMs - 5 * 60 * 1000],
+      ['1h', baseMs - 60 * 60 * 1000],
+      ['24h', baseMs - 24 * 60 * 60 * 1000],
+      ['7d', baseMs - 7 * 24 * 60 * 60 * 1000]
+    ]
+
+    let cancelled = false
+    points.forEach(([key, ts]) => {
+      fetchHistoricalRate({
+        timestamp: ts,
+        selectedCurrency: cur,
+        setPageFiatRate: (rate) => {
+          if (cancelled || rate == null) return
+          setHistoricalRates((prev) => ({ ...prev, [key]: rate }))
+        }
+      })
+    })
+
+    return () => {
+      cancelled = true
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency, selectedCurrencyServer, token?.statistics?.timeAt])
 
+  // Helper: price line as "fiat (XRP)" using historical rate when available
+  const priceLine = ({ price, key }) => {
+    if (!price) return null
+    const rate = historicalRates[key] || fiatRate
+    if (!rate) return null
+    const priceFiat = price * rate
     return (
-      <>
-        <span className="tooltip" suppressHydrationWarning>
-          {shortNiceNumber(priceFiat, 2, 1, selectedCurrency)}
-          <span className="tooltiptext right no-brake" suppressHydrationWarning>
-            {fullNiceNumber(priceFiat, selectedCurrency)}
-          </span>
-        </span>
-        <br />
-        <span className="tooltip grey" suppressHydrationWarning>
-          {shortNiceNumber(price, 6, 1)} {nativeCurrency}
-          <span className="tooltiptext right no-brake" suppressHydrationWarning>
-            {fullNiceNumber(price)} {nativeCurrency}
-          </span>
-        </span>
-      </>
+      <span suppressHydrationWarning>
+        {niceNumber(priceFiat, 4, selectedCurrency)} ({niceNumber(price, 6)} {nativeCurrency})
+      </span>
     )
   }
 
-  const marketcapToFiat = ({ marketcap, mobile }) => {
+  const marketcapLine = ({ marketcap }) => {
     if (!fiatRate || !marketcap) return null
     const marketcapFiat = marketcap * fiatRate
-
-    if (mobile) {
-      return (
-        <>
-          <span suppressHydrationWarning>{niceNumber(marketcapFiat, 0, selectedCurrency)}</span>
-          <br />
-          Marketcap: {niceNumber(marketcap, 0)} {nativeCurrency}
-        </>
-      )
-    }
-
     return (
-      <>
-        <span className="tooltip" suppressHydrationWarning>
-          {shortNiceNumber(marketcapFiat, 2, 1, selectedCurrency)}
-          <span className="tooltiptext right no-brake" suppressHydrationWarning>
-            {fullNiceNumber(marketcapFiat, selectedCurrency)}
-          </span>
-        </span>
-        <br />
-        <span className="tooltip grey" suppressHydrationWarning>
-          {shortNiceNumber(marketcap, 2, 1)} {nativeCurrency}
-          <span className="tooltiptext right no-brake" suppressHydrationWarning>
-            {fullNiceNumber(marketcap)} {nativeCurrency}
-          </span>
-        </span>
-      </>
+      <span suppressHydrationWarning>
+        {niceNumber(marketcapFiat, 2, selectedCurrency)} ({niceNumber(marketcap, 2)} {nativeCurrency})
+      </span>
     )
   }
 
-  const volumeToFiat = ({ token, mobile, type }) => {
+  const volumeLine = ({ token, type }) => {
     const { statistics, currencyDetails } = token
     if (!fiatRate) return null
     let volume
@@ -199,35 +189,11 @@ export default function TokenPage({
     } else {
       volume = statistics?.[type + 'Volume'] || 0
     }
-    const volumeFiat = volume * statistics?.priceXrp * fiatRate || 0
-
-    if (mobile) {
-      return (
-        <>
-          <span suppressHydrationWarning>{niceNumber(volumeFiat, 0, selectedCurrency)}</span>
-          <br />
-          {type !== 'total' ? capitalize(type) : ''} Volume (24h) token: {niceNumber(volume, 0)}{' '}
-          {currencyDetails.currency}
-        </>
-      )
-    }
-
+    const volumeFiat = volume * (statistics?.priceXrp || 0) * fiatRate || 0
     return (
-      <>
-        <span className="tooltip" suppressHydrationWarning>
-          {shortNiceNumber(volumeFiat, 2, 1, selectedCurrency)}
-          <span className="tooltiptext right no-brake" suppressHydrationWarning>
-            {fullNiceNumber(volumeFiat, selectedCurrency)}
-          </span>
-        </span>
-        <br />
-        <span className="tooltip grey" suppressHydrationWarning>
-          {shortNiceNumber(volume, 2, 1)} {currencyDetails.currency}
-          <span className="tooltiptext right no-brake" suppressHydrationWarning>
-            {fullNiceNumber(volume)} {currencyDetails.currency}
-          </span>
-        </span>
-      </>
+      <span suppressHydrationWarning>
+        {niceNumber(volume, 2)} {currencyDetails.currency} ({niceNumber(volumeFiat, 2, selectedCurrency)})
+      </span>
     )
   }
 
@@ -284,6 +250,8 @@ export default function TokenPage({
     })
   }
 
+  console.log(token)
+
   return (
     <>
       <SEO title={`${token?.currencyDetails?.currency} Token - ${token.issuerDetails?.service || token.issuerDetails?.username || 'Token Details'}`} />
@@ -294,7 +262,7 @@ export default function TokenPage({
             {/* Big Token Icon */}
             <img
               alt="token"
-              src={avatarSrc(token?.issuer, null)}
+              src={tokenImageUrl(token)}
               style={{ width: '100%', height: 'auto' }}
             />
             <h1>{token?.currencyDetails?.currency}</h1>
@@ -345,30 +313,15 @@ export default function TokenPage({
                 </tr>
                 <tr>
                   <td>Supply</td>
-                  <td>
-                    <span className="tooltip">
-                      {shortNiceNumber(token.supply, 2, 1)} {token.currencyDetails.currency}
-                      <span className="tooltiptext">{fullNiceNumber(token.supply)} {token.currencyDetails.currency}</span>
-                    </span>
-                  </td>
+                  <td>{fullNiceNumber(token.supply)} {token.currencyDetails.currency}</td>
                 </tr>
                 <tr>
                   <td>Holders</td>
-                  <td>
-                    <span className="tooltip">
-                      {shortNiceNumber(token.holders, 0, 1)}
-                      <span className="tooltiptext">{fullNiceNumber(token.holders)}</span>
-                    </span>
-                  </td>
+                  <td>{fullNiceNumber(token.holders)}</td>
                 </tr>
                 <tr>
                   <td>Trustlines</td>
-                  <td>
-                    <span className="tooltip">
-                      {shortNiceNumber(token.trustlines, 0, 1)}
-                      <span className="tooltiptext">{fullNiceNumber(token.trustlines)}</span>
-                    </span>
-                  </td>
+                  <td>{fullNiceNumber(token.trustlines)}</td>
                 </tr>
                 <tr>
                   <td>KYC Status</td>
@@ -401,40 +354,40 @@ export default function TokenPage({
               <tbody>
                 <tr>
                   <td>Current Price</td>
-                  <td>{priceToFiat({ price: statistics?.priceXrp })}</td>
+                  <td>{priceLine({ price: statistics?.priceXrp, key: 'current' })}</td>
                 </tr>
                 <tr>
                   <td>Market Cap</td>
-                  <td>{marketcapToFiat({ marketcap: statistics?.marketcap })}</td>
+                  <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
                 </tr>
                 {statistics?.priceXrpSpot && (
                   <tr>
                     <td>Spot Price</td>
-                    <td>{priceToFiat({ price: statistics?.priceXrpSpot })}</td>
+                    <td>{priceLine({ price: statistics?.priceXrpSpot, key: 'spot' })}</td>
                   </tr>
                 )}
                 {statistics?.priceXrp1h && (
                   <tr>
                     <td>1 Hour Ago</td>
-                    <td>{priceToFiat({ price: statistics?.priceXrp1h })}</td>
+                    <td>{priceLine({ price: statistics?.priceXrp1h, key: '1h' })}</td>
                   </tr>
                 )}
                 {statistics?.priceXrp5m && (
                   <tr>
                     <td>5 Minutes Ago</td>
-                    <td>{priceToFiat({ price: statistics?.priceXrp5m })}</td>
+                    <td>{priceLine({ price: statistics?.priceXrp5m, key: '5m' })}</td>
                   </tr>
                 )}
                 {statistics?.priceXrp24h && (
                   <tr>
                     <td>24 Hours Ago</td>
-                    <td>{priceToFiat({ price: statistics?.priceXrp24h })}</td>
+                    <td>{priceLine({ price: statistics?.priceXrp24h, key: '24h' })}</td>
                   </tr>
                 )}
                 {statistics?.priceXrp7d && (
                   <tr>
                     <td>7 Days Ago</td>
-                    <td>{priceToFiat({ price: statistics?.priceXrp7d })}</td>
+                    <td>{priceLine({ price: statistics?.priceXrp7d, key: '7d' })}</td>
                   </tr>
                 )}
               </tbody>
@@ -450,15 +403,15 @@ export default function TokenPage({
               <tbody>
                 <tr>
                   <td>Volume (Total)</td>
-                  <td>{volumeToFiat({ token, type: 'total' })}</td>
+                  <td>{volumeLine({ token, type: 'total' })}</td>
                 </tr>
                 <tr>
                   <td>Volume (Buy)</td>
-                  <td>{volumeToFiat({ token, type: 'buy' })}</td>
+                  <td>{volumeLine({ token, type: 'buy' })}</td>
                 </tr>
                 <tr>
                   <td>Volume (Sell)</td>
-                  <td>{volumeToFiat({ token, type: 'sell' })}</td>
+                  <td>{volumeLine({ token, type: 'sell' })}</td>
                 </tr>
                 <tr>
                   <td>Trades</td>
@@ -514,7 +467,7 @@ export default function TokenPage({
                 {statistics?.transferTxs > 0 && (
                   <tr>
                     <td>Transfer Volume</td>
-                    <td>{volumeToFiat({ token, type: 'transfer' })}</td>
+                    <td>{volumeLine({ token, type: 'transfer' })}</td>
                   </tr>
                 )}
                 {statistics?.mintTxs > 0 && (
@@ -526,7 +479,7 @@ export default function TokenPage({
                 {statistics?.mintTxs > 0 && (
                   <tr>
                     <td>Mint Volume</td>
-                    <td>{volumeToFiat({ token, type: 'mint' })}</td>
+                    <td>{volumeLine({ token, type: 'mint' })}</td>
                   </tr>
                 )}
                 {statistics?.burnTxs > 0 && (
@@ -538,7 +491,7 @@ export default function TokenPage({
                 {statistics?.burnTxs > 0 && (
                   <tr>
                     <td>Burn Volume</td>
-                    <td>{volumeToFiat({ token, type: 'burn' })}</td>
+                    <td>{volumeLine({ token, type: 'burn' })}</td>
                   </tr>
                 )}
               </tbody>
