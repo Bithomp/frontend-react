@@ -3,7 +3,6 @@ import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat } from
 import { FiDownload, FiUpload } from 'react-icons/fi'
 import { useTxFiatRate } from './FiatRateContext'
 
-
 export const TransactionRowAccountDelete = ({ tx, address, index, selectedCurrency}) => {
   const pageFiatRate = useTxFiatRate()
 
