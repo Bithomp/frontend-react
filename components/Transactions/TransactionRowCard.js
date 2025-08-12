@@ -1,17 +1,32 @@
 import { amountFormat, dateFormat, nativeCurrencyToFiat, timeFormat } from '../../utils/format'
+import { useEffect, useState } from 'react'
+import { fetchHistoricalRate } from '../../utils/common'
+import { TxFiatRateContext } from './FiatRateContext'
 import { LinkTx } from '../../utils/links'
 import { errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import { useWidth } from '../../utils'
 import { FiCalendar, FiClock } from 'react-icons/fi'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 
-export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selectedCurrency, pageFiatRate }) => {
+export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
   const { specification, tx, outcome } = data
   const date = dateFormat(tx.date + 946684800)
   const time = timeFormat(tx.date + 946684800)
   const memos = specification?.memos
   const isSuccessful = outcome?.result == 'tesSUCCESS'
+
+  const [pageFiatRate, setPageFiatRate] = useState(0)
+
+  useEffect(() => {
+    if (!selectedCurrency || !outcome?.ledgerTimestamp) return
+    fetchHistoricalRate({
+      timestamp: outcome.ledgerTimestamp * 1000,
+      selectedCurrency,
+      setPageFiatRate
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency, outcome?.ledgerTimestamp])
 
   return (
     <tr
@@ -39,7 +54,7 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
         <span>Type: </span>
         <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
         <br />
-        {children}
+        <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
         {outcome && !isSuccessful && (
           <>
             <span className="bold">Failure: </span>
@@ -53,11 +68,7 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
         <span>Fee:</span>
         <span className="bold">{amountFormat(tx.Fee)}</span>
         <span>
-          {nativeCurrencyToFiat({
-            amount: tx.Fee,
-            selectedCurrency,
-            fiatRate: pageFiatRate
-          })}
+          {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
         </span>
         <br />
         {tx.DestinationTag && (

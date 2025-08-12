@@ -1,20 +1,8 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { useEffect, useState } from 'react'
-import { fetchHistoricalRate } from '../../utils/common'
 import { nativeCurrency } from '../../utils'
 
 export const TransactionRowAccountSet = ({ tx, address, index, selectedCurrency}) => {
-  const [pageFiatRate, setPageFiatRate] = useState(0)
-
-  useEffect(() => {
-    if (!selectedCurrency || !tx?.outcome) return
-    const { ledgerTimestamp } = tx?.outcome
-    if (!ledgerTimestamp) return
-
-    fetchHistoricalRate({ timestamp: ledgerTimestamp * 1000, selectedCurrency, setPageFiatRate })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, tx])
-
+  
   const { specification } = tx
 
   return (
@@ -22,7 +10,6 @@ export const TransactionRowAccountSet = ({ tx, address, index, selectedCurrency}
       data={tx}
       address={address}
       index={index}
-      pageFiatRate={pageFiatRate}
       selectedCurrency={selectedCurrency}
     >
       {specification.defaultRipple !== undefined && (

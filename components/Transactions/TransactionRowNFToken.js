@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { TransactionRowCard } from './TransactionRowCard'
-import { fetchHistoricalRate } from '../../utils/common'
 import { nftIdLink, nftOfferLink, amountFormat } from '../../utils/format'
 
 const nftData = (change, nftInfo) => {
@@ -76,16 +75,6 @@ const showAllOfferLinks = (changes) => {
 }
 
 export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) => {
-  const [pageFiatRate, setPageFiatRate] = useState(0)
-
-  useEffect(() => {
-    if (!selectedCurrency || !tx?.outcome) return
-    const { ledgerTimestamp } = tx?.outcome
-    if (!ledgerTimestamp) return
-
-    fetchHistoricalRate({ timestamp: ledgerTimestamp * 1000, selectedCurrency, setPageFiatRate })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, tx])
 
   const { specification, outcome } = tx
 
@@ -104,7 +93,6 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
       data={tx}
       address={address}
       index={index}
-      pageFiatRate={pageFiatRate}
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
     >

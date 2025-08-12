@@ -343,7 +343,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     ) {
       return t('explorer.header.' + tab)
     } else if (tab === 'transactions') {
-      return t('Transactions')
+      return t("explorer.menu.transactions")
     }
     return ''
   }

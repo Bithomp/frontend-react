@@ -1,22 +1,12 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { useEffect, useState } from 'react'
-import { fetchHistoricalRate } from '../../utils/common'
 import { xls14NftValue } from '../../utils'
 import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat, niceCurrency } from '../../utils/format'
 import { addressBalanceChanges } from '../../utils/transaction'
 import { FiDownload, FiUpload } from 'react-icons/fi'
+import { useTxFiatRate } from './FiatRateContext'
 
 export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) => {
-  const [pageFiatRate, setPageFiatRate] = useState(0)
-
-  useEffect(() => {
-    if (!selectedCurrency || !tx?.outcome) return
-    const { ledgerTimestamp } = tx?.outcome
-    if (!ledgerTimestamp) return
-
-    fetchHistoricalRate({ timestamp: ledgerTimestamp * 1000, selectedCurrency, setPageFiatRate })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, tx])
+  const pageFiatRate = useTxFiatRate()
 
   const { outcome, specification } = tx
 
@@ -63,7 +53,6 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
       address={address}
       index={index}
       txTypeSpecial={txTypeSpecial}
-      pageFiatRate={pageFiatRate}
       selectedCurrency={selectedCurrency}
     >
       {!isConvertion &&  (
