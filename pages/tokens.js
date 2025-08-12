@@ -169,7 +169,7 @@ export default function Tokens({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState('rating')
-  const [filtersHide, setFiltersHide] = useState(!isSsrMobile)
+  const [filtersHide, setFiltersHide] = useState(true)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
   const [rendered, setRendered] = useState(false)
@@ -550,6 +550,7 @@ export default function Tokens({
       <SEO title="Tokens" />
       <h1 className="center">Tokens</h1>
 
+      <div className="tokens-page">
       <FiltersFrame
         count={data?.length}
         hasMore={marker}
@@ -942,6 +943,18 @@ export default function Tokens({
           )}
         </InfiniteScrolling>
       </FiltersFrame>
+      <style jsx global>{`
+        @media (max-width: 1300px) {
+          /* Invert mobile filter show/hide semantics for Tokens page only */
+          .tokens-page .content-cols.is-filters-hide .filters__wrap {
+            transform: translateY(100%) !important; /* hide when filtersHide === true */
+          }
+          .tokens-page .content-cols:not(.is-filters-hide) .filters__wrap {
+            transform: translateY(0) !important; /* show when filtersHide === false */
+          }
+        }
+      `}</style>
+      </div>
     </>
   )
 }
