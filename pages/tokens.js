@@ -76,12 +76,31 @@ import { fetchHistoricalRate } from '../utils/common'
 // Server side initial data fetch
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
-  const { currency, issuer } = query
+  const { currency, issuer, order } = query
 
   let initialData = null
   let initialErrorMessage = null
 
-  let url = `v2/trustlines/tokens?limit=100&order=rating&currencyDetails=true&statistics=true`
+  // Validate order param
+  const supportedOrders = new Set([
+    'rating',
+    'trustlinesHigh',
+    'trustlinesLow',
+    'holdersHigh',
+    'holdersLow',
+    'priceNativeCurrencyHigh',
+    'priceNativeCurrencyLow',
+    'marketCapHigh',
+    'sellVolumeHigh',
+    'buyVolumeHigh',
+    'totalVolumeHigh',
+    'uniqueTradersHigh',
+    'uniqueSellersHigh',
+    'uniqueBuyersHigh'
+  ])
+  const orderParam = supportedOrders.has(order) ? order : 'rating'
+
+  let url = `v2/trustlines/tokens?limit=100&order=${orderParam}&currencyDetails=true&statistics=true`
   if (currency) {
     const { valid, currencyCode } = validateCurrencyCode(currency)
     if (valid) {
@@ -122,6 +141,7 @@ export async function getServerSideProps(context) {
       selectedCurrencyServer,
       currencyQuery: currency || initialData?.currency || null,
       issuerQuery: issuer || initialData?.issuer || null,
+      orderQuery: supportedOrders.has(order) ? order : null,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -130,7 +150,18 @@ export async function getServerSideProps(context) {
 const orderList = [
   { value: 'rating', label: 'Rating: High to Low' },
   { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
-  { value: 'holdersHigh', label: 'Holders: High to Low' }
+  { value: 'trustlinesLow', label: 'Trustlines: Low to High' },
+  { value: 'holdersHigh', label: 'Holders: High to Low' },
+  { value: 'holdersLow', label: 'Holders: Low to High' },
+  { value: 'priceNativeCurrencyHigh', label: 'Price: High to Low' },
+  { value: 'priceNativeCurrencyLow', label: 'Price: Low to High' },
+  { value: 'marketCapHigh', label: 'Marketcap: High to Low' },
+  { value: 'sellVolumeHigh', label: 'Sell Volume (24h): High to Low' },
+  { value: 'buyVolumeHigh', label: 'Buy Volume (24h): High to Low' },
+  { value: 'totalVolumeHigh', label: 'Total Volume (24h): High to Low' },
+  { value: 'uniqueTradersHigh', label: 'Unique Traders (24h): High to Low' },
+  { value: 'uniqueSellersHigh', label: 'Unique Sellers (24h): High to Low' },
+  { value: 'uniqueBuyersHigh', label: 'Unique Buyers (24h): High to Low' }
 ]
 
 export default function Tokens({
@@ -147,7 +178,8 @@ export default function Tokens({
   isSsrMobile,
   openEmailLogin,
   currencyQuery,
-  issuerQuery
+  issuerQuery,
+  orderQuery
 }) {
   const { t } = useTranslation()
   const width = useWidth()
@@ -168,18 +200,53 @@ export default function Tokens({
   const [marker, setMarker] = useState(initialData?.marker)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [order, setOrder] = useState('rating')
+  const [order, setOrder] = useState(orderQuery || 'rating')
   const [filtersHide, setFiltersHide] = useState(true)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
   const [rendered, setRendered] = useState(false)
-  const [sortConfig, setSortConfig] = useState({ key: 'rating', direction: 'descending' })
+  const [sortConfig, setSortConfig] = useState(getInitialSortConfig(orderQuery))
   const [fiatRate5m, setFiatRate5m] = useState(null)
   const [fiatRate24h, setFiatRate24h] = useState(null)
   const [fiatRate7d, setFiatRate7d] = useState(null)
   const [fiatRate1h, setFiatRate1h] = useState(null)
 
   const controller = new AbortController()
+
+  function getInitialSortConfig(o) {
+    switch (o) {
+      case 'rating':
+        return { key: 'rating', direction: 'descending' }
+      case 'trustlinesHigh':
+        return { key: 'trustlines', direction: 'descending' }
+      case 'trustlinesLow':
+        return { key: 'trustlines', direction: 'ascending' }
+      case 'holdersHigh':
+        return { key: 'holders', direction: 'descending' }
+      case 'holdersLow':
+        return { key: 'holders', direction: 'ascending' }
+      case 'priceNativeCurrencyHigh':
+        return { key: 'price', direction: 'descending' }
+      case 'priceNativeCurrencyLow':
+        return { key: 'price', direction: 'ascending' }
+      case 'marketCapHigh':
+        return { key: 'marketcap', direction: 'descending' }
+      case 'sellVolumeHigh':
+        return { key: 'sellVolume', direction: 'descending' }
+      case 'buyVolumeHigh':
+        return { key: 'buyVolume', direction: 'descending' }
+      case 'totalVolumeHigh':
+        return { key: 'totalVolume', direction: 'descending' }
+      case 'uniqueTradersHigh':
+        return { key: 'uniqueTraders', direction: 'descending' }
+      case 'uniqueSellersHigh':
+        return { key: 'uniqueSellers', direction: 'descending' }
+      case 'uniqueBuyersHigh':
+        return { key: 'uniqueBuyers', direction: 'descending' }
+      default:
+        return { key: 'rating', direction: 'descending' }
+    }
+  }
 
   // Fetch tokens
   const checkApi = async () => {
@@ -298,7 +365,7 @@ export default function Tokens({
       queryRemoveList
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [issuer, currency])
+  }, [issuer, currency, order])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -519,19 +586,32 @@ export default function Tokens({
     setSortConfig({ key, direction })
 
     const apiOrderFor = (k, dir) => {
-      const suffix = dir === 'descending' ? 'High' : 'Low'
+      const isDesc = dir === 'descending'
       switch (k) {
         case 'rating':
         case 'index':
           return 'rating'
         case 'trustlines':
-          return 'trustlines' + suffix
+          return isDesc ? 'trustlinesHigh' : 'trustlinesLow'
         case 'holders':
-          return 'holders' + suffix
+          return isDesc ? 'holdersHigh' : 'holdersLow'
         case 'price':
-          return 'price' + suffix
+          return isDesc ? 'priceNativeCurrencyHigh' : 'priceNativeCurrencyLow'
         case 'marketcap':
-          return 'marketcap' + suffix
+          // Only High supported per new API list
+          return 'marketCapHigh'
+        case 'buyVolume':
+          return 'buyVolumeHigh'
+        case 'sellVolume':
+          return 'sellVolumeHigh'
+        case 'totalVolume':
+          return 'totalVolumeHigh'
+        case 'uniqueTraders':
+          return 'uniqueTradersHigh'
+        case 'uniqueSellers':
+          return 'uniqueSellersHigh'
+        case 'uniqueBuyers':
+          return 'uniqueBuyersHigh'
         case 'token':
           return null
         default:
@@ -599,21 +679,27 @@ export default function Tokens({
                     Buy volume
                     <br />
                     (24h)
+                    <b className={'link' + (sortConfig.key === 'buyVolume' ? ' orange' : '')} onClick={() => sortTable('buyVolume')}> ⇅</b>
                   </th>
                   <th className="right">
                     Sell volume
                     <br />
                     (24h)
+                    <b className={'link' + (sortConfig.key === 'sellVolume' ? ' orange' : '')} onClick={() => sortTable('sellVolume')}> ⇅</b>
                   </th>
                   <th className="right">
                     Total volume
                     <br />
                     (24h)
+                    <b className={'link' + (sortConfig.key === 'totalVolume' ? ' orange' : '')} onClick={() => sortTable('totalVolume')}> ⇅</b>
                   </th>
                   <th className="right">
-                    Buyers/Sellers
+                    Buyers <b className={'link' + (sortConfig.key === 'uniqueBuyers' ? ' orange' : '')} onClick={() => sortTable('uniqueBuyers')}>⇅</b>
+                    {' '} / {' '}
+                    Sellers <b className={'link' + (sortConfig.key === 'uniqueSellers' ? ' orange' : '')} onClick={() => sortTable('uniqueSellers')}>⇅</b>
                     <br />
                     Traders (24h)
+                    <b className={'link' + (sortConfig.key === 'uniqueTraders' ? ' orange' : '')} onClick={() => sortTable('uniqueTraders')}> ⇅</b>
                   </th>
                   <th className="right">
                     Holders,
