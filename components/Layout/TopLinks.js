@@ -172,7 +172,7 @@ export default function TopLinks({ activatedAccount }) {
           <>
             <span className="tooltip">
               <a href="/go/acc-buy-swap" target="_blank" rel="noreferrer" className="top-link orange">
-                XRP: 5% back
+                Buy XRP now
               </a>
               <span className="tooltiptext right small">{t('sponsored.sponsored')}</span>
             </span>{' '}
