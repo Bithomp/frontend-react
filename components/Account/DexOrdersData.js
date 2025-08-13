@@ -6,9 +6,48 @@ import { MdMoneyOff } from 'react-icons/md'
 export default function DexOrdersData({ account, offerList, ledgerTimestamp, setSignRequest }) {
   //show the section only if there are dex orders to show
   if (!offerList?.length) return ''
+  const isNativeAmount = (amt) => typeof amt === 'string'
+  const amountUnits = (amt) => (typeof amt === 'string' ? Number(amt) / 1000000 : Number(amt?.value || 0))
+  const amountCurrency = (amt) => (typeof amt === 'string' ? nativeCurrency : niceCurrency(amt?.currency))
 
-  // Sort offerList by sequence in ascending order
-  const sortedOfferList = [...offerList].sort((a, b) => a.Sequence - b.Sequence)
+  const computePairAndMetrics = (offer) => {
+    const sell = offer.flags?.sell
+    const base = sell ? offer.TakerGets : offer.TakerPays
+    const quote = sell ? offer.TakerPays : offer.TakerGets
+
+    const baseIsNative = isNativeAmount(base)
+    const quoteIsNative = isNativeAmount(quote)
+    const baseCurrency = amountCurrency(base)
+    const quoteCurrency = amountCurrency(quote)
+    const pairKey = baseCurrency + '/' + quoteCurrency
+
+    const q = Number(offer.quality || 0)
+    let rate = 0 // quote per 1 base
+    if (sell) {
+      if (baseIsNative && !quoteIsNative) rate = q * 1000000
+      else if (!baseIsNative && quoteIsNative) rate = q / 1000000
+      else rate = q
+    } else {
+      if (!baseIsNative && quoteIsNative) rate = 1 / (q * 1000000)
+      else if (baseIsNative && !quoteIsNative) rate = 1000000 / q
+      else rate = 1 / q
+    }
+
+    const sizeBase = amountUnits(base)
+    // For sorting: lower sell rate first, higher buy rate first
+    const rateSortKey = sell ? rate : -rate
+    return { pairKey, rateSortKey, sizeBase }
+  }
+
+  // Sort by: pair → rate (sell asc, buy desc) → size desc → sequence asc as stable fallback
+  const sortedOfferList = [...offerList].sort((a, b) => {
+    const A = computePairAndMetrics(a)
+    const B = computePairAndMetrics(b)
+    if (A.pairKey !== B.pairKey) return A.pairKey < B.pairKey ? -1 : 1
+    if (A.rateSortKey !== B.rateSortKey) return A.rateSortKey < B.rateSortKey ? -1 : 1
+    if (A.sizeBase !== B.sizeBase) return A.sizeBase > B.sizeBase ? -1 : 1
+    return a.Sequence - b.Sequence
+  })
 
   const historicalTitle = ledgerTimestamp ? (
     <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
