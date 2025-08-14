@@ -3,6 +3,7 @@ import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled, addressUsernameOrServiceLink, amountFormat, niceCurrency } from '../../utils/format'
 import { divide } from '../../utils/calc'
+import { addressBalanceChanges } from '../../utils/transaction'
 
 // AMM Flag definitions based on XRPL documentation
 const AMMWithdrawFlags = {
@@ -145,7 +146,6 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   const tradingFee = tx?.TradingFee
   const amount = createAmountWithIssuer(specification, outcome, specification.source.address, 'amount')
   const amount2 = createAmountWithIssuer(specification, outcome, specification.source.address, 'amount2')
-  const lpTokenBalance = createAmountWithIssuer(outcome?.ammChanges, outcome, specification.source.address, 'lpTokenBalance')
   const asset = specification?.asset
   const asset2 = specification?.asset2
   const ePrice = specification?.EPrice
@@ -157,6 +157,10 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
     address: specification?.holder,
     addressDetails: outcome?.balanceChanges?.find((change) => change.address === specification.holder)?.addressDetails
   }
+  // Executor balance changes adjusted for fee
+  const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address) || []
+  const depositedList = sourceBalanceChangesList.filter((c) => Number(c?.value) < 0)
+  const receivedList = sourceBalanceChangesList.filter((c) => Number(c?.value) > 0)
 
   return (
     <TransactionCard
@@ -189,10 +193,106 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           <TData className="bold">{renderAmountWithIssuer(amount2)}</TData>
         </tr>
       )}
-      {(txType === 'AMMCreat' || txType === 'AMMDeposit' || txType === 'AMMWithdraw') && lpTokenBalance?.currency && lpTokenBalance?.value && (
+      {(txType === 'AMMCreate' || txType === 'AMMDeposit') && (
+        <>
+          {depositedList.length > 0 && (
+            <tr>
+              <TData>Deposited</TData>
+              <TData className="bold">
+                {depositedList.map((change, idx) => (
+                  <div key={idx}>
+                    {amountFormat({ ...change, value: Math.abs(Number(change.value)).toString() })}
+                    {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  </div>
+                ))}
+              </TData>
+            </tr>
+          )}
+          {receivedList.length > 0 && (
+            <tr>
+              <TData>Received</TData>
+              <TData className="bold">
+                {receivedList.map((change, idx) => (
+                  <div key={idx}>
+                    {amountFormat(change)}
+                    {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  </div>
+                ))}
+              </TData>
+            </tr>
+          )}
+        </>
+      )}
+      {txType === 'AMMWithdraw' && (
+        <>
+          {/* {(amount?.currency && amount?.value) || (amount2?.currency && amount2?.value) ? (
+            <tr>
+              <TData>Specified Assets for Withdraw</TData>
+              <TData className="bold">
+                {amount?.currency && amount?.value && (
+                  <>
+                    {renderAmountWithIssuer(amount)}
+                    <br />
+                  </>
+                )}
+                {amount2?.currency && amount2?.value && <>{renderAmountWithIssuer(amount2)}</>}
+              </TData>
+            </tr>
+          ) : (
+            ''
+          )} */}
+          {depositedList.length > 0 && (
+            <tr>
+              <TData>Actually paid</TData>
+              <TData className="bold">
+                {depositedList.map((change, idx) => (
+                  <div key={idx}>
+                    {amountFormat({ ...change, value: Math.abs(Number(change.value)).toString() })}
+                    {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  </div>
+                ))}
+              </TData>
+            </tr>
+          )}
+          {(() => {
+            const targetReceivedList = (holder?.address
+              ? addressBalanceChanges(data, holder.address) || []
+              : sourceBalanceChangesList
+            ).filter((c) => Number(c?.value) > 0)
+            return targetReceivedList.length > 0 ? (
+              <tr>
+                <TData>Actually withdrawn</TData>
+                <TData className="bold">
+                  {targetReceivedList.map((change, idx) => (
+                    <div key={idx}>
+                      {amountFormat(change)}
+                      {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                    </div>
+                  ))}
+                </TData>
+              </tr>
+            ) : (
+              ''
+            )
+          })()}
+        </>
+      )}
+      {txType === 'AMMDeposit' && (
         <tr>
-          <TData>LP Token Balance</TData>
-          <TData className="bold">{renderAmountWithIssuer(lpTokenBalance)}</TData>
+          <TData>Specified Max Assets for Deposit</TData>
+          <TData className="bold">
+            {amount?.currency && amount?.value && (
+              <>
+                {renderAmountWithIssuer(amount)}
+                <br />
+              </>
+            )}
+            {amount2?.currency && amount2?.value && (
+              <>
+                {renderAmountWithIssuer(amount2)}
+              </>
+            )}
+          </TData>
         </tr>
       )}
       {ePrice && (
