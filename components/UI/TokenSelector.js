@@ -19,7 +19,7 @@ const limit = 20
 
 // Helper function to fetch and process trustlines for a destination address
 const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '') => {
-  const response = await axios(`v2/trustlines/tokens?trustline=${destinationAddress}&limit=${limit}`)
+  const response = await axios(`v2/address/${destinationAddress}/acceptedTokens?limit=${limit}`)
   const tokens = response.data?.tokens || []
 
   // Trim the search query to handle whitespace
