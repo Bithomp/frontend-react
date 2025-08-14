@@ -8,7 +8,8 @@ import {
   xahauNetwork,
   encodeCurrencyCode,
   validateCurrencyCode,
-  nativeCurrency
+  nativeCurrency,
+  server
 } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { useState, useEffect } from 'react'
@@ -24,24 +25,61 @@ import { multiply } from '../../utils/calc'
 import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
 import { amountFormat } from '../../utils/format'
+import { addAndRemoveQueryParams } from '../../utils'
+import { useRouter } from 'next/router'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
-  const { currency, currencyIssuer } = query
+  const {
+    currency,
+    currencyIssuer,
+    mode,
+    issuer,
+    limit,
+    qualityIn,
+    qualityOut,
+    freeze,
+    noRipple,
+    authorized,
+    deepFreeze
+  } = query
   return {
     props: {
       currencyQuery: currency || nativeCurrency,
       currencyIssuerQuery: currencyIssuer || '',
+      modeQuery: mode || 'simple',
+      issuerQuery: issuer || '',
+      limitQuery: limit || '',
+      qualityInQuery: qualityIn || '',
+      qualityOutQuery: qualityOut || '',
+      freezeQuery: freeze || '',
+      noRippleQuery: noRipple || '',
+      authorizedQuery: authorized || '',
+      deepFreezeQuery: deepFreeze || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
 
-export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuerQuery }) {
+export default function TrustSet({
+  setSignRequest,
+  currencyQuery,
+  currencyIssuerQuery,
+  modeQuery,
+  issuerQuery,
+  limitQuery,
+  qualityInQuery,
+  qualityOutQuery,
+  freezeQuery,
+  noRippleQuery,
+  authorizedQuery,
+  deepFreezeQuery
+}) {
   const { t } = useTranslation()
+  const router = useRouter()
   const [error, setError] = useState('')
-  const [mode, setMode] = useState('simple') // 'simple' or 'advanced'
+  const [mode, setMode] = useState(modeQuery === 'advanced' ? 'advanced' : 'simple') // 'simple' or 'advanced'
 
   const [selectedTokenData, setSelectedTokenData] = useState({})
 
@@ -50,21 +88,22 @@ export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuer
   const [tokenSupply, setTokenSupply] = useState(null)
 
   // Advanced mode state
-  const [issuer, setIssuer] = useState(currencyIssuerQuery)
+  const [issuer, setIssuer] = useState(issuerQuery || currencyIssuerQuery)
   const [currency, setCurrency] = useState({ currency: currencyQuery })
 
   // Common state
-  const [limit, setLimit] = useState('1000000')
-  const [qualityIn, setQualityIn] = useState('')
-  const [qualityOut, setQualityOut] = useState('')
+  const [limit, setLimit] = useState(limitQuery || '1000000')
+  const [qualityIn, setQualityIn] = useState(qualityInQuery || '')
+  const [qualityOut, setQualityOut] = useState(qualityOutQuery || '')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
 
   // TrustSet flags
-  const [setFreeze, setSetFreeze] = useState(false)
-  const [setNoRipple, setSetNoRipple] = useState(true) // Default to true for simple mode
-  const [setAuthorized, setSetAuthorized] = useState(false)
-  const [setDeepFreeze, setSetDeepFreeze] = useState(false)
+  const toBool = (v) => v === '1' || v === 'true'
+  const [setFreeze, setSetFreeze] = useState(freezeQuery ? toBool(freezeQuery) : false)
+  const [setNoRipple, setSetNoRipple] = useState(noRippleQuery ? toBool(noRippleQuery) : true)
+  const [setAuthorized, setSetAuthorized] = useState(authorizedQuery ? toBool(authorizedQuery) : false)
+  const [setDeepFreeze, setSetDeepFreeze] = useState(deepFreezeQuery ? toBool(deepFreezeQuery) : false)
 
   // Fetch token supply when token is selected in simple mode
   useEffect(() => {
@@ -86,6 +125,119 @@ export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuer
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedToken, mode])
+
+  // Sync URL query params with current form state for shareable links
+  useEffect(() => {
+    const addList = []
+    const removeList = []
+
+    if (mode && mode !== 'simple') {
+      addList.push({ name: 'mode', value: mode })
+    } else {
+      removeList.push('mode')
+    }
+
+    if (mode === 'simple') {
+      if (selectedToken.currency && selectedToken.currency !== nativeCurrency) {
+        addList.push({ name: 'currency', value: selectedToken.currency })
+      } else {
+        removeList.push('currency')
+      }
+      if (selectedToken.issuer) {
+        addList.push({ name: 'currencyIssuer', value: selectedToken.issuer })
+      } else {
+        removeList.push('currencyIssuer')
+      }
+      // Remove advanced-only params
+      removeList.push('issuer')
+      removeList.push('limit')
+      removeList.push('qualityIn')
+      removeList.push('qualityOut')
+    } else {
+      // advanced mode
+      if (issuer && isAddressValid(issuer)) {
+        addList.push({ name: 'issuer', value: issuer })
+      } else {
+        removeList.push('issuer')
+      }
+      if (currency.currency) {
+        addList.push({ name: 'currency', value: currency.currency })
+      } else {
+        removeList.push('currency')
+      }
+      if (limit && !isNaN(parseFloat(limit)) && String(limit) !== '1000000') {
+        addList.push({ name: 'limit', value: String(limit) })
+      } else {
+        removeList.push('limit')
+      }
+      if (qualityIn) {
+        addList.push({ name: 'qualityIn', value: String(qualityIn) })
+      } else {
+        removeList.push('qualityIn')
+      }
+      if (qualityOut) {
+        addList.push({ name: 'qualityOut', value: String(qualityOut) })
+      } else {
+        removeList.push('qualityOut')
+      }
+    }
+
+    if (setFreeze) addList.push({ name: 'freeze', value: '1' }); else removeList.push('freeze')
+    if (!setNoRipple) addList.push({ name: 'noRipple', value: '0' }); else removeList.push('noRipple')
+    if (setAuthorized) addList.push({ name: 'authorized', value: '1' }); else removeList.push('authorized')
+    if (!xahauNetwork) {
+      if (setDeepFreeze) addList.push({ name: 'deepFreeze', value: '1' }); else removeList.push('deepFreeze')
+    } else {
+      removeList.push('deepFreeze')
+    }
+
+    addAndRemoveQueryParams(router, addList, removeList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, selectedToken, issuer, currency, limit, qualityIn, qualityOut, setFreeze, setNoRipple, setAuthorized, setDeepFreeze])
+
+  const buildShareUrl = () => {
+    if (typeof window === 'undefined') return ''
+    const params = new URLSearchParams()
+
+    if (mode && mode !== 'simple') params.set('mode', mode)
+
+    if (mode === 'simple') {
+      if (selectedToken.currency && selectedToken.currency !== nativeCurrency) {
+        params.set('currency', selectedToken.currency)
+      }
+      if (selectedToken.issuer) params.set('currencyIssuer', selectedToken.issuer)
+    } else {
+      if (issuer && isAddressValid(issuer)) params.set('issuer', issuer)
+      if (currency.currency) params.set('currency', currency.currency)
+      if (limit && !isNaN(parseFloat(limit)) && String(limit) !== '1000000') {
+        params.set('limit', String(limit))
+      }
+      if (qualityIn) params.set('qualityIn', String(qualityIn))
+      if (qualityOut) params.set('qualityOut', String(qualityOut))
+    }
+
+    if (setFreeze) params.set('freeze', '1')
+    if (!setNoRipple) params.set('noRipple', '0')
+    if (setAuthorized) params.set('authorized', '1')
+    if (!xahauNetwork && setDeepFreeze) params.set('deepFreeze', '1')
+
+    const qs = params.toString()
+    return qs
+      ? `${server}${router.pathname}?${qs}`
+      : `${server}${router.pathname}`
+  }
+
+  const [shareCopied, setShareCopied] = useState(false)
+  const handleShare = async () => {
+    try {
+      const url = buildShareUrl()
+      await navigator.clipboard.writeText(url)
+      setShareCopied(true)
+      setTimeout(() => setShareCopied(false), 2000)
+    } catch (e) {
+      setError('Failed to copy the link')
+    }
+  }
 
   // Sync limit when switching modes
   useEffect(() => {
@@ -434,6 +586,9 @@ export default function TrustSet({ setSignRequest, currencyQuery, currencyIssuer
             </>
           )}
           <div className="center">
+            <button className="button-action" onClick={handleShare} style={{ minWidth: '120px', marginRight: 10 }}>
+              {shareCopied ? 'Link copied' : 'Share'}
+            </button>
             <button className="button-action" onClick={handleTrustSet}>
               Create Trustline
             </button>
