@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { xahauNetwork, explorerName, nativeCurrency, isAddressValid } from '../../utils'
+import { xahauNetwork, explorerName, nativeCurrency, isAddressValid, encode, isEmailValid, md5 } from '../../utils'
+import { multiply, subtract } from '../../utils/calc'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
 import CheckBox from '../../components/UI/CheckBox'
 import AddressInput from '../../components/UI/AddressInput'
+import FormInput from '../../components/UI/FormInput'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
 
 export const getServerSideProps = async (context) => {
@@ -44,7 +46,7 @@ const TF_FLAGS = {
   disallowXRP: { set: 0x00100000, clear: 0x00200000 } // tfDisallowXRP / tfAllowXRP
 }
 
-export default function AccountSettings({ account, setSignRequest }) {
+export default function AccountSettings({ account, setSignRequest, sessionToken, subscriptionExpired, openEmailLogin }) {
   const { t } = useTranslation(['common'])
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
@@ -54,6 +56,18 @@ export default function AccountSettings({ account, setSignRequest }) {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [nftTokenMinter, setNftTokenMinter] = useState('')
   const [currentNftTokenMinter, setCurrentNftTokenMinter] = useState('')
+  const [domainInput, setDomainInput] = useState('')
+  const [currentDomain, setCurrentDomain] = useState('')
+  const [emailHashInput, setEmailHashInput] = useState('')
+  const [currentEmailHash, setCurrentEmailHash] = useState('')
+  const [messageKeyInput, setMessageKeyInput] = useState('')
+  const [currentMessageKey, setCurrentMessageKey] = useState('')
+  const [transferRateInput, setTransferRateInput] = useState('')
+  const [currentTransferRate, setCurrentTransferRate] = useState(null)
+  const [tickSizeInput, setTickSizeInput] = useState('')
+  const [currentTickSize, setCurrentTickSize] = useState(null)
+  const [walletLocatorInput, setWalletLocatorInput] = useState('')
+  const [currentWalletLocator, setCurrentWalletLocator] = useState('')
 
   // TF flags state
   const [tfFlags, setTfFlags] = useState(null)
@@ -87,6 +101,7 @@ export default function AccountSettings({ account, setSignRequest }) {
 
   const flagGroups = getAvailableAsfFlags()
   const tfFlagKeys = Object.keys(TF_FLAGS)
+  const isPro = sessionToken && !subscriptionExpired
 
   // Map UI ASF flag keys to their corresponding keys returned by the ledger API
   const asfLedgerFlagMapping = {
@@ -254,8 +269,38 @@ export default function AccountSettings({ account, setSignRequest }) {
       try {
         const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
         setAccountData(response.data)
+        console.log('response.data', response.data)
         // Set current NFTokenMinter if it exists
         setCurrentNftTokenMinter(response.data?.ledgerInfo?.nftokenMinter || '')
+        setCurrentDomain(response.data?.ledgerInfo?.domain || '')
+        setDomainInput(response.data?.ledgerInfo?.domain || '')
+        setCurrentEmailHash(response.data?.ledgerInfo?.emailHash || '')
+        setEmailHashInput(response.data?.ledgerInfo?.emailHash || '')
+        setCurrentMessageKey(response.data?.ledgerInfo?.messageKey || '')
+        setMessageKeyInput(response.data?.ledgerInfo?.messageKey || '')
+        setCurrentTransferRate(
+          typeof response.data?.ledgerInfo?.transferRate === 'number'
+            ? multiply(response.data.ledgerInfo.transferRate, 1000000000)
+            : null
+        )
+        setTransferRateInput(() => {
+          const tr = response.data?.ledgerInfo?.transferRate
+          if (typeof tr === 'number' && tr > 0) {
+            const percent = multiply(subtract(tr, 1), 100)
+            return String(percent)
+          }
+          return ''
+        })
+        setCurrentTickSize(
+          typeof response.data?.ledgerInfo?.tickSize === 'number' ? response.data.ledgerInfo.tickSize : null
+        )
+        setTickSizeInput(
+          typeof response.data?.ledgerInfo?.tickSize === 'number' && response.data.ledgerInfo.tickSize > 0
+            ? String(response.data.ledgerInfo.tickSize)
+            : ''
+        )
+        setCurrentWalletLocator(response.data?.ledgerInfo?.walletLocator || '')
+        setWalletLocatorInput(response.data?.ledgerInfo?.walletLocator || '')
 
         if (response.data?.ledgerInfo?.flags) {
           const ledgerFlags = response.data.ledgerInfo.flags || {}
@@ -388,6 +433,322 @@ export default function AccountSettings({ account, setSignRequest }) {
     })
   }
 
+  const handleSetDomain = () => {    
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address,
+      Domain: encode(domainInput.trim())
+    }
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setSuccessMessage('Domain set successfully.')
+        setErrorMessage('')
+        setCurrentDomain(domainInput.trim())
+        setAccountData((prev) => {
+          if (prev && prev.ledgerInfo) {
+            return {
+              ...prev,
+              ledgerInfo: { ...prev.ledgerInfo, domain: domainInput.trim() }
+            }
+          }
+          return prev
+        })
+      }
+    })
+  }
+
+  const handleClearDomain = () => {
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address,
+      Domain: ''
+    }
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setSuccessMessage('Domain cleared successfully.')
+        setErrorMessage('')
+        setCurrentDomain('')
+        setDomainInput('')
+        setAccountData((prev) => {
+          if (prev && prev.ledgerInfo) {
+            const updatedLedgerInfo = { ...prev.ledgerInfo }
+            delete updatedLedgerInfo.domain
+            return { ...prev, ledgerInfo: updatedLedgerInfo }
+          }
+          return prev
+        })
+      }
+    })
+  }
+
+  const handleSetEmailHash = () => {
+    const input = emailHashInput.trim()
+    let valueHex = ''
+    if (!input) {
+      setErrorMessage('Please enter an email or a 32-character hex MD5 hash.')
+      return
+    }
+    if (/^[0-9a-fA-F]{32}$/.test(input)) {
+      valueHex = input.toUpperCase()
+    } else if (isEmailValid(input)) {
+      valueHex = md5(input).toUpperCase()
+    } else {
+      setErrorMessage('Enter a valid email or a 32-character hex MD5 hash.')
+      return
+    }
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address,
+      EmailHash: valueHex
+    }
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setSuccessMessage('EmailHash set successfully.')
+        setErrorMessage('')
+        setCurrentEmailHash(valueHex)
+        setAccountData((prev) => {
+          if (prev && prev.ledgerInfo) {
+            return {
+              ...prev,
+              ledgerInfo: { ...prev.ledgerInfo, emailHash: valueHex }
+            }
+          }
+          return prev
+        })
+      }
+    })
+  }
+
+  const handleClearEmailHash = () => {
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address,
+      EmailHash: ''
+    }
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setSuccessMessage('EmailHash cleared successfully.')
+        setErrorMessage('')
+        setCurrentEmailHash('')
+        setEmailHashInput('')
+        setAccountData((prev) => {
+          if (prev && prev.ledgerInfo) {
+            const updatedLedgerInfo = { ...prev.ledgerInfo }
+            delete updatedLedgerInfo.emailHash
+            return { ...prev, ledgerInfo: updatedLedgerInfo }
+          }
+          return prev
+        })
+      }
+    })
+  }
+
+  const handleSetMessageKey = () => {
+    const value = messageKeyInput.trim()
+    const isHex = /^[0-9a-fA-F]+$/.test(value)
+    if (!value || !isHex || value.length % 2 !== 0) {
+      setErrorMessage('Please enter a valid hex-encoded MessageKey.')
+      return
+    }
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address,
+      MessageKey: value.toUpperCase()
+    }
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setSuccessMessage('MessageKey set successfully.')
+        setErrorMessage('')
+        setCurrentMessageKey(value.toUpperCase())
+        setAccountData((prev) => {
+          if (prev && prev.ledgerInfo) {
+            return {
+              ...prev,
+              ledgerInfo: { ...prev.ledgerInfo, messageKey: value.toUpperCase() }
+            }
+          }
+          return prev
+        })
+      }
+    })
+  }
+
+  const handleClearMessageKey = () => {
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address,
+      MessageKey: ''
+    }
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setSuccessMessage('MessageKey cleared successfully.')
+        setErrorMessage('')
+        setCurrentMessageKey('')
+        setMessageKeyInput('')
+        setAccountData((prev) => {
+          if (prev && prev.ledgerInfo) {
+            const updatedLedgerInfo = { ...prev.ledgerInfo }
+            delete updatedLedgerInfo.messageKey
+            return { ...prev, ledgerInfo: updatedLedgerInfo }
+          }
+          return prev
+        })
+      }
+    })
+  }
+
+  const handleSetTransferRate = () => {
+    const percent = Number(transferRateInput)
+    if (isNaN(percent) || percent < 0 || percent > 100) {
+      setErrorMessage('Please enter a valid TransferRate percentage between 0 and 100.')
+      return
+    }
+    const rate = Math.round(1000000000 + percent * 10000000)
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address,
+      TransferRate: rate
+    }
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setSuccessMessage('TransferRate set successfully.')
+        setErrorMessage('')
+        setCurrentTransferRate(rate)
+        setAccountData((prev) => {
+          if (prev && prev.ledgerInfo) {
+            return {
+              ...prev,
+              ledgerInfo: { ...prev.ledgerInfo, transferRate: rate }
+            }
+          }
+          return prev
+        })
+      }
+    })
+  }
+
+  const handleClearTransferRate = () => {
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address,
+      TransferRate: 0
+    }
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setSuccessMessage('TransferRate cleared successfully.')
+        setErrorMessage('')
+        setCurrentTransferRate(null)
+        setTransferRateInput('')
+        setAccountData((prev) => {
+          if (prev && prev.ledgerInfo) {
+            const updatedLedgerInfo = { ...prev.ledgerInfo }
+            delete updatedLedgerInfo.transferRate
+            return { ...prev, ledgerInfo: updatedLedgerInfo }
+          }
+          return prev
+        })
+      }
+    })
+  }
+
+  const handleSetTickSize = () => {
+    const value = Number(tickSizeInput)
+    if (isNaN(value) || !(value === 0 || (value >= 3 && value <= 15))) {
+      setErrorMessage('TickSize must be 0 to clear or an integer between 3 and 15.')
+      return
+    }
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address,
+      TickSize: value
+    }
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setSuccessMessage('TickSize updated successfully.')
+        setErrorMessage('')
+        setCurrentTickSize(value === 0 ? null : value)
+        if (value === 0) setTickSizeInput('')
+        setAccountData((prev) => {
+          if (prev && prev.ledgerInfo) {
+            const li = { ...prev.ledgerInfo }
+            if (value === 0) {
+              delete li.tickSize
+            } else {
+              li.tickSize = value
+            }
+            return { ...prev, ledgerInfo: li }
+          }
+          return prev
+        })
+      }
+    })
+  }
+
+  const handleSetWalletLocator = () => {
+    const value = walletLocatorInput.trim()
+    const isValid = /^[0-9a-fA-F]{64}$/.test(value)
+    if (!isValid) {
+      setErrorMessage('Please enter a valid WalletLocator (64 hexadecimal characters).')
+      return
+    }
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address,
+      WalletLocator: value.toUpperCase()
+    }
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setSuccessMessage('WalletLocator set successfully.')
+        setErrorMessage('')
+        setCurrentWalletLocator(value.toUpperCase())
+        setAccountData((prev) => {
+          if (prev && prev.ledgerInfo) {
+            return {
+              ...prev,
+              ledgerInfo: { ...prev.ledgerInfo, walletLocator: value.toUpperCase() }
+            }
+          }
+          return prev
+        })
+      }
+    })
+  }
+
+  const handleClearWalletLocator = () => {
+    const tx = {
+      TransactionType: 'AccountSet',
+      Account: account.address,
+      WalletLocator: ''
+    }
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setSuccessMessage('WalletLocator cleared successfully.')
+        setErrorMessage('')
+        setCurrentWalletLocator('')
+        setWalletLocatorInput('')
+        setAccountData((prev) => {
+          if (prev && prev.ledgerInfo) {
+            const updatedLedgerInfo = { ...prev.ledgerInfo }
+            delete updatedLedgerInfo.walletLocator
+            return { ...prev, ledgerInfo: updatedLedgerInfo }
+          }
+          return prev
+        })
+      }
+    })
+  }
+
   const handleAsfFlagToggle = (flag) => {
     if (!account?.address) {
       setErrorMessage('Please sign in to your account.')
@@ -396,6 +757,12 @@ export default function AccountSettings({ account, setSignRequest }) {
 
     if (!accountData?.ledgerInfo) {
       setErrorMessage('Error fetching account data')
+      return
+    }
+
+    // Gate advanced flags behind Pro subscription
+    if (flagDetails?.[flag]?.isAdvanced && !isPro) {
+      setErrorMessage('Advanced options are available only to logged-in Bithomp Pro subscribers.')
       return
     }
 
@@ -528,6 +895,14 @@ export default function AccountSettings({ account, setSignRequest }) {
     if (flag === 'globalFreeze' && !canChangeGlobalFreeze()) {
       buttonDisabled = true
       disabledReason = 'Cannot change Global Freeze when No Freeze is enabled'
+    }
+
+    // Disable advanced flags for non-Pro users
+    if (flagData?.isAdvanced && !isPro) {
+      buttonDisabled = true
+      if (!disabledReason) {
+        disabledReason = 'Advanced options are available only to logged-in Bithomp Pro subscribers.'
+      }
     }
 
     // For permanent flags that are already enabled, don't show button
@@ -695,10 +1070,285 @@ export default function AccountSettings({ account, setSignRequest }) {
               </div>
             )}
 
+            {/* Account Fields */}
+            <br />
+            <h4>Account Fields</h4>
+            <div>
+              <div className="flag-item">
+                <div className="flag-header">
+                  <div className="flag-info">
+                    <span className="flag-name">Domain</span>
+                    {account?.address && (
+                      <span className="flag-status">{currentDomain ? currentDomain : 'Not Set'}</span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    {currentDomain && (
+                      <button
+                        className="button-action thin"
+                        onClick={handleClearDomain}
+                        disabled={!account?.address}
+                        style={{ minWidth: '120px' }}
+                      >
+                        Clear Domain
+                      </button>
+                    )}
+                    <button
+                      className="button-action thin"
+                      onClick={handleSetDomain}
+                      disabled={!account?.address}
+                      style={{ minWidth: '120px' }}
+                    >
+                      Set Domain
+                    </button>
+                  </div>
+                </div>
+                <div className="nft-minter-input">
+                  <FormInput
+                    placeholder="example.com"
+                    setInnerValue={setDomainInput}
+                    hideButton={true}
+                    defaultValue={domainInput}
+                    type="text"
+                    disabled={!account?.address}
+                  />
+                  <small>Enter your domain. It will be stored on-ledger.</small>
+                </div>
+              </div>
+
+              <div className="flag-item">
+                <div className="flag-header">
+                  <div className="flag-info">
+                    <span className="flag-name">EmailHash</span>
+                    {account?.address && (
+                      <span className="flag-status">{currentEmailHash ? currentEmailHash : 'Not Set'}</span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    {currentEmailHash && (
+                      <button
+                        className="button-action thin"
+                        onClick={handleClearEmailHash}
+                        disabled={!account?.address}
+                        style={{ minWidth: '120px' }}
+                      >
+                        Clear EmailHash
+                      </button>
+                    )}
+                    <button
+                      className="button-action thin"
+                      onClick={handleSetEmailHash}
+                      disabled={!account?.address}
+                      style={{ minWidth: '120px' }}
+                    >
+                      Set EmailHash
+                    </button>
+                  </div>
+                </div>
+                <div className="nft-minter-input">
+                  <FormInput
+                    placeholder="Email or 32 hex characters (MD5)"
+                    setInnerValue={setEmailHashInput}
+                    hideButton={true}
+                    defaultValue={emailHashInput}
+                    type="text"
+                    disabled={!account?.address}
+                  />
+                  <small>Enter an email or a 32-character hex MD5. Leave empty and press Clear to remove.</small>
+                </div>
+              </div>
+
+              <div className="flag-item">
+                <div className="flag-header">
+                  <div className="flag-info">
+                    <span className="flag-name">MessageKey</span>
+                    {account?.address && (
+                      <span className="flag-status">{currentMessageKey ? 'Set' : 'Not Set'}</span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    {currentMessageKey && (
+                      <button
+                        className="button-action thin"
+                        onClick={handleClearMessageKey}
+                        disabled={!account?.address}
+                        style={{ minWidth: '120px' }}
+                      >
+                        Clear MessageKey
+                      </button>
+                    )}
+                    <button
+                      className="button-action thin"
+                      onClick={handleSetMessageKey}
+                      disabled={!account?.address}
+                      style={{ minWidth: '120px' }}
+                    >
+                      Set MessageKey
+                    </button>
+                  </div>
+                </div>
+                <div className="nft-minter-input">
+                  <FormInput
+                    placeholder="Hex-encoded public key"
+                    setInnerValue={setMessageKeyInput}
+                    hideButton={true}
+                    defaultValue={messageKeyInput}
+                    type="text"
+                    disabled={!account?.address}
+                  />
+                  <small>Provide a hex-encoded public key; clearing removes it from the ledger.</small>
+                </div>
+              </div>
+
+              <div className="flag-item">
+                <div className="flag-header">
+                  <div className="flag-info">
+                    <span className="flag-name">TransferRate</span>
+                    {account?.address && (
+                      <span className="flag-status">
+                        {currentTransferRate && currentTransferRate > 0
+                          ? `${Math.round(((currentTransferRate - 1000000000) / 10000000) * 100) / 100}%`
+                          : 'Not Set'}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    {currentTransferRate && currentTransferRate > 0 && (
+                      <button
+                        className="button-action thin"
+                        onClick={handleClearTransferRate}
+                        disabled={!account?.address}
+                        style={{ minWidth: '120px' }}
+                      >
+                        Clear TransferRate
+                      </button>
+                    )}
+                    <button
+                      className="button-action thin"
+                      onClick={handleSetTransferRate}
+                      disabled={!account?.address}
+                      style={{ minWidth: '120px' }}
+                    >
+                      Set TransferRate
+                    </button>
+                  </div>
+                </div>
+                <div className="nft-minter-input">
+                  <FormInput
+                    placeholder="Percentage 0-100"
+                    setInnerValue={setTransferRateInput}
+                    hideButton={true}
+                    defaultValue={transferRateInput}
+                    type="text"
+                    inputMode="decimal"
+                    disabled={!account?.address}
+                  />
+                  <small>Percentage fee issuer charges on transfers of issued tokens.</small>
+                </div>
+              </div>
+
+              <div className="flag-item">
+                <div className="flag-header">
+                  <div className="flag-info">
+                    <span className="flag-name">TickSize</span>
+                    {account?.address && (
+                      <span className="flag-status">{currentTickSize ? currentTickSize : 'Not Set'}</span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      className="button-action thin"
+                      onClick={handleSetTickSize}
+                      disabled={!account?.address}
+                      style={{ minWidth: '120px' }}
+                    >
+                      Set TickSize
+                    </button>
+                  </div>
+                </div>
+                <div className="nft-minter-input">
+                  <FormInput
+                    placeholder="0 to clear, or 3-15"
+                    setInnerValue={setTickSizeInput}
+                    hideButton={true}
+                    defaultValue={tickSizeInput}
+                    type="text"
+                    inputMode="numeric"
+                    disabled={!account?.address}
+                  />
+                  <small>Controls significant digits for order book prices. 0 clears.</small>
+                </div>
+              </div>
+
+              <div className="flag-item">
+                <div className="flag-header">
+                  <div className="flag-info">
+                    <span className="flag-name">WalletLocator</span>
+                    {account?.address && (
+                      <span className="flag-status">{currentWalletLocator ? 'Set' : 'Not Set'}</span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    {currentWalletLocator && (
+                      <button
+                        className="button-action thin"
+                        onClick={handleClearWalletLocator}
+                        disabled={!account?.address}
+                        style={{ minWidth: '120px' }}
+                      >
+                        Clear WalletLocator
+                      </button>
+                    )}
+                    <button
+                      className="button-action thin"
+                      onClick={handleSetWalletLocator}
+                      disabled={!account?.address}
+                      style={{ minWidth: '120px' }}
+                    >
+                      Set WalletLocator
+                    </button>
+                  </div>
+                </div>
+                <div className="nft-minter-input">
+                  <FormInput
+                    placeholder="64 hex characters"
+                    setInnerValue={setWalletLocatorInput}
+                    hideButton={true}
+                    defaultValue={walletLocatorInput}
+                    type="text"
+                    disabled={!account?.address}
+                    maxLength={64}
+                  />
+                  <small>Optional hash locator for your wallet application.</small>
+                </div>
+              </div>
+            </div>
+
             {/* Advanced options */}
             <div className="advanced-options">
               <CheckBox checked={showAdvanced} setChecked={() => setShowAdvanced(!showAdvanced)} name="advanced-flags">
                 Advanced options (Use with caution)
+                {!sessionToken ? (
+                  <>
+                    {' '}
+                    <span className="orange">
+                      (available to{' '}
+                      <span className="link" onClick={() => openEmailLogin()}>
+                        logged-in
+                      </span>{' '}
+                      Bithomp Pro subscribers)
+                    </span>
+                  </>
+                ) : (
+                  subscriptionExpired && (
+                    <>
+                      {' '}
+                      <span className="orange">
+                        Your Bithomp Pro subscription has expired. <Link href="/admin/subscriptions">Renew your subscription</Link>
+                      </span>
+                    </>
+                  )
+                )}
               </CheckBox>
 
               {showAdvanced && (

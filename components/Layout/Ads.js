@@ -15,8 +15,8 @@ export default function Ads() {
         <a href="/go/main-buy-swap" target="_blank" rel="noreferrer">
           <div className="brand-item nexo">
             <Nexo className="brand-item-icon" fill={theme === 'dark' ? 'white' : '#1C1F21'} />
-            <div className="brand-item-title">XRP: 5% back</div>
-            <div className="brand-item-text">Buy, transfer, or swap to XRP by August 11 and get 5% back.</div>
+            <div className="brand-item-title">Аdd XRP now</div>
+            <div className="brand-item-text">Buy or transfer XRP and earn up to 12% annual interest.</div>
           </div>
         </a>
 

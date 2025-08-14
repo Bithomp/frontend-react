@@ -16,7 +16,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
 const setBalancesFunction = (networkInfo, data) => {
-  if (!data?.ledgerInfo || !networkInfo) return null
+  if (!data?.ledgerInfo || !networkInfo || data.ledgerInfo.balance === undefined) return null
   let balanceList = {
     total: {
       native: data.ledgerInfo.balance || 0
