@@ -431,11 +431,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     })
   }
 
-  const handleSetDomain = () => {
-    if (!account?.address) {
-      setErrorMessage('Please sign in to your account.')
-      return
-    }
+  const handleSetDomain = () => {    
     const tx = {
       TransactionType: 'AccountSet',
       Account: account.address,
@@ -486,10 +482,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   }
 
   const handleSetEmailHash = () => {
-    if (!account?.address) {
-      setErrorMessage('Please sign in to your account.')
-      return
-    }
     const input = emailHashInput.trim()
     let valueHex = ''
     if (!input) {
@@ -554,10 +546,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   }
 
   const handleSetMessageKey = () => {
-    if (!account?.address) {
-      setErrorMessage('Please sign in to your account.')
-      return
-    }
     const value = messageKeyInput.trim()
     const isHex = /^[0-9a-fA-F]+$/.test(value)
     if (!value || !isHex || value.length % 2 !== 0) {
@@ -614,10 +602,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   }
 
   const handleSetTransferRate = () => {
-    if (!account?.address) {
-      setErrorMessage('Please sign in to your account.')
-      return
-    }
     const percent = Number(transferRateInput)
     if (isNaN(percent) || percent < 0 || percent > 100) {
       setErrorMessage('Please enter a valid TransferRate percentage between 0 and 100.')
@@ -674,10 +658,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   }
 
   const handleSetTickSize = () => {
-    if (!account?.address) {
-      setErrorMessage('Please sign in to your account.')
-      return
-    }
     const value = Number(tickSizeInput)
     if (isNaN(value) || !(value === 0 || (value >= 3 && value <= 15))) {
       setErrorMessage('TickSize must be 0 to clear or an integer between 3 and 15.')
@@ -712,10 +692,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
   }
 
   const handleSetWalletLocator = () => {
-    if (!account?.address) {
-      setErrorMessage('Please sign in to your account.')
-      return
-    }
     const value = walletLocatorInput.trim()
     const isValid = /^[0-9a-fA-F]{64}$/.test(value)
     if (!isValid) {
