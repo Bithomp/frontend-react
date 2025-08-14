@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 import { xahauNetwork, explorerName, nativeCurrency, isAddressValid, encode, isEmailValid, md5 } from '../../utils'
+import { multiply, subtract } from '../../utils/calc'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -268,6 +269,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
       try {
         const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
         setAccountData(response.data)
+        console.log('response.data', response.data)
         // Set current NFTokenMinter if it exists
         setCurrentNftTokenMinter(response.data?.ledgerInfo?.nftokenMinter || '')
         setCurrentDomain(response.data?.ledgerInfo?.domain || '')
@@ -278,13 +280,13 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
         setMessageKeyInput(response.data?.ledgerInfo?.messageKey || '')
         setCurrentTransferRate(
           typeof response.data?.ledgerInfo?.transferRate === 'number'
-            ? response.data.ledgerInfo.transferRate
+            ? multiply(response.data.ledgerInfo.transferRate, 1000000000)
             : null
         )
         setTransferRateInput(() => {
           const tr = response.data?.ledgerInfo?.transferRate
           if (typeof tr === 'number' && tr > 0) {
-            const percent = Math.round(((tr - 1000000000) / 10000000) * 100) / 100
+            const percent = multiply(subtract(tr, 1), 100)
             return String(percent)
           }
           return ''
