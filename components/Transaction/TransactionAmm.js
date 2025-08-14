@@ -1,8 +1,9 @@
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled } from '../../utils/format'
+import { AddressWithIconFilled, addressUsernameOrServiceLink, amountFormat, niceCurrency } from '../../utils/format'
 import { divide } from '../../utils/calc'
+import { addressBalanceChanges } from '../../utils/transaction'
 
 // AMM Flag definitions based on XRPL documentation
 const AMMWithdrawFlags = {
@@ -24,6 +25,55 @@ const AMMDepositFlags = {
   twoAssetIfEmpty: 'Perform a special double-asset deposit to an AMM with an empty pool'
 }
 
+const AMMClawbackFlags = {
+  tfClawTwoAssets:
+    "Claw back the specified amount of Asset, and a corresponding amount of Asset2 based on the AMM pool's asset proportion"
+}
+
+// Helper function to create amount object with issuer details
+const createAmountWithIssuer = (specification, outcome, sourceAddress, amountKey) => {
+  const amountData = specification?.[amountKey]
+  if (!amountData) return null
+
+  return {
+    currency: amountData.currency,
+    issuer: amountData.issuer,
+    counterparty: amountData.counterparty,
+    issuerDetails: outcome?.balanceChanges
+      ?.find((change) => change.address === sourceAddress)
+      ?.balanceChanges?.find((change) => change.currency === amountData.currency)?.issuerDetails,
+    value: amountData.value
+  }
+}
+
+// Helper function to render amount with issuer
+const renderAmountWithIssuer = (amountData) => (
+  <>
+    {amountFormat(amountData)}
+    {amountData.issuer && (
+      <>
+        {'('}
+        {addressUsernameOrServiceLink(amountData, 'issuer', { short: true })}
+        {')'}
+      </>
+    )}
+  </>
+)
+
+// Helper function to render asset with issuer
+const renderAssetWithIssuer = (assetData) => (
+  <>
+    {niceCurrency(assetData.currency)}
+    {assetData.issuer && (
+      <>
+        {'('}
+        {addressUsernameOrServiceLink(assetData, 'issuer', { short: true })}
+        {')'}
+      </>
+    )}
+  </>
+)
+
 // Component to display AMM flags with tooltips
 const AMMFlags = ({ flags, txType }) => {
   if (!flags || typeof flags !== 'object') return ''
@@ -33,6 +83,8 @@ const AMMFlags = ({ flags, txType }) => {
     Object.assign(flagDefinitions, AMMWithdrawFlags)
   } else if (txType === 'AMMDeposit') {
     Object.assign(flagDefinitions, AMMDepositFlags)
+  } else if (txType === 'AMMClawback') {
+    Object.assign(flagDefinitions, AMMClawbackFlags)
   }
 
   const activeFlags = []
@@ -89,9 +141,26 @@ const AMMFlags = ({ flags, txType }) => {
 
 export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification, tx } = data
+  const { specification, tx, outcome } = data
   const txType = tx.TransactionType
   const tradingFee = tx?.TradingFee
+  const amount = createAmountWithIssuer(specification, outcome, specification.source.address, 'amount')
+  const amount2 = createAmountWithIssuer(specification, outcome, specification.source.address, 'amount2')
+  const asset = specification?.asset
+  const asset2 = specification?.asset2
+  const ePrice = specification?.EPrice
+  const lpTokenOut = specification?.LPTokenOut
+  const lpTokenIn = specification?.LPTokenIn
+  const bidMax = createAmountWithIssuer(specification, outcome, specification.source.address, 'bidMax')
+  const bidMin = createAmountWithIssuer(specification, outcome, specification.source.address, 'bidMin')
+  const holder = {
+    address: specification?.holder,
+    addressDetails: outcome?.balanceChanges?.find((change) => change.address === specification.holder)?.addressDetails
+  }
+  // Executor balance changes adjusted for fee
+  const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address) || []
+  const depositedList = sourceBalanceChangesList.filter((c) => Number(c?.value) < 0)
+  const receivedList = sourceBalanceChangesList.filter((c) => Number(c?.value) > 0)
 
   return (
     <TransactionCard
@@ -105,7 +174,174 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
         <TData>
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
-      </tr>
+      </tr>      
+      {(txType === 'AMMVote' || txType === 'AMMBid' || txType === 'AMMDelete') && asset && asset2 && (
+        <tr>
+          <TData>Liquidity pool</TData>
+          <TData className="bold">{renderAssetWithIssuer(asset)} / {renderAssetWithIssuer(asset2)}</TData>
+        </tr>
+      )}
+      {amount?.currency && amount?.value && (
+        <tr>
+          <TData>Asset 1</TData>
+          <TData className="bold">{renderAmountWithIssuer(amount)}</TData>
+        </tr>
+      )}
+      {amount2?.currency && amount2?.value && (
+        <tr>
+          <TData>Asset 2</TData>
+          <TData className="bold">{renderAmountWithIssuer(amount2)}</TData>
+        </tr>
+      )}
+      {(txType === 'AMMCreate' || txType === 'AMMDeposit') && (
+        <>
+          {depositedList.length > 0 && (
+            <tr>
+              <TData>Deposited</TData>
+              <TData className="bold">
+                {depositedList.map((change, idx) => (
+                  <div key={idx}>
+                    {amountFormat({ ...change, value: Math.abs(Number(change.value)).toString() })}
+                    {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  </div>
+                ))}
+              </TData>
+            </tr>
+          )}
+          {receivedList.length > 0 && (
+            <tr>
+              <TData>Received</TData>
+              <TData className="bold">
+                {receivedList.map((change, idx) => (
+                  <div key={idx}>
+                    {amountFormat(change)}
+                    {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  </div>
+                ))}
+              </TData>
+            </tr>
+          )}
+        </>
+      )}
+      {txType === 'AMMWithdraw' && (
+        <>
+          {/* {(amount?.currency && amount?.value) || (amount2?.currency && amount2?.value) ? (
+            <tr>
+              <TData>Specified Assets for Withdraw</TData>
+              <TData className="bold">
+                {amount?.currency && amount?.value && (
+                  <>
+                    {renderAmountWithIssuer(amount)}
+                    <br />
+                  </>
+                )}
+                {amount2?.currency && amount2?.value && <>{renderAmountWithIssuer(amount2)}</>}
+              </TData>
+            </tr>
+          ) : (
+            ''
+          )} */}
+          {depositedList.length > 0 && (
+            <tr>
+              <TData>Actually paid</TData>
+              <TData className="bold">
+                {depositedList.map((change, idx) => (
+                  <div key={idx}>
+                    {amountFormat({ ...change, value: Math.abs(Number(change.value)).toString() })}
+                    {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  </div>
+                ))}
+              </TData>
+            </tr>
+          )}
+          {(() => {
+            const targetReceivedList = (holder?.address
+              ? addressBalanceChanges(data, holder.address) || []
+              : sourceBalanceChangesList
+            ).filter((c) => Number(c?.value) > 0)
+            return targetReceivedList.length > 0 ? (
+              <tr>
+                <TData>Actually withdrawn</TData>
+                <TData className="bold">
+                  {targetReceivedList.map((change, idx) => (
+                    <div key={idx}>
+                      {amountFormat(change)}
+                      {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                    </div>
+                  ))}
+                </TData>
+              </tr>
+            ) : (
+              ''
+            )
+          })()}
+        </>
+      )}
+      {txType === 'AMMDeposit' && (
+        <tr>
+          <TData>Specified Max Assets for Deposit</TData>
+          <TData className="bold">
+            {amount?.currency && amount?.value && (
+              <>
+                {renderAmountWithIssuer(amount)}
+                <br />
+              </>
+            )}
+            {amount2?.currency && amount2?.value && (
+              <>
+                {renderAmountWithIssuer(amount2)}
+              </>
+            )}
+          </TData>
+        </tr>
+      )}
+      {ePrice && (
+        <tr>
+          <TData>EPrice</TData>
+          <TData className="bold">{ePrice}</TData>
+        </tr>
+      )}
+      {lpTokenIn && (
+        <tr>
+          <TData>LP Token In</TData>
+          <TData className="bold">{lpTokenIn}</TData>
+        </tr>
+      )}
+      {lpTokenOut && (
+        <tr>
+          <TData>LP Token Out</TData>
+          <TData className="bold">{lpTokenOut}</TData>
+        </tr>
+      )}
+      {bidMax?.currency && bidMax?.value && bidMin?.currency && bidMin?.value && bidMax.value === bidMin.value ? (
+        <tr>
+          <TData>Bid</TData>
+          <TData className="bold">{renderAmountWithIssuer(bidMax)}</TData>
+        </tr>
+      ) : (
+        <>
+          {bidMax?.currency && bidMax?.value && (
+            <tr>
+              <TData>Bid Max</TData>
+              <TData className="bold">{renderAmountWithIssuer(bidMax)}</TData>
+            </tr>
+          )}
+          {bidMin?.currency && bidMin?.value && (
+            <tr>
+              <TData>Bid Min</TData>
+              <TData className="bold">{renderAmountWithIssuer(bidMin)}</TData>
+            </tr>
+          )}
+        </>
+      )}
+      {holder?.address && (
+        <tr>
+          <TData>Holder</TData>
+          <TData className="bold">
+            <AddressWithIconFilled data={holder} name="address" />
+          </TData>
+        </tr>
+      )}
       {tradingFee ? (
         <tr>
           <TData>Trading fee</TData>
