@@ -23,6 +23,7 @@ import CurrencyTable from './CurrencyTable'
 import NetworkTable from './NetworkTable'
 import MobileMenu from './MobileMenu'
 import { FaAngleDown } from 'react-icons/fa'
+import { FaWallet } from 'react-icons/fa'
 import { IoIosRocket } from 'react-icons/io'
 import { MdNewReleases } from 'react-icons/md'
 
@@ -534,6 +535,9 @@ export default function Header({
             )}
 
             <hr className="hr" />
+            <Link href="/auth/connect-wallet" className="link">
+              <FaWallet /> Connect Wallet
+            </Link>
             <Link href="/admin">
               <IoIosRocket style={{ fontSize: '1.2em', marginBottom: '-2px' }} /> Bithomp Pro
             </Link>
