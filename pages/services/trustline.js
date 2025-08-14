@@ -81,8 +81,6 @@ export default function TrustSet({
   const [error, setError] = useState('')
   const [mode, setMode] = useState(modeQuery === 'advanced' ? 'advanced' : 'simple') // 'simple' or 'advanced'
 
-  const [selectedTokenData, setSelectedTokenData] = useState({})
-
   // Simple mode state
   const [selectedToken, setSelectedToken] = useState({ currency: currencyQuery, issuer: currencyIssuerQuery })
   const [tokenSupply, setTokenSupply] = useState(null)
@@ -119,7 +117,6 @@ export default function TrustSet({
         setCurrency({ currency: selectedToken.currency })
       }
       if (selectedToken.issuer) {
-        setSelectedTokenData(selectedToken)
         setIssuer(selectedToken.issuer)
       }
     }
@@ -208,6 +205,7 @@ export default function TrustSet({
       if (selectedToken.issuer) params.set('currencyIssuer', selectedToken.issuer)
     } else {
       if (issuer && isAddressValid(issuer)) params.set('issuer', issuer)
+      if (selectedToken.issuer) params.set('currencyIssuer', selectedToken.issuer)
       if (currency.currency) params.set('currency', currency.currency)
       if (limit && !isNaN(parseFloat(limit)) && String(limit) !== '1000000') {
         params.set('limit', String(limit))
@@ -245,7 +243,7 @@ export default function TrustSet({
       setLimit(Math.round(tokenSupply * 1000000) / 1000000)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, tokenSupply])
+  }, [mode, tokenSupply]) 
 
   const fetchTokenSupply = async () => {
     try {
@@ -451,7 +449,7 @@ export default function TrustSet({
                 hideButton={true}
                 setValue={setIssuer}
                 type="issuer"
-                rawData={selectedTokenData}
+                rawData={issuer && isAddressValid(issuer) ? { issuer } : {}}
               />
               <div className="form-spacing" />
               <FormInput
