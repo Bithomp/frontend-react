@@ -8,7 +8,8 @@ import {
   xahauNetwork,
   encodeCurrencyCode,
   validateCurrencyCode,
-  nativeCurrency
+  nativeCurrency,
+  server
 } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { useState, useEffect } from 'react'
@@ -222,8 +223,8 @@ export default function TrustSet({
 
     const qs = params.toString()
     return qs
-      ? `${window.location.origin}${router.pathname}?${qs}`
-      : `${window.location.origin}${router.pathname}`
+      ? `${server}${router.pathname}?${qs}`
+      : `${server}${router.pathname}`
   }
 
   const [shareCopied, setShareCopied] = useState(false)
