@@ -584,13 +584,20 @@ export default function LedgerData({
               <td>{lastAccountTxNode}</td>
             </tr>
           ) */}
-          {data.ledgerInfo?.messageKey &&
-            data.ledgerInfo?.messageKey.substring(0, 26) !== '02000000000000000000000000' && (
-              <tr>
-                <td>Message key</td>
-                <td>{messageKeyNode}</td>
-              </tr>
-            )}
+          {data.ledgerInfo?.messageKey && (
+            <tr>
+              <td>
+                Message key{' '}
+                {data.ledgerInfo?.messageKey.substring(0, 26) === '02000000000000000000000000' && (
+                  <>
+                    <br />
+                    <b>used for Flare</b>
+                  </>
+                )}
+              </td>
+              <td>{messageKeyNode}</td>
+            </tr>
+          )}
           {data.ledgerInfo?.walletLocator && (
             <tr>
               <td>Wallet locator</td>
