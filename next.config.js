@@ -4,7 +4,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 })
 
-
 module.exports = withBundleAnalyzer({
   compiler: {
     styledComponents: true
@@ -15,9 +14,9 @@ module.exports = withBundleAnalyzer({
       test: /\.svg$/,
       use: ['@svgr/webpack']
     })
-    config.resolve = config.resolve || {};
-    config.resolve.alias = config.resolve.alias || {};
-    config.resolve.alias['@'] = __dirname;
+    config.resolve = config.resolve || {}
+    config.resolve.alias = config.resolve.alias || {}
+    config.resolve.alias['@'] = __dirname
     return config
   },
   images: {
@@ -100,6 +99,11 @@ module.exports = withBundleAnalyzer({
       {
         source: '/xrp-xah-taxes',
         destination: '/learn/xrp-xah-taxes',
+        permanent: true
+      },
+      {
+        source: '/xrpl-article',
+        destination: '/learn/xrpl-article',
         permanent: true
       }
     ]

@@ -68,7 +68,7 @@ if (xahauNetwork) {
 if (network === 'mainnet') {
   if (!xahauNetwork) {
     pages.push(
-      { loc: 'xrpl-article', changefreq: 'monthly', priority: '0.6' },
+      { loc: 'learn/xrpl-article', changefreq: 'monthly', priority: '0.6' },
       { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' }
     )
   }
@@ -99,7 +99,6 @@ function generateSiteMap(posts) {
     'privacy-policy',
     'terms-and-conditions',
     'disclaimer',
-    'xrpl-article',
     'jobs',
     'xrp-xah-taxes',
     'object',
@@ -114,7 +113,8 @@ function generateSiteMap(posts) {
     'learn/blacklisted-address',
     'learn/verified-domain',
     'learn/ripple-usd',
-    'learn/the-bithomp-explorer-advantages'
+    'learn/the-bithomp-explorer-advantages',
+    'learn/xrpl-article'
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]

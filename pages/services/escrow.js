@@ -1,10 +1,11 @@
 import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { explorerName, isAddressValid, typeNumberOnly, nativeCurrency, isTagValid, encode, decode } from '../../utils'
+import { explorerName, isAddressValid, typeNumberOnly, nativeCurrency, isTagValid, encode, decode, addAndRemoveQueryParams } from '../../utils'
 import { multiply } from '../../utils/calc'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
@@ -20,23 +21,109 @@ import axios from 'axios'
 
 const RIPPLE_EPOCH_OFFSET = 946684800 // Seconds between 1970-01-01 and 2000-01-01
 
-export default function CreateEscrow({ setSignRequest, sessionToken, subscriptionExpired, openEmailLogin }) {
+export default function CreateEscrow({
+  setSignRequest,
+  sessionToken,
+  subscriptionExpired,
+  openEmailLogin,
+  addressQuery,
+  amountQuery,
+  destinationTagQuery,
+  finishAfterQuery,
+  cancelAfterQuery,
+  conditionQuery,
+  fulfillmentQuery,
+  memoQuery,
+  feeQuery,
+  sourceTagQuery
+}) {
   const { t } = useTranslation()
+  const router = useRouter()
   const [error, setError] = useState('')
-  const [address, setAddress] = useState(null)
-  const [destinationTag, setDestinationTag] = useState(null)
-  const [amount, setAmount] = useState(null)
-  const [finishAfter, setFinishAfter] = useState(null)
-  const [cancelAfter, setCancelAfter] = useState(null)
-  const [condition, setCondition] = useState(null)
-  const [fulfillment, setFulfillment] = useState(null)
-  const [sourceTag, setSourceTag] = useState(null)
+  const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
+  const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
+  const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
+  const [finishAfter, setFinishAfter] = useState(Number(finishAfterQuery) > 0 ? Number(finishAfterQuery) : null)
+  const [cancelAfter, setCancelAfter] = useState(Number(cancelAfterQuery) > 0 ? Number(cancelAfterQuery) : null)
+  const [condition, setCondition] = useState(conditionQuery || null)
+  const [fulfillment, setFulfillment] = useState(fulfillmentQuery || null)
+  const [sourceTag, setSourceTag] = useState(isTagValid(sourceTagQuery) ? sourceTagQuery : null)
   const [txResult, setTxResult] = useState(null)
-  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [showAdvanced, setShowAdvanced] = useState(
+    Number(feeQuery) > 0 || isTagValid(sourceTagQuery) || !!conditionQuery || !!fulfillmentQuery
+  )
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
-  const [memo, setMemo] = useState(null)
-  const [fee, setFee] = useState(null)
+  const [memo, setMemo] = useState(memoQuery || null)
+  const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 ? feeQuery : null)
   const [feeError, setFeeError] = useState(null)
+  // Reflect filled parameters in URL similar to /send
+  useEffect(() => {
+    let queryAddList = []
+    let queryRemoveList = []
+
+    if (isAddressValid(address)) {
+      queryAddList.push({ name: 'address', value: address })
+    } else {
+      queryRemoveList.push('address')
+    }
+
+    if (isTagValid(destinationTag)) {
+      queryAddList.push({ name: 'destinationTag', value: destinationTag })
+    } else {
+      queryRemoveList.push('destinationTag')
+    }
+
+    if (amount && Number(amount) > 0) {
+      queryAddList.push({ name: 'amount', value: amount })
+    } else {
+      queryRemoveList.push('amount')
+    }
+
+    if (memo) {
+      queryAddList.push({ name: 'memo', value: memo })
+    } else {
+      queryRemoveList.push('memo')
+    }
+
+    if (fee && Number(fee) > 0 && Number(fee) <= 1) {
+      queryAddList.push({ name: 'fee', value: fee })
+    } else {
+      queryRemoveList.push('fee')
+    }
+
+    if (isTagValid(sourceTag)) {
+      queryAddList.push({ name: 'sourceTag', value: sourceTag })
+    } else {
+      queryRemoveList.push('sourceTag')
+    }
+
+    // Condition & fulfillment (hex strings)
+    if (condition && condition.trim()) {
+      queryAddList.push({ name: 'condition', value: condition.trim() })
+    } else {
+      queryRemoveList.push('condition')
+    }
+    if (fulfillment && fulfillment.trim()) {
+      queryAddList.push({ name: 'fulfillment', value: fulfillment.trim() })
+    } else {
+      queryRemoveList.push('fulfillment')
+    }
+
+    // Date fields as relative days; keep as entered
+    if (finishAfter) {
+      queryAddList.push({ name: 'finishAfter', value: String(finishAfter) })
+    } else {
+      queryRemoveList.push('finishAfter')
+    }
+    if (cancelAfter) {
+      queryAddList.push({ name: 'cancelAfter', value: String(cancelAfter) })
+    } else {
+      queryRemoveList.push('cancelAfter')
+    }
+
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, destinationTag, amount, memo, fee, sourceTag, finishAfter, cancelAfter, condition, fulfillment])
 
   const handleFeeChange = (value) => {
     setFee(value)
@@ -490,11 +577,33 @@ export default function CreateEscrow({ setSignRequest, sessionToken, subscriptio
 }
 
 export const getServerSideProps = async (context) => {
-  const { locale } = context
+  const { locale, query } = context
+  const {
+    address,
+    amount,
+    destinationTag,
+    finishAfter,
+    cancelAfter,
+    condition,
+    fulfillment,
+    memo,
+    fee,
+    sourceTag
+  } = query || {}
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
-      isSsrMobile: getIsSsrMobile(context)
+      isSsrMobile: getIsSsrMobile(context),
+      addressQuery: address || '',
+      amountQuery: amount || '',
+      destinationTagQuery: destinationTag || '',
+      finishAfterQuery: finishAfter || '',
+      cancelAfterQuery: cancelAfter || '',
+      conditionQuery: condition || '',
+      fulfillmentQuery: fulfillment || '',
+      memoQuery: memo || '',
+      feeQuery: fee || '',
+      sourceTagQuery: sourceTag || ''
     }
   }
 }

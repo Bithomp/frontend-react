@@ -55,7 +55,7 @@ export default function TheBithompAPI() {
           <h2>Getting Started with the Bithomp API</h2>
           <strong> Step 1: Request Access</strong>
           <ul>
-            <li>Visit https://bithomp.com/en/admin/api and sign in</li>
+            <li>Sign in <Link href="https://bithomp.com/en/admin/api">HERE</Link></li>
             <li>Request your API key</li>
             <p>If you need to purchase or extend the paid plan:</p>
             <li>Press “Manage API Subscriptions”</li>
@@ -98,22 +98,27 @@ export default function TheBithompAPI() {
           </p>
           For detailed limits and pricing, please refer to{' '}
           <>
-            <Link href="https://docs.bithomp.com/#price-and-limits">our full pricing table</Link>
+            <Link href="https://docs.bithomp.com/#price-and-limits">our full pricing table.</Link>
           </>
           <h3>NFT Content Plans</h3>
           <p>
-            The NFT Content Plan is included as part of the main API subscription. It provides direct, fast access to
-            resized and cached NFT media, including:{' '}
+            <strong>
+              NFT Content Plans are intended only for those who want to display NFT images and videos using our CDN
+              servers.
+            </strong>{' '}
+            It provides direct, fast access to resized and cached NFT media, including:{' '}
           </p>
           <ul>
             <li>Images(700×700px)</li>
-            <li>Previews (360×360px)</li>
-            <li> Thumbnails (64×64px)</li>
+            <li>Previews (image, otherwise a frame from a video, 360×360px)</li>
+            <li>Thumbnails (image, otherwise a frame from a video, 64×64px)</li>
             <li>Video snippets (first 15 seconds)</li>
           </ul>
           <p>
-            Each API tier includes a specific volume of NFT media delivery per day and per month, depending on the
-            selected plan.{' '}
+            On <strong>Standard</strong> plan and above, <strong>the NFT Content Plan is included,</strong> but with
+            daily and monthly limits on media delivery. If you need higher limits or want to subscribe only to the NFT
+            Content Plan without the main API subscription, that’s also possible. For now, payment is available through
+            support only.
           </p>
           <p>
             If you are using our CDN server and would like to learn how to pay for the NFT Content Plan, please contact
@@ -132,20 +137,17 @@ export default function TheBithompAPI() {
             offering a more developer-friendly experience.
           </p>
           <ol>
-            {' '}
             <li>
               <strong>Enhanced Metadata</strong>
             </li>
             Bithomp parses memos, decodes NFT metadata, and enriches transactions with context like token names, images,
             and user-friendly tags.
             <li>
-              {' '}
               <strong> Historical Price Calculations</strong>
             </li>
             You can get historical fiat prices and even historical token price data — used in features like tax reports.
             This is crucial for apps dealing with compliance, accounting, and reporting.
             <li>
-              {' '}
               <strong>NFT-Focused Endpoints</strong>
             </li>
             With deep NFT support (including issuer metadata, offer history, and cached media), it goes beyond standard

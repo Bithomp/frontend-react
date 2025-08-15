@@ -364,7 +364,8 @@ export const TransactionCard = ({
 
                   {(tx?.TransactionType === 'EscrowFinish' || tx?.TransactionType === 'EscrowCancel') &&
                     specification?.source?.address !== outcome?.escrowChanges?.source?.address &&
-                    specification?.source?.address !== outcome?.escrowChanges?.destination?.address && (
+                    specification?.source?.address !== outcome?.escrowChanges?.destination?.address &&
+                    isSuccessful && (
                       <tr>
                         <TData>Memos note</TData>
                         <TData className="orange">
