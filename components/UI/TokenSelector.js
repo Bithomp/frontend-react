@@ -7,12 +7,11 @@ import axios from 'axios'
 import {
   avatarServer,
   nativeCurrency,
-  isNativeCurrency,
   nativeCurrenciesImages,
   useWidth,
   setTabParams
 } from '../../utils'
-import { niceCurrency, shortAddress, shortNiceNumber, amountFormat } from '../../utils/format'
+import { niceCurrency, shortAddress, shortNiceNumber } from '../../utils/format'
 import RadioOptions from './RadioOptions'
 import { useRouter } from 'next/router'
 
@@ -20,47 +19,41 @@ const limit = 20
 
 // Helper function to fetch and process trustlines for a destination address
 const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '') => {
-  const response = await axios(`v2/objects/${destinationAddress}?limit=1000&type=state`)
-  const objects = response.data?.objects || []
+  const response = await axios(`v2/address/${destinationAddress}/acceptedTokens?limit=${limit}`)
+  const tokens = response.data?.tokens || []
 
-  // Filter RippleState objects to get trustlines where destination can hold tokens
-  const trustlines = objects.filter((obj) => {
-    if (parseFloat(obj.LowLimit.value) <= 0 && parseFloat(obj.HighLimit.value) <= 0) return false
+  // Trim the search query to handle whitespace
+  const trimmedQuery = searchQuery.trim()
 
+  const trustlines = tokens.filter((token) => {
     // If search query is provided, filter by it
-    if (searchQuery) {
-      const currency = obj.Balance.currency
-      const issuerDetails =
-        obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuerDetails : obj.HighLimit.issuerDetails || {}
-      const serviceOrUsername = issuerDetails.service || issuerDetails.username || ''
-      const issuer = obj.HighLimit.issuer === destinationAddress ? obj.LowLimit.issuer : obj.HighLimit.issuer || ''
+    if (trimmedQuery) {
+      const currency = token.currency
+      const issuerDetails = token.issuerDetails || {}
+      const service = issuerDetails.service || ''
+      const username = issuerDetails.username || ''
+      const issuer = token.issuer || ''
 
-      const searchLower = searchQuery.toLowerCase()
+      const searchLower = trimmedQuery.toLowerCase()
       return (
         currency.toLowerCase().includes(searchLower) ||
-        serviceOrUsername.toLowerCase().includes(searchLower) ||
+        service.toLowerCase().includes(searchLower) ||
+        username.toLowerCase().includes(searchLower) ||
         issuer.toLowerCase().includes(searchLower)
       )
     }
-
     return true
   })
 
-  // Convert trustlines to token format
-  return trustlines.map((tl) => ({
-    currency: tl.Balance.currency,
-    issuer: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuer : tl.HighLimit.issuer,
-    issuerDetails: tl.HighLimit.issuer === destinationAddress ? tl.LowLimit.issuerDetails : tl.HighLimit.issuerDetails,
-    limit: Math.max(parseFloat(tl.LowLimit.value), parseFloat(tl.HighLimit.value)),
-    balance: tl.Balance.value
-  }))
+  return trustlines
 }
 
 // Helper function to add native currency to tokens array if needed
 const addNativeCurrencyIfNeeded = (tokens, excludeNative, searchQuery = '') => {
   if (excludeNative) return tokens
 
-  const shouldAddNative = !searchQuery || searchQuery.toUpperCase() === nativeCurrency.toUpperCase()
+  const trimmedQuery = searchQuery.trim()
+  const shouldAddNative = !trimmedQuery || trimmedQuery.toUpperCase() === nativeCurrency.toUpperCase()
   if (shouldAddNative) {
     tokens.unshift({ currency: nativeCurrency, limit: null })
   }
@@ -84,6 +77,10 @@ export default function TokenSelector({
   const [searchResults, setSearchResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [searchTimeout, setSearchTimeout] = useState(null)
+  
+  // Cache for search results to prevent unnecessary reloads
+  const [lastSearchQuery, setLastSearchQuery] = useState('')
+  const [cachedSearchResults, setCachedSearchResults] = useState([])
 
   // control radio selection: 'all' | 'single'
   const [filterMode, setFilterMode] = useState(() => (value?.currency ? 'single' : 'all'))
@@ -120,6 +117,8 @@ export default function TokenSelector({
   useEffect(() => {
     setSearchResults([])
     setSearchQuery('')
+    setLastSearchQuery('')
+    setCachedSearchResults([])
   }, [destinationAddress])
 
   // Handle search with debounce
@@ -133,25 +132,13 @@ export default function TokenSelector({
     }
 
     const timeout = setTimeout(async () => {
-      if (!searchQuery) {
-        // Only apply the early return logic when there's no destination address
-        // When destination address is provided, we always want to fetch fresh data
-        if (!destinationAddress) {
-          // do not reload default token list if it's already loaded
-          // when searched for native currency, we also add the native currency on top,
-          // so check that it's not that case before canceling the search
-          if (
-            isNativeCurrency(searchResults[0]) &&
-            !niceCurrency(searchResults[1]?.currency)?.toLowerCase().startsWith(nativeCurrency.toLowerCase())
-          )
-            return
-        } else {
-          // For destination address case, check if we already have results loaded
-          if (searchResults.length > 0) {
-            return
-          }
+      if (!searchQuery.trim()) {
+        // Check if we have cached results for empty search query
+        if (lastSearchQuery === '' && cachedSearchResults.length > 0) {
+          setSearchResults(cachedSearchResults)
+          return
         }
-
+        
         setIsLoading(true)
         try {
           let tokens = []
@@ -165,25 +152,45 @@ export default function TokenSelector({
             const response = await axios('v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true')
             tokens = response.data?.tokens || []
             if (!excludeNative) {
-              setSearchResults([{ currency: nativeCurrency }, ...tokens])
+              const defaultTokens = [{ currency: nativeCurrency }, ...tokens]
+              setSearchResults(defaultTokens)
+              // Cache the default token list
+              setLastSearchQuery('')
+              setCachedSearchResults(defaultTokens)
             } else {
               setSearchResults(tokens)
+              // Cache the default token list
+              setLastSearchQuery('')
+              setCachedSearchResults(tokens)
             }
             setIsLoading(false)
             return
           }
 
           setSearchResults(tokens)
+          // Cache the default token list for destination address case
+          setLastSearchQuery('')
+          setCachedSearchResults(tokens)
         } catch (error) {
           console.error('Error loading tokens:', error)
           if (excludeNative) {
             setSearchResults([])
+            setLastSearchQuery('')
+            setCachedSearchResults([])
           } else {
             setSearchResults([{ currency: nativeCurrency }])
+            setLastSearchQuery('')
+            setCachedSearchResults([{ currency: nativeCurrency }])
           }
         } finally {
           setIsLoading(false)
         }
+        return
+      }
+
+      // Check if we have cached results for this search query
+      if (lastSearchQuery === searchQuery) {
+        setSearchResults(cachedSearchResults)
         return
       }
 
@@ -194,16 +201,23 @@ export default function TokenSelector({
           const tokens = await fetchTrustlinesForDestination(destinationAddress, searchQuery)
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
+          // Cache the results
+          setLastSearchQuery(searchQuery)
+          setCachedSearchResults(tokensWithNative)
         } else {
           // Fallback to original search behavior
           const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}&currencyDetails=true`)
           const tokens = response.data?.tokens || []
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
+          // Cache the results
+          setLastSearchQuery(searchQuery)
+          setCachedSearchResults(tokensWithNative)
         }
       } catch (error) {
         console.error('Error searching tokens:', error)
         setSearchResults([])
+        setCachedSearchResults([])
       } finally {
         setIsLoading(false)
       }
@@ -222,7 +236,6 @@ export default function TokenSelector({
   const handleSelect = (token) => {
     onChange(token)
     setIsOpen(false)
-    setSearchQuery('')
   }
 
   // Helper to get icon url if available
@@ -248,20 +261,6 @@ export default function TokenSelector({
       return token.currencyDetails.currency
     }
     return niceCurrency(token.currency)
-  }
-
-  // Helper to get token limit display
-  const getTokenLimitDisplay = (token) => {
-    if (!token.limit || token.currency === nativeCurrency) return null
-
-    return (
-      <div className="token-selector-modal-item-limit">
-        <span className="token-selector-modal-item-limit-label">Max:</span>
-        <span className="token-selector-modal-item-limit-value">
-          {amountFormat({ value: token.limit, currency: token.currency, issuer: token.issuer }, { short: true })}
-        </span>
-      </div>
-    )
   }
 
   return (
@@ -373,7 +372,6 @@ export default function TokenSelector({
                                   )}
                                 </span>
                                 {width > 1100 ? <span>{token.issuer}</span> : <span>{shortAddress(token.issuer)}</span>}
-                                {getTokenLimitDisplay(token)}
                               </div>
                             </div>
                           </div>
