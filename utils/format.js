@@ -16,7 +16,8 @@ import {
   nativeCurrency,
   nativeCurrenciesImages,
   stripText,
-  xls14NftValue
+  xls14NftValue,
+  tokenImageSrc
 } from '.'
 
 dayjs.extend(durationPlugin)
@@ -35,9 +36,9 @@ export const NiceNativeBalance = ({ amount }) => {
 
 export const CurrencyWithIcon = ({ token }) => {
   if (!token) return ''
-  const { currency, issuer, lp_token, currencyDetails } = token
-  let imageUrl = avatarServer.replace('/avatar/', '/issued-token/')
-  imageUrl += issuer + '/' + currency
+  const { lp_token, currencyDetails } = token
+
+  let imageUrl = tokenImageSrc(token)
 
   return (
     <>
@@ -48,16 +49,10 @@ export const CurrencyWithIcon = ({ token }) => {
 }
 
 export const AddressWithIcon = ({ children, address, currency }) => {
-  let imageUrl = avatarServer
+  let imageUrl = avatarServer + address
 
   if (currency) {
-    imageUrl = avatarServer.replace('/avatar/', '/issued-token/')
-  }
-
-  imageUrl += address
-
-  if (currency) {
-    imageUrl += '/' + currency
+    imageUrl = tokenImageSrc({ issuer: address, currency })
   }
 
   if (!address) {
@@ -78,7 +73,7 @@ export const AddressWithIcon = ({ children, address, currency }) => {
   )
 }
 
-export const AddressWithIconFilled = ({ data, name, copyButton }) => {
+export const AddressWithIconFilled = ({ data, name, copyButton, options }) => {
   if (!data) return ''
   if (!name) {
     name = 'address'
@@ -91,7 +86,7 @@ export const AddressWithIconFilled = ({ data, name, copyButton }) => {
           <br />
         </>
       )}
-      {addressLink(data[name])} {copyButton && <CopyButton text={data[name]} />}
+      {addressLink(data[name], options)} {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
   )
 }
@@ -501,7 +496,7 @@ export const addressLink = (address, options = {}) => {
   if (!address) return ''
   return (
     <Link href={'/account/' + address} aria-label="address link">
-      {options.short ? shortAddress(address, options.short) : address}
+      {options?.short ? shortAddress(address, options.short) : address}
     </Link>
   )
 }
