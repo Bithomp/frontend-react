@@ -10,18 +10,13 @@ import {
   shortNiceNumber,
   fullNiceNumber,
   AddressWithIconFilled,
-  fullDateAndTime,
-  tokenImageUrl
+  tokenImageUrl,
+  shortHash
 } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { fetchHistoricalRate } from '../../utils/common'
 import { getIsSsrMobile } from '../../utils/mobile'
-import {
-  isAddressOrUsername,
-  nativeCurrency,
-  validateCurrencyCode,
-  xahauNetwork
-} from '../../utils'
+import { isAddressOrUsername, nativeCurrency, validateCurrencyCode, xahauNetwork } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
 
 // Server side initial data fetch
@@ -102,11 +97,11 @@ export default function TokenPage({
   fiatRate: fiatRateApp,
   fiatRateServer,
   setSignRequest,
+  isSsrMobile
 }) {
   const router = useRouter()
   const token = initialData
   const errorMessage = initialErrorMessage || ''
-  
 
   let selectedCurrency = selectedCurrencyServer
   let fiatRate = fiatRateServer
@@ -165,7 +160,8 @@ export default function TokenPage({
     const priceFiat = price * rate
     return (
       <span suppressHydrationWarning>
-        {niceNumber(priceFiat, 4, selectedCurrency)} ({niceNumber(price, 6)} {nativeCurrency})
+        {niceNumber(priceFiat, 4, selectedCurrency)}
+        {isSsrMobile ? <br /> : ' '}({niceNumber(price, 6)} {nativeCurrency})
       </span>
     )
   }
@@ -175,7 +171,8 @@ export default function TokenPage({
     const marketcapFiat = marketcap * fiatRate
     return (
       <span suppressHydrationWarning>
-        {niceNumber(marketcapFiat, 2, selectedCurrency)} ({niceNumber(marketcap, 2)} {nativeCurrency})
+        {niceNumber(marketcapFiat, 2, selectedCurrency)}
+        {isSsrMobile ? <br /> : ' '}({niceNumber(marketcap, 2)} {nativeCurrency})
       </span>
     )
   }
@@ -192,7 +189,8 @@ export default function TokenPage({
     const volumeFiat = volume * (statistics?.priceXrp || 0) * fiatRate || 0
     return (
       <span suppressHydrationWarning>
-        {niceNumber(volume, 2)} {currencyDetails.currency} ({niceNumber(volumeFiat, 2, selectedCurrency)})
+        {niceNumber(volume, 2)} {currencyDetails.currency}
+        {isSsrMobile ? <br /> : ' '}({niceNumber(volumeFiat, 2, selectedCurrency)})
       </span>
     )
   }
@@ -236,7 +234,7 @@ export default function TokenPage({
   // Handle set trustline
   const handleSetTrustline = () => {
     if (!setSignRequest) return
-    
+
     setSignRequest({
       request: {
         TransactionType: 'TrustSet',
@@ -254,19 +252,19 @@ export default function TokenPage({
 
   return (
     <>
-      <SEO title={`${token?.currencyDetails?.currency} Token - ${token.issuerDetails?.service || token.issuerDetails?.username || 'Token Details'}`} />
-      
+      <SEO
+        title={`${token?.currencyDetails?.currency} Token - ${
+          token.issuerDetails?.service || token.issuerDetails?.username || 'Token Details'
+        }`}
+      />
+
       <div className={tokenClass}>
         <div className="content-profile">
           <div className="column-left">
             {/* Big Token Icon */}
-            <img
-              alt="token"
-              src={tokenImageUrl(token)}
-              style={{ width: '100%', height: 'auto' }}
-            />
+            <img alt="token" src={tokenImageUrl(token)} style={{ width: '100%', height: 'auto' }} />
             <h1>{token?.currencyDetails?.currency}</h1>
-            {token?.description && <p>{token?.description}</p>}            
+            {token?.description && <p>{token?.description}</p>}
 
             {/* Action Buttons */}
             <button className="button-action wide center" onClick={handleSetTrustline}>
@@ -302,18 +300,28 @@ export default function TokenPage({
                 <tr>
                   <td>Issuer</td>
                   <td>
-                    <AddressWithIconFilled data={token} name="issuer" copyButton={true} />
+                    <AddressWithIconFilled
+                      data={token}
+                      name="issuer"
+                      copyButton={true}
+                      options={isSsrMobile ? { short: true } : null}
+                    />
                   </td>
                 </tr>
                 <tr>
                   <td>Currency Code</td>
                   <td>
-                    {token.currencyDetails.currencyCode} <CopyButton text={token.currencyDetails.currencyCode} />
+                    {isSsrMobile
+                      ? token.currencyDetails.currencyCode
+                      : shortHash(token.currencyDetails.currencyCode, 18)}{' '}
+                    <CopyButton text={token.currencyDetails.currencyCode} />
                   </td>
                 </tr>
                 <tr>
                   <td>Supply</td>
-                  <td>{fullNiceNumber(token.supply)} {token.currencyDetails.currency}</td>
+                  <td>
+                    {fullNiceNumber(token.supply)} {token.currencyDetails.currency}
+                  </td>
                 </tr>
                 <tr>
                   <td>Holders</td>
@@ -323,10 +331,13 @@ export default function TokenPage({
                   <td>Trustlines</td>
                   <td>{fullNiceNumber(token.trustlines)}</td>
                 </tr>
+                {/*
                 <tr>
                   <td>KYC Status</td>
                   <td>{token.kyc ? 'Verified' : 'Not Verified'}</td>
                 </tr>
+                */}
+                {/*
                 <tr>
                   <td>Token Type</td>
                   <td>
@@ -335,12 +346,15 @@ export default function TokenPage({
                     {token.fiat && ` (${token.fiat})`}
                   </td>
                 </tr>
+                */}
+                {/*
                 {token.statistics?.timeAt && (
                   <tr>
                     <td>Last Updated</td>
                     <td>{fullDateAndTime(token.statistics?.timeAt)}</td>
                   </tr>
                 )}
+                */}
               </tbody>
             </table>
 
@@ -415,23 +429,23 @@ export default function TokenPage({
                 </tr>
                 <tr>
                   <td>Trades</td>
-                  <td>{shortNiceNumber(statistics?.dexes || 0, 0, 1)}</td>
+                  <td>{fullNiceNumber(statistics?.dexes || 0)}</td>
                 </tr>
                 <tr>
                   <td>Active Holders</td>
-                  <td>{niceNumber(statistics?.activeHolders || 0)}</td>
+                  <td>{fullNiceNumber(statistics?.activeHolders || 0)}</td>
                 </tr>
                 <tr>
                   <td>Buyers</td>
-                  <td>{niceNumber(statistics?.uniqueBuyers || 0)}</td>
+                  <td>{fullNiceNumber(statistics?.uniqueBuyers || 0)}</td>
                 </tr>
                 <tr>
                   <td>Sellers</td>
-                  <td>{niceNumber(statistics?.uniqueSellers || 0)}</td>
+                  <td>{fullNiceNumber(statistics?.uniqueSellers || 0)}</td>
                 </tr>
                 <tr>
                   <td>Traders</td>
-                  <td>{niceNumber(statistics?.uniqueDexAccounts || 0)}</td>
+                  <td>{fullNiceNumber(statistics?.uniqueDexAccounts || 0)}</td>
                 </tr>
               </tbody>
             </table>
@@ -496,11 +510,14 @@ export default function TokenPage({
                 )}
               </tbody>
             </table>
-
-            
           </div>
         </div>
       </div>
+      <style jsx>{`
+        table.table-details tbody tr td:first-child {
+          width: 30%;
+        }
+      `}</style>
     </>
   )
 }

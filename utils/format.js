@@ -78,7 +78,7 @@ export const AddressWithIcon = ({ children, address, currency }) => {
   )
 }
 
-export const AddressWithIconFilled = ({ data, name, copyButton }) => {
+export const AddressWithIconFilled = ({ data, name, copyButton, options }) => {
   if (!data) return ''
   if (!name) {
     name = 'address'
@@ -91,7 +91,7 @@ export const AddressWithIconFilled = ({ data, name, copyButton }) => {
           <br />
         </>
       )}
-      {addressLink(data[name])} {copyButton && <CopyButton text={data[name]} />}
+      {addressLink(data[name], options)} {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
   )
 }
@@ -501,7 +501,7 @@ export const addressLink = (address, options = {}) => {
   if (!address) return ''
   return (
     <Link href={'/account/' + address} aria-label="address link">
-      {options.short ? shortAddress(address, options.short) : address}
+      {options?.short ? shortAddress(address, options.short) : address}
     </Link>
   )
 }
