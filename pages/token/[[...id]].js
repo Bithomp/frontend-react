@@ -5,14 +5,7 @@ import { useRouter } from 'next/router'
 
 import SEO from '../../components/SEO'
 import { tokenClass } from '../../styles/pages/token.module.scss'
-import {
-  niceNumber,
-  shortNiceNumber,
-  fullNiceNumber,
-  AddressWithIconFilled,
-  tokenImageUrl,
-  shortHash
-} from '../../utils/format'
+import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled, tokenImageUrl } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { fetchHistoricalRate } from '../../utils/common'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -248,8 +241,6 @@ export default function TokenPage({
     })
   }
 
-  console.log(token)
-
   return (
     <>
       <SEO
@@ -304,17 +295,14 @@ export default function TokenPage({
                       data={token}
                       name="issuer"
                       copyButton={true}
-                      options={isSsrMobile ? { short: true } : null}
+                      options={isSsrMobile ? { short: 10 } : null}
                     />
                   </td>
                 </tr>
                 <tr>
                   <td>Currency Code</td>
                   <td>
-                    {isSsrMobile
-                      ? token.currencyDetails.currencyCode
-                      : shortHash(token.currencyDetails.currencyCode, 18)}{' '}
-                    <CopyButton text={token.currencyDetails.currencyCode} />
+                    {token.currencyDetails.currencyCode} <CopyButton text={token.currencyDetails.currencyCode} />
                   </td>
                 </tr>
                 <tr>
@@ -513,11 +501,6 @@ export default function TokenPage({
           </div>
         </div>
       </div>
-      <style jsx>{`
-        table.table-details tbody tr td:first-child {
-          width: 30%;
-        }
-      `}</style>
     </>
   )
 }
