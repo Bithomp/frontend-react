@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Select from 'react-select'
 
-export default function SimpleSelect({ value, setValue, optionsList }) {
+export default function SimpleSelect({ value, setValue, optionsList, className }) {
   const [rendered, setRendered] = useState(false)
   const [choosenOption, setChoosenOption] = useState()
 
@@ -36,7 +36,7 @@ export default function SimpleSelect({ value, setValue, optionsList }) {
         setValue(a.value)
       }}
       isSearchable={false}
-      className="dropdown dropdown--desktop"
+      className={`dropdown dropdown--desktop ${className}`}
       classNamePrefix="react-select"
     />
   )
