@@ -1,8 +1,6 @@
 import { network, server, xahauNetwork } from '../utils'
 
 const pages = [
-  { loc: 'the-chain-of-blocks-summit', changefreq: 'monthly', priority: '1' },
-
   { loc: 'explorer/', changefreq: 'monthly', priority: '1' },
   { loc: '', changefreq: 'always', priority: '1' },
   { loc: 'faucet', changefreq: 'monthly', priority: '1' },
@@ -51,21 +49,8 @@ const pages = [
   { loc: 'about-us', changefreq: 'yearly', priority: '0.4' },
   { loc: 'customer-support', changefreq: 'yearly', priority: '0.4' },
   { loc: 'developer', changefreq: 'yearly', priority: '0.4' },
-  { loc: 'press', changefreq: 'yearly', priority: '0.4' },
 
-  { loc: 'jobs', changefreq: 'monthly', priority: '0.5' },
-
-  { loc: 'explorer-advantages', changefreq: 'monthly', priority: '0.5' },
-
-  { loc: 'learn', changefreq: 'weekly', priority: '0.7' },
-  { loc: 'learn/understanding-the-bithomp-explorer', changefreq: 'monthly', priority: '0.8' },
-  { loc: 'learn/verified-domain', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'learn/blackholed-address', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'learn/blacklisted-address', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' },
-  { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.8' },
-  { loc: 'learn/nft-minting', changefreq: 'monthly', priority: '0.9' },
-  { loc: 'learn/the-bithomp-api', changefreq: 'monthly', priority: '0.9' }
+  { loc: 'explorer-advantages', changefreq: 'monthly', priority: '0.5' }
 ]
 
 //network specific pages
@@ -82,9 +67,25 @@ if (xahauNetwork) {
 //works only on the mainnet
 if (network === 'mainnet') {
   if (!xahauNetwork) {
-    pages.push({ loc: 'xrpl-article', changefreq: 'monthly', priority: '0.6' })
+    pages.push(
+      { loc: 'xrpl-article', changefreq: 'monthly', priority: '0.6' },
+      { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' }
+    )
   }
-  pages.push({ loc: 'learn/xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' })
+  pages.push(
+    { loc: 'the-chain-of-blocks-summit', changefreq: 'monthly', priority: '1' },
+    { loc: 'press', changefreq: 'yearly', priority: '0.4' },
+    { loc: 'jobs', changefreq: 'monthly', priority: '0.5' },
+    { loc: 'learn', changefreq: 'weekly', priority: '0.7' },
+    { loc: 'learn/understanding-the-bithomp-explorer', changefreq: 'monthly', priority: '0.8' },
+    { loc: 'learn/verified-domain', changefreq: 'monthly', priority: '0.5' },
+    { loc: 'learn/blackholed-address', changefreq: 'monthly', priority: '0.5' },
+    { loc: 'learn/blacklisted-address', changefreq: 'monthly', priority: '0.5' },
+    { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.8' },
+    { loc: 'learn/nft-minting', changefreq: 'monthly', priority: '0.9' },
+    { loc: 'learn/the-bithomp-api', changefreq: 'monthly', priority: '0.9' },
+    { loc: 'learn/xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' }
+  )
 }
 
 function generateSiteMap(posts) {
