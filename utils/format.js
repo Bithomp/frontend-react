@@ -16,7 +16,8 @@ import {
   nativeCurrency,
   nativeCurrenciesImages,
   stripText,
-  xls14NftValue
+  xls14NftValue,
+  tokenImageSrc
 } from '.'
 
 dayjs.extend(durationPlugin)
@@ -35,9 +36,9 @@ export const NiceNativeBalance = ({ amount }) => {
 
 export const CurrencyWithIcon = ({ token }) => {
   if (!token) return ''
-  const { currency, issuer, lp_token, currencyDetails } = token
-  let imageUrl = avatarServer.replace('/avatar/', '/issued-token/')
-  imageUrl += issuer + '/' + currency
+  const { lp_token, currencyDetails } = token
+
+  let imageUrl = tokenImageSrc(token)
 
   return (
     <>
@@ -48,16 +49,10 @@ export const CurrencyWithIcon = ({ token }) => {
 }
 
 export const AddressWithIcon = ({ children, address, currency }) => {
-  let imageUrl = avatarServer
+  let imageUrl = avatarServer + address
 
   if (currency) {
-    imageUrl = avatarServer.replace('/avatar/', '/issued-token/')
-  }
-
-  imageUrl += address
-
-  if (currency) {
-    imageUrl += '/' + currency
+    imageUrl = tokenImageSrc({ issuer: address, currency })
   }
 
   if (!address) {
@@ -1017,8 +1012,4 @@ export const decodeJsonMemo = (memopiece, options) => {
 export const showAmmPercents = (x) => {
   x = x ? x / 1000 : '0'
   return x + '%'
-}
-
-export const tokenImageUrl = (token) => {
-  return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
 }

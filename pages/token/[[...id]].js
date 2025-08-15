@@ -5,11 +5,11 @@ import { useRouter } from 'next/router'
 
 import SEO from '../../components/SEO'
 import { tokenClass } from '../../styles/pages/token.module.scss'
-import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled, tokenImageUrl } from '../../utils/format'
+import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { fetchHistoricalRate } from '../../utils/common'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { isAddressOrUsername, nativeCurrency, validateCurrencyCode, xahauNetwork } from '../../utils'
+import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
 
 // Server side initial data fetch
@@ -253,7 +253,7 @@ export default function TokenPage({
         <div className="content-profile">
           <div className="column-left">
             {/* Big Token Icon */}
-            <img alt="token" src={tokenImageUrl(token)} style={{ width: '100%', height: 'auto' }} />
+            <img alt="token" src={tokenImageSrc(token)} style={{ width: '100%', height: 'auto' }} />
             <h1>{token?.currencyDetails?.currency}</h1>
             {token?.description && <p>{token?.description}</p>}
 
