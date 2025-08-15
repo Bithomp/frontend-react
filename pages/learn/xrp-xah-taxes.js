@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 import Breadcrumbs from '../../components/Breadcrumbs'
 import SEO from '../../components/SEO'
-import {network} from '../../utils'
+import { network } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { i18n } from 'next-i18next'
 export async function getServerSideProps(context) {
@@ -21,7 +21,7 @@ export default function XRPXAHTaxes() {
   return (
     <>
       <SEO
-        title={'XRP and XAH Taxes'}
+        title="XRP and XAH Taxes"
         description="Discover how Bithomp XRPL and Xahau Explorers provide accurate CSV exports compatible with major tax platforms like Koinly, Cointracking, and Taxbit."
         noindex={network !== 'mainnet'}
       />
