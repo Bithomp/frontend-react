@@ -186,6 +186,9 @@ export default function MobileMenu({
           <Link href="/xrp-xah-taxes" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.tax-reports')}
           </Link>
+          <Link href="/services/issue-currency" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Issue Currency
+          </Link>
 
           <Link href="/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.project-registration')}
