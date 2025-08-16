@@ -253,7 +253,7 @@ export default function TokenPage({
         <div className="content-profile">
           <div className="column-left">
             {/* Big Token Icon */}
-            <img alt="token" src={tokenImageSrc(token)} style={{ width: '100%', height: 'auto' }} />
+            <img alt="token" src={tokenImageSrc(token)} className="token-image" style={{ width: '100%', height: 'auto' }} />
             <h1>{token?.currencyDetails?.currency}</h1>
             {token?.description && <p>{token?.description}</p>}
 
