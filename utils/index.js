@@ -3,6 +3,7 @@ import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import Cookies from 'universal-cookie'
 import axios from 'axios'
+import SparkMD5 from 'spark-md5'
 
 export const forbid18Plus = async () => {
   //check if we have a saved country for the user
@@ -640,6 +641,10 @@ export const avatarSrc = (address, refreshPage) => {
   return avatarServer + address + (refreshPage ? '?' + refreshPage : '')
 }
 
+export const tokenImageSrc = (token) => {
+  return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
+}
+
 export const networksIds = {
   0: { server: 'https://bithomp.com', name: 'mainnet' },
   1: { server: 'https://test.bithomp.com', name: 'testnet' },
@@ -930,3 +935,5 @@ export const xls14NftValue = (value) => {
   }
   return false
 }
+
+export const md5 = (text) => SparkMD5.hash(text) 

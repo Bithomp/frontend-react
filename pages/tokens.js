@@ -631,415 +631,437 @@ export default function Tokens({
       <h1 className="center">Tokens</h1>
 
       <div className="tokens-page">
-      <FiltersFrame
-        count={data?.length}
-        hasMore={marker}
-        data={data || []}
-        csvHeaders={csvHeaders}
-        filtersHide={filtersHide}
-        setFiltersHide={setFiltersHide}
-        setSelectedCurrency={setSelectedCurrency}
-        selectedCurrency={selectedCurrency}
-      >
-        {/* Left filters */}
-        <>
-          {rendered && (
-            <div className="flex flex-col sm:gap-4 md:h-[400px]">
-              <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
-              <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
-            </div>
-          )}
-        </>
-        {/* Main content */}
-        <InfiniteScrolling
-          dataLength={data.length}
-          loadMore={checkApi}
+        <FiltersFrame
+          count={data?.length}
           hasMore={marker}
-          errorMessage={errorMessage}
-          subscriptionExpired={subscriptionExpired}
-          sessionToken={sessionToken}
-          openEmailLogin={openEmailLogin}
+          data={data || []}
+          csvHeaders={csvHeaders}
+          filtersHide={filtersHide}
+          setFiltersHide={setFiltersHide}
+          setSelectedCurrency={setSelectedCurrency}
+          selectedCurrency={selectedCurrency}
         >
-          {/* Desktop table */}
-          {!isSsrMobile || width > 860 ? (
-            <table className="table-large no-hover">
-              <thead>
-                <tr>
-                  <th className="center">                    
-                    <b className={'link' + (sortConfig.key === 'rating' ? ' orange' : '')} onClick={() => sortTable('rating')}> #</b>
-                  </th>
-                  <th>Token</th>
-                  <th className="right">
-                    Price
-                    <b className={'link' + (sortConfig.key === 'price' ? ' orange' : '')} onClick={() => sortTable('price')}> ⇅</b>
-                  </th>
-                  <th className="right">5m % / 1h % <br /> 24h % / 7d %</th>
-                 
-                  <th className="right">
-                    Buy volume
-                    <br />
-                    (24h)
-                    <b className={'link' + (sortConfig.key === 'buyVolume' ? ' orange' : '')} onClick={() => sortTable('buyVolume')}> ⇅</b>
-                  </th>
-                  <th className="right">
-                    Sell volume
-                    <br />
-                    (24h)
-                    <b className={'link' + (sortConfig.key === 'sellVolume' ? ' orange' : '')} onClick={() => sortTable('sellVolume')}> ⇅</b>
-                  </th>
-                  <th className="right">
-                    Total volume
-                    <br />
-                    (24h)
-                    <b className={'link' + (sortConfig.key === 'totalVolume' ? ' orange' : '')} onClick={() => sortTable('totalVolume')}> ⇅</b>
-                  </th>
-                  <th className="right">
-                    Buyers <b className={'link' + (sortConfig.key === 'uniqueBuyers' ? ' orange' : '')} onClick={() => sortTable('uniqueBuyers')}>⇅</b>
-                    {' '} / {' '}
-                    Sellers <b className={'link' + (sortConfig.key === 'uniqueSellers' ? ' orange' : '')} onClick={() => sortTable('uniqueSellers')}>⇅</b>
-                    <br />
-                    Traders (24h)
-                    <b className={'link' + (sortConfig.key === 'uniqueTraders' ? ' orange' : '')} onClick={() => sortTable('uniqueTraders')}> ⇅</b>
-                  </th>
-                  <th className="right">
-                    Holders,
-                    <br />
-                    Active (24h)
-                    <b className={'link' + (sortConfig.key === 'holders' ? ' orange' : '')} onClick={() => sortTable('holders')}> ⇅</b>
-                  </th>
-                  {!xahauNetwork && (
-                    <th className="center">
-                      AMMs,
+          {/* Left filters */}
+          <>
+            {rendered && (
+              <div className="flex flex-col sm:gap-4 md:h-[400px]">
+                <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
+                <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
+              </div>
+            )}
+          </>
+          {/* Main content */}
+          <InfiniteScrolling
+            dataLength={data.length}
+            loadMore={checkApi}
+            hasMore={marker}
+            errorMessage={errorMessage}
+            subscriptionExpired={subscriptionExpired}
+            sessionToken={sessionToken}
+            openEmailLogin={openEmailLogin}
+          >
+            {/* Desktop table */}
+            {!isSsrMobile || width > 860 ? (
+              <table className="table-large no-hover">
+                <thead>
+                  <tr>
+                    <th className="center">                    
+                      <b className={'link' + (sortConfig.key === 'rating' ? ' orange' : '')} onClick={() => sortTable('rating')}> #</b>
+                    </th>
+                    <th>Token</th>
+                    <th className="right">
+                      Price
+                      <b className={'link' + (sortConfig.key === 'price' ? ' orange' : '')} onClick={() => sortTable('price')}> ⇅</b>
+                    </th>
+                    <th className="right">5m % / 1h % <br /> 24h % / 7d %</th>
+                  
+                    <th className="right">
+                      Buy volume
+                      <br />
+                      (24h)
+                      <b className={'link' + (sortConfig.key === 'buyVolume' ? ' orange' : '')} onClick={() => sortTable('buyVolume')}> ⇅</b>
+                    </th>
+                    <th className="right">
+                      Sell volume
+                      <br />
+                      (24h)
+                      <b className={'link' + (sortConfig.key === 'sellVolume' ? ' orange' : '')} onClick={() => sortTable('sellVolume')}> ⇅</b>
+                    </th>
+                    <th className="right">
+                      Total volume
+                      <br />
+                      (24h)
+                      <b className={'link' + (sortConfig.key === 'totalVolume' ? ' orange' : '')} onClick={() => sortTable('totalVolume')}> ⇅</b>
+                    </th>
+                    <th className="right">
+                      Buyers <b className={'link' + (sortConfig.key === 'uniqueBuyers' ? ' orange' : '')} onClick={() => sortTable('uniqueBuyers')}>⇅</b>
+                      {' '} / {' '}
+                      Sellers <b className={'link' + (sortConfig.key === 'uniqueSellers' ? ' orange' : '')} onClick={() => sortTable('uniqueSellers')}>⇅</b>
+                      <br />
+                      Traders (24h)
+                      <b className={'link' + (sortConfig.key === 'uniqueTraders' ? ' orange' : '')} onClick={() => sortTable('uniqueTraders')}> ⇅</b>
+                    </th>
+                    <th className="right">
+                      Holders,
                       <br />
                       Active (24h)
+                      <b className={'link' + (sortConfig.key === 'holders' ? ' orange' : '')} onClick={() => sortTable('holders')}> ⇅</b>
                     </th>
-                  )}
-                  <th className="right">
-                    Trades
-                    <br />
-                    (24h)
-                  </th>
-                  <th className="right">
-                    Marketcap
-                    <b className={'link' + (sortConfig.key === 'marketcap' ? ' orange' : '')} onClick={() => sortTable('marketcap')}> ⇅</b>
-                  </th>
-                  <th className="right">
-                    Trustlines
-                    <b className={'link' + (sortConfig.key === 'trustlines' ? ' orange' : '')} onClick={() => sortTable('trustlines')}> ⇅</b>
-                  </th>
-                  <th className="center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                    </td>
-                  </tr>
-                ) : (
-                  <>
-                    {errorMessage ? (
-                      <tr>
-                        <td colSpan="100" className="center orange bold">
-                          {errorMessage}
-                        </td>
-                      </tr>
-                    ) : (
-                      <>
-                        {data.map((token, i) => {
-                          return (
-                            <tr key={i}>
-                              <td className="center">{i + 1}</td>
-                              <td>
-                                <TokenCell token={token} />
-                              </td>
-                              <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
-                              
-                              <td className="right">
-                                {renderPercentCell({
-                                  currentXrp: token.statistics?.priceXrp,
-                                  pastXrp: token.statistics?.priceXrp5m,
-                                  pastFiatRate: fiatRate5m
-                                })} / {' '}
-                                {renderPercentCell({
-                                  currentXrp: token.statistics?.priceXrp,
-                                  pastXrp: token.statistics?.priceXrp1h,
-                                  pastFiatRate: fiatRate1h
-                                })}
-                                <br />
-                                {renderPercentCell({
-                                  currentXrp: token.statistics?.priceXrp,
-                                  pastXrp: token.statistics?.priceXrp24h,
-                                  pastFiatRate: fiatRate24h
-                                })} / {' '}
-                                {renderPercentCell({
-                                  currentXrp: token.statistics?.priceXrp,
-                                  pastXrp: token.statistics?.priceXrp7d,
-                                  pastFiatRate: fiatRate7d
-                                })}
-                              </td>                              
-                             
-                              <td className="right">{volumeToFiat({ token, type: 'buy' })}</td>
-                              <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
-                              <td className="right">{volumeToFiat({ token })}</td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  <span className="green">
-                                    {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
-                                  </span>{' '}
-                                  /{' '}
-                                  <span className="red">
-                                    {shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}
-                                  </span>
-                                  <br />
-                                  {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
-                                  </span>
-                                </span>
-                              </td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.holders, 0, 1)}
-                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
-                                </span>
-                                <br />
-                                <span className="tooltip green">
-                                  {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.activeHolders) || 0}
-                                  </span>
-                                </span>
-                              </td>
-                              {!xahauNetwork && (
-                                <td className="center">
-                                  <a
-                                    href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                    className="tooltip"
-                                  >
-                                    {token.statistics?.ammPools || 0}
-                                    <span className="tooltiptext no-brake">View AMMs</span>
-                                  </a>
-                                  <br />
-                                  <span className="tooltip green">
-                                    {shortNiceNumber(token.statistics?.activeAmmPools, 0, 1) || 0}
-                                  </span>
-                                </td>
-                              )}
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.dexes) || 0}
-                                  </span>
-                                </span>
-                              </td>
-                              <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.trustlines, 0, 1)}
-                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
-                                </span>
-                              </td>
-
-                              <td className="center">
-                                <span
-                                  onClick={() => {
-                                    handleSetTrustline(token)
-                                  }}
-                                  className="orange tooltip"
-                                >
-                                  <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
-                                  <span className="tooltiptext no-brake">Set trust</span>
-                                </span>
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </>
+                    {!xahauNetwork && (
+                      <th className="center">
+                        AMMs,
+                        <br />
+                        Active (24h)
+                      </th>
                     )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          ) : (
-            // Mobile table
-            <table className="table-mobile">
-              <thead></thead>
-              <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                    </td>
+                    <th className="right">
+                      Trades
+                      <br />
+                      (24h)
+                    </th>
+                    <th className="right">
+                      Marketcap
+                      <b className={'link' + (sortConfig.key === 'marketcap' ? ' orange' : '')} onClick={() => sortTable('marketcap')}> ⇅</b>
+                    </th>
+                    <th className="right">
+                      Trustlines
+                      <b className={'link' + (sortConfig.key === 'trustlines' ? ' orange' : '')} onClick={() => sortTable('trustlines')}> ⇅</b>
+                    </th>
+                    <th className="center">Action</th>
                   </tr>
-                ) : (
-                  <>
-                    {errorMessage ? (
-                      <tr>
-                        <td colSpan="100" className="center orange bold">
-                          {errorMessage}
-                        </td>
-                      </tr>
-                    ) : (
-                      <>
-                        {data.map((token, i) => {
-                          return (
-                            <tr key={i}>
-                              <td style={{ padding: '5px' }} className="center">
-                                <b>{i + 1}</b>
-                              </td>
-                              <td>
-                                <TokenCell token={token} />
-                                <p>
-                                  Issuer address: {addressLink(token.issuer, { short: true })}{' '}
-                                  <CopyButton text={token.issuer} />
-                                  <br />
-                                  Currency code: {shortHash(token.currency)} <CopyButton text={token.currency} />
-                                  <br />
-                                  Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
-                                  <br />
-                                  Price in {nativeCurrency} 5m ago: {niceNumber(token.statistics?.priceXrp5m, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 1h ago: {niceNumber(token.statistics?.priceXrp1h, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 24h ago: {niceNumber(token.statistics?.priceXrp24h, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 7d ago: {niceNumber(token.statistics?.priceXrp7d, 6)}
-                                  <br />
-                                  5m %: {renderPercentCell({
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr className="center">
+                      <td colSpan="100">
+                        <span className="waiting"></span>
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {errorMessage ? (
+                        <tr>
+                          <td colSpan="100" className="center orange bold">
+                            {errorMessage}
+                          </td>
+                        </tr>
+                      ) : (
+                        <>
+                          {data.map((token, i) => {
+                            return (
+                              <tr 
+                                key={i} 
+                                className="clickable-row"
+                                onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                              >
+                                <td className="center">{i + 1}</td>
+                                <td>
+                                  <TokenCell token={token} />
+                                </td>
+                                <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
+                                
+                                <td className="right">
+                                  {renderPercentCell({
                                     currentXrp: token.statistics?.priceXrp,
                                     pastXrp: token.statistics?.priceXrp5m,
                                     pastFiatRate: fiatRate5m
-                                  })}
-                                  <br />
-                                  1h %: {renderPercentCell({
+                                  })} / {' '}
+                                  {renderPercentCell({
                                     currentXrp: token.statistics?.priceXrp,
                                     pastXrp: token.statistics?.priceXrp1h,
                                     pastFiatRate: fiatRate1h
                                   })}
                                   <br />
-                                  24h %: {renderPercentCell({
+                                  {renderPercentCell({
                                     currentXrp: token.statistics?.priceXrp,
                                     pastXrp: token.statistics?.priceXrp24h,
                                     pastFiatRate: fiatRate24h
-                                  })}
-                                  <br />
-                                  7d %: {renderPercentCell({
+                                  })} / {' '}
+                                  {renderPercentCell({
                                     currentXrp: token.statistics?.priceXrp,
                                     pastXrp: token.statistics?.priceXrp7d,
                                     pastFiatRate: fiatRate7d
                                   })}
+                                </td>                              
+                              
+                                <td className="right">{volumeToFiat({ token, type: 'buy' })}</td>
+                                <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
+                                <td className="right">{volumeToFiat({ token })}</td>
+                                <td className="right">
+                                  <span className="tooltip">
+                                    <span className="green">
+                                      {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
+                                    </span>{' '}
+                                    /{' '}
+                                    <span className="red">
+                                      {shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}
+                                    </span>
+                                    <br />
+                                    {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
+                                    <span className="tooltiptext no-brake">
+                                      {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
+                                    </span>
+                                  </span>
+                                </td>
+                                <td className="right">
+                                  <span className="tooltip">
+                                    {shortNiceNumber(token.holders, 0, 1)}
+                                    <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+                                  </span>
                                   <br />
-                                  Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
-                                  <br />
-                                  Sell Volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
-                                  <br />
-                                  {/* 24h %: {token.statistics?.priceChange24h} */}
-                                  {/* 7d %: {token.statistics?.priceChange7d} */}
-                                  Total Volume (24h): {volumeToFiat({ token, mobile: true })}
-                                  <br />
-                                  Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
-                                  <br />
-                                  DEX txs (24h): {niceNumber(token.statistics?.dexTxs) || 0}
-                                  <br />
-                                  Unique Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
-                                  <br />
-                                  Unique Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
-                                  <br />
-                                  Unique Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
-                                  <br />
-                                  Supply: {niceNumber(token.supply, 0)} {niceCurrency(token.currency)}
-                                  <br />
-                                  Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
-                                  <br />
-                                  Trustlines: {niceNumber(token.trustlines)}
-                                  <br />
-                                  Holders: {niceNumber(token.holders)}
-                                  <br />
-                                  Active holders (Account that used the token in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeHolders) || 0}
-                                  <br />
-                                  Active offers (Count of used offers in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeOffers) || 0}
-                                  <br />
-                                  Trading pairs (in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeCounters) || 0}
-                                  <br />
-                                  {!xahauNetwork && (
-                                    <>
-                                      AMM Pools:{' '}
-                                      <a
-                                        href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                        className="tooltip"
-                                      >
-                                        {' '}
-                                        {token.statistics?.ammPools || 0}
-                                      </a>
-                                      <br />
-                                      Active AMM pools (the last closed day):{' '}
-                                      {niceNumber(token.statistics?.activeAmmPools) || 0}
-                                    </>
-                                  )}
-                                  <br />
-                                  Transfer txs (24h): {niceNumber(token.statistics?.transferTxs) || 0}
-                                  <br />
-                                  {token.statistics?.transferTxs > 0 && (
-                                    <>
-                                      Transfer Volume (24h): {volumeToFiat({ token, type: 'transfer', mobile: true })}
-                                      <br />
-                                    </>
-                                  )}
-                                  Rippling txs (24h): {niceNumber(token.statistics?.ripplingTxs) || 0}
-                                  <br />
-                                  {token.statistics?.ripplingTxs > 0 && (
-                                    <>
-                                      Rippling Volume (24h): {volumeToFiat({ token, type: 'rippling', mobile: true })}
-                                      <br />
-                                    </>
-                                  )}
-                                  Mint Volume (24h): {volumeToFiat({ token, type: 'mint', mobile: true })}
-                                  <br />
-                                  Burn Volume (24h): {volumeToFiat({ token, type: 'burn', mobile: true })}
-                                  <br />
-                                  Unique accounts (used the token in the last 24h):{' '}
-                                  {niceNumber(token.statistics?.uniqueAccounts) || 0}
-                                  <br />
-                                  <br />
-                                  <button
-                                    className="button-action narrow thin"
-                                    onClick={() => {
+                                  <span className="tooltip green">
+                                    {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
+                                    <span className="tooltiptext no-brake">
+                                      {fullNiceNumber(token.statistics?.activeHolders) || 0}
+                                    </span>
+                                  </span>
+                                </td>
+                                {!xahauNetwork && (
+                                  <td className="center">
+                                    <a
+                                      href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                      className="tooltip"
+                                    >
+                                      {token.statistics?.ammPools || 0}
+                                      <span className="tooltiptext no-brake">View AMMs</span>
+                                    </a>
+                                    <br />
+                                    <span className="tooltip green">
+                                      {shortNiceNumber(token.statistics?.activeAmmPools, 0, 1) || 0}
+                                    </span>
+                                  </td>
+                                )}
+                                <td className="right">
+                                  <span className="tooltip">
+                                    {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
+                                    <span className="tooltiptext no-brake">
+                                      {fullNiceNumber(token.statistics?.dexes) || 0}
+                                    </span>
+                                  </span>
+                                </td>
+                                <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
+                                <td className="right">
+                                  <span className="tooltip">
+                                    {shortNiceNumber(token.trustlines, 0, 1)}
+                                    <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
+                                  </span>
+                                </td>
+
+                                <td className="center">
+                                  <span
+                                    onClick={(e) => {
+                                      e.stopPropagation()
                                       handleSetTrustline(token)
                                     }}
+                                    className="orange tooltip"
                                   >
-                                    <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Set Trust
-                                  </button>
-                                </p>
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          )}
-        </InfiniteScrolling>
-      </FiltersFrame>
-      <style jsx global>{`
-        @media (max-width: 1300px) {
-          /* Invert mobile filter show/hide semantics for Tokens page only */
-          .tokens-page .content-cols.is-filters-hide .filters__wrap {
-            transform: translateY(100%) !important; /* hide when filtersHide === true */
+                                    <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
+                                    <span className="tooltiptext no-brake">Set trust</span>
+                                  </span>
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </>
+                      )}
+                    </>
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              // Mobile table
+              <table className="table-mobile">
+                <thead></thead>
+                <tbody>
+                  {loading ? (
+                    <tr className="center">
+                      <td colSpan="100">
+                        <span className="waiting"></span>
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {errorMessage ? (
+                        <tr>
+                          <td colSpan="100" className="center orange bold">
+                            {errorMessage}
+                          </td>
+                        </tr>
+                      ) : (
+                        <>
+                          {data.map((token, i) => {
+                            return (
+                              <tr 
+                                key={i} 
+                                className="clickable-row"
+                                onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                              >
+                                <td style={{ padding: '5px' }} className="center">
+                                  <b>{i + 1}</b>
+                                </td>
+                                <td>
+                                  <TokenCell token={token} />
+                                  <p>
+                                    Issuer address: {addressLink(token.issuer, { short: true })}{' '}
+                                    <CopyButton text={token.issuer} />
+                                    <br />
+                                    Currency code: {shortHash(token.currency)} <CopyButton text={token.currency} />
+                                    <br />
+                                    Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
+                                    <br />
+                                    Price in {nativeCurrency} 5m ago: {niceNumber(token.statistics?.priceXrp5m, 6)}
+                                    <br />
+                                    Price in {nativeCurrency} 1h ago: {niceNumber(token.statistics?.priceXrp1h, 6)}
+                                    <br />
+                                    Price in {nativeCurrency} 24h ago: {niceNumber(token.statistics?.priceXrp24h, 6)}
+                                    <br />
+                                    Price in {nativeCurrency} 7d ago: {niceNumber(token.statistics?.priceXrp7d, 6)}
+                                    <br />
+                                    5m %: {renderPercentCell({
+                                      currentXrp: token.statistics?.priceXrp,
+                                      pastXrp: token.statistics?.priceXrp5m,
+                                      pastFiatRate: fiatRate5m
+                                    })}
+                                    <br />
+                                    1h %: {renderPercentCell({
+                                      currentXrp: token.statistics?.priceXrp,
+                                      pastXrp: token.statistics?.priceXrp1h,
+                                      pastFiatRate: fiatRate1h
+                                    })}
+                                    <br />
+                                    24h %: {renderPercentCell({
+                                      currentXrp: token.statistics?.priceXrp,
+                                      pastXrp: token.statistics?.priceXrp24h,
+                                      pastFiatRate: fiatRate24h
+                                    })}
+                                    <br />
+                                    7d %: {renderPercentCell({
+                                      currentXrp: token.statistics?.priceXrp,
+                                      pastXrp: token.statistics?.priceXrp7d,
+                                      pastFiatRate: fiatRate7d
+                                    })}
+                                    <br />
+                                    Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
+                                    <br />
+                                    Sell Volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
+                                    <br />
+                                    {/* 24h %: {token.statistics?.priceChange24h} */}
+                                    {/* 7d %: {token.statistics?.priceChange7d} */}
+                                    Total Volume (24h): {volumeToFiat({ token, mobile: true })}
+                                    <br />
+                                    Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
+                                    <br />
+                                    DEX txs (24h): {niceNumber(token.statistics?.dexTxs) || 0}
+                                    <br />
+                                    Unique Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
+                                    <br />
+                                    Unique Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
+                                    <br />
+                                    Unique Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
+                                    <br />
+                                    Supply: {niceNumber(token.supply, 0)} {niceCurrency(token.currency)}
+                                    <br />
+                                    Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
+                                    <br />
+                                    Trustlines: {niceNumber(token.trustlines)}
+                                    <br />
+                                    Holders: {niceNumber(token.holders)}
+                                    <br />
+                                    Active holders (Account that used the token in the last closed day):{' '}
+                                    {niceNumber(token.statistics?.activeHolders) || 0}
+                                    <br />
+                                    Active offers (Count of used offers in the last closed day):{' '}
+                                    {niceNumber(token.statistics?.activeOffers) || 0}
+                                    <br />
+                                    Trading pairs (in the last closed day):{' '}
+                                    {niceNumber(token.statistics?.activeCounters) || 0}
+                                    <br />
+                                    {!xahauNetwork && (
+                                      <>
+                                        AMM Pools:{' '}
+                                        <a
+                                          href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                          className="tooltip"
+                                        >
+                                          {' '}
+                                          {token.statistics?.ammPools || 0}
+                                        </a>
+                                        <br />
+                                        Active AMM pools (the last closed day):{' '}
+                                        {niceNumber(token.statistics?.activeAmmPools) || 0}
+                                      </>
+                                    )}
+                                    <br />
+                                    Transfer txs (24h): {niceNumber(token.statistics?.transferTxs) || 0}
+                                    <br />
+                                    {token.statistics?.transferTxs > 0 && (
+                                      <>
+                                        Transfer Volume (24h): {volumeToFiat({ token, type: 'transfer', mobile: true })}
+                                        <br />
+                                      </>
+                                    )}
+                                    Rippling txs (24h): {niceNumber(token.statistics?.ripplingTxs) || 0}
+                                    <br />
+                                    {token.statistics?.ripplingTxs > 0 && (
+                                      <>
+                                        Rippling Volume (24h): {volumeToFiat({ token, type: 'rippling', mobile: true })}
+                                        <br />
+                                      </>
+                                    )}
+                                    Mint Volume (24h): {volumeToFiat({ token, type: 'mint', mobile: true })}
+                                    <br />
+                                    Burn Volume (24h): {volumeToFiat({ token, type: 'burn', mobile: true })}
+                                    <br />
+                                    Unique accounts (used the token in the last 24h):{' '}
+                                    {niceNumber(token.statistics?.uniqueAccounts) || 0}
+                                    <br />
+                                    <br />
+                                    <button
+                                      className="button-action narrow thin"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleSetTrustline(token)
+                                      }}
+                                    >
+                                      <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Set Trust
+                                    </button>
+                                  </p>
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </>
+                      )}
+                    </>
+                  )}
+                </tbody>
+              </table>
+            )}
+          </InfiniteScrolling>
+        </FiltersFrame>
+        <style jsx global>{`
+          @media (max-width: 1300px) {
+            /* Invert mobile filter show/hide semantics for Tokens page only */
+            .tokens-page .content-cols.is-filters-hide .filters__wrap {
+              transform: translateY(100%) !important; /* hide when filtersHide === true */
+            }
+            .tokens-page .content-cols:not(.is-filters-hide) .filters__wrap {
+              transform: translateY(0) !important; /* show when filtersHide === false */
+            }
           }
-          .tokens-page .content-cols:not(.is-filters-hide) .filters__wrap {
-            transform: translateY(0) !important; /* show when filtersHide === false */
+          .clickable-row {
+            cursor: pointer;
+            transition: background-color 0.2s;
           }
-        }
-      `}</style>
+          
+          .clickable-row:hover {
+            background-color: var(--unaccent-icon);
+          }
+          
+          .clickable-row td {
+            position: relative;
+          }
+        `}</style>
       </div>
     </>
   )

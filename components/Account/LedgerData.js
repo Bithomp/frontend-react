@@ -19,6 +19,7 @@ import { LinkAmm, LinkTx } from '../../utils/links'
 
 import { MdDeleteForever, MdVerified } from 'react-icons/md'
 import { FiEdit } from 'react-icons/fi'
+import { subtract } from '../../utils/calc'
 
 export default function LedgerData({
   data,
@@ -267,7 +268,7 @@ export default function LedgerData({
 
   const ammIdNode = <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
 
-  const transferRateNode = Math.ceil((data.ledgerInfo.transferRate - 1) * 10000) / 100
+  const transferRateNode = Math.ceil(subtract(data.ledgerInfo.transferRate, 1) * 10000) / 100 + '%'
 
   const regularKeyNode = <AddressWithIconFilled data={data.ledgerInfo} name="regularKey" />
 
@@ -474,7 +475,7 @@ export default function LedgerData({
               <td className="bold">{data.ledgerInfo.tickSize}</td>
             </tr>
           )}
-          {data.ledgerInfo?.flags?.transferRate && (
+          {data.ledgerInfo?.transferRate && (
             <tr>
               <td>Transfer rate</td>
               <td className="bold">{transferRateNode}</td>
@@ -583,13 +584,20 @@ export default function LedgerData({
               <td>{lastAccountTxNode}</td>
             </tr>
           ) */}
-          {data.ledgerInfo?.messageKey &&
-            data.ledgerInfo?.messageKey.substring(0, 26) !== '02000000000000000000000000' && (
-              <tr>
-                <td>Message key</td>
-                <td>{messageKeyNode}</td>
-              </tr>
-            )}
+          {data.ledgerInfo?.messageKey && (
+            <tr>
+              <td>
+                Message key{' '}
+                {data.ledgerInfo?.messageKey.substring(0, 26) === '02000000000000000000000000' && (
+                  <>
+                    <br />
+                    <b>used for Flare</b>
+                  </>
+                )}
+              </td>
+              <td>{messageKeyNode}</td>
+            </tr>
+          )}
           {data.ledgerInfo?.walletLocator && (
             <tr>
               <td>Wallet locator</td>
@@ -751,7 +759,7 @@ export default function LedgerData({
             <span className="grey">Tick size</span> <span className="bold">{data.ledgerInfo.tickSize}</span>
           </p>
         )}
-        {data.ledgerInfo?.flags?.transferRate && (
+        {data.ledgerInfo?.transferRate && (
           <p>
             <span className="grey">Transfer rate</span> <span className="bold">{transferRateNode}</span>
           </p>
