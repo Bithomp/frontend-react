@@ -32,6 +32,7 @@ import {
 } from '../utils'
 import { useRouter } from 'next/router'
 import CopyButton from '../components/UI/CopyButton'
+import { fetchHistoricalRate } from '../utils/common'
 
 /*
   {
@@ -75,12 +76,31 @@ import CopyButton from '../components/UI/CopyButton'
 // Server side initial data fetch
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
-  const { currency, issuer } = query
+  const { currency, issuer, order } = query
 
   let initialData = null
   let initialErrorMessage = null
 
-  let url = `v2/trustlines/tokens?limit=100&order=rating&currencyDetails=true&statistics=true`
+  // Validate order param
+  const supportedOrders = new Set([
+    'rating',
+    'trustlinesHigh',
+    'trustlinesLow',
+    'holdersHigh',
+    'holdersLow',
+    'priceNativeCurrencyHigh',
+    'priceNativeCurrencyLow',
+    'marketCapHigh',
+    'sellVolumeHigh',
+    'buyVolumeHigh',
+    'totalVolumeHigh',
+    'uniqueTradersHigh',
+    'uniqueSellersHigh',
+    'uniqueBuyersHigh'
+  ])
+  const orderParam = supportedOrders.has(order) ? order : 'rating'
+
+  let url = `v2/trustlines/tokens?limit=100&order=${orderParam}&currencyDetails=true&statistics=true`
   if (currency) {
     const { valid, currencyCode } = validateCurrencyCode(currency)
     if (valid) {
@@ -121,6 +141,7 @@ export async function getServerSideProps(context) {
       selectedCurrencyServer,
       currencyQuery: currency || initialData?.currency || null,
       issuerQuery: issuer || initialData?.issuer || null,
+      orderQuery: supportedOrders.has(order) ? order : null,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -129,7 +150,18 @@ export async function getServerSideProps(context) {
 const orderList = [
   { value: 'rating', label: 'Rating: High to Low' },
   { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
-  { value: 'holdersHigh', label: 'Holders: High to Low' }
+  { value: 'trustlinesLow', label: 'Trustlines: Low to High' },
+  { value: 'holdersHigh', label: 'Holders: High to Low' },
+  { value: 'holdersLow', label: 'Holders: Low to High' },
+  { value: 'priceNativeCurrencyHigh', label: 'Price: High to Low' },
+  { value: 'priceNativeCurrencyLow', label: 'Price: Low to High' },
+  { value: 'marketCapHigh', label: 'Marketcap: High to Low' },
+  { value: 'sellVolumeHigh', label: 'Sell Volume (24h): High to Low' },
+  { value: 'buyVolumeHigh', label: 'Buy Volume (24h): High to Low' },
+  { value: 'totalVolumeHigh', label: 'Total Volume (24h): High to Low' },
+  { value: 'uniqueTradersHigh', label: 'Unique Traders (24h): High to Low' },
+  { value: 'uniqueSellersHigh', label: 'Unique Sellers (24h): High to Low' },
+  { value: 'uniqueBuyersHigh', label: 'Unique Buyers (24h): High to Low' }
 ]
 
 export default function Tokens({
@@ -146,7 +178,8 @@ export default function Tokens({
   isSsrMobile,
   openEmailLogin,
   currencyQuery,
-  issuerQuery
+  issuerQuery,
+  orderQuery
 }) {
   const { t } = useTranslation()
   const width = useWidth()
@@ -167,13 +200,53 @@ export default function Tokens({
   const [marker, setMarker] = useState(initialData?.marker)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [order, setOrder] = useState('rating')
-  const [filtersHide, setFiltersHide] = useState(!isSsrMobile)
+  const [order, setOrder] = useState(orderQuery || 'rating')
+  const [filtersHide, setFiltersHide] = useState(true)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
   const [rendered, setRendered] = useState(false)
+  const [sortConfig, setSortConfig] = useState(getInitialSortConfig(orderQuery))
+  const [fiatRate5m, setFiatRate5m] = useState(null)
+  const [fiatRate24h, setFiatRate24h] = useState(null)
+  const [fiatRate7d, setFiatRate7d] = useState(null)
+  const [fiatRate1h, setFiatRate1h] = useState(null)
 
   const controller = new AbortController()
+
+  function getInitialSortConfig(o) {
+    switch (o) {
+      case 'rating':
+        return { key: 'rating', direction: 'descending' }
+      case 'trustlinesHigh':
+        return { key: 'trustlines', direction: 'descending' }
+      case 'trustlinesLow':
+        return { key: 'trustlines', direction: 'ascending' }
+      case 'holdersHigh':
+        return { key: 'holders', direction: 'descending' }
+      case 'holdersLow':
+        return { key: 'holders', direction: 'ascending' }
+      case 'priceNativeCurrencyHigh':
+        return { key: 'price', direction: 'descending' }
+      case 'priceNativeCurrencyLow':
+        return { key: 'price', direction: 'ascending' }
+      case 'marketCapHigh':
+        return { key: 'marketcap', direction: 'descending' }
+      case 'sellVolumeHigh':
+        return { key: 'sellVolume', direction: 'descending' }
+      case 'buyVolumeHigh':
+        return { key: 'buyVolume', direction: 'descending' }
+      case 'totalVolumeHigh':
+        return { key: 'totalVolume', direction: 'descending' }
+      case 'uniqueTradersHigh':
+        return { key: 'uniqueTraders', direction: 'descending' }
+      case 'uniqueSellersHigh':
+        return { key: 'uniqueSellers', direction: 'descending' }
+      case 'uniqueBuyersHigh':
+        return { key: 'uniqueBuyers', direction: 'descending' }
+      default:
+        return { key: 'rating', direction: 'descending' }
+    }
+  }
 
   // Fetch tokens
   const checkApi = async () => {
@@ -265,20 +338,14 @@ export default function Tokens({
     let queryRemoveList = []
 
     if (isAddressOrUsername(issuer)) {
-      queryAddList.push({
-        name: 'issuer',
-        value: issuer
-      })
+      queryAddList.push({ name: 'issuer', value: issuer })
     } else {
       queryRemoveList.push('issuer')
     }
 
     const { valid, currencyCode } = validateCurrencyCode(currency)
     if (valid) {
-      queryAddList.push({
-        name: 'currency',
-        value: currencyCode
-      })
+      queryAddList.push({ name: 'currency', value: currencyCode })
     } else {
       queryRemoveList.push('currency')
     }
@@ -298,16 +365,43 @@ export default function Tokens({
       queryRemoveList
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [issuer, order, currency])
+  }, [issuer, currency, order])
 
   // Cleanup on unmount
   useEffect(() => {
     setRendered(true)
+    // fetch historical fiat rates for percent columns
+    if (selectedCurrency) {
+      const now = Date.now()
+      const t5m = now - 5 * 60 * 1000
+      const t1h = now - 1 * 60 * 60 * 1000
+      const t24h = now - 24 * 60 * 60 * 1000
+      const t7d = now - 7 * 24 * 60 * 60 * 1000
+      fetchHistoricalRate({ timestamp: t5m, selectedCurrency, setPageFiatRate: setFiatRate5m })
+      fetchHistoricalRate({ timestamp: t1h, selectedCurrency, setPageFiatRate: setFiatRate1h })
+      fetchHistoricalRate({ timestamp: t24h, selectedCurrency, setPageFiatRate: setFiatRate24h })
+      fetchHistoricalRate({ timestamp: t7d, selectedCurrency, setPageFiatRate: setFiatRate7d })
+    }
     return () => {
       controller.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Refetch historical fiat rates if currency changes
+  useEffect(() => {
+    if (!selectedCurrency) return
+    const now = Date.now()
+    const t5m = now - 5 * 60 * 1000
+    const t1h = now - 1 * 60 * 60 * 1000
+    const t24h = now - 24 * 60 * 60 * 1000
+    const t7d = now - 7 * 24 * 60 * 60 * 1000
+    fetchHistoricalRate({ timestamp: t5m, selectedCurrency, setPageFiatRate: setFiatRate5m })
+    fetchHistoricalRate({ timestamp: t1h, selectedCurrency, setPageFiatRate: setFiatRate1h })
+    fetchHistoricalRate({ timestamp: t24h, selectedCurrency, setPageFiatRate: setFiatRate24h })
+    fetchHistoricalRate({ timestamp: t7d, selectedCurrency, setPageFiatRate: setFiatRate7d })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency])
 
   // CSV headers for export
   const csvHeaders = [
@@ -407,6 +501,41 @@ export default function Tokens({
     )
   }
 
+  const renderPercentCell = ({ currentXrp, pastXrp, pastFiatRate }) => {
+    const current = Number(currentXrp || 0)
+    const past = Number(pastXrp || 0)
+    if (!current || !past) return <span className="grey">-</span>
+    if (past === 0) return <span className="grey">-</span>
+    const useFiat = fiatRate && pastFiatRate
+    const currentVal = useFiat ? current * fiatRate : current
+    const pastVal = useFiat ? past * pastFiatRate : past
+    const change = currentVal / pastVal - 1
+    const colorClass = change >= 0 ? 'green' : 'red'
+    const percentText = niceNumber(Math.abs(change * 100), 2) + '%'
+    const currentFiat = fiatRate ? current * fiatRate : null
+    const pastFiat = pastFiatRate ? past * pastFiatRate : null
+    return (
+      <span className={`tooltip ${colorClass}`} suppressHydrationWarning>
+        {change >= 0 ? '+' : '-'}{percentText}
+        <span className="tooltiptext right no-brake" suppressHydrationWarning>
+          {fiatRate && pastFiatRate ? (
+            <>
+              Now: {fullNiceNumber(currentFiat, selectedCurrency)}
+              <br />
+              Then: {fullNiceNumber(pastFiat, selectedCurrency)}
+            </>
+          ) : (
+            <>
+              Now: {niceNumber(current, 6)} {nativeCurrency}
+              <br />
+              Then: {niceNumber(past, 6)} {nativeCurrency}
+            </>
+          )}
+        </span>
+      </span>
+    )
+  }
+
   const volumeToFiat = ({ token, mobile, type }) => {
     const { statistics, currency } = token
     if (!fiatRate) return null
@@ -448,376 +577,492 @@ export default function Tokens({
     )
   }
 
+  const sortTable = (key) => {
+    if (!data || data.length === 0) return
+    let direction = 'descending'
+    if (sortConfig.key === key && sortConfig.direction === direction) {
+      direction = 'ascending'
+    }
+    setSortConfig({ key, direction })
+
+    const apiOrderFor = (k, dir) => {
+      const isDesc = dir === 'descending'
+      switch (k) {
+        case 'rating':
+        case 'index':
+          return 'rating'
+        case 'trustlines':
+          return isDesc ? 'trustlinesHigh' : 'trustlinesLow'
+        case 'holders':
+          return isDesc ? 'holdersHigh' : 'holdersLow'
+        case 'price':
+          return isDesc ? 'priceNativeCurrencyHigh' : 'priceNativeCurrencyLow'
+        case 'marketcap':
+          // Only High supported per new API list
+          return 'marketCapHigh'
+        case 'buyVolume':
+          return 'buyVolumeHigh'
+        case 'sellVolume':
+          return 'sellVolumeHigh'
+        case 'totalVolume':
+          return 'totalVolumeHigh'
+        case 'uniqueTraders':
+          return 'uniqueTradersHigh'
+        case 'uniqueSellers':
+          return 'uniqueSellersHigh'
+        case 'uniqueBuyers':
+          return 'uniqueBuyersHigh'
+        case 'token':
+          return null
+        default:
+          return null
+      }
+    }
+
+    const newApiOrder = apiOrderFor(key, direction)
+    if (newApiOrder) {
+      setOrder(newApiOrder)
+    }
+  }
+
   return (
     <>
       <SEO title="Tokens" />
       <h1 className="center">Tokens</h1>
 
-      <FiltersFrame
-        order={order}
-        setOrder={setOrder}
-        orderList={orderList}
-        count={data?.length}
-        hasMore={marker}
-        data={data || []}
-        csvHeaders={csvHeaders}
-        filtersHide={filtersHide}
-        setFiltersHide={setFiltersHide}
-        setSelectedCurrency={setSelectedCurrency}
-        selectedCurrency={selectedCurrency}
-      >
-        {/* Left filters */}
-        <>
-          {rendered && (
-            <div className="flex flex-col sm:gap-4 md:h-[400px]">
-              <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
-              <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
-            </div>
-          )}
-        </>
-        {/* Main content */}
-        <InfiniteScrolling
-          dataLength={data.length}
-          loadMore={checkApi}
+      <div className="tokens-page">
+        <FiltersFrame
+          count={data?.length}
           hasMore={marker}
-          errorMessage={errorMessage}
-          subscriptionExpired={subscriptionExpired}
-          sessionToken={sessionToken}
-          openEmailLogin={openEmailLogin}
+          data={data || []}
+          csvHeaders={csvHeaders}
+          filtersHide={filtersHide}
+          setFiltersHide={setFiltersHide}
+          setSelectedCurrency={setSelectedCurrency}
+          selectedCurrency={selectedCurrency}
         >
-          {/* Desktop table */}
-          {!isSsrMobile || width > 860 ? (
-            <table className="table-large no-hover">
-              <thead>
-                <tr>
-                  <th className="center">#</th>
-                  <th>Token</th>
-                  <th className="right">Price</th>
-                  {/*
-                  <th className="right">24h %</th>
-                  <th className="right">7d %</th>
-                  */}
-                  <th className="right">
-                    Buy volume
-                    <br />
-                    (24h)
-                  </th>
-                  <th className="right">
-                    Sell volume
-                    <br />
-                    (24h)
-                  </th>
-                  <th className="right">
-                    Total volume
-                    <br />
-                    (24h)
-                  </th>
-                  <th className="right">
-                    Buyers/Sellers
-                    <br />
-                    Traders (24h)
-                  </th>
-                  <th className="right">
-                    Holders,
-                    <br />
-                    Active (24h)
-                  </th>
-                  {!xahauNetwork && (
-                    <th className="center">
-                      AMMs,
+          {/* Left filters */}
+          <>
+            {rendered && (
+              <div className="flex flex-col sm:gap-4 md:h-[400px]">
+                <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
+                <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
+              </div>
+            )}
+          </>
+          {/* Main content */}
+          <InfiniteScrolling
+            dataLength={data.length}
+            loadMore={checkApi}
+            hasMore={marker}
+            errorMessage={errorMessage}
+            subscriptionExpired={subscriptionExpired}
+            sessionToken={sessionToken}
+            openEmailLogin={openEmailLogin}
+          >
+            {/* Desktop table */}
+            {!isSsrMobile || width > 860 ? (
+              <table className="table-large no-hover">
+                <thead>
+                  <tr>
+                    <th className="center">                    
+                      <b className={'link' + (sortConfig.key === 'rating' ? ' orange' : '')} onClick={() => sortTable('rating')}> #</b>
+                    </th>
+                    <th>Token</th>
+                    <th className="right">
+                      Price
+                      <b className={'link' + (sortConfig.key === 'price' ? ' orange' : '')} onClick={() => sortTable('price')}> ⇅</b>
+                    </th>
+                    <th className="right">5m % / 1h % <br /> 24h % / 7d %</th>
+                  
+                    <th className="right">
+                      Buy volume
+                      <br />
+                      (24h)
+                      <b className={'link' + (sortConfig.key === 'buyVolume' ? ' orange' : '')} onClick={() => sortTable('buyVolume')}> ⇅</b>
+                    </th>
+                    <th className="right">
+                      Sell volume
+                      <br />
+                      (24h)
+                      <b className={'link' + (sortConfig.key === 'sellVolume' ? ' orange' : '')} onClick={() => sortTable('sellVolume')}> ⇅</b>
+                    </th>
+                    <th className="right">
+                      Total volume
+                      <br />
+                      (24h)
+                      <b className={'link' + (sortConfig.key === 'totalVolume' ? ' orange' : '')} onClick={() => sortTable('totalVolume')}> ⇅</b>
+                    </th>
+                    <th className="right">
+                      Buyers <b className={'link' + (sortConfig.key === 'uniqueBuyers' ? ' orange' : '')} onClick={() => sortTable('uniqueBuyers')}>⇅</b>
+                      {' '} / {' '}
+                      Sellers <b className={'link' + (sortConfig.key === 'uniqueSellers' ? ' orange' : '')} onClick={() => sortTable('uniqueSellers')}>⇅</b>
+                      <br />
+                      Traders (24h)
+                      <b className={'link' + (sortConfig.key === 'uniqueTraders' ? ' orange' : '')} onClick={() => sortTable('uniqueTraders')}> ⇅</b>
+                    </th>
+                    <th className="right">
+                      Holders,
                       <br />
                       Active (24h)
+                      <b className={'link' + (sortConfig.key === 'holders' ? ' orange' : '')} onClick={() => sortTable('holders')}> ⇅</b>
                     </th>
-                  )}
-                  <th className="right">
-                    Trades
-                    <br />
-                    (24h)
-                  </th>
-                  <th className="right">Marketcap</th>
-                  <th className="right">Trustlines</th>
-                  <th className="center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                    </td>
+                    {!xahauNetwork && (
+                      <th className="center">
+                        AMMs,
+                        <br />
+                        Active (24h)
+                      </th>
+                    )}
+                    <th className="right">
+                      Trades
+                      <br />
+                      (24h)
+                    </th>
+                    <th className="right">
+                      Marketcap
+                      <b className={'link' + (sortConfig.key === 'marketcap' ? ' orange' : '')} onClick={() => sortTable('marketcap')}> ⇅</b>
+                    </th>
+                    <th className="right">
+                      Trustlines
+                      <b className={'link' + (sortConfig.key === 'trustlines' ? ' orange' : '')} onClick={() => sortTable('trustlines')}> ⇅</b>
+                    </th>
+                    <th className="center">Action</th>
                   </tr>
-                ) : (
-                  <>
-                    {errorMessage ? (
-                      <tr>
-                        <td colSpan="100" className="center orange bold">
-                          {errorMessage}
-                        </td>
-                      </tr>
-                    ) : (
-                      <>
-                        {data.map((token, i) => {
-                          return (
-                            <tr 
-                              key={i} 
-                              className="clickable-row"
-                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
-                            >
-                              <td className="center">{i + 1}</td>
-                              <td>
-                                <TokenCell token={token} />
-                              </td>
-                              <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
-                              {/*
-                              <td className="right"></td>
-                              <td className="right"></td>
-                              */}
-                              <td className="right">{volumeToFiat({ token, type: 'buy' })}</td>
-                              <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
-                              <td className="right">{volumeToFiat({ token })}</td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  <span className="green">
-                                    {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
-                                  </span>{' '}
-                                  /{' '}
-                                  <span className="red">
-                                    {shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}
-                                  </span>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr className="center">
+                      <td colSpan="100">
+                        <span className="waiting"></span>
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {errorMessage ? (
+                        <tr>
+                          <td colSpan="100" className="center orange bold">
+                            {errorMessage}
+                          </td>
+                        </tr>
+                      ) : (
+                        <>
+                          {data.map((token, i) => {
+                            return (
+                              <tr 
+                                key={i} 
+                                className="clickable-row"
+                                onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                              >
+                                <td className="center">{i + 1}</td>
+                                <td>
+                                  <TokenCell token={token} />
+                                </td>
+                                <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
+                                
+                                <td className="right">
+                                  {renderPercentCell({
+                                    currentXrp: token.statistics?.priceXrp,
+                                    pastXrp: token.statistics?.priceXrp5m,
+                                    pastFiatRate: fiatRate5m
+                                  })} / {' '}
+                                  {renderPercentCell({
+                                    currentXrp: token.statistics?.priceXrp,
+                                    pastXrp: token.statistics?.priceXrp1h,
+                                    pastFiatRate: fiatRate1h
+                                  })}
                                   <br />
-                                  {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
-                                  </span>
-                                </span>
-                              </td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.holders, 0, 1)}
-                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
-                                </span>
-                                <br />
-                                <span className="tooltip green">
-                                  {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.activeHolders) || 0}
-                                  </span>
-                                </span>
-                              </td>
-                              {!xahauNetwork && (
-                                <td className="center">
-                                  <a
-                                    href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                    className="tooltip"
-                                  >
-                                    {token.statistics?.ammPools || 0}
-                                    <span className="tooltiptext no-brake">View AMMs</span>
-                                  </a>
-                                  <br />
-                                  <span className="tooltip green">
-                                    {shortNiceNumber(token.statistics?.activeAmmPools, 0, 1) || 0}
+                                  {renderPercentCell({
+                                    currentXrp: token.statistics?.priceXrp,
+                                    pastXrp: token.statistics?.priceXrp24h,
+                                    pastFiatRate: fiatRate24h
+                                  })} / {' '}
+                                  {renderPercentCell({
+                                    currentXrp: token.statistics?.priceXrp,
+                                    pastXrp: token.statistics?.priceXrp7d,
+                                    pastFiatRate: fiatRate7d
+                                  })}
+                                </td>                              
+                              
+                                <td className="right">{volumeToFiat({ token, type: 'buy' })}</td>
+                                <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
+                                <td className="right">{volumeToFiat({ token })}</td>
+                                <td className="right">
+                                  <span className="tooltip">
+                                    <span className="green">
+                                      {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
+                                    </span>{' '}
+                                    /{' '}
+                                    <span className="red">
+                                      {shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}
+                                    </span>
+                                    <br />
+                                    {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
+                                    <span className="tooltiptext no-brake">
+                                      {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
+                                    </span>
                                   </span>
                                 </td>
-                              )}
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.dexes) || 0}
+                                <td className="right">
+                                  <span className="tooltip">
+                                    {shortNiceNumber(token.holders, 0, 1)}
+                                    <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
                                   </span>
-                                </span>
-                              </td>
-                              <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.trustlines, 0, 1)}
-                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
-                                </span>
-                              </td>
+                                  <br />
+                                  <span className="tooltip green">
+                                    {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
+                                    <span className="tooltiptext no-brake">
+                                      {fullNiceNumber(token.statistics?.activeHolders) || 0}
+                                    </span>
+                                  </span>
+                                </td>
+                                {!xahauNetwork && (
+                                  <td className="center">
+                                    <a
+                                      href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                      className="tooltip"
+                                    >
+                                      {token.statistics?.ammPools || 0}
+                                      <span className="tooltiptext no-brake">View AMMs</span>
+                                    </a>
+                                    <br />
+                                    <span className="tooltip green">
+                                      {shortNiceNumber(token.statistics?.activeAmmPools, 0, 1) || 0}
+                                    </span>
+                                  </td>
+                                )}
+                                <td className="right">
+                                  <span className="tooltip">
+                                    {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
+                                    <span className="tooltiptext no-brake">
+                                      {fullNiceNumber(token.statistics?.dexes) || 0}
+                                    </span>
+                                  </span>
+                                </td>
+                                <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
+                                <td className="right">
+                                  <span className="tooltip">
+                                    {shortNiceNumber(token.trustlines, 0, 1)}
+                                    <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
+                                  </span>
+                                </td>
 
-                              <td className="center">
-                                <span
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleSetTrustline(token)
-                                  }}
-                                  className="orange tooltip"
-                                >
-                                  <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
-                                  <span className="tooltiptext no-brake">Set trust</span>
-                                </span>
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          ) : (
-            // Mobile table
-            <table className="table-mobile">
-              <thead></thead>
-              <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                    </td>
-                  </tr>
-                ) : (
-                  <>
-                    {errorMessage ? (
-                      <tr>
-                        <td colSpan="100" className="center orange bold">
-                          {errorMessage}
-                        </td>
-                      </tr>
-                    ) : (
-                      <>
-                        {data.map((token, i) => {
-                          return (
-                            <tr 
-                              key={i} 
-                              className="clickable-row"
-                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
-                            >
-                              <td style={{ padding: '5px' }} className="center">
-                                <b>{i + 1}</b>
-                              </td>
-                              <td>
-                                <TokenCell token={token} />
-                                <p>
-                                  Issuer address: {addressLink(token.issuer, { short: true })}{' '}
-                                  <CopyButton text={token.issuer} />
-                                  <br />
-                                  Currency code: {shortHash(token.currency)} <CopyButton text={token.currency} />
-                                  <br />
-                                  Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
-                                  <br />
-                                  Price in {nativeCurrency} 5m ago: {niceNumber(token.statistics?.priceXrp5m, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 1h ago: {niceNumber(token.statistics?.priceXrp1h, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 24h ago: {niceNumber(token.statistics?.priceXrp24h, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 7d ago: {niceNumber(token.statistics?.priceXrp7d, 6)}
-                                  <br />
-                                  Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
-                                  <br />
-                                  Sell Volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
-                                  <br />
-                                  {/* 24h %: {token.statistics?.priceChange24h} */}
-                                  {/* 7d %: {token.statistics?.priceChange7d} */}
-                                  Total Volume (24h): {volumeToFiat({ token, mobile: true })}
-                                  <br />
-                                  Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
-                                  <br />
-                                  DEX txs (24h): {niceNumber(token.statistics?.dexTxs) || 0}
-                                  <br />
-                                  Unique Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
-                                  <br />
-                                  Unique Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
-                                  <br />
-                                  Unique Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
-                                  <br />
-                                  Supply: {niceNumber(token.supply, 0)} {niceCurrency(token.currency)}
-                                  <br />
-                                  Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
-                                  <br />
-                                  Trustlines: {niceNumber(token.trustlines)}
-                                  <br />
-                                  Holders: {niceNumber(token.holders)}
-                                  <br />
-                                  Active holders (Account that used the token in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeHolders) || 0}
-                                  <br />
-                                  Active offers (Count of used offers in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeOffers) || 0}
-                                  <br />
-                                  Trading pairs (in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeCounters) || 0}
-                                  <br />
-                                  {!xahauNetwork && (
-                                    <>
-                                      AMM Pools:{' '}
-                                      <a
-                                        href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                        className="tooltip"
-                                      >
-                                        {' '}
-                                        {token.statistics?.ammPools || 0}
-                                      </a>
-                                      <br />
-                                      Active AMM pools (the last closed day):{' '}
-                                      {niceNumber(token.statistics?.activeAmmPools) || 0}
-                                    </>
-                                  )}
-                                  <br />
-                                  Transfer txs (24h): {niceNumber(token.statistics?.transferTxs) || 0}
-                                  <br />
-                                  {token.statistics?.transferTxs > 0 && (
-                                    <>
-                                      Transfer Volume (24h): {volumeToFiat({ token, type: 'transfer', mobile: true })}
-                                      <br />
-                                    </>
-                                  )}
-                                  Rippling txs (24h): {niceNumber(token.statistics?.ripplingTxs) || 0}
-                                  <br />
-                                  {token.statistics?.ripplingTxs > 0 && (
-                                    <>
-                                      Rippling Volume (24h): {volumeToFiat({ token, type: 'rippling', mobile: true })}
-                                      <br />
-                                    </>
-                                  )}
-                                  Mint Volume (24h): {volumeToFiat({ token, type: 'mint', mobile: true })}
-                                  <br />
-                                  Burn Volume (24h): {volumeToFiat({ token, type: 'burn', mobile: true })}
-                                  <br />
-                                  Unique accounts (used the token in the last 24h):{' '}
-                                  {niceNumber(token.statistics?.uniqueAccounts) || 0}
-                                  <br />
-                                  <br />
-                                  <button
-                                    className="button-action narrow thin"
+                                <td className="center">
+                                  <span
                                     onClick={(e) => {
                                       e.stopPropagation()
                                       handleSetTrustline(token)
                                     }}
+                                    className="orange tooltip"
                                   >
-                                    <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Set Trust
-                                  </button>
-                                </p>
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          )}
-        </InfiniteScrolling>
-      </FiltersFrame>
-
-      <style jsx>{`
-        .clickable-row {
-          cursor: pointer;
-          transition: background-color 0.2s;
-        }
-        
-        .clickable-row:hover {
-          background-color: var(--unaccent-icon);
-        }
-        
-        .clickable-row td {
-          position: relative;
-        }
-      `}</style>
+                                    <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
+                                    <span className="tooltiptext no-brake">Set trust</span>
+                                  </span>
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </>
+                      )}
+                    </>
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              // Mobile table
+              <table className="table-mobile">
+                <thead></thead>
+                <tbody>
+                  {loading ? (
+                    <tr className="center">
+                      <td colSpan="100">
+                        <span className="waiting"></span>
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {errorMessage ? (
+                        <tr>
+                          <td colSpan="100" className="center orange bold">
+                            {errorMessage}
+                          </td>
+                        </tr>
+                      ) : (
+                        <>
+                          {data.map((token, i) => {
+                            return (
+                              <tr 
+                                key={i} 
+                                className="clickable-row"
+                                onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                              >
+                                <td style={{ padding: '5px' }} className="center">
+                                  <b>{i + 1}</b>
+                                </td>
+                                <td>
+                                  <TokenCell token={token} />
+                                  <p>
+                                    Issuer address: {addressLink(token.issuer, { short: true })}{' '}
+                                    <CopyButton text={token.issuer} />
+                                    <br />
+                                    Currency code: {shortHash(token.currency)} <CopyButton text={token.currency} />
+                                    <br />
+                                    Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
+                                    <br />
+                                    Price in {nativeCurrency} 5m ago: {niceNumber(token.statistics?.priceXrp5m, 6)}
+                                    <br />
+                                    Price in {nativeCurrency} 1h ago: {niceNumber(token.statistics?.priceXrp1h, 6)}
+                                    <br />
+                                    Price in {nativeCurrency} 24h ago: {niceNumber(token.statistics?.priceXrp24h, 6)}
+                                    <br />
+                                    Price in {nativeCurrency} 7d ago: {niceNumber(token.statistics?.priceXrp7d, 6)}
+                                    <br />
+                                    5m %: {renderPercentCell({
+                                      currentXrp: token.statistics?.priceXrp,
+                                      pastXrp: token.statistics?.priceXrp5m,
+                                      pastFiatRate: fiatRate5m
+                                    })}
+                                    <br />
+                                    1h %: {renderPercentCell({
+                                      currentXrp: token.statistics?.priceXrp,
+                                      pastXrp: token.statistics?.priceXrp1h,
+                                      pastFiatRate: fiatRate1h
+                                    })}
+                                    <br />
+                                    24h %: {renderPercentCell({
+                                      currentXrp: token.statistics?.priceXrp,
+                                      pastXrp: token.statistics?.priceXrp24h,
+                                      pastFiatRate: fiatRate24h
+                                    })}
+                                    <br />
+                                    7d %: {renderPercentCell({
+                                      currentXrp: token.statistics?.priceXrp,
+                                      pastXrp: token.statistics?.priceXrp7d,
+                                      pastFiatRate: fiatRate7d
+                                    })}
+                                    <br />
+                                    Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
+                                    <br />
+                                    Sell Volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
+                                    <br />
+                                    {/* 24h %: {token.statistics?.priceChange24h} */}
+                                    {/* 7d %: {token.statistics?.priceChange7d} */}
+                                    Total Volume (24h): {volumeToFiat({ token, mobile: true })}
+                                    <br />
+                                    Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
+                                    <br />
+                                    DEX txs (24h): {niceNumber(token.statistics?.dexTxs) || 0}
+                                    <br />
+                                    Unique Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
+                                    <br />
+                                    Unique Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
+                                    <br />
+                                    Unique Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
+                                    <br />
+                                    Supply: {niceNumber(token.supply, 0)} {niceCurrency(token.currency)}
+                                    <br />
+                                    Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
+                                    <br />
+                                    Trustlines: {niceNumber(token.trustlines)}
+                                    <br />
+                                    Holders: {niceNumber(token.holders)}
+                                    <br />
+                                    Active holders (Account that used the token in the last closed day):{' '}
+                                    {niceNumber(token.statistics?.activeHolders) || 0}
+                                    <br />
+                                    Active offers (Count of used offers in the last closed day):{' '}
+                                    {niceNumber(token.statistics?.activeOffers) || 0}
+                                    <br />
+                                    Trading pairs (in the last closed day):{' '}
+                                    {niceNumber(token.statistics?.activeCounters) || 0}
+                                    <br />
+                                    {!xahauNetwork && (
+                                      <>
+                                        AMM Pools:{' '}
+                                        <a
+                                          href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                          className="tooltip"
+                                        >
+                                          {' '}
+                                          {token.statistics?.ammPools || 0}
+                                        </a>
+                                        <br />
+                                        Active AMM pools (the last closed day):{' '}
+                                        {niceNumber(token.statistics?.activeAmmPools) || 0}
+                                      </>
+                                    )}
+                                    <br />
+                                    Transfer txs (24h): {niceNumber(token.statistics?.transferTxs) || 0}
+                                    <br />
+                                    {token.statistics?.transferTxs > 0 && (
+                                      <>
+                                        Transfer Volume (24h): {volumeToFiat({ token, type: 'transfer', mobile: true })}
+                                        <br />
+                                      </>
+                                    )}
+                                    Rippling txs (24h): {niceNumber(token.statistics?.ripplingTxs) || 0}
+                                    <br />
+                                    {token.statistics?.ripplingTxs > 0 && (
+                                      <>
+                                        Rippling Volume (24h): {volumeToFiat({ token, type: 'rippling', mobile: true })}
+                                        <br />
+                                      </>
+                                    )}
+                                    Mint Volume (24h): {volumeToFiat({ token, type: 'mint', mobile: true })}
+                                    <br />
+                                    Burn Volume (24h): {volumeToFiat({ token, type: 'burn', mobile: true })}
+                                    <br />
+                                    Unique accounts (used the token in the last 24h):{' '}
+                                    {niceNumber(token.statistics?.uniqueAccounts) || 0}
+                                    <br />
+                                    <br />
+                                    <button
+                                      className="button-action narrow thin"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleSetTrustline(token)
+                                      }}
+                                    >
+                                      <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Set Trust
+                                    </button>
+                                  </p>
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </>
+                      )}
+                    </>
+                  )}
+                </tbody>
+              </table>
+            )}
+          </InfiniteScrolling>
+        </FiltersFrame>
+        <style jsx global>{`
+          @media (max-width: 1300px) {
+            /* Invert mobile filter show/hide semantics for Tokens page only */
+            .tokens-page .content-cols.is-filters-hide .filters__wrap {
+              transform: translateY(100%) !important; /* hide when filtersHide === true */
+            }
+            .tokens-page .content-cols:not(.is-filters-hide) .filters__wrap {
+              transform: translateY(0) !important; /* show when filtersHide === false */
+            }
+          }
+          .clickable-row {
+            cursor: pointer;
+            transition: background-color 0.2s;
+          }
+          
+          .clickable-row:hover {
+            background-color: var(--unaccent-icon);
+          }
+          
+          .clickable-row td {
+            position: relative;
+          }
+        `}</style>
+      </div>
     </>
   )
 }
