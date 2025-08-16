@@ -11,14 +11,14 @@ import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import {
   addressLink,
-  addressUsernameOrServiceLink,
   AddressWithIcon,
   capitalize,
   fullNiceNumber,
   niceCurrency,
   niceNumber,
   shortHash,
-  shortNiceNumber
+  shortNiceNumber,
+  shortAddress
 } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -331,7 +331,17 @@ export default function Tokens({
         {token.issuer && (
           <>
             <br />
-            {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
+            <span className="issuer-address">
+              {token.issuerDetails?.service ? (
+                <span className="green bold">{token.issuerDetails.service}</span>
+              ) : token.issuerDetails?.username ? (
+                <span className="blue bold">{token.issuerDetails.username}</span>
+              ) : (
+                <span className="blue">
+                  {shortAddress(token.issuer)}
+                </span>
+              )}
+            </span>
           </>
         )}
       </AddressWithIcon>
@@ -816,6 +826,11 @@ export default function Tokens({
         
         .clickable-row td {
           position: relative;
+        }
+        
+        .issuer-address {
+          color: var(--text-muted);
+          font-size: 0.9em;
         }
       `}</style>
     </>
