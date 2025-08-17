@@ -183,7 +183,7 @@ export default function MobileMenu({
               {t('menu.usernames')}
             </Link>
           )}
-          <Link href="/xrp-xah-taxes" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          <Link href="/learn/xrp-xah-taxes" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.tax-reports')}
           </Link>
 
