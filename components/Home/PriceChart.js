@@ -344,44 +344,62 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
     }
 
     const bucketMs = getBucketMs(chartPeriod)
-    const bucketStart = (timestamp) => Math.floor(timestamp / bucketMs) * bucketMs
 
     setData((previousData) => {
-      const previousSeries = Array.isArray(previousData?.data) ? previousData.data : []
-      const nowTimestamp = Date.now()
+      const prev = Array.isArray(previousData?.data) ? previousData.data : []
+      const nowTs = Date.now()
 
-      if (previousSeries.length === 0) {
-        return { ...previousData, data: [[nowTimestamp, liveFiatRate]] }
+      // if no data starts with a live dot
+      if (prev.length === 0) {
+        return { ...previousData, data: [[nowTs, liveFiatRate]] }
       }
 
-      const lastPoint = previousSeries[previousSeries.length - 1]
-      const lastTimestamp = Array.isArray(lastPoint) ? lastPoint[0] : null
-
-      const lastBucket = lastTimestamp != null ? Math.floor(lastTimestamp / bucketMs) : null
-      const currentBucket = Math.floor(nowTimestamp / bucketMs)
-      const currentBucketStart = bucketStart(nowTimestamp)
-
-      if (lastBucket === null) {
-        return { ...previousData, data: [[nowTimestamp, liveFiatRate]] }
+      const last = prev[prev.length - 1]
+      const lastTs = Array.isArray(last) ? last[0] : null
+      if (lastTs == null) {
+        return { ...previousData, data: [[nowTs, liveFiatRate]] }
       }
 
-      // Same bucket as last point
-      if (currentBucket === lastBucket) {
-        // Preserve boundary point if the last point is exactly at the bucket boundary.
-        if (lastTimestamp === currentBucketStart) {
-          // Keep the boundary point, add a live point in the same bucket
-          return { ...previousData, data: [...previousSeries, [nowTimestamp, liveFiatRate]] }
+      const lastBucketStart = Math.floor(lastTs / bucketMs) * bucketMs
+      const currentBucketStart = Math.floor(nowTs / bucketMs) * bucketMs
+
+      // 1) still in the same bucket
+      if (currentBucketStart === lastBucketStart) {
+        // if the last dot is an edge, add live (12:00, 12:29)
+        if (lastTs === lastBucketStart) {
+          return { ...previousData, data: [...prev, [nowTs, liveFiatRate]] }
         }
-        // Otherwise update the last point within the same bucket
-        const updated = previousSeries.slice(0, -1)
-        updated.push([nowTimestamp, liveFiatRate])
+        // otherwise update the last point (don't do many 12:29, 12:29', ...)
+        const updated = prev.slice(0, -1)
+        updated.push([nowTs, liveFiatRate])
         return { ...previousData, data: updated }
       }
 
-      // Crossed into a new bucket: append the bucket boundary point, then the live point
-      const boundaryTs = currentBucketStart
-      const appended = [...previousSeries, [boundaryTs, liveFiatRate], [nowTimestamp, liveFiatRate]]
-      return { ...previousData, data: appended }
+      // 2) going to the next bucket, some could be missed
+      const filled = [...prev]
+      let boundary = lastBucketStart + bucketMs
+
+      // if the last point was live inside the previous bucket, updat it to the edge dot
+      // this will remove 12:29, and make it 12:30
+      if (lastTs > lastBucketStart) {
+        // replace the last point with the edge of the bucket
+        filled[filled.length - 1] = [boundary, Array.isArray(last) ? last[1] : liveFiatRate]
+        boundary += bucketMs
+      }
+
+      // add all missing buckets until the current one
+      while (boundary <= currentBucketStart) {
+        const prevVal = filled[filled.length - 1][1]
+        filled.push([boundary, prevVal])
+        boundary += bucketMs
+      }
+
+      // now we add the live point, but only if it's not an edge (so we don't have 12:30, 12:30')
+      if (nowTs > currentBucketStart) {
+        filled.push([nowTs, liveFiatRate])
+      }
+
+      return { ...previousData, data: filled }
     })
 
     // Keep x-axis max pinned to now so the viewport grows live
