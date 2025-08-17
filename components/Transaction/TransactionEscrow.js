@@ -12,15 +12,15 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
 
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
+  const sourceData = outcome?.escrowChanges?.source || (specification?.owner ? specification : specification.source)
+  const sourceName = outcome?.escrowChanges?.source ? 'address' : specification?.owner ? 'owner' : 'address'
+
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <tr>
         <TData>Escrow source</TData>
         <TData>
-          <AddressWithIconFilled
-            data={outcome?.escrowChanges?.source || specification}
-            name={outcome?.escrowChanges?.source ? 'address' : 'owner'}
-          />
+          <AddressWithIconFilled data={sourceData} name={sourceName} />
         </TData>
       </tr>
 
@@ -31,10 +31,12 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
 
-      <tr>
-        <TData>Escrow sequence</TData>
-        <TData>#{outcome?.escrowChanges?.escrowSequence || specification?.escrowSequence}</TData>
-      </tr>
+      {(outcome?.escrowChanges?.escrowSequence || specification?.escrowSequence) && (
+        <tr>
+          <TData>Escrow sequence</TData>
+          <TData>#{outcome?.escrowChanges?.escrowSequence || specification?.escrowSequence}</TData>
+        </tr>
+      )}
 
       {outcome?.escrowChanges?.destination && (
         <tr>
