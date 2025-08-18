@@ -18,7 +18,8 @@ import {
   niceNumber,
   shortHash,
   shortNiceNumber,
-  shortAddress
+  shortAddress,
+  userOrServiceName
 } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -332,14 +333,10 @@ export default function Tokens({
           <>
             <br />
             <span className="issuer-address">
-              {token.issuerDetails?.service ? (
-                <span className="green bold">{token.issuerDetails.service}</span>
-              ) : token.issuerDetails?.username ? (
-                <span className="blue bold">{token.issuerDetails.username}</span>
+              {token.issuerDetails?.service || token.issuerDetails?.username ? (
+                userOrServiceName(token.issuerDetails)
               ) : (
-                <span className="blue">
-                  {shortAddress(token.issuer)}
-                </span>
+                shortAddress(token.issuer)
               )}
             </span>
           </>
