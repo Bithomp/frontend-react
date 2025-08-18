@@ -429,6 +429,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
       ignore = true
       ctrl.abort()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     currency,
     chartPeriod,

@@ -9,7 +9,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
 import CheckBox from '../../components/UI/CheckBox'
 import AddressInput from '../../components/UI/AddressInput'
-import FormInput from '../../components/UI/FormInput'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
 
 export const getServerSideProps = async (context) => {
@@ -496,9 +495,9 @@ export default function AccountSettings({
       return
     }
     if (/^[0-9a-fA-F]{32}$/.test(input)) {
-      valueHex = input.toUpperCase()
+      valueHex = input
     } else if (isEmailValid(input)) {
-      valueHex = md5(input).toUpperCase()
+      valueHex = md5(input)
     } else {
       setErrorMessage('Enter a valid email or a 32-character hex MD5 hash.')
       return
@@ -733,7 +732,7 @@ export default function AccountSettings({
     const tx = {
       TransactionType: 'AccountSet',
       Account: account.address,
-      WalletLocator: ''
+      WalletLocator: '0000000000000000000000000000000000000000000000000000000000000000'
     }
     setSignRequest({
       request: tx,
@@ -1022,58 +1021,7 @@ export default function AccountSettings({
             {/* Basic ASF Flags */}
             {flagGroups.basic.map((flag) => renderFlagItem(flag, 'asf'))}
 
-            {/* NFTokenMinter Section */}
-            {!xahauNetwork && (
-              <div className="flag-item">
-                <div className="flag-header">
-                  <div className="flag-info">
-                    <span className="flag-name">Authorized NFToken Minter</span>
-                    {account?.address && (
-                      <span className="flag-status">{currentNftTokenMinter ? currentNftTokenMinter : 'Not Set'}</span>
-                    )}
-                  </div>
-                  {currentNftTokenMinter ? (
-                    <button
-                      className="button-action thin"
-                      onClick={handleClearNftTokenMinter}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Clear NFTokenMinter
-                    </button>
-                  ) : (
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetNftTokenMinter}
-                      disabled={!account?.address || !nftTokenMinter.trim()}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Set NFTokenMinter
-                    </button>
-                  )}
-                </div>
-                <div className="flag-description">
-                  Allows another account to mint NFTokens on behalf of this account. Requires setting the
-                  asfAuthorizedNFTokenMinter flag and specifying the minter address.
-                </div>
-                {!currentNftTokenMinter && (
-                  <div className="nft-minter-input">
-                    <AddressInput
-                      title="NFTokenMinter Address"
-                      placeholder="Enter NFTokenMinter address"
-                      setInnerValue={setNftTokenMinter}
-                      disabled={!account?.address}
-                      hideButton={true}
-                      type="address"
-                    />
-                    <small>Enter the address that will be authorized to mint NFTokens for this account</small>
-                  </div>
-                )}
-                {currentNftTokenMinter && (
-                  <small>To change the authorized minter, first clear the current one, then set a new one.</small>
-                )}
-              </div>
-            )}
+
 
             {/* Account Fields */}
             <br />
@@ -1087,7 +1035,7 @@ export default function AccountSettings({
                       <span className="flag-status">{currentDomain ? currentDomain : 'Not Set'}</span>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flag-info-buttons">
                     {currentDomain && (
                       <button
                         className="button-action thin"
@@ -1109,11 +1057,11 @@ export default function AccountSettings({
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
+                  <input
+                    className="input-text"
                     placeholder="example.com"
-                    setInnerValue={setDomainInput}
-                    hideButton={true}
-                    defaultValue={domainInput}
+                    value={domainInput}
+                    onChange={(e) => setDomainInput(e.target.value)}
                     type="text"
                     disabled={!account?.address}
                   />
@@ -1129,7 +1077,7 @@ export default function AccountSettings({
                       <span className="flag-status">{currentEmailHash ? currentEmailHash : 'Not Set'}</span>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flag-info-buttons">
                     {currentEmailHash && (
                       <button
                         className="button-action thin"
@@ -1151,11 +1099,11 @@ export default function AccountSettings({
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
+                  <input
+                    className="input-text"
                     placeholder="Email or 32 hex characters (MD5)"
-                    setInnerValue={setEmailHashInput}
-                    hideButton={true}
-                    defaultValue={emailHashInput}
+                    value={emailHashInput}
+                    onChange={(e) => setEmailHashInput(e.target.value)}
                     type="text"
                     disabled={!account?.address}
                   />
@@ -1169,7 +1117,7 @@ export default function AccountSettings({
                     <span className="flag-name">MessageKey</span>
                     {account?.address && <span className="flag-status">{currentMessageKey ? 'Set' : 'Not Set'}</span>}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flag-info-buttons">
                     {currentMessageKey && (
                       <button
                         className="button-action thin"
@@ -1191,11 +1139,11 @@ export default function AccountSettings({
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
+                  <input
+                    className="input-text"
                     placeholder="Hex-encoded public key"
-                    setInnerValue={setMessageKeyInput}
-                    hideButton={true}
-                    defaultValue={messageKeyInput}
+                    value={messageKeyInput}
+                    onChange={(e) => setMessageKeyInput(e.target.value)}
                     type="text"
                     disabled={!account?.address}
                   />
@@ -1215,7 +1163,7 @@ export default function AccountSettings({
                       </span>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flag-info-buttons">
                     {currentTransferRate && currentTransferRate > 0 && (
                       <button
                         className="button-action thin"
@@ -1237,11 +1185,11 @@ export default function AccountSettings({
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
+                  <input
+                    className="input-text"
                     placeholder="Percentage 0-100"
-                    setInnerValue={setTransferRateInput}
-                    hideButton={true}
-                    defaultValue={transferRateInput}
+                    value={transferRateInput}
+                    onChange={(e) => setTransferRateInput(e.target.value)}
                     type="text"
                     inputMode="decimal"
                     disabled={!account?.address}
@@ -1258,7 +1206,7 @@ export default function AccountSettings({
                       <span className="flag-status">{currentTickSize ? currentTickSize : 'Not Set'}</span>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flag-info-buttons">
                     <button
                       className="button-action thin"
                       onClick={handleSetTickSize}
@@ -1270,11 +1218,11 @@ export default function AccountSettings({
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
+                  <input
+                    className="input-text"
                     placeholder="0 to clear, or 3-15"
-                    setInnerValue={setTickSizeInput}
-                    hideButton={true}
-                    defaultValue={tickSizeInput}
+                    value={tickSizeInput}
+                    onChange={(e) => setTickSizeInput(e.target.value)}
                     type="text"
                     inputMode="numeric"
                     disabled={!account?.address}
@@ -1291,7 +1239,7 @@ export default function AccountSettings({
                       <span className="flag-status">{currentWalletLocator ? 'Set' : 'Not Set'}</span>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flag-info-buttons">
                     {currentWalletLocator && (
                       <button
                         className="button-action thin"
@@ -1313,11 +1261,11 @@ export default function AccountSettings({
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
+                  <input
+                    className="input-text"
                     placeholder="64 hex characters"
-                    setInnerValue={setWalletLocatorInput}
-                    hideButton={true}
-                    defaultValue={walletLocatorInput}
+                    value={walletLocatorInput}
+                    onChange={(e) => setWalletLocatorInput(e.target.value)}
                     type="text"
                     disabled={!account?.address}
                     maxLength={64}
@@ -1325,6 +1273,54 @@ export default function AccountSettings({
                   <small>Optional hash locator for your wallet application.</small>
                 </div>
               </div>
+
+              {/* NFTokenMinter Field */}
+              {!xahauNetwork && (
+                <div className="flag-item">
+                  <div className="flag-header">
+                    <div className="flag-info">
+                      <span className="flag-name">NFTokenMinter</span>
+                      {account?.address && (
+                        <span className="flag-status">{currentNftTokenMinter ? currentNftTokenMinter : 'Not Set'}</span>
+                      )}
+                    </div>
+                    <div className="flag-info-buttons">
+                      {currentNftTokenMinter && (
+                        <button
+                          className="button-action thin"
+                          onClick={handleClearNftTokenMinter}
+                          disabled={!account?.address}
+                          style={{ minWidth: '120px' }}
+                        >
+                          Clear NFTokenMinter
+                        </button>
+                      )}
+                      <button
+                        className="button-action thin"
+                        onClick={handleSetNftTokenMinter}
+                        disabled={!account?.address || !nftTokenMinter.trim()}
+                        style={{ minWidth: '120px' }}
+                      >
+                        Set NFTokenMinter
+                      </button>
+                    </div>
+                  </div>
+                  <div className="nft-minter-input">
+                    <AddressInput
+                      title="NFTokenMinter Address"
+                      placeholder="Enter NFTokenMinter address"
+                      setInnerValue={setNftTokenMinter}
+                      disabled={!account?.address}
+                      hideButton={true}
+                      type="address"
+                    />
+                    <small>Enter the address that will be authorized to mint NFTokens for this account</small>
+                  </div>
+                  {currentNftTokenMinter && (
+                    <small>To change the authorized minter, first clear the current one, then set a new one.</small>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Advanced options */}
