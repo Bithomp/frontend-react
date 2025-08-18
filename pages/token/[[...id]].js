@@ -420,9 +420,9 @@ export default function TokenPage({
                   <td>{fullNiceNumber(statistics?.dexes || 0)}</td>
                 </tr>
                 <tr>
-                  <td>Active Holders</td>
-                  <td>{fullNiceNumber(statistics?.activeHolders || 0)}</td>
-                </tr>
+                  <td>DEX txs</td>
+                  <td>{fullNiceNumber(statistics?.dexTxs || 0)}</td>
+                </tr>                
                 <tr>
                   <td>Buyers</td>
                   <td>{fullNiceNumber(statistics?.uniqueBuyers || 0)}</td>
@@ -434,6 +434,26 @@ export default function TokenPage({
                 <tr>
                   <td>Traders</td>
                   <td>{fullNiceNumber(statistics?.uniqueDexAccounts || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Active Holders</td>
+                  <td>{fullNiceNumber(statistics?.activeHolders || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Active Offers</td>
+                  <td>{fullNiceNumber(statistics?.activeOffers || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Trading Pairs</td>
+                  <td>{fullNiceNumber(statistics?.activeCounters || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Rippling txs</td>
+                  <td>{fullNiceNumber(statistics?.ripplingTxs || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Unique accounts</td>
+                  <td>{fullNiceNumber(statistics?.uniqueAccounts || 0)}</td>
                 </tr>
               </tbody>
             </table>

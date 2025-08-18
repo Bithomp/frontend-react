@@ -704,14 +704,14 @@ export default function Tokens({
                                   <br />
                                   Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
                                   <br />
-                                  Price in {nativeCurrency} 5m ago: {niceNumber(token.statistics?.priceXrp5m, 6)}
+                                  {/* Price in {nativeCurrency} 5m ago: {niceNumber(token.statistics?.priceXrp5m, 6)}
                                   <br />
                                   Price in {nativeCurrency} 1h ago: {niceNumber(token.statistics?.priceXrp1h, 6)}
                                   <br />
                                   Price in {nativeCurrency} 24h ago: {niceNumber(token.statistics?.priceXrp24h, 6)}
                                   <br />
                                   Price in {nativeCurrency} 7d ago: {niceNumber(token.statistics?.priceXrp7d, 6)}
-                                  <br />
+                                  <br /> */}
                                   Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
                                   <br />
                                   Sell Volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
@@ -722,16 +722,16 @@ export default function Tokens({
                                   <br />
                                   Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
                                   <br />
-                                  DEX txs (24h): {niceNumber(token.statistics?.dexTxs) || 0}
-                                  <br />
+                                  {/* DEX txs (24h): {niceNumber(token.statistics?.dexTxs) || 0}
+                                  <br /> */}
                                   Unique Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
                                   <br />
                                   Unique Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
                                   <br />
                                   Unique Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
                                   <br />
-                                  Supply: {niceNumber(token.supply, 0)} {niceCurrency(token.currency)}
-                                  <br />
+                                  {/* Supply: {niceNumber(token.supply, 0)} {niceCurrency(token.currency)}
+                                  <br /> */}
                                   Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
                                   <br />
                                   Trustlines: {niceNumber(token.trustlines)}
@@ -741,12 +741,12 @@ export default function Tokens({
                                   Active holders (Account that used the token in the last closed day):{' '}
                                   {niceNumber(token.statistics?.activeHolders) || 0}
                                   <br />
-                                  Active offers (Count of used offers in the last closed day):{' '}
+                                  {/* Active offers (Count of used offers in the last closed day):{' '}
                                   {niceNumber(token.statistics?.activeOffers) || 0}
                                   <br />
                                   Trading pairs (in the last closed day):{' '}
                                   {niceNumber(token.statistics?.activeCounters) || 0}
-                                  <br />
+                                  <br /> */}
                                   {!xahauNetwork && (
                                     <>
                                       AMM Pools:{' '}
@@ -763,7 +763,7 @@ export default function Tokens({
                                     </>
                                   )}
                                   <br />
-                                  Transfer txs (24h): {niceNumber(token.statistics?.transferTxs) || 0}
+                                  {/* Transfer txs (24h): {niceNumber(token.statistics?.transferTxs) || 0}
                                   <br />
                                   {token.statistics?.transferTxs > 0 && (
                                     <>
@@ -785,7 +785,7 @@ export default function Tokens({
                                   <br />
                                   Unique accounts (used the token in the last 24h):{' '}
                                   {niceNumber(token.statistics?.uniqueAccounts) || 0}
-                                  <br />
+                                  <br /> */}
                                   <br />
                                   <button
                                     className="button-action narrow thin"
