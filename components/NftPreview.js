@@ -7,9 +7,10 @@ import { needNftAgeCheck, nftName, nftUrl } from '../utils/nft'
 
 import Tabs from './Tabs'
 import LoadingGif from '../public/images/loading.gif'
-import { FaCloudDownloadAlt } from 'react-icons/fa'
+import { FaCloudDownloadAlt, FaExpand } from 'react-icons/fa'
 import ReactPannellum from 'react-pannellum'
 import AgeCheck from './UI/AgeCheck'
+import NftFullScreenViewer from './NftFullScreenViewer'
 
 const downloadIcon = (
   <div style={{ display: 'inline-block', verticalAlign: 'bottom', height: '19px' }}>
@@ -42,6 +43,7 @@ export default function NftPreview({ nft }) {
   const [errored, setErrored] = useState(false)
   const [isPanoramic, setIsPanoramic] = useState(false)
   const [showAgeCheck, setShowAgeCheck] = useState(false)
+  const [showFullScreen, setShowFullScreen] = useState(false)
 
   const style = {
     textAlign: 'center',
@@ -186,6 +188,26 @@ export default function NftPreview({ nft }) {
     setShowAgeCheck(true)
   }
 
+  const renderFullScreenButton = () => (
+    <button
+      onClick={() => setShowFullScreen(true)}
+      style={{
+        backgroundColor: 'transparent',
+        color: 'var(--accent-link)',
+        border: '1px solid var(--accent-link)',
+        borderRadius: '4px',
+        padding: '6px 12px',
+        cursor: 'pointer',
+        fontSize: '12px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px'
+      }}
+    >
+      <FaExpand /> Full Screen
+    </button>
+  )
+
   return (
     <>
       {contentTabList.length > 1 && (
@@ -199,7 +221,8 @@ export default function NftPreview({ nft }) {
               style={{ margin: 0 }}
             />
           </span>
-          <span style={{ float: 'right', padding: '4px 0px' }}>
+          <span style={{ float: 'right', padding: '4px 0px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+            {renderFullScreenButton()}
             <a href={clUrl[contentTab]} target="_blank" rel="noreferrer">
               {t('tabs.' + contentTab)} {downloadIcon}
             </a>
@@ -304,7 +327,8 @@ export default function NftPreview({ nft }) {
             </>
           )}
           {contentTabList.length < 2 && defaultUrl && (
-            <span style={{ padding: '4px 0px' }}>
+            <span style={{ padding: '4px 0px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+              {renderFullScreenButton()}
               <a href={defaultUrl} target="_blank" rel="noreferrer">
                 {t('tabs.' + defaultTab)}
               </a>{' '}
@@ -319,7 +343,8 @@ export default function NftPreview({ nft }) {
       {defaultTab !== 'model' && defaultTab !== 'video' && audioUrl && (
         <>
           <audio src={audioUrl} controls style={{ display: 'block', margin: '20px auto' }}></audio>
-          <span style={{ padding: '4px 0px' }}>
+          <span style={{ padding: '4px 0px', display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center' }}>
+            {renderFullScreenButton()}
             <a href={clUrl.audio} target="_blank" rel="noreferrer">
               {t('tabs.audio')} {downloadIcon}
             </a>
@@ -348,6 +373,14 @@ export default function NftPreview({ nft }) {
       )}
       <div style={{ height: '15px' }}></div>
       {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} />}
+      
+      {/* Full Screen Viewer */}
+      {showFullScreen && (
+        <NftFullScreenViewer 
+          nft={nft} 
+          onClose={() => setShowFullScreen(false)} 
+        />
+      )}
     </>
   )
 }

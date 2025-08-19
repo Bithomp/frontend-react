@@ -5,6 +5,8 @@
   background-color: var(--background-block);
   text-align: center;
   transition: background-color .5s;
+  position: relative;
+  z-index: 0;
   .search-box {
     display: inline-block;
     position: relative;
