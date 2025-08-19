@@ -255,7 +255,6 @@ export default function TokenPage({
             {/* Big Token Icon */}
             <img alt="token" src={tokenImageSrc(token)} className="token-image" style={{ width: '100%', height: 'auto' }} />
             <h1>{token?.currencyDetails?.currency}</h1>
-            {token?.description && <p>{token?.description}</p>}
 
             {/* Action Buttons */}
             <button className="button-action wide center" onClick={handleSetTrustline}>
