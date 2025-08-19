@@ -465,6 +465,11 @@ export default function Tokens({
         setFiltersHide={setFiltersHide}
         setSelectedCurrency={setSelectedCurrency}
         selectedCurrency={selectedCurrency}
+        filters={{
+          issuer: issuer || '',
+          currency: currency || ''
+        }}
+        showFilterIndicator={width > 1300 ? filtersHide : !filtersHide}
       >
         {/* Left filters */}
         <>
