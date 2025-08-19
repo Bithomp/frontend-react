@@ -308,11 +308,6 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
               <br />
               Loading...
             </div>
-          ) : errorMessage ? (
-            <div className="center orange bold">
-              <br />
-              {errorMessage}
-            </div>
           ) : (
             <>
               <div className="column-left">
@@ -384,106 +379,117 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                   </button>
                 </div>
                 <br />
-                <table className="table-details">
-                  <thead>
-                    <tr>
-                      <th colSpan="2">History</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Current Ledger</td>
-                      <td>
-                        <Link
-                          href={`/object/${router.query.id}?ledgerIndex=${data?.ledger_index}`}
-                          className={router.query.ledgerIndex === data?.ledger_index?.toString() ? 'active' : ''}
-                        >
-                          {data?.ledger_index}
-                        </Link>
-                      </td>
-                    </tr>
-                    {data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index && (
-                      <tr>
-                        <td>Previous Ledger</td>
-                        <td>
-                          <Link
-                            href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`}
-                            className={
-                              router.query.ledgerIndex === data.node.PreviousTxnLgrSeq?.toString() ? 'active' : ''
-                            }
-                          >
-                            {data.node.PreviousTxnLgrSeq}
-                          </Link>
-                        </td>
-                      </tr>
-                    )}
-
-                    {router.query.previousTxHash && (
-                      <tr>
-                        <td>Current Transaction</td>
-                        <td>
-                          <Link
-                            href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
-                            className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
-                          >
-                            {shortAddress(router.query.previousTxHash)}
-                          </Link>
-                        </td>
-                      </tr>
-                    )}
-                    {data?.node?.PreviousTxnID && (
-                      <tr>
-                        <td>Previous Transaction</td>
-                        <td>
-                          <Link
-                            href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
-                            className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
-                          >
-                            {shortAddress(data.node.PreviousTxnID)}
-                          </Link>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-
-                <br />
-              </div>
-              <div className="column-right">
-                {detailsTable()}
-
-                {data?.metadata && (
+                {!errorMessage && (data?.node?.PreviousTxnLgrSeq || data?.node?.PreviousTxnID) && (
                   <table className="table-details">
+                    <thead>
+                      <tr>
+                        <th colSpan="2">History</th>
+                      </tr>
+                    </thead>
                     <tbody>
                       <tr>
-                        <td>Metadata</td>
+                        <td>Current Ledger</td>
                         <td>
-                          <span className="link" onClick={() => setShowMetadata(!showMetadata)}>
-                            {showMetadata ? 'hide' : 'show'}
-                          </span>
+                          <Link
+                            href={`/object/${router.query.id}?ledgerIndex=${data?.ledger_index}`}
+                            className={router.query.ledgerIndex === data?.ledger_index?.toString() ? 'active' : ''}
+                          >
+                            {data?.ledger_index}
+                          </Link>
                         </td>
                       </tr>
+                      {data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index && (
+                        <tr>
+                          <td>Previous Ledger</td>
+                          <td>
+                            <Link
+                              href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`}
+                              className={
+                                router.query.ledgerIndex === data.node.PreviousTxnLgrSeq?.toString() ? 'active' : ''
+                              }
+                            >
+                              {data.node.PreviousTxnLgrSeq}
+                            </Link>
+                          </td>
+                        </tr>
+                      )}
+
+                      {router.query.previousTxHash && (
+                        <tr>
+                          <td>Current Transaction</td>
+                          <td>
+                            <Link
+                              href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
+                              className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
+                            >
+                              {shortAddress(router.query.previousTxHash)}
+                            </Link>
+                          </td>
+                        </tr>
+                      )}
+                      {data?.node?.PreviousTxnID && (
+                        <tr>
+                          <td>Previous Transaction</td>
+                          <td>
+                            <Link
+                              href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
+                              className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
+                            >
+                              {shortAddress(data.node.PreviousTxnID)}
+                            </Link>
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 )}
 
-                <div className={'slide ' + (showMetadata ? 'opened' : 'closed')}>
-                  {showMetadata && codeHighlight(data.metadata)}
-                </div>
+                <br />
+              </div>
+              <div className="column-right">
+                {errorMessage ? (
+                  <div className="center orange bold">
+                    <br />
+                    {errorMessage}
+                  </div>
+                ) : (
+                  <>
+                    {detailsTable()}
 
-                <table className="table-details">
-                  <tbody>
-                    <tr>
-                      <td>Raw JSON</td>
-                      <td>
-                        <span className="link" onClick={() => setShowRaw(!showRaw)}>
-                          {showRaw ? 'hide' : 'show'}
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>{showRaw && codeHighlight(data)}</div>
+                    {data?.metadata && (
+                      <table className="table-details">
+                        <tbody>
+                          <tr>
+                            <td>Metadata</td>
+                            <td>
+                              <span className="link" onClick={() => setShowMetadata(!showMetadata)}>
+                                {showMetadata ? 'hide' : 'show'}
+                              </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    )}
+
+                    <div className={'slide ' + (showMetadata ? 'opened' : 'closed')}>
+                      {showMetadata && codeHighlight(data.metadata)}
+                    </div>
+
+                    <table className="table-details">
+                      <tbody>
+                        <tr>
+                          <td>Raw JSON</td>
+                          <td>
+                            <span className="link" onClick={() => setShowRaw(!showRaw)}>
+                              {showRaw ? 'hide' : 'show'}
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>{showRaw && codeHighlight(data)}</div>
+                  </>
+                )}
               </div>
             </>
           )}
