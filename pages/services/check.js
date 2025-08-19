@@ -287,7 +287,7 @@ export default function IssueCheck({
           <div className="form-spacing" />
           <div>
             <span className="input-title">Expiration</span>
-            <ExpirationSelect onChange={onExpirationChange} />
+            <ExpirationSelect onChange={onExpirationChange} value={expiration} />
           </div>
           <CheckBox
             checked={showAdvanced}
