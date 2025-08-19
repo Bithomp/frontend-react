@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
-import { fullDateAndTime, shortNiceNumber, fullNiceNumber, CurrencyWithIcon, niceNumber, niceCurrency } from '../../utils/format'
+import {
+  fullDateAndTime,
+  shortNiceNumber,
+  fullNiceNumber,
+  CurrencyWithIcon,
+  niceNumber,
+  niceCurrency
+} from '../../utils/format'
 import { xahauNetwork } from '../../utils'
 
 export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate }) {
@@ -90,12 +97,12 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
           </span>
         </td>
         <td className="right">
-          {pageFiatRate && stats?.priceXrp ? (
+          {pageFiatRate && stats?.priceNativeCurrency ? (
             <>
               <span className="tooltip" suppressHydrationWarning>
-                {shortNiceNumber(volume24hToken * stats.priceXrp * pageFiatRate, 2, 1, selectedCurrency)}
+                {shortNiceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, 2, 1, selectedCurrency)}
                 <span className="tooltiptext right no-brake" suppressHydrationWarning>
-                  {niceNumber(volume24hToken * stats.priceXrp * pageFiatRate, 0, selectedCurrency)}
+                  {niceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, 0, selectedCurrency)}
                 </span>
               </span>
               <br />
@@ -175,7 +182,13 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
               <br />
               Traders (24h)
             </th>
-            {!xahauNetwork && <th className="center">AMMs</th>}
+            {!xahauNetwork && (
+              <th className="center">
+                AMMs (total)
+                <br />
+                Active (24h)
+              </th>
+            )}
           </tr>
           {loading ? (
             <tr>
