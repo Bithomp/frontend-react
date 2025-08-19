@@ -107,7 +107,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     //if more than 3 characters - search for suggestions
-    if (value && value.length > 1 && value.length < 36) {
+    if (value && value.length > 1 && value.length < 64) {
       clearTimeout(typingTimer)
       setSearchSuggestions([])
       typingTimer = setTimeout(async () => {
@@ -456,9 +456,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                   option.address +
                   option.username +
                   option.service +
+                  option.payString +
                   option.xaman +
                   option.verifiedDomain +
-                  option.serviceDomain
+                  option.serviceDomain +
+                  option.xAddress
                 }
                 inputValue={searchItem}
                 onInputChange={searchOnInputChange}
