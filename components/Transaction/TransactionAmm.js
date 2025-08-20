@@ -58,7 +58,7 @@ const renderAssetWithIssuer = (assetData) => (
     {niceCurrency(assetData.currency)}
     {assetData.issuer && (
       <>
-        {'('}
+        {' ('}
         {addressUsernameOrServiceLink(assetData, 'issuer', { short: true })}
         {')'}
       </>
@@ -134,6 +134,7 @@ const AMMFlags = ({ flags, txType }) => {
 export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { specification, tx, outcome } = data
+
   const txType = tx.TransactionType
   const tradingFee = tx?.TradingFee
   const amount = createAmountWithIssuer(specification, outcome, specification.source.address, 'amount')
@@ -237,7 +238,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
         <>
           {depositedList.length > 0 && (
             <tr>
-              <TData>Actually paid</TData>
+              <TData>Deposited</TData>
               <TData className="bold">
                 {depositedList.map((change, idx) => (
                   <div key={idx}>
@@ -254,7 +255,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
             ).filter((c) => Number(c?.value) > 0)
             return targetReceivedList.length > 0 ? (
               <tr>
-                <TData>Actually withdrawn</TData>
+                <TData>Withdrawn</TData>
                 <TData className="bold">
                   {targetReceivedList.map((change, idx) => (
                     <div key={idx}>
