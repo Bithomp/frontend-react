@@ -1,7 +1,13 @@
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled, addressUsernameOrServiceLink, amountFormat, niceCurrency } from '../../utils/format'
+import {
+  AddressWithIconFilled,
+  addressUsernameOrServiceLink,
+  amountFormat,
+  nativeCurrencyToFiat,
+  niceCurrency
+} from '../../utils/format'
 import { divide } from '../../utils/calc'
 import { addressBalanceChanges } from '../../utils/transaction'
 
@@ -45,20 +51,6 @@ const createAmountWithIssuer = (specification, outcome, sourceAddress, amountKey
     value: amountData.value
   }
 }
-
-// Helper function to render amount with issuer
-const renderAmountWithIssuer = (amountData) => (
-  <>
-    {amountFormat(amountData)}
-    {amountData.issuer && (
-      <>
-        {'('}
-        {addressUsernameOrServiceLink(amountData, 'issuer', { short: true })}
-        {')'}
-      </>
-    )}
-  </>
-)
 
 // Helper function to render asset with issuer
 const renderAssetWithIssuer = (assetData) => (
@@ -162,6 +154,33 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   const depositedList = sourceBalanceChangesList.filter((c) => Number(c?.value) < 0)
   const receivedList = sourceBalanceChangesList.filter((c) => Number(c?.value) > 0)
 
+  // Helper function to render amount with issuer
+  const renderAmountWithIssuer = (amountData, options) => (
+    <>
+      {amountFormat(amountData)}
+      {amountData.issuer && (
+        <>
+          {'('}
+          {addressUsernameOrServiceLink(amountData, 'issuer', { short: true })}
+          {')'}
+        </>
+      )}
+      {options?.includeFiat &&
+        selectedCurrency &&
+        amountData?.value &&
+        amountData?.currency &&
+        amountData?.value !== '0' && (
+          <span style={{ fontWeight: 'normal' }}>
+            {nativeCurrencyToFiat({
+              amount: amountData,
+              selectedCurrency,
+              fiatRate: pageFiatRate
+            })}{' '}
+          </span>
+        )}
+    </>
+  )
+
   return (
     <TransactionCard
       data={data}
@@ -174,23 +193,13 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
         <TData>
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
-      </tr>      
+      </tr>
       {(txType === 'AMMVote' || txType === 'AMMBid' || txType === 'AMMDelete') && asset && asset2 && (
         <tr>
           <TData>Liquidity pool</TData>
-          <TData className="bold">{renderAssetWithIssuer(asset)} / {renderAssetWithIssuer(asset2)}</TData>
-        </tr>
-      )}
-      {amount?.currency && amount?.value && (
-        <tr>
-          <TData>Asset 1</TData>
-          <TData className="bold">{renderAmountWithIssuer(amount)}</TData>
-        </tr>
-      )}
-      {amount2?.currency && amount2?.value && (
-        <tr>
-          <TData>Asset 2</TData>
-          <TData className="bold">{renderAmountWithIssuer(amount2)}</TData>
+          <TData className="bold">
+            {renderAssetWithIssuer(asset)} / {renderAssetWithIssuer(asset2)}
+          </TData>
         </tr>
       )}
       {(txType === 'AMMCreate' || txType === 'AMMDeposit') && (
@@ -201,8 +210,12 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
               <TData className="bold">
                 {depositedList.map((change, idx) => (
                   <div key={idx}>
-                    {amountFormat({ ...change, value: Math.abs(Number(change.value)).toString() })}
-                    {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                    {renderAmountWithIssuer(
+                      { ...change, value: Math.abs(Number(change.value)).toString() },
+                      {
+                        includeFiat: true
+                      }
+                    )}
                   </div>
                 ))}
               </TData>
@@ -213,10 +226,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
               <TData>Received</TData>
               <TData className="bold">
                 {receivedList.map((change, idx) => (
-                  <div key={idx}>
-                    {amountFormat(change)}
-                    {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
-                  </div>
+                  <div key={idx}>{renderAmountWithIssuer(change, { includeFiat: true })}</div>
                 ))}
               </TData>
             </tr>
@@ -225,22 +235,6 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
       )}
       {txType === 'AMMWithdraw' && (
         <>
-          {/* {(amount?.currency && amount?.value) || (amount2?.currency && amount2?.value) ? (
-            <tr>
-              <TData>Specified Assets for Withdraw</TData>
-              <TData className="bold">
-                {amount?.currency && amount?.value && (
-                  <>
-                    {renderAmountWithIssuer(amount)}
-                    <br />
-                  </>
-                )}
-                {amount2?.currency && amount2?.value && <>{renderAmountWithIssuer(amount2)}</>}
-              </TData>
-            </tr>
-          ) : (
-            ''
-          )} */}
           {depositedList.length > 0 && (
             <tr>
               <TData>Actually paid</TData>
@@ -255,9 +249,8 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
             </tr>
           )}
           {(() => {
-            const targetReceivedList = (holder?.address
-              ? addressBalanceChanges(data, holder.address) || []
-              : sourceBalanceChangesList
+            const targetReceivedList = (
+              holder?.address ? addressBalanceChanges(data, holder.address) || [] : sourceBalanceChangesList
             ).filter((c) => Number(c?.value) > 0)
             return targetReceivedList.length > 0 ? (
               <tr>
@@ -276,24 +269,6 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
             )
           })()}
         </>
-      )}
-      {txType === 'AMMDeposit' && (
-        <tr>
-          <TData>Specified Max Assets for Deposit</TData>
-          <TData className="bold">
-            {amount?.currency && amount?.value && (
-              <>
-                {renderAmountWithIssuer(amount)}
-                <br />
-              </>
-            )}
-            {amount2?.currency && amount2?.value && (
-              <>
-                {renderAmountWithIssuer(amount2)}
-              </>
-            )}
-          </TData>
-        </tr>
       )}
       {ePrice && (
         <tr>
@@ -357,6 +332,37 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
             <AMMFlags flags={specification.flags} txType={txType} />
           </TData>
         </tr>
+      )}
+
+      {txType === 'AMMDeposit' || txType === 'AMMCreate' || txType === 'AMMWithdraw' ? (
+        <tr>
+          <TData>Specification </TData>
+          <TData>
+            It was instructed to {txType === 'AMMDeposit' || txType === 'AMMCreate' ? 'deposit' : 'withdraw'} maximum{' '}
+            {amount?.currency && amount?.value && (
+              <>
+                {renderAmountWithIssuer(amount)}
+                {amount2?.currency && amount2?.value && ' and '}
+              </>
+            )}
+            {amount2?.currency && amount2?.value && renderAmountWithIssuer(amount2)}
+          </TData>
+        </tr>
+      ) : (
+        <>
+          {amount?.currency && amount?.value && (
+            <tr>
+              <TData>Asset 1</TData>
+              <TData className="bold">{renderAmountWithIssuer(amount)}</TData>
+            </tr>
+          )}
+          {amount2?.currency && amount2?.value && (
+            <tr>
+              <TData>Asset 2</TData>
+              <TData className="bold">{renderAmountWithIssuer(amount2)}</TData>
+            </tr>
+          )}
+        </>
       )}
     </TransactionCard>
   )
