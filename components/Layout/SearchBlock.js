@@ -298,6 +298,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         return
       }
 
+      if (tab === 'transactions') {
+        router.push('/account/' + encodeURI(searchFor) + '/transactions' + addParams)
+        return
+      }
+
       router.push('/account/' + encodeURI(searchFor) + addParams)
       return
     }
@@ -337,6 +342,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object'].includes(tab)
     ) {
       return t('explorer.header.' + tab)
+    } else if (tab === 'transactions') {
+      return t("explorer.menu.transactions")
     }
     return ''
   }

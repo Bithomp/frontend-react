@@ -157,7 +157,7 @@ export default function Header({
 
   const signinWithWallet = (wallet) => {
     //redirect to account, if user is on the account page
-    setSignRequest(router.pathname === '/account/[[...id]]' ? { wallet, redirect: 'account' } : { wallet })
+    setSignRequest(router.pathname.startsWith('/account') ? { wallet, redirect: 'account' } : { wallet })
   }
 
   const bithomp = server.includes('bithomp')
