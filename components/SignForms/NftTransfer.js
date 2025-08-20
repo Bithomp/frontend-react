@@ -36,12 +36,14 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
     }
 
     checkDestinationRemit()
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signRequest.request?.Destination])
 
   useEffect(() => {
     if (xahauNetwork) {
       setSignRequest({ ...signRequest, request: { ...signRequest.request, TransactionType: useRemit ? 'Remit' : 'URITokenCreateSellOffer' } })
     } 
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useRemit])
 
   const onAddressChange = (value) => {
