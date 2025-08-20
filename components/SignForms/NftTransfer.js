@@ -1,9 +1,48 @@
 import { useTranslation } from 'next-i18next'
-import { isAddressValid } from '../../utils'
+import { useState, useEffect } from 'react'
+import { isAddressValid, xahauNetwork } from '../../utils'
 import AddressInput from '../UI/AddressInput'
+import CheckBox from '../UI/CheckBox'
+import axios from 'axios'
 
 export default function NftTransfer({ setSignRequest, signRequest, setStatus, setFormError }) {
   const { t } = useTranslation()
+  const [useRemit, setUseRemit] = useState(false)
+  const [destinationRemitDisabled, setDestinationRemitDisabled] = useState(false)
+
+  // Check if destination allows incoming remit when address changes
+  useEffect(() => {
+    const checkDestinationRemit = async () => {
+      if (!signRequest.request?.Destination || !xahauNetwork) {
+        setDestinationRemitDisabled(false)
+        return
+      }
+
+      try {
+        const response = await axios(`/v2/address/${signRequest.request.Destination}?ledgerInfo=true`)
+        const accountData = response?.data
+
+        if (accountData?.ledgerInfo?.flags) {
+          const flags = accountData.ledgerInfo.flags
+          const disallowIncomingRemit = flags.disallowIncomingRemit
+          setDestinationRemitDisabled(disallowIncomingRemit)
+        } else {
+          setDestinationRemitDisabled(false)
+        }
+      } catch (error) {
+        console.error('Error checking destination remit status:', error)
+        setDestinationRemitDisabled(false)
+      }
+    }
+
+    checkDestinationRemit()
+  }, [signRequest.request?.Destination])
+
+  useEffect(() => {
+    if (xahauNetwork) {
+      setSignRequest({ ...signRequest, request: { ...signRequest.request, TransactionType: useRemit ? 'Remit' : 'URITokenCreateSellOffer' } })
+    } 
+  }, [useRemit])
 
   const onAddressChange = (value) => {
     let newRequest = signRequest
@@ -33,6 +72,26 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
           hideButton={true}
         />
       </span>
+      
+      {/* Remit option for Xahau network */}
+      {xahauNetwork && (
+        <div className="terms-checkbox">
+          <CheckBox 
+            checked={useRemit} 
+            setChecked={setUseRemit} 
+            name="use-remit"
+            disabled={destinationRemitDisabled}
+          >
+            Use Remit (Xahau)
+            {destinationRemitDisabled && (
+              <span className="red">
+                {' '}
+                (Disabled - destination has incoming remit disabled)
+              </span>
+            )}
+          </CheckBox>
+        </div>
+      )}
     </div>
   )
 }
