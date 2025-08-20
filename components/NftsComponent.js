@@ -53,7 +53,8 @@ export default function NftsComponent({
   account,
   subscriptionExpired,
   sessionToken,
-  signOutPro
+  signOutPro,
+  openEmailLogin
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -446,7 +447,8 @@ export default function NftsComponent({
     includeWithoutMediaData,
     mintedPeriod,
     burnedPeriod,
-    selectedToken
+    selectedToken,
+    sessionToken
   ])
 
   useEffect(() => {
@@ -659,7 +661,7 @@ export default function NftsComponent({
           }
           description={
             (issuerQuery || searchQuery || t('nft-explorer.header')) +
-            (rendered && mintedPeriod ? ', ' + t('table.mint-period') + ': ' + periodDescription(mintedPeriod) : '')
+            (mintedPeriodQuery ? ', ' + t('table.mint-period') + ': ' + periodDescription(mintedPeriodQuery) : '')
           }
           image={{
             width: 1200,
@@ -861,6 +863,7 @@ export default function NftsComponent({
               loadMoreMessage={t('nfts.load-more')}
               noSessionTokenMessage={t('nfts.change-filters')}
               height={!filtersHide ? '1300px' : '100vh'}
+              openEmailLogin={openEmailLogin}
             >
               {activeView === 'list' && (
                 <>

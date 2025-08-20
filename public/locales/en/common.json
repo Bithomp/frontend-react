@@ -55,8 +55,7 @@
       "developers": "Developers",
       "account-generation": "Account generation",
       "faucet": "Faucet",
-      "api": "API documentation",
-      "api-admin": "API account"
+      "api": "API"
     },
     "legal": "Legal",
     "disclaimer": "Disclaimer",
@@ -64,7 +63,6 @@
     "terms-and-conditions": "Terms and conditions",
     "customer-support": "Customer support",
     "press": "Press",
-    "merch": "Merch shop",
     "donate": "Donate",
     "sponsored": {
       "title": "Sponsored",

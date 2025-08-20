@@ -12,7 +12,8 @@ import {
   server,
   xahauNetwork,
   typeNumberOnly,
-  nativeCurrency
+  nativeCurrency,
+  isNativeCurrency
 } from '../../../utils'
 import { multiply } from '../../../utils/calc'
 const checkmark = '/images/checkmark.svg'
@@ -23,7 +24,18 @@ import TokenSelector from '../../UI/TokenSelector'
 let interval
 let startTime
 
-export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, account }) {
+export default function URITokenMint({
+  setSignRequest,
+  uriQuery,
+  digestQuery,
+  account,
+  burnableQuery,
+  sellQuery,
+  amountQuery,
+  currencyQuery,
+  currencyIssuerQuery,
+  destinationQuery
+}) {
   const { i18n } = useTranslation()
   const router = useRouter()
 
@@ -40,13 +52,17 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
   const [update, setUpdate] = useState(false)
   const [minted, setMinted] = useState('')
   const [uriValidDigest, setUriValidDigest] = useState(isIdValid(digestQuery))
-  const [createSellOffer, setCreateSellOffer] = useState(false)
-  const [amount, setAmount] = useState('')
-  const [destination, setDestination] = useState('')
-  const [selectedToken, setSelectedToken] = useState({ currency: nativeCurrency })
-  const [flags, setFlags] = useState({
-    tfBurnable: false
+  const [createSellOffer, setCreateSellOffer] = useState(sellQuery === 'true')
+  const [amount, setAmount] = useState(amountQuery || '')
+  const [destination, setDestination] = useState(destinationQuery || '')
+  const [selectedToken, setSelectedToken] = useState({
+    currency: currencyQuery || nativeCurrency,
+    issuer: currencyIssuerQuery || null
   })
+  const [flags, setFlags] = useState({
+    tfBurnable: burnableQuery === 'true'
+  })
+  const [mintAndSend, setMintAndSend] = useState(false)
 
   let uriRef
   let digestRef
@@ -72,11 +88,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
     setErrorMessage('')
   }, [i18n.language])
 
-  useEffect(() => {
-    if (!account?.address) {
-      setCreateSellOffer(false)
-    }
-  }, [account?.address])
+  // Do not auto-reset createSellOffer so sell=true in URL survives refresh
 
   const onUriChange = (e) => {
     let uri = e.target.value
@@ -186,6 +198,34 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
       return
     }
 
+    // Remit: Mint and Send
+    if (mintAndSend) {
+      if (!destination?.trim()) {
+        setErrorMessage('Destination is required for Mint and Send (Remit)')
+        return
+      }
+      // Remit transaction (per Xahau docs)
+      let request = {
+        TransactionType: 'Remit',
+        Account: account?.address,
+        Destination: destination.trim(),
+        MintURIToken: {
+          URI: encode(uri)
+        }
+      }
+      if (digest) {
+        request.MintURIToken.Digest = digest
+      }
+      if (flags.tfBurnable) {
+        request.MintURIToken.Flags = 1
+      }
+      setSignRequest({
+        request,
+        callback: afterSubmit
+      })
+      return
+    }
+
     setErrorMessage('')
 
     let request = {
@@ -209,12 +249,12 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
         if (destination?.trim()) {
           request.Amount = '0'
         } else {
-          setErrorMessage('Please specify a Destination or change Amount')
+          setErrorMessage('Please specify a Destination or change the Amount')
           return
         }
       } else if (parseFloat(amount) > 0) {
         // Handle amount based on selected token
-        if (selectedToken.currency === nativeCurrency && selectedToken.issuer === null) {
+        if (isNativeCurrency(selectedToken)) {
           // For XAH, convert to drops
           request.Amount = multiply(amount, 1000000)
         } else {
@@ -261,26 +301,38 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
     let queryAddList = []
     let queryRemoveList = []
     if (digest) {
-      queryAddList.push({
-        name: 'digest',
-        value: digest
-      })
+      queryAddList.push({ name: 'digest', value: digest })
       setErrorMessage('')
     } else {
       queryRemoveList.push('digest')
     }
     if (uri) {
-      queryAddList.push({
-        name: 'uri',
-        value: uri
-      })
+      queryAddList.push({ name: 'uri', value: uri })
       setErrorMessage('')
     } else {
       queryRemoveList.push('uri')
     }
+    // reflect sell offer related params
+    if (createSellOffer) {
+      queryAddList.push({ name: 'sell', value: 'true' })
+      if (amount) queryAddList.push({ name: 'amount', value: amount })
+      else queryRemoveList.push('amount')
+      if (selectedToken?.currency) queryAddList.push({ name: 'currency', value: selectedToken.currency })
+      else queryRemoveList.push('currency')
+      if (selectedToken?.issuer) queryAddList.push({ name: 'currencyIssuer', value: selectedToken.issuer })
+      else queryRemoveList.push('currencyIssuer')
+      if (destination) queryAddList.push({ name: 'destination', value: destination })
+      else queryRemoveList.push('destination')
+    } else {
+      queryRemoveList.push('sell')
+      queryRemoveList.push('amount')
+      queryRemoveList.push('currency')
+      queryRemoveList.push('currencyIssuer')
+      queryRemoveList.push('destination')
+    }
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [digest, uri])
+  }, [digest, uri, createSellOffer, amount, selectedToken?.currency, selectedToken?.issuer, destination])
 
   const onMetadataChange = (e) => {
     setDigest('')
@@ -396,6 +448,25 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
               Burnable
             </CheckBox>
 
+            {/* Mint and Send (Remit) Option */}
+            <CheckBox
+              checked={mintAndSend}
+              setChecked={() => {
+                setMintAndSend(!mintAndSend)
+                if (!mintAndSend) {
+                  setCreateSellOffer(false)
+                }
+              }}
+              name="mint-and-send-remit"
+            >
+              Mint and Send (Remit)
+            </CheckBox>
+            {mintAndSend && (
+              <div className="orange" style={{ marginTop: '5px', fontSize: '14px' }}>
+                You will pay the Object Reserve in XAH for the NFT to be held on the Destination account.
+              </div>
+            )}
+
             {/* Create Sell Offer */}
             <div>
               <CheckBox
@@ -408,7 +479,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
                   setCreateSellOffer(!createSellOffer)
                 }}
                 name="create-sell-offer"
-                disabled={!account?.address}
+                disabled={!account?.address || mintAndSend}
               >
                 Create a Sell offer
               </CheckBox>
@@ -423,7 +494,7 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
             </div>
 
             {/* Sell Offer Fields */}
-            {createSellOffer && (
+            {createSellOffer && !mintAndSend && (
               <>
                 <br />
                 <div className="flex flex-col gap-4 sm:flex-row">
@@ -447,16 +518,22 @@ export default function URITokenMint({ setSignRequest, uriQuery, digestQuery, ac
                   </div>
                   <div className="w-full sm:w-1/2">
                     <span className="input-title">Currency</span>
-                    <TokenSelector 
-                      value={selectedToken} 
+                    <TokenSelector
+                      value={selectedToken}
                       onChange={onTokenChange}
                       destinationAddress={account?.address}
-                    />                    
+                    />
                   </div>
                 </div>
+              </>
+            )}
+
+            {/* Remit Destination Field */}
+            {(mintAndSend || createSellOffer) && (
+              <>
                 <br />
                 <AddressInput
-                  title="Destination (optional - account to receive the NFT):"
+                  title={'Destination (' + (mintAndSend ? 'required' : 'optional') + ' - account to receive the NFT)'}
                   placeholder="Destination address"
                   setValue={onDestinationChange}
                   name="destination"
