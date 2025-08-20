@@ -641,6 +641,10 @@ export const avatarSrc = (address, refreshPage) => {
   return avatarServer + address + (refreshPage ? '?' + refreshPage : '')
 }
 
+export const tokenImageSrc = (token) => {
+  return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
+}
+
 export const networksIds = {
   0: { server: 'https://bithomp.com', name: 'mainnet' },
   1: { server: 'https://test.bithomp.com', name: 'testnet' },

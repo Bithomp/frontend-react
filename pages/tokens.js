@@ -65,7 +65,7 @@ import CopyButton from '../components/UI/CopyButton'
       "ripplingTxs": 0,
       "uniqueAccounts": 730,
       "uniqueDexAccounts": 178,
-      "priceXrp": "0.1146566270598530742",
+      "priceNativeCurrency": "0.1146566270598530742",
       "marketcap": "45723206.888776201217059311928860827119097212012795446"
     }
   }
@@ -416,7 +416,7 @@ export default function Tokens({
     } else {
       volume = statistics?.[type + 'Volume'] || 0
     }
-    const volumeFiat = volume * statistics?.priceXrp * fiatRate || 0
+    const volumeFiat = volume * statistics?.priceNativeCurrency * fiatRate || 0
 
     if (mobile) {
       return (
@@ -558,12 +558,16 @@ export default function Tokens({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr key={i}>
+                            <tr
+                              key={i}
+                              className="clickable-row"
+                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                            >
                               <td className="center">{i + 1}</td>
                               <td>
                                 <TokenCell token={token} />
                               </td>
-                              <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
+                              <td className="right">{priceToFiat({ price: token.statistics?.priceNativeCurrency })}</td>
                               {/*
                               <td className="right"></td>
                               <td className="right"></td>
@@ -633,7 +637,8 @@ export default function Tokens({
 
                               <td className="center">
                                 <span
-                                  onClick={() => {
+                                  onClick={(e) => {
+                                    e.stopPropagation()
                                     handleSetTrustline(token)
                                   }}
                                   className="orange tooltip"
@@ -674,7 +679,11 @@ export default function Tokens({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr key={i}>
+                            <tr
+                              key={i}
+                              className="clickable-row"
+                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                            >
                               <td style={{ padding: '5px' }} className="center">
                                 <b>{i + 1}</b>
                               </td>
@@ -686,15 +695,19 @@ export default function Tokens({
                                   <br />
                                   Currency code: {shortHash(token.currency)} <CopyButton text={token.currency} />
                                   <br />
-                                  Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
+                                  Price: {priceToFiat({ price: token.statistics?.priceNativeCurrency, mobile: true })}
                                   <br />
-                                  Price in {nativeCurrency} 5m ago: {niceNumber(token.statistics?.priceXrp5m, 6)}
+                                  Price in {nativeCurrency} 5m ago:{' '}
+                                  {niceNumber(token.statistics?.priceNativeCurrency5m, 6)}
                                   <br />
-                                  Price in {nativeCurrency} 1h ago: {niceNumber(token.statistics?.priceXrp1h, 6)}
+                                  Price in {nativeCurrency} 1h ago:{' '}
+                                  {niceNumber(token.statistics?.priceNativeCurrency1h, 6)}
                                   <br />
-                                  Price in {nativeCurrency} 24h ago: {niceNumber(token.statistics?.priceXrp24h, 6)}
+                                  Price in {nativeCurrency} 24h ago:{' '}
+                                  {niceNumber(token.statistics?.priceNativeCurrency24h, 6)}
                                   <br />
-                                  Price in {nativeCurrency} 7d ago: {niceNumber(token.statistics?.priceXrp7d, 6)}
+                                  Price in {nativeCurrency} 7d ago:{' '}
+                                  {niceNumber(token.statistics?.priceNativeCurrency7d, 6)}
                                   <br />
                                   Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
                                   <br />
@@ -773,7 +786,8 @@ export default function Tokens({
                                   <br />
                                   <button
                                     className="button-action narrow thin"
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                      e.stopPropagation()
                                       handleSetTrustline(token)
                                     }}
                                   >
@@ -793,6 +807,21 @@ export default function Tokens({
           )}
         </InfiniteScrolling>
       </FiltersFrame>
+
+      <style jsx>{`
+        .clickable-row {
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+
+        .clickable-row:hover {
+          background-color: var(--unaccent-icon);
+        }
+
+        .clickable-row td {
+          position: relative;
+        }
+      `}</style>
     </>
   )
 }

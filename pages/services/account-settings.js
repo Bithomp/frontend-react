@@ -46,7 +46,13 @@ const TF_FLAGS = {
   disallowXRP: { set: 0x00100000, clear: 0x00200000 } // tfDisallowXRP / tfAllowXRP
 }
 
-export default function AccountSettings({ account, setSignRequest, sessionToken, subscriptionExpired, openEmailLogin }) {
+export default function AccountSettings({
+  account,
+  setSignRequest,
+  sessionToken,
+  subscriptionExpired,
+  openEmailLogin
+}) {
   const { t } = useTranslation(['common'])
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
@@ -269,7 +275,6 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
       try {
         const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
         setAccountData(response.data)
-        console.log('response.data', response.data)
         // Set current NFTokenMinter if it exists
         setCurrentNftTokenMinter(response.data?.ledgerInfo?.nftokenMinter || '')
         setCurrentDomain(response.data?.ledgerInfo?.domain || '')
@@ -433,7 +438,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
     })
   }
 
-  const handleSetDomain = () => {    
+  const handleSetDomain = () => {
     const tx = {
       TransactionType: 'AccountSet',
       Account: account.address,
@@ -1162,9 +1167,7 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                 <div className="flag-header">
                   <div className="flag-info">
                     <span className="flag-name">MessageKey</span>
-                    {account?.address && (
-                      <span className="flag-status">{currentMessageKey ? 'Set' : 'Not Set'}</span>
-                    )}
+                    {account?.address && <span className="flag-status">{currentMessageKey ? 'Set' : 'Not Set'}</span>}
                   </div>
                   <div className="flex gap-2">
                     {currentMessageKey && (
@@ -1344,7 +1347,8 @@ export default function AccountSettings({ account, setSignRequest, sessionToken,
                     <>
                       {' '}
                       <span className="orange">
-                        Your Bithomp Pro subscription has expired. <Link href="/admin/subscriptions">Renew your subscription</Link>
+                        Your Bithomp Pro subscription has expired.{' '}
+                        <Link href="/admin/subscriptions">Renew your subscription</Link>
                       </span>
                     </>
                   )

@@ -577,7 +577,7 @@ export default function Account({
                           />
                           {/* don't show yet obligations historically */}
                           {data?.obligations?.trustlines > 0 && !data?.ledgerInfo?.ledgerTimestamp && (
-                            <IssuedTokensData data={data} />
+                            <IssuedTokensData data={data} selectedCurrency={selectedCurrency} pageFiatRate={pageFiatRate} />
                           )}
 
                           <DexOrdersData
