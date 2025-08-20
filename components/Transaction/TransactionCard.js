@@ -364,7 +364,8 @@ export const TransactionCard = ({
 
                   {(tx?.TransactionType === 'EscrowFinish' || tx?.TransactionType === 'EscrowCancel') &&
                     specification?.source?.address !== outcome?.escrowChanges?.source?.address &&
-                    specification?.source?.address !== outcome?.escrowChanges?.destination?.address && (
+                    specification?.source?.address !== outcome?.escrowChanges?.destination?.address &&
+                    isSuccessful && (
                       <tr>
                         <TData>Memos note</TData>
                         <TData className="orange">
@@ -427,6 +428,9 @@ export const TransactionCard = ({
                           </tr>
                         )}
                         {filteredBalanceChanges?.map((change, index) => {
+                          let gateway = change?.balanceChanges?.every(
+                            (changeItem) => changeItem.issuer === change.address
+                          )
                           return (
                             <tr key={index}>
                               <TData>
@@ -437,7 +441,7 @@ export const TransactionCard = ({
                                     Initiator
                                   </span>
                                 )}
-                                {change?.balanceChanges?.[0]?.issuer === change.address && (
+                                {gateway && (
                                   <span className="bold">
                                     <br />
                                     {niceCurrency(change.balanceChanges[0].currency)} issuer
@@ -447,7 +451,7 @@ export const TransactionCard = ({
                               <TData>
                                 <div style={{ height: '10px' }}></div>
                                 <AddressWithIconFilled data={change} name="address" />
-                                {change?.balanceChanges?.[0]?.issuer === change.address
+                                {gateway
                                   ? gatewayChanges(change.balanceChanges)
                                   : change.balanceChanges?.map((c, i) => {
                                       return (

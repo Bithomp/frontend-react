@@ -16,10 +16,10 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
 const setBalancesFunction = (networkInfo, data) => {
-  if (!data?.ledgerInfo || !networkInfo) return null
+  if (!data?.ledgerInfo || !networkInfo || data.ledgerInfo.balance === undefined) return null
   let balanceList = {
     total: {
-      native: data.ledgerInfo.balance
+      native: data.ledgerInfo.balance || 0
     },
     reserved: {
       native: Number(networkInfo.reserveBase) + data.ledgerInfo.ownerCount * networkInfo.reserveIncrement
@@ -47,6 +47,7 @@ export async function getServerSideProps(context) {
   const { id, ledgerTimestamp } = query
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ''
+
   if (account) {
     try {
       const res = await axiosServer({
@@ -102,6 +103,7 @@ import ObjectsData from '../../components/Account/ObjectsData'
 import NFTokenData from '../../components/Account/NFTokenData'
 import URITokenData from '../../components/Account/URITokenData'
 import IOUData from '../../components/Account/IOUData'
+import IssuedTokensData from '../../components/Account/IssuedTokensData'
 import EscrowData from '../../components/Account/EscrowData'
 import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
@@ -138,6 +140,7 @@ export default function Account({
     "tokens": 7
   }
   */
+
   const [data, setData] = useState(initialData)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -152,7 +155,6 @@ export default function Account({
   const [balances, setBalances] = useState(balanceListServer || {})
   const [shownOnSmall, setShownOnSmall] = useState(null)
   const [objects, setObjects] = useState({})
-  //const [obligations, setObligations] = useState({})
   const [gateway, setGateway] = useState(false)
 
   useEffect(() => {
@@ -166,7 +168,6 @@ export default function Account({
     setActivatedAccount(initialData?.ledgerInfo?.activated)
 
     if (initialData?.obligations) {
-      //setObligations(initialData.obligations)
       if (initialData.obligations?.trustlines > 200) {
         setGateway(true)
       } else {
@@ -193,7 +194,7 @@ export default function Account({
     const response = await axios(
       '/v2/address/' +
         id +
-        '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true' +
+        '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true&obligations=true' +
         noCache +
         (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
@@ -230,7 +231,7 @@ export default function Account({
     setObjects({})
     checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, refreshPage, ledgerTimestamp])
+  }, [id, refreshPage, ledgerTimestamp, selectedCurrency])
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -241,7 +242,7 @@ export default function Account({
       fetchHistoricalRate({ timestamp: ledgerTimestamp, selectedCurrency, setPageFiatRate })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fiatRate, ledgerTimestamp])
+  }, [fiatRate, ledgerTimestamp, selectedCurrency])
 
   useEffect(() => {
     if (!data?.ledgerInfo || !networkInfo) return
@@ -574,6 +575,11 @@ export default function Account({
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             address={data?.address}
                           />
+                          {/* don't show yet obligations historically */}
+                          {data?.obligations?.trustlines > 0 && !data?.ledgerInfo?.ledgerTimestamp && (
+                            <IssuedTokensData data={data} selectedCurrency={selectedCurrency} pageFiatRate={pageFiatRate} />
+                          )}
+
                           <DexOrdersData
                             account={account}
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
@@ -606,6 +612,7 @@ export default function Account({
                               address={data?.address}
                               setObjects={setObjects}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              ledgerIndex={data?.ledgerInfo?.ledgerIndex}
                               selectedCurrency={selectedCurrency}
                               pageFiatRate={pageFiatRate}
                             />
@@ -662,4 +669,4 @@ export default function Account({
       `}</style>
     </>
   )
-}
+} 

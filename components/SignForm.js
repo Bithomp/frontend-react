@@ -535,7 +535,7 @@ export default function SignForm({
         closeSignInFormAndRefresh()
       }
       return
-    } else if (type === 'URITokenMint') {
+    } else if (type === 'URITokenMint' || type === 'Remit') {
       let foundToken = false
       for (let i = 0; i < meta?.AffectedNodes?.length; i++) {
         const node = meta.AffectedNodes[i]
@@ -584,7 +584,10 @@ export default function SignForm({
         if (validated && includedInLedger) {
           if (
             txStatus === 'tesSUCCESS' &&
-            (txType?.includes('NFToken') || txType?.includes('URIToken') || txType?.includes('DID'))
+            (txType?.includes('NFToken') ||
+              txType?.includes('URIToken') ||
+              txType?.includes('DID') ||
+              txType === 'Remit')
           ) {
             // for NFToken, URIToken and DID transactions wait for crawler to index the transaction
             prepareForCrawlerCheck({
@@ -739,7 +742,7 @@ export default function SignForm({
             signRequest.callback(param)
           } else {
             //we are on mobile
-            if (type === 'NFTokenMint' || type === 'URITokenMint') {
+            if (type === 'NFTokenMint' || type === 'URITokenMint' || type === 'Remit') {
               router.push('/nft/' + param)
               return
             }

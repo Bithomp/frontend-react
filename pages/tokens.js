@@ -65,7 +65,7 @@ import CopyButton from '../components/UI/CopyButton'
       "ripplingTxs": 0,
       "uniqueAccounts": 730,
       "uniqueDexAccounts": 178,
-      "priceXrp": "0.1146566270598530742",
+      "priceNativeCurrency": "0.1146566270598530742",
       "marketcap": "45723206.888776201217059311928860827119097212012795446"
     }
   }
@@ -144,6 +144,7 @@ export default function Tokens({
   fiatRate: fiatRateApp,
   fiatRateServer,
   isSsrMobile,
+  openEmailLogin,
   currencyQuery,
   issuerQuery
 }) {
@@ -162,6 +163,7 @@ export default function Tokens({
 
   // States
   const [data, setData] = useState(initialData?.tokens || [])
+  const [rawData, setRawData] = useState(initialData || {})
   const [marker, setMarker] = useState(initialData?.marker)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
@@ -173,47 +175,43 @@ export default function Tokens({
 
   const controller = new AbortController()
 
-  // Utility to build api url
-  const apiUrl = (options = {}) => {
-    const limit = 100
-    const parts = []
-    parts.push('v2/trustlines/tokens')
-    parts.push(`?limit=${limit}`)
-    parts.push(`&order=${order}`)
-    parts.push(`&currencyDetails=true&statistics=true`)
+  // Fetch tokens
+  const checkApi = async () => {
+    const oldOrder = rawData?.order
+    const oldCurrency = rawData?.currency
+    const oldIssuer = rawData?.issuer
+    if (!oldOrder || !order) return
+
+    let loadMoreRequest =
+      (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
+      (currency ? oldCurrency === currency : !oldCurrency) &&
+      (issuer ? oldIssuer === issuer : !oldIssuer)
+
+    // do not load more if thereis no session token or if Bithomp Pro is expired
+    if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
+      return
+    }
+
+    let markerPart = ''
+    if (loadMoreRequest) {
+      markerPart = '&marker=' + rawData?.marker
+    }
+
+    if (!markerPart) {
+      setLoading(true)
+    }
+    setRawData({})
+
+    let apiUrl = 'v2/trustlines/tokens?limit=100&order=' + order + '&currencyDetails=true&statistics=true' + markerPart
     if (issuer) {
-      parts.push(`&issuer=${encodeURIComponent(issuer)}`)
+      apiUrl += `&issuer=${encodeURIComponent(issuer)}`
     }
     if (currency) {
-      parts.push(`&currency=${encodeURIComponent(currency)}`)
-    }
-    if (options.marker) {
-      parts.push(`&marker=${options.marker}`)
-    }
-    return parts.join('')
-  }
-
-  // Fetch tokens
-  const checkApi = async (options = {}) => {
-    if (loading) return
-    setLoading(true)
-
-    let markerToUse = undefined
-    if (!options.restart) {
-      markerToUse = options.marker || marker
-    }
-
-    // Check subscription for pagination beyond initial 100 items
-    if (markerToUse && markerToUse !== 'first') {
-      // do not load more if there is no session token or if Bithomp Pro is expired
-      if (!sessionToken || (sessionToken && subscriptionExpired)) {
-        setLoading(false)
-        return
-      }
+      apiUrl += `&currency=${encodeURIComponent(currency)}`
     }
 
     const response = await axios
-      .get(apiUrl({ marker: markerToUse }), {
+      .get(apiUrl, {
         signal: controller.signal
       })
       .catch((error) => {
@@ -225,31 +223,42 @@ export default function Tokens({
 
     const newdata = response?.data
     if (newdata) {
-      // If we are restarting (search/order changed) we replace list, else concat
-      const restart = options.restart
-      if (restart) {
-        setData(newdata.tokens || [])
+      setRawData(newdata)
+      setLoading(false) //keep here for fast tab clickers
+      if (newdata.tokens) {
+        let list = newdata.tokens
+        if (list.length > 0) {
+          setErrorMessage('')
+          setMarker(newdata.marker)
+          if (!loadMoreRequest) {
+            setData(list)
+          } else {
+            setData([...data, ...list])
+          }
+        } else {
+          setErrorMessage(t('general.no-data'))
+        }
       } else {
-        setData((prev) => [...prev, ...(newdata.tokens || [])])
+        if (newdata.error) {
+          setErrorMessage(newdata.error)
+        } else {
+          setErrorMessage('Error')
+        }
       }
-      setMarker(newdata.marker)
-      setErrorMessage('')
     } else {
       setErrorMessage(t('general.no-data'))
     }
-    setLoading(false)
   }
 
   // Effect: refetch when order or search changes
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false
-    } else {
-      setMarker('first')
-      checkApi({ restart: true })
+      return
     }
+    checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, issuer, currency])
+  }, [order, issuer, currency, subscriptionExpired])
 
   useEffect(() => {
     let queryAddList = []
@@ -407,7 +416,7 @@ export default function Tokens({
     } else {
       volume = statistics?.[type + 'Volume'] || 0
     }
-    const volumeFiat = volume * statistics?.priceXrp * fiatRate || 0
+    const volumeFiat = volume * statistics?.priceNativeCurrency * fiatRate || 0
 
     if (mobile) {
       return (
@@ -469,15 +478,12 @@ export default function Tokens({
         {/* Main content */}
         <InfiniteScrolling
           dataLength={data.length}
-          loadMore={() => {
-            if (marker && marker !== 'first') {
-              checkApi({ marker })
-            }
-          }}
+          loadMore={checkApi}
           hasMore={marker}
           errorMessage={errorMessage}
           subscriptionExpired={subscriptionExpired}
           sessionToken={sessionToken}
+          openEmailLogin={openEmailLogin}
         >
           {/* Desktop table */}
           {!isSsrMobile || width > 860 ? (
@@ -552,12 +558,16 @@ export default function Tokens({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr key={i}>
+                            <tr
+                              key={i}
+                              className="clickable-row"
+                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                            >
                               <td className="center">{i + 1}</td>
                               <td>
                                 <TokenCell token={token} />
                               </td>
-                              <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
+                              <td className="right">{priceToFiat({ price: token.statistics?.priceNativeCurrency })}</td>
                               {/*
                               <td className="right"></td>
                               <td className="right"></td>
@@ -627,7 +637,8 @@ export default function Tokens({
 
                               <td className="center">
                                 <span
-                                  onClick={() => {
+                                  onClick={(e) => {
+                                    e.stopPropagation()
                                     handleSetTrustline(token)
                                   }}
                                   className="orange tooltip"
@@ -668,7 +679,11 @@ export default function Tokens({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr key={i}>
+                            <tr
+                              key={i}
+                              className="clickable-row"
+                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                            >
                               <td style={{ padding: '5px' }} className="center">
                                 <b>{i + 1}</b>
                               </td>
@@ -680,15 +695,19 @@ export default function Tokens({
                                   <br />
                                   Currency code: {shortHash(token.currency)} <CopyButton text={token.currency} />
                                   <br />
-                                  Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
+                                  Price: {priceToFiat({ price: token.statistics?.priceNativeCurrency, mobile: true })}
                                   <br />
-                                  Price in {nativeCurrency} 5m ago: {niceNumber(token.statistics?.priceXrp5m, 6)}
+                                  Price in {nativeCurrency} 5m ago:{' '}
+                                  {niceNumber(token.statistics?.priceNativeCurrency5m, 6)}
                                   <br />
-                                  Price in {nativeCurrency} 1h ago: {niceNumber(token.statistics?.priceXrp1h, 6)}
+                                  Price in {nativeCurrency} 1h ago:{' '}
+                                  {niceNumber(token.statistics?.priceNativeCurrency1h, 6)}
                                   <br />
-                                  Price in {nativeCurrency} 24h ago: {niceNumber(token.statistics?.priceXrp24h, 6)}
+                                  Price in {nativeCurrency} 24h ago:{' '}
+                                  {niceNumber(token.statistics?.priceNativeCurrency24h, 6)}
                                   <br />
-                                  Price in {nativeCurrency} 7d ago: {niceNumber(token.statistics?.priceXrp7d, 6)}
+                                  Price in {nativeCurrency} 7d ago:{' '}
+                                  {niceNumber(token.statistics?.priceNativeCurrency7d, 6)}
                                   <br />
                                   Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
                                   <br />
@@ -767,7 +786,8 @@ export default function Tokens({
                                   <br />
                                   <button
                                     className="button-action narrow thin"
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                      e.stopPropagation()
                                       handleSetTrustline(token)
                                     }}
                                   >
@@ -787,6 +807,21 @@ export default function Tokens({
           )}
         </InfiniteScrolling>
       </FiltersFrame>
+
+      <style jsx>{`
+        .clickable-row {
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+
+        .clickable-row:hover {
+          background-color: var(--unaccent-icon);
+        }
+
+        .clickable-row td {
+          position: relative;
+        }
+      `}</style>
     </>
   )
 }

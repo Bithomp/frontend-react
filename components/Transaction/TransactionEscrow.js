@@ -10,12 +10,17 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
   const isEscrowCreation = tx.TransactionType === 'EscrowCreate'
   const isEscrowFinish = tx.TransactionType === 'EscrowFinish'
 
+  const isSuccessful = outcome?.result == 'tesSUCCESS'
+
+  const sourceData = outcome?.escrowChanges?.source || (specification?.owner ? specification : specification.source)
+  const sourceName = outcome?.escrowChanges?.source ? 'address' : specification?.owner ? 'owner' : 'address'
+
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <tr>
         <TData>Escrow source</TData>
         <TData>
-          <AddressWithIconFilled data={outcome?.escrowChanges?.source} name="address" />
+          <AddressWithIconFilled data={sourceData} name={sourceName} />
         </TData>
       </tr>
 
@@ -26,17 +31,21 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
 
-      <tr>
-        <TData>Escrow sequence</TData>
-        <TData>#{outcome?.escrowChanges?.escrowSequence}</TData>
-      </tr>
+      {(outcome?.escrowChanges?.escrowSequence || specification?.escrowSequence) && (
+        <tr>
+          <TData>Escrow sequence</TData>
+          <TData>#{outcome?.escrowChanges?.escrowSequence || specification?.escrowSequence}</TData>
+        </tr>
+      )}
 
-      <tr>
-        <TData>Destination</TData>
-        <TData>
-          <AddressWithIconFilled data={outcome?.escrowChanges?.destination} name="address" />
-        </TData>
-      </tr>
+      {outcome?.escrowChanges?.destination && (
+        <tr>
+          <TData>Destination</TData>
+          <TData>
+            <AddressWithIconFilled data={outcome?.escrowChanges?.destination} name="address" />
+          </TData>
+        </tr>
+      )}
 
       {outcome?.escrowChanges?.destination?.tag !== undefined && (
         <tr>
@@ -45,19 +54,21 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
 
-      <tr>
-        <TData>Escrow amount</TData>
-        <TData className="bold">
-          <span className={isEscrowFinish ? 'green' : ''}>{amountFormat(outcome?.escrowChanges?.amount)}</span>
+      {outcome?.escrowChanges?.amount && (
+        <tr>
+          <TData>Escrow amount</TData>
+          <TData className="bold">
+            <span className={isEscrowFinish ? 'green' : ''}>{amountFormat(outcome?.escrowChanges?.amount)}</span>
 
-          {isEscrowFinish &&
-            nativeCurrencyToFiat({
-              amount: outcome?.escrowChanges?.amount,
-              selectedCurrency,
-              fiatRate: pageFiatRate
-            })}
-        </TData>
-      </tr>
+            {isEscrowFinish &&
+              nativeCurrencyToFiat({
+                amount: outcome?.escrowChanges?.amount,
+                selectedCurrency,
+                fiatRate: pageFiatRate
+              })}
+          </TData>
+        </tr>
+      )}
 
       {outcome?.escrowChanges?.allowExecuteAfter && (
         <tr>
@@ -96,7 +107,8 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
             </TData>
           </tr>
           {specification.source?.address !== outcome?.escrowChanges?.source?.address &&
-            specification.source?.address !== outcome?.escrowChanges?.destination?.address && (
+            specification.source?.address !== outcome?.escrowChanges?.destination?.address &&
+            isSuccessful && (
               <tr>
                 <TData>Note</TData>
                 <TData className="orange">

@@ -14,7 +14,8 @@ export default function InfiniteScrolling({
   height,
   endMessage,
   loadMoreMessage,
-  children
+  children,
+  openEmailLogin
 }) {
   const { t } = useTranslation()
 
@@ -39,7 +40,7 @@ export default function InfiniteScrolling({
                 {!sessionToken ? (
                   <>
                     <Trans i18nKey="general.login-to-bithomp-pro">
-                      Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers.
+                      Loading more data is available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers.
                     </Trans>
                     {noSessionTokenMessage && (
                       <>

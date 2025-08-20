@@ -157,7 +157,7 @@ export default function Header({
 
   const signinWithWallet = (wallet) => {
     //redirect to account, if user is on the account page
-    setSignRequest(router.pathname === '/account/[[...id]]' ? { wallet, redirect: 'account' } : { wallet })
+    setSignRequest(router.pathname.startsWith('/account') ? { wallet, redirect: 'account' } : { wallet })
   }
 
   const bithomp = server.includes('bithomp')
@@ -201,7 +201,7 @@ export default function Header({
             <Link href="/services/account-settings/">Account Settings</Link>
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
-            <Link href="/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
+            <Link href="/learn/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
             <Link href="/submit-account-information">{t('menu.project-registration')}</Link>
             {!devNet && <Link href="/alerts">{t('menu.price-alerts', { nativeCurrency })}</Link>}
             <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a>
@@ -209,7 +209,7 @@ export default function Header({
 
           <div className="menu-dropdown">
             <Link href="/tokens" className="menu-dropdown-button" style={{ textDecoration: 'none' }}>
-              {t('menu.tokens')} <MdNewReleases className="chevron orange" />
+              {t('menu.tokens')} <MdNewReleases className="chevron" />
             </Link>
           </div>
 
@@ -223,14 +223,10 @@ export default function Header({
             >
               <Link href="/amms">{t('menu.amm.pools')}</Link>
               <Link href="/amm">{t('menu.amm.explorer')}</Link>
-              {!devNet && (
-                <>
-                  <Link href="/services/amm?tab=deposit">AMM Deposit</Link>
-                  <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
-                  <Link href="/services/amm?tab=vote">AMM Vote</Link>
-                  <Link href="/services/amm?tab=create">AMM Create</Link>
-                </>
-              )}
+              <Link href="/services/amm?tab=deposit">AMM Deposit</Link>
+              <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
+              <Link href="/services/amm?tab=vote">AMM Vote</Link>
+              <Link href="/services/amm?tab=create">AMM Create</Link>
             </MenuDropDown>
           )}
 
@@ -304,11 +300,12 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
+            <Link href="/learn/the-bithomp-api">{t('menu.developers.api')}</Link>
             {network === 'mainnet' && (
               <>
-                <a href={'https://test.xrplexplorer.com/create/'}>{t('menu.developers.account-generation')}</a>
-                <a href={'https://test.xrplexplorer.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
-                <a href={'https://test.xrplexplorer.com/tools/'}>Bithomp tools</a>
+                <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
+                <a href={'https://test.bithomp.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
+                <a href={'https://test.bithomp.com/tools/'}>Bithomp tools</a>
               </>
             )}
             {devNet && (
@@ -318,8 +315,6 @@ export default function Header({
                 <a href={'/tools/'}>Bithomp tools</a>
               </>
             )}
-            <a href="https://docs.bithomp.com">{t('menu.developers.api')}</a>
-            <Link href="/admin">{t('menu.developers.api-admin')}</Link>
             <a href="https://github.com/Bithomp">Github</a>
             <Link href="/eaas">{t('menu.business.eaas')}</Link>
             <Link href="/build-unl">{t('menu.business.build-unl')}</Link>

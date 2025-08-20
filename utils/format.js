@@ -5,7 +5,6 @@ import * as relativeTimePlugin from 'dayjs/plugin/relativeTime'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Trans } from 'next-i18next'
-import React from 'react'
 
 import CopyButton from '../components/UI/CopyButton'
 import LinkIcon from '../public/images/link.svg'
@@ -17,7 +16,8 @@ import {
   nativeCurrency,
   nativeCurrenciesImages,
   stripText,
-  xls14NftValue
+  xls14NftValue,
+  tokenImageSrc
 } from '.'
 
 dayjs.extend(durationPlugin)
@@ -34,22 +34,31 @@ export const NiceNativeBalance = ({ amount }) => {
   )
 }
 
+export const CurrencyWithIcon = ({ token }) => {
+  if (!token) return ''
+  const { lp_token, currencyDetails } = token
+
+  let imageUrl = tokenImageSrc(token)
+
+  return (
+    <>
+      <Image src={imageUrl} alt="avatar" height={20} width={20} style={{ marginRight: '5px', marginBottom: '-5px' }} />
+      {lp_token ? currencyDetails?.currency : niceCurrency(token.currency)}
+    </>
+  )
+}
+
 export const AddressWithIcon = ({ children, address, currency }) => {
-  let imageUrl = avatarServer
+  let imageUrl = avatarServer + address
 
   if (currency) {
-    imageUrl = avatarServer.replace('/avatar/', '/issued-token/')
-  }
-
-  imageUrl += address
-
-  if (currency) {
-    imageUrl += '/' + currency
+    imageUrl = tokenImageSrc({ issuer: address, currency })
   }
 
   if (!address) {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }
+
   return (
     <table style={{ minWidth: 126 }}>
       <tbody>
@@ -64,7 +73,7 @@ export const AddressWithIcon = ({ children, address, currency }) => {
   )
 }
 
-export const AddressWithIconFilled = ({ data, name, copyButton }) => {
+export const AddressWithIconFilled = ({ data, name, copyButton, options }) => {
   if (!data) return ''
   if (!name) {
     name = 'address'
@@ -77,7 +86,7 @@ export const AddressWithIconFilled = ({ data, name, copyButton }) => {
           <br />
         </>
       )}
-      {addressLink(data[name])} {copyButton && <CopyButton text={data[name]} />}
+      {addressLink(data[name], options)} {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
   )
 }
@@ -487,7 +496,7 @@ export const addressLink = (address, options = {}) => {
   if (!address) return ''
   return (
     <Link href={'/account/' + address} aria-label="address link">
-      {options.short ? shortAddress(address, options.short) : address}
+      {options?.short ? shortAddress(address, options.short) : address}
     </Link>
   )
 }

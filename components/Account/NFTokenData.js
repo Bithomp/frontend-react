@@ -24,10 +24,12 @@ export default function NFTokenData({ data, objects, ledgerTimestamp }) {
     'Loading...'
   ) : objects?.nftList?.length > 0 ? (
     <>
-      {!ledgerTimestamp && (
+      {!ledgerTimestamp ? (
         <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'} className="bold">
-          View owned NFTs ({objects?.nftList?.length})
+          View owned NFTs ({objects.nftList.length})
         </Link>
+      ) : (
+        objects.nftList.length
       )}
     </>
   ) : (
@@ -38,10 +40,12 @@ export default function NFTokenData({ data, objects, ledgerTimestamp }) {
     'Loading...'
   ) : objects?.nftOfferList?.length > 0 ? (
     <>
-      {!ledgerTimestamp && (
+      {!ledgerTimestamp ? (
         <Link href={'/nft-offers/' + data?.address} className="bold">
-          View NFT Offers ({objects?.nftOfferList?.length})
+          View NFT Offers ({objects.nftOfferList.length})
         </Link>
+      ) : (
+        objects.nftOfferList.length
       )}
     </>
   ) : (
@@ -50,17 +54,19 @@ export default function NFTokenData({ data, objects, ledgerTimestamp }) {
 
   const mintedNftsNode = (
     <>
-      {!ledgerTimestamp && (
+      {!ledgerTimestamp ? (
         <Link href={'/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true'}>
           View minted NFTs ({data.ledgerInfo.mintedNFTokens})
         </Link>
+      ) : (
+        data.ledgerInfo.mintedNFTokens
       )}
     </>
   )
 
   const burnedNftsNode = (
     <>
-      {!ledgerTimestamp && (
+      {!ledgerTimestamp ? (
         <Link
           href={
             '/nft-explorer?includeWithoutMediaData=true&issuer=' +
@@ -70,6 +76,8 @@ export default function NFTokenData({ data, objects, ledgerTimestamp }) {
         >
           View burned NFTs ({data.ledgerInfo.burnedNFTokens})
         </Link>
+      ) : (
+        data.ledgerInfo.burnedNFTokens
       )}
     </>
   )
