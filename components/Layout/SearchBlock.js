@@ -329,7 +329,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   searchItem.charAt(0) == "X"
   */
 
-  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account'].includes(tab)
+  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account', 'transactions'].includes(tab)
 
   const searchOnInputChange = (inputValue, action) => {
     if (action.action !== 'input-blur' && action.action !== 'menu-close') {
@@ -343,7 +343,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     ) {
       return t('explorer.header.' + tab)
     } else if (tab === 'transactions') {
-      return t("explorer.menu.transactions")
+      return t('explorer.menu.transactions')
     }
     return ''
   }
@@ -483,7 +483,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             ) : (
               <Link href={'/account/' + searchItem}>{t('explorer.menu.account')}</Link>
             )}
-            <a href={server + '/explorer/' + searchItem}>{t('explorer.menu.transactions')}</a>
+            {tab == 'transactions' ? (
+              <b>{t('explorer.menu.transactions')}</b>
+            ) : (
+              <a href={server + '/explorer/' + searchItem}>{t('explorer.menu.transactions')}</a>
+            )}
           </div>
           <div className="explorer-tabs-shadow"></div>
         </div>
