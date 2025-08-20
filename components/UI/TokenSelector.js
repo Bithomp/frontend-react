@@ -4,13 +4,7 @@ import { IoSearch } from 'react-icons/io5'
 import { IoMdClose } from 'react-icons/io'
 import { IoChevronDown } from 'react-icons/io5'
 import axios from 'axios'
-import {
-  avatarServer,
-  nativeCurrency,
-  nativeCurrenciesImages,
-  useWidth,
-  setTabParams
-} from '../../utils'
+import { nativeCurrency, nativeCurrenciesImages, useWidth, setTabParams, tokenImageSrc } from '../../utils'
 import { niceCurrency, shortAddress, shortNiceNumber } from '../../utils/format'
 import RadioOptions from './RadioOptions'
 import { useRouter } from 'next/router'
@@ -77,7 +71,7 @@ export default function TokenSelector({
   const [searchResults, setSearchResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [searchTimeout, setSearchTimeout] = useState(null)
-  
+
   // Cache for search results to prevent unnecessary reloads
   const [lastSearchQuery, setLastSearchQuery] = useState('')
   const [cachedSearchResults, setCachedSearchResults] = useState([])
@@ -138,7 +132,7 @@ export default function TokenSelector({
           setSearchResults(cachedSearchResults)
           return
         }
-        
+
         setIsLoading(true)
         try {
           let tokens = []
@@ -146,7 +140,6 @@ export default function TokenSelector({
           if (destinationAddress) {
             // Fetch tokens that destination can hold based on trustlines
             tokens = await fetchTrustlinesForDestination(destinationAddress)
-            tokens = addNativeCurrencyIfNeeded(tokens, excludeNative)
           } else {
             // Fallback to original behavior if no destination address
             const response = await axios('v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true')
@@ -240,7 +233,7 @@ export default function TokenSelector({
 
   // Helper to get icon url if available
   const getTokenIcon = (token) => {
-    let imageUrl = avatarServer + token.issuer
+    let imageUrl = tokenImageSrc(token)
     if (!token.issuer) {
       imageUrl = nativeCurrenciesImages[nativeCurrency]
     }
