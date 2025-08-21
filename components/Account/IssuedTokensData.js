@@ -6,10 +6,9 @@ import {
   shortNiceNumber,
   fullNiceNumber,
   CurrencyWithIcon,
-  niceNumber,
   niceCurrency
 } from '../../utils/format'
-import { xahauNetwork } from '../../utils'
+import { nativeCurrency } from '../../utils'
 
 export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate }) {
   const { address, ledgerInfo } = data || {}
@@ -64,11 +63,12 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
     const supply = parseFloat(token.supply || 0)
     const stats = token.statistics || {}
     const volume24hToken = (Number(stats.buyVolume || 0) || 0) + (Number(stats.sellVolume || 0) || 0)
-    const uniqueBuyers = stats.uniqueBuyers || 0
-    const uniqueSellers = stats.uniqueSellers || 0
-    const traders24h = stats.uniqueDexAccounts || 0
-    const ammPools = stats.ammPools || 0
-    const activeAmmPools = stats.activeAmmPools || 0
+    const marketcap = token.statistics?.marketcap || 0
+    // const uniqueBuyers = stats.uniqueBuyers || 0
+    // const uniqueSellers = stats.uniqueSellers || 0
+    // const traders24h = stats.uniqueDexAccounts || 0
+    // const ammPools = stats.ammPools || 0
+    // const activeAmmPools = stats.activeAmmPools || 0
 
     return (
       <tr key={i}>
@@ -80,20 +80,40 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
         </td>
         <td className="right">
           <span className="tooltip">
+            {shortNiceNumber(stats.priceNativeCurrency * pageFiatRate, 2, 1, selectedCurrency)}
+            <span className="tooltiptext right no-brake">
+              {fullNiceNumber(stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}
+            </span>
+          </span>
+          <br />
+          <span className="tooltip grey">
+            {shortNiceNumber(stats.priceNativeCurrency || 0, 2, 1)} {nativeCurrency}
+            <span className="tooltiptext right no-brake">{fullNiceNumber(stats.priceNativeCurrency || 0)} {nativeCurrency}</span>
+          </span>
+        </td>
+        <td className="right">
+          <span className="tooltip">
+            {shortNiceNumber(marketcap * pageFiatRate, 2, 1, selectedCurrency)}
+            <span className="tooltiptext right no-brake">
+              {fullNiceNumber(marketcap * pageFiatRate, selectedCurrency)}
+            </span>
+          </span>
+          <br />
+          <span className="tooltip grey">
             {shortNiceNumber(supply)}
-            <span className="tooltiptext">{fullNiceNumber(supply)}</span>
+            <span className="tooltiptext right no-brake">{fullNiceNumber(supply)}</span>
           </span>
         </td>
         <td className="right">
           <span className="tooltip">
             {shortNiceNumber(token.holders || 0, 0, 0)}
-            <span className="tooltiptext">{fullNiceNumber(token.holders || 0)}</span>
+            <span className="tooltiptext right no-brake">{fullNiceNumber(token.holders || 0)}</span>
           </span>
         </td>
         <td className="right">
           <span className="tooltip">
             {shortNiceNumber(token.trustlines || 0, 0, 0)}
-            <span className="tooltiptext">{fullNiceNumber(token.trustlines || 0)}</span>
+            <span className="tooltiptext right no-brake">{fullNiceNumber(token.trustlines || 0)}</span>
           </span>
         </td>
         <td className="right">
@@ -102,25 +122,25 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
               <span className="tooltip" suppressHydrationWarning>
                 {shortNiceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, 2, 1, selectedCurrency)}
                 <span className="tooltiptext right no-brake" suppressHydrationWarning>
-                  {niceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, 0, selectedCurrency)}
+                  {fullNiceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}
                 </span>
               </span>
               <br />
               <span className="tooltip grey" suppressHydrationWarning>
                 {shortNiceNumber(volume24hToken, 2, 1)} {niceCurrency(token.currency)}
                 <span className="tooltiptext right no-brake" suppressHydrationWarning>
-                  {niceNumber(volume24hToken, 0)} {niceCurrency(token.currency)}
+                  {fullNiceNumber(volume24hToken)} {niceCurrency(token.currency)}
                 </span>
               </span>
             </>
           ) : (
             <span className="tooltip">
               {shortNiceNumber(volume24hToken, 2, 1)}
-              <span className="tooltiptext">{fullNiceNumber(volume24hToken)}</span>
+              <span className="tooltiptext right no-brake">{fullNiceNumber(volume24hToken)}</span>
             </span>
           )}
         </td>
-        <td className="right">
+        {/* <td className="right">
           <span className="tooltip green">
             {shortNiceNumber(uniqueBuyers, 0, 1)}
             <span className="tooltiptext no-brake">{fullNiceNumber(uniqueBuyers)}</span>
@@ -148,7 +168,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
               <span className="tooltiptext no-brake">{fullNiceNumber(activeAmmPools)}</span>
             </span>
           </td>
-        )}
+        )} */}
       </tr>
     )
   })
@@ -165,7 +185,8 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
         <thead>
           <tr>
             <th colSpan="100">
-              {tokensCountText(issuedTokens)} Issued Tokens{historicalTitle}
+              {tokensCountText(issuedTokens)} Issued Tokens{historicalTitle} [
+                <a href={'/tokens?issuer=' + address}>View more details</a>]
             </th>
           </tr>
         </thead>
@@ -173,11 +194,15 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
           <tr>
             <th>#</th>
             <th className="left">Currency</th>
-            <th className="right">Supply</th>
+            <th className="right">Price</th>
+            <th className="right">Marketcap
+              <br />
+              Supply
+            </th>
             <th className="right">Holders</th>
             <th className="right">Trustlines</th>
             <th className="right">Volume (24h)</th>
-            <th className="right">
+            {/* <th className="right">
               Buyers/Sellers
               <br />
               Traders (24h)
@@ -188,7 +213,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
                 <br />
                 Active (24h)
               </th>
-            )}
+            )} */}
           </tr>
           {loading ? (
             <tr>
@@ -213,7 +238,8 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
       <div className="show-on-small-w800">
         <br />
         <center>
-          {tokensCountText(issuedTokens)} Issued Tokens{historicalTitle}
+          {tokensCountText(issuedTokens)} Issued Tokens{historicalTitle} [
+            <a href={'/tokens?issuer=' + address}>View more details</a>]
         </center>
         <br />
         {loading ? (
@@ -230,16 +256,20 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
               <tr>
                 <th>#</th>
                 <th className="left">Currency</th>
-                <th className="right">Supply</th>
+                <th className="right">Price</th>
+                <th className="right">Marketcap
+                  <br />
+                  Supply
+                </th>
                 <th className="right">Holders</th>
                 <th className="right">Trustlines</th>
                 <th className="right">Volume (24h)</th>
-                <th className="right">
-                  {/* Buyers/Sellers
-                  <br /> */}
+                {/* <th className="right">
+                  Buyers/Sellers
+                  <br />
                   Traders (24h)
                 </th>
-                {!xahauNetwork && <th className="center">AMMs</th>}
+                {!xahauNetwork && <th className="center">AMMs</th>} */}
               </tr>
               {issuedTokensRows}
             </tbody>
