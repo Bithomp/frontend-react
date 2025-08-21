@@ -217,7 +217,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
           </tr>
           {loading ? (
             <tr>
-              <td colSpan="5" className="center">
+              <td colSpan="100" className="center">
                 <span className="waiting"></span>
                 <br />
                 {t('general.loading')}
@@ -225,7 +225,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
             </tr>
           ) : error ? (
             <tr>
-              <td colSpan="5" className="center orange bold">
+              <td colSpan="100" className="center orange bold">
                 {error}
               </td>
             </tr>

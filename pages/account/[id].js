@@ -19,7 +19,7 @@ const setBalancesFunction = (networkInfo, data) => {
   if (!data?.ledgerInfo || !networkInfo || data.ledgerInfo.balance === undefined) return null
   let balanceList = {
     total: {
-      native: data.ledgerInfo.balance
+      native: data.ledgerInfo.balance || 0
     },
     reserved: {
       native: Number(networkInfo.reserveBase) + data.ledgerInfo.ownerCount * networkInfo.reserveIncrement
@@ -47,6 +47,7 @@ export async function getServerSideProps(context) {
   const { id, ledgerTimestamp } = query
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ''
+
   if (account) {
     try {
       const res = await axiosServer({
@@ -139,6 +140,7 @@ export default function Account({
     "tokens": 7
   }
   */
+
   const [data, setData] = useState(initialData)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -229,7 +231,7 @@ export default function Account({
     setObjects({})
     checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, refreshPage, ledgerTimestamp])
+  }, [id, refreshPage, ledgerTimestamp, selectedCurrency])
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -240,7 +242,7 @@ export default function Account({
       fetchHistoricalRate({ timestamp: ledgerTimestamp, selectedCurrency, setPageFiatRate })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fiatRate, ledgerTimestamp])
+  }, [fiatRate, ledgerTimestamp, selectedCurrency])
 
   useEffect(() => {
     if (!data?.ledgerInfo || !networkInfo) return
@@ -667,4 +669,4 @@ export default function Account({
       `}</style>
     </>
   )
-}
+} 
