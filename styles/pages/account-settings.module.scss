@@ -47,7 +47,19 @@
         align-self: flex-end;
         width: auto;
       }
+
+      .flag-info-buttons {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+      }
     }
+  }
+
+  .flag-info-buttons {
+    display: flex;
+    gap: 0.5rem;
   }
 
   .flag-info {

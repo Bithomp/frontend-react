@@ -141,6 +141,7 @@ code {
 
 .code-highlight {
   background-color: var(--background-input-readonly);
+  word-break: break-all;
 }
 
 a, .link {
