@@ -201,7 +201,7 @@ export default function Tokens({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState(orderQuery || 'rating')
-  const [filtersHide, setFiltersHide] = useState(!isSsrMobile)
+  const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
   const [rendered, setRendered] = useState(false)
@@ -370,25 +370,13 @@ export default function Tokens({
   // Cleanup on unmount
   useEffect(() => {
     setRendered(true)
-    // fetch historical fiat rates for percent columns
-    if (selectedCurrency) {
-      const now = Date.now()
-      const t5m = now - 5 * 60 * 1000
-      const t1h = now - 1 * 60 * 60 * 1000
-      const t24h = now - 24 * 60 * 60 * 1000
-      const t7d = now - 7 * 24 * 60 * 60 * 1000
-      fetchHistoricalRate({ timestamp: t5m, selectedCurrency, setPageFiatRate: setFiatRate5m })
-      fetchHistoricalRate({ timestamp: t1h, selectedCurrency, setPageFiatRate: setFiatRate1h })
-      fetchHistoricalRate({ timestamp: t24h, selectedCurrency, setPageFiatRate: setFiatRate24h })
-      fetchHistoricalRate({ timestamp: t7d, selectedCurrency, setPageFiatRate: setFiatRate7d })
-    }
     return () => {
       controller.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Refetch historical fiat rates if currency changes
+  // Fetch historical fiat rates if currency changes
   useEffect(() => {
     if (!selectedCurrency) return
     const now = Date.now()
