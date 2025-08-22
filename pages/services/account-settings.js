@@ -1021,8 +1021,6 @@ export default function AccountSettings({
             {/* Basic ASF Flags */}
             {flagGroups.basic.map((flag) => renderFlagItem(flag, 'asf'))}
 
-
-
             {/* Account Fields */}
             <br />
             <h4>Account Fields</h4>
@@ -1037,22 +1035,12 @@ export default function AccountSettings({
                   </div>
                   <div className="flag-info-buttons">
                     {currentDomain && (
-                      <button
-                        className="button-action thin"
-                        onClick={handleClearDomain}
-                        disabled={!account?.address}
-                        style={{ minWidth: '120px' }}
-                      >
-                        Clear Domain
+                      <button className="button-action thin" onClick={handleClearDomain} disabled={!account?.address}>
+                        Clear
                       </button>
                     )}
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetDomain}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Set Domain
+                    <button className="button-action thin" onClick={handleSetDomain} disabled={!account?.address}>
+                      Set
                     </button>
                   </div>
                 </div>
@@ -1083,18 +1071,12 @@ export default function AccountSettings({
                         className="button-action thin"
                         onClick={handleClearEmailHash}
                         disabled={!account?.address}
-                        style={{ minWidth: '120px' }}
                       >
-                        Clear EmailHash
+                        Clear
                       </button>
                     )}
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetEmailHash}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Set EmailHash
+                    <button className="button-action thin" onClick={handleSetEmailHash} disabled={!account?.address}>
+                      Set
                     </button>
                   </div>
                 </div>
@@ -1123,18 +1105,12 @@ export default function AccountSettings({
                         className="button-action thin"
                         onClick={handleClearMessageKey}
                         disabled={!account?.address}
-                        style={{ minWidth: '120px' }}
                       >
-                        Clear MessageKey
+                        Clear
                       </button>
                     )}
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetMessageKey}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Set MessageKey
+                    <button className="button-action thin" onClick={handleSetMessageKey} disabled={!account?.address}>
+                      Set
                     </button>
                   </div>
                 </div>
@@ -1169,18 +1145,12 @@ export default function AccountSettings({
                         className="button-action thin"
                         onClick={handleClearTransferRate}
                         disabled={!account?.address}
-                        style={{ minWidth: '120px' }}
                       >
-                        Clear TransferRate
+                        Clear
                       </button>
                     )}
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetTransferRate}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Set TransferRate
+                    <button className="button-action thin" onClick={handleSetTransferRate} disabled={!account?.address}>
+                      Set
                     </button>
                   </div>
                 </div>
@@ -1207,13 +1177,8 @@ export default function AccountSettings({
                     )}
                   </div>
                   <div className="flag-info-buttons">
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetTickSize}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Set TickSize
+                    <button className="button-action thin" onClick={handleSetTickSize} disabled={!account?.address}>
+                      Set
                     </button>
                   </div>
                 </div>
@@ -1245,18 +1210,16 @@ export default function AccountSettings({
                         className="button-action thin"
                         onClick={handleClearWalletLocator}
                         disabled={!account?.address}
-                        style={{ minWidth: '120px' }}
                       >
-                        Clear WalletLocator
+                        Clear
                       </button>
                     )}
                     <button
                       className="button-action thin"
                       onClick={handleSetWalletLocator}
                       disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
                     >
-                      Set WalletLocator
+                      Set
                     </button>
                   </div>
                 </div>
@@ -1290,24 +1253,22 @@ export default function AccountSettings({
                           className="button-action thin"
                           onClick={handleClearNftTokenMinter}
                           disabled={!account?.address}
-                          style={{ minWidth: '120px' }}
                         >
-                          Clear NFTokenMinter
+                          Clear
                         </button>
                       )}
                       <button
                         className="button-action thin"
                         onClick={handleSetNftTokenMinter}
                         disabled={!account?.address || !nftTokenMinter.trim()}
-                        style={{ minWidth: '120px' }}
                       >
-                        Set NFTokenMinter
+                        Set
                       </button>
                     </div>
                   </div>
                   <div className="nft-minter-input">
                     <AddressInput
-                      title="NFTokenMinter Address"
+                      title="Update to a new NFTokenMinter"
                       placeholder="Enter NFTokenMinter address"
                       setInnerValue={setNftTokenMinter}
                       disabled={!account?.address}
