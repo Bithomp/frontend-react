@@ -1038,7 +1038,8 @@ export default function Tokens({
           )}
         </InfiniteScrolling>
       </FiltersFrame>
-      <style jsx global>{`
+
+      <style jsx>{`
         .clickable-row {
           cursor: pointer;
           transition: background-color 0.2s;
