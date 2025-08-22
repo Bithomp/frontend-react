@@ -662,7 +662,7 @@ export default function Tokens({
             openEmailLogin={openEmailLogin}
           >
             {/* Desktop table */}
-            {!isSsrMobile || width > 860 ? (
+            {!isSsrMobile || width > 1080 ? (
               <table className="table-large no-hover">
                 <thead>
                   <tr>
