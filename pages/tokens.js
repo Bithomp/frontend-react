@@ -504,8 +504,7 @@ export default function Tokens({
   const renderPercentCell = ({ currentXrp, pastXrp, pastFiatRate }) => {
     const current = Number(currentXrp || 0)
     const past = Number(pastXrp || 0)
-    if (!current || !past) return <span className="grey">-</span>
-    if (past === 0) return <span className="grey">-</span>
+    if (!current || !past || !fiatRate || !pastFiatRate) return <span className="grey">--%</span>
     const useFiat = fiatRate && pastFiatRate
     const currentVal = useFiat ? current * fiatRate : current
     const pastVal = useFiat ? past * pastFiatRate : past
@@ -514,6 +513,7 @@ export default function Tokens({
     const percentText = niceNumber(Math.abs(change * 100), 2) + '%'
     const currentFiat = fiatRate ? current * fiatRate : null
     const pastFiat = pastFiatRate ? past * pastFiatRate : null
+
     return (
       <span className={`tooltip ${colorClass}`} suppressHydrationWarning>
         {change >= 0 ? '+' : '-'}
@@ -523,13 +523,13 @@ export default function Tokens({
             <>
               Now: {fullNiceNumber(currentFiat, selectedCurrency)}
               <br />
-              Then: {fullNiceNumber(pastFiat, selectedCurrency)}
+              Before: {fullNiceNumber(pastFiat, selectedCurrency)}
             </>
           ) : (
             <>
               Now: {niceNumber(current, 6)} {nativeCurrency}
               <br />
-              Then: {niceNumber(past, 6)} {nativeCurrency}
+              Before: {niceNumber(past, 6)} {nativeCurrency}
             </>
           )}
         </span>
