@@ -207,7 +207,10 @@ export default function Tokens({
   const [currency, setCurrency] = useState(currencyQuery)
   const [rendered, setRendered] = useState(false)
   const [sortConfig, setSortConfig] = useState(getInitialSortConfig(orderQuery))
+  const [fiatRate5m, setFiatRate5m] = useState(null)
   const [fiatRate24h, setFiatRate24h] = useState(null)
+  const [fiatRate7d, setFiatRate7d] = useState(null)
+  const [fiatRate1h, setFiatRate1h] = useState(null)
 
   const controller = new AbortController()
 
@@ -919,7 +922,7 @@ export default function Tokens({
                                   Price in {nativeCurrency} 7d ago:{' '}
                                   {niceNumber(token.statistics?.priceNativeCurrency7d, 6)}
                                   <br /> */}
-                                  {/* 5m %:{' '}
+                                  5m %:{' '}
                                   {renderPercentCell({
                                     currentXrp: token.statistics?.priceNativeCurrency,
                                     pastXrp: token.statistics?.priceNativeCurrency5m,
@@ -932,7 +935,7 @@ export default function Tokens({
                                     pastXrp: token.statistics?.priceNativeCurrency1h,
                                     pastFiatRate: fiatRate1h
                                   })}
-                                  <br /> */}
+                                  <br />
                                   24h %:{' '}
                                   {renderPercentCell({
                                     currentXrp: token.statistics?.priceNativeCurrency,
@@ -940,13 +943,13 @@ export default function Tokens({
                                     pastFiatRate: fiatRate24h
                                   })}
                                   <br />
-                                  {/* 7d %:{' '}
+                                  7d %:{' '}
                                   {renderPercentCell({
                                     currentXrp: token.statistics?.priceNativeCurrency,
                                     pastXrp: token.statistics?.priceNativeCurrency7d,
                                     pastFiatRate: fiatRate7d
                                   })}
-                                  <br /> */}
+                                  <br />
                                   Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
                                   <br />
                                   Sell Volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
