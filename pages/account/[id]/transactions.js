@@ -93,10 +93,7 @@ export default function AccountTransactions({
   initialErrorMessage,
   initialMarker,
   initialUserData,
-  subscriptionExpired,
-  sessionToken,
   selectedCurrency,
-  openEmailLogin,
 }) {
 
   const { t } = useTranslation()
@@ -211,13 +208,6 @@ export default function AccountTransactions({
     let markerToUse = undefined
     if (!opts.restart) {
       markerToUse = opts.marker || marker
-    }
-
-    if (markerToUse && markerToUse !== 'first') {
-      if (!sessionToken || (sessionToken && subscriptionExpired)) {
-        setLoading(false)
-        return
-      }
     }
 
     try {
@@ -359,9 +349,8 @@ export default function AccountTransactions({
             }}
             hasMore={marker}
             errorMessage={errorMessage}
-            subscriptionExpired={subscriptionExpired}
-            sessionToken={sessionToken}
-            openEmailLogin={openEmailLogin}
+            subscriptionExpired={false}
+            sessionToken={true}
           >
             <table className={width > 600 ? 'table-large no-hover' : 'table-mobile'}>
               <tbody>
@@ -426,7 +415,7 @@ export default function AccountTransactions({
                    })
                  )}
                 </tbody>
-              </table>                        
+              </table>
           </InfiniteScrolling>
         </>
       </FiltersFrame>      
