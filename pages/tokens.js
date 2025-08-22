@@ -628,6 +628,9 @@ export default function Tokens({
         setFiltersHide={setFiltersHide}
         setSelectedCurrency={setSelectedCurrency}
         selectedCurrency={selectedCurrency}
+        order={order}
+        setOrder={setOrder}
+        orderList={orderList}
       >
         {/* Left filters */}
         <>
@@ -650,7 +653,7 @@ export default function Tokens({
         >
           {/* Desktop table */}
           {!isSsrMobile || width > 1080 ? (
-            <table className="table-large no-hover">
+            <table className="table-large no-hover expand">
               <thead>
                 <tr>
                   <th className="center">
