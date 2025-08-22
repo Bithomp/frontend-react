@@ -310,14 +310,21 @@ export const useLocalStorage = (key, initialValue) => {
   const setValue = useCallback(
     (value) => {
       try {
-        const valueToStore = value instanceof Function ? value(state) : value
-        setState(valueToStore)
-        localStorage.setItem(key, JSON.stringify(valueToStore))
+        if (typeof value === 'function') {
+          setState((prev) => {
+            const next = value(prev)
+            localStorage.setItem(key, JSON.stringify(next))
+            return next
+          })
+        } else {
+          setState(value)
+          localStorage.setItem(key, JSON.stringify(value))
+        }
       } catch {
         console.log('Error saving to localStorage')
       }
     },
-    [key, setState, state]
+    [key]
   )
 
   const remove = useCallback(() => {
@@ -936,4 +943,4 @@ export const xls14NftValue = (value) => {
   return false
 }
 
-export const md5 = (text) => SparkMD5.hash(text) 
+export const md5 = (text) => SparkMD5.hash(text)
