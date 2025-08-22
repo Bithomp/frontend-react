@@ -7,6 +7,7 @@ import SEO from '../../components/SEO'
 import { network } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { i18n } from 'next-i18next'
+
 export async function getServerSideProps(context) {
   const { locale } = context
   return {

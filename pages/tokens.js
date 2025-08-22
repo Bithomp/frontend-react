@@ -66,7 +66,7 @@ import { fetchHistoricalRate } from '../utils/common'
       "ripplingTxs": 0,
       "uniqueAccounts": 730,
       "uniqueDexAccounts": 178,
-      "priceXrp": "0.1146566270598530742",
+      "priceNativeCurrency": "0.1146566270598530742",
       "marketcap": "45723206.888776201217059311928860827119097212012795446"
     }
   }
@@ -516,7 +516,8 @@ export default function Tokens({
     const pastFiat = pastFiatRate ? past * pastFiatRate : null
     return (
       <span className={`tooltip ${colorClass}`} suppressHydrationWarning>
-        {change >= 0 ? '+' : '-'}{percentText}
+        {change >= 0 ? '+' : '-'}
+        {percentText}
         <span className="tooltiptext right no-brake" suppressHydrationWarning>
           {fiatRate && pastFiatRate ? (
             <>
@@ -545,7 +546,7 @@ export default function Tokens({
     } else {
       volume = statistics?.[type + 'Volume'] || 0
     }
-    const volumeFiat = volume * statistics?.priceXrp * fiatRate || 0
+    const volumeFiat = volume * statistics?.priceNativeCurrency * fiatRate || 0
 
     if (mobile) {
       return (
@@ -665,47 +666,102 @@ export default function Tokens({
               <table className="table-large no-hover">
                 <thead>
                   <tr>
-                    <th className="center">                    
-                      <b className={'link' + (sortConfig.key === 'rating' ? ' orange' : '')} onClick={() => sortTable('rating')}> #</b>
+                    <th className="center">
+                      <b
+                        className={'link' + (sortConfig.key === 'rating' ? ' orange' : '')}
+                        onClick={() => sortTable('rating')}
+                      >
+                        {' '}
+                        #
+                      </b>
                     </th>
                     <th>Token</th>
                     <th className="right">
                       Price
-                      <b className={'link' + (sortConfig.key === 'price' ? ' orange' : '')} onClick={() => sortTable('price')}> ⇅</b>
+                      <b
+                        className={'link' + (sortConfig.key === 'price' ? ' orange' : '')}
+                        onClick={() => sortTable('price')}
+                      >
+                        {' '}
+                        ⇅
+                      </b>
                     </th>
-                    <th className="right">5m % / 1h % <br /> 24h % / 7d %</th>
-                  
+                    <th className="right">
+                      5m % / 1h % <br /> 24h % / 7d %
+                    </th>
+
                     <th className="right">
                       Buy volume
                       <br />
                       (24h)
-                      <b className={'link' + (sortConfig.key === 'buyVolume' ? ' orange' : '')} onClick={() => sortTable('buyVolume')}> ⇅</b>
+                      <b
+                        className={'link' + (sortConfig.key === 'buyVolume' ? ' orange' : '')}
+                        onClick={() => sortTable('buyVolume')}
+                      >
+                        {' '}
+                        ⇅
+                      </b>
                     </th>
                     <th className="right">
                       Sell volume
                       <br />
                       (24h)
-                      <b className={'link' + (sortConfig.key === 'sellVolume' ? ' orange' : '')} onClick={() => sortTable('sellVolume')}> ⇅</b>
+                      <b
+                        className={'link' + (sortConfig.key === 'sellVolume' ? ' orange' : '')}
+                        onClick={() => sortTable('sellVolume')}
+                      >
+                        {' '}
+                        ⇅
+                      </b>
                     </th>
                     <th className="right">
                       Total volume
                       <br />
                       (24h)
-                      <b className={'link' + (sortConfig.key === 'totalVolume' ? ' orange' : '')} onClick={() => sortTable('totalVolume')}> ⇅</b>
+                      <b
+                        className={'link' + (sortConfig.key === 'totalVolume' ? ' orange' : '')}
+                        onClick={() => sortTable('totalVolume')}
+                      >
+                        {' '}
+                        ⇅
+                      </b>
                     </th>
                     <th className="right">
-                      Buyers <b className={'link' + (sortConfig.key === 'uniqueBuyers' ? ' orange' : '')} onClick={() => sortTable('uniqueBuyers')}>⇅</b>
-                      {' '} / {' '}
-                      Sellers <b className={'link' + (sortConfig.key === 'uniqueSellers' ? ' orange' : '')} onClick={() => sortTable('uniqueSellers')}>⇅</b>
+                      Buyers{' '}
+                      <b
+                        className={'link' + (sortConfig.key === 'uniqueBuyers' ? ' orange' : '')}
+                        onClick={() => sortTable('uniqueBuyers')}
+                      >
+                        ⇅
+                      </b>{' '}
+                      / Sellers{' '}
+                      <b
+                        className={'link' + (sortConfig.key === 'uniqueSellers' ? ' orange' : '')}
+                        onClick={() => sortTable('uniqueSellers')}
+                      >
+                        ⇅
+                      </b>
                       <br />
                       Traders (24h)
-                      <b className={'link' + (sortConfig.key === 'uniqueTraders' ? ' orange' : '')} onClick={() => sortTable('uniqueTraders')}> ⇅</b>
+                      <b
+                        className={'link' + (sortConfig.key === 'uniqueTraders' ? ' orange' : '')}
+                        onClick={() => sortTable('uniqueTraders')}
+                      >
+                        {' '}
+                        ⇅
+                      </b>
                     </th>
                     <th className="right">
                       Holders,
                       <br />
                       Active (24h)
-                      <b className={'link' + (sortConfig.key === 'holders' ? ' orange' : '')} onClick={() => sortTable('holders')}> ⇅</b>
+                      <b
+                        className={'link' + (sortConfig.key === 'holders' ? ' orange' : '')}
+                        onClick={() => sortTable('holders')}
+                      >
+                        {' '}
+                        ⇅
+                      </b>
                     </th>
                     {!xahauNetwork && (
                       <th className="center">
@@ -721,11 +777,23 @@ export default function Tokens({
                     </th>
                     <th className="right">
                       Marketcap
-                      <b className={'link' + (sortConfig.key === 'marketcap' ? ' orange' : '')} onClick={() => sortTable('marketcap')}> ⇅</b>
+                      <b
+                        className={'link' + (sortConfig.key === 'marketcap' ? ' orange' : '')}
+                        onClick={() => sortTable('marketcap')}
+                      >
+                        {' '}
+                        ⇅
+                      </b>
                     </th>
                     <th className="right">
                       Trustlines
-                      <b className={'link' + (sortConfig.key === 'trustlines' ? ' orange' : '')} onClick={() => sortTable('trustlines')}> ⇅</b>
+                      <b
+                        className={'link' + (sortConfig.key === 'trustlines' ? ' orange' : '')}
+                        onClick={() => sortTable('trustlines')}
+                      >
+                        {' '}
+                        ⇅
+                      </b>
                     </th>
                     <th className="center">Action</th>
                   </tr>
@@ -749,8 +817,8 @@ export default function Tokens({
                         <>
                           {data.map((token, i) => {
                             return (
-                              <tr 
-                                key={i} 
+                              <tr
+                                key={i}
                                 className="clickable-row"
                                 onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
                               >
@@ -758,32 +826,36 @@ export default function Tokens({
                                 <td>
                                   <TokenCell token={token} />
                                 </td>
-                                <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
-                                
+                                <td className="right">
+                                  {priceToFiat({ price: token.statistics?.priceNativeCurrency })}
+                                </td>
+
                                 <td className="right">
                                   {renderPercentCell({
-                                    currentXrp: token.statistics?.priceXrp,
-                                    pastXrp: token.statistics?.priceXrp5m,
+                                    currentXrp: token.statistics?.priceNativeCurrency,
+                                    pastXrp: token.statistics?.priceNativeCurrency5m,
                                     pastFiatRate: fiatRate5m
-                                  })} / {' '}
+                                  })}{' '}
+                                  /{' '}
                                   {renderPercentCell({
-                                    currentXrp: token.statistics?.priceXrp,
-                                    pastXrp: token.statistics?.priceXrp1h,
+                                    currentXrp: token.statistics?.priceNativeCurrency,
+                                    pastXrp: token.statistics?.priceNativeCurrency1h,
                                     pastFiatRate: fiatRate1h
                                   })}
                                   <br />
                                   {renderPercentCell({
-                                    currentXrp: token.statistics?.priceXrp,
-                                    pastXrp: token.statistics?.priceXrp24h,
+                                    currentXrp: token.statistics?.priceNativeCurrency,
+                                    pastXrp: token.statistics?.priceNativeCurrency24h,
                                     pastFiatRate: fiatRate24h
-                                  })} / {' '}
+                                  })}{' '}
+                                  /{' '}
                                   {renderPercentCell({
-                                    currentXrp: token.statistics?.priceXrp,
-                                    pastXrp: token.statistics?.priceXrp7d,
+                                    currentXrp: token.statistics?.priceNativeCurrency,
+                                    pastXrp: token.statistics?.priceNativeCurrency7d,
                                     pastFiatRate: fiatRate7d
                                   })}
-                                </td>                              
-                              
+                                </td>
+
                                 <td className="right">{volumeToFiat({ token, type: 'buy' })}</td>
                                 <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
                                 <td className="right">{volumeToFiat({ token })}</td>
@@ -891,8 +963,8 @@ export default function Tokens({
                         <>
                           {data.map((token, i) => {
                             return (
-                              <tr 
-                                key={i} 
+                              <tr
+                                key={i}
                                 className="clickable-row"
                                 onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
                               >
@@ -907,37 +979,45 @@ export default function Tokens({
                                     <br />
                                     Currency code: {shortHash(token.currency)} <CopyButton text={token.currency} />
                                     <br />
-                                    Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
+                                    Price: {priceToFiat({ price: token.statistics?.priceNativeCurrency, mobile: true })}
                                     <br />
-                                    Price in {nativeCurrency} 5m ago: {niceNumber(token.statistics?.priceXrp5m, 6)}
+                                    Price in {nativeCurrency} 5m ago:{' '}
+                                    {niceNumber(token.statistics?.priceNativeCurrency5m, 6)}
                                     <br />
-                                    Price in {nativeCurrency} 1h ago: {niceNumber(token.statistics?.priceXrp1h, 6)}
+                                    Price in {nativeCurrency} 1h ago:{' '}
+                                    {niceNumber(token.statistics?.priceNativeCurrency1h, 6)}
                                     <br />
-                                    Price in {nativeCurrency} 24h ago: {niceNumber(token.statistics?.priceXrp24h, 6)}
+                                    Price in {nativeCurrency} 24h ago:{' '}
+                                    {niceNumber(token.statistics?.priceNativeCurrency24h, 6)}
                                     <br />
-                                    Price in {nativeCurrency} 7d ago: {niceNumber(token.statistics?.priceXrp7d, 6)}
+                                    Price in {nativeCurrency} 7d ago:{' '}
+                                    {niceNumber(token.statistics?.priceNativeCurrency7d, 6)}
                                     <br />
-                                    5m %: {renderPercentCell({
-                                      currentXrp: token.statistics?.priceXrp,
-                                      pastXrp: token.statistics?.priceXrp5m,
+                                    5m %:{' '}
+                                    {renderPercentCell({
+                                      currentXrp: token.statistics?.priceNativeCurrency,
+                                      pastXrp: token.statistics?.priceNativeCurrency5m,
                                       pastFiatRate: fiatRate5m
                                     })}
                                     <br />
-                                    1h %: {renderPercentCell({
-                                      currentXrp: token.statistics?.priceXrp,
-                                      pastXrp: token.statistics?.priceXrp1h,
+                                    1h %:{' '}
+                                    {renderPercentCell({
+                                      currentXrp: token.statistics?.priceNativeCurrency,
+                                      pastXrp: token.statistics?.priceNativeCurrency1h,
                                       pastFiatRate: fiatRate1h
                                     })}
                                     <br />
-                                    24h %: {renderPercentCell({
-                                      currentXrp: token.statistics?.priceXrp,
-                                      pastXrp: token.statistics?.priceXrp24h,
+                                    24h %:{' '}
+                                    {renderPercentCell({
+                                      currentXrp: token.statistics?.priceNativeCurrency,
+                                      pastXrp: token.statistics?.priceNativeCurrency24h,
                                       pastFiatRate: fiatRate24h
                                     })}
                                     <br />
-                                    7d %: {renderPercentCell({
-                                      currentXrp: token.statistics?.priceXrp,
-                                      pastXrp: token.statistics?.priceXrp7d,
+                                    7d %:{' '}
+                                    {renderPercentCell({
+                                      currentXrp: token.statistics?.priceNativeCurrency,
+                                      pastXrp: token.statistics?.priceNativeCurrency7d,
                                       pastFiatRate: fiatRate7d
                                     })}
                                     <br />
@@ -961,7 +1041,8 @@ export default function Tokens({
                                     <br />
                                     Supply: {niceNumber(token.supply, 0)} {niceCurrency(token.currency)}
                                     <br />
-                                    Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
+                                    Marketcap:{' '}
+                                    {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
                                     <br />
                                     Trustlines: {niceNumber(token.trustlines)}
                                     <br />
@@ -1053,11 +1134,11 @@ export default function Tokens({
             cursor: pointer;
             transition: background-color 0.2s;
           }
-          
+
           .clickable-row:hover {
             background-color: var(--unaccent-icon);
           }
-          
+
           .clickable-row td {
             position: relative;
           }
