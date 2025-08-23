@@ -1,7 +1,15 @@
 import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { explorerName, isAddressValid, typeNumberOnly, nativeCurrency, isTagValid, encode, decode, addAndRemoveQueryParams } from '../../utils'
+import {
+  isAddressValid,
+  typeNumberOnly,
+  nativeCurrency,
+  isTagValid,
+  encode,
+  decode,
+  addAndRemoveQueryParams
+} from '../../utils'
 import { multiply } from '../../utils/calc'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { useState, useEffect } from 'react'
@@ -289,7 +297,7 @@ export default function CreateEscrow({
 
   return (
     <>
-      <SEO title="Create Escrow" description={'Create an escrow transaction on the ' + explorerName} />
+      <SEO title="Create Escrow" description="Create an Escrow transaction" />
       <div className="content-text content-center">
         <h1 className="center">Create Escrow</h1>
         <NetworkTabs />
@@ -578,18 +586,8 @@ export default function CreateEscrow({
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
-  const {
-    address,
-    amount,
-    destinationTag,
-    finishAfter,
-    cancelAfter,
-    condition,
-    fulfillment,
-    memo,
-    fee,
-    sourceTag
-  } = query || {}
+  const { address, amount, destinationTag, finishAfter, cancelAfter, condition, fulfillment, memo, fee, sourceTag } =
+    query || {}
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
