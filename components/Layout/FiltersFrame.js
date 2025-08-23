@@ -12,35 +12,36 @@ import { FaFilter } from 'react-icons/fa'
 import { setTabParams, useWidth } from '../../utils'
 import CurrencySelect from '../UI/CurrencySelect'
 import { TablePagination } from '@mui/material'
+import { capitalize, shortHash } from '../../utils/format'
 
 // Filter Indicator Component
 function FilterIndicator({ filters }) {
   // Check if any filters are active
-  const activeFilters = Object.entries(filters).filter(([, value]) => 
-    value && value !== '' && value !== null && value !== undefined
+  const activeFilters = Object.entries(filters).filter(
+    ([, value]) => value && value !== '' && value !== null && value !== undefined
   )
-  
+
   if (activeFilters.length === 0) {
     return null
   }
-  
-  const renderFilterValue = (key, value) => {  
-    
-    return `${key.charAt(0).toUpperCase() + key.slice(1)} = ${value}`
+
+  const renderFilterValue = (key, value) => {
+    return capitalize(key) + ' = ' + shortHash(value)
   }
-  
+
   return (
     <div className="center mb-2">
       <FaFilter />
       <span>
-        Filter applied: {activeFilters.map(([key, value], index) => (
+        Filter applied:{' '}
+        {activeFilters.map(([key, value], index) => (
           <span key={key}>
             {index > 0 && index === activeFilters.length - 1 ? ' and ' : ''}
             {index > 0 && index < activeFilters.length - 1 ? ', ' : ''}
             {renderFilterValue(key, value)}
           </span>
         ))}
-      </span>      
+      </span>
     </div>
   )
 }
@@ -67,8 +68,7 @@ export default function FiltersFrame({
   rowsPerPage,
   setRowsPerPage,
   onlyCsv,
-  filters = {},
-  showFilterIndicator = false
+  filters
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -153,7 +153,7 @@ export default function FiltersFrame({
               </>
             ) : (
               ''
-            )}            
+            )}
 
             {orderList && (
               <>
@@ -225,14 +225,10 @@ export default function FiltersFrame({
       >
         {children[0]}
       </LeftFilters>
-      
+
       <div className="content-text" style={contentStyle}>
         {/* Filter Indicator */}
-        {showFilterIndicator && (
-          <FilterIndicator
-            filters={filters}
-          />
-        )}
+        {filters && (width > 1300 ? filtersHide : !filtersHide) && <FilterIndicator filters={filters} />}
         {children[1]}
       </div>
     </div>

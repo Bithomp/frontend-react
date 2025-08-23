@@ -469,7 +469,6 @@ export default function Tokens({
           issuer: issuer || '',
           currency: currency || ''
         }}
-        showFilterIndicator={width > 1300 ? filtersHide : !filtersHide}
       >
         {/* Left filters */}
         <>
@@ -563,8 +562,8 @@ export default function Tokens({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr 
-                              key={i} 
+                            <tr
+                              key={i}
                               className="clickable-row"
                               onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
                             >
@@ -684,8 +683,8 @@ export default function Tokens({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr 
-                              key={i} 
+                            <tr
+                              key={i}
                               className="clickable-row"
                               onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
                             >
@@ -814,11 +813,11 @@ export default function Tokens({
           cursor: pointer;
           transition: background-color 0.2s;
         }
-        
+
         .clickable-row:hover {
           background-color: var(--unaccent-icon);
         }
-        
+
         .clickable-row td {
           position: relative;
         }
