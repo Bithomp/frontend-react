@@ -618,7 +618,7 @@ export default function History({
         <div className="tabs-inline" style={{ marginTop: -10 }}>
           <ProTabs tab="balance-changes" />
 
-          {isSsrMobile ? <br /> : null}
+          {isSsrMobile ? <br /> : ''}
 
           <Link
             href="/learn/xrp-xah-taxes"
