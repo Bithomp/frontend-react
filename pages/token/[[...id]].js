@@ -179,7 +179,7 @@ export default function TokenPage({
     } else {
       volume = statistics?.[type + 'Volume'] || 0
     }
-    const volumeFiat = volume * (statistics?.priceXrp || 0) * fiatRate || 0
+    const volumeFiat = volume * (statistics?.priceNativeCurrency || 0) * fiatRate || 0
     return (
       <span suppressHydrationWarning>
         {niceNumber(volume, 2)} {currencyDetails.currency}
@@ -356,40 +356,40 @@ export default function TokenPage({
               <tbody>
                 <tr>
                   <td>Current Price</td>
-                  <td>{priceLine({ price: statistics?.priceXrp, key: 'current' })}</td>
+                  <td>{priceLine({ price: statistics?.priceNativeCurrency, key: 'current' })}</td>
                 </tr>
                 <tr>
                   <td>Market Cap</td>
                   <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
                 </tr>
-                {statistics?.priceXrpSpot && (
+                {statistics?.priceNativeCurrencySpot && (
                   <tr>
                     <td>Spot Price</td>
-                    <td>{priceLine({ price: statistics?.priceXrpSpot, key: 'spot' })}</td>
+                    <td>{priceLine({ price: statistics?.priceNativeCurrencySpot, key: 'spot' })}</td>
                   </tr>
                 )}
-                {statistics?.priceXrp1h && (
+                {statistics?.priceNativeCurrency1h && (
                   <tr>
                     <td>1 Hour Ago</td>
-                    <td>{priceLine({ price: statistics?.priceXrp1h, key: '1h' })}</td>
+                    <td>{priceLine({ price: statistics?.priceNativeCurrency1h, key: '1h' })}</td>
                   </tr>
                 )}
-                {statistics?.priceXrp5m && (
+                {statistics?.priceNativeCurrency5m && (
                   <tr>
                     <td>5 Minutes Ago</td>
-                    <td>{priceLine({ price: statistics?.priceXrp5m, key: '5m' })}</td>
+                    <td>{priceLine({ price: statistics?.priceNativeCurrency5m, key: '5m' })}</td>
                   </tr>
                 )}
-                {statistics?.priceXrp24h && (
+                {statistics?.priceNativeCurrency24h && (
                   <tr>
                     <td>24 Hours Ago</td>
-                    <td>{priceLine({ price: statistics?.priceXrp24h, key: '24h' })}</td>
+                    <td>{priceLine({ price: statistics?.priceNativeCurrency24h, key: '24h' })}</td>
                   </tr>
                 )}
-                {statistics?.priceXrp7d && (
+                {statistics?.priceNativeCurrency7d && (
                   <tr>
                     <td>7 Days Ago</td>
-                    <td>{priceLine({ price: statistics?.priceXrp7d, key: '7d' })}</td>
+                    <td>{priceLine({ price: statistics?.priceNativeCurrency7d, key: '7d' })}</td>
                   </tr>
                 )}
               </tbody>

@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
-import { fullDateAndTime, shortNiceNumber, fullNiceNumber, CurrencyWithIcon } from '../../utils/format'
+import {
+  fullDateAndTime,
+  shortNiceNumber,
+  fullNiceNumber,
+  CurrencyWithIcon,
+  niceNumber,
+  niceCurrency
+} from '../../utils/format'
+import { xahauNetwork } from '../../utils'
 
-export default function IssuedTokensData({ data }) {
+export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate }) {
   const { address, ledgerInfo } = data || {}
   const { ledgerTimestamp, ledgerIndex } = ledgerInfo || {}
 
@@ -54,6 +62,13 @@ export default function IssuedTokensData({ data }) {
 
   const issuedTokensRows = issuedTokens.map((token, i) => {
     const supply = parseFloat(token.supply || 0)
+    const stats = token.statistics || {}
+    const volume24hToken = (Number(stats.buyVolume || 0) || 0) + (Number(stats.sellVolume || 0) || 0)
+    const uniqueBuyers = stats.uniqueBuyers || 0
+    const uniqueSellers = stats.uniqueSellers || 0
+    const traders24h = stats.uniqueDexAccounts || 0
+    const ammPools = stats.ammPools || 0
+    const activeAmmPools = stats.activeAmmPools || 0
 
     return (
       <tr key={i}>
@@ -64,7 +79,7 @@ export default function IssuedTokensData({ data }) {
           <CurrencyWithIcon token={token} />
         </td>
         <td className="right">
-          <span className="bold tooltip">
+          <span className="tooltip">
             {shortNiceNumber(supply)}
             <span className="tooltiptext">{fullNiceNumber(supply)}</span>
           </span>
@@ -81,6 +96,59 @@ export default function IssuedTokensData({ data }) {
             <span className="tooltiptext">{fullNiceNumber(token.trustlines || 0)}</span>
           </span>
         </td>
+        <td className="right">
+          {pageFiatRate && stats?.priceNativeCurrency ? (
+            <>
+              <span className="tooltip" suppressHydrationWarning>
+                {shortNiceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, 2, 1, selectedCurrency)}
+                <span className="tooltiptext right no-brake" suppressHydrationWarning>
+                  {niceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, 0, selectedCurrency)}
+                </span>
+              </span>
+              <br />
+              <span className="tooltip grey" suppressHydrationWarning>
+                {shortNiceNumber(volume24hToken, 2, 1)} {niceCurrency(token.currency)}
+                <span className="tooltiptext right no-brake" suppressHydrationWarning>
+                  {niceNumber(volume24hToken, 0)} {niceCurrency(token.currency)}
+                </span>
+              </span>
+            </>
+          ) : (
+            <span className="tooltip">
+              {shortNiceNumber(volume24hToken, 2, 1)}
+              <span className="tooltiptext">{fullNiceNumber(volume24hToken)}</span>
+            </span>
+          )}
+        </td>
+        <td className="right">
+          <span className="tooltip green">
+            {shortNiceNumber(uniqueBuyers, 0, 1)}
+            <span className="tooltiptext no-brake">{fullNiceNumber(uniqueBuyers)}</span>
+          </span>{' '}
+          /{' '}
+          <span className="tooltip red">
+            {shortNiceNumber(uniqueSellers, 0, 1)}
+            <span className="tooltiptext no-brake">{fullNiceNumber(uniqueSellers)}</span>
+          </span>
+          <br />
+          <span className="tooltip">
+            {shortNiceNumber(traders24h, 0, 1)}
+            <span className="tooltiptext no-brake">{fullNiceNumber(traders24h)}</span>
+          </span>
+        </td>
+        {!xahauNetwork && (
+          <td className="center">
+            <a href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`} className="tooltip">
+              {ammPools}
+              <span className="tooltiptext no-brake">View AMMs</span>
+            </a>
+            <br />
+            <span className="tooltip green">
+              {shortNiceNumber(activeAmmPools, 0, 1)}
+              <span className="tooltiptext no-brake">{fullNiceNumber(activeAmmPools)}</span>
+            </span>
+          </td>
+        )}
       </tr>
     )
   })
@@ -108,10 +176,23 @@ export default function IssuedTokensData({ data }) {
             <th className="right">Supply</th>
             <th className="right">Holders</th>
             <th className="right">Trustlines</th>
+            <th className="right">Volume (24h)</th>
+            <th className="right">
+              Buyers/Sellers
+              <br />
+              Traders (24h)
+            </th>
+            {!xahauNetwork && (
+              <th className="center">
+                AMMs (total)
+                <br />
+                Active (24h)
+              </th>
+            )}
           </tr>
           {loading ? (
             <tr>
-              <td colSpan="5" className="center">
+              <td colSpan="100" className="center">
                 <span className="waiting"></span>
                 <br />
                 {t('general.loading')}
@@ -119,7 +200,7 @@ export default function IssuedTokensData({ data }) {
             </tr>
           ) : error ? (
             <tr>
-              <td colSpan="5" className="center orange bold">
+              <td colSpan="100" className="center orange bold">
                 {error}
               </td>
             </tr>
@@ -152,6 +233,13 @@ export default function IssuedTokensData({ data }) {
                 <th className="right">Supply</th>
                 <th className="right">Holders</th>
                 <th className="right">Trustlines</th>
+                <th className="right">Volume (24h)</th>
+                <th className="right">
+                  {/* Buyers/Sellers
+                  <br /> */}
+                  Traders (24h)
+                </th>
+                {!xahauNetwork && <th className="center">AMMs</th>}
               </tr>
               {issuedTokensRows}
             </tbody>
