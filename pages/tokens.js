@@ -628,6 +628,10 @@ export default function Tokens({
         setFiltersHide={setFiltersHide}
         setSelectedCurrency={setSelectedCurrency}
         selectedCurrency={selectedCurrency}
+        filters={{
+          issuer: issuer || '',
+          currency: currency || ''
+        }}
         order={order}
         setOrder={setOrder}
         orderList={orderList}
