@@ -632,7 +632,6 @@ export default function Tokens({
           issuer: issuer || '',
           currency: currency || ''
         }}
-        showFilterIndicator={width > 1300 ? filtersHide : !filtersHide}
         order={order}
         setOrder={setOrder}
         orderList={orderList}
