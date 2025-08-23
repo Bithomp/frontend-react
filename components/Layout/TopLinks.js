@@ -231,6 +231,7 @@ export default function TopLinks({ activatedAccount }) {
             ? 'Build your long-term wealth with industry-leading rates on XRP, BTC, and more.'
             : 'Earn up to 14%'}
         </a>
+        <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
       </span>
       {/*
       {width > 1200 || isMobile ? <span style={{ padding: '0 10px' }}>|</span> : ''}
