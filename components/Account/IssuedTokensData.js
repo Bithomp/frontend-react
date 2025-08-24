@@ -1,13 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
-import {
-  fullDateAndTime,
-  shortNiceNumber,
-  fullNiceNumber,
-  CurrencyWithIcon,
-  niceCurrency
-} from '../../utils/format'
+import { fullDateAndTime, shortNiceNumber, fullNiceNumber, CurrencyWithIcon, niceCurrency } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 
 export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate }) {
@@ -59,109 +53,125 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
     ''
   )
 
-  const issuedTokensRows = (mobile = false) => issuedTokens.map((token, i) => {
-    const supply = parseFloat(token.supply || 0)
-    const stats = token.statistics || {}
-    const volume24hToken = (Number(stats.buyVolume || 0) || 0) + (Number(stats.sellVolume || 0) || 0)
-    const marketcap = token.statistics?.marketcap || 0
+  const issuedTokensRows = (mobile = false) =>
+    issuedTokens.map((token, i) => {
+      const supply = parseFloat(token.supply || 0)
+      const stats = token.statistics || {}
+      const volume24hToken = (Number(stats.buyVolume || 0) || 0) + (Number(stats.sellVolume || 0) || 0)
+      const marketcap = token.statistics?.marketcap || 0
 
-    return (
-      <tr key={i}>
-        <td className="center" style={{ width: 30 }}>
-          {i + 1}
-        </td>
-        {mobile ? (
-          <td className="left">
-            <CurrencyWithIcon token={token} />
-            <br />
-            <span>Price: {fullNiceNumber(stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}</span>
-            <br />
-            <span>Price in {nativeCurrency}: {fullNiceNumber(stats.priceNativeCurrency || 0)} {nativeCurrency}</span>
-            <br />
-            <span>Marketcap: {fullNiceNumber(marketcap * pageFiatRate, selectedCurrency)}</span>
-            <br />
-            <span>Supply: {fullNiceNumber(supply)}</span>
-            <br />
-            <span>Holders: {fullNiceNumber(token.holders || 0)}</span>
-            <br />
-            <span>Trustlines: {fullNiceNumber(token.trustlines || 0)}</span>
-            <br />
-            <span>Volume (24h): {fullNiceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}</span>
-            <br />
-            <span>Volume (24h) in {nativeCurrency}: {fullNiceNumber(volume24hToken * stats.priceNativeCurrency || 0)} {nativeCurrency}</span>
+      return (
+        <tr key={i}>
+          <td className="center" style={{ width: 30 }}>
+            {i + 1}
           </td>
-        ) : (
-          <>
+          {mobile ? (
             <td className="left">
               <CurrencyWithIcon token={token} />
-            </td>
-            <td className="right">
-              <span className="tooltip">
-                {shortNiceNumber(stats.priceNativeCurrency * pageFiatRate, 2, 1, selectedCurrency)}
-                <span className="tooltiptext right no-brake">
-                  {fullNiceNumber(stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}
-                </span>
+              <br />
+              <span>Price: {fullNiceNumber(stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}</span>
+              <br />
+              <span>
+                Price in {nativeCurrency}: {fullNiceNumber(stats.priceNativeCurrency || 0)} {nativeCurrency}
               </span>
               <br />
-              <span className="tooltip grey">
-                {shortNiceNumber(stats.priceNativeCurrency || 0, 2, 1)} {nativeCurrency}
-                <span className="tooltiptext right no-brake">{fullNiceNumber(stats.priceNativeCurrency || 0)} {nativeCurrency}</span>
-              </span>
-            </td>
-            <td className="right">
-              <span className="tooltip">
-                {shortNiceNumber(marketcap * pageFiatRate, 2, 1, selectedCurrency)}
-                <span className="tooltiptext right no-brake">
-                  {fullNiceNumber(marketcap * pageFiatRate, selectedCurrency)}
-                </span>
+              <span>Marketcap: {fullNiceNumber(marketcap * pageFiatRate, selectedCurrency)}</span>
+              <br />
+              <span>Supply: {fullNiceNumber(supply)}</span>
+              <br />
+              <span>Holders: {fullNiceNumber(token.holders || 0)}</span>
+              <br />
+              <span>Trustlines: {fullNiceNumber(token.trustlines || 0)}</span>
+              <br />
+              <span>
+                Volume (24h):{' '}
+                {fullNiceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}
               </span>
               <br />
-              <span className="tooltip grey">
-                {shortNiceNumber(supply)}
-                <span className="tooltiptext right no-brake">{fullNiceNumber(supply)}</span>
+              <span>
+                Volume (24h) in {nativeCurrency}: {fullNiceNumber(volume24hToken * stats.priceNativeCurrency || 0)}{' '}
+                {nativeCurrency}
               </span>
             </td>
-            <td className="right">
-              <span className="tooltip">
-                {shortNiceNumber(token.holders || 0, 0, 0)}
-                <span className="tooltiptext right no-brake">{fullNiceNumber(token.holders || 0)}</span>
-              </span>
-            </td>
-            <td className="right">
-              <span className="tooltip">
-                {shortNiceNumber(token.trustlines || 0, 0, 0)}
-                <span className="tooltiptext right no-brake">{fullNiceNumber(token.trustlines || 0)}</span>
-              </span>
-            </td>
-            <td className="right">
-              {pageFiatRate && stats?.priceNativeCurrency ? (
-                <>
-                  <span className="tooltip" suppressHydrationWarning>
-                    {shortNiceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, 2, 1, selectedCurrency)}
-                    <span className="tooltiptext right no-brake" suppressHydrationWarning>
-                      {fullNiceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}
-                    </span>
-                  </span>
-                  <br />
-                  <span className="tooltip grey" suppressHydrationWarning>
-                    {shortNiceNumber(volume24hToken, 2, 1)} {niceCurrency(token.currency)}
-                    <span className="tooltiptext right no-brake" suppressHydrationWarning>
-                      {fullNiceNumber(volume24hToken)} {niceCurrency(token.currency)}
-                    </span>
-                  </span>
-                </>
-              ) : (
+          ) : (
+            <>
+              <td className="left">
+                <CurrencyWithIcon token={token} />
+              </td>
+              <td className="right">
                 <span className="tooltip">
-                  {shortNiceNumber(volume24hToken, 2, 1)}
-                  <span className="tooltiptext right no-brake">{fullNiceNumber(volume24hToken)}</span>
+                  {shortNiceNumber(stats.priceNativeCurrency * pageFiatRate, 2, 1, selectedCurrency)}
+                  <span className="tooltiptext right no-brake">
+                    {fullNiceNumber(stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}
+                  </span>
                 </span>
-              )}
-            </td>
-          </>
-        )}
-      </tr>
-    )
-  })
+                <br />
+                <span className="tooltip grey">
+                  {shortNiceNumber(stats.priceNativeCurrency || 0, 2, 1)} {nativeCurrency}
+                  <span className="tooltiptext right no-brake">
+                    {fullNiceNumber(stats.priceNativeCurrency || 0)} {nativeCurrency}
+                  </span>
+                </span>
+              </td>
+              <td className="right">
+                <span className="tooltip">
+                  {shortNiceNumber(marketcap * pageFiatRate, 2, 1, selectedCurrency)}
+                  <span className="tooltiptext no-brake">
+                    {fullNiceNumber(marketcap * pageFiatRate, selectedCurrency)}
+                  </span>
+                </span>
+                <br />
+                <span className="tooltip grey">
+                  {shortNiceNumber(supply)}
+                  <span className="tooltiptext no-brake">{fullNiceNumber(supply)}</span>
+                </span>
+              </td>
+              <td className="right">
+                <span className="tooltip">
+                  {shortNiceNumber(token.holders || 0, 0, 0)}
+                  <span className="tooltiptext no-brake">{fullNiceNumber(token.holders || 0)}</span>
+                </span>
+              </td>
+              <td className="right">
+                <span className="tooltip">
+                  {shortNiceNumber(token.trustlines || 0, 0, 0)}
+                  <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines || 0)}</span>
+                </span>
+              </td>
+              <td className="right">
+                {pageFiatRate && stats?.priceNativeCurrency ? (
+                  <>
+                    <span className="tooltip" suppressHydrationWarning>
+                      {shortNiceNumber(
+                        volume24hToken * stats.priceNativeCurrency * pageFiatRate,
+                        2,
+                        1,
+                        selectedCurrency
+                      )}
+                      <span className="tooltiptext no-brake" suppressHydrationWarning>
+                        {fullNiceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}
+                      </span>
+                    </span>
+                    <br />
+                    <span className="tooltip grey" suppressHydrationWarning>
+                      {shortNiceNumber(volume24hToken, 2, 1)} {niceCurrency(token.currency)}
+                      <span className="tooltiptext no-brake" suppressHydrationWarning>
+                        {fullNiceNumber(volume24hToken)} {niceCurrency(token.currency)}
+                      </span>
+                    </span>
+                  </>
+                ) : (
+                  <span className="tooltip">
+                    {shortNiceNumber(volume24hToken, 2, 1)}
+                    <span className="tooltiptext no-brake">{fullNiceNumber(volume24hToken)}</span>
+                  </span>
+                )}
+              </td>
+            </>
+          )}
+        </tr>
+      )
+    })
 
   const tokensCountText = (tokens) => {
     if (!tokens || tokens.length === 0) return '0'
@@ -176,7 +186,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
           <tr>
             <th colSpan="100">
               {tokensCountText(issuedTokens)} Issued Tokens{historicalTitle} [
-                <a href={'/tokens?issuer=' + address}>View more details</a>]
+              <a href={'/tokens?issuer=' + address}>View more details</a>]
             </th>
           </tr>
         </thead>
@@ -185,7 +195,8 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
             <th>#</th>
             <th className="left">Currency</th>
             <th className="right">Price</th>
-            <th className="right">Marketcap
+            <th className="right">
+              Marketcap
               <br />
               Supply
             </th>
@@ -217,7 +228,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
         <br />
         <center>
           {tokensCountText(issuedTokens)} Issued Tokens{historicalTitle} [
-            <a href={'/tokens?issuer=' + address}>View more details</a>]
+          <a href={'/tokens?issuer=' + address}>View more details</a>]
         </center>
         <br />
         {loading ? (
