@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
-import { fullDateAndTime, shortNiceNumber, fullNiceNumber, CurrencyWithIcon, niceCurrency } from '../../utils/format'
+import {
+  fullDateAndTime,
+  shortNiceNumber,
+  fullNiceNumber,
+  CurrencyWithIcon,
+  niceCurrency,
+  niceNumber
+} from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 
 export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate }) {
@@ -75,7 +82,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
                 Price in {nativeCurrency}: {fullNiceNumber(stats.priceNativeCurrency || 0)} {nativeCurrency}
               </span>
               <br />
-              <span>Marketcap: {fullNiceNumber(marketcap * pageFiatRate, selectedCurrency)}</span>
+              <span>Marketcap: {niceNumber(marketcap * pageFiatRate, 2, selectedCurrency)}</span>
               <br />
               <span>Supply: {fullNiceNumber(supply)}</span>
               <br />
@@ -85,11 +92,11 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
               <br />
               <span>
                 Volume (24h):{' '}
-                {fullNiceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}
+                {niceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, 2, selectedCurrency)}
               </span>
               <br />
               <span>
-                Volume (24h) in {nativeCurrency}: {fullNiceNumber(volume24hToken * stats.priceNativeCurrency || 0)}{' '}
+                Volume (24h) in {nativeCurrency}: {niceNumber(volume24hToken * stats.priceNativeCurrency || 0, 6)}{' '}
                 {nativeCurrency}
               </span>
             </td>
@@ -117,13 +124,13 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
                 <span className="tooltip">
                   {shortNiceNumber(marketcap * pageFiatRate, 2, 1, selectedCurrency)}
                   <span className="tooltiptext no-brake">
-                    {fullNiceNumber(marketcap * pageFiatRate, selectedCurrency)}
+                    {niceNumber(marketcap * pageFiatRate, 2, selectedCurrency)}
                   </span>
                 </span>
                 <br />
                 <span className="tooltip grey">
                   {shortNiceNumber(supply)}
-                  <span className="tooltiptext no-brake">{fullNiceNumber(supply)}</span>
+                  <span className="tooltiptext no-brake">{niceNumber(supply, 6)}</span>
                 </span>
               </td>
               <td className="right">
@@ -149,7 +156,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
                         selectedCurrency
                       )}
                       <span className="tooltiptext no-brake" suppressHydrationWarning>
-                        {fullNiceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}
+                        {niceNumber(volume24hToken * stats.priceNativeCurrency * pageFiatRate, 2, selectedCurrency)}
                       </span>
                     </span>
                     <br />
