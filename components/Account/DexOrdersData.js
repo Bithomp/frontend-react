@@ -1,66 +1,20 @@
-import { fullDateAndTime, niceNumber, amountFormat, niceCurrency } from '../../utils/format'
+import { fullDateAndTime, niceNumber, niceCurrency, amountFormatWithIcon, fullNiceNumber } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 import { divide, multiply } from '../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
 
-export default function DexOrdersData({ account, offerList, ledgerTimestamp, setSignRequest }) {
+export default function DexOrdersData({ account, offerList, ledgerTimestamp, setSignRequest, address }) {
   //show the section only if there are dex orders to show
   if (!offerList?.length) return ''
-  const isNativeAmount = (amt) => typeof amt === 'string'
-  const amountUnits = (amt) => (typeof amt === 'string' ? Number(amt) / 1000000 : Number(amt?.value || 0))
-  const amountCurrency = (amt) => (typeof amt === 'string' ? nativeCurrency : niceCurrency(amt?.currency))
 
-  const computePairAndMetrics = (offer) => {
-    const sell = offer.flags?.sell
-    const base = sell ? offer.TakerGets : offer.TakerPays
-    const quote = sell ? offer.TakerPays : offer.TakerGets
-
-    const baseIsNative = isNativeAmount(base)
-    const quoteIsNative = isNativeAmount(quote)
-    const baseCurrency = amountCurrency(base)
-    const quoteCurrency = amountCurrency(quote)
-    const pairKey = baseCurrency + '/' + quoteCurrency
-
-    const q = Number(offer.quality || 0)
-    let rate = 0 // quote per 1 base
-    if (sell) {
-      if (baseIsNative && !quoteIsNative) rate = q * 1000000
-      else if (!baseIsNative && quoteIsNative) rate = q / 1000000
-      else rate = q
-    } else {
-      if (!baseIsNative && quoteIsNative) rate = 1 / (q * 1000000)
-      else if (baseIsNative && !quoteIsNative) rate = 1000000 / q
-      else rate = 1 / q
-    }
-
-    const sizeBase = amountUnits(base)
-    // For sorting: lower sell rate first, higher buy rate first
-    const rateSortKey = sell ? rate : -rate
-    return { pairKey, rateSortKey, sizeBase }
-  }
-
-  // Sort by: pair → rate (sell asc, buy desc) → size desc → sequence asc as stable fallback
-  const sortedOfferList = [...offerList].sort((a, b) => {
-    const A = computePairAndMetrics(a)
-    const B = computePairAndMetrics(b)
-    if (A.pairKey !== B.pairKey) return A.pairKey < B.pairKey ? -1 : 1
-    if (A.rateSortKey !== B.rateSortKey) return A.rateSortKey < B.rateSortKey ? -1 : 1
-    if (A.sizeBase !== B.sizeBase) return A.sizeBase > B.sizeBase ? -1 : 1
-    return a.Sequence - b.Sequence
-  })
+  // Sort offerList by sequence in ascending order and take only the last 5
+  const sortedOfferList = [...offerList].sort((a, b) => a.Sequence - b.Sequence).slice(-5)
 
   const historicalTitle = ledgerTimestamp ? (
     <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
     ''
   )
-
-  const offerListCountText = (offerList) => {
-    if (!offerList) return ''
-    let countList = offerList.filter((p) => p !== undefined)
-    if (countList.length > 1) return countList.length + ' '
-    return ''
-  }
 
   /*
   [
@@ -110,9 +64,9 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         </td>
         <td className="left">
           <span className={sell ? 'red' : 'green'}>{sell ? 'Selling ' : 'Buying '}</span>
-          <span className="bold">{amountFormat(sell ? offer.TakerGets : offer.TakerPays, { withIssuer: true })}</span>
+          <span className="bold">{amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}</span>
           <span className="grey">{' for '}</span>
-          <span className="bold">{amountFormat(sell ? offer.TakerPays : offer.TakerGets, { withIssuer: true })}</span>
+          <span className="bold">{amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}</span>
         </td>
         {sell ? (
           <td className="right">
@@ -138,17 +92,36 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
             {typeof offer.TakerGets === 'string' ? (
               <>
                 1 {niceCurrency(offer.TakerPays?.currency)} ={' '}
-                {niceNumber(divide(1, offer.quality * 1000000), 0, null, 5)} {nativeCurrency}
+                <span className="tooltip">
+                  {niceNumber(divide(1, offer.quality * 1000000), 0, null, 2)} {nativeCurrency}
+                  <span className="tooltiptext no-brake">
+                    {fullNiceNumber(divide(1, offer.quality * 1000000))} {nativeCurrency}
+                  </span>
+                </span>
               </>
             ) : typeof offer.TakerPays === 'string' ? (
               <>
-                1 {nativeCurrency} = {niceNumber(divide(1000000, offer.quality), 0, null, 5)}{' '}
-                {niceCurrency(offer.TakerGets?.currency)}
+                1 {nativeCurrency} ={' '}
+                <span className="tooltip">
+                  {niceNumber(divide(1000000, offer.quality), 0, null, 2)}{' '}
+                  {niceCurrency(offer.TakerGets?.currency)}
+                  <span className="tooltiptext no-brake">
+                    {fullNiceNumber(divide(1000000, offer.quality))}
+                    {niceCurrency(offer.TakerGets?.currency)}
+                  </span>
+                </span>
               </>
             ) : (
               <>
-                1 {niceCurrency(offer.TakerPays?.currency)} = {niceNumber(divide(1, offer.quality), 0, null, 5)}{' '}
-                {niceCurrency(offer.TakerGets?.currency)}
+                1 {niceCurrency(offer.TakerPays?.currency)} ={' '}
+                <span className="tooltip">
+                  {niceNumber(divide(1, offer.quality), 0, null, 2)}{' '}
+                  {niceCurrency(offer.TakerGets?.currency)}
+                  <span className="tooltiptext no-brake">
+                    {fullNiceNumber(divide(1, offer.quality))}
+                    {niceCurrency(offer.TakerGets?.currency)}
+                  </span>
+                </span>
               </>
             )}
           </td>
@@ -187,7 +160,13 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         <thead>
           <tr>
             <th colSpan="100">
-              {offerListCountText(offerList)} DEX orders{historicalTitle}
+              The last 5 DEX orders{historicalTitle}
+              {' '}
+              [
+              <a href={`/account/${address}/dex`} className="link bold">
+                View all
+              </a>{' '}
+              ({offerList.length} total)]
               {!account?.address && !ledgerTimestamp && (
                 <>
                   {' '}
@@ -214,9 +193,13 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
       <div className="show-on-small-w800">
         <br />
         <center>
-          {offerListCountText(offerList)}
-          {'DEX Orders'.toUpperCase()}
-          {historicalTitle}
+          The last 5 DEX orders{historicalTitle}
+          {' '}
+          [
+          <a href={`/account/${address}/dex`} className="link bold">
+            View all
+          </a>{' '}
+          ({offerList.length} total)]
         </center>
         <br />
         <table className="table-mobile wide">
