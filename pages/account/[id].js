@@ -585,6 +585,7 @@ export default function Account({
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             offerList={objects?.offerList}
                             setSignRequest={setSignRequest}
+                            address={data?.address}
                           />
 
                           {xahauNetwork ? (
