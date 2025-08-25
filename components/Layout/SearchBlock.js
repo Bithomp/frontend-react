@@ -17,7 +17,8 @@ import {
   networksIds,
   isValidNftXls20,
   isCurrencyHashValid,
-  server
+  server,
+  isValidPayString
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -278,7 +279,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     // Handle PayString (contains $)
-    if (searchFor.includes('$')) {
+    if (isValidPayString(searchFor)) {
       if (tab === 'nfts') {
         router.push('/nfts/' + encodeURI(searchFor) + addParams)
         return
