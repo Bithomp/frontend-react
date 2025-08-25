@@ -97,6 +97,11 @@ module.exports = withBundleAnalyzer({
         permanent: true
       },
       {
+        source: '/xrp-xah-taxes',
+        destination: '/learn/xrp-xah-taxes',
+        permanent: true
+      },
+      {
         source: '/xrpl-article',
         destination: '/learn/xrpl-article',
         permanent: true

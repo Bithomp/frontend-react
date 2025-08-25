@@ -23,7 +23,7 @@ export default function Footer() {
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.services.services')}</span>
           <Link href="/username">{t('menu.usernames')}</Link>
-          <Link href="/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
+          <Link href="/learn/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
           <Link href="/submit-account-information">{t('menu.project-registration')}</Link>
           {!devNet && <Link href="/alerts">{t('menu.price-alerts', { nativeCurrency })}</Link>}
           <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a>

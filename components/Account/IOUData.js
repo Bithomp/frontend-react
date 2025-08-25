@@ -183,7 +183,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
           {i + 1}
         </td>
         <td className="left">
-          <AddressWithIcon address={issuer.issuer}>
+          <AddressWithIcon address={issuer.issuer} currency={tl.Balance?.currency}>
             <span className="bold">{niceCurrency(tl.Balance?.currency)}</span>{' '}
             {userOrServiceName(issuer.issuerDetails, 'address')}
             <br />

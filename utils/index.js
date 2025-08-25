@@ -3,6 +3,7 @@ import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import Cookies from 'universal-cookie'
 import axios from 'axios'
+import SparkMD5 from 'spark-md5'
 
 export const forbid18Plus = async () => {
   //check if we have a saved country for the user
@@ -309,14 +310,21 @@ export const useLocalStorage = (key, initialValue) => {
   const setValue = useCallback(
     (value) => {
       try {
-        const valueToStore = value instanceof Function ? value(storedValue) : value
-        setState(valueToStore)
-        localStorage.setItem(key, JSON.stringify(valueToStore))
+        if (typeof value === 'function') {
+          setState((prev) => {
+            const next = value(prev)
+            localStorage.setItem(key, JSON.stringify(next))
+            return next
+          })
+        } else {
+          setState(value)
+          localStorage.setItem(key, JSON.stringify(value))
+        }
       } catch {
         console.log('Error saving to localStorage')
       }
     },
-    [key, setState]
+    [key]
   )
 
   const remove = useCallback(() => {
@@ -640,6 +648,10 @@ export const avatarSrc = (address, refreshPage) => {
   return avatarServer + address + (refreshPage ? '?' + refreshPage : '')
 }
 
+export const tokenImageSrc = (token) => {
+  return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
+}
+
 export const networksIds = {
   0: { server: 'https://bithomp.com', name: 'mainnet' },
   1: { server: 'https://test.bithomp.com', name: 'testnet' },
@@ -930,3 +942,5 @@ export const xls14NftValue = (value) => {
   }
   return false
 }
+
+export const md5 = (text) => SparkMD5.hash(text)

@@ -2,18 +2,19 @@ import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import {
-  explorerName,
   isAddressValid,
   typeNumberOnly,
   nativeCurrency,
   isTagValid,
   isIdValid,
   decode,
-  encode
+  encode,
+  addAndRemoveQueryParams
 } from '../../utils'
 import { multiply } from '../../utils/calc'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
@@ -25,21 +26,93 @@ import { LinkTx, LinkAccount } from '../../utils/links'
 import Link from 'next/link'
 import { errorCodeDescription } from '../../utils/transaction'
 
-export default function IssueCheck({ setSignRequest, sessionToken, subscriptionExpired, openEmailLogin }) {
+export default function IssueCheck({
+  setSignRequest,
+  sessionToken,
+  subscriptionExpired,
+  openEmailLogin,
+  addressQuery,
+  amountQuery,
+  destinationTagQuery,
+  expirationQuery,
+  invoiceIdQuery,
+  memoQuery,
+  feeQuery,
+  sourceTagQuery
+}) {
   const { t } = useTranslation()
+  const router = useRouter()
   const [error, setError] = useState('')
-  const [address, setAddress] = useState(null)
-  const [destinationTag, setDestinationTag] = useState(null)
-  const [amount, setAmount] = useState(null)
-  const [expiration, setExpiration] = useState(null)
-  const [invoiceID, setInvoiceID] = useState(null)
+  const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
+  const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
+  const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
+  const [expiration, setExpiration] = useState(Number(expirationQuery) > 0 ? Number(expirationQuery) : null)
+  const [invoiceID, setInvoiceID] = useState(isIdValid(invoiceIdQuery) ? invoiceIdQuery : null)
   const [txResult, setTxResult] = useState(null)
-  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [showAdvanced, setShowAdvanced] = useState(
+    Number(feeQuery) > 0 || isTagValid(sourceTagQuery) || isIdValid(invoiceIdQuery)
+  )
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
-  const [memo, setMemo] = useState(null)
-  const [fee, setFee] = useState(null)
+  const [memo, setMemo] = useState(memoQuery || null)
+  const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 ? feeQuery : null)
   const [feeError, setFeeError] = useState(null)
-  const [sourceTag, setSourceTag] = useState(null)
+  const [sourceTag, setSourceTag] = useState(isTagValid(sourceTagQuery) ? sourceTagQuery : null)
+  // Reflect filled parameters in URL like /send does
+  useEffect(() => {
+    let queryAddList = []
+    let queryRemoveList = []
+
+    if (isAddressValid(address)) {
+      queryAddList.push({ name: 'address', value: address })
+    } else {
+      queryRemoveList.push('address')
+    }
+
+    if (isTagValid(destinationTag)) {
+      queryAddList.push({ name: 'destinationTag', value: destinationTag })
+    } else {
+      queryRemoveList.push('destinationTag')
+    }
+
+    if (amount && Number(amount) > 0) {
+      queryAddList.push({ name: 'amount', value: amount })
+    } else {
+      queryRemoveList.push('amount')
+    }
+
+    if (memo) {
+      queryAddList.push({ name: 'memo', value: memo })
+    } else {
+      queryRemoveList.push('memo')
+    }
+
+    if (fee && Number(fee) > 0 && Number(fee) <= 1) {
+      queryAddList.push({ name: 'fee', value: fee })
+    } else {
+      queryRemoveList.push('fee')
+    }
+
+    if (isTagValid(sourceTag)) {
+      queryAddList.push({ name: 'sourceTag', value: sourceTag })
+    } else {
+      queryRemoveList.push('sourceTag')
+    }
+
+    if (isIdValid(invoiceID)) {
+      queryAddList.push({ name: 'invoiceId', value: invoiceID })
+    } else {
+      queryRemoveList.push('invoiceId')
+    }
+
+    if (expiration && Number(expiration) > 0) {
+      queryAddList.push({ name: 'expiration', value: String(expiration) })
+    } else {
+      queryRemoveList.push('expiration')
+    }
+
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, destinationTag, amount, memo, fee, sourceTag, invoiceID, expiration])
 
   const handleFeeChange = (value) => {
     setFee(value)
@@ -164,7 +237,7 @@ export default function IssueCheck({ setSignRequest, sessionToken, subscriptionE
 
   return (
     <>
-      <SEO title="Issue Check" description={'Create a deferred payment check on the ' + explorerName} />
+      <SEO title="Issue Check" description="Create a deferred payment Check" />
       <div className="content-text content-center">
         <h1 className="center">Issue Check</h1>
         <NetworkTabs />
@@ -202,7 +275,11 @@ export default function IssueCheck({ setSignRequest, sessionToken, subscriptionE
           />
           <div className="form-spacing" />
           <FormInput
-            title={<>{t('table.memo')} (<span className="orange">It will be public</span>)</>}
+            title={
+              <>
+                {t('table.memo')} (<span className="orange">It will be public</span>)
+              </>
+            }
             placeholder="Enter a memo (optional)"
             setInnerValue={setMemo}
             hideButton={true}
@@ -230,7 +307,11 @@ export default function IssueCheck({ setSignRequest, sessionToken, subscriptionE
               <>
                 {' '}
                 <span className="orange">
-                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
+                  (available to{' '}
+                  <span className="link" onClick={() => openEmailLogin()}>
+                    logged-in
+                  </span>{' '}
+                  Bithomp Pro subscribers)
                 </span>
               </>
             ) : (
@@ -377,11 +458,20 @@ export default function IssueCheck({ setSignRequest, sessionToken, subscriptionE
 }
 
 export const getServerSideProps = async (context) => {
-  const { locale } = context
+  const { locale, query } = context
+  const { address, amount, destinationTag, expiration, invoiceId, memo, fee, sourceTag } = query || {}
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
-      isSsrMobile: getIsSsrMobile(context)
+      isSsrMobile: getIsSsrMobile(context),
+      addressQuery: address || '',
+      amountQuery: amount || '',
+      destinationTagQuery: destinationTag || '',
+      expirationQuery: expiration || '',
+      invoiceIdQuery: invoiceId || '',
+      memoQuery: memo || '',
+      feeQuery: fee || '',
+      sourceTagQuery: sourceTag || ''
     }
   }
 }

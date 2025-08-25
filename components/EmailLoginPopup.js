@@ -57,7 +57,11 @@ export default function EmailLoginPopup({ isOpen, onClose, onSuccess, setAccount
     })
 
     if (data?.data) {
-      setAccount({ ...data.data, pro: data.data.email })
+      setAccount((prevAccount) => ({ 
+        ...prevAccount, 
+        ...data.data, 
+        pro: data.data.email 
+      }))
     }
 
     const partnerDataRaw = await axiosAdmin.get('partner').catch((error) => {

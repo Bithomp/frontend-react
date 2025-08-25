@@ -8,9 +8,43 @@ import ViewTogggle from '../UI/ViewToggle'
 
 import { TbArrowsSort } from 'react-icons/tb'
 import { IoMdClose } from 'react-icons/io'
+import { FaFilter } from 'react-icons/fa'
 import { setTabParams, useWidth } from '../../utils'
 import CurrencySelect from '../UI/CurrencySelect'
 import { TablePagination } from '@mui/material'
+import { capitalize, shortHash } from '../../utils/format'
+
+// Filter Indicator Component
+function FilterIndicator({ filters }) {
+  // Check if any filters are active
+  const activeFilters = Object.entries(filters).filter(
+    ([, value]) => value && value !== '' && value !== null && value !== undefined
+  )
+
+  if (activeFilters.length === 0) {
+    return null
+  }
+
+  const renderFilterValue = (key, value) => {
+    return capitalize(key) + ' = ' + shortHash(value)
+  }
+
+  return (
+    <div className="center mb-2">
+      <FaFilter />
+      <span>
+        Filter applied:{' '}
+        {activeFilters.map(([key, value], index) => (
+          <span key={key}>
+            {index > 0 && index === activeFilters.length - 1 ? ' and ' : ''}
+            {index > 0 && index < activeFilters.length - 1 ? ', ' : ''}
+            {renderFilterValue(key, value)}
+          </span>
+        ))}
+      </span>
+    </div>
+  )
+}
 
 export default function FiltersFrame({
   children,
@@ -33,7 +67,8 @@ export default function FiltersFrame({
   setPage,
   rowsPerPage,
   setRowsPerPage,
-  onlyCsv
+  onlyCsv,
+  filters
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -190,7 +225,10 @@ export default function FiltersFrame({
       >
         {children[0]}
       </LeftFilters>
+
       <div className="content-text" style={contentStyle}>
+        {/* Filter Indicator */}
+        {filters && (width > 1300 ? filtersHide : !filtersHide) && <FilterIndicator filters={filters} />}
         {children[1]}
       </div>
     </div>
