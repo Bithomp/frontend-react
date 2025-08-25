@@ -20,7 +20,9 @@ class ErrorBoundary extends React.Component {
       "Failed to read the 'localStorage' property from 'Window': Access is denied for this document.",
       'The operation is insecure.',
       'The object can not be found here.',
-      "null is not an object (evaluating 'localStorage.getItem')"
+      "null is not an object (evaluating 'localStorage.getItem')",
+      "Cannot read properties of null (reading 'getItem')",
+      "Cannot read properties of null (reading 'createImageData')"
     ]
 
     if (process.env.NODE_ENV === 'development') {

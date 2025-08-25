@@ -2,7 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect, useRef } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
-import Head from 'next/head'
+ 
 
 import { server, explorerName, nativeCurrency, devNet, xahauNetwork, wssServer, ledgerName } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -34,26 +34,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-const ldJsonWebsite = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: nativeCurrency + ' Explorer',
-  alternateName: [
-    nativeCurrency + ' Explorer',
-    explorerName + ' Explorer',
-    'Scan ' + nativeCurrency + ' Ledger',
-    'Bithomp ' + explorerName + ' and Services'
-  ],
-  url: server,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: server + '/explorer/?r={search_term_string}'
-    },
-    'query-input': 'required name=search_term_string'
-  }
-}
+ 
 
 function sendData(selectedCurrency) {
   if (ws && ws.readyState === WebSocket.OPEN) {
@@ -224,10 +205,7 @@ export default function Home({
         twitterImage={{
           file: 'previews/630x630/index.png'
         }}
-      />
-      <Head>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }} />
-      </Head>
+      /> 
 
       <section className="home-section">
         <h1 className="center">{t('explorer.header.main', { explorerName })}</h1>
@@ -254,6 +232,7 @@ export default function Home({
                 chartPeriod={chartPeriod}
                 setChartPeriod={setChartPeriod}
                 hideToolbar={true}
+                liveFiatRate={liveFiatRate}
               />
             </div>
           </div>
