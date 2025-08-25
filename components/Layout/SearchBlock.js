@@ -17,7 +17,8 @@ import {
   networksIds,
   isValidNftXls20,
   isCurrencyHashValid,
-  server
+  server,
+  isValidPayString
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -107,7 +108,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     //if more than 3 characters - search for suggestions
-    if (value && value.length > 1 && value.length < 36) {
+    if (value && value.length > 1 && value.length < 64) {
       clearTimeout(typingTimer)
       setSearchSuggestions([])
       typingTimer = setTimeout(async () => {
@@ -277,6 +278,50 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
+    // Handle PayString (contains $)
+    if (isValidPayString(searchFor)) {
+      if (tab === 'nfts') {
+        router.push('/nfts/' + encodeURI(searchFor) + addParams)
+        return
+      }
+      if (tab === 'nft-offers') {
+        router.push('/nft-offers/' + encodeURI(searchFor) + addParams)
+        return
+      }
+      if (tab === 'amm') {
+        router.push('/amm/' + encodeURI(searchFor))
+        return
+      }
+      if (tab === 'nft-volumes') {
+        router.push('/nft-volumes/' + encodeURI(searchFor) + addParams)
+        return
+      }
+      router.push('/account/' + encodeURI(searchFor) + addParams)
+      return
+    }
+
+    // Handle X-address (starts with T or X and length > 36)
+    if ((searchFor.charAt(0) === 'T' || searchFor.charAt(0) === 'X') && searchFor.length > 36) {
+      if (tab === 'nfts') {
+        router.push('/nfts/' + encodeURI(searchFor) + addParams)
+        return
+      }
+      if (tab === 'nft-offers') {
+        router.push('/nft-offers/' + encodeURI(searchFor) + addParams)
+        return
+      }
+      if (tab === 'amm') {
+        router.push('/amm/' + encodeURI(searchFor))
+        return
+      }
+      if (tab === 'nft-volumes') {
+        router.push('/nft-volumes/' + encodeURI(searchFor) + addParams)
+        return
+      }
+      router.push('/account/' + encodeURI(searchFor) + addParams)
+      return
+    }
+
     if (isAddressOrUsername(searchFor)) {
       if (tab === 'nfts') {
         router.push('/nfts/' + encodeURI(searchFor) + addParams)
@@ -419,9 +464,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                   option.address +
                   option.username +
                   option.service +
+                  option.payString +
                   option.xaman +
                   option.verifiedDomain +
-                  option.serviceDomain
+                  option.serviceDomain +
+                  option.xAddress
                 }
                 inputValue={searchItem}
                 onInputChange={searchOnInputChange}
