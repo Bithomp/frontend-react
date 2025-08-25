@@ -98,6 +98,7 @@ import { fetchHistoricalRate } from '../../utils/common'
 import AccountSummary from '../../components/Account/AccountSummary'
 import LedgerData from '../../components/Account/LedgerData'
 import PublicData from '../../components/Account/PublicData'
+import Airdrops from '../../components/Account/Airdrops'
 import XamanData from '../../components/Account/XamanData'
 import ObjectsData from '../../components/Account/ObjectsData'
 import NFTokenData from '../../components/Account/NFTokenData'
@@ -624,6 +625,7 @@ export default function Account({
                             setSignRequest={setSignRequest}
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                           />
+                          <Airdrops data={data} />
                           <RelatedLinks data={data} />
                         </div>
                       </>
