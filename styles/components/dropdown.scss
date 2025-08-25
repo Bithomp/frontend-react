@@ -14,6 +14,12 @@ $small-screen: 440px; // minimum screen
     }
   }
 
+  &--filters {
+    @media(max-width: $small-screen) {
+      display: block !important;
+    }
+  }
+
   &--mobile {
     position: fixed;
     background: #fff;
@@ -126,5 +132,5 @@ $small-screen: 440px; // minimum screen
     .dark & {
       background: #000;
     }
-  }
+  }  
 }

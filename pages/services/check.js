@@ -2,7 +2,6 @@ import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import {
-  explorerName,
   isAddressValid,
   typeNumberOnly,
   nativeCurrency,
@@ -238,7 +237,7 @@ export default function IssueCheck({
 
   return (
     <>
-      <SEO title="Issue Check" description={'Create a deferred payment check on the ' + explorerName} />
+      <SEO title="Issue Check" description="Create a deferred payment Check" />
       <div className="content-text content-center">
         <h1 className="center">Issue Check</h1>
         <NetworkTabs />
@@ -276,7 +275,11 @@ export default function IssueCheck({
           />
           <div className="form-spacing" />
           <FormInput
-            title={<>{t('table.memo')} (<span className="orange">It will be public</span>)</>}
+            title={
+              <>
+                {t('table.memo')} (<span className="orange">It will be public</span>)
+              </>
+            }
             placeholder="Enter a memo (optional)"
             setInnerValue={setMemo}
             hideButton={true}
@@ -304,7 +307,11 @@ export default function IssueCheck({
               <>
                 {' '}
                 <span className="orange">
-                  (available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers)
+                  (available to{' '}
+                  <span className="link" onClick={() => openEmailLogin()}>
+                    logged-in
+                  </span>{' '}
+                  Bithomp Pro subscribers)
                 </span>
               </>
             ) : (

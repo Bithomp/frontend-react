@@ -78,8 +78,8 @@ const MyApp = ({ Component, pageProps }) => {
 
   useEffect(() => {
     //pages where we need to show the latest fiat price
-    const allowedRoutes = ['/', '/account/[[...id]]', '/amms', '/distribution', '/admin/watchlist', '/tokens']
-    const skipOnFirstRender = ['/', '/account/[[...id]]', '/amms', '/tokens']
+    const allowedRoutes = ['/', '/account', '/account/[id]', '/account/[id]/transactions', '/amms', '/distribution', '/admin/watchlist', '/tokens']
+    const skipOnFirstRender = ['/', '/account', '/account/[id]', '/account/[id]/transactions', '/amms', '/tokens']
 
     // Skip fetch on first render for pages that get on the server side
     if (firstRenderRef.current && skipOnFirstRender.includes(router.pathname)) {
@@ -163,7 +163,9 @@ const MyApp = ({ Component, pageProps }) => {
     '/terms-and-conditions',
     '/press',
     '/404',
-    '/faucet'
+    '/faucet',
+    '/explorer',
+    '/explorer2' //remove later
   ]
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(pathname) && !pathname.includes('/admin')

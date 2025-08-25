@@ -195,7 +195,14 @@ const platformList = [
   { value: 'CryptoTax', label: 'CryptoTax' }
 ]
 
-export default function History({ queryAddress, selectedCurrency, setSelectedCurrency, sessionToken, openEmailLogin }) {
+export default function History({
+  queryAddress,
+  selectedCurrency,
+  setSelectedCurrency,
+  sessionToken,
+  openEmailLogin,
+  isSsrMobile
+}) {
   const router = useRouter()
   const width = useWidth()
 
@@ -607,7 +614,21 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         <h1 className="center">Pro address balances history</h1>
 
         <AdminTabs name="mainTabs" tab="pro" />
-        <ProTabs tab="balance-changes" />
+
+        <div className="tabs-inline" style={{ marginTop: -10 }}>
+          <ProTabs tab="balance-changes" />
+
+          {isSsrMobile ? <br /> : ''}
+
+          <Link
+            href="/learn/xrp-xah-taxes"
+            style={isSsrMobile ? { display: 'inline-block', marginBottom: 20 } : { marginRight: -70 }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            View guide
+          </Link>
+        </div>
 
         {sessionToken ? (
           <>
@@ -872,6 +893,11 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
               <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
                 <p>- View detailed balance history for your verified addresses.</p>
                 <p>- Export data for tax reporting and analysis.</p>
+                <br />
+                <center>
+                  Read how it works: <Link href="/learn/xrp-xah-taxes">XRP and XAH Taxes</Link>
+                </center>
+                <br />
               </div>
               <br />
               <center>

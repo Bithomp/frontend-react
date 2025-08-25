@@ -370,7 +370,7 @@ export default function MobileMenu({
           {t('menu.developers.developers')}
         </div>
         <div className="mobile-menu__submenu">
-          <Link href="/learn/the-bithomp-api" className="mobile-menu-item">
+          <Link href="/learn/the-bithomp-api" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.developers.api')}
           </Link>
           {devNet && (

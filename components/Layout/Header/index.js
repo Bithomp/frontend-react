@@ -157,7 +157,7 @@ export default function Header({
 
   const signinWithWallet = (wallet) => {
     //redirect to account, if user is on the account page
-    setSignRequest(router.pathname === '/account/[[...id]]' ? { wallet, redirect: 'account' } : { wallet })
+    setSignRequest(router.pathname.startsWith('/account') ? { wallet, redirect: 'account' } : { wallet })
   }
 
   const bithomp = server.includes('bithomp')
@@ -209,7 +209,7 @@ export default function Header({
 
           <div className="menu-dropdown">
             <Link href="/tokens" className="menu-dropdown-button" style={{ textDecoration: 'none' }}>
-              {t('menu.tokens')} <MdNewReleases className="chevron orange" />
+              {t('menu.tokens')} <MdNewReleases className="chevron" />
             </Link>
           </div>
 
