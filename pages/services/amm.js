@@ -52,7 +52,7 @@ export default function AMMService({ setSignRequest, initialTab }) {
 
   return (
     <>
-      <SEO title="AMM Services" description="Create or vote on Automated Market Makers on XRPL" />
+      <SEO title="AMM Services" description="Create or vote on Automated Market Makers" />
       <div className="page-services-amm content-center">
         <h1 className="center">{tabList.find((t) => t.value === tab)?.label || ''}</h1>
         <div className="center">

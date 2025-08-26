@@ -910,6 +910,10 @@ export const niceNumber = (n, fractionDigits = 0, currency = null, maxFractionDi
       options.style = 'currency'
       options.currency = currency.toUpperCase()
     }
+    if (fractionDigits) {
+      const factor = Math.pow(10, fractionDigits)
+      return Math.floor(n * factor) / factor
+    }
     return n.toLocaleString(undefined, options)
   } else {
     return n

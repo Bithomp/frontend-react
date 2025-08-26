@@ -10,15 +10,13 @@ import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import {
-  addressLink,
-  addressUsernameOrServiceLink,
   AddressWithIcon,
-  capitalize,
   fullNiceNumber,
   niceCurrency,
   niceNumber,
-  shortHash,
-  shortNiceNumber
+  shortNiceNumber,
+  shortAddress,
+  userOrServiceName
 } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -31,7 +29,6 @@ import {
   xahauNetwork
 } from '../utils'
 import { useRouter } from 'next/router'
-import CopyButton from '../components/UI/CopyButton'
 import { fetchHistoricalRate } from '../utils/common'
 
 /*
@@ -206,10 +203,7 @@ export default function Tokens({
   const [currency, setCurrency] = useState(currencyQuery)
   const [rendered, setRendered] = useState(false)
   const [sortConfig, setSortConfig] = useState(getInitialSortConfig(orderQuery))
-  const [fiatRate5m, setFiatRate5m] = useState(null)
   const [fiatRate24h, setFiatRate24h] = useState(null)
-  const [fiatRate7d, setFiatRate7d] = useState(null)
-  const [fiatRate1h, setFiatRate1h] = useState(null)
 
   const controller = new AbortController()
 
@@ -380,14 +374,8 @@ export default function Tokens({
   useEffect(() => {
     if (!selectedCurrency) return
     const now = Date.now()
-    const t5m = now - 5 * 60 * 1000
-    const t1h = now - 1 * 60 * 60 * 1000
     const t24h = now - 24 * 60 * 60 * 1000
-    const t7d = now - 7 * 24 * 60 * 60 * 1000
-    fetchHistoricalRate({ timestamp: t5m, selectedCurrency, setPageFiatRate: setFiatRate5m })
-    fetchHistoricalRate({ timestamp: t1h, selectedCurrency, setPageFiatRate: setFiatRate1h })
     fetchHistoricalRate({ timestamp: t24h, selectedCurrency, setPageFiatRate: setFiatRate24h })
-    fetchHistoricalRate({ timestamp: t7d, selectedCurrency, setPageFiatRate: setFiatRate7d })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency])
 
@@ -413,7 +401,11 @@ export default function Tokens({
         {token.issuer && (
           <>
             <br />
-            {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
+            <span className="issuer-address">
+              {token.issuerDetails?.service || token.issuerDetails?.username
+                ? userOrServiceName(token.issuerDetails)
+                : shortAddress(token.issuer)}
+            </span>
           </>
         )}
       </AddressWithIcon>
@@ -446,13 +438,7 @@ export default function Tokens({
     if (!fiatRate) return null
     price = price || 0
     if (mobile) {
-      return (
-        <span suppressHydrationWarning>
-          {fullNiceNumber(price * fiatRate, selectedCurrency)}
-          <br />
-          Price in {nativeCurrency}: {niceNumber(price, 6)} {nativeCurrency}
-        </span>
-      )
+      return <span suppressHydrationWarning>{fullNiceNumber(price * fiatRate, selectedCurrency)}</span>
     }
     return (
       <>
@@ -537,14 +523,7 @@ export default function Tokens({
     const volumeFiat = volume * statistics?.priceNativeCurrency * fiatRate || 0
 
     if (mobile) {
-      return (
-        <>
-          <span suppressHydrationWarning>{niceNumber(volumeFiat, 0, selectedCurrency)}</span>
-          <br />
-          {type !== 'total' ? capitalize(type) : ''} Volume (24h) token: {niceNumber(volume, 0)}{' '}
-          {niceCurrency(currency)}
-        </>
-      )
+      return <span suppressHydrationWarning>{niceNumber(volumeFiat, 0, selectedCurrency)}</span>
     }
 
     return (
@@ -628,6 +607,10 @@ export default function Tokens({
         setFiltersHide={setFiltersHide}
         setSelectedCurrency={setSelectedCurrency}
         selectedCurrency={selectedCurrency}
+        filters={{
+          issuer: issuer || '',
+          currency: currency || ''
+        }}
         order={order}
         setOrder={setOrder}
         orderList={orderList}
@@ -864,7 +847,7 @@ export default function Tokens({
             </table>
           ) : (
             // Mobile table
-            <table className="table-mobile">
+            <table className="table-mobile wide">
               <thead></thead>
               <tbody>
                 {loading ? (
@@ -885,143 +868,45 @@ export default function Tokens({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr
-                              key={i}
-                              className="clickable-row"
-                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
-                            >
+                            <tr key={i}>
                               <td style={{ padding: '5px' }} className="center">
                                 <b>{i + 1}</b>
                               </td>
                               <td>
                                 <TokenCell token={token} />
                                 <p>
-                                  Issuer address: {addressLink(token.issuer, { short: true })}{' '}
-                                  <CopyButton text={token.issuer} />
-                                  <br />
-                                  Currency code: {shortHash(token.currency)} <CopyButton text={token.currency} />
-                                  <br />
                                   Price: {priceToFiat({ price: token.statistics?.priceNativeCurrency, mobile: true })}
                                   <br />
-                                  Price in {nativeCurrency} 5m ago:{' '}
-                                  {niceNumber(token.statistics?.priceNativeCurrency5m, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 1h ago:{' '}
-                                  {niceNumber(token.statistics?.priceNativeCurrency1h, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 24h ago:{' '}
-                                  {niceNumber(token.statistics?.priceNativeCurrency24h, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 7d ago:{' '}
-                                  {niceNumber(token.statistics?.priceNativeCurrency7d, 6)}
-                                  <br />
-                                  5m %:{' '}
-                                  {renderPercentCell({
-                                    currentXrp: token.statistics?.priceNativeCurrency,
-                                    pastXrp: token.statistics?.priceNativeCurrency5m,
-                                    pastFiatRate: fiatRate5m
-                                  })}
-                                  <br />
-                                  1h %:{' '}
-                                  {renderPercentCell({
-                                    currentXrp: token.statistics?.priceNativeCurrency,
-                                    pastXrp: token.statistics?.priceNativeCurrency1h,
-                                    pastFiatRate: fiatRate1h
-                                  })}
-                                  <br />
-                                  24h %:{' '}
+                                  Change 24h ({selectedCurrency.toUpperCase()}):{' '}
                                   {renderPercentCell({
                                     currentXrp: token.statistics?.priceNativeCurrency,
                                     pastXrp: token.statistics?.priceNativeCurrency24h,
                                     pastFiatRate: fiatRate24h
                                   })}
                                   <br />
-                                  7d %:{' '}
-                                  {renderPercentCell({
-                                    currentXrp: token.statistics?.priceNativeCurrency,
-                                    pastXrp: token.statistics?.priceNativeCurrency7d,
-                                    pastFiatRate: fiatRate7d
-                                  })}
-                                  <br />
-                                  Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
-                                  <br />
-                                  Sell Volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
-                                  <br />
-                                  {/* 24h %: {token.statistics?.priceChange24h} */}
-                                  {/* 7d %: {token.statistics?.priceChange7d} */}
                                   Total Volume (24h): {volumeToFiat({ token, mobile: true })}
                                   <br />
                                   Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
                                   <br />
-                                  DEX txs (24h): {niceNumber(token.statistics?.dexTxs) || 0}
-                                  <br />
                                   Unique Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
-                                  <br />
-                                  Unique Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
-                                  <br />
-                                  Unique Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
-                                  <br />
-                                  Supply: {niceNumber(token.supply, 0)} {niceCurrency(token.currency)}
                                   <br />
                                   Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
                                   <br />
-                                  Trustlines: {niceNumber(token.trustlines)}
-                                  <br />
                                   Holders: {niceNumber(token.holders)}
                                   <br />
-                                  Active holders (Account that used the token in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeHolders) || 0}
-                                  <br />
-                                  Active offers (Count of used offers in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeOffers) || 0}
-                                  <br />
-                                  Trading pairs (in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeCounters) || 0}
-                                  <br />
-                                  {!xahauNetwork && (
-                                    <>
-                                      AMM Pools:{' '}
-                                      <a
-                                        href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                        className="tooltip"
-                                      >
-                                        {' '}
-                                        {token.statistics?.ammPools || 0}
-                                      </a>
-                                      <br />
-                                      Active AMM pools (the last closed day):{' '}
-                                      {niceNumber(token.statistics?.activeAmmPools) || 0}
-                                    </>
-                                  )}
-                                  <br />
-                                  Transfer txs (24h): {niceNumber(token.statistics?.transferTxs) || 0}
-                                  <br />
-                                  {token.statistics?.transferTxs > 0 && (
-                                    <>
-                                      Transfer Volume (24h): {volumeToFiat({ token, type: 'transfer', mobile: true })}
-                                      <br />
-                                    </>
-                                  )}
-                                  Rippling txs (24h): {niceNumber(token.statistics?.ripplingTxs) || 0}
-                                  <br />
-                                  {token.statistics?.ripplingTxs > 0 && (
-                                    <>
-                                      Rippling Volume (24h): {volumeToFiat({ token, type: 'rippling', mobile: true })}
-                                      <br />
-                                    </>
-                                  )}
-                                  Mint Volume (24h): {volumeToFiat({ token, type: 'mint', mobile: true })}
-                                  <br />
-                                  Burn Volume (24h): {volumeToFiat({ token, type: 'burn', mobile: true })}
-                                  <br />
-                                  Unique accounts (used the token in the last 24h):{' '}
-                                  {niceNumber(token.statistics?.uniqueAccounts) || 0}
+                                  Trustlines: {niceNumber(token.trustlines)}
                                   <br />
                                   <br />
                                   <button
                                     className="button-action narrow thin"
-                                    onClick={(e) => {
-                                      e.stopPropagation()
+                                    onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                                  >
+                                    Token Page
+                                  </button>
+                                  <span style={{ display: 'inline-block', width: 10 }}></span>
+                                  <button
+                                    className="button-action narrow thin"
+                                    onClick={() => {
                                       handleSetTrustline(token)
                                     }}
                                   >
@@ -1054,6 +939,11 @@ export default function Tokens({
 
         .clickable-row td {
           position: relative;
+        }
+
+        .issuer-address {
+          color: var(--text-muted);
+          font-size: 0.9em;
         }
       `}</style>
     </>

@@ -179,18 +179,34 @@ export default function TrustSet({
       }
     }
 
-    if (setFreeze) addList.push({ name: 'freeze', value: '1' }); else removeList.push('freeze')
-    if (!setNoRipple) addList.push({ name: 'noRipple', value: '0' }); else removeList.push('noRipple')
-    if (setAuthorized) addList.push({ name: 'authorized', value: '1' }); else removeList.push('authorized')
+    if (setFreeze) addList.push({ name: 'freeze', value: '1' })
+    else removeList.push('freeze')
+    if (!setNoRipple) addList.push({ name: 'noRipple', value: '0' })
+    else removeList.push('noRipple')
+    if (setAuthorized) addList.push({ name: 'authorized', value: '1' })
+    else removeList.push('authorized')
     if (!xahauNetwork) {
-      if (setDeepFreeze) addList.push({ name: 'deepFreeze', value: '1' }); else removeList.push('deepFreeze')
+      if (setDeepFreeze) addList.push({ name: 'deepFreeze', value: '1' })
+      else removeList.push('deepFreeze')
     } else {
       removeList.push('deepFreeze')
     }
 
     addAndRemoveQueryParams(router, addList, removeList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, selectedToken, issuer, currency, limit, qualityIn, qualityOut, setFreeze, setNoRipple, setAuthorized, setDeepFreeze])
+  }, [
+    mode,
+    selectedToken,
+    issuer,
+    currency,
+    limit,
+    qualityIn,
+    qualityOut,
+    setFreeze,
+    setNoRipple,
+    setAuthorized,
+    setDeepFreeze
+  ])
 
   const buildShareUrl = () => {
     if (typeof window === 'undefined') return ''
@@ -220,9 +236,7 @@ export default function TrustSet({
     if (!xahauNetwork && setDeepFreeze) params.set('deepFreeze', '1')
 
     const qs = params.toString()
-    return qs
-      ? `${server}${router.pathname}?${qs}`
-      : `${server}${router.pathname}`
+    return qs ? `${server}${router.pathname}?${qs}` : `${server}${router.pathname}`
   }
 
   const [shareCopied, setShareCopied] = useState(false)
@@ -243,7 +257,7 @@ export default function TrustSet({
       setLimit(Math.round(tokenSupply * 1000000) / 1000000)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, tokenSupply]) 
+  }, [mode, tokenSupply])
 
   const fetchTokenSupply = async () => {
     try {
@@ -370,7 +384,7 @@ export default function TrustSet({
 
   return (
     <>
-      <SEO title="Set Trustline" description={'Set a Trustline on the ' + explorerName} />
+      <SEO title="Set Trustline" description="Trustset: Set a Trustline to an address" />
       <div className="content-text content-center">
         <h1 className="center">Set/Update Trust (Trustlines)</h1>
         <p className="center">Create or modify a Trustline linking two accounts.</p>
