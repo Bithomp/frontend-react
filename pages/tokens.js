@@ -346,6 +346,12 @@ export default function Tokens({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, issuer, currency, subscriptionExpired])
 
+  // Effect: update sortConfig when order changes (e.g., from dropdown)
+  useEffect(() => {
+    setSortConfig(getInitialSortConfig(order))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order])
+
   useEffect(() => {
     let queryAddList = []
     let queryRemoveList = []
