@@ -35,7 +35,7 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [escrowMode, setEscrowMode] = useState('none') // 'none', 'short', 'locked'
-  const [filtersHide, setFiltersHide] = useState(false)
+  const [filtersHide, setFiltersHide] = useState(true)
 
   const controller = new AbortController()
 

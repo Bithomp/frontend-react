@@ -193,10 +193,11 @@ $width: 340px;
       }
     }
 
-    @media (min-width: 1300px) {
-      .content-cols.is-filters-hide & {
-        display: none;
-      }
+    .content-cols.is-filters-hide & {
+      display: none;
+    }
+    .content-cols & {
+      display: block;
     }
 
     @media (max-width: 1300px) {
@@ -205,7 +206,6 @@ $width: 340px;
       background: #fff;
       padding: 20px 30px 90px;
       overflow-y: scroll;
-      transform: translateY(100%);
       pointer-events: all;
       transition: transform 0.3s ease-in-out;
 

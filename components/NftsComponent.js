@@ -98,7 +98,7 @@ export default function NftsComponent({
   const [order, setOrder] = useState(orderQuery)
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
-  const [filtersHide, setFiltersHide] = useState(false)
+  const [filtersHide, setFiltersHide] = useState(true)
   const [selectedToken, setSelectedToken] = useState({
     currency: saleCurrency,
     issuer: saleCurrencyIssuer

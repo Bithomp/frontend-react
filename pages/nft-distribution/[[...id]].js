@@ -68,7 +68,7 @@ export default function NftDistribution({
   const [taxonInput, setTaxonInput] = useState(taxonQuery)
   const [order, setOrder] = useState(orderQuery)
   const [hasMore, setHasMore] = useState('first')
-  const [filtersHide, setFiltersHide] = useState(false)
+  const [filtersHide, setFiltersHide] = useState(true)
 
   const checkApi = async () => {
     /*

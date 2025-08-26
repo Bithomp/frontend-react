@@ -115,7 +115,7 @@ export default function AccountTransactions({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState('newest') // newest | oldest
-  const [filtersHide, setFiltersHide] = useState(false)
+  const [filtersHide, setFiltersHide] = useState(true)
   const [txType, setTxType] = useState('tx') // tx = all types
   const [initiated, setInitiated] = useState('0') // 0 = both, 1 = outgoing, 2 = incoming
   const [excludeFailures, setExcludeFailures] = useState('0') // 0 = include, 1 = exclude

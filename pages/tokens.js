@@ -198,7 +198,7 @@ export default function Tokens({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState(orderQuery || 'rating')
-  const [filtersHide, setFiltersHide] = useState(false)
+  const [filtersHide, setFiltersHide] = useState(true)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
   const [rendered, setRendered] = useState(false)

@@ -136,7 +136,7 @@ export default function NftSales({
   ])
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
-  const [filtersHide, setFiltersHide] = useState(false)
+  const [filtersHide, setFiltersHide] = useState(true)
   const [selectedToken, setSelectedToken] = useState({
     currency: currency,
     issuer: currencyIssuer
