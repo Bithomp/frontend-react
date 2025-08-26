@@ -80,7 +80,7 @@ export default function NftMint({
           You can use this page to create a new NFT, a unique digital asset that can be used in a variety of
           applications. View our guide:{' '}
           <Link href="/learn/nft-minting" target="_blank" rel="noreferrer">
-            How to mint NFTs on XRP Ledger
+            How to mint NFTs
           </Link>
           .
         </p>
