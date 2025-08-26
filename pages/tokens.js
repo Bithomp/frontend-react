@@ -118,8 +118,9 @@ export async function getServerSideProps(context) {
     'trustlinesHigh',
     'holdersHigh',
     'priceNativeCurrencyHigh',
-    'priceNativeCurrencyLow',
     'marketCapHigh',
+    'sellVolumeHigh',
+    'buyVolumeHigh',
     'totalVolumeHigh',
     'uniqueTradersHigh',
     'uniqueSellersHigh',
@@ -179,8 +180,9 @@ const orderList = [
   { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
   { value: 'holdersHigh', label: 'Holders: High to Low' },
   { value: 'priceNativeCurrencyHigh', label: 'Price: High to Low' },
-  { value: 'priceNativeCurrencyLow', label: 'Price: Low to High' },
   { value: 'marketCapHigh', label: 'Marketcap: High to Low' },
+  { value: 'sellVolumeHigh', label: 'Sell Volume (24h): High to Low' },
+  { value: 'buyVolumeHigh', label: 'Buy Volume (24h): High to Low' },
   { value: 'totalVolumeHigh', label: 'Total Volume (24h): High to Low' },
   { value: 'uniqueTradersHigh', label: 'Unique Traders (24h): High to Low' },
   { value: 'uniqueSellersHigh', label: 'Unique Sellers (24h): High to Low' },
@@ -246,10 +248,12 @@ export default function Tokens({
         return { key: 'holders', direction: 'descending' }
       case 'priceNativeCurrencyHigh':
         return { key: 'price', direction: 'descending' }
-      case 'priceNativeCurrencyLow':
-        return { key: 'price', direction: 'ascending' }
       case 'marketCapHigh':
         return { key: 'marketcap', direction: 'descending' }
+      case 'sellVolumeHigh':
+        return { key: 'sellVolume', direction: 'descending' }
+      case 'buyVolumeHigh':
+        return { key: 'buyVolume', direction: 'descending' }
       case 'totalVolumeHigh':
         return { key: 'totalVolume', direction: 'descending' }
       case 'uniqueTradersHigh':
@@ -583,14 +587,17 @@ export default function Tokens({
 
   const sortTable = (key) => {
     if (!data || data.length === 0) return
-    let direction = 'descending'
-    if (key === 'price' && sortConfig.key === key && sortConfig.direction === direction) {
-      direction = 'ascending'
+
+    if (sortConfig.key === key) {
+      setSortConfig({ key: 'rating', direction: 'descending' })
+      setOrder('rating')
+      return
     }
+    
+    let direction = 'descending'
     setSortConfig({ key, direction })
 
-    const apiOrderFor = (k, dir) => {
-      const isDesc = dir === 'descending'
+    const apiOrderFor = (k) => {
       switch (k) {
         case 'rating':
         case 'index':
@@ -600,7 +607,7 @@ export default function Tokens({
         case 'holders':
           return 'holdersHigh'
         case 'price':
-          return isDesc ? 'priceNativeCurrencyHigh' : 'priceNativeCurrencyLow'
+          return 'priceNativeCurrencyHigh'
         case 'marketcap':
           return 'marketCapHigh'
         case 'buyVolume':
@@ -620,7 +627,7 @@ export default function Tokens({
       }
     }
 
-    const newApiOrder = apiOrderFor(key, direction)
+    const newApiOrder = apiOrderFor(key)
     if (newApiOrder) {
       setOrder(newApiOrder)
     }
@@ -682,7 +689,7 @@ export default function Tokens({
                   <th className="right">
                     <span className="inline-flex items-center">
                       Price
-                      <SortingArrow sortKey="price" currentSort={sortConfig} onClick={() => sortTable('price')} canSortBothWays={true} />
+                      <SortingArrow sortKey="price" currentSort={sortConfig} onClick={() => sortTable('price')} />
                     </span>
                   </th>
                   <th className="right">Change (24h)</th>
