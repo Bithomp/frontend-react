@@ -160,13 +160,27 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         <thead>
           <tr>
             <th colSpan="100">
-              The last 5 DEX orders{historicalTitle}
-              {' '}
-              [
-              <a href={`/account/${address}/dex`} className="link bold">
-                View all
-              </a>{' '}
-              ({offerList.length} total)]
+              {offerList.length > 5 ? (
+                <>
+                  The last 5 DEX orders{historicalTitle}
+                  {/* {' '}
+                  [
+                  <a href={`/account/${address}/dex`} className="link bold">
+                    View all ({offerList.length} total)
+                  </a>{' '}
+                  ] */}
+                </>
+              ) : (
+                <>
+                  {offerList.length} DEX orders{historicalTitle}
+                  {/* {' '}
+                  [
+                  <a href={`/account/${address}/dex`} className="link bold">
+                    View details
+                  </a>{' '}
+                  ] */}
+                </>
+              )}
               {!account?.address && !ledgerTimestamp && (
                 <>
                   {' '}
@@ -193,13 +207,27 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
       <div className="show-on-small-w800">
         <br />
         <center>
-          The last 5 DEX orders{historicalTitle}
-          {' '}
-          [
-          <a href={`/account/${address}/dex`} className="link bold">
-            View all
-          </a>{' '}
-          ({offerList.length} total)]
+          {offerList.length > 5 ? (
+            <>
+              The last 5 DEX orders{historicalTitle}
+              {' '}
+              [
+              <a href={`/account/${address}/dex`} className="link bold">
+                View all ({offerList.length} total)
+              </a>{' '}
+              ]
+            </>
+          ) : (
+            <>
+              {offerList.length} DEX orders{historicalTitle}
+              {' '}
+              [
+              <a href={`/account/${address}/dex`} className="link bold">
+                View details
+              </a>{' '}
+              ]
+            </>
+          )}
         </center>
         <br />
         <table className="table-mobile wide">

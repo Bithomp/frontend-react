@@ -112,23 +112,21 @@ export const amountFormatWithIcon = ({ amount }) => {
 
   return (
     <span className="inline-flex items-center gap-1">
-      <span className="tooltip">
-        {shortNiceNumber(value, 2, 1)} {valuePrefix}
-        <span className="tooltiptext no-brake right">
-          {fullNiceNumber(value)} {valuePrefix} {textCurrency}
-        </span>
-      </span>
-      <span className="tooltip">
-        <span className="inline-flex items-center gap-1">
-          <img src={imageUrl} alt={currency} width={16} height={16} />
-          {currency}
-        </span>
+      <span className="tooltip" style={{ display: 'inline-flex', alignItems: 'center' }}>
+        <img src={imageUrl} alt={currency} width={18} height={18} />          
         {amount.issuer && (
           <span className="tooltiptext no-brake right">
             {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
           </span>
         )}
       </span>
+      <span className="tooltip">
+        {shortNiceNumber(value, 2, 1)} {valuePrefix} {currency}
+        <span className="tooltiptext no-brake right">
+          {fullNiceNumber(value)} {valuePrefix} {textCurrency}
+        </span>
+      </span>
+      
     </span>
   )
 }
