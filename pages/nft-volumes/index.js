@@ -81,7 +81,7 @@ export default function NftVolumes({
   const [chartIssuers, setChartIssuers] = useState([])
   const [chartVolumes, setChartVolumes] = useState([])
   const [loadingChart, setLoadingChart] = useState(false)
-  const [filtersHide, setFiltersHide] = useState(false)
+  const [filtersHide, setFiltersHide] = useState(true)
   const [hasMore, setHasMore] = useState('first')
   const [csvHeaders, setCsvHeaders] = useState([])
   const [selectedToken, setSelectedToken] = useState({
