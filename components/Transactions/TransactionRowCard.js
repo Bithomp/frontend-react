@@ -46,7 +46,7 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
           <FiClock style={{ stroke: '#666' }} /> {time}
         </span>
       </td>
-      <td className="left" style={{ maxWidth: width > 600 ? 600 : '100%', wordBreak: 'break-word' }}>
+      <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
         <span className="flex items-center gap-1">
           <span>Transaction hash: </span>
           {width > 600 ? <LinkTx tx={tx.hash}>{tx.hash}</LinkTx> : <LinkTx tx={tx.hash} short={10} />}
