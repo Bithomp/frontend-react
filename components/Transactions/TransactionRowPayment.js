@@ -124,7 +124,7 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
       {!isConvertion && outcome?.deliveredAmount && (
         <div>
           <span className="bold">Delivered amount: </span>
-            <span className="bold green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice' , icon: true })}</span>
+            <span className="bold green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice', icon: true })}</span>
             {outcome?.deliveredAmount?.issuer && (
               <>({addressUsernameOrServiceLink(outcome?.deliveredAmount, 'issuer', { short: true })})</>
             )}

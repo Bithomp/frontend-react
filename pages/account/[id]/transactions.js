@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -179,7 +179,7 @@ export default function AccountTransactions({
   ]
 
   // Build API url
-  const apiUrl = useCallback((opts = {}) => {
+  const apiUrl = (opts = {}) => {
     const limit = 20
     let url = `v3/transactions/${userData?.address}?limit=${limit}`
     // pagination marker
@@ -222,9 +222,9 @@ export default function AccountTransactions({
       }
     }
     return url
-  }, [userData?.address, order, txType, initiated, excludeFailures, counterparty, fromDate, toDate, filtersApplied])
+  }
 
-  const fetchTransactions = useCallback(async (opts = {}) => {
+  const fetchTransactions = async (opts = {}) => {
     if (loading && !opts.restart) return // Only block if not restarting
     setLoading(true)
 
@@ -246,7 +246,7 @@ export default function AccountTransactions({
 
       if (markerToUse && transactions.length > 0) {
         // pagination – append
-      const combined = [...transactions, ...newData]
+        const combined = [...transactions, ...newData]
         setTransactions(combined)
       } else {
         setTransactions(newData)
@@ -259,7 +259,7 @@ export default function AccountTransactions({
     }
     setLoading(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, marker, order, initiated, txType, excludeFailures, counterparty, fromDate, toDate, transactions.length, apiUrl, filtersApplied])
+  }
 
   // CSV headers (basic)
   const csvHeaders = [
@@ -293,57 +293,57 @@ export default function AccountTransactions({
         count={transactions.length}
         hasMore={marker}
         data={transactions.map(item => {
-            let dateObj = new Date();
-            if(item.outcome.timestamp){
-              dateObj = new Date(item.outcome.timestamp);
+          let dateObj = new Date();
+          if(item.outcome.timestamp){
+            dateObj = new Date(item.outcome.timestamp);
+          }
+          // Determine direction based on transaction data and current filter settings
+          let direction = 'Unknown';
+          const isAccountInitiator = item.tx.Account === userData.address;
+          const isAccountDestination = item.tx.Destination === userData.address;
+          
+          if (isAccountInitiator && !isAccountDestination) {
+            // Account is the sender but not the destination
+            direction = 'Outgoing';
+          } else if (!isAccountInitiator && isAccountDestination) {
+            // Account is the destination but not the sender
+            direction = 'Incoming';
+          } else if (isAccountInitiator && isAccountDestination) {
+            // Account is both sender and destination (self-send)
+            direction = 'Self';
+          } else if (!isAccountInitiator && !isAccountDestination) {
+            // Account is neither sender nor destination (e.g., in multi-sign transactions)
+            // Check if this is a transaction where the account is affected in some other way
+            if (item.tx.RegularKey === userData.address || item.tx.SignerQuorum || item.tx.SignerEntries) {
+              direction = 'Settings';
+            } else {
+              direction = 'Other';
             }
-            // Determine direction based on transaction data and current filter settings
-            let direction = 'Unknown';
-            const isAccountInitiator = item.tx.Account === userData.address;
-            const isAccountDestination = item.tx.Destination === userData.address;
-            
-            if (isAccountInitiator && !isAccountDestination) {
-              // Account is the sender but not the destination
-              direction = 'Outgoing';
-            } else if (!isAccountInitiator && isAccountDestination) {
-              // Account is the destination but not the sender
-              direction = 'Incoming';
-            } else if (isAccountInitiator && isAccountDestination) {
-              // Account is both sender and destination (self-send)
-              direction = 'Self';
-            } else if (!isAccountInitiator && !isAccountDestination) {
-              // Account is neither sender nor destination (e.g., in multi-sign transactions)
-              // Check if this is a transaction where the account is affected in some other way
-              if (item.tx.RegularKey === userData.address || item.tx.SignerQuorum || item.tx.SignerEntries) {
-                direction = 'Settings';
-              } else {
-                direction = 'Other';
-              }
-            }
-            
-            // Get counterparty address based on direction
-            let address = '';
-            if (direction === 'Outgoing' && item.tx.Destination) {
-              address = item.tx.Destination;
-            } else if (direction === 'Incoming' && item.tx.Account) {
-              address = item.tx.Account;
-            } else if (direction === 'Self') {
-              address = 'Self';
-            } else if (direction === 'Settings' || direction === 'Other') {
-              address = item.tx.Account || 'N/A';
-            }
-            
-            return {
-              date: dateObj.toLocaleDateString(),
-              time: dateObj.toLocaleTimeString(),
-              type: item.tx.TransactionType || 'Unknown',
-              hash: item.txHash || '',
-              status: item.outcome.result || 'Unknown',
-              direction: direction,
-              address: address,
-              fee: item.outcome.fee || '0'
-            }
-         }) || []}
+          }
+          
+          // Get counterparty address based on direction
+          let address = '';
+          if (direction === 'Outgoing' && item.tx.Destination) {
+            address = item.tx.Destination;
+          } else if (direction === 'Incoming' && item.tx.Account) {
+            address = item.tx.Account;
+          } else if (direction === 'Self') {
+            address = 'Self';
+          } else if (direction === 'Settings' || direction === 'Other') {
+            address = item.tx.Account || 'N/A';
+          }
+          
+          return {
+            date: dateObj.toLocaleDateString(),
+            time: dateObj.toLocaleTimeString(),
+            type: item.tx.TransactionType || 'Unknown',
+            hash: item.txHash || '',
+            status: item.outcome.result || 'Unknown',
+            direction: direction,
+            address: address,
+            fee: item.outcome.fee || '0'
+          }
+        }) || []}
         csvHeaders={csvHeaders}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
@@ -412,9 +412,6 @@ export default function AccountTransactions({
               <button className="button-action" onClick={applyFilters}>
                 Search
               </button>
-              {/* <button className="button-action" onClick={resetFilters} style={{ backgroundColor: '#6c757d' }}>
-                Reset
-              </button> */}
             </div>
           </div>
         </>
@@ -493,10 +490,10 @@ export default function AccountTransactions({
                         selectedCurrency={selectedCurrency}
                       />
                     )
-                   })
-                 )}
-                </tbody>
-              </table>
+                  })
+                )}
+              </tbody>
+            </table>
           </InfiniteScrolling>
         </>
       </FiltersFrame>      

@@ -128,8 +128,124 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
         </>
       )}
 
+      {/* For sell offers, show NFT owner, NFT ID, and destination */}
+      {txType === "NFTokenCreateOffer" && (
+        <>
+          <span>Initiated by: </span>
+          <span className="bold">{specification?.source?.address}</span>
+          <br />
+          {/* For sell offers not initiated by this account, show who created the offer */}
+          {specification?.flags?.sellToken && specification?.source?.address !== tx?.tx?.Account && (
+            <>
+              <span>Sell Offer by: </span>
+              <span className="bold">{specification?.source?.address}</span>
+              <br />
+            </>
+          )}
+        </>
+      )}
 
-      {outcome?.nftokenOfferChanges?.length > 0 && tx.tx.TransactionType !== 'NFTokenAcceptOffer' && (
+      {txType === "NFTokenCancelOffer" && (
+        <>
+          <span>Initiated by: </span>
+          <span className="bold">{tx?.tx?.Account}</span>
+          <br />
+          {/* For cancel offers not initiated by this account, show who initiated the cancel */}
+          {specification?.source?.address !== tx?.tx?.Account && (
+            <>
+              <span>NFTokenCancelOffer by: </span>
+              <span className="bold">{specification?.source?.address}</span>
+              <br />
+            </>
+          )}
+        </>
+      )}
+
+      {/* For buy offers, show NFT owner, NFT ID, and destination */}
+      {txType === "NFTokenCreateOffer" && !specification?.flags?.sellToken && (
+        <>
+          {tx?.tx?.Owner && (
+            <>
+              <span>NFT Owner: </span>
+              <span className="bold">{tx?.tx?.Owner}</span>
+              <br />
+            </>
+          )}
+          {tx?.tx?.NFTokenID && (
+            <>
+              <span>NFT: </span>
+              <span className="bold">{tx?.tx?.NFTokenID}</span>
+              <br />
+            </>
+          )}
+          {tx?.tx?.Destination && (
+            <>
+              <span>Destination: </span>
+              <span className="bold">{tx?.tx?.Destination}</span>
+              <br />
+            </>
+          )}
+        </>
+      )}
+
+      {txType === 'NFTokenAcceptOffer' && (
+        <>
+          <span>Initiated by: </span>
+            <span className="bold">{tx?.tx?.Account}</span>
+          <br />
+          {tx?.tx?.NFTokenSellOffer && (
+            <>
+              <span>Sell offer: </span>
+              <span>{nftOfferLink(tx?.tx?.NFTokenSellOffer)}</span>
+              <br />
+            </>
+          )}
+          {tx?.tx?.NFTokenBuyOffer && (
+            <>
+              <span>Buy offer: </span>
+              <span>{nftOfferLink(tx?.tx?.NFTokenBuyOffer)}</span>
+              <br />
+            </>
+          )}
+          {/* Show amount spent for the NFT */}
+          {specification?.amount && (
+            <>
+              <span>Amount spent: </span>
+              <span className="bold">{amountFormat(specification.amount, { tooltip: 'right', icon: true })}</span>
+              <br />
+            </>
+          )}
+          {/* Show broker fee for broker sells */}
+          {tx?.tx?.NFTokenBrokerFee && tx?.tx?.NFTokenBrokerFee !== '0' && (
+            <>
+              <span>Broker fee: </span>
+              <span className="bold">{amountFormat(specification.nftokenBrokerFee, { tooltip: 'right', icon: true })}</span>
+              <br />
+            </>
+          )}
+          {/* Show NFT transfer details */}
+          {outcome?.nftokenChanges?.length === 2 && (
+            <>
+              <span>Transfer From: </span>
+              <span className="bold">
+                {outcome.nftokenChanges.find(change => 
+                  change.nftokenChanges[0]?.status === 'removed'
+                )?.address || 'Unknown'}
+              </span>
+              <br />
+              <span>Transfer To: </span>
+              <span className="bold">
+                {outcome.nftokenChanges.find(change => 
+                  change.nftokenChanges[0]?.status === 'added'
+                )?.address || 'Unknown'}
+              </span>
+              <br />
+            </>
+          )}
+        </>
+      )}
+
+      {outcome?.nftokenOfferChanges?.length > 0 && txType !== 'NFTokenAcceptOffer' && (
         <div>
           <span>Offer: </span>
           <span>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</span>
