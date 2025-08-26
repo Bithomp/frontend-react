@@ -3,8 +3,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
 import { FaHandshake } from 'react-icons/fa'
-import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
-
 
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
@@ -32,35 +30,6 @@ import {
 } from '../utils'
 import { useRouter } from 'next/router'
 import { fetchHistoricalRate } from '../utils/common'
-
-// Sorting Arrow Component
-const SortingArrow = ({ sortKey, currentSort, onClick, canSortBothWays = false }) => {
-  const isActive = currentSort.key === sortKey
-  const isDescending = currentSort.direction === 'descending'
-  
-  let arrowIcon
-  let arrowClass = 'link green inline-flex items-center'
-  
-  if (canSortBothWays) {
-    arrowIcon = (
-      <span className="inline-flex items-center">
-        <FaLongArrowAltUp className={isActive && !isDescending ? 'orange' : ''} />
-        <FaLongArrowAltDown className={isActive && isDescending ? 'orange ml-[-6px]' : 'ml-[-6px]'} />
-      </span>
-    )
-  } else {
-    if (isActive) {
-      arrowClass = 'link orange inline-flex items-center'
-    }
-    arrowIcon = <FaLongArrowAltDown />
-  }
-  
-  return (
-    <b className={arrowClass} onClick={onClick}>
-      {arrowIcon}
-    </b>
-  )
-}
 
 /*
   {
@@ -113,8 +82,11 @@ export async function getServerSideProps(context) {
   const supportedOrders = new Set([
     'rating',
     'trustlinesHigh',
+    'trustlinesLow',
     'holdersHigh',
+    'holdersLow',
     'priceNativeCurrencyHigh',
+    'priceNativeCurrencyLow',
     'marketCapHigh',
     'sellVolumeHigh',
     'buyVolumeHigh',
@@ -175,8 +147,11 @@ export async function getServerSideProps(context) {
 const orderList = [
   { value: 'rating', label: 'Rating: High to Low' },
   { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
+  { value: 'trustlinesLow', label: 'Trustlines: Low to High' },
   { value: 'holdersHigh', label: 'Holders: High to Low' },
+  { value: 'holdersLow', label: 'Holders: Low to High' },
   { value: 'priceNativeCurrencyHigh', label: 'Price: High to Low' },
+  { value: 'priceNativeCurrencyLow', label: 'Price: Low to High' },
   { value: 'marketCapHigh', label: 'Marketcap: High to Low' },
   { value: 'sellVolumeHigh', label: 'Sell Volume (24h): High to Low' },
   { value: 'buyVolumeHigh', label: 'Buy Volume (24h): High to Low' },
@@ -238,10 +213,16 @@ export default function Tokens({
         return { key: 'rating', direction: 'descending' }
       case 'trustlinesHigh':
         return { key: 'trustlines', direction: 'descending' }
+      case 'trustlinesLow':
+        return { key: 'trustlines', direction: 'ascending' }
       case 'holdersHigh':
         return { key: 'holders', direction: 'descending' }
+      case 'holdersLow':
+        return { key: 'holders', direction: 'ascending' }
       case 'priceNativeCurrencyHigh':
         return { key: 'price', direction: 'descending' }
+      case 'priceNativeCurrencyLow':
+        return { key: 'price', direction: 'ascending' }
       case 'marketCapHigh':
         return { key: 'marketcap', direction: 'descending' }
       case 'sellVolumeHigh':
@@ -555,28 +536,26 @@ export default function Tokens({
 
   const sortTable = (key) => {
     if (!data || data.length === 0) return
-
-    if (sortConfig.key === key) {
-      setSortConfig({ key: 'rating', direction: 'descending' })
-      setOrder('rating')
-      return
-    }
-    
     let direction = 'descending'
+    if (sortConfig.key === key && sortConfig.direction === direction) {
+      direction = 'ascending'
+    }
     setSortConfig({ key, direction })
 
-    const apiOrderFor = (k) => {
+    const apiOrderFor = (k, dir) => {
+      const isDesc = dir === 'descending'
       switch (k) {
         case 'rating':
         case 'index':
           return 'rating'
         case 'trustlines':
-          return 'trustlinesHigh'
+          return isDesc ? 'trustlinesHigh' : 'trustlinesLow'
         case 'holders':
-          return 'holdersHigh'
+          return isDesc ? 'holdersHigh' : 'holdersLow'
         case 'price':
-          return 'priceNativeCurrencyHigh'
+          return isDesc ? 'priceNativeCurrencyHigh' : 'priceNativeCurrencyLow'
         case 'marketcap':
+          // Only High supported per new API list
           return 'marketCapHigh'
         case 'buyVolume':
           return 'buyVolumeHigh'
@@ -590,12 +569,14 @@ export default function Tokens({
           return 'uniqueSellersHigh'
         case 'uniqueBuyers':
           return 'uniqueBuyersHigh'
+        case 'token':
+          return null
         default:
           return null
       }
     }
 
-    const newApiOrder = apiOrderFor(key)
+    const newApiOrder = apiOrderFor(key, direction)
     if (newApiOrder) {
       setOrder(newApiOrder)
     }
@@ -648,47 +629,72 @@ export default function Tokens({
               <thead>
                 <tr>
                   <th className="center">
-                    <span className="inline-flex items-center">
+                    <b
+                      className={'link' + (sortConfig.key === 'rating' ? ' orange' : '')}
+                      onClick={() => sortTable('rating')}
+                    >
+                      {' '}
                       #
-                      <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} />
-                    </span>
+                    </b>
                   </th>
                   <th>Token</th>
                   <th className="right">
-                    <span className="inline-flex items-center">
-                      Price
-                      <SortingArrow sortKey="price" currentSort={sortConfig} onClick={() => sortTable('price')} />
-                    </span>
+                    Price
+                    <b
+                      className={'link' + (sortConfig.key === 'price' ? ' orange' : '')}
+                      onClick={() => sortTable('price')}
+                    >
+                      {' '}
+                      ⇅
+                    </b>
                   </th>
                   <th className="right">Change (24h)</th>
                   <th className="right">
                     Total volume
                     <br />
-                    <span className="inline-flex items-center">
-                      (24h)
-                      <SortingArrow sortKey="totalVolume" currentSort={sortConfig} onClick={() => sortTable('totalVolume')} />
-                    </span>
+                    (24h)
+                    <b
+                      className={'link' + (sortConfig.key === 'totalVolume' ? ' orange' : '')}
+                      onClick={() => sortTable('totalVolume')}
+                    >
+                      {' '}
+                      ⇅
+                    </b>
                   </th>
                   <th className="right">
-                    <span className="inline-flex items-center">
-                      Buyers
-                      <SortingArrow sortKey="uniqueBuyers" currentSort={sortConfig} onClick={() => sortTable('uniqueBuyers')} />
-                    </span>
-                    <span className="inline-flex items-center">
-                      / Sellers
-                      <SortingArrow sortKey="uniqueSellers" currentSort={sortConfig} onClick={() => sortTable('uniqueSellers')} />
-                    </span>
+                    Buyers{' '}
+                    <b
+                      className={'link' + (sortConfig.key === 'uniqueBuyers' ? ' orange' : '')}
+                      onClick={() => sortTable('uniqueBuyers')}
+                    >
+                      ⇅
+                    </b>{' '}
+                    / Sellers{' '}
+                    <b
+                      className={'link' + (sortConfig.key === 'uniqueSellers' ? ' orange' : '')}
+                      onClick={() => sortTable('uniqueSellers')}
+                    >
+                      ⇅
+                    </b>
                     <br />
-                    <span className="inline-flex items-center">
-                      Traders (24h)
-                      <SortingArrow sortKey="uniqueTraders" currentSort={sortConfig} onClick={() => sortTable('uniqueTraders')} />
-                    </span>
+                    Traders (24h)
+                    <b
+                      className={'link' + (sortConfig.key === 'uniqueTraders' ? ' orange' : '')}
+                      onClick={() => sortTable('uniqueTraders')}
+                    >
+                      {' '}
+                      ⇅
+                    </b>
                   </th>
                   <th className="right">
-                    <span className="inline-flex items-center">
-                      Holders
-                      <SortingArrow sortKey="holders" currentSort={sortConfig} onClick={() => sortTable('holders')} />,
-                    </span>
+                    Holders{' '}
+                    <b
+                      className={'link' + (sortConfig.key === 'holders' ? ' orange' : '')}
+                      onClick={() => sortTable('holders')}
+                    >
+                      ⇅
+                    </b>
+                    ,
                     <br />
                     Active (24h)
                   </th>
@@ -705,10 +711,14 @@ export default function Tokens({
                     (24h)
                   </th>
                   <th className="right">
-                    <span className="inline-flex items-center">
-                      Marketcap
-                      <SortingArrow sortKey="marketcap" currentSort={sortConfig} onClick={() => sortTable('marketcap')} />
-                    </span>
+                    Marketcap
+                    <b
+                      className={'link' + (sortConfig.key === 'marketcap' ? ' orange' : '')}
+                      onClick={() => sortTable('marketcap')}
+                    >
+                      {' '}
+                      ⇅
+                    </b>
                   </th>
                   <th className="center">Action</th>
                 </tr>
