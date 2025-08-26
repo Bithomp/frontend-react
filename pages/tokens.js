@@ -493,19 +493,9 @@ export default function Tokens({
         {change >= 0 ? '+' : '-'}
         {percentText}
         <span className="tooltiptext right no-brake" suppressHydrationWarning>
-          {fiatRate && pastFiatRate ? (
-            <>
-              Now: {fullNiceNumber(currentFiat, selectedCurrency)}
-              <br />
-              Before: {fullNiceNumber(pastFiat, selectedCurrency)}
-            </>
-          ) : (
-            <>
-              Now: {niceNumber(current, 6)} {nativeCurrency}
-              <br />
-              Before: {niceNumber(past, 6)} {nativeCurrency}
-            </>
-          )}
+          Now: {fullNiceNumber(currentFiat, selectedCurrency)}
+          <br />
+          Before: {fullNiceNumber(pastFiat, selectedCurrency)}
         </span>
       </span>
     )
