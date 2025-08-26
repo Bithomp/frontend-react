@@ -46,7 +46,7 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
         <div>
           <span>Taker Gets: </span>
           <span className="bold">
-            {amountFormat(takerGets, { precise: true })}
+            {amountFormat(takerGets, { precise: true , icon: true })}
             {takerGets?.issuer && <>({addressUsernameOrServiceLink(takerGets, 'issuer', { short: true })})</>}
           </span>
         </div>
@@ -55,7 +55,7 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
         <div>
           <span>Taker Pays: </span>
           <span className="bold">
-            {amountFormat(takerPays, { precise: true })}
+            {amountFormat(takerPays, { precise: true , icon: true })}
             {takerPays?.issuer && <>({addressUsernameOrServiceLink(takerPays, 'issuer', { short: true })})</>}
           </span>
         </div>
@@ -69,7 +69,7 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
               <div key={index}>
                 <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
                   {Number(change?.value) > 0 && '+'}
-                  {amountFormat(change, { precise: 'nice' })}
+                  {amountFormat(change, { precise: 'nice' , icon: true })}
                 </span>
                 {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
                 {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate: pageFiatRate })}
@@ -87,7 +87,7 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
                     ...sourceBalanceChangesList[1],
                     value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
                   },
-                  { precise: 'nice' }
+                  { precise: 'nice', icon: true }
                 )}
               </span>
               <br />1 {niceCurrency(sourceBalanceChangesList[1].currency)} ={' '}
@@ -97,7 +97,7 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
                     ...sourceBalanceChangesList[0],
                     value: Math.abs(sourceBalanceChangesList[0].value / sourceBalanceChangesList[1].value)
                   },
-                  { precise: 'nice' }
+                  { precise: 'nice', icon: true }
                 )}
               </span>
             </span>

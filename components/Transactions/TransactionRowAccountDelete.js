@@ -1,5 +1,5 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat } from '../../utils/format'
+import { addressUsernameOrServiceLink, amountFormat , nativeCurrencyToFiat } from '../../utils/format'
 import { FiDownload, FiUpload } from 'react-icons/fi'
 import { useTxFiatRate } from './FiatRateContext'
 
@@ -35,7 +35,7 @@ export const TransactionRowAccountDelete = ({ tx, address, index, selectedCurren
       {outcome?.deliveredAmount && (
       <div>
         <span className="bold">Delivered amount: </span>
-          <span className="green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice' })}</span>
+        <span className="green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice' , icon: true })}</span>
           {nativeCurrencyToFiat({
             amount: outcome?.deliveredAmount,
             selectedCurrency,

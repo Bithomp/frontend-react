@@ -1,31 +1,35 @@
 import React from 'react'
 import { TransactionRowCard } from './TransactionRowCard'
-import { nftIdLink, nftOfferLink, amountFormat } from '../../utils/format'
+import { nftIdLink, nftOfferLink, amountFormat} from '../../utils/format'
 
-const nftData = (change, nftInfo) => {
- 
+const nftData = (change, nftInfo, txType) => {
   const flagsAsString = flagList(nftInfo.flags)
 
   return (
     <>
+    {txType === 'NFTokenBurn' ? (
       <div>
-        <span>NFT: </span>
-        <span>{nftIdLink(change.nftokenID)}</span>
+        <span>Change: </span>
+        <span>removed NFT {nftIdLink(change.nftokenID)}</span>
       </div>
+    ) : <div>
+          <span>NFT: </span>
+          <span>{nftIdLink(change.nftokenID)}</span>
+        </div>  }
       
       {nftInfo.transferFee !== undefined && (
         <div>
-          <span>Transfer fee: </span>
+          <span>Royalty: </span>
           <span>{nftInfo.transferFee / 1000}%</span>
         </div>
       )}
-      {flagsAsString && (
+      {flagsAsString && txType !== 'NFTokenBurn' && txType !== 'NFTokenAcceptOffer' && (
         <div>
           <span>Flag{flagsAsString.includes(',') ? 's' : ''}: </span>
           <span className="bold">{flagsAsString}</span>
         </div>
       )}
-      {nftInfo.nftokenTaxon !== undefined && (
+      {nftInfo.nftokenTaxon !== undefined && txType !== 'NFTokenAcceptOffer' && (
         <div>
           <span>NFT taxon: </span>
           <span>{nftInfo.nftokenTaxon}</span>
@@ -96,18 +100,36 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
     >
-      {outcome?.nftokenChanges?.length > 0 &&
-        outcome?.nftokenChanges.map((change, i) => {
-          const nftChanges = change.nftokenChanges
-          return nftChanges.map((nftChange, j) => {
-            const nftInfo = outcome?.affectedObjects?.nftokens?.[nftChange.nftokenID]
-            return (
-              <React.Fragment key={'t' + i + '-' + j}>{nftData(nftChange, nftInfo)}</React.Fragment>
-            )
-          })
-        })}
+      {outcome?.nftokenChanges?.length > 0 && (
+        <>
+          {/* For NFTokenAcceptOffer, show NFT info only once */}
+          {txType === 'NFTokenAcceptOffer' ? (
+            (() => {
+              const firstChange = outcome.nftokenChanges[0]?.nftokenChanges[0]
+              const nftInfo = firstChange ? outcome?.affectedObjects?.nftokens?.[firstChange.nftokenID] : null
+              return firstChange && nftInfo ? (
+                <React.Fragment key="nft-info">
+                  {nftData(firstChange, nftInfo, txType)}
+                </React.Fragment>
+              ) : null
+            })()
+          ) : (
+            /* For other transaction types, show NFT info for each change */
+            outcome.nftokenChanges.map((change, i) => {
+              const nftChanges = change.nftokenChanges
+              return nftChanges.map((nftChange, j) => {
+                const nftInfo = outcome?.affectedObjects?.nftokens?.[nftChange.nftokenID]
+                return (
+                  <React.Fragment key={'t' + i + '-' + j}>{nftData(nftChange, nftInfo, txType)}</React.Fragment>
+                )
+              })
+            })
+          )}
+        </>
+      )}
 
-      {outcome?.nftokenOfferChanges?.length > 0 && (
+
+      {outcome?.nftokenOfferChanges?.length > 0 && tx.tx.TransactionType !== 'NFTokenAcceptOffer' && (
         <div>
           <span>Offer: </span>
           <span>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</span>
@@ -119,7 +141,7 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
         <div>
           <span>{txType === 'NFTokenMint' ? 'Price: ' : 'Amount: '}</span>
           <span>
-            {amountFormat(specification.amount, { tooltip: 'right' })}
+            {amountFormat(specification.amount, { tooltip: 'right', icon: true })}
           </span>
         </div>
       )}

@@ -87,7 +87,7 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
                   <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                    {amountFormat(optionalAbsAmount(change))}
+                    {amountFormat(optionalAbsAmount(change), { icon: true })}
                   </span>
                   {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
                   {nativeCurrencyToFiat({
@@ -110,7 +110,7 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
                       ...sourceBalanceChangesList[1],
                       value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
                     },
-                    { precise: 'nice' }
+                    { precise: 'nice', icon: true }
                   )}
                 </span>
                 {sourceBalanceChangesList[1].issuer && (
@@ -124,7 +124,7 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
       {!isConvertion && outcome?.deliveredAmount && (
         <div>
           <span className="bold">Delivered amount: </span>
-            <span className="bold green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice' })}</span>
+            <span className="bold green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice' , icon: true })}</span>
             {outcome?.deliveredAmount?.issuer && (
               <>({addressUsernameOrServiceLink(outcome?.deliveredAmount, 'issuer', { short: true })})</>
             )}

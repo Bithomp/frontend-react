@@ -37,7 +37,6 @@ export const NiceNativeBalance = ({ amount }) => {
 export const CurrencyWithIcon = ({ token }) => {
   if (!token) return ''
   const { lp_token, currencyDetails } = token
-
   let imageUrl = tokenImageSrc(token)
 
   return (
@@ -565,11 +564,22 @@ export const trAmountWithGateway = ({ amount, name }) => {
   )
 }
 
-export const amountFormat = (amount, options = {}) => {
+export const amountFormat = (amount, options = {icon: false}) => {
   if (!amount && amount !== '0' && amount !== 0) {
     return ''
   }
-  const { value, currency, valuePrefix, issuer, type } = amountParced(amount)
+  const { value, currency, valuePrefix, issuer, type} = amountParced(amount)
+  let icon = options?.icon ;
+
+  // For all tokens including native currency, show icon
+  let imageUrl
+  if (type === nativeCurrency) {
+    // Use native currency icon
+    imageUrl = nativeCurrenciesImages[nativeCurrency]
+  } else {
+    // Use IOU token icon
+    imageUrl = tokenImageSrc({ issuer, currency })
+  }
 
   let textCurrency = currency
   if (options.noSpace) {
@@ -612,6 +622,7 @@ export const amountFormat = (amount, options = {}) => {
     if (options.tooltip) {
       return (
         <span suppressHydrationWarning>
+          {icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom', display: 'inline-block' }} /> }
           {showValue} {valuePrefix}{' '}
           <span className="tooltip">
             <Link href={'/account/' + issuer}>{currency}</Link>
@@ -624,15 +635,26 @@ export const amountFormat = (amount, options = {}) => {
     } else if (options.withIssuer) {
       return (
         <span>
+          {icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom', display: 'inline-block' }} /> }
           {showValue} {valuePrefix} {currency} ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})
         </span>
       )
     } else {
-      return showValue + ' ' + valuePrefix + ' ' + textCurrency
+      return (
+        <span>
+          {icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom', display: 'inline-block' }} /> }
+          {showValue + ' ' + valuePrefix + ' ' + textCurrency}
+        </span>
+      )
     }
   } else {
     //type: ['IOU', 'IOU demurraging', 'NFT']
-    return showValue + ' ' + valuePrefix + ' ' + textCurrency
+    return (
+      <span>
+        {icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom', display: 'inline-block' }} /> }
+        {showValue + ' ' + valuePrefix + ' ' + textCurrency}
+      </span>
+    )
   }
 }
 

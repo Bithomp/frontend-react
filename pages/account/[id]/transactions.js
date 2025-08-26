@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -15,6 +15,7 @@ import SearchBlock from '../../../components/Layout/SearchBlock'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../../../components/Layout/InfiniteScrolling'
 import SimpleSelect from '../../../components/UI/SimpleSelect'
+import AddressInput from '../../../components/UI/AddressInput'
 
 import {
   TransactionRowDetails,
@@ -117,8 +118,9 @@ export default function AccountTransactions({
   const [initiated, setInitiated] = useState('0') // 0 = both, 1 = outgoing, 2 = incoming
   const [excludeFailures, setExcludeFailures] = useState('0') // 0 = include, 1 = exclude
   const [counterparty, setCounterparty] = useState('')
-  const [fromDate, setFromDate] = useState('')
-  const [toDate, setToDate] = useState('')
+  const [fromDate, setFromDate] = useState("")
+  const [toDate, setToDate] = useState("")
+  const [filtersApplied, setFiltersApplied] = useState(true)
 
   // Update userData when initialUserData changes
   useEffect(() => {
@@ -133,6 +135,16 @@ export default function AccountTransactions({
   useEffect(() => {
     setTransactions(initialTransactions)
   }, [initialTransactions])
+
+  // Refresh transactions when order changes (keep this automatic)
+  useEffect(() => {
+    if (userData?.address) {
+      fetchTransactions({restart: true}) ;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, userData?.address])
+
+  // Remove automatic filtering for other filters - they will be applied via search button
 
   // Helpers
   const orderList = [
@@ -167,7 +179,7 @@ export default function AccountTransactions({
   ]
 
   // Build API url
-  const apiUrl = (opts = {}) => {
+  const apiUrl = useCallback((opts = {}) => {
     const limit = 20
     let url = `v3/transactions/${userData?.address}?limit=${limit}`
     // pagination marker
@@ -177,33 +189,44 @@ export default function AccountTransactions({
     }
     // sorting
     if (order === 'oldest') {
-      url += `&earliestFirst=1`
+      url += `&forward=true`
+    } else if (order === 'newest') {
+      url += `&forward=false`
     }
-    // filters
-    if (txType && txType !== 'tx') {
-      url += `&type=${txType}`
-    }
-    if (initiated !== '0') {
-      url += `&initiated=${initiated}`
-    }
-    if (excludeFailures === '1') {
-      url += `&excludeFailures=1`
-    }
-    if (counterparty) {
-      url += `&counterparty=${encodeURIComponent(counterparty.trim())}`
-    }
-    if (fromDate) {
-      url += `&fromDate=${encodeURIComponent(new Date(fromDate).toISOString())}`
-    }
-    if (toDate) {
-      url += `&toDate=${encodeURIComponent(new Date(toDate).toISOString())}`
+    // filters - only apply when filters have been explicitly applied via search button
+    if (filtersApplied) {
+      if (txType && txType !== 'tx') {
+        url += `&type=${txType}`
+      }
+      if (initiated !== '0') {
+        // Direction filtering for outgoing/incoming transactions
+        if (initiated === '1') {
+          // Outgoing transactions
+          url += `&initiated=1`
+        } else if (initiated === '2') {
+          // Incoming transactions
+          url += `&initiated=0`
+        }
+      }
+      if (excludeFailures === '1') {
+        url += `&excludeFailures=1`
+      }
+      if (counterparty) {
+        url += `&counterparty=${encodeURIComponent(counterparty.trim())}`
+      }
+      if (fromDate) {
+        url += `&fromDate=${encodeURIComponent(fromDate.toISOString())}`
+      }
+      if (toDate) {
+        url += `&toDate=${encodeURIComponent(toDate.toISOString())}`
+      }
     }
     return url
-  }
+  }, [userData?.address, order, txType, initiated, excludeFailures, counterparty, fromDate, toDate, filtersApplied])
 
-  const fetchTransactions = async (opts = {}) => {
-    if (loading) return
-    // setLoading(true)
+  const fetchTransactions = useCallback(async (opts = {}) => {
+    if (loading && !opts.restart) return // Only block if not restarting
+    setLoading(true)
 
     let markerToUse = undefined
     if (!opts.restart) {
@@ -211,7 +234,8 @@ export default function AccountTransactions({
     }
 
     try {
-      const response = await axios.get(apiUrl({ marker: markerToUse }))
+      const apiUrlString = apiUrl({ marker: markerToUse })
+      const response = await axios.get(apiUrlString)
       if (response?.data?.status === 'error') {
         setErrorMessage(response?.data?.error)
         setLoading(false)
@@ -222,7 +246,7 @@ export default function AccountTransactions({
 
       if (markerToUse && transactions.length > 0) {
         // pagination – append
-        const combined = [...transactions, ...newData]
+      const combined = [...transactions, ...newData]
         setTransactions(combined)
       } else {
         setTransactions(newData)
@@ -234,7 +258,8 @@ export default function AccountTransactions({
       setErrorMessage(e?.message || 'Failed to load transactions')
     }
     setLoading(false)
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, marker, order, initiated, txType, excludeFailures, counterparty, fromDate, toDate, transactions.length, apiUrl, filtersApplied])
 
   // CSV headers (basic)
   const csvHeaders = [
@@ -249,11 +274,12 @@ export default function AccountTransactions({
   ]
 
   const applyFilters = () => {
+    setFiltersApplied(true)
     setTransactions([])
     setMarker('first')
-    setLoading(true)
+    setLoading(false) // Reset loading to false before calling fetchTransactions
     fetchTransactions({ restart: true })
-  }
+  } 
 
   return (
     <>
@@ -266,7 +292,58 @@ export default function AccountTransactions({
         orderList={orderList}
         count={transactions.length}
         hasMore={marker}
-        data={transactions || []}
+        data={transactions.map(item => {
+            let dateObj = new Date();
+            if(item.outcome.timestamp){
+              dateObj = new Date(item.outcome.timestamp);
+            }
+            // Determine direction based on transaction data and current filter settings
+            let direction = 'Unknown';
+            const isAccountInitiator = item.tx.Account === userData.address;
+            const isAccountDestination = item.tx.Destination === userData.address;
+            
+            if (isAccountInitiator && !isAccountDestination) {
+              // Account is the sender but not the destination
+              direction = 'Outgoing';
+            } else if (!isAccountInitiator && isAccountDestination) {
+              // Account is the destination but not the sender
+              direction = 'Incoming';
+            } else if (isAccountInitiator && isAccountDestination) {
+              // Account is both sender and destination (self-send)
+              direction = 'Self';
+            } else if (!isAccountInitiator && !isAccountDestination) {
+              // Account is neither sender nor destination (e.g., in multi-sign transactions)
+              // Check if this is a transaction where the account is affected in some other way
+              if (item.tx.RegularKey === userData.address || item.tx.SignerQuorum || item.tx.SignerEntries) {
+                direction = 'Settings';
+              } else {
+                direction = 'Other';
+              }
+            }
+            
+            // Get counterparty address based on direction
+            let address = '';
+            if (direction === 'Outgoing' && item.tx.Destination) {
+              address = item.tx.Destination;
+            } else if (direction === 'Incoming' && item.tx.Account) {
+              address = item.tx.Account;
+            } else if (direction === 'Self') {
+              address = 'Self';
+            } else if (direction === 'Settings' || direction === 'Other') {
+              address = item.tx.Account || 'N/A';
+            }
+            
+            return {
+              date: dateObj.toLocaleDateString(),
+              time: dateObj.toLocaleTimeString(),
+              type: item.tx.TransactionType || 'Unknown',
+              hash: item.txHash || '',
+              status: item.outcome.result || 'Unknown',
+              direction: direction,
+              address: address,
+              fee: item.outcome.fee || '0'
+            }
+         }) || []}
         csvHeaders={csvHeaders}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
@@ -291,20 +368,21 @@ export default function AccountTransactions({
             <br />
             <div>
               <span className="input-title">Counterparty</span>
-              <input
-                type="text"
-                value={counterparty}
-                onChange={(e) => setCounterparty(e.target.value)}
-                placeholder="Counterparty address"
-                className="input-text"
+              <AddressInput
+                title=""
+                placeholder=""
+                setValue={setCounterparty}
+                rawData={counterparty ? { counterparty } : {}}
+                type="counterparty"
+                hideButton={true}
               />
             </div>
             <br />
             <div>
               <span className="input-title">From</span>
               <DatePicker
-                selected={fromDate ? new Date(fromDate * 1000) : null}
-                onChange={(date) => setFromDate(date ? Math.floor(date.getTime() / 1000) : null)}
+                selected={fromDate}
+                onChange={(date) => setFromDate(date)}
                 selectsStart
                 showTimeInput
                 timeInputLabel={t('table.time')}
@@ -318,8 +396,8 @@ export default function AccountTransactions({
             <div>
               <span className="input-title">To</span>
               <DatePicker
-                selected={toDate ? new Date(toDate * 1000) : null}
-                onChange={(date) => setToDate(date ? Math.floor(date.getTime() / 1000) : null)}
+                selected={toDate}
+                onChange={(date) => setToDate(date)}
                 selectsEnd
                 showTimeInput
                 timeInputLabel={t('table.time')}
@@ -330,10 +408,13 @@ export default function AccountTransactions({
                 showYearDropdown
               />
             </div>
-            <div className="center">
-              <button className="button-action" onClick={applyFilters} style={{ marginTop: '10px' }}>
+            <div className="center" style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '10px' }}>
+              <button className="button-action" onClick={applyFilters}>
                 Search
               </button>
+              {/* <button className="button-action" onClick={resetFilters} style={{ backgroundColor: '#6c757d' }}>
+                Reset
+              </button> */}
             </div>
           </div>
         </>

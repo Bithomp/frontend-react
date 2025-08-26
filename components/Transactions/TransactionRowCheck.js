@@ -16,11 +16,11 @@ export const TransactionRowCheck = ({ tx, address, index, selectedCurrency}) => 
       index={index}
       selectedCurrency={selectedCurrency}
     >
-      {checkChanges.sendMax && (
+      {checkChanges?.sendMax && (
         <div>
           <span>Max amount: </span>
           <span>
-            <span className="bold orange">{amountFormat(checkChanges.sendMax)}</span>
+            <span className="bold orange">{amountFormat(checkChanges.sendMax, { icon: true })}</span>
             {checkChanges.sendMax?.issuer && (
               <>({addressUsernameOrServiceLink(checkChanges.sendMax, 'issuer', { short: true })})</>
             )}

@@ -72,10 +72,9 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                 <th className="right">Validated</th>
                 <th className="right">Type</th>
                 <th className="right">Hash</th>
-                <th className="right">Status</th>
               </tr>
               {transactions.map((txdata, i) => (
-                <tr key={txdata.tx?.hash || i}>
+                <tr key={txdata.tx?.hash || i} className={txdata.outcome?.result === 'tesSUCCESS' ? '' : 'failed-transaction'}>
                   <td className="center" style={{ width: 30 }}>
                     {i + 1}
                   </td>
@@ -83,11 +82,6 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                   <td className="right">{txdata.tx?.TransactionType}</td>
                   <td className="right">
                     <LinkTx tx={txdata.tx?.hash} /> <CopyButton text={txdata.tx?.hash} />
-                  </td>
-                  <td className="right">
-                    <span className={txdata.outcome?.result === 'tesSUCCESS' ? 'green' : 'red'}>
-                      {txdata.outcome?.result === 'tesSUCCESS' ? 'Success' : 'Failed'}
-                    </span>
                   </td>
                 </tr>
               ))}
@@ -111,10 +105,9 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                 <th className="right">Validated</th>
                 <th className="right">Type</th>
                 <th className="center">Link</th>
-                <th className="left">Status</th>
               </tr>
               {transactions.map((txdata, i) => (
-                <tr key={txdata.tx?.hash || i}>
+                <tr key={txdata.tx?.hash || i} className={txdata.outcome?.result === 'tesSUCCESS' ? '' : 'failed-transaction'}>
                   <td className="center" style={{ width: 30 }}>
                     {i + 1}
                   </td>
@@ -122,11 +115,6 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                   <td className="right">{txdata.tx?.TransactionType}</td>
                   <td className="center">
                     <LinkTx tx={txdata.tx?.hash} icon={true} />
-                  </td>
-                  <td className="left">
-                    <span className={txdata.outcome?.result === 'tesSUCCESS' ? 'green' : 'red'}>
-                      {txdata.outcome?.result === 'tesSUCCESS' ? 'Success' : 'Failed'}
-                    </span>
                   </td>
                 </tr>
               ))}

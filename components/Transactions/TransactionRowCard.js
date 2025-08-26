@@ -1,12 +1,11 @@
-import { amountFormat, dateFormat, nativeCurrencyToFiat, timeFormat } from '../../utils/format'
+import { amountFormat, dateFormat, nativeCurrencyToFiat, nftOfferLink, timeFormat } from '../../utils/format'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
 import { TxFiatRateContext } from './FiatRateContext'
 import { LinkTx } from '../../utils/links'
-import { errorCodeDescription, shortErrorCode } from '../../utils/transaction'
+import { errorCodeDescription, shortErrorCode, dappBySourceTag } from '../../utils/transaction'
 import { useWidth } from '../../utils'
 import { FiCalendar, FiClock } from 'react-icons/fi'
-import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 
 export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
@@ -32,8 +31,9 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
     <tr
       index={index}
       style={{
-        background: !isSuccessful ? 'repeating-linear-gradient(45deg, #f9e3b9, #f9e3b9 10px, #fff 10px, #fff 20px)' : ''
+        background: !isSuccessful ? 'repeating-linear-gradient(45deg,rgba(129, 111, 77, 0.3),rgba(249, 227, 185, 0.3),transparent 10px,transparent 20px)' : ''
       }}
+      className="border-b-1"
     >
       <td className="bold center" style={{ width: 10 }}>
         {index + 1}
@@ -48,12 +48,133 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
       </td>
       <td className="left" style={{ maxWidth: width > 600 ? 600 : '100%', wordBreak: 'break-word' }}>
         <span className="flex items-center gap-1">
-          <FaArrowRightArrowLeft style={{ stroke: '#666', color: '#666' }} />
+          <span>Transaction hash: </span>
+          {/* <FaArrowRightArrowLeft style={{ stroke: '#666', color: '#666' }} /> */}
           {width > 600 ? <LinkTx tx={tx.hash}>{tx.hash}</LinkTx> : <LinkTx tx={tx.hash} short={10} />}
         </span>
         <span>Type: </span>
         <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
         <br />
+        {
+          tx.TransactionType === "NFTokenCreateOffer" && (
+            <>
+              <span>Initiated by: </span>
+              <span className="bold">{specification?.source?.address}</span>
+              <br />
+              {/* For sell offers not initiated by this account, show who created the offer */}
+              {specification?.flags?.sellToken && specification?.source?.address !== tx?.Account && (
+                <>
+                  <span>Sell Offer by: </span>
+                  <span className="bold">{specification?.source?.address}</span>
+                  <br />
+                </>
+              )}
+            </>
+          )
+        }
+        {
+          tx.TransactionType === "NFTokenCancelOffer" && (
+            <>
+              <span>Initiated by: </span>
+              <span className="bold">{tx?.Account}</span>
+              <br />
+              {/* For cancel offers not initiated by this account, show who initiated the cancel */}
+              {specification?.source?.address !== tx?.Account && (
+                <>
+                  <span>NFTokenCancelOffer by: </span>
+                  <span className="bold">{specification?.source?.address}</span>
+                  <br />
+                </>
+              )}
+            </>
+          )
+        }
+        {/* For buy offers, show NFT owner, NFT ID, and destination */}
+        {
+          tx.TransactionType === "NFTokenCreateOffer" && !specification?.flags?.sellToken && (
+            <>
+              {tx?.Owner && (
+                <>
+                  <span>NFT Owner: </span>
+                  <span className="bold">{tx?.Owner}</span>
+                  <br />
+                </>
+              )}
+              {tx?.NFTokenID && (
+                <>
+                  <span>NFT: </span>
+                  <span className="bold">{tx?.NFTokenID}</span>
+                  <br />
+                </>
+              )}
+              {tx?.Destination && (
+                <>
+                  <span>Destination: </span>
+                  <span className="bold">{tx?.Destination}</span>
+                  <br />
+                </>
+              )}
+            </>
+          )
+        }
+
+        {tx.TransactionType === 'NFTokenAcceptOffer' && (
+        <>
+          <span>Initiated by: </span>
+            <span className="bold">{tx?.Account}</span>
+          <br />
+          {tx.NFTokenSellOffer && (
+            <>
+              <span>Sell offer: </span>
+              <span>{nftOfferLink(tx.NFTokenSellOffer)}</span>
+              <br />
+            </>
+          )}
+          {tx.NFTokenBuyOffer && (
+            <>
+              <span>Buy offer: </span>
+              <span>{nftOfferLink(tx.NFTokenBuyOffer)}</span>
+              <br />
+            </>
+          )}
+          {/* Show amount spent for the NFT */}
+          {specification?.amount && (
+            <>
+              <span>Amount spent: </span>
+              <span className="bold">{amountFormat(specification.amount, { tooltip: 'right', icon: true })}</span>
+              <br />
+            </>
+          )}
+          {/* Show broker fee for broker sells */}
+          {tx.NFTokenBrokerFee && tx.NFTokenBrokerFee !== '0' && (
+            <>
+              <span>Broker fee: </span>
+              <span className="bold">{amountFormat(specification.nftokenBrokerFee, { tooltip: 'right', icon: true })}</span>
+              <br />
+            </>
+          )}
+          {/* Show NFT transfer details */}
+          {outcome?.nftokenChanges?.length === 2 && (
+            <>
+              <span>Transfer From: </span>
+              <span className="bold">
+                {outcome.nftokenChanges.find(change => 
+                  change.nftokenChanges[0]?.status === 'removed'
+                )?.address || 'Unknown'}
+              </span>
+              <br />
+              <span>Transfer To: </span>
+              <span className="bold">
+                {outcome.nftokenChanges.find(change => 
+                  change.nftokenChanges[0]?.status === 'added'
+                )?.address || 'Unknown'}
+              </span>
+              <br />
+            </>
+          )}
+        </>
+      )}
+
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
         {outcome && !isSuccessful && (
           <>
@@ -66,18 +187,24 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
           </>
         )}
         <span>Fee:</span>
-        <span className="bold">{amountFormat(tx.Fee)}</span>
+        <span className="bold">{amountFormat(tx.Fee, { icon: true })}</span>
         <span>
           {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
         </span>
         <br />
-        {tx.DestinationTag && (
+        {tx.DestinationTag !== undefined && tx.DestinationTag !== null && (
           <>
-            <span className="gray">Destination tag: {tx.DestinationTag}</span>
+            <span className="gray">Destination: {tx.DestinationTag}</span>
             <br />
           </>
         )}
-        {tx.SourceTag && (
+        {tx.Sequence !== undefined && tx.Sequence !== null  && (
+          <>
+            <span className="gray">Sequence: {tx.Sequence}</span>
+            <br />
+          </>
+        )}
+        {tx.SourceTag && (dappBySourceTag(tx.SourceTag) || (tx.TransactionType !== 'Payment' && !tx.TransactionType?.includes('Check'))) && (
           <>
             <span className="gray">Source tag: {tx.SourceTag}</span>
             <br />
