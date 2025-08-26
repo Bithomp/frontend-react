@@ -479,9 +479,8 @@ export default function Tokens({
     const current = Number(currentXrp || 0)
     const past = Number(pastXrp || 0)
     if (!current || !past || !fiatRate || !pastFiatRate) return <span className="grey">--%</span>
-    const useFiat = fiatRate && pastFiatRate
-    const currentVal = useFiat ? current * fiatRate : current
-    const pastVal = useFiat ? past * pastFiatRate : past
+    const currentVal = current * fiatRate
+    const pastVal = past * pastFiatRate
     const change = currentVal / pastVal - 1
     const colorClass = change >= 0 ? 'green' : 'red'
     const percentText = niceNumber(Math.abs(change * 100), 2) + '%'
