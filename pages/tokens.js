@@ -479,9 +479,8 @@ export default function Tokens({
     const current = Number(currentXrp || 0)
     const past = Number(pastXrp || 0)
     if (!current || !past || !fiatRate || !pastFiatRate) return <span className="grey">--%</span>
-    const useFiat = fiatRate && pastFiatRate
-    const currentVal = useFiat ? current * fiatRate : current
-    const pastVal = useFiat ? past * pastFiatRate : past
+    const currentVal = current * fiatRate
+    const pastVal = past * pastFiatRate
     const change = currentVal / pastVal - 1
     const colorClass = change >= 0 ? 'green' : 'red'
     const percentText = niceNumber(Math.abs(change * 100), 2) + '%'
@@ -493,19 +492,9 @@ export default function Tokens({
         {change >= 0 ? '+' : '-'}
         {percentText}
         <span className="tooltiptext right no-brake" suppressHydrationWarning>
-          {fiatRate && pastFiatRate ? (
-            <>
-              Now: {fullNiceNumber(currentFiat, selectedCurrency)}
-              <br />
-              Before: {fullNiceNumber(pastFiat, selectedCurrency)}
-            </>
-          ) : (
-            <>
-              Now: {niceNumber(current, 6)} {nativeCurrency}
-              <br />
-              Before: {niceNumber(past, 6)} {nativeCurrency}
-            </>
-          )}
+          Now: {fullNiceNumber(currentFiat, selectedCurrency)}
+          <br />
+          Before: {fullNiceNumber(pastFiat, selectedCurrency)}
         </span>
       </span>
     )
