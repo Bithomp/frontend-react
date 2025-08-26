@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react'
 import { fullDateAndTime, timeOrDate } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
