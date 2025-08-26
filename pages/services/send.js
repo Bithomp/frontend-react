@@ -373,55 +373,38 @@ export default function Send({
 
     try {
       let payment = {}
-      
+
+      let amountData = null
+
+      if (isNativeCurrency(selectedToken)) {
+        amountData = multiply(amount, 1000000)
+      } else {
+        amountData = {
+          currency: selectedToken.currency,
+          issuer: selectedToken.issuer,
+          value: amount
+        }
+      }
+
       if (xahauNetwork && useRemit) {
         // Use Remit transaction for Xahau
-        if (isNativeCurrency(selectedToken)) {
-          // For native currency, use simple Amount field
-          payment = {
-            TransactionType: 'Remit',
-            Destination: address,
-            Amounts: [
-              {
-                AmountEntry: {
-                  Amount: multiply(amount, 1000000)
-                }
+        payment = {
+          TransactionType: 'Remit',
+          Destination: address,
+          Amounts: [
+            {
+              AmountEntry: {
+                Amount: amountData
               }
-            ]
-          }
-        } else {
-          // For issued tokens, use Amounts array
-          payment = {
-            TransactionType: 'Remit',
-            Destination: address,
-            Amounts: [
-              {
-                AmountEntry: {
-                  Amount: {
-                    currency: selectedToken.currency,
-                    issuer: selectedToken.issuer,
-                    value: amount
-                  }
-                }
-              }
-            ]
-          }
+            }
+          ]
         }
       } else {
         // Use regular Payment transaction
         payment = {
           TransactionType: 'Payment',
-          Destination: address
-        }
-
-        if (isNativeCurrency(selectedToken)) {
-          payment.Amount = multiply(amount, 1000000)
-        } else {
-          payment.Amount = {
-            currency: selectedToken.currency,
-            issuer: selectedToken.issuer,
-            value: amount
-          }
+          Destination: address,
+          Amount: amountData
         }
       }
 
@@ -466,9 +449,10 @@ export default function Send({
               status,
               date: result.date,
               destination: result.Destination,
-              amount: xahauNetwork && useRemit && result.Amounts 
-                ? amountFormat(result.Amounts[0]?.AmountEntry?.Amount)
-                : amountFormat(result.Amount),
+              amount:
+                xahauNetwork && useRemit && result.Amounts
+                  ? amountFormat(result.Amounts[0]?.AmountEntry?.Amount)
+                  : amountFormat(result.Amount),
               destinationTag: result.DestinationTag,
               sourceTag: result.SourceTag,
               fee: amountFormat(result.Fee),
@@ -491,15 +475,20 @@ export default function Send({
 
   return (
     <>
-      <SEO 
-        title="Send payment" 
-        description={xahauNetwork ? "Send a payment to a destination address. On Xahau network, use Remit to send any token (including native XAH) to destinations with incoming remit enabled." : "Send a payment to a destination address"} 
+      <SEO
+        title="Send payment"
+        description={
+          xahauNetwork
+            ? 'Send a payment to a destination address. On Xahau network, use Remit to send any token (including native XAH) to destinations with incoming remit enabled.'
+            : 'Send a payment to a destination address'
+        }
       />
       <div className="content-text content-center">
         <h1 className="center">Send payment</h1>
         {xahauNetwork && (
           <p className="center text-sm text-gray-600 mb-4">
-            💡 <strong>Xahau Network:</strong> Use the Remit option below to send any token (including native XAH) to destinations with incoming remit enabled
+            💡 <strong>Xahau Network:</strong> Use the Remit option below to send any token (including native XAH) to
+            destinations with incoming remit enabled
           </p>
         )}
         <NetworkTabs />
@@ -666,9 +655,9 @@ export default function Send({
           {/* Remit option for Xahau network */}
           {xahauNetwork && (
             <>
-              <CheckBox 
-                checked={useRemit} 
-                setChecked={setUseRemit} 
+              <CheckBox
+                checked={useRemit}
+                setChecked={setUseRemit}
                 name="use-remit"
                 disabled={destinationRemitDisabled}
               >
@@ -678,22 +667,22 @@ export default function Send({
                   - Send any token to destinations with incoming remit enabled. Sender pays for destination reserves.
                 </span>
                 {destinationRemitDisabled && (
-                  <span className="red">
-                    {' '}
-                    (Disabled - destination has incoming remit disabled)
-                  </span>
+                  <span className="red"> (Disabled - destination has incoming remit disabled)</span>
                 )}
               </CheckBox>
-              
+
               {useRemit && (
                 <div className="blue center p-2 rounded-md border border-blue-200 mb-4 sm:mb-0">
                   <strong>ℹ️ Remit Transaction</strong>
                   <br />
-                  When using Remit, you can send any token to the destination account, even if they don't have a trustline for it.
+                  When using Remit, you can send any token to the destination account, even if they don't have a
+                  trustline for it.
                   <br />
-                  <strong>Note:</strong> You will pay for the destination account's reserve requirements if the account needs to be activated.
+                  <strong>Note:</strong> You will pay for the destination account's reserve requirements if the account
+                  needs to be activated.
                   <br />
-                  <strong>Token Selection:</strong> All available tokens (including native XAH) are shown since remit allows sending any token regardless of trustlines.
+                  <strong>Token Selection:</strong> All available tokens (including native XAH) are shown since remit
+                  allows sending any token regardless of trustlines.
                   <br />
                   This feature is only available on the Xahau network.
                 </div>
@@ -733,7 +722,7 @@ export default function Send({
                 </>
               )
             )}
-          </CheckBox>          
+          </CheckBox>
 
           {showAdvanced && (
             <>
