@@ -154,7 +154,12 @@ export default function TokenPage({
     return (
       <span suppressHydrationWarning>
         {niceNumber(priceFiat, 4, selectedCurrency)}
-        {isSsrMobile ? <br /> : ' '}({niceNumber(price, 6)} {nativeCurrency})
+        {isSsrMobile ? <br /> : ' '}
+        <span className="grey">
+          {!isSsrMobile && '('}
+          {niceNumber(price, 6)} {nativeCurrency}
+          {!isSsrMobile && ')'}
+        </span>
       </span>
     )
   }
@@ -165,7 +170,12 @@ export default function TokenPage({
     return (
       <span suppressHydrationWarning>
         {niceNumber(marketcapFiat, 2, selectedCurrency)}
-        {isSsrMobile ? <br /> : ' '}({niceNumber(marketcap, 2)} {nativeCurrency})
+        {isSsrMobile ? <br /> : ' '}
+        <span className="grey">
+          {!isSsrMobile && '('}
+          {niceNumber(marketcap, 2)} {nativeCurrency}
+          {!isSsrMobile && ')'}
+        </span>
       </span>
     )
   }
@@ -182,8 +192,13 @@ export default function TokenPage({
     const volumeFiat = volume * (statistics?.priceNativeCurrency || 0) * fiatRate || 0
     return (
       <span suppressHydrationWarning>
-        {niceNumber(volume, 2)} {currencyDetails.currency}
-        {isSsrMobile ? <br /> : ' '}({niceNumber(volumeFiat, 2, selectedCurrency)})
+        {niceNumber(volumeFiat, 2, selectedCurrency)}
+        {isSsrMobile ? <br /> : ' '}
+        <span className="grey">
+          {!isSsrMobile && '('}
+          {niceNumber(volume, 2)} {currencyDetails.currency}
+          {!isSsrMobile && ')'}
+        </span>
       </span>
     )
   }
@@ -253,9 +268,13 @@ export default function TokenPage({
         <div className="content-profile">
           <div className="column-left">
             {/* Big Token Icon */}
-            <img alt="token" src={tokenImageSrc(token)} style={{ width: '100%', height: 'auto' }} />
+            <img
+              alt="token"
+              src={tokenImageSrc(token)}
+              className="token-image"
+              style={{ width: '100%', height: 'auto' }}
+            />
             <h1>{token?.currencyDetails?.currency}</h1>
-            {token?.description && <p>{token?.description}</p>}
 
             {/* Action Buttons */}
             <button className="button-action wide center" onClick={handleSetTrustline}>
@@ -420,8 +439,8 @@ export default function TokenPage({
                   <td>{fullNiceNumber(statistics?.dexes || 0)}</td>
                 </tr>
                 <tr>
-                  <td>Active Holders</td>
-                  <td>{fullNiceNumber(statistics?.activeHolders || 0)}</td>
+                  <td>DEX TXs</td>
+                  <td>{fullNiceNumber(statistics?.dexTxs || 0)}</td>
                 </tr>
                 <tr>
                   <td>Buyers</td>
@@ -435,6 +454,48 @@ export default function TokenPage({
                   <td>Traders</td>
                   <td>{fullNiceNumber(statistics?.uniqueDexAccounts || 0)}</td>
                 </tr>
+                <tr>
+                  <td>Transfer Volume</td>
+                  <td>{volumeLine({ token, type: 'transfer' })}</td>
+                </tr>
+                <tr>
+                  <td>Transfer Transactions</td>
+                  <td>{niceNumber(statistics?.transferTxs || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Rippling txs</td>
+                  <td>{fullNiceNumber(statistics?.ripplingTxs || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Mint Volume</td>
+                  <td>{volumeLine({ token, type: 'mint' })}</td>
+                </tr>
+                <tr>
+                  <td>Mint Transactions</td>
+                  <td>{shortNiceNumber(statistics?.mintTxs || 0, 0, 1)}</td>
+                </tr>
+                <tr>
+                  <td>Burn Volume</td>
+                  <td>{volumeLine({ token, type: 'burn' })}</td>
+                </tr>
+                <tr>
+                  <td>Burn Transactions</td>
+                  <td>{shortNiceNumber(statistics?.burnTxs || 0, 0, 1)}</td>
+                </tr>
+                <tr>
+                  <td>Unique accounts</td>
+                  <td>{fullNiceNumber(statistics?.uniqueAccounts || 0)}</td>
+                </tr>
+                {!xahauNetwork && (
+                  <tr>
+                    <td>AMM Pools</td>
+                    <td>
+                      <Link href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}>
+                        {statistics?.ammPools || 0}
+                      </Link>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
 
@@ -446,54 +507,22 @@ export default function TokenPage({
                 </tr>
               </thead>
               <tbody>
-                {!xahauNetwork && statistics?.ammPools > 0 && (
-                  <tr>
-                    <td>AMM Pools</td>
-                    <td>
-                      <Link href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}>
-                        {statistics?.ammPools || 0}
-                      </Link>
-                    </td>
-                  </tr>
-                )}
-                {!xahauNetwork && statistics?.ammPools > 0 && (
+                <tr>
+                  <td>Trading Pairs</td>
+                  <td>{fullNiceNumber(statistics?.activeCounters || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Active Holders</td>
+                  <td>{fullNiceNumber(statistics?.activeHolders || 0)}</td>
+                </tr>
+                <tr>
+                  <td>Active Offers</td>
+                  <td>{fullNiceNumber(statistics?.activeOffers || 0)}</td>
+                </tr>
+                {!xahauNetwork && (
                   <tr>
                     <td>Active AMM Pools</td>
                     <td>{niceNumber(statistics?.activeAmmPools || 0)}</td>
-                  </tr>
-                )}
-                <tr>
-                  <td>Transfer Transactions</td>
-                  <td>{niceNumber(statistics?.transferTxs || 0)}</td>
-                </tr>
-                {statistics?.transferTxs > 0 && (
-                  <tr>
-                    <td>Transfer Volume</td>
-                    <td>{volumeLine({ token, type: 'transfer' })}</td>
-                  </tr>
-                )}
-                {statistics?.mintTxs > 0 && (
-                  <tr>
-                    <td>Mint Transactions</td>
-                    <td>{shortNiceNumber(statistics?.mintTxs || 0, 0, 1)}</td>
-                  </tr>
-                )}
-                {statistics?.mintTxs > 0 && (
-                  <tr>
-                    <td>Mint Volume</td>
-                    <td>{volumeLine({ token, type: 'mint' })}</td>
-                  </tr>
-                )}
-                {statistics?.burnTxs > 0 && (
-                  <tr>
-                    <td>Burn Transactions</td>
-                    <td>{shortNiceNumber(statistics?.burnTxs || 0, 0, 1)}</td>
-                  </tr>
-                )}
-                {statistics?.burnTxs > 0 && (
-                  <tr>
-                    <td>Burn Volume</td>
-                    <td>{volumeLine({ token, type: 'burn' })}</td>
                   </tr>
                 )}
               </tbody>
