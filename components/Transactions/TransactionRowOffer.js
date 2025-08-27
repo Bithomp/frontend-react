@@ -1,7 +1,7 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { useTxFiatRate } from './FiatRateContext'
 import { addressBalanceChanges } from '../../utils/transaction'
-import { amountFormat, nativeCurrencyToFiat, addressUsernameOrServiceLink, niceCurrency } from '../../utils/format'
+import { amountFormat, nativeCurrencyToFiat, addressUsernameOrServiceLink } from '../../utils/format'
 
 const flagList = (flags) => {
     
@@ -80,7 +80,7 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
           <div>
             <span>Rate: </span>
             <span>
-              1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
+              {amountFormat({ currency: sourceBalanceChangesList[0].currency, issuer: sourceBalanceChangesList[0].issuer, value: 1 }, { icon: true })} ={' '}
               <span className="bold">
                 {amountFormat(
                   {
@@ -90,7 +90,8 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
                   { precise: 'nice', icon: true }
                 )}
               </span>
-              <br />1 {niceCurrency(sourceBalanceChangesList[1].currency)} ={' '}
+              <br />
+              {amountFormat({ currency: sourceBalanceChangesList[1].currency, issuer: sourceBalanceChangesList[1].issuer, value: 1 }, { icon: true })} ={' '}
               <span className="bold">
                 {amountFormat(
                   {

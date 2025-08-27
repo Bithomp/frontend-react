@@ -1,9 +1,10 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { xls14NftValue } from '../../utils'
-import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat, niceCurrency } from '../../utils/format'
+import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat } from '../../utils/format'
 import { addressBalanceChanges } from '../../utils/transaction'
 import { FiDownload, FiUpload } from 'react-icons/fi'
 import { useTxFiatRate } from './FiatRateContext'
+import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 
 export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) => {
   const pageFiatRate = useTxFiatRate()
@@ -64,11 +65,17 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
                 {addressUsernameOrServiceLink(specification?.source, 'address')}
               </span>
             </>
-          ) : (
+          ) : specification?.source?.address === address ? (
             <>
               <FiUpload style={{ stroke: 'red', fontSize: 16 }}/>
               <span>
                 {addressUsernameOrServiceLink(specification?.destination, 'address')}
+              </span>
+            </>
+          ) : (
+            <>
+              <span>
+                Payment By {addressUsernameOrServiceLink(specification?.source, 'address')}
               </span>
             </>
           )}
@@ -78,7 +85,7 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
         <>
           <div className="flex items-center gap-1">
             <span>
-              {isConvertion ? 'Exchanged: ' : 'Sender spent: '}
+              {isConvertion ? <> <FaArrowRightArrowLeft style={{ fontSize: 16 , marginBottom: -4 }} /> Exchanged: </> : <> Sender spent: </>}
               {sourceBalanceChangesList.map((change, index) => {
                 return <br key={index} />
               })}
@@ -103,7 +110,7 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
             <div className="flex items-center gap-1">
               <span>Exchange rate: </span>
               <span>
-                1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
+                {amountFormat({ currency: sourceBalanceChangesList[0].currency, issuer: sourceBalanceChangesList[0].issuer, value: 1 }, { icon: true })} ={' '}
                 <span className="bold">
                   {amountFormat(
                     {
@@ -124,7 +131,7 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
       {!isConvertion && outcome?.deliveredAmount && (
         <div>
           <span className="bold">Delivered amount: </span>
-            <span className="bold green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice', icon: true })}</span>
+            <span className="bold green">{amountFormat(outcome?.deliveredAmount, { icon: true })}</span>
             {outcome?.deliveredAmount?.issuer && (
               <>({addressUsernameOrServiceLink(outcome?.deliveredAmount, 'issuer', { short: true })})</>
             )}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { TransactionRowCard } from './TransactionRowCard'
-import { nftIdLink, nftOfferLink, amountFormat} from '../../utils/format'
+import { nftIdLink, nftOfferLink, amountFormat, addressUsernameOrServiceLink} from '../../utils/format'
 
 const nftData = (change, nftInfo, txType) => {
   const flagsAsString = flagList(nftInfo.flags)
@@ -40,14 +40,6 @@ const nftData = (change, nftInfo, txType) => {
 }
 
 const flagList = (flags) => {
-  /*
-  "flags": {
-    "burnable": false,
-    "onlyXRP": false,
-    "trustLine": false,
-    "transferable": true
-  },
-  */
   let flagList = ''
 
   if (!flags) return flagList
@@ -131,11 +123,8 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
       {/* For sell offers, show NFT owner, NFT ID, and destination */}
       {txType === "NFTokenCreateOffer" && (
         <>
-          <span>Initiated by: </span>
-          <span className="bold">{specification?.source?.address}</span>
-          <br />
           {/* For sell offers not initiated by this account, show who created the offer */}
-          {specification?.flags?.sellToken && specification?.source?.address !== tx?.tx?.Account && (
+          {specification?.flags?.sellToken && specification?.source?.address !== address && (
             <>
               <span>Sell Offer by: </span>
               <span className="bold">{specification?.source?.address}</span>
@@ -147,14 +136,11 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
 
       {txType === "NFTokenCancelOffer" && (
         <>
-          <span>Initiated by: </span>
-          <span className="bold">{tx?.tx?.Account}</span>
-          <br />
           {/* For cancel offers not initiated by this account, show who initiated the cancel */}
-          {specification?.source?.address !== tx?.tx?.Account && (
+          {specification?.source?.address !== address && (
             <>
-              <span>NFTokenCancelOffer by: </span>
-              <span className="bold">{specification?.source?.address}</span>
+              <span>NFTokenCancelOffer by </span>
+              <span className="bold">{addressUsernameOrServiceLink(specification?.source?.addressDetails, 'address')}</span>
               <br />
             </>
           )}
@@ -181,7 +167,7 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
           {tx?.tx?.Destination && (
             <>
               <span>Destination: </span>
-              <span className="bold">{tx?.tx?.Destination}</span>
+              <span className="bold">{addressUsernameOrServiceLink(specification?.destination, 'address')}</span>
               <br />
             </>
           )}
@@ -190,9 +176,6 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
 
       {txType === 'NFTokenAcceptOffer' && (
         <>
-          <span>Initiated by: </span>
-            <span className="bold">{tx?.tx?.Account}</span>
-          <br />
           {tx?.tx?.NFTokenSellOffer && (
             <>
               <span>Sell offer: </span>
@@ -228,16 +211,16 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
             <>
               <span>Transfer From: </span>
               <span className="bold">
-                {outcome.nftokenChanges.find(change => 
+                {addressUsernameOrServiceLink(outcome.nftokenChanges.find(change => 
                   change.nftokenChanges[0]?.status === 'removed'
-                )?.address || 'Unknown'}
+                ), 'address')}
               </span>
               <br />
               <span>Transfer To: </span>
               <span className="bold">
-                {outcome.nftokenChanges.find(change => 
+                {addressUsernameOrServiceLink(outcome.nftokenChanges.find(change => 
                   change.nftokenChanges[0]?.status === 'added'
-                )?.address || 'Unknown'}
+                ), 'address')}
               </span>
               <br />
             </>

@@ -118,9 +118,8 @@ export default function AccountTransactions({
   const [initiated, setInitiated] = useState('0') // 0 = both, 1 = outgoing, 2 = incoming
   const [excludeFailures, setExcludeFailures] = useState('0') // 0 = include, 1 = exclude
   const [counterparty, setCounterparty] = useState('')
-  const [fromDate, setFromDate] = useState("")
-  const [toDate, setToDate] = useState("")
-  const [filtersApplied, setFiltersApplied] = useState(true)
+  const [fromDate, setFromDate] = useState('')
+  const [toDate, setToDate] = useState('')
 
   // Update userData when initialUserData changes
   useEffect(() => {
@@ -143,8 +142,6 @@ export default function AccountTransactions({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, userData?.address])
-
-  // Remove automatic filtering for other filters - they will be applied via search button
 
   // Helpers
   const orderList = [
@@ -188,45 +185,34 @@ export default function AccountTransactions({
       url += `&marker=${encodeURIComponent(markerString)}`
     }
     // sorting
-    if (order === 'oldest') {
-      url += `&forward=true`
-    } else if (order === 'newest') {
-      url += `&forward=false`
+    url += `&forward=${order === 'oldest'}`
+    // filters
+    if (txType && txType !== 'tx') {
+      url += `&type=${txType}`
     }
-    // filters - only apply when filters have been explicitly applied via search button
-    if (filtersApplied) {
-      if (txType && txType !== 'tx') {
-        url += `&type=${txType}`
-      }
-      if (initiated !== '0') {
-        // Direction filtering for outgoing/incoming transactions
-        if (initiated === '1') {
-          // Outgoing transactions
-          url += `&initiated=1`
-        } else if (initiated === '2') {
-          // Incoming transactions
-          url += `&initiated=0`
-        }
-      }
-      if (excludeFailures === '1') {
-        url += `&excludeFailures=1`
-      }
-      if (counterparty) {
-        url += `&counterparty=${encodeURIComponent(counterparty.trim())}`
-      }
-      if (fromDate) {
-        url += `&fromDate=${encodeURIComponent(fromDate.toISOString())}`
-      }
-      if (toDate) {
-        url += `&toDate=${encodeURIComponent(toDate.toISOString())}`
-      }
+    if (initiated === '1') {
+      url += `&initiated=true`
+    } else if(initiated === '2') {
+      url += `&initiated=false` 
+    }
+
+    if (excludeFailures === '1') {
+      url += `&excludeFailures=1`
+    }
+    if (counterparty) {
+      url += `&counterparty=${encodeURIComponent(counterparty.trim())}`
+    }
+    if (fromDate) {
+      url += `&fromDate=${encodeURIComponent(fromDate.toISOString())}`
+    }
+    if (toDate) {
+      url += `&toDate=${encodeURIComponent(toDate.toISOString())}`
     }
     return url
   }
 
   const fetchTransactions = async (opts = {}) => {
-    if (loading && !opts.restart) return // Only block if not restarting
-    setLoading(true)
+    if (loading) return
 
     let markerToUse = undefined
     if (!opts.restart) {
@@ -234,8 +220,7 @@ export default function AccountTransactions({
     }
 
     try {
-      const apiUrlString = apiUrl({ marker: markerToUse })
-      const response = await axios.get(apiUrlString)
+      const response = await axios.get(apiUrl({ marker: markerToUse }))
       if (response?.data?.status === 'error') {
         setErrorMessage(response?.data?.error)
         setLoading(false)
@@ -258,7 +243,6 @@ export default function AccountTransactions({
       setErrorMessage(e?.message || 'Failed to load transactions')
     }
     setLoading(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }
 
   // CSV headers (basic)
@@ -268,18 +252,14 @@ export default function AccountTransactions({
     { label: 'Type', key: 'type' },
     { label: 'Hash', key: 'hash' },
     { label: 'Status', key: 'status' },
-    { label: 'Direction', key: 'direction' },
-    { label: 'Address', key: 'address' },
-    { label: 'Fee', key: 'fee' }
   ]
 
   const applyFilters = () => {
-    setFiltersApplied(true)
     setTransactions([])
     setMarker('first')
-    setLoading(false) // Reset loading to false before calling fetchTransactions
+    setLoading(true)
     fetchTransactions({ restart: true })
-  } 
+  }
 
   return (
     <>
@@ -297,41 +277,6 @@ export default function AccountTransactions({
           if(item.outcome.timestamp){
             dateObj = new Date(item.outcome.timestamp);
           }
-          // Determine direction based on transaction data and current filter settings
-          let direction = 'Unknown';
-          const isAccountInitiator = item.tx.Account === userData.address;
-          const isAccountDestination = item.tx.Destination === userData.address;
-          
-          if (isAccountInitiator && !isAccountDestination) {
-            // Account is the sender but not the destination
-            direction = 'Outgoing';
-          } else if (!isAccountInitiator && isAccountDestination) {
-            // Account is the destination but not the sender
-            direction = 'Incoming';
-          } else if (isAccountInitiator && isAccountDestination) {
-            // Account is both sender and destination (self-send)
-            direction = 'Self';
-          } else if (!isAccountInitiator && !isAccountDestination) {
-            // Account is neither sender nor destination (e.g., in multi-sign transactions)
-            // Check if this is a transaction where the account is affected in some other way
-            if (item.tx.RegularKey === userData.address || item.tx.SignerQuorum || item.tx.SignerEntries) {
-              direction = 'Settings';
-            } else {
-              direction = 'Other';
-            }
-          }
-          
-          // Get counterparty address based on direction
-          let address = '';
-          if (direction === 'Outgoing' && item.tx.Destination) {
-            address = item.tx.Destination;
-          } else if (direction === 'Incoming' && item.tx.Account) {
-            address = item.tx.Account;
-          } else if (direction === 'Self') {
-            address = 'Self';
-          } else if (direction === 'Settings' || direction === 'Other') {
-            address = item.tx.Account || 'N/A';
-          }
           
           return {
             date: dateObj.toLocaleDateString(),
@@ -339,9 +284,6 @@ export default function AccountTransactions({
             type: item.tx.TransactionType || 'Unknown',
             hash: item.txHash || '',
             status: item.outcome.result || 'Unknown',
-            direction: direction,
-            address: address,
-            fee: item.outcome.fee || '0'
           }
         }) || []}
         csvHeaders={csvHeaders}
@@ -369,8 +311,6 @@ export default function AccountTransactions({
             <div>
               <span className="input-title">Counterparty</span>
               <AddressInput
-                title=""
-                placeholder=""
                 setValue={setCounterparty}
                 rawData={counterparty ? { counterparty } : {}}
                 type="counterparty"
@@ -408,8 +348,8 @@ export default function AccountTransactions({
                 showYearDropdown
               />
             </div>
-            <div className="center" style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '10px' }}>
-              <button className="button-action" onClick={applyFilters}>
+            <div className="center">
+              <button className="button-action" onClick={applyFilters} style={{ marginTop: '10px' }}>
                 Search
               </button>
             </div>
@@ -490,13 +430,13 @@ export default function AccountTransactions({
                         selectedCurrency={selectedCurrency}
                       />
                     )
-                  })
-                )}
-              </tbody>
-            </table>
+                   })
+                 )}
+                </tbody>
+              </table>                        
           </InfiniteScrolling>
         </>
       </FiltersFrame>      
     </>
   )
-} 
+}
