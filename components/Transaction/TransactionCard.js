@@ -358,7 +358,7 @@ export const TransactionCard = ({
                   )}
                   {dapp && (
                     <tr>
-                      <TData>Client</TData>
+                      <TData>App/Dapp</TData>
                       <TData>{dapp}</TData>
                     </tr>
                   )}
