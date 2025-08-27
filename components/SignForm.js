@@ -587,7 +587,7 @@ export default function SignForm({
             (txType?.includes('NFToken') ||
               txType?.includes('URIToken') ||
               txType?.includes('DID') ||
-              txType === 'Remit')
+              (txType === 'Remit' && !signRequest?.callback)) // it would be better to check that there is no NFT in Remit rather then checking if there is a callback.
           ) {
             // for NFToken, URIToken and DID transactions wait for crawler to index the transaction
             prepareForCrawlerCheck({

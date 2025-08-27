@@ -18,7 +18,8 @@ import {
   nativeCurrency,
   isNativeCurrency,
   encode,
-  decode
+  decode,
+  xahauNetwork
 } from '../../utils'
 import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../utils/format'
 import { useState, useEffect } from 'react'
@@ -30,7 +31,7 @@ import TokenSelector from '../../components/UI/TokenSelector'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
-  const { address, amount, destinationTag, memo, fee, sourceTag, invoiceId, currency, currencyIssuer } = query
+  const { address, amount, destinationTag, memo, fee, sourceTag, invoiceId, currency, currencyIssuer, remit } = query
 
   return {
     props: {
@@ -41,6 +42,7 @@ export const getServerSideProps = async (context) => {
       feeQuery: fee || '',
       sourceTagQuery: sourceTag || '',
       invoiceIdQuery: invoiceId || '',
+      remitQuery: remit === 'true',
       isSsrMobile: getIsSsrMobile(context),
       currencyQuery: currency || nativeCurrency,
       currencyIssuerQuery: currencyIssuer || '',
@@ -59,6 +61,7 @@ export default function Send({
   feeQuery,
   sourceTagQuery,
   invoiceIdQuery,
+  remitQuery,
   sessionToken,
   subscriptionExpired,
   openEmailLogin,
@@ -94,6 +97,8 @@ export default function Send({
   const [selectedToken, setSelectedToken] = useState({ currency: currencyQuery, issuer: currencyIssuerQuery })
   const [networkInfo, setNetworkInfo] = useState({})
   const [destinationStatus, setDestinationStatus] = useState(0)
+  const [useRemit, setUseRemit] = useState(remitQuery)
+  const [destinationRemitDisabled, setDestinationRemitDisabled] = useState(false)
 
   const onTokenChange = (token) => {
     setSelectedToken(token)
@@ -162,9 +167,15 @@ export default function Send({
       queryRemoveList.push('invoiceId')
     }
 
+    if (useRemit) {
+      queryAddList.push({ name: 'remit', value: 'true' })
+    } else {
+      queryRemoveList.push('remit')
+    }
+
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, destinationTag, amount, memo, fee, sourceTag, invoiceId])
+  }, [address, destinationTag, amount, memo, fee, sourceTag, invoiceId, useRemit])
 
   // Fetch destination account data when address changes
   useEffect(() => {
@@ -208,6 +219,15 @@ export default function Send({
           setRequireDestTag(accountData?.account_data?.require_dest_tag)
         } else {
           setRequireDestTag(false)
+        }
+
+        // Check if destination has incoming remit disabled (Xahau only)
+        if (xahauNetwork && data?.ledgerInfo?.flags) {
+          const flags = data.ledgerInfo.flags
+          const disallowIncomingRemit = flags.disallowIncomingRemit
+          setDestinationRemitDisabled(disallowIncomingRemit)
+        } else {
+          setDestinationRemitDisabled(false)
         }
       } catch (error) {
         setError('Error fetching destination account data')
@@ -258,6 +278,14 @@ export default function Send({
       return
     }
 
+    // Check remit validation for Xahau
+    if (xahauNetwork && useRemit) {
+      if (destinationRemitDisabled) {
+        setError('Cannot use Remit: Destination account has incoming remit disabled.')
+        return
+      }
+    }
+
     // Check if advanced options are being used without proper subscription
     if ((fee || sourceTag || invoiceId) && (!sessionToken || subscriptionExpired)) {
       setError(
@@ -297,18 +325,39 @@ export default function Send({
     }
 
     try {
-      let payment = {
-        TransactionType: 'Payment',
-        Destination: address
-      }
+      let payment = {}
+
+      let amountData = null
 
       if (isNativeCurrency(selectedToken)) {
-        payment.Amount = multiply(amount, 1000000)
+        amountData = multiply(amount, 1000000)
       } else {
-        payment.Amount = {
+        amountData = {
           currency: selectedToken.currency,
           issuer: selectedToken.issuer,
           value: amount
+        }
+      }
+
+      if (xahauNetwork && useRemit) {
+        // Use Remit transaction for Xahau
+        payment = {
+          TransactionType: 'Remit',
+          Destination: address,
+          Amounts: [
+            {
+              AmountEntry: {
+                Amount: amountData
+              }
+            }
+          ]
+        }
+      } else {
+        // Use regular Payment transaction
+        payment = {
+          TransactionType: 'Payment',
+          Destination: address,
+          Amount: amountData
         }
       }
 
@@ -353,7 +402,10 @@ export default function Send({
               status,
               date: result.date,
               destination: result.Destination,
-              amount: amountFormat(result.Amount),
+              amount:
+                xahauNetwork && useRemit && result.Amounts
+                  ? amountFormat(result.Amounts[0]?.AmountEntry?.Amount)
+                  : amountFormat(result.Amount),
               destinationTag: result.DestinationTag,
               sourceTag: result.SourceTag,
               fee: amountFormat(result.Fee),
@@ -363,7 +415,8 @@ export default function Send({
               validated: result.validated,
               ledgerIndex: result.ledger_index,
               balanceChanges: result.balanceChanges,
-              invoiceId: result.InvoiceID
+              invoiceId: result.InvoiceID,
+              transactionType: xahauNetwork && useRemit ? 'Remit' : 'Payment'
             })
           }
         }
@@ -375,9 +428,22 @@ export default function Send({
 
   return (
     <>
-      <SEO title="Send payment" description="Send a payment to a destination address" />
+      <SEO
+        title="Send payment"
+        description={
+          xahauNetwork
+            ? 'Send a payment to a destination address. On Xahau network, use Remit to send any token (including native XAH) to destinations with incoming remit enabled.'
+            : 'Send a payment to a destination address'
+        }
+      />
       <div className="content-text content-center">
         <h1 className="center">Send payment</h1>
+        {xahauNetwork && (
+          <p className="center text-sm text-gray-600 mb-4">
+            💡 <strong>Xahau Network:</strong> Use the Remit option below to send any token (including native XAH) to
+            destinations with incoming remit enabled
+          </p>
+        )}
         <NetworkTabs />
 
         <div>
@@ -458,6 +524,22 @@ export default function Send({
             </div>
           )}
 
+          {/* Show warning if destination has incoming remit disabled and user wants to use remit */}
+          {xahauNetwork && useRemit && destinationRemitDisabled && (
+            <div>
+              <div className="form-spacing" />
+              <div className="red center p-2 rounded-md border border-red-200 mb-4 sm:mb-0">
+                <strong>🚫 Remit Not Available</strong>
+                <br />
+                This destination account has incoming remit disabled.
+                <br />
+                <strong>You cannot use Remit to send tokens to this account.</strong>
+                <br />
+                Please uncheck the "Use Remit" option or choose a different destination.
+              </div>
+            </div>
+          )}
+
           <div className="form-spacing" />
           <FormInput
             title={
@@ -504,7 +586,7 @@ export default function Send({
               <TokenSelector
                 value={selectedToken}
                 onChange={onTokenChange}
-                destinationAddress={address}
+                destinationAddress={useRemit ? null : address}
                 currencyQueryName="currency"
               />
             </div>
@@ -523,6 +605,50 @@ export default function Send({
             maxLength={100}
             type="text"
           />
+          {/* Remit option for Xahau network */}
+          {xahauNetwork && (
+            <>
+              <CheckBox
+                checked={useRemit}
+                setChecked={setUseRemit}
+                name="use-remit"
+                disabled={destinationRemitDisabled}
+              >
+                Use Remit
+                <span className="orange">
+                  {' '}
+                  - Send any token to destinations with incoming Remit enabled. Sender pays for destination reserves.
+                </span>
+                {destinationRemitDisabled && (
+                  <span className="red"> (Disabled - destination has incoming remit disabled)</span>
+                )}
+              </CheckBox>
+
+              {useRemit && (
+                <>
+                  <br />
+                  <div className="grey p-2 rounded-md border border-grey-200 mb-4 sm:mb-0">
+                    <strong>ℹ️ Remit Transaction</strong>
+                    <br />
+                    <br />
+                    When using Remit, you can send any token to the destination account, even if they don't have a
+                    trustline for it.
+                    <br />
+                    <br />
+                    <strong>Note:</strong> You will pay for the destination account's reserve requirements if the
+                    account needs to be activated.
+                    <br />
+                    <br />
+                    <strong>Token Selection:</strong> All available tokens (including native XAH) are shown since remit
+                    allows sending any token regardless of trustlines.
+                    <br />
+                    <br />
+                    This feature is only available on the Xahau network.
+                  </div>
+                </>
+              )}
+            </>
+          )}
           <CheckBox
             checked={showAdvanced}
             setChecked={() => {
@@ -557,6 +683,7 @@ export default function Send({
               )
             )}
           </CheckBox>
+
           {showAdvanced && (
             <>
               <br />
@@ -691,6 +818,11 @@ export default function Send({
                     <p>
                       <strong>Invoice ID:</strong> {shortHash(txResult.invoiceId)}{' '}
                       <CopyButton text={txResult.invoiceId} />
+                    </p>
+                  )}
+                  {txResult.transactionType === 'Remit' && (
+                    <p>
+                      <strong>Transaction Type:</strong> <span className="blue bold">Remit (Xahau)</span>
                     </p>
                   )}
                 </div>
