@@ -307,11 +307,27 @@ export default function LedgerData({
     </>
   )
 
+  // Smooth scroll function
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      const top = element.getBoundingClientRect().top + window.pageYOffset - 100 // offset of 100px
+      window.scrollTo({
+        top,
+        behavior: 'smooth'
+      })
+    }
+  }
+
   const tokensNode = !objects?.rippleStateList ? (
     'Loading...'
   ) : objects?.rippleStateList?.length > 0 ? (
     <>
-      <span className="bold">{objects?.rippleStateList?.length}</span> (view below)
+      <span className="bold">{objects?.rippleStateList?.length}</span> (
+      <span className="link" onClick={() => scrollToSection('tokens-section')}>
+        view
+      </span>
+      )
     </>
   ) : (
     "This account doesn't hold Tokens."
@@ -321,7 +337,11 @@ export default function LedgerData({
     'Loading...'
   ) : objects?.offerList?.length > 0 ? (
     <>
-      <span className="bold">{objects?.offerList?.length}</span> (view below)
+      <span className="bold">{objects?.offerList?.length}</span> (
+      <span className="link" onClick={() => scrollToSection('dex-orders-section')}>
+        view
+      </span>
+      )
     </>
   ) : (
     "This account doesn't have DEX orders."
@@ -331,7 +351,11 @@ export default function LedgerData({
     'Loading...'
   ) : objects?.escrowList?.length > 0 ? (
     <>
-      <span className="bold">{objects?.escrowList?.length}</span> (view below)
+      <span className="bold">{objects?.escrowList?.length}</span> (
+      <span className="link" onClick={() => scrollToSection('escrows-section')}>
+        view
+      </span>
+      )
     </>
   ) : (
     "This account doesn't have Escrows."
