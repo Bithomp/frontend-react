@@ -72,7 +72,7 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
           {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
         </span>
         <br />
-        {tx.DestinationTag && (
+        {tx.DestinationTag !== undefined && tx.DestinationTag !== null && (
           <>
             <span className="gray">Destination tag: {tx.DestinationTag}</span>
             <br />
@@ -84,7 +84,7 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             <br />
           </>
         )}
-        {tx.SourceTag && (dappBySourceTag(tx.SourceTag) || (tx.TransactionType !== 'Payment' && !tx.TransactionType?.includes('Check'))) && (
+        {(tx.SourceTag !== undefined && tx.SourceTag !== null) && (dappBySourceTag(tx.SourceTag) || (tx.TransactionType !== 'Payment' && !tx.TransactionType?.includes('Check'))) && (
           <>
             <span className="gray">Source tag: {tx.SourceTag}</span>
             <br />

@@ -3,18 +3,12 @@ import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat } from
 import { FiDownload, FiUpload } from 'react-icons/fi'
 import { useTxFiatRate } from './FiatRateContext'
 
-export const TransactionRowAccountDelete = ({ tx, address, index, selectedCurrency}) => {
+const TransactionRowAccountDeleteContent = ({ tx, address, selectedCurrency }) => {
   const pageFiatRate = useTxFiatRate()
-
   const { outcome, specification } = tx
 
   return (
-    <TransactionRowCard
-      data={tx}
-      address={address}
-      index={index}
-      selectedCurrency={selectedCurrency}
-    >
+    <>
       <div className="flex items-center gap-1">
         {specification?.destination?.address === address ? (
           <>              
@@ -42,6 +36,23 @@ export const TransactionRowAccountDelete = ({ tx, address, index, selectedCurren
             fiatRate: pageFiatRate
           })}
         </div>)}
+    </>
+  )
+}
+
+export const TransactionRowAccountDelete = ({ tx, address, index, selectedCurrency}) => {
+  return (
+    <TransactionRowCard
+      data={tx}
+      address={address}
+      index={index}
+      selectedCurrency={selectedCurrency}
+    >
+      <TransactionRowAccountDeleteContent 
+        tx={tx} 
+        address={address} 
+        selectedCurrency={selectedCurrency} 
+      />
     </TransactionRowCard>
   )
 }

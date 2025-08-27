@@ -2,7 +2,7 @@ import { TransactionRowCard } from './TransactionRowCard'
 import { amountFormat, nativeCurrencyToFiat, addressUsernameOrServiceLink } from '../../utils/format'
 import { useTxFiatRate } from './FiatRateContext'
 
-export const TransactionRowCheck = ({ tx, address, index, selectedCurrency}) => {
+ const TransactionRowCheckContent = ({ tx, selectedCurrency}) => {
   const pageFiatRate = useTxFiatRate()
 
   const { outcome } = tx
@@ -10,12 +10,7 @@ export const TransactionRowCheck = ({ tx, address, index, selectedCurrency}) => 
   const checkChanges = outcome?.checkChanges
 
   return (
-    <TransactionRowCard
-      data={tx}
-      address={address}
-      index={index}
-      selectedCurrency={selectedCurrency}
-    >
+    <>
       {checkChanges?.sendMax && (
         <div>
           <span>Max amount: </span>
@@ -32,6 +27,22 @@ export const TransactionRowCheck = ({ tx, address, index, selectedCurrency}) => 
           </span>
         </div>
       )}
+    </>
+  )
+}
+
+export const TransactionRowCheck = ({ tx, address, index, selectedCurrency}) => {
+  return (
+    <TransactionRowCard
+      data={tx}
+      address={address}
+      index={index}
+      selectedCurrency={selectedCurrency}
+    >
+      <TransactionRowCheckContent 
+        tx={tx} 
+        selectedCurrency={selectedCurrency} 
+      />
     </TransactionRowCard>
   )
 }

@@ -19,7 +19,7 @@ const flagList = (flags) => {
   return flagsString
 }
 
-export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => {
+const TransactionRowOfferContent = ({ tx, selectedCurrency}) => {
   const pageFiatRate = useTxFiatRate()
 
   const { specification, outcome } = tx
@@ -31,22 +31,18 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
   const takerGets = specification.takerGets || sourceOrderbookChange?.takerGets
   const takerPays = specification.takerPays || sourceOrderbookChange?.takerPays
 
-  const direction = (specification.flags ? specification.flags.sell : sourceOrderbookChange?.direction) ? 'Sell' : 'Buy'
-
-  const txTypeSpecial = tx.tx?.TransactionType + ' - ' + direction + ' Order'  
-
   const flagsAsString = flagList(specification?.flags)
 
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(tx, specification.source.address)
 
   return (
-    <TransactionRowCard data={tx} address={address} index={index} selectedCurrency={selectedCurrency} txTypeSpecial={txTypeSpecial}>
+    <>
       {takerGets && (
         <div>
           <span>Taker Gets: </span>
           <span className="bold">
-            {amountFormat(takerGets, { precise: true , icon: true })}
+            {amountFormat(takerGets, { icon: true })}
             {takerGets?.issuer && <>({addressUsernameOrServiceLink(takerGets, 'issuer', { short: true })})</>}
           </span>
         </div>
@@ -55,7 +51,7 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
         <div>
           <span>Taker Pays: </span>
           <span className="bold">
-            {amountFormat(takerPays, { precise: true , icon: true })}
+            {amountFormat(takerPays, { icon: true })}
             {takerPays?.issuer && <>({addressUsernameOrServiceLink(takerPays, 'issuer', { short: true })})</>}
           </span>
         </div>
@@ -69,7 +65,7 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
               <div key={index}>
                 <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
                   {Number(change?.value) > 0 && '+'}
-                  {amountFormat(change, { precise: 'nice' , icon: true })}
+                  {amountFormat(change, { icon: true })}
                 </span>
                 {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
                 {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate: pageFiatRate })}
@@ -111,6 +107,33 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
           <span className="bold">{flagsAsString}</span>
         </div>
       )}
+    </>
+  )
+}
+
+export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => {
+
+  const { specification, outcome } = tx
+  
+  const sourceOrderbookChange = outcome?.orderbookChanges
+    ?.filter((entry) => entry.address === specification.source.address)?.[0]
+    ?.orderbookChanges.filter((entry) => entry.sequence === specification.orderSequence)?.[0]
+
+  const direction = (specification.flags ? specification.flags.sell : sourceOrderbookChange?.direction) ? 'Sell' : 'Buy'
+
+  const txTypeSpecial = tx.tx?.TransactionType + ' - ' + direction + ' Order'  
+  return (
+    <TransactionRowCard
+      data={tx}
+      address={address}
+      index={index}
+      selectedCurrency={selectedCurrency}
+      txTypeSpecial={txTypeSpecial}
+    >
+      <TransactionRowOfferContent 
+        tx={tx} 
+        selectedCurrency={selectedCurrency} 
+      />
     </TransactionRowCard>
   )
 }

@@ -6,7 +6,7 @@ import { FiDownload, FiUpload } from 'react-icons/fi'
 import { useTxFiatRate } from './FiatRateContext'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 
-export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) => {
+const TransactionRowPaymentContent = ({ tx, address, selectedCurrency}) => {
   const pageFiatRate = useTxFiatRate()
 
   const { outcome, specification } = tx
@@ -14,18 +14,13 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(tx, specification.source.address)
 
-  let txTypeSpecial = 'Payment'
   let iouPayment = false
-  // sourse address and destination address is the same
-  // sometimes source tag is added to show the dapp
-  // so if there is no destintaion tag, no need the source tag to be the same
+  
   const isConvertion =
     specification?.source?.address === specification?.destination?.address &&
     (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
 
-  if (isConvertion) {
-    txTypeSpecial = 'Conversion payment'
-  } else {
+  if (!isConvertion) {
     //check if iou involved (pathfinding or iou with fee)
     if (
       !outcome?.deliveredAmount?.mpt_issuance_id &&
@@ -33,10 +28,6 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
     ) {
       iouPayment = true
     }
-  }
-
-  if (xls14NftValue(outcome?.deliveredAmount?.value)) {
-    txTypeSpecial = 'NFT transfer (XLS-14)'
   }
 
   const optionalAbsAmount = (change) => {
@@ -49,13 +40,7 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
   }
 
   return (
-    <TransactionRowCard
-      data={tx}
-      address={address}
-      index={index}
-      txTypeSpecial={txTypeSpecial}
-      selectedCurrency={selectedCurrency}
-    >
+    <>
       {!isConvertion &&  (
         <div className="flex items-center gap-1">
           {specification?.destination?.address === address ? (
@@ -142,6 +127,40 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
             })}
         </div>
       )}
+    </>
+  )
+}
+
+export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) => {
+
+  const { outcome, specification } = tx
+
+  let txTypeSpecial = 'Payment'
+  const isConvertion =
+    specification?.source?.address === specification?.destination?.address &&
+    (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
+
+  if (isConvertion) {
+    txTypeSpecial = 'Conversion payment'
+  }
+
+  if (xls14NftValue(outcome?.deliveredAmount?.value)) {
+    txTypeSpecial = 'NFT transfer (XLS-14)'
+  }
+
+  return (
+    <TransactionRowCard
+      data={tx}
+      address={address}
+      index={index}
+      selectedCurrency={selectedCurrency}
+      txTypeSpecial={txTypeSpecial}
+    >
+      <TransactionRowPaymentContent 
+        tx={tx}
+        address={address}
+        selectedCurrency={selectedCurrency}
+      />
     </TransactionRowCard>
   )
 }
