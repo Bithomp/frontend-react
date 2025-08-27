@@ -127,7 +127,7 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
           {specification?.flags?.sellToken && specification?.source?.address !== address && (
             <>
               <span>Sell Offer by: </span>
-              <span className="bold">{specification?.source?.address}</span>
+              <span className="bold">{addressUsernameOrServiceLink(specification?.source, 'address')}</span>
               <br />
             </>
           )}
@@ -140,7 +140,7 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
           {specification?.source?.address !== address && (
             <>
               <span>NFTokenCancelOffer by </span>
-              <span className="bold">{addressUsernameOrServiceLink(specification?.source?.addressDetails, 'address')}</span>
+              <span className="bold">{addressUsernameOrServiceLink(specification?.source, 'address')}</span>
               <br />
             </>
           )}
