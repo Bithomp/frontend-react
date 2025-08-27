@@ -163,22 +163,22 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
               {offerList.length > 5 ? (
                 <>
                   The last 5 DEX orders{historicalTitle}
-                  {/* {' '}
+                  {' '}
                   [
                   <a href={`/account/${address}/dex`} className="link bold">
                     View all ({offerList.length} total)
                   </a>{' '}
-                  ] */}
+                  ]
                 </>
               ) : (
                 <>
                   {offerList.length} DEX orders{historicalTitle}
-                  {/* {' '}
+                  {' '}
                   [
                   <a href={`/account/${address}/dex`} className="link bold">
                     View details
                   </a>{' '}
-                  ] */}
+                  ]
                 </>
               )}
               {!account?.address && !ledgerTimestamp && (
