@@ -66,7 +66,7 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             <br />
           </>
         )}
-        <span>Fee:</span>
+        <span>Fee: </span>
         <span className="bold">{amountFormat(tx.Fee, { icon: true })}</span>
         <span>
           {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}

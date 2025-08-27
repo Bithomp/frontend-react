@@ -138,6 +138,9 @@ export default function AccountTransactions({
   // Refresh transactions when order changes (keep this automatic)
   useEffect(() => {
     if (userData?.address) {
+      setLoading(true)
+      setTransactions([])
+      setMarker(null)
       fetchTransactions({restart: true}) ;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
