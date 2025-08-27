@@ -87,7 +87,7 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
                     ...sourceBalanceChangesList[1],
                     value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
                   },
-                  { precise: 'nice', icon: true }
+                  { icon: true }
                 )}
               </span>
               <br />
@@ -98,7 +98,7 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
                     ...sourceBalanceChangesList[0],
                     value: Math.abs(sourceBalanceChangesList[0].value / sourceBalanceChangesList[1].value)
                   },
-                  { precise: 'nice', icon: true }
+                  { icon: true }
                 )}
               </span>
             </span>

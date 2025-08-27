@@ -117,7 +117,7 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
                       ...sourceBalanceChangesList[1],
                       value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
                     },
-                    { precise: 'nice', icon: true }
+                    { icon: true }
                   )}
                 </span>
                 {sourceBalanceChangesList[1].issuer && (

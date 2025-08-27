@@ -72,13 +72,13 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
           {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
         </span>
         <br />
-        {tx.DestinationTag !== undefined && tx.DestinationTag !== null && (
+        {tx.DestinationTag && (
           <>
-            <span className="gray">Destination: {tx.DestinationTag}</span>
+            <span className="gray">Destination tag: {tx.DestinationTag}</span>
             <br />
           </>
         )}
-        {tx.Sequence !== undefined && tx.Sequence !== null  && (
+        {tx.Sequence && (
           <>
             <span className="gray">Sequence: {tx.Sequence}</span>
             <br />
