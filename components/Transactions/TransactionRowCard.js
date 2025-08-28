@@ -52,7 +52,7 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
         <span className="flex items-center gap-1">
           <span>Transaction hash: </span>
-          {width > 600 ? <LinkTx tx={tx.hash}>{tx.hash}</LinkTx> : <LinkTx tx={tx.hash} short={10} />}
+          {width > 800 ? <LinkTx tx={tx.hash}>{tx.hash}</LinkTx> : <LinkTx tx={tx.hash} short={10} />}
         </span>
         <span>Type: </span>
         <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>

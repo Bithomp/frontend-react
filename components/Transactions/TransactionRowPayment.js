@@ -130,7 +130,8 @@ const TransactionRowPaymentContent = ({ tx, address, selectedCurrency}) => {
             {outcome?.deliveredAmount?.issuer && (
               <>({addressUsernameOrServiceLink(outcome?.deliveredAmount, 'issuer', { short: true })})</>
             )}
-            {nativeCurrencyToFiat({
+            {
+            nativeCurrencyToFiat({
               amount: outcome?.deliveredAmount,
               selectedCurrency,
               fiatRate: pageFiatRate

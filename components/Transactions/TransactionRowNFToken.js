@@ -72,33 +72,15 @@ const showAllOfferLinks = (changes) => {
   return indexes
 }
 
-export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) => {
+const TransactionRowNFTokenContent = ({ tx, address, selectedCurrency, txType}) => {
 
   const { specification, outcome } = tx
   const pageFiatRate = useTxFiatRate()
-  const txType = tx?.tx?.TransactionType
 
-  const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
-  const amountChangeAddress = outcome?.nftokenChanges?.find(change => 
-    change.nftokenChanges[0]?.status === 'removed'
-  )?.address
-
-  const amountChange = addressBalanceChanges(tx, amountChangeAddress)?.[0]  
-
-  const txTypeSpecial =
-    txType +
-    (direction && (txType === 'NFTokenAcceptOffer' || txType === 'NFTokenCreateOffer')
-      ? ' - ' + direction + ' Offer'
-      : '')
+  const amountChange = addressBalanceChanges(tx, address)?.[0]
 
   return (
-    <TransactionRowCard
-      data={tx}
-      address={address}
-      index={index}
-      selectedCurrency={selectedCurrency}
-      txTypeSpecial={txTypeSpecial}
-    >
+    <>
       {outcome?.nftokenChanges?.length > 0 && (
         <>
           {/* For NFTokenAcceptOffer, show NFT info only once */}
@@ -200,10 +182,11 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
           {/* Show amount spent for the NFT */}
           {amountChange && (
             <>
-              <span>Amount spent: </span>
-              <span className="bold">
-                {amountFormat(amountChange, { icon: true })}
-                {nativeCurrencyToFiat({
+              <span>Amount: </span>
+              <span className="bold">{amountFormat(amountChange, { icon: true })}</span>
+              <span>
+                {
+                nativeCurrencyToFiat({
                   amount: amountChange,
                   selectedCurrency,
                   fiatRate: pageFiatRate
@@ -256,8 +239,39 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
           <span className="bold">
             {amountFormat(specification.amount, { tooltip: 'right', icon: true })}
           </span>
+          <span>
+            {
+            nativeCurrencyToFiat({
+              amount: specification.amount,
+              selectedCurrency,
+              fiatRate: pageFiatRate
+            })}
+          </span>
         </div>
       )}
+    </>
+  )
+}
+
+export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) => {
+  const { specification } = tx
+  const txType = tx?.tx?.TransactionType
+  const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
+  const txTypeSpecial =
+    txType +
+    (direction && (txType === 'NFTokenAcceptOffer' || txType === 'NFTokenCreateOffer')
+      ? ' - ' + direction + ' Offer'
+      : '')
+
+  return (
+    <TransactionRowCard
+      data={tx}
+      address={address}
+      index={index}
+      selectedCurrency={selectedCurrency}
+      txTypeSpecial={txTypeSpecial}
+    >
+      <TransactionRowNFTokenContent tx={tx} address={address} selectedCurrency={selectedCurrency} txType={txType} />
     </TransactionRowCard>
   )
 }
