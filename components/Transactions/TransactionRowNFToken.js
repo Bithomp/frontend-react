@@ -1,21 +1,23 @@
 import React from 'react'
 import { TransactionRowCard } from './TransactionRowCard'
-import { nftIdLink, nftOfferLink, amountFormat, addressUsernameOrServiceLink} from '../../utils/format'
+import { nftIdLink, nftOfferLink, amountFormat, addressUsernameOrServiceLink, nativeCurrencyToFiat} from '../../utils/format'
+import { addressBalanceChanges } from '../../utils/transaction'
+import { useTxFiatRate } from './FiatRateContext'
 
 const nftData = (change, nftInfo, txType) => {
   const flagsAsString = flagList(nftInfo.flags)
 
   return (
     <>
-    {txType === 'NFTokenBurn' ? (
-      <div>
-        <span>Change: </span>
-        <span>removed NFT {nftIdLink(change.nftokenID)}</span>
-      </div>
-    ) : <div>
-          <span>NFT: </span>
-          <span>{nftIdLink(change.nftokenID)}</span>
-        </div>  }
+      {txType === 'NFTokenBurn' ? (
+        <div>
+          <span>Change: </span>
+          <span>removed NFT {nftIdLink(change.nftokenID)}</span>
+        </div>
+      ) : <div>
+            <span>NFT: </span>
+            <span>{nftIdLink(change.nftokenID)}</span>
+          </div>  }
       
       {nftInfo.transferFee !== undefined && (
         <div>
@@ -73,10 +75,15 @@ const showAllOfferLinks = (changes) => {
 export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) => {
 
   const { specification, outcome } = tx
-
+  const pageFiatRate = useTxFiatRate()
   const txType = tx?.tx?.TransactionType
 
   const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
+  const amountChangeAddress = outcome?.nftokenChanges?.find(change => 
+    change.nftokenChanges[0]?.status === 'removed'
+  )?.address
+
+  const amountChange = addressBalanceChanges(tx, amountChangeAddress)?.[0]  
 
   const txTypeSpecial =
     txType +
@@ -191,10 +198,17 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
             </>
           )}
           {/* Show amount spent for the NFT */}
-          {specification?.amount && (
+          {amountChange && (
             <>
               <span>Amount spent: </span>
-              <span className="bold">{amountFormat(specification.amount, { tooltip: 'right', icon: true })}</span>
+              <span className="bold">
+                {amountFormat(amountChange, { icon: true })}
+                {nativeCurrencyToFiat({
+                  amount: amountChange,
+                  selectedCurrency,
+                  fiatRate: pageFiatRate
+                })}
+              </span>
               <br />
             </>
           )}
