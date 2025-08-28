@@ -1,13 +1,17 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { amountFormat, nativeCurrencyToFiat, addressUsernameOrServiceLink } from '../../utils/format'
 import { useTxFiatRate } from './FiatRateContext'
+import { dappBySourceTag } from '../../utils/transaction'
 
  const TransactionRowCheckContent = ({ tx, selectedCurrency}) => {
   const pageFiatRate = useTxFiatRate()
 
-  const { outcome } = tx
+  const { outcome, specification } = tx
 
   const checkChanges = outcome?.checkChanges
+
+  //don't show sourcetag if it's the tag of a known dapp
+  const dapp = dappBySourceTag(specification.source.tag)
 
   return (
     <>
@@ -26,6 +30,13 @@ import { useTxFiatRate } from './FiatRateContext'
             })}
           </span>
         </div>
+      )}
+      
+      {checkChanges.source?.tag !== undefined && !dapp && (
+        <>
+          <span>Source tag:</span>
+          <span className="bold">{checkChanges.source.tag}</span>
+        </>
       )}
     </>
   )

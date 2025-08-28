@@ -1,7 +1,7 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { xls14NftValue } from '../../utils'
 import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat } from '../../utils/format'
-import { addressBalanceChanges } from '../../utils/transaction'
+import { addressBalanceChanges, dappBySourceTag } from '../../utils/transaction'
 import { FiDownload, FiUpload } from 'react-icons/fi'
 import { useTxFiatRate } from './FiatRateContext'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
@@ -13,6 +13,9 @@ const TransactionRowPaymentContent = ({ tx, address, selectedCurrency}) => {
 
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(tx, specification.source.address)
+
+  //don't show sourcetag if it's the tag of a known dapp
+  const dapp = dappBySourceTag(specification.source.tag)
 
   let iouPayment = false
   
@@ -66,6 +69,13 @@ const TransactionRowPaymentContent = ({ tx, address, selectedCurrency}) => {
           )}
         </div>
       )}
+      {specification.source?.tag !== undefined && !dapp && (
+        <>
+          <span>Source tag: </span>
+          <span className="bold">{specification.source.tag}</span>
+        </>
+      )}
+      
       {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
         <>
           <div className="flex items-center gap-1">
@@ -115,7 +125,7 @@ const TransactionRowPaymentContent = ({ tx, address, selectedCurrency}) => {
       )}
       {!isConvertion && outcome?.deliveredAmount && (
         <div>
-          <span className="bold">Delivered amount: </span>
+          <span>Delivered amount: </span>
             <span className="bold green">{amountFormat(outcome?.deliveredAmount, { icon: true })}</span>
             {outcome?.deliveredAmount?.issuer && (
               <>({addressUsernameOrServiceLink(outcome?.deliveredAmount, 'issuer', { short: true })})</>

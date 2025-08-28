@@ -27,6 +27,9 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, outcome?.ledgerTimestamp])
 
+  //don't show sourcetag if it's the tag of a known dapp
+  const dapp = dappBySourceTag(tx.SourceTag)
+
   return (
     <tr
       index={index}
@@ -84,10 +87,13 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             <br />
           </>
         )}
-        {(tx.SourceTag !== undefined && tx.SourceTag !== null) && (dappBySourceTag(tx.SourceTag) || (tx.TransactionType !== 'Payment' && !tx.TransactionType?.includes('Check'))) && (
+        {(dapp ||
+          (tx?.SourceTag !== undefined &&
+            tx.TransactionType !== 'Payment' &&
+            !tx.TransactionType?.includes('Check'))) && (
           <>
-            <span className="gray">Source tag: {tx.SourceTag}</span>
-            <br />
+            <span>Source tag: </span>
+            <span>{tx?.SourceTag}</span>
           </>
         )}
         {memos && memos.length > 0 && (

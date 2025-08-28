@@ -1,6 +1,6 @@
 import React from 'react'
 import { TransactionRowCard } from './TransactionRowCard'
-import { nftIdLink, nftOfferLink, amountFormat, addressUsernameOrServiceLink} from '../../utils/format'
+import { nftIdLink, nftOfferLink, amountFormat, addressUsernameOrServiceLink } from '../../utils/format'
 
 const nftData = (change, nftInfo, txType) => {
   const flagsAsString = flagList(nftInfo.flags)
@@ -153,14 +153,14 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
           {tx?.tx?.Owner && (
             <>
               <span>NFT Owner: </span>
-              <span className="bold">{tx?.tx?.Owner}</span>
+              <span className="bold">{addressUsernameOrServiceLink(specification, 'owner')}</span>
               <br />
             </>
           )}
           {tx?.tx?.NFTokenID && (
             <>
               <span>NFT: </span>
-              <span className="bold">{tx?.tx?.NFTokenID}</span>
+              <span className="bold">{nftIdLink(tx?.tx?.NFTokenID)}</span>
               <br />
             </>
           )}
@@ -239,7 +239,7 @@ export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) =
       {tx.tx.Amount && (
         <div>
           <span>{txType === 'NFTokenMint' ? 'Price: ' : 'Amount: '}</span>
-          <span>
+          <span className="bold">
             {amountFormat(specification.amount, { tooltip: 'right', icon: true })}
           </span>
         </div>

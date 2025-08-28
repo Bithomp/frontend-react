@@ -28,8 +28,8 @@ const TransactionRowAccountDeleteContent = ({ tx, address, selectedCurrency }) =
       </div>
       {outcome?.deliveredAmount && (
         <div>
-          <span className="bold">Delivered amount: </span>
-          <span className="green">{amountFormat(outcome?.deliveredAmount, { icon: true })}</span>
+          <span>Delivered amount: </span>
+          <span className="green bold">{amountFormat(outcome?.deliveredAmount, { icon: true })}</span>
           {nativeCurrencyToFiat({
             amount: outcome?.deliveredAmount,
             selectedCurrency,
