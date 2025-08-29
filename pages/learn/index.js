@@ -18,7 +18,7 @@ const learnPageXRP = {
 }
 
 const learnPageXAHAU = {
-  title: 'Learn About XAHAU & The XAHAU Ledger | XAHAU Explorer',
+  title: 'Learn About XAH & The XAHAU Ledger | XAHAU Explorer',
   description:
     'Explore essential concepts behind XAHAU, and the XAHAU Ledger, and wallet activity. Understand how the ecosystem works with these beginner-friendly guides and definitions.',
   h1: 'Learn About XAHAU & The XAHAU Ledger',
