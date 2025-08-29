@@ -576,6 +576,8 @@ export default function Account({
                               rippleStateList={objects?.rippleStateList}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                               address={data?.address}
+                              pageFiatRate={pageFiatRate}
+                              selectedCurrency={selectedCurrency}
                             />
                           </div>
                           {/* don't show yet obligations historically */}
