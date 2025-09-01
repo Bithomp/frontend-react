@@ -293,7 +293,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                   <td className="center" style={{ width: 30 }}>
                     {i + 1}
                   </td>
-                  <td className="right" style={{ minWidth: "fit-content" }}>{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
+                  <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
                   <td className="right">{getPaymentType(txdata)}</td>
                   <td className="right">
                     <LinkTx tx={txdata.tx?.hash} icon={true} />
