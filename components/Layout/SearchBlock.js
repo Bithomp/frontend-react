@@ -17,9 +17,10 @@ import {
   networksIds,
   isValidNftXls20,
   isCurrencyHashValid,
-  server
+  server,
+  validateCurrencyCode
 } from '../../utils'
-import { userOrServiceName, amountFormat } from '../../utils/format'
+import { userOrServiceName, amountFormat, shortAddress, shortNiceNumber } from '../../utils/format'
 
 import { IoSearch } from 'react-icons/io5'
 
@@ -73,7 +74,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const windowWidth = useWidth()
 
   const { id } = router.query
-  const [searchItem, setSearchItem] = useState(id || userData?.address || '')
+  // Don't pre-populate search field on token pages to avoid showing current token
+  const initialSearchItem = tab === 'token' ? '' : (id || userData?.address || '')
+  const [searchItem, setSearchItem] = useState(initialSearchItem)
   const [searching, setSearching] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
@@ -96,10 +99,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   }, [id, searchInput])
 
   useEffect(() => {
-    if (userData?.address) {
+    if (userData?.address && tab !== 'token') {
       setSearchItem(userData.address)
     }
-  }, [userData])
+  }, [userData, tab])
 
   const requestSuggestions = (value) => {
     if (isValidCTID(value)) {
@@ -113,19 +116,39 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       typingTimer = setTimeout(async () => {
         if (value && value.length > 2) {
           setSearchingSuggestions(true)
-          const suggestionsResponse = await axios('v2/address/search/' + value).catch((error) => {
-            setSearchingSuggestions(false)
-            console.log(error.message)
-          })
-          if (suggestionsResponse) {
-            const suggestions = suggestionsResponse.data
-            if (suggestions?.addresses?.length > 0) {
-              setSearchSuggestions(suggestions.addresses)
+          
+          try {
+            let suggestionsResponse
+            if (tab === 'token') {
+              // Use the same search logic as TokenSelector
+              suggestionsResponse = await axios(`v2/trustlines/tokens/search/${value}?limit=20&currencyDetails=true`)
+            } else {
+              // Default address search
+              suggestionsResponse = await axios('v2/address/search/' + value)
             }
+
+            if (suggestionsResponse) {
+              const suggestions = suggestionsResponse.data
+              if (tab === 'token' && suggestions?.tokens?.length > 0) {
+                // Format token suggestions with enhanced issuer information
+                const tokenSuggestions = await suggestions.tokens.map(token => ({
+                  ...token,
+                  // Create a display label for tokens
+                  displayLabel: `${token.currency} (${token.issuerDetails?.username || token.issuerDetails?.service || shortAddress(token.issuer, 8)})`,
+                  // For routing purposes, we'll use the token identifier
+                  tokenId: `${token.issuer}:${token.currency}`
+                }))
+                setSearchSuggestions(tokenSuggestions)
+              } else if (suggestions?.addresses?.length > 0) {
+                setSearchSuggestions(suggestions.addresses)
+              }
+            }
+          } catch (error) {
+            setSearchingSuggestions(false)
           }
           setSearchingSuggestions(false)
         }
-      }, 500) // 0.5 sec
+      }, 300) // 0.3 sec - same as TokenSelector
     }
   }
 
@@ -150,7 +173,14 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const searchOnChange = (option) => {
     if (!option) return
-    if (option.username && !option.username.includes('-')) {
+    
+    // Update the search input to show the selected value
+    if (tab === 'token' && option.tokenId) {
+      // For tokens, show the token identifier in the input
+      setSearchItem(option.tokenId)
+      // Then search
+      onSearch(option.tokenId)
+    } else if (option.username && !option.username.includes('-')) {
       onSearch(option.username)
     } else {
       onSearch(option.address)
@@ -189,6 +219,46 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     if (!searchFor) return
+
+    // Handle token search
+    if (tab === 'token') {
+      // Check if it's a token identifier (issuer:currency format)
+      if (searchFor.includes(':')) {
+        const [issuer, currency] = searchFor.split(':')
+        if (isAddressOrUsername(issuer) && validateCurrencyCode(currency).valid) {
+          router.push('/token/' + encodeURIComponent(issuer) + '/' + encodeURIComponent(currency))
+          return
+        }
+      }
+      
+      // Check if it's a valid currency code
+      const { valid: isCurrencyValid } = validateCurrencyCode(searchFor)
+      
+      if (isCurrencyValid) {
+        // If it's just a currency code, redirect to tokens page with currency filter
+        router.push('/tokens?currency=' + encodeURIComponent(searchFor))
+        return
+      }
+      
+      // Check if it's an issuer address or username
+      if (isAddressOrUsername(searchFor)) {
+        // Redirect to tokens page with issuer filter
+        router.push('/tokens?issuer=' + encodeURIComponent(searchFor))
+        return
+      }
+      
+      // For any other search term, try to search for tokens and redirect to tokens page
+      if (searchFor.length >= 3) {
+        // Since tokens page doesn't support general search, redirect to tokens page
+        // The user can then use the filters on the tokens page
+        router.push('/tokens')
+        return
+      }
+      
+      // If none of the above, show error
+      setErrorMessage(t('explorer.invalid-token-input') || 'Please enter a valid currency code, issuer address, or token identifier')
+      return
+    }
 
     if (tab === 'nft' && isValidNftXls20(searchFor)) {
       router.push('/nft/' + encodeURI(searchFor))
@@ -339,7 +409,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const explorerHeader = (tab) => {
     if (
-      ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object'].includes(tab)
+      ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object', 'token'].includes(tab)
     ) {
       return t('explorer.header.' + tab)
     } else if (tab === 'transactions') {
@@ -373,64 +443,112 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 onChange={searchOnChange}
                 spellCheck="false"
                 options={searchSuggestions}
-                getOptionLabel={(option) => (
-                  <>
-                    <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
-                    {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
-                    <b className="blue">{option.username}</b>
-                    {option.service && (
+                getOptionLabel={(option) => {
+                  if (tab === 'token' && option.tokenId) {
+                    // Display token information similar to TokenSelector
+                    return (
                       <>
-                        {option.username ? ' (' : ''}
-                        <b className="green">{option.service}</b>
-                        {option.username ? ')' : ''}
-                      </>
-                    )}
-                    {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
-                    {option.verifiedDomain ? (
-                      <span className="green bold"> {option.verifiedDomain}</span>
-                    ) : (
-                      option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
-                    )}
-                    {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
-                      option.xaman && <>, </>}
-                    {option.xaman && (
-                      <>
-                        Xaman{' '}
-                        <span className="orange">
-                          {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
+                        <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>
+                          <b>{option.currency}</b>
+                          {option.issuerDetails?.username || option.issuerDetails?.service ? (
+                            <>
+                              {' - '}
+                              <span className="green">
+                                {option.issuerDetails.username || option.issuerDetails.service}
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              {' - '}
+                              <span className="green bold">{shortAddress(option.issuer, 8)}</span>
+                            </>
+                          )}
                         </span>
-                        {option.xamanVerified && <> ✅</>}
+                        {option.holders !== undefined && (
+                          <>
+                            {' '}
+                            <span style={{ fontSize: '0.85em' }}>
+                              {shortNiceNumber(option.holders, 0)} holders
+                            </span>
+                          </>
+                        )}
+                        {option.supply && (
+                          <>
+                            {' '}
+                            [<b>{amountFormat(option.supply, { maxFractionDigits: 2, noSpace: true })}</b>]
+                          </>
+                        )}
                       </>
-                    )}
-                    {(option.username ||
-                      option.service ||
-                      option.verifiedDomain ||
-                      option.serviceDomain ||
-                      option.xaman) && <>, </>}
-                    {option.balance && (
+                    )
+                  } else {
+                    // Default address display
+                    return (
                       <>
-                        {' '}
-                        [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]
+                        <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
+                        {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
+                        <b className="blue">{option.username}</b>
+                        {option.service && (
+                          <>
+                            {option.username ? ' (' : ''}
+                            <b className="green">{option.service}</b>
+                            {option.username ? ')' : ''}
+                          </>
+                        )}
+                        {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
+                        {option.verifiedDomain ? (
+                          <span className="green bold"> {option.verifiedDomain}</span>
+                        ) : (
+                          option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
+                        )}
+                        {(option.username ||
+                          option.service ||
+                          option.verifiedDomain ||
+                          option.serviceDomain) &&
+                          option.xaman && <>, </>}
+                        {option.xaman && (
+                          <>
+                            Xaman{' '}
+                            <span className="orange">
+                              {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
+                            </span>
+                            {option.xamanVerified && <> ✅</>}
+                          </>
+                        )}
+                        {(option.username ||
+                          option.service ||
+                          option.verifiedDomain ||
+                          option.serviceDomain ||
+                          option.xaman) && <>, </>}
+                        {option.balance && (
+                          <>
+                            {' '}
+                            [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]
+                          </>
+                        )}
                       </>
-                    )}
-                  </>
-                )}
-                getOptionValue={(option) =>
-                  option.address +
-                  option.username +
-                  option.service +
-                  option.xaman +
-                  option.verifiedDomain +
-                  option.serviceDomain
-                }
+                    )
+                  }
+                }}
+                getOptionValue={(option) => {
+                  if (tab === 'token' && option.tokenId) {
+                    return option.tokenId+option.currency+option.issuerDetails?.username+option.issuerDetails?.service+option.issuer
+                  }
+                  return option.address +
+                    option.username +
+                    option.service +
+                    option.xaman +
+                    option.verifiedDomain +
+                    option.serviceDomain
+                }}
                 inputValue={searchItem}
                 onInputChange={searchOnInputChange}
                 isSearchable={true}
                 classNamePrefix="react-select"
                 instanceId="search-select"
                 noOptionsMessage={
-                  () => (searchingSuggestions ? t('explorer.searching-for-addresses') : null)
-                  //({ inputValue }) => inputValue.length > 3
+                  () => (searchingSuggestions ? 
+                    (tab === 'token' ? t('explorer.searching-for-tokens') || 'Searching for tokens...' : t('explorer.searching-for-addresses')) 
+                    : null)
                 }
                 aria-label="Search"
                 components={{ IndicatorsContainer: CustomIndicatorsContainer }}

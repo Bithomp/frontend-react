@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import SEO from '../../components/SEO'
+import SearchBlock from '../../components/Layout/SearchBlock'
 import { tokenClass } from '../../styles/pages/token.module.scss'
 import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
@@ -262,6 +263,12 @@ export default function TokenPage({
         title={`${token?.currencyDetails?.currency} Token - ${
           token.issuerDetails?.service || token.issuerDetails?.username || 'Token Details'
         }`}
+      />
+
+      <SearchBlock 
+        tab="token" 
+        searchPlaceholderText="Search by currency code or issuer address"
+        isSsrMobile={isSsrMobile}
       />
 
       <div className={tokenClass}>
