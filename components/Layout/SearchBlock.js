@@ -148,7 +148,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
           }
           setSearchingSuggestions(false)
         }
-      }, 300) // 0.3 sec - same as TokenSelector
+      }, 500) // 0.5 sec
     }
   }
 
