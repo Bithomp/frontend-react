@@ -20,7 +20,7 @@ import {
   server,
   validateCurrencyCode
 } from '../../utils'
-import { userOrServiceName, amountFormat, shortAddress, shortNiceNumber } from '../../utils/format'
+import { userOrServiceName, amountFormat, shortAddress, shortNiceNumber, niceCurrency } from '../../utils/format'
 
 import { IoSearch } from 'react-icons/io5'
 
@@ -74,8 +74,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const windowWidth = useWidth()
 
   const { id } = router.query
-  // Don't pre-populate search field on token pages to avoid showing current token
-  const initialSearchItem = tab === 'token' ? '' : (id || userData?.address || '')
+  // Set initial search item based on tab type
+  const initialSearchItem = tab === 'token' 
+    ? (id && Array.isArray(id) && id.length >= 2 ? `${id[0]}:${id[1]}` : '')
+    : (id || userData?.address || '')
   const [searchItem, setSearchItem] = useState(initialSearchItem)
   const [searching, setSearching] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
@@ -409,12 +411,26 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const explorerHeader = (tab) => {
     if (
-      ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object', 'token'].includes(tab)
+      ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object'].includes(tab)
     ) {
       return t('explorer.header.' + tab)
     } else if (tab === 'transactions') {
       return t('explorer.menu.transactions')
+    } else if (tab === 'token') {
+      return 'Token information'
     }
+    return ''
+  }
+
+  const getTokenDisplayName = () => {
+    if (tab !== 'token') return ''
+    
+    const { id } = router.query
+    if (id && Array.isArray(id) && id.length >= 2) {
+      const currency = id[1]
+      return <span className="green bold">{niceCurrency(currency)}</span>
+    }
+    
     return ''
   }
 
@@ -430,7 +446,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               </span>
             ) : (
               <div className="bold contrast">
-                {explorerHeader(tab)} {userOrServiceName(userData)}
+                {explorerHeader(tab)} {tab === 'token' ? getTokenDisplayName() : userOrServiceName(userData)}
               </div>
             )}
           </div>
@@ -547,7 +563,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 instanceId="search-select"
                 noOptionsMessage={
                   () => (searchingSuggestions ? 
-                    (tab === 'token' ? t('explorer.searching-for-tokens') || 'Searching for tokens...' : t('explorer.searching-for-addresses')) 
+                    (tab === 'token' ? 'Searching for tokens...' : t('explorer.searching-for-addresses')) 
                     : null)
                 }
                 aria-label="Search"

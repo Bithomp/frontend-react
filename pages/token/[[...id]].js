@@ -394,16 +394,16 @@ export default function TokenPage({
                     <td>{priceLine({ price: statistics?.priceNativeCurrencySpot, key: 'spot' })}</td>
                   </tr>
                 )}
-                {statistics?.priceNativeCurrency1h && (
-                  <tr>
-                    <td>1 Hour Ago</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrency1h, key: '1h' })}</td>
-                  </tr>
-                )}
                 {statistics?.priceNativeCurrency5m && (
                   <tr>
                     <td>5 Minutes Ago</td>
                     <td>{priceLine({ price: statistics?.priceNativeCurrency5m, key: '5m' })}</td>
+                  </tr>
+                )}
+                {statistics?.priceNativeCurrency1h && (
+                  <tr>
+                    <td>1 Hour Ago</td>
+                    <td>{priceLine({ price: statistics?.priceNativeCurrency1h, key: '1h' })}</td>
                   </tr>
                 )}
                 {statistics?.priceNativeCurrency24h && (
