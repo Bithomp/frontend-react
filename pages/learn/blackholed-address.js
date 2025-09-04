@@ -37,8 +37,8 @@ export default function BlackholedAddress() {
             <Image
               src="/images/pages/blackholed-picture.png"
               alt="Blackholed Accounts"
-              width={760}
-              height={500}
+              width={816}
+              height={510}
               className="max-w-full h-auto object-contain"
               priority
             />
