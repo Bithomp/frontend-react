@@ -172,7 +172,7 @@ export default function GuideForTokenIssuers() {
           <p>
             For <strong>blackholed accounts</strong>: if the token icon link is provided in the TOML file, we’ll display
             that image. To ensure your token image looks nice on our website, include a link in your TOML file with a
-            resolution of at least 400×400 pixels.
+            resolution of at least 700×700 pixels (but not more than 10 Mb).
           </p>
           If the icon <strong>is non included into the toml</strong>, we’ll fetch the image in the following priority
           order:
