@@ -9,7 +9,6 @@ import FormInput from '../../components/UI/FormInput'
 import CopyButton from '../../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../../utils/links'
 import { multiply } from '../../utils/calc'
-import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import {
   typeNumberOnly,
   isAddressValid,
@@ -485,13 +484,6 @@ export default function Send({
       />
       <div className="content-text content-center">
         <h1 className="center">Send payment</h1>
-        {xahauNetwork && (
-          <p className="center text-sm text-gray-600 mb-4">
-            💡 <strong>Xahau Network:</strong> Use the Remit option below to send any token (including native XAH) to
-            destinations with incoming remit enabled
-          </p>
-        )}
-        <NetworkTabs />
 
         <div>
           <AddressInput
@@ -608,7 +600,51 @@ export default function Send({
             onKeyPress={typeNumberOnly}
             defaultValue={destinationTag}
           />
-          <div className="form-spacing" />
+          {/* Remit option for Xahau network */}
+          {xahauNetwork && (
+            <>
+              <CheckBox
+                checked={useRemit}
+                setChecked={setUseRemit}
+                name="use-remit"
+                disabled={destinationRemitDisabled}
+              >
+                Use Remit
+                <span className="orange">
+                  {' '}
+                  - Send any token and pay for destination reserves.
+                </span>
+                {destinationRemitDisabled && (
+                  <span className="red"> (Disabled - destination has incoming remit disabled)</span>
+                )}
+              </CheckBox>
+
+              {useRemit && (
+                <>
+                  <br />
+                  <div className="grey p-2 rounded-md border border-grey-200 mb-4 sm:mb-0">
+                    <strong>ℹ️ Remit Transaction</strong>
+                    <br />
+                    <br />
+                    When using Remit, you can send any token to the destination account, even if they don't have a
+                    trustline for it.
+                    <br />
+                    <br />
+                    <strong>Note:</strong> You will pay for the destination account's reserve requirements if the
+                    account needs to be activated.
+                    <br />
+                    <br />
+                    <strong>Token Selection:</strong> All available tokens (including native XAH) are shown since remit
+                    allows sending any token regardless of trustlines.
+                    <br />
+                    <br />
+                    This feature is only available on the Xahau network.
+                  </div>
+                </>
+              )}
+            </>
+          )}
+          <br />
           <div className="flex flex-col gap-x-4 sm:flex-row">
             <div className="flex-1">
               <FormInput
@@ -652,50 +688,7 @@ export default function Send({
             maxLength={100}
             type="text"
           />
-          {/* Remit option for Xahau network */}
-          {xahauNetwork && (
-            <>
-              <CheckBox
-                checked={useRemit}
-                setChecked={setUseRemit}
-                name="use-remit"
-                disabled={destinationRemitDisabled}
-              >
-                Use Remit
-                <span className="orange">
-                  {' '}
-                  - Send any token to destinations with incoming Remit enabled. Sender pays for destination reserves.
-                </span>
-                {destinationRemitDisabled && (
-                  <span className="red"> (Disabled - destination has incoming remit disabled)</span>
-                )}
-              </CheckBox>
-
-              {useRemit && (
-                <>
-                  <br />
-                  <div className="grey p-2 rounded-md border border-grey-200 mb-4 sm:mb-0">
-                    <strong>ℹ️ Remit Transaction</strong>
-                    <br />
-                    <br />
-                    When using Remit, you can send any token to the destination account, even if they don't have a
-                    trustline for it.
-                    <br />
-                    <br />
-                    <strong>Note:</strong> You will pay for the destination account's reserve requirements if the
-                    account needs to be activated.
-                    <br />
-                    <br />
-                    <strong>Token Selection:</strong> All available tokens (including native XAH) are shown since remit
-                    allows sending any token regardless of trustlines.
-                    <br />
-                    <br />
-                    This feature is only available on the Xahau network.
-                  </div>
-                </>
-              )}
-            </>
-          )}
+          
           <CheckBox
             checked={showAdvanced}
             setChecked={() => {
