@@ -72,9 +72,9 @@
     "xrpl-binary-codec-prerelease": "^8.0.1"
   },
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next dev",
-    "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 next build",
-    "start": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next start",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint",
     "prepare": "husky install",
     "pre-commit": "next lint",
