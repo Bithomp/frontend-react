@@ -40,7 +40,7 @@ export default function BlackholedAddress() {
               width="816"
               height="510"
               className="max-w-full h-auto object-contain"
-              priority="true"
+              priority
             />
           </div>
 
