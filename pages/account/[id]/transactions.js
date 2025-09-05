@@ -15,6 +15,7 @@ import SearchBlock from '../../../components/Layout/SearchBlock'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../../../components/Layout/InfiniteScrolling'
 import SimpleSelect from '../../../components/UI/SimpleSelect'
+import AddressInput from '../../../components/UI/AddressInput'
 
 import {
   TransactionRowDetails,
@@ -93,10 +94,7 @@ export default function AccountTransactions({
   initialErrorMessage,
   initialMarker,
   initialUserData,
-  subscriptionExpired,
-  sessionToken,
   selectedCurrency,
-  openEmailLogin,
 }) {
 
   const { t } = useTranslation()
@@ -136,6 +134,17 @@ export default function AccountTransactions({
   useEffect(() => {
     setTransactions(initialTransactions)
   }, [initialTransactions])
+
+  // Refresh transactions when order changes (keep this automatic)
+  useEffect(() => {
+    if (userData?.address) {
+      setLoading(true)
+      setTransactions([])
+      setMarker(null)
+      fetchTransactions({restart: true}) ;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, userData?.address])
 
   // Helpers
   const orderList = [
@@ -179,16 +188,17 @@ export default function AccountTransactions({
       url += `&marker=${encodeURIComponent(markerString)}`
     }
     // sorting
-    if (order === 'oldest') {
-      url += `&earliestFirst=1`
-    }
+    url += `&forward=${order === 'oldest'}`
     // filters
     if (txType && txType !== 'tx') {
       url += `&type=${txType}`
     }
-    if (initiated !== '0') {
-      url += `&initiated=${initiated}`
+    if (initiated === '1') {
+      url += `&initiated=true`
+    } else if(initiated === '2') {
+      url += `&initiated=false` 
     }
+
     if (excludeFailures === '1') {
       url += `&excludeFailures=1`
     }
@@ -196,28 +206,20 @@ export default function AccountTransactions({
       url += `&counterparty=${encodeURIComponent(counterparty.trim())}`
     }
     if (fromDate) {
-      url += `&fromDate=${encodeURIComponent(new Date(fromDate).toISOString())}`
+      url += `&fromDate=${encodeURIComponent(fromDate.toISOString())}`
     }
     if (toDate) {
-      url += `&toDate=${encodeURIComponent(new Date(toDate).toISOString())}`
+      url += `&toDate=${encodeURIComponent(toDate.toISOString())}`
     }
     return url
   }
 
   const fetchTransactions = async (opts = {}) => {
     if (loading) return
-    // setLoading(true)
 
     let markerToUse = undefined
     if (!opts.restart) {
       markerToUse = opts.marker || marker
-    }
-
-    if (markerToUse && markerToUse !== 'first') {
-      if (!sessionToken || (sessionToken && subscriptionExpired)) {
-        setLoading(false)
-        return
-      }
     }
 
     try {
@@ -253,9 +255,6 @@ export default function AccountTransactions({
     { label: 'Type', key: 'type' },
     { label: 'Hash', key: 'hash' },
     { label: 'Status', key: 'status' },
-    { label: 'Direction', key: 'direction' },
-    { label: 'Address', key: 'address' },
-    { label: 'Fee', key: 'fee' }
   ]
 
   const applyFilters = () => {
@@ -276,7 +275,20 @@ export default function AccountTransactions({
         orderList={orderList}
         count={transactions.length}
         hasMore={marker}
-        data={transactions || []}
+        data={transactions.map(item => {
+          let dateObj = new Date();
+          if(item.outcome.timestamp){
+            dateObj = new Date(item.outcome.timestamp);
+          }
+          
+          return {
+            date: dateObj.toLocaleDateString(),
+            time: dateObj.toLocaleTimeString(),
+            type: item.tx.TransactionType || 'Unknown',
+            hash: item.txHash || '',
+            status: item.outcome.result || 'Unknown',
+          }
+        }) || []}
         csvHeaders={csvHeaders}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
@@ -301,20 +313,19 @@ export default function AccountTransactions({
             <br />
             <div>
               <span className="input-title">Counterparty</span>
-              <input
-                type="text"
-                value={counterparty}
-                onChange={(e) => setCounterparty(e.target.value)}
-                placeholder="Counterparty address"
-                className="input-text"
+              <AddressInput
+                setValue={setCounterparty}
+                rawData={counterparty ? { counterparty } : {}}
+                type="counterparty"
+                hideButton={true}
               />
             </div>
             <br />
             <div>
               <span className="input-title">From</span>
               <DatePicker
-                selected={fromDate ? new Date(fromDate * 1000) : null}
-                onChange={(date) => setFromDate(date ? Math.floor(date.getTime() / 1000) : null)}
+                selected={fromDate}
+                onChange={(date) => setFromDate(date)}
                 selectsStart
                 showTimeInput
                 timeInputLabel={t('table.time')}
@@ -328,8 +339,8 @@ export default function AccountTransactions({
             <div>
               <span className="input-title">To</span>
               <DatePicker
-                selected={toDate ? new Date(toDate * 1000) : null}
-                onChange={(date) => setToDate(date ? Math.floor(date.getTime() / 1000) : null)}
+                selected={toDate}
+                onChange={(date) => setToDate(date)}
                 selectsEnd
                 showTimeInput
                 timeInputLabel={t('table.time')}
@@ -359,9 +370,8 @@ export default function AccountTransactions({
             }}
             hasMore={marker}
             errorMessage={errorMessage}
-            subscriptionExpired={subscriptionExpired}
-            sessionToken={sessionToken}
-            openEmailLogin={openEmailLogin}
+            subscriptionExpired={false}
+            sessionToken={true}
           >
             <table className={width > 600 ? 'table-large no-hover' : 'table-mobile'}>
               <tbody>
@@ -432,4 +442,4 @@ export default function AccountTransactions({
       </FiltersFrame>      
     </>
   )
-} 
+}
