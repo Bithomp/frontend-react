@@ -55,7 +55,11 @@ export async function getServerSideProps(context) {
         })
 
         if (res?.data) {
-          initialData = res.data
+          if (res.data?.error) {
+            initialErrorMessage = res.data.error
+          } else {
+            initialData = res.data
+          }
         } else {
           initialErrorMessage = 'Token not found'
         }
@@ -196,7 +200,7 @@ export default function TokenPage({
         {isSsrMobile ? <br /> : ' '}
         <span className="grey">
           {!isSsrMobile && '('}
-          {niceNumber(volume, 2)} {currencyDetails.currency}
+          {niceNumber(volume, 2)} {currencyDetails?.currency}
           {!isSsrMobile && ')'}
         </span>
       </span>
@@ -206,13 +210,15 @@ export default function TokenPage({
   if (errorMessage) {
     return (
       <>
-        <SEO title="Token Not Found" />
+        <SEO title="Token not found" />
         <div className="center">
-          <h1>Token Not Found</h1>
+          <h1>Token not found</h1>
           <p>{errorMessage}</p>
           <Link href="/tokens" className="button-action">
-            Back to Tokens
+            View all tokens
           </Link>
+          <br />
+          <br />
         </div>
       </>
     )
@@ -321,13 +327,13 @@ export default function TokenPage({
                 <tr>
                   <td>Currency Code</td>
                   <td>
-                    {token.currencyDetails.currencyCode} <CopyButton text={token.currencyDetails.currencyCode} />
+                    {token.currencyDetails?.currencyCode} <CopyButton text={token.currencyDetails?.currencyCode} />
                   </td>
                 </tr>
                 <tr>
                   <td>Supply</td>
                   <td>
-                    {fullNiceNumber(token.supply)} {token.currencyDetails.currency}
+                    {fullNiceNumber(token.supply)} {token.currencyDetails?.currency}
                   </td>
                 </tr>
                 <tr>
@@ -387,16 +393,16 @@ export default function TokenPage({
                     <td>{priceLine({ price: statistics?.priceNativeCurrencySpot, key: 'spot' })}</td>
                   </tr>
                 )}
-                {statistics?.priceNativeCurrency1h && (
-                  <tr>
-                    <td>1 Hour Ago</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrency1h, key: '1h' })}</td>
-                  </tr>
-                )}
                 {statistics?.priceNativeCurrency5m && (
                   <tr>
                     <td>5 Minutes Ago</td>
                     <td>{priceLine({ price: statistics?.priceNativeCurrency5m, key: '5m' })}</td>
+                  </tr>
+                )}
+                {statistics?.priceNativeCurrency1h && (
+                  <tr>
+                    <td>1 Hour Ago</td>
+                    <td>{priceLine({ price: statistics?.priceNativeCurrency1h, key: '1h' })}</td>
                   </tr>
                 )}
                 {statistics?.priceNativeCurrency24h && (
