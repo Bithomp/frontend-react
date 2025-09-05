@@ -123,7 +123,7 @@ export default function Amms({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [marker, setMarker] = useState(initialData?.marker)
-  const [filtersHide, setFiltersHide] = useState(false)
+  const [filtersHide, setFiltersHide] = useState(true)
   const [token, setToken] = useState({
     currency: stripText(currencyQuery),
     issuer: stripText(currencyIssuerQuery)
