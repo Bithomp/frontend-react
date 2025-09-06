@@ -490,6 +490,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             ) : (
               <Link href={'/account/' + searchItem}>{t('explorer.menu.account')}</Link>
             )}
+            {tab == 'dex' && <b>DEX orders</b>}
             {tab == 'transactions' ? (
               <b>{t('explorer.menu.transactions')}</b>
             ) : (
