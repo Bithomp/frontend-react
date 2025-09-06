@@ -303,6 +303,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         return
       }
 
+      if (tab === 'dex') {
+        router.push('/account/' + encodeURI(searchFor) + '/dex' + addParams)
+        return
+      }
+
       router.push('/account/' + encodeURI(searchFor) + addParams)
       return
     }
@@ -329,7 +334,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   searchItem.charAt(0) == "X"
   */
 
-  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account', 'transactions'].includes(tab)
+  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account', 'transactions', 'dex'].includes(tab)
 
   const searchOnInputChange = (inputValue, action) => {
     if (action.action !== 'input-blur' && action.action !== 'menu-close') {
@@ -344,6 +349,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return t('explorer.header.' + tab)
     } else if (tab === 'transactions') {
       return t('explorer.menu.transactions')
+    } else if (tab === 'dex') {
+      return 'DEX Orders'
     }
     return ''
   }
@@ -483,6 +490,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             ) : (
               <Link href={'/account/' + searchItem}>{t('explorer.menu.account')}</Link>
             )}
+            {tab == 'dex' && <b>DEX orders</b>}
             {tab == 'transactions' ? (
               <b>{t('explorer.menu.transactions')}</b>
             ) : (
