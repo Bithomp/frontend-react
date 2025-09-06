@@ -54,18 +54,12 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function AccountDex({ 
-  id, 
-  initialData, 
-  initialAccountData, 
-  account, 
-  setSignRequest,
-  isSsrMobile
-}) {
+export default function AccountDex({ id, initialData, initialAccountData, account, setSignRequest, isSsrMobile }) {
   const { t } = useTranslation()
   const width = useWidth()
-  
-  const [offerList, setOfferList] = useState(initialData?.objects || []) 
+
+  const [rendered, setRendered] = useState(false)
+  const [offerList, setOfferList] = useState(initialData?.objects || [])
   const [currency, setCurrency] = useState('')
   const [order, setOrder] = useState('sequence_desc')
   const [filtersHide, setFiltersHide] = useState(false)
@@ -93,13 +87,17 @@ export default function AccountDex({
     )
   }
 
+  useEffect(() => {
+    setRendered(true)
+  }, [])
+
   // Filter and sort offers
   const filteredAndSortedOffers = () => {
     let filtered = offerList
 
     // Apply currency filter
     if (currency) {
-      filtered = filtered.filter(offer => {
+      filtered = filtered.filter((offer) => {
         const takerGetsCurrency = typeof offer.TakerGets === 'string' ? nativeCurrency : offer.TakerGets?.currency
         const takerPaysCurrency = typeof offer.TakerPays === 'string' ? nativeCurrency : offer.TakerPays?.currency
         return takerGetsCurrency === currency || takerPaysCurrency === currency
@@ -111,7 +109,7 @@ export default function AccountDex({
       filtered = [...filtered].sort((a, b) => {
         let comparison = 0
         const [sortBy, sortDirection] = order.split('_')
-        
+
         if (sortBy === 'sequence') {
           comparison = a.Sequence - b.Sequence
         } else if (sortBy === 'amount' && currency) {
@@ -119,22 +117,22 @@ export default function AccountDex({
           const getAmountForCurrency = (offer) => {
             const takerGetsCurrency = typeof offer.TakerGets === 'string' ? nativeCurrency : offer.TakerGets?.currency
             const takerPaysCurrency = typeof offer.TakerPays === 'string' ? nativeCurrency : offer.TakerPays?.currency
-            
+
             if (takerGetsCurrency === currency) {
-              return typeof offer.TakerGets === 'string' 
-                ? parseFloat(offer.TakerGets) / 1000000 
+              return typeof offer.TakerGets === 'string'
+                ? parseFloat(offer.TakerGets) / 1000000
                 : parseFloat(offer.TakerGets?.value || 0)
             } else if (takerPaysCurrency === currency) {
-              return typeof offer.TakerPays === 'string' 
-                ? parseFloat(offer.TakerPays) / 1000000 
+              return typeof offer.TakerPays === 'string'
+                ? parseFloat(offer.TakerPays) / 1000000
                 : parseFloat(offer.TakerPays?.value || 0)
             }
             return 0
           }
-          
+
           comparison = getAmountForCurrency(a) - getAmountForCurrency(b)
         }
-        
+
         return sortDirection === 'asc' ? comparison : -comparison
       })
     }
@@ -192,8 +190,7 @@ export default function AccountDex({
               <>
                 1 {nativeCurrency} ={' '}
                 <span className="tooltip">
-                  {niceNumber(divide(1000000, offer.quality), 0, null, 2)}{' '}
-                  {niceCurrency(offer.TakerGets?.currency)}
+                  {niceNumber(divide(1000000, offer.quality), 0, null, 2)} {niceCurrency(offer.TakerGets?.currency)}
                   <span className="tooltiptext no-brake">
                     {fullNiceNumber(divide(1000000, offer.quality))}
                     {niceCurrency(offer.TakerGets?.currency)}
@@ -204,8 +201,7 @@ export default function AccountDex({
               <>
                 1 {niceCurrency(offer.TakerPays?.currency)} ={' '}
                 <span className="tooltip">
-                  {niceNumber(divide(1, offer.quality), 0, null, 2)}{' '}
-                  {niceCurrency(offer.TakerGets?.currency)}
+                  {niceNumber(divide(1, offer.quality), 0, null, 2)} {niceCurrency(offer.TakerGets?.currency)}
                   <span className="tooltiptext no-brake">
                     {fullNiceNumber(divide(1, offer.quality))}
                     {niceCurrency(offer.TakerGets?.currency)}
@@ -243,8 +239,6 @@ export default function AccountDex({
     )
   })
 
-
-
   return (
     <>
       <SEO
@@ -252,7 +246,7 @@ export default function AccountDex({
         title={`DEX Orders - ${accountData?.username || accountData?.service?.name || id}`}
         description={`DEX orders for ${accountData?.username || accountData?.service?.name || id}`}
       />
-      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="dex" userData={accountData}/>
+      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="dex" userData={accountData} />
 
       {totalOffers === 0 ? (
         <div className="center">
@@ -274,17 +268,15 @@ export default function AccountDex({
           {/* Left filters */}
           <>
             <div className="flex flex-col sm:gap-4 md:h-[400px]">
-              <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
+              {rendered && <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />}
               {!canShowSorting && totalOffers >= 1000 && (
                 <div className="center">
-                  <p className="grey">
-                    Sorting disabled for datasets with 1000+ items for performance.
-                  </p>
+                  <p className="grey">Sorting disabled for datasets with 1000+ items for performance.</p>
                 </div>
               )}
             </div>
           </>
-          
+
           {/* Main content */}
           <>
             {/* Desktop table */}
@@ -298,14 +290,12 @@ export default function AccountDex({
                     <th className="center">Action</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {orderRows}
-                </tbody>
+                <tbody>{orderRows}</tbody>
               </table>
             ) : (
               /* Mobile view */
-              <table className="table-mobile wide">                
-                <tbody> 
+              <table className="table-mobile wide">
+                <tbody>
                   <tr>
                     <th className="center">#</th>
                     <th className="left">Offer</th>
