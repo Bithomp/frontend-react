@@ -246,7 +246,15 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
         title={`DEX Orders - ${accountData?.username || accountData?.service?.name || id}`}
         description={`DEX orders for ${accountData?.username || accountData?.service?.name || id}`}
       />
-      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="dex" userData={accountData} />
+      <SearchBlock
+        searchPlaceholderText={t('explorer.enter-address')}
+        tab="dex"
+        userData={{
+          username: accountData?.username,
+          service: accountData?.service?.name,
+          address: accountData?.address
+        }}
+      />
 
       {totalOffers === 0 ? (
         <div className="center">
