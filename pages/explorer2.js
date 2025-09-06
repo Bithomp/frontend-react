@@ -89,7 +89,7 @@ const examples = {
 
   xahau: {
     nft: 'CE67EA90A55AACD603B5B44C56B44A56D9FA792EB8E872638FF570B31F0ED143',
-    amm: null,
+    amm: null, // not enabled on xahau
     txHash: '658D0ADF47AAF039EB5AAD516AA7C77105E5BC1FC7D42C0F89E15C9DFD65EDA7',
     txCTID: 'C0FBEE5600435359',
     account: 'rPNFrWbZG7mPenXAEBjAkPezE5N6NKy4W',
@@ -101,7 +101,7 @@ const examples = {
 
   'xahau-testnet': {
     nft: '87B493C9E60E0A20A2C070B98DFF81EF421C7D2894483DC967DADB9DA433DBCF',
-    amm: null,
+    amm: null, // not enabled on xahau
     txHash: '542DE886216DBC774E018D33D6B4CD188DFE2171521A7EC0EB4AADD1BAE0DD04',
     txCTID: 'C00A0DC50000535A',
     account: 'rh9ebhNHB4s7tJ7y66B5gmZ6aEnnhNDsgT',
@@ -113,7 +113,7 @@ const examples = {
 
   'xahau-jshooks': {
     nft: null,
-    amm: null,
+    amm: null, // not enabled on xahau
     txHash: '9189121BF648B984D7E63C4E737E0269DC9AA45CBECB79D5D0F3B9F0C2C963B0',
     txCTID: 'C077168800007A6A',
     account: 'rp52uvJuR8PzTG1RRDvCxwXW7o56bPSwbG',
@@ -193,7 +193,7 @@ export default function Explorer({ isSsrMobile, showAds }) {
           <CopyButton text={examples[network]?.txHash} />
           <br />
           <br />
-          <h2>NFT, AMM, Object</h2>
+          <h2>NFT, {examples[network]?.amm && 'AMM, '}Object</h2>
           <b>NFT</b> example: {shortingHash(examples[network]?.nft)} <CopyButton text={examples[network]?.nft} />
           <br />
           <br />
