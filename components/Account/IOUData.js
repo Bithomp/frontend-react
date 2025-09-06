@@ -113,20 +113,20 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
   const width = useWidth()
   const { t } = useTranslation()
   const [totalBalance, setTotalBalance] = useState(0)
-  
+
   useEffect(() => {
     if (!pageFiatRate || !rippleStateList?.length) return
     const total = rippleStateList.reduce((sum, tl) => {
       const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
-      const tokenWorth = (tl.priceNativeCurrencySpot * pageFiatRate * balance) || 0
+      const tokenWorth = tl.priceNativeCurrencySpot * pageFiatRate * balance || 0
       return sum + tokenWorth
     }, 0)
     setTotalBalance(total)
   }, [rippleStateList, pageFiatRate])
-  
+
   //show the section only if there are tokens to show
   if (!rippleStateList?.length) return ''
-  
+
   const historicalTitle = ledgerTimestamp ? (
     <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
@@ -209,29 +209,31 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           </AddressWithIcon>
         </td>
         <td className="right">
+          <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
+            <LimitsIcon trustline={tl} />
+            <FlagIcons flags={tl.flags} />
+          </div>
+        </td>
+        <td className="right">
           {pageFiatRate && tl.priceNativeCurrencySpot ? (
             <>
               <span className="tooltip bold">
                 {shortNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate * balance || 0, 2, 1, selectedCurrency)}
                 <span className="tooltiptext no-brake">
                   {fullNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate * balance || 0, selectedCurrency)}
-                  <br />
-                  (1 {niceCurrency(tl.Balance?.currency)} = {fullNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate || 0, selectedCurrency)})
+                  <br />1 {niceCurrency(tl.Balance?.currency)} ={' '}
+                  {fullNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate || 0, selectedCurrency)}
                 </span>
               </span>
-              <br /> 
+              <br />
             </>
           ) : null}
           <span className="tooltip grey">
             {shortNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}
-            <span className="tooltiptext no-brake">{fullNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}</span>
-          </span>       
-        </td>
-        <td className="right">
-          <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
-            <LimitsIcon trustline={tl} />
-            <FlagIcons flags={tl.flags} />
-          </div>
+            <span className="tooltiptext no-brake">
+              {fullNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}
+            </span>
+          </span>
         </td>
       </tr>
     )
@@ -243,18 +245,17 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
         <thead>
           <tr>
             <th colSpan="100">
-              {tokensCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle}
+              {tokensCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle} [
+              <a href={'/explorer/' + address}>Old View</a>]
               {totalBalance > 0 && (
-                <span>
-                  (Total Worth: 
+                <span style={{ float: 'right' }}>
+                  Total worth:{' '}
                   <span className="tooltip bold">
                     {shortNiceNumber(totalBalance, 2, 1, selectedCurrency)}
                     <span className="tooltiptext no-brake">{fullNiceNumber(totalBalance, selectedCurrency)}</span>
                   </span>
-                  )
                 </span>
               )}
-              {' '}[<a href={'/explorer/' + address}>Old View</a>]
             </th>
           </tr>
         </thead>
@@ -262,8 +263,8 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           <tr>
             <th>#</th>
             <th className="left">Currency</th>
-            <th className="right">Balance</th>
             <th className="right">Params</th>
+            <th className="right">Balance</th>
           </tr>
           {tokenRows}
         </tbody>
@@ -272,19 +273,17 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
         <br />
         <center>
           {tokensCountText(rippleStateList)}
-          {t('menu.tokens').toUpperCase()}
-          {historicalTitle}
+          {t('menu.tokens').toUpperCase()} {historicalTitle}[<a href={'/explorer/' + address}>Old View</a>]
           {totalBalance > 0 && (
             <div>
-              (Total Worth: 
+              <br />
+              Total worth:{' '}
               <span className="tooltip bold">
                 {shortNiceNumber(totalBalance, 2, 1, selectedCurrency)}
                 <span className="tooltiptext no-brake">{fullNiceNumber(totalBalance, selectedCurrency)}</span>
               </span>
-              )
             </div>
           )}
-          [<a href={'/explorer/' + address}>Old View</a>]
         </center>
         <br />
         {rippleStateList.length > 0 && (
