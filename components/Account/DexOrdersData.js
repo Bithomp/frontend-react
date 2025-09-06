@@ -103,8 +103,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
               <>
                 1 {nativeCurrency} ={' '}
                 <span className="tooltip">
-                  {niceNumber(divide(1000000, offer.quality), 0, null, 2)}{' '}
-                  {niceCurrency(offer.TakerGets?.currency)}
+                  {niceNumber(divide(1000000, offer.quality), 0, null, 2)} {niceCurrency(offer.TakerGets?.currency)}
                   <span className="tooltiptext no-brake">
                     {fullNiceNumber(divide(1000000, offer.quality))}
                     {niceCurrency(offer.TakerGets?.currency)}
@@ -115,8 +114,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
               <>
                 1 {niceCurrency(offer.TakerPays?.currency)} ={' '}
                 <span className="tooltip">
-                  {niceNumber(divide(1, offer.quality), 0, null, 2)}{' '}
-                  {niceCurrency(offer.TakerGets?.currency)}
+                  {niceNumber(divide(1, offer.quality), 0, null, 2)} {niceCurrency(offer.TakerGets?.currency)}
                   <span className="tooltiptext no-brake">
                     {fullNiceNumber(divide(1, offer.quality))}
                     {niceCurrency(offer.TakerGets?.currency)}
@@ -209,9 +207,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         <center>
           {offerList.length > 5 ? (
             <>
-              The last 5 DEX orders{historicalTitle}
-              {' '}
-              [
+              The last 5 DEX orders{historicalTitle} [
               <a href={`/account/${address}/dex`} className="link bold">
                 View all ({offerList.length} total)
               </a>{' '}
@@ -219,12 +215,10 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
             </>
           ) : (
             <>
-              {offerList.length} DEX orders{historicalTitle}
-              {' '}
-              [
+              {offerList.length} DEX orders{historicalTitle} [
               <a href={`/account/${address}/dex`} className="link bold">
                 View details
-              </a>{' '}
+              </a>
               ]
             </>
           )}
