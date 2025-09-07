@@ -1,9 +1,21 @@
 import { useState, useEffect } from 'react'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import FormInput from '../../components/UI/FormInput'
 import AddressInput from '../../components/UI/AddressInput'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import { ledgerName } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
+
+export const getServerSideProps = async (context) => {
+  const { locale } = context
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      isSsrMobile: getIsSsrMobile(context)
+    }
+  }
+}
 
 export default function IssueCurrency({ subscriptionExpired, openEmailLogin, sessionToken, account, setSignRequest }) {
   const [currentStep, setCurrentStep] = useState(1)
