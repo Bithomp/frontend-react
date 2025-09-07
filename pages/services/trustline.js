@@ -601,8 +601,11 @@ export default function TrustSet({
             <button className="button-action" onClick={handleShare} style={{ minWidth: '120px', marginRight: 10 }}>
               {shareCopied ? 'Link copied' : 'Share'}
             </button>
-            <button className="button-action" onClick={handleTrustSet}>
+            <button className="button-action" onClick={handleTrustSet} style={{ minWidth: '120px', marginRight: 10 }}>
               Create Trustline
+            </button>
+            <button className="button-action" onClick={() => router.push('/tokens')}>
+              View all token rankings
             </button>
           </div>
           {txResult?.status === 'tesSUCCESS' && (

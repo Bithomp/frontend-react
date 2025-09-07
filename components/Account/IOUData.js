@@ -124,9 +124,6 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
     setTotalBalance(total)
   }, [rippleStateList, pageFiatRate])
 
-  //show the section only if there are tokens to show
-  if (!rippleStateList?.length) return ''
-
   const historicalTitle = ledgerTimestamp ? (
     <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
@@ -187,7 +184,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
   */
 
   // amount / gateway details / trustline settings
-  const tokenRows = rippleStateList.map((tl, i) => {
+  const tokenRows = rippleStateList?.length ? rippleStateList.map((tl, i) => {
     const issuer = tl.HighLimit?.issuer === address ? tl.LowLimit : tl.HighLimit
     const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
 
@@ -237,7 +234,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
         </td>
       </tr>
     )
-  })
+  }) : <tr key="none"><td colSpan="4" className='center'>You currently don’t hold any tokens</td></tr>
 
   return (
     <>
@@ -247,6 +244,11 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
             <th colSpan="100">
               {tokensCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle} [
               <a href={'/explorer/' + address}>Old View</a>]
+              {!rippleStateList?.length && (
+                <>
+                  [<a href={'/services/trustline?address=' + address}>Add a token</a>]
+                </>
+              )}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
                   Total worth:{' '}
@@ -274,6 +276,11 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
         <center>
           {tokensCountText(rippleStateList)}
           {t('menu.tokens').toUpperCase()} {historicalTitle}[<a href={'/explorer/' + address}>Old View</a>]
+          {!rippleStateList?.length && (
+            <>
+              [<a href={'/services/trustline?address=' + address}>Add a token</a>]
+            </>
+          )}
           {totalBalance > 0 && (
             <div>
               <br />
@@ -286,7 +293,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           )}
         </center>
         <br />
-        {rippleStateList.length > 0 && (
+        {
           <table className="table-mobile wide">
             <tbody>
               <tr>
@@ -298,7 +305,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
               {tokenRows}
             </tbody>
           </table>
-        )}
+        }
         <br />
       </div>
     </>
