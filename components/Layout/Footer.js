@@ -59,6 +59,7 @@ export default function Footer() {
           <Link href="/press">{t('menu.press')}</Link>
           <Link href="/jobs">Join our team</Link>
           <Link href="/donate">{t('menu.donate')}</Link>
+          <Link href="/the-chain-of-blocks-summit">Chain Of Blocks Summit 🇲🇹</Link>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.legal')}</span>
@@ -79,9 +80,6 @@ export default function Footer() {
         {!xahauNetwork && (
           <div className="footer-menu-column">
             <span className="footer-menu-header">{t('menu.sponsored.title')}</span>
-            <Link href="/the-chain-of-blocks-summit">
-              XRPL Summit 2025 <span className="red">❤</span>
-            </Link>
             <a href="/go/fm-buy" target="_blank" rel="noreferrer">
               {t('menu.sponsored.buy')}
             </a>
