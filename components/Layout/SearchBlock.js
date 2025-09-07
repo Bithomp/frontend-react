@@ -18,7 +18,9 @@ import {
   isValidNftXls20,
   isCurrencyHashValid,
   server,
-  validateCurrencyCode
+  validateCurrencyCode,
+  isValidPayString,
+  isValidXAddress
 } from '../../utils'
 import { userOrServiceName, amountFormat, shortAddress, shortNiceNumber, niceCurrency } from '../../utils/format'
 
@@ -112,7 +114,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     //if more than 3 characters - search for suggestions
-    if (value && value.length > 1 && value.length < 36) {
+    if (value && value.length > 1 && value.length < 64) {
       clearTimeout(typingTimer)
       setSearchSuggestions([])
       typingTimer = setTimeout(async () => {
@@ -349,6 +351,17 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
+    if (isValidPayString(searchFor) || isValidXAddress(searchFor)) {
+      // the check for paystring/xAddress should be before the check for addressOrUsername,
+      // as if there is no destination tag, we will treat it as an address or username
+
+      // we need to resolve paystring and x-address first before redirecting!
+      // if there is a tag -
+      // get the new page which we can show an address and a tag
+      router.push('/account/' + encodeURI(searchFor) + addParams) //replace with a new page to show a tag
+      return
+    }
+
     if (isAddressOrUsername(searchFor)) {
       if (tab === 'nfts') {
         router.push('/nfts/' + encodeURI(searchFor) + addParams)
@@ -372,6 +385,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
       if (tab === 'transactions') {
         router.push('/account/' + encodeURI(searchFor) + '/transactions' + addParams)
+        return
+      }
+
+      if (tab === 'dex') {
+        router.push('/account/' + encodeURI(searchFor) + '/dex' + addParams)
         return
       }
 
@@ -401,7 +419,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   searchItem.charAt(0) == "X"
   */
 
-  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account', 'transactions'].includes(tab)
+  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account', 'transactions', 'dex'].includes(tab)
 
   const searchOnInputChange = (inputValue, action) => {
     if (action.action !== 'input-blur' && action.action !== 'menu-close') {
@@ -418,6 +436,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return t('explorer.menu.transactions')
     } else if (tab === 'token') {
       return 'Token information'
+    } else if (tab === 'dex') {
+      return 'DEX Orders'
     }
     return ''
   }
@@ -530,15 +550,23 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                             {option.xamanVerified && <> ✅</>}
                           </>
                         )}
-                        {(option.username ||
-                          option.service ||
-                          option.verifiedDomain ||
-                          option.serviceDomain ||
-                          option.xaman) && <>, </>}
-                        {option.balance && (
-                          <>
+                        {option.tag ? (
+                          <b className="no-brake">
                             {' '}
-                            [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]
+                            [TAG: <span className="orange">{option.tag}</span>]
+                          </b>
+                        ) : (
+                          <>
+                            {option.balance !== null && (
+                              <>
+                                {' '}
+                                [
+                                <b>
+                                  {amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) || 'Not activated'}
+                                </b>
+                                ]
+                              </>
+                            )}
                           </>
                         )}
                       </>
@@ -550,11 +578,13 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                     return option.tokenId+option.currency+option.issuerDetails?.username+option.issuerDetails?.service+option.issuer
                   }
                   return option.address +
-                    option.username +
-                    option.service +
-                    option.xaman +
-                    option.verifiedDomain +
-                    option.serviceDomain
+                  option.username +
+                  option.service +
+                  option.payString +
+                  option.xaman +
+                  option.verifiedDomain +
+                  option.serviceDomain +
+                  option.xAddress
                 }}
                 inputValue={searchItem}
                 onInputChange={searchOnInputChange}
@@ -617,6 +647,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             ) : (
               <Link href={'/account/' + searchItem}>{t('explorer.menu.account')}</Link>
             )}
+            {tab == 'dex' && <b>DEX orders</b>}
             {tab == 'transactions' ? (
               <b>{t('explorer.menu.transactions')}</b>
             ) : (
