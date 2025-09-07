@@ -786,9 +786,12 @@ export const isValidJson = (x) => {
 
 export const isValidPayString = (x) => {
   if (!x) return false
-  const re = /^([A-Za-z0-9](?:[A-Za-z0-9._+-]{0,62}[A-Za-z0-9])?)\$((?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+(?:[A-Za-z]{2,63}|xn--[A-Za-z0-9-]{2,59}))$/
+  const re =
+    /^([A-Za-z0-9](?:[A-Za-z0-9._+-]{0,62}[A-Za-z0-9])?)\$((?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+(?:[A-Za-z]{2,63}|xn--[A-Za-z0-9-]{2,59}))$/
   return re.test(x)
 }
+
+export { isValidXAddress } from 'ripple-address-codec'
 
 const makeXfl = (exponent, mantissa) => {
   const minMantissa = 1000000000000000n

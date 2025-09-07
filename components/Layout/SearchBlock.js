@@ -18,7 +18,8 @@ import {
   isValidNftXls20,
   isCurrencyHashValid,
   server,
-  isValidPayString
+  isValidPayString,
+  isValidXAddress
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -278,51 +279,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    // Handle PayString (contains $)
-    if (isValidPayString(searchFor)) {
-      if (tab === 'nfts') {
-        router.push('/nfts/' + encodeURI(searchFor) + addParams)
-        return
-      }
-      if (tab === 'nft-offers') {
-        router.push('/nft-offers/' + encodeURI(searchFor) + addParams)
-        return
-      }
-      if (tab === 'amm') {
-        router.push('/amm/' + encodeURI(searchFor))
-        return
-      }
-      if (tab === 'nft-volumes') {
-        router.push('/nft-volumes/' + encodeURI(searchFor) + addParams)
-        return
-      }
-      router.push('/account/' + encodeURI(searchFor) + addParams)
-      return
-    }
-
-    // Handle X-address (starts with T or X and length > 36)
-    if ((searchFor.charAt(0) === 'T' || searchFor.charAt(0) === 'X') && searchFor.length > 36) {
-      if (tab === 'nfts') {
-        router.push('/nfts/' + encodeURI(searchFor) + addParams)
-        return
-      }
-      if (tab === 'nft-offers') {
-        router.push('/nft-offers/' + encodeURI(searchFor) + addParams)
-        return
-      }
-      if (tab === 'amm') {
-        router.push('/amm/' + encodeURI(searchFor))
-        return
-      }
-      if (tab === 'nft-volumes') {
-        router.push('/nft-volumes/' + encodeURI(searchFor) + addParams)
-        return
-      }
-      router.push('/account/' + encodeURI(searchFor) + addParams)
-      return
-    }
-
-    if (isAddressOrUsername(searchFor)) {
+    if (isAddressOrUsername(searchFor) || isValidPayString(searchFor) || isValidXAddress(searchFor)) {
+      // we need to resolve paystring first before redirecting!
       if (tab === 'nfts') {
         router.push('/nfts/' + encodeURI(searchFor) + addParams)
         return
