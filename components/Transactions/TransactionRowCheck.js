@@ -32,7 +32,7 @@ import { dappBySourceTag } from '../../utils/transaction'
         </div>
       )}
       
-      {checkChanges.source?.tag !== undefined && !dapp && (
+      {checkChanges?.source?.tag !== undefined && !dapp && (
         <>
           <span>Source tag:</span>
           <span className="bold">{checkChanges.source.tag}</span>
