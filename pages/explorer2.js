@@ -166,8 +166,8 @@ export default function Explorer({ isSsrMobile, showAds }) {
           full address like {examples[network]?.account} <CopyButton text={examples[network]?.account} />
           <br />
           <br />
-          <b>Username</b> examples: {examples[network]?.username[0]}, {examples[network]?.username[1]},{' '}
-          {examples[network]?.username[2]} (start typing and we will find the full usernames){' '}
+          <b>Username</b> examples: {examples[network]?.username?.[0]}, {examples[network]?.username?.[1]},{' '}
+          {examples[network]?.username?.[2]} (start typing and we will find the full usernames){' '}
           <Link href="/username">Register your username.</Link>
           <br />
           <br />
@@ -179,9 +179,9 @@ export default function Explorer({ isSsrMobile, showAds }) {
           <CopyButton text={examples[network]?.xAddress} />
           <br />
           <br />
-          <b>PayString</b> example: {examples[network]?.payString[0]}{' '}
-          <CopyButton text={examples[network]?.payString[0]} />, {examples[network]?.payString[1]}{' '}
-          <CopyButton text={examples[network]?.payString[1]} /> <Link href="/username">Get your PayString.</Link>
+          <b>PayString</b> example: {examples[network]?.payString?.[0]}{' '}
+          <CopyButton text={examples[network]?.payString?.[0]} />, {examples[network]?.payString?.[1]}{' '}
+          <CopyButton text={examples[network]?.payString?.[1]} /> <Link href="/username">Get your PayString.</Link>
           <br />
           <br />
           <h2>Transaction</h2>
