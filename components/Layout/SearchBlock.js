@@ -287,6 +287,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       // if there is a tag -
       // get the new page which we can show an address and a tag
       router.push('/account/' + encodeURI(searchFor) + addParams) //replace with a new page to show a tag
+      return
     }
 
     if (isAddressOrUsername(searchFor)) {
@@ -414,15 +415,23 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                         {option.xamanVerified && <> ✅</>}
                       </>
                     )}
-                    {(option.username ||
-                      option.service ||
-                      option.verifiedDomain ||
-                      option.serviceDomain ||
-                      option.xaman) && <>, </>}
-                    {option.balance && (
-                      <>
+                    {option.tag ? (
+                      <b className="no-brake">
                         {' '}
-                        [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]
+                        [TAG: <span className="orange">{option.tag}</span>]
+                      </b>
+                    ) : (
+                      <>
+                        {option.balance !== null && (
+                          <>
+                            {' '}
+                            [
+                            <b>
+                              {amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) || 'Not activated'}
+                            </b>
+                            ]
+                          </>
+                        )}
                       </>
                     )}
                   </>
