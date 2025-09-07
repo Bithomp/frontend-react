@@ -658,14 +658,12 @@ export const amountFormat = (amount, options = {icon: false}) => {
     showValue = niceNumber(value, 0, null, options.maxFractionDigits)
   }
 
-  let tokenImage = icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '2px',marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }} />
-
   //add issued by (issuerDetails.service / username)
   if (type !== nativeCurrency) {
     if (options.tooltip) {
       return (
         <span suppressHydrationWarning>
-          {tokenImage}
+          {icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '2px',marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }} /> }
           {showValue} {valuePrefix}{' '}
           <span className="tooltip">
             <Link href={'/account/' + issuer}>{currency}</Link>
@@ -678,14 +676,14 @@ export const amountFormat = (amount, options = {icon: false}) => {
     } else if (options.withIssuer) {
       return (
         <span>
-          {tokenImage}
+          {icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '2px',marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }} /> }
           {showValue} {valuePrefix} {currency} ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})
         </span>
       )
     } else {
       return (
         <span>
-          {tokenImage}
+          {icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '2px',marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }} /> }
           {showValue + ' ' + valuePrefix + ' ' + textCurrency}
         </span>
       )
@@ -695,21 +693,21 @@ export const amountFormat = (amount, options = {icon: false}) => {
     if (options.tooltip) {
       return (
         <span suppressHydrationWarning>
-          {tokenImage}
+          {icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '2px',marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }} /> }
           {showValue} {valuePrefix} {textCurrency}
         </span>
       )
     } else if (options.withIssuer) {
       return (
         <span>
-          {tokenImage}
+          {icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '2px',marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }} /> }
           {showValue} {valuePrefix} {textCurrency}
         </span>
       )
     } else {
       return (
         <span>
-          {tokenImage}
+          {icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '2px',marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }} /> }
           {showValue + ' ' + valuePrefix + ' ' + textCurrency}
         </span>
       )
