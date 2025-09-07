@@ -84,7 +84,7 @@ Runs the app in production
 
 ### Get more memmory for a process (if you have many images to process etc)
 
-`NODE_OPTIONS="--max-old-space-size=8192" pm2 start frontend-react --update-env`
+`NODE_OPTIONS="--max-old-space-size=1024" pm2 start frontend-react --update-env`
 
 ### Clean up if run on small VPS
 
