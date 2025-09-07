@@ -375,45 +375,45 @@ export default function TokenPage({
             <table className="table-details">
               <thead>
                 <tr>
-                  <th colSpan="100">Price Information</th>
+                  <th colSpan="100">Price information</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Current Price</td>
+                  <td>Last price</td>
                   <td>{priceLine({ price: statistics?.priceNativeCurrency, key: 'current' })}</td>
                 </tr>
                 <tr>
-                  <td>Market Cap</td>
+                  <td>Market cap</td>
                   <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
                 </tr>
                 {statistics?.priceNativeCurrencySpot && (
                   <tr>
-                    <td>Spot Price</td>
+                    <td>Spot price</td>
                     <td>{priceLine({ price: statistics?.priceNativeCurrencySpot, key: 'spot' })}</td>
                   </tr>
                 )}
                 {statistics?.priceNativeCurrency5m && (
                   <tr>
-                    <td>5 Minutes Ago</td>
+                    <td>5 minutes ago</td>
                     <td>{priceLine({ price: statistics?.priceNativeCurrency5m, key: '5m' })}</td>
                   </tr>
                 )}
                 {statistics?.priceNativeCurrency1h && (
                   <tr>
-                    <td>1 Hour Ago</td>
+                    <td>1 hour ago</td>
                     <td>{priceLine({ price: statistics?.priceNativeCurrency1h, key: '1h' })}</td>
                   </tr>
                 )}
                 {statistics?.priceNativeCurrency24h && (
                   <tr>
-                    <td>24 Hours Ago</td>
+                    <td>24 hours ago</td>
                     <td>{priceLine({ price: statistics?.priceNativeCurrency24h, key: '24h' })}</td>
                   </tr>
                 )}
                 {statistics?.priceNativeCurrency7d && (
                   <tr>
-                    <td>7 Days Ago</td>
+                    <td>7 days ago</td>
                     <td>{priceLine({ price: statistics?.priceNativeCurrency7d, key: '7d' })}</td>
                   </tr>
                 )}
