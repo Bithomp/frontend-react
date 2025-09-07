@@ -308,6 +308,10 @@ const assetUrl = (uri, type = 'image', gateway = 'our') => {
     if (type === 'video' && uri.toLowerCase().includes('youtube.com')) {
       return null
     }
+    if (type === 'audio') {
+      // for https:// audio return original url
+      return uri
+    }
     return `https://cdn.${webSiteName}/${type}?url=${encodeURIComponent(stripText(uri))}`
   } else if ((type === 'image' || type === 'thumbnail') && uri.slice(0, 10) === 'data:image') {
     return stripText(uri)

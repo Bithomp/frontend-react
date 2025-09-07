@@ -474,7 +474,7 @@ export default function NFTokenMint({
                 <br />
                 <div>
                   <span className="input-title">Offer expiration</span>
-                  <ExpirationSelect onChange={onExpirationChange} />
+                  <ExpirationSelect onChange={onExpirationChange} value={expiration} />
                 </div>
               </>
             )}

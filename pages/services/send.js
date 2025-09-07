@@ -103,53 +103,6 @@ export default function Send({
     setSelectedToken(token)
   }
 
-  // Helper to get maximum amount that can be sent for the selected token
-  const getMaxAmount = () => {
-    if (!selectedToken || selectedToken.currency === nativeCurrency) return null
-    return selectedToken.limit
-  }
-
-  // Helper to format max amount display
-  const getMaxAmountDisplay = () => {
-    const maxAmount = getMaxAmount()
-    if (!maxAmount) return null
-
-    return (
-      <>
-        <span className="max-amount-display">
-          (<span className="max-amount-label">Dest. can accept max</span>{' '}
-          <span className="max-amount-value">
-            {amountFormat(
-              { value: maxAmount, currency: selectedToken.currency, issuer: selectedToken.issuer },
-              { short: true }
-            )}
-          </span>
-          )
-        </span>
-        <style jsx>{`
-          .max-amount-display {
-            align-items: center;
-            margin-top: 4px;
-            font-size: 12px;
-
-            .max-amount-label {
-              color: #6b7280;
-              font-weight: 500;
-              .dark & {
-                color: #9ca3af;
-              }
-            }
-
-            .max-amount-value {
-              color: var(--accent-link);
-              font-weight: 500;
-            }
-          }
-        `}</style>
-      </>
-    )
-  }
-
   // Fetch network info for reserve amounts only when account is not activated
   useEffect(() => {
     const fetchNetworkInfo = async () => {
@@ -650,7 +603,7 @@ export default function Send({
               <FormInput
                 title={
                   <>
-                    {t('table.amount')} {getMaxAmountDisplay()}
+                    {t('table.amount')}
                   </>
                 }
                 placeholder="Enter amount"

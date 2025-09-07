@@ -34,13 +34,13 @@ export default function BlackholedAddress() {
         <article className="prose sm:prose-lg dark:prose-invert max-w-4xl my-10">
           <h1>What Are Blackholed Addresses on {explorerName}?</h1>
           <div className="flex justify-center">
-            <Image
+            <img
               src="/images/pages/blackholed-picture.png"
               alt="Blackholed Accounts"
-              width={760}
-              height={500}
+              width="816"
+              height="510"
               className="max-w-full h-auto object-contain"
-              priority
+              priority="true"
             />
           </div>
 
