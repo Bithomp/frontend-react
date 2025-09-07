@@ -17,7 +17,9 @@ import {
   networksIds,
   isValidNftXls20,
   isCurrencyHashValid,
-  server
+  server,
+  isValidPayString,
+  isValidXAddress
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -107,7 +109,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     //if more than 3 characters - search for suggestions
-    if (value && value.length > 1 && value.length < 36) {
+    if (value && value.length > 1 && value.length < 64) {
       clearTimeout(typingTimer)
       setSearchSuggestions([])
       typingTimer = setTimeout(async () => {
@@ -277,6 +279,17 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
+    if (isValidPayString(searchFor) || isValidXAddress(searchFor)) {
+      // the check for paystring/xAddress should be before the check for addressOrUsername,
+      // as if there is no destination tag, we will treat it as an address or username
+
+      // we need to resolve paystring and x-address first before redirecting!
+      // if there is a tag -
+      // get the new page which we can show an address and a tag
+      router.push('/account/' + encodeURI(searchFor) + addParams) //replace with a new page to show a tag
+      return
+    }
+
     if (isAddressOrUsername(searchFor)) {
       if (tab === 'nfts') {
         router.push('/nfts/' + encodeURI(searchFor) + addParams)
@@ -409,15 +422,23 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                         {option.xamanVerified && <> ✅</>}
                       </>
                     )}
-                    {(option.username ||
-                      option.service ||
-                      option.verifiedDomain ||
-                      option.serviceDomain ||
-                      option.xaman) && <>, </>}
-                    {option.balance && (
-                      <>
+                    {option.tag ? (
+                      <b className="no-brake">
                         {' '}
-                        [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]
+                        [TAG: <span className="orange">{option.tag}</span>]
+                      </b>
+                    ) : (
+                      <>
+                        {option.balance !== null && (
+                          <>
+                            {' '}
+                            [
+                            <b>
+                              {amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) || 'Not activated'}
+                            </b>
+                            ]
+                          </>
+                        )}
                       </>
                     )}
                   </>
@@ -426,9 +447,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                   option.address +
                   option.username +
                   option.service +
+                  option.payString +
                   option.xaman +
                   option.verifiedDomain +
-                  option.serviceDomain
+                  option.serviceDomain +
+                  option.xAddress
                 }
                 inputValue={searchItem}
                 onInputChange={searchOnInputChange}
