@@ -427,14 +427,7 @@ export default function Send({
 
   return (
     <>
-      <SEO
-        title="Send payment"
-        description={
-          xahauNetwork
-            ? 'Send a payment to a destination address. On Xahau network, use Remit to send any token (including native XAH) to destinations with incoming remit enabled.'
-            : 'Send a payment to a destination address'
-        }
-      />
+      <SEO title="Send payment" description="Send a payment to a destination address" />
       <div className="content-text content-center">
         <h1 className="center">Send payment</h1>
 
@@ -560,13 +553,10 @@ export default function Send({
                 checked={useRemit}
                 setChecked={setUseRemit}
                 name="use-remit"
-                disabled={destinationRemitDisabled}
+                disabled={destinationRemitDisabled && !useRemit}
               >
                 Use Remit
-                <span className="orange">
-                  {' '}
-                  - Send any token and pay for destination reserves.
-                </span>
+                <span className="orange"> - Send any token and pay for destination reserves.</span>
                 {destinationRemitDisabled && (
                   <span className="red"> (Disabled - destination has incoming remit disabled)</span>
                 )}
@@ -601,11 +591,7 @@ export default function Send({
           <div className="flex flex-col gap-x-4 sm:flex-row">
             <div className="flex-1">
               <FormInput
-                title={
-                  <>
-                    {t('table.amount')}
-                  </>
-                }
+                title={t('table.amount')}
                 placeholder="Enter amount"
                 setInnerValue={setAmount}
                 hideButton={true}
@@ -641,7 +627,7 @@ export default function Send({
             maxLength={100}
             type="text"
           />
-          
+
           <CheckBox
             checked={showAdvanced}
             setChecked={() => {
