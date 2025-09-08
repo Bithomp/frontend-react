@@ -195,6 +195,15 @@ const platformList = [
   { value: 'CryptoTax', label: 'CryptoTax' }
 ]
 
+const defaultWalletList = [
+  'rhWTXC2m2gGGA9WozUaoMm6kLAVPb1tcS3',
+  'rDLNm4ehD7XQCtYKWuMjEKY7TCfmf3CwzH',
+  'r3sQYvXxc82iSNs5DnUUvXtcQQQqigCdW',
+  'raWYT6DD2XFAvjCqRPsCCzr1CMBzJydf9E',
+  'rakZprdzwsUJ1rD2ouhYYAVP7tPbhrCbtz',
+  'r3LAichpcBeZWk7LLSZcfSQcqYsvQ6beBc'
+]
+
 export default function History({
   queryAddress,
   selectedCurrency,
@@ -544,58 +553,69 @@ export default function History({
 
   const getVerifiedAddresses = async () => {
     setLoadingVerifiedAddresses(true)
-    const response = await axiosAdmin.get('user/addresses').catch((error) => {
+    if(!sessionToken) {
+      // Create hardcoded wallet data for non-authenticated users
+      const walletDatas = defaultWalletList.map((address, index) => ({
+        address: address, 
+        name: `Test Wallet ${index + 1}`, 
+        crawler: { status: "synced" }
+      }))
+      setVerifiedAddresses(walletDatas)
       setLoadingVerifiedAddresses(false)
-      if (error.response?.data?.error === 'errors.token.required') {
-        router.push('/admin')
-        return
+      // Set first hardcoded wallet as default selection
+      if (addressesToCheck?.length === 0 && walletDatas[0]?.address) {
+        setAddressesToCheck([walletDatas[0].address])
       }
-      if (error && error.message !== 'canceled') {
-        setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
-      }
-    })
-    setLoadingVerifiedAddresses(false)
-    const data = response?.data
-    /*
-      {
-        "total": 1,
-        "count": 1,
-        "addresses": [
-          {
-            "id": 28,
-            "createdAt": 1721741550,
-            "address": "raN6cSu",
-            "name": "vasia",
-            "crawler": {
-              "status": "queued",
-              "createdAt": 1728212999,
-              "updatedAt": 1728212999,
-              "lastCrawledAt": null,
-              "firstLedgerIndex": null,
-              "currentLedgerIndex": null,
-              "lastLedgerIndex": null
+    } else {
+      const response = await axiosAdmin.get('user/addresses').catch((error) => {
+        setLoadingVerifiedAddresses(false)
+        if (error.response?.data?.error === 'errors.token.required') {
+          router.push('/admin')
+          return
+        }
+        if (error && error.message !== 'canceled') {
+          setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
+        }
+      })
+      const data = response?.data
+      /*
+        {
+          "total": 1,
+          "count": 1,
+          "addresses": [
+            {
+              "id": 28,
+              "createdAt": 1721741550,
+              "address": "raN6cSu",
+              "name": "vasia",
+              "crawler": {
+                "status": "queued",
+                "createdAt": 1728212999,
+                "updatedAt": 1728212999,
+                "lastCrawledAt": null,
+                "firstLedgerIndex": null,
+                "currentLedgerIndex": null,
+                "lastLedgerIndex": null
+              }
             }
-          }
-        ]
+          ]
+        }
+      */
+      setVerifiedAddresses(data?.addresses)
+      setLoadingVerifiedAddresses(false)
+      if (addressesToCheck?.length === 0 && data?.addresses?.[0]?.address) {
+        setAddressesToCheck([data.addresses[0].address])
       }
-    */
-    setVerifiedAddresses(data?.addresses)
-    if (addressesToCheck?.length === 0 && data?.addresses?.[0]?.address) {
-      setAddressesToCheck([data.addresses[0].address])
     }
   }
 
   useEffect(() => {
-    if (sessionToken) {
-      getVerifiedAddresses()
-    }
+    getVerifiedAddresses()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionToken])
 
   useEffect(() => {
-    if (sessionToken) {
-      getProAddressHistory()
-    }
+    getProAddressHistory()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressesToCheck, selectedCurrency, period, order, sessionToken])
 
@@ -630,285 +650,260 @@ export default function History({
           </Link>
         </div>
 
-        {sessionToken ? (
+        <FiltersFrame
+          order={order}
+          setOrder={setOrder}
+          orderList={[
+            { value: 'DESC', label: 'Latest first' },
+            { value: 'ASC', label: 'Earliest first' },
+            { value: 'nativeCurrencyAmountLow', label: nativeCurrency.toUpperCase() + ': low to high' },
+            { value: 'nativeCurrencyAmountHigh', label: nativeCurrency.toUpperCase() + ': high to low' },
+            { value: 'fiatAmountLow', label: 'FIAT: low to high' },
+            { value: 'fiatAmountHigh', label: 'FIAT: high to low' }
+          ]}
+          count={activities?.length || 0}
+          total={data?.total || 0}
+          hasMore={data?.marker}
+          data={filteredActivities || []}
+          csvHeaders={csvHeaders}
+          setSelectedCurrency={setSelectedCurrency}
+          selectedCurrency={selectedCurrency}
+          setFiltersHide={setFiltersHide}
+          filtersHide={filtersHide}
+          page={page}
+          setPage={setPage}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
+        >
           <>
-            <FiltersFrame
-              order={order}
-              setOrder={setOrder}
-              orderList={[
-                { value: 'DESC', label: 'Latest first' },
-                { value: 'ASC', label: 'Earliest first' },
-                { value: 'nativeCurrencyAmountLow', label: nativeCurrency.toUpperCase() + ': low to high' },
-                { value: 'nativeCurrencyAmountHigh', label: nativeCurrency.toUpperCase() + ': high to low' },
-                { value: 'fiatAmountLow', label: 'FIAT: low to high' },
-                { value: 'fiatAmountHigh', label: 'FIAT: high to low' }
-              ]}
-              count={activities?.length || 0}
-              total={data?.total || 0}
-              hasMore={data?.marker}
-              data={filteredActivities || []}
-              csvHeaders={csvHeaders}
-              setSelectedCurrency={setSelectedCurrency}
-              selectedCurrency={selectedCurrency}
-              setFiltersHide={setFiltersHide}
-              filtersHide={filtersHide}
-              page={page}
-              setPage={setPage}
-              rowsPerPage={rowsPerPage}
-              setRowsPerPage={setRowsPerPage}
-            >
-              <>
-                {verifiedAddresses?.length > 0 && data && activities && data.total > activities.length && (
-                  <div className="center" style={{ margin: 'auto' }}>
-                    <button
-                      className="button-action narrow thin"
-                      onClick={() => getProAddressHistory({ marker: data.marker })}
-                    >
-                      Load more data
-                    </button>
-                    <br />
-                    <br />
-                  </div>
-                )}
-                <div style={{ margin: 'auto' }}>Addresses</div>
-                {verifiedAddresses?.length > 0 ? (
-                  <>
-                    {verifiedAddresses.map((address, i) => (
-                      <div className="filters-check-box" key={i}>
-                        <CheckBox
-                          checked={addressesToCheck.includes(address.address)}
-                          setChecked={() => {
-                            setAddressesToCheck(
-                              addressesToCheck.includes(address.address)
-                                ? addressesToCheck.filter((a) => a !== address.address)
-                                : [...addressesToCheck, address.address]
-                            )
-                          }}
-                          outline
-                          checkmarkStyle={{ top: '10px' }}
-                        >
-                          <table>
-                            <tbody>
-                              <tr>
-                                <td style={{ padding: 0 }}>
-                                  <Image alt="avatar" src={avatarServer + address.address} width="40" height="40" />
-                                </td>
-                                <td style={{ padding: '0 0 0 5px' }}>
-                                  <b className="orange">{address.name}</b> -{' '}
-                                  <small>{crawlerStatus(address.crawler, { inline: true })}</small>
-                                  <br />
-                                  {addressLink(address.address, { short: 10 })}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </CheckBox>
-                      </div>
-                    ))}
-                  </>
-                ) : (
-                  <>
-                    {loadingVerifiedAddresses ? (
-                      'Loading data...'
-                    ) : (
-                      <div>
-                        <br />
-                        <Link href="/admin/pro" className="button-action narrow thin">
-                          Add
-                        </Link>
-                      </div>
-                    )}
-                  </>
-                )}
-                <div>
-                  Period
-                  <DateAndTimeRange setPeriod={setPeriod} defaultPeriod="all" radio={true} />
-                </div>
-                <div>
-                  <CheckBox checked={removeDust} outline setChecked={setRemoveDust}>
-                    Remove dust transactions
-                  </CheckBox>
-                </div>
-                <div>
-                  Tax Export Platform
-                  <RadioOptions
-                    tabList={platformList}
-                    tab={platformCSVExport}
-                    setTab={setPlatformCSVExport}
-                    name="platformSelect"
-                  />
-                  {rendered && (
-                    <CSVLink
-                      data={processDataForExport(filteredActivities || [], platformCSVExport)}
-                      headers={
-                        platformCSVHeaders.find(
-                          (header) => header.platform.toLowerCase() === platformCSVExport.toLowerCase()
-                        )?.headers || []
-                      }
-                      filename={'export ' + platformCSVExport + ' ' + new Date().toISOString() + '.csv'}
-                      className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
-                      uFEFF={platformCSVExport === 'BlockPit' ? false : undefined}
-                    >
-                      <DownloadIcon /> CSV for {platformCSVExport}
-                    </CSVLink>
-                  )}
-                  {platformCSVExport === 'Koinly' && (
-                    <>
-                      <br />
-                      <br />
-                      Let us know if we miss koinlyIDs for your tokens. We will add them to the system.
-                    </>
-                  )}
-                </div>
-              </>
-              <>
-                {addressesToCheck.length > 0 && (
-                  <>
-                    {!width || width > 800 ? (
-                      <table className="table-large no-border no-hover" style={width > 800 ? { width: 780 } : {}}>
-                        <thead>
-                          <tr>
-                            <th className="center">#</th>
-                            <th>Timestamp</th>
-                            {addressesToCheck.length > 1 && <th>Address</th>}
-                            <th className="center">Tx</th>
-                            <th>Memo</th>
-                            <th className="right">Transfer Fee</th>
-                            <th className="right">Tx Fee</th>
-                            <th className="right">Balance change</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {currentList?.length > 0 ? (
-                            <>
-                              {currentList.map((a, i) => (
-                                <tr key={i}>
-                                  <td className="center">{a.index}</td>
-                                  <td>{fullDateAndTime(a.timestamp)}</td>
-                                  {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
-                                  <td className="center">
-                                    <LinkTx tx={a.hash}>
-                                      <TypeToIcon type={a.txType} direction={isSending(a) ? 'sent' : 'received'} />
-                                    </LinkTx>
-                                  </td>
-                                  <td>
-                                    <div style={{ width: 160 }}>
-                                      <span className={a.memo?.length > 20 ? 'tooltip' : ''}>
-                                        {a.memo && a.memo?.slice(0, 20) + (a.memo?.length > 20 ? '...' : '')}
-                                        {a.memo?.length > 20 && <span className="tooltiptext right">{a.memo}</span>}
-                                      </span>
-                                    </div>
-                                  </td>
-                                  <td className="right" style={{ width: 110 }}>
-                                    {/* showAmount(a.transferFee) */}
-                                    <br />
-                                    {a.transferFee ? (
-                                      niceNumber(a.transferFeeInFiats?.[selectedCurrency], 0, selectedCurrency, 6)
-                                    ) : (
-                                      <br />
-                                    )}
-                                  </td>
-                                  <td className="right" style={{ width: 110 }}>
-                                    {showAmount(a.txFee)}
-                                    <br />
-                                    {a.txFee ? (
-                                      niceNumber(a.txFeeInFiats?.[selectedCurrency], 0, selectedCurrency, 6)
-                                    ) : (
-                                      <br />
-                                    )}
-                                  </td>
-                                  <td className="right" style={{ width: 110 }}>
-                                    {showAmount(a.amount)}
-                                    <br />
-                                    {showFiat(a.amountInFiats?.[selectedCurrency], selectedCurrency) || <br />}
-                                  </td>
-                                </tr>
-                              ))}
-                            </>
-                          ) : (
-                            <tr>
-                              <td colSpan="100" className="center">
-                                {loading ? 'Loading data...' : 'There is no data to show here.'}
-                              </td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    ) : (
-                      <table className="table-mobile">
-                        <tbody>
-                          {currentList?.length > 0 ? (
-                            <>
-                              {currentList.map((a, i) => (
-                                <tr key={i}>
-                                  <td style={{ padding: '5px' }}>#{a.index}</td>
-                                  <td>
-                                    <p>
-                                      Timestamp: <b>{fullDateAndTime(a.timestamp)}</b>
-                                    </p>
-                                    {addressesToCheck.length > 1 && (
-                                      <p>
-                                        Address: <b>{addressName(a.address)}</b>
-                                      </p>
-                                    )}
-                                    <p>Type: {a.txType}</p>
-                                    <p>
-                                      Ledger Amount: <b>{showAmount(a.amount)}</b>
-                                    </p>
-                                    <p>
-                                      {selectedCurrency.toUpperCase()} equavalent:{' '}
-                                      {showFiat(a.amountInFiats?.[selectedCurrency], selectedCurrency)}
-                                    </p>
-                                    {a.memo && (
-                                      <p>Memo: {a.memo?.slice(0, 197) + (a.memo?.length > 197 ? '...' : '')}</p>
-                                    )}
-                                    <p>
-                                      Tx: <LinkTx tx={a.hash} />
-                                    </p>
-                                  </td>
-                                </tr>
-                              ))}
-                            </>
-                          ) : (
-                            <tr>
-                              <td colSpan="100" className="center">
-                                {loading ? 'Loading data...' : 'There is no data to show here.'}
-                              </td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    )}
-                  </>
-                )}
+            {verifiedAddresses?.length > 0 && data && activities && data.total > activities.length && (
+              <div className="center" style={{ margin: 'auto' }}>
+                <button
+                  className="button-action narrow thin"
+                  onClick={() => getProAddressHistory({ marker: data.marker })}
+                >
+                  Load more data
+                </button>
                 <br />
-                <br />
-                {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
-              </>
-            </FiltersFrame>
-          </>
-        ) : (
-          <>
-            <div className="center">
-              <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
-                <p>- View detailed balance history for your verified addresses.</p>
-                <p>- Export data for tax reporting and analysis.</p>
-                <br />
-                <center>
-                  Read how it works: <Link href="/learn/xrp-xah-taxes">XRP and XAH Taxes</Link>
-                </center>
                 <br />
               </div>
-              <br />
-              <center>
-                <button className="button-action" onClick={() => openEmailLogin()}>
-                  Register or Sign In
-                </button>
-              </center>
+            )}
+            <div style={{ margin: 'auto' }}>Addresses</div>
+            {verifiedAddresses?.length > 0 ? (
+              <>
+                {verifiedAddresses.map((address, i) => (
+                  <div className="filters-check-box" key={i}>
+                    <CheckBox
+                      checked={addressesToCheck.includes(address.address)}
+                      setChecked={() => {
+                        setAddressesToCheck(
+                          addressesToCheck.includes(address.address)
+                            ? addressesToCheck.filter((a) => a !== address.address)
+                            : [...addressesToCheck, address.address]
+                        )
+                      }}
+                      outline
+                      checkmarkStyle={{ top: '10px' }}
+                    >
+                      <table>
+                        <tbody>
+                          <tr>
+                            <td style={{ padding: 0 }}>
+                              <Image alt="avatar" src={avatarServer + address.address} width="40" height="40" />
+                            </td>
+                            <td style={{ padding: '0 0 0 5px' }}>
+                              <b className="orange">{address.name}</b> -{' '}
+                              <small>{crawlerStatus(address.crawler, { inline: true })}</small>
+                              <br />
+                              {addressLink(address.address, { short: 10 })}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </CheckBox>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                {loadingVerifiedAddresses ? (
+                  'Loading data...'
+                ) : (
+                  <div>
+                    <br />
+                    <Link href="/admin/pro" className="button-action narrow thin">
+                      Add
+                    </Link>
+                  </div>
+                )}
+              </>
+            )}
+            <div>
+              Period
+              <DateAndTimeRange setPeriod={setPeriod} defaultPeriod="all" radio={true} />
             </div>
-            <br />
+            <div>
+              <CheckBox checked={removeDust} outline setChecked={setRemoveDust}>
+                Remove dust transactions
+              </CheckBox>
+            </div>
+            <div>
+              Tax Export Platform
+              <RadioOptions
+                tabList={platformList}
+                tab={platformCSVExport}
+                setTab={setPlatformCSVExport}
+                name="platformSelect"
+              />
+              {rendered && (
+                <CSVLink
+                  data={processDataForExport(filteredActivities || [], platformCSVExport)}
+                  headers={
+                    platformCSVHeaders.find(
+                      (header) => header.platform.toLowerCase() === platformCSVExport.toLowerCase()
+                    )?.headers || []
+                  }
+                  filename={'export ' + platformCSVExport + ' ' + new Date().toISOString() + '.csv'}
+                  className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
+                  uFEFF={platformCSVExport === 'BlockPit' ? false : undefined}
+                >
+                  <DownloadIcon /> CSV for {platformCSVExport}
+                </CSVLink>
+              )}
+              {platformCSVExport === 'Koinly' && (
+                <>
+                  <br />
+                  <br />
+                  Let us know if we miss koinlyIDs for your tokens. We will add them to the system.
+                </>
+              )}
+            </div>
           </>
-        )}
+          <>
+            {addressesToCheck.length > 0 && (
+              <>
+                {!width || width > 800 ? (
+                  <table className="table-large no-border no-hover" style={width > 800 ? { width: 780 } : {}}>
+                    <thead>
+                      <tr>
+                        <th className="center">#</th>
+                        <th>Timestamp</th>
+                        {addressesToCheck.length > 1 && <th>Address</th>}
+                        <th className="center">Tx</th>
+                        <th>Memo</th>
+                        <th className="right">Transfer Fee</th>
+                        <th className="right">Tx Fee</th>
+                        <th className="right">Balance change</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentList?.length > 0 ? (
+                        <>
+                          {currentList.map((a, i) => (
+                            <tr key={i}>
+                              <td className="center">{a.index}</td>
+                              <td>{fullDateAndTime(a.timestamp)}</td>
+                              {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
+                              <td className="center">
+                                <LinkTx tx={a.hash}>
+                                  <TypeToIcon type={a.txType} direction={isSending(a) ? 'sent' : 'received'} />
+                                </LinkTx>
+                              </td>
+                              <td>
+                                <div style={{ width: 160 }}>
+                                  <span className={a.memo?.length > 20 ? 'tooltip' : ''}>
+                                    {a.memo && a.memo?.slice(0, 20) + (a.memo?.length > 20 ? '...' : '')}
+                                    {a.memo?.length > 20 && <span className="tooltiptext right">{a.memo}</span>}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="right" style={{ width: 110 }}>
+                                {/* showAmount(a.transferFee) */}
+                                <br />
+                                {a.transferFee ? (
+                                  niceNumber(a.transferFeeInFiats?.[selectedCurrency], 0, selectedCurrency, 6)
+                                ) : (
+                                  <br />
+                                )}
+                              </td>
+                              <td className="right" style={{ width: 110 }}>
+                                {showAmount(a.txFee)}
+                                <br />
+                                {a.txFee ? (
+                                  niceNumber(a.txFeeInFiats?.[selectedCurrency], 0, selectedCurrency, 6)
+                                ) : (
+                                  <br />
+                                )}
+                              </td>
+                              <td className="right" style={{ width: 110 }}>
+                                {showAmount(a.amount)}
+                                <br />
+                                {showFiat(a.amountInFiats?.[selectedCurrency], selectedCurrency) || <br />}
+                              </td>
+                            </tr>
+                          ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan="100" className="center">
+                            {loading ? 'Loading data...' : 'There is no data to show here.'}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                ) : (
+                  <table className="table-mobile">
+                    <tbody>
+                      {currentList?.length > 0 ? (
+                        <>
+                          {currentList.map((a, i) => (
+                            <tr key={i}>
+                              <td style={{ padding: '5px' }}>#{a.index}</td>
+                              <td>
+                                <p>
+                                  Timestamp: <b>{fullDateAndTime(a.timestamp)}</b>
+                                </p>
+                                {addressesToCheck.length > 1 && (
+                                  <p>
+                                    Address: <b>{addressName(a.address)}</b>
+                                  </p>
+                                )}
+                                <p>Type: {a.txType}</p>
+                                <p>
+                                  Ledger Amount: <b>{showAmount(a.amount)}</b>
+                                </p>
+                                <p>
+                                  {selectedCurrency.toUpperCase()} equavalent:{' '}
+                                  {showFiat(a.amountInFiats?.[selectedCurrency], selectedCurrency)}
+                                </p>
+                                {a.memo && (
+                                  <p>Memo: {a.memo?.slice(0, 197) + (a.memo?.length > 197 ? '...' : '')}</p>
+                                )}
+                                <p>
+                                  Tx: <LinkTx tx={a.hash} />
+                                </p>
+                              </td>
+                            </tr>
+                          ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan="100" className="center">
+                            {loading ? 'Loading data...' : 'There is no data to show here.'}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                )}
+              </>
+            )}
+            <br />
+            <br />
+            {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+          </>
+        </FiltersFrame>
       </div>
     </>
   )
