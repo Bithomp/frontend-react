@@ -1,5 +1,6 @@
+import React from 'react'
 import { useState, useEffect } from 'react'
-import { fullDateAndTime, timeOrDate, amountFormat, nftIdLink, shortAddress } from '../../utils/format'
+import { fullDateAndTime, timeOrDate, amountFormat, nftIdLink, shortAddress, nftOfferLink } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import axios from 'axios'
 import { addressBalanceChanges } from '../../utils/transaction'
@@ -18,26 +19,85 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     ''
   )
 
+  const showAllOfferLinks = (changes) => {
+    const indexes = []
+    for (let i = 0; i < changes?.length; i++) {
+      for (let j = 0; j < changes[i]?.nftokenOfferChanges?.length; j++) {
+        indexes.push(
+          <React.Fragment key={i + '-' + j}>{nftOfferLink(changes[i].nftokenOfferChanges[j].index)}</React.Fragment>
+        )
+      }
+    }
+    return indexes
+  }
+
+  // Tooltip function for AccountSet fields
+  const createTooltip = (text, fullValue, label) => (
+    <span className="tooltip">
+      {text}
+      <span className="tooltiptext">
+        <strong>{label}:</strong> {fullValue}
+      </span>
+    </span>
+  )
+
+  // Function to detect spam transactions (incoming payments for 0.000001 XRP)
+  const isSpamTransaction = (txdata) => {
+    if (txdata.tx?.TransactionType !== 'Payment') {
+      return false
+    }
+
+    const { specification, outcome } = txdata
+    const userAddress = userData?.address
+
+    // Check if it's an incoming payment to the user
+    const isIncoming = specification?.destination?.address === userAddress
+
+    if (!isIncoming) {
+      return false
+    }
+
+    // Check if the amount is exactly 0.000001 XRP (1000000 drops)
+    const deliveredAmount = outcome?.deliveredAmount
+    if (deliveredAmount?.currency === 'XRP' && deliveredAmount?.value === '0.000001') {
+      return true
+    }
+
+    return false
+  }
+
+  // Function to get transaction status
+  const getTransactionStatus = (txdata) => {
+    const outcome = txdata.outcome
+    if (!outcome) return { status: 'unknown', color: 'grey' }
+    
+    if (outcome.result === 'tesSUCCESS') {
+      return { status: '✓', color: 'green' }
+    } else {
+      return { status: '✗', color: 'red' }
+    }
+  }
+
   // Function to get all transaction changes
-  const getAllTransactionChanges = (txdata, userAddress) => {
+  const getAllTransactionChanges = (txdata) => {
     // Check for balance changes first
-    const balanceChanges = addressBalanceChanges(txdata, userAddress)
+    const balanceChanges = addressBalanceChanges(txdata, txdata.specification?.source?.address)
     if (balanceChanges && balanceChanges.length > 0) {
       return balanceChanges.map((change, index) => (
         <span key={index}>
           <span className={Number(change.value) > 0 ? 'green' : 'red'}>
-            {Number(change.value) > 0 ? '+' : ''}
             <span className="tooltip">
+              {Number(change.value) > 0 ? '+' : ''}
               <span>
                 {amountFormat(change, { short: true, maxFractionDigits: 2 })}
               </span>
+              {index < balanceChanges.length - 1 && ', '}
               <span className="tooltiptext">
                 <strong>Change:</strong>
                 {amountFormat(change, { precise: 'nice' })}
               </span>
             </span>
           </span>
-          {index < balanceChanges.length - 1 && ', '}
         </span>
       ))
     }
@@ -52,7 +112,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
               <span className="text-purple-600">NFT</span>
               {nftoken_id && (
                 <span className='bold'>
-                  {nftIdLink(nftoken_id)}
+                  {nftIdLink(nftoken_id, 4)}
                 </span>
               )}
             </span>
@@ -64,6 +124,106 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       }
     }
     
+    // Check for NFTokenBurn transactions
+    if (txdata.tx?.TransactionType === 'NFTokenBurn') {
+      const nftoken_id = txdata.tx?.NFTokenID
+      if (nftoken_id) {
+        return (
+          <span className="tooltip">
+            <span className="inline-flex items-center gap-1">
+              <span className="text-red-600">NFT removed: </span>
+              <span className='bold'>
+                {nftIdLink(nftoken_id, 4)}
+              </span>
+            </span>
+            <span className="tooltiptext">
+              <span>NFT removed: {nftoken_id || 'N/A'}</span> 
+            </span>
+          </span>
+        )
+      }
+    }
+    
+    // Check for NFTokenAcceptOffer transactions
+    if (txdata.tx?.TransactionType === 'NFTokenAcceptOffer') {
+      const nftokenChanges = txdata.outcome?.nftokenChanges
+      if (nftokenChanges && nftokenChanges.length > 0) {
+        const addedNft = nftokenChanges.find(change => 
+          change.nftokenChanges?.some(nftChange => nftChange.status === 'added')
+        )
+        if (addedNft) {
+          const nftId = addedNft.nftokenChanges.find(nftChange => nftChange.status === 'added')?.nftokenID
+          if (nftId) {
+            return (
+              <span className="tooltip">
+                <span className="inline-flex items-center gap-1">
+                  <span className="text-green-600">NFT added: </span>
+                  <span className='bold'>
+                    {nftIdLink(nftId , 4)}
+                  </span>
+                </span>
+                <span className="tooltiptext">
+                  <span>NFT added: {nftId || 'N/A'}</span> 
+                </span>
+              </span>
+            )
+          }
+        }
+      }
+    }
+    
+    // Check for OfferCreate transactions (when no balance change)
+    if (txdata.tx?.TransactionType === 'OfferCreate') {
+      const specification = txdata.specification
+      const direction = specification?.flags?.sell ? 'Sell' : 'Buy'
+      return (
+        <span className="tooltip">
+          <span className="inline-flex items-center gap-1">
+            <span className="text-blue-600">{direction} order created</span>
+          </span>
+          <span className="tooltiptext">
+            <span>{direction} order created</span> 
+          </span>
+        </span>
+      )
+    }
+    
+    // Check for OfferCancel transactions (when no balance change)
+    if (txdata.tx?.TransactionType === 'OfferCancel') {
+      const sourceOrderbookChange = txdata.outcome?.orderbookChanges
+        ?.filter((entry) => entry.address === txdata.specification?.source?.address)?.[0]
+        ?.orderbookChanges.filter((entry) => entry.sequence === txdata.specification?.orderSequence)?.[0]
+      
+      const direction = sourceOrderbookChange?.direction ? 'Sell' : 'Buy'
+      return (
+        <span className="tooltip">
+          <span className="inline-flex items-center gap-1">
+            <span className="text-orange-600">{direction} order cancelled</span>
+          </span>
+          <span className="tooltiptext">
+            <span>{direction} order cancelled</span> 
+          </span>
+        </span>
+      )
+    }
+    
+    // Check for NFTokenCreateOffer transactions
+    if (txdata.tx?.TransactionType === 'NFTokenCreateOffer') {
+      const specification = txdata.specification
+      const direction = specification?.flags?.sellToken ? 'Sell' : 'Buy'
+      return (
+        <span className="tooltip">
+          <span className="inline-flex items-center gap-1">
+            <span className="text-purple-600">{direction} offer created</span>
+            {showAllOfferLinks(txdata.outcome?.nftokenOfferChanges)}
+          </span>
+          <span className="tooltiptext">
+            <span>NFT {direction} offer created: {showAllOfferLinks(txdata.outcome?.nftokenOfferChanges)}</span> 
+          </span>
+        </span>
+      )
+    }
+    
     // Check for AccountSet transactions
     if (txdata.tx?.TransactionType === 'AccountSet') {
       const accountSetData = txdata.tx
@@ -72,21 +232,39 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
 
       if (accountSetData.Domain !== undefined) {
         if (specification?.domain) {
-          changes.push(`Set domain to ${specification.domain}`)
+          changes.push(
+            createTooltip(
+              `Set domain to ${shortAddress(specification.domain)}`,
+              specification.domain,
+              'Domain'
+            )
+          )
         } else {
           changes.push('Remove domain')
         }
       }
       if (accountSetData.EmailHash !== undefined) {
         if (specification?.emailHash) {
-          changes.push(`Set email hash to ${shortAddress(specification.emailHash)}` )
+          changes.push(
+            createTooltip(
+              `Set email hash to ${shortAddress(specification.emailHash)}`,
+              specification.emailHash,
+              'Email Hash'
+            )
+          )
         } else {
           changes.push('Remove email hash')
         }
       }
       if (accountSetData.MessageKey !== undefined) {
         if (specification?.messageKey) {
-          changes.push(`Set message key to ${shortAddress(specification.messageKey)}`)
+          changes.push(
+            createTooltip(
+              `Set message key to ${shortAddress(specification.messageKey)}`,
+              specification.messageKey,
+              'Message Key'
+            )
+          )
         } else {
           changes.push('Remove message key')
         }
@@ -104,7 +282,13 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       }
       if (accountSetData.WalletLocator !== undefined) {
         if (specification?.walletLocator) {
-          changes.push(`Set wallet locator to ${shortAddress(specification.walletLocator)}`)
+          changes.push(
+            createTooltip(
+              `Set wallet locator to ${shortAddress(specification.walletLocator)}`,
+              specification.walletLocator,
+              'Wallet Locator'
+            )
+          )
         } else {
           changes.push('Remove wallet locator')
         }
@@ -153,7 +337,13 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       }
       if (accountSetData.NFTokenMinter !== undefined) {
         if (specification?.nftokenMinter) {
-          changes.push(`Set NFT minter to ${shortAddress(specification.nftokenMinter)}`)
+          changes.push(
+            createTooltip(
+              `Set NFT minter to ${shortAddress(specification.nftokenMinter)}`,
+              specification.nftokenMinter,
+              'NFT Minter'
+            )
+          )
         } else {
           changes.push('Remove NFT minter')
         }
@@ -236,14 +426,20 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     setLoading(true)
     setError(null)
     const res = await axios(
-      `/v3/transactions/${address}?limit=5` +
+      `/v3/transactions/${address}?limit=15` +
         (ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
       setError(error.message)
       setLoading(false)
     })
-    const transactions = Array.isArray(res?.data) ? res.data : res?.data?.transactions
-    setTransactions(transactions || [])
+    const allTransactions = Array.isArray(res?.data) ? res.data : res?.data?.transactions
+    
+    // Filter out spam transactions and take the latest 5
+    const filteredTransactions = (allTransactions || [])
+      .filter(txdata => !isSpamTransaction(txdata))
+      .slice(0, 5)
+    
+    setTransactions(filteredTransactions)
     setLoading(false)
   }
 
@@ -282,27 +478,32 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
           {!loading && !error && (
             <>
               <tr>
-                <th>#</th>
-                <th className="right min-w-[90px]">Validated</th>
+                <th className="right">Validated</th>
                 <th className="right">Type</th>
-                <th className="right min-w-[50px]">Hash</th>
+                <th className="right">Hash</th>
+                <th className="center">Status</th>
                 <th className="right">Changes</th>
               </tr>
-              {transactions.map((txdata, i) => (
-                <tr key={txdata.tx?.hash || i}>
-                  <td className="center" style={{ width: 30 }}>
-                    {i + 1}
-                  </td>
-                  <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
-                  <td className="right">{getPaymentType(txdata)}</td>
-                  <td className="right">
-                    <LinkTx tx={txdata.tx?.hash} icon={true} />
-                  </td>
-                  <td className="right">
-                    {getAllTransactionChanges(txdata, userData.address)}
-                  </td>
-                </tr>
-              ))}
+              {transactions.map((txdata, i) => {
+                const status = getTransactionStatus(txdata)
+                return (
+                  <tr key={txdata.tx?.hash || i}>
+                    <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
+                    <td className="right">{getPaymentType(txdata)}</td>
+                    <td className="right">
+                      <LinkTx tx={txdata.tx?.hash} short={4} />
+                    </td>
+                    <td className="center">
+                      <span className={status.color} style={{ fontWeight: 'bold' }}>
+                        {status.status}
+                      </span>
+                    </td>
+                    <td className="right">
+                      {getAllTransactionChanges(txdata, userData.address)}
+                    </td>
+                  </tr>
+                )
+              })}
             </>
           )}
         </tbody>
@@ -319,27 +520,32 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
           <table className="table-mobile wide">
             <tbody>
               <tr>
-                <th>#</th>
                 <th className="right">Validated</th>
                 <th className="right">Type</th>
                 <th className="center">Link</th>
+                <th className="center">Status</th>
                 <th className="right">Changes</th>
               </tr>
-              {transactions.map((txdata, i) => (
-                <tr key={txdata.tx?.hash || i}>
-                  <td className="center" style={{ width: 30 }}>
-                    {i + 1}
-                  </td>
-                  <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
-                  <td className="right">{getPaymentType(txdata)}</td>
-                  <td className="center">
-                    <LinkTx tx={txdata.tx?.hash} icon={true} />
-                  </td>
-                  <td className="right">
-                    {getAllTransactionChanges(txdata, userData.address)}
-                  </td>
-                </tr>
-              ))}
+              {transactions.map((txdata, i) => {
+                const status = getTransactionStatus(txdata)
+                return (
+                  <tr key={txdata.tx?.hash || i}>
+                    <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
+                    <td className="right">{getPaymentType(txdata)}</td>
+                    <td className="center">
+                      <LinkTx tx={txdata.tx?.hash} short={4} />
+                    </td>
+                    <td className="center">
+                      <span className={status.color} style={{ fontWeight: 'bold' }}>
+                        {status.status}
+                      </span>
+                    </td>
+                    <td className="right">
+                      {getAllTransactionChanges(txdata, userData.address)}
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         )}
