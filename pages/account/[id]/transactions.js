@@ -275,7 +275,7 @@ export default function AccountTransactions({
         count={transactions.length}
         hasMore={marker}
         data={
-          transactions.map((item) => {
+          transactions?.map((item) => {
             let dateObj = new Date()
             if (item.outcome.timestamp) {
               dateObj = new Date(item.outcome.timestamp)

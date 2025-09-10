@@ -34,9 +34,12 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
     <tr
       index={index}
       style={{
-        background: !isSuccessful ? 'repeating-linear-gradient(45deg, rgba(129, 111, 77, 0.3), rgba(249, 227, 185, 0.3), transparent 10px, transparent 20px)' : ''
+        background: !isSuccessful
+          ? 'repeating-linear-gradient(45deg, rgba(129, 111, 77, 0.3), rgba(249, 227, 185, 0.3), transparent 10px, transparent 20px)'
+          : ''
       }}
       className="border-b-1"
+      suppressHydrationWarning
     >
       <td className="bold center" style={{ width: 10 }}>
         {index + 1}
@@ -57,7 +60,7 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
         <span>Type: </span>
         <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
         <br />
-        
+
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
         {outcome && !isSuccessful && (
           <>
@@ -71,9 +74,7 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
         )}
         <span>Fee: </span>
         <span className="bold">{amountFormat(tx.Fee, { icon: true })}</span>
-        <span>
-          {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
-        </span>
+        <span>{nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}</span>
         <br />
         {tx.DestinationTag !== undefined && tx.DestinationTag !== null && (
           <>

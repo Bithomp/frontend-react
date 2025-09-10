@@ -3,7 +3,7 @@ import { amountFormat, nativeCurrencyToFiat, addressUsernameOrServiceLink } from
 import { useTxFiatRate } from './FiatRateContext'
 import { dappBySourceTag } from '../../utils/transaction'
 
- const TransactionRowCheckContent = ({ tx, selectedCurrency}) => {
+const TransactionRowCheckContent = ({ tx, selectedCurrency }) => {
   const pageFiatRate = useTxFiatRate()
 
   const { outcome, specification } = tx
@@ -31,7 +31,7 @@ import { dappBySourceTag } from '../../utils/transaction'
           </span>
         </div>
       )}
-      
+
       {checkChanges?.source?.tag !== undefined && !dapp && (
         <>
           <span>Source tag:</span>
@@ -42,18 +42,10 @@ import { dappBySourceTag } from '../../utils/transaction'
   )
 }
 
-export const TransactionRowCheck = ({ tx, address, index, selectedCurrency}) => {
+export const TransactionRowCheck = ({ tx, address, index, selectedCurrency }) => {
   return (
-    <TransactionRowCard
-      data={tx}
-      address={address}
-      index={index}
-      selectedCurrency={selectedCurrency}
-    >
-      <TransactionRowCheckContent 
-        tx={tx} 
-        selectedCurrency={selectedCurrency} 
-      />
+    <TransactionRowCard data={tx} address={address} index={index} selectedCurrency={selectedCurrency}>
+      <TransactionRowCheckContent tx={tx} selectedCurrency={selectedCurrency} />
     </TransactionRowCard>
   )
 }
