@@ -124,8 +124,9 @@ export async function getServerSideProps(context) {
     'uniqueBuyersHigh'
   ])
   const orderParam = supportedOrders.has(order) ? order : 'rating'
+  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
-  let url = `v2/trustlines/tokens?limit=100&order=${orderParam}&currencyDetails=true&statistics=true`
+  let url = `v2/trustlines/tokens?limit=100&order=${orderParam}&currencyDetails=true&statistics=true&convertCurrencies=${selectedCurrencyServer}`
   if (currency) {
     const { valid, currencyCode } = validateCurrencyCode(currency)
     if (valid) {
@@ -154,8 +155,6 @@ export async function getServerSideProps(context) {
   } catch (e) {
     console.error(e)
   }
-
-  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
   return {
     props: {
@@ -288,7 +287,7 @@ export default function Tokens({
     }
     setRawData({})
 
-    let apiUrl = 'v2/trustlines/tokens?limit=100&order=' + order + '&currencyDetails=true&statistics=true' + markerPart
+    let apiUrl = 'v2/trustlines/tokens?limit=100&order=' + order + '&currencyDetails=true&statistics=true&convertCurrencies=' + selectedCurrencyServer + markerPart
     if (issuer) {
       apiUrl += `&issuer=${encodeURIComponent(issuer)}`
     }
@@ -459,17 +458,17 @@ export default function Tokens({
     })
   }
 
-  const priceToFiat = ({ price, mobile }) => {
+  const priceToFiat = ({ price, mobile, priceFiats }) => {
     if (!fiatRate) return null
     price = price || 0
     if (mobile) {
-      return <span suppressHydrationWarning>{fullNiceNumber(price * fiatRate, selectedCurrency)}</span>
+      return <span suppressHydrationWarning>{fullNiceNumber(priceFiats[selectedCurrency], selectedCurrency)}</span>
     }
     return (
       <>
         <span className="tooltip" suppressHydrationWarning>
-          {shortNiceNumber(price * fiatRate, 4, 1, selectedCurrency)}
-          <span className="tooltiptext right no-brake">{fullNiceNumber(price * fiatRate, selectedCurrency)}</span>
+          {shortNiceNumber(priceFiats[selectedCurrency], 4, 1, selectedCurrency)}
+          <span className="tooltiptext right no-brake">{fullNiceNumber(priceFiats[selectedCurrency], selectedCurrency)}</span>
         </span>
         <br />
         <span className="tooltip grey" suppressHydrationWarning>
@@ -747,7 +746,7 @@ export default function Tokens({
                               <td>
                                 <TokenCell token={token} />
                               </td>
-                              <td className="right">{priceToFiat({ price: token.statistics?.priceNativeCurrency })}</td>
+                              <td className="right">{priceToFiat({ price: token.statistics?.priceNativeCurrency, priceFiats: token.statistics.priceFiats })}</td>
                               <td className="right">
                                 {renderPercentCell({
                                   currentXrp: token.statistics?.priceNativeCurrency,
@@ -860,7 +859,7 @@ export default function Tokens({
                               <td>
                                 <TokenCell token={token} />
                                 <p>
-                                  Price: {priceToFiat({ price: token.statistics?.priceNativeCurrency, mobile: true })}
+                                  Price: {priceToFiat({ price: token.statistics?.priceNativeCurrency, mobile: true, priceFiats: token.statistics.priceFiats })}
                                   <br />
                                   Change 24h ({selectedCurrency.toUpperCase()}):{' '}
                                   {renderPercentCell({

@@ -7,7 +7,6 @@ import SEO from '../../components/SEO'
 import { tokenClass } from '../../styles/pages/token.module.scss'
 import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
-import { fetchHistoricalRate } from '../../utils/common'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
@@ -16,12 +15,12 @@ import CopyButton from '../../components/UI/CopyButton'
 export async function getServerSideProps(context) {
   const { locale, req, params } = context
   const { id } = params || {}
-
+  
   let initialData = null
   let initialErrorMessage = null
   let issuer = null
   let currency = null
-
+  
   // Parse the dynamic route parameters
   if (id && Array.isArray(id) && id.length >= 2) {
     issuer = id[0]
@@ -29,6 +28,8 @@ export async function getServerSideProps(context) {
   } else {
     initialErrorMessage = 'Invalid token URL. Expected format: /token/{issuer}/{currencyCode}'
   }
+  
+  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
   if (issuer && currency) {
     // Validate issuer
@@ -45,7 +46,7 @@ export async function getServerSideProps(context) {
     if (!initialErrorMessage) {
       try {
         // Fetch token data
-        const url = `v2/trustlines/token/${issuer}/${currencyCode}?statistics=true&currencyDetails=true`
+        const url = `v2/trustlines/token/${issuer}/${currencyCode}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrencyServer}`
         const res = await axiosServer({
           method: 'get',
           url,
@@ -53,7 +54,6 @@ export async function getServerSideProps(context) {
         }).catch((error) => {
           initialErrorMessage = error.message
         })
-
         if (res?.data) {
           if (res.data?.error) {
             initialErrorMessage = res.data.error
@@ -69,8 +69,6 @@ export async function getServerSideProps(context) {
       }
     }
   }
-
-  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
   return {
     props: {
@@ -116,36 +114,28 @@ export default function TokenPage({
   }, [initialData, initialErrorMessage, router])
 
   // Historical fiat rates for price points
+
   const [historicalRates, setHistoricalRates] = useState({})
 
-  useEffect(() => {
+  const getHistoricalRates = async () => {
     const cur = (selectedCurrency || selectedCurrencyServer)?.toLowerCase()
     if (!cur) return
-    const baseSeconds = token?.statistics?.timeAt || Math.floor(Date.now() / 1000)
-    const baseMs = baseSeconds * 1000
-    const points = [
-      ['spot', baseMs],
-      ['5m', baseMs - 5 * 60 * 1000],
-      ['1h', baseMs - 60 * 60 * 1000],
-      ['24h', baseMs - 24 * 60 * 60 * 1000],
-      ['7d', baseMs - 7 * 24 * 60 * 60 * 1000]
-    ]
-
-    let cancelled = false
-    points.forEach(([key, ts]) => {
-      fetchHistoricalRate({
-        timestamp: ts,
-        selectedCurrency: cur,
-        setPageFiatRate: (rate) => {
-          if (cancelled || rate == null) return
-          setHistoricalRates((prev) => ({ ...prev, [key]: rate }))
-        }
-      })
+    const url = `v2/trustlines/token/${initialData.issuer}/${initialData.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
+    const res = await axiosServer({
+      method: 'get',
+      url
+    }).catch((error) => {
+      initialErrorMessage = error.message
     })
+    const points = ['Spot', '5m', '1h', '24h', '7d'] ;
+    setHistoricalRates({})
+    points.forEach((point) => {
+      setHistoricalRates((prev) => ({ ...prev, [point]: res.data.statistics['priceFiatsSpot'][cur] }))
+    })
+  }
 
-    return () => {
-      cancelled = true
-    }
+  useEffect(() => {
+    getHistoricalRates()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, selectedCurrencyServer, token?.statistics?.timeAt])
 
