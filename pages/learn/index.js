@@ -34,7 +34,8 @@ const learnContentXRP = [
       { title: 'Blackholed Address', slug: 'blackholed-address' },
       { title: 'Blacklisted Address', slug: 'blacklisted-address' },
       { title: 'Ripple USD', slug: 'ripple-usd' },
-      { title: 'Verified Domain', slug: 'verified-domain' }
+      { title: 'Verified Domain', slug: 'verified-domain' },
+      { title: 'XRPL AMM', slug: 'amm' }
     ]
   },
   {

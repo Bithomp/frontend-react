@@ -69,7 +69,8 @@ if (network === 'mainnet') {
   if (!xahauNetwork) {
     pages.push(
       { loc: 'learn/xrpl-article', changefreq: 'monthly', priority: '0.6' },
-      { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' }
+      { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' },
+      { loc: 'learn/amm', changefreq: 'monthly', priority: '0.5' },
     )
   }
   pages.push(
@@ -85,6 +86,7 @@ if (network === 'mainnet') {
     { loc: 'learn/nft-minting', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/the-bithomp-api', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' }
+
   )
 }
 
@@ -114,7 +116,8 @@ function generateSiteMap(posts) {
     'learn/verified-domain',
     'learn/ripple-usd',
     'learn/the-bithomp-explorer-advantages',
-    'learn/xrpl-article'
+    'learn/xrpl-article',
+    'learn/amm',
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
