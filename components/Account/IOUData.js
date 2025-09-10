@@ -13,6 +13,7 @@ import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaChartLine
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 const tokensCountText = (rippleStateList) => {
   if (!rippleStateList) return ''
@@ -113,6 +114,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
   const width = useWidth()
   const { t } = useTranslation()
   const [totalBalance, setTotalBalance] = useState(0)
+  const router = useRouter()
 
   useEffect(() => {
     if (!pageFiatRate || !rippleStateList?.length) return
@@ -244,11 +246,6 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
             <th colSpan="100">
               {tokensCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle} [
               <a href={'/explorer/' + address}>Old View</a>]
-              {!rippleStateList?.length && (
-                <>
-                  [<a href={'/services/trustline?address=' + address}>Add a token</a>]
-                </>
-              )}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
                   Total worth:{' '}
@@ -262,13 +259,23 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th>#</th>
-            <th className="left">Currency</th>
-            <th className="right">Params</th>
-            <th className="right">Balance</th>
-          </tr>
+          {rippleStateList?.length && <tr>
+              <th>#</th>
+              <th className="left">Currency</th>
+              <th className="right">Params</th>
+              <th className="right">Balance</th>
+            </tr>
+          }
           {tokenRows}
+          {!rippleStateList?.length && (
+            <tr>
+              <td className="center" colSpan="100">
+                <button className="button-action center" onClick={() => router.push('/services/trustline?address=' + address)}>
+                  Add a token
+                </button>
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
       <div className="show-on-small-w800">

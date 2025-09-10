@@ -16,7 +16,6 @@ import { useState, useEffect } from 'react'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
-import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import CopyButton from '../../components/UI/CopyButton'
 import TokenSelector from '../../components/UI/TokenSelector'
 import { LinkTx } from '../../utils/links'
@@ -388,13 +387,18 @@ export default function TrustSet({
       <div className="content-text content-center">
         <h1 className="center">Set/Update Trust (Trustlines)</h1>
         <p className="center">Create or modify a Trustline linking two accounts.</p>
-        <NetworkTabs />
 
         <p className="center">
           Trustlines are structures in the {explorerName} for holding tokens. Trustlines enforce the rule that you
           cannot cause someone else to hold a token they don't want.
         </p>
 
+        <div className="center">
+          <button className="button-action" onClick={() => router.push('/tokens')}>
+            View all token rankings
+          </button>
+        </div>
+        
         <div>
           {/* Mode Selection */}
           <div className="radio-options" style={{ justifyContent: 'center' }}>
@@ -601,11 +605,8 @@ export default function TrustSet({
             <button className="button-action" onClick={handleShare} style={{ minWidth: '120px', marginRight: 10 }}>
               {shareCopied ? 'Link copied' : 'Share'}
             </button>
-            <button className="button-action" onClick={handleTrustSet} style={{ minWidth: '120px', marginRight: 10 }}>
+            <button className="button-action" onClick={handleTrustSet} style={{ minWidth: '120px' }}>
               Create Trustline
-            </button>
-            <button className="button-action" onClick={() => router.push('/tokens')}>
-              View all token rankings
             </button>
           </div>
           {txResult?.status === 'tesSUCCESS' && (
