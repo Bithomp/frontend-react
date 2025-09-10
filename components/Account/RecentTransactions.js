@@ -103,9 +103,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
           <span className={Number(change.value) > 0 ? 'green' : 'red'}>
             <span className="tooltip">
               {Number(change.value) > 0 ? '+' : ''}
-              <span className="no-brake">
-                {amountFormat(change, { short: true, maxFractionDigits: 2, noSpace: true })}
-              </span>
+              <span>{amountFormat(change, { short: true, maxFractionDigits: 2, noSpace: true })}</span>
               <span className="tooltiptext no-brake">{amountFormat(change, { precise: 'nice' })}</span>
             </span>
           </span>
@@ -473,7 +471,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                 const status = getTransactionStatus(txdata)
                 return (
                   <tr key={txdata.tx?.hash || i}>
-                    <td className="center" style={{ width: 20 }}>
+                    <td className="center" style={{ width: 65 }}>
                       <span className={status.color}>{status.status}</span>
                     </td>
                     <td className="right no-brake">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
@@ -515,7 +513,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                       <span className={status.color}>{status.status}</span>
                     </td>
                     <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
-                    <td className="right no-brake">{getPaymentType(txdata)}</td>
+                    <td className="right">{getPaymentType(txdata)}</td>
                     <td className="center">
                       <LinkTx tx={txdata.tx?.hash} icon={true} />
                     </td>
