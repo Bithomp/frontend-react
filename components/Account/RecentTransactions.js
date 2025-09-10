@@ -56,7 +56,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       return false
     }
 
-    // Check if the amount is exactly 0.000001 XRP (1000000 drops)
+    // Check if the amount is exactly 0.000001 XRP (1 drop)
     const deliveredAmount = outcome?.deliveredAmount
     if (deliveredAmount?.currency === 'XRP' && deliveredAmount?.value === '0.000001') {
       return true
