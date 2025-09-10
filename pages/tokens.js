@@ -259,7 +259,7 @@ export default function Tokens({
   }
 
   // Fetch tokens
-  const checkApi = async () => {
+  const checkApi = async (currencyConfig = false) => {
     const oldOrder = rawData?.order
     const oldCurrency = rawData?.currency
     const oldIssuer = rawData?.issuer
@@ -271,12 +271,12 @@ export default function Tokens({
       (issuer ? oldIssuer === issuer : !oldIssuer)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
-    if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
+    if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired)) && !currencyConfig) {
       return
     }
 
     let markerPart = ''
-    if (loadMoreRequest) {
+    if (loadMoreRequest && !currencyConfig) {
       markerPart = '&marker=' + rawData?.marker
     }
 
@@ -286,7 +286,6 @@ export default function Tokens({
     setRawData({})
 
     let apiUrl = 'v2/trustlines/tokens?limit=100&order=' + order + '&currencyDetails=true&statistics=true&convertCurrencies=' + selectedCurrency + markerPart
-    console.log(apiUrl, "apiUrl")
     if (issuer) {
       apiUrl += `&issuer=${encodeURIComponent(issuer)}`
     }
@@ -314,7 +313,7 @@ export default function Tokens({
         if (list.length > 0) {
           setErrorMessage('')
           setMarker(newdata.marker)
-          if (!loadMoreRequest) {
+          if (!loadMoreRequest || currencyConfig) {
             setData(list)
           } else {
             setData([...data, ...list])
@@ -342,13 +341,18 @@ export default function Tokens({
     }
     checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, issuer, currency, subscriptionExpired, selectedCurrency])
+  }, [order, issuer, currency, subscriptionExpired])
 
   // Effect: update sortConfig when order changes (e.g., from dropdown)
   useEffect(() => {
     setSortConfig(getInitialSortConfig(order))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order])
+
+  useEffect(() => {
+    checkApi({currencyConfig: true})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency])
 
   useEffect(() => {
     let queryAddList = []
