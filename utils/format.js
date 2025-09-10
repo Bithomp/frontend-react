@@ -112,7 +112,7 @@ export const amountFormatWithIcon = ({ amount }) => {
   return (
     <span className="inline-flex items-center gap-1">
       <span className="tooltip" style={{ display: 'inline-flex', alignItems: 'center' }}>
-        <img src={imageUrl} alt={currency} width={18} height={18} />          
+        <img src={imageUrl} alt={currency} width={18} height={18} />
         {amount.issuer && (
           <span className="tooltiptext no-brake right">
             {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
@@ -125,7 +125,6 @@ export const amountFormatWithIcon = ({ amount }) => {
           {fullNiceNumber(value)} {valuePrefix} {textCurrency}
         </span>
       </span>
-      
     </span>
   )
 }
@@ -604,12 +603,12 @@ export const trAmountWithGateway = ({ amount, name }) => {
   )
 }
 
-export const amountFormat = (amount, options = {icon: false}) => {
+export const amountFormat = (amount, options = { icon: false }) => {
   if (!amount && amount !== '0' && amount !== 0) {
     return ''
   }
-  const { value, currency, valuePrefix, issuer, type, originalCurrency} = amountParced(amount)
-  let icon = options?.icon ;
+  const { value, currency, valuePrefix, issuer, type, originalCurrency } = amountParced(amount)
+  let icon = options?.icon
 
   // For all tokens including native currency, show icon
   let imageUrl
@@ -658,7 +657,15 @@ export const amountFormat = (amount, options = {icon: false}) => {
     showValue = niceNumber(value, 0, null, options.maxFractionDigits)
   }
 
-  let tokenImage = icon && <Image src={imageUrl} alt="token" height={16} width={16} style={{ marginRight: '2px',marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }} /> 
+  let tokenImage = icon && (
+    <Image
+      src={imageUrl}
+      alt="token"
+      height={16}
+      width={16}
+      style={{ marginRight: '2px', marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }}
+    />
+  )
 
   //add issued by (issuerDetails.service / username)
   if (type !== nativeCurrency) {

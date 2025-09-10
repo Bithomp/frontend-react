@@ -45,7 +45,7 @@ export async function getServerSideProps(context) {
   let initialTransactions = []
   let initialErrorMessage = ''
   let initialMarker = null
-  let initialUserData = null 
+  let initialUserData = null
 
   if (account) {
     try {
@@ -94,9 +94,8 @@ export default function AccountTransactions({
   initialErrorMessage,
   initialMarker,
   initialUserData,
-  selectedCurrency,
+  selectedCurrency
 }) {
-
   const { t } = useTranslation()
   const width = useWidth()
 
@@ -141,7 +140,7 @@ export default function AccountTransactions({
       setLoading(true)
       setTransactions([])
       setMarker(null)
-      fetchTransactions({restart: true}) ;
+      fetchTransactions({ restart: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, userData?.address])
@@ -195,8 +194,8 @@ export default function AccountTransactions({
     }
     if (initiated === '1') {
       url += `&initiated=true`
-    } else if(initiated === '2') {
-      url += `&initiated=false` 
+    } else if (initiated === '2') {
+      url += `&initiated=false`
     }
 
     if (excludeFailures === '1') {
@@ -254,7 +253,7 @@ export default function AccountTransactions({
     { label: 'Time', key: 'time' },
     { label: 'Type', key: 'type' },
     { label: 'Hash', key: 'hash' },
-    { label: 'Status', key: 'status' },
+    { label: 'Status', key: 'status' }
   ]
 
   const applyFilters = () => {
@@ -275,20 +274,22 @@ export default function AccountTransactions({
         orderList={orderList}
         count={transactions.length}
         hasMore={marker}
-        data={transactions.map(item => {
-          let dateObj = new Date();
-          if(item.outcome.timestamp){
-            dateObj = new Date(item.outcome.timestamp);
-          }
-          
-          return {
-            date: dateObj.toLocaleDateString(),
-            time: dateObj.toLocaleTimeString(),
-            type: item.tx.TransactionType || 'Unknown',
-            hash: item.txHash || '',
-            status: item.outcome.result || 'Unknown',
-          }
-        }) || []}
+        data={
+          transactions.map((item) => {
+            let dateObj = new Date()
+            if (item.outcome.timestamp) {
+              dateObj = new Date(item.outcome.timestamp)
+            }
+
+            return {
+              date: dateObj.toLocaleDateString(),
+              time: dateObj.toLocaleTimeString(),
+              type: item.tx.TransactionType || 'Unknown',
+              hash: item.txHash || '',
+              status: item.outcome.result || 'Unknown'
+            }
+          }) || []
+        }
         csvHeaders={csvHeaders}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
@@ -298,17 +299,32 @@ export default function AccountTransactions({
           <div className="filters-body-inner">
             <div>
               <span className="input-title">Type</span>
-              <SimpleSelect value={txType} setValue={setTxType} optionsList={txTypeOptions} className="dropdown--filters" />
+              <SimpleSelect
+                value={txType}
+                setValue={setTxType}
+                optionsList={txTypeOptions}
+                className="dropdown--filters"
+              />
             </div>
             <br />
             <div>
               <span className="input-title">Direction</span>
-              <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} className="dropdown--filters" />
+              <SimpleSelect
+                value={initiated}
+                setValue={setInitiated}
+                optionsList={initiatedOptions}
+                className="dropdown--filters"
+              />
             </div>
             <br />
             <div>
               <span className="input-title">Failures</span>
-              <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} className="dropdown--filters" />
+              <SimpleSelect
+                value={excludeFailures}
+                setValue={setExcludeFailures}
+                optionsList={failuresOptions}
+                className="dropdown--filters"
+              />
             </div>
             <br />
             <div>
@@ -433,13 +449,13 @@ export default function AccountTransactions({
                         selectedCurrency={selectedCurrency}
                       />
                     )
-                   })
-                 )}
-                </tbody>
-              </table>                        
+                  })
+                )}
+              </tbody>
+            </table>
           </InfiniteScrolling>
         </>
-      </FiltersFrame>      
+      </FiltersFrame>
     </>
   )
 }
