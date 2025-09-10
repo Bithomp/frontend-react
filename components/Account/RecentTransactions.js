@@ -4,7 +4,7 @@ import { fullDateAndTime, timeOrDate, amountFormat, nftIdLink, shortAddress, nft
 import { LinkTx } from '../../utils/links'
 import axios from 'axios'
 import { addressBalanceChanges } from '../../utils/transaction'
-import { xls14NftValue } from '../../utils'
+import { isNativeCurrency, xls14NftValue } from '../../utils'
 
 export default function RecentTransactions({ userData, ledgerTimestamp }) {
   const [transactions, setTransactions] = useState([])
@@ -42,12 +42,24 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
   )
 
   // Function to detect spam transactions (incoming payments for 0.000001 XRP)
-  const isSpamTransaction = (txdata) => {
+  const skipTx = (txdata) => {
+    //check if no balance, nft changes and if addres is not a sender/receiver - skip
+    const balanceChanges = addressBalanceChanges(txdata, address)
+    const { specification, outcome } = txdata
+    const senderOrReceiver =
+      specification?.destination?.address === address || specification?.source?.address === address
+
+    if (!balanceChanges?.length && !senderOrReceiver) {
+      // if not sender and not receiver and balance is not effected..
+      //shall we check for burned nfts, so for nft changes?
+      return true
+    }
+
+    // discard payments with 1 drop (spamm)
+
     if (txdata.tx?.TransactionType !== 'Payment') {
       return false
     }
-
-    const { specification, outcome } = txdata
 
     // Check if it's an incoming payment to the user
     const isIncoming = specification?.destination?.address === address
@@ -56,9 +68,13 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       return false
     }
 
-    // Check if the amount is exactly 0.000001 XRP (1 drop)
     const deliveredAmount = outcome?.deliveredAmount
-    if (deliveredAmount?.currency === 'XRP' && deliveredAmount?.value === '0.000001') {
+
+    if (
+      deliveredAmount &&
+      isNativeCurrency(deliveredAmount) &&
+      (deliveredAmount === '1' || deliveredAmount.value === '0.000001')
+    ) {
       return true
     }
 
@@ -89,10 +105,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
               {Number(change.value) > 0 ? '+' : ''}
               <span>{amountFormat(change, { short: true, maxFractionDigits: 2 })}</span>
               {index < balanceChanges.length - 1 && ', '}
-              <span className="tooltiptext">
-                <strong>Change:</strong>
-                {amountFormat(change, { precise: 'nice' })}
-              </span>
+              <span className="tooltiptext no-brake">{amountFormat(change, { precise: 'nice' })}</span>
             </span>
           </span>
         </span>
@@ -390,15 +403,6 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       return 'NFT transfer (XLS-14)'
     }
 
-    // Check if IOU is involved (pathfinding or IOU with fee)
-    const sourceBalanceChangesList = addressBalanceChanges(txdata, specification?.source?.address)
-    if (
-      !outcome?.deliveredAmount?.mpt_issuance_id &&
-      sourceBalanceChangesList?.[0]?.value !== '-' + outcome?.deliveredAmount?.value
-    ) {
-      return 'IOU Payment'
-    }
-
     return 'Payment'
   }
 
@@ -416,7 +420,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     const allTransactions = Array.isArray(res?.data) ? res.data : res?.data?.transactions
 
     // Filter out spam transactions and take the latest 5
-    const filteredTransactions = (allTransactions || []).filter((txdata) => !isSpamTransaction(txdata)).slice(0, 5)
+    const filteredTransactions = (allTransactions || []).filter((txdata) => !skipTx(txdata)).slice(0, 5)
 
     setTransactions(filteredTransactions)
     setLoading(false)
@@ -457,25 +461,23 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
           {!loading && !error && (
             <>
               <tr>
+                <th className="center">Status</th>
                 <th className="right">Validated</th>
                 <th className="right">Type</th>
                 <th className="right">Hash</th>
-                <th className="center">Status</th>
                 <th className="right">Changes</th>
               </tr>
               {transactions.map((txdata, i) => {
                 const status = getTransactionStatus(txdata)
                 return (
                   <tr key={txdata.tx?.hash || i}>
-                    <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
-                    <td className="right">{getPaymentType(txdata)}</td>
+                    <td className="center" style={{ width: 20 }}>
+                      <span className={status.color}>{status.status}</span>
+                    </td>
+                    <td className="right no-brake">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
+                    <td className="right no-brake">{getPaymentType(txdata)}</td>
                     <td className="right">
                       <LinkTx tx={txdata.tx?.hash} short={4} />
-                    </td>
-                    <td className="center">
-                      <span className={status.color} style={{ fontWeight: 'bold' }}>
-                        {status.status}
-                      </span>
                     </td>
                     <td className="right">{getAllTransactionChanges(txdata, address)}</td>
                   </tr>
@@ -497,25 +499,23 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
           <table className="table-mobile wide">
             <tbody>
               <tr>
+                <th className="center">Status</th>
                 <th className="right">Validated</th>
                 <th className="right">Type</th>
                 <th className="center">Link</th>
-                <th className="center">Status</th>
                 <th className="right">Changes</th>
               </tr>
               {transactions.map((txdata, i) => {
                 const status = getTransactionStatus(txdata)
                 return (
                   <tr key={txdata.tx?.hash || i}>
+                    <td className="center">
+                      <span className={status.color}>{status.status}</span>
+                    </td>
                     <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
-                    <td className="right">{getPaymentType(txdata)}</td>
+                    <td className="right no-brake">{getPaymentType(txdata)}</td>
                     <td className="center">
                       <LinkTx tx={txdata.tx?.hash} short={4} />
-                    </td>
-                    <td className="center">
-                      <span className={status.color} style={{ fontWeight: 'bold' }}>
-                        {status.status}
-                      </span>
                     </td>
                     <td className="right">{getAllTransactionChanges(txdata, address)}</td>
                   </tr>
