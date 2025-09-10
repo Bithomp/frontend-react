@@ -80,7 +80,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
   // Function to get all transaction changes
   const getAllTransactionChanges = (txdata) => {
     // Check for balance changes first
-    const balanceChanges = addressBalanceChanges(txdata, txdata.specification?.source?.address)
+    const balanceChanges = addressBalanceChanges(txdata, address)
     if (balanceChanges && balanceChanges.length > 0) {
       return balanceChanges.map((change, index) => (
         <span key={index}>
