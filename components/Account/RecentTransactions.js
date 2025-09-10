@@ -360,25 +360,32 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       }
     }
 
+    const limit = txdata.specification?.limit
+
     // If no balance changes, try to show relevant transaction information
-    if (txdata.specification?.limit) {
-      const limitAmount = {
-        value: txdata.specification.limit,
-        currency: txdata.specification.currency,
-        issuer: txdata.specification?.counterparty
+    if (limit || txdata.tx?.TransactionType === 'CheckCreate') {
+      let limitAmount
+      if (limit) {
+        limitAmount = {
+          value: txdata.specification.limit,
+          currency: txdata.specification.currency,
+          issuer: txdata.specification?.counterparty
+        }
+      } else {
+        limitAmount = txdata.specification?.sendMax
       }
       return (
         <span className="tooltip">
           <span style={{ color: '#ce8e12' }}>{amountFormat(limitAmount, { short: true, maxFractionDigits: 2 })}</span>
           <span className="tooltiptext">
-            <strong>Limit:</strong>
+            <strong>{limit ? 'Limit' : 'Amount'}:</strong>
             {amountFormat(limitAmount, { precise: 'nice' })}
           </span>
         </span>
       )
     }
 
-    return '-'
+    return ''
   }
 
   // Function to get specific payment type
