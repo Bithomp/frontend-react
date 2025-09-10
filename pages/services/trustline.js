@@ -99,14 +99,14 @@ export default function TrustSet({
 
   // TrustSet flags - using radio select states: 'none', 'set', 'clear'
   const toFlagState = (v) => {
-    if (v === '1' || v === 'true') return 'set'
-    if (v === '0' || v === 'false') return 'clear'
+    if (v === 'true') return 'set'
+    if (v === 'false') return 'clear'
     return 'none'
   }
   
   const [freezeState, setFreezeState] = useState(freezeQuery ? toFlagState(freezeQuery) : 'none')
   const [noRippleState, setNoRippleState] = useState(noRippleQuery ? toFlagState(noRippleQuery) : (modeQuery === 'simple' ? 'set' : 'none'))
-  const [authorizedState, setAuthorizedState] = useState(authorizedQuery ? toFlagState(authorizedQuery) : 'set')
+  const [authorizedState, setAuthorizedState] = useState(authorizedQuery ? toFlagState(authorizedQuery) : 'clear')
   const [deepFreezeState, setDeepFreezeState] = useState(deepFreezeQuery ? toFlagState(deepFreezeQuery) : 'none')
 
   // Fetch token supply when token is selected in simple mode
@@ -186,20 +186,20 @@ export default function TrustSet({
     }
 
 
-    if (freezeState === 'set') addList.push({ name: 'freeze', value: '1' })
-    else if (freezeState === 'clear') addList.push({ name: 'freeze', value: '0' })
+    if (freezeState === 'set') addList.push({ name: 'freeze', value: 'true' })
+    else if (freezeState === 'clear') addList.push({ name: 'freeze', value: 'false' })
     else removeList.push('freeze')
     
-    if (noRippleState === 'set') addList.push({ name: 'noRipple', value: '1' })
-    else if (noRippleState === 'clear') addList.push({ name: 'noRipple', value: '0' })
+    if (noRippleState === 'set') addList.push({ name: 'noRipple', value: 'true' })
+    else if (noRippleState === 'clear') addList.push({ name: 'noRipple', value: 'false' })
     else removeList.push('noRipple')
     
-    if (authorizedState === 'set') addList.push({ name: 'authorized', value: '1' })
-    else if (authorizedState === 'clear') addList.push({ name: 'authorized', value: '0' })
+    if (authorizedState === 'set') addList.push({ name: 'authorized', value: 'true' })
+    else addList.push({ name: 'authorized', value: 'false' })
     
     if (!xahauNetwork) {
-      if (deepFreezeState === 'set') addList.push({ name: 'deepFreeze', value: '1' })
-      else if (deepFreezeState === 'clear') addList.push({ name: 'deepFreeze', value: '0' })
+      if (deepFreezeState === 'set') addList.push({ name: 'deepFreeze', value: 'true' })
+      else if (deepFreezeState === 'clear') addList.push({ name: 'deepFreeze', value: 'false' })
       else removeList.push('deepFreeze')
     } else {
       removeList.push('deepFreeze')
@@ -243,18 +243,18 @@ export default function TrustSet({
       if (qualityOut) params.set('qualityOut', String(qualityOut))
     }
 
-    if (freezeState === 'set') params.set('freeze', '1')
-    else if (freezeState === 'clear') params.set('freeze', '0')
+    if (freezeState === 'set') params.set('freeze', 'true')
+    else if (freezeState === 'clear') params.set('freeze', 'false')
     
-    if (noRippleState === 'set') params.set('noRipple', '1')
-    else if (noRippleState === 'clear') params.set('noRipple', '0')
+    if (noRippleState === 'set') params.set('noRipple', 'true')
+    else if (noRippleState === 'clear') params.set('noRipple', 'false')
     
-    if (authorizedState === 'set') params.set('authorized', '1')
-    else if (authorizedState === 'clear') params.set('authorized', '0')
+    if (authorizedState === 'set') params.set('authorized', 'true')
+    else params.set('authorized', 'false')
     
     if (!xahauNetwork) {
-      if (deepFreezeState === 'set') params.set('deepFreeze', '1')
-      else if (deepFreezeState === 'clear') params.set('deepFreeze', '0')
+      if (deepFreezeState === 'set') params.set('deepFreeze', 'true')
+      else if (deepFreezeState === 'clear') params.set('deepFreeze', 'false')
     }
 
     const qs = params.toString()
