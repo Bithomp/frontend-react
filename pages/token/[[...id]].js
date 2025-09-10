@@ -95,7 +95,7 @@ export default function TokenPage({
   isSsrMobile
 }) {
   const router = useRouter()
-  const token = initialData
+  const [token, setToken] = useState(initialData)
   const errorMessage = initialErrorMessage || ''
 
   let selectedCurrency = selectedCurrencyServer
@@ -113,10 +113,6 @@ export default function TokenPage({
     }
   }, [initialData, initialErrorMessage, router])
 
-  // Historical fiat rates for price points
-
-  const [historicalRates, setHistoricalRates] = useState({})
-
   const getHistoricalRates = async () => {
     const cur = (selectedCurrency || selectedCurrencyServer)?.toLowerCase()
     if (!cur) return
@@ -127,31 +123,22 @@ export default function TokenPage({
     }).catch((error) => {
       initialErrorMessage = error.message
     })
-    const points = ['Spot', '5m', '1h', '24h', '7d'] ;
-    setHistoricalRates({})
-    points.forEach((point) => {
-      setHistoricalRates((prev) => ({ ...prev, [point]: res.data.statistics['priceFiatsSpot'][cur] }))
-    })
+    setToken(res.data)
   }
 
   useEffect(() => {
     getHistoricalRates()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, selectedCurrencyServer, token?.statistics?.timeAt])
-
   // Helper: price line as "fiat (XRP)" using historical rate when available
-  const priceLine = ({ price, key }) => {
-    if (!price) return null
-    const rate = historicalRates[key] || fiatRate
-    if (!rate) return null
-    const priceFiat = price * rate
+  const priceLine = ({ priceNative, priceFiat }) => {
     return (
       <span suppressHydrationWarning>
-        {niceNumber(priceFiat, 4, selectedCurrency)}
+        {niceNumber(priceFiat || 0, 4, selectedCurrency)}
         {isSsrMobile ? <br /> : ' '}
         <span className="grey">
           {!isSsrMobile && '('}
-          {niceNumber(price, 6)} {nativeCurrency}
+          {niceNumber(priceNative || 0, 6)} {nativeCurrency}
           {!isSsrMobile && ')'}
         </span>
       </span>
@@ -371,7 +358,7 @@ export default function TokenPage({
               <tbody>
                 <tr>
                   <td>Last price</td>
-                  <td>{priceLine({ price: statistics?.priceNativeCurrency, key: 'current' })}</td>
+                  <td>{priceLine({ priceNative: statistics?.priceNativeCurrency, priceFiat: statistics?.priceFiats[selectedCurrency]})}</td>
                 </tr>
                 <tr>
                   <td>Market cap</td>
@@ -380,31 +367,31 @@ export default function TokenPage({
                 {statistics?.priceNativeCurrencySpot && (
                   <tr>
                     <td>Spot price</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrencySpot, key: 'spot' })}</td>
+                    <td>{priceLine({ priceNative: statistics?.priceNativeCurrencySpot, priceFiat: statistics?.priceFiatsSpot[selectedCurrency]})}</td>
                   </tr>
                 )}
                 {statistics?.priceNativeCurrency5m && (
                   <tr>
                     <td>5 minutes ago</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrency5m, key: '5m' })}</td>
+                    <td>{priceLine({ priceNative: statistics?.priceNativeCurrency5m, priceFiat: statistics?.priceFiats5m[selectedCurrency]})}</td>
                   </tr>
                 )}
                 {statistics?.priceNativeCurrency1h && (
                   <tr>
                     <td>1 hour ago</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrency1h, key: '1h' })}</td>
+                    <td>{priceLine({ priceNative: statistics?.priceNativeCurrency1h, priceFiat: statistics?.priceFiats1h[selectedCurrency]})}</td>
                   </tr>
                 )}
                 {statistics?.priceNativeCurrency24h && (
                   <tr>
                     <td>24 hours ago</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrency24h, key: '24h' })}</td>
+                    <td>{priceLine({ priceNative: statistics?.priceNativeCurrency24h, priceFiat: statistics?.priceFiats24h[selectedCurrency]})}</td>
                   </tr>
                 )}
                 {statistics?.priceNativeCurrency7d && (
                   <tr>
                     <td>7 days ago</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrency7d, key: '7d' })}</td>
+                    <td>{priceLine({ priceNative: statistics?.priceNativeCurrency7d, priceFiat: statistics?.priceFiats7d[selectedCurrency]})}</td>
                   </tr>
                 )}
               </tbody>
