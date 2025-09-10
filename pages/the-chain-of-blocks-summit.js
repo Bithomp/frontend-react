@@ -19,8 +19,8 @@ export default function ChainOfBlocksSummit() {
   return (
     <>
       <SEO
-        title={'CHAIN OF BLOCKS SUMMIT 2025 — XRPL Community Summit.'}
-        description="The XRPL Community Summit in Europe — September 2, 2025 in Valletta, Malta. Insights, inspiration, and IRL connection."
+        title={'CHAIN OF BLOCKS SUMMIT 2026 — XRPL Community Summit.'}
+        description="The XRPL Community Summit in Europe — 2026 in Valletta, Malta. Insights, inspiration, and IRL connection."
         noindex={network !== 'mainnet'}
         image={{
           file: '/images/chainOfBlocksSummit/summit-preview.avif',
@@ -35,21 +35,21 @@ export default function ChainOfBlocksSummit() {
       />
       <article className="prose sm:prose-lg dark:prose-invert content-center">
         <h1>CHAIN OF BLOCKS SUMMIT</h1>
-        <h2>Europe, Malta 2025</h2>
+        <h2>Europe | Malta 2026 (Date To Be Announced)</h2>
         <figure>
           <Image
             src={'/images/chainOfBlocksSummit/summit-preview.avif'}
-            alt="Chain of Blocks Summit 2025"
+            alt="Chain of Blocks Summit 2026"
             width={940}
             height={348}
             className="max-w-full h-auto object-contain"
             priority
           />
-          <figcaption>Chain Of Blocks Summit 2025</figcaption>
+          <figcaption>Chain Of Blocks Summit 2026</figcaption>
         </figure>
         <p>
           {' '}
-          <strong>September 2, 2025 · Valletta, Malta</strong>
+          <strong>2026 (Date To Be Announced) · Valletta, Malta</strong>
         </p>
 
         <p>
@@ -82,7 +82,11 @@ export default function ChainOfBlocksSummit() {
         <h2>🤝 Brought to You By</h2>
         <p>
           {' '}
-          Co-organized by Bithomp and{' '}
+          Co-organized by{' '}
+          <Link href="https://x.com/bithomp">
+            <strong>Bithomp</strong>
+          </Link>{' '}
+          and{' '}
           <Link href="https://x.com/SnwoManYClub">
             <strong>SnwoMan</strong>
           </Link>{' '}
@@ -103,7 +107,7 @@ export default function ChainOfBlocksSummit() {
         <ul>
           <li>Looking for speakers and XRPL projects to present</li>
           <li>Welcoming sponsors</li>
-          <li>Inviting everyone to join us in Malta this September — developers, creators, users, and newcomers</li>
+          <li>Inviting everyone to join us in Malta — developers, creators, users, and newcomers</li>
         </ul>
 
         <h2>🧡 Community First</h2>
@@ -114,16 +118,18 @@ export default function ChainOfBlocksSummit() {
 
         <h2>🎫 Get your Tickets</h2>
         <p>
+          Tickets will be available in 2026.
+          {/*
           All the event details and tickets are available on Eventbrite:{' '}
           <Link href="https://ChainOfBlocksSummit.eventbrite.com">https://ChainOfBlocksSummit.eventbrite.com</Link>.
+          */}
         </p>
 
         <h2>🌍 Let’s build.</h2>
         <p>
-          📩 Interested in speaking, sponsoring, or helping out? DM{' '}
-          <Link href="https://x.com/Bakshayev">Bakshayev</Link>.
+          📩 Interested in speaking, sponsoring, or helping out? DM <Link href="https://x.com/bithomp">Bithomp</Link>.
         </p>
-        <p>📅 See you in Malta — September 2, 2025</p>
+        <p>📅 See you in Malta - 2026 (Date To Be Announced)</p>
       </article>
     </>
   )
