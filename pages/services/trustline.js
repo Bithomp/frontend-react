@@ -16,6 +16,7 @@ import { useState, useEffect } from 'react'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
+import RadioOptions from '../../components/UI/RadioOptions'
 import CopyButton from '../../components/UI/CopyButton'
 import TokenSelector from '../../components/UI/TokenSelector'
 import { LinkTx } from '../../utils/links'
@@ -94,12 +95,19 @@ export default function TrustSet({
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
 
-  // TrustSet flags
-  const toBool = (v) => v === '1' || v === 'true'
-  const [setFreeze, setSetFreeze] = useState(freezeQuery ? toBool(freezeQuery) : false)
-  const [setNoRipple, setSetNoRipple] = useState(noRippleQuery ? toBool(noRippleQuery) : true)
-  const [setAuthorized, setSetAuthorized] = useState(authorizedQuery ? toBool(authorizedQuery) : false)
-  const [setDeepFreeze, setSetDeepFreeze] = useState(deepFreezeQuery ? toBool(deepFreezeQuery) : false)
+  // TrustSet flags - using radio select states: 'none', 'set', 'clear'
+  const toFlagState = (v) => {
+    if (v === 'true') return 'set'
+    if (v === 'false') return 'clear'
+    return 'none'
+  }
+
+  const [freezeState, setFreezeState] = useState(freezeQuery ? toFlagState(freezeQuery) : 'none')
+  const [noRippleState, setNoRippleState] = useState(
+    noRippleQuery ? toFlagState(noRippleQuery) : modeQuery === 'simple' ? 'set' : 'none'
+  )
+  const [authorizedState, setAuthorizedState] = useState(authorizedQuery ? toFlagState(authorizedQuery) : 'none')
+  const [deepFreezeState, setDeepFreezeState] = useState(deepFreezeQuery ? toFlagState(deepFreezeQuery) : 'none')
 
   // Fetch token supply when token is selected in simple mode
   useEffect(() => {
@@ -148,6 +156,10 @@ export default function TrustSet({
       removeList.push('limit')
       removeList.push('qualityIn')
       removeList.push('qualityOut')
+      removeList.push('noRipple')
+      removeList.push('freeze')
+      removeList.push('authorized')
+      removeList.push('deepFreeze')
     } else {
       // advanced mode
       if (issuer && isAddressValid(issuer)) {
@@ -175,19 +187,23 @@ export default function TrustSet({
       } else {
         removeList.push('qualityOut')
       }
-    }
 
-    if (setFreeze) addList.push({ name: 'freeze', value: '1' })
-    else removeList.push('freeze')
-    if (!setNoRipple) addList.push({ name: 'noRipple', value: '0' })
-    else removeList.push('noRipple')
-    if (setAuthorized) addList.push({ name: 'authorized', value: '1' })
-    else removeList.push('authorized')
-    if (!xahauNetwork) {
-      if (setDeepFreeze) addList.push({ name: 'deepFreeze', value: '1' })
-      else removeList.push('deepFreeze')
-    } else {
-      removeList.push('deepFreeze')
+      if (noRippleState === 'set') addList.push({ name: 'noRipple', value: 'true' })
+      else if (noRippleState === 'clear') addList.push({ name: 'noRipple', value: 'false' })
+      else removeList.push('noRipple')
+
+      if (freezeState === 'set') addList.push({ name: 'freeze', value: 'true' })
+      else if (freezeState === 'clear') addList.push({ name: 'freeze', value: 'false' })
+      else removeList.push('freeze')
+
+      if (authorizedState === 'set') addList.push({ name: 'authorized', value: 'true' })
+      else removeList.push('authorized')
+
+      if (!xahauNetwork) {
+        if (deepFreezeState === 'set') addList.push({ name: 'deepFreeze', value: 'true' })
+        else if (deepFreezeState === 'clear') addList.push({ name: 'deepFreeze', value: 'false' })
+        else removeList.push('deepFreeze')
+      }
     }
 
     addAndRemoveQueryParams(router, addList, removeList)
@@ -200,10 +216,10 @@ export default function TrustSet({
     limit,
     qualityIn,
     qualityOut,
-    setFreeze,
-    setNoRipple,
-    setAuthorized,
-    setDeepFreeze
+    freezeState,
+    noRippleState,
+    authorizedState,
+    deepFreezeState
   ])
 
   const buildShareUrl = () => {
@@ -226,12 +242,20 @@ export default function TrustSet({
       }
       if (qualityIn) params.set('qualityIn', String(qualityIn))
       if (qualityOut) params.set('qualityOut', String(qualityOut))
-    }
 
-    if (setFreeze) params.set('freeze', '1')
-    if (!setNoRipple) params.set('noRipple', '0')
-    if (setAuthorized) params.set('authorized', '1')
-    if (!xahauNetwork && setDeepFreeze) params.set('deepFreeze', '1')
+      if (freezeState === 'set') params.set('freeze', 'true')
+      else if (freezeState === 'clear') params.set('freeze', 'false')
+
+      if (noRippleState === 'set') params.set('noRipple', 'true')
+      else if (noRippleState === 'clear') params.set('noRipple', 'false')
+
+      if (authorizedState === 'set') params.set('authorized', 'true')
+
+      if (!xahauNetwork) {
+        if (deepFreezeState === 'set') params.set('deepFreeze', 'true')
+        else if (deepFreezeState === 'clear') params.set('deepFreeze', 'false')
+      }
+    }
 
     const qs = params.toString()
     return qs ? `${server}${router.pathname}?${qs}` : `${server}${router.pathname}`
@@ -249,10 +273,16 @@ export default function TrustSet({
     }
   }
 
-  // Sync limit when switching modes
+  // Sync limit when switching modes and set default noRipple behavior
   useEffect(() => {
     if (mode === 'advanced' && tokenSupply) {
       setLimit(Math.round(tokenSupply * 1000000) / 1000000)
+    }
+    // Set default noRipple behavior based on mode
+    if (mode === 'simple') {
+      setNoRippleState('set')
+    } else if (mode === 'advanced') {
+      setNoRippleState('none')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, tokenSupply])
@@ -350,12 +380,24 @@ export default function TrustSet({
         trustSet.QualityOut = Number(multiply(qualityOut, 10000000))
       }
 
-      // Add flags
+      // Add flags - only include flags that are explicitly set or cleared
       let flags = 0
-      if (setFreeze) flags |= 0x00100000 // tfSetFreeze
-      if (setNoRipple) flags |= 0x00020000 // tfSetNoRipple
-      if (setAuthorized) flags |= 0x00010000 // tfSetfAuth
-      if (!xahauNetwork && setDeepFreeze) flags |= 0x00400000 // tfSetDeepFreeze (XRP only)
+      if (mode === 'advanced') {
+        if (freezeState === 'set') flags |= 0x00100000 // tfSetFreeze
+        else if (freezeState === 'clear') flags |= 0x00200000 // tfClearFreeze
+
+        if (noRippleState === 'set') flags |= 0x00020000 // tfSetNoRipple
+        else if (noRippleState === 'clear') flags |= 0x00040000 // tfClearNoRipple
+
+        if (authorizedState === 'set') flags |= 0x00010000 // tfSetfAuth
+
+        if (!xahauNetwork) {
+          if (deepFreezeState === 'set') flags |= 0x00400000 // tfSetDeepFreeze (XRP only)
+          else if (deepFreezeState === 'clear') flags |= 0x00800000 // tfClearDeepFreeze (XRP only)
+        }
+      } else {
+        flags |= 0x00020000 // tfSetNoRipple in simple mode
+      }
 
       if (flags > 0) {
         trustSet.Flags = flags
@@ -500,56 +542,68 @@ export default function TrustSet({
           {mode === 'advanced' && (
             <>
               <div className="form-spacing" />
-              <b>No Rippling</b> blocks indirect movement of your funds. (keep it checked unless you are a token issuer)
-              <CheckBox
-                checked={setNoRipple}
-                setChecked={() => {
-                  setSetNoRipple(!setNoRipple)
-                }}
-              >
-                No Rippling
-              </CheckBox>
+              <div>
+                <b>Rippling</b> - Controls indirect movement of your funds. (Disallow unless you are a token issuer)
+                <RadioOptions
+                  tabList={[
+                    { value: 'none', label: 'No change' },
+                    { value: 'clear', label: 'Allow' },
+                    { value: 'set', label: 'Disallow' }
+                  ]}
+                  tab={noRippleState}
+                  setTab={setNoRippleState}
+                  name="noRipple"
+                />
+              </div>
               <br />
-              <br />
-              <b>Authorize</b> - Authorizes the counterparty to hold currency issued by this account.{' '}
-              <span className="orange bold">Can not be unset.</span>
-              <CheckBox
-                checked={setAuthorized}
-                setChecked={() => {
-                  setSetAuthorized(!setAuthorized)
-                }}
-              >
-                Authorize
-              </CheckBox>
-              <br />
-              <br />
-              <b>Freeze</b> - Freezes the counterparty's ability to send the frozen currencies to others, but the
-              counterparty can still send them directly to the issuer.
-              <CheckBox
-                checked={setFreeze}
-                setChecked={() => {
-                  setSetFreeze(!setFreeze)
-                }}
-              >
-                Freeze
-              </CheckBox>
+              <div>
+                <b>Freeze</b> - Freezes the counterparty's ability to send the frozen currencies to others, but the
+                counterparty can still send them directly to the issuer.
+                <RadioOptions
+                  tabList={[
+                    { value: 'none', label: 'No change' },
+                    { value: 'set', label: 'Freeze' },
+                    { value: 'clear', label: 'Unfreeze' }
+                  ]}
+                  tab={freezeState}
+                  setTab={setFreezeState}
+                  name="freeze"
+                />
+              </div>
               {!xahauNetwork && (
                 <>
                   <br />
-                  <br />
-                  <b>Deep Freeze</b> - The counterparty cannot receive funds until or unless their Trustline is
-                  unfrozen. It requires that the issuer implement a standard freeze on the Trustline before enacting a
-                  Deep Freeze. The issuer cannot enact a Deep Freeze if they have enabled No Freeze on their account.
-                  <CheckBox
-                    checked={setDeepFreeze}
-                    setChecked={() => {
-                      setSetDeepFreeze(!setDeepFreeze)
-                    }}
-                  >
-                    Deep Freeze
-                  </CheckBox>
+                  <div>
+                    <b>Deep Freeze</b> - The counterparty cannot receive funds until or unless their Trustline is
+                    unfrozen. It requires that the issuer implement a standard freeze on the Trustline before enacting a
+                    Deep Freeze. The issuer cannot enact a Deep Freeze if they have enabled No Freeze on their account.
+                    <RadioOptions
+                      tabList={[
+                        { value: 'none', label: 'No change' },
+                        { value: 'set', label: 'Deep Freeze' },
+                        { value: 'clear', label: 'Clear Deep Freeze' }
+                      ]}
+                      tab={deepFreezeState}
+                      setTab={setDeepFreezeState}
+                      name="deepFreeze"
+                    />
+                  </div>
                 </>
               )}
+              <br />
+              <div>
+                <b>Authorize</b> - Grants the counterparty permission to hold currency issued by this account.{' '}
+                <span className="orange bold">Once enabled, it cannot be revoked.</span>
+                <RadioOptions
+                  tabList={[
+                    { value: 'none', label: 'No change' },
+                    { value: 'set', label: 'Authorize' }
+                  ]}
+                  tab={authorizedState}
+                  setTab={setAuthorizedState}
+                  name="authorized"
+                />
+              </div>
               <br />
               <p>
                 <strong>Quality</strong> — the exchange rate for this trustline.

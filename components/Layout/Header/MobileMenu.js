@@ -480,9 +480,11 @@ export default function MobileMenu({
           <a href="/go/fm-earn" target="_blank" rel="noreferrer" className="mobile-menu-item">
             {t('menu.sponsored.earn')}
           </a>
+          {/*
           <a href="/go/fm-play" target="_blank" rel="noreferrer" className="mobile-menu-item">
             {t('menu.sponsored.play')}
           </a>
+          */}
         </div>
       </div>
     </div>

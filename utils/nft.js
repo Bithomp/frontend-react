@@ -308,10 +308,6 @@ const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => {
     if (type === 'video' && uri.toLowerCase().includes('youtube.com')) {
       return null
     }
-    if (type === 'audio') {
-      // for https:// audio return original url
-      return stripText(uri)
-    }
     if (flags?.mutable && type === 'image') {
       //mutable NFTs can have changing images, so we do not cache them
       return stripText(uri)
