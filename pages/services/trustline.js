@@ -435,11 +435,11 @@ export default function TrustSet({
         </p>
 
         <div className="center">
-          <button className="button-action" onClick={() => router.push('/tokens')}>
-            View all token rankings
-          </button>
+          <Link href="/tokens">View TOP Tokens</Link>
+          <br />
+          <br />
         </div>
-        
+
         <div>
           {/* Mode Selection */}
           <div className="radio-options" style={{ justifyContent: 'center' }}>
