@@ -13,7 +13,7 @@ import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaChartLine
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 const tokensCountText = (rippleStateList) => {
   if (!rippleStateList) return ''
@@ -114,7 +114,6 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
   const width = useWidth()
   const { t } = useTranslation()
   const [totalBalance, setTotalBalance] = useState(0)
-  const router = useRouter()
 
   useEffect(() => {
     if (!pageFiatRate || !rippleStateList?.length) return
@@ -279,12 +278,9 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           {!rippleStateList?.length && (
             <tr>
               <td className="center" colSpan="100">
-                <button
-                  className="button-action center"
-                  onClick={() => router.push('/services/trustline?address=' + address)}
-                >
+                <Link href={'/services/trustline?address=' + address} className="button-action">
                   Add a token
-                </button>
+                </Link>
               </td>
             </tr>
           )}
