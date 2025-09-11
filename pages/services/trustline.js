@@ -46,7 +46,7 @@ export const getServerSideProps = async (context) => {
   } = query
   return {
     props: {
-      currencyQuery: currency || nativeCurrency,
+      currencyQuery: currency || '',
       currencyIssuerQuery: currencyIssuer || '',
       modeQuery: mode || 'simple',
       issuerQuery: issuer || '',
@@ -85,7 +85,6 @@ export default function TrustSet({
   // Simple mode state
   const [selectedToken, setSelectedToken] = useState({ currency: currencyQuery, issuer: currencyIssuerQuery })
   const [tokenSupply, setTokenSupply] = useState(null)
-
   // Advanced mode state
   const [issuer, setIssuer] = useState(issuerQuery || currencyIssuerQuery)
   const [currency, setCurrency] = useState({ currency: currencyQuery })
