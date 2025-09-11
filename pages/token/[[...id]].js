@@ -151,7 +151,7 @@ export default function TokenPage({
 
   const showPrice = (amount , rate) => {
     return <>
-      {amount < 0.1 ? 
+      {amount < 0.000001 ? 
         <>
           <span className="no-brake">
             {niceNumber(amount * 1000000, 6)}, 
