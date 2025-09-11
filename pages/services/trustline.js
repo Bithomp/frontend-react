@@ -184,18 +184,18 @@ export default function TrustSet({
       } else {
         removeList.push('qualityOut')
       }
+
+      if (noRippleState === 'set') addList.push({ name: 'noRipple', value: 'true' })
+      else if (noRippleState === 'clear') addList.push({ name: 'noRipple', value: 'false' })
+      else removeList.push('noRipple')
+
+      if (freezeState === 'set') addList.push({ name: 'freeze', value: 'true' })
+      else if (freezeState === 'clear') addList.push({ name: 'freeze', value: 'false' })
+      else removeList.push('freeze')
+
+      if (authorizedState === 'set') addList.push({ name: 'authorized', value: 'true' })
+      else removeList.push('authorized')
     }
-
-    if (freezeState === 'set') addList.push({ name: 'freeze', value: 'true' })
-    else if (freezeState === 'clear') addList.push({ name: 'freeze', value: 'false' })
-    else removeList.push('freeze')
-
-    if (noRippleState === 'set') addList.push({ name: 'noRipple', value: 'true' })
-    else if (noRippleState === 'clear') addList.push({ name: 'noRipple', value: 'false' })
-    else removeList.push('noRipple')
-
-    if (authorizedState === 'set') addList.push({ name: 'authorized', value: 'true' })
-    else removeList.push('authorized')
 
     if (!xahauNetwork) {
       if (deepFreezeState === 'set') addList.push({ name: 'deepFreeze', value: 'true' })
