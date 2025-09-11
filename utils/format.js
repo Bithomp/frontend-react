@@ -667,60 +667,39 @@ export const amountFormat = (amount, options = { icon: false }) => {
     />
   )
 
-  //add issued by (issuerDetails.service / username)
-  if (type !== nativeCurrency) {
-    if (options.tooltip) {
-      return (
-        <span suppressHydrationWarning>
-          {tokenImage}
-          {showValue} {valuePrefix}{' '}
+  if (options.tooltip) {
+    return (
+      <span suppressHydrationWarning>
+        {tokenImage}
+        {showValue} {valuePrefix}{' '}
+        {type === nativeCurrency ? (
+          textCurrency
+        ) : (
           <span className="tooltip">
             <Link href={'/account/' + issuer}>{currency}</Link>
             <span className={'tooltiptext ' + options.tooltip}>
               {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
             </span>
           </span>
-        </span>
-      )
-    } else if (options.withIssuer) {
-      return (
-        <span>
-          {tokenImage}
-          {showValue} {valuePrefix} {currency} ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})
-        </span>
-      )
-    } else {
-      return (
-        <span>
-          {tokenImage}
-          {showValue + ' ' + valuePrefix + ' ' + textCurrency}
-        </span>
-      )
-    }
+        )}
+      </span>
+    )
+  } else if (options.withIssuer) {
+    return (
+      <span>
+        {tokenImage}
+        {showValue} {valuePrefix} {currency} ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})
+      </span>
+    )
+  } else if (options.icon) {
+    return (
+      <span>
+        {tokenImage}
+        {showValue + ' ' + valuePrefix + ' ' + textCurrency}
+      </span>
+    )
   } else {
-    // For native currency, show icon without issuer info - same logic as /tokens page
-    if (options.tooltip) {
-      return (
-        <span suppressHydrationWarning>
-          {tokenImage}
-          {showValue} {valuePrefix} {textCurrency}
-        </span>
-      )
-    } else if (options.withIssuer) {
-      return (
-        <span>
-          {tokenImage}
-          {showValue} {valuePrefix} {textCurrency}
-        </span>
-      )
-    } else {
-      return (
-        <span>
-          {tokenImage}
-          {showValue + ' ' + valuePrefix + ' ' + textCurrency}
-        </span>
-      )
-    }
+    return showValue + '' + valuePrefix + ' ' + textCurrency
   }
 }
 
