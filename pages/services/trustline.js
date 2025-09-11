@@ -108,7 +108,7 @@ export default function TrustSet({
   const [noRippleState, setNoRippleState] = useState(
     noRippleQuery ? toFlagState(noRippleQuery) : modeQuery === 'simple' ? 'set' : 'none'
   )
-  const [authorizedState, setAuthorizedState] = useState(authorizedQuery ? toFlagState(authorizedQuery) : 'clear')
+  const [authorizedState, setAuthorizedState] = useState(authorizedQuery ? toFlagState(authorizedQuery) : 'none')
   const [deepFreezeState, setDeepFreezeState] = useState(deepFreezeQuery ? toFlagState(deepFreezeQuery) : 'none')
 
   // Fetch token supply when token is selected in simple mode
@@ -196,7 +196,7 @@ export default function TrustSet({
     else removeList.push('noRipple')
 
     if (authorizedState === 'set') addList.push({ name: 'authorized', value: 'true' })
-    else addList.push({ name: 'authorized', value: 'false' })
+    else removeList.push('authorized')
 
     if (!xahauNetwork) {
       if (deepFreezeState === 'set') addList.push({ name: 'deepFreeze', value: 'true' })
@@ -251,7 +251,6 @@ export default function TrustSet({
     else if (noRippleState === 'clear') params.set('noRipple', 'false')
 
     if (authorizedState === 'set') params.set('authorized', 'true')
-    else params.set('authorized', 'false')
 
     if (!xahauNetwork) {
       if (deepFreezeState === 'set') params.set('deepFreeze', 'true')
@@ -549,20 +548,6 @@ export default function TrustSet({
               </div>
               <br />
               <div>
-                <b>Authorize</b> - Authorizes the counterparty to hold currency issued by this account.{' '}
-                <span className="orange bold">Can not be unset once set.</span>
-                <RadioOptions
-                  tabList={[
-                    { value: 'set', label: 'Authorize' },
-                    { value: 'clear', label: 'Unauthorize' }
-                  ]}
-                  tab={authorizedState}
-                  setTab={setAuthorizedState}
-                  name="authorized"
-                />
-              </div>
-              <br />
-              <div>
                 <b>Freeze</b> - Freezes the counterparty's ability to send the frozen currencies to others, but the
                 counterparty can still send them directly to the issuer.
                 <RadioOptions
@@ -596,6 +581,20 @@ export default function TrustSet({
                   </div>
                 </>
               )}
+              <br />
+              <div>
+                <b>Authorize</b> - Grants the counterparty permission to hold currency issued by this account.{' '}
+                <span className="orange bold">Once enabled, it cannot be revoked.</span>
+                <RadioOptions
+                  tabList={[
+                    { value: 'none', label: 'No change' },
+                    { value: 'set', label: 'Authorize' }
+                  ]}
+                  tab={authorizedState}
+                  setTab={setAuthorizedState}
+                  name="authorized"
+                />
+              </div>
               <br />
               <p>
                 <strong>Quality</strong> — the exchange rate for this trustline.
