@@ -103,9 +103,11 @@ export default function TrustSet({
     if (v === 'false') return 'clear'
     return 'none'
   }
-  
+
   const [freezeState, setFreezeState] = useState(freezeQuery ? toFlagState(freezeQuery) : 'none')
-  const [noRippleState, setNoRippleState] = useState(noRippleQuery ? toFlagState(noRippleQuery) : (modeQuery === 'simple' ? 'set' : 'none'))
+  const [noRippleState, setNoRippleState] = useState(
+    noRippleQuery ? toFlagState(noRippleQuery) : modeQuery === 'simple' ? 'set' : 'none'
+  )
   const [authorizedState, setAuthorizedState] = useState(authorizedQuery ? toFlagState(authorizedQuery) : 'clear')
   const [deepFreezeState, setDeepFreezeState] = useState(deepFreezeQuery ? toFlagState(deepFreezeQuery) : 'none')
 
@@ -185,18 +187,17 @@ export default function TrustSet({
       }
     }
 
-
     if (freezeState === 'set') addList.push({ name: 'freeze', value: 'true' })
     else if (freezeState === 'clear') addList.push({ name: 'freeze', value: 'false' })
     else removeList.push('freeze')
-    
+
     if (noRippleState === 'set') addList.push({ name: 'noRipple', value: 'true' })
     else if (noRippleState === 'clear') addList.push({ name: 'noRipple', value: 'false' })
     else removeList.push('noRipple')
-    
+
     if (authorizedState === 'set') addList.push({ name: 'authorized', value: 'true' })
     else addList.push({ name: 'authorized', value: 'false' })
-    
+
     if (!xahauNetwork) {
       if (deepFreezeState === 'set') addList.push({ name: 'deepFreeze', value: 'true' })
       else if (deepFreezeState === 'clear') addList.push({ name: 'deepFreeze', value: 'false' })
@@ -245,13 +246,13 @@ export default function TrustSet({
 
     if (freezeState === 'set') params.set('freeze', 'true')
     else if (freezeState === 'clear') params.set('freeze', 'false')
-    
+
     if (noRippleState === 'set') params.set('noRipple', 'true')
     else if (noRippleState === 'clear') params.set('noRipple', 'false')
-    
+
     if (authorizedState === 'set') params.set('authorized', 'true')
     else params.set('authorized', 'false')
-    
+
     if (!xahauNetwork) {
       if (deepFreezeState === 'set') params.set('deepFreeze', 'true')
       else if (deepFreezeState === 'clear') params.set('deepFreeze', 'false')
@@ -384,12 +385,12 @@ export default function TrustSet({
       let flags = 0
       if (freezeState === 'set') flags |= 0x00100000 // tfSetFreeze
       else if (freezeState === 'clear') flags |= 0x00200000 // tfClearFreeze
-      
+
       if (noRippleState === 'set') flags |= 0x00020000 // tfSetNoRipple
       else if (noRippleState === 'clear') flags |= 0x00040000 // tfClearNoRipple
-      
+
       if (authorizedState === 'set') flags |= 0x00010000 // tfSetfAuth
-      
+
       if (!xahauNetwork) {
         if (deepFreezeState === 'set') flags |= 0x00400000 // tfSetDeepFreeze (XRP only)
         else if (deepFreezeState === 'clear') flags |= 0x00800000 // tfClearDeepFreeze (XRP only)
