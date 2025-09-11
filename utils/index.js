@@ -735,14 +735,7 @@ export const isDomainValid = (x) => {
 }
 
 export const isAddressValid = (x) => {
-  let address = x
-  if (Array.isArray(x)) {
-    address = String(x[0] ?? '').trim()
-  }
-  if (typeof address !== 'string') {
-    return false
-  }
-  return isValidClassicAddress(address)
+  return isValidClassicAddress(x)
 }
 
 export const isTagValid = (x) => {
