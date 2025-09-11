@@ -149,25 +149,6 @@ export default function TokenPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, selectedCurrencyServer, token?.statistics?.timeAt])
 
-  const showPrice = (amount , rate) => {
-    return <>
-      {amount < 0.000001 ? 
-        <>
-          <span className="no-brake">
-            {niceNumber(amount * 1000000, 6)}, 
-          </span>
-          <span className="no-brake">
-            1M {token?.currencyDetails?.currency} = {niceNumber(rate * 1000000, 6)} {nativeCurrency}, 
-          </span>
-        </> : <span className="no-brake">
-          {niceNumber(amount, 6) + ' ' + nativeCurrency}, 
-        </span>}
-        <span className="no-brake">
-          1 {nativeCurrency} = {niceNumber(1 / rate, 6)} {token?.currencyDetails?.currency}
-        </span>
-      </>
-  }
-
   // Helper: price line as "fiat (XRP)" using historical rate when available
   const priceLine = ({ price, key }) => {
     if (!price) return null
@@ -180,7 +161,17 @@ export default function TokenPage({
         {isSsrMobile ? <br /> : ' '}
         <span className="grey">
           {!isSsrMobile && '('}
-          {showPrice(price , rate)}
+          {price < 0.000001 ? 
+          <>
+            <span className="no-brake">
+              1M <span className="green">{token?.currencyDetails?.currency}</span> = {niceNumber(price * 1000000, 6)} <span className="red">{nativeCurrency}</span>, 
+            </span>
+          </> : <span className="no-brake">
+            {niceNumber(price, 6)} <span className="red">{nativeCurrency}</span>,
+          </span>}
+          <span className="no-brake">
+            1 <span className="red">{nativeCurrency}</span> = {niceNumber(1 / price, 6)} <span className="green">{token?.currencyDetails?.currency}</span>
+          </span>
           {!isSsrMobile && ')'}
         </span>
       </span>
