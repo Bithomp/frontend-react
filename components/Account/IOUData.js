@@ -110,7 +110,7 @@ const LimitsIcon = ({ trustline }) => {
   )
 }
 
-export default function IOUData({ address, rippleStateList, ledgerTimestamp, pageFiatRate, selectedCurrency }) {
+export default function IOUData({ address, rippleStateList, ledgerTimestamp, pageFiatRate, selectedCurrency, account, setSignRequest }) {
   const width = useWidth()
   const { t } = useTranslation()
   const [totalBalance, setTotalBalance] = useState(0)
@@ -184,6 +184,9 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
   ]
   */
 
+  // Check if user is logged in (has wallet connected)
+  const isLoggedIn = account?.address && account?.wallet
+
   // amount / gateway details / trustline settings
   const tokenRows = rippleStateList?.length ? (
     rippleStateList.map((tl, i) => {
@@ -240,7 +243,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
   ) : (
     <tr key="none">
       <td colSpan="100" className="center">
-        This account does not hold any issued tokens.
+        {isLoggedIn ? "You don't hold any tokens." : "This account doesn't have any tokens, login to manage your tokens."}
       </td>
     </tr>
   )
@@ -278,9 +281,22 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           {!rippleStateList?.length && (
             <tr>
               <td className="center" colSpan="100">
-                <Link href={'/services/trustline?address=' + address} className="button-action">
-                  Add a token
-                </Link>
+                {isLoggedIn ? (
+                  address === account?.address ? (
+                  <Link href={'/services/trustline?address=' + address} className="button-action">
+                    Add a token
+                  </Link>
+                  ) : (
+                    ''
+                  )
+                ) : (
+                  <button 
+                    className="button-action"
+                    onClick={() => setSignRequest({ redirect: 'account' })}
+                  >
+                    Log-in
+                  </button>
+                )}
               </td>
             </tr>
           )}
@@ -291,11 +307,6 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
         <center>
           {tokensCountText(rippleStateList)}
           {t('menu.tokens').toUpperCase()} {historicalTitle}[<a href={'/explorer/' + address}>Old View</a>]
-          {!rippleStateList?.length && (
-            <>
-              [<a href={'/services/trustline?address=' + address}>Add a token</a>]
-            </>
-          )}
           {totalBalance > 0 && (
             <div>
               <br />
@@ -309,17 +320,43 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
         </center>
         <br />
         {
-          <table className="table-mobile wide">
-            <tbody>
-              <tr>
-                <th>#</th>
-                <th className="left">Currency</th>
-                <th className="right">Balance</th>
-                <th className="right">Params</th>
-              </tr>
-              {tokenRows}
-            </tbody>
-          </table>
+          !rippleStateList?.length ? (
+            <>
+              {isLoggedIn ? (
+                <div className="center">
+                  <p>You don't hold any tokens.</p>
+                  { address === account?.address ? (
+                    <>[<a href={'/services/trustline?address=' + address}>Add a token</a>]</>
+                    ) : (
+                      ''
+                    )
+                  }
+                </div>
+              ) : (
+                <div className="center">
+                  <p>This account doesn't have any tokens, login to manage your tokens.</p>
+                  <button 
+                    className="button-action"
+                    onClick={() => setSignRequest({ redirect: 'account' })}
+                  >
+                    Log-in
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <table className="table-mobile wide">
+              <tbody>
+                <tr>
+                  <th>#</th>
+                  <th className="left">Currency</th>
+                  <th className="right">Balance</th>
+                  <th className="right">Params</th>
+                </tr>
+                {tokenRows}
+              </tbody>
+            </table>
+          )
         }
         <br />
       </div>
