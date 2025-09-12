@@ -330,7 +330,18 @@ export default function LedgerData({
       )
     </>
   ) : (
-    "This account doesn't hold Tokens."
+    account?.address === data?.address ? (
+      <>
+        <span>
+          You don't have any tokens
+        </span>
+        <Link href={'/services/trustline?address=' + data?.address} className="button-action">
+          Add a token
+        </Link>
+      </>
+    ) : (
+      <span>This account doesn't hold Tokens.</span>
+    )
   )
 
   const dexOrdersNode = !objects?.offerList ? (

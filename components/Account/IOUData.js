@@ -283,9 +283,9 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
               <td className="center" colSpan="100">
                 {isLoggedIn ? (
                   address === account?.address ? (
-                  <Link href={'/services/trustline?address=' + address} className="button-action">
-                    Add a token
-                  </Link>
+                    <Link href={'/services/trustline?address=' + address} className="button-action">
+                      Add a token
+                    </Link>
                   ) : (
                     ''
                   )
@@ -326,7 +326,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
                 <div className="center">
                   <p>You don't hold any tokens.</p>
                   { address === account?.address ? (
-                    <>[<a href={'/services/trustline?address=' + address}>Add a token</a>]</>
+                      <>[<a href={'/services/trustline?address=' + address}>Add a token</a>]</>
                     ) : (
                       ''
                     )
