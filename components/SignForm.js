@@ -171,15 +171,30 @@ export default function SignForm({
     }
 
     if (signRequest.action === 'nftTransfer') {
-      tx.Amount = '0'
-      if (!agreedToRisks) {
-        setScreen('nftTransfer')
-        return
-      } else {
-        if (!signRequest.request?.Destination) {
-          setStatus(t('form.error.address-empty'))
-          setFormError(true)
+      if (tx.TransactionType === 'Remit') {
+        // For Remit transactions, no Amount field is needed
+        if (!agreedToRisks) {
+          setScreen('nftTransfer')
           return
+        } else {
+          if (!signRequest.request?.Destination) {
+            setStatus(t('form.error.address-empty'))
+            setFormError(true)
+            return
+          }
+        }
+      } else {
+        // For regular NFT transfer offers
+        tx.Amount = '0'
+        if (!agreedToRisks) {
+          setScreen('nftTransfer')
+          return
+        } else {
+          if (!signRequest.request?.Destination) {
+            setStatus(t('form.error.address-empty'))
+            setFormError(true)
+            return
+          }
         }
       }
     }
@@ -904,13 +919,23 @@ export default function SignForm({
   const xls35Sell = signRequest?.request?.TransactionType === 'URITokenCreateSellOffer'
 
   const checkBoxText = (screen, signRequest) => {
-    if (screen === 'nftTransfer')
-      return (
-        <Trans i18nKey="signin.confirm.nft-transfer">
-          I'm offering that NFT for FREE to the Destination account,{' '}
-          <span className="orange bold">the destination account would need to accept the NFT transfer</span>.
-        </Trans>
-      )
+    if (screen === 'nftTransfer') {
+      if (signRequest.request?.TransactionType === 'Remit') {
+        return (
+          <span>
+            I'm sending this NFT directly to the Destination account using Remit.{' '}
+            <span className="orange bold">The destination will receive the NFT immediately, and I will pay for the NFT reserve requirements.</span>
+          </span>
+        )
+      } else {
+        return (
+          <Trans i18nKey="signin.confirm.nft-transfer">
+            I'm offering that NFT for FREE to the Destination account,{' '}
+            <span className="orange bold">the destination account would need to accept the NFT transfer</span>.
+          </Trans>
+        )
+      }
+    }
 
     if (screen === 'NFTokenBurn') return t('signin.confirm.nft-burn')
     if (screen === 'NFTokenModify') return 'I understand that URI will be updated for this NFT.'
