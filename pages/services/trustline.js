@@ -281,8 +281,6 @@ export default function TrustSet({
     // Set default noRipple behavior based on mode
     if (mode === 'simple') {
       setNoRippleState('set')
-    } else if (mode === 'advanced') {
-      setNoRippleState('none')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, tokenSupply])
