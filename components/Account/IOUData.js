@@ -266,16 +266,18 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           </tr>
         </thead>
         <tbody>
-          {rippleStateList?.length && (
+          {rippleStateList?.length ? (
             <tr>
               <th>#</th>
               <th className="left">Currency</th>
               <th className="right">Params</th>
               <th className="right">Balance</th>
             </tr>
+          ) : (
+            ''
           )}
           {tokenRows}
-          {!rippleStateList?.length && (
+          {!rippleStateList?.length ? (
             <tr>
               <td className="center" colSpan="100">
                 <Link href={'/services/trustline?address=' + address} className="button-action">
@@ -283,6 +285,8 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
                 </Link>
               </td>
             </tr>
+          ) : (
+            ''
           )}
         </tbody>
       </table>
