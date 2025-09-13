@@ -19,6 +19,12 @@ import {
 } from '../../utils/format'
 import { LinkTx, LedgerLink } from '../../utils/links'
 import { object } from '../../styles/pages/object.module.scss'
+import { network } from '../../utils'
+
+const errorNotFoundMessage =
+  'Such Object is not found on the current Ledger of the ' +
+  network.toUpperCase() +
+  " network, try to use a Time Machine to change the date or change the network if it's wrong."
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -49,7 +55,7 @@ export async function getServerSideProps(context) {
     data = res?.data
     // Handle case when the object is not found
     if (data?.error) {
-      errorMessage = data.error_message || 'Such object is not found on that network'
+      errorMessage = data.error_message || errorNotFoundMessage
       data = null
     }
   } catch (e) {
@@ -250,7 +256,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
     try {
       const res = await axios('/v2/ledgerEntry/' + id + query)
       if (res?.data?.error === 'entryNotFound') {
-        setErrorMessage('Such object is not found on that network')
+        setErrorMessage(errorNotFoundMessage)
         setData(null)
       } else {
         setData(res?.data)
