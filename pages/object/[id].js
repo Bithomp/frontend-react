@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
@@ -29,8 +29,11 @@ export async function getServerSideProps(context) {
 
   const makeQueryString = () => {
     const params = []
-    if (ledgerIndex) params.push('ledgerIndex=' + ledgerIndex)
-    if (date) params.push('date=' + date)
+    if (ledgerIndex) {
+      params.push('ledgerIndex=' + ledgerIndex)
+    } else if (date) {
+      params.push('date=' + date)
+    }
     if (previousTxHash) params.push('previousTxHash=' + previousTxHash)
     return params.length ? '?' + params.join('&') : ''
   }
