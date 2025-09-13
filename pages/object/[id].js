@@ -15,7 +15,8 @@ import {
   AddressWithIconFilled,
   amountFormatNode,
   addressUsernameOrServiceLink,
-  shortAddress
+  shortAddress,
+  fullDateAndTime
 } from '../../utils/format'
 import { LinkTx, LedgerLink } from '../../utils/links'
 import { object } from '../../styles/pages/object.module.scss'
@@ -30,42 +31,28 @@ function stripKeys(obj) {
   if (Array.isArray(obj)) {
     return obj.map(stripKeys)
   } else if (obj && typeof obj === 'object') {
-    // Pre-check: Do we have matching uppercase siblings with the same value?
-    const hasMatchingCancel =
+    const hasBothCancel =
       Object.prototype.hasOwnProperty.call(obj, 'cancelAfter') &&
-      Object.prototype.hasOwnProperty.call(obj, 'CancelAfter') &&
-      isSameValue(obj.cancelAfter, obj.CancelAfter)
+      Object.prototype.hasOwnProperty.call(obj, 'CancelAfter')
 
-    const hasMatchingFinish =
+    const hasBothFinish =
       Object.prototype.hasOwnProperty.call(obj, 'finishAfter') &&
-      Object.prototype.hasOwnProperty.call(obj, 'FinishAfter') &&
-      isSameValue(obj.finishAfter, obj.FinishAfter)
+      Object.prototype.hasOwnProperty.call(obj, 'FinishAfter')
 
     const result = {}
     for (const [key, value] of Object.entries(obj)) {
       // Always drop any *Details keys
       if (key.includes('Details')) continue
 
-      // Conditionally drop lowercase duplicates when the matching UPPER key exists with same value
-      if (key === 'cancelAfter' && hasMatchingCancel) continue
-      if (key === 'finishAfter' && hasMatchingFinish) continue
+      // Drop lowercase if both lower+upper exist
+      if (key === 'cancelAfter' && hasBothCancel) continue
+      if (key === 'finishAfter' && hasBothFinish) continue
 
       result[key] = stripKeys(value)
     }
     return result
   }
   return obj
-}
-
-// Compare values safely (handles primitives/JSON-safe structures)
-function isSameValue(a, b) {
-  if (a === b) return true
-  // Fallback for cases like number-as-string vs number, or simple objects
-  try {
-    return JSON.stringify(a) === JSON.stringify(b)
-  } catch {
-    return String(a) === String(b)
-  }
 }
 
 export async function getServerSideProps(context) {
@@ -228,11 +215,24 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
             </tr>
           )
         }
-        if (key === 'previousTxAt' || key === 'CancelAfter' || key === 'Finishafter') {
+        if (key === 'previousTxAt') {
           return (
             <tr key={key}>
               <td>{key}</td>
-              <td>{new Date(value * 1000).toISOString()}</td>
+              <td>
+                {fullDateAndTime(value * 1000)} ({value})
+              </td>
+            </tr>
+          )
+        }
+
+        if (key === 'CancelAfter' || key === 'FinishAfter') {
+          return (
+            <tr key={key}>
+              <td>{key}</td>
+              <td>
+                {fullDateAndTime(value, 'ripple')} ({value})
+              </td>
             </tr>
           )
         }
