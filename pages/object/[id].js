@@ -26,6 +26,48 @@ const errorNotFoundMessage =
   network.toUpperCase() +
   " network, try to use a Time Machine to change the date or change the network if it's wrong."
 
+function stripKeys(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map(stripKeys)
+  } else if (obj && typeof obj === 'object') {
+    // Pre-check: Do we have matching uppercase siblings with the same value?
+    const hasMatchingCancel =
+      Object.prototype.hasOwnProperty.call(obj, 'cancelAfter') &&
+      Object.prototype.hasOwnProperty.call(obj, 'CancelAfter') &&
+      isSameValue(obj.cancelAfter, obj.CancelAfter)
+
+    const hasMatchingFinish =
+      Object.prototype.hasOwnProperty.call(obj, 'finishAfter') &&
+      Object.prototype.hasOwnProperty.call(obj, 'FinishAfter') &&
+      isSameValue(obj.finishAfter, obj.FinishAfter)
+
+    const result = {}
+    for (const [key, value] of Object.entries(obj)) {
+      // Always drop any *Details keys
+      if (key.includes('Details')) continue
+
+      // Conditionally drop lowercase duplicates when the matching UPPER key exists with same value
+      if (key === 'cancelAfter' && hasMatchingCancel) continue
+      if (key === 'finishAfter' && hasMatchingFinish) continue
+
+      result[key] = stripKeys(value)
+    }
+    return result
+  }
+  return obj
+}
+
+// Compare values safely (handles primitives/JSON-safe structures)
+function isSameValue(a, b) {
+  if (a === b) return true
+  // Fallback for cases like number-as-string vs number, or simple objects
+  try {
+    return JSON.stringify(a) === JSON.stringify(b)
+  } catch {
+    return String(a) === String(b)
+  }
+}
+
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   const { id, ledgerIndex, date, previousTxHash } = query
@@ -123,7 +165,9 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
       </tr>
     ) : null
 
-    const rows = Object.entries(data.node)
+    const cleanData = stripKeys(data.node)
+
+    const rows = Object.entries(cleanData)
       .filter(([key]) => key !== 'LedgerEntryType') // Exclude LedgerEntryType from regular rows
       .map(([key, value]) => {
         // Link for transaction id
@@ -184,7 +228,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
             </tr>
           )
         }
-        if (key === 'previousTxAt') {
+        if (key === 'previousTxAt' || key === 'CancelAfter' || key === 'Finishafter') {
           return (
             <tr key={key}>
               <td>{key}</td>
@@ -496,7 +540,9 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                         </tr>
                       </tbody>
                     </table>
-                    <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>{showRaw && codeHighlight(data)}</div>
+                    <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>
+                      {showRaw && codeHighlight(stripKeys(data))}
+                    </div>
                   </>
                 )}
               </div>
