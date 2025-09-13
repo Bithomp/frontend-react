@@ -602,6 +602,7 @@ export default function Account({
                               data={data}
                               objects={objects}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              selectedCurrency={selectedCurrency}
                             />
                           )}
 
