@@ -259,11 +259,15 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
                 <>
                   [<a href={'/services/trustline?address=' + address}>Add a token</a>]
                 </>
+              ) : (!account?.address && rippleStateList?.length ? (
+                <>
+                  [<a onClick={() => setSignRequest({ redirect: 'account' })}> Login </a>]
+                </>
               ) : (
                 <>
                   [<a href={'/explorer/' + address}>Old View</a>]
                 </>
-              )}
+              ))}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
                   Total worth:{' '}
