@@ -9,7 +9,7 @@ import {
 } from '../../utils/format'
 import { LinkAccount } from '../../utils/links'
 import { useWidth } from '../../utils'
-import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaChartLine } from 'react-icons/fa'
+import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaInfoCircle } from 'react-icons/fa'
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
@@ -104,7 +104,7 @@ const LimitsIcon = ({ trustline }) => {
 
   return (
     <span className="tooltip">
-      <FaChartLine style={{ fontSize: 18, marginBottom: -4 }} />
+      <FaInfoCircle style={{ fontSize: 18, marginBottom: -4 }} />
       <span className="tooltiptext no-brake">{tooltipText}</span>
     </span>
   )
@@ -254,8 +254,16 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
         <thead>
           <tr>
             <th colSpan="100">
-              {tokensCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle} [
-              <a href={'/explorer/' + address}>Old View</a>]
+              {tokensCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle}
+              {account?.address && rippleStateList?.length ? (
+                <>
+                  [<a href={'/services/trustline?address=' + address}>Add a token</a>]
+                </>
+              ) : (
+                <>
+                  [<a href={'/explorer/' + address}>Old View</a>]
+                </>
+              )}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
                   Total worth:{' '}
