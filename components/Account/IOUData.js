@@ -292,7 +292,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
             ''
           )}
           {tokenRows}
-          {!rippleStateList?.length && (
+          {!rippleStateList?.length ? (
             <tr>
               <td className="center" colSpan="100">
                 {isLoggedIn ? (
@@ -313,6 +313,8 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
                 )}
               </td>
             </tr>
+          ) : (
+            ''
           )}
         </tbody>
       </table>

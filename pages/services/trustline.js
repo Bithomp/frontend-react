@@ -103,9 +103,7 @@ export default function TrustSet({
   }
 
   const [freezeState, setFreezeState] = useState(freezeQuery ? toFlagState(freezeQuery) : 'none')
-  const [noRippleState, setNoRippleState] = useState(
-    noRippleQuery ? toFlagState(noRippleQuery) : modeQuery === 'simple' ? 'set' : 'none'
-  )
+  const [noRippleState, setNoRippleState] = useState(noRippleQuery ? toFlagState(noRippleQuery) : 'none')
   const [authorizedState, setAuthorizedState] = useState(authorizedQuery ? toFlagState(authorizedQuery) : 'none')
   const [deepFreezeState, setDeepFreezeState] = useState(deepFreezeQuery ? toFlagState(deepFreezeQuery) : 'none')
 
@@ -273,16 +271,10 @@ export default function TrustSet({
     }
   }
 
-  // Sync limit when switching modes and set default noRipple behavior
+  // Sync limit when switching modes
   useEffect(() => {
     if (mode === 'advanced' && tokenSupply) {
       setLimit(Math.round(tokenSupply * 1000000) / 1000000)
-    }
-    // Set default noRipple behavior based on mode
-    if (mode === 'simple') {
-      setNoRippleState('set')
-    } else if (mode === 'advanced') {
-      setNoRippleState('none')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, tokenSupply])
