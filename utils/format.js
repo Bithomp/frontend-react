@@ -688,7 +688,8 @@ export const amountFormat = (amount, options = { icon: false }) => {
     return (
       <span>
         {tokenImage}
-        {showValue} {valuePrefix} {currency} ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})
+        {showValue} {valuePrefix} {currency}
+        {amount.issuer ? <>({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</> : ''}
       </span>
     )
   } else if (options.icon) {
