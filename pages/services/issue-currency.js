@@ -4,7 +4,7 @@ import SEO from '../../components/SEO'
 import FormInput from '../../components/UI/FormInput'
 import AddressInput from '../../components/UI/AddressInput'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
-import { ledgerName } from '../../utils'
+import { ledgerName, nativeCurrency } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 
 export const getServerSideProps = async (context) => {
@@ -99,14 +99,14 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
       <>
         <SEO
           title="Issue Your Own Currency"
-          description="Create and issue your own custom currency on the XRPL - Bithomp Pro feature"
+          description={`Create and issue your own custom currency on the ${ledgerName} - Bithomp Pro feature`}
         />
         <div className="content-text content-center">
           <h1 className="center">Issue Your Own Currency</h1>
           <div className="ic-pro-access-required">
             <h2>Bithomp Pro Required</h2>
             <p>This feature is available exclusively to Bithomp Pro subscribers.</p>
-            <p>Upgrade to Pro to unlock the ability to create and issue your own custom currencies on the XRPL.</p>
+            <p>Upgrade to Pro to unlock the ability to create and issue your own custom currencies on the {ledgerName}.</p>
             <br />
             <center>
               <button className="button-action" onClick={openEmailLogin}>
@@ -344,7 +344,7 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
     <>
       <SEO
         title="Issue Your Own Currency"
-        description="Create and issue your own custom currency on the XRPL - Bithomp Pro feature"
+        description={`Create and issue your own custom currency on the ${ledgerName} - Bithomp Pro feature`}
       />
 
       <section className="home-section">
@@ -503,13 +503,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                               setIsSettingColdAddress(false)
                             }}
                           />
-                          <span>Disallow XRP</span>
+                          <span>Disallow {nativeCurrency}</span>
                         </label>
                         <span className="ic-flag-status-indicator">
                           {disallowXRP ? '✓ Enabled' : '✗ Disabled'}
                         </span>
                       </div>
-                      <small>Prevent incoming XRP payments</small>
+                      <small>Prevent incoming {nativeCurrency} payments</small>
                     </div>
                       <div 
                         className={`ic-flag-option ${requireDestTag ? 'enabled' : 'disabled'}`}
@@ -681,13 +681,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                             setIsSettingHotWallet(false)
                           }}
                         />
-                        <span>Disallow XRP</span>
+                        <span>Disallow {nativeCurrency}</span>
                       </label>
                       <span className="ic-flag-status-indicator">
                         {hotDisallowXRP ? '✓ Enabled' : '✗ Disabled'}
                       </span>
                     </div>
-                    <small>Prevent incoming XRP payments to hot wallet</small>
+                    <small>Prevent incoming {nativeCurrency} payments to hot wallet</small>
                   </div>
                   
                   <div 
