@@ -578,6 +578,8 @@ export default function Account({
                               address={data?.address}
                               pageFiatRate={pageFiatRate}
                               selectedCurrency={selectedCurrency}
+                              account={account}
+                              setSignRequest={setSignRequest}
                             />
                           </div>
                           {/* don't show yet obligations historically */}
