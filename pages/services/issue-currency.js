@@ -73,11 +73,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
   // Update canProceedFromStep1 when dependent values change
   useEffect(() => {
     setCanProceedFromStep1(supplyType && coldWalletAddress)
+    setIsSettingColdAddress(false)
   }, [supplyType, coldWalletAddress])
 
   // Update canProceedFromStep2 when dependent values change
   useEffect(() => {
     setCanProceedFromStep2(hotWalletAddress && currencyCode && totalSupply)
+    setIsSettingHotWallet(false)
   }, [hotWalletAddress, currencyCode, totalSupply])
 
   const handleNextStep = () => {
@@ -105,12 +107,12 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
             <h2>Bithomp Pro Required</h2>
             <p>This feature is available exclusively to Bithomp Pro subscribers.</p>
             <p>Upgrade to Pro to unlock the ability to create and issue your own custom currencies on the XRPL.</p>
-            <button 
-              className="btn btn-primary"
-              onClick={openEmailLogin}
-            >
-              Upgrade to Pro
-            </button>
+            <br />
+            <center>
+              <button className="button-action" onClick={openEmailLogin}>
+                Register or Sign In
+              </button>
+            </center>
           </div>
         </div>
       </>
@@ -150,6 +152,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
     }
 
     const generatedWalletLocator = generateWalletLocator(coldWalletAddress)
+    
+    // Validate WalletLocator format
+    if (!/^[0-9A-F]{64}$/.test(generatedWalletLocator)) {
+      setColdAddressError('Invalid cold wallet address format')
+      return
+    }
+    
     setColdAddressError('')
     setColdAddressSuccess('')
 
@@ -162,18 +171,37 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
       tfFlags |= TF_FLAGS.disallowXRP.set
     }
 
+    // Validate TransferRate and TickSize
+    const transferRateValue = parseInt(coldTransferRate)
+    const tickSizeValue = parseInt(tickSize)
+    
+    if (transferRateValue < 0 || transferRateValue > 100) {
+      setColdAddressError('Transfer rate must be between 0 and 100 percent')
+      return
+    }
+    
+    if (tickSizeValue < 0 || tickSizeValue > 15) {
+      setColdAddressError('Tick size must be between 0 and 15')
+      return
+    }
+
     // Create comprehensive AccountSet transaction
     const tx = {
       TransactionType: 'AccountSet',
       Account: account.address,
-      TransferRate: parseInt(coldTransferRate) * 1000000000, // Convert to drops
-      TickSize: parseInt(tickSize),
+      TransferRate: transferRateValue === 0 ? 0 : transferRateValue * 1000000000, // Convert to drops, 0 means no fee
+      TickSize: tickSizeValue,
       WalletLocator: generatedWalletLocator,
       setFlag: ASF_FLAGS.asfDefaultRipple
     }
 
     // Add domain if provided
     if (domain) {
+      // Validate domain format (basic validation)
+      if (domain.length > 256) {
+        setColdAddressError('Domain name too long (maximum 256 characters)')
+        return
+      }
       tx.Domain = domainToHex(domain)
     }
 
