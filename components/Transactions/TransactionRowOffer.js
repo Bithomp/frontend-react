@@ -64,7 +64,6 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency}) => {
             {sourceBalanceChangesList.map((change, index) => (
               <div key={index}>
                 <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                  {Number(change?.value) > 0 && '+'}
                   {amountFormat(change, { icon: true })}
                 </span>
                 {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}

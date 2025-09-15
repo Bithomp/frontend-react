@@ -641,7 +641,7 @@ export const amountFormat = (amount, options = { icon: false }) => {
     return value + ' ' + valuePrefix + ' ' + textCurrency
   }
 
-  let showValue = value
+  let showValue = value > 0 && options.icon ? '+' + value : value
 
   if (Math.abs(value) >= 100) {
     if (options.short) {

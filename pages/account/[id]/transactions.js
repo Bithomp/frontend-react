@@ -5,7 +5,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-
 import { getIsSsrMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
 import { useWidth } from '../../../utils'
@@ -350,6 +349,7 @@ export default function AccountTransactions({
                 maxDate={new Date()}
                 showMonthDropdown
                 showYearDropdown
+                isClearable={true}
               />
             </div>
             <div>
