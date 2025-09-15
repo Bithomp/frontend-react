@@ -8,7 +8,13 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
 import { stripText, decode, network, isValidJson, xahauNetwork, devNet, encode } from '../../utils'
-import { AddressWithIconFilled, convertedAmount, timeFromNow, usernameOrAddress } from '../../utils/format'
+import {
+  AddressWithIconFilled,
+  convertedAmount,
+  nativeCurrencyToFiat,
+  timeFromNow,
+  usernameOrAddress
+} from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl, isNftExplicit } from '../../utils/nft'
 import {
@@ -76,7 +82,7 @@ const hasJsonMeta = (nft) => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== 'bithomp'
 }
 
-export default function Nft({ setSignRequest, account, pageMeta, id, selectedCurrency, refreshPage }) {
+export default function Nft({ setSignRequest, account, pageMeta, id, selectedCurrency, refreshPage, fiatRate }) {
   const { t, i18n } = useTranslation()
   const isFirstRender = useRef(true)
 
@@ -446,7 +452,19 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           </tr>
           <tr>
             <td>{t('table.amount')}</td>
-            <td>{amountFormat(offer.amount, { withIssuer: true })}</td>
+            <td>
+              {amountFormat(offer.amount, { withIssuer: true })}
+              {/* only show the current prices, add to show historical for accepted/canceled*/}
+              {!offer.canceledAt && !offer.acceptedAt && fiatRate > 0 && (
+                <span className="grey">
+                  {nativeCurrencyToFiat({
+                    amount: offer.amount,
+                    selectedCurrency,
+                    fiatRate
+                  })}
+                </span>
+              )}
+            </td>
           </tr>
           {offer.createdAt && (
             <tr>
