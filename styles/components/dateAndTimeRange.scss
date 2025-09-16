@@ -74,3 +74,35 @@ input {
     width: 100%;
   }
 }
+
+.date-picker-container {
+  position: relative;
+  display: inline-block;
+  height: fit-content;
+
+  .date-picker-clear {
+    position: absolute;
+    right: 8px;
+    top: calc(50% - 5px);
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--unaccent-icon);
+    transition: color 0.3s;
+    z-index: 10;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: var(--text-main);
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
