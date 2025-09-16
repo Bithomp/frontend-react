@@ -184,9 +184,28 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
   ]
   */
 
+  // Sort tokens by fiat value (largest first), with 0 amount tokens at the end
+  const sortedTokens = rippleStateList?.length ? rippleStateList.sort((a, b) => {
+    const balanceA = Math.abs(subtract(a.Balance?.value, a.LockedBalance?.value ? a.LockedBalance?.value : 0))
+    const balanceB = Math.abs(subtract(b.Balance?.value, b.LockedBalance?.value ? b.LockedBalance?.value : 0))
+    
+    // If both have 0 balance, maintain original order
+    if (balanceA === 0 && balanceB === 0) return 0
+    
+    // If only one has 0 balance, put it at the end
+    if (balanceA === 0) return 1
+    if (balanceB === 0) return -1
+    
+    // Both have non-zero balance, sort by fiat value (largest first)
+    const fiatValueA = a.priceNativeCurrencySpot * pageFiatRate * balanceA || 0
+    const fiatValueB = b.priceNativeCurrencySpot * pageFiatRate * balanceB || 0
+    
+    return fiatValueB - fiatValueA
+  }) : []
+
   // amount / gateway details / trustline settings
-  const tokenRows = rippleStateList?.length ? (
-    rippleStateList.map((tl, i) => {
+  const tokenRows = sortedTokens?.length ? (
+    sortedTokens.map((tl, i) => {
       const issuer = tl.HighLimit?.issuer === address ? tl.LowLimit : tl.HighLimit
       const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
 
@@ -266,7 +285,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           </tr>
         </thead>
         <tbody>
-          {rippleStateList?.length ? (
+          {sortedTokens?.length ? (
             <tr>
               <th>#</th>
               <th className="left">Currency</th>
@@ -277,7 +296,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
             ''
           )}
           {tokenRows}
-          {!rippleStateList?.length ? (
+          {!sortedTokens?.length ? (
             <tr>
               <td className="center" colSpan="100">
                 <Link href={'/services/trustline?address=' + address} className="button-action">
@@ -295,7 +314,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
         <center>
           {tokensCountText(rippleStateList)}
           {t('menu.tokens').toUpperCase()} {historicalTitle}[<a href={'/explorer/' + address}>Old View</a>]
-          {!rippleStateList?.length && (
+          {!sortedTokens?.length && (
             <>
               [<a href={'/services/trustline?address=' + address}>Add a token</a>]
             </>
