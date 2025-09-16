@@ -417,17 +417,17 @@ export default function Faucet({ account, type, sessionTokenData }) {
                   {testPayment ? (
                     <>
                       <b className="green">{fullNiceNumber(data.amount)} drops</b> (
-                      {amountFormat(data.amount, 6)?.trim()})
+                      {amountFormat(data.amount, { noSpaces: true })})
                     </>
                   ) : (
-                    <b className="green">{amountFormat(data.amount, 6)?.trim()}</b>
+                    <b className="green">{amountFormat(data.amount, { noSpaces: true })}</b>
                   )}
                 </p>
               )}
               {data.fee && (
                 <p>
                   {t('table.fee', { ns: 'faucet' })}: <b className="green">{data.fee} drops</b> (
-                  {amountFormat(data.fee, 6)?.trim()})
+                  {amountFormat(data.fee, { noSpaces: true })})
                 </p>
               )}
               {data.executionTime && (
