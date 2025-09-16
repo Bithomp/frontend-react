@@ -165,8 +165,8 @@ export default function TokenPage({
             <>
               <span className="no-brake">
                 1M <span className="green">{token?.currencyDetails?.currency}</span> = {niceNumber(price * 1000000, 6)}{' '}
-                <span className="red">{nativeCurrency}</span>,{' '}
               </span>
+              <span className="red no-brake">{nativeCurrency}</span>,{' '}
             </>
           ) : (
             <span className="no-brake">
