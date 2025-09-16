@@ -171,30 +171,16 @@ export default function SignForm({
     }
 
     if (signRequest.action === 'nftTransfer') {
-      if (tx.TransactionType === 'Remit') {
-        // For Remit transactions, no Amount field is needed
-        if (!agreedToRisks) {
-          setScreen('nftTransfer')
-          return
-        } else {
-          if (!signRequest.request?.Destination) {
-            setStatus(t('form.error.address-empty'))
-            setFormError(true)
-            return
-          }
-        }
+      if (!tx.TransactionType === 'Remit') tx.Amount = '0'
+      // For Remit transactions, no Amount field is needed
+      if (!agreedToRisks) {
+        setScreen('nftTransfer')
+        return
       } else {
-        // For regular NFT transfer offers
-        tx.Amount = '0'
-        if (!agreedToRisks) {
-          setScreen('nftTransfer')
+        if (!signRequest.request?.Destination) {
+          setStatus(t('form.error.address-empty'))
+          setFormError(true)
           return
-        } else {
-          if (!signRequest.request?.Destination) {
-            setStatus(t('form.error.address-empty'))
-            setFormError(true)
-            return
-          }
         }
       }
     }
