@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { IoMdClose } from 'react-icons/io'
@@ -98,6 +99,20 @@ export default function AccountTransactions({
 }) {
   const { t } = useTranslation()
   const width = useWidth()
+  const router = useRouter()
+
+  // URL synchronization functions
+  const getInitialFilterValue = (key, defaultValue) => {
+    if (router.isReady && router.query[key]) {
+      const value = router.query[key]
+      // Handle date values
+      if (key === 'fromDate' || key === 'toDate') {
+        return value ? new Date(value) : defaultValue
+      }
+      return value
+    }
+    return defaultValue
+  }
 
   // User data for SearchBlock
   const [userData, setUserData] = useState({
@@ -111,14 +126,14 @@ export default function AccountTransactions({
   const [marker, setMarker] = useState(initialMarker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [order, setOrder] = useState('newest') // newest | oldest
+  const [order, setOrder] = useState(() => getInitialFilterValue('order', 'newest')) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
-  const [txType, setTxType] = useState('tx') // tx = all types
-  const [initiated, setInitiated] = useState('0') // 0 = both, 1 = outgoing, 2 = incoming
-  const [excludeFailures, setExcludeFailures] = useState('0') // 0 = include, 1 = exclude
-  const [counterparty, setCounterparty] = useState('')
-  const [fromDate, setFromDate] = useState('')
-  const [toDate, setToDate] = useState('')
+  const [txType, setTxType] = useState(() => getInitialFilterValue('txType', 'tx')) // tx = all types
+  const [initiated, setInitiated] = useState(() => getInitialFilterValue('initiated', '0')) // 0 = both, 1 = outgoing, 2 = incoming
+  const [excludeFailures, setExcludeFailures] = useState(() => getInitialFilterValue('excludeFailures', '0')) // 0 = include, 1 = exclude
+  const [counterparty, setCounterparty] = useState(() => getInitialFilterValue('counterparty', ''))
+  const [fromDate, setFromDate] = useState(() => getInitialFilterValue('fromDate', ''))
+  const [toDate, setToDate] = useState(() => getInitialFilterValue('toDate', ''))
 
   // Update userData when initialUserData changes
   useEffect(() => {
@@ -144,6 +159,22 @@ export default function AccountTransactions({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, userData?.address])
+
+  // Sync filter changes to URL
+  useEffect(() => {
+    if (router.isReady) {
+      updateURL({
+        order,
+        txType,
+        initiated,
+        excludeFailures,
+        counterparty,
+        fromDate: fromDate ? fromDate.toISOString() : '',
+        toDate: toDate ? toDate.toISOString() : ''
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, txType, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
 
   // Helpers
   const orderList = [
@@ -269,6 +300,28 @@ export default function AccountTransactions({
 
   const clearToDate = () => {
     setToDate('')
+  }
+
+  // URL synchronization functions
+  const updateURL = (newFilters) => {
+    if (!router.isReady) return
+    
+    const query = { ...router.query }
+    
+    // Update query parameters with new filter values
+    Object.keys(newFilters).forEach(key => {
+      if (newFilters[key] && newFilters[key] !== '' && newFilters[key] !== '0' && newFilters[key] !== 'tx' && newFilters[key] !== 'newest') {
+        query[key] = newFilters[key]
+      } else {
+        delete query[key]
+      }
+    })
+
+    // Update URL without triggering a page reload
+    router.replace({
+      pathname: router.pathname,
+      query
+    }, undefined, { shallow: true })
   }
 
   return (
