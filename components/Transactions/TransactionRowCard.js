@@ -82,12 +82,12 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             <br />
           </>
         )}
-        {tx.Sequence && (
+        {tx.Sequence ? (
           <>
             <span className="gray">Sequence: {tx.Sequence}</span>
             <br />
           </>
-        )}
+        ) : ''}
         {(dapp ||
           (tx?.SourceTag !== undefined &&
             tx.TransactionType !== 'Payment' &&
