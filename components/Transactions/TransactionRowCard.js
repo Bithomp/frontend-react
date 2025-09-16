@@ -68,7 +68,7 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             <span className="red bold">{shortErrorCode(outcome.result)}</span>
             <br />
             <span className="bold">Description: </span>
-            <span className="orange bold">{errorCodeDescription(outcome.result)}</span>
+            <span className="description-text bold">{errorCodeDescription(outcome.result)}</span>
             <br />
           </>
         )}
