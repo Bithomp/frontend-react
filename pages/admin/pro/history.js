@@ -544,7 +544,7 @@ export default function History({
       }
       setData(res) // last request data
       if (options?.marker) {
-        setActivities(activities.concat(res.activities)) // joines data
+        setActivities(prevActivities => prevActivities.concat(res.activities)) // joins data
       } else {
         setActivities(res.activities) // rewrite old data
       }
@@ -632,6 +632,17 @@ export default function History({
       <SEO title="My addresses: history" />
       <div className="page-pro-history">
         <h1 className="center">Pro address balances history</h1>
+        
+        {!sessionToken && (
+          <div className="center" style={{ padding: '15px' }}>
+            <p>
+              Use these test wallets to try all features of the page. Want to add your address?{' '}
+              <Link href="/admin" style={{ color: '#007bff' }}>
+                Sign in here
+              </Link>
+            </p>
+          </div>
+        )}
 
         <AdminTabs name="mainTabs" tab="pro" />
 

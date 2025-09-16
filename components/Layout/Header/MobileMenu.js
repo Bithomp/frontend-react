@@ -186,6 +186,9 @@ export default function MobileMenu({
           <Link href="/learn/xrp-xah-taxes" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.tax-reports')}
           </Link>
+          <Link href="/admin/pro/history" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Try Out Tax Reports
+          </Link>
 
           <Link href="/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.project-registration')}
