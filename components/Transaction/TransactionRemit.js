@@ -213,6 +213,33 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
           </TData>
         </tr>
       )}
+      {tx?.Amounts?.length > 0 && (
+        <tr>
+          <TData>
+            {isSuccessful ? 'Amount' : 'Intended amount'}
+            {tx.Amounts.map((amount, index) => {
+              return <br key={index} />
+            })}
+          </TData>
+          <TData>
+            {tx.Amounts.map((amountEntry, index) => (
+              <div key={index}>
+                <span className={'bold ' + (isSuccessful ? 'green' : 'orange')}>
+                  {amountFormat(amountEntry.AmountEntry.Amount, { precise: 'nice' })}
+                </span>
+                {amountEntry.AmountEntry.Amount?.issuer && (
+                  <>({addressUsernameOrServiceLink(amountEntry.AmountEntry.Amount, 'issuer', { short: true })})</>
+                )}
+                {nativeCurrencyToFiat({
+                  amount: amountEntry.AmountEntry.Amount,
+                  selectedCurrency,
+                  fiatRate: pageFiatRate
+                })}
+              </div>
+            ))}
+          </TData>
+        </tr>
+      )}
       {destinationBalanceChangesList?.length > 0 && (
         <tr>
           <TData>
