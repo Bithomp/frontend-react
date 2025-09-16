@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { IoMdClose } from 'react-icons/io'
 
 import axios from 'axios'
 import DatePicker from 'react-datepicker'
@@ -262,6 +263,14 @@ export default function AccountTransactions({
     fetchTransactions({ restart: true })
   }
 
+  const clearFromDate = () => {
+    setFromDate('')
+  }
+
+  const clearToDate = () => {
+    setToDate('')
+  }
+
   return (
     <>
       <SEO page="Transactions" title={`Transactions of ${id}`} description={`All transactions for address ${id}`} />
@@ -338,34 +347,47 @@ export default function AccountTransactions({
             <br />
             <div>
               <span className="input-title">From</span>
-              <DatePicker
-                selected={fromDate}
-                onChange={(date) => setFromDate(date)}
-                selectsStart
-                showTimeInput
-                timeInputLabel={t('table.time')}
-                dateFormat="yyyy/MM/dd HH:mm:ss"
-                className="dateAndTimeRange"
-                maxDate={new Date()}
-                showMonthDropdown
-                showYearDropdown
-                isClearable={true}
-              />
+              <div className="date-picker-container">
+                <DatePicker
+                  selected={fromDate}
+                  onChange={(date) => setFromDate(date)}
+                  selectsStart
+                  showTimeInput
+                  timeInputLabel={t('table.time')}
+                  dateFormat="yyyy/MM/dd HH:mm:ss"
+                  className="dateAndTimeRange"
+                  maxDate={new Date()}
+                  showMonthDropdown
+                  showYearDropdown
+                />
+                {fromDate && (
+                  <button className="date-picker-clear" onClick={clearFromDate}>
+                    <IoMdClose />
+                  </button>
+                )}
+              </div>
             </div>
             <div>
               <span className="input-title">To</span>
-              <DatePicker
-                selected={toDate}
-                onChange={(date) => setToDate(date)}
-                selectsEnd
-                showTimeInput
-                timeInputLabel={t('table.time')}
-                dateFormat="yyyy/MM/dd HH:mm:ss"
-                className="dateAndTimeRange"
-                maxDate={new Date()}
-                showMonthDropdown
-                showYearDropdown
-              />
+              <div className="date-picker-container">
+                <DatePicker
+                  selected={toDate}
+                  onChange={(date) => setToDate(date)}
+                  selectsEnd
+                  showTimeInput
+                  timeInputLabel={t('table.time')}
+                  dateFormat="yyyy/MM/dd HH:mm:ss"
+                  className="dateAndTimeRange"
+                  maxDate={new Date()}
+                  showMonthDropdown
+                  showYearDropdown
+                />
+                {toDate && (
+                  <button className="date-picker-clear" onClick={clearToDate}>
+                    <IoMdClose />
+                  </button>
+                )}
+              </div>
             </div>
             <div className="center">
               <button className="button-action" onClick={applyFilters} style={{ marginTop: '10px' }}>
