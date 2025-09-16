@@ -161,7 +161,22 @@ export default function TokenPage({
         {isSsrMobile ? <br /> : ' '}
         <span className="grey">
           {!isSsrMobile && '('}
-          {niceNumber(price, 6)} {nativeCurrency}
+          {price < 0.000001 ? (
+            <>
+              <span className="no-brake">
+                1M <span className="green">{token?.currencyDetails?.currency}</span> = {niceNumber(price * 1000000, 6)}{' '}
+              </span>
+              <span className="red no-brake">{nativeCurrency}</span>,{' '}
+            </>
+          ) : (
+            <span className="no-brake">
+              {niceNumber(price, 6)} <span className="red">{nativeCurrency}</span>,{' '}
+            </span>
+          )}
+          <span className="no-brake">
+            1 <span className="red">{nativeCurrency}</span> = {niceNumber(1 / price, 6)}{' '}
+            <span className="green">{token?.currencyDetails?.currency}</span>
+          </span>
           {!isSsrMobile && ')'}
         </span>
       </span>
