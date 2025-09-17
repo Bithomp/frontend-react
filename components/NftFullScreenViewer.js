@@ -9,6 +9,7 @@ import LoadingGif from '../public/images/loading.gif'
 import { FaCloudDownloadAlt, FaTimes } from 'react-icons/fa'
 import ReactPannellum from 'react-pannellum'
 import AgeCheck from './UI/AgeCheck'
+import styles from '../styles/components/nftFullScreenViewer.module.scss'
 
 const downloadIcon = (
   <div style={{ display: 'inline-block', verticalAlign: 'bottom', height: '19px' }}>
@@ -65,7 +66,7 @@ export default function NftFullScreenViewer({ nft, onClose }) {
     contentTabList.push({ value: 'model', label: t('tabs.model') })
   }
 
-  let imageStyle = { width: '100%', height: 'auto', maxHeight: '80vh' }
+  let imageStyle = { width: '100%', height: 'auto', maxHeight: '76vh' }
   if (imageUrl) {
     if (imageUrl.slice(0, 10) === 'data:image') {
       imageStyle.imageRendering = 'pixelated'
@@ -151,6 +152,20 @@ export default function NftFullScreenViewer({ nft, onClose }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUrl, videoUrl])
 
+  // Disable body scroll when full-screen viewer is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    
+    // Set search block visibility flag to false when full screen opens
+    document.body.setAttribute('data-fullscreen-open', 'true')
+
+    return () => {
+      document.body.style.overflow = 'unset'
+      // Set search block visibility flag to true when full screen closes
+      document.body.setAttribute('data-fullscreen-open', 'false')
+    }
+  }, [])
+
   const clickOn18PlusImage = async () => {
     const forbid = await forbid18Plus()
     if (forbid) return
@@ -176,112 +191,101 @@ export default function NftFullScreenViewer({ nft, onClose }) {
     }
   }
 
+  // Reusable button rendering functions
+  const renderTabButtons = (containerClass = '') => (
+    contentTabList.length > 1 && (
+      <div className={`${styles['fv-tabs-container']} ${containerClass}`}>
+        {contentTabList.map(tab => (
+          <button
+            key={tab.value}
+            onClick={() => setContentTab(tab.value)}
+            className={`${styles['fv-tab-button']} ${contentTab === tab.value ? styles['fv-tab-button-active'] : ''}`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+    )
+  );
+
+  const renderActionButtons = (containerClass = '') => {
+    // Use the actual content URL for download, not the clUrl
+    let downloadUrl = null
+    if (contentTab === 'image' && imageUrl) {
+      downloadUrl = imageUrl
+    } else if (contentTab === 'video' && videoUrl) {
+      downloadUrl = videoUrl
+    } else if (contentTab === 'model' && modelUrl) {
+      downloadUrl = modelUrl
+    } else if (contentTab === 'audio' && audioUrl) {
+      downloadUrl = audioUrl
+    }
+
+    return (
+      <div className={`${styles['fv-actions-container']} ${containerClass}`}>
+        {downloadUrl && (
+          <a 
+            href={downloadUrl} 
+            target="_blank" 
+            rel="noreferrer"
+            className={`${styles['fv-button']} ${styles['fv-action-button']}`}
+          >
+            {t('tabs.' + contentTab)} {downloadIcon}
+          </a>
+        )}
+        
+        <button
+          onClick={onClose}
+          className={`${styles['fv-button']} ${styles['fv-close-button']}`}
+        >
+          <FaTimes /> Close
+        </button>
+      </div>
+    );
+  };
+
+  const renderDownloadButton = (url, label) => (
+    <a 
+      href={url} 
+      target="_blank" 
+      rel="noreferrer"
+      className={`${styles['fv-button']} ${styles['fv-action-button']}`}
+    >
+      {label} {downloadIcon}
+    </a>
+  );
+
   return (
-    <div style={{ 
-      position: 'fixed', 
-      top: 0, 
-      left: 0, 
-      right: 0, 
-      bottom: 0, 
-      backgroundColor: 'rgba(0, 0, 0, 0.95)', 
-      zIndex: 9999,
-      overflow: 'auto'
-    }}>
+    <div className={styles['fv-root']}>
       <Head>
         <title>{nftName(nft) || 'NFT Viewer'} - Full Screen</title>
       </Head>
       
       {/* Header with close button and tabs */}
-      <div style={{ 
-        position: 'sticky', 
-        top: '80px',  
-        padding: '15px 20px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <h2 style={{ color: 'white', margin: 0, fontSize: '24px' }}>
+      <div className={styles['fv-header']}>
+        <div className={styles['fv-header-left']}>
+          <h2 className={styles['fv-title']} style={{ color: 'white', margin: 0, fontSize: '24px' }}>
             {nftName(nft) || 'NFT Viewer'}
           </h2>
           
-          {contentTabList.length > 1 && (
-            <div style={{ display: 'flex', gap: '10px' }}>
-              {contentTabList.map(tab => (
-                <button
-                  key={tab.value}
-                  onClick={() => setContentTab(tab.value)}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: contentTab === tab.value ? 'var(--accent-link)' : 'transparent',
-                    color: 'white',
-                    border: '1px solid var(--accent-link)',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '14px'
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          )}
+          {renderTabButtons()}
         </div>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          {defaultUrl && (
-            <a 
-              href={defaultUrl} 
-              target="_blank" 
-              rel="noreferrer"
-              style={{
-                color: 'white',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 16px',
-                border: '1px solid var(--accent-link)',
-                borderRadius: '4px',
-                fontSize: '14px'
-              }}
-            >
-              {t('tabs.' + defaultTab)} {downloadIcon}
-            </a>
-          )}
-          
-          <button
-            onClick={onClose}
-            style={{
-              backgroundColor: 'transparent',
-              color: 'white',
-              border: '1px solid var(--accent-link)',
-              borderRadius: '4px',
-              padding: '8px 16px',
-              cursor: 'pointer',
-              fontSize: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-            <FaTimes /> Close
-          </button>
+        {renderActionButtons()}
+
+        {/* Mobile buttons row */}
+        <div className={styles['fv-mobile-buttons']}>
+          {renderTabButtons()}
+          {renderActionButtons()}
         </div>
       </div>
 
       {/* Content Area */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: 'calc(100vh - 120px)',
-        padding: '20px 0'
-      }}>
+      <div className={styles['fv-content']}>
         {needNftAgeCheck(nft) ? (
           <img
             src="/images/nft/18plus.jpg"
-            style={{ maxWidth: '100%', maxHeight: '80vh', height: 'auto' }}
+            className={styles['fv-age-image']}
             onClick={clickOn18PlusImage}
             alt="18 plus content"
           />
@@ -299,21 +303,16 @@ export default function NftFullScreenViewer({ nft, onClose }) {
                       autoLoad: true,
                       autoRotate: -2
                     }}
-                    style={{ 
-                      width: '90vw', 
-                      height: '80vh', 
-                      display: loaded ? 'inline-block' : 'none',
-                      maxWidth: '1200px'
-                    }}
+                    className={styles['fv-panorama']}
+                    style={{ display: loaded ? 'inline-block' : 'none' }}
                   />
                 ) : (
                   <img
+                    className={styles['fv-media-image']}
                     style={{ 
-                      ...imageStyle, 
-                      display: loaded ? 'inline-block' : 'none',
-                      maxWidth: '90vw',
-                      maxHeight: '80vh',
-                      objectFit: 'contain'
+                      imageRendering: imageStyle.imageRendering,
+                      filter: imageStyle.filter,
+                      display: loaded ? 'inline-block' : 'none'
                     }}
                     src={imageUrl}
                     onLoad={() => {
@@ -345,12 +344,8 @@ export default function NftFullScreenViewer({ nft, onClose }) {
                       autoLoad: true,
                       autoRotate: 0
                     }}
-                    style={{ 
-                      width: '90vw', 
-                      height: '80vh', 
-                      display: loaded ? 'inline-block' : 'none',
-                      maxWidth: '1200px'
-                    }}
+                    className={styles['fv-panorama']}
+                    style={{ display: loaded ? 'inline-block' : 'none' }}
                   />
                 ) : (
                   <video 
@@ -359,12 +354,7 @@ export default function NftFullScreenViewer({ nft, onClose }) {
                     muted 
                     loop 
                     controls 
-                    style={{ 
-                      maxWidth: '90vw', 
-                      maxHeight: '80vh', 
-                      width: 'auto',
-                      height: 'auto'
-                    }}
+                    className={styles['fv-video']}
                   >
                     <source src={videoUrl} type="video/mp4" />
                   </video>
@@ -378,7 +368,7 @@ export default function NftFullScreenViewer({ nft, onClose }) {
                   <script type="module" src="/js/model-viewer.min.js?v=2" defer />
                 </Head>
                 <model-viewer
-                  className="model-viewer"
+                  className={`model-viewer ${styles['fv-model']}`}
                   src={modelUrl}
                   camera-controls
                   auto-rotate
@@ -386,11 +376,6 @@ export default function NftFullScreenViewer({ nft, onClose }) {
                   poster={LoadingGif}
                   autoplay
                   ar-modes="webxr scene-viewer quick-look"
-                  style={{
-                    width: '90vw',
-                    height: '80vh',
-                    maxWidth: '1200px'
-                  }}
                   {...modelAttr?.reduce((prev, curr) => {
                     prev[curr.attribute] = curr.value
                     return prev
@@ -404,41 +389,14 @@ export default function NftFullScreenViewer({ nft, onClose }) {
 
       {/* Audio player at bottom if applicable */}
       {defaultTab !== 'model' && defaultTab !== 'video' && audioUrl && (
-        <div style={{ 
-          position: 'fixed', 
-          bottom: 0, 
-          left: 0, 
-          right: 0, 
-          backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-          padding: '20px',
-          backdropFilter: 'blur(10px)'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
+        <div className={styles['fv-audio-bar']}>
+          <div className={styles['fv-audio-row']}>
             <audio 
               src={audioUrl} 
               controls 
-              style={{ 
-                maxWidth: '600px',
-                width: '100%'
-              }}
+              className={styles['fv-audio']}
             />
-            <a 
-              href={clUrl.audio} 
-              target="_blank" 
-              rel="noreferrer"
-              style={{
-                color: 'white',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 16px',
-                border: '1px solid var(--accent-link)',
-                borderRadius: '4px'
-              }}
-            >
-              {t('tabs.audio')} {downloadIcon}
-            </a>
+            {renderDownloadButton(audioUrl, t('tabs.audio'))}
           </div>
         </div>
       )}

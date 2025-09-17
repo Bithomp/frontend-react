@@ -5,8 +5,16 @@
   background-color: var(--background-block);
   text-align: center;
   transition: background-color .5s;
-  position: relative;
-  z-index: 0;
+  // position: relative;
+  // z-index: 0;
+  
+  // Hide search block when full screen viewer is open
+  body[data-fullscreen-open="true"] & {
+    z-index: 0 !important;
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
   .search-box {
     display: inline-block;
     position: relative;

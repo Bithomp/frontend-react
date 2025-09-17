@@ -201,11 +201,38 @@ export default function NftPreview({ nft }) {
         fontSize: '12px',
         display: 'flex',
         alignItems: 'center',
-        gap: '6px'
+        gap: '6px',
+        height: '32px',
+        boxSizing: 'border-box'
       }}
     >
       <FaExpand /> Full Screen
     </button>
+  )
+
+  const renderDownloadButton = (url, label) => (
+    <a 
+      href={url} 
+      target="_blank" 
+      rel="noreferrer"
+      style={{
+        backgroundColor: 'transparent',
+        color: 'var(--accent-link)',
+        border: '1px solid var(--accent-link)',
+        borderRadius: '4px',
+        padding: '6px 12px',
+        cursor: 'pointer',
+        fontSize: '12px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        textDecoration: 'none',
+        height: '32px',
+        boxSizing: 'border-box'
+      }}
+    >
+      {label} {downloadIcon}
+    </a>
   )
 
   return (
@@ -221,11 +248,9 @@ export default function NftPreview({ nft }) {
               style={{ margin: 0 }}
             />
           </span>
-          <span style={{ float: 'right', padding: '4px 0px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <span style={{ float: 'right', display: 'flex', gap: '10px', alignItems: 'center' }}>
             {renderFullScreenButton()}
-            <a href={clUrl[contentTab]} target="_blank" rel="noreferrer">
-              {t('tabs.' + contentTab)} {downloadIcon}
-            </a>
+            {renderDownloadButton(clUrl[contentTab], t('tabs.' + contentTab))}
           </span>
         </div>
       )}
@@ -329,12 +354,7 @@ export default function NftPreview({ nft }) {
           {contentTabList.length < 2 && defaultUrl && (
             <span style={{ padding: '4px 0px', display: 'flex', gap: '10px', alignItems: 'center' }}>
               {renderFullScreenButton()}
-              <a href={defaultUrl} target="_blank" rel="noreferrer">
-                {t('tabs.' + defaultTab)}
-              </a>{' '}
-              <a href={defaultUrl} target="_blank" rel="noreferrer">
-                {downloadIcon}
-              </a>
+              {renderDownloadButton(defaultUrl, t('tabs.' + defaultTab))}
             </span>
           )}
         </>
@@ -344,10 +364,7 @@ export default function NftPreview({ nft }) {
         <>
           <audio src={audioUrl} controls style={{ display: 'block', margin: '20px auto' }}></audio>
           <span style={{ padding: '4px 0px', display: 'flex', gap: '10px', alignItems: 'center', justifyContent: 'center' }}>
-            {renderFullScreenButton()}
-            <a href={clUrl.audio} target="_blank" rel="noreferrer">
-              {t('tabs.audio')} {downloadIcon}
-            </a>
+            {renderDownloadButton(clUrl.audio, t('tabs.audio'))}
           </span>
         </>
       )}
