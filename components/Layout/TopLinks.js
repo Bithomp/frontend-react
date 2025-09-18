@@ -1,35 +1,17 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
 //import { network } from '../../utils'
 import { useIsMobile } from '../../utils/mobile'
-import axios from 'axios'
 import { useRouter } from 'next/router'
 //import { useWidth } from '../../utils'
 //import Image from 'next/image'
 
-export default function TopLinks({ activatedAccount }) {
+export default function TopLinks({ activatedAccount, countryCode }) {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
   const router = useRouter()
   //const width = useWidth()
 
-  const [countryCode, setCountryCode] = useState('')
-
   const pathname = router.pathname
-
-  //check country
-  {
-    useEffect(() => {
-      async function fetchData() {
-        // {"ip":"176.28.256.49","country":"SE"}
-        const clientInfo = await axios('client/info')
-        setCountryCode(clientInfo?.data?.country)
-      }
-
-      fetchData()
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-  }
 
   {
     /* it is important to have "tooltiptext right" on the first ad, otherwise brakes UI on mobiles, too wide to the left */
