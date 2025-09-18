@@ -213,31 +213,28 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
           </TData>
         </tr>
       )}
-      {destinationBalanceChangesList?.length > 0 && (
-        <tr>
-          <TData>
-            Delivered
-            {destinationBalanceChangesList?.map((change, index) => {
-              return <br key={index} />
-            })}
-          </TData>
-          <TData>
-            {destinationBalanceChangesList?.map((change, index) => (
-              <div key={index}>
-                <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                  {amountFormat(optionalAbsAmount(change))}
-                </span>
-                {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
-                {nativeCurrencyToFiat({
-                  amount: optionalAbsAmount(change),
-                  selectedCurrency,
-                  fiatRate: pageFiatRate
-                })}
-              </div>
-            ))}
-          </TData>
-        </tr>
-      )}
+      <tr>
+        <TData>
+          {destinationBalanceChangesList?.map((change, index) => {
+            return <br key={index} />
+          })}
+        </TData>
+        <TData>
+          {destinationBalanceChangesList?.map((change, index) => (
+            <div key={index}>
+              <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
+                {amountFormat(optionalAbsAmount(change))}
+              </span>
+              {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+              {nativeCurrencyToFiat({
+                amount: optionalAbsAmount(change),
+                selectedCurrency,
+                fiatRate: pageFiatRate
+              })}
+            </div>
+          ))}
+        </TData>
+      </tr>
       {tx?.URITokenIDs?.length > 0 && (
         <tr>
           <TData>URIToken IDs</TData>
