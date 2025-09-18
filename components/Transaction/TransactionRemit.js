@@ -214,14 +214,13 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
       <tr>
-        <TData>
-          Delivered
-          {destinationBalanceChangesList.map((change, index) => {
+        {/* <TData>
+          {destinationBalanceChangesList?.map((change, index) => {
             return <br key={index} />
           })}
-        </TData>
+        </TData> */}
         <TData>
-          {destinationBalanceChangesList.map((change, index) => (
+          {destinationBalanceChangesList?.map((change, index) => (
             <div key={index}>
               <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
                 {amountFormat(optionalAbsAmount(change))}
