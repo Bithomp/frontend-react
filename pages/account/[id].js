@@ -582,7 +582,11 @@ export default function Account({
                           </div>
                           {/* don't show yet obligations historically */}
                           {data?.obligations?.trustlines > 0 && !data?.ledgerInfo?.ledgerTimestamp && (
-                            <IssuedTokensData data={data} selectedCurrency={selectedCurrency} pageFiatRate={pageFiatRate} />
+                            <IssuedTokensData
+                              data={data}
+                              selectedCurrency={selectedCurrency}
+                              pageFiatRate={pageFiatRate}
+                            />
                           )}
 
                           <div id="dex-orders-section">
@@ -600,8 +604,10 @@ export default function Account({
                           ) : (
                             <NFTokenData
                               data={data}
+                              address={data?.address}
                               objects={objects}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              selectedCurrency={selectedCurrency}
                             />
                           )}
 
@@ -680,4 +686,4 @@ export default function Account({
       `}</style>
     </>
   )
-} 
+}
