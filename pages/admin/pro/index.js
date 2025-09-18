@@ -78,7 +78,8 @@ export default function Pro({
   refreshPage,
   subscriptionExpired,
   sessionToken,
-  openEmailLogin
+  openEmailLogin,
+  isSsrMobile
 }) {
   const width = useWidth()
 
@@ -245,7 +246,20 @@ export default function Pro({
 
         <AdminTabs name="mainTabs" tab="pro" />
 
-        <ProTabs tab="addresses" />
+        <div className="tabs-inline" style={{ marginTop: -10 }}>
+          <ProTabs tab="addresses" />
+
+          {isSsrMobile ? <br /> : ''}
+
+          <Link
+            href="/learn/xrp-xah-taxes"
+            style={isSsrMobile ? { display: 'inline-block', marginBottom: 20 } : { marginLeft: 15, marginRight: -75 }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            View guide
+          </Link>
+        </div>
 
         {sessionToken ? (
           <>

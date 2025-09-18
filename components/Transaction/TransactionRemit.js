@@ -214,11 +214,11 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
       <tr>
-        {/* <TData>
+        <TData>
           {destinationBalanceChangesList?.map((change, index) => {
             return <br key={index} />
           })}
-        </TData> */}
+        </TData>
         <TData>
           {destinationBalanceChangesList?.map((change, index) => (
             <div key={index}>

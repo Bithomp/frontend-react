@@ -9,9 +9,11 @@ import {
 } from '../../utils/format'
 import { LinkAccount } from '../../utils/links'
 import { useWidth } from '../../utils'
-import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaChartLine } from 'react-icons/fa' //FaCoins,
+import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaChartLine } from 'react-icons/fa'
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 const tokensCountText = (rippleStateList) => {
   if (!rippleStateList) return ''
@@ -108,11 +110,20 @@ const LimitsIcon = ({ trustline }) => {
   )
 }
 
-export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
+export default function IOUData({ address, rippleStateList, ledgerTimestamp, pageFiatRate, selectedCurrency }) {
   const width = useWidth()
   const { t } = useTranslation()
-  //show the section only if there are tokens to show
-  if (!rippleStateList?.length) return ''
+  const [totalBalance, setTotalBalance] = useState(0)
+
+  useEffect(() => {
+    if (!pageFiatRate || !rippleStateList?.length) return
+    const total = rippleStateList.reduce((sum, tl) => {
+      const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
+      const tokenWorth = tl.priceNativeCurrencySpot * pageFiatRate * balance || 0
+      return sum + tokenWorth
+    }, 0)
+    setTotalBalance(total)
+  }, [rippleStateList, pageFiatRate])
 
   const historicalTitle = ledgerTimestamp ? (
     <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
@@ -167,48 +178,72 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
             "lowDeepFreeze": false,
             "highDeepFreeze": false
         },
-        "previousTxAt": 1747261031
+        "previousTxAt": 1747261031,
+        "priceNativeCurrencySpot": "0.34800765616843570559"
     }
   ]
   */
 
   // amount / gateway details / trustline settings
-  const tokenRows = rippleStateList.map((tl, i) => {
-    const issuer = tl.HighLimit?.issuer === address ? tl.LowLimit : tl.HighLimit
-    const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
+  const tokenRows = rippleStateList?.length ? (
+    rippleStateList.map((tl, i) => {
+      const issuer = tl.HighLimit?.issuer === address ? tl.LowLimit : tl.HighLimit
+      const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
 
-    return (
-      <tr key={i}>
-        <td className="center" style={{ width: 30 }}>
-          {i + 1}
-        </td>
-        <td className="left">
-          <AddressWithIcon address={issuer.issuer}>
-            <span className="bold">{niceCurrency(tl.Balance?.currency)}</span>{' '}
-            {userOrServiceName(issuer.issuerDetails, 'address')}
-            <br />
-            {width > 800 ? (
-              <LinkAccount address={issuer.issuerDetails.address} />
-            ) : (
-              <LinkAccount address={issuer.issuerDetails.address} short={6} />
-            )}
-          </AddressWithIcon>
-        </td>
-        <td className="right">
-          <span className="bold tooltip">
-            {shortNiceNumber(balance)}
-            <span className="tooltiptext">{fullNiceNumber(balance)}</span>
-          </span>
-        </td>
-        <td className="right">
-          <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
-            <LimitsIcon trustline={tl} />
-            <FlagIcons flags={tl.flags} />
-          </div>
-        </td>
-      </tr>
-    )
-  })
+      return (
+        <tr key={i}>
+          <td className="center" style={{ width: 30 }}>
+            {i + 1}
+          </td>
+          <td className="left">
+            <AddressWithIcon address={issuer.issuer} currency={tl.Balance?.currency}>
+              <span className="bold">{niceCurrency(tl.Balance?.currency)}</span>{' '}
+              {userOrServiceName(issuer.issuerDetails, 'address')}
+              <br />
+              {width > 800 ? (
+                <LinkAccount address={issuer.issuerDetails.address} />
+              ) : (
+                <LinkAccount address={issuer.issuerDetails.address} short={6} />
+              )}
+            </AddressWithIcon>
+          </td>
+          <td className="right">
+            <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
+              <LimitsIcon trustline={tl} />
+              <FlagIcons flags={tl.flags} />
+            </div>
+          </td>
+          <td className="right">
+            {pageFiatRate && tl.priceNativeCurrencySpot ? (
+              <>
+                <span className="tooltip bold">
+                  {shortNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate * balance || 0, 2, 1, selectedCurrency)}
+                  <span className="tooltiptext no-brake">
+                    {fullNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate * balance || 0, selectedCurrency)}
+                    <br />1 {niceCurrency(tl.Balance?.currency)} ={' '}
+                    {fullNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate || 0, selectedCurrency)}
+                  </span>
+                </span>
+                <br />
+              </>
+            ) : null}
+            <span className="tooltip grey">
+              {shortNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}
+              <span className="tooltiptext no-brake">
+                {fullNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}
+              </span>
+            </span>
+          </td>
+        </tr>
+      )
+    })
+  ) : (
+    <tr key="none">
+      <td colSpan="100" className="center">
+        This account does not hold any issued tokens.
+      </td>
+    </tr>
+  )
 
   return (
     <>
@@ -218,28 +253,66 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
             <th colSpan="100">
               {tokensCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle} [
               <a href={'/explorer/' + address}>Old View</a>]
+              {totalBalance > 0 && (
+                <span style={{ float: 'right' }}>
+                  Total worth:{' '}
+                  <span className="tooltip bold">
+                    {shortNiceNumber(totalBalance, 2, 1, selectedCurrency)}
+                    <span className="tooltiptext no-brake">{fullNiceNumber(totalBalance, selectedCurrency)}</span>
+                  </span>
+                </span>
+              )}
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th>#</th>
-            <th className="left">Currency</th>
-            <th className="right">Balance</th>
-            <th className="right">Params</th>
-          </tr>
+          {rippleStateList?.length ? (
+            <tr>
+              <th>#</th>
+              <th className="left">Currency</th>
+              <th className="right">Params</th>
+              <th className="right">Balance</th>
+            </tr>
+          ) : (
+            ''
+          )}
           {tokenRows}
+          {!rippleStateList?.length ? (
+            <tr>
+              <td className="center" colSpan="100">
+                <Link href={'/services/trustline?address=' + address} className="button-action">
+                  Add a token
+                </Link>
+              </td>
+            </tr>
+          ) : (
+            ''
+          )}
         </tbody>
       </table>
       <div className="show-on-small-w800">
         <br />
         <center>
           {tokensCountText(rippleStateList)}
-          {t('menu.tokens').toUpperCase()}
-          {historicalTitle} [<a href={'/explorer/' + address}>Old View</a>]
+          {t('menu.tokens').toUpperCase()} {historicalTitle}[<a href={'/explorer/' + address}>Old View</a>]
+          {!rippleStateList?.length && (
+            <>
+              [<a href={'/services/trustline?address=' + address}>Add a token</a>]
+            </>
+          )}
+          {totalBalance > 0 && (
+            <div>
+              <br />
+              Total worth:{' '}
+              <span className="tooltip bold">
+                {shortNiceNumber(totalBalance, 2, 1, selectedCurrency)}
+                <span className="tooltiptext no-brake">{fullNiceNumber(totalBalance, selectedCurrency)}</span>
+              </span>
+            </div>
+          )}
         </center>
         <br />
-        {rippleStateList.length > 0 && (
+        {
           <table className="table-mobile wide">
             <tbody>
               <tr>
@@ -251,7 +324,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp }) {
               {tokenRows}
             </tbody>
           </table>
-        )}
+        }
         <br />
       </div>
     </>

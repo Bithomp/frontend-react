@@ -17,7 +17,6 @@ import {
 } from 'react-icons/fa6'
 import Link from 'next/link'
 
-import LinkIcon from '../../public/images/link.svg'
 import { LinkTx } from '../../utils/links'
 
 export default function PublicData({ data }) {
@@ -260,9 +259,7 @@ export default function PublicData({ data }) {
     </>
   )
 
-  const flareClaimNode = data.flare?.spark ? <>{fullNiceNumber(data.flare.spark * 0.15)} FLR</> : ''
 
-  const songbirdClaimNode = data.flare?.songbird ? <>{fullNiceNumber(data.flare.songbird)} SGB</> : ''
 
   return (
     <>
@@ -340,38 +337,7 @@ export default function PublicData({ data }) {
               <td>{activatedWithNode}</td>
             </tr>
           )}
-          {data.flare?.spark && (
-            <>
-              <tr>
-                <td>Flare address</td>
-                <td>
-                  <a href={'https://flarescan.com/address/' + data.flare.address} target="_blank" rel="noopener">
-                    {data.flare.address}
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>Flare claim</td>
-                <td>{flareClaimNode}</td>
-              </tr>
-              <tr>
-                <td>Songbird address</td>
-                <td>
-                  <a
-                    href={'https://songbird.flarescan.com/address/' + data.flare.address}
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    {data.flare.address}
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>Songbird claim</td>
-                <td>{songbirdClaimNode}</td>
-              </tr>
-            </>
-          )}
+
         </tbody>
       </table>
       <div className="show-on-small-w800">
@@ -436,22 +402,7 @@ export default function PublicData({ data }) {
             </>
           )
         )}
-        {data.flare?.spark && (
-          <>
-            <p>
-              <span className="grey">Flare claim</span> {flareClaimNode}{' '}
-              <a href={'https://flarescan.com/address/' + data.flare.address} target="_blank" rel="noopener">
-                <LinkIcon />
-              </a>
-            </p>
-            <p>
-              <span className="grey">Songbird claim</span> {songbirdClaimNode}{' '}
-              <a href={'https://songbird.flarescan.com/address/' + data.flare.address} target="_blank" rel="noopener">
-                <LinkIcon />
-              </a>
-            </p>
-          </>
-        )}
+
       </div>
     </>
   )

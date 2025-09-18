@@ -1,11 +1,11 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation } from 'next-i18next'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { xahauNetwork } from '../../utils'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import URITokenMint from '../../components/Services/NftMint/URITokenMint'
 import NFTokenMint from '../../components/Services/NftMint/NFTokenMint'
+import Link from 'next/link'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -71,23 +71,18 @@ export default function NftMint({
   issuerQuery,
   mintForOtherQuery
 }) {
-  const { t } = useTranslation()
-
   return (
     <>
-      <SEO
-        title={
-          xahauNetwork ? t('nft-mint.title-xahau', 'Xahau NFT Mint') : t('nft-mint.title-xrpl', 'XRP Ledger NFT Mint')
-        }
-        description={t('nft-mint.description', 'Mint NFTs on XRPL and Xahau networks')}
-      />
+      <SEO title="NFT Mint" description="Mint a New NFT, Free." />
       <div className="page-services-nft-mint content-center">
-        <h1 className="center">{t('nft-mint.header', 'Mint a New NFT')}</h1>
+        <h1 className="center">Mint a new NFT</h1>
         <p>
-          {t(
-            'nft-mint.bidirectional-pointer',
-            'You can use this page to create a new NFT, a unique digital asset that can be used in a variety of applications.'
-          )}
+          You can use this page to create a new NFT, a unique digital asset that can be used in a variety of
+          applications. View our guide:{' '}
+          <Link href="/learn/nft-minting" target="_blank" rel="noreferrer">
+            How to mint NFTs
+          </Link>
+          .
         </p>
 
         <NetworkTabs />
