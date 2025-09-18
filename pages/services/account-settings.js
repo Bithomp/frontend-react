@@ -73,6 +73,115 @@ export default function AccountSettings({
   const [currentTickSize, setCurrentTickSize] = useState(null)
   const [walletLocatorInput, setWalletLocatorInput] = useState('')
   const [currentWalletLocator, setCurrentWalletLocator] = useState('')
+  
+  // Validation states
+  const [messageKeyValidation, setMessageKeyValidation] = useState({ isValid: true, message: '' })
+  const [walletLocatorValidation, setWalletLocatorValidation] = useState({ isValid: true, message: '' })
+  const [tickSizeValidation, setTickSizeValidation] = useState({ isValid: true, message: '' })
+
+  // Validation functions
+  const validateMessageKey = (value) => {
+    const trimmed = value.trim()
+    
+    if (!trimmed) {
+      return { isValid: true, message: '' } // Empty is valid (will be cleared)
+    }
+    
+    const isHex = /^[0-9a-fA-F]+$/.test(trimmed)
+    
+    if (!isHex) {
+      return { 
+        isValid: false, 
+        message: 'Must contain only hexadecimal characters (0-9, a-f, A-F)' 
+      }
+    }
+    
+    if (trimmed.length % 2 !== 0) {
+      return { 
+        isValid: false, 
+        message: 'Must have an even number of characters (pairs of hex digits)' 
+      }
+    }
+    
+    if (trimmed.length < 32) {
+      return { 
+        isValid: false, 
+        message: 'Must be at least 32 characters (16 bytes)' 
+      }
+    }
+    
+    return { isValid: true, message: 'Valid hex-encoded public key' }
+  }
+
+  const validateWalletLocator = (value) => {
+    const trimmed = value.trim()
+    
+    if (!trimmed) {
+      return { isValid: true, message: '' } // Empty is valid (will be cleared)
+    }
+    
+    const isHex = /^[0-9a-fA-F]+$/.test(trimmed)
+    
+    if (!isHex) {
+      return { 
+        isValid: false, 
+        message: 'Must contain only hexadecimal characters (0-9, a-f, A-F)' 
+      }
+    }
+    
+    if (trimmed.length !== 64) {
+      return { 
+        isValid: false, 
+        message: `Must be exactly 64 characters (current: ${trimmed.length})` 
+      }
+    }
+    
+    return { isValid: true, message: 'Valid 64-character hex string' }
+  }
+
+  const validateTickSize = (value) => {
+    const trimmed = value.trim()
+    
+    if (!trimmed) {
+      return { isValid: true, message: '' } // Empty is valid (will be cleared)
+    }
+    
+    const numValue = Number(trimmed)
+    
+    if (isNaN(numValue)) {
+      return { 
+        isValid: false, 
+        message: 'Must be a valid number' 
+      }
+    }
+    
+    if (!Number.isInteger(numValue)) {
+      return { 
+        isValid: false, 
+        message: 'Must be a whole number (integer)' 
+      }
+    }
+    
+    if (numValue < 0) {
+      return { 
+        isValid: false, 
+        message: 'Must be 0 or positive' 
+      }
+    }
+    
+    if (numValue === 0) {
+      return { isValid: true, message: 'Valid (will clear tick size)' }
+    }
+    
+    if (numValue < 3 || numValue > 15) {
+      return { 
+        isValid: false, 
+        message: 'Must be between 3 and 15 (or 0 to clear)' 
+      }
+    }
+    
+    return { isValid: true, message: 'Valid tick size' }
+  }
 
   // TF flags state
   const [tfFlags, setTfFlags] = useState(null)
@@ -554,8 +663,24 @@ export default function AccountSettings({
   const handleSetMessageKey = () => {
     const value = messageKeyInput.trim()
     const isHex = /^[0-9a-fA-F]+$/.test(value)
-    if (!value || !isHex || value.length % 2 !== 0) {
-      setErrorMessage('Please enter a valid hex-encoded MessageKey.')
+    
+    if (!value) {
+      setErrorMessage('MessageKey cannot be empty. Please enter a hex-encoded public key.')
+      return
+    }
+    
+    if (!isHex) {
+      setErrorMessage('MessageKey must contain only hexadecimal characters (0-9, a-f, A-F).')
+      return
+    }
+    
+    if (value.length % 2 !== 0) {
+      setErrorMessage('MessageKey must have an even number of characters (pairs of hex digits). Current length: ' + value.length + '.')
+      return
+    }
+    
+    if (value.length < 32) {
+      setErrorMessage('MessageKey must be at least 32 characters (16 bytes). Current length: ' + value.length + '.')
       return
     }
     const tx = {
@@ -699,9 +824,20 @@ export default function AccountSettings({
 
   const handleSetWalletLocator = () => {
     const value = walletLocatorInput.trim()
-    const isValid = /^[0-9a-fA-F]{64}$/.test(value)
-    if (!isValid) {
-      setErrorMessage('Please enter a valid WalletLocator (64 hexadecimal characters).')
+    const isHex = /^[0-9a-fA-F]+$/.test(value)
+    
+    if (!value) {
+      setErrorMessage('WalletLocator cannot be empty. Please enter a 64-character hexadecimal string.')
+      return
+    }
+    
+    if (!isHex) {
+      setErrorMessage('WalletLocator must contain only hexadecimal characters (0-9, a-f, A-F).')
+      return
+    }
+    
+    if (value.length !== 64) {
+      setErrorMessage('WalletLocator must be exactly 64 characters long. Current length: ' + value.length + '.')
       return
     }
     const tx = {
@@ -1109,21 +1245,34 @@ export default function AccountSettings({
                         Clear
                       </button>
                     )}
-                    <button className="button-action thin" onClick={handleSetMessageKey} disabled={!account?.address}>
+                    <button 
+                      className="button-action thin" 
+                      onClick={handleSetMessageKey} 
+                      disabled={!account?.address || (messageKeyInput && !messageKeyValidation.isValid)}
+                    >
                       Set
                     </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
                   <input
-                    className="input-text"
-                    placeholder="Hex-encoded public key"
+                    className={`input-text ${messageKeyInput && !messageKeyValidation.isValid ? 'input-error' : messageKeyInput && messageKeyValidation.isValid ? 'input-valid' : ''}`}
+                    placeholder="e.g., 020000000000000000000000000000000000000000000000000000000000000000"
                     value={messageKeyInput}
-                    onChange={(e) => setMessageKeyInput(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setMessageKeyInput(value)
+                      setMessageKeyValidation(validateMessageKey(value))
+                    }}
                     type="text"
                     disabled={!account?.address}
                   />
-                  <small>Provide a hex-encoded public key; clearing removes it from the ledger.</small>
+                  <small>Provide a hex-encoded public key (minimum 32 characters, even number of hex digits). Used for encrypted messaging.</small>
+                  {messageKeyInput && messageKeyValidation.message && (
+                    <div className={`validation-message ${messageKeyValidation.isValid ? 'validation-success' : 'validation-error'}`}>
+                      {messageKeyValidation.message}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1177,22 +1326,35 @@ export default function AccountSettings({
                     )}
                   </div>
                   <div className="flag-info-buttons">
-                    <button className="button-action thin" onClick={handleSetTickSize} disabled={!account?.address}>
+                    <button 
+                      className="button-action thin" 
+                      onClick={handleSetTickSize} 
+                      disabled={!account?.address || (tickSizeInput && !tickSizeValidation.isValid)}
+                    >
                       Set
                     </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
                   <input
-                    className="input-text"
+                    className={`input-text ${tickSizeInput && !tickSizeValidation.isValid ? 'input-error' : tickSizeInput && tickSizeValidation.isValid ? 'input-valid' : ''}`}
                     placeholder="0 to clear, or 3-15"
                     value={tickSizeInput}
-                    onChange={(e) => setTickSizeInput(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setTickSizeInput(value)
+                      setTickSizeValidation(validateTickSize(value))
+                    }}
                     type="text"
                     inputMode="numeric"
                     disabled={!account?.address}
                   />
                   <small>Controls significant digits for order book prices. 0 clears.</small>
+                  {tickSizeInput && tickSizeValidation.message && (
+                    <div className={`validation-message ${tickSizeValidation.isValid ? 'validation-success' : 'validation-error'}`}>
+                      {tickSizeValidation.message}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1217,7 +1379,7 @@ export default function AccountSettings({
                     <button
                       className="button-action thin"
                       onClick={handleSetWalletLocator}
-                      disabled={!account?.address}
+                      disabled={!account?.address || (walletLocatorInput && !walletLocatorValidation.isValid)}
                     >
                       Set
                     </button>
@@ -1225,15 +1387,24 @@ export default function AccountSettings({
                 </div>
                 <div className="nft-minter-input">
                   <input
-                    className="input-text"
-                    placeholder="64 hex characters"
+                    className={`input-text ${walletLocatorInput && !walletLocatorValidation.isValid ? 'input-error' : walletLocatorInput && walletLocatorValidation.isValid ? 'input-valid' : ''}`}
+                    placeholder="e.g., 0000000000000000000000000000000000000000000000000000000000000000"
                     value={walletLocatorInput}
-                    onChange={(e) => setWalletLocatorInput(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setWalletLocatorInput(value)
+                      setWalletLocatorValidation(validateWalletLocator(value))
+                    }}
                     type="text"
                     disabled={!account?.address}
                     maxLength={64}
                   />
-                  <small>Optional hash locator for your wallet application.</small>
+                  <small>Optional 64-character hexadecimal hash locator for your wallet application.</small>
+                  {walletLocatorInput && walletLocatorValidation.message && (
+                    <div className={`validation-message ${walletLocatorValidation.isValid ? 'validation-success' : 'validation-error'}`}>
+                      {walletLocatorValidation.message}
+                    </div>
+                  )}
                 </div>
               </div>
 
