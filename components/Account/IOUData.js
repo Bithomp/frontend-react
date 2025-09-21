@@ -197,14 +197,16 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
     if (balanceB === 0) return -1
     
     // Both have non-zero balance, sort by fiat value (largest first)
-    const fiatValueA = a.priceNativeCurrencySpot * pageFiatRate * balanceA || 0
-    const fiatValueB = b.priceNativeCurrencySpot * pageFiatRate * balanceB || 0
+    const fiatValueA = a.priceNativeCurrencySpot * balanceA || 0
+    const fiatValueB = b.priceNativeCurrencySpot * balanceB || 0
     
     return fiatValueB - fiatValueA
   }) : []
 
+  const tokenLength = sortedTokens?.length
+
   // amount / gateway details / trustline settings
-  const tokenRows = sortedTokens?.length ? (
+  const tokenRows = tokenLength ? (
     sortedTokens.map((tl, i) => {
       const issuer = tl.HighLimit?.issuer === address ? tl.LowLimit : tl.HighLimit
       const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
@@ -285,7 +287,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           </tr>
         </thead>
         <tbody>
-          {sortedTokens?.length ? (
+          {tokenLength ? (
             <tr>
               <th>#</th>
               <th className="left">Currency</th>
@@ -296,7 +298,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
             ''
           )}
           {tokenRows}
-          {!sortedTokens?.length ? (
+          {!tokenLength ? (
             <tr>
               <td className="center" colSpan="100">
                 <Link href={'/services/trustline?address=' + address} className="button-action">
@@ -314,7 +316,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
         <center>
           {tokensCountText(rippleStateList)}
           {t('menu.tokens').toUpperCase()} {historicalTitle}[<a href={'/explorer/' + address}>Old View</a>]
-          {!sortedTokens?.length && (
+          {!tokenLength && (
             <>
               [<a href={'/services/trustline?address=' + address}>Add a token</a>]
             </>
