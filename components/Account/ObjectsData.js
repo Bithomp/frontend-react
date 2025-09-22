@@ -18,6 +18,7 @@ import Link from 'next/link'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
 import { LinkTx } from '../../utils/links'
+import { axiosServer } from '../../utils/axios'
 
 const isPositiveBalance = (balance) => {
   return balance !== '0' && balance[0] !== '-'
@@ -82,6 +83,7 @@ export default function ObjectsData({
   const [incomingPayChannelList, setIncomingPayChannelList] = useState([])
   const [mptIssuanceList, setMptIssuanceList] = useState([])
   const [mptList, setMptList] = useState([])
+  const [mptokenCurrencyDetails, setMptokenCurrencyDetails] = useState([])
 
   const { t } = useTranslation()
 
@@ -92,6 +94,31 @@ export default function ObjectsData({
   ) : (
     ''
   )
+
+  const fetchMptokenCurrencyDetails = async (mptList) => {
+    try {
+      const currencyDetailsPromises = await mptList.map(async (mpt) => {
+        try {
+          const res = await axiosServer({
+            method: 'get',
+            url: 'v2/ledgerEntry/' + mpt.index + '?currencyDetails=true'
+          }).catch((error) => {
+            console.error('error', error)
+          })
+          return res?.data?.node?.mptokenCurrencyDetails?.metadata || []
+        } catch (error) {
+          console.error(`Error fetching currency details for MPToken ${mpt.index}:`, error)
+          return []
+        }
+      })
+
+      const allCurrencyDetails = await Promise.all(currencyDetailsPromises)
+      const flattenedDetails = allCurrencyDetails.flat()
+      setMptokenCurrencyDetails(flattenedDetails)
+    } catch (error) {
+      console.error('Error fetching multi-token currency details:', error)
+    }
+  }
 
   useEffect(() => {
     setObjects({})
@@ -154,6 +181,11 @@ export default function ObjectsData({
 
           let accountObjectsWithMpt = accountObjects.filter((o) => o.LedgerEntryType === 'MPToken') || []
           setMptList(accountObjectsWithMpt)
+
+          // Fetch multi-token currency details for MPToken objects
+          if (accountObjectsWithMpt.length > 0) {
+            fetchMptokenCurrencyDetails(accountObjectsWithMpt)
+          }
 
           const accountObjectWithURITokens = accountObjects.filter((o) => o.LedgerEntryType === 'URIToken') || []
 
@@ -759,6 +791,72 @@ export default function ObjectsData({
                           <p>
                             <span className="grey">Last update</span> {timeOrDate(c.previousTxAt)}{' '}
                             <LinkTx tx={c.PreviousTxnID} icon={true} />
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                ))}
+              </div>
+            </>
+          )}
+
+          {mptokenCurrencyDetails.length > 0 && (
+            <>
+              <table className="table-details hide-on-small-w800">
+                <thead>
+                  <tr>
+                    <th colSpan="100">
+                      {objectsCountText(mptokenCurrencyDetails)}Multi-Token Currency Details{historicalTitle}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>#</th>
+                    <th className="left">Currency</th>
+                    <th className="left">Name</th>
+                    <th className="left">Asset Class</th>
+                    <th className="left">Asset Subclass</th>
+                  </tr>
+                  {mptokenCurrencyDetails.map((detail, i) => (
+                    <tr key={i}>
+                      <td className="center" style={{ width: 30 }}>
+                        {i + 1}
+                      </td>
+                      <td>{detail.currency || '-'}</td>
+                      <td>{detail.name || '-'}</td>
+                      <td>{detail.asset_class || '-'}</td>
+                      <td>{detail.asset_subclass || '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="show-on-small-w800">
+                <br />
+                <center>
+                  {objectsCountText(mptokenCurrencyDetails)}
+                  {'Multi-Token Currency Details'.toUpperCase()}
+                  {historicalTitle}
+                </center>
+                <br />
+                {mptokenCurrencyDetails.map((detail, i) => (
+                  <table className="table-mobile wide" key={i}>
+                    <tbody>
+                      <tr>
+                        <td className="center">{i + 1}</td>
+                        <td>
+                          <p>
+                            <span className="grey">Currency</span> {detail.currency || '-'}
+                          </p>
+                          <p>
+                            <span className="grey">Name</span> {detail.name || '-'}
+                          </p>
+                          <p>
+                            <span className="grey">Asset Class</span> {detail.asset_class || '-'}
+                          </p>
+                          <p>
+                            <span className="grey">Asset Subclass</span> {detail.asset_subclass || '-'}
                           </p>
                         </td>
                       </tr>
