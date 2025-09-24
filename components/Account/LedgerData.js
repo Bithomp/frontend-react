@@ -329,8 +329,12 @@ export default function LedgerData({
       </span>
       )
     </>
+  ) : account?.address === data?.address ? (
+    <>
+      You don't have any tokens. [<Link href={'/services/trustline'}>Add a token</Link>]
+    </>
   ) : (
-    "This account doesn't hold Tokens."
+    <span>This account doesn't hold Tokens.</span>
   )
 
   const dexOrdersNode = !objects?.offerList ? (
@@ -343,6 +347,8 @@ export default function LedgerData({
       </span>
       )
     </>
+  ) : account?.address === data?.address ? (
+    "You don't have any DEX orders."
   ) : (
     "This account doesn't have DEX orders."
   )
@@ -356,6 +362,10 @@ export default function LedgerData({
         view
       </span>
       )
+    </>
+  ) : account?.address === data?.address ? (
+    <>
+      You don't have any Escrows. [<Link href={'/services/escrow'}>Create</Link>]
     </>
   ) : (
     "This account doesn't have Escrows."
