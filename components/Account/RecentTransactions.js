@@ -41,7 +41,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     </span>
   )
 
-  // Function to detect spam transactions (incoming payments for 0.000001 XRP)
+  // Function to detect spam transactions (incoming payments for 0.000001/0.0001 XRP)
   const skipTx = (txdata) => {
     //check if no balance, nft changes and if addres is not a sender/receiver - skip
     const balanceChanges = addressBalanceChanges(txdata, address)
@@ -73,7 +73,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     if (
       deliveredAmount &&
       isNativeCurrency(deliveredAmount) &&
-      (deliveredAmount === '1' || deliveredAmount.value === '0.000001')
+      (deliveredAmount === '1' || deliveredAmount.value === '0.000001' || deliveredAmount.value === '0.0001')
     ) {
       return true
     }

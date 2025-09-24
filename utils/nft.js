@@ -20,7 +20,7 @@ export const mpUrl = (offer) => {
   let url = ''
   if (service === 'bidds') {
     url = 'https://nft.bidds.com/nft/'
-  } else if (service === 'xrp.cafe') {
+  } else if (service === 'xrp.cafe' || service === 'xrp.cafe (auction)') {
     url = 'https://xrp.cafe/nft/'
   } else if (service === 'xMart') {
     url = 'https://api.xmart.art/nft/'
