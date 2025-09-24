@@ -110,7 +110,15 @@ const LimitsIcon = ({ trustline }) => {
   )
 }
 
-export default function IOUData({ address, rippleStateList, ledgerTimestamp, pageFiatRate, selectedCurrency, account, setSignRequest }) {
+export default function IOUData({
+  address,
+  rippleStateList,
+  ledgerTimestamp,
+  pageFiatRate,
+  selectedCurrency,
+  account,
+  setSignRequest
+}) {
   const width = useWidth()
   const { t } = useTranslation()
   const [totalBalance, setTotalBalance] = useState(0)
@@ -212,8 +220,8 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           </td>
           <td className="right">
             <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
-              <LimitsIcon trustline={tl} />
               <FlagIcons flags={tl.flags} />
+              <LimitsIcon trustline={tl} />
             </div>
           </td>
           <td className="right">
@@ -243,7 +251,9 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
   ) : (
     <tr key="none">
       <td colSpan="100" className="center">
-        {isLoggedIn ? "You don't hold any tokens." : "This account doesn't have any tokens, login to manage your tokens."}
+        {isLoggedIn
+          ? "You don't hold any tokens."
+          : "This account doesn't have any tokens, login to manage your tokens."}
       </td>
     </tr>
   )
@@ -259,7 +269,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
                 <>
                   [<a href={'/services/trustline?address=' + address}>Add a token</a>]
                 </>
-              ) : (!account?.address && rippleStateList?.length ? (
+              ) : !account?.address && rippleStateList?.length ? (
                 <>
                   [<a onClick={() => setSignRequest({ redirect: 'account' })}> Login </a>]
                 </>
@@ -267,7 +277,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
                 <>
                   [<a href={'/explorer/' + address}>Old View</a>]
                 </>
-              ))}
+              )}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
                   Total worth:{' '}
@@ -304,10 +314,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
                     ''
                   )
                 ) : (
-                  <button 
-                    className="button-action"
-                    onClick={() => setSignRequest({ redirect: 'account' })}
-                  >
+                  <button className="button-action" onClick={() => setSignRequest({ redirect: 'account' })}>
                     Log-in
                   </button>
                 )}
@@ -335,45 +342,41 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           )}
         </center>
         <br />
-        {
-          !rippleStateList?.length ? (
-            <>
-              {isLoggedIn ? (
-                <div className="center">
-                  <p>You don't hold any tokens.</p>
-                  { address === account?.address ? (
-                      <>[<a href={'/services/trustline?address=' + address}>Add a token</a>]</>
-                    ) : (
-                      ''
-                    )
-                  }
-                </div>
-              ) : (
-                <div className="center">
-                  <p>This account doesn't have any tokens, login to manage your tokens.</p>
-                  <button 
-                    className="button-action"
-                    onClick={() => setSignRequest({ redirect: 'account' })}
-                  >
-                    Log-in
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <table className="table-mobile wide">
-              <tbody>
-                <tr>
-                  <th>#</th>
-                  <th className="left">Currency</th>
-                  <th className="right">Balance</th>
-                  <th className="right">Params</th>
-                </tr>
-                {tokenRows}
-              </tbody>
-            </table>
-          )
-        }
+        {!rippleStateList?.length ? (
+          <>
+            {isLoggedIn ? (
+              <div className="center">
+                <p>You don't hold any tokens.</p>
+                {address === account?.address ? (
+                  <>
+                    [<a href={'/services/trustline?address=' + address}>Add a token</a>]
+                  </>
+                ) : (
+                  ''
+                )}
+              </div>
+            ) : (
+              <div className="center">
+                <p>This account doesn't have any tokens, login to manage your tokens.</p>
+                <button className="button-action" onClick={() => setSignRequest({ redirect: 'account' })}>
+                  Log-in
+                </button>
+              </div>
+            )}
+          </>
+        ) : (
+          <table className="table-mobile wide">
+            <tbody>
+              <tr>
+                <th>#</th>
+                <th className="left">Currency</th>
+                <th className="right">Balance</th>
+                <th className="right">Params</th>
+              </tr>
+              {tokenRows}
+            </tbody>
+          </table>
+        )}
         <br />
       </div>
     </>
