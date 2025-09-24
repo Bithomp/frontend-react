@@ -141,14 +141,29 @@ export default function TokenPage({
   }, [selectedCurrency])
   // Helper: price line as "fiat (XRP)" using historical rate when available
 
-  const priceLine = ({ priceNative, priceFiat }) => {
+  const priceLine = ({ priceFiat }) => {
     return (
       <span suppressHydrationWarning>
         {niceNumber(priceFiat || 0, 4, selectedCurrency)}
         {isSsrMobile ? <br /> : ' '}
         <span className="grey">
           {!isSsrMobile && '('}
-          {niceNumber(priceNative || 0, 6)} {nativeCurrency}
+          {price < 0.0001 ? (
+            <>
+              <span className="no-brake">
+                1M <span className="green">{token?.currencyDetails?.currency}</span> = {niceNumber(price * 1000000, 6)}{' '}
+              </span>
+              <span className="red no-brake">{nativeCurrency}</span>,{' '}
+            </>
+          ) : (
+            <span className="no-brake">
+              {niceNumber(price, 6)} <span className="red">{nativeCurrency}</span>,{' '}
+            </span>
+          )}
+          <span className="no-brake">
+            1 <span className="red">{nativeCurrency}</span> = {niceNumber(1 / price, 6)}{' '}
+            <span className="green">{token?.currencyDetails?.currency}</span>
+          </span>
           {!isSsrMobile && ')'}
         </span>
       </span>
