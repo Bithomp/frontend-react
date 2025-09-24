@@ -13,7 +13,6 @@ import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaInfoCircl
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
 
 const tokensCountText = (rippleStateList) => {
   if (!rippleStateList) return ''
@@ -195,6 +194,26 @@ export default function IOUData({
   // Check if user is logged in (has wallet connected)
   const isLoggedIn = account?.address && account?.wallet
 
+  const noTokensNode =
+    isLoggedIn && account?.address === address ? (
+      "You don't have any tokens."
+    ) : (
+      <>
+        This account doesn't have any tokens
+        {!isLoggedIn ? (
+          <>
+            ,{' '}
+            <span onClick={() => setSignRequest({})} className="link underline">
+              sign in
+            </span>{' '}
+            to manage your tokens.
+          </>
+        ) : (
+          '.'
+        )}
+      </>
+    )
+
   // amount / gateway details / trustline settings
   const tokenRows = rippleStateList?.length ? (
     rippleStateList.map((tl, i) => {
@@ -250,13 +269,26 @@ export default function IOUData({
     })
   ) : (
     <tr key="none">
-      <td colSpan="100" className="center">
-        {isLoggedIn
-          ? "You don't hold any tokens."
-          : "This account doesn't have any tokens, login to manage your tokens."}
-      </td>
+      <td colSpan="100">{noTokensNode}</td>
     </tr>
   )
+
+  const actionLink =
+    isLoggedIn && account.address === address ? (
+      <>
+        [<a href={'/services/trustline'}>Add a token</a>]
+      </>
+    ) : (
+      !isLoggedIn && (
+        <>
+          [
+          <span className="link" onClick={() => setSignRequest({})}>
+            Sign In
+          </span>
+          ]
+        </>
+      )
+    )
 
   return (
     <>
@@ -265,19 +297,7 @@ export default function IOUData({
           <tr>
             <th colSpan="100">
               {tokensCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle}
-              {account?.address && rippleStateList?.length ? (
-                <>
-                  [<a href={'/services/trustline?address=' + address}>Add a token</a>]
-                </>
-              ) : !account?.address && rippleStateList?.length ? (
-                <>
-                  [<a onClick={() => setSignRequest({ redirect: 'account' })}> Login </a>]
-                </>
-              ) : (
-                <>
-                  [<a href={'/explorer/' + address}>Old View</a>]
-                </>
-              )}
+              {actionLink}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
                   Total worth:{' '}
@@ -302,34 +322,14 @@ export default function IOUData({
             ''
           )}
           {tokenRows}
-          {!rippleStateList?.length ? (
-            <tr>
-              <td className="center" colSpan="100">
-                {isLoggedIn ? (
-                  address === account?.address ? (
-                    <Link href={'/services/trustline?address=' + address} className="button-action">
-                      Add a token
-                    </Link>
-                  ) : (
-                    ''
-                  )
-                ) : (
-                  <button className="button-action" onClick={() => setSignRequest({ redirect: 'account' })}>
-                    Log-in
-                  </button>
-                )}
-              </td>
-            </tr>
-          ) : (
-            ''
-          )}
         </tbody>
       </table>
       <div className="show-on-small-w800">
         <br />
         <center>
           {tokensCountText(rippleStateList)}
-          {t('menu.tokens').toUpperCase()} {historicalTitle}[<a href={'/explorer/' + address}>Old View</a>]
+          {t('menu.tokens').toUpperCase()} {historicalTitle}
+          {actionLink}
           {totalBalance > 0 && (
             <div>
               <br />
@@ -344,25 +344,8 @@ export default function IOUData({
         <br />
         {!rippleStateList?.length ? (
           <>
-            {isLoggedIn ? (
-              <div className="center">
-                <p>You don't hold any tokens.</p>
-                {address === account?.address ? (
-                  <>
-                    [<a href={'/services/trustline?address=' + address}>Add a token</a>]
-                  </>
-                ) : (
-                  ''
-                )}
-              </div>
-            ) : (
-              <div className="center">
-                <p>This account doesn't have any tokens, login to manage your tokens.</p>
-                <button className="button-action" onClick={() => setSignRequest({ redirect: 'account' })}>
-                  Log-in
-                </button>
-              </div>
-            )}
+            {noTokensNode}
+            <br />
           </>
         ) : (
           <table className="table-mobile wide">
