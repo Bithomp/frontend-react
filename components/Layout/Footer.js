@@ -10,7 +10,7 @@ const SocialIcons = dynamic(() => import('./SocialIcons'), { ssr: false })
 const LogoAnimated = dynamic(() => import('./LogoAnimated'), { ssr: false })
 const ButtonScrollTop = dynamic(() => import('./ButtonScrollTop'), { ssr: false })
 
-export default function Footer() {
+export default function Footer({ countryCode }) {
   const { t, i18n } = useTranslation()
   const footerRef = useRef()
 
@@ -86,7 +86,11 @@ export default function Footer() {
             <a href="/go/fm-earn" target="_blank" rel="noreferrer">
               {t('menu.sponsored.earn')}
             </a>
-            <a href="/go/fm-play" target="_blank" rel="noreferrer">
+            <a
+              href={countryCode === 'US' ? 'https://bithomp.com/go/fm-play-us' : 'https://bithomp.com/go/fm-play'}
+              target="_blank"
+              rel="noreferrer"
+            >
               {t('menu.sponsored.play')}
             </a>
           </div>

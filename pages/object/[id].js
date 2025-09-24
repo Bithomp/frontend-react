@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
@@ -15,10 +15,45 @@ import {
   AddressWithIconFilled,
   amountFormatNode,
   addressUsernameOrServiceLink,
-  shortAddress
+  shortAddress,
+  fullDateAndTime
 } from '../../utils/format'
 import { LinkTx, LedgerLink } from '../../utils/links'
 import { object } from '../../styles/pages/object.module.scss'
+import { network } from '../../utils'
+
+const errorNotFoundMessage =
+  'Such Object is not found on the current Ledger of the ' +
+  network.toUpperCase() +
+  " network, try to use a Time Machine to change the date or change the network if it's wrong."
+
+function stripKeys(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map(stripKeys)
+  } else if (obj && typeof obj === 'object') {
+    const hasBothCancel =
+      Object.prototype.hasOwnProperty.call(obj, 'cancelAfter') &&
+      Object.prototype.hasOwnProperty.call(obj, 'CancelAfter')
+
+    const hasBothFinish =
+      Object.prototype.hasOwnProperty.call(obj, 'finishAfter') &&
+      Object.prototype.hasOwnProperty.call(obj, 'FinishAfter')
+
+    const result = {}
+    for (const [key, value] of Object.entries(obj)) {
+      // Always drop any *Details keys
+      if (key.includes('Details')) continue
+
+      // Drop lowercase if both lower+upper exist
+      if (key === 'cancelAfter' && hasBothCancel) continue
+      if (key === 'finishAfter' && hasBothFinish) continue
+
+      result[key] = stripKeys(value)
+    }
+    return result
+  }
+  return obj
+}
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -29,8 +64,11 @@ export async function getServerSideProps(context) {
 
   const makeQueryString = () => {
     const params = []
-    if (ledgerIndex) params.push('ledgerIndex=' + ledgerIndex)
-    if (date) params.push('date=' + date)
+    if (ledgerIndex) {
+      params.push('ledgerIndex=' + ledgerIndex)
+    } else if (date) {
+      params.push('date=' + date)
+    }
     if (previousTxHash) params.push('previousTxHash=' + previousTxHash)
     return params.length ? '?' + params.join('&') : ''
   }
@@ -46,7 +84,7 @@ export async function getServerSideProps(context) {
     data = res?.data
     // Handle case when the object is not found
     if (data?.error) {
-      errorMessage = data.error_message || 'Such object is not found on that network'
+      errorMessage = data.error_message || errorNotFoundMessage
       data = null
     }
   } catch (e) {
@@ -114,7 +152,9 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
       </tr>
     ) : null
 
-    const rows = Object.entries(data.node)
+    const cleanData = stripKeys(data.node)
+
+    const rows = Object.entries(cleanData)
       .filter(([key]) => key !== 'LedgerEntryType') // Exclude LedgerEntryType from regular rows
       .map(([key, value]) => {
         // Link for transaction id
@@ -179,7 +219,20 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
           return (
             <tr key={key}>
               <td>{key}</td>
-              <td>{new Date(value * 1000).toISOString()}</td>
+              <td>
+                {fullDateAndTime(value * 1000)} ({value})
+              </td>
+            </tr>
+          )
+        }
+
+        if (key === 'CancelAfter' || key === 'FinishAfter') {
+          return (
+            <tr key={key}>
+              <td>{key}</td>
+              <td>
+                {fullDateAndTime(value, 'ripple')} ({value})
+              </td>
             </tr>
           )
         }
@@ -247,7 +300,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
     try {
       const res = await axios('/v2/ledgerEntry/' + id + query)
       if (res?.data?.error === 'entryNotFound') {
-        setErrorMessage('Such object is not found on that network')
+        setErrorMessage(errorNotFoundMessage)
         setData(null)
       } else {
         setData(res?.data)
@@ -307,11 +360,6 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
               <span className="waiting"></span>
               <br />
               Loading...
-            </div>
-          ) : errorMessage ? (
-            <div className="center orange bold">
-              <br />
-              {errorMessage}
             </div>
           ) : (
             <>
@@ -384,106 +432,119 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                   </button>
                 </div>
                 <br />
-                <table className="table-details">
-                  <thead>
-                    <tr>
-                      <th colSpan="2">History</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Current Ledger</td>
-                      <td>
-                        <Link
-                          href={`/object/${router.query.id}?ledgerIndex=${data?.ledger_index}`}
-                          className={router.query.ledgerIndex === data?.ledger_index?.toString() ? 'active' : ''}
-                        >
-                          {data?.ledger_index}
-                        </Link>
-                      </td>
-                    </tr>
-                    {data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index && (
-                      <tr>
-                        <td>Previous Ledger</td>
-                        <td>
-                          <Link
-                            href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`}
-                            className={
-                              router.query.ledgerIndex === data.node.PreviousTxnLgrSeq?.toString() ? 'active' : ''
-                            }
-                          >
-                            {data.node.PreviousTxnLgrSeq}
-                          </Link>
-                        </td>
-                      </tr>
-                    )}
-
-                    {router.query.previousTxHash && (
-                      <tr>
-                        <td>Current Transaction</td>
-                        <td>
-                          <Link
-                            href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
-                            className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
-                          >
-                            {shortAddress(router.query.previousTxHash)}
-                          </Link>
-                        </td>
-                      </tr>
-                    )}
-                    {data?.node?.PreviousTxnID && (
-                      <tr>
-                        <td>Previous Transaction</td>
-                        <td>
-                          <Link
-                            href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
-                            className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
-                          >
-                            {shortAddress(data.node.PreviousTxnID)}
-                          </Link>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-
-                <br />
-              </div>
-              <div className="column-right">
-                {detailsTable()}
-
-                {data?.metadata && (
+                {!errorMessage && (data?.node?.PreviousTxnLgrSeq || data?.node?.PreviousTxnID) && (
                   <table className="table-details">
+                    <thead>
+                      <tr>
+                        <th colSpan="2">History</th>
+                      </tr>
+                    </thead>
                     <tbody>
                       <tr>
-                        <td>Metadata</td>
+                        <td>Current Ledger</td>
                         <td>
-                          <span className="link" onClick={() => setShowMetadata(!showMetadata)}>
-                            {showMetadata ? 'hide' : 'show'}
-                          </span>
+                          <Link
+                            href={`/object/${router.query.id}?ledgerIndex=${data?.ledger_index}`}
+                            className={router.query.ledgerIndex === data?.ledger_index?.toString() ? 'active' : ''}
+                          >
+                            {data?.ledger_index}
+                          </Link>
                         </td>
                       </tr>
+                      {data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index && (
+                        <tr>
+                          <td>Previous Ledger</td>
+                          <td>
+                            <Link
+                              href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`}
+                              className={
+                                router.query.ledgerIndex === data.node.PreviousTxnLgrSeq?.toString() ? 'active' : ''
+                              }
+                            >
+                              {data.node.PreviousTxnLgrSeq}
+                            </Link>
+                          </td>
+                        </tr>
+                      )}
+
+                      {router.query.previousTxHash && (
+                        <tr>
+                          <td>Current Transaction</td>
+                          <td>
+                            <Link
+                              href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
+                              className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
+                            >
+                              {shortAddress(router.query.previousTxHash)}
+                            </Link>
+                          </td>
+                        </tr>
+                      )}
+                      {data?.node?.PreviousTxnID && (
+                        <tr>
+                          <td>Previous Transaction</td>
+                          <td>
+                            <Link
+                              href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
+                              className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
+                            >
+                              {shortAddress(data.node.PreviousTxnID)}
+                            </Link>
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 )}
 
-                <div className={'slide ' + (showMetadata ? 'opened' : 'closed')}>
-                  {showMetadata && codeHighlight(data.metadata)}
-                </div>
+                <br />
+              </div>
+              <div className="column-right">
+                {errorMessage ? (
+                  <div className="center orange bold">
+                    <br />
+                    {errorMessage}
+                  </div>
+                ) : (
+                  <>
+                    {detailsTable()}
 
-                <table className="table-details">
-                  <tbody>
-                    <tr>
-                      <td>Raw JSON</td>
-                      <td>
-                        <span className="link" onClick={() => setShowRaw(!showRaw)}>
-                          {showRaw ? 'hide' : 'show'}
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>{showRaw && codeHighlight(data)}</div>
+                    {data?.metadata && (
+                      <table className="table-details">
+                        <tbody>
+                          <tr>
+                            <td>Metadata</td>
+                            <td>
+                              <span className="link" onClick={() => setShowMetadata(!showMetadata)}>
+                                {showMetadata ? 'hide' : 'show'}
+                              </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    )}
+
+                    <div className={'slide ' + (showMetadata ? 'opened' : 'closed')}>
+                      {showMetadata && codeHighlight(data.metadata)}
+                    </div>
+
+                    <table className="table-details">
+                      <tbody>
+                        <tr>
+                          <td>Raw JSON</td>
+                          <td>
+                            <span className="link" onClick={() => setShowRaw(!showRaw)}>
+                              {showRaw ? 'hide' : 'show'}
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div className={'slide ' + (showRaw ? 'opened' : 'closed')}>
+                      {showRaw && codeHighlight(stripKeys(data))}
+                    </div>
+                  </>
+                )}
               </div>
             </>
           )}

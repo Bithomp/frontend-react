@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { xahauNetwork } from '../../../utils'
 
 const options = [
-  { value: 'm1', label: '1 month', price: '4.99 EUR' },
-  { value: 'm3', label: '3 months', price: '14.97 EUR' },
-  { value: 'm6', label: '6 months', price: '29.94 EUR' },
-  { value: 'y1', label: '1 year', price: '49.99 EUR' }
+  { value: 'm1', label: '1 month', price: '9.99 EUR' },
+  { value: 'm3', label: '3 months', price: '29.97 EUR' },
+  { value: 'm6', label: '6 months', price: '59.94 EUR' },
+  { value: 'y1', label: '1 year', price: '99.99 EUR' }
 ]
 
 export default function Pro({ setPayPeriod }) {

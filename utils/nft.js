@@ -20,7 +20,7 @@ export const mpUrl = (offer) => {
   let url = ''
   if (service === 'bidds') {
     url = 'https://nft.bidds.com/nft/'
-  } else if (service === 'xrp.cafe') {
+  } else if (service === 'xrp.cafe' || service === 'xrp.cafe (auction)') {
     url = 'https://xrp.cafe/nft/'
   } else if (service === 'xMart') {
     url = 'https://api.xmart.art/nft/'
@@ -307,10 +307,6 @@ const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => {
   } else if (uri.slice(0, 8) === 'https://') {
     if (type === 'video' && uri.toLowerCase().includes('youtube.com')) {
       return null
-    }
-    if (type === 'audio') {
-      // for https:// audio return original url
-      return stripText(uri)
     }
     if (flags?.mutable && type === 'image') {
       //mutable NFTs can have changing images, so we do not cache them
