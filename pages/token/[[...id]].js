@@ -15,12 +15,12 @@ import CopyButton from '../../components/UI/CopyButton'
 export async function getServerSideProps(context) {
   const { locale, req, params } = context
   const { id } = params || {}
-  
+
   let initialData = null
   let initialErrorMessage = null
   let issuer = null
   let currency = null
-  
+
   // Parse the dynamic route parameters
   if (id && Array.isArray(id) && id.length >= 2) {
     issuer = id[0]
@@ -28,7 +28,7 @@ export async function getServerSideProps(context) {
   } else {
     initialErrorMessage = 'Invalid token URL. Expected format: /token/{issuer}/{currencyCode}'
   }
-  
+
   const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
   if (issuer && currency) {
@@ -134,6 +134,7 @@ export default function TokenPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, selectedCurrencyServer, token?.statistics?.timeAt])
   // Helper: price line as "fiat (XRP)" using historical rate when available
+
   const priceLine = ({ priceNative, priceFiat }) => {
     return (
       <span suppressHydrationWarning>
@@ -369,7 +370,12 @@ export default function TokenPage({
                   <>
                     <tr>
                       <td>Last price</td>
-                      <td>{priceLine({ priceNative: statistics?.priceNativeCurrency, priceFiat: statistics?.priceFiats[selectedCurrency]})}</td>
+                      <td>
+                        {priceLine({
+                          priceNative: statistics?.priceNativeCurrency,
+                          priceFiat: statistics?.priceFiats[selectedCurrency]
+                        })}
+                      </td>
                     </tr>
                     <tr>
                       <td>Market cap</td>
@@ -378,33 +384,58 @@ export default function TokenPage({
                     {statistics?.priceNativeCurrencySpot && (
                       <tr>
                         <td>Spot price</td>
-                        <td>{priceLine({ priceNative: statistics?.priceNativeCurrencySpot, priceFiat: statistics?.priceFiatsSpot[selectedCurrency]})}</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrencySpot,
+                            priceFiat: statistics?.priceFiatsSpot[selectedCurrency]
+                          })}
+                        </td>
                       </tr>
                     )}
                     {statistics?.priceNativeCurrency5m && (
                       <tr>
                         <td>5 minutes ago</td>
-                        <td>{priceLine({ priceNative: statistics?.priceNativeCurrency5m, priceFiat: statistics?.priceFiats5m[selectedCurrency]})}</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrency5m,
+                            priceFiat: statistics?.priceFiats5m[selectedCurrency]
+                          })}
+                        </td>
                       </tr>
                     )}
                     {statistics?.priceNativeCurrency1h && (
                       <tr>
                         <td>1 hour ago</td>
-                        <td>{priceLine({ priceNative: statistics?.priceNativeCurrency1h, priceFiat: statistics?.priceFiats1h[selectedCurrency]})}</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrency1h,
+                            priceFiat: statistics?.priceFiats1h[selectedCurrency]
+                          })}
+                        </td>
                       </tr>
                     )}
                     {statistics?.priceNativeCurrency24h && (
                       <tr>
                         <td>24 hours ago</td>
-                        <td>{priceLine({ priceNative: statistics?.priceNativeCurrency24h, priceFiat: statistics?.priceFiats24h[selectedCurrency]})}</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrency24h,
+                            priceFiat: statistics?.priceFiats24h[selectedCurrency]
+                          })}
+                        </td>
                       </tr>
                     )}
                     {statistics?.priceNativeCurrency7d && (
                       <tr>
                         <td>7 days ago</td>
-                        <td>{priceLine({ priceNative: statistics?.priceNativeCurrency7d, priceFiat: statistics?.priceFiats7d[selectedCurrency]})}</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrency7d,
+                            priceFiat: statistics?.priceFiats7d[selectedCurrency]
+                          })}
+                        </td>
                       </tr>
-                    )} 
+                    )}
                   </>
                 )}
               </tbody>
