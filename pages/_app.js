@@ -90,7 +90,15 @@ const MyApp = ({ Component, pageProps }) => {
       '/nft/[[...id]]',
       '/token/[[...id]]'
     ]
-    const skipOnFirstRender = ['/', '/account', '/account/[id]', '/account/[id]/transactions', '/amms', '/tokens']
+    const skipOnFirstRender = [
+      '/',
+      '/account',
+      '/account/[id]',
+      '/account/[id]/transactions',
+      '/amms',
+      '/tokens',
+      '/token/[[...id]]'
+    ]
 
     // Skip fetch on first render for pages that get on the server side
     if (firstRenderRef.current && skipOnFirstRender.includes(router.pathname)) {

@@ -1,5 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -98,6 +98,7 @@ export default function TokenPage({
   const [token, setToken] = useState(initialData)
   const [loading, setLoading] = useState(false)
   const errorMessage = initialErrorMessage || ''
+  const firstRenderRef = useRef(true)
 
   let selectedCurrency = selectedCurrencyServer
   let fiatRate = fiatRateServer
@@ -116,7 +117,7 @@ export default function TokenPage({
 
   const getHistoricalRates = async () => {
     setLoading(true)
-    const cur = (selectedCurrency || selectedCurrencyServer)?.toLowerCase()
+    const cur = selectedCurrency?.toLowerCase()
     if (!cur) return
     const url = `v2/trustlines/token/${initialData.issuer}/${initialData.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
     const res = await axiosServer({
@@ -130,9 +131,14 @@ export default function TokenPage({
   }
 
   useEffect(() => {
+    // Skip fetch on first render for pages that get on the server side
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false
+      return
+    }
     getHistoricalRates()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, selectedCurrencyServer, token?.statistics?.timeAt])
+  }, [selectedCurrency])
   // Helper: price line as "fiat (XRP)" using historical rate when available
 
   const priceLine = ({ priceNative, priceFiat }) => {
@@ -377,10 +383,6 @@ export default function TokenPage({
                         })}
                       </td>
                     </tr>
-                    <tr>
-                      <td>Market cap</td>
-                      <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
-                    </tr>
                     {statistics?.priceNativeCurrencySpot && (
                       <tr>
                         <td>Spot price</td>
@@ -392,6 +394,10 @@ export default function TokenPage({
                         </td>
                       </tr>
                     )}
+                    <tr>
+                      <td>Market cap</td>
+                      <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
+                    </tr>
                     {statistics?.priceNativeCurrency5m && (
                       <tr>
                         <td>5 minutes ago</td>
