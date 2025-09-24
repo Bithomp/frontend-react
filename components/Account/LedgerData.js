@@ -329,19 +329,12 @@ export default function LedgerData({
       </span>
       )
     </>
+  ) : account?.address === data?.address ? (
+    <>
+      You don't have any tokens. [<Link href={'/services/trustline'}>Add a token</Link>]
+    </>
   ) : (
-    account?.address === data?.address ? (
-      <>
-        <span>
-          You don't have any tokens
-        </span>
-        [<Link href={'/services/trustline?address=' + data?.address}>
-          Add a token
-        </Link>]
-      </>
-    ) : (
-      <span>This account doesn't hold Tokens.</span>
-    )
+    <span>This account doesn't hold Tokens.</span>
   )
 
   const dexOrdersNode = !objects?.offerList ? (
@@ -354,8 +347,10 @@ export default function LedgerData({
       </span>
       )
     </>
+  ) : account?.address === data?.address ? (
+    "You don't have any DEX orders."
   ) : (
-    account?.address === data?.address ? "You don't have any DEX orders." : "This account doesn't have DEX orders."
+    "This account doesn't have DEX orders."
   )
 
   const escrowNode = !objects?.escrowList ? (
@@ -368,17 +363,12 @@ export default function LedgerData({
       </span>
       )
     </>
+  ) : account?.address === data?.address ? (
+    <>
+      You don't have any Escrows. [<Link href={'/services/escrow'}>Create</Link>]
+    </>
   ) : (
-    account?.address === data?.address ? (
-      <>
-        <span>You don't have any Escrows.</span>
-        [<Link href={'/services/escrow'}>
-          Create
-        </Link>]
-      </>
-    ) : (
-      "This account doesn't have Escrows."
-    )
+    "This account doesn't have Escrows."
   )
 
   return (
