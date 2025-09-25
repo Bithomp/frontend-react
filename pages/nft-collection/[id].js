@@ -58,7 +58,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
   const [mounted, setMounted] = useState(false)
   const [nftList, setNftList] = useState([])
   const [nftListLoading, setNftListLoading] = useState(false)
-  const {statistics} = data.collection
+  const statistics = data?.collection?.statistics
   const [activityData, setActivityData] = useState({
     sales: [],
     listings: [],
@@ -462,12 +462,12 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                                     <td>{statistics.month.tradedNfts}</td>
                                   </tr>
                                 )}
-                                {statistics?.week?.tradedNfts && (
+                                {statistics?.week?.tradedNfts ? (
                                   <tr>
                                     <td>Weekly Traded NFTs</td>
                                     <td>{statistics.week.tradedNfts}</td>
                                   </tr>
-                                )}
+                                ) : null}
                               </tbody>
                             </table>
                           )}
@@ -487,7 +487,15 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                                     View all
                                   </Link>
                                 ) : (
-                                  ''
+                                  <Link
+                                    href={
+                                      `/nft-explorer?collection=${encodeURIComponent(
+                                        data.collection.collection
+                                      )}&includeWithoutMediaData=true`
+                                    }
+                                  >
+                                    View all
+                                  </Link>
                                 )}
                               </div>
 
