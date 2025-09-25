@@ -9,7 +9,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getIsSsrMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
-import { useWidth } from '../../../utils'
+import { useWidth, addAndRemoveQueryParams } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -40,7 +40,16 @@ import {
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  const { id } = query
+  const { 
+    id, 
+    fromDate, 
+    toDate, 
+    txType, 
+    initiated, 
+    excludeFailures, 
+    counterparty, 
+    order 
+  } = query
   const account = id || ''
   const limit = 20
   let initialTransactions = []
@@ -84,6 +93,13 @@ export async function getServerSideProps(context) {
       initialMarker,
       initialUserData: initialUserData || {},
       isSsrMobile: getIsSsrMobile(context),
+      fromDateQuery: fromDate || '',
+      toDateQuery: toDate || '',
+      txTypeQuery: txType || 'tx',
+      initiatedQuery: initiated || '0',
+      excludeFailuresQuery: excludeFailures || '0',
+      counterpartyQuery: counterparty || '',
+      orderQuery: order || 'newest',
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -95,24 +111,18 @@ export default function AccountTransactions({
   initialErrorMessage,
   initialMarker,
   initialUserData,
-  selectedCurrency
+  selectedCurrency,
+  fromDateQuery,
+  toDateQuery,
+  txTypeQuery,
+  initiatedQuery,
+  excludeFailuresQuery,
+  counterpartyQuery,
+  orderQuery,
 }) {
   const { t } = useTranslation()
   const width = useWidth()
   const router = useRouter()
-
-  // URL synchronization functions
-  const getInitialFilterValue = (key, defaultValue) => {
-    if (router.isReady && router.query[key]) {
-      const value = router.query[key]
-      // Handle date values
-      if (key === 'fromDate' || key === 'toDate') {
-        return value ? new Date(value) : defaultValue
-      }
-      return value
-    }
-    return defaultValue
-  }
 
   // User data for SearchBlock
   const [userData, setUserData] = useState({
@@ -126,14 +136,14 @@ export default function AccountTransactions({
   const [marker, setMarker] = useState(initialMarker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [order, setOrder] = useState(() => getInitialFilterValue('order', 'newest')) // newest | oldest
+  const [order, setOrder] = useState(orderQuery) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
-  const [txType, setTxType] = useState(() => getInitialFilterValue('txType', 'tx')) // tx = all types
-  const [initiated, setInitiated] = useState(() => getInitialFilterValue('initiated', '0')) // 0 = both, 1 = outgoing, 2 = incoming
-  const [excludeFailures, setExcludeFailures] = useState(() => getInitialFilterValue('excludeFailures', '0')) // 0 = include, 1 = exclude
-  const [counterparty, setCounterparty] = useState(() => getInitialFilterValue('counterparty', ''))
-  const [fromDate, setFromDate] = useState(() => getInitialFilterValue('fromDate', ''))
-  const [toDate, setToDate] = useState(() => getInitialFilterValue('toDate', ''))
+  const [txType, setTxType] = useState(txTypeQuery) // tx = all types
+  const [initiated, setInitiated] = useState(initiatedQuery) // 0 = both, 1 = outgoing, 2 = incoming
+  const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // 0 = include, 1 = exclude
+  const [counterparty, setCounterparty] = useState(counterpartyQuery)
+  const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
+  const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
 
   // Update userData when initialUserData changes
   useEffect(() => {
@@ -306,22 +316,20 @@ export default function AccountTransactions({
   const updateURL = (newFilters) => {
     if (!router.isReady) return
     
-    const query = { ...router.query }
+    const addList = []
+    const removeList = []
     
-    // Update query parameters with new filter values
+    // Process each filter
     Object.keys(newFilters).forEach(key => {
-      if (newFilters[key] && newFilters[key] !== '' && newFilters[key] !== '0' && newFilters[key] !== 'tx' && newFilters[key] !== 'newest') {
-        query[key] = newFilters[key]
+      const value = newFilters[key]
+      if (value && value !== '' && value !== '0' && value !== 'tx' && value !== 'newest') {
+        addList.push({ name: key, value })
       } else {
-        delete query[key]
+        removeList.push(key)
       }
     })
 
-    // Update URL without triggering a page reload
-    router.replace({
-      pathname: router.pathname,
-      query
-    }, undefined, { shallow: true })
+    addAndRemoveQueryParams(router, addList, removeList)
   }
 
   return (

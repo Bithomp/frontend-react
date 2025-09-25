@@ -68,12 +68,12 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             <span className="red bold">{shortErrorCode(outcome.result)}</span>
             <br />
             <span className="bold">Description: </span>
-            <span className="description-text bold">{errorCodeDescription(outcome.result)}</span>
+            <span className="orange bold">{errorCodeDescription(outcome.result)}</span>
             <br />
           </>
         )}
         <span>Fee: </span>
-        <span className="bold">{amountFormat(tx.Fee, { icon: true, fee: true })}</span>
+        <span className="bold">{amountFormat(tx.Fee, { icon: true })}</span>
         <span>{nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}</span>
         <br />
         {tx.DestinationTag !== undefined && tx.DestinationTag !== null && (

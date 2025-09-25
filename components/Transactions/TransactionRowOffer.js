@@ -64,7 +64,7 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency}) => {
             {sourceBalanceChangesList.map((change, index) => (
               <div key={index}>
                 <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                  {amountFormat(change, { icon: true })}
+                  {amountFormat(change, { icon: true, txType: "Offer" })}
                 </span>
                 {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
                 {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate: pageFiatRate })}
