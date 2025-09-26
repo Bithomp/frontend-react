@@ -667,6 +667,10 @@ export const amountFormat = (amount, options = { icon: false }) => {
     />
   )
 
+  if (options.showPlus && value > 0) {
+    showValue = '+' + showValue
+  }
+
   if (options.tooltip) {
     return (
       <span suppressHydrationWarning>
