@@ -641,7 +641,7 @@ export const amountFormat = (amount, options = { icon: false }) => {
     return value + ' ' + valuePrefix + ' ' + textCurrency
   }
 
-  let showValue = options.txType === "Offer" && Number(value) > 0 ? '+' + value : value
+  let showValue = value
 
   if (Math.abs(value) >= 100) {
     if (options.short) {
@@ -666,6 +666,10 @@ export const amountFormat = (amount, options = { icon: false }) => {
       style={{ marginRight: '2px', marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }}
     />
   )
+
+  if (options.showPlus && value > 0) {
+    showValue = '+' + showValue
+  }
 
   if (options.tooltip) {
     return (
