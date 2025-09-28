@@ -4,6 +4,7 @@
   "author": "Bithomp AB",
   "description": "Bithomp Frontend for XRPL and XAHAU Explorers",
   "private": true,
+  "license": "UNLICENSED",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Bithomp/frontend-react.git"
