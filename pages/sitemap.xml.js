@@ -85,7 +85,7 @@ if (network === 'mainnet') {
     { loc: 'learn/nft-minting', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/the-bithomp-api', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' },
-    { loc: 'learn/guide-for-token-issuers', changefreq: 'monthly', priority: '0.5' }
+    { loc: 'learn/guide-for-token-issuers', changefreq: 'monthly', priority: '0.9' }
   )
 }
 
@@ -116,8 +116,7 @@ function generateSiteMap(posts) {
     'learn/ripple-usd',
     'learn/the-bithomp-explorer-advantages',
     'learn/xrpl-article',
-
-    'learn/guide-for-token-issuers',
+    'learn/guide-for-token-issuers'
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
