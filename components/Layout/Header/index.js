@@ -215,6 +215,7 @@ export default function Header({
             >
               <Link href="/tokens">TOP {t('menu.tokens')}</Link>
               <Link href="/services/trustline">Set Trust (Trustline)</Link>
+              <Link href="/learn/issue-a-token">How to Issue a Token</Link>
               <Link href="/learn/guide-for-token-issuers">Guide for Token Issuers</Link>
             </MenuDropDown>
           </div>

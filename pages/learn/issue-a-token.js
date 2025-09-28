@@ -118,11 +118,14 @@ export default function IssueAToken() {
             </li>
             <li>If you plan to issue tokens continuously, it’s best to use a hardware wallet (such as Ledger).</li>
             👉 You can get your Ledger Wallet{' '}
-            <Link href="https://shop.ledger.com/?r=8aeb&tracker=iou_issuer">HERE.</Link>
+            <Link href="https://shop.ledger.com/?r=8aeb&tracker=iou_issuer">here</Link>.
             <p>
               <strong>Step 2</strong>
             </p>
-            <p>Set up TWO accounts – one will issue the token, the other will hold it.</p>
+            <p>
+              Set up TWO accounts – one will issue the token (ISSUER ACCOUNT), the other will hold and distribute it
+              (CURRENCY DESTRIBUTION ACCOUNT).
+            </p>
             <p>
               <strong>Step 3</strong>
             </p>
@@ -131,12 +134,48 @@ export default function IssueAToken() {
               <strong>Step 4</strong>
             </p>
             <p>
-              Create a trustline – the receiving account must explicitly trust the issuing account to hold its token.
+              Create a trustline – the receiving account (CURRENCY DESTRIBUTION ACCOUNT) must explicitly trust the
+              issuing account to hold its token. This trustline must be created with <i>Rippling</i> enabled. You can do
+              it <Link href="/services/trustline?mode=advanced&noRipple=false">here</Link>.
             </p>
             <p>
               <strong>Step 5</strong>
             </p>
-            <p>Send a payment transaction – the issuer sends a payment of the new token to the receiver.</p>
+            <p>
+              Send a payment transaction – the ISSUER ACCOUNT sends a payment of the new token to the CURRENCY
+              DESTRIBUTION ACCOUNT.
+            </p>
+            <p>
+              <strong>Step 6</strong>
+            </p>
+            <p>
+              Follow the guidence to register your token and make it representable.{' '}
+              <Link href="/learn/guide-for-token-issuers">Guidence for token issuers.</Link>
+            </p>
+            <p></p>
+            <p>
+              <strong>Step 7</strong>
+            </p>
+            <p>
+              Users can now create trustlines to your ISSUER ACCOUNT to hold your token. You can share a link to Simple
+              mode (where Rippling is disabled). Get your Trust Set link for your token{' '}
+              <Link href="/services/trustline">here</Link>.
+            </p>
+            <p>
+              <strong>Step 8</strong>
+            </p>
+            <p>
+              Now you can distribute your token from the CURRENCY DESTRIBUTION ACCOUNT. You can send payments, create
+              orders on DEX
+              {!xahauNetwork && (
+                <>
+                  {' '}
+                  or set up an AMM (Automated Market Maker) to create a market for your token.{' '}
+                  <Link href="https://bithomp.com/en/services/amm?tab=create">Create an AMM here</Link>
+                </>
+              )}
+              .
+            </p>
             <p>
               <strong>This creates the token on {explorerName}. 🎉 </strong>
             </p>
@@ -148,7 +187,7 @@ export default function IssueAToken() {
             trust {xahauNetwork ? 'EVR issued by Evernode' : 'RLUSD issued by Ripple'} more than tokens issued by an
             unknown individual.
           </p>
-          <h2>Common Scenarios for XRPL Tokens</h2>
+          <h2>Common Scenarios for {explorerName} Tokens</h2>
           <ol>
             <li>
               <strong>Meme or Community Tokens</strong>
@@ -203,6 +242,8 @@ export default function IssueAToken() {
           </p>
         </article>
       </div>
+      <br />
+      <br />
     </>
   )
 }
