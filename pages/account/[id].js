@@ -571,16 +571,26 @@ export default function Account({
                             gateway={gateway}
                           />
                           <PublicData data={data} />
-                          <div id="tokens-section">
-                            <IOUData
-                              rippleStateList={objects?.rippleStateList}
-                              ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                              address={data?.address}
-                            />
-                          </div>
+                          {data?.ledgerInfo?.activated && (
+                            <div id="tokens-section">
+                              <IOUData
+                                rippleStateList={objects?.rippleStateList}
+                                ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                                address={data?.address}
+                                pageFiatRate={pageFiatRate}
+                                selectedCurrency={selectedCurrency}
+                                account={account}
+                                setSignRequest={setSignRequest}
+                              />
+                            </div>
+                          )}
                           {/* don't show yet obligations historically */}
                           {data?.obligations?.trustlines > 0 && !data?.ledgerInfo?.ledgerTimestamp && (
-                            <IssuedTokensData data={data} selectedCurrency={selectedCurrency} pageFiatRate={pageFiatRate} />
+                            <IssuedTokensData
+                              data={data}
+                              selectedCurrency={selectedCurrency}
+                              pageFiatRate={pageFiatRate}
+                            />
                           )}
 
                           <div id="dex-orders-section">
@@ -678,4 +688,4 @@ export default function Account({
       `}</style>
     </>
   )
-} 
+}

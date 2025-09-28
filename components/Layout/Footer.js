@@ -10,7 +10,7 @@ const SocialIcons = dynamic(() => import('./SocialIcons'), { ssr: false })
 const LogoAnimated = dynamic(() => import('./LogoAnimated'), { ssr: false })
 const ButtonScrollTop = dynamic(() => import('./ButtonScrollTop'), { ssr: false })
 
-export default function Footer() {
+export default function Footer({ countryCode }) {
   const { t, i18n } = useTranslation()
   const footerRef = useRef()
 
@@ -59,6 +59,7 @@ export default function Footer() {
           <Link href="/press">{t('menu.press')}</Link>
           <Link href="/jobs">Join our team</Link>
           <Link href="/donate">{t('menu.donate')}</Link>
+          <Link href="/the-chain-of-blocks-summit">Chain Of Blocks Summit 🇲🇹</Link>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.legal')}</span>
@@ -79,16 +80,17 @@ export default function Footer() {
         {!xahauNetwork && (
           <div className="footer-menu-column">
             <span className="footer-menu-header">{t('menu.sponsored.title')}</span>
-            <Link href="/the-chain-of-blocks-summit">
-              XRPL Summit 2025 <span className="red">❤</span>
-            </Link>
             <a href="/go/fm-buy" target="_blank" rel="noreferrer">
               {t('menu.sponsored.buy')}
             </a>
             <a href="/go/fm-earn" target="_blank" rel="noreferrer">
               {t('menu.sponsored.earn')}
             </a>
-            <a href="/go/fm-play" target="_blank" rel="noreferrer">
+            <a
+              href={countryCode === 'US' ? 'https://bithomp.com/go/fm-play-us' : 'https://bithomp.com/go/fm-play'}
+              target="_blank"
+              rel="noreferrer"
+            >
               {t('menu.sponsored.play')}
             </a>
           </div>

@@ -38,7 +38,6 @@ export const NiceNativeBalance = ({ amount }) => {
 export const CurrencyWithIcon = ({ token }) => {
   if (!token) return ''
   const { lp_token, currencyDetails } = token
-
   let imageUrl = tokenImageSrc(token)
 
   return (
@@ -113,7 +112,7 @@ export const amountFormatWithIcon = ({ amount }) => {
   return (
     <span className="inline-flex items-center gap-1">
       <span className="tooltip" style={{ display: 'inline-flex', alignItems: 'center' }}>
-        <img src={imageUrl} alt={currency} width={18} height={18} />          
+        <img src={imageUrl} alt={currency} width={18} height={18} />
         {amount.issuer && (
           <span className="tooltiptext no-brake right">
             {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
@@ -126,7 +125,6 @@ export const amountFormatWithIcon = ({ amount }) => {
           {fullNiceNumber(value)} {valuePrefix} {textCurrency}
         </span>
       </span>
-      
     </span>
   )
 }
@@ -605,11 +603,23 @@ export const trAmountWithGateway = ({ amount, name }) => {
   )
 }
 
-export const amountFormat = (amount, options = {}) => {
+export const amountFormat = (amount, options = { icon: false }) => {
   if (!amount && amount !== '0' && amount !== 0) {
     return ''
   }
-  const { value, currency, valuePrefix, issuer, type } = amountParced(amount)
+  const { value, currency, valuePrefix, issuer, type, originalCurrency } = amountParced(amount)
+  let icon = options?.icon
+
+  // For all tokens including native currency, show icon
+  let imageUrl
+  if (type === nativeCurrency) {
+    // Use native currency icon
+    imageUrl = nativeCurrenciesImages[nativeCurrency]
+  } else {
+    // Use IOU token icon
+    // Use originalCurrency for token icon to avoid processed currency issues
+    imageUrl = tokenImageSrc({ issuer, currency: originalCurrency || currency })
+  }
 
   let textCurrency = currency
   if (options.noSpace) {
@@ -647,32 +657,54 @@ export const amountFormat = (amount, options = {}) => {
     showValue = niceNumber(value, 0, null, options.maxFractionDigits)
   }
 
-  //add issued by (issuerDetails.service / username)
-  if (type !== nativeCurrency) {
-    if (options.tooltip) {
-      return (
-        <span suppressHydrationWarning>
-          {showValue} {valuePrefix}{' '}
+  let tokenImage = icon && (
+    <Image
+      src={imageUrl}
+      alt="token"
+      height={16}
+      width={16}
+      style={{ marginRight: '2px', marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }}
+    />
+  )
+
+  if (options.showPlus && value > 0) {
+    showValue = '+' + showValue
+  }
+
+  if (options.tooltip) {
+    return (
+      <span suppressHydrationWarning>
+        {tokenImage}
+        {showValue} {valuePrefix}{' '}
+        {type === nativeCurrency ? (
+          textCurrency
+        ) : (
           <span className="tooltip">
             <Link href={'/account/' + issuer}>{currency}</Link>
             <span className={'tooltiptext ' + options.tooltip}>
               {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
             </span>
           </span>
-        </span>
-      )
-    } else if (options.withIssuer) {
-      return (
-        <span>
-          {showValue} {valuePrefix} {currency} ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})
-        </span>
-      )
-    } else {
-      return showValue + ' ' + valuePrefix + ' ' + textCurrency
-    }
+        )}
+      </span>
+    )
+  } else if (options.withIssuer) {
+    return (
+      <span>
+        {tokenImage}
+        {showValue} {valuePrefix} {currency}
+        {amount.issuer ? <>({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</> : ''}
+      </span>
+    )
+  } else if (options.icon) {
+    return (
+      <span>
+        {tokenImage}
+        {showValue + ' ' + valuePrefix + ' ' + textCurrency}
+      </span>
+    )
   } else {
-    //type: ['IOU', 'IOU demurraging', 'NFT']
-    return showValue + ' ' + valuePrefix + ' ' + textCurrency
+    return showValue + '' + valuePrefix + ' ' + textCurrency
   }
 }
 
@@ -751,8 +783,10 @@ export const amountParced = (amount) => {
   let valuePrefix = ''
   let type = ''
   let issuer = null
+  let originalCurrency = '' // Store original currency for token icons
 
   if (amount.value && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
+    originalCurrency = amount.currency // Store original before processing
     currency = amount.currency
     value = amount.value
     issuer = amount.issuer
@@ -777,12 +811,14 @@ export const amountParced = (amount) => {
       value = xls14NftVal
     }
   } else if (amount.mpt_issuance_id) {
+    originalCurrency = amount.mpt_issuance_id // Store original before processing
     currency = amount.mpt_issuance_id
     value = amount.value
     type = 'MPT'
     valuePrefix = 'MPT'
   } else {
     type = nativeCurrency
+    originalCurrency = nativeCurrency // Store original before processing
     if (amount.value) {
       value = amount.value
     } else {
@@ -803,7 +839,8 @@ export const amountParced = (amount) => {
     value,
     valuePrefix,
     currency,
-    issuer
+    issuer,
+    originalCurrency // Return original currency for token icons
   }
 }
 

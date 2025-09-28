@@ -50,7 +50,78 @@ const examples = {
     username: ['bitstamp', 'vbuterin', 'JoelKatz'],
     object: '0802E4E7EACC17414747174474487E9DF24CFDB61DD12C58B09D9EFB42C7F8C8'
   },
-  testnet: {}
+
+  staging: {
+    nft: '000900007CDA3D523C8D4CA25F55439D447FBF4D4F26AC3B99AFB57D005429E2',
+    amm: '0B19CBEC8ECC26F23056E981390F3210F3D2B0C598B3729B7618D2CF55B5EBC6',
+    txHash: '3EA3434D60F7B78BBACE9074858202FB5CDDA003FC3F98622CEE8797D32EF0C4',
+    txCTID: 'C0547DD100070002',
+    account: 'rwxuXYidJrbqWCEzvTipswauoKTiDfoatK',
+    payString: ['gemtesting2$staging.bithomp.com'],
+    xAddress: null,
+    username: ['GemTesting2'],
+    object: null
+  },
+
+  testnet: {
+    nft: '000800005D2E32254DA5D6AD397B084B990EAD2D4CD35EA0A1DE0B58006CF41B',
+    amm: 'F7332F4AAD5FEE202A4B7C877D19DA0C694BC2DE6FF23461C12D68316F70BB22',
+    txHash: '5A8F7913DDB7C8B7DA3A9329C397599C89978437445AE5D748DDC9A8FA016A4A',
+    txCTID: 'C097E2D200010001',
+    account: 'rMA8uFhm1hRRu2e9huxjR62gMw4PY2uQAP',
+    payString: ['mainfortesting$test.bithomp.com', 'gemtesting$test.bithomp.com'],
+    xAddress: 'TVE26TYGhfLC7tQDno7G8dGtxSkYQnTMgJJYfAbsiPsc6Zg',
+    username: ['xrpdomains', 'faucet'],
+    object: null
+  },
+
+  devnet: {
+    nft: '000900007CDA3D523C8D4CA25F55439D447FBF4D4F26AC3B82C9E47C005429E1',
+    amm: '33072CA199E75633CD9C174D9DC731C773303A834AF4B3FF8EB28BE30EAA0AE1',
+    txHash: '100D2346C65FF4C681B5AD805EC54419FF38ECDD824006D0E050D2A68808475B',
+    txCTID: 'C0546A8800120002',
+    account: 'rh1HPuRVsYYvThxG2Bs1MfjmrVC73S16Fb',
+    payString: ['gemtesting$dev.bithomp.com', 'mainfortesting$dev.bithomp.com'],
+    xAddress: null,
+    username: ['xrpdomains'],
+    object: null
+  },
+
+  xahau: {
+    nft: 'CE67EA90A55AACD603B5B44C56B44A56D9FA792EB8E872638FF570B31F0ED143',
+    amm: null, // not enabled on xahau
+    txHash: '658D0ADF47AAF039EB5AAD516AA7C77105E5BC1FC7D42C0F89E15C9DFD65EDA7',
+    txCTID: 'C0FBEE5600435359',
+    account: 'rPNFrWbZG7mPenXAEBjAkPezE5N6NKy4W',
+    payString: ['xrpmoon$xahauexplorer.com', 'joelkatz$xahauexplorer.com'],
+    xAddress: null,
+    username: ['JoelKatz', 'XRPMOON'],
+    object: null
+  },
+
+  'xahau-testnet': {
+    nft: '87B493C9E60E0A20A2C070B98DFF81EF421C7D2894483DC967DADB9DA433DBCF',
+    amm: null, // not enabled on xahau
+    txHash: '542DE886216DBC774E018D33D6B4CD188DFE2171521A7EC0EB4AADD1BAE0DD04',
+    txCTID: 'C00A0DC50000535A',
+    account: 'rh9ebhNHB4s7tJ7y66B5gmZ6aEnnhNDsgT',
+    payString: ['gemtesting$test.xahauexplorer.com'],
+    xAddress: null,
+    username: ['MainForTesting'],
+    object: null
+  },
+
+  'xahau-jshooks': {
+    nft: null,
+    amm: null, // not enabled on xahau
+    txHash: '9189121BF648B984D7E63C4E737E0269DC9AA45CBECB79D5D0F3B9F0C2C963B0',
+    txCTID: 'C077168800007A6A',
+    account: 'rp52uvJuR8PzTG1RRDvCxwXW7o56bPSwbG',
+    payString: ['mainfortesting$jshooks.xahauexplorer.com'],
+    xAddress: null,
+    username: ['faucet'],
+    object: null
+  }
 }
 
 export default function Explorer({ isSsrMobile, showAds }) {
@@ -81,6 +152,8 @@ export default function Explorer({ isSsrMobile, showAds }) {
         <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} />
       </section>
 
+      {showAds && <Ads />}
+
       <section className="home-section">
         <div className="content-text content-center">
           <h2 className="center">Examples</h2>
@@ -93,8 +166,8 @@ export default function Explorer({ isSsrMobile, showAds }) {
           full address like {examples[network]?.account} <CopyButton text={examples[network]?.account} />
           <br />
           <br />
-          <b>Username</b> examples: {examples[network]?.username[0]}, {examples[network]?.username[1]},{' '}
-          {examples[network]?.username[2]} (start typing and we will find the full usernames){' '}
+          <b>Username</b> examples: {examples[network]?.username?.[0]}, {examples[network]?.username?.[1]},{' '}
+          {examples[network]?.username?.[2]} (start typing and we will find the full usernames){' '}
           <Link href="/username">Register your username.</Link>
           <br />
           <br />
@@ -106,9 +179,9 @@ export default function Explorer({ isSsrMobile, showAds }) {
           <CopyButton text={examples[network]?.xAddress} />
           <br />
           <br />
-          <b>PayString</b> example: {examples[network]?.payString[0]}{' '}
-          <CopyButton text={examples[network]?.payString[0]} />, {examples[network]?.payString[1]}{' '}
-          <CopyButton text={examples[network]?.payString[1]} /> <Link href="/username">Get your PayString.</Link>
+          <b>PayString</b> example: {examples[network]?.payString?.[0]}{' '}
+          <CopyButton text={examples[network]?.payString?.[0]} />, {examples[network]?.payString?.[1]}{' '}
+          <CopyButton text={examples[network]?.payString?.[1]} /> <Link href="/username">Get your PayString.</Link>
           <br />
           <br />
           <h2>Transaction</h2>
@@ -120,21 +193,23 @@ export default function Explorer({ isSsrMobile, showAds }) {
           <CopyButton text={examples[network]?.txHash} />
           <br />
           <br />
-          <h2>NFT, AMM, Object</h2>
+          <h2>NFT, {examples[network]?.amm && 'AMM, '}Object</h2>
           <b>NFT</b> example: {shortingHash(examples[network]?.nft)} <CopyButton text={examples[network]?.nft} />
           <br />
           <br />
-          <b>AMM</b> example: {shortingHash(examples[network]?.amm)} <CopyButton text={examples[network]?.amm} />
-          <br />
-          <br />
+          {examples[network]?.amm && (
+            <>
+              <b>AMM</b> example: {shortingHash(examples[network]?.amm)} <CopyButton text={examples[network]?.amm} />
+              <br />
+              <br />
+            </>
+          )}
           <b>Object</b> example: {shortingHash(examples[network]?.object)}{' '}
           <CopyButton text={examples[network]?.object} />
           <br />
           <br />
         </div>
       </section>
-
-      {showAds && <Ads />}
       <br />
     </>
   )

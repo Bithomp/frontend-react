@@ -45,7 +45,8 @@ const learnContentXRP = [
       { title: 'How to Mint NFTs on XRPL', slug: 'nft-minting' },
       { title: 'The Bithomp API', slug: 'the-bithomp-api' },
       { title: 'XRP and XAH Taxes - get SCV exports for your report', slug: 'xrp-xah-taxes' },
-      { title: 'How to Issue a Token on XRPL', slug: 'issue-a-token' }
+      { title: 'How to Issue a Token on XRPL', slug: 'issue-a-token' },
+      { title: 'Guide for Token Issuers: Username, Toml file, Project Registration', slug: 'guide-for-token-issuers' }
     ]
   }
 ]
@@ -67,7 +68,8 @@ const learnContentXAHAU = [
       { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
       { title: 'How to mint NFTs on Xahau', slug: 'nft-minting' },
       { title: 'The Bithomp API', slug: 'the-bithomp-api' },
-      { title: 'How to Issue a Token on Xahau', slug: 'issue-a-token' }
+      { title: 'How to Issue a Token on Xahau', slug: 'issue-a-token' },
+      { title: 'Guide for Token Issuers: Username, Toml file, Project Registration', slug: 'guide-for-token-issuers' }
     ]
   }
 ]
