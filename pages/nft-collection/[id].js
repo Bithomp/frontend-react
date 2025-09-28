@@ -79,6 +79,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
     updateIsMobile()
     window.addEventListener('resize', updateIsMobile)
     return () => window.removeEventListener('resize', updateIsMobile)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -512,25 +513,23 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                             <div>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <h3 style={{ margin: 0 }}>NFTs in this Collection</h3>
-                                {data?.collection?.issuer !== undefined &&
+                                {data?.collection?.issuer &&
                                 (data?.collection?.taxon || data?.collection?.taxon === 0) ? (
                                   <Link
-                                    href={`/nft-explorer?issuer=${encodeURIComponent(
-                                      data.collection.issuer
-                                    )}&taxon=${encodeURIComponent(data.collection.taxon)}&includeWithoutMediaData=true`}
+                                    href={`/nft-explorer?issuer=${data.collection.issuer}&taxon=${data.collection.taxon}&includeWithoutMediaData=true`}
                                   >
                                     View all
                                   </Link>
                                 ) : (
-                                  <Link
-                                    href={
-                                      `/nft-explorer?collection=${encodeURIComponent(
+                                  data.collection?.collection && (
+                                    <Link
+                                      href={`/nft-explorer?collection=${encodeURIComponent(
                                         data.collection.collection
-                                      )}&includeWithoutMediaData=true`
-                                    }
-                                  >
-                                    View all
-                                  </Link>
+                                      )}&includeWithoutMediaData=true`}
+                                    >
+                                      View all
+                                    </Link>
+                                  )
                                 )}
                               </div>
 
