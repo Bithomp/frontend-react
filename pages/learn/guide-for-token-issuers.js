@@ -2,7 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
-import {explorerName, xahauNetwork } from '../../utils'
+import { explorerName, xahauNetwork } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import Breadcrumbs from '../../components/Breadcrumbs'
@@ -18,7 +18,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function GuideForTokenIssuers() {
-  const serverUrl = ['mainnet', 'testnet', 'devnet'].includes(network) ? 'bithomp.com' : 'xahauexplorer.com'
+  const serverUrl = xahauNetwork ? 'xahauexplorer.com' : 'bithomp.com'
 
   return (
     <>
@@ -90,7 +90,7 @@ export default function GuideForTokenIssuers() {
               <span role="img" aria-label="lamp">
                 👉
               </span>{' '}
-              <Link href="/submit-account-information"> Submit Your Project / Service Info Here </Link>
+              <Link href="/submit-account-information"> Submit Your Project / Service Info</Link>
             </p>
           </div>
           <p>
@@ -177,12 +177,12 @@ export default function GuideForTokenIssuers() {
           If the icon <strong>is non included into the toml</strong>, we’ll fetch the image in the following priority
           order:
           <ul>
-            <li>Xaman asset - currency icon</li>
             <li>
               X image - if you have registered your project on Bithomp and mentioned your X account (view the point 2
               above)
             </li>
             <li>Gravatar image</li>
+            <li>Xaman asset - currency icon</li>
           </ul>
           <p>
             <strong>Step 6</strong>
@@ -192,10 +192,10 @@ export default function GuideForTokenIssuers() {
           </p>
           <p>
             You can check the whole statistics about your token (supply, trustlines, holders, markets, etc.) on our
-            token explorer here 👉 : https://bithomp.com/en/token/issuer/currencycode. Here, <strong>issuer</strong> is
-            the address of the account that issued the token, and <strong>currencycode </strong>can be either: a
-            character string such as "EUR" or "USD", “MAG”, “MyCurrency’, or a 160-bit hexadecimal string, such as
-            "524C555344000000000000000000000000000000".
+            token explorer here 👉 : <code>https://bithomp.com/en/token/[ISSUER ADDRESS]/[CURRENCY CODE]</code>. Here,{' '}
+            <strong>[ISSUER ADDRESS]</strong> is the address of the account that issued the token, and{' '}
+            <strong>[CURRENCY CODE]</strong> can be either: a character string such as "EUR" or "USD", “MAG”,
+            “MyCurrency’, or a 160-bit hexadecimal string, such as "524C555344000000000000000000000000000000".
           </p>
           {xahauNetwork ? (
             <Link href="https://xahauexplorer.com/en/token/rEvernodee8dJLaFsujS6q1EiXvZYmHXr8/EVR">
@@ -219,9 +219,9 @@ export default function GuideForTokenIssuers() {
               <Link href="/services/trustline">Trustline Setup Link</Link>
             </li>
             <p>
-              Simply choose your Token in the drop-down list and copy the link usind the Share Button. We support
-              several wallets, including Xaman, Ledger, MetaMask, WalletConnect, and others, to securely sign the
-              transaction.
+              Simply choose your Token in the drop-down list and copy the link usind the <strong>Share Button</strong>.
+              We support several wallets, including Xaman, Ledger, MetaMask, WalletConnect, and others, to securely sign
+              the transaction.
             </p>
 
             <li>
@@ -230,9 +230,7 @@ export default function GuideForTokenIssuers() {
 
             <li>
               Your Token info and Statistics:{' '}
-              {xahauNetwork
-                ? 'https://xahauexplorer.com/en/token/issuer/currencycode'
-                : 'https://bithomp.com/en/token/issuer/currencycode'}
+              <code>{'https://' + serverUrl + '/en/token/[ISSUER ADDRESS]/[CURRENCY CODE]'}</code>
             </li>
           </ul>
           <p>
@@ -256,7 +254,7 @@ export default function GuideForTokenIssuers() {
                   <span role="img" aria-label="lamp">
                     👉
                   </span>{' '}
-                  <Link href="https://bithomp.com/en/services/amm?tab=create"> Create AMM Here </Link>
+                  <Link href="https://bithomp.com/en/services/amm?tab=create">Create AMM Pool</Link>
                 </p>
               </div>
 
@@ -265,6 +263,8 @@ export default function GuideForTokenIssuers() {
                 an AMM. You can simply place buy and sell orders on the order book, and that will already create a
                 market.
               </p>
+              <br />
+              <br />
             </>
           )}
         </article>
