@@ -24,7 +24,11 @@ export default function IssueAToken() {
     <>
       <SEO
         title={'How to issue a token on ' + explorerName}
-        description="Step-by-step guide on how to issue a token on XRPL or Xahau. Understand XRPL and Xahau tokens, their use cases, and how to get started with tokenization."
+        description={
+          'Step-by-step guide on how to issue a token on ' +
+          explorerName +
+          '. Understand XRPL and Xahau tokens, their use cases, and how to get started with tokenization.'
+        }
         noindex={network !== 'mainnet'}
         image={{ file: '/images/pages/learn/issue-a-token/cover', width: 1520, height: 953, allNetworks: true }}
         canonical={serverUrl + '/issue-a-token'}
