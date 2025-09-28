@@ -208,6 +208,12 @@ export default function MobileMenu({
           <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
             TOP {t('menu.tokens')}
           </Link>
+          <Link href="/services/trustline" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Set Trust (Trustline)
+          </Link>
+          <Link href="/learn/guide-for-token-issuers" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Guide for Token Issuers
+          </Link>
         </div>
 
         {/* Hide AMM for XAHAU */}
