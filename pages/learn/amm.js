@@ -28,7 +28,7 @@ export default function AMM() {
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
         <article className="prose sm:prose-lg dark:prose-invert mx-auto my-10">
-          <h1 class="text-center">What Is an Automated Market Maker (AMM)?</h1>
+          <h1 className="text-center">What Is an Automated Market Maker (AMM)?</h1>
           <figure>
             <Image
               src={'/images/pages/learn/amm/cover.jpg'}
@@ -40,10 +40,7 @@ export default function AMM() {
             />
             <figcaption>XRPL AMM</figcaption>
           </figure>
-          <p>
-            Crypto is moving towards decentralization, where people want more control over their assets without relying
-            on centralized companies.
-          </p>
+          <p>In crypto, people want greater control over their assets without depending on centralized entities.</p>
           <p>
             On a centralized exchange (CEX) like Coinbase or Binance, you deposit money via bank transfer, card, or
             crypto. But the moment you deposit, you don’t actually control your assets anymore — the exchange does. Your
@@ -67,49 +64,75 @@ export default function AMM() {
           <h2>Enter AMMs</h2>
           <p>
             An Automated Market Maker (AMM) is a type of DEX that uses algorithms and liquidity pools to make trading
-            seamless. Instead of needing a buyer and seller to match instantly, you trade against a pool of assets.
+            seamless. Instead of creating or matching orders in an order book, you can trade directly against a pool of
+            assets.
           </p>
           <p>With AMMs:</p>
           <ul>
             <li>Prices are set by math, not humans</li>
             <li>You trade against liquidity pools, not individual traders</li>
-            <li>Transactions are instant, without waiting for order matches</li>
           </ul>
           <h2>AMMs vs. Order Book DEXs</h2>
-          <div class="overflow-x-auto">
-            <table class="table-auto border-collapse w-full text-sm text-left">
+          <div className="overflow-x-auto">
+            <table className="table-auto border-collapse w-full text-sm text-left">
               <thead>
-                <tr class="bg-[#4BA8B6] text-white">
-                  <th class="px-4 py-2">Feature</th>
-                  <th class="px-4 py-2">AMM</th>
-                  <th class="px-4 py-2">DEX (Order Book)</th>
+                <tr className="bg-[#4BA8B6] text-white">
+                  <th className="pl-5 px-4 py-2" style={{ paddingLeft: 5 }}>
+                    Feature
+                  </th>
+                  <th className="px-4 py-2">AMM</th>
+                  <th className="px-4 py-2">DEX (Order Book)</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                <tr class="hover:bg-[#4BA8B6]/10">
-                  <td class="px-4 py-2 font-medium">Pricing</td>
-                  <td class="px-4 py-2">Liquidity pools</td>
-                  <td class="px-4 py-2">Best matching orders</td>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tr className="hover:bg-[#4BA8B6]/10">
+                  <td className="px-4 py-2 font-medium" style={{ paddingLeft: 5 }}>
+                    Trading method
+                  </td>
+                  <td className="px-4 py-2">Trade against a liquidity pool</td>
+                  <td className="px-4 py-2">Match buy/sell orders</td>
                 </tr>
-                <tr class="hover:bg-[#4BA8B6]/10">
-                  <td class="px-4 py-2 font-medium">Limit orders</td>
-                  <td class="px-4 py-2">❌ Mostly no</td>
-                  <td class="px-4 py-2">✅ Yes</td>
+                <tr className="hover:bg-[#4BA8B6]/10">
+                  <td className="px-4 py-2 font-medium" style={{ paddingLeft: 5 }}>
+                    Price execution
+                  </td>
+                  <td className="px-4 py-2">Determined by the AMM curve</td>
+                  <td className="px-4 py-2">Best matching orders</td>
                 </tr>
-                <tr class="hover:bg-[#4BA8B6]/10">
-                  <td class="px-4 py-2 font-medium">Impermanent loss</td>
-                  <td class="px-4 py-2">✅ Yes</td>
-                  <td class="px-4 py-2">❌ No</td>
+                <tr className="hover:bg-[#4BA8B6]/10">
+                  <td className="px-4 py-2 font-medium" style={{ paddingLeft: 5 }}>
+                    Limit orders
+                  </td>
+                  <td className="px-4 py-2">❌ Not supported</td>
+                  <td className="px-4 py-2">✅ Supported</td>
                 </tr>
-                <tr class="hover:bg-[#4BA8B6]/10">
-                  <td class="px-4 py-2 font-medium">Easy to provide liquidity</td>
-                  <td class="px-4 py-2">✅ Yes</td>
-                  <td class="px-4 py-2">❌ No</td>
+                <tr className="hover:bg-[#4BA8B6]/10">
+                  <td className="px-4 py-2 font-medium" style={{ paddingLeft: 5 }}>
+                    Control
+                  </td>
+                  <td className="px-4 py-2">You can set slippage tolerance (to avoid bad execution)</td>
+                  <td className="px-4 py-2">You can set exact price and amount</td>
                 </tr>
-                <tr class="hover:bg-[#4BA8B6]/10">
-                  <td class="px-4 py-2 font-medium">Best for</td>
-                  <td class="px-4 py-2">Rare or long-tail assets</td>
-                  <td class="px-4 py-2">Popular assets</td>
+                <tr className="hover:bg-[#4BA8B6]/10">
+                  <td className="px-4 py-2 font-medium" style={{ paddingLeft: 5 }}>
+                    Impermanent loss
+                  </td>
+                  <td className="px-4 py-2">✅ Yes</td>
+                  <td className="px-4 py-2">❌ No</td>
+                </tr>
+                <tr className="hover:bg-[#4BA8B6]/10">
+                  <td className="px-4 py-2 font-medium" style={{ paddingLeft: 5 }}>
+                    Easy to provide liquidity
+                  </td>
+                  <td className="px-4 py-2">✅ Yes</td>
+                  <td className="px-4 py-2">❌ No</td>
+                </tr>
+                <tr className="hover:bg-[#4BA8B6]/10">
+                  <td className="px-4 py-2 font-medium" style={{ paddingLeft: 5 }}>
+                    Use case
+                  </td>
+                  <td className="px-4 py-2">Quick swaps, liquidity provision</td>
+                  <td className="px-4 py-2">Precise trading, market making</td>
                 </tr>
               </tbody>
             </table>
@@ -129,7 +152,7 @@ export default function AMM() {
               <span role="img" aria-label="lamp">
                 👉
               </span>{' '}
-              <Link href="/services/amm?tab=deposit"> On Bithomp AMM Deposit</Link>, you can easily add liquidity to
+              On Bithomp <Link href="/services/amm?tab=deposit">AMM Deposit</Link>, you can easily add liquidity to
               pools and start earning fees.
             </p>
           </div>
@@ -143,10 +166,7 @@ export default function AMM() {
               <span role="img" aria-label="lamp">
                 👉
               </span>{' '}
-              <Link href="/services/amm?tab=withdraw">
-                {' '}
-                Manage and withdraw your liquidity easily on Bithomp AMM Withdraw
-              </Link>
+              Withdraw your liquidity easily on Bithomp <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
             </p>
           </div>
           <h2>Impermanent Loss</h2>
@@ -166,9 +186,9 @@ export default function AMM() {
           <p>The XRP Ledger’s AMM (XLS-30) introduces unique features that improve on traditional AMMs:</p>
           <ul>
             <li>
-              <strong>Fee Voting</strong> – LPs can vote on pool trading fees, making it community-driven.
-            </li>{' '}
-            <Link href="/services/amm?tab=vote">Try it on Bithomp AMM Vote </Link>
+              <strong>Fee Voting</strong> – LPs can vote on pool trading fees, making it community-driven. Try it on
+              Bithomp <Link href="/services/amm?tab=vote">AMM Vote</Link>.
+            </li>
             <li>
               <strong>Continuous Auction Mechanism </strong>– Rewards liquidity providers while helping offset
               impermanent loss.
@@ -183,8 +203,8 @@ export default function AMM() {
               <span role="img" aria-label="lamp">
                 👉
               </span>{' '}
-              Want to create your own AMM pool? You can do it directly via
-              <Link href="/services/amm?tab=create"> Bithomp AMM Create</Link>
+              Want to create your own AMM pool? You can do it directly via Bithomp{' '}
+              <Link href="/services/amm?tab=create">AMM Create</Link>
             </p>
           </div>
           <h3>Auction Rewards </h3>
@@ -244,6 +264,8 @@ export default function AMM() {
           </p>
           <p>All available directly on Bithomp.❤️</p>
         </article>
+        <br />
+        <br />
       </div>
     </>
   )
