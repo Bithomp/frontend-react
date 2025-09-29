@@ -315,12 +315,8 @@ table {
     }
     tbody {
       tr {
-        td {
+        td, th {
           padding: 5px;
-          &:first-child {
-            width: 20%;
-            color: var(--text-secondary);
-          }
           &:nth-child(2) {
             word-break: break-word;
           }

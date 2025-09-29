@@ -20,7 +20,7 @@ export const addressBalanceChanges = (data, address) => {
   allSourceBalanceChanges = safeClone(allSourceBalanceChanges)
   let balanceChanges = []
   const fee = outcome.fee // string in nativeCurrency not drops
-  for (let i = 0; i < allSourceBalanceChanges.length; i++) {
+  for (let i = 0; i < allSourceBalanceChanges?.length; i++) {
     const change = allSourceBalanceChanges[i]
     if (!(change.currency === nativeCurrency && change.value === '-' + fee)) {
       if (change.currency === nativeCurrency) {

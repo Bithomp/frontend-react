@@ -70,7 +70,7 @@ if (network === 'mainnet') {
     pages.push(
       { loc: 'learn/xrpl-article', changefreq: 'monthly', priority: '0.6' },
       { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' },
-      { loc: 'learn/amm', changefreq: 'monthly', priority: '0.5' },
+      { loc: 'learn/amm', changefreq: 'monthly', priority: '0.5' }
     )
   }
   pages.push(
@@ -85,8 +85,9 @@ if (network === 'mainnet') {
     { loc: 'learn/the-bithomp-explorer-advantages', changefreq: 'monthly', priority: '0.8' },
     { loc: 'learn/nft-minting', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/the-bithomp-api', changefreq: 'monthly', priority: '0.9' },
-    { loc: 'learn/xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' }
-
+    { loc: 'learn/xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' },
+    { loc: 'learn/issue-a-token', changefreq: 'monthly', priority: '0.9' },
+    { loc: 'learn/guide-for-token-issuers', changefreq: 'monthly', priority: '0.9' }
   )
 }
 
@@ -118,6 +119,8 @@ function generateSiteMap(posts) {
     'learn/the-bithomp-explorer-advantages',
     'learn/xrpl-article',
     'learn/amm',
+    'learn/issue-a-token',
+    'learn/guide-for-token-issuers'
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
