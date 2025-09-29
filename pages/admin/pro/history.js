@@ -48,6 +48,7 @@ const showAmount = (amount) => {
 }
 
 const showFiat = (fiat, selectedCurrency) => {
+  if (isNaN(fiat)) return ''
   if (!fiat && fiat !== 0) return ''
   return (
     <span className={'no-brake ' + (fiat > 0 ? 'green' : fiat < 0 ? 'red' : '')}>
