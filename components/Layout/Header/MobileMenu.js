@@ -30,7 +30,8 @@ export default function MobileMenu({
   signOut,
   isCopied,
   copyToClipboard,
-  account
+  account,
+  countryCode
 }) {
   const { t } = useTranslation('common')
 
@@ -486,17 +487,20 @@ export default function MobileMenu({
           {t('menu.sponsored.title')}
         </div>
         <div className="mobile-menu__submenu">
-          <a href="/go/fm-buy" target="_blank" rel="noreferrer" className="mobile-menu-item">
+          <a href="https://bithomp.com/go/fm-buy" target="_blank" rel="noreferrer" className="mobile-menu-item">
             {t('menu.sponsored.buy')}
           </a>
-          <a href="/go/fm-earn" target="_blank" rel="noreferrer" className="mobile-menu-item">
+          <a href="https://bithomp.com/go/fm-earn" target="_blank" rel="noreferrer" className="mobile-menu-item">
             {t('menu.sponsored.earn')}
           </a>
-          {/*
-          <a href="/go/fm-play" target="_blank" rel="noreferrer" className="mobile-menu-item">
-            {t('menu.sponsored.play')}
+          <a
+            href={countryCode === 'US' ? 'https://bithomp.com/go/fm-play-us' : 'https://bithomp.com/go/fm-play'}
+            target="_blank"
+            rel="noreferrer"
+            className="mobile-menu-item"
+          >
+            {countryCode === 'US' ? 'Join Drake on Stake' : 'Join Stake'}
           </a>
-          */}
         </div>
       </div>
     </div>

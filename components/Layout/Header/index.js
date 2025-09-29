@@ -84,7 +84,8 @@ export default function Header({
   signOut,
   signOutPro,
   selectedCurrency,
-  setSelectedCurrency
+  setSelectedCurrency,
+  countryCode
 }) {
   const { i18n, t } = useTranslation()
 
@@ -625,6 +626,7 @@ export default function Header({
           isCopied={isCopied}
           copyToClipboard={copyToClipboard}
           account={account}
+          countryCode={countryCode}
         />
       )}
     </div>

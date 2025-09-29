@@ -109,5 +109,8 @@
     "is-core-module": "2.13.1",
     "error-ex": "1.3.2",
     "has-ansi": "5.0.1"
+  },
+  "engines": {
+    "node": ">=20.19.2"
   }
 }

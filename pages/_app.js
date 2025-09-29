@@ -224,6 +224,7 @@ const MyApp = ({ Component, pageProps }) => {
                 signOutPro={signOutPro}
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
+                countryCode={countryCode}
               />
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}

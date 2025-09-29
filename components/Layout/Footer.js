@@ -91,7 +91,7 @@ export default function Footer({ countryCode }) {
               target="_blank"
               rel="noreferrer"
             >
-              {t('menu.sponsored.play')}
+              {countryCode === 'US' ? 'Join Drake on Stake' : 'Join Stake'}
             </a>
           </div>
         )}
