@@ -69,7 +69,8 @@ if (network === 'mainnet') {
   if (!xahauNetwork) {
     pages.push(
       { loc: 'learn/xrpl-article', changefreq: 'monthly', priority: '0.6' },
-      { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.5' }
+      { loc: 'learn/ripple-usd', changefreq: 'monthly', priority: '0.7' },
+      { loc: 'learn/amm', changefreq: 'monthly', priority: '0.8' }
     )
   }
   pages.push(
@@ -117,6 +118,7 @@ function generateSiteMap(posts) {
     'learn/ripple-usd',
     'learn/the-bithomp-explorer-advantages',
     'learn/xrpl-article',
+    'learn/amm',
     'learn/issue-a-token',
     'learn/guide-for-token-issuers'
   ]
