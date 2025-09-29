@@ -229,8 +229,8 @@ export default function MobileMenu({
               <Link href="/amms" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('menu.amm.pools')}
               </Link>
-              <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('menu.amm.explorer')}
+              <Link href="/learn/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                What is AMM?
               </Link>
               <Link href="/services/amm?tab=deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Deposit
@@ -243,6 +243,9 @@ export default function MobileMenu({
               </Link>
               <Link href="/services/amm?tab=create" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Create
+              </Link>
+              <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t('menu.amm.explorer')}
               </Link>
             </div>
           </>
