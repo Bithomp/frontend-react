@@ -203,7 +203,6 @@ export default function AMM() {
           </p>
           <h2>Benefits of XRPL’s AMM </h2>
           <p>
-            {' '}
             <strong>For Liquidity Providers (LPs): </strong>
           </p>
           <ul>
@@ -225,14 +224,11 @@ export default function AMM() {
             funds, democratizing liquidity provision, and creating new earning opportunities.
           </p>
           <p>
-            {' '}
             The XRPL’s AMM (XLS-30) adds even more powerful features like fee voting, continuous auctions, and dual
             interoperability with order books.{' '}
           </p>
           <p>
-            <p>
-              <strong> Ready to explore XRPL’s AMM yourself?</strong>{' '}
-            </p>
+            <strong> Ready to explore XRPL’s AMM yourself?</strong>
           </p>
           <p>
             👉 <Link href="/services/amm?tab=deposit">Deposit liquidity</Link>
