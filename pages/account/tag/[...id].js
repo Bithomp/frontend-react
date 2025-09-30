@@ -224,10 +224,10 @@ export default function AccountTag({ resolvedData, errorMessage }) {
 
             <div className="account-tag-service-description">
                 This address belongs to{' '}
-                <a href={`https://${accountData?.service?.domain || 'crypto.com'}`} target="_blank" rel="noopener noreferrer" className="account-tag-service-link">
-                  {accountData?.service?.domain || 'crypto.com'}
+                <a href={`https://${accountData?.service?.domain}`} target="_blank" rel="noopener noreferrer" className="account-tag-service-link">
+                  {accountData?.service?.domain}
                 </a>{' '}
-                <b>({accountData?.service?.name || 'Crypto.com exchange'}).</b>
+                <b>({accountData?.service?.name}).</b>
             </div>
 
             {accountData?.bithomp?.avatar && (
