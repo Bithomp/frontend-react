@@ -197,12 +197,9 @@ const platformList = [
 ]
 
 const defaultWalletList = [
-  'rhWTXC2m2gGGA9WozUaoMm6kLAVPb1tcS3',
   'rDLNm4ehD7XQCtYKWuMjEKY7TCfmf3CwzH',
   'r3sQYvXxc82iSNs5DnUUvXtcQQQqigCdW',
   'raWYT6DD2XFAvjCqRPsCCzr1CMBzJydf9E',
-  'rakZprdzwsUJ1rD2ouhYYAVP7tPbhrCbtz',
-  'r3LAichpcBeZWk7LLSZcfSQcqYsvQ6beBc'
 ]
 
 export default function History({
@@ -234,6 +231,7 @@ export default function History({
   const [removeDust, setRemoveDust] = useState(false)
   const [filteredActivities, setFilteredActivities] = useState([])
   const [platformCSVExport, setPlatformCSVExport] = useState('Koinly')
+  const [reloadNotification, setReloadNotification] = useState('')
 
   const platformCSVHeaders = useMemo(
     () => [
@@ -477,6 +475,7 @@ export default function History({
       )
       .catch((error) => {
         setLoading(false)
+        setReloadNotification('')
         if (error.response?.data?.error === 'errors.token.required') {
           openEmailLogin()
           return
@@ -549,16 +548,28 @@ export default function History({
       } else {
         setActivities(res.activities) // rewrite old data
       }
+
+      let notificationText = ''
+      const totalCount = res?.total || 0
+      const loadedCount = options?.marker ? activities.length + res.activities.length : res.activities.length
+      if (loadedCount > 0 && totalCount > 0) {
+        notificationText = `loaded 1 ~ ${loadedCount} of ${totalCount} transactions`
+      }
+      setReloadNotification(notificationText)
+
+      setTimeout(() => {
+        setReloadNotification('')
+      }, 2000) // Clear notification when loading is complete
     }
   }
 
   const getVerifiedAddresses = async () => {
     setLoadingVerifiedAddresses(true)
-    if(!sessionToken) {
+    if (!sessionToken) {
       // Create hardcoded wallet data for non-authenticated users
       const walletDatas = defaultWalletList.map((address, index) => ({
-        address: address, 
-        name: `Test Wallet ${index + 1}`, 
+        address: address,
+        name: `Test Wallet ${index + 1}`,
         crawler: { status: "synced" }
       }))
       setVerifiedAddresses(walletDatas)
@@ -633,7 +644,7 @@ export default function History({
       <SEO title="My addresses: history" />
       <div className="page-pro-history">
         <h1 className="center">Pro address balances history</h1>
-        
+
         {!sessionToken && (
           <div className="center" style={{ padding: '15px' }}>
             <p>
@@ -646,6 +657,26 @@ export default function History({
         )}
 
         <AdminTabs name="mainTabs" tab="pro" />
+
+        {reloadNotification && (
+          <div
+            className="center" 
+            style={{
+              position: 'fixed',
+              top: '10px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 1000,
+              backgroundColor: 'var(--color-primary-50)',
+              border: '1px solid var(--color-primary-100)',
+              color: 'var(--color-primary-900)',
+              padding: '10px',
+              borderRadius: '6px'
+            }}
+          >
+            {reloadNotification}
+          </div>
+        )}
 
         <div className="tabs-inline" style={{ marginTop: -10 }}>
           <ProTabs tab="balance-changes" />
@@ -686,6 +717,7 @@ export default function History({
           setPage={setPage}
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
+          sortingDisabled={data?.marker ? true : false}
         >
           <>
             {verifiedAddresses?.length > 0 && data && activities && data.total > activities.length && (
