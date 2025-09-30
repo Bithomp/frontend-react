@@ -5,16 +5,25 @@ import { brandsBlock } from '../../styles/components/ads.module.scss'
 import BtcBit from '../../public/images/sponsored/btcbit.svg'
 import Nexo from '../../public/images/sponsored/nexo.svg'
 import Doppler from '../../public/images/sponsored/doppler.svg'
+import { useState, useEffect } from 'react'
 
 export default function Ads() {
   const { theme } = useTheme()
+
+  const [rendered, setRendered] = useState(false)
+
+  useEffect(() => {
+    setRendered(true)
+  }, [])
+
+  const color = rendered ? (theme === 'dark' ? 'white' : '#1C1F21') : '#1C1F21'
 
   if (!xahauNetwork) {
     return (
       <div className={brandsBlock}>
         <a href="/go/main-buy-swap" target="_blank" rel="noreferrer">
           <div className="brand-item nexo">
-            <Nexo className="brand-item-icon" fill={theme === 'dark' ? 'white' : '#1C1F21'} />
+            <Nexo className="brand-item-icon" fill={color} />
             <div className="brand-item-title">Аdd XRP now</div>
             <div className="brand-item-text">Buy or transfer XRP and earn up to 12% annual interest.</div>
           </div>
@@ -22,7 +31,7 @@ export default function Ads() {
 
         <a href="/go/xrp-yield" target="_blank" rel="noreferrer">
           <div className="brand-item doppler">
-            <Doppler className="brand-item-icon" fill={theme === 'dark' ? 'white' : '#1C1F21'} />
+            <Doppler className="brand-item-icon" fill={color} />
             <div className="brand-item-title">
               <span className="hideOnsmall">Earn </span>XRP Yields
             </div>
@@ -60,7 +69,7 @@ export default function Ads() {
         </a>
         <a href="/go/earn-xrp" target="_blank" rel="noreferrer">
           <div className="brand-item nexo">
-            <Nexo className="brand-item-icon" fill={theme === 'dark' ? 'white' : '#1C1F21'} />
+            <Nexo className="brand-item-icon" fill={color} />
             <div className="brand-item-title">Earn up to 14%</div>
             <div className="brand-item-text">Build your long-term wealth with leading rates on XRP, BTC, and more.</div>
           </div>
