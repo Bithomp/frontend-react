@@ -608,8 +608,10 @@ export default function Account({
                           ) : (
                             <NFTokenData
                               data={data}
+                              address={data?.address}
                               objects={objects}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              selectedCurrency={selectedCurrency}
                             />
                           )}
 
