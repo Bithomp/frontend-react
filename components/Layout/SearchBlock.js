@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { classicAddressToXAddress } from 'ripple-address-codec'
 import { IoMdClose } from 'react-icons/io'
 
 import {
@@ -153,9 +154,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const searchOnChange = (option) => {
     if (!option) return
     if (option.username && !option.username.includes('-')) {
-      onSearch(option.username)
+      onSearch(option.username, option?.tag)
     } else {
-      onSearch(option.address)
+      onSearch(option.address, option?.tag)
     }
   }
 
@@ -178,7 +179,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
-  const onSearch = async (si) => {
+  const onSearch = async (si, tag = null) => {
     setErrorMessage('')
     let searchFor = null
 
@@ -279,14 +280,15 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    if (isValidPayString(searchFor) || isValidXAddress(searchFor)) {
+    if (isValidPayString(searchItem) || isValidXAddress(searchItem)) {
       // the check for paystring/xAddress should be before the check for addressOrUsername,
       // as if there is no destination tag, we will treat it as an address or username
-
-      // we need to resolve paystring and x-address first before redirecting!
-      // if there is a tag -
-      // get the new page which we can show an address and a tag
-      router.push('/account/' + encodeURI(searchFor) + addParams) //replace with a new page to show a tag
+      if(tag) {
+        const xAddress = classicAddressToXAddress(searchFor, tag)
+        router.push('/account/tag/' + encodeURI(xAddress) + addParams)
+      } else {
+        router.push('/account/' + encodeURI(searchFor) + addParams)
+      }
       return
     }
 
