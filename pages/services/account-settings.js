@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { xahauNetwork, explorerName, nativeCurrency, isAddressValid, encode, isEmailValid, md5 } from '../../utils'
+import { xahauNetwork, explorerName, nativeCurrency, isAddressValid, encode, isEmailValid, md5, isHexString } from '../../utils'
 import { multiply, subtract } from '../../utils/calc'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -79,64 +79,71 @@ export default function AccountSettings({
   const [walletLocatorValidation, setWalletLocatorValidation] = useState({ isValid: true, message: '' })
   const [tickSizeValidation, setTickSizeValidation] = useState({ isValid: true, message: '' })
 
+  const validateInput = (value, options = {}) => {
+    const {
+      allowEmpty = true,
+      evenLength = true,
+      minChars,
+      exactChars,
+      successMessage = 'Valid input'
+    } = options
+
+    const trimmed = value.trim()
+
+    if (!trimmed) {
+      return { isValid: allowEmpty, message: '' }
+    }
+
+    if (!isHexString(trimmed)) {
+      return {
+        isValid: false,
+        message: 'Must contain only hexadecimal characters (0-9, a-f, A-F)'
+      }
+    }
+
+    if (evenLength && trimmed.length % 2 !== 0) {
+      return {
+        isValid: false,
+        message: 'Must have an even number of characters (pairs of hex digits)'
+      }
+    }
+
+    if (typeof exactChars === 'number') {
+      if (trimmed.length !== exactChars) {
+        return {
+          isValid: false,
+          message: `Must be exactly ${exactChars} characters (current: ${trimmed.length})`
+        }
+      }
+    } else if (typeof minChars === 'number') {
+      if (trimmed.length < minChars) {
+        return {
+          isValid: false,
+          message: `Must be at least ${minChars} characters (${minChars / 2} bytes)`
+        }
+      }
+    }
+
+    return { isValid: true, message: successMessage }
+  }
+
   // Validation functions
   const validateMessageKey = (value) => {
-    const trimmed = value.trim()
-    
-    if (!trimmed) {
-      return { isValid: true, message: '' } // Empty is valid (will be cleared)
-    }
-    
-    const isHex = /^[0-9a-fA-F]+$/.test(trimmed)
-    
-    if (!isHex) {
-      return { 
-        isValid: false, 
-        message: 'Must contain only hexadecimal characters (0-9, a-f, A-F)' 
-      }
-    }
-    
-    if (trimmed.length % 2 !== 0) {
-      return { 
-        isValid: false, 
-        message: 'Must have an even number of characters (pairs of hex digits)' 
-      }
-    }
-    
-    if (trimmed.length < 32) {
-      return { 
-        isValid: false, 
-        message: 'Must be at least 32 characters (16 bytes)' 
-      }
-    }
-    
-    return { isValid: true, message: 'Valid hex-encoded public key' }
+    return validateInput(value, {
+      allowEmpty: true,
+      evenLength: true,
+      minChars: 32,
+      successMessage: 'Valid hex-encoded public key'
+    })
   }
 
   const validateWalletLocator = (value) => {
-    const trimmed = value.trim()
-    
-    if (!trimmed) {
-      return { isValid: true, message: '' } // Empty is valid (will be cleared)
-    }
-    
-    const isHex = /^[0-9a-fA-F]+$/.test(trimmed)
-    
-    if (!isHex) {
-      return { 
-        isValid: false, 
-        message: 'Must contain only hexadecimal characters (0-9, a-f, A-F)' 
-      }
-    }
-    
-    if (trimmed.length !== 64) {
-      return { 
-        isValid: false, 
-        message: `Must be exactly 64 characters (current: ${trimmed.length})` 
-      }
-    }
-    
-    return { isValid: true, message: 'Valid 64-character hex string' }
+    return validateInput(value, {
+      allowEmpty: true,
+      evenLength: true,
+      exactChars: 64,
+      successMessage: 'Valid 64-character hex string'
+    })
   }
 
   const validateTickSize = (value) => {
@@ -662,25 +669,14 @@ export default function AccountSettings({
 
   const handleSetMessageKey = () => {
     const value = messageKeyInput.trim()
-    const isHex = /^[0-9a-fA-F]+$/.test(value)
-    
     if (!value) {
       setErrorMessage('MessageKey cannot be empty. Please enter a hex-encoded public key.')
       return
     }
-    
-    if (!isHex) {
-      setErrorMessage('MessageKey must contain only hexadecimal characters (0-9, a-f, A-F).')
-      return
-    }
-    
-    if (value.length % 2 !== 0) {
-      setErrorMessage('MessageKey must have an even number of characters (pairs of hex digits). Current length: ' + value.length + '.')
-      return
-    }
-    
-    if (value.length < 32) {
-      setErrorMessage('MessageKey must be at least 32 characters (16 bytes). Current length: ' + value.length + '.')
+
+    const validation = validateMessageKey(value)
+    if (!validation.isValid) {
+      setErrorMessage(`MessageKey ${validation.message}`)
       return
     }
     const tx = {
@@ -824,20 +820,14 @@ export default function AccountSettings({
 
   const handleSetWalletLocator = () => {
     const value = walletLocatorInput.trim()
-    const isHex = /^[0-9a-fA-F]+$/.test(value)
-    
     if (!value) {
       setErrorMessage('WalletLocator cannot be empty. Please enter a 64-character hexadecimal string.')
       return
     }
-    
-    if (!isHex) {
-      setErrorMessage('WalletLocator must contain only hexadecimal characters (0-9, a-f, A-F).')
-      return
-    }
-    
-    if (value.length !== 64) {
-      setErrorMessage('WalletLocator must be exactly 64 characters long. Current length: ' + value.length + '.')
+
+    const validation = validateWalletLocator(value)
+    if (!validation.isValid) {
+      setErrorMessage(`WalletLocator ${validation.message}`)
       return
     }
     const tx = {
