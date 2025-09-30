@@ -106,7 +106,7 @@ export default function TopLinks({ activatedAccount, countryCode }) {
     return <div className="top-links">
       <span className='tooltip'>
         <a
-          href="/go/top-play"
+          href="https://bithomp.com/go/top-play"
           target="_blank"
           rel="noreferrer"
           className='top-link orange'
@@ -124,7 +124,7 @@ export default function TopLinks({ activatedAccount, countryCode }) {
     return <div className="top-links">
       <span className='tooltip'>
         <a
-          href="/go/top-play"
+          href="https://bithomp.com/go/top-play"
           target="_blank"
           rel="noreferrer"
           className='top-link orange'
@@ -149,7 +149,12 @@ export default function TopLinks({ activatedAccount, countryCode }) {
         {pathname.includes('/account') && activatedAccount && (
           <>
             <span className="tooltip">
-              <a href="/go/acc-buy-swap" target="_blank" rel="noreferrer" className="top-link orange">
+              <a
+                href="https://bithomp.com/go/acc-buy-swap"
+                target="_blank"
+                rel="noreferrer"
+                className="top-link orange"
+              >
                 Buy XRP now
               </a>
               <span className="tooltiptext right small">{t('sponsored.sponsored')}</span>
@@ -158,14 +163,14 @@ export default function TopLinks({ activatedAccount, countryCode }) {
           </>
         )}
         <span className="tooltip">
-          <a href="/go/earn-on-xrp" target="_blank" rel="noreferrer" className="top-link orange">
+          <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer" className="top-link orange">
             Earn on XRP
           </a>
           <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
         </span>{' '}
         💰{isMobile ? <br /> : ' | '}
         <span className="tooltip">
-          <a href="/go/play-slots" target="_blank" rel="noreferrer" className="top-link orange">
+          <a href="https://bithomp.com/go/play-slots" target="_blank" rel="noreferrer" className="top-link orange">
             Play Slots and win 70,000 XRP
           </a>
           <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
@@ -173,7 +178,7 @@ export default function TopLinks({ activatedAccount, countryCode }) {
         ❤️
         {isMobile ? <br /> : ' | '}
         <span className="tooltip">
-          <a href="/go/yield-xrp" target="_blank" rel="noreferrer" className="top-link orange">
+          <a href="https://bithomp.com/go/yield-xrp" target="_blank" rel="noreferrer" className="top-link orange">
             Earn XRP Yields
           </a>
           <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
@@ -184,7 +189,7 @@ export default function TopLinks({ activatedAccount, countryCode }) {
         {/*
         {isMobile ? <br /> : ' | '}
         <span className="tooltip">
-          <a href="/go/playxrp" target="_blank" rel="noreferrer" className="top-link orange">
+          <a href="https://bithomp.com/go/playxrp" target="_blank" rel="noreferrer" className="top-link orange">
             Bet in crypto and win with 1xbit! No KYC
           </a>
           <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
@@ -206,7 +211,7 @@ export default function TopLinks({ activatedAccount, countryCode }) {
     <div className="top-links">
       💰{' '}
       <span className="tooltip">
-        <a href="/go/top-earn" target="_blank" rel="noreferrer" className="top-link orange">
+        <a href="https://bithomp.com/go/top-earn" target="_blank" rel="noreferrer" className="top-link orange">
           {!isMobile
             ? 'Build your long-term wealth with industry-leading rates on XRP, BTC, and more.'
             : 'Earn up to 14%'}
@@ -218,7 +223,7 @@ export default function TopLinks({ activatedAccount, countryCode }) {
       {/*
       {width > 1200 || isMobile ? <span style={{ padding: '0 10px' }}>|</span> : ''}
       <span className="tooltip">
-        <a href="/go/top-play" target="_blank" rel="noreferrer" className="top-link orange">
+        <a href="https://bithomp.com/go/top-play" target="_blank" rel="noreferrer" className="top-link orange">
           {!isMobile ? 'Bet in crypto. Get cashback on every bet, WB up to 7BTC+250FS with no KYC.' : 'Bet in crypto'}
         </a>
       </span>{' '}
