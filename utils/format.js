@@ -700,7 +700,7 @@ export const amountFormat = (amount, options = { icon: false }) => {
       </span>
     )
   } else {
-    return showValue + '' + valuePrefix + ' ' + shortAddress(textCurrency, 6)
+    return showValue + '' + valuePrefix + ' ' + ( textCurrency.length > 10 ? shortAddress(textCurrency, 6) : textCurrency )
   }
 }
 
@@ -770,6 +770,7 @@ export const niceCurrency = (currency) => {
 }
 
 export const amountParced = (amount) => {
+  console.log(amount)
   if (!amount && amount !== 0) {
     return false
   }
