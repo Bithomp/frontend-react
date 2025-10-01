@@ -18,7 +18,6 @@ import Link from 'next/link'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
 import { LinkTx } from '../../utils/links'
-import { axiosServer } from '../../utils/axios'
 
 const isPositiveBalance = (balance) => {
   return balance !== '0' && balance[0] !== '-'
@@ -83,7 +82,6 @@ export default function ObjectsData({
   const [incomingPayChannelList, setIncomingPayChannelList] = useState([])
   const [mptIssuanceList, setMptIssuanceList] = useState([])
   const [mptList, setMptList] = useState([])
-  const [mptokenCurrencyDetails, setMptokenCurrencyDetails] = useState({})
 
   const { t } = useTranslation()
 
@@ -95,44 +93,12 @@ export default function ObjectsData({
     ''
   )
 
-  const fetchMptokenCurrencyDetails = async (mptList) => {
-    try {
-      const detailsByIndex = {}
-      const currencyDetailsPromises = await mptList.map(async (mpt) => {
-        try {
-          const res = await axiosServer({
-            method: 'get',
-            url: 'v2/ledgerEntry/' + mpt.index + '?currencyDetails=true'
-          }).catch((error) => {
-            console.error('error', error)
-          })
-          // MPTokenIssuance: metadata at node.metadata
-          // MPToken: metadata at node.mptokenCurrencyDetails.metadata
-          const metadata =
-            mpt.LedgerEntryType === 'MPTokenIssuance'
-              ? res?.data?.node?.metadata
-              : res?.data?.node?.mptokenCurrencyDetails?.metadata
-          // Store first metadata object if array, otherwise store object or undefined
-          detailsByIndex[mpt.index] = Array.isArray(metadata) ? metadata[0] : metadata || undefined
-        } catch (error) {
-          console.error(`Error fetching currency details for MPToken ${mpt.index}:`, error)
-          detailsByIndex[mpt.index] = undefined
-        }
-      })
-
-      await Promise.all(currencyDetailsPromises)
-      setMptokenCurrencyDetails(detailsByIndex)
-    } catch (error) {
-      console.error('Error fetching multi-token currency details:', error)
-    }
-  }
-
   useEffect(() => {
     setObjects({})
     async function checkObjects() {
       setLoadingObjects(true)
       const accountObjectsData = await axios
-        .get('v2/objects/' + address + '?limit=1000&priceNativeCurrencySpot=true' + (ledgerIndex ? '&ledgerIndex=' + ledgerIndex : ''), {
+        .get('v2/objects/' + address + '?limit=1000&priceNativeCurrencySpot=true' + (ledgerIndex ? '&ledgerIndex=' + ledgerIndex : '') + '&currencyDetails=true', {
           signal: controller.signal
         })
         .catch((error) => {
@@ -188,15 +154,6 @@ export default function ObjectsData({
 
           let accountObjectsWithMpt = accountObjects.filter((o) => o.LedgerEntryType === 'MPToken') || []
           setMptList(accountObjectsWithMpt)
-
-          // Fetch multi-token currency details for both MPToken and MPTokenIssuance objects
-          const needsCurrencyDetails = accountObjectsWithMpt.length > 0 || accountObjectWithMptIssuance.length > 0
-          if (needsCurrencyDetails) {
-            fetchMptokenCurrencyDetails([...
-              accountObjectsWithMpt,
-              ...accountObjectWithMptIssuance
-            ])
-          }
 
           const accountObjectWithURITokens = accountObjects.filter((o) => o.LedgerEntryType === 'URIToken') || []
 
@@ -696,7 +653,7 @@ export default function ObjectsData({
                     <th className="left">Asset Subclass</th>
                   </tr>
                   {mptIssuanceList.map((c, i) => {
-                    const meta = mptokenCurrencyDetails[c.index]
+                    const meta = c?.metadata
                     return (
                     <tr key={i}>
                       <td className="center" style={{ width: 30 }}>
@@ -723,7 +680,7 @@ export default function ObjectsData({
                 </center>
                 <br />
                 {mptIssuanceList.map((c, i) => {
-                  const meta = mptokenCurrencyDetails[c.index]
+                  const meta = c?.metadata
                   return (
                   <table className="table-mobile wide" key={i}>
                     <tbody>
@@ -731,20 +688,20 @@ export default function ObjectsData({
                         <td className="center">{i + 1}</td>
                         <td>
                           <p>
-                            <span className="grey">ID</span> {shortHash(c.mpt_issuance_id)}{' '}
+                            <span className="grey">ID: </span> {shortHash(c.mpt_issuance_id)}{' '}
                             <CopyButton text={c.mpt_issuance_id} />
                           </p>
                           <p>
-                            <span className="grey">Currency</span> {meta?.currency || '-'}
+                            <span className="grey">Currency: </span> {meta?.currency || '-'}
                           </p>
                           <p>
-                            <span className="grey">Name</span> {meta?.name || '-'}
+                            <span className="grey">Name: </span> {meta?.name || '-'}
                           </p>
                           <p>
-                            <span className="grey">Asset Class</span> {meta?.asset_class || '-'}
+                            <span className="grey">Asset Class: </span> {meta?.asset_class || '-'}
                           </p>
                           <p>
-                            <span className="grey">Asset Subclass</span> {meta?.asset_subclass || '-'}
+                            <span className="grey">Asset Subclass: </span> {meta?.asset_subclass || '-'}
                           </p>
                         </td>
                       </tr>
@@ -773,14 +730,14 @@ export default function ObjectsData({
                     <th className="left">Asset Subclass</th>
                   </tr>
                   {mptList.map((c, i) => {
-                    const meta = mptokenCurrencyDetails[c.index]
+                    const meta = c?.mptokenCurrencyDetails?.metadata
                     return (
                     <tr key={i}>
                       <td className="center" style={{ width: 30 }}>
                         {i + 1}
                       </td>
                       <td>
-                        {shortHash(c.MPTokenIssuanceID)} <CopyButton text={c.MPTokenIssuanceID} />
+                        {shortHash(c?.mptokenCurrencyDetails?.mptokenIssuanceID)} <CopyButton text={c?.mptokenCurrencyDetails?.mptokenIssuanceID} />
                       </td>
                       <td className="left">{meta?.currency || '-'}</td>
                       <td className="left">{meta?.name || '-'}</td>
@@ -800,7 +757,7 @@ export default function ObjectsData({
                 </center>
                 <br />
                 {mptList.map((c, i) => {
-                  const meta = mptokenCurrencyDetails[c.index]
+                  const meta = c?.mptokenCurrencyDetails?.metadata
                   return (
                   <table className="table-mobile wide" key={i}>
                     <tbody>
@@ -808,20 +765,20 @@ export default function ObjectsData({
                         <td className="center">{i + 1}</td>
                         <td>
                           <p>
-                            <span className="grey">ID</span> {shortHash(c.MPTokenIssuanceID)}{' '}
-                            <CopyButton text={c.MPTokenIssuanceID} />
+                            <span className="grey">ID: </span> {shortHash(c?.mptokenCurrencyDetails?.mptokenIssuanceID)}{' '}
+                            <CopyButton text={c?.mptokenCurrencyDetails?.mptokenIssuanceID} />
                           </p>
                           <p>
-                            <span className="grey">Currency</span> {meta?.currency || '-'}
+                            <span className="grey">Currency: </span> {meta?.currency || '-'}
                           </p>
                           <p>
-                            <span className="grey">Name</span> {meta?.name || '-'}
+                            <span className="grey">Name: </span> {meta?.name || '-'}
                           </p>
                           <p>
-                            <span className="grey">Asset Class</span> {meta?.asset_class || '-'}
+                            <span className="grey">Asset Class: </span> {meta?.asset_class || '-'}
                           </p>
                           <p>
-                            <span className="grey">Asset Subclass</span> {meta?.asset_subclass || '-'}
+                            <span className="grey">Asset Subclass: </span> {meta?.asset_subclass || '-'}
                           </p>
                         </td>
                       </tr>
