@@ -73,7 +73,6 @@ export default function ObjectsData({
   const [depositPreauthList, setDepositPreauthList] = useState([])
   const [payChannelList, setPayChannelList] = useState([])
   const [incomingPayChannelList, setIncomingPayChannelList] = useState([])
-  const [mptList, setMptList] = useState([])
 
   const { t } = useTranslation()
 
@@ -148,10 +147,7 @@ export default function ObjectsData({
 
           const accountObjectWithMPTokenIssuance =
             accountObjects.filter((o) => o.LedgerEntryType === 'MPTokenIssuance') || []
-
-          let accountObjectsWithMpt = accountObjects.filter((o) => o.LedgerEntryType === 'MPToken') || []
-          setMptList(accountObjectsWithMpt)
-
+          const accountObjectsWithMPToken = accountObjects.filter((o) => o.LedgerEntryType === 'MPToken') || []
           const accountObjectWithURITokens = accountObjects.filter((o) => o.LedgerEntryType === 'URIToken') || []
 
           //https://github.com/Bithomp/xrpl-api/blob/master/src/models/account_object.ts#L95-L131
@@ -201,7 +197,8 @@ export default function ObjectsData({
             offerList: accountObjectWithOffer,
             rippleStateList: accountObjectWithRippleState,
             uriTokenList: accountObjectWithURITokens,
-            mptIssuanceList: accountObjectWithMPTokenIssuance
+            mptIssuanceList: accountObjectWithMPTokenIssuance,
+            mptList: accountObjectsWithMPToken
           })
         } else {
           // no objects
@@ -212,7 +209,8 @@ export default function ObjectsData({
             offerList: [],
             rippleStateList: [],
             uriTokenList: [],
-            mptIssuanceList: []
+            mptIssuanceList: [],
+            mptList: []
           })
         }
       }
@@ -633,73 +631,6 @@ export default function ObjectsData({
           )}
           {payChannelList.length > 0 && payChannelListNode(payChannelList)}
           {incomingPayChannelList.length > 0 && payChannelListNode(incomingPayChannelList, { type: 'incoming' })}
-
-          {mptList.length > 0 && (
-            <>
-              <table className="table-details hide-on-small-w800">
-                <thead>
-                  <tr>
-                    <th colSpan="100">
-                      {objectsCountText(mptList)}Multi-Purpose Token{historicalTitle}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th>#</th>
-                    <th className="left">ID</th>
-                    <th className="right">Amount</th>
-                    <th>Last update</th>
-                  </tr>
-                  {mptList.map((c, i) => (
-                    <tr key={i}>
-                      <td className="center" style={{ width: 30 }}>
-                        {i + 1}
-                      </td>
-                      <td>
-                        {shortHash(c.MPTokenIssuanceID)} <CopyButton text={c.MPTokenIssuanceID} />
-                      </td>
-                      <td className="right">{c.MPTAmount}</td>
-                      <td className="center">
-                        {timeOrDate(c.previousTxAt)} <LinkTx tx={c.PreviousTxnID} icon={true} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="show-on-small-w800">
-                <br />
-                <center>
-                  {objectsCountText(mptList)}
-                  {'Multi-Purpose Token'.toUpperCase()}
-                  {historicalTitle}
-                </center>
-                <br />
-                {mptList.map((c, i) => (
-                  <table className="table-mobile wide" key={i}>
-                    <tbody>
-                      <tr>
-                        <td className="center">{i + 1}</td>
-                        <td>
-                          <p>
-                            <span className="grey">ID</span> {shortHash(c.MPTokenIssuanceID)}{' '}
-                            <CopyButton text={c.MPTokenIssuanceID} />
-                          </p>
-                          <p>
-                            <span className="grey">Amount</span> {c.MPTAmount}
-                          </p>
-                          <p>
-                            <span className="grey">Last update</span> {timeOrDate(c.previousTxAt)}{' '}
-                            <LinkTx tx={c.PreviousTxnID} icon={true} />
-                          </p>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                ))}
-              </div>
-            </>
-          )}
         </>
       )}
     </>
