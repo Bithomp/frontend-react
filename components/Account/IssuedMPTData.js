@@ -1,18 +1,15 @@
 import { i18n } from 'next-i18next'
 import { objectsCountText } from '../../utils'
-import {
-  addressUsernameOrServiceLink,
-  fullDateAndTime,
-  shortHash,
-  shortNiceNumber,
-  timeFromNow,
-  timeOrDate
-} from '../../utils/format'
+import { fullDateAndTime, shortHash, shortNiceNumber, timeFromNow, timeOrDate } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import CopyButton from '../UI/CopyButton'
 
 const mptCurrency = (meta) => {
   return meta.currency || meta.c || 'N/A'
+}
+
+const mptName = (meta) => {
+  return meta.name || meta.n || 'N/A'
 }
 
 export default function IssuedMPTData({ mptIssuanceList, ledgerTimestamp }) {
@@ -30,7 +27,8 @@ export default function IssuedMPTData({ mptIssuanceList, ledgerTimestamp }) {
         <thead>
           <tr>
             <th colSpan="100">
-              {objectsCountText(mptIssuanceList)}Multi-Purpose Token issuance{historicalTitle}
+              {objectsCountText(mptIssuanceList)}Issued Multi-Purpose Tokens
+              {historicalTitle}
             </th>
           </tr>
         </thead>
@@ -39,7 +37,7 @@ export default function IssuedMPTData({ mptIssuanceList, ledgerTimestamp }) {
             <th>#</th>
             <th className="left">ID</th>
             <th className="left">Currency</th>
-            <th className="right">Issuer</th>
+            <th className="right">Name</th>
             <th className="right">Outstanding</th>
             <th className="right">Max</th>
             <th>Last update</th>
@@ -53,11 +51,7 @@ export default function IssuedMPTData({ mptIssuanceList, ledgerTimestamp }) {
                 <CopyButton text={c.mpt_issuance_id} />
               </td>
               <td className="left">{mptCurrency(c.metadata)}</td>
-              <td className="right">
-                {addressUsernameOrServiceLink({ issuer: c.Issuer, issuerDetails: c.issuerDetails }, 'issuer', {
-                  short: true
-                })}
-              </td>
+              <td className="right">{mptName(c.metadata)}</td>
               <td className="right">{shortNiceNumber(c.OutstandingAmount)}</td>
               <td className="right">{shortNiceNumber(c.MaximumAmount)}</td>
               <td className="center">
@@ -89,10 +83,7 @@ export default function IssuedMPTData({ mptIssuanceList, ledgerTimestamp }) {
                     <span className="grey">Currency</span> {mptCurrency(c.metadata)}
                   </p>
                   <p>
-                    <span className="grey">Issuer</span>{' '}
-                    {addressUsernameOrServiceLink({ issuer: c.Issuer, issuerDetails: c.issuerDetails }, 'issuer', {
-                      short: true
-                    })}
+                    <span className="grey">Name</span> {mptName(c.metadata)}
                   </p>
                   <p>
                     <span className="grey">Outstanding amount</span> {shortNiceNumber(c.OutstandingAmount)}
