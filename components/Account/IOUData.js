@@ -8,18 +8,11 @@ import {
   fullNiceNumber
 } from '../../utils/format'
 import { LinkAccount } from '../../utils/links'
-import { useWidth } from '../../utils'
+import { objectsCountText, useWidth } from '../../utils'
 import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaInfoCircle } from 'react-icons/fa'
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
-
-const tokensCountText = (rippleStateList) => {
-  if (!rippleStateList) return ''
-  let countList = rippleStateList.filter((p) => p !== undefined)
-  if (countList.length > 1) return countList.length + ' '
-  return ''
-}
 
 // Component to display flag icons with tooltips
 const FlagIcons = ({ flags }) => {
@@ -215,23 +208,25 @@ export default function IOUData({
     )
 
   // Sort tokens by fiat value (largest first), with 0 amount tokens at the end
-  const sortedTokens = rippleStateList?.length ? rippleStateList.sort((a, b) => {
-    const balanceA = Math.abs(subtract(a.Balance?.value, a.LockedBalance?.value ? a.LockedBalance?.value : 0))
-    const balanceB = Math.abs(subtract(b.Balance?.value, b.LockedBalance?.value ? b.LockedBalance?.value : 0))
-    
-    // If both have 0 balance, maintain original order
-    if (balanceA === 0 && balanceB === 0) return 0
-    
-    // If only one has 0 balance, put it at the end
-    if (balanceA === 0) return 1
-    if (balanceB === 0) return -1
-    
-    // Both have non-zero balance, sort by fiat value (largest first)
-    const fiatValueA = a.priceNativeCurrencySpot * balanceA || 0
-    const fiatValueB = b.priceNativeCurrencySpot * balanceB || 0
-    
-    return fiatValueB - fiatValueA
-  }) : []
+  const sortedTokens = rippleStateList?.length
+    ? rippleStateList.sort((a, b) => {
+        const balanceA = Math.abs(subtract(a.Balance?.value, a.LockedBalance?.value ? a.LockedBalance?.value : 0))
+        const balanceB = Math.abs(subtract(b.Balance?.value, b.LockedBalance?.value ? b.LockedBalance?.value : 0))
+
+        // If both have 0 balance, maintain original order
+        if (balanceA === 0 && balanceB === 0) return 0
+
+        // If only one has 0 balance, put it at the end
+        if (balanceA === 0) return 1
+        if (balanceB === 0) return -1
+
+        // Both have non-zero balance, sort by fiat value (largest first)
+        const fiatValueA = a.priceNativeCurrencySpot * balanceA || 0
+        const fiatValueB = b.priceNativeCurrencySpot * balanceB || 0
+
+        return fiatValueB - fiatValueA
+      })
+    : []
 
   const tokenLength = sortedTokens?.length
 
@@ -317,7 +312,7 @@ export default function IOUData({
         <thead>
           <tr>
             <th colSpan="100">
-              {tokensCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle}
+              {objectsCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle}
               {actionLink}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
@@ -348,7 +343,7 @@ export default function IOUData({
       <div className="show-on-small-w800">
         <br />
         <center>
-          {tokensCountText(rippleStateList)}
+          {objectsCountText(rippleStateList)}
           {t('menu.tokens').toUpperCase()} {historicalTitle}
           {actionLink}
           {totalBalance > 0 && (

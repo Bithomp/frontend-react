@@ -953,3 +953,10 @@ export const xls14NftValue = (value) => {
 }
 
 export const md5 = (text) => SparkMD5.hash(text)
+
+export const objectsCountText = (objects) => {
+  if (!objects) return ''
+  let countList = objects.filter((p) => p !== undefined)
+  if (countList.length > 1) return countList.length + ' '
+  return ''
+}

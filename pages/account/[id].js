@@ -108,6 +108,7 @@ import IssuedTokensData from '../../components/Account/IssuedTokensData'
 import EscrowData from '../../components/Account/EscrowData'
 import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
+import IssuedMPTData from '../../components/Account/IssuedMPTData'
 
 export default function Account({
   initialData,
@@ -592,6 +593,11 @@ export default function Account({
                               pageFiatRate={pageFiatRate}
                             />
                           )}
+
+                          <IssuedMPTData
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            mptIssuanceList={objects?.mptIssuanceList}
+                          />
 
                           <div id="dex-orders-section">
                             <DexOrdersData
