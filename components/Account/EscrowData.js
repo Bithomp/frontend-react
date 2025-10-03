@@ -1,5 +1,11 @@
 import { i18n } from 'next-i18next'
-import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat, timeFromNow, AddressWithIconFilled } from '../../utils/format'
+import {
+  fullDateAndTime,
+  addressUsernameOrServiceLink,
+  amountFormat,
+  timeFromNow,
+  AddressWithIconFilled
+} from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { avatarServer, timestampExpired } from '../../utils'
 import Image from 'next/image'
@@ -61,12 +67,9 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
 
   const escrowListNode = (escrowList, options) => {
     const adrLabel = options?.type === 'received' ? 'Account' : 'Destination'
-    const hasMptEscrows = escrowList.some(escrow => escrow.Amount?.mpt_issuance_id)
 
     const rows = escrowList.map((escrow, i) => {
       const accountAddress = escrow[adrLabel]
-      const mptDetails = escrow.Amount?.currencyDetails?.metadata
-      const isMptEscrow = escrow.Amount?.mpt_issuance_id
 
       const formattedAccountInfo = {
         address: accountAddress,
@@ -81,67 +84,44 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           <td className="center" style={{ width: 30 }}>
             {i + 1}
           </td>
-          {isMptEscrow ? (
-            <>
-              <td className="left">
-                {mptDetails ? (
-                  mptDetails?.currency || '-'
-                ) : (
-                  <span className="grey">Loading...</span>
-                )}
-              </td>
-              <td>
-                <Link href={'/account/' + escrow.Account}>
-                  <AddressWithIconFilled data={escrow?.Amount?.currencyDetails} name="account" options={{ short: true }} />
-                </Link>
-              </td>
-            </>
-          ) : (
-            <>
-              {options?.type !== 'self' && (
-                <td>
-                  <Link href={'/account/' + accountAddress}>
-                    <Image
-                      src={avatarServer + accountAddress}
-                      alt={'service logo'}
-                      height={20}
-                      width={20}
-                      style={{ marginRight: '5px', marginBottom: '-5px' }}
-                    />
-                  </Link>
-                  {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
-                </td>
-              )}
-              <td className="right">
-                {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : <span className="grey">none</span>}
-              </td>
-              <td className="right">
-                {escrow.CancelAfter ? (
-                  <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red tooltip' : 'tooltip'}>
-                    {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
-                    <span className="tooltiptext">
-                      {fullDateAndTime(escrow.CancelAfter, 'ripple')}
-                    </span>
-                  </span>
-                ) : (
-                  <span className="grey">no expiration</span>
-                )}
-              </td>
-              <td className="right">
-                {escrow.FinishAfter ? (
-                  <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green tooltip' : 'tooltip'}>
-                    {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
-                    <span className="tooltiptext">
-                      {fullDateAndTime(escrow.FinishAfter, 'ripple')}
-                    </span>
-                  </span>
-                ) : (
-                  <span className="grey">no expiration</span>
-                )}
-              </td>
-              <td className="bold right">{amountFormat(escrow.Amount, { short: true })}</td>
-            </>
+          {options?.type !== 'self' && (
+            <td>
+              <Link href={'/account/' + accountAddress}>
+                <Image
+                  src={avatarServer + accountAddress}
+                  alt={'service logo'}
+                  height={20}
+                  width={20}
+                  style={{ marginRight: '5px', marginBottom: '-5px' }}
+                />
+              </Link>
+              {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
+            </td>
           )}
+          <td className="right">
+            {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : <span className="grey">none</span>}
+          </td>
+          <td className="right">
+            {escrow.CancelAfter ? (
+              <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red tooltip' : 'tooltip'}>
+                {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
+                <span className="tooltiptext">{fullDateAndTime(escrow.CancelAfter, 'ripple')}</span>
+              </span>
+            ) : (
+              <span className="grey">no expiration</span>
+            )}
+          </td>
+          <td className="right">
+            {escrow.FinishAfter ? (
+              <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green tooltip' : 'tooltip'}>
+                {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
+                <span className="tooltiptext">{fullDateAndTime(escrow.FinishAfter, 'ripple')}</span>
+              </span>
+            ) : (
+              <span className="grey">no expiration</span>
+            )}
+          </td>
+          <td className="bold right">{amountFormat(escrow.Amount, { short: true })}</td>
           {!ledgerTimestamp && (
             <td className="center">
               {(() => {
@@ -194,20 +174,11 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
       <>
         <tr>
           <th>#</th>
-          {hasMptEscrows ? (
-            <>
-              <th className="left">Currency</th>
-              <th className="left">Issuer</th>
-            </>
-          ) : (
-            <>
-              {options?.type !== 'self' && <th className="left">{options?.type === 'received' ? 'From' : 'To'}</th>}
-              <th className="right">Dest. tag</th>
-              <th className="right">Expire</th>
-              <th className="right">Unlock</th>
-              <th className="right">Amount</th>
-            </>
-          )}
+          {options?.type !== 'self' && <th className="left">{options?.type === 'received' ? 'From' : 'To'}</th>}
+          <th className="right">Dest. tag</th>
+          <th className="right">Expire</th>
+          <th className="right">Unlock</th>
+          <th className="right">Amount</th>
           {!ledgerTimestamp && <th>Actions</th>}
         </tr>
         {rows}
@@ -229,7 +200,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
             </thead>
             <tbody>{escrowListNode(receivedEscrowList, { type: 'received' })}</tbody>
           </table>
-           <div className="show-on-small-w800">
+          <div className="show-on-small-w800">
             <br />
             <center>
               {escrowCountText(receivedEscrowList)}
@@ -238,8 +209,6 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
             </center>
             <br />
             {receivedEscrowList.map((escrow, i) => {
-              const mptDetails = escrow.Amount?.currencyDetails?.metadata
-              const isMptEscrow = escrow.Amount?.mpt_issuance_id
               const accountAddress = escrow.Account
               const formattedAccountInfo = {
                 address: accountAddress,
@@ -248,57 +217,51 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
                   service: escrow.AccountDetails?.service?.name
                 }
               }
-               
+
               return (
                 <table className="table-mobile wide" key={i}>
                   <tbody>
                     <tr>
                       <td className="center">{i + 1}</td>
                       <td>
-                        {isMptEscrow ? (
-                          <>
-                            <p>
-                              <span className="grey">Currency</span> {mptDetails ? (mptDetails?.currency || '-') : <span className="grey">Loading...</span>}
-                            </p>
-                            <p>
-                              <span className="grey">Issuer</span> <AddressWithIconFilled data={escrow?.Amount?.currencyDetails} name="account" options={{ short: true }} />
-                            </p>
-                          </>
-                        ) : (
-                          <>
-                            <span className="grey">From</span>
-                            <Link href={'/account/' + accountAddress}>
-                              <Image
-                                src={avatarServer + accountAddress}
-                                alt={'service logo'}
-                                height={20}
-                                width={20}
-                                style={{ marginRight: '5px', marginBottom: '-5px' }}
-                              />
-                            </Link>
-                            {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
-                            <p>
-                              <span className="grey">Dest. tag</span> {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : 'none'}
-                            </p>
-                            <p>
-                              <span className="grey">Expire</span> {escrow.CancelAfter ? (
-                                <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>
-                                  {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
-                                </span>
-                              ) : 'no expiration'}
-                            </p>
-                            <p>
-                              <span className="grey">Unlock</span> {escrow.FinishAfter ? (
-                                <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green' : ''}>
-                                  {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
-                                </span>
-                              ) : 'no expiration'}
-                            </p>
-                            <p>
-                              <span className="grey">Amount</span> {amountFormat(escrow.Amount, { short: true })}
-                            </p>
-                          </>
-                        )}
+                        <span className="grey">From</span>
+                        <Link href={'/account/' + accountAddress}>
+                          <Image
+                            src={avatarServer + accountAddress}
+                            alt={'service logo'}
+                            height={20}
+                            width={20}
+                            style={{ marginRight: '5px', marginBottom: '-5px' }}
+                          />
+                        </Link>
+                        {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
+                        <p>
+                          <span className="grey">Dest. tag</span>{' '}
+                          {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : 'none'}
+                        </p>
+                        <p>
+                          <span className="grey">Expire</span>{' '}
+                          {escrow.CancelAfter ? (
+                            <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>
+                              {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
+                            </span>
+                          ) : (
+                            'no expiration'
+                          )}
+                        </p>
+                        <p>
+                          <span className="grey">Unlock</span>{' '}
+                          {escrow.FinishAfter ? (
+                            <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green' : ''}>
+                              {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
+                            </span>
+                          ) : (
+                            'no expiration'
+                          )}
+                        </p>
+                        <p>
+                          <span className="grey">Amount</span> {amountFormat(escrow.Amount, { short: true })}
+                        </p>
                       </td>
                     </tr>
                   </tbody>
@@ -327,7 +290,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
               {'Sent Escrows'.toUpperCase()}
               {historicalTitle}
             </center>
-            <br/>
+            <br />
             {sentEscrowList.map((escrow, i) => {
               const mptDetails = escrow.Amount?.currencyDetails?.metadata
               const isMptEscrow = escrow.Amount?.mpt_issuance_id
@@ -364,25 +327,32 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
                                 height={20}
                                 width={20}
                                 style={{ marginRight: '5px', marginBottom: '-5px' }}
-                                />
+                              />
                             </Link>
                             {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
                             <p>
-                              <span className="grey">Dest. tag</span> {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : 'none'}
+                              <span className="grey">Dest. tag</span>{' '}
+                              {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : 'none'}
                             </p>
                             <p>
-                              <span className="grey">Expire</span> {escrow.CancelAfter ? (
+                              <span className="grey">Expire</span>{' '}
+                              {escrow.CancelAfter ? (
                                 <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>
                                   {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
                                 </span>
-                              ) : 'no expiration'}
+                              ) : (
+                                'no expiration'
+                              )}
                             </p>
                             <p>
-                              <span className="grey">Unlock</span> {escrow.FinishAfter ? (
+                              <span className="grey">Unlock</span>{' '}
+                              {escrow.FinishAfter ? (
                                 <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green' : ''}>
                                   {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
                                 </span>
-                              ) : 'no expiration'}
+                              ) : (
+                                'no expiration'
+                              )}
                             </p>
                             <p>
                               <span className="grey">Amount</span> {amountFormat(escrow.Amount, { short: true })}
@@ -410,64 +380,76 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
             </thead>
             <tbody>{escrowListNode(selfEscrowList, { type: 'self' })}</tbody>
           </table>
-           <div className="show-on-small-w800">
-             <br />
-             <center>
-               {escrowCountText(selfEscrowList)}
-               {'Self Escrows'.toUpperCase()}
-               {historicalTitle}
-             </center>
-             <br />
-             {selfEscrowList.map((escrow, i) => {
-               const mptDetails = escrow.Amount?.currencyDetails?.metadata
-               const isMptEscrow = escrow.Amount?.mpt_issuance_id
-               
-               return (
-                 <table className="table-mobile wide" key={i}>
-                   <tbody>
-                     <tr>
-                       <td className="center">{i + 1}</td>
-                       <td>
-                         {isMptEscrow ? (
-                           <>
-                             <p>
-                               <span className="grey">Currency</span> { mptDetails?.currency || '-' }
-                             </p>
-                             <p>
-                                <span className="grey">Issuer</span> <AddressWithIconFilled data={escrow?.Amount?.currencyDetails} name="account" options={{ short: true }} />
-                             </p>
-                           </>
-                         ) : (
-                           <>
-                             <p>
-                               <span className="grey">Dest. tag</span> {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : 'none'}
-                             </p>
-                             <p>
-                               <span className="grey">Expire</span> {escrow.CancelAfter ? (
-                                 <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>
-                                   {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
-                                 </span>
-                               ) : 'no expiration'}
-                             </p>
-                             <p>
-                               <span className="grey">Unlock</span> {escrow.FinishAfter ? (
-                                 <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green' : ''}>
-                                   {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
-                                 </span>
-                               ) : 'no expiration'}
-                             </p>
-                             <p>
-                               <span className="grey">Amount</span> {amountFormat(escrow.Amount, { short: true })}
-                             </p>
-                           </>
-                         )}
-                       </td>
-                     </tr>
-                   </tbody>
-                 </table>
-               )
-             })}
-           </div>
+          <div className="show-on-small-w800">
+            <br />
+            <center>
+              {escrowCountText(selfEscrowList)}
+              {'Self Escrows'.toUpperCase()}
+              {historicalTitle}
+            </center>
+            <br />
+            {selfEscrowList.map((escrow, i) => {
+              const mptDetails = escrow.Amount?.currencyDetails?.metadata
+              const isMptEscrow = escrow.Amount?.mpt_issuance_id
+
+              return (
+                <table className="table-mobile wide" key={i}>
+                  <tbody>
+                    <tr>
+                      <td className="center">{i + 1}</td>
+                      <td>
+                        {isMptEscrow ? (
+                          <>
+                            <p>
+                              <span className="grey">Currency</span> {mptDetails?.currency || '-'}
+                            </p>
+                            <p>
+                              <span className="grey">Issuer</span>{' '}
+                              <AddressWithIconFilled
+                                data={escrow?.Amount?.currencyDetails}
+                                name="account"
+                                options={{ short: true }}
+                              />
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <p>
+                              <span className="grey">Dest. tag</span>{' '}
+                              {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : 'none'}
+                            </p>
+                            <p>
+                              <span className="grey">Expire</span>{' '}
+                              {escrow.CancelAfter ? (
+                                <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>
+                                  {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
+                                </span>
+                              ) : (
+                                'no expiration'
+                              )}
+                            </p>
+                            <p>
+                              <span className="grey">Unlock</span>{' '}
+                              {escrow.FinishAfter ? (
+                                <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green' : ''}>
+                                  {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
+                                </span>
+                              ) : (
+                                'no expiration'
+                              )}
+                            </p>
+                            <p>
+                              <span className="grey">Amount</span> {amountFormat(escrow.Amount, { short: true })}
+                            </p>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              )
+            })}
+          </div>
         </>
       )}
     </>
