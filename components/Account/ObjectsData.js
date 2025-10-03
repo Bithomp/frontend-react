@@ -101,9 +101,8 @@ export default function ObjectsData({
         .get(
           'v2/objects/' +
             address +
-            '?limit=1000&priceNativeCurrencySpot=true' +
-            (ledgerIndex ? '&ledgerIndex=' + ledgerIndex : '') +
-            '&currencyDetails=true',
+            '?limit=1000&priceNativeCurrencySpot=true&currencyDetails=true' +
+            (ledgerIndex ? '&ledgerIndex=' + ledgerIndex : ''),
           {
             signal: controller.signal
           }
@@ -656,28 +655,23 @@ export default function ObjectsData({
                   <tr>
                     <th>#</th>
                     <th className="left">ID</th>
-                    <th className="left">Currency</th>
-                    <th className="left">Name</th>
-                    <th className="left">Asset Class</th>
-                    <th className="left">Asset Subclass</th>
+                    <th className="right">Outstanding amount</th>
+                    <th>Last update</th>
                   </tr>
-                  {mptIssuanceList.map((c, i) => {
-                    const meta = c?.metadata
-                    return (
-                      <tr key={i}>
-                        <td className="center" style={{ width: 30 }}>
-                          {i + 1}
-                        </td>
-                        <td>
-                          {shortHash(c.mpt_issuance_id)} <CopyButton text={c.mpt_issuance_id} />
-                        </td>
-                        <td className="left">{meta?.currency || '-'}</td>
-                        <td className="left">{meta?.name || '-'}</td>
-                        <td className="left">{meta?.asset_class || '-'}</td>
-                        <td className="left">{meta?.asset_subclass || '-'}</td>
-                      </tr>
-                    )
-                  })}
+                  {mptIssuanceList.map((c, i) => (
+                    <tr key={i}>
+                      <td className="center" style={{ width: 30 }}>
+                        {i + 1}
+                      </td>
+                      <td>
+                        {shortHash(c.mpt_issuance_id)} <CopyButton text={c.mpt_issuance_id} />
+                      </td>
+                      <td className="right">{c.OutstandingAmount}</td>
+                      <td className="center">
+                        {timeOrDate(c.previousTxAt)} <LinkTx tx={c.PreviousTxnID} icon={true} />
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
               <div className="show-on-small-w800">
@@ -688,36 +682,28 @@ export default function ObjectsData({
                   {historicalTitle}
                 </center>
                 <br />
-                {mptIssuanceList.map((c, i) => {
-                  const meta = c?.metadata
-                  return (
-                    <table className="table-mobile wide" key={i}>
-                      <tbody>
-                        <tr>
-                          <td className="center">{i + 1}</td>
-                          <td>
-                            <p>
-                              <span className="grey">ID: </span> {shortHash(c.mpt_issuance_id)}{' '}
-                              <CopyButton text={c.mpt_issuance_id} />
-                            </p>
-                            <p>
-                              <span className="grey">Currency: </span> {meta?.currency || '-'}
-                            </p>
-                            <p>
-                              <span className="grey">Name: </span> {meta?.name || '-'}
-                            </p>
-                            <p>
-                              <span className="grey">Asset Class: </span> {meta?.asset_class || '-'}
-                            </p>
-                            <p>
-                              <span className="grey">Asset Subclass: </span> {meta?.asset_subclass || '-'}
-                            </p>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  )
-                })}
+                {mptIssuanceList.map((c, i) => (
+                  <table className="table-mobile wide" key={i}>
+                    <tbody>
+                      <tr>
+                        <td className="center">{i + 1}</td>
+                        <td>
+                          <p>
+                            <span className="grey">ID</span> {shortHash(c.mpt_issuance_id)}{' '}
+                            <CopyButton text={c.mpt_issuance_id} />
+                          </p>
+                          <p>
+                            <span className="grey">Outstanding amount</span> {c.OutstandingAmount}
+                          </p>
+                          <p>
+                            <span className="grey">Last update</span> {timeOrDate(c.previousTxAt)}{' '}
+                            <LinkTx tx={c.PreviousTxnID} icon={true} />
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                ))}
               </div>
             </>
           )}
@@ -736,29 +722,23 @@ export default function ObjectsData({
                   <tr>
                     <th>#</th>
                     <th className="left">ID</th>
-                    <th className="left">Currency</th>
-                    <th className="left">Name</th>
-                    <th className="left">Asset Class</th>
-                    <th className="left">Asset Subclass</th>
+                    <th className="right">Amount</th>
+                    <th>Last update</th>
                   </tr>
-                  {mptList.map((c, i) => {
-                    const meta = c?.mptokenCurrencyDetails?.metadata
-                    return (
-                      <tr key={i}>
-                        <td className="center" style={{ width: 30 }}>
-                          {i + 1}
-                        </td>
-                        <td>
-                          {shortHash(c?.mptokenCurrencyDetails?.mptokenIssuanceID)}{' '}
-                          <CopyButton text={c?.mptokenCurrencyDetails?.mptokenIssuanceID} />
-                        </td>
-                        <td className="left">{meta?.currency || '-'}</td>
-                        <td className="left">{meta?.name || '-'}</td>
-                        <td className="left">{meta?.asset_class || '-'}</td>
-                        <td className="left">{meta?.asset_subclass || '-'}</td>
-                      </tr>
-                    )
-                  })}
+                  {mptList.map((c, i) => (
+                    <tr key={i}>
+                      <td className="center" style={{ width: 30 }}>
+                        {i + 1}
+                      </td>
+                      <td>
+                        {shortHash(c.MPTokenIssuanceID)} <CopyButton text={c.MPTokenIssuanceID} />
+                      </td>
+                      <td className="right">{c.MPTAmount}</td>
+                      <td className="center">
+                        {timeOrDate(c.previousTxAt)} <LinkTx tx={c.PreviousTxnID} icon={true} />
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
               <div className="show-on-small-w800">
@@ -769,37 +749,28 @@ export default function ObjectsData({
                   {historicalTitle}
                 </center>
                 <br />
-                {mptList.map((c, i) => {
-                  const meta = c?.mptokenCurrencyDetails?.metadata
-                  return (
-                    <table className="table-mobile wide" key={i}>
-                      <tbody>
-                        <tr>
-                          <td className="center">{i + 1}</td>
-                          <td>
-                            <p>
-                              <span className="grey">ID: </span>{' '}
-                              {shortHash(c?.mptokenCurrencyDetails?.mptokenIssuanceID)}{' '}
-                              <CopyButton text={c?.mptokenCurrencyDetails?.mptokenIssuanceID} />
-                            </p>
-                            <p>
-                              <span className="grey">Currency: </span> {meta?.currency || '-'}
-                            </p>
-                            <p>
-                              <span className="grey">Name: </span> {meta?.name || '-'}
-                            </p>
-                            <p>
-                              <span className="grey">Asset Class: </span> {meta?.asset_class || '-'}
-                            </p>
-                            <p>
-                              <span className="grey">Asset Subclass: </span> {meta?.asset_subclass || '-'}
-                            </p>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  )
-                })}
+                {mptList.map((c, i) => (
+                  <table className="table-mobile wide" key={i}>
+                    <tbody>
+                      <tr>
+                        <td className="center">{i + 1}</td>
+                        <td>
+                          <p>
+                            <span className="grey">ID</span> {shortHash(c.MPTokenIssuanceID)}{' '}
+                            <CopyButton text={c.MPTokenIssuanceID} />
+                          </p>
+                          <p>
+                            <span className="grey">Amount</span> {c.MPTAmount}
+                          </p>
+                          <p>
+                            <span className="grey">Last update</span> {timeOrDate(c.previousTxAt)}{' '}
+                            <LinkTx tx={c.PreviousTxnID} icon={true} />
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                ))}
               </div>
             </>
           )}
