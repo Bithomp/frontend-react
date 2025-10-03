@@ -234,9 +234,32 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           </div>
         </>
       )}
-      <table className="table-mobile wide">
-        <tbody>{escrowListNode(selfEscrowList, { type: 'sent', mobile: true })}</tbody>
-      </table>
+      {selfEscrowList?.length > 0 && (
+        <>
+          <table className="table-details hide-on-small-w800">
+            <thead>
+              <tr>
+                <th colSpan="100">
+                  {escrowCountText(selfEscrowList)} Self Escrows {historicalTitle}
+                </th>
+              </tr>
+            </thead>
+            <tbody>{escrowListNode(selfEscrowList, { type: 'self' })}</tbody>
+          </table>
+          <div className="show-on-small-w800">
+            <br />
+            <center>
+              {escrowCountText(selfEscrowList)}
+              {'Self Escrows'.toUpperCase()}
+              {historicalTitle}
+            </center>
+            <br />
+            <table className="table-mobile wide">
+              <tbody>{escrowListNode(selfEscrowList, { type: 'self', mobile: true })}</tbody>
+            </table>
+          </div>
+        </>
+      )}
     </>
   )
 }
