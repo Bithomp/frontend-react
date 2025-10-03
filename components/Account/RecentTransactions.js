@@ -418,7 +418,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     setLoading(true)
     setError(null)
     const res = await axios(
-      `/v3/transactions/${address}?limit=15` +
+      `/v3/transactions/${address}?limit=15&currencyDetails=true` +
         (ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
       setError(error.message)

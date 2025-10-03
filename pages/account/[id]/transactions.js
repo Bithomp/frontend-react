@@ -65,7 +65,7 @@ export async function getServerSideProps(context) {
       // Fetch transactions
       const res = await axiosServer({
         method: 'get',
-        url: `v3/transactions/${initialUserData?.address || account}?limit=${limit}`,
+        url: `v3/transactions/${initialUserData?.address || account}?limit=${limit}&currencyDetails=true`,
         headers: passHeaders(req)
       })
       initialTransactions = res?.data?.transactions || res?.data || []
@@ -180,7 +180,7 @@ export default function AccountTransactions({
   // Build API url
   const apiUrl = (opts = {}) => {
     const limit = 20
-    let url = `v3/transactions/${userData?.address}?limit=${limit}`
+    let url = `v3/transactions/${userData?.address}?limit=${limit}&currencyDetails=true`
     // pagination marker
     if (opts.marker) {
       const markerString = typeof opts.marker === 'object' ? JSON.stringify(opts.marker) : opts.marker
