@@ -40,16 +40,7 @@ import {
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  const { 
-    id, 
-    fromDate, 
-    toDate, 
-    txType, 
-    initiated, 
-    excludeFailures, 
-    counterparty, 
-    order 
-  } = query
+  const { id, fromDate, toDate, txType, initiated, excludeFailures, counterparty, order } = query
   const account = id || ''
   const limit = 20
   let initialTransactions = []
@@ -75,7 +66,7 @@ export async function getServerSideProps(context) {
       // Fetch transactions
       const res = await axiosServer({
         method: 'get',
-        url: `v3/transactions/${initialUserData?.address || account}?limit=${limit}&currencyDetails=true`,
+        url: `v3/transactions/${initialUserData?.address || account}?limit=${limit}`,
         headers: passHeaders(req)
       })
       initialTransactions = res?.data?.transactions || res?.data || []
@@ -118,7 +109,7 @@ export default function AccountTransactions({
   initiatedQuery,
   excludeFailuresQuery,
   counterpartyQuery,
-  orderQuery,
+  orderQuery
 }) {
   const { t } = useTranslation()
   const width = useWidth()
@@ -221,7 +212,7 @@ export default function AccountTransactions({
   // Build API url
   const apiUrl = (opts = {}) => {
     const limit = 20
-    let url = `v3/transactions/${userData?.address}?limit=${limit}&currencyDetails=true`
+    let url = `v3/transactions/${userData?.address}?limit=${limit}`
     // pagination marker
     if (opts.marker) {
       const markerString = typeof opts.marker === 'object' ? JSON.stringify(opts.marker) : opts.marker
@@ -315,12 +306,12 @@ export default function AccountTransactions({
   // URL synchronization functions
   const updateURL = (newFilters) => {
     if (!router.isReady) return
-    
+
     const addList = []
     const removeList = []
-    
+
     // Process each filter
-    Object.keys(newFilters).forEach(key => {
+    Object.keys(newFilters).forEach((key) => {
       const value = newFilters[key]
       if (value && value !== '' && value !== '0' && value !== 'tx' && value !== 'newest') {
         addList.push({ name: key, value })
