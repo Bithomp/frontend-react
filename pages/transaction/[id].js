@@ -35,7 +35,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v3/transaction/' + id,
+      url: 'v3/transaction/' + id + '?currencyDetails=true',
       headers: passHeaders(req)
     })
     data = res?.data

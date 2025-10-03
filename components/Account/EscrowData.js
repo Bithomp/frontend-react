@@ -99,9 +99,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
             {escrow.CancelAfter ? (
               <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red tooltip' : 'tooltip'}>
                 {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
-                <span className="tooltiptext">
-                  {fullDateAndTime(escrow.CancelAfter, 'ripple')}
-                </span>
+                <span className="tooltiptext">{fullDateAndTime(escrow.CancelAfter, 'ripple')}</span>
               </span>
             ) : (
               <span className="grey">no expiration</span>
@@ -111,9 +109,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
             {escrow.FinishAfter ? (
               <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green tooltip' : 'tooltip'}>
                 {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
-                <span className="tooltiptext">
-                  {fullDateAndTime(escrow.FinishAfter, 'ripple')}
-                </span>
+                <span className="tooltiptext">{fullDateAndTime(escrow.FinishAfter, 'ripple')}</span>
               </span>
             ) : (
               <span className="grey">no expiration</span>
