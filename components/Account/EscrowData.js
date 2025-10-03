@@ -228,80 +228,9 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
               {historicalTitle}
             </center>
             <br />
-            {sentEscrowList.map((escrow, i) => {
-              const mptDetails = escrow.Amount?.currencyDetails?.metadata
-              const isMptEscrow = escrow.Amount?.mpt_issuance_id
-              const accountAddress = escrow.Destination
-              const formattedAccountInfo = {
-                address: accountAddress,
-                addressDetails: {
-                  username: escrow.DestinationDetails?.username,
-                  service: escrow.DestinationDetails?.service?.name
-                }
-              }
-              return (
-                <table className="table-mobile wide" key={i}>
-                  <tbody>
-                    <tr>
-                      <td className="center">{i + 1}</td>
-                      <td>
-                        {isMptEscrow ? (
-                          <>
-                            <p>
-                              <span className="grey">Currency: </span> {mptDetails?.currency || '-'}
-                            </p>
-                            <p>
-                              <span className="grey">Issuer: </span> {escrow?.Amount?.currencyDetails?.account}
-                            </p>
-                          </>
-                        ) : (
-                          <>
-                            <span className="grey">To</span>
-                            <Link href={'/account/' + accountAddress}>
-                              <Image
-                                src={avatarServer + accountAddress}
-                                alt={'service logo'}
-                                height={20}
-                                width={20}
-                                style={{ marginRight: '5px', marginBottom: '-5px' }}
-                              />
-                            </Link>
-                            {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
-                            <p>
-                              <span className="grey">Dest. tag</span>{' '}
-                              {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : 'none'}
-                            </p>
-                            <p>
-                              <span className="grey">Expire</span>{' '}
-                              {escrow.CancelAfter ? (
-                                <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>
-                                  {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
-                                </span>
-                              ) : (
-                                'no expiration'
-                              )}
-                            </p>
-                            <p>
-                              <span className="grey">Unlock</span>{' '}
-                              {escrow.FinishAfter ? (
-                                <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green' : ''}>
-                                  {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
-                                </span>
-                              ) : (
-                                'no expiration'
-                              )}
-                            </p>
-                            <p>
-                              <span className="grey">Amount</span> {amountFormat(escrow.Amount, { short: true })}
-                            </p>
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              )
-            })}
+            <table className="table-mobile wide">
+              <tbody>{escrowListNode(sentEscrowList, { type: 'sent', mobile: true })}</tbody>
+            </table>
           </div>
         </>
       )}
