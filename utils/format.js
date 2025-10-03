@@ -808,7 +808,7 @@ export const amountParced = (amount) => {
     }
   } else if (amount.mpt_issuance_id) {
     originalCurrency = amount.mpt_issuance_id // Store original before processing
-    currency = amount.currencyDetails?.currency || '(NON STANDARD)'
+    currency = amount.currencyDetails?.currency || '(Multi-Purpose Token)'
     value = amount.value
     issuer = amount.account
     type = 'MPT'
