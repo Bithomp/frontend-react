@@ -54,8 +54,6 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
     ''
   )
 
-  console.log(list)
-
   const title = (isIssued ? 'Issued ' : '') + 'Multi-Purpose Tokens'
 
   return (
