@@ -1,11 +1,5 @@
 import { i18n } from 'next-i18next'
-import {
-  fullDateAndTime,
-  addressUsernameOrServiceLink,
-  amountFormat,
-  timeFromNow,
-  AddressWithIconFilled
-} from '../../utils/format'
+import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat, timeFromNow } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { avatarServer, timestampExpired } from '../../utils'
 import Image from 'next/image'
@@ -208,66 +202,9 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
               {historicalTitle}
             </center>
             <br />
-            {receivedEscrowList.map((escrow, i) => {
-              const accountAddress = escrow.Account
-              const formattedAccountInfo = {
-                address: accountAddress,
-                addressDetails: {
-                  username: escrow.AccountDetails?.username,
-                  service: escrow.AccountDetails?.service?.name
-                }
-              }
-
-              return (
-                <table className="table-mobile wide" key={i}>
-                  <tbody>
-                    <tr>
-                      <td className="center">{i + 1}</td>
-                      <td>
-                        <span className="grey">From</span>
-                        <Link href={'/account/' + accountAddress}>
-                          <Image
-                            src={avatarServer + accountAddress}
-                            alt={'service logo'}
-                            height={20}
-                            width={20}
-                            style={{ marginRight: '5px', marginBottom: '-5px' }}
-                          />
-                        </Link>
-                        {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
-                        <p>
-                          <span className="grey">Dest. tag</span>{' '}
-                          {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : 'none'}
-                        </p>
-                        <p>
-                          <span className="grey">Expire</span>{' '}
-                          {escrow.CancelAfter ? (
-                            <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>
-                              {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
-                            </span>
-                          ) : (
-                            'no expiration'
-                          )}
-                        </p>
-                        <p>
-                          <span className="grey">Unlock</span>{' '}
-                          {escrow.FinishAfter ? (
-                            <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green' : ''}>
-                              {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
-                            </span>
-                          ) : (
-                            'no expiration'
-                          )}
-                        </p>
-                        <p>
-                          <span className="grey">Amount</span> {amountFormat(escrow.Amount, { short: true })}
-                        </p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              )
-            })}
+            <table className="table-mobile wide">
+              <tbody>{escrowListNode(receivedEscrowList, { type: 'received', mobile: true })}</tbody>
+            </table>
           </div>
         </>
       )}
@@ -368,90 +305,9 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           </div>
         </>
       )}
-      {selfEscrowList?.length > 0 && (
-        <>
-          <table className="table-details hide-on-small-w800">
-            <thead>
-              <tr>
-                <th colSpan="100">
-                  {escrowCountText(selfEscrowList)} Self Escrows {historicalTitle}
-                </th>
-              </tr>
-            </thead>
-            <tbody>{escrowListNode(selfEscrowList, { type: 'self' })}</tbody>
-          </table>
-          <div className="show-on-small-w800">
-            <br />
-            <center>
-              {escrowCountText(selfEscrowList)}
-              {'Self Escrows'.toUpperCase()}
-              {historicalTitle}
-            </center>
-            <br />
-            {selfEscrowList.map((escrow, i) => {
-              const mptDetails = escrow.Amount?.currencyDetails?.metadata
-              const isMptEscrow = escrow.Amount?.mpt_issuance_id
-
-              return (
-                <table className="table-mobile wide" key={i}>
-                  <tbody>
-                    <tr>
-                      <td className="center">{i + 1}</td>
-                      <td>
-                        {isMptEscrow ? (
-                          <>
-                            <p>
-                              <span className="grey">Currency</span> {mptDetails?.currency || '-'}
-                            </p>
-                            <p>
-                              <span className="grey">Issuer</span>{' '}
-                              <AddressWithIconFilled
-                                data={escrow?.Amount?.currencyDetails}
-                                name="account"
-                                options={{ short: true }}
-                              />
-                            </p>
-                          </>
-                        ) : (
-                          <>
-                            <p>
-                              <span className="grey">Dest. tag</span>{' '}
-                              {typeof escrow.DestinationTag !== 'undefined' ? escrow.DestinationTag : 'none'}
-                            </p>
-                            <p>
-                              <span className="grey">Expire</span>{' '}
-                              {escrow.CancelAfter ? (
-                                <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>
-                                  {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
-                                </span>
-                              ) : (
-                                'no expiration'
-                              )}
-                            </p>
-                            <p>
-                              <span className="grey">Unlock</span>{' '}
-                              {escrow.FinishAfter ? (
-                                <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green' : ''}>
-                                  {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
-                                </span>
-                              ) : (
-                                'no expiration'
-                              )}
-                            </p>
-                            <p>
-                              <span className="grey">Amount</span> {amountFormat(escrow.Amount, { short: true })}
-                            </p>
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              )
-            })}
-          </div>
-        </>
-      )}
+      <table className="table-mobile wide">
+        <tbody>{escrowListNode(selfEscrowList, { type: 'sent', mobile: true })}</tbody>
+      </table>
     </>
   )
 }
