@@ -68,7 +68,8 @@ export default function FiltersFrame({
   rowsPerPage,
   setRowsPerPage,
   onlyCsv,
-  filters
+  filters,
+  sortingDisabled
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -157,8 +158,8 @@ export default function FiltersFrame({
 
             {orderList && (
               <>
-                <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} />
-                <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
+                <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} disabled={sortingDisabled} />
+                <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)} disabled={sortingDisabled}>
                   <TbArrowsSort />
                 </button>
               </>
@@ -203,8 +204,12 @@ export default function FiltersFrame({
             {orderList?.map((item, i) => (
               <li
                 key={i}
-                style={{ fontWeight: item.value === order ? 'bold' : 'normal' }}
-                onClick={() => hideMobileSortMenu(item.value)}
+                style={{
+                  fontWeight: item.value === order ? 'bold' : 'normal',
+                  opacity: sortingDisabled ? 0.5 : 1,
+                  pointerEvents: sortingDisabled ? 'none' : 'auto'
+                }}
+                onClick={() => !sortingDisabled && hideMobileSortMenu(item.value)}
                 suppressHydrationWarning
               >
                 {item.label}
