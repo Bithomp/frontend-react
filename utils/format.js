@@ -833,11 +833,10 @@ export const amountParced = (amount) => {
     }
   } else if (amount.mpt_issuance_id) {
     originalCurrency = amount.mpt_issuance_id // Store original before processing
-    currency = amount.currencyDetails?.currency || '(Multi-Purpose Token)'
+    currency = amount.currencyDetails?.currency || '[MPT: ' + shortHash(amount.mpt_issuance_id, 4) + ']'
     value = amount.value
     issuer = amount.currencyDetails?.account
     issuerDetails = amount.currencyDetails?.accountDetails
-    valuePrefix = ' [MPT: ' + shortHash(amount.mpt_issuance_id, 4) + ']'
     type = 'MPT'
   } else {
     type = nativeCurrency
