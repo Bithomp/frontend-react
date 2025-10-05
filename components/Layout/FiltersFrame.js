@@ -69,7 +69,8 @@ export default function FiltersFrame({
   setRowsPerPage,
   onlyCsv,
   filters,
-  sortingDisabled
+  loading,
+  setLoading
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -105,6 +106,8 @@ export default function FiltersFrame({
   }, [activeView])
 
   const handleChangePage = (event, newPage) => {
+    if(loading) return
+    setLoading(true)
     setPage(newPage)
   }
 
@@ -149,6 +152,7 @@ export default function FiltersFrame({
                   rowsPerPage={rowsPerPage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   rowsPerPageOptions={width <= 440 ? [] : rowsPerPageOptions}
+                  disabled={loading}
                   //slotProps={{ select: </> }}
                 />
               </>
@@ -158,8 +162,8 @@ export default function FiltersFrame({
 
             {orderList && (
               <>
-                <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} disabled={sortingDisabled} />
-                <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)} disabled={sortingDisabled}>
+                <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} disabled={loading}/>
+                <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
                   <TbArrowsSort />
                 </button>
               </>
@@ -183,6 +187,7 @@ export default function FiltersFrame({
                   rowsPerPage={rowsPerPage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   rowsPerPageOptions={rowsPerPageOptions}
+                  disabled={loading}
                   //slotProps={{ select: </> }}
                 />
               </>
@@ -206,10 +211,8 @@ export default function FiltersFrame({
                 key={i}
                 style={{
                   fontWeight: item.value === order ? 'bold' : 'normal',
-                  opacity: sortingDisabled ? 0.5 : 1,
-                  pointerEvents: sortingDisabled ? 'none' : 'auto'
                 }}
-                onClick={() => !sortingDisabled && hideMobileSortMenu(item.value)}
+                onClick={() => hideMobileSortMenu(item.value)}
                 suppressHydrationWarning
               >
                 {item.label}

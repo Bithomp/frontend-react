@@ -231,7 +231,6 @@ export default function History({
   const [removeDust, setRemoveDust] = useState(false)
   const [filteredActivities, setFilteredActivities] = useState([])
   const [platformCSVExport, setPlatformCSVExport] = useState('Koinly')
-  const [reloadNotification, setReloadNotification] = useState('')
 
   const platformCSVHeaders = useMemo(
     () => [
@@ -376,6 +375,7 @@ export default function History({
   }, [])
 
   useEffect(() => {
+    setLoading(true)
     if (filteredActivities.length > 0) {
       if (rowsPerPage === -1) {
         setCurrentList(filteredActivities)
@@ -385,8 +385,14 @@ export default function History({
     } else {
       setCurrentList([])
     }
-    if ((page + 2) * rowsPerPage > filteredActivities.length && data?.marker) {
+
+    if(page * rowsPerPage > data?.total) {
+      setPage(0)
+      getProAddressHistory()
+    }else if ((page + 2) * rowsPerPage > filteredActivities.length && data?.marker) {
       getProAddressHistory({ marker: data.marker })
+    } else {
+      setLoading(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredActivities, page, rowsPerPage])
@@ -438,8 +444,12 @@ export default function History({
   ]
 
   const getProAddressHistory = async (options) => {
-    if (addressesToCheck.length === 0) return
-    setLoading(true)
+    if (addressesToCheck.length === 0) {
+      setLoading(false)
+      setActivities([])
+      setData(null)
+      return
+    }
 
     let orderPart = order
     let sortCurrency = null
@@ -475,7 +485,6 @@ export default function History({
       )
       .catch((error) => {
         setLoading(false)
-        setReloadNotification('')
         if (error.response?.data?.error === 'errors.token.required') {
           openEmailLogin()
           return
@@ -484,7 +493,6 @@ export default function History({
           setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
         }
       })
-    setLoading(false)
     let res = response?.data
     /*
       {
@@ -548,18 +556,6 @@ export default function History({
       } else {
         setActivities(res.activities) // rewrite old data
       }
-
-      let notificationText = ''
-      const totalCount = res?.total || 0
-      const loadedCount = options?.marker ? activities.length + res.activities.length : res.activities.length
-      if (loadedCount > 0 && totalCount > 0) {
-        notificationText = `loaded 1 ~ ${loadedCount} of ${totalCount} transactions`
-      }
-      setReloadNotification(notificationText)
-
-      setTimeout(() => {
-        setReloadNotification('')
-      }, 2000) // Clear notification when loading is complete
     }
   }
 
@@ -627,6 +623,7 @@ export default function History({
   }, [sessionToken])
 
   useEffect(() => {
+    setLoading(true)
     getProAddressHistory()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressesToCheck, selectedCurrency, period, order, sessionToken])
@@ -657,26 +654,6 @@ export default function History({
         )}
 
         <AdminTabs name="mainTabs" tab="pro" />
-
-        {reloadNotification && (
-          <div
-            className="center" 
-            style={{
-              position: 'fixed',
-              top: '10px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 1000,
-              backgroundColor: 'var(--color-primary-50)',
-              border: '1px solid var(--color-primary-100)',
-              color: 'var(--color-primary-900)',
-              padding: '10px',
-              borderRadius: '6px'
-            }}
-          >
-            {reloadNotification}
-          </div>
-        )}
 
         <div className="tabs-inline" style={{ marginTop: -10 }}>
           <ProTabs tab="balance-changes" />
@@ -717,7 +694,8 @@ export default function History({
           setPage={setPage}
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
-          sortingDisabled={data?.marker ? true : false}
+          loading={loading}
+          setLoading={setLoading}
         >
           <>
             {verifiedAddresses?.length > 0 && data && activities && data.total > activities.length && (
@@ -725,8 +703,12 @@ export default function History({
                 <button
                   className="button-action narrow thin"
                   onClick={() => getProAddressHistory({ marker: data.marker })}
+                  style={{ minWidth: '120px' }}
+                  disabled={loading}
                 >
-                  Load more data
+                  {
+                    loading ? 'Loading...' : 'Load more data'
+                  }
                 </button>
                 <br />
                 <br />
@@ -740,6 +722,7 @@ export default function History({
                     <CheckBox
                       checked={addressesToCheck.includes(address.address)}
                       setChecked={() => {
+                        setLoading(true)
                         setAddressesToCheck(
                           addressesToCheck.includes(address.address)
                             ? addressesToCheck.filter((a) => a !== address.address)
@@ -748,6 +731,7 @@ export default function History({
                       }}
                       outline
                       checkmarkStyle={{ top: '10px' }}
+                      disabled={loading}
                     >
                       <table>
                         <tbody>
