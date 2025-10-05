@@ -607,7 +607,7 @@ export const amountFormat = (amount, options = {}) => {
   if (!amount && amount !== '0' && amount !== 0) {
     return ''
   }
-  const { value, currency, valuePrefix, issuer, type, originalCurrency } = amountParced(amount)
+  const { value, currency, valuePrefix, issuer, issuerDetails, type, originalCurrency } = amountParced(amount)
 
   let textCurrency = currency
   if (options.noSpace) {
@@ -687,8 +687,10 @@ export const amountFormat = (amount, options = {}) => {
       <span>
         {tokenImage}
         {showValue} {valuePrefix} {textCurrency}
-        {amount.issuer ? (
-          <span class="no-inherit">({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</span>
+        {issuer ? (
+          <span className="no-inherit">
+            ({addressUsernameOrServiceLink({ issuer, issuerDetails }, 'issuer', { short: true })})
+          </span>
         ) : (
           ''
         )}
@@ -781,6 +783,7 @@ export const amountParced = (amount) => {
   let valuePrefix = ''
   let type = ''
   let issuer = null
+  let issuerDetails = null
   let originalCurrency = '' // Store original currency for token icons
 
   if (amount.value && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
@@ -788,6 +791,7 @@ export const amountParced = (amount) => {
     currency = amount.currency
     value = amount.value
     issuer = amount.issuer
+    issuerDetails = amount.issuerDetails
     type = 'IOU'
     const xls14NftVal = xls14NftValue(value)
     let realXls14 = false
@@ -812,9 +816,10 @@ export const amountParced = (amount) => {
     originalCurrency = amount.mpt_issuance_id // Store original before processing
     currency = amount.currencyDetails?.currency || '(Multi-Purpose Token)'
     value = amount.value
-    issuer = amount.account
+    issuer = amount.currencyDetails?.account
+    issuerDetails = amount.currencyDetails?.accountDetails
+    valuePrefix = ' [MPT: ' + shortHash(amount.mpt_issuance_id, 4) + ']'
     type = 'MPT'
-    valuePrefix = ' MPT'
   } else {
     type = nativeCurrency
     originalCurrency = nativeCurrency // Store original before processing
@@ -839,6 +844,7 @@ export const amountParced = (amount) => {
     valuePrefix,
     currency,
     issuer,
+    issuerDetails,
     originalCurrency // Return original currency for token icons
   }
 }

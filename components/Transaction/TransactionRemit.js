@@ -176,7 +176,7 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData className="bold orange">Problem solving</TData>
           <TData className="bold">
-            The transaction <span class="red">FAILED</span>, if your balance changed, contact{' '}
+            The transaction <span className="red">FAILED</span>, if your balance changed, contact{' '}
             {addressUsernameOrServiceLink(specification.source, 'address')} support.
           </TData>
         </tr>
