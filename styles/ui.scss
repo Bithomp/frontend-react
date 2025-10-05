@@ -494,22 +494,22 @@ table {
 }
 
 .blue,
-.blue a {
+.blue:not(:has(.no-inherit a)) a {
   color: var(--accent-link) !important;
 }
 
 .green,
-.green a {
+.green:not(:has(.no-inherit a)) a {
   color: var(--green) !important;
 }
 
 .orange,
-.orange a {
-  color: var(--orange) !important;
+.orange:not(:has(.no-inherit a)) a {
+  color: var(--orange);
 }
 
 .purple,
-.purple a {
+.purple:not(:has(.no-inherit a)) a {
   color: var(--purple) !important;
 }
 
@@ -518,6 +518,11 @@ table {
 .grey a,
 .gray a {
   color: var(--text-secondary) !important;
+}
+
+.no-inherit {
+  color: initial !important;
+  font-weight: initial !important;
 }
 
 .contrast {

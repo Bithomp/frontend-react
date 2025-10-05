@@ -90,9 +90,8 @@ const TransactionRowPaymentContent = ({ tx, address, selectedCurrency }) => {
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
                   <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                    {amountFormat(optionalAbsAmount(change), { icon: true })}
+                    {amountFormat(optionalAbsAmount(change), { icon: true, withIssuer: true })}
                   </span>
-                  {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
                   {nativeCurrencyToFiat({
                     amount: optionalAbsAmount(change),
                     selectedCurrency,
@@ -121,12 +120,9 @@ const TransactionRowPaymentContent = ({ tx, address, selectedCurrency }) => {
                       ...sourceBalanceChangesList[1],
                       value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
                     },
-                    { icon: true }
+                    { icon: true, withIssuer: true }
                   )}
                 </span>
-                {sourceBalanceChangesList[1].issuer && (
-                  <>({addressUsernameOrServiceLink(sourceBalanceChangesList[1], 'issuer', { short: true })})</>
-                )}
               </span>
             </div>
           )}
@@ -135,10 +131,7 @@ const TransactionRowPaymentContent = ({ tx, address, selectedCurrency }) => {
       {!isConvertion && outcome?.deliveredAmount && (
         <div>
           <span>Delivered amount: </span>
-          <span className="bold green">{amountFormat(outcome?.deliveredAmount, { icon: true })}</span>
-          {outcome?.deliveredAmount?.issuer && (
-            <>({addressUsernameOrServiceLink(outcome?.deliveredAmount, 'issuer', { short: true })})</>
-          )}
+          <span className="bold green">{amountFormat(outcome?.deliveredAmount, { icon: true, withIssuer: true })}</span>
           {nativeCurrencyToFiat({
             amount: outcome?.deliveredAmount,
             selectedCurrency,

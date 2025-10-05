@@ -1,7 +1,6 @@
 import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
 import {
-  addressUsernameOrServiceLink,
   AddressWithIconFilled,
   amountFormat,
   capitalize,
@@ -59,19 +58,13 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
       {takerGets && (
         <tr>
           <TData tooltip="The amount and type of currency being sold.">Taker Gets</TData>
-          <TData className="bold">
-            {amountFormat(takerGets, { precise: true })}
-            {takerGets?.issuer && <>({addressUsernameOrServiceLink(takerGets, 'issuer', { short: true })})</>}
-          </TData>
+          <TData className="bold">{amountFormat(takerGets, { precise: true, withIssuer: true })}</TData>
         </tr>
       )}
       {takerPays && (
         <tr>
           <TData tooltip="The amount and type of currency being bought.">Taker Pays</TData>
-          <TData className="bold">
-            {amountFormat(takerPays, { precise: true })}
-            {takerPays?.issuer && <>({addressUsernameOrServiceLink(takerPays, 'issuer', { short: true })})</>}
-          </TData>
+          <TData className="bold">{amountFormat(takerPays, { precise: true, withIssuer: true })}</TData>
         </tr>
       )}
 
@@ -130,9 +123,8 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
                 <div key={index}>
                   <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
                     {Number(change?.value) > 0 && '+'}
-                    {amountFormat(change, { precise: 'nice' })}
+                    {amountFormat(change, { precise: 'nice', withIssuer: true })}
                   </span>
-                  {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
                   {nativeCurrencyToFiat({
                     amount: change,
                     selectedCurrency,

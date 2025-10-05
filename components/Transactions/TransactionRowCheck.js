@@ -1,5 +1,5 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { amountFormat, nativeCurrencyToFiat, addressUsernameOrServiceLink } from '../../utils/format'
+import { amountFormat, nativeCurrencyToFiat } from '../../utils/format'
 import { useTxFiatRate } from './FiatRateContext'
 import { dappBySourceTag } from '../../utils/transaction'
 
@@ -19,10 +19,7 @@ const TransactionRowCheckContent = ({ tx, selectedCurrency }) => {
         <div>
           <span>Max amount: </span>
           <span>
-            <span className="bold orange">{amountFormat(checkChanges.sendMax, { icon: true })}</span>
-            {checkChanges.sendMax?.issuer && (
-              <>({addressUsernameOrServiceLink(checkChanges.sendMax, 'issuer', { short: true })})</>
-            )}
+            <span className="bold orange">{amountFormat(checkChanges.sendMax, { icon: true, withIssuer: true })}</span>
             {nativeCurrencyToFiat({
               amount: checkChanges.sendMax,
               selectedCurrency,

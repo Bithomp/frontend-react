@@ -1,6 +1,5 @@
 import { TData } from '../Table'
 import {
-  addressUsernameOrServiceLink,
   AddressWithIconFilled,
   amountFormat,
   expirationExpired,
@@ -109,10 +108,7 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
             <tr>
               <TData>Max amount</TData>
               <TData>
-                <span className="bold orange">{amountFormat(checkChanges.sendMax)}</span>
-                {checkChanges.sendMax?.issuer && (
-                  <>({addressUsernameOrServiceLink(checkChanges.sendMax, 'issuer', { short: true })})</>
-                )}
+                <span className="bold orange">{amountFormat(checkChanges.sendMax, { withIssuer: true })}</span>
                 {nativeCurrencyToFiat({
                   amount: checkChanges.sendMax,
                   selectedCurrency,
@@ -148,8 +144,9 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
           <TData>
             {destinationBalanceChangesList.map((change, index) => (
               <div key={index}>
-                <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>{amountFormat(change)}</span>
-                {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
+                  {amountFormat(change, { withIssuer: true })}
+                </span>
                 {nativeCurrencyToFiat({
                   amount: change,
                   selectedCurrency,

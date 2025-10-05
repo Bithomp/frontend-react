@@ -1,7 +1,7 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { useTxFiatRate } from './FiatRateContext'
 import { addressBalanceChanges } from '../../utils/transaction'
-import { amountFormat, nativeCurrencyToFiat, addressUsernameOrServiceLink } from '../../utils/format'
+import { amountFormat, nativeCurrencyToFiat } from '../../utils/format'
 
 const flagList = (flags) => {
   let flagsString = ''
@@ -40,19 +40,13 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
       {takerGets && (
         <div>
           <span>Taker Gets: </span>
-          <span className="bold">
-            {amountFormat(takerGets, { icon: true })}
-            {takerGets?.issuer && <>({addressUsernameOrServiceLink(takerGets, 'issuer', { short: true })})</>}
-          </span>
+          <span className="bold">{amountFormat(takerGets, { icon: true, withIssuer: true })}</span>
         </div>
       )}
       {takerPays && (
         <div>
           <span>Taker Pays: </span>
-          <span className="bold">
-            {amountFormat(takerPays, { icon: true })}
-            {takerPays?.issuer && <>({addressUsernameOrServiceLink(takerPays, 'issuer', { short: true })})</>}
-          </span>
+          <span className="bold">{amountFormat(takerPays, { icon: true, withIssuer: true })}</span>
         </div>
       )}
       {sourceBalanceChangesList.length === 2 && (
@@ -63,9 +57,8 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
                   <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                    {amountFormat(change, { icon: true, showPlus: true })}
-                  </span>
-                  {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                    {amountFormat(change, { icon: true, showPlus: true, withIssuer: true })}
+                  </span>{' '}
                   {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate: pageFiatRate })}
                 </div>
               ))}

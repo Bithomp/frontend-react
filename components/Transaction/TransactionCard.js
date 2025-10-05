@@ -459,11 +459,8 @@ export const TransactionCard = ({
                                         <div key={i}>
                                           <span className={'bold ' + (Number(c.value) > 0 ? 'green' : 'red')}>
                                             {Number(c.value) > 0 ? '+' : ''}
-                                            {amountFormat(c, { precise: true })}
+                                            {amountFormat(c, { precise: true, withIssuer: true })}
                                           </span>
-                                          {c.issuer && (
-                                            <>({addressUsernameOrServiceLink(c, 'issuer', { short: true })})</>
-                                          )}
                                           {nativeCurrencyToFiat({
                                             amount: c,
                                             selectedCurrency,

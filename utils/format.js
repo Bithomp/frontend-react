@@ -603,23 +603,11 @@ export const trAmountWithGateway = ({ amount, name }) => {
   )
 }
 
-export const amountFormat = (amount, options = { icon: false }) => {
+export const amountFormat = (amount, options = {}) => {
   if (!amount && amount !== '0' && amount !== 0) {
     return ''
   }
   const { value, currency, valuePrefix, issuer, type, originalCurrency } = amountParced(amount)
-  let icon = options?.icon
-
-  // For all tokens including native currency, show icon
-  let imageUrl
-  if (type === nativeCurrency) {
-    // Use native currency icon
-    imageUrl = nativeCurrenciesImages[nativeCurrency]
-  } else {
-    // Use IOU token icon
-    // Use originalCurrency for token icon to avoid processed currency issues
-    imageUrl = tokenImageSrc({ issuer, currency: originalCurrency || currency })
-  }
 
   let textCurrency = currency
   if (options.noSpace) {
@@ -634,38 +622,44 @@ export const amountFormat = (amount, options = { icon: false }) => {
     }
   }
 
-  if (options.precise) {
-    if (options.precise === 'nice') {
-      return niceNumber(value, 0, null, 15) + ' ' + valuePrefix + ' ' + textCurrency
-    }
-    return value + ' ' + valuePrefix + ' ' + textCurrency
-  }
-
   let showValue = value
 
-  if (Math.abs(value) >= 100) {
-    if (options.short) {
-      showValue = shortNiceNumber(value, 0, 1)
-    } else {
-      if (options.minFractionDigits) {
-        showValue = niceNumber(value, options.minFractionDigits)
-      } else {
-        showValue = niceNumber(value)
-      }
+  if (options.precise) {
+    if (options.precise === 'nice') {
+      showValue = niceNumber(value, 0, null, 15)
     }
-  } else if (options.maxFractionDigits) {
-    showValue = niceNumber(value, 0, null, options.maxFractionDigits)
+  } else {
+    if (Math.abs(value) >= 100) {
+      if (options.short) {
+        showValue = shortNiceNumber(value, 0, 1)
+      } else {
+        if (options.minFractionDigits) {
+          showValue = niceNumber(value, options.minFractionDigits)
+        } else {
+          showValue = niceNumber(value)
+        }
+      }
+    } else if (options.maxFractionDigits) {
+      showValue = niceNumber(value, 0, null, options.maxFractionDigits)
+    }
   }
 
-  let tokenImage = icon && (
-    <Image
-      src={imageUrl}
-      alt="token"
-      height={16}
-      width={16}
-      style={{ marginRight: '2px', marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }}
-    />
-  )
+  let tokenImage = ''
+  if (options?.icon) {
+    tokenImage = (
+      <Image
+        src={
+          type === nativeCurrency
+            ? nativeCurrenciesImages[nativeCurrency]
+            : tokenImageSrc({ issuer, currency: originalCurrency || currency })
+        }
+        alt="token"
+        height={16}
+        width={16}
+        style={{ marginRight: '2px', marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }}
+      />
+    )
+  }
 
   if (options.showPlus && value > 0) {
     showValue = '+' + showValue
@@ -680,7 +674,7 @@ export const amountFormat = (amount, options = { icon: false }) => {
           textCurrency
         ) : (
           <span className="tooltip">
-            <Link href={'/account/' + issuer}>{currency}</Link>
+            <Link href={'/account/' + issuer}>{textCurrency}</Link>
             <span className={'tooltiptext ' + options.tooltip}>
               {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
             </span>
@@ -692,8 +686,12 @@ export const amountFormat = (amount, options = { icon: false }) => {
     return (
       <span>
         {tokenImage}
-        {showValue} {valuePrefix} {currency}
-        {amount.issuer ? <>({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</> : ''}
+        {showValue} {valuePrefix} {textCurrency}
+        {amount.issuer ? (
+          <span class="no-inherit">({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</span>
+        ) : (
+          ''
+        )}
       </span>
     )
   } else if (options.icon) {
@@ -704,7 +702,7 @@ export const amountFormat = (amount, options = { icon: false }) => {
       </span>
     )
   } else {
-    return showValue + '' + valuePrefix + ' ' + textCurrency
+    return showValue + ' ' + valuePrefix + ' ' + textCurrency
   }
 }
 

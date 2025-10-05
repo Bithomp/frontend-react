@@ -10,14 +10,7 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { axiosServer, passHeaders } from '../../utils/axios'
-import {
-  codeHighlight,
-  AddressWithIconFilled,
-  amountFormatNode,
-  addressUsernameOrServiceLink,
-  shortAddress,
-  fullDateAndTime
-} from '../../utils/format'
+import { codeHighlight, AddressWithIconFilled, shortAddress, fullDateAndTime, amountFormat } from '../../utils/format'
 import { LinkTx, LedgerLink } from '../../utils/links'
 import { object } from '../../styles/pages/object.module.scss'
 import { network } from '../../utils'
@@ -198,10 +191,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
           return (
             <tr key={key}>
               <td>{key}</td>
-              <td>
-                {amountFormatNode(value)}{' '}
-                {value?.issuer && <>({addressUsernameOrServiceLink(value, 'issuer', { short: true })})</>}
-              </td>
+              <td>{amountFormat(value, { withIssuer: true })}</td>
             </tr>
           )
         }
