@@ -609,6 +609,21 @@ export const amountFormat = (amount, options = {}) => {
   }
   const { value, currency, valuePrefix, issuer, issuerDetails, type, originalCurrency } = amountParced(amount)
 
+  const StyleAmount = ({ children }) => {
+    if (options?.color === 'direction') {
+      if (Number(value) > 0) {
+        options.color = 'green'
+      } else if (Number(value) < 0) {
+        options.color = 'red'
+      } else {
+        options.color = null
+      }
+    }
+    if (!options?.color && !options?.bold) return <>{children}</>
+    const classes = [options.bold && 'bold', options.color].filter(Boolean).join(' ')
+    return <span className={classes}>{children}</span>
+  }
+
   let textCurrency = currency
   if (options.noSpace) {
     textCurrency = textCurrency?.trim()
@@ -669,9 +684,11 @@ export const amountFormat = (amount, options = {}) => {
     return (
       <span suppressHydrationWarning>
         {tokenImage}
-        {showValue} {valuePrefix}{' '}
+        <StyleAmount>
+          {showValue} {valuePrefix}{' '}
+        </StyleAmount>
         {type === nativeCurrency ? (
-          textCurrency
+          <StyleAmount>{textCurrency}</StyleAmount>
         ) : (
           <span className="tooltip">
             <Link href={'/account/' + issuer}>{textCurrency}</Link>
@@ -684,9 +701,11 @@ export const amountFormat = (amount, options = {}) => {
     )
   } else if (options.withIssuer) {
     return (
-      <span>
+      <>
         {tokenImage}
-        {showValue} {valuePrefix} {textCurrency}
+        <StyleAmount>
+          {showValue} {valuePrefix} {textCurrency}
+        </StyleAmount>
         {issuer ? (
           <span className="no-inherit">
             ({addressUsernameOrServiceLink({ issuer, issuerDetails }, 'issuer', { short: true })})
@@ -694,14 +713,14 @@ export const amountFormat = (amount, options = {}) => {
         ) : (
           ''
         )}
-      </span>
+      </>
     )
   } else if (options.icon) {
     return (
-      <span>
+      <>
         {tokenImage}
-        {showValue + ' ' + valuePrefix + ' ' + textCurrency}
-      </span>
+        <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
+      </>
     )
   } else {
     return showValue + ' ' + valuePrefix + ' ' + textCurrency

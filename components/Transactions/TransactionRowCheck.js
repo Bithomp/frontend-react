@@ -19,7 +19,7 @@ const TransactionRowCheckContent = ({ tx, selectedCurrency }) => {
         <div>
           <span>Max amount: </span>
           <span>
-            <span className="bold orange">{amountFormat(checkChanges.sendMax, { icon: true, withIssuer: true })}</span>
+            {amountFormat(checkChanges.sendMax, { icon: true, withIssuer: true, bold: true, color: 'orange' })}
             {nativeCurrencyToFiat({
               amount: checkChanges.sendMax,
               selectedCurrency,

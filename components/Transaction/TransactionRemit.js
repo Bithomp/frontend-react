@@ -224,9 +224,7 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
           <TData>
             {destinationBalanceChangesList?.map((change, index) => (
               <div key={index}>
-                <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                  {amountFormat(optionalAbsAmount(change), { withIssuer: true })}
-                </span>
+                {amountFormat(optionalAbsAmount(change), { withIssuer: true, color: 'direction', bold: true })}
                 {nativeCurrencyToFiat({
                   amount: optionalAbsAmount(change),
                   selectedCurrency,

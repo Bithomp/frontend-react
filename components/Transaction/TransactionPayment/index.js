@@ -188,9 +188,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
             <TData>
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
-                  <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                    {amountFormat(optionalAbsAmount(change), { withIssuer: true })}
-                  </span>
+                  {amountFormat(optionalAbsAmount(change), { withIssuer: true, bold: true, color: 'direction' })}
                   {nativeCurrencyToFiat({
                     amount: optionalAbsAmount(change),
                     selectedCurrency,
@@ -205,15 +203,13 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
               <TData>Exchange rate</TData>
               <TData>
                 1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
-                <span className="bold">
-                  {amountFormat(
-                    {
-                      ...sourceBalanceChangesList[1],
-                      value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
-                    },
-                    { precise: 'nice', withIssuer: true }
-                  )}
-                </span>
+                {amountFormat(
+                  {
+                    ...sourceBalanceChangesList[1],
+                    value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                  },
+                  { precise: 'nice', withIssuer: true, bold: true }
+                )}
               </TData>
             </tr>
           )}
@@ -223,9 +219,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         <tr>
           <TData>Delivered amount</TData>
           <TData>
-            <span className="bold green">
-              {amountFormat(outcome?.deliveredAmount, { precise: 'nice', withIssuer: true })}
-            </span>
+            {amountFormat(outcome?.deliveredAmount, { precise: 'nice', withIssuer: true, bold: true, color: 'green' })}
             {nativeCurrencyToFiat({
               amount: outcome?.deliveredAmount,
               selectedCurrency,

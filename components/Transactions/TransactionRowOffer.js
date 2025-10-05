@@ -40,13 +40,13 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
       {takerGets && (
         <div>
           <span>Taker Gets: </span>
-          <span className="bold">{amountFormat(takerGets, { icon: true, withIssuer: true })}</span>
+          <span>{amountFormat(takerGets, { icon: true, withIssuer: true, bold: true })}</span>
         </div>
       )}
       {takerPays && (
         <div>
           <span>Taker Pays: </span>
-          <span className="bold">{amountFormat(takerPays, { icon: true, withIssuer: true })}</span>
+          <span>{amountFormat(takerPays, { icon: true, withIssuer: true, bold: true })}</span>
         </div>
       )}
       {sourceBalanceChangesList.length === 2 && (
@@ -56,9 +56,13 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
             <span>
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
-                  <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                    {amountFormat(change, { icon: true, showPlus: true, withIssuer: true })}
-                  </span>{' '}
+                  {amountFormat(change, {
+                    icon: true,
+                    showPlus: true,
+                    withIssuer: true,
+                    bold: true,
+                    color: 'direction'
+                  })}
                   {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate: pageFiatRate })}
                 </div>
               ))}

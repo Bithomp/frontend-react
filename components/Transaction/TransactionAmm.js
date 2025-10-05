@@ -239,12 +239,12 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           {depositedList.length > 0 && (
             <tr>
               <TData>Deposited</TData>
-              <TData className="bold">
+              <TData>
                 {depositedList.map((change, idx) => (
                   <div key={idx}>
                     {amountFormat(
                       { ...change, value: Math.abs(Number(change.value)).toString() },
-                      { withIssuer: true }
+                      { withIssuer: true, bold: true }
                     )}
                   </div>
                 ))}
@@ -258,9 +258,9 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
             return targetReceivedList.length > 0 ? (
               <tr>
                 <TData>Withdrawn</TData>
-                <TData className="bold">
+                <TData>
                   {targetReceivedList.map((change, idx) => (
-                    <div key={idx}>{amountFormat(change, { withIssuer: true })}</div>
+                    <div key={idx}>{amountFormat(change, { withIssuer: true, bold: true })}</div>
                   ))}
                 </TData>
               </tr>

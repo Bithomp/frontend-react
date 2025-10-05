@@ -108,7 +108,7 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
             <tr>
               <TData>Max amount</TData>
               <TData>
-                <span className="bold orange">{amountFormat(checkChanges.sendMax, { withIssuer: true })}</span>
+                {amountFormat(checkChanges.sendMax, { withIssuer: true, color: 'orange', bold: true })}
                 {nativeCurrencyToFiat({
                   amount: checkChanges.sendMax,
                   selectedCurrency,
@@ -144,9 +144,7 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
           <TData>
             {destinationBalanceChangesList.map((change, index) => (
               <div key={index}>
-                <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                  {amountFormat(change, { withIssuer: true })}
-                </span>
+                {amountFormat(change, { withIssuer: true, bold: true, color: 'direction' })}
                 {nativeCurrencyToFiat({
                   amount: change,
                   selectedCurrency,
