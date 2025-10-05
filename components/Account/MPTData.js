@@ -1,5 +1,5 @@
 import { i18n } from 'next-i18next'
-import { objectsCountText } from '../../utils'
+import { objectsCountText, shortName } from '../../utils'
 import {
   addressUsernameOrServiceLink,
   fullDateAndTime,
@@ -98,7 +98,7 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                   <CopyButton text={cMptId} />
                 </td>
                 <td className="left">{mptCurrency(c)}</td>
-                <td className="right">{mptName(c)}</td>
+                <td className="right">{shortName(mptName(c), { maxLength: 10 })}</td>
                 {isIssued ? (
                   <>
                     <td className="right">{shortNiceNumber(c.OutstandingAmount)}</td>
