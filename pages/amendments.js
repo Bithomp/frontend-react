@@ -24,7 +24,7 @@ export const getServerSideProps = async (context) => {
 }
 
 const amendmentLink = (a, options) => {
-  let name = options?.short ? shortName(a.name) : a.name
+  let name = options?.short ? shortName(a.name, { maxLength: xahauNetwork ? 12 : 18 }) : a.name
   return <Link href={'amendment/' + name || a.amendment}>{name || shortHash(a.amendment)}</Link>
 }
 
@@ -60,8 +60,13 @@ export default function Amendment() {
         }
       }
       setMajorityAmendments(majority)
-      //sort enabled by enabledLedgerIndex with higher on top (so most recent first)
-      enabled.sort((a, b) => (a.enabledLedgerIndex > b.enabledLedgerIndex ? -1 : 1))
+      //sort enabled by enabledLedgerIndex with higher on top (so most recent first), non-empty first
+      enabled.sort((a, b) => {
+        if (a.enabledLedgerIndex == null && b.enabledLedgerIndex == null) return 0
+        if (a.enabledLedgerIndex == null) return 1 // a has no data → move down
+        if (b.enabledLedgerIndex == null) return -1 // b has no data → move down
+        return b.enabledLedgerIndex - a.enabledLedgerIndex // sort descending
+      })
       setEnabledAmendments(enabled)
     }
 
