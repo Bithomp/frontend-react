@@ -107,7 +107,8 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                 ) : (
                   <>
                     <td className="right">
-                      {addressUsernameOrServiceLink(c.mptokenCurrencyDetails, 'account', { short: true })}
+                      {c.mptokenCurrencyDetails &&
+                        addressUsernameOrServiceLink(c.mptokenCurrencyDetails, 'account', { short: true })}
                     </td>
                     <td className="right">{shortNiceNumber(c.MPTAmount || 0)}</td>
                   </>
@@ -157,8 +158,11 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                     ) : (
                       <>
                         <p>
-                          <span className="grey">Issuer</span>{' '}
-                          {addressUsernameOrServiceLink(c.mptokenCurrencyDetails, 'account', { short: true }) || 'N/A'}
+                          <span className="grey">Issuer</span>
+                          {console.log(c)}
+                          {(c.mptokenCurrencyDetails &&
+                            addressUsernameOrServiceLink(c.mptokenCurrencyDetails, 'account', { short: true })) ||
+                            'N/A'}
                         </p>
                         <p>
                           <span className="grey">Amount</span> {shortNiceNumber(c.MPTAmount || 0)}

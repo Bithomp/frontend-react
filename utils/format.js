@@ -518,15 +518,15 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   }
   if (options.short) {
     if (options.url === '/explorer/') {
-      return oldExplorerLink(data[type], { short: options.short })
+      return oldExplorerLink(data?.[type], { short: options.short })
     } else {
-      return <Link href={options.url + data[type]}>{shortAddress(data[type])}</Link>
+      return <Link href={options.url + data?.[type]}>{shortAddress(data?.[type])}</Link>
     }
   }
   if (options.url === '/explorer/') {
     return oldExplorerLink(data[type])
   } else {
-    return <Link href={options.url + data[type]}>{data[type]}</Link>
+    return <Link href={options.url + data?.[type]}>{data?.[type]}</Link>
   }
 }
 
