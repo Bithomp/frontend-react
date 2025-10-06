@@ -334,23 +334,37 @@ export default function LedgerData({
       You don't have any tokens. [<Link href={'/services/trustline'}>Add a token</Link>]
     </>
   ) : (
-    <span>This account doesn't hold Tokens.</span>
+    "This account doesn't hold Tokens."
   )
 
   const mptNode = !objects?.mptList ? (
     'Loading...'
-  ) : objects?.mptList?.length > 0 ? (
+  ) : objects?.mptList?.length > 0 || objects?.mptIssuanceList?.length > 0 ? (
     <>
-      <span className="bold">{objects?.mptList?.length}</span> (
-      <span className="link" onClick={() => scrollToSection('mpts-section')}>
-        view
-      </span>
-      )
+      {objects?.mptList?.length > 0 && (
+        <>
+          <span className="bold">{objects?.mptList?.length}</span> (
+          <span className="link" onClick={() => scrollToSection('mpt-section')}>
+            view
+          </span>
+          )
+        </>
+      )}
+      {objects?.mptList?.length > 0 && objects?.mptIssuanceList?.length > 0 ? ', ' : ''}
+      {objects?.mptIssuanceList?.length > 0 && (
+        <>
+          <span className="bold">{objects?.mptIssuanceList?.length}</span> issued (
+          <span className="link" onClick={() => scrollToSection('mpt-section-issued')}>
+            view
+          </span>
+          )
+        </>
+      )}
     </>
   ) : account?.address === data?.address ? (
     "You don't have any Multi Purpose Tokens."
   ) : (
-    <span>This account doesn't hold Multi Purpose Tokens.</span>
+    "This account doesn't hold Multi Purpose Tokens."
   )
 
   const dexOrdersNode = !objects?.offerList ? (
@@ -730,6 +744,9 @@ export default function LedgerData({
                 </>
               )}
               {tokensNode}
+            </p>
+            <p>
+              {objects?.mptList?.length > 0 && <span className="grey">MP Tokens</span>} {mptNode}
             </p>
             <p>
               {objects?.offerList?.length > 0 && <span className="grey">DEX orders</span>} {dexOrdersNode}
