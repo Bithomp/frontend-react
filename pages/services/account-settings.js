@@ -94,7 +94,7 @@ export default function AccountSettings({
       return { isValid: allowEmpty, message: '' }
     }
 
-    if (!isHexString(trimmed)) {
+    if (!isHexString(trimmed.toUpperCase())) {
       return {
         isValid: false,
         message: 'Must contain only hexadecimal characters (0-9, a-f, A-F)'
@@ -129,11 +129,22 @@ export default function AccountSettings({
 
   // Validation functions
   const validateMessageKey = (value) => {
+    const trimmed = value.trim()
+    // Check the first byte for valid key type prefixes
+    const firstByte = trimmed.substring(0, 2).toUpperCase()
+    const validPrefixes = ['02', '03', 'ED']
+    
+    if (!validPrefixes.includes(firstByte)) {
+      return {
+        isValid: false,
+        message: `First byte must be 02 or 03 for secp256k1 keys, or ED for Ed25519 keys. Current: 0x${firstByte}`
+      }
+    }
     return validateInput(value, {
       allowEmpty: true,
       evenLength: true,
-      minChars: 32,
-      successMessage: 'Valid hex-encoded public key'
+      exactChars: 66,
+      successMessage: 'Valid 66-character hex string'
     })
   }
 
@@ -1256,8 +1267,9 @@ export default function AccountSettings({
                     }}
                     type="text"
                     disabled={!account?.address}
+                    maxLength={66}
                   />
-                  <small>Provide a hex-encoded public key (minimum 32 characters, even number of hex digits). Used for encrypted messaging.</small>
+                  <small>Provide a hex-encoded public key (exactly 66 characters/33 bytes). First byte must be 0x02 or 0x03 for secp256k1 keys, or 0xED for Ed25519 keys. Used for encrypted messaging.</small>
                   {messageKeyInput && messageKeyValidation.message && (
                     <div className={`validation-message ${messageKeyValidation.isValid ? 'validation-success' : 'validation-error'}`}>
                       {messageKeyValidation.message}
