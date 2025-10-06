@@ -210,22 +210,13 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
       )
     }
 
-    if (!nfts || nfts.length === 0) {
-      return (
-        <div className="nft-section">
-          <p>{title}</p>
-          <p className="center grey">{t('nfts.no-nfts')}</p>
-        </div>
-      )
-    }
-
     return (
       <table className={windowWidth > 800 ? 'table-details' : 'table-mobile'} style={{ width: '100%', marginTop: '15px' }}>
         <thead>
           <tr>
             <th colSpan="100" className="left">
               {title}
-              {title === 'Recently Acquired NFTs' && 
+              {title === 'Recently Acquired NFTs' && nfts?.length > 0 && 
                 <>
                   {' '}
                   (<Link href={'/nfts/' + address + '?includeWithoutMediaData=true'} className="bold">
@@ -238,9 +229,15 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
         </thead>
         <tbody>
           <tr>
-            <td>
-              <Tiles nftList={windowWidth > 800 ? nfts : nfts.slice(0, 3)} type={type} disabled={true} convertCurrency={selectedCurrency} />
-            </td>
+            {nfts?.length > 0 ?
+              <td>
+                <Tiles nftList={windowWidth > 800 ? nfts : nfts.slice(0, 3)} type={type} disabled={true} convertCurrency={selectedCurrency} />
+              </td>
+            :
+              <td className="center">
+                <p className="center grey">{t('nfts.no-nfts')}</p>
+              </td>
+            }
           </tr>
         </tbody>
       </table>
@@ -248,14 +245,6 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   }
 
   const renderOffersSection = (title, offers, loading) => {
-    if (!offers || offers.length === 0) {
-      return (
-        <div className="nft-section">
-          <p>{title}</p>
-          <p className="center grey">{t('nft-offers.no-nft-offers')}</p>
-        </div>
-      )
-    }
 
     if (windowWidth > 800) {
       return (
@@ -265,15 +254,18 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
               <th colSpan="100">
                 {title}
                 {' '}
-                (<Link
+                {!offers?.length ? '' : 
+                <Link
                   href={'/nft-offers/' + address + '?offerList=' + (title === 'NFT Offers Created' ? 'for-owned-nfts' : 'privately-offered-to-address')}
                   className="bold">
                   View All - {offers?.length}
-                </Link>)
+                </Link>}
               </th>
             </tr>
           </thead>
           <tbody>
+            {!offers?.length ?
+            <p className="center grey">{t('nft-offers.no-nft-offers')}</p> : 
             <tr>
               {!xahauNetwork && (
                 <th className="center" style={{ width: '10px' }}>
@@ -285,7 +277,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
               <th className='center'>{t('table.amount')}</th>
               <th className='center'>{t('table.placed')}</th>
               {title === 'NFT Offers Created' && <th className='center'>{t('table.destination')}</th>}
-            </tr>
+            </tr>}
             {loading ? (
               <tr className="center">
                 <td colSpan="100">
@@ -352,14 +344,15 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                   <td colSpan="100" className="bold">
                     {title}
                     {' '}
-                    (<Link
+                    {!offers?.length ? '' : 
+                    <Link
                       href={'/nft-offers/' + address + '?offerList=' + (title === 'NFT Offers Created' ? 'for-owned-nfts' : 'privately-offered-to-address')}
                       className="bold">
                       View All - {offers?.length}
-                    </Link>)
+                    </Link>}
                   </td>
                 </tr>
-                {!errorMessage ? (
+                {(!errorMessage && offers?.length) ? (
                   offers.slice(0, 5).map((offer, i) => (
                     <tr key={i}>
                       <td style={{ padding: '5px' }} className="center">
@@ -400,9 +393,14 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                   ))
                 ) : (
                   <tr>
+                    {errorMessage && 
                     <td colSpan="100" className="center orange bold">
                       {errorMessage}
-                    </td>
+                    </td>}
+                    {!offers?.length &&
+                    <td colSpan="100" className="center grey">
+                      {t('nft-offers.no-nft-offers')}
+                    </td>}
                   </tr>
                 )}
               </>
