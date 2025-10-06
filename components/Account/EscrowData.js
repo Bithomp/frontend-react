@@ -174,7 +174,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
   }
 
   return (
-    <>
+    <div id="escrows-section">
       {receivedEscrowList?.length > 0 && (
         <>
           <table className="table-details hide-on-small-w800">
@@ -253,6 +253,6 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           </div>
         </>
       )}
-    </>
+    </div>
   )
 }

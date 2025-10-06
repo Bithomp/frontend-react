@@ -57,7 +57,7 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
   const title = (isIssued ? 'Issued ' : '') + 'Multi-Purpose Tokens'
 
   return (
-    <>
+    <div id="mpts-section">
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
@@ -180,7 +180,7 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
           )
         })}
       </div>
-    </>
+    </div>
   )
 }
 

@@ -153,7 +153,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
   })
 
   return (
-    <>
+    <div id="dex-orders-section">
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
@@ -233,6 +233,6 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         </table>
         <br />
       </div>
-    </>
+    </div>
   )
 }

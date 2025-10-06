@@ -337,6 +337,22 @@ export default function LedgerData({
     <span>This account doesn't hold Tokens.</span>
   )
 
+  const mptNode = !objects?.mptList ? (
+    'Loading...'
+  ) : objects?.mptList?.length > 0 ? (
+    <>
+      <span className="bold">{objects?.mptList?.length}</span> (
+      <span className="link" onClick={() => scrollToSection('mpts-section')}>
+        view
+      </span>
+      )
+    </>
+  ) : account?.address === data?.address ? (
+    "You don't have any Multi Purpose Tokens."
+  ) : (
+    <span>This account doesn't hold Multi Purpose Tokens.</span>
+  )
+
   const dexOrdersNode = !objects?.offerList ? (
     'Loading...'
   ) : objects?.offerList?.length > 0 ? (
@@ -417,6 +433,10 @@ export default function LedgerData({
               <tr>
                 <td>{t('menu.tokens')}</td>
                 <td>{tokensNode}</td>
+              </tr>
+              <tr>
+                <td>MP Tokens</td>
+                <td>{mptNode}</td>
               </tr>
               <tr>
                 <td>DEX orders</td>

@@ -307,7 +307,7 @@ export default function IOUData({
     )
 
   return (
-    <>
+    <div id="tokens-section">
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
@@ -378,6 +378,6 @@ export default function IOUData({
         )}
         <br />
       </div>
-    </>
+    </div>
   )
 }
