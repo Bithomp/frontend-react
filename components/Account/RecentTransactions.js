@@ -442,13 +442,16 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     return null
   }
 
+  const transactionCount = transactions.length < 5 ? transactions.length : 5
+  const title = `Last ${transactionCount} transactions`
+
   return (
     <>
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
             <th colSpan="100">
-              Last 5 transactions [<a href={'/explorer/' + address}>View all</a>]{historicalTitle}
+              {title} [<a href={'/explorer/' + address}>View all</a>]{historicalTitle}
             </th>
           </tr>
         </thead>
@@ -497,7 +500,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       <div className="show-on-small-w800">
         <br />
         <center>
-          {'Last 5 Transactions'.toUpperCase()} [<a href={'/explorer/' + address}>View all</a>]{historicalTitle}
+          {title.toUpperCase()} [<a href={'/explorer/' + address}>View all</a>]{historicalTitle}
         </center>
         <br />
         {loading && <span className="grey">Loading recent transactions...</span>}
