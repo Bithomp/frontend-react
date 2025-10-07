@@ -13,132 +13,29 @@ export default function TopLinks({ activatedAccount, countryCode }) {
 
   const pathname = router.pathname
 
-  {
-    /* it is important to have "tooltiptext right" on the first ad, otherwise brakes UI on mobiles, too wide to the left */
-  }
-  {
-    /* it is important to have "tooltiptext left" on the last ad, otherwise brakes UI on mobiles, too wide to the right */
-  }
+  /* it is important to have "tooltiptext right" on the first ad, otherwise brakes UI on mobiles, too wide to the left */
+  /* it is important to have "tooltiptext left" on the last ad, otherwise brakes UI on mobiles, too wide to the right */
 
   let stakeAd = (
     <span className="tooltip">
       <a href="https://bithomp.com/go/stake-world" target="_blank" rel="noreferrer" className="top-link orange">
         Join Stake! 200% Bonus 🔥
       </a>
-      <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
+      <span className="tooltiptext right small">{t('sponsored.sponsored')}</span>
     </span>
   )
 
   //country specific ads
-  {
-    let stakeCountries = ['US']
-    if (stakeCountries.includes(countryCode)) {
-      stakeAd = (
-        <span className="tooltip">
-          <a href="https://bithomp.com/go/stake-usa" target="_blank" rel="noreferrer" className="top-link orange">
-            Join Drake on Stake! 🔥
-          </a>
-          <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
-        </span>
-      )
-    }
-  }
-
-  //tree ads
-  {
-    /*
-  return (
-    <div className="top-links">
-      <span className='tooltip'>
-        <a
-          href="https://bithomp.com/go/top-buy"
-          target="_blank"
-          rel="noreferrer"
-          className='top-link'
-        >
-          Buy XRP
+  let stakeCountries = ['US']
+  if (stakeCountries.includes(countryCode)) {
+    stakeAd = (
+      <span className="tooltip">
+        <a href="https://bithomp.com/go/stake-usa" target="_blank" rel="noreferrer" className="top-link orange">
+          Join Drake on Stake! 🔥
         </a>
-        <span className='tooltiptext right small'>
-          {t("sponsored.sponsored")}
-        </span>
+        <span className="tooltiptext right small">{t('sponsored.sponsored')}</span>
       </span>
-
-      <span style={{ padding: "0 10px" }}>|</span>
-
-      <span className='tooltip'>
-        <a
-          href="https://bithomp.com/go/top-exchange"
-          target="_blank"
-          rel="noreferrer"
-          className='top-link'
-        >
-          Exchange crypto
-        </a>
-        <span className='tooltiptext right small'>
-          {t("sponsored.sponsored")}
-        </span>
-      </span>
-
-      <span style={{ padding: "0 10px" }}>|</span>
-      
-      <span className='tooltip'>
-        <a
-          href="https://bithomp.com/go/top-play"
-          target="_blank"
-          rel="noreferrer"
-          className='top-link'
-        >
-          XRP Play
-        </a>
-        <span className='tooltiptext left small'>
-          {t("sponsored.sponsored")}
-        </span>
-      </span>
-    </div>
-  )
-  */
-  }
-
-  {
-    /*
-
-  if (network === "mainnet") {
-    return <div className="top-links">
-      <span className='tooltip'>
-        <a
-          href="https://bithomp.com/go/top-play"
-          target="_blank"
-          rel="noreferrer"
-          className='top-link orange'
-        >
-          {!isMobile ? "Play XRP - register with the promo code BITHOMP to boost up your bonus." : "Play XRP"}
-        </a>
-        <span className='tooltiptext right small'>
-          {t("sponsored.sponsored")}
-        </span>
-      </span>
-    </div>
-  }
-
-  if (network === "xahau") {
-    return <div className="top-links">
-      <span className='tooltip'>
-        <a
-          href="https://bithomp.com/go/top-play"
-          target="_blank"
-          rel="noreferrer"
-          className='top-link orange'
-        >
-          {!isMobile ? "Play Now - Register with a promo code XAHAU and get 125% 1st dep welcome bonus!" : "Play Now"}
-        </a>
-        <span className='tooltiptext right small'>
-          {t("sponsored.sponsored")}
-        </span>
-      </span>
-    </div>
-  }
-
-  */
+    )
   }
 
   //explorer links
@@ -168,7 +65,9 @@ export default function TopLinks({ activatedAccount, countryCode }) {
           </a>
           <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
         </span>{' '}
-        💰{isMobile ? <br /> : ' | '}
+        💰 {isMobile ? <br /> : ' | '}
+        {stakeAd}
+        {isMobile ? <br /> : ' | '}
         <span className="tooltip">
           <a href="https://bithomp.com/go/play-slots" target="_blank" rel="noreferrer" className="top-link orange">
             Play Slots and win 70,000 XRP
@@ -184,8 +83,6 @@ export default function TopLinks({ activatedAccount, countryCode }) {
           <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
         </span>{' '}
         💵
-        {isMobile ? <br /> : ' | '}
-        {stakeAd}
         {/*
         {isMobile ? <br /> : ' | '}
         <span className="tooltip">
@@ -209,6 +106,8 @@ export default function TopLinks({ activatedAccount, countryCode }) {
 
   return (
     <div className="top-links">
+      {stakeAd}
+      {isMobile ? <br /> : ' | '}
       💰{' '}
       <span className="tooltip">
         <a href="https://bithomp.com/go/top-earn" target="_blank" rel="noreferrer" className="top-link orange">
@@ -218,8 +117,6 @@ export default function TopLinks({ activatedAccount, countryCode }) {
         </a>
         <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
       </span>
-      {isMobile ? <br /> : ' | '}
-      {stakeAd}
       {/*
       {width > 1200 || isMobile ? <span style={{ padding: '0 10px' }}>|</span> : ''}
       <span className="tooltip">
