@@ -6,6 +6,7 @@ import AddressInput from '../../components/UI/AddressInput'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import { ledgerName, nativeCurrency } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
+import { shortAddress } from '../../utils/format'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -24,14 +25,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
   const [hotWalletAddress, setHotWalletAddress] = useState('')
   const [currencyCode, setCurrencyCode] = useState('')
   const [totalSupply, setTotalSupply] = useState('')
-  const [transferRate, setTransferRate] = useState('0')
   const [isSettingColdAddress, setIsSettingColdAddress] = useState(false)
   const [coldAddressError, setColdAddressError] = useState('')
   const [coldAddressSuccess, setColdAddressSuccess] = useState('')
   
   // AccountSet transaction fields for cold wallet
-  const [coldTransferRate, setColdTransferRate] = useState('0')
-  const [tickSize, setTickSize] = useState('5')
+  const [coldTransferRate, setColdTransferRate] = useState(0)
+  const [tickSize, setTickSize] = useState(5)
   const [domain, setDomain] = useState('')
   const [disallowXRP, setDisallowXRP] = useState(false)
   const [requireDestTag, setRequireDestTag] = useState(false)
@@ -53,6 +53,11 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
   const [isIssuingTokens, setIsIssuingTokens] = useState(false)
   const [tokenError, setTokenError] = useState('')
   const [tokenSuccess, setTokenSuccess] = useState('')
+  
+  // TrustLine creation fields
+  const [isCreatingTrustLine, setIsCreatingTrustLine] = useState(false)
+  const [trustLineError, setTrustLineError] = useState('')
+  const [trustLineSuccess, setTrustLineSuccess] = useState('')
 
   // Flag constants
   const ASF_FLAGS = {
@@ -81,6 +86,22 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
     setCanProceedFromStep2(hotWalletAddress && currencyCode && totalSupply)
     setIsSettingHotWallet(false)
   }, [hotWalletAddress, currencyCode, totalSupply])
+
+  useEffect(() => {
+    if (!(coldTransferRate >= 0 && coldTransferRate <= 1)) {
+      setTimeout(() => {
+        setColdTransferRate(0)
+      }, 1000)
+    }
+  }, [coldTransferRate])
+
+  useEffect(() => {
+    if (!(tickSize >= 0 && tickSize <= 15)) {
+      setTimeout(() => {
+        setTickSize(5)
+      }, 1000)
+    }
+  }, [tickSize])
 
   const handleNextStep = () => {
     if (currentStep < 3) {
@@ -216,14 +237,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
       callback: () => {
         setColdAddressSuccess('Cold address AccountSet transaction submitted successfully!')
         setColdAddressError('')
-        setIsSettingColdAddress(false)
       },
       errorCallback: (error) => {
         setColdAddressError(`Transaction failed: ${error.message || 'Unknown error'}`)
         setColdAddressSuccess('')
-        setIsSettingColdAddress(false)
       }
     })
+    setIsSettingColdAddress(false)
   }
 
   // Handle hot wallet AccountSet configuration
@@ -278,14 +298,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
       callback: () => {
         setHotWalletSuccess('Hot wallet AccountSet transaction submitted successfully!')
         setHotWalletError('')
-        setIsSettingHotWallet(false)
       },
       errorCallback: (error) => {
         setHotWalletError(`Transaction failed: ${error.message || 'Unknown error'}`)
         setHotWalletSuccess('')
-        setIsSettingHotWallet(false)
       }
     })
+    setIsSettingHotWallet(false)
   }
 
   // Handle token issuance from cold to hot wallet
@@ -340,6 +359,36 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
     }
   }
 
+  const handleCreateTrustLine = () => {
+    setTrustLineError('')
+    setTrustLineSuccess('')
+
+    const tx = {
+      TransactionType: 'TrustSet',
+      Account: hotWalletAddress,
+      LimitAmount: {
+        currency: currencyCode,
+        issuer: coldWalletAddress,
+        value: totalSupply
+      }
+    }
+
+    setIsCreatingTrustLine(true)
+    setSignRequest({
+      request: tx,
+      callback: () => {
+        setTrustLineSuccess('TrustLine created successfully!')
+        setTrustLineError('')
+        setIsCreatingTrustLine(false)
+      },
+      errorCallback: (error) => {
+        setTrustLineError(`TrustLine creation failed: ${error.message || 'Unknown error'}`)
+        setTrustLineSuccess('')
+        setIsCreatingTrustLine(false)
+      }
+    })
+  }
+
   return (
     <>
       <SEO
@@ -353,9 +402,9 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
         <NetworkTabs />
       </section>
 
-      <div className="content-text content-center">
+      <div>
         {/* Progress Indicator */}
-        <div className="ic-step-progress" style={{ marginBottom: '30px' }}>
+        <div className="ic-step-progress">
           <div className="ic-step-indicator">
             <div className={`ic-step ${currentStep >= 1 ? 'active' : ''}`}>1</div>
             <div className={`ic-step ${currentStep >= 2 ? 'active' : ''}`}>2</div>
@@ -416,15 +465,22 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
 
             <div className="ic-cold-wallet-setup">
               <h3>Create and Configure Your Issuer Account (Cold Wallet):</h3>
-              <p>This will be your cold wallet that issues the currency. {supplyType === 'closed' ? 'It will be blackholed after issuance for maximum security.' : 'You will maintain control over this account.'} Configure comprehensive AccountSet settings including transfer rates, tick size, domain, and security flags.</p>
+              <p>
+                This will be your cold wallet that issues the currency.
+                {supplyType === 'closed' ?
+                  'It will be blackholed after issuance for maximum security.' :
+                  'You will maintain control over this account.'
+                }
+                Configure comprehensive AccountSet settings including transfer rates, tick size, domain, and security flags.
+              </p>
               
-                <AddressInput
-                  title="Cold Wallet Address (Issuer Account)"
-                  placeholder="r..."
-                  setInnerValue={setColdWalletAddress}
-                  rawData={coldWalletAddress}
-                  hideButton={true}
-                />
+              <AddressInput
+                title={<span className="bold">Cold Wallet Address (Issuer Account)</span>}
+                placeholder="r..."
+                setInnerValue={setColdWalletAddress}
+                rawData={coldWalletAddress}
+                hideButton={true}
+              />
               
               {supplyType === 'closed' && (
                 <div className="ic-blackhole-warning">
@@ -442,30 +498,43 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
               <div className="ic-cold-address-form">
                 <div className="ic-form-section">
                   <h4>Basic Settings</h4>
-                  
+
                   <FormInput
-                    title="Transfer Rate (%)"
+                    title={<span className="bold">Transfer Rate (%)</span>}
                     placeholder="0"
                     setInnerValue={setColdTransferRate}
                     defaultValue={coldTransferRate}
                     hideButton={true}
-                  />
+                    />
+                  <small>Transfer rate is the percentage of the total supply that will be transferred to the hot wallet.</small>
+                  <div className="form-spacing">
+                    {!(coldTransferRate >= 0 && coldTransferRate <= 1) && window.innerWidth > 800 &&
+                      <span className="error-text red">Transfer rate must be between 0 and 1</span>
+                    }
+                  </div>
                   
                   <FormInput
-                    title="Tick Size"
+                    title={<span className="bold">Tick Size</span>}
                     placeholder="5"
                     setInnerValue={setTickSize}
                     defaultValue={tickSize}
                     hideButton={true}
                   />
+                  <small>Tick size is the number of significant digits for the currency.</small>
+                  <div className="form-spacing">
+                    {!(tickSize >= 0 && tickSize <= 15) && window.innerWidth > 800 &&
+                      <span className="error-text red">Tick size must be between 0 and 15</span>
+                    }
+                  </div>
                   
                   <FormInput
-                    title="Domain (optional)"
+                    title={<span className="bold">Domain (optional)</span>}
                     placeholder="example.com"
                     setInnerValue={setDomain}
                     defaultValue={domain}
                     hideButton={true}
                   />
+                  <small>Domain is the domain name for the currency.</small>
                 </div>
 
                 <div className="ic-form-section">
@@ -474,17 +543,16 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                     <div className={`ic-flag-option enabled`}>
                       <div className="ic-flag-header">
                         <label>
-                          <input
-                            type="checkbox"
-                            checked={true}
-                          />
+                          <input type="checkbox" checked={true}/>
                           <span>Enable Default Ripple</span>
                         </label>
-                        <span className="ic-flag-status-indicator">
+                      </div>
+                      <div className="ic-flag-status">
+                        <small>Allow rippling on trust lines by default </small>
+                        <span className="ic-flag-status-indicator no-brake">
                           ✓ Enabled
                         </span>
                       </div>
-                      <small>Allow rippling on trust lines by default</small>
                     </div>
                       <div 
                         className={`ic-flag-option ${disallowXRP ? 'enabled' : 'disabled'}`}
@@ -505,11 +573,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                           />
                           <span>Disallow {nativeCurrency}</span>
                         </label>
-                        <span className="ic-flag-status-indicator">
+                      </div>
+                      <div className="ic-flag-status">
+                        <small>Prevent incoming {nativeCurrency} payments </small>
+                        <span className="ic-flag-status-indicator no-brake">
                           {disallowXRP ? '✓ Enabled' : '✗ Disabled'}
                         </span>
                       </div>
-                      <small>Prevent incoming {nativeCurrency} payments</small>
                     </div>
                       <div 
                         className={`ic-flag-option ${requireDestTag ? 'enabled' : 'disabled'}`}
@@ -530,11 +600,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                           />
                           <span>Require Destination Tag</span>
                         </label>
-                        <span className="ic-flag-status-indicator">
+                      </div>
+                      <div className="ic-flag-status">
+                        <small>Require destination tag for incoming payments </small>
+                        <span className="ic-flag-status-indicator no-brake">
                           {requireDestTag ? '✓ Enabled' : '✗ Disabled'}
                         </span>
                       </div>
-                      <small>Require destination tag for incoming payments</small>
                     </div>
                   </div>
                 </div>
@@ -585,7 +657,7 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
               <h3>Hot Wallet Configuration:</h3>
               <p>The hot wallet is where you'll store the issued currency for trading, transfers, and other operations. This should be a separate account from your issuer account.</p>
               <AddressInput
-                title="Hot Wallet Address"
+                title={<span className="bold">Hot Wallet Address</span>}
                 placeholder="r..."
                 setInnerValue={setHotWalletAddress}
                 rawData={hotWalletAddress}
@@ -595,7 +667,7 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
               <div className="ic-currency-properties">
                 <h3>Currency Properties:</h3>
                 <FormInput
-                  title="Currency Code"
+                  title={<span className="bold">Currency Code</span>}
                   placeholder="e.g., USD, EUR, or custom hex"
                   setInnerValue={setCurrencyCode}
                   defaultValue={currencyCode}
@@ -603,18 +675,10 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                 />
                 <div className="ic-form-spacing" />
                 <FormInput
-                  title="Total Supply"
+                  title={<span className="bold">Total Supply</span>}
                   placeholder="e.g., 1000000"
                   setInnerValue={setTotalSupply}
                   defaultValue={totalSupply}
-                  hideButton={true}
-                />
-                <div className="ic-form-spacing" />
-                <FormInput
-                  title="Transfer Rate (%)"
-                  placeholder="0"
-                  setInnerValue={setTransferRate}
-                  defaultValue={transferRate}
                   hideButton={true}
                 />
               </div>
@@ -627,7 +691,7 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
               <div className="ic-form-section">
                 <h4>Basic Settings</h4>
                 <FormInput
-                  title="Domain (optional)"
+                  title={<span className="bold">Domain (optional)</span>}
                   placeholder="example.com"
                   setInnerValue={setHotDomain}
                   defaultValue={hotDomain}
@@ -657,11 +721,14 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                         />
                         <span>Require Authorization</span>
                       </label>
-                      <span className="ic-flag-status-indicator">
+                      
+                      <div className="ic-flag-status">
+                        <small>Prevents accidental trust line usage by requiring explicit authorization </small>
+                        <span className="ic-flag-status-indicator no-brake">
                         {hotRequireAuth ? '✓ Enabled' : '✗ Disabled'}
-                      </span>
+                        </span>
+                      </div>
                     </div>
-                    <small>Prevents accidental trust line usage by requiring explicit authorization</small>
                   </div>
                   
                   <div 
@@ -683,11 +750,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                         />
                         <span>Disallow {nativeCurrency}</span>
                       </label>
-                      <span className="ic-flag-status-indicator">
+                      <div className="ic-flag-status">
+                        <small>Prevent incoming {nativeCurrency} payments to hot wallet </small>
+                        <span className="ic-flag-status-indicator no-brake">
                         {hotDisallowXRP ? '✓ Enabled' : '✗ Disabled'}
-                      </span>
+                        </span>
+                      </div>
                     </div>
-                    <small>Prevent incoming {nativeCurrency} payments to hot wallet</small>
                   </div>
                   
                   <div 
@@ -709,11 +778,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                         />
                         <span>Require Destination Tag</span>
                       </label>
-                      <span className="ic-flag-status-indicator">
-                        {hotRequireDestTag ? '✓ Enabled' : '✗ Disabled'}
-                      </span>
+                      <div className="ic-flag-status">
+                        <small>Require destination tag for incoming payments </small>
+                        <span className="ic-flag-status-indicator no-brake">
+                          {hotRequireDestTag ? '✓ Enabled' : '✗ Disabled'}
+                        </span>
+                      </div>
                     </div>
-                    <small>Require destination tag for incoming payments</small>
                   </div>
                 </div>
               </div>
@@ -738,11 +809,6 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                 >
                   {isSettingHotWallet ? 'Configuring Hot Wallet...' : 'Configure Hot Wallet'}
                 </button>
-                {(hotWalletAddress && account?.address) && (
-                  <div style={{ marginTop: '10px', color: '#28a745', fontSize: '14px' }}>
-                    ✓ Ready to configure hot wallet
-                  </div>
-                )}
               </div>
             </div>
 
@@ -773,15 +839,32 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
             {/* Step 1: Create TrustLine */}
             <div className="ic-trustline-step">
               <h3>1. Create TrustLine</h3>
-              <p>First, set up a trustline from your hot wallet to the issuer account to allow holding the tokens.</p>
+              <p>HotWallet must have Coldwallet address as RegularKey.</p>
+              <p>(Services &gt; Account Settings &gt; RegularKey)</p>
               <div className="ic-trustline-info">
                 <h4>TrustLine Setup Details:</h4>
                 <ul>
                   <li><strong>Currency:</strong> {currencyCode}</li>
-                  <li><strong>Issuer:</strong> {coldWalletAddress}</li>
-                  <li><strong>Limit:</strong> {totalSupply} (or higher)</li>
+                  <li><strong>Issuer:</strong> {window.innerWidth > 800 ? coldWalletAddress : shortAddress(coldWalletAddress)}</li>
+                  <li><strong>Limit:</strong> {totalSupply}</li>
                 </ul>
               </div>
+              <button 
+                className="ic-button-action"
+                onClick={handleCreateTrustLine}
+              >
+                {isCreatingTrustLine ? 'Creating TrustLine...' : 'Create TrustLine'}
+              </button>
+              {trustLineError && (
+                <div className="ic-error-message">
+                  <span className="error-text red">{trustLineError}</span>
+                </div>
+              )}
+              {trustLineSuccess && (
+                <div className="ic-success-message">
+                  <span className="success-text green">{trustLineSuccess}</span>
+                </div>
+              )}
             </div>
 
             {/* Step 2: Issue Tokens from Cold to Hot */}
@@ -792,7 +875,7 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
               <div className="ic-form-section">
                 <h4>Token Issuance Settings</h4>
                 <FormInput
-                  title="Issue Quantity"
+                  title={<span className="bold">Issue Quantity</span>}
                   placeholder="e.g., 1000"
                   setInnerValue={setIssueQuantity}
                   defaultValue={issueQuantity}
@@ -801,7 +884,7 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                 
                 {hotRequireDestTag && (
                   <FormInput
-                    title="Destination Tag"
+                    title={<span className="bold">Destination Tag</span>}
                     placeholder="1"
                     setInnerValue={setDestinationTag}
                     defaultValue={destinationTag}
@@ -818,26 +901,20 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                 >
                   {isIssuingTokens ? 'Issuing Tokens...' : 'Issue Tokens to Hot Wallet'}
                 </button>
-                {(issueQuantity && account?.address) && (
-                  <div style={{ marginTop: '10px', color: '#28a745', fontSize: '14px' }}>
-                    ✓ Ready to issue tokens
-                  </div>
-                )}
               </div>
-            </div>
-            
-            {/* Error and Success Messages */}
-            {tokenError && (
-              <div className="ic-error-message">
-                <span className="error-text">{tokenError}</span>
-              </div>
-            )}
+              {/* Error and Success Messages */}
+              {tokenError && (
+                <div className="ic-error-message">
+                  <span className="error-text">{tokenError}</span>
+                </div>
+              )}
 
-            {tokenSuccess && (
-              <div className="ic-success-message">
-                <span className="success-text">{tokenSuccess}</span>
-              </div>
-            )}
+              {tokenSuccess && (
+                <div className="ic-success-message">
+                  <span className="success-text">{tokenSuccess}</span>
+                </div>
+              )}
+            </div>
 
             <div className="ic-step-actions">
               <button 

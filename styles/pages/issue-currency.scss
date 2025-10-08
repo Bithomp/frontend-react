@@ -3,7 +3,6 @@
 .ic-step-progress {
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
 }
 
 .ic-step-indicator {
@@ -219,19 +218,18 @@
 
 .ic-flag-header {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-between;
   margin-bottom: 5px;
+  gap: 8px;
 }
 
 .ic-flag-option label {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
 .ic-flag-option input[type="checkbox"] {
-  margin-right: 10px;
   margin-top: 0;
 }
 
@@ -503,6 +501,13 @@
   border-bottom: none;
 }
 
+.ic-flag-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+
 // Responsive Design
 @media (min-width: 1400px) {
   .ic-radio-options {
@@ -573,6 +578,14 @@
 }
 
 @media (max-width: 767px) {
+  .ic-flag-status {
+    display: block;
+  }
+
+  .ic-hot-wallet-accountset {
+    padding: 8px;
+  }
+
   .ic-radio-options {
     flex-direction: column;
     max-width: 100%;
@@ -581,7 +594,6 @@
   
   .ic-radio-option {
     height: 240px;
-    width: 90%;
     max-width: 100%;
   }
   
@@ -625,10 +637,6 @@
   
   .ic-flag-option label {
     margin-bottom: 3px;
-  }
-  
-  .ic-flag-option input[type="checkbox"] {
-    margin-right: 8px;
   }
   
   .ic-locator-display code {

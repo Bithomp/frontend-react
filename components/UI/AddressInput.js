@@ -27,7 +27,7 @@ export default function AddressInput({
   const hasRun = useRef(false)
   const initialRawData = useRef(rawData)
 
-  const [inputValue, setInputValue] = useState('')
+  const [inputValue, setInputValue] = useState(rawData || '')
   const [errorMessage, setErrorMessage] = useState('')
   const [isMounted, setIsMounted] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
