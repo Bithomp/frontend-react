@@ -101,7 +101,8 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
 
   const fetchOwnedNfts = async () => {
     try {
-      const response = await axios(`v2/nfts?owner=${address}&limit=100&order=mintedNew&includeWithoutMediaData=true`)
+      const response = await axios(`v2/nfts?owner=${address}&order=mintedNew&includeWithoutMediaData=true`)
+      console.log(response.data.nfts.length)
       if (response?.data?.nfts) {
         setOwnedNfts(response.data.nfts)
       } else {
@@ -118,7 +119,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   const fetchSoldNfts = async () => {
     try {
       const response = await axios(
-        `v2/nft-sales?seller=${address}&limit=100&list=lastSold&convertCurrencies=${selectedCurrency?.toLowerCase()}&sortCurrency=${selectedCurrency?.toLowerCase()}`
+        `v2/nft-sales?seller=${address}&list=lastSold&convertCurrencies=${selectedCurrency?.toLowerCase()}&sortCurrency=${selectedCurrency?.toLowerCase()}`
       )
       if (response?.data?.sales) {
         setSoldNfts(response.data.sales)
@@ -215,11 +216,18 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
           <tr>
             <th colSpan="100" className="left">
               {title}
-              {title === 'Recently Acquired NFTs' && nfts?.length > 0 && 
+              {nfts?.length > 0 && 
                 <>
                   {' '}
-                  (<Link href={'/nfts/' + address + '?includeWithoutMediaData=true'} className="bold">
-                    View All {windowWidth > 800 ? 'Owned NFTs' : ''} - {objects?.nftList?.length}
+                  (<Link 
+                    href={
+                      title === 'Owned NFTs' ?
+                      `/nfts/${address}?includeWithoutMediaData=true` :
+                      `/nft-sales?seller=${address}&period=all`
+                    }
+                    className="bold">
+                    View All {' '}
+                    {windowWidth > 800 ? title : ''} - {nfts?.length}
                   </Link>)
                 </>
               }
@@ -231,7 +239,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
             {nfts?.length > 0 ?
               <td>
                 {
-                  nfts?.map((nft, i) => (
+                  nfts?.slice(0, 50).map((nft, i) => (
                     <Link href={'/nft/' + nft.nftokenID} key={i}>
                       <img 
                         src={nftUrl(nft, 'image') || nftUrl(nft?.nftoken, 'image')} 
@@ -244,7 +252,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
               </td>
             :
               <td className="center">
-                <p className="center grey">{t('nfts.no-nfts')}</p>
+                <p className="center grey">We couldn't find any NFTs.</p>
               </td>
             }
           </tr>
@@ -423,9 +431,9 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   const getMetaData = () => {
     return (
       <>
-        {renderNFTSection('Recently Acquired NFTs', ownedNfts, loading.owned, 'name')}
+        {renderNFTSection('Owned NFTs', ownedNfts, loading.owned, 'name')}
 
-        {renderNFTSection('Last Sold NFTs', soldNfts, loading.sold, 'soldNew')}
+        {renderNFTSection('Sold NFTs', soldNfts, loading.sold, 'soldNew')}
         <br />
 
         {renderOffersSection('NFT Offers Created', createdOffers, loading.createdOffers)}
