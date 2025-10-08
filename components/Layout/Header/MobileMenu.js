@@ -209,6 +209,13 @@ export default function MobileMenu({
           <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
             TOP {t('menu.tokens')}
           </Link>
+          <Link
+            href="/distribution?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            TOP Holders
+          </Link>
           <Link href="/services/trustline" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Set Trust (Trustline)
           </Link>

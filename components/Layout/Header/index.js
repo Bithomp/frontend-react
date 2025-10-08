@@ -215,6 +215,9 @@ export default function Header({
               hoverStates={hoverStates}
             >
               <Link href="/tokens">TOP {t('menu.tokens')}</Link>
+              <Link href="/distribution?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De">
+                TOP Holders
+              </Link>
               <Link href="/services/trustline">Set Trust (Trustline)</Link>
               <Link href="/learn/issue-a-token">How to Issue a Token</Link>
               <Link href="/learn/guide-for-token-issuers">Guide for Token Issuers</Link>

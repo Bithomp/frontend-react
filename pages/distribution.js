@@ -3,19 +3,26 @@ import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
 
 import { getIsSsrMobile } from '../utils/mobile'
 
 export async function getServerSideProps(context) {
   const { query, locale, req } = context
-  const { escrow } = query
+  const { escrow, currency, currencyIssuer } = query
 
   let data = null
+
+  let url = ''
+  if (currency && currencyIssuer) {
+    url = `v2/trustlines/token/richlist/${currencyIssuer}/${currency}`
+  } else {
+    url = 'v2/addresses/richlist' + (escrow ? `?escrow=${escrow}` : '')
+  }
+
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/addresses/richlist' + (escrow ? `?escrow=${escrow}` : ''),
+      url,
       headers: passHeaders(req)
     })
     data = res?.data
@@ -25,7 +32,10 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      queryCurrency: currency || nativeCurrency,
+      queryCurrencyIssuer: currencyIssuer || null,
       initialRawData: data || null,
+      initialData: data?.addresses || data?.trustlines || [],
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'distribution']))
     }
@@ -35,7 +45,7 @@ export async function getServerSideProps(context) {
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 
-import { useWidth, nativeCurrency, devNet } from '../utils'
+import { nativeCurrency, devNet } from '../utils'
 import {
   amountFormat,
   niceNumber,
@@ -47,22 +57,24 @@ import {
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
 
-export default function Distribution({ selectedCurrency, fiatRate, initialRawData }) {
+export default function Distribution({
+  selectedCurrency,
+  fiatRate,
+  initialRawData,
+  initialData,
+  queryCurrency,
+  queryCurrencyIssuer
+}) {
   const { t } = useTranslation()
-  const router = useRouter()
   const isFirstRender = useRef(true)
 
-  const { isReady } = router
-
-  const windowWidth = useWidth()
-
-  const [data, setData] = useState(initialRawData?.addresses || [])
+  const [data, setData] = useState(initialData || [])
   const [rawData, setRawData] = useState(initialRawData || {})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [escrowMode, setEscrowMode] = useState('none') // 'none', 'short', 'locked'
   const [filtersHide, setFiltersHide] = useState(false)
-  const [token, setToken] = useState({ currency: nativeCurrency })
+  const [token, setToken] = useState({ currency: queryCurrency, issuer: queryCurrencyIssuer })
 
   const controller = new AbortController()
 
@@ -241,7 +253,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
       controller.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, escrowMode, token])
+  }, [escrowMode, token])
 
   const currency = niceCurrency(token.currency)
 
@@ -310,66 +322,65 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
           )}
         </>
         <>
-          {windowWidth > 1000 ? (
-            <table className="table-large no-hover">
-              <thead>
-                <tr>
-                  <th className="center">{t('table.index')}</th>
-                  <th>{t('table.address')}</th>
-                  <th className="right">{t('table.balance')}</th>
-                  {!token?.issuer && (escrowMode === 'short' || escrowMode === 'locked') && (
-                    <>
-                      <th className="right">Escrow {capitalize(escrowMode)}</th>
-                      <th className="right">Total</th>
-                    </>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  renderLoadingState()
-                ) : (
+          <table className="table-large no-hover hide-on-small-w800">
+            <thead>
+              <tr>
+                <th className="center">{t('table.index')}</th>
+                <th>{t('table.address')}</th>
+                <th className="right">{t('table.balance')}</th>
+                {!token?.issuer && (escrowMode === 'short' || escrowMode === 'locked') && (
                   <>
-                    {!errorMessage && data ? (
-                      <>
-                        {data.length > 0 &&
-                          data.map((r, i) => (
-                            <tr key={i}>
-                              <td className="center">{i + 1}</td>
-                              <td>
-                                <AddressWithIconFilled data={r} />
-                              </td>
-                              <td className="right">
-                                {token?.issuer
-                                  ? amountFormat({ value: r.balance, currency: r.currency, issuer: r.counterparty })
-                                  : renderBalance(r.balance, rawData.summary?.totalCoins)}
-                              </td>
-                              {!token?.issuer && (escrowMode === 'short' || escrowMode === 'locked') && (
-                                <>
-                                  <td className="right">
-                                    {escrowMode === 'short' &&
-                                      r.escrowShortBalance &&
-                                      renderBalance(getEscrowAmount(r, 'short'), rawData.summary?.totalCoins, true)}
-                                    {escrowMode === 'locked' &&
-                                      r.escrowLockedBalance &&
-                                      renderBalance(getEscrowAmount(r, 'locked'), rawData.summary?.totalCoins, true)}
-                                  </td>
-                                  <td className="right">
-                                    {renderBalance(calculateTotalBalance(r), rawData.summary?.totalCoins, true)}
-                                  </td>
-                                </>
-                              )}
-                            </tr>
-                          ))}
-                      </>
-                    ) : (
-                      renderErrorState()
-                    )}
+                    <th className="right">Escrow {capitalize(escrowMode)}</th>
+                    <th className="right">Total</th>
                   </>
                 )}
-              </tbody>
-            </table>
-          ) : (
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                renderLoadingState()
+              ) : (
+                <>
+                  {!errorMessage && data ? (
+                    <>
+                      {data.length > 0 &&
+                        data.map((r, i) => (
+                          <tr key={i}>
+                            <td className="center">{i + 1}</td>
+                            <td>
+                              <AddressWithIconFilled data={r} />
+                            </td>
+                            <td className="right">
+                              {token?.issuer
+                                ? amountFormat({ value: r.balance, currency: r.currency, issuer: r.counterparty })
+                                : renderBalance(r.balance, rawData.summary?.totalCoins)}
+                            </td>
+                            {!token?.issuer && (escrowMode === 'short' || escrowMode === 'locked') && (
+                              <>
+                                <td className="right">
+                                  {escrowMode === 'short' &&
+                                    r.escrowShortBalance &&
+                                    renderBalance(getEscrowAmount(r, 'short'), rawData.summary?.totalCoins, true)}
+                                  {escrowMode === 'locked' &&
+                                    r.escrowLockedBalance &&
+                                    renderBalance(getEscrowAmount(r, 'locked'), rawData.summary?.totalCoins, true)}
+                                </td>
+                                <td className="right">
+                                  {renderBalance(calculateTotalBalance(r), rawData.summary?.totalCoins, true)}
+                                </td>
+                              </>
+                            )}
+                          </tr>
+                        ))}
+                    </>
+                  ) : (
+                    renderErrorState()
+                  )}
+                </>
+              )}
+            </tbody>
+          </table>
+          <div className="show-on-small-w800">
             <table className="table-mobile">
               <thead></thead>
               <tbody>
@@ -447,7 +458,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                 )}
               </tbody>
             </table>
-          )}
+          </div>
         </>
       </FiltersFrame>
     </>
