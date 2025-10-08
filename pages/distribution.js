@@ -1,7 +1,7 @@
 import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
-import { axiosServer, passHeaders } from '../utils/axios'
+import { axiosServer, currencyServer, passHeaders } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { getIsSsrMobile } from '../utils/mobile'
@@ -12,9 +12,11 @@ export async function getServerSideProps(context) {
 
   let data = null
 
+  const serverCurrency = currencyServer(req) || 'usd'
+
   let url = ''
   if (currency && currencyIssuer) {
-    url = `v2/trustlines/token/richlist/${currencyIssuer}/${currency}`
+    url = `v2/trustlines/token/richlist/${currencyIssuer}/${currency}?summary=true&convertCurrencies=${serverCurrency}`
   } else {
     url = 'v2/addresses/richlist' + (escrow ? `?escrow=${escrow}` : '')
   }
@@ -50,6 +52,7 @@ import {
   amountFormat,
   niceNumber,
   percentFormat,
+  amountToFiat,
   nativeCurrencyToFiat,
   AddressWithIconFilled,
   niceCurrency,
@@ -156,7 +159,13 @@ export default function Distribution({
     }
 
     if (token.currency !== nativeCurrency && token.issuer) {
-      apiUrl = 'v2/trustlines/token/richlist/' + token.issuer + '/' + token.currency
+      apiUrl =
+        'v2/trustlines/token/richlist/' +
+        token.issuer +
+        '/' +
+        token.currency +
+        '?summary=true&convertCurrencies=' +
+        selectedCurrency
     }
 
     setLoading(true)
@@ -253,9 +262,11 @@ export default function Distribution({
       controller.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [escrowMode, token])
+  }, [escrowMode, token, selectedCurrency])
 
   const currency = niceCurrency(token.currency)
+
+  const priceFiat = rawData?.summary?.convertCurrencies?.[selectedCurrency] * rawData?.summary?.priceNativeCurrencySpot
 
   return (
     <>
@@ -273,17 +284,35 @@ export default function Distribution({
       <div className="content-center">
         <h1 className="center">{t('menu.network.distribution', { currency })}</h1>
         <div className="flex-container">
-          <div className="grey-box">{t('desc', { ns: 'distribution', currency })}</div>
+          <div className="grey-box">
+            {t('desc', { ns: 'distribution', currency })}
+            {token?.issuer && !loading && (
+              <>
+                <br />
+                <br />
+                <br />1 {currency} = {priceFiat} {selectedCurrency.toUpperCase()}
+                <br />1 {currency} = {rawData?.summary?.priceNativeCurrencySpot} {nativeCurrency}
+              </>
+            )}
+          </div>
           <div className="grey-box">
             {loading ? (
               t('general.loading')
             ) : token?.issuer ? (
-              <AddressWithIconFilled
-                data={rawData}
-                name="issuer"
-                currency={rawData.currency}
-                options={{ short: true }}
-              />
+              <>
+                <AddressWithIconFilled
+                  data={rawData}
+                  name="issuer"
+                  currency={rawData.currency}
+                  options={{ short: 12 }}
+                />
+                <br />
+                Total supply: {niceNumber(rawData?.summary?.totalCoins || 0)} {currency}
+                <br />
+                Holders: {niceNumber(rawData?.summary?.holders || 0)}
+                <br />
+                Trustlines: {niceNumber(rawData?.summary?.trustlines || 0)}
+              </>
             ) : (
               <Trans i18nKey="summary" ns="distribution">
                 There are <b>{{ activeAccounts: niceNumber(rawData?.summary?.activeAccounts) }}</b> active accounts,
@@ -351,9 +380,20 @@ export default function Distribution({
                               <AddressWithIconFilled data={r} />
                             </td>
                             <td className="right">
-                              {token?.issuer
-                                ? amountFormat({ value: r.balance, currency: r.currency, issuer: r.counterparty })
-                                : renderBalance(r.balance, rawData.summary?.totalCoins)}
+                              {token?.issuer ? (
+                                <>
+                                  {amountFormat({ value: r.balance, currency: r.currency, issuer: r.counterparty })}{' '}
+                                  {percentFormat(r.balance, rawData.summary?.totalCoins)}
+                                  <br />
+                                  {amountToFiat({
+                                    amount: { value: r.balance, currency: r.currency, issuer: r.counterparty },
+                                    selectedCurrency,
+                                    fiatRate: priceFiat
+                                  })}
+                                </>
+                              ) : (
+                                renderBalance(r.balance, rawData.summary?.totalCoins)
+                              )}
                             </td>
                             {!token?.issuer && (escrowMode === 'short' || escrowMode === 'locked') && (
                               <>
@@ -398,20 +438,32 @@ export default function Distribution({
                               <br />
                               <AddressWithIconFilled data={r} />
                               <p>
-                                {t('table.balance')}:
+                                {t('table.balance')}:{' '}
                                 {token?.issuer
                                   ? amountFormat({ value: r.balance, currency: r.currency, issuer: r.counterparty })
                                   : amountFormat(r.balance)}{' '}
                                 {percentFormat(r.balance, rawData.summary?.totalCoins)}{' '}
-                                {devNet
-                                  ? t('table.no-value')
-                                  : fiatRate > 0 &&
-                                    token?.currency === nativeCurrency &&
-                                    nativeCurrencyToFiat({
-                                      amount: r.balance,
+                                {token?.issuer ? (
+                                  <>
+                                    {amountToFiat({
+                                      amount: { value: r.balance, currency: r.currency, issuer: r.counterparty },
                                       selectedCurrency,
-                                      fiatRate
+                                      fiatRate: priceFiat
                                     })}
+                                  </>
+                                ) : (
+                                  <>
+                                    {devNet
+                                      ? t('table.no-value')
+                                      : fiatRate > 0 &&
+                                        token?.currency === nativeCurrency &&
+                                        nativeCurrencyToFiat({
+                                          amount: r.balance,
+                                          selectedCurrency,
+                                          fiatRate
+                                        })}
+                                  </>
+                                )}
                               </p>
                               {!token?.issuer && (escrowMode === 'short' || escrowMode === 'locked') && (
                                 <>

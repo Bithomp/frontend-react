@@ -130,16 +130,25 @@ export const amountFormatWithIcon = ({ amount }) => {
 }
 
 export const nativeCurrencyToFiat = (params) => {
+  if (!isAmountInNativeCurrency(params?.amount)) return ''
+  return amountToFiat(params)
+}
+
+export const amountToFiat = (params) => {
   if (devNet) return ''
   const { amount, selectedCurrency, fiatRate } = params
-  if (!amount || amount === '0' || !selectedCurrency || !fiatRate || !isAmountInNativeCurrency(amount)) return ''
+  if (!amount || amount === '0' || !selectedCurrency || !fiatRate) return ''
 
   let calculatedAmount = null
+  let currency = ''
 
-  if (amount.currency === nativeCurrency) {
-    calculatedAmount = shortNiceNumber(amount.value * fiatRate, 2, 1, selectedCurrency)
-  } else {
+  if (!amount?.currency) {
+    // drops
     calculatedAmount = shortNiceNumber((amount / 1000000) * fiatRate, 2, 1, selectedCurrency)
+    currency = nativeCurrency
+  } else {
+    calculatedAmount = shortNiceNumber(amount.value * fiatRate, 2, 1, selectedCurrency)
+    currency = niceCurrency(amount.currency)
   }
 
   if (params.asText) {
@@ -151,7 +160,7 @@ export const nativeCurrencyToFiat = (params) => {
       {' '}
       ≈ {calculatedAmount}
       <span className="tooltiptext no-brake" suppressHydrationWarning>
-        1 {nativeCurrency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
+        1 {currency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
       </span>
     </span>
   )
