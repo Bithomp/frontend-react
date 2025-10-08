@@ -266,7 +266,7 @@ export default function Distribution({
 
   const currency = niceCurrency(token.currency)
 
-  const priceFiat = rawData?.summary?.convertCurrencies?.[selectedCurrency] * rawData?.summary?.priceNativeCurrencySpot
+  const priceFiat = rawData?.summary?.convertCurrencies?.[selectedCurrency]
 
   return (
     <>
