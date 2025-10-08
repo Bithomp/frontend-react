@@ -78,15 +78,19 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
   if (!name) {
     name = 'address'
   }
+
+  const fullUrl = currency ? '/token/' + data[name] + '/' + currency : null
+
+  const link = userOrServiceLink(data, name, { fullUrl })
   return (
     <AddressWithIcon address={data[name]} currency={currency}>
-      {userOrServiceLink(data, name) && (
+      {link && (
         <>
-          {userOrServiceLink(data, name)}
+          {link}
           <br />
         </>
       )}
-      {addressLink(data[name], options)} {copyButton && <CopyButton text={data[name]} />}
+      {addressLink(data[name], { ...options, fullUrl })} {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
   )
 }
@@ -468,6 +472,8 @@ export const userOrServiceLink = (data, type, options = {}) => {
   if (data[typeDetails]) {
     const { username, service } = data[typeDetails]
     let link = username ? username : data[type]
+
+    let buildLink = options?.fullUrl || options?.url + link
     if (service) {
       let serviceName = service
       if (options.short && serviceName.length > 18) {
@@ -475,13 +481,13 @@ export const userOrServiceLink = (data, type, options = {}) => {
       }
       if (options.url === '/explorer/') {
         return (
-          <a href={options.url + link} className="bold green">
+          <a href={buildLink} className="bold green">
             {serviceName}
           </a>
         )
       } else {
         return (
-          <Link href={options.url + link} className="bold green">
+          <Link href={buildLink} className="bold green">
             {serviceName}
           </Link>
         )
@@ -490,13 +496,13 @@ export const userOrServiceLink = (data, type, options = {}) => {
     if (username) {
       if (options.url === '/explorer/') {
         return (
-          <a href={options.url + link} className="bold blue">
+          <a href={buildLink} className="bold blue">
             {username}
           </a>
         )
       } else {
         return (
-          <Link href={options.url + link} className="bold blue">
+          <Link href={buildLink} className="bold blue">
             {username}
           </Link>
         )
@@ -542,7 +548,7 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
 export const addressLink = (address, options = {}) => {
   if (!address) return ''
   return (
-    <Link href={'/account/' + address} aria-label="address link">
+    <Link href={options?.fullUrl || '/account/' + address} aria-label="address link">
       {options?.short ? shortAddress(address, options.short) : address}
     </Link>
   )
