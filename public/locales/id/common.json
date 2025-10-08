@@ -41,7 +41,7 @@
       "nodes": "Node",
       "governance": "Governance",
       "activations": "Akun yang Telah Aktif (grafik)",
-      "distribution": "Distribusi {{nativeCurrency}}",
+      "distribution": "Distribusi {{currency}}",
       "last-ledger-information": "Informasi Ledger Terbaru",
       "last-ledger-transactions": "Transaksi Ledger Terbaru",
       "top-transfers-24h": "Transfer terbesar (24j)",

@@ -41,7 +41,7 @@
       "nodes": "Ноды",
       "governance": "Правление",
       "activations": "Активированные адреса (график)",
-      "distribution": "ТОП адресов по балансу",
+      "distribution": "ТОП адресов по балансу {{currency}}",
       "last-ledger-information": "Информация с последнего леджера",
       "last-ledger-transactions": "Транзакции последнего леджера",
       "top-transfers-24h": "Крупнейшие переводы (24ч)",

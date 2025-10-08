@@ -41,7 +41,7 @@
       "nodes": "노드",
       "governance": "거버넌스",
       "activations": "활성화된 계정 (차트)",
-      "distribution": "{{nativeCurrency}} 분배",
+      "distribution": "{{currency}} 분배",
       "last-ledger-information": "최근 원장 정보",
       "last-ledger-transactions": "최근 거래 정보",
       "top-transfers-24h": "최대 이체 (24시간)",

@@ -41,7 +41,7 @@
       "nodes": "Knoten",
       "governance": "Governance",
       "activations": "Aktivierte Konten (Diagramm)",
-      "distribution": "{{nativeCurrency}} Verteilung",
+      "distribution": "{{currency}} Verteilung",
       "last-ledger-information": "Aktuellste Ledger Informationen",
       "last-ledger-transactions": "Aktuellste Ledger Transaktionen",
       "top-transfers-24h": "Top Überweisungen (24h)",

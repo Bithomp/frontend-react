@@ -289,7 +289,7 @@ export default function Header({
           >
             {xahauNetwork && <Link href="/governance">{t('menu.network.governance')}</Link>}
             <Link href="/activations">{t('menu.network.activations')}</Link>
-            <Link href="/distribution">{t('menu.network.distribution', { nativeCurrency })}</Link>
+            <Link href="/distribution">{t('menu.network.distribution', { currency: nativeCurrency })}</Link>
             <Link href="/last-ledger-information">{t('menu.network.last-ledger-information')}</Link>
             <Link href="/ledger">{t('menu.network.last-ledger-transactions')}</Link>
             <Link href="/whales">{t('menu.network.top-transfers-24h')}</Link>

@@ -343,7 +343,7 @@ export default function MobileMenu({
             {t('menu.network.activations')}
           </Link>
           <Link href="/distribution" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t('menu.network.distribution', { nativeCurrency })}
+            {t('menu.network.distribution', { currency: nativeCurrency })}
           </Link>
           <Link href="/last-ledger-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.network.last-ledger-information')}

@@ -73,13 +73,13 @@ export const AddressWithIcon = ({ children, address, currency }) => {
   )
 }
 
-export const AddressWithIconFilled = ({ data, name, copyButton, options }) => {
+export const AddressWithIconFilled = ({ data, name, copyButton, options, currency }) => {
   if (!data) return ''
   if (!name) {
     name = 'address'
   }
   return (
-    <AddressWithIcon address={data[name]}>
+    <AddressWithIcon address={data[name]} currency={currency}>
       {userOrServiceLink(data, name) && (
         <>
           {userOrServiceLink(data, name)}

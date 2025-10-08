@@ -41,7 +41,7 @@
       "nodes": "Nodos",
       "governance": "Gobierno",
       "activations": "Cuentas activadas (gráfica)",
-      "distribution": "Distribución de {{nativeCurrency}}",
+      "distribution": "Distribución de {{currency}}",
       "last-ledger-information": "Información del último libro contable",
       "last-ledger-transactions": "Transacciones del último libro contable",
       "top-transfers-24h": "Top transferencias (24h)",
