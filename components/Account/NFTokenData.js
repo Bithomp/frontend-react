@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { xahauNetwork, useWidth } from '../../utils'
-import { nftName, nftNameLink, nftThumbnail } from '../../utils/nft'
+import { nftName, nftNameLink, nftThumbnail, nftUrl } from '../../utils/nft'
 import LinkIcon from '../../public/images/link.svg'
 import { LinkTx } from '../../utils/links'
 import {
@@ -15,7 +15,6 @@ import {
   AddressWithIconFilled,
   dateFormat
 } from '../../utils/format'
-import Tiles from '../Tiles'
 
 export default function NFTokenData({ data, address, objects, ledgerTimestamp, selectedCurrency }) {
   const windowWidth = useWidth()
@@ -102,7 +101,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
 
   const fetchOwnedNfts = async () => {
     try {
-      const response = await axios(`v2/nfts?owner=${address}&limit=5&order=mintedNew&includeWithoutMediaData=true`)
+      const response = await axios(`v2/nfts?owner=${address}&limit=100&order=mintedNew&includeWithoutMediaData=true`)
       if (response?.data?.nfts) {
         setOwnedNfts(response.data.nfts)
       } else {
@@ -119,7 +118,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   const fetchSoldNfts = async () => {
     try {
       const response = await axios(
-        `v2/nft-sales?seller=${address}&limit=5&list=lastSold&convertCurrencies=${selectedCurrency?.toLowerCase()}&sortCurrency=${selectedCurrency?.toLowerCase()}`
+        `v2/nft-sales?seller=${address}&limit=100&list=lastSold&convertCurrencies=${selectedCurrency?.toLowerCase()}&sortCurrency=${selectedCurrency?.toLowerCase()}`
       )
       if (response?.data?.sales) {
         setSoldNfts(response.data.sales)
@@ -196,7 +195,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
     fetchReceivedOffers()
   }, [])
 
-  const renderNFTSection = (title, nfts, loading, type) => {
+  const renderNFTSection = (title, nfts, loading) => {
     if (loading) {
       return (
         <div className="nft-section">
@@ -231,7 +230,17 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
           <tr>
             {nfts?.length > 0 ?
               <td>
-                <Tiles nftList={windowWidth > 800 ? nfts : nfts.slice(0, 3)} type={type} disabled={true} convertCurrency={selectedCurrency} />
+                {
+                  nfts?.map((nft, i) => (
+                    <Link href={'/nft/' + nft.nftokenID} key={i}>
+                      <img 
+                        src={nftUrl(nft, 'image') || nftUrl(nft?.nftoken, 'image')} 
+                        alt={nftName(nft)} 
+                        style={{ width: '48px', height: '48px', borderRadius: '4px', margin: '2px' }} 
+                      />
+                    </Link>
+                  ))
+                }
               </td>
             :
               <td className="center">
