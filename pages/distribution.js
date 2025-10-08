@@ -283,7 +283,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
       </div>
       <FiltersFrame filtersHide={filtersHide} setFiltersHide={setFiltersHide} data={data || []}>
         <>
-          <TokenSelector value={token} onChange={setToken} />
+          <TokenSelector value={token} onChange={setToken} currencyQueryName="currency" />
           {token.currency === nativeCurrency && (
             <div
               className="radio-options radio-options--large"
