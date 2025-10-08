@@ -1,15 +1,31 @@
 import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
+import { axiosServer, passHeaders } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 
 import { getIsSsrMobile } from '../utils/mobile'
 
-export const getServerSideProps = async (context) => {
-  const { locale } = context
+export async function getServerSideProps(context) {
+  const { query, locale, req } = context
+  const { escrow } = query
+
+  let data = null
+  try {
+    const res = await axiosServer({
+      method: 'get',
+      url: 'v2/addresses/richlist' + (escrow ? `?escrow=${escrow}` : ''),
+      headers: passHeaders(req)
+    })
+    data = res?.data
+  } catch (r) {
+    data = r?.response?.data
+  }
+
   return {
     props: {
+      initialRawData: data || null,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'distribution']))
     }
@@ -22,16 +38,17 @@ import FiltersFrame from '../components/Layout/FiltersFrame'
 import { useWidth, nativeCurrency, devNet } from '../utils'
 import { amountFormat, niceNumber, percentFormat, nativeCurrencyToFiat, AddressWithIconFilled } from '../utils/format'
 
-export default function Distribution({ selectedCurrency, fiatRate }) {
+export default function Distribution({ selectedCurrency, fiatRate, initialRawData }) {
   const { t } = useTranslation()
   const router = useRouter()
+  const isFirstRender = useRef(true)
 
   const { isReady } = router
 
   const windowWidth = useWidth()
 
-  const [data, setData] = useState([])
-  const [rawData, setRawData] = useState({})
+  const [data, setData] = useState(initialRawData?.addresses || [])
+  const [rawData, setRawData] = useState(initialRawData || {})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [escrowMode, setEscrowMode] = useState('none') // 'none', 'short', 'locked'
@@ -40,9 +57,21 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
   const controller = new AbortController()
 
   const escrowModeList = [
-    { value: 'none', label: 'Available balance', description: `${nativeCurrency} excluding escrows. Only currently spendable funds` },
-    { value: 'short', label: 'Balance + expected escrows', description: `Includes ${nativeCurrency} that will likely be received from escrows by this account (this account = destination)` },
-    { value: 'locked', label: 'Balance + locked escrows', description: `Includes ${nativeCurrency} currently locked in escrows created by this account (this account = current owner)` }
+    {
+      value: 'none',
+      label: 'Available balance',
+      description: `${nativeCurrency} excluding escrows. Only currently spendable funds`
+    },
+    {
+      value: 'short',
+      label: 'Balance + expected escrows',
+      description: `Includes ${nativeCurrency} that will likely be received from escrows by this account (this account = destination)`
+    },
+    {
+      value: 'locked',
+      label: 'Balance + locked escrows',
+      description: `Includes ${nativeCurrency} currently locked in escrows created by this account (this account = current owner)`
+    }
   ]
 
   // calculate total balance including escrow
@@ -160,6 +189,11 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
   */
 
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+
     checkApi()
     return () => {
       controller.abort()
