@@ -68,3 +68,22 @@ export const LinkAmm = ({ ammId, hash, icon, copy, text }) =>
   ) : (
     ''
   )
+
+export const LinkToken = ({ currencyIssuer, currency, icon, text, short }) =>
+  currency && currencyIssuer ? (
+    <>
+      <Link href={`/token/${currencyIssuer}/${currency}`}>
+        {text ? text : short > 0 ? shortHash(currencyIssuer, short) : short === 0 ? '' : currencyIssuer}
+        {icon ? (
+          <>
+            {' '}
+            <LinkIcon />
+          </>
+        ) : (
+          ''
+        )}
+      </Link>
+    </>
+  ) : (
+    ''
+  )

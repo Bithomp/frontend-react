@@ -7,7 +7,7 @@ import {
   userOrServiceName,
   fullNiceNumber
 } from '../../utils/format'
-import { LinkAccount } from '../../utils/links'
+import { LinkToken } from '../../utils/links'
 import { objectsCountText, useWidth } from '../../utils'
 import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaInfoCircle } from 'react-icons/fa'
 import { subtract } from '../../utils/calc'
@@ -247,9 +247,9 @@ export default function IOUData({
               {userOrServiceName(issuer.issuerDetails, 'address')}
               <br />
               {width > 800 ? (
-                <LinkAccount address={issuer.issuerDetails.address} />
+                <LinkToken currencyIssuer={issuer.issuer} currency={tl.Balance?.currency} />
               ) : (
-                <LinkAccount address={issuer.issuerDetails.address} short={6} />
+                <LinkToken currencyIssuer={issuer.issuer} currency={tl.Balance?.currency} short={6} />
               )}
             </AddressWithIcon>
           </td>
