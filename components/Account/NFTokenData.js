@@ -250,11 +250,11 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                 {nfts?.map((nft, i) => (
                   <Link href={'/nft/' + nft.nftokenID} key={i}>
                     <img
-                      src={nftUrl(nft?.nftoken || nft, 'image')} // src={nftUrl(nft?.nftoken || nft, 'thumbnail')} - lower quality but faster
+                      src={nftUrl(nft?.nftoken || nft, 'image')}
                       alt={'NFT ' + (i + 1)}
                       style={
                         windowWidth > 800
-                          ? { width: '57px', height: '57px', borderRadius: '4px', margin: '2px' }
+                          ? { width: '61px', height: '61px', borderRadius: '4px', margin: '2px' }
                           : { width: '51px', height: '51px', borderRadius: '4px', margin: '2px' }
                       }
                     />
