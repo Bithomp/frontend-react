@@ -202,7 +202,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
     }
   }, [objects])
 
-  const renderNFTSection = (title, nfts, loading) => {
+  const renderNFTSection = (type, title, nfts, loading) => {
     if (loading) {
       return (
         <div className="nft-section">
@@ -231,7 +231,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                   [
                   <Link
                     href={
-                      title === 'Owned NFTs'
+                      type === 'owned'
                         ? `/nfts/${address}?includeWithoutMediaData=true`
                         : `/nft-sales?seller=${address}&period=all`
                     }
@@ -269,7 +269,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
     )
   }
 
-  const renderOffersSection = (title, offers, loading) => {
+  const renderOffersSection = (type, title, offers, loading) => {
     if (windowWidth > 800) {
       return (
         <table className="table-details">
@@ -287,7 +287,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                         '/nft-offers/' +
                         address +
                         '?offerList=' +
-                        (title === 'NFT Offers Created' ? 'for-owned-nfts' : 'privately-offered-to-address')
+                        (type === 'created' ? 'for-owned-nfts' : 'privately-offered-to-address')
                       }
                     >
                       View All
@@ -312,7 +312,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                 <th className="center">{t('table.type')}</th>
                 <th className="center">{t('table.amount')}</th>
                 <th className="center">{t('table.placed')}</th>
-                {title === 'NFT Offers Created' && <th className="center">{t('table.destination')}</th>}
+                {type === 'created' && <th className="center">{t('table.destination')}</th>}
               </tr>
             )}
             {loading ? (
@@ -344,7 +344,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                       <td className="center">
                         {dateFormat(offer?.createdAt)} <LinkTx tx={offer?.createdTxHash} icon={true} />
                       </td>
-                      {title === 'NFT Offers Created' && <td className="center">{nftLink(offer, 'destination')}</td>}
+                      {type === 'created' && <td className="center">{nftLink(offer, 'destination')}</td>}
                     </tr>
                   ))
                 ) : (
@@ -388,7 +388,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                           '/nft-offers/' +
                           address +
                           '?offerList=' +
-                          (title === 'NFT Offers Created' ? 'for-owned-nfts' : 'privately-offered-to-address')
+                          (type === 'created' ? 'for-owned-nfts' : 'privately-offered-to-address')
                         }
                         className="bold"
                       >
@@ -461,13 +461,13 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   const getMetaData = () => {
     return (
       <>
-        {renderNFTSection('Owned NFTs', ownedNfts, loading.owned, 'name')}
+        {renderNFTSection('owned', 'Owned NFTs', ownedNfts, loading.owned, 'name')}
 
-        {renderNFTSection('Sold NFTs', soldNfts, loading.sold, 'soldNew')}
+        {renderNFTSection('sold', 'Sold NFTs', soldNfts, loading.sold, 'soldNew')}
 
-        {renderOffersSection('NFT Offers Created', createdOffers, loading.createdOffers)}
+        {renderOffersSection('created', 'NFT Offers Created', createdOffers, loading.createdOffers)}
 
-        {renderOffersSection('Received NFT Offers', receivedOffers, loading.receivedOffers)}
+        {renderOffersSection('received', 'Received NFT Offers', receivedOffers, loading.receivedOffers)}
       </>
     )
   }
