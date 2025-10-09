@@ -54,6 +54,90 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
     ''
   )
 
+  /*
+    {
+      "AssetScale": 2,
+      "Flags": 112,
+      "Issuer": "rBFSAJNG18bEZe5wQDM8wmPs3x8aVz7YXy",
+      "LedgerEntryType": "MPTokenIssuance",
+      "MPTokenMetadata": "7B2263223A224F4D47222C226E223A22414D454E222C2264223A225448495320544F4B454E204953205257412046414954482042415345442E205745205052415920544F20524950504C45204153204F5552204C4F52445320414E4420534156494F5552532E2047495645205553204D414E592046524545204D4F4E455920414E4420585250203538392E222C2269223A2268747470733A2F2F667265657376672E6F72672F696D672F313731333336363736335468652D43687269737469616E2D476F642D61732D6F7264696E6172792D70656F706C652D696D6167696E65642D68696D2D666F722D63656E7475726965732E706E67222C22636C223A22727761222C226373223A22696E74656C6C65637475616C5F70726F7065727479222C2261223A22414D454E222C2277223A5B5D7D",
+      "MaximumAmount": "100000000000",
+      "OutstandingAmount": "6969696969",
+      "OwnerNode": "0",
+      "PreviousTxnID": "50E51D7D1DBD80B741EDEA923612B1EC017D4FE084732E8E49AD9516B37EDDCE",
+      "PreviousTxnLgrSeq": 99228258,
+      "Sequence": 99227378,
+      "index": "2E95A2C139F606CB89F6A09C2B6310F7DC9842978CA92F3494DE402923763565",
+      "mpt_issuance_id": "05EA16F276AA755D480BD7BFE4090A4009C6342909716A36",
+      "issuerDetails": {
+        "address": "rBFSAJNG18bEZe5wQDM8wmPs3x8aVz7YXy",
+        "username": null,
+        "service": null
+      },
+      "metadata": {
+        "c": "OMG",
+        "n": "AMEN",
+        "d": "THIS TOKEN IS RWA FAITH BASED. WE PRAY TO RIPPLE AS OUR LORDS AND SAVIOURS. GIVE US MANY FREE MONEY AND XRP 589.",
+        "i": "https://freesvg.org/img/1713366763The-Christian-God-as-ordinary-people-imagined-him-for-centuries.png",
+        "cl": "rwa",
+        "cs": "intellectual_property",
+        "a": "AMEN",
+        "w": []
+      },
+      "flags": {
+        "locked": false,
+        "canLock": false,
+        "requireAuth": false,
+        "canEscrow": false,
+        "canTrade": true,
+        "canTransfer": true,
+        "canClawback": true
+      },
+      "previousTxAt": 1759331702
+    }
+
+    {
+      "Account": "rUcPfT7wdGuA8YZiwt58PJCrgzF5UHAaqz",
+      "Flags": 0,
+      "LedgerEntryType": "MPToken",
+      "MPTAmount": "1",
+      "MPTokenIssuanceID": "05EA170476AA755D480BD7BFE4090A4009C6342909716A36",
+      "OwnerNode": "0",
+      "PreviousTxnID": "2B17C0AF7FC0627405169D1D6B94522F5A80C75BC3194193BFCE3A3C3C6536CB",
+      "PreviousTxnLgrSeq": 99234444,
+      "index": "68DEF1CDC736F90CE84274AD8C06262385DD5BD361D7F53AB3607157C2A14523",
+      "accountDetails": {
+        "address": "rUcPfT7wdGuA8YZiwt58PJCrgzF5UHAaqz",
+        "username": null,
+        "service": null
+      },
+      "mptokenCurrencyDetails": {
+        "type": "mp_token",
+        "mptokenIssuanceID": "05EA170476AA755D480BD7BFE4090A4009C6342909716A36",
+        "account": "rBFSAJNG18bEZe5wQDM8wmPs3x8aVz7YXy",
+        "accountDetails": {
+          "address": "rBFSAJNG18bEZe5wQDM8wmPs3x8aVz7YXy",
+          "username": null,
+          "service": null
+        },
+        "scale": null,
+        "currency": "SDS",
+        "metadata": {
+          "c": "SDS",
+          "n": "dfadad",
+          "d": "asssssssss",
+          "cl": "stablecoin",
+          "a": "dfadad"
+        }
+      },
+      "flags": {
+        "locked": false,
+        "authorized": false
+      },
+      "previousTxAt": 1759355640
+    }
+  */
+
   const title = (isIssued ? 'Issued ' : '') + 'Multi-Purpose Tokens'
 
   return (
@@ -101,8 +185,12 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                 <td className="right">{shortName(mptName(c), { maxLength: 10 })}</td>
                 {isIssued ? (
                   <>
-                    <td className="right">{shortNiceNumber(c.OutstandingAmount)}</td>
-                    <td className="right">{shortNiceNumber(c.MaximumAmount)}</td>
+                    <td className="right">
+                      {shortNiceNumber(c.OutstandingAmount * Math.pow(10, -1 * (c.AssetScale || 0)))}
+                    </td>
+                    <td className="right">
+                      {shortNiceNumber(c.MaximumAmount * Math.pow(10, -1 * (c.AssetScale || 0)))}
+                    </td>
                   </>
                 ) : (
                   <>
@@ -110,7 +198,9 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                       {c.mptokenCurrencyDetails &&
                         addressUsernameOrServiceLink(c.mptokenCurrencyDetails, 'account', { short: true })}
                     </td>
-                    <td className="right">{shortNiceNumber(c.MPTAmount || 0)}</td>
+                    <td className="right">
+                      {shortNiceNumber(c.MPTAmount * Math.pow(10, -1 * (c.mptokenCurrencyDetails?.scale || 0)) || 0)}
+                    </td>
                   </>
                 )}
                 <td className="center">
