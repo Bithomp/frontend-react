@@ -68,7 +68,9 @@ export default function FiltersFrame({
   rowsPerPage,
   setRowsPerPage,
   onlyCsv,
-  filters
+  filters,
+  loading,
+  setLoading
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -104,6 +106,8 @@ export default function FiltersFrame({
   }, [activeView])
 
   const handleChangePage = (event, newPage) => {
+    if(loading) return
+    setLoading(true)
     setPage(newPage)
   }
 
@@ -148,6 +152,7 @@ export default function FiltersFrame({
                   rowsPerPage={rowsPerPage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   rowsPerPageOptions={width <= 440 ? [] : rowsPerPageOptions}
+                  disabled={loading}
                   //slotProps={{ select: </> }}
                 />
               </>
@@ -157,7 +162,7 @@ export default function FiltersFrame({
 
             {orderList && (
               <>
-                <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} />
+                <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} disabled={loading}/>
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
                   <TbArrowsSort />
                 </button>
@@ -182,6 +187,7 @@ export default function FiltersFrame({
                   rowsPerPage={rowsPerPage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   rowsPerPageOptions={rowsPerPageOptions}
+                  disabled={loading}
                   //slotProps={{ select: </> }}
                 />
               </>
@@ -203,7 +209,9 @@ export default function FiltersFrame({
             {orderList?.map((item, i) => (
               <li
                 key={i}
-                style={{ fontWeight: item.value === order ? 'bold' : 'normal' }}
+                style={{
+                  fontWeight: item.value === order ? 'bold' : 'normal',
+                }}
                 onClick={() => hideMobileSortMenu(item.value)}
                 suppressHydrationWarning
               >
