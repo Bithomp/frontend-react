@@ -989,7 +989,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   }
 
   const updateUriButton = () => {
-    if (!id || !data.flags?.mutable || data.type === 'xls35') return '' //if it is not mutable
+    if (!id || !data.flags?.mutable || data.type === 'xls35' || data.deletedAt) return '' //if it is not mutable or deleted
 
     // if not signed, or signed but not an issuer - do not show the button
     if (!(data?.issuer && account?.address && account.address === data.issuer)) return ''
