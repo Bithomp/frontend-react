@@ -232,8 +232,8 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                   <Link
                     href={
                       type === 'owned'
-                        ? `/nfts/${address}?includeWithoutMediaData=true`
-                        : `/nft-sales?seller=${address}&period=all`
+                        ? `/nfts/${address}?includeWithoutMediaData=true&limit=50`
+                        : `/nft-sales?seller=${address}&period=all&limit=50`
                     }
                   >
                     View All
@@ -248,11 +248,11 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
           <tr>
             {nfts?.length > 0 ? (
               <td>
-                {nfts?.slice(0, 50).map((nft, i) => (
+                {nfts?.map((nft, i) => (
                   <Link href={'/nft/' + nft.nftokenID} key={i}>
                     <img
-                      src={nftUrl(nft, 'image') || nftUrl(nft?.nftoken, 'image')}
-                      alt={nftName(nft)}
+                      src={nftUrl(nft?.nftoken || nft, 'image')} // src={nftUrl(nft?.nftoken || nft, 'thumbnail')} - lower quality but faster
+                      alt={nftName(nft?.nftoken || nft) || 'NFT'}
                       style={{ width: '48px', height: '48px', borderRadius: '4px', margin: '2px' }}
                     />
                   </Link>
@@ -270,32 +270,35 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   }
 
   const renderOffersSection = (type, title, offers, loading) => {
+    const titleNode = (
+      <>
+        {offers?.length > 1 ? offers.length : ''} {title}{' '}
+        {offers?.length ? (
+          <>
+            [
+            <Link
+              href={
+                '/nft-offers/' +
+                address +
+                '?offerList=' +
+                (type === 'created' ? 'for-owned-nfts' : 'privately-offered-to-address')
+              }
+            >
+              View All
+            </Link>
+            ]
+          </>
+        ) : (
+          ''
+        )}
+      </>
+    )
     if (windowWidth > 800) {
       return (
         <table className="table-details">
           <thead>
             <tr>
-              <th colSpan="100">
-                {offers?.length > 1 ? offers.length : ''} {title}{' '}
-                {!offers?.length ? (
-                  ''
-                ) : (
-                  <>
-                    [
-                    <Link
-                      href={
-                        '/nft-offers/' +
-                        address +
-                        '?offerList=' +
-                        (type === 'created' ? 'for-owned-nfts' : 'privately-offered-to-address')
-                      }
-                    >
-                      View All
-                    </Link>
-                    ]
-                  </>
-                )}
-              </th>
+              <th colSpan="100">{titleNode}</th>
             </tr>
           </thead>
           <tbody>
@@ -378,24 +381,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
             ) : (
               <>
                 <tr>
-                  <td colSpan="100" className="bold">
-                    {title}{' '}
-                    {!offers?.length ? (
-                      ''
-                    ) : (
-                      <Link
-                        href={
-                          '/nft-offers/' +
-                          address +
-                          '?offerList=' +
-                          (type === 'created' ? 'for-owned-nfts' : 'privately-offered-to-address')
-                        }
-                        className="bold"
-                      >
-                        View All - {offers?.length}
-                      </Link>
-                    )}
-                  </td>
+                  <td colSpan="100">{titleNode}</td>
                 </tr>
                 {!errorMessage && offers?.length ? (
                   offers.slice(0, 5).map((offer, i) => (
@@ -462,11 +448,8 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
     return (
       <>
         {renderNFTSection('owned', 'Owned NFTs', ownedNfts, loading.owned, 'name')}
-
         {renderNFTSection('sold', 'Sold NFTs', soldNfts, loading.sold, 'soldNew')}
-
         {renderOffersSection('created', 'NFT Offers Created', createdOffers, loading.createdOffers)}
-
         {renderOffersSection('received', 'Received NFT Offers', receivedOffers, loading.receivedOffers)}
       </>
     )
