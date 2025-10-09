@@ -341,7 +341,18 @@ export default function TokenPage({
                 </tr>
                 <tr>
                   <td>Holders</td>
-                  <td>{fullNiceNumber(token.holders)}</td>
+                  <td>
+                    <Link
+                      href={
+                        '/distribution?currencyIssuer=' +
+                        token.issuer +
+                        '&currency=' +
+                        token.currencyDetails?.currencyCode
+                      }
+                    >
+                      {fullNiceNumber(token.holders)}
+                    </Link>
+                  </td>
                 </tr>
                 <tr>
                   <td>Trustlines</td>

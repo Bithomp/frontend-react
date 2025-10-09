@@ -290,7 +290,7 @@ export default function Distribution({
               <>
                 <br />
                 <br />
-                <br />1 {currency} = {priceFiat} {selectedCurrency.toUpperCase()}
+                <br />1 {currency} = {niceNumber(priceFiat, null, null, 18)} {selectedCurrency.toUpperCase()}
                 <br />1 {currency} = {rawData?.summary?.priceNativeCurrencySpot} {nativeCurrency}
               </>
             )}
