@@ -224,22 +224,21 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
         <thead>
           <tr>
             <th colSpan="100" className="left">
-              {title}
+              {nfts?.length > 1 ? nfts.length : ''} {title}
               {nfts?.length > 0 && (
                 <>
                   {' '}
-                  (
+                  [
                   <Link
                     href={
                       title === 'Owned NFTs'
                         ? `/nfts/${address}?includeWithoutMediaData=true`
                         : `/nft-sales?seller=${address}&period=all`
                     }
-                    className="bold"
                   >
-                    View All {windowWidth > 800 ? title : ''} - {nfts?.length}
+                    View All
                   </Link>
-                  )
+                  ]
                 </>
               )}
             </th>
@@ -277,21 +276,24 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
           <thead>
             <tr>
               <th colSpan="100">
-                {title}{' '}
+                {offers?.length > 1 ? offers.length : ''} {title}{' '}
                 {!offers?.length ? (
                   ''
                 ) : (
-                  <Link
-                    href={
-                      '/nft-offers/' +
-                      address +
-                      '?offerList=' +
-                      (title === 'NFT Offers Created' ? 'for-owned-nfts' : 'privately-offered-to-address')
-                    }
-                    className="bold"
-                  >
-                    View All - {offers?.length}
-                  </Link>
+                  <>
+                    [
+                    <Link
+                      href={
+                        '/nft-offers/' +
+                        address +
+                        '?offerList=' +
+                        (title === 'NFT Offers Created' ? 'for-owned-nfts' : 'privately-offered-to-address')
+                      }
+                    >
+                      View All
+                    </Link>
+                    ]
+                  </>
                 )}
               </th>
             </tr>
