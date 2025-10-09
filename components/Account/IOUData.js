@@ -2,12 +2,10 @@ import {
   fullDateAndTime,
   niceCurrency,
   shortNiceNumber,
-  AddressWithIcon,
   amountFormat,
-  userOrServiceName,
-  fullNiceNumber
+  fullNiceNumber,
+  AddressWithIconFilled
 } from '../../utils/format'
-import { LinkToken } from '../../utils/links'
 import { objectsCountText, useWidth } from '../../utils'
 import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaInfoCircle } from 'react-icons/fa'
 import { subtract } from '../../utils/calc'
@@ -242,16 +240,7 @@ export default function IOUData({
             {i + 1}
           </td>
           <td className="left">
-            <AddressWithIcon address={issuer.issuer} currency={tl.Balance?.currency}>
-              <span className="bold">{niceCurrency(tl.Balance?.currency)}</span>{' '}
-              {userOrServiceName(issuer.issuerDetails, 'address')}
-              <br />
-              {width > 800 ? (
-                <LinkToken currencyIssuer={issuer.issuer} currency={tl.Balance?.currency} />
-              ) : (
-                <LinkToken currencyIssuer={issuer.issuer} currency={tl.Balance?.currency} short={6} />
-              )}
-            </AddressWithIcon>
+            <AddressWithIconFilled data={issuer} name="issuer" currency={tl.Balance?.currency} windowWidth={width} />
           </td>
           <td className="right">
             <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>

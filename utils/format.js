@@ -73,7 +73,7 @@ export const AddressWithIcon = ({ children, address, currency }) => {
   )
 }
 
-export const AddressWithIconFilled = ({ data, name, copyButton, options, currency }) => {
+export const AddressWithIconFilled = ({ data, name, copyButton, options, currency, windowWidth }) => {
   if (!data) return ''
   if (!name) {
     name = 'address'
@@ -82,8 +82,22 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
   const fullUrl = currency ? '/token/' + data[name] + '/' + currency : null
 
   const link = userOrServiceLink(data, name, { fullUrl })
+
+  if (windowWidth && windowWidth < 800) {
+    if (options) {
+      options.short = true
+    } else {
+      options = { short: true }
+    }
+  }
+
   return (
     <AddressWithIcon address={data[name]} currency={currency}>
+      {currency && (
+        <>
+          <span className="bold">{niceCurrency(currency)}</span>{' '}
+        </>
+      )}
       {link && (
         <>
           {link}
