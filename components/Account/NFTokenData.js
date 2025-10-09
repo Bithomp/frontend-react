@@ -462,10 +462,8 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
         {renderNFTSection('Owned NFTs', ownedNfts, loading.owned, 'name')}
 
         {renderNFTSection('Sold NFTs', soldNfts, loading.sold, 'soldNew')}
-        <br />
 
         {renderOffersSection('NFT Offers Created', createdOffers, loading.createdOffers)}
-        <br />
 
         {renderOffersSection('Received NFT Offers', receivedOffers, loading.receivedOffers)}
       </>
@@ -530,14 +528,11 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                   <td className="bold">disallowed</td>
                 </tr>
               )}
-
-              <tr>
-                <td colSpan="100">{getMetaData()}</td>
-              </tr>
             </>
           )}
         </tbody>
       </table>
+      {getMetaData()}
       <div className="show-on-small-w800">
         <center>
           {historicalTitle || title.toUpperCase()}
