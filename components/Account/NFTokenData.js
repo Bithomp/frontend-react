@@ -101,8 +101,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
 
   const fetchOwnedNfts = async () => {
     try {
-      const response = await axios(`v2/nfts?owner=${address}&order=mintedNew&includeWithoutMediaData=true`)
-      console.log(response.data.nfts.length)
+      const response = await axios(`v2/nfts?owner=${address}&order=mintedNew&includeWithoutMediaData=true&limit=40`)
       if (response?.data?.nfts) {
         setOwnedNfts(response.data.nfts)
       } else {
@@ -119,7 +118,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   const fetchSoldNfts = async () => {
     try {
       const response = await axios(
-        `v2/nft-sales?seller=${address}&list=lastSold&convertCurrencies=${selectedCurrency?.toLowerCase()}&sortCurrency=${selectedCurrency?.toLowerCase()}`
+        `v2/nft-sales?seller=${address}&list=lastSold&convertCurrencies=${selectedCurrency?.toLowerCase()}&sortCurrency=${selectedCurrency?.toLowerCase()}&limit=40`
       )
       if (response?.data?.sales) {
         setSoldNfts(response.data.sales)
@@ -232,8 +231,8 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                   <Link
                     href={
                       type === 'owned'
-                        ? `/nfts/${address}?includeWithoutMediaData=true&limit=50`
-                        : `/nft-sales?seller=${address}&period=all&limit=50`
+                        ? `/nfts/${address}?includeWithoutMediaData=true`
+                        : `/nft-sales?seller=${address}&period=all`
                     }
                   >
                     View All
@@ -247,13 +246,17 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
         <tbody>
           <tr>
             {nfts?.length > 0 ? (
-              <td>
+              <td style={{ paddingLeft: 8 }}>
                 {nfts?.map((nft, i) => (
                   <Link href={'/nft/' + nft.nftokenID} key={i}>
                     <img
                       src={nftUrl(nft?.nftoken || nft, 'image')} // src={nftUrl(nft?.nftoken || nft, 'thumbnail')} - lower quality but faster
-                      alt={nftName(nft?.nftoken || nft) || 'NFT'}
-                      style={{ width: '48px', height: '48px', borderRadius: '4px', margin: '2px' }}
+                      alt={'NFT ' + (i + 1)}
+                      style={
+                        windowWidth > 800
+                          ? { width: '57px', height: '57px', borderRadius: '4px', margin: '2px' }
+                          : { width: '51px', height: '51px', borderRadius: '4px', margin: '2px' }
+                      }
                     />
                   </Link>
                 ))}
