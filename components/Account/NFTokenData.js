@@ -199,6 +199,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
     if (objects?.nftList?.length > 0) {
       fetchReceivedOffers()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [objects])
 
   const renderNFTSection = (type, title, nfts, loading) => {

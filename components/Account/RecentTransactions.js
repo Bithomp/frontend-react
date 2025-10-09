@@ -1,10 +1,10 @@
-import React from 'react'
 import { useState, useEffect } from 'react'
-import { fullDateAndTime, timeOrDate, amountFormat, nftIdLink, shortAddress, nftOfferLink } from '../../utils/format'
+import { fullDateAndTime, timeOrDate, amountFormat, nftIdLink, shortAddress } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import axios from 'axios'
 import { addressBalanceChanges } from '../../utils/transaction'
 import { isNativeCurrency, xls14NftValue } from '../../utils'
+import Link from 'next/link'
 
 export default function RecentTransactions({ userData, ledgerTimestamp }) {
   const [transactions, setTransactions] = useState([])
@@ -19,16 +19,12 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     ''
   )
 
-  const showAllOfferLinks = (changes) => {
-    const indexes = []
+  const showOfferLink = (changes, title) => {
     for (let i = 0; i < changes?.length; i++) {
       for (let j = 0; j < changes[i]?.nftokenOfferChanges?.length; j++) {
-        indexes.push(
-          <React.Fragment key={i + '-' + j}>{nftOfferLink(changes[i].nftokenOfferChanges[j].index)}</React.Fragment>
-        )
+        return <Link href={'/nft-offer/' + changes[i].nftokenOfferChanges[j].index}>{title}</Link>
       }
     }
-    return indexes
   }
 
   // Tooltip function for AccountSet fields
@@ -214,16 +210,8 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       const specification = txdata.specification
       const direction = specification?.flags?.sellToken ? 'Sell' : 'Buy'
       return (
-        <span className="tooltip">
-          <span className="inline-flex items-center gap-1">
-            <span className="text-purple-600">{direction} offer created</span>
-            {showAllOfferLinks(txdata.outcome?.nftokenOfferChanges)}
-          </span>
-          <span className="tooltiptext">
-            <span>
-              NFT {direction} offer created: {showAllOfferLinks(txdata.outcome?.nftokenOfferChanges)}
-            </span>
-          </span>
+        <span className="inline-flex items-center gap-1">
+          {showOfferLink(txdata.outcome?.nftokenOfferChanges, direction + ' offer')} created
         </span>
       )
     }
