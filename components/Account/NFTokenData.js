@@ -25,10 +25,10 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   const [receivedOffers, setReceivedOffers] = useState([])
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState({
-    owned: true,
-    sold: true,
-    createdOffers: true,
-    receivedOffers: true
+    owned: false,
+    sold: false,
+    createdOffers: false,
+    receivedOffers: false
   })
 
   const title = 'NFT Data'
@@ -101,6 +101,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
 
   const fetchOwnedNfts = async () => {
     try {
+      setLoading((prev) => ({ ...prev, owned: true }))
       const response = await axios(`v2/nfts?owner=${address}&order=mintedNew&includeWithoutMediaData=true&limit=40`)
       if (response?.data?.nfts) {
         setOwnedNfts(response.data.nfts)
@@ -117,6 +118,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
 
   const fetchSoldNfts = async () => {
     try {
+      setLoading((prev) => ({ ...prev, sold: true }))
       const response = await axios(
         `v2/nft-sales?seller=${address}&list=lastSold&convertCurrencies=${selectedCurrency?.toLowerCase()}&sortCurrency=${selectedCurrency?.toLowerCase()}&limit=40`
       )
@@ -135,6 +137,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
 
   const fetchCreatedOffers = async () => {
     try {
+      setLoading((prev) => ({ ...prev, createdOffers: true }))
       const response = await axios(`v2/nft-offers/${address}?list=counterOffers&nftoken=true&offersValidate=true`)
       if (response?.data?.nftOffers) {
         setCreatedOffers(
@@ -158,6 +161,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
 
   const fetchReceivedOffers = async () => {
     try {
+      setLoading((prev) => ({ ...prev, receivedOffers: true }))
       const response = await axios(
         `v2/nft-offers/${address}?list=privatelyOfferedToAddress&nftoken=true&offersValidate=true`
       )
@@ -182,6 +186,8 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   }
 
   useEffect(() => {
+    if (!objects?.nftList) return
+
     // Fetch owned NFTs (last bought)
     if (objects?.nftList?.length > 0) {
       fetchOwnedNfts()
@@ -203,19 +209,6 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   }, [objects])
 
   const renderNFTSection = (type, title, nfts, loading) => {
-    if (loading) {
-      return (
-        <div className="nft-section">
-          <h3>{title}</h3>
-          <div className="center">
-            <span className="waiting"></span>
-            <br />
-            {t('general.loading')}
-          </div>
-        </div>
-      )
-    }
-
     return (
       <table
         className={windowWidth > 800 ? 'table-details' : 'table-mobile'}
@@ -246,26 +239,34 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
         </thead>
         <tbody>
           <tr>
-            {nfts?.length > 0 ? (
-              <td style={{ paddingLeft: 8 }}>
-                {nfts?.map((nft, i) => (
-                  <Link href={'/nft/' + nft.nftokenID} key={i}>
-                    <img
-                      src={nftUrl(nft?.nftoken || nft, 'image')}
-                      alt={'NFT ' + (i + 1)}
-                      style={
-                        windowWidth > 800
-                          ? { width: '61px', height: '61px', borderRadius: '4px', margin: '2px' }
-                          : { width: '51px', height: '51px', borderRadius: '4px', margin: '2px' }
-                      }
-                    />
-                  </Link>
-                ))}
+            {loading ? (
+              <td colSpan={100} className="center">
+                <span className="waiting"></span>
+                <br />
+                {t('general.loading')}
               </td>
             ) : (
-              <td className="center">
-                <p className="center grey">We couldn't find any NFTs.</p>
-              </td>
+              <>
+                {nfts?.length > 0 ? (
+                  <td style={{ paddingLeft: 8 }}>
+                    {nfts?.map((nft, i) => (
+                      <Link href={'/nft/' + nft.nftokenID} key={i}>
+                        <img
+                          src={nftUrl(nft?.nftoken || nft, 'image')}
+                          alt={'NFT ' + (i + 1)}
+                          style={
+                            windowWidth > 800
+                              ? { width: '61px', height: '61px', borderRadius: '4px', margin: '2px' }
+                              : { width: '51px', height: '51px', borderRadius: '4px', margin: '2px' }
+                          }
+                        />
+                      </Link>
+                    ))}
+                  </td>
+                ) : (
+                  <td>We couldn't find any NFTs.</td>
+                )}
+              </>
             )}
           </tr>
         </tbody>
@@ -306,9 +307,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
             </tr>
           </thead>
           <tbody>
-            {!offers?.length ? (
-              <p className="center grey">{t('nft-offers.no-nft-offers')}</p>
-            ) : (
+            {offers?.length > 0 && (
               <tr>
                 {!xahauNetwork && (
                   <th className="center" style={{ width: '10px' }}>
@@ -334,26 +333,40 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
             ) : (
               <>
                 {!errorMessage ? (
-                  offers.slice(0, 5).map((offer, i) => (
-                    <tr key={i}>
-                      {!xahauNetwork && (
-                        <td className="center" style={{ width: '10px' }}>
-                          <Link href={'/nft-offer/' + offer.offerIndex}>
-                            <LinkIcon />
-                          </Link>
-                        </td>
-                      )}
-                      <td className="center">{nftThumbnail(offer?.nftoken)}</td>
-                      <td className="center">
-                        {offer?.flags?.sellToken === true || xahauNetwork ? t('table.text.sell') : t('table.text.buy')}
-                      </td>
-                      <td className="center">{amountFormat(offer?.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
-                      <td className="center">
-                        {dateFormat(offer?.createdAt)} <LinkTx tx={offer?.createdTxHash} icon={true} />
-                      </td>
-                      {type === 'created' && <td className="center">{nftLink(offer, 'destination')}</td>}
-                    </tr>
-                  ))
+                  <>
+                    {offers?.length > 0 ? (
+                      <>
+                        {offers.slice(0, 5).map((offer, i) => (
+                          <tr key={i}>
+                            {!xahauNetwork && (
+                              <td className="center" style={{ width: '10px' }}>
+                                <Link href={'/nft-offer/' + offer.offerIndex}>
+                                  <LinkIcon />
+                                </Link>
+                              </td>
+                            )}
+                            <td className="center">{nftThumbnail(offer?.nftoken)}</td>
+                            <td className="center">
+                              {offer?.flags?.sellToken === true || xahauNetwork
+                                ? t('table.text.sell')
+                                : t('table.text.buy')}
+                            </td>
+                            <td className="center">
+                              {amountFormat(offer?.amount, { tooltip: true, maxFractionDigits: 2 })}
+                            </td>
+                            <td className="center">
+                              {dateFormat(offer?.createdAt)} <LinkTx tx={offer?.createdTxHash} icon={true} />
+                            </td>
+                            {type === 'created' && <td className="center">{nftLink(offer, 'destination')}</td>}
+                          </tr>
+                        ))}
+                      </>
+                    ) : (
+                      <tr>
+                        <td>{t('nft-offers.no-nft-offers')}</td>
+                      </tr>
+                    )}
+                  </>
                 ) : (
                   <tr>
                     <td colSpan="9" className="center orange bold">
@@ -449,6 +462,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   }
 
   const getMetaData = () => {
+    if (!objects?.nftList) return ''
     return (
       <>
         {renderNFTSection('owned', 'Owned NFTs', ownedNfts, loading.owned, 'name')}
