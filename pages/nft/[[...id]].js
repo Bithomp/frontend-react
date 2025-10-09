@@ -1027,6 +1027,8 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
 
     if (isNftExplicit(data)) return '' //if it is explicit, do not offer to set as avatar
 
+    if (!imageUrl) return '' //if there is no image, do not offer to set as avatar
+
     //if devnet, or signed, but not an owner or issuer - do not show set as avatar button
     if (devNet || (account?.address && account.address !== data.owner && account.address !== data.issuer)) return ''
 
