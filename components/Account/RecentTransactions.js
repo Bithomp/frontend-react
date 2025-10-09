@@ -113,14 +113,9 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       const nftoken_id = txdata.meta?.nftoken_id
       if (nftoken_id) {
         return (
-          <span className="tooltip">
-            <span className="inline-flex items-center gap-1">
-              <span className="text-purple-600">NFT</span>
-              {nftoken_id && <span className="bold">{nftIdLink(nftoken_id, 4)}</span>}
-            </span>
-            <span className="tooltiptext">
-              <span>NFT: {nftoken_id || 'N/A'}</span>
-            </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="text-purple-600">NFT</span>
+            {nftoken_id && <span className="bold">{nftIdLink(nftoken_id, 4)}</span>}
           </span>
         )
       }
@@ -131,14 +126,9 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       const nftoken_id = txdata.tx?.NFTokenID
       if (nftoken_id) {
         return (
-          <span className="tooltip">
-            <span className="inline-flex items-center gap-1">
-              <span className="text-red-600">NFT removed: </span>
-              <span className="bold">{nftIdLink(nftoken_id, 4)}</span>
-            </span>
-            <span className="tooltiptext">
-              <span>NFT removed: {nftoken_id || 'N/A'}</span>
-            </span>
+          <span className="inline-flex items-center gap-1">
+            <Link href={'/nft/' + nftoken_id}>NFT</Link>
+            <span className="text-red-600">burned</span>
           </span>
         )
       }
@@ -155,14 +145,9 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
           const nftId = addedNft.nftokenChanges.find((nftChange) => nftChange.status === 'added')?.nftokenID
           if (nftId) {
             return (
-              <span className="tooltip">
-                <span className="inline-flex items-center gap-1">
-                  <span className="text-green-600">NFT added: </span>
-                  <span className="bold">{nftIdLink(nftId, 4)}</span>
-                </span>
-                <span className="tooltiptext">
-                  <span>NFT added: {nftId || 'N/A'}</span>
-                </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="text-green-600">NFT added: </span>
+                <span className="bold">{nftIdLink(nftId, 4)}</span>
               </span>
             )
           }
@@ -175,13 +160,8 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       const specification = txdata.specification
       const direction = specification?.flags?.sell ? 'Sell' : 'Buy'
       return (
-        <span className="tooltip">
-          <span className="inline-flex items-center gap-1">
-            <span className="text-blue-600">{direction} order created</span>
-          </span>
-          <span className="tooltiptext">
-            <span>{direction} order created</span>
-          </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="text-blue-600">{direction} order created</span>
         </span>
       )
     }
@@ -194,13 +174,8 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
 
       const direction = sourceOrderbookChange?.direction ? 'Sell' : 'Buy'
       return (
-        <span className="tooltip">
-          <span className="inline-flex items-center gap-1">
-            <span className="text-orange-600">{direction} order cancelled</span>
-          </span>
-          <span className="tooltiptext">
-            <span>{direction} order cancelled</span>
-          </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="text-orange-600">{direction} order cancelled</span>
         </span>
       )
     }
@@ -210,7 +185,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       const specification = txdata.specification
       const direction = specification?.flags?.sellToken ? 'Sell' : 'Buy'
       return (
-        <span className="inline-flex items-center gap-1">
+        <span className="inline-flex items-center gap-1 text-purple-600">
           {showOfferLink(txdata.outcome?.nftokenOfferChanges, direction + ' offer')} created
         </span>
       )
