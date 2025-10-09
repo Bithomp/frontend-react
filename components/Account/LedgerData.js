@@ -367,6 +367,25 @@ export default function LedgerData({
     "This account doesn't hold Multi Purpose Tokens."
   )
 
+  const nftNode = !objects?.nftList ? (
+    'Loading...'
+  ) : objects?.nftList?.length > 0 ? (
+    <>
+      <span className="bold">{objects?.nftList?.length}</span> (
+      <span className="link" onClick={() => scrollToSection('nft-section')}>
+        view
+      </span>
+      )
+    </>
+  ) : account?.address === data?.address ? (
+    <>
+      You don't have any NFTs. You can <Link href="/services/nft-mint">Mint NFT</Link> or
+      <Link href="/nft-explorer?saleCurrency=xrp&list=onSale">Buy NFT</Link>
+    </>
+  ) : (
+    "This account doesn't hold NFTs."
+  )
+
   const dexOrdersNode = !objects?.offerList ? (
     'Loading...'
   ) : objects?.offerList?.length > 0 ? (
@@ -451,6 +470,10 @@ export default function LedgerData({
               <tr>
                 <td>MP Tokens</td>
                 <td>{mptNode}</td>
+              </tr>
+              <tr>
+                <td>NFTs</td>
+                <td>{nftNode}</td>
               </tr>
               <tr>
                 <td>DEX orders</td>

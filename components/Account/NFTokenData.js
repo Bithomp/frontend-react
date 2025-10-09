@@ -208,16 +208,21 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [objects])
 
-  const renderNFTSection = (type, title, nfts, loading) => {
+  //'owned', 'Owned NFTs', ownedNfts, loading.owned, 'name', objects?.nftList?.length)
+
+  const renderNFTSection = (type, title, nfts, loading, total) => {
+    const countNfts = total || nfts?.length
+
     return (
       <table
         className={windowWidth > 800 ? 'table-details' : 'table-mobile'}
         style={{ width: '100%', marginTop: '15px' }}
+        id={type === 'owned' ? 'nft-section' : undefined}
       >
         <thead>
           <tr>
             <th colSpan="100" className="left">
-              {nfts?.length > 1 ? nfts.length : ''} {title}
+              {countNfts > 1 ? countNfts : ''} {title}
               {nfts?.length > 0 && (
                 <>
                   {' '}
@@ -461,25 +466,25 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
     }
   }
 
-  const getMetaData = () => {
-    if (!objects?.nftList) return ''
-    return (
-      <>
-        {renderNFTSection('owned', 'Owned NFTs', ownedNfts, loading.owned, 'name')}
-        {renderNFTSection('sold', 'Sold NFTs', soldNfts, loading.sold, 'soldNew')}
-        {renderOffersSection('created', 'NFT Offers Created', createdOffers, loading.createdOffers)}
-        {renderOffersSection('received', 'Received NFT Offers', receivedOffers, loading.receivedOffers)}
-        {windowWidth < 800 && <br />}
-      </>
-    )
-  }
-
   let isEmpty =
     !data?.ledgerInfo?.nftokenMinter &&
     !data.ledgerInfo?.burnedNFTokens &&
     !data.ledgerInfo?.mintedNFTokens &&
     !(objects?.nftOfferList?.length > 0) &&
     !(objects?.nftList?.length > 0)
+
+  const getMetaData = () => {
+    if (isEmpty) return ''
+    return (
+      <>
+        {renderNFTSection('owned', 'Owned NFTs', ownedNfts, loading.owned, objects?.nftList?.length)}
+        {renderNFTSection('sold', 'Sold NFTs', soldNfts, loading.sold)}
+        {renderOffersSection('created', 'NFT Offers Created', createdOffers, loading.createdOffers)}
+        {renderOffersSection('received', 'Received NFT Offers', receivedOffers, loading.receivedOffers)}
+        {windowWidth < 800 && <br />}
+      </>
+    )
+  }
 
   return (
     <>
