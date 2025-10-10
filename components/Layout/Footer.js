@@ -80,10 +80,10 @@ export default function Footer({ countryCode }) {
         {!xahauNetwork && (
           <div className="footer-menu-column">
             <span className="footer-menu-header">{t('menu.sponsored.title')}</span>
-            <a href="/go/fm-buy" target="_blank" rel="noreferrer">
+            <a href="https://bithomp.com/go/fm-buy" target="_blank" rel="noreferrer">
               {t('menu.sponsored.buy')}
             </a>
-            <a href="/go/fm-earn" target="_blank" rel="noreferrer">
+            <a href="https://bithomp.com/go/fm-earn" target="_blank" rel="noreferrer">
               {t('menu.sponsored.earn')}
             </a>
             <a
@@ -91,7 +91,7 @@ export default function Footer({ countryCode }) {
               target="_blank"
               rel="noreferrer"
             >
-              {t('menu.sponsored.play')}
+              {countryCode === 'US' ? 'Join Drake on Stake' : 'Join Stake'}
             </a>
           </div>
         )}

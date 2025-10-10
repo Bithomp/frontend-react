@@ -99,11 +99,24 @@ const MyApp = ({ Component, pageProps }) => {
       '/amms',
       '/distribution',
       '/admin/watchlist',
+      '/nft/[[...id]]',
       '/tokens',
+<<<<<<< HEAD
       '/nft/[[...id]]',
       '/nft-collection/[id]'
+=======
+      '/token/[[...id]]'
     ]
-    const skipOnFirstRender = ['/', '/account', '/account/[id]', '/account/[id]/transactions', '/amms', '/tokens']
+    const skipOnFirstRender = [
+      '/',
+      '/account',
+      '/account/[id]',
+      '/account/[id]/transactions',
+      '/amms',
+      '/tokens',
+      '/token/[[...id]]'
+>>>>>>> upstream
+    ]
 
     // Skip fetch on first render for pages that get on the server side
     if (firstRenderRef.current && skipOnFirstRender.includes(router.pathname)) {
@@ -216,6 +229,7 @@ const MyApp = ({ Component, pageProps }) => {
                 signOutPro={signOutPro}
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
+                countryCode={countryCode}
               />
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}

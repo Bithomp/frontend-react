@@ -53,8 +53,12 @@ class ErrorBoundary extends React.Component {
       return (
         <div className="center">
           <br />
-          <h1>Something went wrong, contact our support.</h1>
-          <Mailto email="support@bithomp.com" headers={{ subject: 'Front-end error' }} />
+          <h1 className="contrast">Something went wrong, contact our support.</h1>
+          <Mailto email="support@bithomp.com" headers={{ subject: 'Frontend error' }} />
+          [For technical enquiries only, send a link to the page where the error occurred and a brief description of
+          what you did.]
+          <br />
+          <br />
         </div>
       )
     }

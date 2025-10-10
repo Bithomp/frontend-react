@@ -401,6 +401,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
           yaxis: {
             ...prev.yaxis,
             tickAmount: 5,
+            logarithmic: false,
             labels: {
               ...(prev.yaxis?.labels ?? {}),
               formatter: (val) => sign + Number(val).toFixed(digitsAfterDot)
