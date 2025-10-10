@@ -79,7 +79,7 @@ export async function getServerSideProps(context) {
   let initialErrorMessage = null
 
   // Validate order param
-  const supportedOrders = new Set([
+  const supportedOrders = [
     'rating',
     'trustlinesHigh',
     'holdersHigh',
@@ -91,8 +91,8 @@ export async function getServerSideProps(context) {
     'uniqueTradersHigh',
     'uniqueSellersHigh',
     'uniqueBuyersHigh'
-  ])
-  const orderParam = supportedOrders.has(order) ? order : 'rating'
+  ]
+  const orderParam = supportedOrders.includes(order) ? order : 'rating'
   const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
   let url = `v2/trustlines/tokens?limit=100&order=${orderParam}&currencyDetails=true&statistics=true&convertCurrencies=${selectedCurrencyServer}`
@@ -134,7 +134,7 @@ export async function getServerSideProps(context) {
       selectedCurrencyServer,
       currencyQuery: currency || initialData?.currency || null,
       issuerQuery: issuer || initialData?.issuer || null,
-      orderQuery: supportedOrders.has(order) ? order : null,
+      orderQuery: supportedOrders.includes(order) ? order : null,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -153,6 +153,31 @@ const orderList = [
   { value: 'uniqueSellersHigh', label: 'Unique Sellers (24h): High to Low' },
   { value: 'uniqueBuyersHigh', label: 'Unique Buyers (24h): High to Low' }
 ]
+
+// Helper component to render token with icon
+const TokenCell = ({ token }) => {
+  return (
+    <AddressWithIcon address={token?.issuer} currency={token?.currency}>
+      {token.lp_token ? (
+        <b>{token.currencyDetails.currency}</b>
+      ) : (
+        <>
+          <b>{niceCurrency(token.currency)}</b>
+        </>
+      )}
+      {token.issuer && (
+        <>
+          <br />
+          <span className="issuer-address">
+            {token.issuerDetails?.service || token.issuerDetails?.username
+              ? userOrServiceName(token.issuerDetails)
+              : shortAddress(token.issuer)}
+          </span>
+        </>
+      )}
+    </AddressWithIcon>
+  )
+}
 
 export default function Tokens({
   initialData,
@@ -376,31 +401,6 @@ export default function Tokens({
     { label: 'Trustlines', key: 'trustlines' },
     { label: 'Holders', key: 'holders' }
   ]
-
-  // Helper component to render token with icon
-  const TokenCell = ({ token }) => {
-    return (
-      <AddressWithIcon address={token?.issuer} currency={token?.currency}>
-        {token.lp_token ? (
-          <b>{token.currencyDetails.currency}</b>
-        ) : (
-          <>
-            <b>{niceCurrency(token.currency)}</b>
-          </>
-        )}
-        {token.issuer && (
-          <>
-            <br />
-            <span className="issuer-address">
-              {token.issuerDetails?.service || token.issuerDetails?.username
-                ? userOrServiceName(token.issuerDetails)
-                : shortAddress(token.issuer)}
-            </span>
-          </>
-        )}
-      </AddressWithIcon>
-    )
-  }
 
   const handleSetTrustline = (token) => {
     // Format supply to have at most 6 decimal places
