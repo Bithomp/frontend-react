@@ -1,13 +1,5 @@
-import { i18n } from 'next-i18next'
-import { objectsCountText, shortName } from '../../utils'
-import {
-  addressUsernameOrServiceLink,
-  fullDateAndTime,
-  shortHash,
-  shortNiceNumber,
-  timeFromNow
-} from '../../utils/format'
-import { LinkTx } from '../../utils/links'
+import { objectsCountText } from '../../utils'
+import { AddressWithIconFilled, fullDateAndTime, shortNiceNumber } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 
 const mptCurrency = (data) => {
@@ -39,12 +31,17 @@ const mptName = (data) => {
   return meta.name || meta.n || 'N/A'
 }
 
-const mptId = (data, isIssued) => {
+const issuerDetails = (data) => {
   if (!data) return null
-  if (isIssued) {
-    return data.mpt_issuance_id
+  return {
+    issuer: data.mptokenCurrencyDetails?.account || data.Issuer || null,
+    issuerDetails: data.mptokenCurrencyDetails?.accountDetails || data.issuerDetails || null
   }
-  return data.MPTokenIssuanceID
+}
+
+const mptId = (data) => {
+  if (!data) return null
+  return data.MPTokenIssuanceID || data.mpt_issuance_id
 }
 
 const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
@@ -155,33 +152,35 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
         <tbody>
           <tr>
             <th>#</th>
-            <th className="left">ID</th>
             <th className="left">Currency</th>
-            <th className="right">Name</th>
+            <th className="center">MPT ID</th>
             {isIssued ? (
               <>
                 <th className="right">Outstanding</th>
                 <th className="right">Max</th>
               </>
             ) : (
-              <>
-                <th className="right">Issuer</th>
-                <th className="right">Balance</th>
-              </>
+              <th className="right">Balance</th>
             )}
           </tr>
           {list.map((c, i) => {
-            const cMptId = mptId(c, isIssued)
+            const cMptId = mptId(c)
             return (
               <tr key={i}>
                 <td className="center" style={{ width: 30 }}>
                   {i + 1}
                 </td>
-                <td>
+                <td className="left">
+                  <AddressWithIconFilled
+                    data={issuerDetails(c)}
+                    name="issuer"
+                    currency={mptCurrency(c)}
+                    options={{ mptId: cMptId, currencyName: mptName(c) }}
+                  />
+                </td>
+                <td className="center">
                   <CopyButton text={cMptId} />
                 </td>
-                <td className="left">{mptCurrency(c)}</td>
-                <td className="right">{shortName(mptName(c), { maxLength: 10 })}</td>
                 {isIssued ? (
                   <>
                     <td className="right">
@@ -192,15 +191,9 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                     </td>
                   </>
                 ) : (
-                  <>
-                    <td className="right">
-                      {c.mptokenCurrencyDetails &&
-                        addressUsernameOrServiceLink(c.mptokenCurrencyDetails, 'account', { short: true })}
-                    </td>
-                    <td className="right">
-                      {shortNiceNumber(c.MPTAmount * Math.pow(10, -1 * (c.mptokenCurrencyDetails?.scale || 0)) || 0)}
-                    </td>
-                  </>
+                  <td className="right">
+                    {shortNiceNumber(c.MPTAmount * Math.pow(10, -1 * (c.mptokenCurrencyDetails?.scale || 0)) || 0)}
+                  </td>
                 )}
               </tr>
             )
@@ -215,55 +208,52 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
           {historicalTitle}
         </center>
         <br />
-        {list.map((c, i) => {
-          const cMptId = mptId(c, isIssued)
-          return (
-            <table className="table-mobile wide" key={i}>
-              <tbody>
-                <tr>
+        <table className="table-mobile wide">
+          <tbody>
+            <tr>
+              <th>#</th>
+              <th className="left">Currency</th>
+              <th className="center">MPT ID</th>
+              {isIssued ? (
+                <>
+                  <th className="right">Outstanding amount</th>
+                  <th className="right">Maximum amount</th>
+                </>
+              ) : (
+                <th className="right">Balance</th>
+              )}
+            </tr>
+            {list.map((c, i) => {
+              const cMptId = mptId(c)
+              return (
+                <tr key={i}>
                   <td className="center">{i + 1}</td>
                   <td>
-                    <p>
-                      <span className="grey">ID</span> {shortHash(cMptId)} <CopyButton text={cMptId} />
-                    </p>
-                    <p>
-                      <span className="grey">Currency</span> {mptCurrency(c)}
-                    </p>
-                    <p>
-                      <span className="grey">Name</span> {mptName(c)}
-                    </p>
-                    {isIssued ? (
-                      <>
-                        <p>
-                          <span className="grey">Outstanding amount</span> {shortNiceNumber(c.OutstandingAmount)}
-                        </p>
-                        <p>
-                          <span className="grey">Maximum amount</span> {shortNiceNumber(c.MaximumAmount)}
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <p>
-                          <span className="grey">Issuer</span>
-                          {(c.mptokenCurrencyDetails &&
-                            addressUsernameOrServiceLink(c.mptokenCurrencyDetails, 'account', { short: true })) ||
-                            'N/A'}
-                        </p>
-                        <p>
-                          <span className="grey">Amount</span> {shortNiceNumber(c.MPTAmount || 0)}
-                        </p>
-                      </>
-                    )}
-                    <p>
-                      <span className="grey">Last update</span> {timeFromNow(c.previousTxAt, i18n)}{' '}
-                      <LinkTx tx={c.PreviousTxnID} icon={true} />
-                    </p>
+                    <AddressWithIconFilled
+                      data={issuerDetails(c)}
+                      name="issuer"
+                      currency={mptCurrency(c)}
+                      options={{ mptId: cMptId, currencyName: mptName(c) }}
+                      windowWidth={700}
+                    />
                   </td>
+                  <td className="center">
+                    <CopyButton text={cMptId} />
+                  </td>
+                  {isIssued ? (
+                    <>
+                      <td className="right">{shortNiceNumber(c.OutstandingAmount)}</td>
+                      <td className="right">{shortNiceNumber(c.MaximumAmount)}</td>
+                    </>
+                  ) : (
+                    <td className="right">{shortNiceNumber(c.MPTAmount || 0)}</td>
+                  )}
                 </tr>
-              </tbody>
-            </table>
-          )
-        })}
+              )
+            })}
+          </tbody>
+        </table>
+        <br />
       </div>
     </div>
   )

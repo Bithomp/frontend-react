@@ -652,6 +652,10 @@ export const tokenImageSrc = (token) => {
   return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
 }
 
+export const mptokenImageSrc = (mptid) => {
+  return avatarServer.replace('/avatar/', '/mptoken/') + mptid
+}
+
 export const networksIds = {
   0: { server: 'https://bithomp.com', name: 'mainnet' },
   1: { server: 'https://test.bithomp.com', name: 'testnet' },

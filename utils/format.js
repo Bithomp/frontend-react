@@ -18,7 +18,9 @@ import {
   stripText,
   xls14NftValue,
   tokenImageSrc,
-  isNativeCurrency
+  mptokenImageSrc,
+  isNativeCurrency,
+  shortName
 } from '.'
 
 dayjs.extend(durationPlugin)
@@ -48,11 +50,15 @@ export const CurrencyWithIcon = ({ token }) => {
   )
 }
 
-export const AddressWithIcon = ({ children, address, currency }) => {
+export const AddressWithIcon = ({ children, address, currency, options }) => {
   let imageUrl = avatarServer + address
 
   if (currency) {
-    imageUrl = tokenImageSrc({ issuer: address, currency })
+    if (options?.mptId) {
+      imageUrl = mptokenImageSrc(options.mptId)
+    } else {
+      imageUrl = tokenImageSrc({ issuer: address, currency })
+    }
   }
 
   if (!address) {
@@ -79,7 +85,7 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
     name = 'address'
   }
 
-  const fullUrl = currency ? '/token/' + data[name] + '/' + currency : null
+  const fullUrl = currency && !options?.mptId ? '/token/' + data[name] + '/' + currency : null
 
   const link = userOrServiceLink(data, name, { fullUrl })
 
@@ -92,18 +98,23 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
   }
 
   return (
-    <AddressWithIcon address={data[name]} currency={currency}>
+    <AddressWithIcon address={data[name]} currency={currency} options={options}>
       {currency && (
         <>
-          <span className="bold">{niceCurrency(currency)}</span>{' '}
+          <span className="bold">{options?.mptId ? currency : niceCurrency(currency)}</span>{' '}
         </>
       )}
+      {options?.currencyName && options.currencyName.length > 10 && currency.length > 10 && <br />}
+      {options?.currencyName && options.currencyName !== currency && (
+        <span>{shortName(options.currencyName, { maxLength: 10 })}</span>
+      )}{' '}
       {link && (
         <>
           {link}
           <br />
         </>
       )}
+      <br />
       {addressLink(data[name], { ...options, fullUrl })} {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
   )

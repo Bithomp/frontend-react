@@ -421,6 +421,15 @@ table {
     }
     tr {
       border: 1px solid var(--accent-link);
+      > td:last-child,
+      > th:last-child {
+        padding-right: 6px;
+      }
+
+      > td:first-child,
+      > th:first-child {
+        padding-left: 6px;
+      }
     }
   }
 }

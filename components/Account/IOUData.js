@@ -358,8 +358,8 @@ export default function IOUData({
               <tr>
                 <th>#</th>
                 <th className="left">Currency</th>
-                <th className="right">Balance</th>
                 <th className="right">Params</th>
+                <th className="right">Balance</th>
               </tr>
               {tokenRows}
             </tbody>
