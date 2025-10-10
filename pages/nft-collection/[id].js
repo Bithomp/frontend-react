@@ -177,7 +177,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
     let items = []
     if (kind === 'sales') {
       title = 'Recent Sales'
-      headers = ['NFT', 'Seller', 'Buyer', 'Price', 'Date']
+      headers = ['NFT', 'Seller / Buyer', 'Price', 'Date']
       items = activityData.sales || []
     } else if (kind === 'listings') {
       title = 'Recent Listings'
@@ -299,14 +299,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
 
     // Desktop: render table
     return (
-      <table
-        className="table-details"
-        style={{
-          marginBottom: '20px',
-          overflowX: 'auto',
-          padding: '3px 5px'
-        }}
-      >
+      <table className="table-details" style={{ marginBottom: '20px' }}>
         <thead>
           <tr>
             <th colSpan="100">{title}</th>
@@ -342,14 +335,12 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                 </td>
                 {kind === 'sales' && (
                   <>
-                    <td>
+                    <td style={{width: 'fit-content'}}>
                       {item.seller ? (
                         <AddressWithIconFilled data={item} name="seller" options={{ short: true }} />
                       ) : (
                         '—'
                       )}
-                    </td>
-                    <td>
                       {item.buyer ? (
                         <AddressWithIconFilled data={item} name="buyer" options={{ short: true }} />
                       ) : (

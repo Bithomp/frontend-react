@@ -101,10 +101,8 @@ const MyApp = ({ Component, pageProps }) => {
       '/admin/watchlist',
       '/nft/[[...id]]',
       '/tokens',
-<<<<<<< HEAD
       '/nft/[[...id]]',
-      '/nft-collection/[id]'
-=======
+      '/nft-collection/[id]',
       '/token/[[...id]]'
     ]
     const skipOnFirstRender = [
@@ -115,7 +113,6 @@ const MyApp = ({ Component, pageProps }) => {
       '/amms',
       '/tokens',
       '/token/[[...id]]'
->>>>>>> upstream
     ]
 
     // Skip fetch on first render for pages that get on the server side
