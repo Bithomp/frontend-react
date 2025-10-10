@@ -537,7 +537,6 @@ export default function Tokens({
     const apiOrderFor = (k) => {
       switch (k) {
         case 'rating':
-        case 'index':
           return 'rating'
         case 'trustlines':
           return 'trustlinesHigh'

@@ -361,7 +361,6 @@ export default function Mpts({
     const apiOrderFor = (k) => {
       switch (k) {
         case 'rating':
-        case 'index':
           return 'rating'
         case 'holders':
           return 'holdersHigh'
@@ -378,8 +377,8 @@ export default function Mpts({
 
   return (
     <>
-      <SEO title="Tokens" />
-      <h1 className="center">Tokens</h1>
+      <SEO title="Multi-Purpose Tokens" />
+      <h1 className="center">Multi-Purpose Tokens</h1>
 
       <FiltersFrame
         count={data?.length}
