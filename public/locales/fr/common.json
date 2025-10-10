@@ -41,7 +41,7 @@
       "nodes": "Nœuds",
       "governance": "Gouvernance",
       "activations": "Comptes activés (graphique)",
-      "distribution": "Distribution {{nativeCurrency}}",
+      "distribution": "Distribution {{currency}}",
       "last-ledger-information": "Dernières informations sur le registre",
       "last-ledger-transactions": "Dernières transactions du registre",
       "top-transfers-24h": "Top transferts (24h)",
@@ -67,8 +67,7 @@
     "sponsored": {
       "title": "Sponsorisé",
       "buy": "Acheter XRP",
-      "earn": "Gagner sur XRP",
-      "play": "Jouer à XRP"
+      "earn": "Gagner sur XRP"
     },
     "learn-more": {
       "title": "En savoir plus"

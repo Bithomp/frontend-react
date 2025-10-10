@@ -1,11 +1,12 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { xls14NftValue } from '../../utils'
-import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat, niceCurrency } from '../../utils/format'
-import { addressBalanceChanges } from '../../utils/transaction'
+import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat } from '../../utils/format'
+import { addressBalanceChanges, dappBySourceTag } from '../../utils/transaction'
 import { FiDownload, FiUpload } from 'react-icons/fi'
 import { useTxFiatRate } from './FiatRateContext'
+import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 
-export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) => {
+const TransactionRowPaymentContent = ({ tx, address, selectedCurrency }) => {
   const pageFiatRate = useTxFiatRate()
 
   const { outcome, specification } = tx
@@ -13,18 +14,16 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(tx, specification.source.address)
 
-  let txTypeSpecial = 'Payment'
+  //don't show sourcetag if it's the tag of a known dapp
+  const dapp = dappBySourceTag(specification.source.tag)
+
   let iouPayment = false
-  // sourse address and destination address is the same
-  // sometimes source tag is added to show the dapp
-  // so if there is no destintaion tag, no need the source tag to be the same
+
   const isConvertion =
     specification?.source?.address === specification?.destination?.address &&
     (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
 
-  if (isConvertion) {
-    txTypeSpecial = 'Conversion payment'
-  } else {
+  if (!isConvertion) {
     //check if iou involved (pathfinding or iou with fee)
     if (
       !outcome?.deliveredAmount?.mpt_issuance_id &&
@@ -32,10 +31,6 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
     ) {
       iouPayment = true
     }
-  }
-
-  if (xls14NftValue(outcome?.deliveredAmount?.value)) {
-    txTypeSpecial = 'NFT transfer (XLS-14)'
   }
 
   const optionalAbsAmount = (change) => {
@@ -48,37 +43,45 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
   }
 
   return (
-    <TransactionRowCard
-      data={tx}
-      address={address}
-      index={index}
-      txTypeSpecial={txTypeSpecial}
-      selectedCurrency={selectedCurrency}
-    >
-      {!isConvertion &&  (
+    <>
+      {!isConvertion && (
         <div className="flex items-center gap-1">
           {specification?.destination?.address === address ? (
-            <>              
-              <FiDownload style={{ stroke: 'green', fontSize: 16 }}/>
-              <span>
-                {addressUsernameOrServiceLink(specification?.source, 'address')}
-              </span>
+            <>
+              <FiDownload style={{ stroke: 'green', fontSize: 16 }} />
+              <span>{addressUsernameOrServiceLink(specification?.source, 'address')}</span>
+            </>
+          ) : specification?.source?.address === address ? (
+            <>
+              <FiUpload style={{ stroke: 'red', fontSize: 16 }} />
+              <span>{addressUsernameOrServiceLink(specification?.destination, 'address')}</span>
             </>
           ) : (
             <>
-              <FiUpload style={{ stroke: 'red', fontSize: 16 }}/>
-              <span>
-                {addressUsernameOrServiceLink(specification?.destination, 'address')}
-              </span>
+              <span>Payment By {addressUsernameOrServiceLink(specification?.source, 'address')}</span>
             </>
           )}
         </div>
       )}
+      {specification.source?.tag !== undefined && !dapp && (
+        <>
+          <span>Source tag: </span>
+          <span className="bold">{specification.source.tag}</span>
+        </>
+      )}
+
       {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
         <>
           <div className="flex items-center gap-1">
             <span>
-              {isConvertion ? 'Exchanged: ' : 'Sender spent: '}
+              {isConvertion ? (
+                <>
+                  {' '}
+                  <FaArrowRightArrowLeft style={{ fontSize: 16, marginBottom: -4 }} /> Exchanged:{' '}
+                </>
+              ) : (
+                <> Sender spent: </>
+              )}
               {sourceBalanceChangesList.map((change, index) => {
                 return <br key={index} />
               })}
@@ -86,10 +89,12 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
             <span>
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
-                  <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                    {amountFormat(optionalAbsAmount(change))}
-                  </span>
-                  {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  {amountFormat(optionalAbsAmount(change), {
+                    icon: true,
+                    withIssuer: true,
+                    bold: true,
+                    color: 'direction'
+                  })}
                   {nativeCurrencyToFiat({
                     amount: optionalAbsAmount(change),
                     selectedCurrency,
@@ -103,18 +108,21 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
             <div className="flex items-center gap-1">
               <span>Exchange rate: </span>
               <span>
-                1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
-                <span className="bold">
-                  {amountFormat(
-                    {
-                      ...sourceBalanceChangesList[1],
-                      value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
-                    },
-                    { precise: 'nice' }
-                  )}
-                </span>
-                {sourceBalanceChangesList[1].issuer && (
-                  <>({addressUsernameOrServiceLink(sourceBalanceChangesList[1], 'issuer', { short: true })})</>
+                {amountFormat(
+                  {
+                    currency: sourceBalanceChangesList[0].currency,
+                    issuer: sourceBalanceChangesList[0].issuer,
+                    value: 1
+                  },
+                  { icon: true }
+                )}{' '}
+                ={' '}
+                {amountFormat(
+                  {
+                    ...sourceBalanceChangesList[1],
+                    value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                  },
+                  { icon: true, withIssuer: true, bold: true }
                 )}
               </span>
             </div>
@@ -123,18 +131,44 @@ export const TransactionRowPayment = ({ tx, address, index, selectedCurrency}) =
       )}
       {!isConvertion && outcome?.deliveredAmount && (
         <div>
-          <span className="bold">Delivered amount: </span>
-            <span className="bold green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice' })}</span>
-            {outcome?.deliveredAmount?.issuer && (
-              <>({addressUsernameOrServiceLink(outcome?.deliveredAmount, 'issuer', { short: true })})</>
-            )}
-            {nativeCurrencyToFiat({
-              amount: outcome?.deliveredAmount,
-              selectedCurrency,
-              fiatRate: pageFiatRate
-            })}
+          <span>Delivered amount: </span>
+          {amountFormat(outcome?.deliveredAmount, { icon: true, withIssuer: true, bold: true, color: 'green' })}
+          {nativeCurrencyToFiat({
+            amount: outcome?.deliveredAmount,
+            selectedCurrency,
+            fiatRate: pageFiatRate
+          })}
         </div>
       )}
+    </>
+  )
+}
+
+export const TransactionRowPayment = ({ tx, address, index, selectedCurrency }) => {
+  const { outcome, specification } = tx
+
+  let txTypeSpecial = 'Payment'
+  const isConvertion =
+    specification?.source?.address === specification?.destination?.address &&
+    (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
+
+  if (isConvertion) {
+    txTypeSpecial = 'Conversion payment'
+  }
+
+  if (xls14NftValue(outcome?.deliveredAmount?.value)) {
+    txTypeSpecial = 'NFT transfer (XLS-14)'
+  }
+
+  return (
+    <TransactionRowCard
+      data={tx}
+      address={address}
+      index={index}
+      selectedCurrency={selectedCurrency}
+      txTypeSpecial={txTypeSpecial}
+    >
+      <TransactionRowPaymentContent tx={tx} address={address} selectedCurrency={selectedCurrency} />
     </TransactionRowCard>
   )
 }

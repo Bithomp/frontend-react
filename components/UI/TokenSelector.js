@@ -90,7 +90,7 @@ export default function TokenSelector({
     }
     let queryAddList = []
     let queryRemoveList = []
-    if (value?.currency) {
+    if (value?.currency && value.currency !== nativeCurrency) {
       queryAddList.push({ name: currencyQueryName, value: value.currency })
     } else {
       queryRemoveList.push(currencyQueryName)
