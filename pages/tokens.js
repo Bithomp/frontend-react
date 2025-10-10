@@ -3,13 +3,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
 import { FaHandshake } from 'react-icons/fa'
-import { FaLongArrowAltDown, FaLongArrowAltUp } from 'react-icons/fa'
 
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
+import SortingArrow from '../components/Tables/SortingArrow'
 import {
   AddressWithIcon,
   fullNiceNumber,
@@ -30,35 +30,6 @@ import {
   xahauNetwork
 } from '../utils'
 import { useRouter } from 'next/router'
-
-// Sorting Arrow Component
-const SortingArrow = ({ sortKey, currentSort, onClick, canSortBothWays = false }) => {
-  const isActive = currentSort.key === sortKey
-  const isDescending = currentSort.direction === 'descending'
-
-  let arrowIcon
-  let arrowClass = 'link green inline-flex items-center'
-
-  if (canSortBothWays) {
-    arrowIcon = (
-      <span className="inline-flex items-center">
-        <FaLongArrowAltUp className={isActive && !isDescending ? 'orange' : ''} />
-        <FaLongArrowAltDown className={isActive && isDescending ? 'orange ml-[-6px]' : 'ml-[-6px]'} />
-      </span>
-    )
-  } else {
-    if (isActive) {
-      arrowClass = 'link orange inline-flex items-center'
-    }
-    arrowIcon = <FaLongArrowAltDown />
-  }
-
-  return (
-    <b className={arrowClass} onClick={onClick}>
-      {arrowIcon}
-    </b>
-  )
-}
 
 /*
   {
