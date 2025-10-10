@@ -104,7 +104,10 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
           <span className="bold">{options?.mptId ? currency : niceCurrency(currency)}</span>{' '}
         </>
       )}
-      {options?.currencyName && options.currencyName.length > 10 && currency.length > 10 && <br />}
+      {options?.currencyName &&
+        options.currencyName.length > 10 &&
+        currency.length > 10 &&
+        options.currencyName !== currency && <br />}
       {options?.currencyName && options.currencyName !== currency && (
         <span>{shortName(options.currencyName, { maxLength: 10 })}</span>
       )}{' '}
@@ -114,7 +117,7 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
           <br />
         </>
       )}
-      {options?.mptId && <br />}
+      {!link && options?.mptId && <br />}
       {options?.flags ? showFlags(options.flags) : addressLink(data[name], { ...options, fullUrl })}{' '}
       {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
