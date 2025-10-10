@@ -24,7 +24,6 @@ import NetworkTable from './NetworkTable'
 import MobileMenu from './MobileMenu'
 import { FaAngleDown } from 'react-icons/fa'
 import { IoIosRocket } from 'react-icons/io'
-import { MdNewReleases } from 'react-icons/md'
 
 import LogoSmall from '../LogoSmall'
 import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
@@ -85,7 +84,8 @@ export default function Header({
   signOut,
   signOutPro,
   selectedCurrency,
-  setSelectedCurrency
+  setSelectedCurrency,
+  countryCode
 }) {
   const { i18n, t } = useTranslation()
 
@@ -208,9 +208,20 @@ export default function Header({
           </MenuDropDown>
 
           <div className="menu-dropdown">
-            <Link href="/tokens" className="menu-dropdown-button" style={{ textDecoration: 'none' }}>
-              {t('menu.tokens')} <MdNewReleases className="chevron" />
-            </Link>
+            <MenuDropDown
+              id="dropdown2"
+              title={t('menu.tokens')}
+              setHoverStates={setHoverStates}
+              hoverStates={hoverStates}
+            >
+              <Link href="/tokens">TOP {t('menu.tokens')}</Link>
+              <Link href="/distribution?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De">
+                TOP Holders
+              </Link>
+              <Link href="/services/trustline">Set Trust (Trustline)</Link>
+              <Link href="/learn/issue-a-token">How to Issue a Token</Link>
+              <Link href="/learn/guide-for-token-issuers">Guide for Token Issuers</Link>
+            </MenuDropDown>
           </div>
 
           {/* Hide AMM for XAHAU */}
@@ -222,11 +233,12 @@ export default function Header({
               hoverStates={hoverStates}
             >
               <Link href="/amms">{t('menu.amm.pools')}</Link>
-              <Link href="/amm">{t('menu.amm.explorer')}</Link>
+              <Link href="/learn/amm">What is AMM?</Link>
               <Link href="/services/amm?tab=deposit">AMM Deposit</Link>
               <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
               <Link href="/services/amm?tab=vote">AMM Vote</Link>
               <Link href="/services/amm?tab=create">AMM Create</Link>
+              <Link href="/amm">{t('menu.amm.explorer')}</Link>
             </MenuDropDown>
           )}
 
@@ -280,7 +292,7 @@ export default function Header({
           >
             {xahauNetwork && <Link href="/governance">{t('menu.network.governance')}</Link>}
             <Link href="/activations">{t('menu.network.activations')}</Link>
-            <Link href="/distribution">{t('menu.network.distribution', { nativeCurrency })}</Link>
+            <Link href="/distribution">{t('menu.network.distribution', { currency: nativeCurrency })}</Link>
             <Link href="/last-ledger-information">{t('menu.network.last-ledger-information')}</Link>
             <Link href="/ledger">{t('menu.network.last-ledger-transactions')}</Link>
             <Link href="/whales">{t('menu.network.top-transfers-24h')}</Link>
@@ -617,6 +629,7 @@ export default function Header({
           isCopied={isCopied}
           copyToClipboard={copyToClipboard}
           account={account}
+          countryCode={countryCode}
         />
       )}
     </div>

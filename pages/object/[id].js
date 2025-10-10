@@ -13,10 +13,10 @@ import { axiosServer, passHeaders } from '../../utils/axios'
 import {
   codeHighlight,
   AddressWithIconFilled,
-  amountFormatNode,
-  addressUsernameOrServiceLink,
   shortAddress,
-  fullDateAndTime
+  fullDateAndTime,
+  amountFormat,
+  showFlags
 } from '../../utils/format'
 import { LinkTx, LedgerLink } from '../../utils/links'
 import { object } from '../../styles/pages/object.module.scss'
@@ -198,10 +198,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
           return (
             <tr key={key}>
               <td>{key}</td>
-              <td>
-                {amountFormatNode(value)}{' '}
-                {value?.issuer && <>({addressUsernameOrServiceLink(value, 'issuer', { short: true })})</>}
-              </td>
+              <td>{amountFormat(value, { withIssuer: true })}</td>
             </tr>
           )
         }
@@ -241,17 +238,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
           return (
             <tr key={key}>
               <td>{key}</td>
-              <td>
-                <div className="flex flex-wrap gap-1">
-                  {Object.entries(value)
-                    .filter(([, flagValue]) => flagValue === true)
-                    .map(([flag]) => (
-                      <span key={flag} className="flag">
-                        {flag}
-                      </span>
-                    ))}
-                </div>
-              </td>
+              <td>{showFlags(value)}</td>
             </tr>
           )
         }

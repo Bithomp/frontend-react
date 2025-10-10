@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { IoMdClose } from 'react-icons/io'
 
 import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-
 import { getIsSsrMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
-import { useWidth } from '../../../utils'
+import { useWidth, addAndRemoveQueryParams } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -39,7 +40,7 @@ import {
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  const { id } = query
+  const { id, fromDate, toDate, txType, initiated, excludeFailures, counterparty, order } = query
   const account = id || ''
   const limit = 20
   let initialTransactions = []
@@ -83,6 +84,13 @@ export async function getServerSideProps(context) {
       initialMarker,
       initialUserData: initialUserData || {},
       isSsrMobile: getIsSsrMobile(context),
+      fromDateQuery: fromDate || '',
+      toDateQuery: toDate || '',
+      txTypeQuery: txType || 'tx',
+      initiatedQuery: initiated || '0',
+      excludeFailuresQuery: excludeFailures || '0',
+      counterpartyQuery: counterparty || '',
+      orderQuery: order || 'newest',
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -94,10 +102,18 @@ export default function AccountTransactions({
   initialErrorMessage,
   initialMarker,
   initialUserData,
-  selectedCurrency
+  selectedCurrency,
+  fromDateQuery,
+  toDateQuery,
+  txTypeQuery,
+  initiatedQuery,
+  excludeFailuresQuery,
+  counterpartyQuery,
+  orderQuery
 }) {
   const { t } = useTranslation()
   const width = useWidth()
+  const router = useRouter()
 
   // User data for SearchBlock
   const [userData, setUserData] = useState({
@@ -111,14 +127,14 @@ export default function AccountTransactions({
   const [marker, setMarker] = useState(initialMarker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [order, setOrder] = useState('newest') // newest | oldest
+  const [order, setOrder] = useState(orderQuery) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
-  const [txType, setTxType] = useState('tx') // tx = all types
-  const [initiated, setInitiated] = useState('0') // 0 = both, 1 = outgoing, 2 = incoming
-  const [excludeFailures, setExcludeFailures] = useState('0') // 0 = include, 1 = exclude
-  const [counterparty, setCounterparty] = useState('')
-  const [fromDate, setFromDate] = useState('')
-  const [toDate, setToDate] = useState('')
+  const [txType, setTxType] = useState(txTypeQuery) // tx = all types
+  const [initiated, setInitiated] = useState(initiatedQuery) // 0 = both, 1 = outgoing, 2 = incoming
+  const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // 0 = include, 1 = exclude
+  const [counterparty, setCounterparty] = useState(counterpartyQuery)
+  const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
+  const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
 
   // Update userData when initialUserData changes
   useEffect(() => {
@@ -144,6 +160,22 @@ export default function AccountTransactions({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, userData?.address])
+
+  // Sync filter changes to URL
+  useEffect(() => {
+    if (router.isReady) {
+      updateURL({
+        order,
+        txType,
+        initiated,
+        excludeFailures,
+        counterparty,
+        fromDate: fromDate ? fromDate.toISOString() : '',
+        toDate: toDate ? toDate.toISOString() : ''
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, txType, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
 
   // Helpers
   const orderList = [
@@ -263,6 +295,34 @@ export default function AccountTransactions({
     fetchTransactions({ restart: true })
   }
 
+  const clearFromDate = () => {
+    setFromDate('')
+  }
+
+  const clearToDate = () => {
+    setToDate('')
+  }
+
+  // URL synchronization functions
+  const updateURL = (newFilters) => {
+    if (!router.isReady) return
+
+    const addList = []
+    const removeList = []
+
+    // Process each filter
+    Object.keys(newFilters).forEach((key) => {
+      const value = newFilters[key]
+      if (value && value !== '' && value !== '0' && value !== 'tx' && value !== 'newest') {
+        addList.push({ name: key, value })
+      } else {
+        removeList.push(key)
+      }
+    })
+
+    addAndRemoveQueryParams(router, addList, removeList)
+  }
+
   return (
     <>
       <SEO page="Transactions" title={`Transactions of ${id}`} description={`All transactions for address ${id}`} />
@@ -339,33 +399,47 @@ export default function AccountTransactions({
             <br />
             <div>
               <span className="input-title">From</span>
-              <DatePicker
-                selected={fromDate}
-                onChange={(date) => setFromDate(date)}
-                selectsStart
-                showTimeInput
-                timeInputLabel={t('table.time')}
-                dateFormat="yyyy/MM/dd HH:mm:ss"
-                className="dateAndTimeRange"
-                maxDate={new Date()}
-                showMonthDropdown
-                showYearDropdown
-              />
+              <div className="date-picker-container">
+                <DatePicker
+                  selected={fromDate}
+                  onChange={(date) => setFromDate(date)}
+                  selectsStart
+                  showTimeInput
+                  timeInputLabel={t('table.time')}
+                  dateFormat="yyyy/MM/dd HH:mm:ss"
+                  className="dateAndTimeRange"
+                  maxDate={new Date()}
+                  showMonthDropdown
+                  showYearDropdown
+                />
+                {fromDate && (
+                  <button className="date-picker-clear" onClick={clearFromDate}>
+                    <IoMdClose />
+                  </button>
+                )}
+              </div>
             </div>
             <div>
               <span className="input-title">To</span>
-              <DatePicker
-                selected={toDate}
-                onChange={(date) => setToDate(date)}
-                selectsEnd
-                showTimeInput
-                timeInputLabel={t('table.time')}
-                dateFormat="yyyy/MM/dd HH:mm:ss"
-                className="dateAndTimeRange"
-                maxDate={new Date()}
-                showMonthDropdown
-                showYearDropdown
-              />
+              <div className="date-picker-container">
+                <DatePicker
+                  selected={toDate}
+                  onChange={(date) => setToDate(date)}
+                  selectsEnd
+                  showTimeInput
+                  timeInputLabel={t('table.time')}
+                  dateFormat="yyyy/MM/dd HH:mm:ss"
+                  className="dateAndTimeRange"
+                  maxDate={new Date()}
+                  showMonthDropdown
+                  showYearDropdown
+                />
+                {toDate && (
+                  <button className="date-picker-clear" onClick={clearToDate}>
+                    <IoMdClose />
+                  </button>
+                )}
+              </div>
             </div>
             <div className="center">
               <button className="button-action" onClick={applyFilters} style={{ marginTop: '10px' }}>

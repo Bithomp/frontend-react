@@ -3,14 +3,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
 import { FaHandshake } from 'react-icons/fa'
-import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
-
 
 import SEO from '../components/SEO'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
+import SortingArrow from '../components/Tables/SortingArrow'
 import {
   AddressWithIcon,
   fullNiceNumber,
@@ -31,36 +30,6 @@ import {
   xahauNetwork
 } from '../utils'
 import { useRouter } from 'next/router'
-import { fetchHistoricalRate } from '../utils/common'
-
-// Sorting Arrow Component
-const SortingArrow = ({ sortKey, currentSort, onClick, canSortBothWays = false }) => {
-  const isActive = currentSort.key === sortKey
-  const isDescending = currentSort.direction === 'descending'
-  
-  let arrowIcon
-  let arrowClass = 'link green inline-flex items-center'
-  
-  if (canSortBothWays) {
-    arrowIcon = (
-      <span className="inline-flex items-center">
-        <FaLongArrowAltUp className={isActive && !isDescending ? 'orange' : ''} />
-        <FaLongArrowAltDown className={isActive && isDescending ? 'orange ml-[-6px]' : 'ml-[-6px]'} />
-      </span>
-    )
-  } else {
-    if (isActive) {
-      arrowClass = 'link orange inline-flex items-center'
-    }
-    arrowIcon = <FaLongArrowAltDown />
-  }
-  
-  return (
-    <b className={arrowClass} onClick={onClick}>
-      {arrowIcon}
-    </b>
-  )
-}
 
 /*
   {
@@ -124,8 +93,9 @@ export async function getServerSideProps(context) {
     'uniqueBuyersHigh'
   ])
   const orderParam = supportedOrders.has(order) ? order : 'rating'
+  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
-  let url = `v2/trustlines/tokens?limit=100&order=${orderParam}&currencyDetails=true&statistics=true`
+  let url = `v2/trustlines/tokens?limit=100&order=${orderParam}&currencyDetails=true&statistics=true&convertCurrencies=${selectedCurrencyServer}`
   if (currency) {
     const { valid, currencyCode } = validateCurrencyCode(currency)
     if (valid) {
@@ -154,8 +124,6 @@ export async function getServerSideProps(context) {
   } catch (e) {
     console.error(e)
   }
-
-  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
   return {
     props: {
@@ -228,7 +196,6 @@ export default function Tokens({
   const [currency, setCurrency] = useState(currencyQuery)
   const [rendered, setRendered] = useState(false)
   const [sortConfig, setSortConfig] = useState(getInitialSortConfig(orderQuery))
-  const [fiatRate24h, setFiatRate24h] = useState(null)
 
   const controller = new AbortController()
 
@@ -266,12 +233,14 @@ export default function Tokens({
     const oldOrder = rawData?.order
     const oldCurrency = rawData?.currency
     const oldIssuer = rawData?.issuer
+    const oldSelectedCurrency = rawData?.convertCurrencies[0]
     if (!oldOrder || !order) return
 
     let loadMoreRequest =
       (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
       (currency ? oldCurrency === currency : !oldCurrency) &&
-      (issuer ? oldIssuer === issuer : !oldIssuer)
+      (issuer ? oldIssuer === issuer : !oldIssuer) &&
+      (selectedCurrency ? oldSelectedCurrency.toLowerCase() === selectedCurrency.toLowerCase() : !oldSelectedCurrency)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
     if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
@@ -288,7 +257,12 @@ export default function Tokens({
     }
     setRawData({})
 
-    let apiUrl = 'v2/trustlines/tokens?limit=100&order=' + order + '&currencyDetails=true&statistics=true' + markerPart
+    let apiUrl =
+      'v2/trustlines/tokens?limit=100&order=' +
+      order +
+      '&currencyDetails=true&statistics=true&convertCurrencies=' +
+      selectedCurrency +
+      markerPart
     if (issuer) {
       apiUrl += `&issuer=${encodeURIComponent(issuer)}`
     }
@@ -344,7 +318,7 @@ export default function Tokens({
     }
     checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, issuer, currency, subscriptionExpired])
+  }, [selectedCurrency, order, issuer, currency, subscriptionExpired])
 
   // Effect: update sortConfig when order changes (e.g., from dropdown)
   useEffect(() => {
@@ -394,15 +368,6 @@ export default function Tokens({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  // Fetch historical fiat rates if currency changes
-  useEffect(() => {
-    if (!selectedCurrency) return
-    const now = Date.now()
-    const t24h = now - 24 * 60 * 60 * 1000
-    fetchHistoricalRate({ timestamp: t24h, selectedCurrency, setPageFiatRate: setFiatRate24h })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency])
 
   // CSV headers for export
   const csvHeaders = [
@@ -459,17 +424,19 @@ export default function Tokens({
     })
   }
 
-  const priceToFiat = ({ price, mobile }) => {
+  const priceToFiat = ({ price, mobile, priceFiats }) => {
     if (!fiatRate) return null
     price = price || 0
     if (mobile) {
-      return <span suppressHydrationWarning>{fullNiceNumber(price * fiatRate, selectedCurrency)}</span>
+      return <span suppressHydrationWarning>{fullNiceNumber(priceFiats[selectedCurrency], selectedCurrency)}</span>
     }
     return (
       <>
         <span className="tooltip" suppressHydrationWarning>
-          {shortNiceNumber(price * fiatRate, 4, 1, selectedCurrency)}
-          <span className="tooltiptext right no-brake">{fullNiceNumber(price * fiatRate, selectedCurrency)}</span>
+          {shortNiceNumber(priceFiats[selectedCurrency], 4, 1, selectedCurrency)}
+          <span className="tooltiptext right no-brake">
+            {fullNiceNumber(priceFiats[selectedCurrency], selectedCurrency)}
+          </span>
         </span>
         <br />
         <span className="tooltip grey" suppressHydrationWarning>
@@ -500,26 +467,22 @@ export default function Tokens({
     )
   }
 
-  const renderPercentCell = ({ currentXrp, pastXrp, pastFiatRate }) => {
-    const current = Number(currentXrp || 0)
-    const past = Number(pastXrp || 0)
-    if (!current || !past || !fiatRate || !pastFiatRate) return <span className="grey">--%</span>
-    const currentVal = current * fiatRate
-    const pastVal = past * pastFiatRate
-    const change = currentVal / pastVal - 1
+  const renderPercentCell = ({ currentPrice, pastPrice }) => {
+    const current = Number(currentPrice || 0)
+    const past = Number(pastPrice || 0)
+    if (!current || !past) return <span className="grey">--%</span>
+    const change = current / past - 1
     const colorClass = change >= 0 ? 'green' : 'red'
     const percentText = niceNumber(Math.abs(change * 100), 2) + '%'
-    const currentFiat = fiatRate ? current * fiatRate : null
-    const pastFiat = pastFiatRate ? past * pastFiatRate : null
 
     return (
       <span className={`tooltip ${colorClass}`} suppressHydrationWarning>
         {change >= 0 ? '+' : '-'}
         {percentText}
         <span className="tooltiptext right no-brake" suppressHydrationWarning>
-          Now: {fullNiceNumber(currentFiat, selectedCurrency)}
+          Now: {fullNiceNumber(currentPrice, selectedCurrency)}
           <br />
-          Before: {fullNiceNumber(pastFiat, selectedCurrency)}
+          Before: {fullNiceNumber(pastPrice, selectedCurrency)}
         </span>
       </span>
     )
@@ -567,7 +530,7 @@ export default function Tokens({
       setOrder('rating')
       return
     }
-    
+
     let direction = 'descending'
     setSortConfig({ key, direction })
 
@@ -672,22 +635,38 @@ export default function Tokens({
                     <br />
                     <span className="inline-flex items-center">
                       (24h)
-                      <SortingArrow sortKey="totalVolume" currentSort={sortConfig} onClick={() => sortTable('totalVolume')} />
+                      <SortingArrow
+                        sortKey="totalVolume"
+                        currentSort={sortConfig}
+                        onClick={() => sortTable('totalVolume')}
+                      />
                     </span>
                   </th>
                   <th className="right">
                     <span className="inline-flex items-center">
                       Buyers
-                      <SortingArrow sortKey="uniqueBuyers" currentSort={sortConfig} onClick={() => sortTable('uniqueBuyers')} />
+                      <SortingArrow
+                        sortKey="uniqueBuyers"
+                        currentSort={sortConfig}
+                        onClick={() => sortTable('uniqueBuyers')}
+                      />
                     </span>
                     <span className="inline-flex items-center">
                       / Sellers
-                      <SortingArrow sortKey="uniqueSellers" currentSort={sortConfig} onClick={() => sortTable('uniqueSellers')} />
+                      <SortingArrow
+                        sortKey="uniqueSellers"
+                        currentSort={sortConfig}
+                        onClick={() => sortTable('uniqueSellers')}
+                      />
                     </span>
                     <br />
                     <span className="inline-flex items-center">
                       Traders (24h)
-                      <SortingArrow sortKey="uniqueTraders" currentSort={sortConfig} onClick={() => sortTable('uniqueTraders')} />
+                      <SortingArrow
+                        sortKey="uniqueTraders"
+                        currentSort={sortConfig}
+                        onClick={() => sortTable('uniqueTraders')}
+                      />
                     </span>
                   </th>
                   <th className="right">
@@ -713,7 +692,11 @@ export default function Tokens({
                   <th className="right">
                     <span className="inline-flex items-center">
                       Marketcap
-                      <SortingArrow sortKey="marketcap" currentSort={sortConfig} onClick={() => sortTable('marketcap')} />
+                      <SortingArrow
+                        sortKey="marketcap"
+                        currentSort={sortConfig}
+                        onClick={() => sortTable('marketcap')}
+                      />
                     </span>
                   </th>
                   <th className="center">Action</th>
@@ -747,12 +730,16 @@ export default function Tokens({
                               <td>
                                 <TokenCell token={token} />
                               </td>
-                              <td className="right">{priceToFiat({ price: token.statistics?.priceNativeCurrency })}</td>
+                              <td className="right">
+                                {priceToFiat({
+                                  price: token.statistics?.priceNativeCurrency,
+                                  priceFiats: token.statistics.priceFiats
+                                })}
+                              </td>
                               <td className="right">
                                 {renderPercentCell({
-                                  currentXrp: token.statistics?.priceNativeCurrency,
-                                  pastXrp: token.statistics?.priceNativeCurrency24h,
-                                  pastFiatRate: fiatRate24h
+                                  currentPrice: token.statistics?.priceFiats[selectedCurrency],
+                                  pastPrice: token.statistics?.priceFiats24h[selectedCurrency]
                                 })}
                               </td>
                               <td className="right">{volumeToFiat({ token })}</td>
@@ -860,13 +847,17 @@ export default function Tokens({
                               <td>
                                 <TokenCell token={token} />
                                 <p>
-                                  Price: {priceToFiat({ price: token.statistics?.priceNativeCurrency, mobile: true })}
+                                  Price:{' '}
+                                  {priceToFiat({
+                                    price: token.statistics?.priceNativeCurrency,
+                                    mobile: true,
+                                    priceFiats: token.statistics.priceFiats
+                                  })}
                                   <br />
                                   Change 24h ({selectedCurrency.toUpperCase()}):{' '}
                                   {renderPercentCell({
-                                    currentXrp: token.statistics?.priceNativeCurrency,
-                                    pastXrp: token.statistics?.priceNativeCurrency24h,
-                                    pastFiatRate: fiatRate24h
+                                    currentPrice: token.statistics?.priceFiats[selectedCurrency],
+                                    pastPrice: token.statistics?.priceFiats24h[selectedCurrency]
                                   })}
                                   <br />
                                   Total Volume (24h): {volumeToFiat({ token, mobile: true })}

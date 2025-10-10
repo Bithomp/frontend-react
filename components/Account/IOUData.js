@@ -2,25 +2,15 @@ import {
   fullDateAndTime,
   niceCurrency,
   shortNiceNumber,
-  AddressWithIcon,
   amountFormat,
-  userOrServiceName,
-  fullNiceNumber
+  fullNiceNumber,
+  AddressWithIconFilled
 } from '../../utils/format'
-import { LinkAccount } from '../../utils/links'
-import { useWidth } from '../../utils'
-import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaChartLine } from 'react-icons/fa'
+import { objectsCountText, useWidth } from '../../utils'
+import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaInfoCircle } from 'react-icons/fa'
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
-
-const tokensCountText = (rippleStateList) => {
-  if (!rippleStateList) return ''
-  let countList = rippleStateList.filter((p) => p !== undefined)
-  if (countList.length > 1) return countList.length + ' '
-  return ''
-}
 
 // Component to display flag icons with tooltips
 const FlagIcons = ({ flags }) => {
@@ -104,13 +94,21 @@ const LimitsIcon = ({ trustline }) => {
 
   return (
     <span className="tooltip">
-      <FaChartLine style={{ fontSize: 18, marginBottom: -4 }} />
+      <FaInfoCircle style={{ fontSize: 18, marginBottom: -4 }} />
       <span className="tooltiptext no-brake">{tooltipText}</span>
     </span>
   )
 }
 
-export default function IOUData({ address, rippleStateList, ledgerTimestamp, pageFiatRate, selectedCurrency }) {
+export default function IOUData({
+  address,
+  rippleStateList,
+  ledgerTimestamp,
+  pageFiatRate,
+  selectedCurrency,
+  account,
+  setSignRequest
+}) {
   const width = useWidth()
   const { t } = useTranslation()
   const [totalBalance, setTotalBalance] = useState(0)
@@ -184,9 +182,55 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
   ]
   */
 
+  // Check if user is logged in (has wallet connected)
+  const isLoggedIn = account?.address && account?.wallet
+
+  const noTokensNode =
+    isLoggedIn && account?.address === address ? (
+      "You don't have any tokens."
+    ) : (
+      <>
+        This account doesn't have any tokens
+        {!isLoggedIn ? (
+          <>
+            ,{' '}
+            <span onClick={() => setSignRequest({})} className="link underline">
+              sign in
+            </span>{' '}
+            to manage your tokens.
+          </>
+        ) : (
+          '.'
+        )}
+      </>
+    )
+
+  // Sort tokens by fiat value (largest first), with 0 amount tokens at the end
+  const sortedTokens = rippleStateList?.length
+    ? rippleStateList.sort((a, b) => {
+        const balanceA = Math.abs(subtract(a.Balance?.value, a.LockedBalance?.value ? a.LockedBalance?.value : 0))
+        const balanceB = Math.abs(subtract(b.Balance?.value, b.LockedBalance?.value ? b.LockedBalance?.value : 0))
+
+        // If both have 0 balance, maintain original order
+        if (balanceA === 0 && balanceB === 0) return 0
+
+        // If only one has 0 balance, put it at the end
+        if (balanceA === 0) return 1
+        if (balanceB === 0) return -1
+
+        // Both have non-zero balance, sort by fiat value (largest first)
+        const fiatValueA = a.priceNativeCurrencySpot * balanceA || 0
+        const fiatValueB = b.priceNativeCurrencySpot * balanceB || 0
+
+        return fiatValueB - fiatValueA
+      })
+    : []
+
+  const tokenLength = sortedTokens?.length
+
   // amount / gateway details / trustline settings
-  const tokenRows = rippleStateList?.length ? (
-    rippleStateList.map((tl, i) => {
+  const tokenRows = tokenLength ? (
+    sortedTokens.map((tl, i) => {
       const issuer = tl.HighLimit?.issuer === address ? tl.LowLimit : tl.HighLimit
       const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
 
@@ -196,21 +240,12 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
             {i + 1}
           </td>
           <td className="left">
-            <AddressWithIcon address={issuer.issuer} currency={tl.Balance?.currency}>
-              <span className="bold">{niceCurrency(tl.Balance?.currency)}</span>{' '}
-              {userOrServiceName(issuer.issuerDetails, 'address')}
-              <br />
-              {width > 800 ? (
-                <LinkAccount address={issuer.issuerDetails.address} />
-              ) : (
-                <LinkAccount address={issuer.issuerDetails.address} short={6} />
-              )}
-            </AddressWithIcon>
+            <AddressWithIconFilled data={issuer} name="issuer" currency={tl.Balance?.currency} windowWidth={width} />
           </td>
           <td className="right">
             <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
-              <LimitsIcon trustline={tl} />
               <FlagIcons flags={tl.flags} />
+              <LimitsIcon trustline={tl} />
             </div>
           </td>
           <td className="right">
@@ -239,20 +274,35 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
     })
   ) : (
     <tr key="none">
-      <td colSpan="100" className="center">
-        This account does not hold any issued tokens.
-      </td>
+      <td colSpan="100">{noTokensNode}</td>
     </tr>
   )
 
+  const actionLink =
+    isLoggedIn && account.address === address ? (
+      <>
+        [<a href={'/services/trustline'}>Add a token</a>]
+      </>
+    ) : (
+      !isLoggedIn && (
+        <>
+          [
+          <span className="link" onClick={() => setSignRequest({})}>
+            Sign In
+          </span>
+          ]
+        </>
+      )
+    )
+
   return (
-    <>
+    <div id="tokens-section">
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
             <th colSpan="100">
-              {tokensCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle} [
-              <a href={'/explorer/' + address}>Old View</a>]
+              {objectsCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle}
+              {actionLink}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
                   Total worth:{' '}
@@ -266,7 +316,7 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           </tr>
         </thead>
         <tbody>
-          {rippleStateList?.length ? (
+          {tokenLength ? (
             <tr>
               <th>#</th>
               <th className="left">Currency</th>
@@ -277,29 +327,14 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
             ''
           )}
           {tokenRows}
-          {!rippleStateList?.length ? (
-            <tr>
-              <td className="center" colSpan="100">
-                <Link href={'/services/trustline?address=' + address} className="button-action">
-                  Add a token
-                </Link>
-              </td>
-            </tr>
-          ) : (
-            ''
-          )}
         </tbody>
       </table>
       <div className="show-on-small-w800">
         <br />
         <center>
-          {tokensCountText(rippleStateList)}
-          {t('menu.tokens').toUpperCase()} {historicalTitle}[<a href={'/explorer/' + address}>Old View</a>]
-          {!rippleStateList?.length && (
-            <>
-              [<a href={'/services/trustline?address=' + address}>Add a token</a>]
-            </>
-          )}
+          {objectsCountText(rippleStateList)}
+          {t('menu.tokens').toUpperCase()} {historicalTitle}
+          {actionLink}
           {totalBalance > 0 && (
             <div>
               <br />
@@ -312,21 +347,26 @@ export default function IOUData({ address, rippleStateList, ledgerTimestamp, pag
           )}
         </center>
         <br />
-        {
+        {!rippleStateList?.length ? (
+          <>
+            {noTokensNode}
+            <br />
+          </>
+        ) : (
           <table className="table-mobile wide">
             <tbody>
               <tr>
                 <th>#</th>
                 <th className="left">Currency</th>
-                <th className="right">Balance</th>
                 <th className="right">Params</th>
+                <th className="right">Balance</th>
               </tr>
               {tokenRows}
             </tbody>
           </table>
-        }
+        )}
         <br />
       </div>
-    </>
+    </div>
   )
 }

@@ -652,6 +652,10 @@ export const tokenImageSrc = (token) => {
   return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
 }
 
+export const mptokenImageSrc = (mptid) => {
+  return avatarServer.replace('/avatar/', '/mptoken/') + mptid
+}
+
 export const networksIds = {
   0: { server: 'https://bithomp.com', name: 'mainnet' },
   1: { server: 'https://test.bithomp.com', name: 'testnet' },
@@ -953,3 +957,10 @@ export const xls14NftValue = (value) => {
 }
 
 export const md5 = (text) => SparkMD5.hash(text)
+
+export const objectsCountText = (objects) => {
+  if (!objects) return ''
+  let countList = objects.filter((p) => p !== undefined)
+  if (countList.length > 1) return countList.length + ' '
+  return ''
+}

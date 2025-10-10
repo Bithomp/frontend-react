@@ -223,11 +223,11 @@ export default function Did({ data, setSignRequest, account, ledgerTimestamp }) 
           </div>
         )}
         {didData.metadata && (
-          <p>
+          <div>
             <span className="grey">Metadata</span>
             <br />
             {metadataNode}
-          </p>
+          </div>
         )}
         {data.address === account?.address && !ledgerTimestamp && <div className="center">{actionsNode}</div>}
       </div>

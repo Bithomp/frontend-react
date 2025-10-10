@@ -457,13 +457,13 @@ export const TransactionCard = ({
                                   : change.balanceChanges?.map((c, i) => {
                                       return (
                                         <div key={i}>
-                                          <span className={'bold ' + (Number(c.value) > 0 ? 'green' : 'red')}>
-                                            {Number(c.value) > 0 ? '+' : ''}
-                                            {amountFormat(c, { precise: true })}
-                                          </span>
-                                          {c.issuer && (
-                                            <>({addressUsernameOrServiceLink(c, 'issuer', { short: true })})</>
-                                          )}
+                                          {amountFormat(c, {
+                                            precise: 'nice',
+                                            withIssuer: true,
+                                            bold: true,
+                                            showPlus: true,
+                                            color: 'direction'
+                                          })}
                                           {nativeCurrencyToFiat({
                                             amount: c,
                                             selectedCurrency,

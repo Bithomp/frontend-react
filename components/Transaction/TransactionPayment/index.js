@@ -130,7 +130,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         <tr>
           <TData className="bold orange">Problem solving</TData>
           <TData className="bold">
-            The transaction <span class="red">FAILED</span>, if your balance changed, contact{' '}
+            The transaction <span className="red">FAILED</span>, if your balance changed, contact{' '}
             {addressUsernameOrServiceLink(specification.source, 'address')} support.
           </TData>
         </tr>
@@ -188,10 +188,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
             <TData>
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
-                  <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                    {amountFormat(optionalAbsAmount(change))}
-                  </span>
-                  {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  {amountFormat(optionalAbsAmount(change), { withIssuer: true, bold: true, color: 'direction' })}
                   {nativeCurrencyToFiat({
                     amount: optionalAbsAmount(change),
                     selectedCurrency,
@@ -206,17 +203,12 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
               <TData>Exchange rate</TData>
               <TData>
                 1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
-                <span className="bold">
-                  {amountFormat(
-                    {
-                      ...sourceBalanceChangesList[1],
-                      value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
-                    },
-                    { precise: 'nice' }
-                  )}
-                </span>
-                {sourceBalanceChangesList[1].issuer && (
-                  <>({addressUsernameOrServiceLink(sourceBalanceChangesList[1], 'issuer', { short: true })})</>
+                {amountFormat(
+                  {
+                    ...sourceBalanceChangesList[1],
+                    value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                  },
+                  { precise: 'nice', withIssuer: true, bold: true }
                 )}
               </TData>
             </tr>
@@ -227,10 +219,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         <tr>
           <TData>Delivered amount</TData>
           <TData>
-            <span className="bold green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice' })}</span>
-            {outcome?.deliveredAmount?.issuer && (
-              <>({addressUsernameOrServiceLink(outcome?.deliveredAmount, 'issuer', { short: true })})</>
-            )}
+            {amountFormat(outcome?.deliveredAmount, { precise: 'nice', withIssuer: true, bold: true, color: 'green' })}
             {nativeCurrencyToFiat({
               amount: outcome?.deliveredAmount,
               selectedCurrency,
