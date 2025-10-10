@@ -2,6 +2,7 @@ import { fullDateAndTime, niceNumber, niceCurrency, amountFormatWithIcon, fullNi
 import { nativeCurrency } from '../../utils'
 import { divide, multiply } from '../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
+import { FaArrowRight } from 'react-icons/fa'
 
 export default function DexOrdersData({ account, offerList, ledgerTimestamp, setSignRequest, address }) {
   //show the section only if there are dex orders to show
@@ -62,11 +63,11 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         <td className="center" style={{ width: 30 }}>
           {offer.Sequence}
         </td>
-        <td className="left">
+        <td className="left flex align-items-center gap-2">
           <span className={sell ? 'red' : 'green'}>{sell ? 'Selling ' : 'Buying '}</span>
-          <span className="bold">{amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}</span>
+          <span className="bold flex align-items-center">{amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}</span>
           <span className="grey">{' for '}</span>
-          <span className="bold">{amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}</span>
+          <span className="bold flex align-items-center">{amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}</span>
         </td>
         {sell ? (
           <td className="right">
@@ -159,9 +160,9 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
     // Format the offer details
     const offerDetails = (
       <>
-        <span className="bol">{amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}</span>
-        <span className="gre">{' for '}</span>
-        <span className="bol">{amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}</span>
+        <span className="bol flex align-items-center">{amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}</span>
+        <span className="gre flex" style={{ alignItems: 'center' }}> <FaArrowRight /></span>
+        <span className="bol flex align-items-center">{amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}</span>
       </>
     )
 
@@ -262,7 +263,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
             </span>
           </div>
 
-          <div className="mobile-dex-line2">
+          <div className="mobile-dex-line2 flex align-items-center gap-2">
             <span className="mobile-dex-label">Offer: </span>
             {offerDetails}
           </div>
