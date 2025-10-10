@@ -18,11 +18,10 @@ import {
   isValidNftXls20,
   isCurrencyHashValid,
   server,
-  validateCurrencyCode,
   isValidPayString,
   isValidXAddress
 } from '../../utils'
-import { userOrServiceName, amountFormat, shortAddress, shortNiceNumber, niceCurrency } from '../../utils/format'
+import { userOrServiceName, amountFormat } from '../../utils/format'
 
 import { IoSearch } from 'react-icons/io5'
 
@@ -76,11 +75,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const windowWidth = useWidth()
 
   const { id } = router.query
-  // Set initial search item based on tab type
-  const initialSearchItem = tab === 'token' 
-    ? (id && Array.isArray(id) && id.length >= 2 ? `${id[0]}:${id[1]}` : '')
-    : (id || userData?.address || '')
-  const [searchItem, setSearchItem] = useState(initialSearchItem)
+  const [searchItem, setSearchItem] = useState(id || userData?.address || '')
   const [searching, setSearching] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
@@ -103,10 +98,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   }, [id, searchInput])
 
   useEffect(() => {
-    if (userData?.address && tab !== 'token') {
+    if (userData?.address) {
       setSearchItem(userData.address)
     }
-  }, [userData, tab])
+  }, [userData])
 
   const requestSuggestions = (value) => {
     if (isValidCTID(value)) {
@@ -120,35 +115,15 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       typingTimer = setTimeout(async () => {
         if (value && value.length > 2) {
           setSearchingSuggestions(true)
-          
-          try {
-            let suggestionsResponse
-            if (tab === 'token') {
-              // Use the same search logic as TokenSelector
-              suggestionsResponse = await axios(`v2/trustlines/tokens/search/${value}?limit=20&currencyDetails=true`)
-            } else {
-              // Default address search
-              suggestionsResponse = await axios('v2/address/search/' + value)
-            }
-
-            if (suggestionsResponse) {
-              const suggestions = suggestionsResponse.data
-              if (tab === 'token' && suggestions?.tokens?.length > 0) {
-                // Format token suggestions with enhanced issuer information
-                const tokenSuggestions = await suggestions.tokens.map(token => ({
-                  ...token,
-                  // Create a display label for tokens
-                  displayLabel: `${token.currency} (${token.issuerDetails?.username || token.issuerDetails?.service || shortAddress(token.issuer, 8)})`,
-                  // For routing purposes, we'll use the token identifier
-                  tokenId: `${token.issuer}:${token.currency}`
-                }))
-                setSearchSuggestions(tokenSuggestions)
-              } else if (suggestions?.addresses?.length > 0) {
-                setSearchSuggestions(suggestions.addresses)
-              }
-            }
-          } catch (error) {
+          const suggestionsResponse = await axios('v2/address/search/' + value).catch((error) => {
             setSearchingSuggestions(false)
+            console.log(error.message)
+          })
+          if (suggestionsResponse) {
+            const suggestions = suggestionsResponse.data
+            if (suggestions?.addresses?.length > 0) {
+              setSearchSuggestions(suggestions.addresses)
+            }
           }
           setSearchingSuggestions(false)
         }
@@ -177,14 +152,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const searchOnChange = (option) => {
     if (!option) return
-    
-    // Update the search input to show the selected value
-    if (tab === 'token' && option.tokenId) {
-      // For tokens, show the token identifier in the input
-      setSearchItem(option.tokenId)
-      // Then search
-      onSearch(option.tokenId)
-    } else if (option.username && !option.username.includes('-')) {
+    if (option.username && !option.username.includes('-')) {
       onSearch(option.username)
     } else {
       onSearch(option.address)
@@ -223,46 +191,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     if (!searchFor) return
-
-    // Handle token search
-    if (tab === 'token') {
-      // Check if it's a token identifier (issuer:currency format)
-      if (searchFor.includes(':')) {
-        const [issuer, currency] = searchFor.split(':')
-        if (isAddressOrUsername(issuer) && validateCurrencyCode(currency).valid) {
-          router.push('/token/' + encodeURIComponent(issuer) + '/' + encodeURIComponent(currency))
-          return
-        }
-      }
-      
-      // Check if it's a valid currency code
-      const { valid: isCurrencyValid } = validateCurrencyCode(searchFor)
-      
-      if (isCurrencyValid) {
-        // If it's just a currency code, redirect to tokens page with currency filter
-        router.push('/tokens?currency=' + encodeURIComponent(searchFor))
-        return
-      }
-      
-      // Check if it's an issuer address or username
-      if (isAddressOrUsername(searchFor)) {
-        // Redirect to tokens page with issuer filter
-        router.push('/tokens?issuer=' + encodeURIComponent(searchFor))
-        return
-      }
-      
-      // For any other search term, try to search for tokens and redirect to tokens page
-      if (searchFor.length >= 3) {
-        // Since tokens page doesn't support general search, redirect to tokens page
-        // The user can then use the filters on the tokens page
-        router.push('/tokens')
-        return
-      }
-      
-      // If none of the above, show error
-      setErrorMessage(t('explorer.invalid-token-input') || 'Please enter a valid currency code, issuer address, or token identifier')
-      return
-    }
 
     if (tab === 'nft' && isValidNftXls20(searchFor)) {
       router.push('/nft/' + encodeURI(searchFor))
@@ -434,23 +362,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return t('explorer.header.' + tab)
     } else if (tab === 'transactions') {
       return t('explorer.menu.transactions')
-    } else if (tab === 'token') {
-      return 'Token information'
     } else if (tab === 'dex') {
       return 'DEX Orders'
     }
-    return ''
-  }
-
-  const getTokenDisplayName = () => {
-    if (tab !== 'token') return ''
-    
-    const { id } = router.query
-    if (id && Array.isArray(id) && id.length >= 2) {
-      const currency = id[1]
-      return <span className="green bold">{niceCurrency(currency)}</span>
-    }
-    
     return ''
   }
 
@@ -466,7 +380,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               </span>
             ) : (
               <div className="bold contrast">
-                {explorerHeader(tab)} {tab === 'token' ? getTokenDisplayName() : userOrServiceName(userData)}
+                {explorerHeader(tab)} {userOrServiceName(userData)}
               </div>
             )}
           </div>
@@ -479,105 +393,58 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 onChange={searchOnChange}
                 spellCheck="false"
                 options={searchSuggestions}
-                getOptionLabel={(option) => {
-                  if (tab === 'token' && option.tokenId) {
-                    // Display token information similar to TokenSelector
-                    return (
+                getOptionLabel={(option) => (
+                  <>
+                    <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
+                    {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
+                    <b className="blue">{option.username}</b>
+                    {option.service && (
                       <>
-                        <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>
-                          <b>{option.currency}</b>
-                          {option.issuerDetails?.username || option.issuerDetails?.service ? (
-                            <>
-                              {' - '}
-                              <span className="green">
-                                {option.issuerDetails.username || option.issuerDetails.service}
-                              </span>
-                            </>
-                          ) : (
-                            <>
-                              {' - '}
-                              <span className="green bold">{shortAddress(option.issuer, 8)}</span>
-                            </>
-                          )}
+                        {option.username ? ' (' : ''}
+                        <b className="green">{option.service}</b>
+                        {option.username ? ')' : ''}
+                      </>
+                    )}
+                    {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
+                    {option.verifiedDomain ? (
+                      <span className="green bold"> {option.verifiedDomain}</span>
+                    ) : (
+                      option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
+                    )}
+                    {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
+                      option.xaman && <>, </>}
+                    {option.xaman && (
+                      <>
+                        Xaman{' '}
+                        <span className="orange">
+                          {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
                         </span>
-                        {option.holders !== undefined && (
-                          <>
-                            {' '}
-                            <span style={{ fontSize: '0.85em' }}>
-                              {shortNiceNumber(option.holders, 0)} holders
-                            </span>
-                          </>
-                        )}
-                        {option.supply && (
-                          <>
-                            {' '}
-                            [<b>{amountFormat(option.supply, { maxFractionDigits: 2, noSpace: true })}</b>]
-                          </>
-                        )}
+                        {option.xamanVerified && <> ✅</>}
                       </>
-                    )
-                  } else {
-                    // Default address display
-                    return (
+                    )}
+                    {option.tag ? (
+                      <b className="no-brake">
+                        {' '}
+                        [TAG: <span className="orange">{option.tag}</span>]
+                      </b>
+                    ) : (
                       <>
-                        <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
-                        {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
-                        <b className="blue">{option.username}</b>
-                        {option.service && (
+                        {option.balance !== null && (
                           <>
-                            {option.username ? ' (' : ''}
-                            <b className="green">{option.service}</b>
-                            {option.username ? ')' : ''}
-                          </>
-                        )}
-                        {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
-                        {option.verifiedDomain ? (
-                          <span className="green bold"> {option.verifiedDomain}</span>
-                        ) : (
-                          option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
-                        )}
-                        {(option.username ||
-                          option.service ||
-                          option.verifiedDomain ||
-                          option.serviceDomain) &&
-                          option.xaman && <>, </>}
-                        {option.xaman && (
-                          <>
-                            Xaman{' '}
-                            <span className="orange">
-                              {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
-                            </span>
-                            {option.xamanVerified && <> ✅</>}
-                          </>
-                        )}
-                        {option.tag ? (
-                          <b className="no-brake">
                             {' '}
-                            [TAG: <span className="orange">{option.tag}</span>]
-                          </b>
-                        ) : (
-                          <>
-                            {option.balance !== null && (
-                              <>
-                                {' '}
-                                [
-                                <b>
-                                  {amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) || 'Not activated'}
-                                </b>
-                                ]
-                              </>
-                            )}
+                            [
+                            <b>
+                              {amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) || 'Not activated'}
+                            </b>
+                            ]
                           </>
                         )}
                       </>
-                    )
-                  }
-                }}
-                getOptionValue={(option) => {
-                  if (tab === 'token' && option.tokenId) {
-                    return option.tokenId+option.currency+option.issuerDetails?.username+option.issuerDetails?.service+option.issuer
-                  }
-                  return option.address +
+                    )}
+                  </>
+                )}
+                getOptionValue={(option) =>
+                  option.address +
                   option.username +
                   option.service +
                   option.payString +
@@ -585,16 +452,15 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                   option.verifiedDomain +
                   option.serviceDomain +
                   option.xAddress
-                }}
+                }
                 inputValue={searchItem}
                 onInputChange={searchOnInputChange}
                 isSearchable={true}
                 classNamePrefix="react-select"
                 instanceId="search-select"
                 noOptionsMessage={
-                  () => (searchingSuggestions ? 
-                    (tab === 'token' ? 'Searching for tokens...' : t('explorer.searching-for-addresses')) 
-                    : null)
+                  () => (searchingSuggestions ? t('explorer.searching-for-addresses') : null)
+                  //({ inputValue }) => inputValue.length > 3
                 }
                 aria-label="Search"
                 components={{ IndicatorsContainer: CustomIndicatorsContainer }}
