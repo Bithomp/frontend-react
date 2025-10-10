@@ -114,7 +114,7 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
           <br />
         </>
       )}
-      <br />
+      {options?.mptId && <br />}
       {options?.flags ? showFlags(options.flags) : addressLink(data[name], { ...options, fullUrl })}{' '}
       {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
