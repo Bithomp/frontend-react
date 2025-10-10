@@ -100,7 +100,8 @@ const MyApp = ({ Component, pageProps }) => {
       '/distribution',
       '/admin/watchlist',
       '/tokens',
-      '/nft/[[...id]]'
+      '/nft/[[...id]]',
+      '/nft-collection/[id]'
     ]
     const skipOnFirstRender = ['/', '/account', '/account/[id]', '/account/[id]/transactions', '/amms', '/tokens']
 
