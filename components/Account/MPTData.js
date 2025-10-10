@@ -166,10 +166,9 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
             ) : (
               <>
                 <th className="right">Issuer</th>
-                <th className="right">Amount</th>
+                <th className="right">Balance</th>
               </>
             )}
-            <th>Last update</th>
           </tr>
           {list.map((c, i) => {
             const cMptId = mptId(c, isIssued)
@@ -203,9 +202,6 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                     </td>
                   </>
                 )}
-                <td className="center">
-                  {timeFromNow(c.previousTxAt, i18n)} <LinkTx tx={c.PreviousTxnID} icon={true} />
-                </td>
               </tr>
             )
           })}
