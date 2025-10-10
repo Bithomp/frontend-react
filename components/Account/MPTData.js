@@ -175,7 +175,7 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                     data={issuerDetails(c)}
                     name="issuer"
                     currency={mptCurrency(c)}
-                    options={{ mptId: cMptId, currencyName: mptName(c) }}
+                    options={{ mptId: cMptId, currencyName: mptName(c), flags: isIssued ? c.flags : null }}
                   />
                 </td>
                 <td className="center">
@@ -233,7 +233,7 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                       data={issuerDetails(c)}
                       name="issuer"
                       currency={mptCurrency(c)}
-                      options={{ mptId: cMptId, currencyName: mptName(c) }}
+                      options={{ mptId: cMptId, currencyName: mptName(c), flags: isIssued ? c.flags : null }}
                       windowWidth={700}
                     />
                   </td>

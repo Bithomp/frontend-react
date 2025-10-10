@@ -115,7 +115,8 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
         </>
       )}
       <br />
-      {addressLink(data[name], { ...options, fullUrl })} {copyButton && <CopyButton text={data[name]} />}
+      {options?.flags ? showFlags(options.flags) : addressLink(data[name], { ...options, fullUrl })}{' '}
+      {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
   )
 }
@@ -1156,4 +1157,18 @@ export const decodeJsonMemo = (memopiece, options) => {
 export const showAmmPercents = (x) => {
   x = x ? x / 1000 : '0'
   return x + '%'
+}
+
+export const showFlags = (flags) => {
+  return (
+    <div className="flex flex-wrap gap-1">
+      {Object.entries(flags)
+        .filter(([, flagValue]) => flagValue === true)
+        .map(([flag]) => (
+          <span key={flag} className="flag">
+            {flag}
+          </span>
+        ))}
+    </div>
+  )
 }
