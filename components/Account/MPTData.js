@@ -245,7 +245,6 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                       <>
                         <p>
                           <span className="grey">Issuer</span>
-                          {console.log(c)}
                           {(c.mptokenCurrencyDetails &&
                             addressUsernameOrServiceLink(c.mptokenCurrencyDetails, 'account', { short: true })) ||
                             'N/A'}
