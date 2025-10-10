@@ -61,7 +61,8 @@ export default function TokenSelector({
   excludeNative = false,
   destinationAddress = null,
   allOrOne,
-  currencyQueryName
+  currencyQueryName,
+  addParams = true
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -81,6 +82,12 @@ export default function TokenSelector({
 
   useEffect(() => {
     if (!currencyQueryName) return
+    if(!addParams) {
+      const {pathname, query} = router
+      query.id = [value?.issuer, value?.currency]
+      router.replace({ pathname, query }, null, { shallow: true })
+      return
+    }
     let queryAddList = []
     let queryRemoveList = []
     if (value?.currency) {
@@ -142,7 +149,7 @@ export default function TokenSelector({
             tokens = await fetchTrustlinesForDestination(destinationAddress)
           } else {
             // Fallback to original behavior if no destination address
-            const response = await axios('v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true')
+            const response = await axios('v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true&statistics=true')
             tokens = response.data?.tokens || []
             if (!excludeNative) {
               const defaultTokens = [{ currency: nativeCurrency }, ...tokens]
@@ -199,7 +206,7 @@ export default function TokenSelector({
           setCachedSearchResults(tokensWithNative)
         } else {
           // Fallback to original search behavior
-          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}&currencyDetails=true`)
+          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}&currencyDetails=true&statistics=true`)
           const tokens = response.data?.tokens || []
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)

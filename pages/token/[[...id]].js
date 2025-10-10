@@ -4,9 +4,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import SEO from '../../components/SEO'
-import SearchBlock from '../../components/Layout/SearchBlock'
+import TokenSelector from '../../components/UI/TokenSelector'
 import { tokenClass } from '../../styles/pages/token.module.scss'
-import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled } from '../../utils/format'
+import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled, amountFormat } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { fetchHistoricalRate } from '../../utils/common'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -98,7 +98,7 @@ export default function TokenPage({
   isSsrMobile
 }) {
   const router = useRouter()
-  const token = initialData
+  const [token, setToken] = useState(initialData)
   const errorMessage = initialErrorMessage || ''
 
   let selectedCurrency = selectedCurrencyServer
@@ -270,15 +270,33 @@ export default function TokenPage({
           token.issuerDetails?.service || token.issuerDetails?.username || 'Token Details'
         }`}
       />
-
-      <SearchBlock 
-        tab="token" 
-        searchPlaceholderText="Search by currency code or issuer address"
-        isSsrMobile={isSsrMobile}
-      />
-
       <div className={tokenClass}>
         <div className="content-profile">
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+            <span className="input-title" style={{width: isSsrMobile ? '100%' : '80%'}}>
+              Token
+              {token.supply && token.currency && (
+                <span className="grey">
+                  {' '}
+                  - the Limit will be set to the total supply:{' '}
+                  {amountFormat({ value: token.supply, currency: token.currency })}
+                </span>
+              )}
+            </span>
+            <div style={{width: isSsrMobile ? '100%' : '80%', marginBottom: '20px'}}>
+              <TokenSelector
+                value={token}
+                onChange={setToken}
+                excludeNative={true}
+                currencyQueryName="currency"
+                addParams={false}
+              />
+            </div>
+          </div>
           <div className="column-left">
             {/* Big Token Icon */}
             <img
