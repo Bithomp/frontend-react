@@ -20,7 +20,7 @@ import {
 } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
-import { isAddressOrUsername, setTabParams, useWidth, validateCurrencyCode } from '../utils'
+import { isAddressOrUsername, setTabParams, validateCurrencyCode, xahauNetwork } from '../utils'
 import { useRouter } from 'next/router'
 import SortingArrow from '../components/Tables/SortingArrow'
 import CopyButton from '../components/UI/CopyButton'
@@ -160,14 +160,12 @@ export default function Mpts({
   initialErrorMessage,
   subscriptionExpired,
   sessionToken,
-  isSsrMobile,
   openEmailLogin,
   currencyQuery,
   issuerQuery,
   orderQuery
 }) {
   const { t } = useTranslation()
-  const width = useWidth()
   const isFirstRender = useRef(true)
   const router = useRouter()
 
@@ -432,7 +430,7 @@ export default function Mpts({
           sessionToken={sessionToken}
           openEmailLogin={openEmailLogin}
         >
-          {!isSsrMobile || width > 1080 ? (
+          <div className="hide-on-small-w800">
             <table className="table-large no-hover expand">
               <thead>
                 <tr>
@@ -524,108 +522,107 @@ export default function Mpts({
                 )}
               </tbody>
             </table>
-          ) : (
-            <table className="table-mobile wide">
-              <thead></thead>
-              <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                    </td>
-                  </tr>
-                ) : (
-                  <>
-                    {errorMessage ? (
-                      <tr>
-                        <td colSpan="100" className="center orange bold">
-                          {errorMessage}
-                        </td>
-                      </tr>
-                    ) : (
-                      <>
-                        {data.map((token, i) => {
-                          return (
-                            <tr key={i}>
-                              <td style={{ padding: '5px' }} className="center">
-                                <b>{i + 1}</b>
-                              </td>
-                              <td>
-                                <br />
-                                <TokenCell token={token} />
-                                <br />
-                                {showFlags(token.flags)}
-                                <br />
-                                <b>MPT ID:</b> <CopyButton text={token.mptokenIssuanceID} /> <br />
-                                <b>Holders:</b>{' '}
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.holders, 0, 1)}
-                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
-                                </span>
-                                <br />
-                                <b>Created:</b>{' '}
-                                <span suppressHydrationWarning>
-                                  {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
-                                </span>
-                                <br />
-                                <b>Outstanding:</b>{' '}
-                                <span suppressHydrationWarning>
-                                  {niceNumber(scaleAmount(token.outstandingAmount, token.scale))}{' '}
-                                </span>
-                                {token.currency}
-                                <br />
-                                <b>Max supply:</b>{' '}
-                                <span suppressHydrationWarning>
-                                  {niceNumber(scaleAmount(token.maximumAmount, token.scale))}{' '}
-                                </span>
-                                {token.currency}
-                                <br />
-                                <b>Last used:</b> {timeFromNow(token.lastUsedAt, i18n)}
-                                {token.metadata?.description ? (
-                                  <>
-                                    <br />
-                                    <b>Description:</b> {token.metadata?.description}
-                                  </>
-                                ) : (
-                                  ''
-                                )}
-                                {token.metadata?.weblinks && token.metadata?.weblinks.length > 0 ? (
-                                  <>
-                                    <br />
-                                    {token.metadata.weblinks.map((link, index) => (
-                                      <span key={index}>
-                                        <a
-                                          href={link}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                          style={{ wordBreak: 'break-all' }}
-                                        >
-                                          {link}
-                                        </a>
-                                        <br />
-                                      </span>
-                                    ))}
-                                  </>
-                                ) : (
-                                  ''
-                                )}
-                                <br />
-                                <b>Transfer fee:</b> {token.transferFee ? token.transferFee / 1000 + '%' : 'none'}
-                                <br />
-                                <b>Decimal places:</b> {token.scale || 0}
-                                <br />
-                                <br />
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          )}
+          </div>
+          <table className="table-mobile wide show-on-small-w800">
+            <thead></thead>
+            <tbody>
+              {loading ? (
+                <tr className="center">
+                  <td colSpan="100">
+                    <span className="waiting"></span>
+                  </td>
+                </tr>
+              ) : (
+                <>
+                  {errorMessage ? (
+                    <tr>
+                      <td colSpan="100" className="center orange bold">
+                        {errorMessage}
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {data.map((token, i) => {
+                        return (
+                          <tr key={i}>
+                            <td style={{ padding: '5px' }} className="center">
+                              <b>{i + 1}</b>
+                            </td>
+                            <td>
+                              <br />
+                              <TokenCell token={token} />
+                              <br />
+                              {showFlags(token.flags)}
+                              <br />
+                              <b>MPT ID:</b> <CopyButton text={token.mptokenIssuanceID} /> <br />
+                              <b>Holders:</b>{' '}
+                              <span className="tooltip">
+                                {shortNiceNumber(token.holders, 0, 1)}
+                                <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+                              </span>
+                              <br />
+                              <b>Created:</b>{' '}
+                              <span suppressHydrationWarning>
+                                {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
+                              </span>
+                              <br />
+                              <b>Outstanding:</b>{' '}
+                              <span suppressHydrationWarning>
+                                {niceNumber(scaleAmount(token.outstandingAmount, token.scale))}{' '}
+                              </span>
+                              {token.currency}
+                              <br />
+                              <b>Max supply:</b>{' '}
+                              <span suppressHydrationWarning>
+                                {niceNumber(scaleAmount(token.maximumAmount, token.scale))}{' '}
+                              </span>
+                              {token.currency}
+                              <br />
+                              <b>Last used:</b> {timeFromNow(token.lastUsedAt, i18n)}
+                              {token.metadata?.description ? (
+                                <>
+                                  <br />
+                                  <b>Description:</b> {token.metadata?.description}
+                                </>
+                              ) : (
+                                ''
+                              )}
+                              {token.metadata?.weblinks && token.metadata?.weblinks.length > 0 ? (
+                                <>
+                                  <br />
+                                  {token.metadata.weblinks.map((link, index) => (
+                                    <span key={index}>
+                                      <a
+                                        href={link}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        style={{ wordBreak: 'break-all' }}
+                                      >
+                                        {link}
+                                      </a>
+                                      <br />
+                                    </span>
+                                  ))}
+                                </>
+                              ) : (
+                                ''
+                              )}
+                              <br />
+                              <b>Transfer fee:</b> {token.transferFee ? token.transferFee / 1000 + '%' : 'none'}
+                              <br />
+                              <b>Decimal places:</b> {token.scale || 0}
+                              <br />
+                              <br />
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </>
+                  )}
+                </>
+              )}
+            </tbody>
+          </table>
         </InfiniteScrolling>
       </FiltersFrame>
     </>
