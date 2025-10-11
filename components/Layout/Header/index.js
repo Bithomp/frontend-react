@@ -214,7 +214,8 @@ export default function Header({
               setHoverStates={setHoverStates}
               hoverStates={hoverStates}
             >
-              <Link href="/tokens">TOP {t('menu.tokens')}</Link>
+              <Link href="/tokens">Trustline {t('menu.tokens')}</Link>
+              <Link href="/mpts">Multi-Purpose {t('menu.tokens')}</Link>
               <Link href="/distribution?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De">
                 TOP Holders
               </Link>
