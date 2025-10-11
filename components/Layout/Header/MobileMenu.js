@@ -207,8 +207,13 @@ export default function MobileMenu({
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            TOP {t('menu.tokens')}
+            Trustline {t('menu.tokens')}
           </Link>
+          {!xahauNetwork && (
+            <Link href="/mpts" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              Multi-Purpose {t('menu.tokens')}
+            </Link>
+          )}
           <Link
             href="/distribution?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De"
             className="mobile-menu-item"

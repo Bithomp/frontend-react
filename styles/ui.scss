@@ -401,7 +401,7 @@ table {
           svg {
             stroke: inherit;
             &.change-fill {
-              fill: inherit;
+              fill: var(--accent-link);
             }
           }
           a, .link {

@@ -1,4 +1,5 @@
 import { objectsCountText } from '../../utils'
+import { scaleAmount } from '../../utils/calc'
 import { AddressWithIconFilled, fullDateAndTime, shortNiceNumber } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 
@@ -183,16 +184,12 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                 </td>
                 {isIssued ? (
                   <>
-                    <td className="right">
-                      {shortNiceNumber(c.OutstandingAmount * Math.pow(10, -1 * (c.AssetScale || 0)))}
-                    </td>
-                    <td className="right">
-                      {shortNiceNumber(c.MaximumAmount * Math.pow(10, -1 * (c.AssetScale || 0)))}
-                    </td>
+                    <td className="right">{shortNiceNumber(scaleAmount(c.OutstandingAmount, c.AssetScale))}</td>
+                    <td className="right">{shortNiceNumber(scaleAmount(c.MaximumAmount, c.AssetScale))}</td>
                   </>
                 ) : (
                   <td className="right">
-                    {shortNiceNumber(c.MPTAmount * Math.pow(10, -1 * (c.mptokenCurrencyDetails?.scale || 0)) || 0)}
+                    {shortNiceNumber(scaleAmount(c.MPTAmount, c.mptokenCurrencyDetails?.scale))}
                   </td>
                 )}
               </tr>
