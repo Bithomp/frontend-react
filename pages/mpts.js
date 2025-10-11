@@ -398,7 +398,7 @@ export default function Mpts({
       <SEO title="Multi-Purpose Tokens" />
       <h1 className="center">Multi-Purpose Tokens</h1>
 
-      <TokenTabs tab="mpts" />
+      {!xahauNetwork && <TokenTabs tab="mpts" />}
 
       <FiltersFrame
         count={data?.length}

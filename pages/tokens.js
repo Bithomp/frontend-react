@@ -575,7 +575,7 @@ export default function Tokens({
       <SEO title="Tokens" />
       <h1 className="center">Trustline Tokens</h1>
 
-      <TokenTabs tab="tokens" />
+      {!xahauNetwork && <TokenTabs tab="tokens" />}
 
       <FiltersFrame
         count={data?.length}
