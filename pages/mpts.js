@@ -542,15 +542,61 @@ export default function Mpts({
                                 <b>{i + 1}</b>
                               </td>
                               <td>
+                                <br />
                                 <TokenCell token={token} />
-                                <p>
-                                  <br />
-                                  Holders: {niceNumber(token.holders)}
-                                  <br />
-                                  Trustlines: {niceNumber(token.trustlines)}
-                                  <br />
-                                  <br />
-                                </p>
+                                <br />
+                                {showFlags(token.flags)}
+                                <br />
+                                <b>MPT ID:</b> <CopyButton text={token.mptokenIssuanceID} /> <br />
+                                <b>Holders:</b>{' '}
+                                <span className="tooltip">
+                                  {shortNiceNumber(token.holders, 0, 1)}
+                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+                                </span>
+                                <br />
+                                <b>Created:</b> {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
+                                <br />
+                                <b>Outstanding:</b> {niceNumber(scaleAmount(token.outstandingAmount, token.scale))}{' '}
+                                {token.currency}
+                                <br />
+                                <b>Max supply:</b> {niceNumber(scaleAmount(token.maximumAmount, token.scale))}{' '}
+                                {token.currency}
+                                <br />
+                                <b>Last used:</b> {timeFromNow(token.lastUsedAt, i18n)}
+                                {token.metadata?.description ? (
+                                  <>
+                                    <br />
+                                    <b>Description:</b> {token.metadata?.description}
+                                  </>
+                                ) : (
+                                  ''
+                                )}
+                                {token.metadata?.weblinks && token.metadata?.weblinks.length > 0 ? (
+                                  <>
+                                    <br />
+                                    {token.metadata.weblinks.map((link, index) => (
+                                      <span key={index}>
+                                        <a
+                                          href={link}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          style={{ wordBreak: 'break-all' }}
+                                        >
+                                          {link}
+                                        </a>
+                                        <br />
+                                      </span>
+                                    ))}
+                                  </>
+                                ) : (
+                                  ''
+                                )}
+                                <br />
+                                <b>Transfer fee:</b> {token.transferFee ? token.transferFee / 1000 + '%' : 'none'}
+                                <br />
+                                <b>Decimal places:</b> {token.scale || 0}
+                                <br />
+                                <br />
                               </td>
                             </tr>
                           )
