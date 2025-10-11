@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
@@ -14,13 +14,16 @@ import {
   shortNiceNumber,
   AddressWithIconFilled,
   dateFormat,
-  timeFormat
+  timeFormat,
+  timeFromNow
 } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { isAddressOrUsername, setTabParams, useWidth, validateCurrencyCode } from '../utils'
 import { useRouter } from 'next/router'
 import SortingArrow from '../components/Tables/SortingArrow'
+import CopyButton from '../components/UI/CopyButton'
+import { scaleAmount } from '../utils/calc'
 
 /*
   {
@@ -81,7 +84,7 @@ export async function getServerSideProps(context) {
 
   // Validate order param
   const supportedOrders = ['rating', 'createdOld', 'createdNew', 'mptokensHigh', 'holdersHigh']
-  const orderParam = supportedOrders.includes(order) ? order : 'rating'
+  const orderParam = supportedOrders.includes(order) ? order : 'createdNew' //'rating'
 
   let url = `v2/mptokens?limit=100&order=${orderParam}`
   if (currency) {
@@ -127,9 +130,9 @@ export async function getServerSideProps(context) {
 }
 
 const orderList = [
-  { value: 'rating', label: 'Rating: High to Low' },
-  { value: 'createdOld', label: 'Created: Oldest first' },
+  //{ value: 'rating', label: 'Rating: High to Low' },
   { value: 'createdNew', label: 'Created: Latest first' },
+  { value: 'createdOld', label: 'Created: Oldest first' },
   { value: 'mptokensHigh', label: 'MPTs: High to Low' },
   { value: 'holdersHigh', label: 'Holders: High to Low' }
 ]
@@ -171,7 +174,7 @@ export default function Mpts({
   const [marker, setMarker] = useState(initialData?.marker)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [order, setOrder] = useState(orderQuery || 'rating')
+  const [order, setOrder] = useState(orderQuery || 'createdNew') //'rating
   const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
@@ -191,7 +194,8 @@ export default function Mpts({
       case 'createdNew':
         return { key: 'created', direction: 'ascending' }
       default:
-        return { key: 'rating', direction: 'descending' }
+        return { key: 'created', direction: 'ascending' }
+      //return { key: 'rating', direction: 'descending' }
     }
   }
 
@@ -309,7 +313,7 @@ export default function Mpts({
         {
           tabList: orderList,
           tab: order,
-          defaultTab: 'rating',
+          defaultTab: 'createdNew', //'rating'
           setTab: setOrder,
           paramName: 'order'
         }
@@ -350,8 +354,10 @@ export default function Mpts({
         }
         return
       }
-      setSortConfig({ key: 'rating', direction: 'descending' })
-      setOrder('rating')
+      //setSortConfig({ key: 'rating', direction: 'descending' })
+      //setOrder('rating')
+      setSortConfig({ key: 'created', direction: 'ascending' })
+      setOrder('createdNew')
       return
     }
 
@@ -362,6 +368,8 @@ export default function Mpts({
       switch (k) {
         case 'rating':
           return 'rating'
+        case 'created':
+          return 'createdOld'
         case 'holders':
           return 'holdersHigh'
         default:
@@ -422,10 +430,12 @@ export default function Mpts({
                   <th className="center">
                     <span className="inline-flex items-center">
                       #
-                      <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} />
+                      {/* <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} /> */}
                     </span>
                   </th>
                   <th>Token</th>
+                  <th className="center">MPT ID</th>
+                  <th className="right">Transfer fee</th>
                   <th className="right">
                     <span className="inline-flex items-center">
                       Holders
@@ -443,6 +453,9 @@ export default function Mpts({
                       />
                     </span>
                   </th>
+                  <th className="right">Outstanding</th>
+                  <th className="right">Max</th>
+                  <th>Last used</th>
                 </tr>
               </thead>
               <tbody>
@@ -469,6 +482,10 @@ export default function Mpts({
                               <td>
                                 <TokenCell token={token} />
                               </td>
+                              <td className="center">
+                                <CopyButton text={token.mptokenIssuanceID} />
+                              </td>
+                              <td className="right">{token.transferFee / 1000}%</td>
                               <td className="right">
                                 <span className="tooltip">
                                   {shortNiceNumber(token.holders, 0, 1)}
@@ -480,6 +497,13 @@ export default function Mpts({
                                 <br />
                                 {timeFormat(token.createdAt)}
                               </td>
+                              <td className="right">
+                                {shortNiceNumber(scaleAmount(token.outstandingAmount, token.scale))}
+                              </td>
+                              <td className="right">
+                                {shortNiceNumber(scaleAmount(token.maximumAmount, token.scale))}
+                              </td>
+                              <td>{timeFromNow(token.lastUsedAt, i18n)}</td>
                             </tr>
                           )
                         })}
