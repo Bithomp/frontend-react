@@ -2,6 +2,7 @@ import { fullDateAndTime, niceNumber, niceCurrency, amountFormatWithIcon, fullNi
 import { nativeCurrency } from '../../utils'
 import { divide, multiply } from '../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
+import { FaArrowRight } from 'react-icons/fa'
 
 export default function DexOrdersData({ account, offerList, ledgerTimestamp, setSignRequest, address }) {
   //show the section only if there are dex orders to show
@@ -62,11 +63,11 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         <td className="center" style={{ width: 30 }}>
           {offer.Sequence}
         </td>
-        <td className="left">
+        <td className="left flex align-items-center gap-2">
           <span className={sell ? 'red' : 'green'}>{sell ? 'Selling ' : 'Buying '}</span>
-          <span className="bold">{amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}</span>
+          <span className="bold flex align-items-center">{amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}</span>
           <span className="grey">{' for '}</span>
-          <span className="bold">{amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}</span>
+          <span className="bold flex align-items-center">{amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}</span>
         </td>
         {sell ? (
           <td className="right">
@@ -152,6 +153,130 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
     )
   })
 
+  // Mobile-specific row format
+  const mobileOrderRows = sortedOfferList.map((offer, i) => {
+    const sell = offer.flags?.sell
+    
+    // Format the offer details
+    const offerDetails = (
+      <>
+        <span className="bol flex align-items-center">{amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}</span>
+        <span className="gre flex" style={{ alignItems: 'center' }}> <FaArrowRight /></span>
+        <span className="bol flex align-items-center">{amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}</span>
+      </>
+    )
+
+    // Format the rate details
+    const rateDetails = sell ? (
+      typeof offer.TakerGets === 'string' ? (
+        <>
+          <span>1 {nativeCurrency} = </span>
+          <span className="no-brake">
+            {niceNumber(multiply(offer.quality, 1000000), 0, null, 5)}{' '}
+            {niceCurrency(offer.TakerPays?.currency || nativeCurrency)} 
+          </span>
+        </>
+      ) : typeof offer.TakerPays === 'string' ? (
+        <>
+          <span>1 {niceCurrency(offer.TakerGets?.currency)} = </span>
+          <span className="no-brake">
+            {niceNumber(divide(offer.quality, 1000000), 0, null, 5)}{' '}
+            {nativeCurrency}
+          </span>
+        </>
+      ) : (
+        <>
+          <span>1 {niceCurrency(offer.TakerGets?.currency)} = </span>
+          <span className="no-brake">
+            {niceNumber(offer.quality, 0, null, 5)}{' '}
+            {niceCurrency(offer.TakerPays?.currency)}
+          </span>
+        </>
+      )
+    ) : (
+      typeof offer.TakerGets === 'string' ? (
+        <>
+          <span>1 {niceCurrency(offer.TakerPays?.currency)} ={' '}</span>
+          <span className="tooltip">
+            <span className="no-brake">{niceNumber(divide(1, offer.quality * 1000000), 0, null, 2)} {nativeCurrency}</span>
+            <span className="tooltiptext no-brake">
+              {fullNiceNumber(divide(1, offer.quality * 1000000))} {nativeCurrency}
+            </span>
+          </span>
+        </>
+      ) : typeof offer.TakerPays === 'string' ? (
+        <>
+          <span>1 {nativeCurrency} ={' '}</span>
+          <span className="tooltip">
+            <span className="no-brake">{niceNumber(divide(1000000, offer.quality), 0, null, 2)} {niceCurrency(offer.TakerGets?.currency)}</span>
+            <span className="tooltiptext no-brake">
+              {fullNiceNumber(divide(1000000, offer.quality))}
+              {niceCurrency(offer.TakerGets?.currency)}
+            </span>
+          </span>
+        </>
+      ) : (
+        <>
+          <span>1 {niceCurrency(offer.TakerPays?.currency)} ={' '}</span>
+          <span className="tooltip">
+            <span className="no-brake">{niceNumber(divide(1, offer.quality), 0, null, 2)} {niceCurrency(offer.TakerGets?.currency)}</span>
+            <span className="tooltiptext no-brake">
+              {fullNiceNumber(divide(1, offer.quality))}
+              {niceCurrency(offer.TakerGets?.currency)}
+            </span>
+          </span>
+        </>
+      )
+    )
+
+    return (
+      <tr key={i} className="mobile-dex-row">
+        <td colSpan="4">
+          <div className="mobile-dex-line1">
+            <span className="mobile-dex-sequence">#{offer.Sequence}</span>
+            <span className={`mobile-dex-type ${sell ? 'red' : 'green'}`}>
+              {sell ? 'Selling' : 'Buying'}
+            </span>
+            <span className="mobile-dex-action">
+              {offer.Account === account?.address ? (
+                <a
+                  href="#"
+                  onClick={() =>
+                    setSignRequest({
+                      request: {
+                        TransactionType: 'OfferCancel',
+                        OfferSequence: offer.Sequence
+                      }
+                    })
+                  }
+                  className="red tooltip"
+                >
+                  <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
+                  <span className="tooltiptext">Cancel</span>
+                </a>
+              ) : (
+                <span className="grey tooltip">
+                  <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
+                  <span className="tooltiptext">Cancel</span>
+                </span>
+              )}
+            </span>
+          </div>
+
+          <div className="mobile-dex-line2 flex align-items-center gap-2">
+            <span className="mobile-dex-label">Offer: </span>
+            {offerDetails}
+          </div>
+
+          <div className="mobile-dex-line3">
+            <span className="mobile-dex-label">Rate: </span>
+            {rateDetails}
+          </div>
+        </td>
+      </tr>
+    )
+  })
+
   return (
     <div id="dex-orders-section">
       <table className="table-details hide-on-small-w800">
@@ -222,13 +347,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         <br />
         <table className="table-mobile wide">
           <tbody>
-            <tr>
-              <th>#</th>
-              <th className="left">Offer</th>
-              <th className="right">Rate</th>
-              <th className="center">Action</th>
-            </tr>
-            {orderRows}
+            {mobileOrderRows}
           </tbody>
         </table>
         <br />
