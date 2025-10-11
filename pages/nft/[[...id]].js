@@ -989,7 +989,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   }
 
   const updateUriButton = () => {
-    if (!id || !data.flags?.mutable || data.type === 'xls35') return '' //if it is not mutable
+    if (!id || !data.flags?.mutable || data.type === 'xls35' || data.deletedAt) return '' //if it is not mutable or deleted
 
     // if not signed, or signed but not an issuer - do not show the button
     if (!(data?.issuer && account?.address && account.address === data.issuer)) return ''
@@ -1026,6 +1026,8 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     if (!id || data.deletedAt) return '' //if it is already burned do not offer to burn
 
     if (isNftExplicit(data)) return '' //if it is explicit, do not offer to set as avatar
+
+    if (!imageUrl) return '' //if there is no image, do not offer to set as avatar
 
     //if devnet, or signed, but not an owner or issuer - do not show set as avatar button
     if (devNet || (account?.address && account.address !== data.owner && account.address !== data.issuer)) return ''

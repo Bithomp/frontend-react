@@ -264,7 +264,11 @@ export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
     url = url.replace('#', '%23')
     if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail' || type === 'preview')) {
       return 'https://cdn.' + webSiteName + '/' + type + '/' + url + filename
-    } else if (gateway === 'cl' && type === 'model') {
+    } else if (
+      gateway === 'cl' &&
+      type === 'model' &&
+      url.includes('QmUR2XyUZvGvsNMmLBA5joPduT4f95jSMGzzzmCkckKSF4/?object=')
+    ) {
       return stripText(uri)
     } else if (gateway === 'cl' || type === 'audio' || type === 'model' || type === 'viewer') {
       return 'https://ipfs.io/ipfs/' + url + filename

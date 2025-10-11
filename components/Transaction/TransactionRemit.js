@@ -176,7 +176,7 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData className="bold orange">Problem solving</TData>
           <TData className="bold">
-            The transaction <span class="red">FAILED</span>, if your balance changed, contact{' '}
+            The transaction <span className="red">FAILED</span>, if your balance changed, contact{' '}
             {addressUsernameOrServiceLink(specification.source, 'address')} support.
           </TData>
         </tr>
@@ -224,10 +224,7 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
           <TData>
             {destinationBalanceChangesList?.map((change, index) => (
               <div key={index}>
-                <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                  {amountFormat(optionalAbsAmount(change))}
-                </span>
-                {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                {amountFormat(optionalAbsAmount(change), { withIssuer: true, color: 'direction', bold: true })}
                 {nativeCurrencyToFiat({
                   amount: optionalAbsAmount(change),
                   selectedCurrency,
