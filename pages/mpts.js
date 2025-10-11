@@ -134,7 +134,7 @@ const orderList = [
   //{ value: 'rating', label: 'Rating: High to Low' },
   { value: 'createdNew', label: 'Created: Latest first' },
   { value: 'createdOld', label: 'Created: Oldest first' },
-  { value: 'mptokensHigh', label: 'MPTs: High to Low' },
+  //{ value: 'mptokensHigh', label: 'MPTs: High to Low' },
   { value: 'holdersHigh', label: 'Holders: High to Low' }
 ]
 
@@ -336,9 +336,17 @@ export default function Mpts({
 
   // CSV headers for export
   const csvHeaders = [
+    { label: 'MPT ID', key: 'mptokenIssuanceID' },
     { label: 'Currency', key: 'currency' },
     { label: 'Issuer', key: 'issuer' },
-    { label: 'Holders', key: 'holders' }
+    { label: 'Holders', key: 'holders' },
+    { label: 'Created', key: 'createdAt' },
+    { label: 'Scale', key: 'scale' },
+    { label: 'Outstanding', key: 'outstandingAmount' },
+    { label: 'Max supply', key: 'maximumAmount' },
+    { label: 'Last used', key: 'lastUsedAt' },
+    { label: 'Transfer fee', key: 'transferFee' },
+    { label: 'Description', key: 'metadata.description' }
   ]
 
   const sortTable = (key) => {
@@ -403,8 +411,8 @@ export default function Mpts({
         order={order}
         setOrder={setOrder}
         orderList={orderList}
+        onlyCsv={true} //delete this line to enable filters
       >
-        {/* Left filters */}
         <>
           {rendered && (
             <div className="flex flex-col sm:gap-4 md:h-[400px]">
@@ -413,7 +421,6 @@ export default function Mpts({
             </div>
           )}
         </>
-        {/* Main content */}
         <InfiniteScrolling
           dataLength={data.length}
           loadMore={checkApi}
@@ -423,7 +430,6 @@ export default function Mpts({
           sessionToken={sessionToken}
           openEmailLogin={openEmailLogin}
         >
-          {/* Desktop table */}
           {!isSsrMobile || width > 1080 ? (
             <table className="table-large no-hover expand">
               <thead>
@@ -482,6 +488,7 @@ export default function Mpts({
                               <td className="center">{i + 1}</td>
                               <td>
                                 <TokenCell token={token} />
+                                <div style={{ height: 5 }} />
                                 {showFlags(token.flags)}
                               </td>
                               <td className="center">
@@ -499,10 +506,10 @@ export default function Mpts({
                                 <br />
                                 {timeFormat(token.createdAt)}
                               </td>
-                              <td className="right">
+                              <td className="right" suppressHydrationWarning>
                                 {shortNiceNumber(scaleAmount(token.outstandingAmount, token.scale))}
                               </td>
-                              <td className="right">
+                              <td className="right" suppressHydrationWarning>
                                 {shortNiceNumber(scaleAmount(token.maximumAmount, token.scale))}
                               </td>
                               <td>{timeFromNow(token.lastUsedAt, i18n)}</td>
@@ -554,12 +561,21 @@ export default function Mpts({
                                   <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
                                 </span>
                                 <br />
-                                <b>Created:</b> {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
+                                <b>Created:</b>{' '}
+                                <span suppressHydrationWarning>
+                                  {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
+                                </span>
                                 <br />
-                                <b>Outstanding:</b> {niceNumber(scaleAmount(token.outstandingAmount, token.scale))}{' '}
+                                <b>Outstanding:</b>{' '}
+                                <span suppressHydrationWarning>
+                                  {niceNumber(scaleAmount(token.outstandingAmount, token.scale))}{' '}
+                                </span>
                                 {token.currency}
                                 <br />
-                                <b>Max supply:</b> {niceNumber(scaleAmount(token.maximumAmount, token.scale))}{' '}
+                                <b>Max supply:</b>{' '}
+                                <span suppressHydrationWarning>
+                                  {niceNumber(scaleAmount(token.maximumAmount, token.scale))}{' '}
+                                </span>
                                 {token.currency}
                                 <br />
                                 <b>Last used:</b> {timeFromNow(token.lastUsedAt, i18n)}
