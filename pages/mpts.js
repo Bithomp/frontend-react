@@ -25,6 +25,7 @@ import { useRouter } from 'next/router'
 import SortingArrow from '../components/Tables/SortingArrow'
 import CopyButton from '../components/UI/CopyButton'
 import { scaleAmount } from '../utils/calc'
+import TokenTabs from '../components/Tabs/TokenTabs'
 
 /*
   {
@@ -397,6 +398,8 @@ export default function Mpts({
       <SEO title="Multi-Purpose Tokens" />
       <h1 className="center">Multi-Purpose Tokens</h1>
 
+      <TokenTabs tab="mpts" />
+
       <FiltersFrame
         count={data?.length}
         hasMore={marker}
@@ -461,7 +464,7 @@ export default function Mpts({
                     </span>
                   </th>
                   <th className="right">Outstanding</th>
-                  <th className="right">Max</th>
+                  <th className="right">Max supply</th>
                   <th>Last used</th>
                 </tr>
               </thead>

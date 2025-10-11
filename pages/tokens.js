@@ -30,6 +30,7 @@ import {
   xahauNetwork
 } from '../utils'
 import { useRouter } from 'next/router'
+import TokenTabs from '../components/Tabs/TokenTabs'
 
 /*
   {
@@ -572,7 +573,9 @@ export default function Tokens({
   return (
     <>
       <SEO title="Tokens" />
-      <h1 className="center">Tokens</h1>
+      <h1 className="center">Trustline Tokens</h1>
+
+      <TokenTabs tab="tokens" />
 
       <FiltersFrame
         count={data?.length}
