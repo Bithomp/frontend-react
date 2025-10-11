@@ -414,13 +414,12 @@ export default function Mpts({
         order={order}
         setOrder={setOrder}
         orderList={orderList}
-        onlyCsv={true} //delete this line to enable filters
       >
         <>
           {rendered && (
             <div className="flex flex-col sm:gap-4 md:h-[400px]">
-              <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
-              <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
+              <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} type="mpt" />
+              <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} type="mpt" />
             </div>
           )}
         </>
