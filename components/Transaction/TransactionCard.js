@@ -479,6 +479,12 @@ export const TransactionCard = ({
                         })}
                       </>
                     )}
+                  {outcome?.parentBatchID && (
+                    <tr>
+                      <TData>Parent batch ID</TData>
+                      <TData>{addressUsernameOrServiceLink(outcome, 'parentBatchID', { short: true, url: '/tx/' })}</TData>
+                    </tr>
+                  )}
                   <tr>
                     <TData>Transaction link</TData>
                     <TData>
