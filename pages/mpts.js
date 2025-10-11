@@ -430,101 +430,40 @@ export default function Mpts({
           sessionToken={sessionToken}
           openEmailLogin={openEmailLogin}
         >
-          <div className="hide-on-small-w800">
-            <table className="table-large no-hover expand">
-              <thead>
-                <tr>
-                  <th className="center">
-                    <span className="inline-flex items-center">
-                      #
-                      {/* <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} /> */}
-                    </span>
-                  </th>
-                  <th>Token</th>
-                  <th className="center">MPT ID</th>
-                  <th className="right">Transfer fee</th>
-                  <th className="right">
-                    <span className="inline-flex items-center">
-                      Holders
-                      <SortingArrow sortKey="holders" currentSort={sortConfig} onClick={() => sortTable('holders')} />
-                    </span>
-                  </th>
-                  <th className="right">
-                    <span className="inline-flex items-center">
-                      Created
-                      <SortingArrow
-                        sortKey="created"
-                        currentSort={sortConfig}
-                        onClick={() => sortTable('created')}
-                        canSortBothWays={true}
-                      />
-                    </span>
-                  </th>
-                  <th className="right">Outstanding</th>
-                  <th className="right">Max supply</th>
-                  <th>Last used</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                    </td>
-                  </tr>
-                ) : (
-                  <>
-                    {errorMessage ? (
-                      <tr>
-                        <td colSpan="100" className="center orange bold">
-                          {errorMessage}
-                        </td>
-                      </tr>
-                    ) : (
-                      <>
-                        {data.map((token, i) => {
-                          return (
-                            <tr key={i}>
-                              <td className="center">{i + 1}</td>
-                              <td>
-                                <TokenCell token={token} />
-                                <div style={{ height: 5 }} />
-                                {showFlags(token.flags)}
-                              </td>
-                              <td className="center">
-                                <CopyButton text={token.mptokenIssuanceID} />
-                              </td>
-                              <td className="right">{token.transferFee ? token.transferFee / 1000 + '%' : ''}</td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.holders, 0, 1)}
-                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
-                                </span>
-                              </td>
-                              <td className="right" suppressHydrationWarning>
-                                {dateFormat(token.createdAt)}
-                                <br />
-                                {timeFormat(token.createdAt)}
-                              </td>
-                              <td className="right" suppressHydrationWarning>
-                                {shortNiceNumber(scaleAmount(token.outstandingAmount, token.scale))}
-                              </td>
-                              <td className="right" suppressHydrationWarning>
-                                {shortNiceNumber(scaleAmount(token.maximumAmount, token.scale))}
-                              </td>
-                              <td>{timeFromNow(token.lastUsedAt, i18n)}</td>
-                            </tr>
-                          )
-                        })}
-                      </>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          </div>
-          <table className="table-mobile wide show-on-small-w800">
-            <thead></thead>
+          <table className="table-large no-hover expand hide-on-small-w800">
+            <thead>
+              <tr>
+                <th className="center">
+                  <span className="inline-flex items-center">
+                    #
+                    {/* <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} /> */}
+                  </span>
+                </th>
+                <th>Token</th>
+                <th className="center">MPT ID</th>
+                <th className="right">Transfer fee</th>
+                <th className="right">
+                  <span className="inline-flex items-center">
+                    Holders
+                    <SortingArrow sortKey="holders" currentSort={sortConfig} onClick={() => sortTable('holders')} />
+                  </span>
+                </th>
+                <th className="right">
+                  <span className="inline-flex items-center">
+                    Created
+                    <SortingArrow
+                      sortKey="created"
+                      currentSort={sortConfig}
+                      onClick={() => sortTable('created')}
+                      canSortBothWays={true}
+                    />
+                  </span>
+                </th>
+                <th className="right">Outstanding</th>
+                <th className="right">Max supply</th>
+                <th>Last used</th>
+              </tr>
+            </thead>
             <tbody>
               {loading ? (
                 <tr className="center">
@@ -545,75 +484,34 @@ export default function Mpts({
                       {data.map((token, i) => {
                         return (
                           <tr key={i}>
-                            <td style={{ padding: '5px' }} className="center">
-                              <b>{i + 1}</b>
-                            </td>
+                            <td className="center">{i + 1}</td>
                             <td>
-                              <br />
                               <TokenCell token={token} />
-                              <br />
+                              <div style={{ height: 5 }} />
                               {showFlags(token.flags)}
-                              <br />
-                              <b>MPT ID:</b> <CopyButton text={token.mptokenIssuanceID} /> <br />
-                              <b>Holders:</b>{' '}
+                            </td>
+                            <td className="center">
+                              <CopyButton text={token.mptokenIssuanceID} />
+                            </td>
+                            <td className="right">{token.transferFee ? token.transferFee / 1000 + '%' : ''}</td>
+                            <td className="right">
                               <span className="tooltip">
                                 {shortNiceNumber(token.holders, 0, 1)}
                                 <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
                               </span>
-                              <br />
-                              <b>Created:</b>{' '}
-                              <span suppressHydrationWarning>
-                                {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
-                              </span>
-                              <br />
-                              <b>Outstanding:</b>{' '}
-                              <span suppressHydrationWarning>
-                                {niceNumber(scaleAmount(token.outstandingAmount, token.scale))}{' '}
-                              </span>
-                              {token.currency}
-                              <br />
-                              <b>Max supply:</b>{' '}
-                              <span suppressHydrationWarning>
-                                {niceNumber(scaleAmount(token.maximumAmount, token.scale))}{' '}
-                              </span>
-                              {token.currency}
-                              <br />
-                              <b>Last used:</b> {timeFromNow(token.lastUsedAt, i18n)}
-                              {token.metadata?.description ? (
-                                <>
-                                  <br />
-                                  <b>Description:</b> {token.metadata?.description}
-                                </>
-                              ) : (
-                                ''
-                              )}
-                              {token.metadata?.weblinks && token.metadata?.weblinks.length > 0 ? (
-                                <>
-                                  <br />
-                                  {token.metadata.weblinks.map((link, index) => (
-                                    <span key={index}>
-                                      <a
-                                        href={link}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        style={{ wordBreak: 'break-all' }}
-                                      >
-                                        {link}
-                                      </a>
-                                      <br />
-                                    </span>
-                                  ))}
-                                </>
-                              ) : (
-                                ''
-                              )}
-                              <br />
-                              <b>Transfer fee:</b> {token.transferFee ? token.transferFee / 1000 + '%' : 'none'}
-                              <br />
-                              <b>Decimal places:</b> {token.scale || 0}
-                              <br />
-                              <br />
                             </td>
+                            <td className="right" suppressHydrationWarning>
+                              {dateFormat(token.createdAt)}
+                              <br />
+                              {timeFormat(token.createdAt)}
+                            </td>
+                            <td className="right" suppressHydrationWarning>
+                              {shortNiceNumber(scaleAmount(token.outstandingAmount, token.scale))}
+                            </td>
+                            <td className="right" suppressHydrationWarning>
+                              {shortNiceNumber(scaleAmount(token.maximumAmount, token.scale))}
+                            </td>
+                            <td>{timeFromNow(token.lastUsedAt, i18n)}</td>
                           </tr>
                         )
                       })}
@@ -623,6 +521,109 @@ export default function Mpts({
               )}
             </tbody>
           </table>
+
+          <div className="show-on-small-w800">
+            <table className="table-mobile wide">
+              <thead></thead>
+              <tbody>
+                {loading ? (
+                  <tr className="center">
+                    <td colSpan="100">
+                      <span className="waiting"></span>
+                    </td>
+                  </tr>
+                ) : (
+                  <>
+                    {errorMessage ? (
+                      <tr>
+                        <td colSpan="100" className="center orange bold">
+                          {errorMessage}
+                        </td>
+                      </tr>
+                    ) : (
+                      <>
+                        {data.map((token, i) => {
+                          return (
+                            <tr key={i}>
+                              <td style={{ padding: '5px' }} className="center">
+                                <b>{i + 1}</b>
+                              </td>
+                              <td>
+                                <br />
+                                <TokenCell token={token} />
+                                <br />
+                                {showFlags(token.flags)}
+                                <br />
+                                <b>MPT ID:</b> <CopyButton text={token.mptokenIssuanceID} /> <br />
+                                <b>Holders:</b>{' '}
+                                <span className="tooltip">
+                                  {shortNiceNumber(token.holders, 0, 1)}
+                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+                                </span>
+                                <br />
+                                <b>Created:</b>{' '}
+                                <span suppressHydrationWarning>
+                                  {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
+                                </span>
+                                <br />
+                                <b>Outstanding:</b>{' '}
+                                <span suppressHydrationWarning>
+                                  {niceNumber(scaleAmount(token.outstandingAmount, token.scale))}{' '}
+                                </span>
+                                {token.currency}
+                                <br />
+                                <b>Max supply:</b>{' '}
+                                <span suppressHydrationWarning>
+                                  {niceNumber(scaleAmount(token.maximumAmount, token.scale))}{' '}
+                                </span>
+                                {token.currency}
+                                <br />
+                                <b>Last used:</b> {timeFromNow(token.lastUsedAt, i18n)}
+                                {token.metadata?.description ? (
+                                  <>
+                                    <br />
+                                    <b>Description:</b> {token.metadata?.description}
+                                  </>
+                                ) : (
+                                  ''
+                                )}
+                                {token.metadata?.weblinks && token.metadata?.weblinks.length > 0 ? (
+                                  <>
+                                    <br />
+                                    {token.metadata.weblinks.map((link, index) => (
+                                      <span key={index}>
+                                        <a
+                                          href={link}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          style={{ wordBreak: 'break-all' }}
+                                        >
+                                          {link}
+                                        </a>
+                                        <br />
+                                      </span>
+                                    ))}
+                                  </>
+                                ) : (
+                                  ''
+                                )}
+                                <br />
+                                <b>Transfer fee:</b> {token.transferFee ? token.transferFee / 1000 + '%' : 'none'}
+                                <br />
+                                <b>Decimal places:</b> {token.scale || 0}
+                                <br />
+                                <br />
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </>
+                    )}
+                  </>
+                )}
+              </tbody>
+            </table>
+          </div>
         </InfiniteScrolling>
       </FiltersFrame>
     </>
