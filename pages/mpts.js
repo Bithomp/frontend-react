@@ -15,7 +15,8 @@ import {
   AddressWithIconFilled,
   dateFormat,
   timeFormat,
-  timeFromNow
+  timeFromNow,
+  showFlags
 } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -481,11 +482,12 @@ export default function Mpts({
                               <td className="center">{i + 1}</td>
                               <td>
                                 <TokenCell token={token} />
+                                {showFlags(token.flags)}
                               </td>
                               <td className="center">
                                 <CopyButton text={token.mptokenIssuanceID} />
                               </td>
-                              <td className="right">{token.transferFee / 1000}%</td>
+                              <td className="right">{token.transferFee ? token.transferFee / 1000 + '%' : ''}</td>
                               <td className="right">
                                 <span className="tooltip">
                                   {shortNiceNumber(token.holders, 0, 1)}
