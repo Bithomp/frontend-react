@@ -123,6 +123,9 @@ export default function IOUData({
     setTotalBalance(total)
   }, [rippleStateList, pageFiatRate])
 
+  // if no tokens, and if not loggedin, or loggedin but not the owner of the account, return nothing
+  if (!rippleStateList?.length && account?.address !== address) return ''
+
   const historicalTitle = ledgerTimestamp ? (
     <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
