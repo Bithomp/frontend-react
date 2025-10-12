@@ -158,7 +158,7 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
             {isIssued ? (
               <>
                 <th className="right">Outstanding</th>
-                <th className="right">Max</th>
+                <th className="right">Max supply</th>
               </>
             ) : (
               <th className="right">Balance</th>
@@ -185,7 +185,9 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                 {isIssued ? (
                   <>
                     <td className="right">{shortNiceNumber(scaleAmount(c.OutstandingAmount, c.AssetScale))}</td>
-                    <td className="right">{shortNiceNumber(scaleAmount(c.MaximumAmount, c.AssetScale))}</td>
+                    <td className="right">
+                      {c.MaximumAmount ? shortNiceNumber(scaleAmount(c.MaximumAmount, c.AssetScale)) : 'not set'}
+                    </td>
                   </>
                 ) : (
                   <td className="right">
@@ -243,7 +245,7 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                       <td className="right">{shortNiceNumber(c.MaximumAmount)}</td>
                     </>
                   ) : (
-                    <td className="right">{shortNiceNumber(c.MPTAmount || 0)}</td>
+                    <td className="right">{c.MPTAmount ? shortNiceNumber(c.MPTAmount) : 0}</td>
                   )}
                 </tr>
               )

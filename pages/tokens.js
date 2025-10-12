@@ -787,8 +787,7 @@ export default function Tokens({
                             <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
                             <td className="center">
                               <span
-                                onClick={(e) => {
-                                  e.stopPropagation()
+                                onClick={() => {
                                   handleSetTrustline(token)
                                 }}
                                 className="orange tooltip"

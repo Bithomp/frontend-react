@@ -12,6 +12,7 @@ import {
   TransactionAccountSet,
   TransactionAMM,
   TransactionCheck,
+  TransactionCredential,
   TransactionDID,
   TransactionEscrow,
   TransactionImport,
@@ -94,6 +95,8 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionAMM
   } else if (txType?.includes('Check')) {
     TransactionComponent = TransactionCheck
+  } else if (txType === 'CredentialCreate' || txType === 'CredentialAccept' || txType === 'CredentialDelete' || txType === 'DepositPreauth') {
+    TransactionComponent = TransactionCredential
   } else if (txType?.includes('Escrow')) {
     TransactionComponent = TransactionEscrow
   } else if (txType === 'Import') {
