@@ -433,11 +433,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                         {errorMessage}
                       </td>
                     )}
-                    {!offers?.length && (
-                      <td colSpan="100" className="center grey">
-                        {t('nft-offers.no-nft-offers')}
-                      </td>
-                    )}
+                    {!offers?.length && <td colSpan="100">{t('nft-offers.no-nft-offers')}</td>}
                   </tr>
                 )}
               </>
