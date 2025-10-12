@@ -86,7 +86,7 @@ export async function getServerSideProps(context) {
 
   // Validate order param
   const supportedOrders = ['rating', 'createdOld', 'createdNew', 'mptokensHigh', 'holdersHigh']
-  const orderParam = supportedOrders.includes(order) ? order : 'createdNew' //'rating'
+  const orderParam = supportedOrders.includes(order) ? order : 'holdersHigh' //'rating'
 
   let url = `v2/mptokens?limit=100&order=${orderParam}`
   if (currency) {
@@ -133,10 +133,10 @@ export async function getServerSideProps(context) {
 
 const orderList = [
   //{ value: 'rating', label: 'Rating: High to Low' },
+  { value: 'holdersHigh', label: 'Holders: High to Low' },
+  { value: 'mptokensHigh', label: 'Authorized: High to Low' },
   { value: 'createdNew', label: 'Created: Latest first' },
-  { value: 'createdOld', label: 'Created: Oldest first' },
-  //{ value: 'mptokensHigh', label: 'MPTs: High to Low' },
-  { value: 'holdersHigh', label: 'Holders: High to Low' }
+  { value: 'createdOld', label: 'Created: Oldest first' }
 ]
 
 // Helper component to render token with icon
@@ -174,7 +174,7 @@ export default function Mpts({
   const [marker, setMarker] = useState(initialData?.marker)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [order, setOrder] = useState(orderQuery || 'createdNew') //'rating
+  const [order, setOrder] = useState(orderQuery || 'holdersHight') //'rating
   const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
@@ -189,12 +189,14 @@ export default function Mpts({
         return { key: 'rating', direction: 'descending' }
       case 'holdersHigh':
         return { key: 'holders', direction: 'descending' }
+      case 'mptokensHigh':
+        return { key: 'mptokens', direction: 'descending' }
       case 'createdOld':
         return { key: 'created', direction: 'descending' }
       case 'createdNew':
         return { key: 'created', direction: 'ascending' }
       default:
-        return { key: 'created', direction: 'ascending' }
+        return { key: 'holders', direction: 'ascending' }
       //return { key: 'rating', direction: 'descending' }
     }
   }
@@ -313,7 +315,7 @@ export default function Mpts({
         {
           tabList: orderList,
           tab: order,
-          defaultTab: 'createdNew', //'rating'
+          defaultTab: 'holdersHigh', //'rating'
           setTab: setOrder,
           paramName: 'order'
         }
@@ -338,6 +340,7 @@ export default function Mpts({
     { label: 'MPT ID', key: 'mptokenIssuanceID' },
     { label: 'Currency', key: 'currency' },
     { label: 'Issuer', key: 'issuer' },
+    { label: 'Authorised addresses', key: 'mptokens' },
     { label: 'Holders', key: 'holders' },
     { label: 'Created', key: 'createdAt' },
     { label: 'Scale', key: 'scale' },
@@ -364,8 +367,8 @@ export default function Mpts({
       }
       //setSortConfig({ key: 'rating', direction: 'descending' })
       //setOrder('rating')
-      setSortConfig({ key: 'created', direction: 'ascending' })
-      setOrder('createdNew')
+      setSortConfig({ key: 'holders', direction: 'ascending' })
+      setOrder('holdersHigh')
       return
     }
 
@@ -380,6 +383,8 @@ export default function Mpts({
           return 'createdOld'
         case 'holders':
           return 'holdersHigh'
+        case 'mptokens':
+          return 'mptokensHigh'
         default:
           return null
       }
@@ -440,15 +445,20 @@ export default function Mpts({
                   </span>
                 </th>
                 <th>Token</th>
-                <th className="center">MPT ID</th>
-                <th className="right">Sequence</th>
-                <th className="right">Transfer fee</th>
                 <th className="right">
                   <span className="inline-flex items-center">
                     Holders
                     <SortingArrow sortKey="holders" currentSort={sortConfig} onClick={() => sortTable('holders')} />
                   </span>
+                  <br />
+                  <span className="inline-flex items-center">
+                    Authorized
+                    <SortingArrow sortKey="mptokens" currentSort={sortConfig} onClick={() => sortTable('mptokens')} />
+                  </span>
                 </th>
+                <th className="center">MPT ID</th>
+                <th className="right">Sequence</th>
+                <th className="right">Transfer fee</th>
                 <th className="right">
                   <span className="inline-flex items-center">
                     Created
@@ -491,17 +501,22 @@ export default function Mpts({
                               <div style={{ height: 5 }} />
                               {showFlags(token.flags)}
                             </td>
+                            <td className="right">
+                              <span className="tooltip green">
+                                {shortNiceNumber(token.holders, 0, 1)}
+                                <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+                              </span>
+                              <br />
+                              <span className="tooltip">
+                                {shortNiceNumber(token.mptokens, 0, 1)}
+                                <span className="tooltiptext no-brake">{fullNiceNumber(token.mptokens)}</span>
+                              </span>
+                            </td>
                             <td className="center">
                               <CopyButton text={token.mptokenIssuanceID} />
                             </td>
                             <td className="right">{token.sequence}</td>
                             <td className="right">{token.transferFee ? token.transferFee / 1000 + '%' : ''}</td>
-                            <td className="right">
-                              <span className="tooltip">
-                                {shortNiceNumber(token.holders, 0, 1)}
-                                <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
-                              </span>
-                            </td>
                             <td className="right" suppressHydrationWarning>
                               {dateFormat(token.createdAt)}
                               <br />
@@ -561,6 +576,12 @@ export default function Mpts({
                                 <span className="tooltip">
                                   {shortNiceNumber(token.holders, 0, 1)}
                                   <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+                                </span>
+                                <br />
+                                <b>Authorized addresses:</b>{' '}
+                                <span className="tooltip">
+                                  {shortNiceNumber(token.mptokens, 0, 1)}
+                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.mptokens)}</span>
                                 </span>
                                 <br />
                                 <b>Created:</b>{' '}
