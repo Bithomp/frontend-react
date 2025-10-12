@@ -20,7 +20,9 @@ class ErrorBoundary extends React.Component {
       "Failed to read the 'localStorage' property from 'Window': Access is denied for this document.",
       'The operation is insecure.',
       'The object can not be found here.',
-      "null is not an object (evaluating 'localStorage.getItem')"
+      "null is not an object (evaluating 'localStorage.getItem')",
+      "Cannot read properties of null (reading 'getItem')",
+      "Cannot read properties of null (reading 'createImageData')"
     ]
 
     if (process.env.NODE_ENV === 'development') {
@@ -51,8 +53,12 @@ class ErrorBoundary extends React.Component {
       return (
         <div className="center">
           <br />
-          <h1>Something went wrong, contact our support.</h1>
-          <Mailto email="support@bithomp.com" headers={{ subject: 'Front-end error' }} />
+          <h1 className="contrast">Something went wrong, contact our support.</h1>
+          <Mailto email="support@bithomp.com" headers={{ subject: 'Frontend error' }} />
+          [For technical enquiries only, send a link to the page where the error occurred and a brief description of
+          what you did.]
+          <br />
+          <br />
         </div>
       )
     }

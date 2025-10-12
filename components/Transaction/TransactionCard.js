@@ -57,6 +57,7 @@ export const TransactionCard = ({
   const [showRawData, setShowRawData] = useState(false)
   const [showRawMeta, setShowRawMeta] = useState(false)
   const [showAdditionalData, setShowAdditionalData] = useState(false)
+  const [showBalanceChanges, setShowBalanceChanges] = useState(false)
 
   if (!data) return null
 
@@ -357,7 +358,7 @@ export const TransactionCard = ({
                   )}
                   {dapp && (
                     <tr>
-                      <TData>Client</TData>
+                      <TData>App/Dapp</TData>
                       <TData>{dapp}</TData>
                     </tr>
                   )}
@@ -416,7 +417,7 @@ export const TransactionCard = ({
                     ))}
                   {/* keep here outcome?.balanceChanges.length, to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
                   {tx?.TransactionType !== 'UNLReport' &&
-                    (outcome?.balanceChanges?.length > 2 || notFullySupported) && (
+                    (outcome?.balanceChanges?.length > 2 || notFullySupported || showBalanceChanges) && (
                       <>
                         {filteredBalanceChanges?.length > 1 && (
                           <tr>
@@ -456,13 +457,13 @@ export const TransactionCard = ({
                                   : change.balanceChanges?.map((c, i) => {
                                       return (
                                         <div key={i}>
-                                          <span className={'bold ' + (Number(c.value) > 0 ? 'green' : 'red')}>
-                                            {Number(c.value) > 0 ? '+' : ''}
-                                            {amountFormat(c, { precise: true })}
-                                          </span>
-                                          {c.issuer && (
-                                            <>({addressUsernameOrServiceLink(c, 'issuer', { short: true })})</>
-                                          )}
+                                          {amountFormat(c, {
+                                            precise: 'nice',
+                                            withIssuer: true,
+                                            bold: true,
+                                            showPlus: true,
+                                            color: 'direction'
+                                          })}
                                           {nativeCurrencyToFiat({
                                             amount: c,
                                             selectedCurrency,
@@ -491,6 +492,14 @@ export const TransactionCard = ({
                         Additional data
                       </span>{' '}
                       |{' '}
+                      {!notFullySupported && (
+                        <>
+                          <span className="link" onClick={() => setShowBalanceChanges(!showBalanceChanges)}>
+                            Balance changes
+                          </span>{' '}
+                          |{' '}
+                        </>
+                      )}
                       <span className="link" onClick={() => setShowRawData(!showRawData)}>
                         {t('table.raw-data')}
                       </span>{' '}

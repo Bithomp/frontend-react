@@ -307,22 +307,97 @@ export default function LedgerData({
     </>
   )
 
+  // Smooth scroll function
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      const top = element.getBoundingClientRect().top + window.pageYOffset - 100 // offset of 100px
+      window.scrollTo({
+        top,
+        behavior: 'smooth'
+      })
+    }
+  }
+
   const tokensNode = !objects?.rippleStateList ? (
     'Loading...'
   ) : objects?.rippleStateList?.length > 0 ? (
     <>
-      <span className="bold">{objects?.rippleStateList?.length}</span> (view below)
+      <span className="bold">{objects?.rippleStateList?.length}</span> (
+      <span className="link" onClick={() => scrollToSection('tokens-section')}>
+        view
+      </span>
+      )
+    </>
+  ) : account?.address === data?.address ? (
+    <>
+      You don't have any tokens. [<Link href={'/services/trustline'}>Add a token</Link>]
     </>
   ) : (
     "This account doesn't hold Tokens."
+  )
+
+  const mptNode = !objects?.mptList ? (
+    'Loading...'
+  ) : objects?.mptList?.length > 0 || objects?.mptIssuanceList?.length > 0 ? (
+    <>
+      {objects?.mptList?.length > 0 && (
+        <>
+          <span className="bold">{objects?.mptList?.length}</span> (
+          <span className="link" onClick={() => scrollToSection('mpt-section')}>
+            view
+          </span>
+          )
+        </>
+      )}
+      {objects?.mptList?.length > 0 && objects?.mptIssuanceList?.length > 0 ? ', ' : ''}
+      {objects?.mptIssuanceList?.length > 0 && (
+        <>
+          <span className="bold">{objects?.mptIssuanceList?.length}</span> issued (
+          <span className="link" onClick={() => scrollToSection('mpt-section-issued')}>
+            view
+          </span>
+          )
+        </>
+      )}
+    </>
+  ) : account?.address === data?.address ? (
+    "You don't have any Multi Purpose Tokens."
+  ) : (
+    "This account doesn't hold Multi Purpose Tokens."
+  )
+
+  const nftNode = !objects?.nftList ? (
+    'Loading...'
+  ) : objects?.nftList?.length > 0 ? (
+    <>
+      <span className="bold">{objects?.nftList?.length}</span> (
+      <span className="link" onClick={() => scrollToSection('nft-section')}>
+        view
+      </span>
+      )
+    </>
+  ) : account?.address === data?.address ? (
+    <>
+      You don't have any NFTs. You can <Link href="/services/nft-mint">Mint NFT</Link> or
+      <Link href="/nft-explorer?saleCurrency=xrp&list=onSale">Buy NFT</Link>
+    </>
+  ) : (
+    "This account doesn't hold NFTs."
   )
 
   const dexOrdersNode = !objects?.offerList ? (
     'Loading...'
   ) : objects?.offerList?.length > 0 ? (
     <>
-      <span className="bold">{objects?.offerList?.length}</span> (view below)
+      <span className="bold">{objects?.offerList?.length}</span> (
+      <span className="link" onClick={() => scrollToSection('dex-orders-section')}>
+        view
+      </span>
+      )
     </>
+  ) : account?.address === data?.address ? (
+    "You don't have any DEX orders."
   ) : (
     "This account doesn't have DEX orders."
   )
@@ -331,7 +406,15 @@ export default function LedgerData({
     'Loading...'
   ) : objects?.escrowList?.length > 0 ? (
     <>
-      <span className="bold">{objects?.escrowList?.length}</span> (view below)
+      <span className="bold">{objects?.escrowList?.length}</span> (
+      <span className="link" onClick={() => scrollToSection('escrows-section')}>
+        view
+      </span>
+      )
+    </>
+  ) : account?.address === data?.address ? (
+    <>
+      You don't have any Escrows. [<Link href={'/services/escrow'}>Create</Link>]
     </>
   ) : (
     "This account doesn't have Escrows."
@@ -383,6 +466,14 @@ export default function LedgerData({
               <tr>
                 <td>{t('menu.tokens')}</td>
                 <td>{tokensNode}</td>
+              </tr>
+              <tr>
+                <td>MP Tokens</td>
+                <td>{mptNode}</td>
+              </tr>
+              <tr>
+                <td>NFTs</td>
+                <td>{nftNode}</td>
               </tr>
               <tr>
                 <td>DEX orders</td>
@@ -676,6 +767,9 @@ export default function LedgerData({
                 </>
               )}
               {tokensNode}
+            </p>
+            <p>
+              {objects?.mptList?.length > 0 && <span className="grey">MP Tokens</span>} {mptNode}
             </p>
             <p>
               {objects?.offerList?.length > 0 && <span className="grey">DEX orders</span>} {dexOrdersNode}

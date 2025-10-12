@@ -9,29 +9,21 @@ import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
+import SortingArrow from '../components/Tables/SortingArrow'
 import {
-  addressLink,
-  addressUsernameOrServiceLink,
   AddressWithIcon,
-  capitalize,
   fullNiceNumber,
   niceCurrency,
   niceNumber,
-  shortHash,
-  shortNiceNumber
+  shortNiceNumber,
+  shortAddress,
+  userOrServiceName
 } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
-import {
-  isAddressOrUsername,
-  nativeCurrency,
-  setTabParams,
-  useWidth,
-  validateCurrencyCode,
-  xahauNetwork
-} from '../utils'
+import { isAddressOrUsername, nativeCurrency, setTabParams, validateCurrencyCode, xahauNetwork } from '../utils'
 import { useRouter } from 'next/router'
-import CopyButton from '../components/UI/CopyButton'
+import TokenTabs from '../components/Tabs/TokenTabs'
 
 /*
   {
@@ -65,7 +57,7 @@ import CopyButton from '../components/UI/CopyButton'
       "ripplingTxs": 0,
       "uniqueAccounts": 730,
       "uniqueDexAccounts": 178,
-      "priceXrp": "0.1146566270598530742",
+      "priceNativeCurrency": "0.1146566270598530742",
       "marketcap": "45723206.888776201217059311928860827119097212012795446"
     }
   }
@@ -75,12 +67,29 @@ import CopyButton from '../components/UI/CopyButton'
 // Server side initial data fetch
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
-  const { currency, issuer } = query
+  const { currency, issuer, order } = query
 
   let initialData = null
   let initialErrorMessage = null
 
-  let url = `v2/trustlines/tokens?limit=100&order=rating&currencyDetails=true&statistics=true`
+  // Validate order param
+  const supportedOrders = [
+    'rating',
+    'trustlinesHigh',
+    'holdersHigh',
+    'priceNativeCurrencyHigh',
+    'marketCapHigh',
+    'sellVolumeHigh',
+    'buyVolumeHigh',
+    'totalVolumeHigh',
+    'uniqueTradersHigh',
+    'uniqueSellersHigh',
+    'uniqueBuyersHigh'
+  ]
+  const orderParam = supportedOrders.includes(order) ? order : 'rating'
+  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
+
+  let url = `v2/trustlines/tokens?limit=100&order=${orderParam}&currencyDetails=true&statistics=true&convertCurrencies=${selectedCurrencyServer}`
   if (currency) {
     const { valid, currencyCode } = validateCurrencyCode(currency)
     if (valid) {
@@ -110,8 +119,6 @@ export async function getServerSideProps(context) {
     console.error(e)
   }
 
-  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
-
   return {
     props: {
       initialData: initialData || null,
@@ -121,6 +128,7 @@ export async function getServerSideProps(context) {
       selectedCurrencyServer,
       currencyQuery: currency || initialData?.currency || null,
       issuerQuery: issuer || initialData?.issuer || null,
+      orderQuery: supportedOrders.includes(order) ? order : null,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -129,8 +137,41 @@ export async function getServerSideProps(context) {
 const orderList = [
   { value: 'rating', label: 'Rating: High to Low' },
   { value: 'trustlinesHigh', label: 'Trustlines: High to Low' },
-  { value: 'holdersHigh', label: 'Holders: High to Low' }
+  { value: 'holdersHigh', label: 'Holders: High to Low' },
+  { value: 'priceNativeCurrencyHigh', label: 'Price: High to Low' },
+  { value: 'marketCapHigh', label: 'Marketcap: High to Low' },
+  { value: 'sellVolumeHigh', label: 'Sell Volume (24h): High to Low' },
+  { value: 'buyVolumeHigh', label: 'Buy Volume (24h): High to Low' },
+  { value: 'totalVolumeHigh', label: 'Total Volume (24h): High to Low' },
+  { value: 'uniqueTradersHigh', label: 'Unique Traders (24h): High to Low' },
+  { value: 'uniqueSellersHigh', label: 'Unique Sellers (24h): High to Low' },
+  { value: 'uniqueBuyersHigh', label: 'Unique Buyers (24h): High to Low' }
 ]
+
+// Helper component to render token with icon
+const TokenCell = ({ token }) => {
+  return (
+    <AddressWithIcon address={token?.issuer} currency={token?.currency}>
+      {token.lp_token ? (
+        <b>{token.currencyDetails.currency}</b>
+      ) : (
+        <>
+          <b>{niceCurrency(token.currency)}</b>
+        </>
+      )}
+      {token.issuer && (
+        <>
+          <br />
+          <span className="issuer-address">
+            {token.issuerDetails?.service || token.issuerDetails?.username
+              ? userOrServiceName(token.issuerDetails)
+              : shortAddress(token.issuer)}
+          </span>
+        </>
+      )}
+    </AddressWithIcon>
+  )
+}
 
 export default function Tokens({
   initialData,
@@ -143,13 +184,12 @@ export default function Tokens({
   setSelectedCurrency,
   fiatRate: fiatRateApp,
   fiatRateServer,
-  isSsrMobile,
   openEmailLogin,
   currencyQuery,
-  issuerQuery
+  issuerQuery,
+  orderQuery
 }) {
   const { t } = useTranslation()
-  const width = useWidth()
   const isFirstRender = useRef(true)
   const router = useRouter()
 
@@ -167,25 +207,57 @@ export default function Tokens({
   const [marker, setMarker] = useState(initialData?.marker)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [order, setOrder] = useState('rating')
-  const [filtersHide, setFiltersHide] = useState(!isSsrMobile)
+  const [order, setOrder] = useState(orderQuery || 'rating')
+  const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
   const [rendered, setRendered] = useState(false)
+  const [sortConfig, setSortConfig] = useState(getInitialSortConfig(orderQuery))
 
   const controller = new AbortController()
+
+  function getInitialSortConfig(o) {
+    switch (o) {
+      case 'rating':
+        return { key: 'rating', direction: 'descending' }
+      case 'trustlinesHigh':
+        return { key: 'trustlines', direction: 'descending' }
+      case 'holdersHigh':
+        return { key: 'holders', direction: 'descending' }
+      case 'priceNativeCurrencyHigh':
+        return { key: 'price', direction: 'descending' }
+      case 'marketCapHigh':
+        return { key: 'marketcap', direction: 'descending' }
+      case 'sellVolumeHigh':
+        return { key: 'sellVolume', direction: 'descending' }
+      case 'buyVolumeHigh':
+        return { key: 'buyVolume', direction: 'descending' }
+      case 'totalVolumeHigh':
+        return { key: 'totalVolume', direction: 'descending' }
+      case 'uniqueTradersHigh':
+        return { key: 'uniqueTraders', direction: 'descending' }
+      case 'uniqueSellersHigh':
+        return { key: 'uniqueSellers', direction: 'descending' }
+      case 'uniqueBuyersHigh':
+        return { key: 'uniqueBuyers', direction: 'descending' }
+      default:
+        return { key: 'rating', direction: 'descending' }
+    }
+  }
 
   // Fetch tokens
   const checkApi = async () => {
     const oldOrder = rawData?.order
     const oldCurrency = rawData?.currency
     const oldIssuer = rawData?.issuer
+    const oldSelectedCurrency = rawData?.convertCurrencies[0]
     if (!oldOrder || !order) return
 
     let loadMoreRequest =
       (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
       (currency ? oldCurrency === currency : !oldCurrency) &&
-      (issuer ? oldIssuer === issuer : !oldIssuer)
+      (issuer ? oldIssuer === issuer : !oldIssuer) &&
+      (selectedCurrency ? oldSelectedCurrency.toLowerCase() === selectedCurrency.toLowerCase() : !oldSelectedCurrency)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
     if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
@@ -202,7 +274,12 @@ export default function Tokens({
     }
     setRawData({})
 
-    let apiUrl = 'v2/trustlines/tokens?limit=100&order=' + order + '&currencyDetails=true&statistics=true' + markerPart
+    let apiUrl =
+      'v2/trustlines/tokens?limit=100&order=' +
+      order +
+      '&currencyDetails=true&statistics=true&convertCurrencies=' +
+      selectedCurrency +
+      markerPart
     if (issuer) {
       apiUrl += `&issuer=${encodeURIComponent(issuer)}`
     }
@@ -258,27 +335,27 @@ export default function Tokens({
     }
     checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, issuer, currency, subscriptionExpired])
+  }, [selectedCurrency, order, issuer, currency, subscriptionExpired])
+
+  // Effect: update sortConfig when order changes (e.g., from dropdown)
+  useEffect(() => {
+    setSortConfig(getInitialSortConfig(order))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order])
 
   useEffect(() => {
     let queryAddList = []
     let queryRemoveList = []
 
     if (isAddressOrUsername(issuer)) {
-      queryAddList.push({
-        name: 'issuer',
-        value: issuer
-      })
+      queryAddList.push({ name: 'issuer', value: issuer })
     } else {
       queryRemoveList.push('issuer')
     }
 
     const { valid, currencyCode } = validateCurrencyCode(currency)
     if (valid) {
-      queryAddList.push({
-        name: 'currency',
-        value: currencyCode
-      })
+      queryAddList.push({ name: 'currency', value: currencyCode })
     } else {
       queryRemoveList.push('currency')
     }
@@ -298,7 +375,7 @@ export default function Tokens({
       queryRemoveList
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [issuer, order, currency])
+  }, [issuer, currency, order])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -316,27 +393,6 @@ export default function Tokens({
     { label: 'Trustlines', key: 'trustlines' },
     { label: 'Holders', key: 'holders' }
   ]
-
-  // Helper component to render token with icon
-  const TokenCell = ({ token }) => {
-    return (
-      <AddressWithIcon address={token?.issuer} currency={token?.currency}>
-        {token.lp_token ? (
-          <b>{token.currencyDetails.currency}</b>
-        ) : (
-          <>
-            <b>{niceCurrency(token.currency)}</b>
-          </>
-        )}
-        {token.issuer && (
-          <>
-            <br />
-            {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
-          </>
-        )}
-      </AddressWithIcon>
-    )
-  }
 
   const handleSetTrustline = (token) => {
     // Format supply to have at most 6 decimal places
@@ -360,23 +416,19 @@ export default function Tokens({
     })
   }
 
-  const priceToFiat = ({ price, mobile }) => {
+  const priceToFiat = ({ price, mobile, priceFiats }) => {
     if (!fiatRate) return null
     price = price || 0
     if (mobile) {
-      return (
-        <span suppressHydrationWarning>
-          {fullNiceNumber(price * fiatRate, selectedCurrency)}
-          <br />
-          Price in {nativeCurrency}: {niceNumber(price, 6)} {nativeCurrency}
-        </span>
-      )
+      return <span suppressHydrationWarning>{fullNiceNumber(priceFiats[selectedCurrency], selectedCurrency)}</span>
     }
     return (
       <>
         <span className="tooltip" suppressHydrationWarning>
-          {shortNiceNumber(price * fiatRate, 4, 1, selectedCurrency)}
-          <span className="tooltiptext right no-brake">{fullNiceNumber(price * fiatRate, selectedCurrency)}</span>
+          {shortNiceNumber(priceFiats[selectedCurrency], 4, 1, selectedCurrency)}
+          <span className="tooltiptext right no-brake">
+            {fullNiceNumber(priceFiats[selectedCurrency], selectedCurrency)}
+          </span>
         </span>
         <br />
         <span className="tooltip grey" suppressHydrationWarning>
@@ -407,6 +459,27 @@ export default function Tokens({
     )
   }
 
+  const renderPercentCell = ({ currentPrice, pastPrice }) => {
+    const current = Number(currentPrice || 0)
+    const past = Number(pastPrice || 0)
+    if (!current || !past) return <span className="grey">--%</span>
+    const change = current / past - 1
+    const colorClass = change >= 0 ? 'green' : 'red'
+    const percentText = niceNumber(Math.abs(change * 100), 2) + '%'
+
+    return (
+      <span className={`tooltip ${colorClass}`} suppressHydrationWarning>
+        {change >= 0 ? '+' : '-'}
+        {percentText}
+        <span className="tooltiptext right no-brake" suppressHydrationWarning>
+          Now: {fullNiceNumber(currentPrice, selectedCurrency)}
+          <br />
+          Before: {fullNiceNumber(pastPrice, selectedCurrency)}
+        </span>
+      </span>
+    )
+  }
+
   const volumeToFiat = ({ token, mobile, type }) => {
     const { statistics, currency } = token
     if (!fiatRate) return null
@@ -416,17 +489,10 @@ export default function Tokens({
     } else {
       volume = statistics?.[type + 'Volume'] || 0
     }
-    const volumeFiat = volume * statistics?.priceXrp * fiatRate || 0
+    const volumeFiat = volume * statistics?.priceNativeCurrency * fiatRate || 0
 
     if (mobile) {
-      return (
-        <>
-          <span suppressHydrationWarning>{niceNumber(volumeFiat, 0, selectedCurrency)}</span>
-          <br />
-          {type !== 'total' ? capitalize(type) : ''} Volume (24h) token: {niceNumber(volume, 0)}{' '}
-          {niceCurrency(currency)}
-        </>
-      )
+      return <span suppressHydrationWarning>{niceNumber(volumeFiat, 0, selectedCurrency)}</span>
     }
 
     return (
@@ -448,15 +514,61 @@ export default function Tokens({
     )
   }
 
+  const sortTable = (key) => {
+    if (!data || data.length === 0) return
+
+    if (sortConfig.key === key) {
+      setSortConfig({ key: 'rating', direction: 'descending' })
+      setOrder('rating')
+      return
+    }
+
+    let direction = 'descending'
+    setSortConfig({ key, direction })
+
+    const apiOrderFor = (k) => {
+      switch (k) {
+        case 'rating':
+          return 'rating'
+        case 'trustlines':
+          return 'trustlinesHigh'
+        case 'holders':
+          return 'holdersHigh'
+        case 'price':
+          return 'priceNativeCurrencyHigh'
+        case 'marketcap':
+          return 'marketCapHigh'
+        case 'buyVolume':
+          return 'buyVolumeHigh'
+        case 'sellVolume':
+          return 'sellVolumeHigh'
+        case 'totalVolume':
+          return 'totalVolumeHigh'
+        case 'uniqueTraders':
+          return 'uniqueTradersHigh'
+        case 'uniqueSellers':
+          return 'uniqueSellersHigh'
+        case 'uniqueBuyers':
+          return 'uniqueBuyersHigh'
+        default:
+          return null
+      }
+    }
+
+    const newApiOrder = apiOrderFor(key)
+    if (newApiOrder) {
+      setOrder(newApiOrder)
+    }
+  }
+
   return (
     <>
       <SEO title="Tokens" />
-      <h1 className="center">Tokens</h1>
+      <h1 className="center">Trustline Tokens</h1>
+
+      {!xahauNetwork && <TokenTabs tab="tokens" />}
 
       <FiltersFrame
-        order={order}
-        setOrder={setOrder}
-        orderList={orderList}
         count={data?.length}
         hasMore={marker}
         data={data || []}
@@ -465,6 +577,13 @@ export default function Tokens({
         setFiltersHide={setFiltersHide}
         setSelectedCurrency={setSelectedCurrency}
         selectedCurrency={selectedCurrency}
+        filters={{
+          issuer: issuer || '',
+          currency: currency || ''
+        }}
+        order={order}
+        setOrder={setOrder}
+        orderList={orderList}
       >
         {/* Left filters */}
         <>
@@ -486,179 +605,210 @@ export default function Tokens({
           openEmailLogin={openEmailLogin}
         >
           {/* Desktop table */}
-          {!isSsrMobile || width > 860 ? (
-            <table className="table-large no-hover">
-              <thead>
-                <tr>
-                  <th className="center">#</th>
-                  <th>Token</th>
-                  <th className="right">Price</th>
-                  {/*
-                  <th className="right">24h %</th>
-                  <th className="right">7d %</th>
-                  */}
-                  <th className="right">
-                    Buy volume
-                    <br />
+
+          <table className="table-large no-hover expand hide-on-small-w800">
+            <thead>
+              <tr>
+                <th className="center">
+                  <span className="inline-flex items-center">
+                    #
+                    <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} />
+                  </span>
+                </th>
+                <th>Token</th>
+                <th className="right">
+                  <span className="inline-flex items-center">
+                    Price
+                    <SortingArrow sortKey="price" currentSort={sortConfig} onClick={() => sortTable('price')} />
+                  </span>
+                </th>
+                <th className="right">Change (24h)</th>
+                <th className="right">
+                  Total volume
+                  <br />
+                  <span className="inline-flex items-center">
                     (24h)
-                  </th>
-                  <th className="right">
-                    Sell volume
-                    <br />
-                    (24h)
-                  </th>
-                  <th className="right">
-                    Total volume
-                    <br />
-                    (24h)
-                  </th>
-                  <th className="right">
-                    Buyers/Sellers
-                    <br />
+                    <SortingArrow
+                      sortKey="totalVolume"
+                      currentSort={sortConfig}
+                      onClick={() => sortTable('totalVolume')}
+                    />
+                  </span>
+                </th>
+                <th className="right">
+                  <span className="inline-flex items-center">
+                    Buyers
+                    <SortingArrow
+                      sortKey="uniqueBuyers"
+                      currentSort={sortConfig}
+                      onClick={() => sortTable('uniqueBuyers')}
+                    />
+                  </span>
+                  <span className="inline-flex items-center">
+                    / Sellers
+                    <SortingArrow
+                      sortKey="uniqueSellers"
+                      currentSort={sortConfig}
+                      onClick={() => sortTable('uniqueSellers')}
+                    />
+                  </span>
+                  <br />
+                  <span className="inline-flex items-center">
                     Traders (24h)
-                  </th>
-                  <th className="right">
-                    Holders,
+                    <SortingArrow
+                      sortKey="uniqueTraders"
+                      currentSort={sortConfig}
+                      onClick={() => sortTable('uniqueTraders')}
+                    />
+                  </span>
+                </th>
+                <th className="right">
+                  <span className="inline-flex items-center">
+                    Holders
+                    <SortingArrow sortKey="holders" currentSort={sortConfig} onClick={() => sortTable('holders')} />,
+                  </span>
+                  <br />
+                  Active (24h)
+                </th>
+                {!xahauNetwork && (
+                  <th className="center">
+                    AMMs,
                     <br />
                     Active (24h)
                   </th>
-                  {!xahauNetwork && (
-                    <th className="center">
-                      AMMs,
-                      <br />
-                      Active (24h)
-                    </th>
-                  )}
-                  <th className="right">
-                    Trades
-                    <br />
-                    (24h)
-                  </th>
-                  <th className="right">Marketcap</th>
-                  <th className="right">Trustlines</th>
-                  <th className="center">Action</th>
+                )}
+                <th className="right">
+                  Trades
+                  <br />
+                  (24h)
+                </th>
+                <th className="right">
+                  <span className="inline-flex items-center">
+                    Marketcap
+                    <SortingArrow sortKey="marketcap" currentSort={sortConfig} onClick={() => sortTable('marketcap')} />
+                  </span>
+                </th>
+                <th className="center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr className="center">
+                  <td colSpan="100">
+                    <span className="waiting"></span>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                    </td>
-                  </tr>
-                ) : (
-                  <>
-                    {errorMessage ? (
-                      <tr>
-                        <td colSpan="100" className="center orange bold">
-                          {errorMessage}
-                        </td>
-                      </tr>
-                    ) : (
-                      <>
-                        {data.map((token, i) => {
-                          return (
-                            <tr 
-                              key={i} 
-                              className="clickable-row"
-                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
-                            >
-                              <td className="center">{i + 1}</td>
-                              <td>
-                                <TokenCell token={token} />
-                              </td>
-                              <td className="right">{priceToFiat({ price: token.statistics?.priceXrp })}</td>
-                              {/*
-                              <td className="right"></td>
-                              <td className="right"></td>
-                              */}
-                              <td className="right">{volumeToFiat({ token, type: 'buy' })}</td>
-                              <td className="right">{volumeToFiat({ token, type: 'sell' })}</td>
-                              <td className="right">{volumeToFiat({ token })}</td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  <span className="green">
-                                    {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
-                                  </span>{' '}
-                                  /{' '}
-                                  <span className="red">
-                                    {shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}
-                                  </span>
-                                  <br />
-                                  {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
-                                  </span>
-                                </span>
-                              </td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.holders, 0, 1)}
-                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+              ) : (
+                <>
+                  {errorMessage ? (
+                    <tr>
+                      <td colSpan="100" className="center orange bold">
+                        {errorMessage}
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {data.map((token, i) => {
+                        return (
+                          <tr
+                            key={i}
+                            className="clickable-row"
+                            onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                          >
+                            <td className="center">{i + 1}</td>
+                            <td>
+                              <TokenCell token={token} />
+                            </td>
+                            <td className="right">
+                              {priceToFiat({
+                                price: token.statistics?.priceNativeCurrency,
+                                priceFiats: token.statistics.priceFiats
+                              })}
+                            </td>
+                            <td className="right">
+                              {renderPercentCell({
+                                currentPrice: token.statistics?.priceFiats[selectedCurrency],
+                                pastPrice: token.statistics?.priceFiats24h[selectedCurrency]
+                              })}
+                            </td>
+                            <td className="right">{volumeToFiat({ token })}</td>
+                            <td className="right">
+                              <span className="tooltip">
+                                <span className="green">
+                                  {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
+                                </span>{' '}
+                                /{' '}
+                                <span className="red">
+                                  {shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}
                                 </span>
                                 <br />
-                                <span className="tooltip green">
-                                  {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.activeHolders) || 0}
-                                  </span>
+                                {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
+                                <span className="tooltiptext no-brake">
+                                  {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
                                 </span>
-                              </td>
-                              {!xahauNetwork && (
-                                <td className="center">
-                                  <a
-                                    href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                    className="tooltip"
-                                  >
-                                    {token.statistics?.ammPools || 0}
-                                    <span className="tooltiptext no-brake">View AMMs</span>
-                                  </a>
-                                  <br />
-                                  <span className="tooltip green">
-                                    {shortNiceNumber(token.statistics?.activeAmmPools, 0, 1) || 0}
-                                  </span>
-                                </td>
-                              )}
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.dexes) || 0}
-                                  </span>
+                              </span>
+                            </td>
+                            <td className="right">
+                              <span className="tooltip">
+                                {shortNiceNumber(token.holders, 0, 1)}
+                                <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+                              </span>
+                              <br />
+                              <span className="tooltip green">
+                                {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
+                                <span className="tooltiptext no-brake">
+                                  {fullNiceNumber(token.statistics?.activeHolders) || 0}
                                 </span>
-                              </td>
-                              <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.trustlines, 0, 1)}
-                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.trustlines)}</span>
-                                </span>
-                              </td>
-
+                              </span>
+                            </td>
+                            {!xahauNetwork && (
                               <td className="center">
-                                <span
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleSetTrustline(token)
-                                  }}
-                                  className="orange tooltip"
+                                <a
+                                  href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                  className="tooltip"
                                 >
-                                  <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
-                                  <span className="tooltiptext no-brake">Set trust</span>
+                                  {token.statistics?.ammPools || 0}
+                                  <span className="tooltiptext no-brake">View AMMs</span>
+                                </a>
+                                <br />
+                                <span className="tooltip green">
+                                  {shortNiceNumber(token.statistics?.activeAmmPools, 0, 1) || 0}
                                 </span>
                               </td>
-                            </tr>
-                          )
-                        })}
-                      </>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          ) : (
-            // Mobile table
-            <table className="table-mobile">
+                            )}
+                            <td className="right">
+                              <span className="tooltip">
+                                {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
+                                <span className="tooltiptext no-brake">
+                                  {fullNiceNumber(token.statistics?.dexes) || 0}
+                                </span>
+                              </span>
+                            </td>
+                            <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
+                            <td className="center">
+                              <span
+                                onClick={() => {
+                                  handleSetTrustline(token)
+                                }}
+                                className="orange tooltip"
+                              >
+                                <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
+                                <span className="tooltiptext no-brake">Set trust</span>
+                              </span>
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </>
+                  )}
+                </>
+              )}
+            </tbody>
+          </table>
+
+          {/* Mobile table */}
+          <div className="show-on-small-w800">
+            <table className="table-mobile wide">
               <thead></thead>
               <tbody>
                 {loading ? (
@@ -679,111 +829,49 @@ export default function Tokens({
                       <>
                         {data.map((token, i) => {
                           return (
-                            <tr 
-                              key={i} 
-                              className="clickable-row"
-                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
-                            >
+                            <tr key={i}>
                               <td style={{ padding: '5px' }} className="center">
                                 <b>{i + 1}</b>
                               </td>
                               <td>
                                 <TokenCell token={token} />
                                 <p>
-                                  Issuer address: {addressLink(token.issuer, { short: true })}{' '}
-                                  <CopyButton text={token.issuer} />
+                                  Price:{' '}
+                                  {priceToFiat({
+                                    price: token.statistics?.priceNativeCurrency,
+                                    mobile: true,
+                                    priceFiats: token.statistics.priceFiats
+                                  })}
                                   <br />
-                                  Currency code: {shortHash(token.currency)} <CopyButton text={token.currency} />
+                                  Change 24h ({selectedCurrency.toUpperCase()}):{' '}
+                                  {renderPercentCell({
+                                    currentPrice: token.statistics?.priceFiats[selectedCurrency],
+                                    pastPrice: token.statistics?.priceFiats24h[selectedCurrency]
+                                  })}
                                   <br />
-                                  Price: {priceToFiat({ price: token.statistics?.priceXrp, mobile: true })}
-                                  <br />
-                                  Price in {nativeCurrency} 5m ago: {niceNumber(token.statistics?.priceXrp5m, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 1h ago: {niceNumber(token.statistics?.priceXrp1h, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 24h ago: {niceNumber(token.statistics?.priceXrp24h, 6)}
-                                  <br />
-                                  Price in {nativeCurrency} 7d ago: {niceNumber(token.statistics?.priceXrp7d, 6)}
-                                  <br />
-                                  Buy Volume (24h): {volumeToFiat({ token, type: 'buy', mobile: true })}
-                                  <br />
-                                  Sell Volume (24h): {volumeToFiat({ token, type: 'sell', mobile: true })}
-                                  <br />
-                                  {/* 24h %: {token.statistics?.priceChange24h} */}
-                                  {/* 7d %: {token.statistics?.priceChange7d} */}
                                   Total Volume (24h): {volumeToFiat({ token, mobile: true })}
                                   <br />
                                   Trades (24h): {niceNumber(token.statistics?.dexes) || 0}
                                   <br />
-                                  DEX txs (24h): {niceNumber(token.statistics?.dexTxs) || 0}
-                                  <br />
                                   Unique Traders (24h): {niceNumber(token.statistics?.uniqueDexAccounts) || 0}
-                                  <br />
-                                  Unique Sellers (24h): {niceNumber(token.statistics?.uniqueSellers) || 0}
-                                  <br />
-                                  Unique Buyers (24h): {niceNumber(token.statistics?.uniqueBuyers) || 0}
-                                  <br />
-                                  Supply: {niceNumber(token.supply, 0)} {niceCurrency(token.currency)}
                                   <br />
                                   Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
                                   <br />
-                                  Trustlines: {niceNumber(token.trustlines)}
-                                  <br />
                                   Holders: {niceNumber(token.holders)}
                                   <br />
-                                  Active holders (Account that used the token in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeHolders) || 0}
-                                  <br />
-                                  Active offers (Count of used offers in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeOffers) || 0}
-                                  <br />
-                                  Trading pairs (in the last closed day):{' '}
-                                  {niceNumber(token.statistics?.activeCounters) || 0}
-                                  <br />
-                                  {!xahauNetwork && (
-                                    <>
-                                      AMM Pools:{' '}
-                                      <a
-                                        href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                        className="tooltip"
-                                      >
-                                        {' '}
-                                        {token.statistics?.ammPools || 0}
-                                      </a>
-                                      <br />
-                                      Active AMM pools (the last closed day):{' '}
-                                      {niceNumber(token.statistics?.activeAmmPools) || 0}
-                                    </>
-                                  )}
-                                  <br />
-                                  Transfer txs (24h): {niceNumber(token.statistics?.transferTxs) || 0}
-                                  <br />
-                                  {token.statistics?.transferTxs > 0 && (
-                                    <>
-                                      Transfer Volume (24h): {volumeToFiat({ token, type: 'transfer', mobile: true })}
-                                      <br />
-                                    </>
-                                  )}
-                                  Rippling txs (24h): {niceNumber(token.statistics?.ripplingTxs) || 0}
-                                  <br />
-                                  {token.statistics?.ripplingTxs > 0 && (
-                                    <>
-                                      Rippling Volume (24h): {volumeToFiat({ token, type: 'rippling', mobile: true })}
-                                      <br />
-                                    </>
-                                  )}
-                                  Mint Volume (24h): {volumeToFiat({ token, type: 'mint', mobile: true })}
-                                  <br />
-                                  Burn Volume (24h): {volumeToFiat({ token, type: 'burn', mobile: true })}
-                                  <br />
-                                  Unique accounts (used the token in the last 24h):{' '}
-                                  {niceNumber(token.statistics?.uniqueAccounts) || 0}
+                                  Trustlines: {niceNumber(token.trustlines)}
                                   <br />
                                   <br />
                                   <button
                                     className="button-action narrow thin"
-                                    onClick={(e) => {
-                                      e.stopPropagation()
+                                    onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                                  >
+                                    Token Page
+                                  </button>
+                                  <span style={{ display: 'inline-block', width: 10 }}></span>
+                                  <button
+                                    className="button-action narrow thin"
+                                    onClick={() => {
                                       handleSetTrustline(token)
                                     }}
                                   >
@@ -800,7 +888,7 @@ export default function Tokens({
                 )}
               </tbody>
             </table>
-          )}
+          </div>
         </InfiniteScrolling>
       </FiltersFrame>
 
@@ -809,13 +897,18 @@ export default function Tokens({
           cursor: pointer;
           transition: background-color 0.2s;
         }
-        
+
         .clickable-row:hover {
           background-color: var(--unaccent-icon);
         }
-        
+
         .clickable-row td {
           position: relative;
+        }
+
+        .issuer-address {
+          color: var(--text-muted);
+          font-size: 0.9em;
         }
       `}</style>
     </>

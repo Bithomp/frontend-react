@@ -401,6 +401,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
           yaxis: {
             ...prev.yaxis,
             tickAmount: 5,
+            logarithmic: false,
             labels: {
               ...(prev.yaxis?.labels ?? {}),
               formatter: (val) => sign + Number(val).toFixed(digitsAfterDot)
@@ -429,6 +430,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
       ignore = true
       ctrl.abort()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     currency,
     chartPeriod,

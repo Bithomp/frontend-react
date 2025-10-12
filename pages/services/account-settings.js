@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { xahauNetwork, explorerName, nativeCurrency, isAddressValid, encode, isEmailValid, md5 } from '../../utils'
+import { xahauNetwork, explorerName, nativeCurrency, isAddressValid, encode, isEmailValid, md5, isHexString } from '../../utils'
 import { multiply, subtract } from '../../utils/calc'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
 import CheckBox from '../../components/UI/CheckBox'
 import AddressInput from '../../components/UI/AddressInput'
-import FormInput from '../../components/UI/FormInput'
 import { accountSettings } from '../../styles/pages/account-settings.module.scss'
 
 export const getServerSideProps = async (context) => {
@@ -74,6 +73,133 @@ export default function AccountSettings({
   const [currentTickSize, setCurrentTickSize] = useState(null)
   const [walletLocatorInput, setWalletLocatorInput] = useState('')
   const [currentWalletLocator, setCurrentWalletLocator] = useState('')
+  
+  // Validation states
+  const [messageKeyValidation, setMessageKeyValidation] = useState({ isValid: true, message: '' })
+  const [walletLocatorValidation, setWalletLocatorValidation] = useState({ isValid: true, message: '' })
+  const [tickSizeValidation, setTickSizeValidation] = useState({ isValid: true, message: '' })
+
+  const validateInput = (value, options = {}) => {
+    const {
+      allowEmpty = true,
+      evenLength = true,
+      minChars,
+      exactChars,
+      successMessage = 'Valid input'
+    } = options
+
+    const trimmed = value.trim()
+
+    if (!trimmed) {
+      return { isValid: allowEmpty, message: '' }
+    }
+
+    if (!isHexString(trimmed.toUpperCase())) {
+      return {
+        isValid: false,
+        message: 'Must contain only hexadecimal characters (0-9, a-f, A-F)'
+      }
+    }
+
+    if (evenLength && trimmed.length % 2 !== 0) {
+      return {
+        isValid: false,
+        message: 'Must have an even number of characters (pairs of hex digits)'
+      }
+    }
+
+    if (typeof exactChars === 'number') {
+      if (trimmed.length !== exactChars) {
+        return {
+          isValid: false,
+          message: `Must be exactly ${exactChars} characters (current: ${trimmed.length})`
+        }
+      }
+    } else if (typeof minChars === 'number') {
+      if (trimmed.length < minChars) {
+        return {
+          isValid: false,
+          message: `Must be at least ${minChars} characters (${minChars / 2} bytes)`
+        }
+      }
+    }
+
+    return { isValid: true, message: successMessage }
+  }
+
+  // Validation functions
+  const validateMessageKey = (value) => {
+    const trimmed = value.trim()
+    // Check the first byte for valid key type prefixes
+    const firstByte = trimmed.substring(0, 2).toUpperCase()
+    const validPrefixes = ['02', '03', 'ED']
+    
+    if (!validPrefixes.includes(firstByte)) {
+      return {
+        isValid: false,
+        message: `First byte must be 02 or 03 for secp256k1 keys, or ED for Ed25519 keys. Current: 0x${firstByte}`
+      }
+    }
+    return validateInput(value, {
+      allowEmpty: true,
+      evenLength: true,
+      exactChars: 66,
+      successMessage: 'Valid 66-character hex string'
+    })
+  }
+
+  const validateWalletLocator = (value) => {
+    return validateInput(value, {
+      allowEmpty: true,
+      evenLength: true,
+      exactChars: 64,
+      successMessage: 'Valid 64-character hex string'
+    })
+  }
+
+  const validateTickSize = (value) => {
+    const trimmed = value.trim()
+    
+    if (!trimmed) {
+      return { isValid: true, message: '' } // Empty is valid (will be cleared)
+    }
+    
+    const numValue = Number(trimmed)
+    
+    if (isNaN(numValue)) {
+      return { 
+        isValid: false, 
+        message: 'Must be a valid number' 
+      }
+    }
+    
+    if (!Number.isInteger(numValue)) {
+      return { 
+        isValid: false, 
+        message: 'Must be a whole number (integer)' 
+      }
+    }
+    
+    if (numValue < 0) {
+      return { 
+        isValid: false, 
+        message: 'Must be 0 or positive' 
+      }
+    }
+    
+    if (numValue === 0) {
+      return { isValid: true, message: 'Valid (will clear tick size)' }
+    }
+    
+    if (numValue < 3 || numValue > 15) {
+      return { 
+        isValid: false, 
+        message: 'Must be between 3 and 15 (or 0 to clear)' 
+      }
+    }
+    
+    return { isValid: true, message: 'Valid tick size' }
+  }
 
   // TF flags state
   const [tfFlags, setTfFlags] = useState(null)
@@ -496,9 +622,9 @@ export default function AccountSettings({
       return
     }
     if (/^[0-9a-fA-F]{32}$/.test(input)) {
-      valueHex = input.toUpperCase()
+      valueHex = input
     } else if (isEmailValid(input)) {
-      valueHex = md5(input).toUpperCase()
+      valueHex = md5(input)
     } else {
       setErrorMessage('Enter a valid email or a 32-character hex MD5 hash.')
       return
@@ -554,9 +680,14 @@ export default function AccountSettings({
 
   const handleSetMessageKey = () => {
     const value = messageKeyInput.trim()
-    const isHex = /^[0-9a-fA-F]+$/.test(value)
-    if (!value || !isHex || value.length % 2 !== 0) {
-      setErrorMessage('Please enter a valid hex-encoded MessageKey.')
+    if (!value) {
+      setErrorMessage('MessageKey cannot be empty. Please enter a hex-encoded public key.')
+      return
+    }
+
+    const validation = validateMessageKey(value)
+    if (!validation.isValid) {
+      setErrorMessage(`MessageKey ${validation.message}`)
       return
     }
     const tx = {
@@ -700,9 +831,14 @@ export default function AccountSettings({
 
   const handleSetWalletLocator = () => {
     const value = walletLocatorInput.trim()
-    const isValid = /^[0-9a-fA-F]{64}$/.test(value)
-    if (!isValid) {
-      setErrorMessage('Please enter a valid WalletLocator (64 hexadecimal characters).')
+    if (!value) {
+      setErrorMessage('WalletLocator cannot be empty. Please enter a 64-character hexadecimal string.')
+      return
+    }
+
+    const validation = validateWalletLocator(value)
+    if (!validation.isValid) {
+      setErrorMessage(`WalletLocator ${validation.message}`)
       return
     }
     const tx = {
@@ -733,7 +869,7 @@ export default function AccountSettings({
     const tx = {
       TransactionType: 'AccountSet',
       Account: account.address,
-      WalletLocator: ''
+      WalletLocator: '0000000000000000000000000000000000000000000000000000000000000000'
     }
     setSignRequest({
       request: tx,
@@ -962,7 +1098,7 @@ export default function AccountSettings({
   if (account?.address && loading) {
     return (
       <>
-        <SEO title="Account Settings" description={`Manage your account settings on the ${explorerName}.`} />
+        <SEO title="Account Settings" description="Manage your account settings" />
         <div className="content-center">
           <h1 className="center">Account Settings</h1>
           <div className="center">
@@ -991,7 +1127,7 @@ export default function AccountSettings({
   return (
     <>
       <div className={accountSettings}>
-        <SEO title="Account Settings" description={`Manage your account settings on the ${explorerName}.`} />
+        <SEO title="Account Settings" description="Manage your account settings." />
         <div className="content-center">
           <h1 className="center">Account Settings</h1>
           <p className="center">
@@ -1022,59 +1158,6 @@ export default function AccountSettings({
             {/* Basic ASF Flags */}
             {flagGroups.basic.map((flag) => renderFlagItem(flag, 'asf'))}
 
-            {/* NFTokenMinter Section */}
-            {!xahauNetwork && (
-              <div className="flag-item">
-                <div className="flag-header">
-                  <div className="flag-info">
-                    <span className="flag-name">Authorized NFToken Minter</span>
-                    {account?.address && (
-                      <span className="flag-status">{currentNftTokenMinter ? currentNftTokenMinter : 'Not Set'}</span>
-                    )}
-                  </div>
-                  {currentNftTokenMinter ? (
-                    <button
-                      className="button-action thin"
-                      onClick={handleClearNftTokenMinter}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Clear NFTokenMinter
-                    </button>
-                  ) : (
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetNftTokenMinter}
-                      disabled={!account?.address || !nftTokenMinter.trim()}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Set NFTokenMinter
-                    </button>
-                  )}
-                </div>
-                <div className="flag-description">
-                  Allows another account to mint NFTokens on behalf of this account. Requires setting the
-                  asfAuthorizedNFTokenMinter flag and specifying the minter address.
-                </div>
-                {!currentNftTokenMinter && (
-                  <div className="nft-minter-input">
-                    <AddressInput
-                      title="NFTokenMinter Address"
-                      placeholder="Enter NFTokenMinter address"
-                      setInnerValue={setNftTokenMinter}
-                      disabled={!account?.address}
-                      hideButton={true}
-                      type="address"
-                    />
-                    <small>Enter the address that will be authorized to mint NFTokens for this account</small>
-                  </div>
-                )}
-                {currentNftTokenMinter && (
-                  <small>To change the authorized minter, first clear the current one, then set a new one.</small>
-                )}
-              </div>
-            )}
-
             {/* Account Fields */}
             <br />
             <h4>Account Fields</h4>
@@ -1087,33 +1170,23 @@ export default function AccountSettings({
                       <span className="flag-status">{currentDomain ? currentDomain : 'Not Set'}</span>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flag-info-buttons">
                     {currentDomain && (
-                      <button
-                        className="button-action thin"
-                        onClick={handleClearDomain}
-                        disabled={!account?.address}
-                        style={{ minWidth: '120px' }}
-                      >
-                        Clear Domain
+                      <button className="button-action thin" onClick={handleClearDomain} disabled={!account?.address}>
+                        Clear
                       </button>
                     )}
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetDomain}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Set Domain
+                    <button className="button-action thin" onClick={handleSetDomain} disabled={!account?.address}>
+                      Set
                     </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
+                  <input
+                    className="input-text"
                     placeholder="example.com"
-                    setInnerValue={setDomainInput}
-                    hideButton={true}
-                    defaultValue={domainInput}
+                    value={domainInput}
+                    onChange={(e) => setDomainInput(e.target.value)}
                     type="text"
                     disabled={!account?.address}
                   />
@@ -1129,33 +1202,27 @@ export default function AccountSettings({
                       <span className="flag-status">{currentEmailHash ? currentEmailHash : 'Not Set'}</span>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flag-info-buttons">
                     {currentEmailHash && (
                       <button
                         className="button-action thin"
                         onClick={handleClearEmailHash}
                         disabled={!account?.address}
-                        style={{ minWidth: '120px' }}
                       >
-                        Clear EmailHash
+                        Clear
                       </button>
                     )}
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetEmailHash}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Set EmailHash
+                    <button className="button-action thin" onClick={handleSetEmailHash} disabled={!account?.address}>
+                      Set
                     </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
+                  <input
+                    className="input-text"
                     placeholder="Email or 32 hex characters (MD5)"
-                    setInnerValue={setEmailHashInput}
-                    hideButton={true}
-                    defaultValue={emailHashInput}
+                    value={emailHashInput}
+                    onChange={(e) => setEmailHashInput(e.target.value)}
                     type="text"
                     disabled={!account?.address}
                   />
@@ -1169,37 +1236,45 @@ export default function AccountSettings({
                     <span className="flag-name">MessageKey</span>
                     {account?.address && <span className="flag-status">{currentMessageKey ? 'Set' : 'Not Set'}</span>}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flag-info-buttons">
                     {currentMessageKey && (
                       <button
                         className="button-action thin"
                         onClick={handleClearMessageKey}
                         disabled={!account?.address}
-                        style={{ minWidth: '120px' }}
                       >
-                        Clear MessageKey
+                        Clear
                       </button>
                     )}
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetMessageKey}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
+                    <button 
+                      className="button-action thin" 
+                      onClick={handleSetMessageKey} 
+                      disabled={!account?.address || (messageKeyInput && !messageKeyValidation.isValid)}
                     >
-                      Set MessageKey
+                      Set
                     </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
-                    placeholder="Hex-encoded public key"
-                    setInnerValue={setMessageKeyInput}
-                    hideButton={true}
-                    defaultValue={messageKeyInput}
+                  <input
+                    className={`input-text ${messageKeyInput && !messageKeyValidation.isValid ? 'input-error' : messageKeyInput && messageKeyValidation.isValid ? 'input-valid' : ''}`}
+                    placeholder="e.g., 020000000000000000000000000000000000000000000000000000000000000000"
+                    value={messageKeyInput}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setMessageKeyInput(value)
+                      setMessageKeyValidation(validateMessageKey(value))
+                    }}
                     type="text"
                     disabled={!account?.address}
+                    maxLength={66}
                   />
-                  <small>Provide a hex-encoded public key; clearing removes it from the ledger.</small>
+                  <small>Provide a hex-encoded public key (exactly 66 characters/33 bytes). First byte must be 0x02 or 0x03 for secp256k1 keys, or 0xED for Ed25519 keys. Used for encrypted messaging.</small>
+                  {messageKeyInput && messageKeyValidation.message && (
+                    <div className={`validation-message ${messageKeyValidation.isValid ? 'validation-success' : 'validation-error'}`}>
+                      {messageKeyValidation.message}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1215,33 +1290,27 @@ export default function AccountSettings({
                       </span>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flag-info-buttons">
                     {currentTransferRate && currentTransferRate > 0 && (
                       <button
                         className="button-action thin"
                         onClick={handleClearTransferRate}
                         disabled={!account?.address}
-                        style={{ minWidth: '120px' }}
                       >
-                        Clear TransferRate
+                        Clear
                       </button>
                     )}
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetTransferRate}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
-                    >
-                      Set TransferRate
+                    <button className="button-action thin" onClick={handleSetTransferRate} disabled={!account?.address}>
+                      Set
                     </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
+                  <input
+                    className="input-text"
                     placeholder="Percentage 0-100"
-                    setInnerValue={setTransferRateInput}
-                    hideButton={true}
-                    defaultValue={transferRateInput}
+                    value={transferRateInput}
+                    onChange={(e) => setTransferRateInput(e.target.value)}
                     type="text"
                     inputMode="decimal"
                     disabled={!account?.address}
@@ -1258,28 +1327,36 @@ export default function AccountSettings({
                       <span className="flag-status">{currentTickSize ? currentTickSize : 'Not Set'}</span>
                     )}
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetTickSize}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
+                  <div className="flag-info-buttons">
+                    <button 
+                      className="button-action thin" 
+                      onClick={handleSetTickSize} 
+                      disabled={!account?.address || (tickSizeInput && !tickSizeValidation.isValid)}
                     >
-                      Set TickSize
+                      Set
                     </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
+                  <input
+                    className={`input-text ${tickSizeInput && !tickSizeValidation.isValid ? 'input-error' : tickSizeInput && tickSizeValidation.isValid ? 'input-valid' : ''}`}
                     placeholder="0 to clear, or 3-15"
-                    setInnerValue={setTickSizeInput}
-                    hideButton={true}
-                    defaultValue={tickSizeInput}
+                    value={tickSizeInput}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setTickSizeInput(value)
+                      setTickSizeValidation(validateTickSize(value))
+                    }}
                     type="text"
                     inputMode="numeric"
                     disabled={!account?.address}
                   />
                   <small>Controls significant digits for order book prices. 0 clears.</small>
+                  {tickSizeInput && tickSizeValidation.message && (
+                    <div className={`validation-message ${tickSizeValidation.isValid ? 'validation-success' : 'validation-error'}`}>
+                      {tickSizeValidation.message}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1291,40 +1368,93 @@ export default function AccountSettings({
                       <span className="flag-status">{currentWalletLocator ? 'Set' : 'Not Set'}</span>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flag-info-buttons">
                     {currentWalletLocator && (
                       <button
                         className="button-action thin"
                         onClick={handleClearWalletLocator}
                         disabled={!account?.address}
-                        style={{ minWidth: '120px' }}
                       >
-                        Clear WalletLocator
+                        Clear
                       </button>
                     )}
                     <button
                       className="button-action thin"
                       onClick={handleSetWalletLocator}
-                      disabled={!account?.address}
-                      style={{ minWidth: '120px' }}
+                      disabled={!account?.address || (walletLocatorInput && !walletLocatorValidation.isValid)}
                     >
-                      Set WalletLocator
+                      Set
                     </button>
                   </div>
                 </div>
                 <div className="nft-minter-input">
-                  <FormInput
-                    placeholder="64 hex characters"
-                    setInnerValue={setWalletLocatorInput}
-                    hideButton={true}
-                    defaultValue={walletLocatorInput}
+                  <input
+                    className={`input-text ${walletLocatorInput && !walletLocatorValidation.isValid ? 'input-error' : walletLocatorInput && walletLocatorValidation.isValid ? 'input-valid' : ''}`}
+                    placeholder="e.g., 0000000000000000000000000000000000000000000000000000000000000000"
+                    value={walletLocatorInput}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setWalletLocatorInput(value)
+                      setWalletLocatorValidation(validateWalletLocator(value))
+                    }}
                     type="text"
                     disabled={!account?.address}
                     maxLength={64}
                   />
-                  <small>Optional hash locator for your wallet application.</small>
+                  <small>Optional 64-character hexadecimal hash locator for your wallet application.</small>
+                  {walletLocatorInput && walletLocatorValidation.message && (
+                    <div className={`validation-message ${walletLocatorValidation.isValid ? 'validation-success' : 'validation-error'}`}>
+                      {walletLocatorValidation.message}
+                    </div>
+                  )}
                 </div>
               </div>
+
+              {/* NFTokenMinter Field */}
+              {!xahauNetwork && (
+                <div className="flag-item">
+                  <div className="flag-header">
+                    <div className="flag-info">
+                      <span className="flag-name">NFTokenMinter</span>
+                      {account?.address && (
+                        <span className="flag-status">{currentNftTokenMinter ? currentNftTokenMinter : 'Not Set'}</span>
+                      )}
+                    </div>
+                    <div className="flag-info-buttons">
+                      {currentNftTokenMinter && (
+                        <button
+                          className="button-action thin"
+                          onClick={handleClearNftTokenMinter}
+                          disabled={!account?.address}
+                        >
+                          Clear
+                        </button>
+                      )}
+                      <button
+                        className="button-action thin"
+                        onClick={handleSetNftTokenMinter}
+                        disabled={!account?.address || !nftTokenMinter.trim()}
+                      >
+                        Set
+                      </button>
+                    </div>
+                  </div>
+                  <div className="nft-minter-input">
+                    <AddressInput
+                      title="Update to a new NFTokenMinter"
+                      placeholder="Enter NFTokenMinter address"
+                      setInnerValue={setNftTokenMinter}
+                      disabled={!account?.address}
+                      hideButton={true}
+                      type="address"
+                    />
+                    <small>Enter the address that will be authorized to mint NFTokens for this account</small>
+                  </div>
+                  {currentNftTokenMinter && (
+                    <small>To change the authorized minter, first clear the current one, then set a new one.</small>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Advanced options */}

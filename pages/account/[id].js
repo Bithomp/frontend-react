@@ -19,7 +19,7 @@ const setBalancesFunction = (networkInfo, data) => {
   if (!data?.ledgerInfo || !networkInfo || data.ledgerInfo.balance === undefined) return null
   let balanceList = {
     total: {
-      native: data.ledgerInfo.balance
+      native: data.ledgerInfo.balance || 0
     },
     reserved: {
       native: Number(networkInfo.reserveBase) + data.ledgerInfo.ownerCount * networkInfo.reserveIncrement
@@ -47,6 +47,7 @@ export async function getServerSideProps(context) {
   const { id, ledgerTimestamp } = query
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ''
+
   if (account) {
     try {
       const res = await axiosServer({
@@ -97,6 +98,7 @@ import { fetchHistoricalRate } from '../../utils/common'
 import AccountSummary from '../../components/Account/AccountSummary'
 import LedgerData from '../../components/Account/LedgerData'
 import PublicData from '../../components/Account/PublicData'
+import Airdrops from '../../components/Account/Airdrops'
 import XamanData from '../../components/Account/XamanData'
 import ObjectsData from '../../components/Account/ObjectsData'
 import NFTokenData from '../../components/Account/NFTokenData'
@@ -106,6 +108,7 @@ import IssuedTokensData from '../../components/Account/IssuedTokensData'
 import EscrowData from '../../components/Account/EscrowData'
 import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
+import MPTData from '../../components/Account/MPTData'
 
 export default function Account({
   initialData,
@@ -139,6 +142,7 @@ export default function Account({
     "tokens": 7
   }
   */
+
   const [data, setData] = useState(initialData)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -229,7 +233,7 @@ export default function Account({
     setObjects({})
     checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, refreshPage, ledgerTimestamp])
+  }, [id, refreshPage, ledgerTimestamp, selectedCurrency])
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -240,7 +244,7 @@ export default function Account({
       fetchHistoricalRate({ timestamp: ledgerTimestamp, selectedCurrency, setPageFiatRate })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fiatRate, ledgerTimestamp])
+  }, [fiatRate, ledgerTimestamp, selectedCurrency])
 
   useEffect(() => {
     if (!data?.ledgerInfo || !networkInfo) return
@@ -568,21 +572,38 @@ export default function Account({
                             gateway={gateway}
                           />
                           <PublicData data={data} />
-                          <IOUData
-                            rippleStateList={objects?.rippleStateList}
-                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                            address={data?.address}
-                          />
+                          {data?.ledgerInfo?.activated && (
+                            <IOUData
+                              rippleStateList={objects?.rippleStateList}
+                              ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              address={data?.address}
+                              pageFiatRate={pageFiatRate}
+                              selectedCurrency={selectedCurrency}
+                              account={account}
+                              setSignRequest={setSignRequest}
+                            />
+                          )}
                           {/* don't show yet obligations historically */}
                           {data?.obligations?.trustlines > 0 && !data?.ledgerInfo?.ledgerTimestamp && (
-                            <IssuedTokensData data={data} />
+                            <IssuedTokensData
+                              data={data}
+                              selectedCurrency={selectedCurrency}
+                              pageFiatRate={pageFiatRate}
+                            />
                           )}
+
+                          <MPTData
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            mptIssuanceList={objects?.mptIssuanceList}
+                            mptList={objects?.mptList}
+                          />
 
                           <DexOrdersData
                             account={account}
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             offerList={objects?.offerList}
                             setSignRequest={setSignRequest}
+                            address={data?.address}
                           />
 
                           {xahauNetwork ? (
@@ -590,8 +611,10 @@ export default function Account({
                           ) : (
                             <NFTokenData
                               data={data}
+                              address={data?.address}
                               objects={objects}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              selectedCurrency={selectedCurrency}
                             />
                           )}
 
@@ -622,6 +645,7 @@ export default function Account({
                             setSignRequest={setSignRequest}
                             ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                           />
+                          <Airdrops data={data} />
                           <RelatedLinks data={data} />
                         </div>
                       </>

@@ -3,14 +3,15 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { fullDateAndTime, shortHash } from '../utils/format'
-import { useWidth, xahauNetwork } from '../utils'
+import { fullDateAndTime, shortHash, timeOrDate } from '../utils/format'
+import { shortName, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
 import Link from 'next/link'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
+import { LinkTx } from '../utils/links'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -22,8 +23,9 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-const amendmentLink = (a) => {
-  return <Link href={'amendment/' + a.name || a.amendment}>{a.name || shortHash(a.amendment)}</Link>
+const amendmentLink = (a, options) => {
+  let name = options?.short ? shortName(a.name, { maxLength: xahauNetwork ? 12 : 18 }) : a.name
+  return <Link href={'amendment/' + name || a.amendment}>{name || shortHash(a.amendment)}</Link>
 }
 
 export default function Amendment() {
@@ -58,6 +60,13 @@ export default function Amendment() {
         }
       }
       setMajorityAmendments(majority)
+      //sort enabled by enabledLedgerIndex with higher on top (so most recent first), non-empty first
+      enabled.sort((a, b) => {
+        if (a.enabledLedgerIndex == null && b.enabledLedgerIndex == null) return 0
+        if (a.enabledLedgerIndex == null) return 1 // a has no data → move down
+        if (b.enabledLedgerIndex == null) return -1 // b has no data → move down
+        return b.enabledLedgerIndex - a.enabledLedgerIndex // sort descending
+      })
       setEnabledAmendments(enabled)
     }
 
@@ -243,6 +252,7 @@ export default function Amendment() {
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
+                  <th>Enabled</th>
                   <th>{t('table.name')}</th>
                   <th className="right">{t('table.version')}</th>
                   <th className="right">{t('table.hash')}</th>
@@ -252,7 +262,10 @@ export default function Amendment() {
                 {enabledAmendments.map((a, i) => (
                   <tr key={a.amendment}>
                     <td className="center">{i + 1}</td>
-                    <td>{amendmentLink(a)}</td>
+                    <td>
+                      {timeOrDate(a.enabledAt)} <LinkTx tx={a.txHash} icon={true} />
+                    </td>
+                    <td>{amendmentLink(a, { short: windowWidth < 1140 })}</td>
                     <td className="right">{a.introduced}</td>
                     <td className="right">
                       {showHash(a.amendment)}
