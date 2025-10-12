@@ -70,6 +70,12 @@ export const TransactionCredential = ({ data, pageFiatRate, selectedCurrency }) 
               issuer
             </>
           )}
+          {outcome?.credentialChanges.subject === specification?.source && (
+            <>
+              <br />
+              subject
+            </>
+          )}
         </TData>
         <TData>
           <AddressWithIconFilled data={specification?.source} name="address" />
@@ -93,32 +99,26 @@ export const TransactionCredential = ({ data, pageFiatRate, selectedCurrency }) 
       )}
       {!isDepositPreauth && (
         <>
-          {txType === 'CredentialDelete' && (
-            <tr>
-              <TData>Account</TData>
-              <TData>
-                <AddressWithIconFilled data={specification?.source} name="address" />
-              </TData>
-            </tr>
-          )}
-          {txType !== 'CredentialCreate' && (
+          {specification.issuer && (
             <tr>
               <TData>Issuer</TData>
               <TData>
-                <AddressWithIconFilled data={outcome?.credentialChanges} name="issuer" />
+                <AddressWithIconFilled data={specification} name="issuer" />
+              </TData>
+            </tr>
+          )}
+          {specification?.subject && (
+            <tr>
+              <TData>Subject</TData>
+              <TData>
+                <AddressWithIconFilled data={specification} name="subject" />
               </TData>
             </tr>
           )}
           <tr>
-            <TData>{txType === 'CredentialCreate' || txType === 'CredentialDelete' ? 'Subject' : 'Account'}</TData>
-            <TData>
-              <AddressWithIconFilled data={specification || outcome?.credentialChanges} name="subject" />
-            </TData>
-          </tr>
-          <tr>
             <TData>Credential type</TData>
             <TData>
-              <span suppressHydrationWarning>{decode(outcome?.credentialChanges?.credentialType)}</span>{' '}
+              {outcome?.credentialChanges?.credentialType}{' '}
               <CopyButton text={outcome?.credentialChanges?.credentialType} />
             </TData>
           </tr>
