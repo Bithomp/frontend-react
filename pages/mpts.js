@@ -26,6 +26,7 @@ import SortingArrow from '../components/Tables/SortingArrow'
 import CopyButton from '../components/UI/CopyButton'
 import { scaleAmount } from '../utils/calc'
 import TokenTabs from '../components/Tabs/TokenTabs'
+import { FaHandshake } from 'react-icons/fa'
 
 /*
   {
@@ -163,7 +164,8 @@ export default function Mpts({
   openEmailLogin,
   currencyQuery,
   issuerQuery,
-  orderQuery
+  orderQuery,
+  setSignRequest
 }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
@@ -396,6 +398,15 @@ export default function Mpts({
     }
   }
 
+  const authorize = (mptid) => {
+    setSignRequest({
+      request: {
+        TransactionType: 'MPTokenAuthorize',
+        MPTokenIssuanceID: mptid
+      }
+    })
+  }
+
   return (
     <>
       <SEO title="Multi-Purpose Tokens" />
@@ -473,6 +484,7 @@ export default function Mpts({
                 <th className="right">Outstanding</th>
                 <th className="right">Max supply</th>
                 <th>Last used</th>
+                <th className="center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -529,6 +541,17 @@ export default function Mpts({
                               {shortNiceNumber(scaleAmount(token.maximumAmount, token.scale))}
                             </td>
                             <td>{timeFromNow(token.lastUsedAt, i18n)}</td>
+                            <td className="center">
+                              <span
+                                onClick={() => {
+                                  authorize(token.mptokenIssuanceID)
+                                }}
+                                className="orange tooltip"
+                              >
+                                <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
+                                <span className="tooltiptext no-brake">Authorize</span>
+                              </span>
+                            </td>
                           </tr>
                         )
                       })}
@@ -636,6 +659,16 @@ export default function Mpts({
                                 <b>Decimal places:</b> {token.scale || 0}
                                 <br />
                                 <b>Token sequence:</b> {token.sequence}
+                                <br />
+                                <br />
+                                <button
+                                  className="button-action narrow thin"
+                                  onClick={() => {
+                                    authorize(token.mptokenIssuanceID)
+                                  }}
+                                >
+                                  <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} /> Authorize
+                                </button>
                                 <br />
                                 <br />
                               </td>
