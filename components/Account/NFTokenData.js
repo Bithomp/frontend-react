@@ -16,6 +16,17 @@ import {
   dateFormat
 } from '../../utils/format'
 
+const size = 60
+const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+     <rect width="100%" height="100%" fill="#ffffff"/>
+     <text x="50%" y="50%" font-family="sans-serif" font-size="10"
+           text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
+       No image
+     </text>
+   </svg>`
+)}`
+
 export default function NFTokenData({ data, address, objects, ledgerTimestamp, selectedCurrency }) {
   const windowWidth = useWidth()
   const { t } = useTranslation()
@@ -239,13 +250,18 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                     {nfts?.map((nft, i) => (
                       <Link href={'/nft/' + nft.nftokenID} key={i}>
                         <img
-                          src={nftUrl(nft?.nftoken || nft, 'image')}
+                          src={nftUrl(nft?.nftoken || nft, 'image') || placeholder}
                           alt={'NFT ' + (i + 1)}
                           style={
                             windowWidth > 800
                               ? { width: '61px', height: '61px', borderRadius: '4px', margin: '2px' }
                               : { width: '51px', height: '51px', borderRadius: '4px', margin: '2px' }
                           }
+                          onError={(e) => {
+                            e.target.onerror = null
+                            console.log('Error loading NFT image:', e.target.src)
+                            e.target.src = placeholder
+                          }}
                         />
                       </Link>
                     ))}
