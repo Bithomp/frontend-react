@@ -63,7 +63,15 @@ export const TransactionCredential = ({ data, pageFiatRate, selectedCurrency }) 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <tr>
-        <TData>Initiated by</TData>
+        <TData>
+          Initiated by
+          {txType === 'CredentialCreate' && (
+            <>
+              <br />
+              issuer
+            </>
+          )}
+        </TData>
         <TData>
           <AddressWithIconFilled data={specification?.source} name="address" />
         </TData>
@@ -94,12 +102,14 @@ export const TransactionCredential = ({ data, pageFiatRate, selectedCurrency }) 
               </TData>
             </tr>
           )}
-          <tr>
-            <TData>{txType === 'CredentialCreate' ? 'Account' : 'Issuer'}</TData>
-            <TData>
-              <AddressWithIconFilled data={outcome?.credentialChanges} name="issuer" />
-            </TData>
-          </tr>
+          {txType !== 'CredentialCreate' && (
+            <tr>
+              <TData>Issuer</TData>
+              <TData>
+                <AddressWithIconFilled data={outcome?.credentialChanges} name="issuer" />
+              </TData>
+            </tr>
+          )}
           <tr>
             <TData>{txType === 'CredentialCreate' || txType === 'CredentialDelete' ? 'Subject' : 'Account'}</TData>
             <TData>
