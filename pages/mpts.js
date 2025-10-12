@@ -441,6 +441,7 @@ export default function Mpts({
                 </th>
                 <th>Token</th>
                 <th className="center">MPT ID</th>
+                <th className="right">Sequence</th>
                 <th className="right">Transfer fee</th>
                 <th className="right">
                   <span className="inline-flex items-center">
@@ -493,6 +494,7 @@ export default function Mpts({
                             <td className="center">
                               <CopyButton text={token.mptokenIssuanceID} />
                             </td>
+                            <td className="right">{token.sequence}</td>
                             <td className="right">{token.transferFee ? token.transferFee / 1000 + '%' : ''}</td>
                             <td className="right">
                               <span className="tooltip">
@@ -611,6 +613,8 @@ export default function Mpts({
                                 <b>Transfer fee:</b> {token.transferFee ? token.transferFee / 1000 + '%' : 'none'}
                                 <br />
                                 <b>Decimal places:</b> {token.scale || 0}
+                                <br />
+                                <b>Token sequence:</b> {token.sequence}
                                 <br />
                                 <br />
                               </td>
