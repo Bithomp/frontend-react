@@ -1,5 +1,4 @@
 import { TData } from '../Table'
-
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled, fullDateAndTime } from '../../utils/format'
 import { decode } from '../../utils'
@@ -113,13 +112,13 @@ export const TransactionCredential = ({ data, pageFiatRate, selectedCurrency }) 
           <tr>
             <TData>{txType === 'CredentialCreate' || txType === 'CredentialDelete' ? 'Subject' : 'Account'}</TData>
             <TData>
-              <AddressWithIconFilled data={outcome?.credentialChanges} name="subject" />
+              <AddressWithIconFilled data={specification || outcome?.credentialChanges} name="subject" />
             </TData>
           </tr>
           <tr>
-            <TData>Credential Type</TData>
+            <TData>Credential type</TData>
             <TData>
-              {decode(outcome?.credentialChanges?.credentialType)}{' '}
+              <span suppressHydrationWarning>{decode(outcome?.credentialChanges?.credentialType)}</span>{' '}
               <CopyButton text={outcome?.credentialChanges?.credentialType} />
             </TData>
           </tr>
