@@ -1,7 +1,9 @@
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled } from '../../utils/format'
+import { AddressWithIconFilled, fullDateAndTime } from '../../utils/format'
+import { decode } from '../../utils'
+import CopyButton from '../UI/CopyButton'
 
 const CredentialList = ({ credentials, title }) => {
   if (!credentials || credentials.length === 0) return null
@@ -12,27 +14,38 @@ const CredentialList = ({ credentials, title }) => {
       <TData>
         <div>
           {credentials.map((credential, index) => (
-            <div key={index} style={{ marginBottom: '8px', padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}>
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: '4px'
-              }}>
-                <div style={{ 
-                  flex: '0 0 auto',
-                  minWidth: 'fit-content'
-                }}>
+            <div
+              key={index}
+              style={{ marginBottom: '8px', padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '4px'
+                }}
+              >
+                <div
+                  style={{
+                    flex: '0 0 auto',
+                    minWidth: 'fit-content'
+                  }}
+                >
                   <strong>Issuer:</strong>
                 </div>
-                <div style={{ 
-                  flex: '1 1 auto',
-                  minWidth: '140px'
-                }}>
+                <div
+                  style={{
+                    flex: '1 1 auto',
+                    minWidth: '140px'
+                  }}
+                >
                   <AddressWithIconFilled data={credential} name="issuer" />
                 </div>
               </div>
-              <div><strong>Type:</strong> {credential.type || <span className="orange">Unknown</span>}</div>
+              <div>
+                <strong>Type:</strong> {credential.type || <span className="orange">Unknown</span>}
+              </div>
             </div>
           ))}
         </div>
@@ -48,11 +61,7 @@ export const TransactionCredential = ({ data, pageFiatRate, selectedCurrency }) 
   const isDepositPreauth = txType === 'DepositPreauth'
 
   return (
-    <TransactionCard
-      data={data}
-      pageFiatRate={pageFiatRate}
-      selectedCurrency={selectedCurrency}
-    >
+    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <tr>
         <TData>Initiated by</TData>
         <TData>
@@ -86,65 +95,48 @@ export const TransactionCredential = ({ data, pageFiatRate, selectedCurrency }) 
             </tr>
           )}
           <tr>
-            <TData>
-              {txType === 'CredentialCreate' ? 'Account' : 'Issuer'}
-            </TData>
+            <TData>{txType === 'CredentialCreate' ? 'Account' : 'Issuer'}</TData>
             <TData>
               <AddressWithIconFilled data={outcome?.credentialChanges} name="issuer" />
             </TData>
           </tr>
           <tr>
-            <TData>
-              {txType === 'CredentialCreate' || txType === 'CredentialDelete' ? 'Subject' : 'Account'}
-            </TData>
+            <TData>{txType === 'CredentialCreate' || txType === 'CredentialDelete' ? 'Subject' : 'Account'}</TData>
             <TData>
               <AddressWithIconFilled data={outcome?.credentialChanges} name="subject" />
             </TData>
           </tr>
           <tr>
             <TData>Credential Type</TData>
-            <TData>{outcome?.credentialChanges?.credentialType}</TData>
+            <TData>
+              {decode(outcome?.credentialChanges?.credentialType)}{' '}
+              <CopyButton text={outcome?.credentialChanges?.credentialType} />
+            </TData>
           </tr>
           {outcome?.credentialChanges?.flags && (
             <tr>
-              <TData>Flags</TData>
+              <TData>Flag</TData>
               <TData>
-                <div>
-                  <div>Accepted: <span className={outcome.credentialChanges.flags.accepted ? 'green' : 'red'}>
-                    {outcome.credentialChanges.flags.accepted ? 'Yes' : 'No'}
-                  </span></div>
-                </div>
+                <span className={outcome.credentialChanges.flags.accepted ? 'green' : 'red'}>
+                  {outcome.credentialChanges.flags.accepted ? 'Accepted' : 'Not accepted'}
+                </span>
               </TData>
             </tr>
           )}
         </>
       )}
-      <CredentialList 
-        credentials={specification?.authorizeCredentials} 
-        title="Authorize Credentials" 
-      />
-      <CredentialList 
-        credentials={specification?.unauthorizeCredentials} 
-        title="Unauthorize Credentials" 
-      />
-      {!isDepositPreauth && specification?.expiration !== undefined && (
+      <CredentialList credentials={specification?.authorizeCredentials} title="Authorize Credentials" />
+      <CredentialList credentials={specification?.unauthorizeCredentials} title="Unauthorize Credentials" />
+      {!isDepositPreauth && specification?.expiration && (
         <tr>
           <TData>Expiration</TData>
-          <TData>{specification.expiration}</TData>
+          <TData>{fullDateAndTime(specification.expiration, 'ripple')}</TData>
         </tr>
       )}
       {!isDepositPreauth && specification?.uri && (
         <tr>
           <TData>URI</TData>
-          <TData>
-            {specification.uri.startsWith('http') ? (
-              <a href={specification.uri} target="_blank" rel="noopener">
-                {specification.uri}
-              </a>
-            ) : (
-              specification.uri
-            )}
-          </TData>
+          <TData>{decode(specification.uri)}</TData>
         </tr>
       )}
     </TransactionCard>
