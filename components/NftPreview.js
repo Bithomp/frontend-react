@@ -36,7 +36,7 @@ const isPanorama = (metadata) => {
   return hasPanoramaKeyword || hasPanoramaCamera
 }
 
-export default function NftPreview({ nft }) {
+export default function NftPreview({ nft, setIsHidden }) {
   const { t } = useTranslation()
   const [contentTab, setContentTab] = useState('image')
   const [loaded, setLoaded] = useState(false)
@@ -190,7 +190,10 @@ export default function NftPreview({ nft }) {
 
   const renderFullScreenButton = () => (
     <button
-      onClick={() => setShowFullScreen(true)}
+      onClick={() => {
+        setShowFullScreen(true)
+        setIsHidden && setIsHidden(true)
+      }}
       style={{
         backgroundColor: 'transparent',
         color: 'var(--accent-link)',
@@ -395,7 +398,10 @@ export default function NftPreview({ nft }) {
       {showFullScreen && (
         <NftFullScreenViewer 
           nft={nft} 
-          onClose={() => setShowFullScreen(false)} 
+          onClose={() => {
+            setShowFullScreen(false)
+            setIsHidden && setIsHidden(false)
+          }} 
         />
       )}
     </>
