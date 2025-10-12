@@ -21,15 +21,9 @@ import {
 } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
-import {
-  isAddressOrUsername,
-  nativeCurrency,
-  setTabParams,
-  useWidth,
-  validateCurrencyCode,
-  xahauNetwork
-} from '../utils'
+import { isAddressOrUsername, nativeCurrency, setTabParams, validateCurrencyCode, xahauNetwork } from '../utils'
 import { useRouter } from 'next/router'
+import TokenTabs from '../components/Tabs/TokenTabs'
 
 /*
   {
@@ -79,7 +73,7 @@ export async function getServerSideProps(context) {
   let initialErrorMessage = null
 
   // Validate order param
-  const supportedOrders = new Set([
+  const supportedOrders = [
     'rating',
     'trustlinesHigh',
     'holdersHigh',
@@ -91,8 +85,8 @@ export async function getServerSideProps(context) {
     'uniqueTradersHigh',
     'uniqueSellersHigh',
     'uniqueBuyersHigh'
-  ])
-  const orderParam = supportedOrders.has(order) ? order : 'rating'
+  ]
+  const orderParam = supportedOrders.includes(order) ? order : 'rating'
   const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
   let url = `v2/trustlines/tokens?limit=100&order=${orderParam}&currencyDetails=true&statistics=true&convertCurrencies=${selectedCurrencyServer}`
@@ -134,7 +128,7 @@ export async function getServerSideProps(context) {
       selectedCurrencyServer,
       currencyQuery: currency || initialData?.currency || null,
       issuerQuery: issuer || initialData?.issuer || null,
-      orderQuery: supportedOrders.has(order) ? order : null,
+      orderQuery: supportedOrders.includes(order) ? order : null,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -154,6 +148,31 @@ const orderList = [
   { value: 'uniqueBuyersHigh', label: 'Unique Buyers (24h): High to Low' }
 ]
 
+// Helper component to render token with icon
+const TokenCell = ({ token }) => {
+  return (
+    <AddressWithIcon address={token?.issuer} currency={token?.currency}>
+      {token.lp_token ? (
+        <b>{token.currencyDetails.currency}</b>
+      ) : (
+        <>
+          <b>{niceCurrency(token.currency)}</b>
+        </>
+      )}
+      {token.issuer && (
+        <>
+          <br />
+          <span className="issuer-address">
+            {token.issuerDetails?.service || token.issuerDetails?.username
+              ? userOrServiceName(token.issuerDetails)
+              : shortAddress(token.issuer)}
+          </span>
+        </>
+      )}
+    </AddressWithIcon>
+  )
+}
+
 export default function Tokens({
   initialData,
   initialErrorMessage,
@@ -165,14 +184,12 @@ export default function Tokens({
   setSelectedCurrency,
   fiatRate: fiatRateApp,
   fiatRateServer,
-  isSsrMobile,
   openEmailLogin,
   currencyQuery,
   issuerQuery,
   orderQuery
 }) {
   const { t } = useTranslation()
-  const width = useWidth()
   const isFirstRender = useRef(true)
   const router = useRouter()
 
@@ -377,31 +394,6 @@ export default function Tokens({
     { label: 'Holders', key: 'holders' }
   ]
 
-  // Helper component to render token with icon
-  const TokenCell = ({ token }) => {
-    return (
-      <AddressWithIcon address={token?.issuer} currency={token?.currency}>
-        {token.lp_token ? (
-          <b>{token.currencyDetails.currency}</b>
-        ) : (
-          <>
-            <b>{niceCurrency(token.currency)}</b>
-          </>
-        )}
-        {token.issuer && (
-          <>
-            <br />
-            <span className="issuer-address">
-              {token.issuerDetails?.service || token.issuerDetails?.username
-                ? userOrServiceName(token.issuerDetails)
-                : shortAddress(token.issuer)}
-            </span>
-          </>
-        )}
-      </AddressWithIcon>
-    )
-  }
-
   const handleSetTrustline = (token) => {
     // Format supply to have at most 6 decimal places
     const formatSupply = (supply) => {
@@ -537,7 +529,6 @@ export default function Tokens({
     const apiOrderFor = (k) => {
       switch (k) {
         case 'rating':
-        case 'index':
           return 'rating'
         case 'trustlines':
           return 'trustlinesHigh'
@@ -573,7 +564,9 @@ export default function Tokens({
   return (
     <>
       <SEO title="Tokens" />
-      <h1 className="center">Tokens</h1>
+      <h1 className="center">Trustline Tokens</h1>
+
+      {!xahauNetwork && <TokenTabs tab="tokens" />}
 
       <FiltersFrame
         count={data?.length}
@@ -612,213 +605,209 @@ export default function Tokens({
           openEmailLogin={openEmailLogin}
         >
           {/* Desktop table */}
-          {!isSsrMobile || width > 1080 ? (
-            <table className="table-large no-hover expand">
-              <thead>
-                <tr>
+
+          <table className="table-large no-hover expand hide-on-small-w800">
+            <thead>
+              <tr>
+                <th className="center">
+                  <span className="inline-flex items-center">
+                    #
+                    <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} />
+                  </span>
+                </th>
+                <th>Token</th>
+                <th className="right">
+                  <span className="inline-flex items-center">
+                    Price
+                    <SortingArrow sortKey="price" currentSort={sortConfig} onClick={() => sortTable('price')} />
+                  </span>
+                </th>
+                <th className="right">Change (24h)</th>
+                <th className="right">
+                  Total volume
+                  <br />
+                  <span className="inline-flex items-center">
+                    (24h)
+                    <SortingArrow
+                      sortKey="totalVolume"
+                      currentSort={sortConfig}
+                      onClick={() => sortTable('totalVolume')}
+                    />
+                  </span>
+                </th>
+                <th className="right">
+                  <span className="inline-flex items-center">
+                    Buyers
+                    <SortingArrow
+                      sortKey="uniqueBuyers"
+                      currentSort={sortConfig}
+                      onClick={() => sortTable('uniqueBuyers')}
+                    />
+                  </span>
+                  <span className="inline-flex items-center">
+                    / Sellers
+                    <SortingArrow
+                      sortKey="uniqueSellers"
+                      currentSort={sortConfig}
+                      onClick={() => sortTable('uniqueSellers')}
+                    />
+                  </span>
+                  <br />
+                  <span className="inline-flex items-center">
+                    Traders (24h)
+                    <SortingArrow
+                      sortKey="uniqueTraders"
+                      currentSort={sortConfig}
+                      onClick={() => sortTable('uniqueTraders')}
+                    />
+                  </span>
+                </th>
+                <th className="right">
+                  <span className="inline-flex items-center">
+                    Holders
+                    <SortingArrow sortKey="holders" currentSort={sortConfig} onClick={() => sortTable('holders')} />,
+                  </span>
+                  <br />
+                  Active (24h)
+                </th>
+                {!xahauNetwork && (
                   <th className="center">
-                    <span className="inline-flex items-center">
-                      #
-                      <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} />
-                    </span>
-                  </th>
-                  <th>Token</th>
-                  <th className="right">
-                    <span className="inline-flex items-center">
-                      Price
-                      <SortingArrow sortKey="price" currentSort={sortConfig} onClick={() => sortTable('price')} />
-                    </span>
-                  </th>
-                  <th className="right">Change (24h)</th>
-                  <th className="right">
-                    Total volume
-                    <br />
-                    <span className="inline-flex items-center">
-                      (24h)
-                      <SortingArrow
-                        sortKey="totalVolume"
-                        currentSort={sortConfig}
-                        onClick={() => sortTable('totalVolume')}
-                      />
-                    </span>
-                  </th>
-                  <th className="right">
-                    <span className="inline-flex items-center">
-                      Buyers
-                      <SortingArrow
-                        sortKey="uniqueBuyers"
-                        currentSort={sortConfig}
-                        onClick={() => sortTable('uniqueBuyers')}
-                      />
-                    </span>
-                    <span className="inline-flex items-center">
-                      / Sellers
-                      <SortingArrow
-                        sortKey="uniqueSellers"
-                        currentSort={sortConfig}
-                        onClick={() => sortTable('uniqueSellers')}
-                      />
-                    </span>
-                    <br />
-                    <span className="inline-flex items-center">
-                      Traders (24h)
-                      <SortingArrow
-                        sortKey="uniqueTraders"
-                        currentSort={sortConfig}
-                        onClick={() => sortTable('uniqueTraders')}
-                      />
-                    </span>
-                  </th>
-                  <th className="right">
-                    <span className="inline-flex items-center">
-                      Holders
-                      <SortingArrow sortKey="holders" currentSort={sortConfig} onClick={() => sortTable('holders')} />,
-                    </span>
+                    AMMs,
                     <br />
                     Active (24h)
                   </th>
-                  {!xahauNetwork && (
-                    <th className="center">
-                      AMMs,
-                      <br />
-                      Active (24h)
-                    </th>
-                  )}
-                  <th className="right">
-                    Trades
-                    <br />
-                    (24h)
-                  </th>
-                  <th className="right">
-                    <span className="inline-flex items-center">
-                      Marketcap
-                      <SortingArrow
-                        sortKey="marketcap"
-                        currentSort={sortConfig}
-                        onClick={() => sortTable('marketcap')}
-                      />
-                    </span>
-                  </th>
-                  <th className="center">Action</th>
+                )}
+                <th className="right">
+                  Trades
+                  <br />
+                  (24h)
+                </th>
+                <th className="right">
+                  <span className="inline-flex items-center">
+                    Marketcap
+                    <SortingArrow sortKey="marketcap" currentSort={sortConfig} onClick={() => sortTable('marketcap')} />
+                  </span>
+                </th>
+                <th className="center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr className="center">
+                  <td colSpan="100">
+                    <span className="waiting"></span>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr className="center">
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                    </td>
-                  </tr>
-                ) : (
-                  <>
-                    {errorMessage ? (
-                      <tr>
-                        <td colSpan="100" className="center orange bold">
-                          {errorMessage}
-                        </td>
-                      </tr>
-                    ) : (
-                      <>
-                        {data.map((token, i) => {
-                          return (
-                            <tr
-                              key={i}
-                              className="clickable-row"
-                              onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
-                            >
-                              <td className="center">{i + 1}</td>
-                              <td>
-                                <TokenCell token={token} />
-                              </td>
-                              <td className="right">
-                                {priceToFiat({
-                                  price: token.statistics?.priceNativeCurrency,
-                                  priceFiats: token.statistics.priceFiats
-                                })}
-                              </td>
-                              <td className="right">
-                                {renderPercentCell({
-                                  currentPrice: token.statistics?.priceFiats[selectedCurrency],
-                                  pastPrice: token.statistics?.priceFiats24h[selectedCurrency]
-                                })}
-                              </td>
-                              <td className="right">{volumeToFiat({ token })}</td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  <span className="green">
-                                    {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
-                                  </span>{' '}
-                                  /{' '}
-                                  <span className="red">
-                                    {shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}
-                                  </span>
-                                  <br />
-                                  {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
-                                  </span>
-                                </span>
-                              </td>
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.holders, 0, 1)}
-                                  <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+              ) : (
+                <>
+                  {errorMessage ? (
+                    <tr>
+                      <td colSpan="100" className="center orange bold">
+                        {errorMessage}
+                      </td>
+                    </tr>
+                  ) : (
+                    <>
+                      {data.map((token, i) => {
+                        return (
+                          <tr
+                            key={i}
+                            className="clickable-row"
+                            onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
+                          >
+                            <td className="center">{i + 1}</td>
+                            <td>
+                              <TokenCell token={token} />
+                            </td>
+                            <td className="right">
+                              {priceToFiat({
+                                price: token.statistics?.priceNativeCurrency,
+                                priceFiats: token.statistics.priceFiats
+                              })}
+                            </td>
+                            <td className="right">
+                              {renderPercentCell({
+                                currentPrice: token.statistics?.priceFiats[selectedCurrency],
+                                pastPrice: token.statistics?.priceFiats24h[selectedCurrency]
+                              })}
+                            </td>
+                            <td className="right">{volumeToFiat({ token })}</td>
+                            <td className="right">
+                              <span className="tooltip">
+                                <span className="green">
+                                  {shortNiceNumber(token.statistics?.uniqueBuyers, 0, 1) || 0}
+                                </span>{' '}
+                                /{' '}
+                                <span className="red">
+                                  {shortNiceNumber(token.statistics?.uniqueSellers, 0, 1) || 0}
                                 </span>
                                 <br />
-                                <span className="tooltip green">
-                                  {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.activeHolders) || 0}
-                                  </span>
+                                {shortNiceNumber(token.statistics?.uniqueDexAccounts, 0, 1) || 0}
+                                <span className="tooltiptext no-brake">
+                                  {fullNiceNumber(token.statistics?.uniqueDexAccounts) || 0}
                                 </span>
-                              </td>
-                              {!xahauNetwork && (
-                                <td className="center">
-                                  <a
-                                    href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
-                                    className="tooltip"
-                                  >
-                                    {token.statistics?.ammPools || 0}
-                                    <span className="tooltiptext no-brake">View AMMs</span>
-                                  </a>
-                                  <br />
-                                  <span className="tooltip green">
-                                    {shortNiceNumber(token.statistics?.activeAmmPools, 0, 1) || 0}
-                                  </span>
-                                </td>
-                              )}
-                              <td className="right">
-                                <span className="tooltip">
-                                  {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
-                                  <span className="tooltiptext no-brake">
-                                    {fullNiceNumber(token.statistics?.dexes) || 0}
-                                  </span>
+                              </span>
+                            </td>
+                            <td className="right">
+                              <span className="tooltip">
+                                {shortNiceNumber(token.holders, 0, 1)}
+                                <span className="tooltiptext no-brake">{fullNiceNumber(token.holders)}</span>
+                              </span>
+                              <br />
+                              <span className="tooltip green">
+                                {shortNiceNumber(token.statistics?.activeHolders, 0, 1) || 0}
+                                <span className="tooltiptext no-brake">
+                                  {fullNiceNumber(token.statistics?.activeHolders) || 0}
                                 </span>
-                              </td>
-                              <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
+                              </span>
+                            </td>
+                            {!xahauNetwork && (
                               <td className="center">
-                                <span
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleSetTrustline(token)
-                                  }}
-                                  className="orange tooltip"
+                                <a
+                                  href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}
+                                  className="tooltip"
                                 >
-                                  <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
-                                  <span className="tooltiptext no-brake">Set trust</span>
+                                  {token.statistics?.ammPools || 0}
+                                  <span className="tooltiptext no-brake">View AMMs</span>
+                                </a>
+                                <br />
+                                <span className="tooltip green">
+                                  {shortNiceNumber(token.statistics?.activeAmmPools, 0, 1) || 0}
                                 </span>
                               </td>
-                            </tr>
-                          )
-                        })}
-                      </>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          ) : (
-            // Mobile table
+                            )}
+                            <td className="right">
+                              <span className="tooltip">
+                                {shortNiceNumber(token.statistics?.dexes, 0, 1) || 0}
+                                <span className="tooltiptext no-brake">
+                                  {fullNiceNumber(token.statistics?.dexes) || 0}
+                                </span>
+                              </span>
+                            </td>
+                            <td className="right">{marketcapToFiat({ marketcap: token.statistics?.marketcap })}</td>
+                            <td className="center">
+                              <span
+                                onClick={() => {
+                                  handleSetTrustline(token)
+                                }}
+                                className="orange tooltip"
+                              >
+                                <FaHandshake style={{ fontSize: 18, marginBottom: -4 }} />
+                                <span className="tooltiptext no-brake">Set trust</span>
+                              </span>
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </>
+                  )}
+                </>
+              )}
+            </tbody>
+          </table>
+
+          {/* Mobile table */}
+          <div className="show-on-small-w800">
             <table className="table-mobile wide">
               <thead></thead>
               <tbody>
@@ -899,7 +888,7 @@ export default function Tokens({
                 )}
               </tbody>
             </table>
-          )}
+          </div>
         </InfiniteScrolling>
       </FiltersFrame>
 

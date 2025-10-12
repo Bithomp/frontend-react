@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import SEO from '../../components/SEO'
 import TokenSelector from '../../components/UI/TokenSelector'
 import { tokenClass } from '../../styles/pages/token.module.scss'
-import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled, amountFormat } from '../../utils/format'
+import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
@@ -280,16 +280,6 @@ export default function TokenPage({
             flexDirection: 'column',
             alignItems: 'center'
           }}>
-            <span className="input-title" style={{width: isSsrMobile ? '100%' : '80%'}}>
-              Token
-              {token.supply && token.currency && (
-                <span className="grey">
-                  {' '}
-                  - the Limit will be set to the total supply:{' '}
-                  {amountFormat({ value: token.supply, currency: token.currency })}
-                </span>
-              )}
-            </span>
             <div style={{width: isSsrMobile ? '100%' : '80%', marginBottom: '20px'}}>
               <TokenSelector
                 value={token}
@@ -297,6 +287,7 @@ export default function TokenPage({
                 excludeNative={true}
                 currencyQueryName="currency"
                 addParams={false}
+                selectedCurrency={selectedCurrency}
               />
             </div>
           </div>

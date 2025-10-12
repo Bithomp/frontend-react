@@ -22,6 +22,7 @@ import {
   isNativeCurrency,
   shortName
 } from '.'
+import { scaleAmount } from './calc'
 
 dayjs.extend(durationPlugin)
 dayjs.extend(relativeTimePlugin)
@@ -879,6 +880,10 @@ export const amountParced = (amount) => {
     originalCurrency = amount.mpt_issuance_id // Store original before processing
     currency = amount.currencyDetails?.currency || '[MPT: ' + shortHash(amount.mpt_issuance_id, 4) + ']'
     value = amount.value
+    const scale = amount.currencyDetails?.scale || 0
+    if (scale > 0) {
+      value = scaleAmount(value, scale)
+    }
     issuer = amount.currencyDetails?.account
     issuerDetails = amount.currencyDetails?.accountDetails
     type = 'MPT'

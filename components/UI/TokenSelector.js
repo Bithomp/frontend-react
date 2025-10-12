@@ -62,7 +62,8 @@ export default function TokenSelector({
   destinationAddress = null,
   allOrOne,
   currencyQueryName,
-  addParams = true
+  addParams = true,
+  selectedCurrency = null
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -233,9 +234,15 @@ export default function TokenSelector({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, isOpen, destinationAddress])
 
-  const handleSelect = (token) => {
-    onChange(token)
+  const handleSelect = async (token) => {
+    const newToken = await fetchToken(token)
+    onChange(newToken)
     setIsOpen(false)
+  }
+
+  const fetchToken = async (token) => {
+    const response = await axios(`v2/trustlines/token/${token?.issuer}/${token?.currency}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrency}`)
+    return response.data || null
   }
 
   // Helper to get icon url if available

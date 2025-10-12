@@ -466,12 +466,10 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
     }
   }
 
-  let isEmpty =
-    !data?.ledgerInfo?.nftokenMinter &&
-    !data.ledgerInfo?.burnedNFTokens &&
-    !data.ledgerInfo?.mintedNFTokens &&
-    !(objects?.nftOfferList?.length > 0) &&
-    !(objects?.nftList?.length > 0)
+  const noNftLedgerInfo =
+    !data?.ledgerInfo?.nftokenMinter && !data.ledgerInfo?.burnedNFTokens && !data.ledgerInfo?.mintedNFTokens
+
+  const isEmpty = noNftLedgerInfo && !(objects?.nftOfferList?.length > 0) && !(objects?.nftList?.length > 0)
 
   const getMetaData = () => {
     if (isEmpty) return ''
@@ -488,7 +486,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
 
   return (
     <>
-      {!isEmpty && (
+      {!noNftLedgerInfo && (
         <table className="table-details hide-on-small-w800">
           <thead>
             <tr>
