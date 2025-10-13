@@ -2,7 +2,7 @@ import { useState } from 'react'
 import FormInput from '../../UI/FormInput'
 import { nativeCurrency, typeNumberOnly, isNativeCurrency } from '../../../utils'
 import TokenSelector from '../../UI/TokenSelector'
-import { LinkTx } from '../../../utils/links'
+import { LinkAmm, LinkTx } from '../../../utils/links'
 import CopyButton from '../../UI/CopyButton'
 import { errorCodeDescription } from '../../../utils/transaction'
 
@@ -142,8 +142,8 @@ export default function AMMVoteForm({ setSignRequest }) {
                 Hash: <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
               </p>
               <p>
-                <strong>AMM ID{/*:*/} </strong>
-                {/* <LinkAmm ammId={txResult.ammId} hash={true} copy={true} /> */}
+                <strong>AMM ID: </strong>
+                <LinkAmm ammId={txResult.ammId} hash={true} copy={true} />
               </p>
             </div>
           ) : (
