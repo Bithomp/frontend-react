@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 import { usernameOrAddress, AddressWithIconFilled, shortHash, addressUsernameOrServiceLink, amountFormat, convertedAmount, nativeCurrencyToFiat } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { nftUrl, nftName } from '../../utils/nft'
+import { nftUrl, nftName, ipfsUrl } from '../../utils/nft'
 import { axiosServer, passHeaders } from '../../utils/axios'
 
 import SEO from '../../components/SEO'
@@ -23,17 +23,10 @@ export async function getServerSideProps(context) {
       // Try collection-specific endpoint first, fallback to NFT endpoint
       let res = await axiosServer({
         method: 'get',
-        url: 'v2/nft-collection/' + collectionId + '?uri=true&metadata=true',
+        url: 'v2/nft-collection/' + collectionId,
         headers: passHeaders(req)
-      }).catch(async () => {
-        // Fallback to individual NFT endpoint if collection endpoint doesn't exist
-        return await axiosServer({
-          method: 'get',
-          url: 'v2/nft/' + collectionId + '?uri=true&metadata=true',
-          headers: passHeaders(req)
-        })
       })
-      pageMeta = res?.data
+      pageMeta = res?.data?.collection || res?.data
     } catch (error) {
       console.error(error)
     }
@@ -58,6 +51,8 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
   const [nftList, setNftList] = useState([])
   const [nftListLoading, setNftListLoading] = useState(false)
   const statistics = data?.collection?.statistics
+  const issuerDetails = data?.collection?.issuerDetails
+  const collection = data?.collection
   const [activityData, setActivityData] = useState({
     sales: [],
     listings: [],
@@ -114,7 +109,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
     if (newdata) {
       setData(newdata)
     } else {
-      setErrorMessage('Error')
+      setErrorMessage('No data found')
     }
   }
 
@@ -169,7 +164,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
     return data?.collection?.description || ''
   }
 
-  const imageUrl = data?.collection?.assets?.image || data?.collection?.image
+  const imageUrl = ipfsUrl(data?.collection?.image)
 
   const renderActivityTable = (kind) => {
     let title = ''
@@ -193,106 +188,107 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
     if (isMobile) {
       return (
         <div style={{ marginBottom: '20px' }}>
-          <div className="bold" style={{ marginBottom: '8px' }}>
-            {title}
-          </div>
-          {items.length > 0 ? (
-            items.map((item, i) => (
-              <div
-                key={i}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px',
-                  padding: '10px',
-                  border: '1px solid var(--border-color, #eee)',
-                  borderRadius: '6px',
-                  marginBottom: '10px'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span>NFT: </span>
-                  {nftUrl(item?.nftoken || item, 'thumbnail') ? (
-                    <img
-                      src={nftUrl(item?.nftoken || item, 'thumbnail')}
-                      alt={nftName(item?.nftoken || item) || 'NFT thumbnail'}
-                      style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
-                    />
-                  ) : (
-                    ''
-                  )}
-                  <div className="code" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <span>{nftName(item?.nftoken || item)}</span>
-                    <Link href={'/nft/' + item.nftokenID}>{shortHash(item.nftokenID, 6)}</Link>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
-                  {kind === 'sales' && (
-                    <>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span>Seller: </span>
-                        {item.seller ? (
-                          <AddressWithIconFilled data={item} name="seller" options={{ short: true }} />
-                        ) : (
-                          ''
-                        )}
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span>Buyer: </span>
-                        {item.buyer ? (
-                          <AddressWithIconFilled data={item} name="buyer" options={{ short: true }} />
-                        ) : (
-                          ''
-                        )}
-                      </div>
-                      <div>
-                        <span>Price: </span>
-                        {amountFormat(item.amount)} 
-                        ≈ {convertedAmount(item, selectedCurrency, { short: true })}
-                      </div>
-                      <div>
-                        <span>Date: </span>
-                        {item.acceptedAt ? new Date(item.acceptedAt * 1000).toLocaleDateString() : ''}
-                      </div>
-                    </>
-                  )}
-                  {kind === 'listings' && (
-                    <>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span>Owner: </span>
-                        {item.owner && addressUsernameOrServiceLink(item, 'owner', { short: 12 })}
-                      </div>
-                      <div>
-                        <span>Price: </span>
-                        {amountFormat(item?.sellOffers?.[0]?.amount)} 
-                        {nativeCurrencyToFiat({amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate})}
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span>Date: </span>
-                        {new Date(item.ownerChangedAt * 1000).toLocaleDateString()}
-                      </div>
-                    </>
-                  )}
-                  {kind === 'mints' && (
-                    <>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span>Owner: </span>
-                        {item.owner && addressUsernameOrServiceLink(item, 'owner', { short: 12 })}
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span>Date: </span>
-                        {new Date(item.issuedAt * 1000).toLocaleDateString()}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="center" style={{ padding: '10px' }}>
-              {t('general.nodata') || 'No data'}
-            </div>
-          )}
+          <table className="table-details">
+            <thead>
+              <tr>
+                <th colSpan="100">{title}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                items.length > 0 ? items.map((item, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <span>NFT: </span>
+                          {nftUrl(item?.nftoken || item, 'thumbnail') ? (
+                            <img
+                              src={nftUrl(item?.nftoken || item, 'thumbnail')}
+                              alt={nftName(item?.nftoken || item) || 'NFT thumbnail'}
+                              style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
+                            />
+                          ) : (
+                            ''
+                          )}
+                          <div className="code" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            <span>{nftName(item?.nftoken || item)}</span>
+                            <Link href={'/nft/' + item.nftokenID}>{shortHash(item.nftokenID, 6)}</Link>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
+                          {kind === 'sales' && (
+                            <>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <span>Seller: </span>
+                                {item.seller ? (
+                                  <AddressWithIconFilled data={item} name="seller" options={{ short: true }} />
+                                ) : (
+                                  ''
+                                )}
+                              </div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <span>Buyer: </span>
+                                {item.buyer ? (
+                                  <AddressWithIconFilled data={item} name="buyer" options={{ short: true }} />
+                                ) : (
+                                  ''
+                                )}
+                              </div>
+                              <div>
+                                <span>Price: </span>
+                                {amountFormat(item.amount)} 
+                                ≈ {convertedAmount(item, selectedCurrency, { short: true })}
+                              </div>
+                              <div>
+                                <span>Date: </span>
+                                {item.acceptedAt ? new Date(item.acceptedAt * 1000).toLocaleDateString() : ''}
+                              </div>
+                            </>
+                          )}
+                          {kind === 'listings' && (
+                            <>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <span>Owner: </span>
+                                {item.owner && addressUsernameOrServiceLink(item, 'owner', { short: 12 })}
+                              </div>
+                              <div>
+                                <span>Price: </span>
+                                {amountFormat(item?.sellOffers?.[0]?.amount)} 
+                                {nativeCurrencyToFiat({amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate})}
+                              </div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <span>Date: </span>
+                                {new Date(item.ownerChangedAt * 1000).toLocaleDateString()}
+                              </div>
+                            </>
+                          )}
+                          {kind === 'mints' && (
+                            <>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <span>Owner: </span>
+                                {item.owner && addressUsernameOrServiceLink(item, 'owner', { short: 12 })}
+                              </div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <span>Date: </span>
+                                {new Date(item.issuedAt * 1000).toLocaleDateString()}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                }) : (
+                  <tr>
+                    <td colSpan="100" className="center">
+                      {'No data'}
+                    </td>
+                  </tr>
+                )
+              }
+            </tbody>
+          </table>
         </div>
       )
     }
@@ -307,7 +303,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
         </thead>
         <tbody>
           <tr>
-            {headers.map((h, i) => (
+            {items.length > 0 && headers.map((h, i) => (
               <td className="bold center" key={i}>
                 {h}
               </td>
@@ -379,7 +375,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
           ) : (
             <tr>
               <td colSpan={headers.length} className="center">
-                {t('general.nodata') || 'No data'}
+                {'No data'}
               </td>
             </tr>
           )}
@@ -403,7 +399,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
         image={{ file: imageUrl }}
       />
       <div className="content-profile">
-        {id ? (
+        {id && !data?.error ? (
           <>
             {loading ? (
               <div className="center" style={{ marginTop: '80px' }}>
@@ -452,37 +448,37 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                                 <tr>
                                   <td>Address</td>
                                   <td>
-                                    <AddressWithIconFilled data={data.collection.issuerDetails} name="address" />
+                                    <AddressWithIconFilled data={issuerDetails} name="address" />
                                   </td>
                                 </tr>
-                                {data?.collection?.issuerDetails?.username && (
+                                {issuerDetails?.username && (
                                   <tr>
                                     <td>Username</td>
-                                    <td>{data.collection.issuerDetails.username}</td>
+                                    <td>{issuerDetails.username}</td>
                                   </tr>
                                 )}
                                 {data?.collection?.issuerDetails?.service && (
                                   <tr>
                                     <td>Service</td>
-                                    <td>{data.collection.issuerDetails.service}</td>
+                                    <td>{issuerDetails.service}</td>
                                   </tr>
                                 )}
-                                {data?.collection?.taxon ? (
+                                {collection?.taxon ? (
                                   <tr>
                                     <td>Taxon</td>
-                                    <td>{data.collection.taxon}</td>
+                                    <td>{collection?.taxon}</td>
                                   </tr>
                                 ) : null}
-                                {data?.collection?.createdAt && (
+                                {collection?.createdAt && (
                                   <tr>
                                     <td>Created At</td>
-                                    <td>{new Date(data.collection.createdAt * 1000).toLocaleString()}</td>
+                                    <td>{new Date(collection?.createdAt * 1000).toLocaleString()}</td>
                                   </tr>
                                 )}
-                                {data?.collection?.updatedAt && (
+                                {collection?.updatedAt && (
                                   <tr>
                                     <td>Updated At</td>
-                                    <td>{new Date(data.collection.updatedAt * 1000).toLocaleString()}</td>
+                                    <td>{new Date(collection?.updatedAt * 1000).toLocaleString()}</td>
                                   </tr>
                                 )}
                               </tbody>
@@ -543,24 +539,22 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                                 <tr>
                                   <th colSpan="100">
                                     NFTs in this Collection
-                                    {data?.collection?.issuer &&
-                                    (data?.collection?.taxon || data?.collection?.taxon === 0) ? (
+                                    {collection?.issuer &&
+                                    (collection?.taxon || collection?.taxon === 0) ? (
                                       <>
                                         {' '}
                                         [<Link
-                                          href={`/nft-explorer?issuer=${data.collection.issuer}&taxon=${data.collection.taxon}&includeWithoutMediaData=true`}
+                                          href={`/nft-explorer?issuer=${collection?.issuer}&taxon=${collection?.taxon}&includeWithoutMediaData=true`}
                                         >
                                           View all
                                         </Link>]
                                       </>
                                     ) : (
-                                      data.collection?.collection && (
+                                      collection?.collection && (
                                         <>
                                           {' '}
                                           [<Link
-                                            href={`/nft-explorer?collection=${encodeURIComponent(
-                                              data.collection.collection
-                                            )}&includeWithoutMediaData=true`}
+                                            href={`/nft-explorer?collection=${encodeURIComponent(data)}&includeWithoutMediaData=true`}
                                           >
                                             View all
                                           </Link>]
@@ -571,32 +565,36 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                                 </tr>
                               </thead>
                               <tbody>
-                              {nftListLoading && (
-                                <div className="center" style={{ marginTop: '10px' }}>
-                                  <span className="waiting"></span>
-                                </div>
-                              )}
+                                <tr>
+                                  <td colSpan={100}>
+                                    {nftListLoading && (
+                                      <div className="center" style={{ marginTop: '10px' }}>
+                                        <span className="waiting"></span>
+                                      </div>
+                                    )}
 
-                              {!nftListLoading && nftList.length === 0 && (
-                                <div style={{ marginTop: '10px' }}>No NFTs found</div>
-                              )}
+                                    {!nftListLoading && nftList.length === 0 && (
+                                      <div className="center" style={{ marginTop: '10px' }}>No NFTs found</div>
+                                    )}
 
-                              {!nftListLoading && nftList.length > 0 && (
-                                <div style={{ marginTop: '10px' }}>
-                                  {
-                                    nftList.map((nft, i) => (
-                                      <Link href={`/nft/${nft.nftokenID}`} key={i}>
-                                        <img
-                                          src={nftUrl(nft, 'image')}
-                                          alt={nftName(nft)}
-                                          style={{ width: '64px', height: '64px', objectFit: 'cover', borderRadius: '4px', margin: '2px' }}
-                                        />
-                                      </Link>
-                                    ))
-                                  }
-                                </div>
-                              )}
-                            </tbody>
+                                    {!nftListLoading && nftList.length > 0 && (
+                                      <div style={{ marginTop: '10px' }}>
+                                        {
+                                          nftList.map((nft, i) => (
+                                            <Link href={`/nft/${nft.nftokenID}`} key={i}>
+                                              <img
+                                                src={nftUrl(nft, 'image')}
+                                                alt={nftName(nft)}
+                                                style={{ width: '64px', height: '64px', objectFit: 'cover', borderRadius: '4px', margin: '2px' }}
+                                              />
+                                            </Link>
+                                          ))
+                                        }
+                                      </div>
+                                    )}
+                                  </td>
+                                </tr>
+                              </tbody>
                             </table>
                           )}
 
@@ -628,7 +626,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
         ) : (
           <>
             <h2 className="center">NFT Collection</h2>
-            <p className="center">{t('desc', { ns: 'nft' })}</p>
+            <p className="center">{data?.error || t('desc', { ns: 'nft' })}</p>
           </>
         )}
       </div>
