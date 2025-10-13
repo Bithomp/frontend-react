@@ -1,11 +1,12 @@
 import { i18n } from 'next-i18next'
-import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat, timeFromNow, shortAddress } from '../../utils/format'
+import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat, timeFromNow } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { avatarServer, objectsCountText, timestampExpired } from '../../utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
+import { LinkTx } from '../../utils/links'
 
 export default function EscrowData({ setSignRequest, address, escrowList, ledgerTimestamp }) {
   const [receivedEscrowList, setReceivedEscrowList] = useState([])
@@ -71,11 +72,6 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           <td className="center" style={{ width: 30 }}>
             {i + 1}
           </td>
-          <td className="center">
-            <Link href={'/transaction/' + escrow.PreviousTxnID}>
-              {shortAddress(escrow.PreviousTxnID)}
-            </Link>
-          </td>
           {options?.type !== 'self' && (
             <td>
               <Link href={'/account/' + accountAddress}>
@@ -112,6 +108,9 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
             ) : (
               <span className="grey">not set</span>
             )}
+          </td>
+          <td className="center">
+            <LinkTx tx={escrow.PreviousTxnID} icon={true} />
           </td>
           <td className="bold right">{amountFormat(escrow.Amount, { short: true })}</td>
           {!ledgerTimestamp && (
@@ -166,11 +165,11 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
       <>
         <tr>
           <th>#</th>
-          <th>TxID</th>
           {options?.type !== 'self' && <th className="left">{options?.type === 'received' ? 'From' : 'To'}</th>}
           <th className="right">Dest. tag</th>
           <th className="right">Expire</th>
           <th className="right">Unlock</th>
+          <th class="center">Tx</th>
           <th className="right">Amount</th>
           {!ledgerTimestamp && <th>Actions</th>}
         </tr>
@@ -201,10 +200,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
               {historicalTitle}
             </center>
             <br />
-            <table
-              className="table-mobile wide"
-              style={{ overflowX: 'scroll', overflowY: 'hidden', display: 'block' }}
-            >
+            <table className="table-mobile wide">
               <tbody>{escrowListNode(receivedEscrowList, { type: 'received', mobile: true })}</tbody>
             </table>
           </div>
@@ -230,10 +226,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
               {historicalTitle}
             </center>
             <br />
-            <table
-              className="table-mobile wide"
-              style={{ overflowX: 'scroll', overflowY: 'hidden', display: 'block' }}
-            >
+            <table className="table-mobile wide">
               <tbody>{escrowListNode(sentEscrowList, { type: 'sent', mobile: true })}</tbody>
             </table>
           </div>
@@ -259,10 +252,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
               {historicalTitle}
             </center>
             <br />
-            <table
-              className="table-mobile wide"
-              style={{ overflowX: 'scroll', overflowY: 'hidden', display: 'block' }}
-            >
+            <table className="table-mobile wide">
               <tbody>{escrowListNode(selfEscrowList, { type: 'self', mobile: true })}</tbody>
             </table>
           </div>
