@@ -175,7 +175,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
             <tr>
               <TData>Invoiced TX</TData>
               <TData>
-                <LinkTx tx={tx.InvoiceID} />
+                <LinkTx tx={tx.InvoiceID} /> <CopyButton text={tx.InvoiceID} />
               </TData>
             </tr>
           ) : (
