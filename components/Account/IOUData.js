@@ -243,7 +243,12 @@ export default function IOUData({
             {i + 1}
           </td>
           <td className="left">
-            <AddressWithIconFilled data={issuer} name="issuer" currency={tl.Balance?.currency} windowWidth={width} />
+            <AddressWithIconFilled
+              data={issuer}
+              name="issuer"
+              currency={tl.Balance?.currency}
+              options={{ short: width < 970, currencyDetails: tl.Balance?.currencyDetails }}
+            />
           </td>
           <td className="right">
             <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>

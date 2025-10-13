@@ -23,6 +23,7 @@ import {
   shortName
 } from '.'
 import { scaleAmount } from './calc'
+import { LinkAmm } from './links'
 
 dayjs.extend(durationPlugin)
 dayjs.extend(relativeTimePlugin)
@@ -80,29 +81,26 @@ export const AddressWithIcon = ({ children, address, currency, options }) => {
   )
 }
 
-export const AddressWithIconFilled = ({ data, name, copyButton, options, currency, windowWidth }) => {
+export const AddressWithIconFilled = ({ data, name, copyButton, options, currency }) => {
   if (!data) return ''
   if (!name) {
     name = 'address'
   }
 
   const fullUrl = currency && !options?.mptId ? '/token/' + data[name] + '/' + currency : null
-
   const link = userOrServiceLink(data, name, { fullUrl })
 
-  if (windowWidth && windowWidth < 800) {
-    if (options) {
-      options.short = true
-    } else {
-      options = { short: true }
-    }
+  const ammId = options?.currencyDetails?.ammID
+
+  if (ammId) {
+    currency = options?.currencyDetails?.currency
   }
 
   return (
     <AddressWithIcon address={data[name]} currency={currency} options={options}>
       {currency && (
         <>
-          <span className="bold">{options?.mptId ? currency : niceCurrency(currency)}</span>{' '}
+          <span className="bold">{options?.mptId || ammId ? currency : niceCurrency(currency)}</span>{' '}
         </>
       )}
       {options?.currencyName &&
@@ -118,8 +116,14 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
           <br />
         </>
       )}
-      {!link && options?.mptId && <br />}
-      {options?.flags ? showFlags(options.flags) : addressLink(data[name], { ...options, fullUrl })}{' '}
+      {!link && (options?.mptId || ammId) && <br />}
+      {ammId ? (
+        <>
+          AMM pool: <LinkAmm ammId={ammId} hash={!options?.short} icon={options?.short} />
+        </>
+      ) : (
+        <>{options?.flags ? showFlags(options.flags) : addressLink(data[name], { ...options, fullUrl })}</>
+      )}{' '}
       {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
   )
