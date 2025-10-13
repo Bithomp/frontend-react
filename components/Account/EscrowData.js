@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
+import { LinkTx } from '../../utils/links'
 
 export default function EscrowData({ setSignRequest, address, escrowList, ledgerTimestamp }) {
   const [receivedEscrowList, setReceivedEscrowList] = useState([])
@@ -95,7 +96,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
                 <span className="tooltiptext">{fullDateAndTime(escrow.CancelAfter, 'ripple')}</span>
               </span>
             ) : (
-              <span className="grey">no expiration</span>
+              <span className="grey">not set</span>
             )}
           </td>
           <td className="right">
@@ -105,8 +106,11 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
                 <span className="tooltiptext">{fullDateAndTime(escrow.FinishAfter, 'ripple')}</span>
               </span>
             ) : (
-              <span className="grey">no expiration</span>
+              <span className="grey">not set</span>
             )}
+          </td>
+          <td className="center">
+            <LinkTx tx={escrow.PreviousTxnID} icon={true} />
           </td>
           <td className="bold right">{amountFormat(escrow.Amount, { short: true })}</td>
           {!ledgerTimestamp && (
@@ -165,6 +169,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           <th className="right">Dest. tag</th>
           <th className="right">Expire</th>
           <th className="right">Unlock</th>
+          <th class="center">Tx</th>
           <th className="right">Amount</th>
           {!ledgerTimestamp && <th>Actions</th>}
         </tr>
