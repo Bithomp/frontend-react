@@ -60,14 +60,23 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
     const sell = offer.flags?.sell
     return (
       <tr key={i}>
-        <td className="center" style={{ width: 30 }}>
-          {offer.Sequence}
-        </td>
-        <td className="left flex align-items-center gap-2">
-          <span className={sell ? 'red' : 'green'}>{sell ? 'Selling ' : 'Buying '}</span>
-          <span className="bold flex align-items-center">{amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}</span>
+        <td
+          className="left flex align-items-center gap-2"
+          style={{ width: '100%' }}
+        >
+          <span className="tooltip">
+            <span className={sell ? 'red' : 'green'}>{sell ? 'Selling ' : 'Buying '}</span>
+            <span className="tooltiptext no-brake">
+              Sequence: {offer.Sequence}
+            </span>
+          </span>
+          <span className="bold flex align-items-center">
+            {amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}
+          </span>
           <span className="grey">{' for '}</span>
-          <span className="bold flex align-items-center">{amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}</span>
+          <span className="bold flex align-items-center">
+            {amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}
+          </span>
         </td>
         {sell ? (
           <td className="right">
@@ -315,8 +324,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         </thead>
         <tbody>
           <tr>
-            <th>#</th>
-            <th className="left">Offer</th>
+            <th className="left" style={{ paddingLeft: '20px' }}>Offer</th>
             <th className="right">Rate</th>
             <th className="center">Action</th>
           </tr>
