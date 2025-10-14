@@ -23,7 +23,7 @@ import {
   shortName
 } from '.'
 import { scaleAmount } from './calc'
-//import { LinkAmm } from './links'
+import { LinkAmm } from './links'
 
 dayjs.extend(durationPlugin)
 dayjs.extend(relativeTimePlugin)
@@ -118,7 +118,9 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
       )}
       {!link && (options?.mptId || ammId) && <br />}
       {ammId ? (
-        <>AMM pool{/*: <LinkAmm ammId={ammId} hash={!options?.short} icon={options?.short} />*/}</>
+        <>
+          AMM pool: <LinkAmm ammId={ammId} hash={!options?.short} icon={options?.short} />
+        </>
       ) : (
         <>{options?.flags ? showFlags(options.flags) : addressLink(data[name], { ...options, fullUrl })}</>
       )}{' '}
