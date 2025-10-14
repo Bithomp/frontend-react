@@ -134,53 +134,53 @@ export default function IOUData({
   /*
   [
     {
-        "Balance": {
-            "currency": "EUR",
-            "issuer": "rrrrrrrrrrrrrrrrrrrrBZbvji",
-            "value": "0"
-        },
-        "Flags": 2228224,
-        "HighLimit": {
-            "currency": "EUR",
-            "issuer": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
-            "value": "1000000000",
-            "issuerDetails": {
-                "address": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
-                "username": null,
-                "service": "XRPL-Labs"
-            }
-        },
-        "HighNode": "1",
-        "LedgerEntryType": "RippleState",
-        "LowLimit": {
-            "currency": "EUR",
-            "issuer": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
-            "value": "0",
-            "issuerDetails": {
-                "address": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
-                "username": "gatehub",
-                "service": "GateHub Crypto"
-            }
-        },
-        "LowNode": "1d3b",
-        "PreviousTxnID": "089783179C2C22C8B511F760C49BA78336FFA7C6E3CB13BDC72D906C36A84DF3",
-        "PreviousTxnLgrSeq": 96124408,
-        "index": "1AEA98113F835CA0CAFFA2355F5B280A95AF6D312180053453E462AE73242202",
-        "flags": {
-            "lowReserve": false,
-            "highReserve": true,
-            "lowAuth": false,
-            "highAuth": false,
-            "lowNoRipple": false,
-            "highNoRipple": true,
-            "lowFreeze": false,
-            "highFreeze": false,
-            "ammNode": false,
-            "lowDeepFreeze": false,
-            "highDeepFreeze": false
-        },
-        "previousTxAt": 1747261031,
-        "priceNativeCurrencySpot": "0.34800765616843570559"
+      "Balance": {
+        "currency": "EUR",
+        "issuer": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+        "value": "0"
+      },
+      "Flags": 2228224,
+      "HighLimit": {
+        "currency": "EUR",
+        "issuer": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
+        "value": "1000000000",
+        "issuerDetails": {
+          "address": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
+          "username": null,
+          "service": "XRPL-Labs"
+        }
+      },
+      "HighNode": "1",
+      "LedgerEntryType": "RippleState",
+      "LowLimit": {
+        "currency": "EUR",
+        "issuer": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
+        "value": "0",
+        "issuerDetails": {
+          "address": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
+          "username": "gatehub",
+          "service": "GateHub Crypto"
+        }
+      },
+      "LowNode": "1d3b",
+      "PreviousTxnID": "089783179C2C22C8B511F760C49BA78336FFA7C6E3CB13BDC72D906C36A84DF3",
+      "PreviousTxnLgrSeq": 96124408,
+      "index": "1AEA98113F835CA0CAFFA2355F5B280A95AF6D312180053453E462AE73242202",
+      "flags": {
+        "lowReserve": false,
+        "highReserve": true,
+        "lowAuth": false,
+        "highAuth": false,
+        "lowNoRipple": false,
+        "highNoRipple": true,
+        "lowFreeze": false,
+        "highFreeze": false,
+        "ammNode": false,
+        "lowDeepFreeze": false,
+        "highDeepFreeze": false
+      },
+      "previousTxAt": 1747261031,
+      "priceNativeCurrencySpot": "0.34800765616843570559"
     }
   ]
   */
