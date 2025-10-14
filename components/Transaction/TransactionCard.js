@@ -415,7 +415,7 @@ export const TransactionCard = ({
                         </TData>
                       </tr>
                     ))}
-                  {/* keep here outcome?.balanceChanges.length, to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
+                  {/* keep here outcome?.balanceChanges.length > 2 (not filteredBalanceChanges), to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
                   {tx?.TransactionType !== 'UNLReport' &&
                     (outcome?.balanceChanges?.length > 2 || notFullySupported || showBalanceChanges) && (
                       <>
@@ -492,7 +492,7 @@ export const TransactionCard = ({
                         Additional data
                       </span>{' '}
                       |{' '}
-                      {!notFullySupported && (
+                      {!(outcome?.balanceChanges?.length > 2 || notFullySupported) && (
                         <>
                           <span className="link" onClick={() => setShowBalanceChanges(!showBalanceChanges)}>
                             Balance changes
