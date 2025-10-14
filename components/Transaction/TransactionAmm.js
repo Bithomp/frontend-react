@@ -158,14 +158,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   // Helper function to render amount with issuer
   const renderAmountWithIssuer = (amountData, options) => (
     <>
-      {amountFormat(amountData)}
-      {amountData.issuer && (
-        <>
-          {'('}
-          {addressUsernameOrServiceLink(amountData, 'issuer', { short: true })}
-          {')'}
-        </>
-      )}
+      {amountFormat(amountData, { withIssuer: true, bold: true, precise: 'nice' })}
       {options?.includeFiat &&
         selectedCurrency &&
         amountData?.value &&
@@ -183,12 +176,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   )
 
   return (
-    <TransactionCard
-      data={data}
-      pageFiatRate={pageFiatRate}
-      selectedCurrency={selectedCurrency}
-      notFullySupported={true}
-    >
+    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <tr>
         <TData>Initiated by</TData>
         <TData>
@@ -244,7 +232,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
                   <div key={idx}>
                     {amountFormat(
                       { ...change, value: Math.abs(Number(change.value)).toString() },
-                      { withIssuer: true, bold: true }
+                      { withIssuer: true, bold: true, precise: 'nice' }
                     )}
                   </div>
                 ))}
@@ -260,7 +248,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
                 <TData>Withdrawn</TData>
                 <TData>
                   {targetReceivedList.map((change, idx) => (
-                    <div key={idx}>{amountFormat(change, { withIssuer: true, bold: true })}</div>
+                    <div key={idx}>{amountFormat(change, { withIssuer: true, bold: true, precise: 'nice' })}</div>
                   ))}
                 </TData>
               </tr>
