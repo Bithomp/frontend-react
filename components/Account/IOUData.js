@@ -309,7 +309,7 @@ export default function IOUData({
 
   const actionLink = (type) => {
     return isLoggedIn && account.address === address ? (
-      <>[{type === 'lp' ? <a href={'/amms'}>Add liquidity</a> : <a href={'/services/trustline'}>Add a token</a>}]</>
+      <> [{type === 'lp' ? <a href={'/amms'}>AMM pools</a> : <a href={'/tokens'}>Add tokens</a>}]</>
     ) : (
       !isLoggedIn && (
         <>
