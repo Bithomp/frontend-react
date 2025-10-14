@@ -7,7 +7,7 @@ import {
   AddressWithIconFilled
 } from '../../utils/format'
 import { objectsCountText, useWidth } from '../../utils'
-import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaInfoCircle } from 'react-icons/fa'
+import { FaSnowflake, FaLock, FaIcicles, FaShieldAlt, FaInfoCircle } from 'react-icons/fa'
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
 
@@ -42,12 +42,6 @@ const FlagIcons = ({ flags }) => {
       tooltip: 'Reserve'
     },
     */
-    {
-      key: 'ammNode',
-      condition: flags.ammNode,
-      icon: FaExchangeAlt,
-      tooltip: 'AMM Node'
-    },
     {
       key: 'deepFreeze',
       condition: flags.lowDeepFreeze || flags.highDeepFreeze,
