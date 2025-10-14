@@ -10,7 +10,6 @@ import { objectsCountText, useWidth } from '../../utils'
 import { FaSnowflake, FaLock, FaExchangeAlt, FaIcicles, FaShieldAlt, FaInfoCircle } from 'react-icons/fa'
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
 
 // Component to display flag icons with tooltips
 const FlagIcons = ({ flags }) => {
@@ -111,17 +110,16 @@ export default function IOUData({
 }) {
   const width = useWidth()
   const { t } = useTranslation()
-  const [totalBalance, setTotalBalance] = useState(0)
 
-  useEffect(() => {
-    if (!pageFiatRate || !rippleStateList?.length) return
-    const total = rippleStateList.reduce((sum, tl) => {
-      const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
-      const tokenWorth = tl.priceNativeCurrencySpot * pageFiatRate * balance || 0
-      return sum + tokenWorth
-    }, 0)
-    setTotalBalance(total)
-  }, [rippleStateList, pageFiatRate])
+  const totalBalanceCount = (list) => {
+    return list?.length
+      ? list.reduce((sum, tl) => {
+          const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
+          const tokenWorth = tl.priceNativeCurrencySpot * pageFiatRate * balance || 0
+          return sum + tokenWorth
+        }, 0)
+      : 0
+  }
 
   // if no tokens, and if not loggedin, or loggedin but not the owner of the account, return nothing
   if (!rippleStateList?.length && account?.address !== address) return ''
@@ -188,26 +186,6 @@ export default function IOUData({
   // Check if user is logged in (has wallet connected)
   const isLoggedIn = account?.address && account?.wallet
 
-  const noTokensNode =
-    isLoggedIn && account?.address === address ? (
-      "You don't have any tokens."
-    ) : (
-      <>
-        This account doesn't have any tokens
-        {!isLoggedIn ? (
-          <>
-            ,{' '}
-            <span onClick={() => setSignRequest({})} className="link underline">
-              sign in
-            </span>{' '}
-            to manage your tokens.
-          </>
-        ) : (
-          '.'
-        )}
-      </>
-    )
-
   // Sort tokens by fiat value (largest first), with 0 amount tokens at the end
   const sortedTokens = rippleStateList?.length
     ? rippleStateList.sort((a, b) => {
@@ -229,62 +207,111 @@ export default function IOUData({
       })
     : []
 
-  const tokenLength = sortedTokens?.length
+  // Split LP tokens and normal tokens
+  const lpTokens = []
+  const issuedTokens = []
 
-  // amount / gateway details / trustline settings
-  const tokenRows = tokenLength ? (
-    sortedTokens.map((tl, i) => {
-      const issuer = tl.HighLimit?.issuer === address ? tl.LowLimit : tl.HighLimit
-      const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
+  for (const t of sortedTokens) {
+    const prefix = t.Balance?.currency?.substring(0, 2)
+    if (prefix === '03') lpTokens.push(t)
+    else issuedTokens.push(t)
+  }
 
-      return (
-        <tr key={i}>
-          <td className="center" style={{ width: 30 }}>
-            {i + 1}
-          </td>
-          <td className="left">
-            <AddressWithIconFilled
-              data={issuer}
-              name="issuer"
-              currency={tl.Balance?.currency}
-              options={{ short: width < 970, currencyDetails: tl.Balance?.currencyDetails }}
-            />
-          </td>
-          <td className="right">
-            <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
-              <FlagIcons flags={tl.flags} />
-              <LimitsIcon trustline={tl} />
-            </div>
-          </td>
-          <td className="right">
-            {pageFiatRate && tl.priceNativeCurrencySpot ? (
-              <>
-                <span className="tooltip bold">
-                  {shortNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate * balance || 0, 2, 1, selectedCurrency)}
-                  <span className="tooltiptext no-brake">
-                    {fullNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate * balance || 0, selectedCurrency)}
-                    <br />1 {niceCurrency(tl.Balance?.currency)} ={' '}
-                    {fullNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate || 0, selectedCurrency)}
+  const noTokensNode =
+    isLoggedIn && account?.address === address ? (
+      "You don't have any tokens."
+    ) : (
+      <>
+        This account doesn't have any tokens
+        {!isLoggedIn ? (
+          <>
+            ,{' '}
+            <span onClick={() => setSignRequest({})} className="link underline">
+              sign in
+            </span>{' '}
+            to manage your tokens.
+          </>
+        ) : (
+          '.'
+        )}
+      </>
+    )
+
+  const tokenRows = (list, type) => {
+    return list?.length ? (
+      list.map((tl, i) => {
+        const issuer = tl.HighLimit?.issuer === address ? tl.LowLimit : tl.HighLimit
+        const balance = Math.abs(subtract(tl.Balance?.value, tl.LockedBalance?.value ? tl.LockedBalance?.value : 0))
+
+        return (
+          <tr key={i}>
+            <td className="center" style={{ width: 30 }}>
+              {i + 1}
+            </td>
+            <td className="left">
+              <AddressWithIconFilled
+                data={issuer}
+                name="issuer"
+                currency={tl.Balance?.currency}
+                options={{ short: width < 970, currencyDetails: tl.Balance?.currencyDetails }}
+              />
+            </td>
+            {type !== 'lp' && (
+              <td className="right">
+                <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
+                  <FlagIcons flags={tl.flags} />
+                  <LimitsIcon trustline={tl} />
+                </div>
+              </td>
+            )}
+            <td className="right">
+              {pageFiatRate && tl.priceNativeCurrencySpot ? (
+                <>
+                  <span className="tooltip bold">
+                    {shortNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate * balance || 0, 2, 1, selectedCurrency)}
+                    <span className="tooltiptext no-brake">
+                      {fullNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate * balance || 0, selectedCurrency)}
+                      <br />1 {niceCurrency(tl.Balance?.currency)} ={' '}
+                      {fullNiceNumber(tl.priceNativeCurrencySpot * pageFiatRate || 0, selectedCurrency)}
+                    </span>
                   </span>
+                  <br />
+                </>
+              ) : null}
+              <span className="tooltip grey">
+                {shortNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}
+                <span className="tooltiptext no-brake">
+                  {fullNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}
                 </span>
-                <br />
-              </>
-            ) : null}
-            <span className="tooltip grey">
-              {shortNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}
-              <span className="tooltiptext no-brake">
-                {fullNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}
               </span>
-            </span>
-          </td>
-        </tr>
-      )
-    })
-  ) : (
-    <tr key="none">
-      <td colSpan="100">{noTokensNode}</td>
-    </tr>
-  )
+            </td>
+          </tr>
+        )
+      })
+    ) : (
+      <tr key="none">
+        <td colSpan="100">{noTokensNode}</td>
+      </tr>
+    )
+  }
+
+  const tokenTbody = (list, type) => {
+    return (
+      <tbody>
+        {list.length > 0 ? (
+          <tr>
+            <th>#</th>
+            <th className="left">Currency</th>
+            {type !== 'lp' && <th className="right">Params</th>}
+            <th className="right">Balance</th>
+          </tr>
+        ) : (
+          ''
+        )}
+        {tokenRows(list, type)}
+      </tbody>
+    )
+  }
 
   const actionLink =
     isLoggedIn && account.address === address ? (
@@ -303,13 +330,19 @@ export default function IOUData({
       )
     )
 
-  return (
-    <div id="tokens-section">
-      <table className="table-details hide-on-small-w800">
+  const tokenTitle = (type) => {
+    if (type === 'lp') return objectsCountText(lpTokens) + 'Liquidity Provider Tokens' + historicalTitle
+    return objectsCountText(issuedTokens) + t('menu.tokens') + historicalTitle
+  }
+
+  const tokensOnDesktop = (list, type) => {
+    const totalBalance = totalBalanceCount(list)
+    return (
+      <table className="table-details">
         <thead>
           <tr>
             <th colSpan="100">
-              {objectsCountText(rippleStateList)} {t('menu.tokens')} {historicalTitle}
+              {tokenTitle(type)}
               {actionLink}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
@@ -323,29 +356,21 @@ export default function IOUData({
             </th>
           </tr>
         </thead>
-        <tbody>
-          {tokenLength ? (
-            <tr>
-              <th>#</th>
-              <th className="left">Currency</th>
-              <th className="right">Params</th>
-              <th className="right">Balance</th>
-            </tr>
-          ) : (
-            ''
-          )}
-          {tokenRows}
-        </tbody>
+        {tokenTbody(list, type)}
       </table>
-      <div className="show-on-small-w800">
+    )
+  }
+
+  const tokensOnMobile = (list, type) => {
+    const totalBalance = totalBalanceCount(list)
+    return (
+      <>
         <br />
         <center>
-          {objectsCountText(rippleStateList)}
-          {t('menu.tokens').toUpperCase()} {historicalTitle}
+          {tokenTitle(type)}
           {actionLink}
           {totalBalance > 0 && (
             <div>
-              <br />
               Total worth:{' '}
               <span className="tooltip bold">
                 {shortNiceNumber(totalBalance, 2, 1, selectedCurrency)}
@@ -355,26 +380,33 @@ export default function IOUData({
           )}
         </center>
         <br />
-        {!rippleStateList?.length ? (
+        {!list?.length ? (
           <>
             {noTokensNode}
             <br />
           </>
         ) : (
-          <table className="table-mobile wide">
-            <tbody>
-              <tr>
-                <th>#</th>
-                <th className="left">Currency</th>
-                <th className="right">Params</th>
-                <th className="right">Balance</th>
-              </tr>
-              {tokenRows}
-            </tbody>
-          </table>
+          <table className="table-mobile wide">{tokenTbody(list, type)}</table>
         )}
         <br />
-      </div>
-    </div>
+      </>
+    )
+  }
+
+  return (
+    <>
+      {issuedTokens.length > 0 && (
+        <div id="tokens-section">
+          <div className="hide-on-small-w800">{tokensOnDesktop(issuedTokens)}</div>
+          <div className="show-on-small-w800">{tokensOnMobile(issuedTokens)}</div>
+        </div>
+      )}
+      {lpTokens.length > 0 && (
+        <div id="lptokens-section">
+          <div className="hide-on-small-w800">{tokensOnDesktop(lpTokens, 'lp')}</div>
+          <div className="show-on-small-w800">{tokensOnMobile(lpTokens, 'lp')}</div>
+        </div>
+      )}
+    </>
   )
 }

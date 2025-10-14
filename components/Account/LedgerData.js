@@ -319,15 +319,41 @@ export default function LedgerData({
     }
   }
 
+  // Count LP tokens and normal tokens
+  let lpCount = 0
+  let issuedCount = 0
+
+  if (objects?.rippleStateList) {
+    for (const t of objects.rippleStateList) {
+      const prefix = t.Balance?.currency?.substring(0, 2)
+      if (prefix === '03') lpCount++
+      else issuedCount++
+    }
+  }
+
   const tokensNode = !objects?.rippleStateList ? (
     'Loading...'
   ) : objects?.rippleStateList?.length > 0 ? (
     <>
-      <span className="bold">{objects?.rippleStateList?.length}</span> (
-      <span className="link" onClick={() => scrollToSection('tokens-section')}>
-        view
-      </span>
-      )
+      {issuedCount > 0 && (
+        <>
+          <span className="bold">{issuedCount}</span> (
+          <span className="link" onClick={() => scrollToSection('tokens-section')}>
+            view
+          </span>
+          )
+        </>
+      )}
+      {lpCount > 0 && issuedCount > 0 ? ', ' : ''}
+      {lpCount > 0 && (
+        <>
+          <span className="bold">{lpCount}</span> LP (
+          <span className="link" onClick={() => scrollToSection('lptokens-section')}>
+            view
+          </span>
+          )
+        </>
+      )}
     </>
   ) : account?.address === data?.address ? (
     <>
