@@ -25,6 +25,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { axiosServer, passHeaders } from '../../utils/axios'
+import Link from 'next/link'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -228,6 +229,21 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                           </td>
                         </tr>
                         <tr>
+                          <td>Holders</td>
+                          <td>
+                            <Link
+                              href={
+                                '/distribution?currency=' +
+                                data.lpTokenBalance.currency +
+                                '&currencyIssuer=' +
+                                data.account
+                              }
+                            >
+                              {data.holders}
+                            </Link>
+                          </td>
+                        </tr>
+                        <tr>
                           <td>{t('table.address')}</td>
                           <td>
                             <AddressWithIconFilled data={data} name="account" />
@@ -345,54 +361,57 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                           </tr>
                         </thead>
                         <tbody>
-                          {data.voteSlots.map((slot, i) => (
-                            <React.Fragment key={i}>
-                              <tr>
-                                <td>Voter {data.voteSlots.length > 1 ? i + 1 : ''}</td>
-                                <td>
-                                  <AddressWithIconFilled data={slot} name="account" />
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>Trading fee</td>
-                                <td>{showAmmPercents(slot.tradingFee)}</td>
-                              </tr>
-                              <tr>
-                                <td>Vote weight</td>
-                                <td>{showAmmPercents(slot.voteWeight)}</td>
-                              </tr>
-                              {slot.createdAt && (
-                                <>
-                                  <tr>
-                                    <td>Created</td>
-                                    <td>
-                                      {timeFromNow(slot.createdAt, i18n)}
-                                      {', '}
-                                      {fullDateAndTime(slot.createdAt)} <LinkTx tx={slot.createdTxHash} icon={true} />
-                                    </td>
-                                  </tr>
-
-                                  {slot.createdAt !== slot.updatedAt && (
-                                    <tr>
-                                      <td>Last update</td>
-                                      <td>
-                                        {timeFromNow(data.updatedAt, i18n)}
-                                        {', '}
-                                        {fullDateAndTime(data.updatedAt)} <LinkTx tx={slot.updatedTxHash} icon={true} />
-                                      </td>
-                                    </tr>
-                                  )}
-                                </>
-                              )}
-                              {i !== data.voteSlots.length - 1 && (
+                          {data.voteSlots
+                            .sort((a, b) => b.voteWeight - a.voteWeight)
+                            .map((slot, i) => (
+                              <React.Fragment key={i}>
                                 <tr>
-                                  <td colSpan="100">
-                                    <hr />
+                                  <td>Voter {data.voteSlots.length > 1 ? i + 1 : ''}</td>
+                                  <td>
+                                    <AddressWithIconFilled data={slot} name="account" />
                                   </td>
                                 </tr>
-                              )}
-                            </React.Fragment>
-                          ))}
+                                <tr>
+                                  <td>Trading fee</td>
+                                  <td>{showAmmPercents(slot.tradingFee)}</td>
+                                </tr>
+                                <tr>
+                                  <td>Vote weight</td>
+                                  <td>{showAmmPercents(slot.voteWeight)}</td>
+                                </tr>
+                                {slot.createdAt && (
+                                  <>
+                                    <tr>
+                                      <td>Created</td>
+                                      <td>
+                                        {timeFromNow(slot.createdAt, i18n)}
+                                        {', '}
+                                        {fullDateAndTime(slot.createdAt)} <LinkTx tx={slot.createdTxHash} icon={true} />
+                                      </td>
+                                    </tr>
+
+                                    {slot.createdAt !== slot.updatedAt && (
+                                      <tr>
+                                        <td>Last update</td>
+                                        <td>
+                                          {timeFromNow(data.updatedAt, i18n)}
+                                          {', '}
+                                          {fullDateAndTime(data.updatedAt)}{' '}
+                                          <LinkTx tx={slot.updatedTxHash} icon={true} />
+                                        </td>
+                                      </tr>
+                                    )}
+                                  </>
+                                )}
+                                {i !== data.voteSlots.length - 1 && (
+                                  <tr>
+                                    <td colSpan="100">
+                                      <hr />
+                                    </td>
+                                  </tr>
+                                )}
+                              </React.Fragment>
+                            ))}
                         </tbody>
                       </table>
                     )}

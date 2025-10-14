@@ -6,9 +6,9 @@ import { nativeCurrency, stripText, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import {
-  lpTokenName,
   showAmmPercents,
   addressUsernameOrServiceLink,
   shortNiceNumber,
@@ -318,7 +318,8 @@ export default function Amms({
                   <th className="center">{t('table.index')}</th>
                   <th>Asset 1</th>
                   <th>Asset 2</th>
-                  <th>LP balance</th>
+                  <th className="right">Holders</th>
+                  <th className="right">LP balance</th>
                   <th>Created</th>
                   <th>{t('table.updated')}</th>
                   <th className="right">Trading fee</th>
@@ -350,10 +351,20 @@ export default function Amms({
                               <td>
                                 <AmountWithIcon amount={a.amount2} />
                               </td>
-                              <td suppressHydrationWarning>
+                              <td className="right">
+                                <Link
+                                  href={
+                                    '/distribution?currency=' +
+                                    a.lpTokenBalance.currency +
+                                    '&currencyIssuer=' +
+                                    a.account
+                                  }
+                                >
+                                  {a.holders}
+                                </Link>
+                              </td>
+                              <td suppressHydrationWarning className="right">
                                 {shortNiceNumber(a.lpTokenBalance?.value)}
-                                <br />
-                                {lpTokenName(a)}
                               </td>
                               <td>{timeFromNow(a.createdAt, i18n)}</td>
                               <td>{timeFromNow(a.updatedAt, i18n)}</td>
@@ -399,6 +410,16 @@ export default function Amms({
                             <p>
                               AMM ID: <LinkAmm ammId={a.ammID} hash={12} />
                             </p>
+                            <p>
+                              Holders:{' '}
+                              <Link
+                                href={
+                                  '/distribution?currency=' + a.lpTokenBalance.currency + '&currencyIssuer=' + a.account
+                                }
+                              >
+                                {a.holders}
+                              </Link>
+                            </p>
                             Assets:
                             <div style={{ height: 10 }} />
                             <table>
@@ -414,9 +435,7 @@ export default function Amms({
                                 </tr>
                               </tbody>
                             </table>
-                            <p suppressHydrationWarning>
-                              LP balance: {shortNiceNumber(a.lpTokenBalance?.value)} {lpTokenName(a)}
-                            </p>
+                            <p suppressHydrationWarning>LP balance: {shortNiceNumber(a.lpTokenBalance?.value)}</p>
                             <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
                             <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
                             <p>Updated: {timeFromNow(a.updatedAt, i18n)}</p>
