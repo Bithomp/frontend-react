@@ -158,14 +158,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   // Helper function to render amount with issuer
   const renderAmountWithIssuer = (amountData, options) => (
     <>
-      {amountFormat(amountData)}
-      {amountData.issuer && (
-        <>
-          {'('}
-          {addressUsernameOrServiceLink(amountData, 'issuer', { short: true })}
-          {')'}
-        </>
-      )}
+      {amountFormat(amountData, { withIssuer: true, bold: true, precise: 'nice' })}
       {options?.includeFiat &&
         selectedCurrency &&
         amountData?.value &&
@@ -183,12 +176,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   )
 
   return (
-    <TransactionCard
-      data={data}
-      pageFiatRate={pageFiatRate}
-      selectedCurrency={selectedCurrency}
-      notFullySupported={true}
-    >
+    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <tr>
         <TData>Initiated by</TData>
         <TData>
@@ -239,11 +227,13 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           {depositedList.length > 0 && (
             <tr>
               <TData>Deposited</TData>
-              <TData className="bold">
+              <TData>
                 {depositedList.map((change, idx) => (
                   <div key={idx}>
-                    {amountFormat({ ...change, value: Math.abs(Number(change.value)).toString() })}
-                    {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                    {amountFormat(
+                      { ...change, value: Math.abs(Number(change.value)).toString() },
+                      { withIssuer: true, bold: true, precise: 'nice' }
+                    )}
                   </div>
                 ))}
               </TData>
@@ -256,12 +246,9 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
             return targetReceivedList.length > 0 ? (
               <tr>
                 <TData>Withdrawn</TData>
-                <TData className="bold">
+                <TData>
                   {targetReceivedList.map((change, idx) => (
-                    <div key={idx}>
-                      {amountFormat(change)}
-                      {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
-                    </div>
+                    <div key={idx}>{amountFormat(change, { withIssuer: true, bold: true, precise: 'nice' })}</div>
                   ))}
                 </TData>
               </tr>

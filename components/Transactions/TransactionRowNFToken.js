@@ -19,7 +19,7 @@ const nftData = (change, nftInfo, txType) => {
             <span>{nftIdLink(change.nftokenID)}</span>
           </div>  }
       
-      {nftInfo.transferFee !== undefined && (
+      {nftInfo.transferFee !== undefined && txType !== 'NFTokenBurn' && (
         <div>
           <span>Royalty: </span>
           <span>{nftInfo.transferFee / 1000}%</span>

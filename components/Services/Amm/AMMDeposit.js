@@ -17,7 +17,6 @@ export default function AMMDepositForm({ setSignRequest }) {
   const [amount2, setAmount2] = useState('')
   const [lpTokenOut, setLpTokenOut] = useState('')
   const [ePrice, setEPrice] = useState('')
-  const [tradingFee, setTradingFee] = useState('')
   const [depositMode, setDepositMode] = useState('tfTwoAsset') // Default to double-asset deposit
   const [error, setError] = useState('')
   const [agreeToTerms, setAgreeToTerms] = useState(false)
@@ -114,11 +113,6 @@ export default function AMMDepositForm({ setSignRequest }) {
           return false
         }
         break
-    }
-
-    if (tradingFee && (isNaN(parseFloat(tradingFee)) || parseFloat(tradingFee) < 0 || parseFloat(tradingFee) > 1)) {
-      setError('Please enter a valid trading fee between 0 and 1 (percent).')
-      return false
     }
 
     if (!agreeToRisks) {
@@ -244,11 +238,6 @@ export default function AMMDepositForm({ setSignRequest }) {
             }
           }
           break
-      }
-
-      // Add trading fee if specified
-      if (tradingFee) {
-        ammDeposit.TradingFee = Math.round(parseFloat(tradingFee) * 1000) // Convert to units of 1/1000
       }
 
       // Add flags
@@ -460,15 +449,6 @@ export default function AMMDepositForm({ setSignRequest }) {
         </div>
         <br />
         {renderModeSpecificFields()}
-        <br />
-        <FormInput
-          title="Trading Fee Vote (0 - 1%)"
-          placeholder="Fee in percent (max 1)"
-          setInnerValue={setTradingFee}
-          defaultValue={tradingFee}
-          onKeyPress={typeNumberOnly}
-          hideButton={true}
-        />
         <br />
         <CheckBox checked={agreeToRisks} setChecked={setAgreeToRisks} name="amm-deposit-risks">
           <span className="orange bold">

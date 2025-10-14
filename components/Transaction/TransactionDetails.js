@@ -1,7 +1,7 @@
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled } from '../../utils/format'
+import { AddressWithIconFilled, showFlags } from '../../utils/format'
 
 export const TransactionDetails = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -20,6 +20,12 @@ export const TransactionDetails = ({ data, pageFiatRate, selectedCurrency }) => 
           <AddressWithIconFilled data={specification?.source} name="address" />
         </TData>
       </tr>
+      {specification?.flags && (
+        <tr>
+          <TData>Flags</TData>
+          <TData>{showFlags(specification?.flags)}</TData>
+        </tr>
+      )}
     </TransactionCard>
   )
 }

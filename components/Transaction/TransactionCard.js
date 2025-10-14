@@ -415,19 +415,16 @@ export const TransactionCard = ({
                         </TData>
                       </tr>
                     ))}
-                  {/* keep here outcome?.balanceChanges.length, to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
                   {tx?.TransactionType !== 'UNLReport' &&
-                    (outcome?.balanceChanges?.length > 2 || notFullySupported || showBalanceChanges) && (
+                    (filteredBalanceChanges?.length > 2 || notFullySupported || showBalanceChanges) && (
                       <>
-                        {filteredBalanceChanges?.length > 1 && (
-                          <tr>
-                            <TData>Affected accounts</TData>
-                            <TData>
-                              There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
-                              affected by this transaction.
-                            </TData>
-                          </tr>
-                        )}
+                        <tr>
+                          <TData>Affected accounts</TData>
+                          <TData>
+                            There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
+                            affected by this transaction.
+                          </TData>
+                        </tr>
                         {filteredBalanceChanges?.map((change, index) => {
                           let gateway = change?.balanceChanges?.every(
                             (changeItem) => changeItem.issuer === change.address
@@ -457,13 +454,13 @@ export const TransactionCard = ({
                                   : change.balanceChanges?.map((c, i) => {
                                       return (
                                         <div key={i}>
-                                          <span className={'bold ' + (Number(c.value) > 0 ? 'green' : 'red')}>
-                                            {Number(c.value) > 0 ? '+' : ''}
-                                            {amountFormat(c, { precise: true })}
-                                          </span>
-                                          {c.issuer && (
-                                            <>({addressUsernameOrServiceLink(c, 'issuer', { short: true })})</>
-                                          )}
+                                          {amountFormat(c, {
+                                            precise: 'nice',
+                                            withIssuer: true,
+                                            bold: true,
+                                            showPlus: true,
+                                            color: 'direction'
+                                          })}
                                           {nativeCurrencyToFiat({
                                             amount: c,
                                             selectedCurrency,
@@ -498,7 +495,7 @@ export const TransactionCard = ({
                         Additional data
                       </span>{' '}
                       |{' '}
-                      {!notFullySupported && (
+                      {!(filteredBalanceChanges?.length > 2 || notFullySupported) && (
                         <>
                           <span className="link" onClick={() => setShowBalanceChanges(!showBalanceChanges)}>
                             Balance changes

@@ -89,10 +89,12 @@ const TransactionRowPaymentContent = ({ tx, address, selectedCurrency }) => {
             <span>
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
-                  <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                    {amountFormat(optionalAbsAmount(change), { icon: true })}
-                  </span>
-                  {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  {amountFormat(optionalAbsAmount(change), {
+                    icon: true,
+                    withIssuer: true,
+                    bold: true,
+                    color: 'direction'
+                  })}
                   {nativeCurrencyToFiat({
                     amount: optionalAbsAmount(change),
                     selectedCurrency,
@@ -115,17 +117,12 @@ const TransactionRowPaymentContent = ({ tx, address, selectedCurrency }) => {
                   { icon: true }
                 )}{' '}
                 ={' '}
-                <span className="bold">
-                  {amountFormat(
-                    {
-                      ...sourceBalanceChangesList[1],
-                      value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
-                    },
-                    { icon: true }
-                  )}
-                </span>
-                {sourceBalanceChangesList[1].issuer && (
-                  <>({addressUsernameOrServiceLink(sourceBalanceChangesList[1], 'issuer', { short: true })})</>
+                {amountFormat(
+                  {
+                    ...sourceBalanceChangesList[1],
+                    value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                  },
+                  { icon: true, withIssuer: true, bold: true }
                 )}
               </span>
             </div>
@@ -135,10 +132,7 @@ const TransactionRowPaymentContent = ({ tx, address, selectedCurrency }) => {
       {!isConvertion && outcome?.deliveredAmount && (
         <div>
           <span>Delivered amount: </span>
-          <span className="bold green">{amountFormat(outcome?.deliveredAmount, { icon: true })}</span>
-          {outcome?.deliveredAmount?.issuer && (
-            <>({addressUsernameOrServiceLink(outcome?.deliveredAmount, 'issuer', { short: true })})</>
-          )}
+          {amountFormat(outcome?.deliveredAmount, { icon: true, withIssuer: true, bold: true, color: 'green' })}
           {nativeCurrencyToFiat({
             amount: outcome?.deliveredAmount,
             selectedCurrency,

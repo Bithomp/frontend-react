@@ -1,15 +1,4 @@
 .account {
-  .show-on-small-w800 {
-    display: none;
-    @media only screen and (max-width: 800px) {
-      display: block;
-    }
-  }
-  .hide-on-small-w800 {
-    @media only screen and (max-width: 800px) {
-      display: none;
-    }
-  }
   .avatar-div {
     background-color: var(--background-main);
   }

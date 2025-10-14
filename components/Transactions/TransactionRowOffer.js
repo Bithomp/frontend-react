@@ -1,16 +1,15 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { useTxFiatRate } from './FiatRateContext'
 import { addressBalanceChanges } from '../../utils/transaction'
-import { amountFormat, nativeCurrencyToFiat, addressUsernameOrServiceLink } from '../../utils/format'
+import { amountFormat, nativeCurrencyToFiat } from '../../utils/format'
 
 const flagList = (flags) => {
-    
   let flagsString = ''
 
   if (!flags) return flagsString
 
   for (let key in flags) {
-    if (flags[key]) {        
+    if (flags[key]) {
       flagsString += key + ', '
     }
   }
@@ -19,7 +18,7 @@ const flagList = (flags) => {
   return flagsString
 }
 
-const TransactionRowOfferContent = ({ tx, selectedCurrency}) => {
+const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
   const pageFiatRate = useTxFiatRate()
 
   const { specification, outcome } = tx
@@ -41,19 +40,13 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency}) => {
       {takerGets && (
         <div>
           <span>Taker Gets: </span>
-          <span className="bold">
-            {amountFormat(takerGets, { icon: true })}
-            {takerGets?.issuer && <>({addressUsernameOrServiceLink(takerGets, 'issuer', { short: true })})</>}
-          </span>
+          <span>{amountFormat(takerGets, { icon: true, withIssuer: true, bold: true })}</span>
         </div>
       )}
       {takerPays && (
         <div>
           <span>Taker Pays: </span>
-          <span className="bold">
-            {amountFormat(takerPays, { icon: true })}
-            {takerPays?.issuer && <>({addressUsernameOrServiceLink(takerPays, 'issuer', { short: true })})</>}
-          </span>
+          <span>{amountFormat(takerPays, { icon: true, withIssuer: true, bold: true })}</span>
         </div>
       )}
       {sourceBalanceChangesList.length === 2 && (
@@ -61,22 +54,32 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency}) => {
           <div className="flex gap-1">
             <span>Exchanged: </span>
             <span>
-            {sourceBalanceChangesList.map((change, index) => (
-              <div key={index}>
-                <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                  {Number(change?.value) > 0 && '+'}
-                  {amountFormat(change, { icon: true })}
-                </span>
-                {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
-                {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate: pageFiatRate })}
-              </div>
-            ))}
+              {sourceBalanceChangesList.map((change, index) => (
+                <div key={index}>
+                  {amountFormat(change, {
+                    icon: true,
+                    showPlus: true,
+                    withIssuer: true,
+                    bold: true,
+                    color: 'direction'
+                  })}
+                  {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate: pageFiatRate })}
+                </div>
+              ))}
             </span>
           </div>
           <div>
             <span>Rate: </span>
             <span>
-              {amountFormat({ currency: sourceBalanceChangesList[0].currency, issuer: sourceBalanceChangesList[0].issuer, value: 1 }, { icon: true })} ={' '}
+              {amountFormat(
+                {
+                  currency: sourceBalanceChangesList[0].currency,
+                  issuer: sourceBalanceChangesList[0].issuer,
+                  value: 1
+                },
+                { icon: true }
+              )}{' '}
+              ={' '}
               <span className="bold">
                 {amountFormat(
                   {
@@ -87,7 +90,15 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency}) => {
                 )}
               </span>
               <br />
-              {amountFormat({ currency: sourceBalanceChangesList[1].currency, issuer: sourceBalanceChangesList[1].issuer, value: 1 }, { icon: true })} ={' '}
+              {amountFormat(
+                {
+                  currency: sourceBalanceChangesList[1].currency,
+                  issuer: sourceBalanceChangesList[1].issuer,
+                  value: 1
+                },
+                { icon: true }
+              )}{' '}
+              ={' '}
               <span className="bold">
                 {amountFormat(
                   {
@@ -111,17 +122,16 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency}) => {
   )
 }
 
-export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => {
-
+export const TransactionRowOffer = ({ tx, address, index, selectedCurrency }) => {
   const { specification, outcome } = tx
-  
+
   const sourceOrderbookChange = outcome?.orderbookChanges
     ?.filter((entry) => entry.address === specification.source.address)?.[0]
     ?.orderbookChanges.filter((entry) => entry.sequence === specification.orderSequence)?.[0]
 
   const direction = (specification.flags ? specification.flags.sell : sourceOrderbookChange?.direction) ? 'Sell' : 'Buy'
 
-  const txTypeSpecial = tx.tx?.TransactionType + ' - ' + direction + ' Order'  
+  const txTypeSpecial = tx.tx?.TransactionType + ' - ' + direction + ' Order'
   return (
     <TransactionRowCard
       data={tx}
@@ -130,10 +140,7 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency}) => 
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
     >
-      <TransactionRowOfferContent 
-        tx={tx} 
-        selectedCurrency={selectedCurrency} 
-      />
+      <TransactionRowOfferContent tx={tx} selectedCurrency={selectedCurrency} />
     </TransactionRowCard>
   )
 }

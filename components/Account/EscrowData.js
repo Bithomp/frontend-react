@@ -1,11 +1,12 @@
 import { i18n } from 'next-i18next'
 import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat, timeFromNow } from '../../utils/format'
 import { useState, useEffect } from 'react'
-import { avatarServer, timestampExpired } from '../../utils'
+import { avatarServer, objectsCountText, timestampExpired } from '../../utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
+import { LinkTx } from '../../utils/links'
 
 export default function EscrowData({ setSignRequest, address, escrowList, ledgerTimestamp }) {
   const [receivedEscrowList, setReceivedEscrowList] = useState([])
@@ -52,13 +53,6 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
     ''
   )
 
-  const escrowCountText = (escrow) => {
-    if (!escrow) return ''
-    let countList = escrow.filter((p) => p !== undefined)
-    if (countList.length > 1) return countList.length + ' '
-    return ''
-  }
-
   const escrowListNode = (escrowList, options) => {
     const adrLabel = options?.type === 'received' ? 'Account' : 'Destination'
 
@@ -99,25 +93,24 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
             {escrow.CancelAfter ? (
               <span className={timestampExpired(escrow.CancelAfter, 'ripple') ? 'red tooltip' : 'tooltip'}>
                 {timeFromNow(escrow.CancelAfter, i18n, 'ripple')}
-                <span className="tooltiptext">
-                  {fullDateAndTime(escrow.CancelAfter, 'ripple')}
-                </span>
+                <span className="tooltiptext">{fullDateAndTime(escrow.CancelAfter, 'ripple')}</span>
               </span>
             ) : (
-              <span className="grey">no expiration</span>
+              <span className="grey">not set</span>
             )}
           </td>
           <td className="right">
             {escrow.FinishAfter ? (
               <span className={timestampExpired(escrow.FinishAfter, 'ripple') ? 'green tooltip' : 'tooltip'}>
                 {timeFromNow(escrow.FinishAfter, i18n, 'ripple')}
-                <span className="tooltiptext">
-                  {fullDateAndTime(escrow.FinishAfter, 'ripple')}
-                </span>
+                <span className="tooltiptext">{fullDateAndTime(escrow.FinishAfter, 'ripple')}</span>
               </span>
             ) : (
-              <span className="grey">no expiration</span>
+              <span className="grey">not set</span>
             )}
+          </td>
+          <td className="center">
+            <LinkTx tx={escrow.PreviousTxnID} icon={true} />
           </td>
           <td className="bold right">{amountFormat(escrow.Amount, { short: true })}</td>
           {!ledgerTimestamp && (
@@ -176,6 +169,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           <th className="right">Dest. tag</th>
           <th className="right">Expire</th>
           <th className="right">Unlock</th>
+          <th class="center">Tx</th>
           <th className="right">Amount</th>
           {!ledgerTimestamp && <th>Actions</th>}
         </tr>
@@ -185,14 +179,14 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
   }
 
   return (
-    <>
+    <div id="escrows-section">
       {receivedEscrowList?.length > 0 && (
         <>
           <table className="table-details hide-on-small-w800">
             <thead>
               <tr>
                 <th colSpan="100">
-                  {escrowCountText(receivedEscrowList)} Received Escrows {historicalTitle}
+                  {objectsCountText(receivedEscrowList)} Received Escrows {historicalTitle}
                 </th>
               </tr>
             </thead>
@@ -201,7 +195,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           <div className="show-on-small-w800">
             <br />
             <center>
-              {escrowCountText(receivedEscrowList)}
+              {objectsCountText(receivedEscrowList)}
               {'Received Escrows'.toUpperCase()}
               {historicalTitle}
             </center>
@@ -218,7 +212,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
             <thead>
               <tr>
                 <th colSpan="100">
-                  {escrowCountText(sentEscrowList)} Sent Escrows {historicalTitle}
+                  {objectsCountText(sentEscrowList)} Sent Escrows {historicalTitle}
                 </th>
               </tr>
             </thead>
@@ -227,7 +221,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           <div className="show-on-small-w800">
             <br />
             <center>
-              {escrowCountText(sentEscrowList)}
+              {objectsCountText(sentEscrowList)}
               {'Sent Escrows'.toUpperCase()}
               {historicalTitle}
             </center>
@@ -244,7 +238,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
             <thead>
               <tr>
                 <th colSpan="100">
-                  {escrowCountText(selfEscrowList)} Self Escrows {historicalTitle}
+                  {objectsCountText(selfEscrowList)} Self Escrows {historicalTitle}
                 </th>
               </tr>
             </thead>
@@ -253,7 +247,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           <div className="show-on-small-w800">
             <br />
             <center>
-              {escrowCountText(selfEscrowList)}
+              {objectsCountText(selfEscrowList)}
               {'Self Escrows'.toUpperCase()}
               {historicalTitle}
             </center>
@@ -264,6 +258,6 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           </div>
         </>
       )}
-    </>
+    </div>
   )
 }
