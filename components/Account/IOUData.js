@@ -336,8 +336,7 @@ export default function IOUData({
         <thead>
           <tr>
             <th colSpan="100">
-              {tokenTitle(type)}
-              {actionLink}
+              {tokenTitle(type)} {actionLink}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
                   Total worth:{' '}
