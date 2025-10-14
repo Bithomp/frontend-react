@@ -307,11 +307,9 @@ export default function IOUData({
     )
   }
 
-  const actionLink =
-    isLoggedIn && account.address === address ? (
-      <>
-        [<a href={'/services/trustline'}>Add a token</a>]
-      </>
+  const actionLink = (type) => {
+    return isLoggedIn && account.address === address ? (
+      <>[{type === 'lp' ? <a href={'/amms'}>Add liquidity</a> : <a href={'/services/trustline'}>Add a token</a>}]</>
     ) : (
       !isLoggedIn && (
         <>
@@ -323,6 +321,7 @@ export default function IOUData({
         </>
       )
     )
+  }
 
   const tokenTitle = (type) => {
     if (type === 'lp') return objectsCountText(lpTokens) + 'Liquidity Provider Tokens' + historicalTitle
@@ -336,7 +335,7 @@ export default function IOUData({
         <thead>
           <tr>
             <th colSpan="100">
-              {tokenTitle(type)} {actionLink}
+              {tokenTitle(type)} {actionLink(type)}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
                   Total worth:{' '}
@@ -361,7 +360,7 @@ export default function IOUData({
         <br />
         <center>
           {tokenTitle(type)}
-          {actionLink}
+          {actionLink(type)}
           {totalBalance > 0 && (
             <div>
               Total worth:{' '}
