@@ -1,9 +1,7 @@
 import { i18n } from 'next-i18next'
-import { fullDateAndTime, addressUsernameOrServiceLink, amountFormat, timeFromNow } from '../../utils/format'
+import { fullDateAndTime, amountFormat, timeFromNow, AddressWithIconInline } from '../../utils/format'
 import { useState, useEffect } from 'react'
-import { avatarServer, objectsCountText, timestampExpired } from '../../utils'
-import Image from 'next/image'
-import Link from 'next/link'
+import { objectsCountText, timestampExpired } from '../../utils'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
 import { LinkTx } from '../../utils/links'
@@ -57,16 +55,6 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
     const adrLabel = options?.type === 'received' ? 'Account' : 'Destination'
 
     const rows = escrowList.map((escrow, i) => {
-      const accountAddress = escrow[adrLabel]
-
-      const formattedAccountInfo = {
-        address: accountAddress,
-        addressDetails: {
-          username: escrow[adrLabel + 'Details']?.username,
-          service: escrow[adrLabel + 'Details']?.service?.name
-        }
-      }
-
       return (
         <tr key={i}>
           <td className="center" style={{ width: 30 }}>
@@ -74,16 +62,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           </td>
           {options?.type !== 'self' && (
             <td>
-              <Link href={'/account/' + accountAddress}>
-                <Image
-                  src={avatarServer + accountAddress}
-                  alt={'service logo'}
-                  height={20}
-                  width={20}
-                  style={{ marginRight: '5px', marginBottom: '-5px' }}
-                />
-              </Link>
-              {addressUsernameOrServiceLink(formattedAccountInfo, 'address', { short: true })}
+              <AddressWithIconInline data={escrow} name={adrLabel} options={{ short: true }} />
             </td>
           )}
           <td className="right">

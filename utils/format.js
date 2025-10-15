@@ -52,6 +52,24 @@ export const CurrencyWithIcon = ({ token }) => {
   )
 }
 
+export const AddressWithIconInline = ({ data, name = 'address', options }) => {
+  const address = data[name]
+  return (
+    <>
+      <Link href={'/account/' + address}>
+        <Image
+          src={avatarServer + address}
+          alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
+          height={20}
+          width={20}
+          style={{ marginRight: '5px', marginBottom: '-5px' }}
+        />
+      </Link>
+      {addressUsernameOrServiceLink(data, name, options)}
+    </>
+  )
+}
+
 export const AddressWithIcon = ({ children, address, currency, options }) => {
   let imageUrl = avatarServer + address
 
