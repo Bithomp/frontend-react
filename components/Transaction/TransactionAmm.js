@@ -152,7 +152,7 @@ function VoteSlotsChangesTable({ voteSlotsChanges = [] }) {
           <thead className="text-left">
             <tr>
               <th className="px-3 py-2 font-semibold text-gray-600">#</th>
-              <th className="px-3 py-2 font-semibold text-gray-600">Account</th>
+              <th className="px-3 py-2 font-semibold text-gray-600 left">Account</th>
               <th className="px-3 py-2 font-semibold text-gray-600 center">Status</th>
               <th className="px-3 py-2 font-semibold text-gray-600 right">Trading Fee</th>
               <th className="px-3 py-2 font-semibold text-gray-600 right">Vote Weight</th>
@@ -168,7 +168,7 @@ function VoteSlotsChangesTable({ voteSlotsChanges = [] }) {
                 return (
                   <tr key={`${v.account}-${i}`} className="hover:bg-gray-50">
                     <td className="px-3 py-2 text-gray-500">{i + 1}</td>
-                    <td className="px-3 py-2">
+                    <td className="px-3 py-2 left">
                       <AddressWithIconInline data={v} name="account" options={{ short: 6 }} />
                     </td>
                     <td className="px-3 py-2 center">
