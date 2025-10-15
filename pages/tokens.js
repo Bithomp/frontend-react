@@ -24,6 +24,7 @@ import { getIsSsrMobile } from '../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, setTabParams, validateCurrencyCode, xahauNetwork } from '../utils'
 import { useRouter } from 'next/router'
 import TokenTabs from '../components/Tabs/TokenTabs'
+import Link from 'next/link'
 
 /*
   {
@@ -857,7 +858,12 @@ export default function Tokens({
                                   <br />
                                   Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
                                   <br />
-                                  Holders: {niceNumber(token.holders)}
+                                  Holders:{' '}
+                                  <Link
+                                    href={`/distribution?currencyIssuer=${token.issuer}&currency=${token.currency}`}
+                                  >
+                                    {niceNumber(token.holders)}
+                                  </Link>
                                   <br />
                                   Trustlines: {niceNumber(token.trustlines)}
                                   <br />
