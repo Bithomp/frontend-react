@@ -228,7 +228,7 @@ export default function TokenSelector({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, isOpen, destinationAddress])
 
-  const handleSelect = async (token) => {
+  const handleSelect = (token) => {
     onChange(token)
     setIsOpen(false)
   }
