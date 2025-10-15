@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/amms?order=currencyHigh&limit=100&voteSlots=false&auctionSlot=false' + currencyPart,
+      url: 'v2/amms?order=currencyHigh&limit=100&voteSlots=false&auctionSlot=false&holders=true' + currencyPart,
       headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -175,7 +175,8 @@ export default function Amms({
       currencyPart = '&sortCurrency=' + nativeCurrency
     }
 
-    let apiUrl = 'v2/amms?order=' + order + '&limit=100&voteSlots=false&auctionSlot=false' + markerPart + currencyPart
+    let apiUrl =
+      'v2/amms?order=' + order + '&limit=100&voteSlots=false&auctionSlot=false&holders=true' + markerPart + currencyPart
 
     if (!markerPart) {
       setLoading(true)

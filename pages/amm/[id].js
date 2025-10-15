@@ -35,7 +35,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/amm/' + id + (ledgerTimestamp ? '?ledgerTimestamp=' + ledgerTimestamp : ''),
+      url: 'v2/amm/' + id + '?holders=true' + (ledgerTimestamp ? '&ledgerTimestamp=' + ledgerTimestamp : ''),
       headers: passHeaders(req)
     }).catch((error) => {
       errorMessage = error.message
@@ -74,7 +74,10 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
     setErrorMessage('')
 
     const response = await axios(
-      'v2/amm/' + id + (ledgerTimestamp ? '?ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : '')
+      'v2/amm/' +
+        id +
+        '?holders=true' +
+        (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
       setErrorMessage(t('error.' + error.message))
       setLoading(false)
