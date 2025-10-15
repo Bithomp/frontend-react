@@ -3,6 +3,7 @@ import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
 import {
   AddressWithIconFilled,
+  AddressWithIconInline,
   addressUsernameOrServiceLink,
   amountFormat,
   nativeCurrencyToFiat,
@@ -127,6 +128,104 @@ const AMMFlags = ({ flags, txType }) => {
           }
         }
       `}</style>
+    </>
+  )
+}
+
+function statusBadgeClasses(status) {
+  switch (status) {
+    case 'added':
+      return 'bg-green-100 text-green-800'
+    case 'removed':
+      return 'bg-red-100 text-red-800'
+    case 'modified':
+    default:
+      return 'bg-amber-100 text-amber-800'
+  }
+}
+
+function VoteSlotsChangesTable({ voteSlotsChanges = [] }) {
+  return (
+    <>
+      <div className="overflow-x-auto rounded-lg border border-gray-200 hide-on-small-w800">
+        <table className="min-w-full text-sm text-center mx-auto">
+          <thead className="text-left">
+            <tr>
+              <th className="px-3 py-2 font-semibold text-gray-600">#</th>
+              <th className="px-3 py-2 font-semibold text-gray-600">Account</th>
+              <th className="px-3 py-2 font-semibold text-gray-600 center">Status</th>
+              <th className="px-3 py-2 font-semibold text-gray-600 right">Trading Fee</th>
+              <th className="px-3 py-2 font-semibold text-gray-600 right">Vote Weight</th>
+              <th className="px-3 py-2 font-semibold text-gray-600 right">Δ Weight</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {voteSlotsChanges
+              .sort((a, b) => b.voteWeight - a.voteWeight)
+              .map((v, i) => {
+                const delta = v.voteWeightChange ? v.voteWeightChange / 1000 : 0
+                const deltaColor = delta > 0 ? 'text-green-600' : delta < 0 ? 'text-red-600' : 'text-gray-500'
+                return (
+                  <tr key={`${v.account}-${i}`} className="hover:bg-gray-50">
+                    <td className="px-3 py-2 text-gray-500">{i + 1}</td>
+                    <td className="px-3 py-2">
+                      <AddressWithIconInline data={v} name="account" options={{ short: 6 }} />
+                    </td>
+                    <td className="px-3 py-2 center">
+                      <span
+                        className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${statusBadgeClasses(
+                          v.status
+                        )}`}
+                      >
+                        {v.status || 'modified'}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 tabular-nums right">{v.tradingFee ? v.tradingFee / 1000 + '%' : '—'}</td>
+                    <td className="px-3 py-2 tabular-nums right">
+                      {v.voteWeight !== undefined ? v.voteWeight / 1000 + '%' : '—'}
+                    </td>
+                    <td className={`right px-3 py-2 tabular-nums ${deltaColor}`}>{delta > 0 ? `+${delta}` : delta}%</td>
+                  </tr>
+                )
+              })}
+          </tbody>
+        </table>
+      </div>
+      <div className="show-on-small-w800 space-y-3">
+        {voteSlotsChanges
+          .slice()
+          .sort((a, b) => b.voteWeight - a.voteWeight)
+          .map((v, i) => {
+            const delta = v.voteWeightChange ? v.voteWeightChange / 1000 : 0
+            const deltaColor = delta > 0 ? 'text-green-600' : delta < 0 ? 'text-red-600' : 'text-gray-500'
+
+            return (
+              <div key={`${v.account}-${i}`} className="border border-gray-200 rounded-xl p-3 shadow-sm bg-white">
+                <div className="flex justify-between text-xs text-gray-500 mb-1">
+                  <span>#{i + 1}</span>
+                  <span className={deltaColor}>{delta > 0 ? `+${delta}` : delta}%</span>
+                </div>
+                <div className="mb-2 flex items-center justify-between">
+                  <div className="flex-shrink-0 text-left">
+                    <AddressWithIconInline data={v} name="account" options={{ short: true }} />
+                  </div>
+                  <span className={`ml-2 rounded-full px-2 py-0.5 text-xs font-medium ${statusBadgeClasses(v.status)}`}>
+                    {v.status || 'modified'}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-700">
+                  <div>
+                    <span className="font-medium">Trading Fee:</span> {v.tradingFee ? v.tradingFee / 1000 + '%' : '—'}
+                  </div>
+                  <div>
+                    <span className="font-medium">Vote:</span>{' '}
+                    {v.voteWeight !== undefined ? v.voteWeight / 1000 + '%' : '—'}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+      </div>
     </>
   )
 }
@@ -324,7 +423,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
 
       {txType === 'AMMDeposit' || txType === 'AMMCreate' || txType === 'AMMWithdraw' ? (
         <tr>
-          <TData>Specification </TData>
+          <TData>Specification</TData>
           <TData>
             It was instructed to {txType === 'AMMDeposit' || txType === 'AMMCreate' ? 'deposit' : 'withdraw'} maximum{' '}
             {amount?.currency && amount?.value && (
@@ -351,6 +450,18 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
             </tr>
           )}
         </>
+      )}
+      {outcome?.ammChanges?.voteSlotsChanges.length > 0 && (
+        <tr>
+          <TData colSpan={2}>
+            <br />
+            <center className="bold">Vote Slots Changes</center>
+            <br />
+            <VoteSlotsChangesTable voteSlotsChanges={outcome.ammChanges.voteSlotsChanges} />
+            <br />
+            <br />
+          </TData>
+        </tr>
       )}
     </TransactionCard>
   )

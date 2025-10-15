@@ -269,7 +269,7 @@ export const TransactionCard = ({
                   </p>
                 )
               )}
-              <table>
+              <table style={{ width: '100%' }}>
                 <tbody>
                   {tx?.ctid && id === tx.ctid && (
                     <tr>
