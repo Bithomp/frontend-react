@@ -4,7 +4,15 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
-import { usernameOrAddress, AddressWithIconFilled, shortHash, addressUsernameOrServiceLink, amountFormat, convertedAmount, nativeCurrencyToFiat } from '../../utils/format'
+import {
+  usernameOrAddress,
+  AddressWithIconFilled,
+  shortHash,
+  addressUsernameOrServiceLink,
+  amountFormat,
+  convertedAmount,
+  nativeCurrencyToFiat
+} from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { nftUrl, nftName, ipfsUrl } from '../../utils/nft'
 import { axiosServer, passHeaders } from '../../utils/axios'
@@ -97,7 +105,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
     // Try collection-specific endpoint first, fallback to NFT endpoint
     let response = await axiosServer({
       method: 'get',
-      url: 'v2/nft-collection/' + id + '?floorPrice=true&statistics=true&assets=true'
+      url: 'v2/nft-collection/' + id + '?floorPrice=true&statistics=true'
     }).catch((error) => {
       setErrorMessage(t('error.' + error.message))
       return null
@@ -127,13 +135,15 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
 
     try {
       // Fetch recent sales
-      const salesRes = await axios(`/v2/nft-sales?collection=${encodeURIComponent(id)}&list=lastSold&limit=3&convertCurrencies=${selectedCurrency}`).catch(
-        () => null
-      )
+      const salesRes = await axios(
+        `/v2/nft-sales?collection=${encodeURIComponent(id)}&list=lastSold&limit=3&convertCurrencies=${selectedCurrency}`
+      ).catch(() => null)
 
       // Fetch recent listings (NFTs on sale)
       const listingsRes = await axios(
-        `/v2/nfts?collection=${encodeURIComponent(id)}&list=onSale&order=offerCreatedNew&limit=3&currency=${selectedCurrency}`
+        `/v2/nfts?collection=${encodeURIComponent(
+          id
+        )}&list=onSale&order=offerCreatedNew&limit=3&currency=${selectedCurrency}`
       ).catch(() => null)
 
       // Fetch recent mints
@@ -154,10 +164,13 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
   }
 
   const collectionName = (data) => {
-    return data?.collection?.name ||
-    <>
-      {addressUsernameOrServiceLink(data?.collection, 'issuer', { short: isMobile })} ({data?.collection?.taxon})
-    </>
+    return (
+      data?.collection?.name || (
+        <>
+          {addressUsernameOrServiceLink(data?.collection, 'issuer', { short: isMobile })} ({data?.collection?.taxon})
+        </>
+      )
+    )
   }
 
   const collectionDescription = (data) => {
@@ -195,8 +208,8 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
               </tr>
             </thead>
             <tbody>
-              {
-                items.length > 0 ? items.map((item, i) => {
+              {items.length > 0 ? (
+                items.map((item, i) => {
                   return (
                     <tr key={i}>
                       <td>
@@ -237,8 +250,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                               </div>
                               <div>
                                 <span>Price: </span>
-                                {amountFormat(item.amount)} 
-                                ≈ {convertedAmount(item, selectedCurrency, { short: true })}
+                                {amountFormat(item.amount)}≈ {convertedAmount(item, selectedCurrency, { short: true })}
                               </div>
                               <div>
                                 <span>Date: </span>
@@ -254,8 +266,12 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                               </div>
                               <div>
                                 <span>Price: </span>
-                                {amountFormat(item?.sellOffers?.[0]?.amount)} 
-                                {nativeCurrencyToFiat({amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate})}
+                                {amountFormat(item?.sellOffers?.[0]?.amount)}
+                                {nativeCurrencyToFiat({
+                                  amount: item?.sellOffers?.[0]?.amount,
+                                  selectedCurrency,
+                                  fiatRate
+                                })}
                               </div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 <span>Date: </span>
@@ -279,14 +295,14 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                       </td>
                     </tr>
                   )
-                }) : (
-                  <tr>
-                    <td colSpan="100" className="center">
-                      {'No data'}
-                    </td>
-                  </tr>
-                )
-              }
+                })
+              ) : (
+                <tr>
+                  <td colSpan="100" className="center">
+                    {'No data'}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -303,11 +319,12 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
         </thead>
         <tbody>
           <tr>
-            {items.length > 0 && headers.map((h, i) => (
-              <td className="bold center" key={i}>
-                {h}
-              </td>
-            ))}
+            {items.length > 0 &&
+              headers.map((h, i) => (
+                <td className="bold center" key={i}>
+                  {h}
+                </td>
+              ))}
           </tr>
           {items.length > 0 ? (
             items.map((item, i) => (
@@ -331,21 +348,16 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                 </td>
                 {kind === 'sales' && (
                   <>
-                    <td style={{width: 'fit-content'}}>
+                    <td style={{ width: 'fit-content' }}>
                       {item.seller ? (
                         <AddressWithIconFilled data={item} name="seller" options={{ short: true }} />
                       ) : (
                         '—'
                       )}
-                      {item.buyer ? (
-                        <AddressWithIconFilled data={item} name="buyer" options={{ short: true }} />
-                      ) : (
-                        '—'
-                      )}
+                      {item.buyer ? <AddressWithIconFilled data={item} name="buyer" options={{ short: true }} /> : '—'}
                     </td>
                     <td>
-                      {amountFormat(item.amount)} 
-                      ≈ {convertedAmount(item, selectedCurrency, { short: true })}
+                      {amountFormat(item.amount)}≈ {convertedAmount(item, selectedCurrency, { short: true })}
                     </td>
                     <td>{item.acceptedAt ? new Date(item.acceptedAt * 1000).toLocaleDateString() : 'N/A'}</td>
                   </>
@@ -357,7 +369,7 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                     </td>
                     <td>
                       {amountFormat(item?.sellOffers?.[0]?.amount)}
-                      {nativeCurrencyToFiat({amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate})}
+                      {nativeCurrencyToFiat({ amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate })}
                     </td>
                     <td>{new Date(item.ownerChangedAt * 1000).toLocaleDateString()}</td>
                   </>
@@ -539,25 +551,30 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                                 <tr>
                                   <th colSpan="100">
                                     NFTs in this Collection
-                                    {collection?.issuer &&
-                                    (collection?.taxon || collection?.taxon === 0) ? (
+                                    {collection?.issuer && (collection?.taxon || collection?.taxon === 0) ? (
                                       <>
                                         {' '}
-                                        [<Link
+                                        [
+                                        <Link
                                           href={`/nft-explorer?issuer=${collection?.issuer}&taxon=${collection?.taxon}&includeWithoutMediaData=true`}
                                         >
                                           View all
-                                        </Link>]
+                                        </Link>
+                                        ]
                                       </>
                                     ) : (
                                       collection?.collection && (
                                         <>
                                           {' '}
-                                          [<Link
-                                            href={`/nft-explorer?collection=${encodeURIComponent(data)}&includeWithoutMediaData=true`}
+                                          [
+                                          <Link
+                                            href={`/nft-explorer?collection=${encodeURIComponent(
+                                              data
+                                            )}&includeWithoutMediaData=true`}
                                           >
                                             View all
-                                          </Link>]
+                                          </Link>
+                                          ]
                                         </>
                                       )
                                     )}
@@ -574,22 +591,28 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
                                     )}
 
                                     {!nftListLoading && nftList.length === 0 && (
-                                      <div className="center" style={{ marginTop: '10px' }}>No NFTs found</div>
+                                      <div className="center" style={{ marginTop: '10px' }}>
+                                        No NFTs found
+                                      </div>
                                     )}
 
                                     {!nftListLoading && nftList.length > 0 && (
                                       <div style={{ marginTop: '10px' }}>
-                                        {
-                                          nftList.map((nft, i) => (
-                                            <Link href={`/nft/${nft.nftokenID}`} key={i}>
-                                              <img
-                                                src={nftUrl(nft, 'image')}
-                                                alt={nftName(nft)}
-                                                style={{ width: '64px', height: '64px', objectFit: 'cover', borderRadius: '4px', margin: '2px' }}
-                                              />
-                                            </Link>
-                                          ))
-                                        }
+                                        {nftList.map((nft, i) => (
+                                          <Link href={`/nft/${nft.nftokenID}`} key={i}>
+                                            <img
+                                              src={nftUrl(nft, 'image')}
+                                              alt={nftName(nft)}
+                                              style={{
+                                                width: '64px',
+                                                height: '64px',
+                                                objectFit: 'cover',
+                                                borderRadius: '4px',
+                                                margin: '2px'
+                                              }}
+                                            />
+                                          </Link>
+                                        ))}
                                       </div>
                                     )}
                                   </td>
