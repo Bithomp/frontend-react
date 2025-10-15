@@ -98,6 +98,7 @@ export default function TokenPage({
   const router = useRouter()
   const [token, setToken] = useState(initialData)
   const [loading, setLoading] = useState(false)
+  const [selectedToken, setSelectedToken] = useState(initialData)
   const errorMessage = initialErrorMessage || ''
   const firstRenderRef = useRef(true)
 
@@ -116,11 +117,11 @@ export default function TokenPage({
     }
   }, [initialData, initialErrorMessage, router])
 
-  const getHistoricalRates = async () => {
+  const getData = async () => {
     setLoading(true)
     const cur = selectedCurrency?.toLowerCase()
     if (!cur) return
-    const url = `v2/trustlines/token/${initialData.issuer}/${initialData.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
+    const url = `v2/trustlines/token/${selectedToken.issuer}/${selectedToken.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
     const res = await axiosServer({
       method: 'get',
       url
@@ -137,15 +138,16 @@ export default function TokenPage({
       firstRenderRef.current = false
       return
     }
-    getHistoricalRates()
+    getData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency])
+  }, [selectedCurrency, selectedToken])
 
   useEffect(() => {
     const { pathname, query } = router
-    query.id = [token?.issuer, token?.currency]
+    query.id = [selectedToken?.issuer, selectedToken?.currency]
     router.replace({ pathname, query }, null, { shallow: true })
-  }, [router, token])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedToken])
 
   // Helper: price line as "fiat (XRP)" using historical rate when available
   const priceLine = ({ priceNative, priceFiat }) => {
@@ -289,13 +291,7 @@ export default function TokenPage({
             }}
           >
             <div style={{ width: isSsrMobile ? '100%' : '80%', marginBottom: '20px' }}>
-              <TokenSelector
-                value={token}
-                onChange={setToken}
-                excludeNative={true}
-                addParams={false}
-                selectedCurrency={selectedCurrency}
-              />
+              <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={true} />
             </div>
           </div>
           <div className="column-left">
