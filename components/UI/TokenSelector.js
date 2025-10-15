@@ -83,8 +83,8 @@ export default function TokenSelector({
 
   useEffect(() => {
     if (!currencyQueryName) return
-    if(!addParams) {
-      const {pathname, query} = router
+    if (!addParams) {
+      const { pathname, query } = router
       query.id = [value?.issuer, value?.currency]
       router.replace({ pathname, query }, null, { shallow: true })
       return
@@ -150,7 +150,9 @@ export default function TokenSelector({
             tokens = await fetchTrustlinesForDestination(destinationAddress)
           } else {
             // Fallback to original behavior if no destination address
-            const response = await axios('v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true&statistics=true')
+            const response = await axios(
+              'v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true&statistics=true'
+            )
             tokens = response.data?.tokens || []
             if (!excludeNative) {
               const defaultTokens = [{ currency: nativeCurrency }, ...tokens]
@@ -207,7 +209,9 @@ export default function TokenSelector({
           setCachedSearchResults(tokensWithNative)
         } else {
           // Fallback to original search behavior
-          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}&currencyDetails=true&statistics=true`)
+          const response = await axios(
+            `v2/trustlines/tokens/search/${searchQuery}?limit=${limit}&currencyDetails=true&statistics=true`
+          )
           const tokens = response.data?.tokens || []
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
@@ -241,7 +245,9 @@ export default function TokenSelector({
   }
 
   const fetchToken = async (token) => {
-    const response = await axios(`v2/trustlines/token/${token?.issuer}/${token?.currency}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrency}`)
+    const response = await axios(
+      `v2/trustlines/token/${token?.issuer}/${token?.currency}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrency}`
+    )
     return response.data || null
   }
 
