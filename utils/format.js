@@ -110,15 +110,17 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
 
   const ammId = options?.currencyDetails?.ammID
 
-  if (ammId) {
-    currency = options?.currencyDetails?.currency
-  }
+  const textCurrency = options?.mptId
+    ? currency
+    : ammId && options?.currencyDetails?.currency
+    ? options.currencyDetails.currency
+    : niceCurrency(currency)
 
   return (
     <AddressWithIcon address={data[name]} currency={currency} options={options}>
       {currency && (
         <>
-          <span className="bold">{options?.mptId || ammId ? currency : niceCurrency(currency)}</span>{' '}
+          <span className="bold">{textCurrency}</span>{' '}
         </>
       )}
       {options?.currencyName &&
