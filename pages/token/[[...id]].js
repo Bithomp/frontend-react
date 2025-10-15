@@ -290,7 +290,7 @@ export default function TokenPage({
               alignItems: 'center'
             }}
           >
-            <div style={{ width: isSsrMobile ? '100%' : '80%', marginBottom: '20px' }}>
+            <div style={{ width: '100%', marginBottom: '20px' }}>
               <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={true} />
             </div>
           </div>
@@ -300,7 +300,7 @@ export default function TokenPage({
               alt="token"
               src={tokenImageSrc(token)}
               className="token-image"
-              style={{ width: 'calc(100% - 4px)', height: 'auto' }}
+              style={{ width: 'calc(100% - 2px)', height: 'auto' }}
             />
             <h1>{token?.currencyDetails?.currency}</h1>
 
