@@ -275,17 +275,18 @@ export default function TokenPage({
       />
       <div className={tokenClass}>
         <div className="content-profile">
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-          }}>
-            <div style={{width: isSsrMobile ? '100%' : '80%', marginBottom: '20px'}}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}
+          >
+            <div style={{ width: isSsrMobile ? '100%' : '80%', marginBottom: '20px' }}>
               <TokenSelector
                 value={token}
                 onChange={setToken}
                 excludeNative={true}
-                currencyQueryName="currency"
                 addParams={false}
                 selectedCurrency={selectedCurrency}
               />
