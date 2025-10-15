@@ -140,8 +140,14 @@ export default function TokenPage({
     getHistoricalRates()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency])
-  // Helper: price line as "fiat (XRP)" using historical rate when available
 
+  useEffect(() => {
+    const { pathname, query } = router
+    query.id = [token?.issuer, token?.currency]
+    router.replace({ pathname, query }, null, { shallow: true })
+  }, [router, token])
+
+  // Helper: price line as "fiat (XRP)" using historical rate when available
   const priceLine = ({ priceNative, priceFiat }) => {
     const price = priceNative
     return (

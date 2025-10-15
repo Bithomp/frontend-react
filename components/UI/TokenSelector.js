@@ -62,7 +62,6 @@ export default function TokenSelector({
   destinationAddress = null,
   allOrOne,
   currencyQueryName,
-  addParams = true,
   selectedCurrency = null
 }) {
   const { t } = useTranslation()
@@ -83,12 +82,6 @@ export default function TokenSelector({
 
   useEffect(() => {
     if (!currencyQueryName) return
-    if (!addParams) {
-      const { pathname, query } = router
-      query.id = [value?.issuer, value?.currency]
-      router.replace({ pathname, query }, null, { shallow: true })
-      return
-    }
     let queryAddList = []
     let queryRemoveList = []
     if (value?.currency && value.currency !== nativeCurrency) {
