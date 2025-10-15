@@ -144,7 +144,7 @@ export default function TokenSelector({
           } else {
             // Fallback to original behavior if no destination address
             const response = await axios(
-              'v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true&statistics=true'
+              'v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true' // &statistics=true - shall we get USD prices and show them
             )
             tokens = response.data?.tokens || []
             if (!excludeNative) {
