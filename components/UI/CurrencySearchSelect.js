@@ -106,6 +106,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '', t
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue])
 
   const searchOnChange = (option) => {
