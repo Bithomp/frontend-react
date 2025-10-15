@@ -62,7 +62,7 @@ export default function TokenSelector({
   destinationAddress = null,
   allOrOne,
   currencyQueryName,
-  selectedCurrency = null
+  selectedCurrency
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -143,9 +143,8 @@ export default function TokenSelector({
             tokens = await fetchTrustlinesForDestination(destinationAddress)
           } else {
             // Fallback to original behavior if no destination address
-            const response = await axios(
-              'v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true' // &statistics=true - shall we get USD prices and show them
-            )
+            // &statistics=true - shall we get USD prices and show them?
+            const response = await axios('v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true')
             tokens = response.data?.tokens || []
             if (!excludeNative) {
               const defaultTokens = [{ currency: nativeCurrency }, ...tokens]
@@ -202,9 +201,8 @@ export default function TokenSelector({
           setCachedSearchResults(tokensWithNative)
         } else {
           // Fallback to original search behavior
-          const response = await axios(
-            `v2/trustlines/tokens/search/${searchQuery}?limit=${limit}&currencyDetails=true&statistics=true`
-          )
+          // &statistics=true - shall we get USD prices and show them?
+          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}&currencyDetails=true`)
           const tokens = response.data?.tokens || []
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
