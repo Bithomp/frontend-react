@@ -300,7 +300,7 @@ export default function TokenPage({
               alt="token"
               src={tokenImageSrc(token)}
               className="token-image"
-              style={{ width: '100%', height: 'auto' }}
+              style={{ width: 'calc(100% - 4px)', height: 'auto' }}
             />
             <h1>{token?.currencyDetails?.currency}</h1>
 
