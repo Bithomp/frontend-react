@@ -585,8 +585,7 @@ export default function Tokens({
           openEmailLogin={openEmailLogin}
         >
           {/* Desktop table */}
-
-          <table className="table-large no-hover expand hide-on-small-w800">
+          <table className="table-large clickable expand hide-on-small-w800">
             <thead>
               <tr>
                 <th className="center">
@@ -690,11 +689,7 @@ export default function Tokens({
                     <>
                       {data.map((token, i) => {
                         return (
-                          <tr
-                            key={i}
-                            className="clickable-row"
-                            onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
-                          >
+                          <tr key={i} onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}>
                             <td className="center">{i + 1}</td>
                             <td>
                               <TokenCell token={token} />
@@ -878,19 +873,6 @@ export default function Tokens({
       </FiltersFrame>
 
       <style jsx>{`
-        .clickable-row {
-          cursor: pointer;
-          transition: background-color 0.2s;
-        }
-
-        .clickable-row:hover {
-          background-color: var(--unaccent-icon);
-        }
-
-        .clickable-row td {
-          position: relative;
-        }
-
         .issuer-address {
           color: var(--text-muted);
           font-size: 0.9em;

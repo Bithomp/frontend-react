@@ -349,7 +349,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
           )}
         </>
         <>
-          <table className="table-large no-hover hide-on-small-w800">
+          <table className="table-large hide-on-small-w800">
             <thead>
               <tr>
                 <th className="center">{t('table.index')}</th>

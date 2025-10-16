@@ -446,7 +446,7 @@ export default function Mpts({
           sessionToken={sessionToken}
           openEmailLogin={openEmailLogin}
         >
-          <table className="table-large no-hover expand hide-on-small-w800">
+          <table className="table-large expand hide-on-small-w800">
             <thead>
               <tr>
                 <th className="center">
