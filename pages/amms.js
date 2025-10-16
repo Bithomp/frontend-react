@@ -313,7 +313,7 @@ export default function Amms({
           openEmailLogin={openEmailLogin}
         >
           {!windowWidth || windowWidth > 860 ? (
-            <table className="table-large">
+            <table className="table-large expand">
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>

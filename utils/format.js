@@ -155,10 +155,11 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
   const link = userOrServiceLink(data, name, { fullUrl })
 
   const ammId = options?.currencyDetails?.ammID
+  const lpToken = options?.currencyDetails?.type === 'lp_token'
 
   const textCurrency = options?.mptId
     ? currency
-    : (ammId || options?.currencyDetails?.type === 'lp_token') && options?.currencyDetails?.currency
+    : lpToken && options?.currencyDetails?.currency
     ? options.currencyDetails.currency
     : niceCurrency(currency)
 
@@ -182,7 +183,7 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
           <br />
         </>
       )}
-      {!link && (options?.mptId || ammId) && <br />}
+      {(!link || options?.mptId || lpToken) && <br />}
       {ammId ? (
         <>
           AMM pool: <LinkAmm ammId={ammId} hash={!options?.short} icon={options?.short} />

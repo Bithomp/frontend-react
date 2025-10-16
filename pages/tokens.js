@@ -10,15 +10,7 @@ import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import SortingArrow from '../components/Tables/SortingArrow'
-import {
-  AddressWithIcon,
-  fullNiceNumber,
-  niceCurrency,
-  niceNumber,
-  shortNiceNumber,
-  shortAddress,
-  userOrServiceName
-} from '../utils/format'
+import { fullNiceNumber, niceCurrency, niceNumber, shortNiceNumber, AddressWithIconFilled } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, setTabParams, validateCurrencyCode, xahauNetwork } from '../utils'
@@ -152,25 +144,12 @@ const orderList = [
 // Helper component to render token with icon
 const TokenCell = ({ token }) => {
   return (
-    <AddressWithIcon address={token?.issuer} currency={token?.currency}>
-      {token.lp_token ? (
-        <b>{token.currencyDetails.currency}</b>
-      ) : (
-        <>
-          <b>{niceCurrency(token.currency)}</b>
-        </>
-      )}
-      {token.issuer && (
-        <>
-          <br />
-          <span className="issuer-address">
-            {token.issuerDetails?.service || token.issuerDetails?.username
-              ? userOrServiceName(token.issuerDetails)
-              : shortAddress(token.issuer)}
-          </span>
-        </>
-      )}
-    </AddressWithIcon>
+    <AddressWithIconFilled
+      data={token}
+      name="issuer"
+      currency={token?.currency}
+      options={{ short: true, currencyDetails: token?.currencyDetails }}
+    />
   )
 }
 
