@@ -124,6 +124,10 @@ module.exports = withBundleAnalyzer({
         destination: '/transaction'
       },
       {
+        source: '/address/:id/dex',
+        destination: '/account/:id/dex'
+      },
+      {
         source: '/address/:id/transactions',
         destination: '/account/:id/transactions'
       },
