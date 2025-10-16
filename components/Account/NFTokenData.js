@@ -319,8 +319,8 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                 )}
                 <th className="center">NFT</th>
                 <th className="center">{t('table.type')}</th>
-                <th className="center">{t('table.amount')}</th>
-                <th className="center">{t('table.placed')}</th>
+                <th className="right">{t('table.amount')}</th>
+                <th className="right">{t('table.placed')}</th>
                 {type === 'created' && <th className="center">{t('table.destination')}</th>}
               </tr>
             )}
@@ -354,10 +354,10 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                                 ? t('table.text.sell')
                                 : t('table.text.buy')}
                             </td>
-                            <td className="center">
+                            <td className="right">
                               {amountFormat(offer?.amount, { tooltip: true, maxFractionDigits: 2 })}
                             </td>
-                            <td className="center">
+                            <td className="right">
                               {dateFormat(offer?.createdAt)} <LinkTx tx={offer?.createdTxHash} icon={true} />
                             </td>
                             {type === 'created' && <td className="center">{nftLink(offer, 'destination')}</td>}
