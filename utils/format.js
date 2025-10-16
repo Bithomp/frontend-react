@@ -112,7 +112,7 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
 
   const textCurrency = options?.mptId
     ? currency
-    : ammId && options?.currencyDetails?.currency
+    : (ammId || options?.currencyDetails?.type === 'lp_token') && options?.currencyDetails?.currency
     ? options.currencyDetails.currency
     : niceCurrency(currency)
 
