@@ -295,7 +295,7 @@ export default function IOUData({
         {list.length > 0 ? (
           <tr>
             <th>#</th>
-            <th className="left">Currency</th>
+            <th className="left">{type === 'lp' ? 'LP Token' : 'Currency'}</th>
             {type !== 'lp' && <th className="right">Params</th>}
             <th className="right">Balance</th>
           </tr>
