@@ -594,7 +594,7 @@ export default function Tokens({
                     <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} />
                   </span>
                 </th>
-                <th>Token</th>
+                <th className="left">Token</th>
                 <th className="right">
                   <span className="inline-flex items-center">
                     Price

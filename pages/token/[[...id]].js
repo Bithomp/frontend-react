@@ -6,11 +6,18 @@ import { useRouter } from 'next/router'
 import SEO from '../../components/SEO'
 import TokenSelector from '../../components/UI/TokenSelector'
 import { tokenClass } from '../../styles/pages/token.module.scss'
-import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled } from '../../utils/format'
+import {
+  niceNumber,
+  shortNiceNumber,
+  fullNiceNumber,
+  AddressWithIconFilled,
+  userOrServiceLink
+} from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
+import TokenTabs from '../../components/Tabs/TokenTabs'
 
 // Server side initial data fetch
 export async function getServerSideProps(context) {
@@ -274,14 +281,26 @@ export default function TokenPage({
     })
   }
 
+  const title = (
+    <>
+      {token?.currencyDetails?.currency} issued by {userOrServiceLink(token, 'issuer') || token?.issuer}
+    </>
+  )
+
   return (
     <>
       <SEO
-        title={`${token?.currencyDetails?.currency} Token - ${
-          token.issuerDetails?.service || token.issuerDetails?.username || 'Token Details'
-        }`}
+        title={
+          token?.currencyDetails?.currency +
+          ' issued by ' +
+          (token?.issuerDetails?.service || token?.issuerDetails?.username || token?.issuer)
+        }
       />
       <div className={tokenClass}>
+        <h1 className="center">{title}</h1>
+
+        {!xahauNetwork && <TokenTabs />}
+
         <div className="content-profile">
           <div
             style={{
