@@ -650,7 +650,8 @@ export const avatarSrc = (address, refreshPage) => {
 
 export const tokenImageSrc = (token) => {
   if (!token) return ''
-  if (!token.issuer && token.currency === nativeCurrency) return nativeCurrenciesImages[nativeCurrency]
+  if ((!token.issuer && token.currency === nativeCurrency) || typeof token === 'string')
+    return nativeCurrenciesImages[nativeCurrency]
   return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
 }
 

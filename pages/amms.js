@@ -5,7 +5,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { nativeCurrency, stripText, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import {
@@ -17,7 +16,9 @@ import {
   amountFormatNode,
   amountFormat,
   nativeCurrencyToFiat,
-  AddressWithIcon
+  AddressWithIcon,
+  AddressWithIconFilled,
+  niceCurrency
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
 
@@ -74,6 +75,7 @@ import SEO from '../components/SEO'
 import { LinkAmm } from '../utils/links'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
+import TokenTabs from '../components/Tabs/TokenTabs'
 
 // add to the list new parameters for CSV
 const updateListForCsv = (list) => {
@@ -105,7 +107,6 @@ export default function Amms({
   openEmailLogin
 }) {
   const { t, i18n } = useTranslation()
-  const router = useRouter()
 
   let fiatRate = fiatRateServer
   let selectedCurrency = selectedCurrencyServer
@@ -258,6 +259,29 @@ export default function Amms({
     )
   }
 
+  const LPToken = ({ a }) => {
+    return (
+      <AddressWithIconFilled
+        data={a.lpTokenBalance}
+        name="issuer"
+        currency={a.lpTokenBalance.currency}
+        options={{
+          short: true,
+          currencyDetails: {
+            type: 'lp_token',
+            ammID: a.ammID,
+            asset: a.amount,
+            asset2: a.amount2,
+            currency:
+              niceCurrency(a.amount?.currency || nativeCurrency) +
+              '/' +
+              niceCurrency(a.amount2?.currency || nativeCurrency)
+          }
+        }}
+      />
+    )
+  }
+
   return (
     <>
       <SEO
@@ -274,6 +298,7 @@ export default function Amms({
         twitterImage={xahauNetwork ? null : { file: 'previews/630x630/amms.png' }}
       />
       <h1 className="center">{t('menu.amm.pools')}</h1>
+      {!xahauNetwork && <TokenTabs tab="amms" />}
       <FiltersFrame
         order={order}
         setOrder={setOrder}
@@ -317,6 +342,7 @@ export default function Amms({
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
+                  <th>LP Token</th>
                   <th>Asset 1</th>
                   <th>Asset 2</th>
                   <th className="right">Holders</th>
@@ -344,15 +370,29 @@ export default function Amms({
                       <>
                         {data.length > 0 &&
                           data.map((a, i) => (
-                            <tr key={i} onClick={() => router.push('/amm/' + a.ammID)} style={{ cursor: 'pointer' }}>
+                            <tr key={i}>
                               <td className="center">{i + 1}</td>
+                              <td>
+                                <LPToken a={a} />
+                              </td>
                               <td>
                                 <AmountWithIcon amount={a.amount} />
                               </td>
                               <td>
                                 <AmountWithIcon amount={a.amount2} />
                               </td>
-                              <td className="right link underline">{a.holders}</td>
+                              <td className="right">
+                                <Link
+                                  href={
+                                    '/distribution?currency=' +
+                                    a.lpTokenBalance.currency +
+                                    '&currencyIssuer=' +
+                                    a.account
+                                  }
+                                >
+                                  {a.holders}
+                                </Link>
+                              </td>
                               <td suppressHydrationWarning className="right">
                                 {shortNiceNumber(a.lpTokenBalance?.value)}
                               </td>
@@ -397,6 +437,8 @@ export default function Amms({
                             <b>{i + 1}</b>
                           </td>
                           <td>
+                            <br />
+                            <LPToken a={a} />
                             <p>
                               AMM ID: <LinkAmm ammId={a.ammID} hash={12} />
                             </p>

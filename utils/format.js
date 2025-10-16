@@ -114,6 +114,7 @@ export const AddressWithIcon = ({ children, address, currency, options }) => {
                     left: 1,
                     borderRadius: '50%',
                     objectFit: 'cover',
+                    backgroundColor: '#fff',
                     boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
                   }}
                 />
@@ -130,6 +131,7 @@ export const AddressWithIcon = ({ children, address, currency, options }) => {
                     borderRadius: '50%',
                     objectFit: 'cover',
                     zIndex: 2,
+                    backgroundColor: '#fff',
                     boxShadow: '0 0 0 1px #fff'
                   }}
                 />
