@@ -420,15 +420,17 @@ export default function TokenPage({
                   </tr>
                 ) : (
                   <>
-                    <tr>
-                      <td>Last price</td>
-                      <td>
-                        {priceLine({
-                          priceNative: statistics?.priceNativeCurrency,
-                          priceFiat: statistics?.priceFiats[selectedCurrency]
-                        })}
-                      </td>
-                    </tr>
+                    {statistics?.priceNativeCurrency && (
+                      <tr>
+                        <td>Last price</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrency,
+                            priceFiat: statistics?.priceFiats[selectedCurrency]
+                          })}
+                        </td>
+                      </tr>
+                    )}
                     {statistics?.priceNativeCurrencySpot && (
                       <tr>
                         <td>Spot price</td>
