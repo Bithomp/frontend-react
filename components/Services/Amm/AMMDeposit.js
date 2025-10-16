@@ -292,7 +292,7 @@ export default function AMMDepositForm({ setSignRequest }) {
               </div>
               <div className="w-full sm:w-1/2">
                 <span className="input-title">Asset 1 Currency</span>
-                <TokenSelector value={asset1} onChange={setAsset1} />
+                <TokenSelector value={asset1} onChange={setAsset1} currencyQueryName="currency" />
               </div>
             </div>
             <br />
@@ -309,7 +309,7 @@ export default function AMMDepositForm({ setSignRequest }) {
               </div>
               <div className="w-full sm:w-1/2">
                 <span className="input-title">Asset 2 Currency</span>
-                <TokenSelector value={asset2} onChange={setAsset2} />
+                <TokenSelector value={asset2} onChange={setAsset2} currencyQueryName="currency2" />
               </div>
             </div>
           </>
