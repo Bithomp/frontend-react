@@ -544,7 +544,7 @@ export default function Tokens({
   return (
     <>
       <SEO title="Tokens" />
-      <h1 className="center">Trustline Tokens</h1>
+      <h1 className="center">Tokens</h1>
 
       {!xahauNetwork && <TokenTabs tab="tokens" />}
 

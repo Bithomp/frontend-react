@@ -207,7 +207,7 @@ export default function MobileMenu({
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            Trustline {t('menu.tokens')}
+            {t('menu.tokens')}
           </Link>
           {!xahauNetwork && (
             <Link href="/mpts" className="mobile-menu-item" onClick={mobileMenuToggle}>
