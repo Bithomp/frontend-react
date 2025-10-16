@@ -352,18 +352,7 @@ export default function Amms({
                               <td>
                                 <AmountWithIcon amount={a.amount2} />
                               </td>
-                              <td className="right">
-                                <Link
-                                  href={
-                                    '/distribution?currency=' +
-                                    a.lpTokenBalance.currency +
-                                    '&currencyIssuer=' +
-                                    a.account
-                                  }
-                                >
-                                  {a.holders}
-                                </Link>
-                              </td>
+                              <td className="right link underline">{a.holders}</td>
                               <td suppressHydrationWarning className="right">
                                 {shortNiceNumber(a.lpTokenBalance?.value)}
                               </td>
