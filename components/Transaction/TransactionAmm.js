@@ -197,11 +197,11 @@ function VoteSlotsChangesTable({ voteSlotsChanges = [] }) {
           .sort((a, b) => b.voteWeight - a.voteWeight)
           .map((v, i) => {
             const delta = v.voteWeightChange ? v.voteWeightChange / 1000 : 0
-            const deltaColor = delta > 0 ? 'text-green-600' : delta < 0 ? 'text-red-600' : 'text-gray-500'
+            const deltaColor = delta > 0 ? 'green' : delta < 0 ? 'red' : 'gray'
 
             return (
-              <div key={`${v.account}-${i}`} className="border border-gray-200 rounded-xl p-3 shadow-sm bg-white">
-                <div className="flex justify-between text-xs text-gray-500 mb-1">
+              <div key={`${v.account}-${i}`} className="border border-gray-200 rounded-xl p-3 shadow-sm">
+                <div className="flex justify-between text-sm mb-1">
                   <span>#{i + 1}</span>
                   <span className={deltaColor}>{delta > 0 ? `+${delta}` : delta}%</span>
                 </div>
@@ -213,7 +213,7 @@ function VoteSlotsChangesTable({ voteSlotsChanges = [] }) {
                     {v.status || 'modified'}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm text-gray-700">
+                <div className="flex justify-between text-sm">
                   <div>
                     <span className="font-medium">Trading Fee:</span> {v.tradingFee ? v.tradingFee / 1000 + '%' : '—'}
                   </div>
