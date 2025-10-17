@@ -26,7 +26,7 @@ export default function AMMDepositForm({
   const [amount2, setAmount2] = useState('')
   const [lpTokenOut, setLpTokenOut] = useState('')
   const [ePrice, setEPrice] = useState('')
-  const [depositMode, setDepositMode] = useState('tfTwoAsset') // Default to double-asset deposit
+  const [depositMode, setDepositMode] = useState('tfSingleAsset')
   const [error, setError] = useState('')
   const [agreeToTerms, setAgreeToTerms] = useState(false)
   const [agreeToRisks, setAgreeToRisks] = useState(false)
@@ -34,8 +34,14 @@ export default function AMMDepositForm({
 
   const depositModes = [
     {
+      value: 'tfSingleAsset',
+      label: 'Single Asset Deposit',
+      description:
+        'Deposit exactly the specified amount of one asset, and receive an amount of LP Tokens based on the resulting share of the pool (minus fees).'
+    },
+    {
       value: 'tfTwoAsset',
-      label: 'Double Asset Deposit (Amount + Amount2)',
+      label: 'Double Asset Deposit',
       description:
         "Deposit both of this AMM's assets, up to the specified amounts. The actual amounts deposited must maintain the same balance of assets as the AMM already holds, so the amount of either one deposited MAY be less than specified. The amount of LP Tokens you get in return is based on the total value deposited."
     },
@@ -50,12 +56,6 @@ export default function AMMDepositForm({
       label: 'LP Token Target',
       description:
         "Deposit both of this AMM's assets, in amounts calculated so that you receive the specified amount of LP Tokens in return. The amounts deposited maintain the relative proportions of the two assets the AMM already holds. The amount of LP Tokens you get in return is based on the total value deposited."
-    },
-    {
-      value: 'tfSingleAsset',
-      label: 'Single Asset Deposit',
-      description:
-        'Deposit exactly the specified amount of one asset, and receive an amount of LP Tokens based on the resulting share of the pool (minus fees).'
     },
     {
       value: 'tfOneAssetLPToken',
