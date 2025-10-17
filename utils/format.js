@@ -934,7 +934,14 @@ export const amountParced = (amount) => {
   let issuerDetails = null
   let originalCurrency = '' // Store original currency for token icons
 
-  if (amount.value && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
+  if (amount.currencyDetails?.type === 'lp_token') {
+    originalCurrency = amount.currency
+    currency = amount.currencyDetails?.currency
+    value = amount.value
+    issuer = amount.issuer
+    issuerDetails = amount.issuerDetails
+    type = 'LPT'
+  } else if (amount.value && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
     originalCurrency = amount.currency // Store original before processing
     currency = amount.currency
     value = amount.value
@@ -961,7 +968,7 @@ export const amountParced = (amount) => {
       value = xls14NftVal
     }
   } else if (amount.mpt_issuance_id) {
-    originalCurrency = amount.mpt_issuance_id // Store original before processing
+    originalCurrency = amount.mpt_issuance_id
     currency = amount.currencyDetails?.currency || '[MPT: ' + shortHash(amount.mpt_issuance_id, 4) + ']'
     value = amount.value
     const scale = amount.currencyDetails?.scale || 0
