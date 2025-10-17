@@ -333,11 +333,6 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
                       { ...change, value: Math.abs(Number(change.value)).toString() },
                       { withIssuer: true, bold: true, precise: 'nice' }
                     )}
-                    {nativeCurrencyToFiat({
-                      amount: { ...change, value: Math.abs(Number(change.value)).toString() },
-                      selectedCurrency,
-                      fiatRate: pageFiatRate
-                    })}
                   </div>
                 ))}
               </TData>

@@ -148,7 +148,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
           <th className="right">Dest. tag</th>
           <th className="right">Expire</th>
           <th className="right">Unlock</th>
-          <th class="center">Tx</th>
+          <th className="center">Tx</th>
           <th className="right">Amount</th>
           {!ledgerTimestamp && <th>Actions</th>}
         </tr>
