@@ -51,8 +51,8 @@ const crossmarkSign = async ({
       setStatus('Getting transaction fee...')
       const txFee = await getNextTransactionParams(tx)
       setAwaiting(false)
-      tx.Sequence = txFee.Sequence
-      tx.Fee = txFee.Fee
+      tx.Sequence = txFee?.Sequence
+      tx.Fee = txFee?.Fee
       //tx.LastLedgerSequence = txFee.LastLedgerSequence //crossmark has it own lastLedgerSequence
       setStatus('Sign the transaction in Crossmark.')
 
