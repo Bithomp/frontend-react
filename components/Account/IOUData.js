@@ -8,8 +8,11 @@ import {
 } from '../../utils/format'
 import { objectsCountText, useWidth } from '../../utils'
 import { FaSnowflake, FaLock, FaIcicles, FaShieldAlt, FaInfoCircle } from 'react-icons/fa'
+import { RiCoinsFill } from 'react-icons/ri'
+import { GiTakeMyMoney } from 'react-icons/gi'
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
+import Link from 'next/link'
 
 // Component to display flag icons with tooltips
 const FlagIcons = ({ flags }) => {
@@ -247,10 +250,30 @@ export default function IOUData({
                 data={issuer}
                 name="issuer"
                 currency={tl.Balance?.currency}
-                options={{ short: width < 970, currencyDetails: tl.Balance?.currencyDetails }}
+                options={{ short: true, currencyDetails: tl.Balance?.currencyDetails }}
               />
             </td>
-            {type !== 'lp' && (
+            {type === 'lp' ? (
+              <td className="right">
+                <Link
+                  href={
+                    '/services/amm?tab=deposit&currency=' + tl.Balance?.currency + '&currencyIssuer=' + issuer?.issuer
+                  }
+                >
+                  Deposit
+                  {width > 800 && <RiCoinsFill style={{ marginBottom: -6, height: 24 }} alt="Deposit" />}
+                </Link>
+                <br />
+                <Link
+                  href={
+                    '/services/amm?tab=withdraw&currency=' + tl.Balance?.currency + '&currencyIssuer=' + issuer?.issuer
+                  }
+                >
+                  Withdraw
+                  {width > 800 && <GiTakeMyMoney style={{ marginBottom: -6, height: 24 }} alt="Withdraw" />}
+                </Link>
+              </td>
+            ) : (
               <td className="right">
                 <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
                   <FlagIcons flags={tl.flags} />
@@ -296,7 +319,7 @@ export default function IOUData({
           <tr>
             <th>#</th>
             <th className="left">{type === 'lp' ? 'LP Token' : 'Currency'}</th>
-            {type !== 'lp' && <th className="right">Params</th>}
+            <th className="right">{type === 'lp' ? 'Actions' : 'Params'}</th>
             <th className="right">Balance</th>
           </tr>
         ) : (
