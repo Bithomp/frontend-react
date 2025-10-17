@@ -15,49 +15,55 @@ import {
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { nftUrl, nftName, ipfsUrl } from '../../utils/nft'
-import { axiosServer, passHeaders } from '../../utils/axios'
+import { axiosServer } from '../../utils/axios'
 
 import SEO from '../../components/SEO'
 import { nftClass } from '../../styles/pages/nft.module.scss'
 
 export async function getServerSideProps(context) {
-  const { locale, query, req } = context
-  let pageMeta = null
+  const { locale, query } = context
   const { id } = query
   const collectionId = id ? (Array.isArray(id) ? id[0] : id) : ''
 
-  if (collectionId) {
-    try {
-      // Try collection-specific endpoint first, fallback to NFT endpoint
-      let res = await axiosServer({
-        method: 'get',
-        url: 'v2/nft-collection/' + collectionId,
-        headers: passHeaders(req)
-      })
-      pageMeta = res?.data?.collection || res?.data
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  let loading = true
+  let errorMessage = ''
+  let newdata = null
+
+  // Try collection-specific endpoint first, fallback to NFT endpoint
+  let response = await axiosServer({
+    method: 'get',
+    url: 'v2/nft-collection/' + collectionId + '?floorPrice=true&statistics=true'
+  }).catch((error) => {
+    errorMessage = 'error.' + error.message
+  })
+
+  loading = false
+  newdata = response?.data
+  if (!newdata) errorMessage = 'No data found'
+
+  let nftListLoading = true
+  const url = `/v2/nfts?collection=${encodeURIComponent(id)}&limit=16&order=mintedNew&hasMedia=true`
+  const res = await axios(url).catch(() => null)
+  nftListLoading = false
+  const nftList = res?.data?.nfts || []
 
   return {
     props: {
       id: collectionId,
-      pageMeta: pageMeta || {},
+      data: newdata,
+      nftList: nftList,
       isSsrMobile: getIsSsrMobile(context),
+      loading: loading,
+      nftListLoading: nftListLoading,
+      errorMessage: errorMessage,
       ...(await serverSideTranslations(locale, ['common', 'nft']))
     }
   }
 }
 
-export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMobile, fiatRate }) {
+export default function NftCollection({ id, nftList, nftListLoading, selectedCurrency, isSsrMobile, fiatRate, loading, errorMessage, data }) {
   const { t } = useTranslation()
-  const [data, setData] = useState(pageMeta)
-  const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
   const [mounted, setMounted] = useState(false)
-  const [nftList, setNftList] = useState([])
-  const [nftListLoading, setNftListLoading] = useState(false)
   const statistics = data?.collection?.statistics
   const issuerDetails = data?.collection?.issuerDetails
   const collection = data?.collection
@@ -85,71 +91,26 @@ export default function NftCollection({ pageMeta, id, selectedCurrency, isSsrMob
   }, [])
 
   useEffect(() => {
-    if (!selectedCurrency || !id) return
-    checkApi()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, selectedCurrency])
-
-  useEffect(() => {
-    if (!mounted) return
-    if (!id) return
-    fetchCollectionNfts()
     fetchActivityData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mounted, id])
-
-  const checkApi = async () => {
-    if (!id) return
-
-    setLoading(true)
-    // Try collection-specific endpoint first, fallback to NFT endpoint
-    let response = await axiosServer({
-      method: 'get',
-      url: 'v2/nft-collection/' + id + '?floorPrice=true&statistics=true'
-    }).catch((error) => {
-      setErrorMessage(t('error.' + error.message))
-      return null
-    })
-
-    setLoading(false)
-    const newdata = response?.data
-
-    if (newdata) {
-      setData(newdata)
-    } else {
-      setErrorMessage('No data found')
-    }
-  }
-
-  const fetchCollectionNfts = async () => {
-    setNftListLoading(true)
-    const url = `/v2/nfts?collection=${encodeURIComponent(id)}&limit=16&order=mintedNew&hasMedia=true`
-    const res = await axios(url).catch(() => null)
-    setNftListLoading(false)
-    const list = res?.data?.nfts || []
-    setNftList(list)
-  }
+  }, [selectedCurrency])
 
   const fetchActivityData = async () => {
     setActivityLoading(true)
 
     try {
-      // Fetch recent sales
-      const salesRes = await axios(
-        `/v2/nft-sales?collection=${encodeURIComponent(id)}&list=lastSold&limit=3&convertCurrencies=${selectedCurrency}`
-      ).catch(() => null)
-
-      // Fetch recent listings (NFTs on sale)
-      const listingsRes = await axios(
-        `/v2/nfts?collection=${encodeURIComponent(
-          id
-        )}&list=onSale&order=offerCreatedNew&limit=3&currency=${selectedCurrency}`
-      ).catch(() => null)
-
-      // Fetch recent mints
-      const mintsRes = await axios(`/v2/nfts?collection=${encodeURIComponent(id)}&limit=3&order=mintedNew`).catch(
-        () => null
-      )
+      const [salesRes, listingsRes, mintsRes] = await Promise.all([
+        axios(
+          `/v2/nft-sales?collection=${encodeURIComponent(id)}&list=lastSold&limit=3&convertCurrencies=${selectedCurrency}`
+        ).catch(() => null),
+    
+        axios(
+          `/v2/nfts?collection=${encodeURIComponent(id)}&list=onSale&order=offerCreatedNew&limit=3&currency=${selectedCurrency}`
+        ).catch(() => null),
+    
+        axios(
+          `/v2/nfts?collection=${encodeURIComponent(id)}&limit=3&order=mintedNew`
+        ).catch(() => null)
+      ])
       setActivityData({
         sales: salesRes?.data?.sales || [],
         listings: listingsRes?.data?.nfts || [],
