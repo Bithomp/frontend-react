@@ -13,6 +13,7 @@ export { TransactionPayment } from './TransactionPayment'
 export { TransactionSetRegularKey } from './TransactionSetRegularKey'
 export { TransactionTrustSet } from './TransactionTrustSet'
 export { TransactionEnableAmendment } from './TransactionEnableAmendment'
+export { TransactionBatch } from './TransactionBatch'
 
 //xrpl
 export { TransactionAMM } from './TransactionAmm'
