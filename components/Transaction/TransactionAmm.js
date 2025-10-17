@@ -412,7 +412,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
       ) : (
         ''
       )}
-      {specification?.flags && Object.entries(specification?.flags).length > 0 && (
+      {specification?.flags && Object.values(specification.flags).some((v) => v === true) && (
         <tr>
           <TData>Flags</TData>
           <TData>
@@ -420,7 +420,6 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           </TData>
         </tr>
       )}
-
       {txType === 'AMMDeposit' || txType === 'AMMCreate' || txType === 'AMMWithdraw' ? (
         <tr>
           <TData>Specification</TData>
@@ -451,7 +450,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           )}
         </>
       )}
-      {outcome?.ammChanges?.voteSlotsChanges.length > 0 && (
+      {outcome?.ammChanges?.voteSlotsChanges?.length > 0 && (
         <tr>
           <TData colSpan={2}>
             <br />
