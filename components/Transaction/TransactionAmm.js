@@ -333,6 +333,11 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
                       { ...change, value: Math.abs(Number(change.value)).toString() },
                       { withIssuer: true, bold: true, precise: 'nice' }
                     )}
+                    {nativeCurrencyToFiat({
+                      amount: { ...change, value: Math.abs(Number(change.value)).toString() },
+                      selectedCurrency,
+                      fiatRate: pageFiatRate
+                    })}
                   </div>
                 ))}
               </TData>
@@ -347,7 +352,14 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
                 <TData>Withdrawn</TData>
                 <TData>
                   {targetReceivedList.map((change, idx) => (
-                    <div key={idx}>{amountFormat(change, { withIssuer: true, bold: true, precise: 'nice' })}</div>
+                    <div key={idx}>
+                      {amountFormat(change, { withIssuer: true, bold: true, precise: 'nice' })}
+                      {nativeCurrencyToFiat({
+                        amount: change,
+                        selectedCurrency,
+                        fiatRate: pageFiatRate
+                      })}
+                    </div>
                   ))}
                 </TData>
               </tr>
@@ -424,7 +436,8 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData>Specification</TData>
           <TData>
-            It was instructed to {txType === 'AMMDeposit' || txType === 'AMMCreate' ? 'deposit' : 'withdraw'} maximum{' '}
+            It was instructed to{' '}
+            {txType === 'AMMDeposit' || txType === 'AMMCreate' ? 'deposit maximum' : 'withdraw minimum'}{' '}
             {amount?.currency && amount?.value && (
               <>
                 {renderAmountWithIssuer(amount)}
