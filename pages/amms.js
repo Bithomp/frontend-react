@@ -350,7 +350,7 @@ export default function Amms({
                   <th>Created</th>
                   <th>{t('table.updated')}</th>
                   <th className="right">Trading fee</th>
-                  <th>Actions</th>
+                  <th className="center">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -400,7 +400,7 @@ export default function Amms({
                               <td>{timeFromNow(a.createdAt, i18n)}</td>
                               <td>{timeFromNow(a.updatedAt, i18n)}</td>
                               <td className="right">{showAmmPercents(a.tradingFee)}</td>
-                              <td>
+                              <td className="center">
                                 <Link
                                   href={
                                     '/services/amm/deposit?currency=' +
