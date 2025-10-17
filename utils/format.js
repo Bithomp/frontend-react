@@ -832,7 +832,13 @@ export const amountFormat = (amount, options = {}) => {
         </StyleAmount>
         {issuer ? (
           <span className="no-inherit">
-            ({addressUsernameOrServiceLink({ issuer, issuerDetails }, 'issuer', { short: true })})
+            (
+            {amount.currencyDetails?.type === 'lp_token' ? (
+              <LinkAmm ammId={issuer} hash={6} style={{ fontWeight: 400 }} />
+            ) : (
+              addressUsernameOrServiceLink({ issuer, issuerDetails }, 'issuer', { short: true })
+            )}
+            )
           </span>
         ) : (
           ''
