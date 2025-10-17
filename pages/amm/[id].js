@@ -148,7 +148,7 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
       [
       <Link
         href={
-          '/services/amm/deposit?currency=' +
+          '/services/amm/vote?currency=' +
           (data.amount?.currency || nativeCurrency) +
           (data.amount?.issuer ? '&currencyIssuer=' + data.amount?.issuer : '') +
           '&currency2=' +
