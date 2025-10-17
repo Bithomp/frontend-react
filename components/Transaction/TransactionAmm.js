@@ -314,7 +314,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
               <TData>Received</TData>
               <TData className="bold">
                 {receivedList.map((change, idx) => (
-                  <div key={idx}>{renderAmountWithIssuer(change, { includeFiat: true })}</div>
+                  <div key={idx}>{amountFormat(change, { withIssuer: true, bold: true, precise: 'nice' })}</div>
                 ))}
               </TData>
             </tr>
