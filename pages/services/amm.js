@@ -11,6 +11,7 @@ import AMMWithdrawForm from '../../components/Services/Amm/AMMWithdraw'
 import AMMDepositForm from '../../components/Services/Amm/AMMDeposit'
 
 const tabList = [
+  { value: 'amms', label: 'AMM Pools' },
   { value: 'deposit', label: 'AMM Deposit' },
   { value: 'withdraw', label: 'AMM Withdraw' },
   { value: 'vote', label: 'AMM Vote' },
@@ -53,6 +54,11 @@ export default function AMMService({
   }, [initialTab])
 
   const handleTabChange = (newTab) => {
+    if (newTab === 'amms') {
+      router.push('/amms')
+      return
+    }
+
     setTab(newTab)
     router.push(
       {
