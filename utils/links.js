@@ -42,10 +42,10 @@ export const LinkAccount = ({ address, icon, copy, text, short }) =>
     ''
   )
 
-export const LinkAmm = ({ ammId, hash, icon, copy, text }) =>
+export const LinkAmm = ({ ammId, hash, icon, copy, text, style }) =>
   ammId ? (
     <>
-      <Link href={`/amm/${ammId}`}>
+      <Link href={`/amm/${ammId}`} style={style}>
         {text ? text : hash ? shortHash(ammId, hash > 3 ? hash : 10) : ''}
         {icon ? (
           <>
