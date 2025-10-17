@@ -168,8 +168,8 @@ export default function MobileMenu({
           <Link href="/services/escrow" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Create Escrow
           </Link>
-          {!xahauNetwork && !devNet && (
-            <Link href="/services/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {!xahauNetwork && (
+            <Link href="/services/amm/deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
               AMM Services
             </Link>
           )}
@@ -245,16 +245,16 @@ export default function MobileMenu({
               <Link href="/learn/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 What is AMM?
               </Link>
-              <Link href="/services/amm?tab=deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Deposit
               </Link>
-              <Link href="/services/amm?tab=withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Withdraw
               </Link>
-              <Link href="/services/amm?tab=vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Vote
               </Link>
-              <Link href="/services/amm?tab=create" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/create" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Create
               </Link>
               <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>

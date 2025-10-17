@@ -257,7 +257,7 @@ export default function IOUData({
               <td className="right">
                 <Link
                   href={
-                    '/services/amm?tab=deposit&currency=' +
+                    '/services/amm/deposit?currency=' +
                     tl.Balance?.currencyDetails?.asset?.currency +
                     (tl.Balance?.currencyDetails?.asset?.issuer
                       ? '&currencyIssuer=' + tl.Balance?.currencyDetails?.asset?.issuer
@@ -275,7 +275,7 @@ export default function IOUData({
                 <br />
                 <Link
                   href={
-                    '/services/amm?tab=withdraw&currency=' +
+                    '/services/amm/withdraw?currency=' +
                     tl.Balance?.currencyDetails?.asset?.currency +
                     (tl.Balance?.currencyDetails?.asset?.issuer
                       ? '&currencyIssuer=' + tl.Balance?.currencyDetails?.asset?.issuer

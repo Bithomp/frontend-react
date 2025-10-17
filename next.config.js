@@ -106,6 +106,11 @@ module.exports = withBundleAnalyzer({
         source: '/xrpl-article',
         destination: '/learn/xrpl-article',
         permanent: true
+      },
+      {
+        source: '/services/amm',
+        destination: '/services/amm/deposit',
+        permanent: true
       }
     ]
   },

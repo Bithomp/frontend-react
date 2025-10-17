@@ -403,7 +403,7 @@ export default function Amms({
                               <td>
                                 <Link
                                   href={
-                                    '/services/amm?tab=deposit&currency=' +
+                                    '/services/amm/deposit?currency=' +
                                     (a.amount?.currency || nativeCurrency) +
                                     (a.amount?.issuer ? '&currencyIssuer=' + a.amount?.issuer : '') +
                                     '&currency2=' +
@@ -488,7 +488,7 @@ export default function Amms({
                             <p>Updated: {timeFromNow(a.updatedAt, i18n)}</p>
                             <Link
                               href={
-                                '/services/amm?tab=deposit&currency=' +
+                                '/services/amm/deposit?currency=' +
                                 (a.amount?.currency || nativeCurrency) +
                                 (a.amount?.issuer ? '&currencyIssuer=' + a.amount?.issuer : '') +
                                 '&currency2=' +

@@ -707,15 +707,26 @@ export const percentFormat = (small, big) => {
   return '(' + Math.floor(((small * 100) / big) * 100) / 100 + '%)'
 }
 
-export const trAmountWithGateway = ({ amount, name }) => {
+export const trAmountWithGateway = ({ amount, name, icon }) => {
   if (!amount && amount !== 0) return ''
   return (
     <tr>
       <td>{name}</td>
       <td>
         {amountFormatNode(amount)}
-        {amount?.issuer && <> ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</>}
-        {amount?.counterparty && <> ({addressUsernameOrServiceLink(amount, 'counterparty', { short: true })})</>}
+        {icon ? (
+          <>
+            {amount?.issuer && <AddressWithIconInline data={amount} name="issuer" options={{ short: true }} />}
+            {amount?.counterparty && (
+              <AddressWithIconInline data={amount} name="counterparty" options={{ short: true }} />
+            )}
+          </>
+        ) : (
+          <>
+            {amount?.issuer && <> ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</>}
+            {amount?.counterparty && <> ({addressUsernameOrServiceLink(amount, 'counterparty', { short: true })})</>}
+          </>
+        )}
       </td>
     </tr>
   )

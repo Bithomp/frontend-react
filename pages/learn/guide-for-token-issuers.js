@@ -254,7 +254,7 @@ export default function GuideForTokenIssuers() {
                   <span role="img" aria-label="lamp">
                     👉
                   </span>{' '}
-                  <Link href="https://bithomp.com/en/services/amm?tab=create">Create AMM Pool</Link>
+                  <Link href="https://bithomp.com/en/services/amm/create">Create AMM Pool</Link>
                 </p>
               </div>
 

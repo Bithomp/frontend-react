@@ -26,6 +26,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import Link from 'next/link'
+import AmmTabs from '../../components/Tabs/AmmTabs'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -57,7 +58,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Amm({ id, initialData, initialErrorMessage, ledgerTimestampQuery }) {
+export default function Amm({ id, initialData, initialErrorMessage, ledgerTimestampQuery, isSsrMobile }) {
   const { t, i18n } = useTranslation()
   const width = useWidth()
   const router = useRouter()
@@ -147,7 +148,7 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
       [
       <Link
         href={
-          '/services/amm?tab=deposit&currency=' +
+          '/services/amm/deposit?currency=' +
           (data.amount?.currency || nativeCurrency) +
           (data.amount?.issuer ? '&currencyIssuer=' + data.amount?.issuer : '') +
           '&currency2=' +
@@ -189,7 +190,17 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
         }
         userData={userData}
       />
-      <div className="content-center short-top amm">
+      <div className="content-center amm">
+        <h1 className="center">{lpToken}</h1>
+        <AmmTabs
+          tab="amm"
+          params={{
+            currency: data.amount?.currency || nativeCurrency,
+            currencyIssuer: data.amount?.issuer || '',
+            currency2: data.amount2?.currency || nativeCurrency,
+            currency2Issuer: data.amount2?.issuer || ''
+          }}
+        />
         <div className={width > 600 ? '' : 'center'}>
           Time machine:{' '}
           <DatePicker
@@ -245,6 +256,26 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                       </thead>
                       <tbody>
                         <tr>
+                          <td>LP Token</td>
+                          <td>
+                            <AddressWithIconFilled
+                              data={data}
+                              name="account"
+                              currency={data.lpTokenBalance.currency}
+                              options={{
+                                short: isSsrMobile,
+                                currencyDetails: {
+                                  type: 'lp_token',
+                                  asset: data.amount,
+                                  asset2: data.amount2,
+                                  currency: lpToken
+                                }
+                              }}
+                              copyButton={true}
+                            />
+                          </td>
+                        </tr>
+                        <tr>
                           <td>AMM ID</td>
                           <td>
                             {shortHash(data.ammID, 10)} <CopyButton text={data.ammID} />
@@ -265,14 +296,8 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                             </Link>
                           </td>
                         </tr>
-                        <tr>
-                          <td>{t('table.address')}</td>
-                          <td>
-                            <AddressWithIconFilled data={data} name="account" />
-                          </td>
-                        </tr>
-                        {trAmountWithGateway({ amount: data.amount, name: 'Asset 1' })}
-                        {trAmountWithGateway({ amount: data.amount2, name: 'Asset 2' })}
+                        {trAmountWithGateway({ amount: data.amount, name: 'Asset 1', icon: true })}
+                        {trAmountWithGateway({ amount: data.amount2, name: 'Asset 2', icon: true })}
                         <tr>
                           <td>Trading fee</td>
                           <td>
