@@ -5,7 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SearchBlock from '../../components/Layout/SearchBlock'
 import SEO from '../../components/SEO'
-import { addQueryParams, removeQueryParams, useWidth } from '../../utils'
+import { addQueryParams, nativeCurrency, removeQueryParams, useWidth } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import {
   lpTokenName,
@@ -142,6 +142,25 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
     </span>
   )
 
+  const voteLink = (
+    <>
+      [
+      <Link
+        href={
+          '/services/amm?tab=deposit&currency=' +
+          (data.amount?.currency || nativeCurrency) +
+          (data.amount?.issuer ? '&currencyIssuer=' + data.amount?.issuer : '') +
+          '&currency2=' +
+          (data.amount2?.currency || nativeCurrency) +
+          (data.amount2?.issuer ? '&currency2Issuer=' + data.amount2?.issuer : '')
+        }
+      >
+        Vote
+      </Link>
+      ]
+    </>
+  )
+
   return (
     <>
       <SEO
@@ -256,7 +275,9 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                         {trAmountWithGateway({ amount: data.amount2, name: 'Asset 2' })}
                         <tr>
                           <td>Trading fee</td>
-                          <td>{showAmmPercents(data.tradingFee)}</td>
+                          <td>
+                            {showAmmPercents(data.tradingFee)} {voteLink}
+                          </td>
                         </tr>
                         <tr>
                           <td>Balance</td>

@@ -350,6 +350,7 @@ export default function Amms({
                   <th>Created</th>
                   <th>{t('table.updated')}</th>
                   <th className="right">Trading fee</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -399,6 +400,20 @@ export default function Amms({
                               <td>{timeFromNow(a.createdAt, i18n)}</td>
                               <td>{timeFromNow(a.updatedAt, i18n)}</td>
                               <td className="right">{showAmmPercents(a.tradingFee)}</td>
+                              <td>
+                                <Link
+                                  href={
+                                    '/services/amm?tab=deposit&currency=' +
+                                    (a.amount?.currency || nativeCurrency) +
+                                    (a.amount?.issuer ? '&currencyIssuer=' + a.amount?.issuer : '') +
+                                    '&currency2=' +
+                                    (a.amount2?.currency || nativeCurrency) +
+                                    (a.amount2?.issuer ? '&currency2Issuer=' + a.amount2?.issuer : '')
+                                  }
+                                >
+                                  Deposit
+                                </Link>
+                              </td>
                             </tr>
                           ))}
                       </>
@@ -471,6 +486,21 @@ export default function Amms({
                             <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
                             <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
                             <p>Updated: {timeFromNow(a.updatedAt, i18n)}</p>
+                            <Link
+                              href={
+                                '/services/amm?tab=deposit&currency=' +
+                                (a.amount?.currency || nativeCurrency) +
+                                (a.amount?.issuer ? '&currencyIssuer=' + a.amount?.issuer : '') +
+                                '&currency2=' +
+                                (a.amount2?.currency || nativeCurrency) +
+                                (a.amount2?.issuer ? '&currency2Issuer=' + a.amount2?.issuer : '')
+                              }
+                              className="button-action thin narrow"
+                            >
+                              Deposit
+                            </Link>
+                            <br />
+                            <br />
                           </td>
                         </tr>
                       ))
