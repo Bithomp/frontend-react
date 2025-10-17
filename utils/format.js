@@ -179,13 +179,8 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
       {options?.currencyName && options.currencyName !== currency && (
         <span>{shortName(options.currencyName, { maxLength: 10 })}</span>
       )}{' '}
-      {link && (
-        <>
-          {link}
-          <br />
-        </>
-      )}
-      {(!link || options?.mptId || lpToken) && <br />}
+      {link}
+      {(currency || options?.currencyName || link) && <br />}
       {ammId ? (
         <>
           AMM pool: <LinkAmm ammId={ammId} hash={!options?.short} icon={options?.short} />
