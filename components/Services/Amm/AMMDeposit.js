@@ -10,9 +10,18 @@ import CopyButton from '../../UI/CopyButton'
 import { errorCodeDescription } from '../../../utils/transaction'
 import SimpleSelect from '../../UI/SimpleSelect'
 
-export default function AMMDepositForm({ setSignRequest }) {
-  const [asset1, setAsset1] = useState({ currency: nativeCurrency })
-  const [asset2, setAsset2] = useState({ currency: nativeCurrency })
+export default function AMMDepositForm({
+  setSignRequest,
+  queryCurrency,
+  queryCurrencyIssuer,
+  queryCurrency2,
+  queryCurrency2Issuer
+}) {
+  const [asset1, setAsset1] = useState({ currency: queryCurrency || nativeCurrency, issuer: queryCurrencyIssuer || '' })
+  const [asset2, setAsset2] = useState({
+    currency: queryCurrency2 || nativeCurrency,
+    issuer: queryCurrency2Issuer || ''
+  })
   const [amount1, setAmount1] = useState('')
   const [amount2, setAmount2] = useState('')
   const [lpTokenOut, setLpTokenOut] = useState('')

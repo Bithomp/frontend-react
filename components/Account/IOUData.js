@@ -257,7 +257,16 @@ export default function IOUData({
               <td className="right">
                 <Link
                   href={
-                    '/services/amm?tab=deposit&currency=' + tl.Balance?.currency + '&currencyIssuer=' + issuer?.issuer
+                    '/services/amm?tab=deposit&currency=' +
+                    tl.Balance?.currencyDetails?.asset?.currency +
+                    (tl.Balance?.currencyDetails?.asset?.issuer
+                      ? '&currencyIssuer=' + tl.Balance?.currencyDetails?.asset1?.issuer
+                      : '') +
+                    '&currency2=' +
+                    tl.Balance?.currencyDetails?.asset2?.currency +
+                    (tl.Balance?.currencyDetails?.asset2?.issuer
+                      ? '&currency2Issuer=' + tl.Balance?.currencyDetails?.asset2?.issuer
+                      : '')
                   }
                 >
                   Deposit
@@ -266,7 +275,16 @@ export default function IOUData({
                 <br />
                 <Link
                   href={
-                    '/services/amm?tab=withdraw&currency=' + tl.Balance?.currency + '&currencyIssuer=' + issuer?.issuer
+                    '/services/amm?tab=withdraw&currency=' +
+                    tl.Balance?.currencyDetails?.asset?.currency +
+                    (tl.Balance?.currencyDetails?.asset?.issuer
+                      ? '&currencyIssuer=' + tl.Balance?.currencyDetails?.asset1?.issuer
+                      : '') +
+                    '&currency2=' +
+                    tl.Balance?.currencyDetails?.asset2?.currency +
+                    (tl.Balance?.currencyDetails?.asset2?.issuer
+                      ? '&currency2Issuer=' + tl.Balance?.currencyDetails?.asset2?.issuer
+                      : '')
                   }
                 >
                   Withdraw

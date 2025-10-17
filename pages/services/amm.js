@@ -19,17 +19,31 @@ const tabList = [
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
+  const { tab, currency, currencyIssuer, currency2, currency2Issuer } = query
+
+  const queryTab = tab.toLowerCase()
 
   return {
     props: {
+      queryCurrency: currency || null,
+      queryCurrencyIssuer: currencyIssuer || null,
+      queryCurrency2: currency2 || null,
+      queryCurrency2Issuer: currency2Issuer || null,
       isSsrMobile: getIsSsrMobile(context),
-      initialTab: tabList.some((tab) => tab.value === query?.tab) ? query.tab : 'create',
+      initialTab: tabList.some((t) => t.value === queryTab) ? queryTab : 'create',
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
 
-export default function AMMService({ setSignRequest, initialTab }) {
+export default function AMMService({
+  setSignRequest,
+  initialTab,
+  queryCurrency,
+  queryCurrencyIssuer,
+  queryCurrency2,
+  queryCurrency2Issuer
+}) {
   const [tab, setTab] = useState(initialTab)
   const router = useRouter()
 
@@ -58,10 +72,42 @@ export default function AMMService({ setSignRequest, initialTab }) {
         <div className="center">
           <Tabs tabList={tabList} tab={tab} setTab={handleTabChange} name="ammTabs" />
         </div>
-        {tab === 'create' && <AMMCreateForm setSignRequest={setSignRequest} />}
-        {tab === 'vote' && <AMMVoteForm setSignRequest={setSignRequest} />}
-        {tab === 'withdraw' && <AMMWithdrawForm setSignRequest={setSignRequest} />}
-        {tab === 'deposit' && <AMMDepositForm setSignRequest={setSignRequest} />}
+        {tab === 'create' && (
+          <AMMCreateForm
+            setSignRequest={setSignRequest}
+            queryCurrency={queryCurrency}
+            queryCurrencyIssuer={queryCurrencyIssuer}
+            queryCurrency2={queryCurrency2}
+            queryCurrency2Issuer={queryCurrency2Issuer}
+          />
+        )}
+        {tab === 'vote' && (
+          <AMMVoteForm
+            setSignRequest={setSignRequest}
+            queryCurrency={queryCurrency}
+            queryCurrencyIssuer={queryCurrencyIssuer}
+            queryCurrency2={queryCurrency2}
+            queryCurrency2Issuer={queryCurrency2Issuer}
+          />
+        )}
+        {tab === 'withdraw' && (
+          <AMMWithdrawForm
+            setSignRequest={setSignRequest}
+            queryCurrency={queryCurrency}
+            queryCurrencyIssuer={queryCurrencyIssuer}
+            queryCurrency2={queryCurrency2}
+            queryCurrency2Issuer={queryCurrency2Issuer}
+          />
+        )}
+        {tab === 'deposit' && (
+          <AMMDepositForm
+            setSignRequest={setSignRequest}
+            queryCurrency={queryCurrency}
+            queryCurrencyIssuer={queryCurrencyIssuer}
+            queryCurrency2={queryCurrency2}
+            queryCurrency2Issuer={queryCurrency2Issuer}
+          />
+        )}
       </div>
     </>
   )
