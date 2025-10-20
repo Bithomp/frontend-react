@@ -1,10 +1,10 @@
 import React from 'react'
-import CopyButton from '../UI/CopyButton'
+import CopyButton from '../../UI/CopyButton'
 import { useState } from 'react'
 import { i18n, useTranslation } from 'next-i18next'
 
-import { LedgerLink, LinkTx } from '../../utils/links'
-import { TData } from '../Table'
+import { LedgerLink, LinkTx } from '../../../utils/links'
+import { TData } from '../../Table'
 import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
@@ -16,10 +16,11 @@ import {
   niceCurrency,
   shortHash,
   timeFromNow
-} from '../../utils/format'
-import { decodeCTID, isValidCTID, networksIds, server, xahauNetwork } from '../../utils'
-import { dappBySourceTag, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
-import { add } from '../../utils/calc'
+} from '../../../utils/format'
+import { decodeCTID, isValidCTID, networksIds, server, xahauNetwork } from '../../../utils'
+import { dappBySourceTag, errorCodeDescription, shortErrorCode } from '../../../utils/transaction'
+import { add } from '../../../utils/calc'
+import ExchangesTable from './ExchangeTable'
 
 const gatewaySum = (balances) => {
   return balances?.reduce((sum, c) => add(sum, c.value), 0) || 0
@@ -476,6 +477,26 @@ export const TransactionCard = ({
                         })}
                       </>
                     )}
+
+                  {outcome?.exchanges?.length > 0 && (
+                    <>
+                      <tr>
+                        <TData style={{ verticalAlign: 'top' }}>Exchange{outcome?.exchanges?.length > 1 && 's'}</TData>
+                        <TData>
+                          {outcome?.exchanges?.length > 1 && (
+                            <>
+                              There are <span className="bold">{outcome?.exchanges?.length}</span> exchnages that
+                              occured within this transaction.
+                              <br />
+                              <br />
+                            </>
+                          )}
+                          <ExchangesTable exchanges={outcome.exchanges} ledgerIndex={outcome.ledgerIndex} />
+                        </TData>
+                      </tr>
+                    </>
+                  )}
+
                   <tr>
                     <TData>Transaction link</TData>
                     <TData>

@@ -783,15 +783,16 @@ export const amountFormat = (amount, options = {}) => {
     }
   }
 
+  // do not show icons for native currency
+  if (options?.icon && originalCurrency === nativeCurrency) {
+    options.icon = false
+  }
+
   let tokenImage = ''
   if (options?.icon) {
     tokenImage = (
       <Image
-        src={
-          type === nativeCurrency
-            ? nativeCurrenciesImages[nativeCurrency]
-            : tokenImageSrc({ issuer, currency: originalCurrency || currency })
-        }
+        src={tokenImageSrc({ issuer, currency: originalCurrency || currency })}
         alt="token"
         height={16}
         width={16}
