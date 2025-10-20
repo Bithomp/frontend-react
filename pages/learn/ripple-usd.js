@@ -4,7 +4,6 @@ import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { network } from '../../utils'
 import Breadcrumbs from '../../components/Breadcrumbs'
-import Link from 'next/link'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -44,9 +43,9 @@ export default function RLUSD() {
             <em>April 11, 2025</em>
           </p>
           <p>
-            <Link href="https://www.mexc.com/ru-RU/price/ripple-usd">Ripple USD (RLUSD)</Link> is a stablecoin designed
-            to bring speed, reliability, and dollar-backed stability to global payments. Issued by Ripple in 2024, RLUSD
-            is built for real-world utility — from remittances and trading to financial settlement — all powered by fast
+            <a href="https://www.mexc.com/ru-RU/price/ripple-usd">Ripple USD (RLUSD)</a> is a stablecoin designed to
+            bring speed, reliability, and dollar-backed stability to global payments. Issued by Ripple in 2024, RLUSD is
+            built for real-world utility — from remittances and trading to financial settlement — all powered by fast
             and cost-effective blockchain infrastructure.
           </p>
           <h3>RLUSD: A New Stablecoin Backed by Ripple</h3>
