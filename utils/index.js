@@ -753,6 +753,10 @@ export const isTagValid = (x) => {
 }
 
 export const isUsernameValid = (x) => {
+  return x && /^(?=.{3,22}$)[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+){0,5}$/.test(x)
+}
+
+export const isUsernameValidToRegister = (x) => {
   return x && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(x)
 }
 
