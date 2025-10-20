@@ -554,7 +554,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                               height: '64px',
                                               objectFit: 'cover',
                                               borderRadius: '4px',
-                                              margin: '2px'
+                                              margin: '1px'
                                             }}
                                           />
                                         </Link>
