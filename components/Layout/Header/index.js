@@ -95,15 +95,12 @@ export default function Header({
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
 
-  const [xamanUserToken, setXamanUserToken] = useState(null)
-
   const [hoverStates, setHoverStates] = useState({}) //{ dropdown7: true }
 
   const width = useWidth()
 
   useEffect(() => {
     setRendered(true)
-    setXamanUserToken(localStorage.getItem('xamanUserToken'))
   }, [])
 
   let address, displayName, username, pro, proName
@@ -460,23 +457,11 @@ export default function Header({
                 </span>
                 <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
                 <a href={server + '/explorer/' + address}>{t('signin.actions.my-transactions')}</a>
+                <Link href="/services/send">Send payment</Link>
                 <Link href="/services/account-settings/">Account Settings</Link>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
                 <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
-
                 {!username && <Link href={'/username?address=' + address}>{t('menu.usernames')}</Link>}
-
-                {/* Hide Send XRP for XAHAU while they are not ready yet */}
-                {!xahauNetwork && (
-                  <>
-                    {account?.wallet === 'xaman' && xamanUserToken && (
-                      <a href={'/explorer/' + address + '?hw=xumm&xummtoken=' + xamanUserToken + '&action=send'}>
-                        {t('signin.actions.send')}
-                      </a>
-                    )}
-                  </>
-                )}
-
                 <span onClick={signOut} className="link">
                   {account?.wallet === 'walletconnect' && (
                     <Image
@@ -625,7 +610,6 @@ export default function Header({
           proName={proName}
           signOut={signOut}
           signOutPro={signOutPro}
-          xamanUserToken={account?.wallet === 'xaman' ? xamanUserToken : null}
           username={username}
           isCopied={isCopied}
           copyToClipboard={copyToClipboard}

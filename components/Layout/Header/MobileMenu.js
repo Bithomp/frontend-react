@@ -26,7 +26,6 @@ export default function MobileMenu({
   setSignRequest,
   proName,
   signOutPro,
-  xamanUserToken,
   signOut,
   isCopied,
   copyToClipboard,
@@ -65,6 +64,9 @@ export default function MobileMenu({
               <a href={server + '/explorer/' + address} className="mobile-menu-item">
                 {t('signin.actions.my-transactions')}
               </a>
+              <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                Send payment
+              </Link>
               <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 My Account Settings
               </Link>
@@ -74,27 +76,11 @@ export default function MobileMenu({
               <Link href={'/nft-offers/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.my-nft-offers')}
               </Link>
-
               {!username && (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                   {t('menu.usernames')}
                 </Link>
               )}
-
-              {/* Hide Send XRP for XAHAU while they are not ready yet */}
-              {!xahauNetwork && (
-                <>
-                  {xamanUserToken && (
-                    <a
-                      href={server + '/explorer/' + address + '?hw=xumm&xummtoken=' + xamanUserToken + '&action=send'}
-                      className="mobile-menu-item"
-                    >
-                      {t('signin.actions.send')}
-                    </a>
-                  )}
-                </>
-              )}
-
               <span onClick={signOut} className="mobile-menu-item link">
                 {t('signin.signout')}
                 <span style={{ display: 'inline-block', width: 10 }}></span>
