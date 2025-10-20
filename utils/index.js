@@ -967,3 +967,38 @@ export const objectsCountText = (objects) => {
   if (countList.length > 1) return countList.length + ' '
   return ''
 }
+
+export const performIdSearch = async ({ searchFor, router, setErrorMessage }) => {
+  //nft nftOffer uriToken
+  if (isIdValid(searchFor)) {
+    const response = await axios('v3/search/' + searchFor)
+    const data = response.data
+    if (data.type === 'transaction') {
+      router.push('/tx/' + searchFor)
+      return
+    }
+    if (data.type === 'nftoken' || data.type === 'uriToken') {
+      router.push('/nft/' + searchFor)
+      return
+    }
+    if (data.type === 'nftokenOffer') {
+      router.push('/nft-offer/' + searchFor)
+      return
+    }
+    if (data.type === 'amm') {
+      router.push('/amm/' + searchFor)
+      return
+    }
+    if (data.type === 'ledgerEntry') {
+      router.push('/object/' + searchFor)
+      return
+    }
+
+    if (data.type === 'unknown') {
+      setErrorMessage(data.error)
+      return
+    }
+  } else {
+    setErrorMessage('Invalid ID format')
+  }
+}
