@@ -15,54 +15,46 @@ import {
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { nftUrl, nftName, ipfsUrl } from '../../utils/nft'
-import { axiosServer } from '../../utils/axios'
 
 import SEO from '../../components/SEO'
 import { nftClass } from '../../styles/pages/nft.module.scss'
+import { useWidth } from '../../utils'
 
 export async function getServerSideProps(context) {
   const { locale, query } = context
   const { id } = query
   const collectionId = id ? (Array.isArray(id) ? id[0] : id) : ''
 
-  let loading = true
   let errorMessage = ''
-  let newdata = null
 
-  // Try collection-specific endpoint first, fallback to NFT endpoint
-  let response = await axiosServer({
-    method: 'get',
-    url: 'v2/nft-collection/' + collectionId + '?floorPrice=true&statistics=true'
-  }).catch((error) => {
-    errorMessage = 'error.' + error.message
-  })
+  const [dataRes, nftRes] = await Promise.all([
+    axios(
+      `/v2/nft-collection/${encodeURIComponent(collectionId)}?floorPrice=true&statistics=true`
+    ).catch((error) => {
+      errorMessage = 'error.' + error.message
+    }),
+    axios(
+      `/v2/nfts?collection=${encodeURIComponent(collectionId)}&limit=16&order=mintedNew&hasMedia=true`
+    ).catch(() => null)
+  ])
 
-  loading = false
-  newdata = response?.data
-  if (!newdata) errorMessage = 'No data found'
-
-  let nftListLoading = true
-  const url = `/v2/nfts?collection=${encodeURIComponent(id)}&limit=16&order=mintedNew&hasMedia=true`
-  const res = await axios(url).catch(() => null)
-  nftListLoading = false
-  const nftList = res?.data?.nfts || []
+  if (!dataRes?.data) errorMessage = 'No data found'
 
   return {
     props: {
       id: collectionId,
-      data: newdata,
-      nftList: nftList,
+      data: dataRes?.data,
+      nftList: nftRes?.data?.nfts || [],
       isSsrMobile: getIsSsrMobile(context),
-      loading: loading,
-      nftListLoading: nftListLoading,
       errorMessage: errorMessage,
       ...(await serverSideTranslations(locale, ['common', 'nft']))
     }
   }
 }
 
-export default function NftCollection({ id, nftList, nftListLoading, selectedCurrency, isSsrMobile, fiatRate, loading, errorMessage, data }) {
+export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobile, fiatRate, errorMessage, data }) {
   const { t } = useTranslation()
+  const width = useWidth()
   const [mounted, setMounted] = useState(false)
   const statistics = data?.collection?.statistics
   const issuerDetails = data?.collection?.issuerDetails
@@ -80,7 +72,6 @@ export default function NftCollection({ id, nftList, nftListLoading, selectedCur
     // Client-side viewport fallback for mobile detection
     const updateIsMobile = () => {
       try {
-        const width = window.innerWidth || document.documentElement.clientWidth
         setIsMobile(isSsrMobile || width <= 768)
       } catch (_) {}
     }
@@ -88,7 +79,7 @@ export default function NftCollection({ id, nftList, nftListLoading, selectedCur
     window.addEventListener('resize', updateIsMobile)
     return () => window.removeEventListener('resize', updateIsMobile)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [width])
 
   useEffect(() => {
     fetchActivityData()
@@ -98,23 +89,19 @@ export default function NftCollection({ id, nftList, nftListLoading, selectedCur
     setActivityLoading(true)
 
     try {
-      const [salesRes, listingsRes, mintsRes] = await Promise.all([
+      const [salesRes, listingsRes] = await Promise.all([
         axios(
           `/v2/nft-sales?collection=${encodeURIComponent(id)}&list=lastSold&limit=3&convertCurrencies=${selectedCurrency}`
         ).catch(() => null),
     
         axios(
           `/v2/nfts?collection=${encodeURIComponent(id)}&list=onSale&order=offerCreatedNew&limit=3&currency=${selectedCurrency}`
-        ).catch(() => null),
-    
-        axios(
-          `/v2/nfts?collection=${encodeURIComponent(id)}&limit=3&order=mintedNew`
         ).catch(() => null)
       ])
       setActivityData({
         sales: salesRes?.data?.sales || [],
         listings: listingsRes?.data?.nfts || [],
-        mints: mintsRes?.data?.nfts || []
+        mints: nftList.slice(0, 3)
       })
     } catch (error) {
       console.error('Error fetching activity data:', error)
@@ -134,9 +121,7 @@ export default function NftCollection({ id, nftList, nftListLoading, selectedCur
     )
   }
 
-  const collectionDescription = (data) => {
-    return data?.collection?.description || ''
-  }
+  const collectionDescription = data?.collection?.description
 
   const imageUrl = ipfsUrl(data?.collection?.image)
 
@@ -363,7 +348,7 @@ export default function NftCollection({ id, nftList, nftListLoading, selectedCur
         page="NFT Collection"
         title={'NFT Collection'}
         description={
-          collectionDescription(data) ||
+          collectionDescription ||
           t('desc', { ns: 'nft' }) +
             (data?.collection?.issuer
               ? ' - ' + t('table.issuer') + ': ' + usernameOrAddress(data?.collection, 'issuer')
@@ -374,7 +359,7 @@ export default function NftCollection({ id, nftList, nftListLoading, selectedCur
       <div className="content-profile">
         {id && !data?.error ? (
           <>
-            {loading ? (
+            {(!data && !errorMessage) ? (
               <div className="center" style={{ marginTop: '80px' }}>
                 <span className="waiting"></span>
                 <br />
@@ -405,8 +390,8 @@ export default function NftCollection({ id, nftList, nftListLoading, selectedCur
                         <div className="column-right">
                           <div className="collection-info">
                             <h2 className="collection-name">{collectionName(data)}</h2>
-                            {collectionDescription(data) && (
-                              <p className="collection-description">{collectionDescription(data)}</p>
+                            {collectionDescription && (
+                              <p className="collection-description">{collectionDescription}</p>
                             )}
                           </div>
 
@@ -545,37 +530,36 @@ export default function NftCollection({ id, nftList, nftListLoading, selectedCur
                               <tbody>
                                 <tr>
                                   <td colSpan={100}>
-                                    {nftListLoading && (
-                                      <div className="center" style={{ marginTop: '10px' }}>
-                                        <span className="waiting"></span>
-                                      </div>
-                                    )}
-
-                                    {!nftListLoading && nftList.length === 0 && (
-                                      <div className="center" style={{ marginTop: '10px' }}>
-                                        No NFTs found
-                                      </div>
-                                    )}
-
-                                    {!nftListLoading && nftList.length > 0 && (
-                                      <div style={{ marginTop: '10px' }}>
-                                        {nftList.map((nft, i) => (
-                                          <Link href={`/nft/${nft.nftokenID}`} key={i}>
-                                            <img
-                                              src={nftUrl(nft, 'image')}
-                                              alt={nftName(nft)}
-                                              style={{
-                                                width: '64px',
-                                                height: '64px',
-                                                objectFit: 'cover',
-                                                borderRadius: '4px',
-                                                margin: '2px'
-                                              }}
-                                            />
-                                          </Link>
-                                        ))}
-                                      </div>
-                                    )}
+                                    <div
+                                      style={{
+                                        marginTop: '10px',
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        justifyContent: 'center', // centers images horizontally
+                                        alignItems: 'start'
+                                      }}
+                                    >
+                                      {nftList.length === 0 && (
+                                        <span>
+                                          No NFTs found
+                                        </span>
+                                      )}
+                                      {nftList?.map((nft, i) => (
+                                        <Link href={`/nft/${nft.nftokenID}`} key={i}>
+                                          <img
+                                            src={nftUrl(nft, 'image')}
+                                            alt={nftName(nft)}
+                                            style={{
+                                              width: '64px',
+                                              height: '64px',
+                                              objectFit: 'cover',
+                                              borderRadius: '4px',
+                                              margin: '2px'
+                                            }}
+                                          />
+                                        </Link>
+                                      ))}
+                                    </div>
                                   </td>
                                 </tr>
                               </tbody>
