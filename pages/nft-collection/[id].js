@@ -19,24 +19,33 @@ import { nftUrl, nftName, ipfsUrl } from '../../utils/nft'
 import SEO from '../../components/SEO'
 import { nftClass } from '../../styles/pages/nft.module.scss'
 import { useWidth } from '../../utils'
+import { axiosServer, passHeaders } from '../../utils/axios'
 
 export async function getServerSideProps(context) {
-  const { locale, query } = context
+  const { locale, query, req } = context
   const { id } = query
   const collectionId = id ? (Array.isArray(id) ? id[0] : id) : ''
+  let dataRes = []
+  let nftRes = []
 
   let errorMessage = ''
 
-  const [dataRes, nftRes] = await Promise.all([
-    axios(
-      `/v2/nft-collection/${encodeURIComponent(collectionId)}?floorPrice=true&statistics=true`
-    ).catch((error) => {
-      errorMessage = 'error.' + error.message
-    }),
-    axios(
-      `/v2/nfts?collection=${encodeURIComponent(collectionId)}&limit=16&order=mintedNew&hasMedia=true`
-    ).catch(() => null)
-  ])
+  try {
+    [dataRes, nftRes] = await Promise.all([
+      axiosServer({
+        method: 'get',
+        url: `/v2/nft-collection/${encodeURIComponent(collectionId)}?floorPrice=true&statistics=true`,
+        headers: passHeaders(req)
+      }),
+      axiosServer({
+        method: 'get',
+        url: `/v2/nfts?collection=${encodeURIComponent(collectionId)}&limit=16&order=mintedNew&hasMedia=true`,
+        headers: passHeaders(req)
+      })
+    ])
+  } catch(error) {
+    errorMessage = "error." + error.message
+  }
 
   if (!dataRes?.data) errorMessage = 'No data found'
 
@@ -76,8 +85,6 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
       } catch (_) {}
     }
     updateIsMobile()
-    window.addEventListener('resize', updateIsMobile)
-    return () => window.removeEventListener('resize', updateIsMobile)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width])
 
