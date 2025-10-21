@@ -2,7 +2,7 @@ import React from 'react'
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled, amountFormatWithIcon, shortAddress } from '../../utils/format'
+import { AddressWithIconFilled, amountFormatWithIcon, amountToFiat, shortAddress } from '../../utils/format'
 import Link from 'next/link'
 
 // Component to display transaction flags with tooltips
@@ -60,8 +60,9 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
           <TransactionFlags flags={specification.flags} txType={data?.tx?.TransactionType} />
         </TData>
       </tr>
-      {specification?.transactions?.map((transaction, index) => (
-        <React.Fragment key={transaction.id || index}>
+      {specification?.transactions?.map((transaction, index) => {
+        const maxAmount = transaction.specification?.source?.maxAmount
+        return <React.Fragment key={transaction.id || index}>
           <tr>
             <TData className="bold">
                 Transaction {index + 1}
@@ -103,16 +104,21 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
             </tr>
           }
           {
-            transaction.specification?.source?.maxAmount &&
+            maxAmount &&
             <tr>
               <TData style={{ paddingLeft: '30px' }}>Max Amount</TData>
-              <TData>
-                {amountFormatWithIcon({ amount: transaction.specification?.source?.maxAmount })}
+              <TData style={{ display: 'flex' }}>
+                {amountFormatWithIcon({ amount: maxAmount })}
+                {amountToFiat({
+                  amount: maxAmount,
+                  selectedCurrency: selectedCurrency,
+                  fiatRate: pageFiatRate
+                })}
               </TData>
             </tr>
           }
         </React.Fragment>
-      ))}
+      })}
     </TransactionCard>
   )
 }
