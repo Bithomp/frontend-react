@@ -57,6 +57,7 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
         <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
         <br />
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
+        {/* show SourceBalanceChanges like payments for all tx types */}
         {outcome && !isSuccessful && (
           <>
             <span className="bold">Failure: </span>

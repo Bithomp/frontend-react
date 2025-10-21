@@ -49,16 +49,16 @@ const TransactionRowPaymentContent = ({ tx, address, selectedCurrency }) => {
           {specification?.destination?.address === address ? (
             <>
               <FiDownload style={{ stroke: 'green', fontSize: 16 }} />
-              <span>{addressUsernameOrServiceLink(specification?.source, 'address')}</span>
+              <span>{addressUsernameOrServiceLink(specification, 'source')}</span>
             </>
           ) : specification?.source?.address === address ? (
             <>
               <FiUpload style={{ stroke: 'red', fontSize: 16 }} />
-              <span>{addressUsernameOrServiceLink(specification?.destination, 'address')}</span>
+              <span>{addressUsernameOrServiceLink(specification, 'destination')}</span>
             </>
           ) : (
             <>
-              <span>Payment By {addressUsernameOrServiceLink(specification?.source, 'address')}</span>
+              <span>Payment By {addressUsernameOrServiceLink(specification, 'source')}</span>
             </>
           )}
         </div>

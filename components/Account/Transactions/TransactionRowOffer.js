@@ -2,6 +2,7 @@ import { TransactionRowCard } from './TransactionRowCard'
 import { useTxFiatRate } from './FiatRateContext'
 import { addressBalanceChanges } from '../../../utils/transaction'
 import { amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
+import { nativeCurrency } from '../../../utils'
 
 const flagList = (flags) => {
   let flagsString = ''
@@ -18,22 +19,15 @@ const flagList = (flags) => {
   return flagsString
 }
 
-const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
+const TransactionRowOfferContent = ({ tx, selectedCurrency, myOrderbookChange, myBalanceChangesList }) => {
   const pageFiatRate = useTxFiatRate()
 
-  const { specification, outcome } = tx
+  const { specification } = tx
 
-  const sourceOrderbookChange = outcome?.orderbookChanges
-    ?.filter((entry) => entry.address === specification.source.address)?.[0]
-    ?.orderbookChanges.filter((entry) => entry.sequence === specification.orderSequence)?.[0]
-
-  const takerGets = specification.takerGets || sourceOrderbookChange?.takerGets
-  const takerPays = specification.takerPays || sourceOrderbookChange?.takerPays
+  const takerGets = specification.takerGets || myOrderbookChange?.takerGets
+  const takerPays = specification.takerPays || myOrderbookChange?.takerPays
 
   const flagsAsString = flagList(specification?.flags)
-
-  //for payments executor is always the sender, so we can check executor's balance changes.
-  const sourceBalanceChangesList = addressBalanceChanges(tx, specification.source.address)
 
   return (
     <>
@@ -49,12 +43,12 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
           <span>{amountFormat(takerPays, { icon: true, withIssuer: true, bold: true })}</span>
         </div>
       )}
-      {sourceBalanceChangesList.length === 2 && (
+      {myBalanceChangesList.length === 2 && (
         <>
           <div className="flex gap-1">
             <span>Exchanged: </span>
             <span>
-              {sourceBalanceChangesList.map((change, index) => (
+              {myBalanceChangesList.map((change, index) => (
                 <div key={index}>
                   {amountFormat(change, {
                     icon: true,
@@ -73,8 +67,8 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
             <span>
               {amountFormat(
                 {
-                  currency: sourceBalanceChangesList[0].currency,
-                  issuer: sourceBalanceChangesList[0].issuer,
+                  currency: myBalanceChangesList[0].currency,
+                  issuer: myBalanceChangesList[0].issuer,
                   value: 1
                 },
                 { icon: true }
@@ -83,8 +77,8 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
               <span className="bold">
                 {amountFormat(
                   {
-                    ...sourceBalanceChangesList[1],
-                    value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                    ...myBalanceChangesList[1],
+                    value: Math.abs(myBalanceChangesList[1].value / myBalanceChangesList[0].value)
                   },
                   { icon: true }
                 )}
@@ -92,8 +86,8 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
               <br />
               {amountFormat(
                 {
-                  currency: sourceBalanceChangesList[1].currency,
-                  issuer: sourceBalanceChangesList[1].issuer,
+                  currency: myBalanceChangesList[1].currency,
+                  issuer: myBalanceChangesList[1].issuer,
                   value: 1
                 },
                 { icon: true }
@@ -102,8 +96,8 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
               <span className="bold">
                 {amountFormat(
                   {
-                    ...sourceBalanceChangesList[0],
-                    value: Math.abs(sourceBalanceChangesList[0].value / sourceBalanceChangesList[1].value)
+                    ...myBalanceChangesList[0],
+                    value: Math.abs(myBalanceChangesList[0].value / myBalanceChangesList[1].value)
                   },
                   { icon: true }
                 )}
@@ -125,13 +119,36 @@ const TransactionRowOfferContent = ({ tx, selectedCurrency }) => {
 export const TransactionRowOffer = ({ tx, address, index, selectedCurrency }) => {
   const { specification, outcome } = tx
 
-  const sourceOrderbookChange = outcome?.orderbookChanges
-    ?.filter((entry) => entry.address === specification.source.address)?.[0]
+  const myOrderbookChange = outcome?.orderbookChanges
+    ?.filter((entry) => entry.address === address)?.[0]
     ?.orderbookChanges.filter((entry) => entry.sequence === specification.orderSequence)?.[0]
 
-  const direction = (specification.flags ? specification.flags.sell : sourceOrderbookChange?.direction) ? 'Sell' : 'Buy'
+  const direction = (specification.flags ? specification.flags.sell : myOrderbookChange?.direction) ? 'Sell' : 'Buy'
 
-  const txTypeSpecial = tx.tx?.TransactionType + ' - ' + direction + ' Order'
+  const myBalanceChangesList = addressBalanceChanges(tx, address)
+
+  let orderStatus = ''
+
+  if (
+    myBalanceChangesList?.length === 1 &&
+    myBalanceChangesList[0].currency === nativeCurrency &&
+    myBalanceChangesList[0].value === -tx.Fee
+  ) {
+    orderStatus = 'placed'
+  } else {
+    if (address !== tx.tx?.Account) {
+      orderStatus = 'fullfilled'
+      const seq = specification.sequence || specification.ticketSequence
+      if (seq) {
+        orderStatus += ' #'.seq
+      }
+    } else {
+      orderStatus = 'placed and fulfilled'
+    }
+  }
+
+  const txTypeSpecial = tx.tx?.TransactionType + ' - ' + direction + ' Order ' + orderStatus
+
   return (
     <TransactionRowCard
       data={tx}
@@ -140,7 +157,12 @@ export const TransactionRowOffer = ({ tx, address, index, selectedCurrency }) =>
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
     >
-      <TransactionRowOfferContent tx={tx} selectedCurrency={selectedCurrency} />
+      <TransactionRowOfferContent
+        tx={tx}
+        selectedCurrency={selectedCurrency}
+        myOrderbookChange={myOrderbookChange}
+        myBalanceChangesList={myBalanceChangesList}
+      />
     </TransactionRowCard>
   )
 }
