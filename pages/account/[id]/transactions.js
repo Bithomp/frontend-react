@@ -43,10 +43,9 @@ export async function getServerSideProps(context) {
   const { id, fromDate, toDate, txType, initiated, excludeFailures, counterparty, order } = query
   const account = id || ''
   const limit = 20
-  let initialTransactions = []
   let initialErrorMessage = ''
-  let initialMarker = null
   let userData = null
+  let initialData = null
 
   if (account) {
     try {
@@ -76,8 +75,7 @@ export async function getServerSideProps(context) {
         url: `v3/transactions/${account}?limit=${limit}`,
         headers: passHeaders(req)
       })
-      initialTransactions = res?.data?.transactions || res?.data || []
-      initialMarker = res?.data?.marker || null
+      initialData = res?.data
     } catch (e) {
       initialErrorMessage = e?.message || 'Failed to load transactions'
     }
@@ -86,9 +84,8 @@ export async function getServerSideProps(context) {
   return {
     props: {
       address: account,
-      initialTransactions,
+      initialData: initialData || null,
       initialErrorMessage,
-      initialMarker,
       userData: userData || {},
       isSsrMobile: getIsSsrMobile(context),
       fromDateQuery: fromDate || '',
@@ -105,9 +102,8 @@ export async function getServerSideProps(context) {
 
 export default function AccountTransactions({
   address,
-  initialTransactions,
+  initialData,
   initialErrorMessage,
-  initialMarker,
   userData,
   selectedCurrency,
   fromDateQuery,
@@ -124,8 +120,8 @@ export default function AccountTransactions({
   const firstRenderRef = useRef(true)
 
   // State management
-  const [transactions, setTransactions] = useState(initialTransactions || [])
-  const [marker, setMarker] = useState(initialMarker || null)
+  const [transactions, setTransactions] = useState(initialData?.transactions || [])
+  const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState(orderQuery) // newest | oldest
@@ -136,10 +132,6 @@ export default function AccountTransactions({
   const [counterparty, setCounterparty] = useState(counterpartyQuery)
   const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
   const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
-
-  useEffect(() => {
-    setTransactions(initialTransactions)
-  }, [initialTransactions])
 
   // Refresh transactions when order changes
   useEffect(() => {
