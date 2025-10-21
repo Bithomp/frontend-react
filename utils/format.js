@@ -1054,12 +1054,18 @@ export const fullDateAndTime = (timestamp, type = null, options) => {
   }
 }
 
-export const timeFormat = (timestamp) => {
+export const timeFormat = (timestamp, type = null) => {
+  if (type === 'ripple') {
+    timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+  }
   return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
 export const dateFormat = (timestamp, stringParams = {}, params = {}) => {
   if (timestamp) {
+    if (type === 'ripple') {
+      timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+    }
     if (params.type?.toUpperCase() !== 'ISO') {
       timestamp = timestamp * 1000
     }

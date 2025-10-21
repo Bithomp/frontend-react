@@ -10,8 +10,6 @@ import { FiCalendar, FiClock } from 'react-icons/fi'
 export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
   const { specification, tx, outcome } = data
-  const date = dateFormat(tx.date + 946684800)
-  const time = timeFormat(tx.date + 946684800)
   const memos = specification?.memos
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
@@ -39,17 +37,16 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
           : ''
       }}
       className="border-b-1"
-      suppressHydrationWarning
     >
       <td className="bold center" style={{ width: 10 }}>
         {index + 1}
       </td>
       <td className="left" style={{ width: 70 }}>
-        <span className="flex items-center gap-1" suppressHydrationWarning>
-          <FiCalendar style={{ stroke: '#666' }} /> {date}
+        <span className="flex items-center gap-1">
+          <FiCalendar style={{ stroke: '#666' }} /> {dateFormat(tx.date, {}, { type: 'ripple' })}
         </span>
-        <span className="flex items-center gap-1" suppressHydrationWarning>
-          <FiClock style={{ stroke: '#666' }} /> {time}
+        <span className="flex items-center gap-1">
+          <FiClock style={{ stroke: '#666' }} /> {timeFormat(tx.date, 'ripple')}
         </span>
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
