@@ -11,7 +11,8 @@ import {
   addressUsernameOrServiceLink,
   amountFormat,
   convertedAmount,
-  nativeCurrencyToFiat
+  nativeCurrencyToFiat,
+  fullDateAndTime
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { nftUrl, nftName, ipfsUrl } from '../../utils/nft'
@@ -51,12 +52,12 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      id: collectionId,
-      data: dataRes?.data,
+      id: collectionId || null,
+      data: dataRes?.data || null,
       nftList: nftRes?.data?.nfts || [],
       isSsrMobile: getIsSsrMobile(context),
-      errorMessage: errorMessage,
-      ...(await serverSideTranslations(locale, ['common', 'nft']))
+      errorMessage: errorMessage || null,
+      ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
@@ -65,9 +66,9 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
   const { t } = useTranslation()
   const width = useWidth()
   const [mounted, setMounted] = useState(false)
-  const statistics = data?.collection?.statistics
-  const issuerDetails = data?.collection?.issuerDetails
   const collection = data?.collection
+  const statistics = collection?.statistics
+  const issuerDetails = collection?.issuerDetails
   const [activityData, setActivityData] = useState({
     sales: [],
     listings: [],
@@ -127,10 +128,10 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
       )
     )
   }
+``
+  const collectionDescription = collection?.description
 
-  const collectionDescription = data?.collection?.description
-
-  const imageUrl = ipfsUrl(data?.collection?.image)
+  const imageUrl = ipfsUrl(collection?.image)
 
   const renderActivityTable = (kind) => {
     let title = ''
@@ -207,7 +208,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                               </div>
                               <div>
                                 <span>Date: </span>
-                                {item.acceptedAt ? new Date(item.acceptedAt * 1000).toLocaleDateString() : ''}
+                                {item.acceptedAt ? fullDateAndTime(item.acceptedAt) : ''}
                               </div>
                             </>
                           )}
@@ -228,7 +229,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                               </div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 <span>Date: </span>
-                                {new Date(item.ownerChangedAt * 1000).toLocaleDateString()}
+                                {fullDateAndTime(item.ownerChangedAt)}
                               </div>
                             </>
                           )}
@@ -240,7 +241,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                               </div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 <span>Date: </span>
-                                {new Date(item.issuedAt * 1000).toLocaleDateString()}
+                                {fullDateAndTime(item.issuedAt)}
                               </div>
                             </>
                           )}
@@ -312,7 +313,9 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                     <td>
                       {amountFormat(item.amount)}≈ {convertedAmount(item, selectedCurrency, { short: true })}
                     </td>
-                    <td>{item.acceptedAt ? new Date(item.acceptedAt * 1000).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                      {item.acceptedAt ? fullDateAndTime(item.acceptedAt) : 'N/A'}
+                    </td>
                   </>
                 )}
                 {kind === 'listings' && (
@@ -324,7 +327,9 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                       {amountFormat(item?.sellOffers?.[0]?.amount)}
                       {nativeCurrencyToFiat({ amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate })}
                     </td>
-                    <td>{new Date(item.ownerChangedAt * 1000).toLocaleDateString()}</td>
+                    <td>
+                      {fullDateAndTime(item.ownerChangedAt)}
+                    </td>
                   </>
                 )}
                 {kind === 'mints' && (
@@ -332,7 +337,9 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                     <td>
                       {item.owner && <AddressWithIconFilled data={item} name="owner" options={{ short: true }} />}
                     </td>
-                    <td>{new Date(item.issuedAt * 1000).toLocaleDateString()}</td>
+                    <td>
+                      {fullDateAndTime(item.issuedAt)}
+                    </td>
                   </>
                 )}
               </tr>
@@ -357,8 +364,8 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
         description={
           collectionDescription ||
           t('desc', { ns: 'nft' }) +
-            (data?.collection?.issuer
-              ? ' - ' + t('table.issuer') + ': ' + usernameOrAddress(data?.collection, 'issuer')
+            (collection?.issuer
+              ? ' - ' + t('table.issuer') + ': ' + usernameOrAddress(collection, 'issuer')
               : '')
         }
         image={{ file: imageUrl }}
@@ -402,7 +409,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                             )}
                           </div>
 
-                          {mounted && data?.collection?.issuerDetails && (
+                          {mounted && collection?.issuer && (
                             <table className="table-details">
                               <thead>
                                 <tr>
@@ -413,7 +420,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                 <tr>
                                   <td>Address</td>
                                   <td>
-                                    <AddressWithIconFilled data={issuerDetails} name="address" />
+                                    <AddressWithIconFilled data={collection} name="issuer" />
                                   </td>
                                 </tr>
                                 {issuerDetails?.username && (
@@ -422,7 +429,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                     <td>{issuerDetails.username}</td>
                                   </tr>
                                 )}
-                                {data?.collection?.issuerDetails?.service && (
+                                {collection?.issuerDetails?.service && (
                                   <tr>
                                     <td>Service</td>
                                     <td>{issuerDetails.service}</td>
@@ -437,13 +444,17 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                 {collection?.createdAt && (
                                   <tr>
                                     <td>Created At</td>
-                                    <td>{new Date(collection?.createdAt * 1000).toLocaleString()}</td>
+                                    <td>
+                                      {fullDateAndTime(collection.createdAt)}
+                                    </td>
                                   </tr>
                                 )}
                                 {collection?.updatedAt && (
                                   <tr>
                                     <td>Updated At</td>
-                                    <td>{new Date(collection?.updatedAt * 1000).toLocaleString()}</td>
+                                    <td>
+                                      {fullDateAndTime(collection.updatedAt)}
+                                    </td>
                                   </tr>
                                 )}
                               </tbody>
