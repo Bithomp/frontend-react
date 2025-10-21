@@ -1,7 +1,7 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { useTxFiatRate } from './FiatRateContext'
-import { addressBalanceChanges } from '../../utils/transaction'
-import { amountFormat, nativeCurrencyToFiat } from '../../utils/format'
+import { addressBalanceChanges } from '../../../utils/transaction'
+import { amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
 
 const flagList = (flags) => {
   let flagsString = ''

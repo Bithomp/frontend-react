@@ -1,7 +1,7 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { amountFormat, nativeCurrencyToFiat } from '../../utils/format'
+import { amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
 import { useTxFiatRate } from './FiatRateContext'
-import { dappBySourceTag } from '../../utils/transaction'
+import { dappBySourceTag } from '../../../utils/transaction'
 
 const TransactionRowCheckContent = ({ tx, selectedCurrency }) => {
   const pageFiatRate = useTxFiatRate()

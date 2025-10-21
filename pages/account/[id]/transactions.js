@@ -36,7 +36,7 @@ import {
   TransactionRowRemit,
   TransactionRowEnableAmendment,
   TransactionRowDelegateSet
-} from '../../../components/Transactions'
+} from '../../../components/Account/Transactions'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context

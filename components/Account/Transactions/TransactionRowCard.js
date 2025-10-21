@@ -1,10 +1,10 @@
-import { amountFormat, dateFormat, nativeCurrencyToFiat, timeFormat } from '../../utils/format'
+import { amountFormat, dateFormat, nativeCurrencyToFiat, timeFormat } from '../../../utils/format'
 import { useEffect, useState } from 'react'
-import { fetchHistoricalRate } from '../../utils/common'
+import { fetchHistoricalRate } from '../../../utils/common'
 import { TxFiatRateContext } from './FiatRateContext'
 import { LinkTx } from '../../utils/links'
-import { errorCodeDescription, shortErrorCode, dappBySourceTag } from '../../utils/transaction'
-import { useWidth } from '../../utils'
+import { errorCodeDescription, shortErrorCode, dappBySourceTag } from '../../../utils/transaction'
+import { useWidth } from '../../../utils'
 import { FiCalendar, FiClock } from 'react-icons/fi'
 
 export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selectedCurrency }) => {
@@ -87,7 +87,9 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             <span className="gray">Sequence: {tx.Sequence}</span>
             <br />
           </>
-        ) : ''}
+        ) : (
+          ''
+        )}
         {(dapp ||
           (tx?.SourceTag !== undefined &&
             tx.TransactionType !== 'Payment' &&

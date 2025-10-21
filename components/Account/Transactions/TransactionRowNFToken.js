@@ -1,7 +1,13 @@
 import React from 'react'
 import { TransactionRowCard } from './TransactionRowCard'
-import { nftIdLink, nftOfferLink, amountFormat, addressUsernameOrServiceLink, nativeCurrencyToFiat} from '../../utils/format'
-import { addressBalanceChanges } from '../../utils/transaction'
+import {
+  nftIdLink,
+  nftOfferLink,
+  amountFormat,
+  addressUsernameOrServiceLink,
+  nativeCurrencyToFiat
+} from '../../../utils/format'
+import { addressBalanceChanges } from '../../../utils/transaction'
 import { useTxFiatRate } from './FiatRateContext'
 
 const nftData = (change, nftInfo, txType) => {
@@ -14,11 +20,13 @@ const nftData = (change, nftInfo, txType) => {
           <span>Change: </span>
           <span>removed NFT {nftIdLink(change.nftokenID)}</span>
         </div>
-      ) : <div>
-            <span>NFT: </span>
-            <span>{nftIdLink(change.nftokenID)}</span>
-          </div>  }
-      
+      ) : (
+        <div>
+          <span>NFT: </span>
+          <span>{nftIdLink(change.nftokenID)}</span>
+        </div>
+      )}
+
       {nftInfo.transferFee !== undefined && txType !== 'NFTokenBurn' && (
         <div>
           <span>Royalty: </span>
@@ -36,7 +44,7 @@ const nftData = (change, nftInfo, txType) => {
           <span>NFT taxon: </span>
           <span>{nftInfo.nftokenTaxon}</span>
         </div>
-      )}      
+      )}
     </>
   )
 }
@@ -72,8 +80,7 @@ const showAllOfferLinks = (changes) => {
   return indexes
 }
 
-const TransactionRowNFTokenContent = ({ tx, address, selectedCurrency, txType}) => {
-
+const TransactionRowNFTokenContent = ({ tx, address, selectedCurrency, txType }) => {
   const { specification, outcome } = tx
   const pageFiatRate = useTxFiatRate()
 
@@ -84,33 +91,27 @@ const TransactionRowNFTokenContent = ({ tx, address, selectedCurrency, txType}) 
       {outcome?.nftokenChanges?.length > 0 && (
         <>
           {/* For NFTokenAcceptOffer, show NFT info only once */}
-          {txType === 'NFTokenAcceptOffer' ? (
-            (() => {
-              const firstChange = outcome.nftokenChanges[0]?.nftokenChanges[0]
-              const nftInfo = firstChange ? outcome?.affectedObjects?.nftokens?.[firstChange.nftokenID] : null
-              return firstChange && nftInfo ? (
-                <React.Fragment key="nft-info">
-                  {nftData(firstChange, nftInfo, txType)}
-                </React.Fragment>
-              ) : null
-            })()
-          ) : (
-            /* For other transaction types, show NFT info for each change */
-            outcome.nftokenChanges.map((change, i) => {
-              const nftChanges = change.nftokenChanges
-              return nftChanges.map((nftChange, j) => {
-                const nftInfo = outcome?.affectedObjects?.nftokens?.[nftChange.nftokenID]
-                return (
-                  <React.Fragment key={'t' + i + '-' + j}>{nftData(nftChange, nftInfo, txType)}</React.Fragment>
-                )
-              })
-            })
-          )}
+          {txType === 'NFTokenAcceptOffer'
+            ? (() => {
+                const firstChange = outcome.nftokenChanges[0]?.nftokenChanges[0]
+                const nftInfo = firstChange ? outcome?.affectedObjects?.nftokens?.[firstChange.nftokenID] : null
+                return firstChange && nftInfo ? (
+                  <React.Fragment key="nft-info">{nftData(firstChange, nftInfo, txType)}</React.Fragment>
+                ) : null
+              })()
+            : /* For other transaction types, show NFT info for each change */
+              outcome.nftokenChanges.map((change, i) => {
+                const nftChanges = change.nftokenChanges
+                return nftChanges.map((nftChange, j) => {
+                  const nftInfo = outcome?.affectedObjects?.nftokens?.[nftChange.nftokenID]
+                  return <React.Fragment key={'t' + i + '-' + j}>{nftData(nftChange, nftInfo, txType)}</React.Fragment>
+                })
+              })}
         </>
       )}
 
       {/* For sell offers, show NFT owner, NFT ID, and destination */}
-      {txType === "NFTokenCreateOffer" && (
+      {txType === 'NFTokenCreateOffer' && (
         <>
           {/* For sell offers not initiated by this account, show who created the offer */}
           {specification?.flags?.sellToken && specification?.source?.address !== address && (
@@ -123,7 +124,7 @@ const TransactionRowNFTokenContent = ({ tx, address, selectedCurrency, txType}) 
         </>
       )}
 
-      {txType === "NFTokenCancelOffer" && (
+      {txType === 'NFTokenCancelOffer' && (
         <>
           {/* For cancel offers not initiated by this account, show who initiated the cancel */}
           {specification?.source?.address !== address && (
@@ -137,7 +138,7 @@ const TransactionRowNFTokenContent = ({ tx, address, selectedCurrency, txType}) 
       )}
 
       {/* For buy offers, show NFT owner, NFT ID, and destination */}
-      {txType === "NFTokenCreateOffer" && !specification?.flags?.sellToken && (
+      {txType === 'NFTokenCreateOffer' && !specification?.flags?.sellToken && (
         <>
           {tx?.tx?.Owner && (
             <>
@@ -185,8 +186,7 @@ const TransactionRowNFTokenContent = ({ tx, address, selectedCurrency, txType}) 
               <span>Amount: </span>
               <span className="bold">{amountFormat(amountChange, { icon: true })}</span>
               <span>
-                {
-                nativeCurrencyToFiat({
+                {nativeCurrencyToFiat({
                   amount: amountChange,
                   selectedCurrency,
                   fiatRate: pageFiatRate
@@ -199,7 +199,9 @@ const TransactionRowNFTokenContent = ({ tx, address, selectedCurrency, txType}) 
           {tx?.tx?.NFTokenBrokerFee && tx?.tx?.NFTokenBrokerFee !== '0' && (
             <>
               <span>Broker fee: </span>
-              <span className="bold">{amountFormat(specification.nftokenBrokerFee, { tooltip: 'right', icon: true })}</span>
+              <span className="bold">
+                {amountFormat(specification.nftokenBrokerFee, { tooltip: 'right', icon: true })}
+              </span>
               <br />
             </>
           )}
@@ -208,16 +210,18 @@ const TransactionRowNFTokenContent = ({ tx, address, selectedCurrency, txType}) 
             <>
               <span>Transfer From: </span>
               <span className="bold">
-                {addressUsernameOrServiceLink(outcome.nftokenChanges.find(change => 
-                  change.nftokenChanges[0]?.status === 'removed'
-                ), 'address')}
+                {addressUsernameOrServiceLink(
+                  outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'removed'),
+                  'address'
+                )}
               </span>
               <br />
               <span>Transfer To: </span>
               <span className="bold">
-                {addressUsernameOrServiceLink(outcome.nftokenChanges.find(change => 
-                  change.nftokenChanges[0]?.status === 'added'
-                ), 'address')}
+                {addressUsernameOrServiceLink(
+                  outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'added'),
+                  'address'
+                )}
               </span>
               <br />
             </>
@@ -236,12 +240,9 @@ const TransactionRowNFTokenContent = ({ tx, address, selectedCurrency, txType}) 
       {tx.tx.Amount && (
         <div>
           <span>{txType === 'NFTokenMint' ? 'Price: ' : 'Amount: '}</span>
-          <span className="bold">
-            {amountFormat(specification.amount, { tooltip: 'right', icon: true })}
-          </span>
+          <span className="bold">{amountFormat(specification.amount, { tooltip: 'right', icon: true })}</span>
           <span>
-            {
-            nativeCurrencyToFiat({
+            {nativeCurrencyToFiat({
               amount: specification.amount,
               selectedCurrency,
               fiatRate: pageFiatRate
@@ -253,7 +254,7 @@ const TransactionRowNFTokenContent = ({ tx, address, selectedCurrency, txType}) 
   )
 }
 
-export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency}) => {
+export const TransactionRowNFToken = ({ tx, address, index, selectedCurrency }) => {
   const { specification } = tx
   const txType = tx?.tx?.TransactionType
   const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
