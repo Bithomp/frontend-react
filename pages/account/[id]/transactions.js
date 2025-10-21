@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -46,7 +46,7 @@ export async function getServerSideProps(context) {
   let initialTransactions = []
   let initialErrorMessage = ''
   let initialMarker = null
-  let initialUserData = null
+  let userData = null
 
   if (account) {
     try {
@@ -56,17 +56,24 @@ export async function getServerSideProps(context) {
         url: `v2/address/${account}?username=true&service=true&verifiedDomain=true`,
         headers: passHeaders(req)
       })
-      initialUserData = userRes?.data
+      userData = {
+        username: userRes?.data?.username,
+        service: userRes?.data?.service?.name,
+        address: account
+      }
     } catch (e) {
       // If user data fetch fails, continue without it
       console.error('Failed to fetch user data:', e?.message)
     }
 
+    // REMOVE THE previous CALL
+    // GET addressDetails in the transactions call!
+
     try {
       // Fetch transactions
       const res = await axiosServer({
         method: 'get',
-        url: `v3/transactions/${initialUserData?.address || account}?limit=${limit}`,
+        url: `v3/transactions/${account}?limit=${limit}`,
         headers: passHeaders(req)
       })
       initialTransactions = res?.data?.transactions || res?.data || []
@@ -78,11 +85,11 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      id: account,
+      address: account,
       initialTransactions,
       initialErrorMessage,
       initialMarker,
-      initialUserData: initialUserData || {},
+      userData: userData || {},
       isSsrMobile: getIsSsrMobile(context),
       fromDateQuery: fromDate || '',
       toDateQuery: toDate || '',
@@ -97,11 +104,11 @@ export async function getServerSideProps(context) {
 }
 
 export default function AccountTransactions({
-  id,
+  address,
   initialTransactions,
   initialErrorMessage,
   initialMarker,
-  initialUserData,
+  userData,
   selectedCurrency,
   fromDateQuery,
   toDateQuery,
@@ -114,13 +121,7 @@ export default function AccountTransactions({
   const { t } = useTranslation()
   const width = useWidth()
   const router = useRouter()
-
-  // User data for SearchBlock
-  const [userData, setUserData] = useState({
-    username: initialUserData?.username,
-    service: initialUserData?.service?.name,
-    address: initialUserData?.address || id
-  })
+  const firstRenderRef = useRef(true)
 
   // State management
   const [transactions, setTransactions] = useState(initialTransactions || [])
@@ -136,30 +137,23 @@ export default function AccountTransactions({
   const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
   const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
 
-  // Update userData when initialUserData changes
-  useEffect(() => {
-    if (!initialUserData?.address) return
-    setUserData({
-      username: initialUserData.username,
-      service: initialUserData.service?.name,
-      address: initialUserData.address
-    })
-  }, [initialUserData])
-
   useEffect(() => {
     setTransactions(initialTransactions)
   }, [initialTransactions])
 
-  // Refresh transactions when order changes (keep this automatic)
+  // Refresh transactions when order changes
   useEffect(() => {
-    if (userData?.address) {
-      setLoading(true)
-      setTransactions([])
-      setMarker(null)
-      fetchTransactions({ restart: true })
+    // Skip fetch on first render
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false
+      return
     }
+    setLoading(true)
+    setTransactions([])
+    setMarker(null)
+    fetchTransactions({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, userData?.address])
+  }, [order])
 
   // Sync filter changes to URL
   useEffect(() => {
@@ -212,7 +206,7 @@ export default function AccountTransactions({
   // Build API url
   const apiUrl = (opts = {}) => {
     const limit = 20
-    let url = `v3/transactions/${userData?.address}?limit=${limit}`
+    let url = `v3/transactions/${address}?limit=${limit}`
     // pagination marker
     if (opts.marker) {
       const markerString = typeof opts.marker === 'object' ? JSON.stringify(opts.marker) : opts.marker
@@ -325,7 +319,11 @@ export default function AccountTransactions({
 
   return (
     <>
-      <SEO page="Transactions" title={`Transactions of ${id}`} description={`All transactions for address ${id}`} />
+      <SEO
+        page="Transactions"
+        title={`Transactions of ${address}`}
+        description={`All transactions for address ${address}`}
+      />
       <SearchBlock tab="transactions" searchPlaceholderText={t('explorer.enter-address')} userData={userData} />
 
       <FiltersFrame
@@ -503,7 +501,7 @@ export default function AccountTransactions({
                       <TransactionRowComponent
                         key={tx.hash || index}
                         tx={tx}
-                        address={userData?.address}
+                        address={address}
                         index={index}
                         selectedCurrency={selectedCurrency}
                       />
