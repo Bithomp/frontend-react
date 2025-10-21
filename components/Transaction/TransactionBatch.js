@@ -43,7 +43,7 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
             </TData>
           </tr>
           <tr>
-            <TData style={{ paddingLeft: '30px' }}>ID</TData>
+            <TData>ID</TData>
             <TData>
               <Link href={`/tx/${transaction.id}`}>
                 {shortAddress(transaction.id)}
@@ -51,19 +51,19 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
             </TData>
           </tr>
           <tr>
-            <TData style={{ paddingLeft: '30px' }}>Type</TData>
+            <TData>Type</TData>
             <TData>
               <span className="bold">{transaction?.type}</span>
             </TData>
           </tr>
           <tr>
-            <TData style={{ paddingLeft: '30px' }}>Sequence</TData>
+            <TData>Sequence</TData>
             <TData>
               #{transaction?.sequence}
             </TData>
           </tr>
           <tr>
-            <TData style={{ paddingLeft: '30px' }}>Flags</TData>
+            <TData>Flags</TData>
             <TData>
               {showFlags(transaction?.specification?.flags)}
             </TData>
@@ -71,7 +71,7 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
           {
             transaction.specification.destination &&
             <tr>
-              <TData style={{ paddingLeft: '30px' }}>Destination</TData>
+              <TData>Destination</TData>
               <TData>
                 <AddressWithIconFilled data={transaction.specification.destination} name="address" />
               </TData>
@@ -80,7 +80,7 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
           {
             maxAmount &&
             <tr>
-              <TData style={{ paddingLeft: '30px' }}>Max Amount</TData>
+              <TData>Max Amount</TData>
               <TData style={{ display: 'flex' }}>
                 {amountFormatWithIcon({ amount: maxAmount })}
                 {amountToFiat({
