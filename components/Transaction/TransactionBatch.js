@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification } = data
+  const { specification, outcome } = data
 
   return (
     <TransactionCard
@@ -22,6 +22,12 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
+      {outcome?.parentBatchID && (
+        <tr>
+          <TData>Parent batch ID</TData>
+          <TData>{addressUsernameOrServiceLink(outcome, 'parentBatchID', { short: true, url: '/tx/' })}</TData>
+        </tr>
+      )}
       <tr>
         <TData>Flags</TData>
         <TData>

@@ -477,13 +477,6 @@ export const TransactionCard = ({
                         })}
                       </>
                     )}
-                  {outcome?.parentBatchID && (
-                    <tr>
-                      <TData>Parent batch ID</TData>
-                      <TData>{addressUsernameOrServiceLink(outcome, 'parentBatchID', { short: true, url: '/tx/' })}</TData>
-                    </tr>
-                  )}
-
                   {outcome?.exchanges?.length > 0 && (
                     <>
                       <tr>
