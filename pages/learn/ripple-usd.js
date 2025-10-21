@@ -43,7 +43,7 @@ export default function RLUSD() {
             <em>April 11, 2025</em>
           </p>
           <p>
-            <a href="https://www.mexc.com/ru-RU/price/ripple-usd">Ripple USD (RLUSD)</a> is a stablecoin designed to
+            <a href="https://www.mexc.com/price/ripple-usd">Ripple USD (RLUSD)</a> is a stablecoin designed to
             bring speed, reliability, and dollar-backed stability to global payments. Issued by Ripple in 2024, RLUSD is
             built for real-world utility — from remittances and trading to financial settlement — all powered by fast
             and cost-effective blockchain infrastructure.
