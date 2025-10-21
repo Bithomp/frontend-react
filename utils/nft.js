@@ -20,7 +20,7 @@ export const mpUrl = (offer) => {
   let url = ''
   if (service === 'bidds') {
     url = 'https://nft.bidds.com/nft/'
-  } else if (service === 'xrp.cafe') {
+  } else if (service === 'xrp.cafe' || service === 'xrp.cafe (auction)') {
     url = 'https://xrp.cafe/nft/'
   } else if (service === 'xMart') {
     url = 'https://api.xmart.art/nft/'
@@ -264,7 +264,11 @@ export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
     url = url.replace('#', '%23')
     if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail' || type === 'preview')) {
       return 'https://cdn.' + webSiteName + '/' + type + '/' + url + filename
-    } else if (gateway === 'cl' && type === 'model') {
+    } else if (
+      gateway === 'cl' &&
+      type === 'model' &&
+      url.includes('QmUR2XyUZvGvsNMmLBA5joPduT4f95jSMGzzzmCkckKSF4/?object=')
+    ) {
       return stripText(uri)
     } else if (gateway === 'cl' || type === 'audio' || type === 'model' || type === 'viewer') {
       return 'https://ipfs.io/ipfs/' + url + filename
@@ -274,7 +278,7 @@ export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
   }
 }
 
-const assetUrl = (uri, type = 'image', gateway = 'our') => {
+const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => {
   uri = uri.toString()
   if (
     type === 'image' &&
@@ -308,9 +312,9 @@ const assetUrl = (uri, type = 'image', gateway = 'our') => {
     if (type === 'video' && uri.toLowerCase().includes('youtube.com')) {
       return null
     }
-    if (type === 'audio') {
-      // for https:// audio return original url
-      return uri
+    if (flags?.mutable && type === 'image') {
+      //mutable NFTs can have changing images, so we do not cache them
+      return stripText(uri)
     }
     return `https://cdn.${webSiteName}/${type}?url=${encodeURIComponent(stripText(uri))}`
   } else if ((type === 'image' || type === 'thumbnail') && uri.slice(0, 10) === 'data:image') {
@@ -323,50 +327,51 @@ const assetUrl = (uri, type = 'image', gateway = 'our') => {
 const metaUrl = (nft, type = 'image', gateway = 'our') => {
   if (!nft.metadata) return null
   let meta = nft.metadata
+  let flags = nft.flags
   if (type === 'image' || type === 'thumbnail' || type === 'preview') {
     //Evernode
     if ((meta.evernodeRegistration || meta.evernodeLease) && gateway === 'our') {
       return '/images/nft/evernode.png'
     }
     //XLS-35
-    if (meta.content?.url) return assetUrl(meta.content.url, type, gateway)
+    if (meta.content?.url) return assetUrl(meta.content.url, type, gateway, flags)
     //XLS-20
-    if (meta.image) return assetUrl(meta.image, type, gateway)
-    if (meta.image_url) return assetUrl(meta.image_url, type, gateway)
-    if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway)
-    if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway)
+    if (meta.image) return assetUrl(meta.image, type, gateway, flags)
+    if (meta.image_url) return assetUrl(meta.image_url, type, gateway, flags)
+    if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway, flags)
+    if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway, flags)
     //sologenic
     if (meta.content_type && meta.content_type.includes('image') && meta.file_extension && nft.uri) {
       let decodedUri = Buffer.from(nft.uri, 'hex').toString()
       if (decodedUri.toLowerCase().includes('metadata.json')) {
-        return assetUrl(decodedUri.replace('metadata.json', 'data.' + meta.file_extension), type, gateway)
+        return assetUrl(decodedUri.replace('metadata.json', 'data.' + meta.file_extension), type, gateway, flags)
       }
     }
     //image from animation
-    if (meta.animation) return assetUrl(meta.animation, 'preview', gateway)
-    if (meta.animation_url) return assetUrl(meta.animation_url, 'preview', gateway)
+    if (meta.animation) return assetUrl(meta.animation, 'preview', gateway, flags)
+    if (meta.animation_url) return assetUrl(meta.animation_url, 'preview', gateway, flags)
   }
   if (type === 'video' || type === 'thumbnail' || type === 'preview') {
-    if (meta.video) return assetUrl(meta.video, type, gateway)
-    if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway)
-    if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway)
+    if (meta.video) return assetUrl(meta.video, type, gateway, flags)
+    if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway, flags)
+    if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway, flags)
     // a hack for xSPECTAR avatars
     if (nft.issuer === 'ra59pDJcuqKJcQws7Xpuu1S8UYKmKnpUkW' && nft.nftokenTaxon === 10) {
-      return assetUrl(meta.animation_url, type, gateway)
+      return assetUrl(meta.animation_url, type, gateway, flags)
     }
-    if (meta.movie) return assetUrl(meta.movie, type, gateway)
-    if (meta.content) return assetUrl(meta.content, type, gateway)
+    if (meta.movie) return assetUrl(meta.movie, type, gateway, flags)
+    if (meta.content) return assetUrl(meta.content, type, gateway, flags)
   }
   if (type === 'audio') {
-    if (meta.audio) return assetUrl(meta.audio, type, gateway)
+    if (meta.audio) return assetUrl(meta.audio, type, gateway, flags)
   }
   if (type === 'model') {
-    if (meta['3D_model']) return assetUrl(meta['3D_model'], type, gateway)
-    if (meta['3d_model']) return assetUrl(meta['3d_model'], type, gateway)
+    if (meta['3D_model']) return assetUrl(meta['3D_model'], type, gateway, flags)
+    if (meta['3d_model']) return assetUrl(meta['3d_model'], type, gateway, flags)
   }
   if (type === 'viewer') {
-    if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway)
-    if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway)
+    if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway, flags)
+    if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway, flags)
   }
   return null
 }
@@ -420,6 +425,7 @@ const isCorrectFileType = (url, nftType = 'image') => {
 export const nftUrl = (nft, type = 'image', gateway = 'our') => {
   if (!nft) return null
   const url = metaUrl(nft, type, gateway)
+  const flags = nft.flags
   if (url) {
     // do not return IPFS CL links as base64 images
     if (gateway === 'cl' && url.slice(0, 10) === 'data:image') {
@@ -430,7 +436,7 @@ export const nftUrl = (nft, type = 'image', gateway = 'our') => {
     if (nft.uri) {
       const decodedUri = Buffer.from(nft.uri, 'hex')
       if (isCorrectFileType(decodedUri, type)) {
-        return assetUrl(decodedUri, type, gateway)
+        return assetUrl(decodedUri, type, gateway, flags)
       }
     }
     return null

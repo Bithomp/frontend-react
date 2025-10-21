@@ -315,12 +315,8 @@ table {
     }
     tbody {
       tr {
-        td {
+        td, th {
           padding: 5px;
-          &:first-child {
-            width: 20%;
-            color: var(--text-secondary);
-          }
           &:nth-child(2) {
             word-break: break-word;
           }
@@ -348,21 +344,9 @@ table {
     &.expand {
       width: calc(100% - 30px);
     }
-    tr {
+    > tbody > tr {
       &:hover {
-        td {
-          background-color: var(--accent-icon);
-          color: var(--text-oposite);
-        }
-        a {
-          color: var(--text-oposite);
-        }
-        svg {
-          stroke: var(--text-oposite);
-          &.change-fill {
-            fill: var(--text-oposite);
-          }
-        }
+        background-color: var(--unaccent-icon);
       }
       th {
         text-align: left;
@@ -387,33 +371,13 @@ table {
       min-width: calc(100% - 20px);
     }
     &.no-hover {
+      > tbody > tr:hover {
+        background-color: unset;
+      }
+    }
+    &.clickable {
       tr {
-        &:hover {
-          td {
-            background-color: inherit;
-            color: inherit;
-          }
-          a {
-            color: var(--accent-link);
-            &:hover {
-              color: inherit;
-            }
-            &.button-action {
-              color: var(--text-contrast);
-            }
-          }
-          svg {
-            stroke: inherit;
-            &.change-fill {
-              fill: inherit;
-            }
-          }
-          a, .link {
-            svg {
-              stroke: var(--accent-link);
-            }
-          }
-        }
+        cursor: pointer;
       }
     }
   }
@@ -425,6 +389,15 @@ table {
     }
     tr {
       border: 1px solid var(--accent-link);
+      > td:last-child,
+      > th:last-child {
+        padding-right: 6px;
+      }
+
+      > td:first-child,
+      > th:first-child {
+        padding-left: 6px;
+      }
     }
   }
 }
@@ -636,7 +609,13 @@ table {
   }
 }
 
-.hideOnSmall-w800 {
+.show-on-small-w800 {
+  display: none;
+  @media only screen and (max-width: 800px) {
+    display: block;
+  }
+}
+.hide-on-small-w800 {
   @media only screen and (max-width: 800px) {
     display: none;
   }
@@ -831,12 +810,12 @@ body.dark {
 .flag {
   background-color: #e6f4ea;
   color: #008000;
-  padding: 2px 6px;
+  padding: 0 2px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   border: 1px solid #008000;
-  margin-right: 4px;
+  margin: 0;
 }
 
 //common ui

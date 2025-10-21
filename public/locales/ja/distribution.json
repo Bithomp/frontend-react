@@ -1,4 +1,4 @@
 {
-  "desc": "{{nativeCurrency}}残高の上位100アカウントを見ることができます。",
+  "desc": "{{currency}}残高の上位100アカウントを見ることができます。",
   "summary": "<1>{{activeAccounts}}</1> のアクティブアカウント、合計 <3>{{totalCoins}}</3>です。"
 }

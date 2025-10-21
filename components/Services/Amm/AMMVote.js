@@ -6,9 +6,18 @@ import { LinkAmm, LinkTx } from '../../../utils/links'
 import CopyButton from '../../UI/CopyButton'
 import { errorCodeDescription } from '../../../utils/transaction'
 
-export default function AMMVoteForm({ setSignRequest }) {
-  const [asset1, setAsset1] = useState({ currency: nativeCurrency })
-  const [asset2, setAsset2] = useState({ currency: nativeCurrency })
+export default function AMMVoteForm({
+  setSignRequest,
+  queryCurrency,
+  queryCurrencyIssuer,
+  queryCurrency2,
+  queryCurrency2Issuer
+}) {
+  const [asset1, setAsset1] = useState({ currency: queryCurrency || nativeCurrency, issuer: queryCurrencyIssuer || '' })
+  const [asset2, setAsset2] = useState({
+    currency: queryCurrency2 || nativeCurrency,
+    issuer: queryCurrency2Issuer || ''
+  })
 
   const [tradingFee, setTradingFee] = useState()
   const [error, setError] = useState('')

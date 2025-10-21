@@ -41,7 +41,7 @@
       "nodes": "ノード",
       "governance": "ガバナンス",
       "activations": "アクティブアカウント(チャート)",
-      "distribution": "{{nativeCurrency}}の分布",
+      "distribution": "{{currency}}の分布",
       "last-ledger-information": "現在のレジャー情報",
       "last-ledger-transactions": "現在のトランザクション情報",
       "top-transfers-24h": "最大送金（24時間）",
@@ -67,8 +67,7 @@
     "sponsored": {
       "title": "スポンサー",
       "buy": "XRPを購入",
-      "earn": "XRPで稼ぐ",
-      "play": "XRPで遊ぶ"
+      "earn": "XRPで稼ぐ"
     },
     "learn-more": {
       "title": "もっと学ぶ"
@@ -118,7 +117,6 @@
     "actions": {
       "view": "マイアカウントページ",
       "my-transactions": "トランザクションを確認",
-      "send": "XRPを送信",
       "my-nfts": "NFTを確認",
       "my-nft-offers": "NFTオファーの確認"
     },

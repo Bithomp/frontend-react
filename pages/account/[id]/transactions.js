@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { IoMdClose } from 'react-icons/io'
 
 import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-
 import { getIsSsrMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
-import { useWidth } from '../../../utils'
+import { useWidth, addAndRemoveQueryParams } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../../../components/Layout/InfiniteScrolling'
 import SimpleSelect from '../../../components/UI/SimpleSelect'
+import AddressInput from '../../../components/UI/AddressInput'
 
 import {
   TransactionRowDetails,
@@ -38,13 +40,13 @@ import {
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  const { id } = query
+  const { id, fromDate, toDate, txType, initiated, excludeFailures, counterparty, order } = query
   const account = id || ''
   const limit = 20
   let initialTransactions = []
   let initialErrorMessage = ''
   let initialMarker = null
-  let initialUserData = null 
+  let initialUserData = null
 
   if (account) {
     try {
@@ -82,6 +84,13 @@ export async function getServerSideProps(context) {
       initialMarker,
       initialUserData: initialUserData || {},
       isSsrMobile: getIsSsrMobile(context),
+      fromDateQuery: fromDate || '',
+      toDateQuery: toDate || '',
+      txTypeQuery: txType || 'tx',
+      initiatedQuery: initiated || '0',
+      excludeFailuresQuery: excludeFailures || '0',
+      counterpartyQuery: counterparty || '',
+      orderQuery: order || 'newest',
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -93,14 +102,18 @@ export default function AccountTransactions({
   initialErrorMessage,
   initialMarker,
   initialUserData,
-  subscriptionExpired,
-  sessionToken,
   selectedCurrency,
-  openEmailLogin,
+  fromDateQuery,
+  toDateQuery,
+  txTypeQuery,
+  initiatedQuery,
+  excludeFailuresQuery,
+  counterpartyQuery,
+  orderQuery
 }) {
-
   const { t } = useTranslation()
   const width = useWidth()
+  const router = useRouter()
 
   // User data for SearchBlock
   const [userData, setUserData] = useState({
@@ -114,14 +127,14 @@ export default function AccountTransactions({
   const [marker, setMarker] = useState(initialMarker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [order, setOrder] = useState('newest') // newest | oldest
+  const [order, setOrder] = useState(orderQuery) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
-  const [txType, setTxType] = useState('tx') // tx = all types
-  const [initiated, setInitiated] = useState('0') // 0 = both, 1 = outgoing, 2 = incoming
-  const [excludeFailures, setExcludeFailures] = useState('0') // 0 = include, 1 = exclude
-  const [counterparty, setCounterparty] = useState('')
-  const [fromDate, setFromDate] = useState('')
-  const [toDate, setToDate] = useState('')
+  const [txType, setTxType] = useState(txTypeQuery) // tx = all types
+  const [initiated, setInitiated] = useState(initiatedQuery) // 0 = both, 1 = outgoing, 2 = incoming
+  const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // 0 = include, 1 = exclude
+  const [counterparty, setCounterparty] = useState(counterpartyQuery)
+  const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
+  const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
 
   // Update userData when initialUserData changes
   useEffect(() => {
@@ -136,6 +149,33 @@ export default function AccountTransactions({
   useEffect(() => {
     setTransactions(initialTransactions)
   }, [initialTransactions])
+
+  // Refresh transactions when order changes (keep this automatic)
+  useEffect(() => {
+    if (userData?.address) {
+      setLoading(true)
+      setTransactions([])
+      setMarker(null)
+      fetchTransactions({ restart: true })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, userData?.address])
+
+  // Sync filter changes to URL
+  useEffect(() => {
+    if (router.isReady) {
+      updateURL({
+        order,
+        txType,
+        initiated,
+        excludeFailures,
+        counterparty,
+        fromDate: fromDate ? fromDate.toISOString() : '',
+        toDate: toDate ? toDate.toISOString() : ''
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, txType, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
 
   // Helpers
   const orderList = [
@@ -179,16 +219,17 @@ export default function AccountTransactions({
       url += `&marker=${encodeURIComponent(markerString)}`
     }
     // sorting
-    if (order === 'oldest') {
-      url += `&earliestFirst=1`
-    }
+    url += `&forward=${order === 'oldest'}`
     // filters
     if (txType && txType !== 'tx') {
       url += `&type=${txType}`
     }
-    if (initiated !== '0') {
-      url += `&initiated=${initiated}`
+    if (initiated === '1') {
+      url += `&initiated=true`
+    } else if (initiated === '2') {
+      url += `&initiated=false`
     }
+
     if (excludeFailures === '1') {
       url += `&excludeFailures=1`
     }
@@ -196,28 +237,20 @@ export default function AccountTransactions({
       url += `&counterparty=${encodeURIComponent(counterparty.trim())}`
     }
     if (fromDate) {
-      url += `&fromDate=${encodeURIComponent(new Date(fromDate).toISOString())}`
+      url += `&fromDate=${encodeURIComponent(fromDate.toISOString())}`
     }
     if (toDate) {
-      url += `&toDate=${encodeURIComponent(new Date(toDate).toISOString())}`
+      url += `&toDate=${encodeURIComponent(toDate.toISOString())}`
     }
     return url
   }
 
   const fetchTransactions = async (opts = {}) => {
     if (loading) return
-    // setLoading(true)
 
     let markerToUse = undefined
     if (!opts.restart) {
       markerToUse = opts.marker || marker
-    }
-
-    if (markerToUse && markerToUse !== 'first') {
-      if (!sessionToken || (sessionToken && subscriptionExpired)) {
-        setLoading(false)
-        return
-      }
     }
 
     try {
@@ -252,10 +285,7 @@ export default function AccountTransactions({
     { label: 'Time', key: 'time' },
     { label: 'Type', key: 'type' },
     { label: 'Hash', key: 'hash' },
-    { label: 'Status', key: 'status' },
-    { label: 'Direction', key: 'direction' },
-    { label: 'Address', key: 'address' },
-    { label: 'Fee', key: 'fee' }
+    { label: 'Status', key: 'status' }
   ]
 
   const applyFilters = () => {
@@ -263,6 +293,34 @@ export default function AccountTransactions({
     setMarker('first')
     setLoading(true)
     fetchTransactions({ restart: true })
+  }
+
+  const clearFromDate = () => {
+    setFromDate('')
+  }
+
+  const clearToDate = () => {
+    setToDate('')
+  }
+
+  // URL synchronization functions
+  const updateURL = (newFilters) => {
+    if (!router.isReady) return
+
+    const addList = []
+    const removeList = []
+
+    // Process each filter
+    Object.keys(newFilters).forEach((key) => {
+      const value = newFilters[key]
+      if (value && value !== '' && value !== '0' && value !== 'tx' && value !== 'newest') {
+        addList.push({ name: key, value })
+      } else {
+        removeList.push(key)
+      }
+    })
+
+    addAndRemoveQueryParams(router, addList, removeList)
   }
 
   return (
@@ -276,7 +334,22 @@ export default function AccountTransactions({
         orderList={orderList}
         count={transactions.length}
         hasMore={marker}
-        data={transactions || []}
+        data={
+          transactions?.map((item) => {
+            let dateObj = new Date()
+            if (item.outcome.timestamp) {
+              dateObj = new Date(item.outcome.timestamp)
+            }
+
+            return {
+              date: dateObj.toLocaleDateString(),
+              time: dateObj.toLocaleTimeString(),
+              type: item.tx.TransactionType || 'Unknown',
+              hash: item.txHash || '',
+              status: item.outcome.result || 'Unknown'
+            }
+          }) || []
+        }
         csvHeaders={csvHeaders}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
@@ -286,59 +359,72 @@ export default function AccountTransactions({
           <div className="filters-body-inner">
             <div>
               <span className="input-title">Type</span>
-              <SimpleSelect value={txType} setValue={setTxType} optionsList={txTypeOptions} className="dropdown--filters" />
+              <SimpleSelect value={txType} setValue={setTxType} optionsList={txTypeOptions} />
             </div>
             <br />
             <div>
               <span className="input-title">Direction</span>
-              <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} className="dropdown--filters" />
+              <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} />
             </div>
             <br />
             <div>
               <span className="input-title">Failures</span>
-              <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} className="dropdown--filters" />
+              <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
             </div>
             <br />
             <div>
               <span className="input-title">Counterparty</span>
-              <input
-                type="text"
-                value={counterparty}
-                onChange={(e) => setCounterparty(e.target.value)}
-                placeholder="Counterparty address"
-                className="input-text"
+              <AddressInput
+                setValue={setCounterparty}
+                rawData={counterparty ? { counterparty } : {}}
+                type="counterparty"
+                hideButton={true}
               />
             </div>
             <br />
             <div>
               <span className="input-title">From</span>
-              <DatePicker
-                selected={fromDate ? new Date(fromDate * 1000) : null}
-                onChange={(date) => setFromDate(date ? Math.floor(date.getTime() / 1000) : null)}
-                selectsStart
-                showTimeInput
-                timeInputLabel={t('table.time')}
-                dateFormat="yyyy/MM/dd HH:mm:ss"
-                className="dateAndTimeRange"
-                maxDate={new Date()}
-                showMonthDropdown
-                showYearDropdown
-              />
+              <div className="date-picker-container">
+                <DatePicker
+                  selected={fromDate}
+                  onChange={(date) => setFromDate(date)}
+                  selectsStart
+                  showTimeInput
+                  timeInputLabel={t('table.time')}
+                  dateFormat="yyyy/MM/dd HH:mm:ss"
+                  className="dateAndTimeRange"
+                  maxDate={new Date()}
+                  showMonthDropdown
+                  showYearDropdown
+                />
+                {fromDate && (
+                  <button className="date-picker-clear" onClick={clearFromDate}>
+                    <IoMdClose />
+                  </button>
+                )}
+              </div>
             </div>
             <div>
               <span className="input-title">To</span>
-              <DatePicker
-                selected={toDate ? new Date(toDate * 1000) : null}
-                onChange={(date) => setToDate(date ? Math.floor(date.getTime() / 1000) : null)}
-                selectsEnd
-                showTimeInput
-                timeInputLabel={t('table.time')}
-                dateFormat="yyyy/MM/dd HH:mm:ss"
-                className="dateAndTimeRange"
-                maxDate={new Date()}
-                showMonthDropdown
-                showYearDropdown
-              />
+              <div className="date-picker-container">
+                <DatePicker
+                  selected={toDate}
+                  onChange={(date) => setToDate(date)}
+                  selectsEnd
+                  showTimeInput
+                  timeInputLabel={t('table.time')}
+                  dateFormat="yyyy/MM/dd HH:mm:ss"
+                  className="dateAndTimeRange"
+                  maxDate={new Date()}
+                  showMonthDropdown
+                  showYearDropdown
+                />
+                {toDate && (
+                  <button className="date-picker-clear" onClick={clearToDate}>
+                    <IoMdClose />
+                  </button>
+                )}
+              </div>
             </div>
             <div className="center">
               <button className="button-action" onClick={applyFilters} style={{ marginTop: '10px' }}>
@@ -359,11 +445,10 @@ export default function AccountTransactions({
             }}
             hasMore={marker}
             errorMessage={errorMessage}
-            subscriptionExpired={subscriptionExpired}
-            sessionToken={sessionToken}
-            openEmailLogin={openEmailLogin}
+            subscriptionExpired={false}
+            sessionToken={true}
           >
-            <table className={width > 600 ? 'table-large no-hover' : 'table-mobile'}>
+            <table className={width > 600 ? 'table-large' : 'table-mobile'}>
               <tbody>
                 {loading ? (
                   <tr className="center">
@@ -423,13 +508,13 @@ export default function AccountTransactions({
                         selectedCurrency={selectedCurrency}
                       />
                     )
-                   })
-                 )}
-                </tbody>
-              </table>                        
+                  })
+                )}
+              </tbody>
+            </table>
           </InfiniteScrolling>
         </>
-      </FiltersFrame>      
+      </FiltersFrame>
     </>
   )
-} 
+}

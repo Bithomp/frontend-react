@@ -649,7 +649,14 @@ export const avatarSrc = (address, refreshPage) => {
 }
 
 export const tokenImageSrc = (token) => {
+  if (!token) return ''
+  if ((!token.issuer && token.currency === nativeCurrency) || typeof token === 'string')
+    return nativeCurrenciesImages[nativeCurrency]
   return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
+}
+
+export const mptokenImageSrc = (mptid) => {
+  return avatarServer.replace('/avatar/', '/mptoken/') + mptid
 }
 
 export const networksIds = {
@@ -746,7 +753,11 @@ export const isTagValid = (x) => {
 }
 
 export const isUsernameValid = (x) => {
-  return x && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(x)
+  return x && /^(?=.{3,22}$)[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+){0,5}$/.test(x)
+}
+
+export const isUsernameValidToRegister = (x) => {
+  return x && /^[a-zA-Z0-9]{3,18}$/.test(x)
 }
 
 export const isAddressOrUsername = (x) => {
@@ -953,3 +964,45 @@ export const xls14NftValue = (value) => {
 }
 
 export const md5 = (text) => SparkMD5.hash(text)
+
+export const objectsCountText = (objects) => {
+  if (!objects) return ''
+  let countList = objects.filter((p) => p !== undefined)
+  if (countList.length > 1) return countList.length + ' '
+  return ''
+}
+
+export const performIdSearch = async ({ searchFor, router, setErrorMessage }) => {
+  //nft nftOffer uriToken
+  if (isIdValid(searchFor)) {
+    const response = await axios('v3/search/' + searchFor)
+    const data = response.data
+    if (data.type === 'transaction') {
+      router.push('/tx/' + searchFor)
+      return
+    }
+    if (data.type === 'nftoken' || data.type === 'uriToken') {
+      router.push('/nft/' + searchFor)
+      return
+    }
+    if (data.type === 'nftokenOffer') {
+      router.push('/nft-offer/' + searchFor)
+      return
+    }
+    if (data.type === 'amm') {
+      router.push('/amm/' + searchFor)
+      return
+    }
+    if (data.type === 'ledgerEntry') {
+      router.push('/object/' + searchFor)
+      return
+    }
+
+    if (data.type === 'unknown') {
+      setErrorMessage(data.error)
+      return
+    }
+  } else {
+    setErrorMessage('Invalid ID format')
+  }
+}

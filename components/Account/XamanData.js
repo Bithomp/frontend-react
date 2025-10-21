@@ -45,26 +45,35 @@ export default function XamanData({ data }) {
           </tr>
         </thead>
         <tbody>
-          {data.xamanMeta?.xummPro && (
-            <>
-              <tr>
-                <td>Pro</td>
-                <td>{proStatusNode}</td>
-              </tr>
-              {data.xamanMeta?.xummProfile?.ownerAlias && (
-                <tr>
-                  <td>Owner alias</td>
-                  <td>{data.xamanMeta?.xummProfile?.ownerAlias}</td>
-                </tr>
-              )}
-              {data.xamanMeta?.xummProfile?.accountAlias && (
-                <tr>
-                  <td>Account alias</td>
-                  <td>{data.xamanMeta?.xummProfile?.accountAlias}</td>
-                </tr>
-              )}
-            </>
-          )}
+          {data.xamanMeta?.xummPro ||
+            (data.xamanMeta?.thirdPartyProfiles?.[0]?.source === 'xumm.app' && (
+              <>
+                {data.xamanMeta.xummPro && (
+                  <tr>
+                    <td>Pro</td>
+                    <td>{proStatusNode}</td>
+                  </tr>
+                )}
+                {data.xamanMeta.xummProfile?.ownerAlias && (
+                  <tr>
+                    <td>Owner alias</td>
+                    <td>{data.xamanMeta?.xummProfile?.ownerAlias}</td>
+                  </tr>
+                )}
+                {data.xamanMeta.xummProfile?.accountAlias ||
+                  (data.xamanMeta.thirdPartyProfiles?.[0]?.accountAlias && (
+                    <tr>
+                      <td>Account alias</td>
+                      <td>
+                        {data.xamanMeta.xummProfile?.accountAlias ||
+                          (data.xamanMeta.thirdPartyProfiles?.[0]?.source === 'xumm.app'
+                            ? data.xamanMeta.thirdPartyProfiles[0].accountAlias
+                            : null)}
+                      </td>
+                    </tr>
+                  ))}
+              </>
+            ))}
 
           {data.xamanMeta?.kycApproved && (
             <tr>

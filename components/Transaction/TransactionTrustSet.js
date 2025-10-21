@@ -30,10 +30,12 @@ export const TransactionTrustSet = ({ data, pageFiatRate, selectedCurrency }) =>
           })}
         </TData>
       </tr>
-      <tr>
-        <TData>Rippling</TData>
-        <TData>{specification.ripplingDisabled ? 'disabled' : 'enabled'}</TData>
-      </tr>
+      {specification.ripplingDisabled !== undefined && (
+        <tr>
+          <TData>Rippling</TData>
+          <TData>{specification.ripplingDisabled ? 'disabled' : 'enabled'}</TData>
+        </tr>
+      )}
       {tx?.QualityIn && (
         <tr>
           <TData>Quality in</TData>
@@ -46,18 +48,24 @@ export const TransactionTrustSet = ({ data, pageFiatRate, selectedCurrency }) =>
           <TData className="bold">{tx.QualityOut / 10000000}%</TData>
         </tr>
       )}
-      <tr>
-        <TData>Frozen</TData>
-        <TData>{specification.frozen ? 'yes' : 'no'}</TData>
-      </tr>
-      <tr>
-        <TData>Deep frozen</TData>
-        <TData>{specification.deepFrozen ? 'yes' : 'no'}</TData>
-      </tr>
-      <tr>
-        <TData>Authorized</TData>
-        <TData>{specification.authorized ? 'yes' : 'no'}</TData>
-      </tr>
+      {specification.frozen !== undefined && (
+        <tr>
+          <TData>Frozen</TData>
+          <TData>{specification.frozen ? 'yes' : 'no'}</TData>
+        </tr>
+      )}
+      {specification.deepFrozen !== undefined && (
+        <tr>
+          <TData>Deep frozen</TData>
+          <TData>{specification.deepFrozen ? 'yes' : 'no'}</TData>
+        </tr>
+      )}
+      {specification.authorized && (
+        <tr>
+          <TData>Authorized</TData>
+          <TData>yes</TData>
+        </tr>
+      )}
     </TransactionCard>
   )
 }

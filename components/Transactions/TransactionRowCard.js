@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
 import { TxFiatRateContext } from './FiatRateContext'
 import { LinkTx } from '../../utils/links'
-import { errorCodeDescription, shortErrorCode } from '../../utils/transaction'
+import { errorCodeDescription, shortErrorCode, dappBySourceTag } from '../../utils/transaction'
 import { useWidth } from '../../utils'
 import { FiCalendar, FiClock } from 'react-icons/fi'
-import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 
 export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
@@ -28,12 +27,19 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, outcome?.ledgerTimestamp])
 
+  //don't show sourcetag if it's the tag of a known dapp
+  const dapp = dappBySourceTag(tx.SourceTag)
+
   return (
     <tr
       index={index}
       style={{
-        background: !isSuccessful ? 'repeating-linear-gradient(45deg, #f9e3b9, #f9e3b9 10px, #fff 10px, #fff 20px)' : ''
+        background: !isSuccessful
+          ? 'repeating-linear-gradient(45deg, rgba(129, 111, 77, 0.3), rgba(249, 227, 185, 0.3), transparent 10px, transparent 20px)'
+          : ''
       }}
+      className="border-b-1"
+      suppressHydrationWarning
     >
       <td className="bold center" style={{ width: 10 }}>
         {index + 1}
@@ -46,14 +52,15 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
           <FiClock style={{ stroke: '#666' }} /> {time}
         </span>
       </td>
-      <td className="left" style={{ maxWidth: width > 600 ? 600 : '100%', wordBreak: 'break-word' }}>
+      <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
         <span className="flex items-center gap-1">
-          <FaArrowRightArrowLeft style={{ stroke: '#666', color: '#666' }} />
-          {width > 600 ? <LinkTx tx={tx.hash}>{tx.hash}</LinkTx> : <LinkTx tx={tx.hash} short={10} />}
+          <span>Transaction hash: </span>
+          {width > 800 ? <LinkTx tx={tx.hash}>{tx.hash}</LinkTx> : <LinkTx tx={tx.hash} short={10} />}
         </span>
         <span>Type: </span>
         <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
         <br />
+
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
         {outcome && !isSuccessful && (
           <>
@@ -65,22 +72,29 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             <br />
           </>
         )}
-        <span>Fee:</span>
-        <span className="bold">{amountFormat(tx.Fee)}</span>
-        <span>
-          {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
-        </span>
+        <span>Fee: </span>
+        <span className="bold">{amountFormat(tx.Fee, { icon: true })}</span>
+        <span>{nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}</span>
         <br />
-        {tx.DestinationTag && (
+        {tx.DestinationTag !== undefined && tx.DestinationTag !== null && (
           <>
             <span className="gray">Destination tag: {tx.DestinationTag}</span>
             <br />
           </>
         )}
-        {tx.SourceTag && (
+        {tx.Sequence ? (
           <>
-            <span className="gray">Source tag: {tx.SourceTag}</span>
+            <span className="gray">Sequence: {tx.Sequence}</span>
             <br />
+          </>
+        ) : ''}
+        {(dapp ||
+          (tx?.SourceTag !== undefined &&
+            tx.TransactionType !== 'Payment' &&
+            !tx.TransactionType?.includes('Check'))) && (
+          <>
+            <span>Source tag: </span>
+            <span>{tx?.SourceTag}</span>
           </>
         )}
         {memos && memos.length > 0 && (

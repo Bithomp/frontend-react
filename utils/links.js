@@ -42,11 +42,11 @@ export const LinkAccount = ({ address, icon, copy, text, short }) =>
     ''
   )
 
-export const LinkAmm = ({ ammId, hash, icon, copy, text }) =>
+export const LinkAmm = ({ ammId, hash, icon, copy, text, style }) =>
   ammId ? (
     <>
-      <Link href={`/amm/${ammId}`}>
-        {text ? text : hash ? shortHash(ammId, hash > 3 ? hash : 10) : ''}
+      <Link href={`/amm/${ammId}`} style={style ? style : {}}>
+        {text ? text : hash ? shortHash(ammId, hash === true ? 6 : hash) : ''}
         {icon ? (
           <>
             {' '}
@@ -60,6 +60,36 @@ export const LinkAmm = ({ ammId, hash, icon, copy, text }) =>
         <>
           {' '}
           <CopyButton text={ammId} />
+        </>
+      ) : (
+        ''
+      )}
+    </>
+  ) : (
+    ''
+  )
+
+export const LinkObject = ({ objectId, ledgerIndex, hash, icon, copy, text, style }) =>
+  objectId ? (
+    <>
+      <Link
+        href={`/object/${objectId}` + (ledgerIndex ? '?ledgerIndex=' + ledgerIndex : '')}
+        style={style ? style : {}}
+      >
+        {text ? text : hash ? shortHash(objectId, hash === true ? 6 : hash) : ''}
+        {icon ? (
+          <>
+            {' '}
+            <LinkIcon />
+          </>
+        ) : (
+          ''
+        )}
+      </Link>
+      {copy ? (
+        <>
+          {' '}
+          <CopyButton text={objectId} />
         </>
       ) : (
         ''

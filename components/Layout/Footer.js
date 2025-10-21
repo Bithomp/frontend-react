@@ -10,7 +10,7 @@ const SocialIcons = dynamic(() => import('./SocialIcons'), { ssr: false })
 const LogoAnimated = dynamic(() => import('./LogoAnimated'), { ssr: false })
 const ButtonScrollTop = dynamic(() => import('./ButtonScrollTop'), { ssr: false })
 
-export default function Footer() {
+export default function Footer({ countryCode }) {
   const { t, i18n } = useTranslation()
   const footerRef = useRef()
 
@@ -80,14 +80,18 @@ export default function Footer() {
         {!xahauNetwork && (
           <div className="footer-menu-column">
             <span className="footer-menu-header">{t('menu.sponsored.title')}</span>
-            <a href="/go/fm-buy" target="_blank" rel="noreferrer">
+            <a href="https://bithomp.com/go/fm-buy" target="_blank" rel="noreferrer">
               {t('menu.sponsored.buy')}
             </a>
-            <a href="/go/fm-earn" target="_blank" rel="noreferrer">
+            <a href="https://bithomp.com/go/fm-earn" target="_blank" rel="noreferrer">
               {t('menu.sponsored.earn')}
             </a>
-            <a href="/go/fm-play" target="_blank" rel="noreferrer">
-              {t('menu.sponsored.play')}
+            <a
+              href={countryCode === 'US' ? 'https://bithomp.com/go/fm-play-us' : 'https://bithomp.com/go/fm-play'}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {countryCode === 'US' ? 'Join Drake on Stake' : 'Join Stake'}
             </a>
           </div>
         )}

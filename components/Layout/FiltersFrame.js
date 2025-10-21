@@ -162,7 +162,7 @@ export default function FiltersFrame({
 
             {orderList && (
               <>
-                <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} disabled={loading}/>
+                <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} className="dropdown--desktop" disabled={loading} />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
                   <TbArrowsSort />
                 </button>

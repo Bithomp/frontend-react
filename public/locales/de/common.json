@@ -41,7 +41,7 @@
       "nodes": "Knoten",
       "governance": "Governance",
       "activations": "Aktivierte Konten (Diagramm)",
-      "distribution": "{{nativeCurrency}} Verteilung",
+      "distribution": "{{currency}} Verteilung",
       "last-ledger-information": "Aktuellste Ledger Informationen",
       "last-ledger-transactions": "Aktuellste Ledger Transaktionen",
       "top-transfers-24h": "Top Überweisungen (24h)",
@@ -67,8 +67,7 @@
     "sponsored": {
       "title": "Gesponsert",
       "buy": "XRP kaufen",
-      "earn": "Mit XRP verdienen",
-      "play": "Mit XRP wetten"
+      "earn": "Mit XRP verdienen"
     },
     "learn-more": {
       "title": "Mehr erfahren"
@@ -118,7 +117,6 @@
     "actions": {
       "view": "Meine Kontoseite",
       "my-transactions": "Meine Transaktionen",
-      "send": "XRP senden",
       "my-nfts": "Meine NFTs",
       "my-nft-offers": "Meine NFT Angebote"
     },

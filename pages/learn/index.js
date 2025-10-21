@@ -18,7 +18,7 @@ const learnPageXRP = {
 }
 
 const learnPageXAHAU = {
-  title: 'Learn About XAHAU & The XAHAU Ledger | XAHAU Explorer',
+  title: 'Learn About XAH & The XAHAU Ledger | XAHAU Explorer',
   description:
     'Explore essential concepts behind XAHAU, and the XAHAU Ledger, and wallet activity. Understand how the ecosystem works with these beginner-friendly guides and definitions.',
   h1: 'Learn About XAHAU & The XAHAU Ledger',
@@ -34,7 +34,8 @@ const learnContentXRP = [
       { title: 'Blackholed Address', slug: 'blackholed-address' },
       { title: 'Blacklisted Address', slug: 'blacklisted-address' },
       { title: 'Ripple USD', slug: 'ripple-usd' },
-      { title: 'Verified Domain', slug: 'verified-domain' }
+      { title: 'Verified Domain', slug: 'verified-domain' },
+      { title: 'XRPL AMM', slug: 'amm' }
     ]
   },
   {
@@ -44,7 +45,9 @@ const learnContentXRP = [
       { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
       { title: 'How to Mint NFTs on XRPL', slug: 'nft-minting' },
       { title: 'The Bithomp API', slug: 'the-bithomp-api' },
-      { title: 'XRP and XAH Taxes - get SCV exports for your report', slug: 'xrp-xah-taxes' }
+      { title: 'XRP and XAH Taxes - get SCV exports for your report', slug: 'xrp-xah-taxes' },
+      { title: 'How to Issue a Token on XRPL', slug: 'issue-a-token' },
+      { title: 'Guide for Token Issuers: Username, Toml file, Project Registration', slug: 'guide-for-token-issuers' }
     ]
   }
 ]
@@ -65,7 +68,9 @@ const learnContentXAHAU = [
     items: [
       { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
       { title: 'How to mint NFTs on Xahau', slug: 'nft-minting' },
-      { title: 'The Bithomp API', slug: 'the-bithomp-api' }
+      { title: 'The Bithomp API', slug: 'the-bithomp-api' },
+      { title: 'How to Issue a Token on Xahau', slug: 'issue-a-token' },
+      { title: 'Guide for Token Issuers: Username, Toml file, Project Registration', slug: 'guide-for-token-issuers' }
     ]
   }
 ]

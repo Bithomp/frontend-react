@@ -41,7 +41,7 @@
       "nodes": "노드",
       "governance": "거버넌스",
       "activations": "활성화된 계정 (차트)",
-      "distribution": "{{nativeCurrency}} 분배",
+      "distribution": "{{currency}} 분배",
       "last-ledger-information": "최근 원장 정보",
       "last-ledger-transactions": "최근 거래 정보",
       "top-transfers-24h": "최대 이체 (24시간)",
@@ -67,8 +67,7 @@
     "sponsored": {
       "title": "지원받음",
       "buy": "XRP 구매",
-      "earn": "XRP 수익창출",
-      "play": "XRP 플레이"
+      "earn": "XRP 수익창출"
     },
     "learn-more": {
       "title": "더 알아보기"
@@ -118,7 +117,6 @@
     "actions": {
       "view": "내 계정 페이지",
       "my-transactions": "내 거래",
-      "send": "전송",
       "my-nfts": "내 NFT",
       "my-nft-offers": "내 NFT 제안"
     },

@@ -41,7 +41,7 @@
       "nodes": "Ноды",
       "governance": "Правление",
       "activations": "Активированные адреса (график)",
-      "distribution": "ТОП адресов по балансу",
+      "distribution": "ТОП адресов по балансу {{currency}}",
       "last-ledger-information": "Информация с последнего леджера",
       "last-ledger-transactions": "Транзакции последнего леджера",
       "top-transfers-24h": "Крупнейшие переводы (24ч)",
@@ -67,8 +67,7 @@
     "sponsored": {
       "title": "Реклама",
       "buy": "Купить XRP",
-      "earn": "XRP вклады",
-      "play": "Играть с XRP"
+      "earn": "XRP вклады"
     },
     "learn-more": {
       "title": "Узнать больше"
@@ -118,7 +117,6 @@
     "actions": {
       "view": "Мой аккаунт",
       "my-transactions": "Мои транзакции",
-      "send": "Отправить XRP",
       "my-nfts": "Мои NFT",
       "my-nft-offers": "Мои NFT оферы"
     },
