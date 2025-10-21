@@ -79,6 +79,7 @@ export default function IssuerSearchSelect({ setIssuer, defaultValue = '', type 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue])
 
   // Select handlers

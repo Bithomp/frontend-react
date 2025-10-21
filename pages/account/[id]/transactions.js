@@ -359,32 +359,17 @@ export default function AccountTransactions({
           <div className="filters-body-inner">
             <div>
               <span className="input-title">Type</span>
-              <SimpleSelect
-                value={txType}
-                setValue={setTxType}
-                optionsList={txTypeOptions}
-                className="dropdown--filters"
-              />
+              <SimpleSelect value={txType} setValue={setTxType} optionsList={txTypeOptions} />
             </div>
             <br />
             <div>
               <span className="input-title">Direction</span>
-              <SimpleSelect
-                value={initiated}
-                setValue={setInitiated}
-                optionsList={initiatedOptions}
-                className="dropdown--filters"
-              />
+              <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} />
             </div>
             <br />
             <div>
               <span className="input-title">Failures</span>
-              <SimpleSelect
-                value={excludeFailures}
-                setValue={setExcludeFailures}
-                optionsList={failuresOptions}
-                className="dropdown--filters"
-              />
+              <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
             </div>
             <br />
             <div>
@@ -463,7 +448,7 @@ export default function AccountTransactions({
             subscriptionExpired={false}
             sessionToken={true}
           >
-            <table className={width > 600 ? 'table-large no-hover' : 'table-mobile'}>
+            <table className={width > 600 ? 'table-large' : 'table-mobile'}>
               <tbody>
                 {loading ? (
                   <tr className="center">

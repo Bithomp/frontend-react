@@ -117,7 +117,6 @@
     "actions": {
       "view": "マイアカウントページ",
       "my-transactions": "トランザクションを確認",
-      "send": "XRPを送信",
       "my-nfts": "NFTを確認",
       "my-nft-offers": "NFTオファーの確認"
     },

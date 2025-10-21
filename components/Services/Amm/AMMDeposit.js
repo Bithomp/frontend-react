@@ -10,14 +10,23 @@ import CopyButton from '../../UI/CopyButton'
 import { errorCodeDescription } from '../../../utils/transaction'
 import SimpleSelect from '../../UI/SimpleSelect'
 
-export default function AMMDepositForm({ setSignRequest }) {
-  const [asset1, setAsset1] = useState({ currency: nativeCurrency })
-  const [asset2, setAsset2] = useState({ currency: nativeCurrency })
+export default function AMMDepositForm({
+  setSignRequest,
+  queryCurrency,
+  queryCurrencyIssuer,
+  queryCurrency2,
+  queryCurrency2Issuer
+}) {
+  const [asset1, setAsset1] = useState({ currency: queryCurrency || nativeCurrency, issuer: queryCurrencyIssuer || '' })
+  const [asset2, setAsset2] = useState({
+    currency: queryCurrency2 || nativeCurrency,
+    issuer: queryCurrency2Issuer || ''
+  })
   const [amount1, setAmount1] = useState('')
   const [amount2, setAmount2] = useState('')
   const [lpTokenOut, setLpTokenOut] = useState('')
   const [ePrice, setEPrice] = useState('')
-  const [depositMode, setDepositMode] = useState('tfTwoAsset') // Default to double-asset deposit
+  const [depositMode, setDepositMode] = useState('tfSingleAsset')
   const [error, setError] = useState('')
   const [agreeToTerms, setAgreeToTerms] = useState(false)
   const [agreeToRisks, setAgreeToRisks] = useState(false)
@@ -25,8 +34,14 @@ export default function AMMDepositForm({ setSignRequest }) {
 
   const depositModes = [
     {
+      value: 'tfSingleAsset',
+      label: 'Single Asset Deposit',
+      description:
+        'Deposit exactly the specified amount of one asset, and receive an amount of LP Tokens based on the resulting share of the pool (minus fees).'
+    },
+    {
       value: 'tfTwoAsset',
-      label: 'Double Asset Deposit (Amount + Amount2)',
+      label: 'Double Asset Deposit',
       description:
         "Deposit both of this AMM's assets, up to the specified amounts. The actual amounts deposited must maintain the same balance of assets as the AMM already holds, so the amount of either one deposited MAY be less than specified. The amount of LP Tokens you get in return is based on the total value deposited."
     },
@@ -41,12 +56,6 @@ export default function AMMDepositForm({ setSignRequest }) {
       label: 'LP Token Target',
       description:
         "Deposit both of this AMM's assets, in amounts calculated so that you receive the specified amount of LP Tokens in return. The amounts deposited maintain the relative proportions of the two assets the AMM already holds. The amount of LP Tokens you get in return is based on the total value deposited."
-    },
-    {
-      value: 'tfSingleAsset',
-      label: 'Single Asset Deposit',
-      description:
-        'Deposit exactly the specified amount of one asset, and receive an amount of LP Tokens based on the resulting share of the pool (minus fees).'
     },
     {
       value: 'tfOneAssetLPToken',
@@ -292,7 +301,7 @@ export default function AMMDepositForm({ setSignRequest }) {
               </div>
               <div className="w-full sm:w-1/2">
                 <span className="input-title">Asset 1 Currency</span>
-                <TokenSelector value={asset1} onChange={setAsset1} />
+                <TokenSelector value={asset1} onChange={setAsset1} currencyQueryName="currency" />
               </div>
             </div>
             <br />
@@ -309,7 +318,7 @@ export default function AMMDepositForm({ setSignRequest }) {
               </div>
               <div className="w-full sm:w-1/2">
                 <span className="input-title">Asset 2 Currency</span>
-                <TokenSelector value={asset2} onChange={setAsset2} />
+                <TokenSelector value={asset2} onChange={setAsset2} currencyQueryName="currency2" />
               </div>
             </div>
           </>

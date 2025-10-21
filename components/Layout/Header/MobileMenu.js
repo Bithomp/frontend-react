@@ -26,7 +26,6 @@ export default function MobileMenu({
   setSignRequest,
   proName,
   signOutPro,
-  xamanUserToken,
   signOut,
   isCopied,
   copyToClipboard,
@@ -65,6 +64,9 @@ export default function MobileMenu({
               <a href={server + '/explorer/' + address} className="mobile-menu-item">
                 {t('signin.actions.my-transactions')}
               </a>
+              <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                Send payment
+              </Link>
               <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 My Account Settings
               </Link>
@@ -74,27 +76,11 @@ export default function MobileMenu({
               <Link href={'/nft-offers/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.my-nft-offers')}
               </Link>
-
               {!username && (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                   {t('menu.usernames')}
                 </Link>
               )}
-
-              {/* Hide Send XRP for XAHAU while they are not ready yet */}
-              {!xahauNetwork && (
-                <>
-                  {xamanUserToken && (
-                    <a
-                      href={server + '/explorer/' + address + '?hw=xumm&xummtoken=' + xamanUserToken + '&action=send'}
-                      className="mobile-menu-item"
-                    >
-                      {t('signin.actions.send')}
-                    </a>
-                  )}
-                </>
-              )}
-
               <span onClick={signOut} className="mobile-menu-item link">
                 {t('signin.signout')}
                 <span style={{ display: 'inline-block', width: 10 }}></span>
@@ -168,8 +154,8 @@ export default function MobileMenu({
           <Link href="/services/escrow" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Create Escrow
           </Link>
-          {!xahauNetwork && !devNet && (
-            <Link href="/services/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {!xahauNetwork && (
+            <Link href="/services/amm/deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
               AMM Services
             </Link>
           )}
@@ -207,7 +193,7 @@ export default function MobileMenu({
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            Trustline {t('menu.tokens')}
+            {t('menu.tokens')}
           </Link>
           {!xahauNetwork && (
             <Link href="/mpts" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -245,16 +231,16 @@ export default function MobileMenu({
               <Link href="/learn/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 What is AMM?
               </Link>
-              <Link href="/services/amm?tab=deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Deposit
               </Link>
-              <Link href="/services/amm?tab=withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Withdraw
               </Link>
-              <Link href="/services/amm?tab=vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Vote
               </Link>
-              <Link href="/services/amm?tab=create" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/create" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Create
               </Link>
               <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>

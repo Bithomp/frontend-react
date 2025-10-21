@@ -75,6 +75,7 @@ export default function TopLinks({ activatedAccount, countryCode }) {
           <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
         </span>{' '}
         ❤️
+        {/* 
         {isMobile ? <br /> : ' | '}
         <span className="tooltip">
           <a href="https://bithomp.com/go/yield-xrp" target="_blank" rel="noreferrer" className="top-link orange">
@@ -83,6 +84,7 @@ export default function TopLinks({ activatedAccount, countryCode }) {
           <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
         </span>{' '}
         💵
+        */}
         {/*
         {isMobile ? <br /> : ' | '}
         <span className="tooltip">

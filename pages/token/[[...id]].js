@@ -4,12 +4,20 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import SEO from '../../components/SEO'
+import TokenSelector from '../../components/UI/TokenSelector'
 import { tokenClass } from '../../styles/pages/token.module.scss'
-import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled } from '../../utils/format'
+import {
+  niceNumber,
+  shortNiceNumber,
+  fullNiceNumber,
+  AddressWithIconFilled,
+  userOrServiceLink
+} from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
+import TokenTabs from '../../components/Tabs/TokenTabs'
 
 // Server side initial data fetch
 export async function getServerSideProps(context) {
@@ -97,6 +105,7 @@ export default function TokenPage({
   const router = useRouter()
   const [token, setToken] = useState(initialData)
   const [loading, setLoading] = useState(false)
+  const [selectedToken, setSelectedToken] = useState(initialData)
   const errorMessage = initialErrorMessage || ''
   const firstRenderRef = useRef(true)
 
@@ -115,11 +124,11 @@ export default function TokenPage({
     }
   }, [initialData, initialErrorMessage, router])
 
-  const getHistoricalRates = async () => {
+  const getData = async () => {
     setLoading(true)
     const cur = selectedCurrency?.toLowerCase()
     if (!cur) return
-    const url = `v2/trustlines/token/${initialData.issuer}/${initialData.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
+    const url = `v2/trustlines/token/${selectedToken.issuer}/${selectedToken.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
     const res = await axiosServer({
       method: 'get',
       url
@@ -136,11 +145,18 @@ export default function TokenPage({
       firstRenderRef.current = false
       return
     }
-    getHistoricalRates()
+    getData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency])
-  // Helper: price line as "fiat (XRP)" using historical rate when available
+  }, [selectedCurrency, selectedToken])
 
+  useEffect(() => {
+    const { pathname, query } = router
+    query.id = [selectedToken?.issuer, selectedToken?.currency]
+    router.replace({ pathname, query }, null, { shallow: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedToken])
+
+  // Helper: price line as "fiat (XRP)" using historical rate when available
   const priceLine = ({ priceNative, priceFiat }) => {
     const price = priceNative
     return (
@@ -265,23 +281,45 @@ export default function TokenPage({
     })
   }
 
+  const title = (
+    <>
+      {token?.currencyDetails?.currency} issued by {userOrServiceLink(token, 'issuer') || token?.issuer}
+    </>
+  )
+
   return (
     <>
       <SEO
-        title={`${token?.currencyDetails?.currency} Token - ${
-          token.issuerDetails?.service || token.issuerDetails?.username || 'Token Details'
-        }`}
+        title={
+          token?.currencyDetails?.currency +
+          ' issued by ' +
+          (token?.issuerDetails?.service || token?.issuerDetails?.username || token?.issuer)
+        }
       />
-
       <div className={tokenClass}>
+        <h1 className="center">{title}</h1>
+
+        {!xahauNetwork && <TokenTabs />}
+
         <div className="content-profile">
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}
+          >
+            <div style={{ width: '100%', marginBottom: '20px' }}>
+              <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={true} />
+            </div>
+          </div>
           <div className="column-left">
             {/* Big Token Icon */}
             <img
               alt="token"
               src={tokenImageSrc(token)}
               className="token-image"
-              style={{ width: '100%', height: 'auto' }}
+              style={{ width: 'calc(100% - 2px)', height: 'auto' }}
             />
             <h1>{token?.currencyDetails?.currency}</h1>
 
@@ -401,15 +439,17 @@ export default function TokenPage({
                   </tr>
                 ) : (
                   <>
-                    <tr>
-                      <td>Last price</td>
-                      <td>
-                        {priceLine({
-                          priceNative: statistics?.priceNativeCurrency,
-                          priceFiat: statistics?.priceFiats[selectedCurrency]
-                        })}
-                      </td>
-                    </tr>
+                    {statistics?.priceNativeCurrency && (
+                      <tr>
+                        <td>Last price</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrency,
+                            priceFiat: statistics?.priceFiats[selectedCurrency]
+                          })}
+                        </td>
+                      </tr>
+                    )}
                     {statistics?.priceNativeCurrencySpot && (
                       <tr>
                         <td>Spot price</td>

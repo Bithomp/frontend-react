@@ -8,8 +8,11 @@ import {
 } from '../../utils/format'
 import { objectsCountText, useWidth } from '../../utils'
 import { FaSnowflake, FaLock, FaIcicles, FaShieldAlt, FaInfoCircle } from 'react-icons/fa'
+import { RiCoinsFill } from 'react-icons/ri'
+import { GiTakeMyMoney } from 'react-icons/gi'
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
+import Link from 'next/link'
 
 // Component to display flag icons with tooltips
 const FlagIcons = ({ flags }) => {
@@ -247,10 +250,48 @@ export default function IOUData({
                 data={issuer}
                 name="issuer"
                 currency={tl.Balance?.currency}
-                options={{ short: width < 970, currencyDetails: tl.Balance?.currencyDetails }}
+                options={{ short: true, currencyDetails: tl.Balance?.currencyDetails }}
               />
             </td>
-            {type !== 'lp' && (
+            {type === 'lp' ? (
+              <td className="right">
+                <Link
+                  href={
+                    '/services/amm/deposit?currency=' +
+                    tl.Balance?.currencyDetails?.asset?.currency +
+                    (tl.Balance?.currencyDetails?.asset?.issuer
+                      ? '&currencyIssuer=' + tl.Balance?.currencyDetails?.asset?.issuer
+                      : '') +
+                    '&currency2=' +
+                    tl.Balance?.currencyDetails?.asset2?.currency +
+                    (tl.Balance?.currencyDetails?.asset2?.issuer
+                      ? '&currency2Issuer=' + tl.Balance?.currencyDetails?.asset2?.issuer
+                      : '')
+                  }
+                >
+                  Deposit
+                  {width > 800 && <RiCoinsFill style={{ marginBottom: -6, height: 24 }} alt="Deposit" />}
+                </Link>
+                <br />
+                <Link
+                  href={
+                    '/services/amm/withdraw?currency=' +
+                    tl.Balance?.currencyDetails?.asset?.currency +
+                    (tl.Balance?.currencyDetails?.asset?.issuer
+                      ? '&currencyIssuer=' + tl.Balance?.currencyDetails?.asset?.issuer
+                      : '') +
+                    '&currency2=' +
+                    tl.Balance?.currencyDetails?.asset2?.currency +
+                    (tl.Balance?.currencyDetails?.asset2?.issuer
+                      ? '&currency2Issuer=' + tl.Balance?.currencyDetails?.asset2?.issuer
+                      : '')
+                  }
+                >
+                  Withdraw
+                  {width > 800 && <GiTakeMyMoney style={{ marginBottom: -6, height: 24 }} alt="Withdraw" />}
+                </Link>
+              </td>
+            ) : (
               <td className="right">
                 <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end', alignItems: 'center' }}>
                   <FlagIcons flags={tl.flags} />
@@ -295,8 +336,8 @@ export default function IOUData({
         {list.length > 0 ? (
           <tr>
             <th>#</th>
-            <th className="left">Currency</th>
-            {type !== 'lp' && <th className="right">Params</th>}
+            <th className="left">{type === 'lp' ? 'LP Token' : 'Currency'}</th>
+            <th className="right">{type === 'lp' ? 'Actions' : 'Params'}</th>
             <th className="right">Balance</th>
           </tr>
         ) : (
@@ -307,11 +348,9 @@ export default function IOUData({
     )
   }
 
-  const actionLink =
-    isLoggedIn && account.address === address ? (
-      <>
-        [<a href={'/services/trustline'}>Add a token</a>]
-      </>
+  const actionLink = (type) => {
+    return isLoggedIn && account.address === address ? (
+      <> [{type === 'lp' ? <a href={'/amms'}>AMM pools</a> : <a href={'/tokens'}>Add tokens</a>}]</>
     ) : (
       !isLoggedIn && (
         <>
@@ -323,6 +362,7 @@ export default function IOUData({
         </>
       )
     )
+  }
 
   const tokenTitle = (type) => {
     if (type === 'lp') return objectsCountText(lpTokens) + 'Liquidity Provider Tokens' + historicalTitle
@@ -336,7 +376,7 @@ export default function IOUData({
         <thead>
           <tr>
             <th colSpan="100">
-              {tokenTitle(type)} {actionLink}
+              {tokenTitle(type)} {actionLink(type)}
               {totalBalance > 0 && (
                 <span style={{ float: 'right' }}>
                   Total worth:{' '}
@@ -361,7 +401,7 @@ export default function IOUData({
         <br />
         <center>
           {tokenTitle(type)}
-          {actionLink}
+          {actionLink(type)}
           {totalBalance > 0 && (
             <div>
               Total worth:{' '}

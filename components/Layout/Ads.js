@@ -4,7 +4,7 @@ import { brandsBlock } from '../../styles/components/ads.module.scss'
 
 import BtcBit from '../../public/images/sponsored/btcbit.svg'
 import Nexo from '../../public/images/sponsored/nexo.svg'
-import Doppler from '../../public/images/sponsored/doppler.svg'
+//import Doppler from '../../public/images/sponsored/doppler.svg'
 import { useState, useEffect } from 'react'
 
 export default function Ads() {
@@ -29,7 +29,7 @@ export default function Ads() {
           </div>
         </a>
 
-        <a href="https://bithomp.com/go/xrp-yield" target="_blank" rel="noreferrer">
+        {/* <a href="https://bithomp.com/go/xrp-yield" target="_blank" rel="noreferrer">
           <div className="brand-item doppler">
             <Doppler className="brand-item-icon" fill={color} />
             <div className="brand-item-title">
@@ -38,6 +38,7 @@ export default function Ads() {
             <div className="brand-item-text">Deposit XRP and earn XRP native yields.</div>
           </div>
         </a>
+        */}
         {/*
         <a href="https://bithomp.com/go/play-xrp" target="_blank" rel="noreferrer">
           <div className="brand-item xbit">

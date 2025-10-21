@@ -9,14 +9,14 @@ import dynamic from 'next/dynamic'
 
 import {
   isAddressValid,
-  isUsernameValid,
   server,
   wssServer,
   addAndRemoveQueryParams,
   addQueryParams,
   encode,
   network,
-  ledgerName
+  ledgerName,
+  isUsernameValidToRegister
 } from '../utils'
 
 let registrtaionCompleted = false
@@ -82,7 +82,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
         queryRemoveList.push('address')
       }
     }
-    if (isUsernameValid(usernameQuery)) {
+    if (isUsernameValidToRegister(usernameQuery)) {
       setUsername(usernameQuery)
     } else {
       queryRemoveList.push('username')
@@ -165,7 +165,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     setUsername(username)
     let queryAddList = []
     let queryRemoveList = []
-    if (isUsernameValid(username)) {
+    if (isUsernameValidToRegister(username)) {
       queryAddList.push({
         name: 'username',
         value: username
@@ -220,7 +220,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
       return
     }
 
-    if (!isUsernameValid(username)) {
+    if (!isUsernameValidToRegister(username)) {
       setErrorMessage(t('error.username-invalid', { ns: 'username' }))
       usernameRef?.focus()
       return
@@ -489,7 +489,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                     services which use bithomp <a href="https://docs.bithomp.com">API</a>. After the registration it
                     will become public - <b>anyone</b> will be able to see it. Your XRPL address will be accessable by:
                   </Trans>
-                  {' ' + server}/account/{isUsernameValid(username) ? username : <i>username</i>}
+                  {' ' + server}/account/{isUsernameValidToRegister(username) ? username : <i>username</i>}
                 </p>
                 <p>
                   <Trans ns="username" i18nKey="step0.text2">
@@ -599,7 +599,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                             spellCheck="false"
                             maxLength="18"
                           />
-                          {isUsernameValid(username) && (
+                          {isUsernameValidToRegister(username) && (
                             <img src={checkmark} className="validation-icon" alt="validated" />
                           )}
                         </div>

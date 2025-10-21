@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
-  addressUsernameOrServiceLink,
   AddressWithIconFilled,
+  AddressWithIconInline,
   amountFormat,
   fullDateAndTime,
   nativeCurrencyToFiat,
@@ -12,9 +12,7 @@ import {
 import CopyButton from '../UI/CopyButton'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
-import { avatarServer, objectsCountText, timestampExpired } from '../../utils'
-import Image from 'next/image'
-import Link from 'next/link'
+import { objectsCountText, timestampExpired } from '../../utils'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
 import { LinkTx } from '../../utils/links'
@@ -233,16 +231,7 @@ export default function ObjectsData({
           {i + 1}
         </td>
         <td>
-          <Link href={'/account/' + c[adrLabel]}>
-            <Image
-              src={avatarServer + c[adrLabel]}
-              alt={'service logo'}
-              height={20}
-              width={20}
-              style={{ marginRight: '5px', marginBottom: '-5px' }}
-            />
-          </Link>
-          {addressUsernameOrServiceLink(c, adrLabel, { short: true })}
+          <AddressWithIconInline data={c} name={adrLabel} options={{ short: true }} />
         </td>
         <td className="bold right">{amountFormat(c.SendMax)}</td>
         <td className="right">{typeof c.DestinationTag !== 'undefined' && c.DestinationTag}</td>
