@@ -1,11 +1,11 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { nativeCurrency } from '../../../utils'
 
-export const TransactionRowAccountSet = ({ tx, address, index, selectedCurrency }) => {
-  const { specification } = tx
+export const TransactionRowAccountSet = ({ data, address, index, selectedCurrency }) => {
+  const { specification, tx } = data
 
   return (
-    <TransactionRowCard data={tx} address={address} index={index} selectedCurrency={selectedCurrency}>
+    <TransactionRowCard data={data} address={address} index={index} selectedCurrency={selectedCurrency}>
       {specification.defaultRipple !== undefined && (
         <div>
           <span>Default ripple: </span>

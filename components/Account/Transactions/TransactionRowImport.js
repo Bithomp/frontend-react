@@ -1,9 +1,8 @@
 import { TransactionRowCard } from './TransactionRowCard'
 
-export const TransactionRowImport = ({ tx, address, index, selectedCurrency}) => {
-
+export const TransactionRowImport = ({ data, address, index, selectedCurrency }) => {
   return (
-    <TransactionRowCard data={tx} address={address} index={index} selectedCurrency={selectedCurrency}>
+    <TransactionRowCard data={data} address={address} index={index} selectedCurrency={selectedCurrency}>
       {/* Import */}
     </TransactionRowCard>
   )

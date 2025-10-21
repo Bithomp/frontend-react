@@ -325,6 +325,7 @@ export default function AccountTransactions({
         count={transactions.length}
         hasMore={marker}
         data={
+          // for csv export?
           transactions?.map((item) => {
             let dateObj = new Date()
             if (item.outcome.timestamp) {
@@ -491,8 +492,8 @@ export default function AccountTransactions({
 
                     return (
                       <TransactionRowComponent
-                        key={tx.hash || index}
-                        tx={tx}
+                        key={tx.hash}
+                        data={tx}
                         address={address}
                         index={index}
                         selectedCurrency={selectedCurrency}
