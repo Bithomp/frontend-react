@@ -2,40 +2,8 @@ import React from 'react'
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled, amountFormatWithIcon, amountToFiat, shortAddress } from '../../utils/format'
+import { AddressWithIconFilled, amountFormatWithIcon, amountToFiat, shortAddress, showFlags } from '../../utils/format'
 import Link from 'next/link'
-
-// Component to display transaction flags with tooltips
-const TransactionFlags = ({ flags }) => {
-  if (!flags || typeof flags !== 'object') return <span className="grey">None</span>
-
-  const activeFlags = []
-
-  // Check each flag in the specification.flags object
-  Object.entries(flags).forEach(([flagName, isActive]) => {
-    if (isActive === true) {
-      activeFlags.push(flagName)
-    }
-  })
-
-  if (activeFlags.length === 0) {
-    return <span className="grey">None</span>
-  }
-
-  return (
-    <>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        {activeFlags.map((flag, index) => (
-          <div key={index}>
-            <span className="no-brake">
-              <span className="flag">{flag}</span>
-            </span>
-          </div>
-        ))}
-      </div>
-    </>
-  )
-}
 
 export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -57,7 +25,7 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
       <tr>
         <TData>Flags</TData>
         <TData>
-          <TransactionFlags flags={specification.flags} txType={data?.tx?.TransactionType} />
+          {showFlags(specification?.flags)}
         </TData>
       </tr>
       {specification?.transactions?.map((transaction, index) => {
@@ -91,7 +59,7 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
           <tr>
             <TData style={{ paddingLeft: '30px' }}>Flags</TData>
             <TData>
-              <TransactionFlags flags={transaction.specification.flags} txType={transaction.type} />
+              {showFlags(transaction?.specification?.flags)}
             </TData>
           </tr>
           {
