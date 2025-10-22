@@ -1,4 +1,4 @@
-import { fullDateAndTime, niceNumber, niceCurrency, amountFormatWithIcon, fullNiceNumber } from '../../utils/format'
+import { fullDateAndTime, niceNumber, niceCurrency, amountFormatWithIcon } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 import { divide, multiply } from '../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
@@ -79,66 +79,35 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
   }
 
   const getRateDetails = (sell, offer) => {
+    let getCurrency = niceCurrency(offer.TakerGets?.currency) || nativeCurrency
+    let payCurrency = niceCurrency(offer.TakerPays?.currency) || nativeCurrency
+
     return sell ? (
-      typeof offer.TakerGets === 'string' ? (
-        <>
-          <span>1 {nativeCurrency} = </span>
-          <span className="no-brake">
-            {niceNumber(multiply(offer.quality, 1000000), 0, null, 5)}{' '}
-            {niceCurrency(offer.TakerPays?.currency || nativeCurrency)}
-          </span>
-        </>
-      ) : typeof offer.TakerPays === 'string' ? (
-        <>
-          <span>1 {niceCurrency(offer.TakerGets?.currency)} = </span>
-          <span className="no-brake">
-            {niceNumber(divide(offer.quality, 1000000), 0, null, 5)} {nativeCurrency}
-          </span>
-        </>
-      ) : (
-        <>
-          <span>1 {niceCurrency(offer.TakerGets?.currency)} = </span>
-          <span className="no-brake">
-            {niceNumber(offer.quality, 0, null, 5)} {niceCurrency(offer.TakerPays?.currency)}
-          </span>
-        </>
-      )
-    ) : typeof offer.TakerGets === 'string' ? (
       <>
-        <span>1 {niceCurrency(offer.TakerPays?.currency)} = </span>
-        <span className="tooltip">
-          <span className="no-brake">
-            {niceNumber(divide(1, offer.quality * 1000000), 0, null, 2)} {nativeCurrency}
-          </span>
-          <span className="tooltiptext no-brake">
-            {fullNiceNumber(divide(1, offer.quality * 1000000))} {nativeCurrency}
-          </span>
-        </span>
-      </>
-    ) : typeof offer.TakerPays === 'string' ? (
-      <>
-        <span>1 {nativeCurrency} = </span>
-        <span className="tooltip">
-          <span className="no-brake">
-            {niceNumber(divide(1000000, offer.quality), 0, null, 2)} {niceCurrency(offer.TakerGets?.currency)}
-          </span>
-          <span className="tooltiptext no-brake">
-            {fullNiceNumber(divide(1000000, offer.quality))}
-            {niceCurrency(offer.TakerGets?.currency)}
-          </span>
+        <span>1 {getCurrency} = </span>
+        <span className="no-brake">
+          {
+            typeof offer.TakerGets === 'string'
+              ? niceNumber(multiply(offer.quality, 1000000), 0, null, 5)
+              : typeof offer.TakerPays === 'string'
+                ? niceNumber(divide(offer.quality, 1000000), 0, null, 5)
+                : niceNumber(offer.quality, 0, null, 5)
+          }{' '}
+          {payCurrency}
         </span>
       </>
     ) : (
       <>
-        <span>1 {niceCurrency(offer.TakerPays?.currency)} = </span>
-        <span className="tooltip">
-          <span className="no-brake">
-            {niceNumber(divide(1, offer.quality), 0, null, 2)} {niceCurrency(offer.TakerGets?.currency)}
-          </span>
-          <span className="tooltiptext no-brake">
-            {fullNiceNumber(divide(1, offer.quality))}
-            {niceCurrency(offer.TakerGets?.currency)}
-          </span>
+        <span>1 {payCurrency} = </span>
+        <span className="no-brake">
+          {
+            typeof offer.TakerGets === 'string'
+              ? niceNumber(divide(1, offer.quality * 1000000), 0, null, 2)
+              : typeof offer.TakerPays === 'string'
+                ? niceNumber(divide(1000000, offer.quality), 0, null, 2)
+                : niceNumber(divide(1, offer.quality), 0, null, 2)
+          }{' '}
+          {getCurrency}
         </span>
       </>
     )
