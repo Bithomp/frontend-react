@@ -36,7 +36,7 @@ export default function SimpleSelect({ value, setValue, optionsList, className }
         setValue(a.value)
       }}
       isSearchable={false}
-      className={`dropdown dropdown--desktop ${className}`}
+      className={`dropdown ${className}`}
       classNamePrefix="react-select"
     />
   )

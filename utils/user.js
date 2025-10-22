@@ -10,8 +10,7 @@ export const broadcastTransaction = async ({
   wallet,
   signRequest,
   tx,
-  setAwaiting,
-  t
+  setAwaiting
 }) => {
   if (!blob) {
     setStatus('There is no blob to broadcast')

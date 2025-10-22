@@ -5,12 +5,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../../components/SEO'
 
-import { network, ledgerName, minLedger, avatarServer } from '../../utils'
+import { network, ledgerName, minLedger } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { fullDateAndTime, addressUsernameOrServiceLink } from '../../utils/format'
+import { fullDateAndTime, AddressWithIconInline } from '../../utils/format'
 import { LedgerLink, LinkTx } from '../../utils/links'
 import { axiosServer, passHeaders } from '../../utils/axios'
-import Image from 'next/image'
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -170,14 +169,7 @@ export default function Ledger({ pageMeta, ledgerIndexQuery }) {
                           <td className="center">{tx.indexInLedger}</td>
                           <td>{tx.type}</td>
                           <td>
-                            <Image
-                              src={avatarServer + tx.address}
-                              alt={tx.addressDetails?.service || 'service logo'}
-                              height={20}
-                              width={20}
-                              style={{ marginRight: '5px', marginBottom: '-5px' }}
-                            />
-                            {addressUsernameOrServiceLink(tx, 'address', { short: 6 })}
+                            <AddressWithIconInline data={tx} options={{ short: 6 }} />
                           </td>
                           <td className="hide-on-mobile">{tx.txStatus}</td>
                           <td className="right">

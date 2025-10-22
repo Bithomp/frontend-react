@@ -30,7 +30,7 @@ const addressName = (details, name) => {
   return ''
 }
 
-export default function Tiles({ nftList, type = 'name', convertCurrency, account }) {
+export default function Tiles({ nftList, type = 'name', convertCurrency, account, disabled = false }) {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -107,25 +107,27 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                       <div className="title-text">
                         {type === 'name' ? nftName(nft, { maxLength: 18 }) : saleData(nft.sellOffers)}
                       </div>
-                      <div className="title-full">
-                        {nftName(nft) ? (
-                          <>
-                            {t('table.name')}: {nftName(nft)}
-                            <br />
-                          </>
-                        ) : (
-                          ''
-                        )}
-                        {!xahauNetwork && (
-                          <>
-                            {t('table.serial')}: {nft.sequence}
-                            <br />
-                            {t('table.taxon')}: {nft.nftokenTaxon}
-                          </>
-                        )}
-                        {addressName(nft.issuerDetails, t('table.issuer'))}
-                        {addressName(nft.ownerDetails, t('table.owner'))}
-                      </div>
+                      {!disabled &&
+                        <div className="title-full">
+                          {nftName(nft) ? (
+                            <>
+                              {t('table.name')}: {nftName(nft)}
+                              <br />
+                            </>
+                          ) : (
+                            ''
+                          )}
+                          {!xahauNetwork && (
+                            <>
+                              {t('table.serial')}: {nft.sequence}
+                              <br />
+                              {t('table.taxon')}: {nft.nftokenTaxon}
+                            </>
+                          )}
+                          {addressName(nft.issuerDetails, t('table.issuer'))}
+                          {addressName(nft.ownerDetails, t('table.owner'))}
+                        </div>
+                      }
                     </Link>
                   </div>
                 </li>
@@ -157,26 +159,28 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                       <div className="title-text">
                         {convertedAmount(nft, convertCurrency, { short: true }) || amountFormat(nft.amount)}
                         <br />
-                        {timeOrDate(nft.acceptedAt)}
+                        {!disabled && timeOrDate(nft.acceptedAt)}
                       </div>
-                      <div className="title-full">
-                        {nftName(nft.nftoken) ? (
-                          <>
-                            {t('table.name')}: {nftName(nft.nftoken, { maxLength: 18 })}
-                          </>
-                        ) : (
-                          ''
-                        )}
-                        {addressName(nft.nftoken?.issuerDetails, t('table.issuer'))}
-                        <br />
-                        {t('table.price')}: {amountFormat(nft.amount)}
-                        {nft.marketplace && (
-                          <>
-                            <br />
-                            {t('table.marketplace')}: {nft.marketplace}
-                          </>
-                        )}
-                      </div>
+                      {!disabled &&
+                        <div className="title-full">
+                          {nftName(nft.nftoken) ? (
+                            <>
+                              {t('table.name')}: {nftName(nft.nftoken, { maxLength: 18 })}
+                            </>
+                          ) : (
+                            ''
+                          )}
+                          {addressName(nft.nftoken?.issuerDetails, t('table.issuer'))}
+                          <br />
+                          {t('table.price')}: {amountFormat(nft.amount)}
+                          {nft.marketplace && (
+                            <>
+                              <br />
+                              {t('table.marketplace')}: {nft.marketplace}
+                            </>
+                          )}
+                        </div>
+                      }
                     </Link>
                   </div>
                 </li>

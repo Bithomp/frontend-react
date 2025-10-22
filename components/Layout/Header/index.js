@@ -24,7 +24,6 @@ import NetworkTable from './NetworkTable'
 import MobileMenu from './MobileMenu'
 import { FaAngleDown } from 'react-icons/fa'
 import { IoIosRocket } from 'react-icons/io'
-import { MdNewReleases } from 'react-icons/md'
 
 import LogoSmall from '../LogoSmall'
 import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
@@ -85,7 +84,8 @@ export default function Header({
   signOut,
   signOutPro,
   selectedCurrency,
-  setSelectedCurrency
+  setSelectedCurrency,
+  countryCode
 }) {
   const { i18n, t } = useTranslation()
 
@@ -95,15 +95,12 @@ export default function Header({
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
 
-  const [xamanUserToken, setXamanUserToken] = useState(null)
-
   const [hoverStates, setHoverStates] = useState({}) //{ dropdown7: true }
 
   const width = useWidth()
 
   useEffect(() => {
     setRendered(true)
-    setXamanUserToken(localStorage.getItem('xamanUserToken'))
   }, [])
 
   let address, displayName, username, pro, proName
@@ -198,7 +195,7 @@ export default function Header({
             <Link href="/services/check">Issue Check</Link>
             <Link href="/services/issue-currency">Issue Currency</Link>
             <Link href="/services/escrow">Create Escrow</Link>
-            {!xahauNetwork && !devNet && <Link href="/services/amm">AMM Services</Link>}
+            {!xahauNetwork && <Link href="/services/amm/deposit">AMM Services</Link>}
             <Link href="/services/account-settings/">Account Settings</Link>
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
@@ -209,9 +206,21 @@ export default function Header({
           </MenuDropDown>
 
           <div className="menu-dropdown">
-            <Link href="/tokens" className="menu-dropdown-button" style={{ textDecoration: 'none' }}>
-              {t('menu.tokens')} <MdNewReleases className="chevron" />
-            </Link>
+            <MenuDropDown
+              id="dropdown2"
+              title={t('menu.tokens')}
+              setHoverStates={setHoverStates}
+              hoverStates={hoverStates}
+            >
+              <Link href="/tokens">{t('menu.tokens')}</Link>
+              {!xahauNetwork && <Link href="/mpts">Multi-Purpose {t('menu.tokens')}</Link>}
+              <Link href="/distribution?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De">
+                TOP Holders
+              </Link>
+              <Link href="/services/trustline">Set Trust (Trustline)</Link>
+              <Link href="/learn/issue-a-token">How to Issue a Token</Link>
+              <Link href="/learn/guide-for-token-issuers">Guide for Token Issuers</Link>
+            </MenuDropDown>
           </div>
 
           {/* Hide AMM for XAHAU */}
@@ -223,11 +232,12 @@ export default function Header({
               hoverStates={hoverStates}
             >
               <Link href="/amms">{t('menu.amm.pools')}</Link>
+              <Link href="/learn/amm">What is AMM?</Link>
+              <Link href="/services/amm/deposit">AMM Deposit</Link>
+              <Link href="/services/amm/withdraw">AMM Withdraw</Link>
+              <Link href="/services/amm/vote">AMM Vote</Link>
+              <Link href="/services/amm/create">AMM Create</Link>
               <Link href="/amm">{t('menu.amm.explorer')}</Link>
-              <Link href="/services/amm?tab=deposit">AMM Deposit</Link>
-              <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
-              <Link href="/services/amm?tab=vote">AMM Vote</Link>
-              <Link href="/services/amm?tab=create">AMM Create</Link>
             </MenuDropDown>
           )}
 
@@ -281,7 +291,7 @@ export default function Header({
           >
             {xahauNetwork && <Link href="/governance">{t('menu.network.governance')}</Link>}
             <Link href="/activations">{t('menu.network.activations')}</Link>
-            <Link href="/distribution">{t('menu.network.distribution', { nativeCurrency })}</Link>
+            <Link href="/distribution">{t('menu.network.distribution', { currency: nativeCurrency })}</Link>
             <Link href="/last-ledger-information">{t('menu.network.last-ledger-information')}</Link>
             <Link href="/ledger">{t('menu.network.last-ledger-transactions')}</Link>
             <Link href="/whales">{t('menu.network.top-transfers-24h')}</Link>
@@ -448,23 +458,11 @@ export default function Header({
                 </span>
                 <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
                 <a href={server + '/explorer/' + address}>{t('signin.actions.my-transactions')}</a>
+                <Link href="/services/send">Send payment</Link>
                 <Link href="/services/account-settings/">Account Settings</Link>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
                 <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
-
                 {!username && <Link href={'/username?address=' + address}>{t('menu.usernames')}</Link>}
-
-                {/* Hide Send XRP for XAHAU while they are not ready yet */}
-                {!xahauNetwork && (
-                  <>
-                    {account?.wallet === 'xaman' && xamanUserToken && (
-                      <a href={'/explorer/' + address + '?hw=xumm&xummtoken=' + xamanUserToken + '&action=send'}>
-                        {t('signin.actions.send')}
-                      </a>
-                    )}
-                  </>
-                )}
-
                 <span onClick={signOut} className="link">
                   {account?.wallet === 'walletconnect' && (
                     <Image
@@ -613,11 +611,11 @@ export default function Header({
           proName={proName}
           signOut={signOut}
           signOutPro={signOutPro}
-          xamanUserToken={account?.wallet === 'xaman' ? xamanUserToken : null}
           username={username}
           isCopied={isCopied}
           copyToClipboard={copyToClipboard}
           account={account}
+          countryCode={countryCode}
         />
       )}
     </div>

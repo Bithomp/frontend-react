@@ -5,7 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SearchBlock from '../../components/Layout/SearchBlock'
 import SEO from '../../components/SEO'
-import { addQueryParams, removeQueryParams, useWidth } from '../../utils'
+import { addQueryParams, nativeCurrency, removeQueryParams, useWidth } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import {
   lpTokenName,
@@ -25,6 +25,8 @@ import CopyButton from '../../components/UI/CopyButton'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { axiosServer, passHeaders } from '../../utils/axios'
+import Link from 'next/link'
+import AmmTabs from '../../components/Tabs/AmmTabs'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -34,7 +36,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/amm/' + id + (ledgerTimestamp ? '?ledgerTimestamp=' + ledgerTimestamp : ''),
+      url: 'v2/amm/' + id + '?holders=true' + (ledgerTimestamp ? '&ledgerTimestamp=' + ledgerTimestamp : ''),
       headers: passHeaders(req)
     }).catch((error) => {
       errorMessage = error.message
@@ -56,7 +58,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Amm({ id, initialData, initialErrorMessage, ledgerTimestampQuery }) {
+export default function Amm({ id, initialData, initialErrorMessage, ledgerTimestampQuery, isSsrMobile }) {
   const { t, i18n } = useTranslation()
   const width = useWidth()
   const router = useRouter()
@@ -73,7 +75,10 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
     setErrorMessage('')
 
     const response = await axios(
-      'v2/amm/' + id + (ledgerTimestamp ? '?ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : '')
+      'v2/amm/' +
+        id +
+        '?holders=true' +
+        (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
       setErrorMessage(t('error.' + error.message))
       setLoading(false)
@@ -138,6 +143,25 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
     </span>
   )
 
+  const voteLink = (
+    <>
+      [
+      <Link
+        href={
+          '/services/amm/vote?currency=' +
+          (data.amount?.currency || nativeCurrency) +
+          (data.amount?.issuer ? '&currencyIssuer=' + data.amount?.issuer : '') +
+          '&currency2=' +
+          (data.amount2?.currency || nativeCurrency) +
+          (data.amount2?.issuer ? '&currency2Issuer=' + data.amount2?.issuer : '')
+        }
+      >
+        Vote
+      </Link>
+      ]
+    </>
+  )
+
   return (
     <>
       <SEO
@@ -166,7 +190,17 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
         }
         userData={userData}
       />
-      <div className="content-center short-top amm">
+      <div className="content-center amm">
+        <h1 className="center">{lpToken}</h1>
+        <AmmTabs
+          tab="amm"
+          params={{
+            currency: data.amount?.currency || nativeCurrency,
+            currencyIssuer: data.amount?.issuer || '',
+            currency2: data.amount2?.currency || nativeCurrency,
+            currency2Issuer: data.amount2?.issuer || ''
+          }}
+        />
         <div className={width > 600 ? '' : 'center'}>
           Time machine:{' '}
           <DatePicker
@@ -222,22 +256,53 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                       </thead>
                       <tbody>
                         <tr>
+                          <td>LP Token</td>
+                          <td>
+                            <AddressWithIconFilled
+                              data={data}
+                              name="account"
+                              currency={data.lpTokenBalance.currency}
+                              options={{
+                                short: isSsrMobile,
+                                currencyDetails: {
+                                  type: 'lp_token',
+                                  asset: data.amount,
+                                  asset2: data.amount2,
+                                  currency: lpToken
+                                }
+                              }}
+                              copyButton={true}
+                            />
+                          </td>
+                        </tr>
+                        <tr>
                           <td>AMM ID</td>
                           <td>
                             {shortHash(data.ammID, 10)} <CopyButton text={data.ammID} />
                           </td>
                         </tr>
                         <tr>
-                          <td>{t('table.address')}</td>
+                          <td>Holders</td>
                           <td>
-                            <AddressWithIconFilled data={data} name="account" />
+                            <Link
+                              href={
+                                '/distribution?currency=' +
+                                data.lpTokenBalance.currency +
+                                '&currencyIssuer=' +
+                                data.account
+                              }
+                            >
+                              {data.holders}
+                            </Link>
                           </td>
                         </tr>
-                        {trAmountWithGateway({ amount: data.amount, name: 'Asset 1' })}
-                        {trAmountWithGateway({ amount: data.amount2, name: 'Asset 2' })}
+                        {trAmountWithGateway({ amount: data.amount, name: 'Asset 1', icon: true })}
+                        {trAmountWithGateway({ amount: data.amount2, name: 'Asset 2', icon: true })}
                         <tr>
                           <td>Trading fee</td>
-                          <td>{showAmmPercents(data.tradingFee)}</td>
+                          <td>
+                            {showAmmPercents(data.tradingFee)} {voteLink}
+                          </td>
                         </tr>
                         <tr>
                           <td>Balance</td>
@@ -345,54 +410,57 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                           </tr>
                         </thead>
                         <tbody>
-                          {data.voteSlots.map((slot, i) => (
-                            <React.Fragment key={i}>
-                              <tr>
-                                <td>Voter {data.voteSlots.length > 1 ? i + 1 : ''}</td>
-                                <td>
-                                  <AddressWithIconFilled data={slot} name="account" />
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>Trading fee</td>
-                                <td>{showAmmPercents(slot.tradingFee)}</td>
-                              </tr>
-                              <tr>
-                                <td>Vote weight</td>
-                                <td>{showAmmPercents(slot.voteWeight)}</td>
-                              </tr>
-                              {slot.createdAt && (
-                                <>
-                                  <tr>
-                                    <td>Created</td>
-                                    <td>
-                                      {timeFromNow(slot.createdAt, i18n)}
-                                      {', '}
-                                      {fullDateAndTime(slot.createdAt)} <LinkTx tx={slot.createdTxHash} icon={true} />
-                                    </td>
-                                  </tr>
-
-                                  {slot.createdAt !== slot.updatedAt && (
-                                    <tr>
-                                      <td>Last update</td>
-                                      <td>
-                                        {timeFromNow(data.updatedAt, i18n)}
-                                        {', '}
-                                        {fullDateAndTime(data.updatedAt)} <LinkTx tx={slot.updatedTxHash} icon={true} />
-                                      </td>
-                                    </tr>
-                                  )}
-                                </>
-                              )}
-                              {i !== data.voteSlots.length - 1 && (
+                          {data.voteSlots
+                            .sort((a, b) => b.voteWeight - a.voteWeight)
+                            .map((slot, i) => (
+                              <React.Fragment key={i}>
                                 <tr>
-                                  <td colSpan="100">
-                                    <hr />
+                                  <td>Voter {data.voteSlots.length > 1 ? i + 1 : ''}</td>
+                                  <td>
+                                    <AddressWithIconFilled data={slot} name="account" />
                                   </td>
                                 </tr>
-                              )}
-                            </React.Fragment>
-                          ))}
+                                <tr>
+                                  <td>Trading fee</td>
+                                  <td>{showAmmPercents(slot.tradingFee)}</td>
+                                </tr>
+                                <tr>
+                                  <td>Vote weight</td>
+                                  <td>{showAmmPercents(slot.voteWeight)}</td>
+                                </tr>
+                                {slot.createdAt && (
+                                  <>
+                                    <tr>
+                                      <td>Created</td>
+                                      <td>
+                                        {timeFromNow(slot.createdAt, i18n)}
+                                        {', '}
+                                        {fullDateAndTime(slot.createdAt)} <LinkTx tx={slot.createdTxHash} icon={true} />
+                                      </td>
+                                    </tr>
+
+                                    {slot.createdAt !== slot.updatedAt && (
+                                      <tr>
+                                        <td>Last update</td>
+                                        <td>
+                                          {timeFromNow(data.updatedAt, i18n)}
+                                          {', '}
+                                          {fullDateAndTime(data.updatedAt)}{' '}
+                                          <LinkTx tx={slot.updatedTxHash} icon={true} />
+                                        </td>
+                                      </tr>
+                                    )}
+                                  </>
+                                )}
+                                {i !== data.voteSlots.length - 1 && (
+                                  <tr>
+                                    <td colSpan="100">
+                                      <hr />
+                                    </td>
+                                  </tr>
+                                )}
+                              </React.Fragment>
+                            ))}
                         </tbody>
                       </table>
                     )}

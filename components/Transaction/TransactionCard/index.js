@@ -1,10 +1,10 @@
 import React from 'react'
-import CopyButton from '../UI/CopyButton'
+import CopyButton from '../../UI/CopyButton'
 import { useState } from 'react'
 import { i18n, useTranslation } from 'next-i18next'
 
-import { LedgerLink, LinkTx } from '../../utils/links'
-import { TData } from '../Table'
+import { LedgerLink, LinkTx } from '../../../utils/links'
+import { TData } from '../../Table'
 import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
@@ -16,10 +16,11 @@ import {
   niceCurrency,
   shortHash,
   timeFromNow
-} from '../../utils/format'
-import { decodeCTID, isValidCTID, networksIds, server, xahauNetwork } from '../../utils'
-import { dappBySourceTag, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
-import { add } from '../../utils/calc'
+} from '../../../utils/format'
+import { decodeCTID, isValidCTID, networksIds, server, xahauNetwork } from '../../../utils'
+import { dappBySourceTag, errorCodeDescription, shortErrorCode } from '../../../utils/transaction'
+import { add } from '../../../utils/calc'
+import ExchangesTable from './ExchangeTable'
 
 const gatewaySum = (balances) => {
   return balances?.reduce((sum, c) => add(sum, c.value), 0) || 0
@@ -269,7 +270,7 @@ export const TransactionCard = ({
                   </p>
                 )
               )}
-              <table>
+              <table style={{ width: '100%' }}>
                 <tbody>
                   {tx?.ctid && id === tx.ctid && (
                     <tr>
@@ -415,19 +416,16 @@ export const TransactionCard = ({
                         </TData>
                       </tr>
                     ))}
-                  {/* keep here outcome?.balanceChanges.length, to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
                   {tx?.TransactionType !== 'UNLReport' &&
-                    (outcome?.balanceChanges?.length > 2 || notFullySupported || showBalanceChanges) && (
+                    (filteredBalanceChanges?.length > 2 || notFullySupported || showBalanceChanges) && (
                       <>
-                        {filteredBalanceChanges?.length > 1 && (
-                          <tr>
-                            <TData>Affected accounts</TData>
-                            <TData>
-                              There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
-                              affected by this transaction.
-                            </TData>
-                          </tr>
-                        )}
+                        <tr>
+                          <TData>Affected accounts</TData>
+                          <TData>
+                            There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
+                            affected by this transaction.
+                          </TData>
+                        </tr>
                         {filteredBalanceChanges?.map((change, index) => {
                           let gateway = change?.balanceChanges?.every(
                             (changeItem) => changeItem.issuer === change.address
@@ -457,13 +455,13 @@ export const TransactionCard = ({
                                   : change.balanceChanges?.map((c, i) => {
                                       return (
                                         <div key={i}>
-                                          <span className={'bold ' + (Number(c.value) > 0 ? 'green' : 'red')}>
-                                            {Number(c.value) > 0 ? '+' : ''}
-                                            {amountFormat(c, { precise: true })}
-                                          </span>
-                                          {c.issuer && (
-                                            <>({addressUsernameOrServiceLink(c, 'issuer', { short: true })})</>
-                                          )}
+                                          {amountFormat(c, {
+                                            precise: 'nice',
+                                            withIssuer: true,
+                                            bold: true,
+                                            showPlus: true,
+                                            color: 'direction'
+                                          })}
                                           {nativeCurrencyToFiat({
                                             amount: c,
                                             selectedCurrency,
@@ -479,6 +477,26 @@ export const TransactionCard = ({
                         })}
                       </>
                     )}
+
+                  {outcome?.exchanges?.length > 0 && (
+                    <>
+                      <tr>
+                        <TData style={{ verticalAlign: 'top' }}>Exchange{outcome?.exchanges?.length > 1 && 's'}</TData>
+                        <TData>
+                          {outcome?.exchanges?.length > 1 && (
+                            <>
+                              There are <span className="bold">{outcome?.exchanges?.length}</span> exchnages that
+                              occured within this transaction.
+                              <br />
+                              <br />
+                            </>
+                          )}
+                          <ExchangesTable exchanges={outcome.exchanges} ledgerIndex={outcome.ledgerIndex} />
+                        </TData>
+                      </tr>
+                    </>
+                  )}
+
                   <tr>
                     <TData>Transaction link</TData>
                     <TData>
@@ -492,7 +510,7 @@ export const TransactionCard = ({
                         Additional data
                       </span>{' '}
                       |{' '}
-                      {!notFullySupported && (
+                      {!(filteredBalanceChanges?.length > 2 || notFullySupported) && (
                         <>
                           <span className="link" onClick={() => setShowBalanceChanges(!showBalanceChanges)}>
                             Balance changes

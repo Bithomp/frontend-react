@@ -106,6 +106,11 @@ module.exports = withBundleAnalyzer({
         source: '/xrpl-article',
         destination: '/learn/xrpl-article',
         permanent: true
+      },
+      {
+        source: '/services/amm',
+        destination: '/services/amm/deposit',
+        permanent: true
       }
     ]
   },
@@ -122,6 +127,14 @@ module.exports = withBundleAnalyzer({
       {
         source: '/tx',
         destination: '/transaction'
+      },
+      {
+        source: '/address/:id/dex',
+        destination: '/account/:id/dex'
+      },
+      {
+        source: '/address/:id/transactions',
+        destination: '/account/:id/transactions'
       },
       {
         source: '/address/:id',

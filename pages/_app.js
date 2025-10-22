@@ -64,6 +64,7 @@ const MyApp = ({ Component, pageProps }) => {
   const [wcSession, setWcSession] = useState(null)
   const [isClient, setIsClient] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
+  const [countryCode, setCountryCode] = useState('')
 
   const [activatedAccount, setActivatedAccount] = useState(false)
 
@@ -77,10 +78,41 @@ const MyApp = ({ Component, pageProps }) => {
   const router = useRouter()
   const isBot = useIsBot()
 
+  //check country
+  useEffect(() => {
+    async function fetchData() {
+      // {"ip":"176.28.256.49","country":"SE"}
+      const clientInfo = await axios('client/info')
+      setCountryCode(clientInfo?.data?.country)
+    }
+
+    fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   useEffect(() => {
     //pages where we need to show the latest fiat price
-    const allowedRoutes = ['/', '/account', '/account/[id]', '/account/[id]/transactions', '/amms', '/distribution', '/admin/watchlist', '/tokens']
-    const skipOnFirstRender = ['/', '/account', '/account/[id]', '/account/[id]/transactions', '/amms', '/tokens']
+    const allowedRoutes = [
+      '/',
+      '/account',
+      '/account/[id]',
+      '/account/[id]/transactions',
+      '/amms',
+      '/distribution',
+      '/admin/watchlist',
+      '/nft/[[...id]]',
+      '/tokens',
+      '/token/[[...id]]'
+    ]
+    const skipOnFirstRender = [
+      '/',
+      '/account',
+      '/account/[id]',
+      '/account/[id]/transactions',
+      '/amms',
+      '/tokens',
+      '/token/[[...id]]'
+    ]
 
     // Skip fetch on first render for pages that get on the server side
     if (firstRenderRef.current && skipOnFirstRender.includes(router.pathname)) {
@@ -193,6 +225,7 @@ const MyApp = ({ Component, pageProps }) => {
                 signOutPro={signOutPro}
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
+                countryCode={countryCode}
               />
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}
@@ -224,7 +257,7 @@ const MyApp = ({ Component, pageProps }) => {
               )}
               <div className="content">
                 <TopProgressBar />
-                {showTopAds && <TopLinks activatedAccount={activatedAccount} />}
+                {showTopAds && <TopLinks activatedAccount={activatedAccount} countryCode={countryCode} />}
                 <Component
                   {...pageProps}
                   refreshPage={refreshPage}
@@ -246,7 +279,7 @@ const MyApp = ({ Component, pageProps }) => {
                   setActivatedAccount={setActivatedAccount}
                 />
               </div>
-              <Footer setSignRequest={setSignRequest} account={account} />
+              <Footer countryCode={countryCode} />
             </div>
           </ErrorBoundary>
         </ThemeProvider>

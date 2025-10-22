@@ -9,10 +9,19 @@ import { LinkAmm, LinkTx } from '../../../utils/links'
 import CopyButton from '../../UI/CopyButton'
 import { errorCodeDescription } from '../../../utils/transaction'
 
-export default function AMMCreateForm({ setSignRequest }) {
-  const [asset1, setAsset1] = useState({ currency: nativeCurrency })
+export default function AMMCreateForm({
+  setSignRequest,
+  queryCurrency,
+  queryCurrencyIssuer,
+  queryCurrency2,
+  queryCurrency2Issuer
+}) {
+  const [asset1, setAsset1] = useState({ currency: queryCurrency || nativeCurrency, issuer: queryCurrencyIssuer || '' })
+  const [asset2, setAsset2] = useState({
+    currency: queryCurrency2 || nativeCurrency,
+    issuer: queryCurrency2Issuer || ''
+  })
   const [asset1Amount, setAsset1Amount] = useState('')
-  const [asset2, setAsset2] = useState({ currency: nativeCurrency })
   const [asset2Amount, setAsset2Amount] = useState('')
 
   const [tradingFee, setTradingFee] = useState()

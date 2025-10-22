@@ -1,16 +1,23 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import SEO from '../../components/SEO'
+import TokenSelector from '../../components/UI/TokenSelector'
 import { tokenClass } from '../../styles/pages/token.module.scss'
-import { niceNumber, shortNiceNumber, fullNiceNumber, AddressWithIconFilled } from '../../utils/format'
+import {
+  niceNumber,
+  shortNiceNumber,
+  fullNiceNumber,
+  AddressWithIconFilled,
+  userOrServiceLink
+} from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
-import { fetchHistoricalRate } from '../../utils/common'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, tokenImageSrc, validateCurrencyCode, xahauNetwork } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
+import TokenTabs from '../../components/Tabs/TokenTabs'
 
 // Server side initial data fetch
 export async function getServerSideProps(context) {
@@ -30,6 +37,8 @@ export async function getServerSideProps(context) {
     initialErrorMessage = 'Invalid token URL. Expected format: /token/{issuer}/{currencyCode}'
   }
 
+  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
+
   if (issuer && currency) {
     // Validate issuer
     if (!isAddressOrUsername(issuer)) {
@@ -45,7 +54,7 @@ export async function getServerSideProps(context) {
     if (!initialErrorMessage) {
       try {
         // Fetch token data
-        const url = `v2/trustlines/token/${issuer}/${currencyCode}?statistics=true&currencyDetails=true`
+        const url = `v2/trustlines/token/${issuer}/${currencyCode}?statistics=true&currencyDetails=true&convertCurrencies=${selectedCurrencyServer}`
         const res = await axiosServer({
           method: 'get',
           url,
@@ -53,7 +62,6 @@ export async function getServerSideProps(context) {
         }).catch((error) => {
           initialErrorMessage = error.message
         })
-
         if (res?.data) {
           if (res.data?.error) {
             initialErrorMessage = res.data.error
@@ -69,8 +77,6 @@ export async function getServerSideProps(context) {
       }
     }
   }
-
-  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
   return {
     props: {
@@ -97,8 +103,11 @@ export default function TokenPage({
   isSsrMobile
 }) {
   const router = useRouter()
-  const token = initialData
+  const [token, setToken] = useState(initialData)
+  const [loading, setLoading] = useState(false)
+  const [selectedToken, setSelectedToken] = useState(initialData)
   const errorMessage = initialErrorMessage || ''
+  const firstRenderRef = useRef(true)
 
   let selectedCurrency = selectedCurrencyServer
   let fiatRate = fiatRateServer
@@ -115,53 +124,63 @@ export default function TokenPage({
     }
   }, [initialData, initialErrorMessage, router])
 
-  // Historical fiat rates for price points
-  const [historicalRates, setHistoricalRates] = useState({})
+  const getData = async () => {
+    setLoading(true)
+    const cur = selectedCurrency?.toLowerCase()
+    if (!cur) return
+    const url = `v2/trustlines/token/${selectedToken.issuer}/${selectedToken.currency}?statistics=true&currencyDetails=true&convertCurrencies=${cur}`
+    const res = await axiosServer({
+      method: 'get',
+      url
+    }).catch((error) => {
+      initialErrorMessage = error.message
+    })
+    setToken(res.data)
+    setLoading(false)
+  }
 
   useEffect(() => {
-    const cur = (selectedCurrency || selectedCurrencyServer)?.toLowerCase()
-    if (!cur) return
-    const baseSeconds = token?.statistics?.timeAt || Math.floor(Date.now() / 1000)
-    const baseMs = baseSeconds * 1000
-    const points = [
-      ['spot', baseMs],
-      ['5m', baseMs - 5 * 60 * 1000],
-      ['1h', baseMs - 60 * 60 * 1000],
-      ['24h', baseMs - 24 * 60 * 60 * 1000],
-      ['7d', baseMs - 7 * 24 * 60 * 60 * 1000]
-    ]
-
-    let cancelled = false
-    points.forEach(([key, ts]) => {
-      fetchHistoricalRate({
-        timestamp: ts,
-        selectedCurrency: cur,
-        setPageFiatRate: (rate) => {
-          if (cancelled || rate == null) return
-          setHistoricalRates((prev) => ({ ...prev, [key]: rate }))
-        }
-      })
-    })
-
-    return () => {
-      cancelled = true
+    // Skip fetch on first render for pages that get on the server side
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false
+      return
     }
+    getData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, selectedCurrencyServer, token?.statistics?.timeAt])
+  }, [selectedCurrency, selectedToken])
+
+  useEffect(() => {
+    const { pathname, query } = router
+    query.id = [selectedToken?.issuer, selectedToken?.currency]
+    router.replace({ pathname, query }, null, { shallow: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedToken])
 
   // Helper: price line as "fiat (XRP)" using historical rate when available
-  const priceLine = ({ price, key }) => {
-    if (!price) return null
-    const rate = historicalRates[key] || fiatRate
-    if (!rate) return null
-    const priceFiat = price * rate
+  const priceLine = ({ priceNative, priceFiat }) => {
+    const price = priceNative
     return (
       <span suppressHydrationWarning>
-        {niceNumber(priceFiat, 4, selectedCurrency)}
+        {niceNumber(priceFiat || 0, 4, selectedCurrency)}
         {isSsrMobile ? <br /> : ' '}
         <span className="grey">
           {!isSsrMobile && '('}
-          {niceNumber(price, 6)} {nativeCurrency}
+          {price < 0.0001 ? (
+            <>
+              <span className="no-brake">
+                1M <span className="green">{token?.currencyDetails?.currency}</span> = {niceNumber(price * 1000000, 6)}{' '}
+              </span>
+              <span className="red no-brake">{nativeCurrency}</span>,{' '}
+            </>
+          ) : (
+            <span className="no-brake">
+              {niceNumber(price, 6)} <span className="red">{nativeCurrency}</span>,{' '}
+            </span>
+          )}
+          <span className="no-brake">
+            1 <span className="red">{nativeCurrency}</span> = {niceNumber(1 / price, 6)}{' '}
+            <span className="green">{token?.currencyDetails?.currency}</span>
+          </span>
           {!isSsrMobile && ')'}
         </span>
       </span>
@@ -262,23 +281,45 @@ export default function TokenPage({
     })
   }
 
+  const title = (
+    <>
+      {token?.currencyDetails?.currency} issued by {userOrServiceLink(token, 'issuer') || token?.issuer}
+    </>
+  )
+
   return (
     <>
       <SEO
-        title={`${token?.currencyDetails?.currency} Token - ${
-          token.issuerDetails?.service || token.issuerDetails?.username || 'Token Details'
-        }`}
+        title={
+          token?.currencyDetails?.currency +
+          ' issued by ' +
+          (token?.issuerDetails?.service || token?.issuerDetails?.username || token?.issuer)
+        }
       />
-
       <div className={tokenClass}>
+        <h1 className="center">{title}</h1>
+
+        {!xahauNetwork && <TokenTabs />}
+
         <div className="content-profile">
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}
+          >
+            <div style={{ width: '100%', marginBottom: '20px' }}>
+              <TokenSelector value={selectedToken} onChange={setSelectedToken} excludeNative={true} />
+            </div>
+          </div>
           <div className="column-left">
             {/* Big Token Icon */}
             <img
               alt="token"
               src={tokenImageSrc(token)}
               className="token-image"
-              style={{ width: '100%', height: 'auto' }}
+              style={{ width: 'calc(100% - 2px)', height: 'auto' }}
             />
             <h1>{token?.currencyDetails?.currency}</h1>
 
@@ -338,7 +379,18 @@ export default function TokenPage({
                 </tr>
                 <tr>
                   <td>Holders</td>
-                  <td>{fullNiceNumber(token.holders)}</td>
+                  <td>
+                    <Link
+                      href={
+                        '/distribution?currencyIssuer=' +
+                        token.issuer +
+                        '&currency=' +
+                        token.currencyDetails?.currencyCode
+                      }
+                    >
+                      {fullNiceNumber(token.holders)}
+                    </Link>
+                  </td>
                 </tr>
                 <tr>
                   <td>Trustlines</td>
@@ -375,47 +427,89 @@ export default function TokenPage({
             <table className="table-details">
               <thead>
                 <tr>
-                  <th colSpan="100">Price Information</th>
+                  <th colSpan="100">Price information</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Current Price</td>
-                  <td>{priceLine({ price: statistics?.priceNativeCurrency, key: 'current' })}</td>
-                </tr>
-                <tr>
-                  <td>Market Cap</td>
-                  <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
-                </tr>
-                {statistics?.priceNativeCurrencySpot && (
-                  <tr>
-                    <td>Spot Price</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrencySpot, key: 'spot' })}</td>
+                {loading ? (
+                  <tr className="center">
+                    <td colSpan="100">
+                      <span className="waiting"></span>
+                    </td>
                   </tr>
-                )}
-                {statistics?.priceNativeCurrency5m && (
-                  <tr>
-                    <td>5 Minutes Ago</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrency5m, key: '5m' })}</td>
-                  </tr>
-                )}
-                {statistics?.priceNativeCurrency1h && (
-                  <tr>
-                    <td>1 Hour Ago</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrency1h, key: '1h' })}</td>
-                  </tr>
-                )}
-                {statistics?.priceNativeCurrency24h && (
-                  <tr>
-                    <td>24 Hours Ago</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrency24h, key: '24h' })}</td>
-                  </tr>
-                )}
-                {statistics?.priceNativeCurrency7d && (
-                  <tr>
-                    <td>7 Days Ago</td>
-                    <td>{priceLine({ price: statistics?.priceNativeCurrency7d, key: '7d' })}</td>
-                  </tr>
+                ) : (
+                  <>
+                    {statistics?.priceNativeCurrency && (
+                      <tr>
+                        <td>Last price</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrency,
+                            priceFiat: statistics?.priceFiats[selectedCurrency]
+                          })}
+                        </td>
+                      </tr>
+                    )}
+                    {statistics?.priceNativeCurrencySpot && (
+                      <tr>
+                        <td>Spot price</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrencySpot,
+                            priceFiat: statistics?.priceFiatsSpot[selectedCurrency]
+                          })}
+                        </td>
+                      </tr>
+                    )}
+                    <tr>
+                      <td>Market cap</td>
+                      <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
+                    </tr>
+                    {statistics?.priceNativeCurrency5m && (
+                      <tr>
+                        <td>5 minutes ago</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrency5m,
+                            priceFiat: statistics?.priceFiats5m[selectedCurrency]
+                          })}
+                        </td>
+                      </tr>
+                    )}
+                    {statistics?.priceNativeCurrency1h && (
+                      <tr>
+                        <td>1 hour ago</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrency1h,
+                            priceFiat: statistics?.priceFiats1h[selectedCurrency]
+                          })}
+                        </td>
+                      </tr>
+                    )}
+                    {statistics?.priceNativeCurrency24h && (
+                      <tr>
+                        <td>24 hours ago</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrency24h,
+                            priceFiat: statistics?.priceFiats24h[selectedCurrency]
+                          })}
+                        </td>
+                      </tr>
+                    )}
+                    {statistics?.priceNativeCurrency7d && (
+                      <tr>
+                        <td>7 days ago</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrency7d,
+                            priceFiat: statistics?.priceFiats7d[selectedCurrency]
+                          })}
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 )}
               </tbody>
             </table>

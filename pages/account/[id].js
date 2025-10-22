@@ -108,6 +108,7 @@ import IssuedTokensData from '../../components/Account/IssuedTokensData'
 import EscrowData from '../../components/Account/EscrowData'
 import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
+import MPTData from '../../components/Account/MPTData'
 
 export default function Account({
   initialData,
@@ -571,48 +572,58 @@ export default function Account({
                             gateway={gateway}
                           />
                           <PublicData data={data} />
-                          <div id="tokens-section">
+                          {data?.ledgerInfo?.activated && (
                             <IOUData
                               rippleStateList={objects?.rippleStateList}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                               address={data?.address}
                               pageFiatRate={pageFiatRate}
                               selectedCurrency={selectedCurrency}
+                              account={account}
+                              setSignRequest={setSignRequest}
                             />
-                          </div>
+                          )}
                           {/* don't show yet obligations historically */}
                           {data?.obligations?.trustlines > 0 && !data?.ledgerInfo?.ledgerTimestamp && (
-                            <IssuedTokensData data={data} selectedCurrency={selectedCurrency} pageFiatRate={pageFiatRate} />
+                            <IssuedTokensData
+                              data={data}
+                              selectedCurrency={selectedCurrency}
+                              pageFiatRate={pageFiatRate}
+                            />
                           )}
 
-                          <div id="dex-orders-section">
-                            <DexOrdersData
-                              account={account}
-                              ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                              offerList={objects?.offerList}
-                              setSignRequest={setSignRequest}
-                              address={data?.address}
-                            />
-                          </div>
+                          <MPTData
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            mptIssuanceList={objects?.mptIssuanceList}
+                            mptList={objects?.mptList}
+                          />
+
+                          <DexOrdersData
+                            account={account}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            offerList={objects?.offerList}
+                            setSignRequest={setSignRequest}
+                            address={data?.address}
+                          />
 
                           {xahauNetwork ? (
                             <URITokenData data={data} uriTokenList={objects?.uriTokenList} />
                           ) : (
                             <NFTokenData
                               data={data}
+                              address={data?.address}
                               objects={objects}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              selectedCurrency={selectedCurrency}
                             />
                           )}
 
-                          <div id="escrows-section">
-                            <EscrowData
-                              setSignRequest={setSignRequest}
-                              address={data?.address}
-                              ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                              escrowList={objects?.escrowList}
-                            />
-                          </div>
+                          <EscrowData
+                            setSignRequest={setSignRequest}
+                            address={data?.address}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            escrowList={objects?.escrowList}
+                          />
 
                           <RecentTransactions userData={userData} ledgerTimestamp={ledgerTimestamp} />
                           {data?.ledgerInfo?.activated && !gateway && (
@@ -680,4 +691,4 @@ export default function Account({
       `}</style>
     </>
   )
-} 
+}

@@ -289,7 +289,7 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
           <>
             {/* Desktop table */}
             {!isSsrMobile || width > 800 ? (
-              <table className="table-large no-hover">
+              <table className="table-large">
                 <thead>
                   <tr>
                     <th className="center">#</th>

@@ -10,9 +10,18 @@ import CopyButton from '../../UI/CopyButton'
 import { errorCodeDescription } from '../../../utils/transaction'
 import SimpleSelect from '../../UI/SimpleSelect'
 
-export default function AMMWithdrawForm({ setSignRequest }) {
-  const [asset1, setAsset1] = useState({ currency: nativeCurrency })
-  const [asset2, setAsset2] = useState({ currency: nativeCurrency })
+export default function AMMWithdrawForm({
+  setSignRequest,
+  queryCurrency,
+  queryCurrencyIssuer,
+  queryCurrency2,
+  queryCurrency2Issuer
+}) {
+  const [asset1, setAsset1] = useState({ currency: queryCurrency || nativeCurrency, issuer: queryCurrencyIssuer || '' })
+  const [asset2, setAsset2] = useState({
+    currency: queryCurrency2 || nativeCurrency,
+    issuer: queryCurrency2Issuer || ''
+  })
   const [amount1, setAmount1] = useState('')
   const [amount2, setAmount2] = useState('')
   const [lpTokenIn, setLpTokenIn] = useState('')
@@ -24,13 +33,46 @@ export default function AMMWithdrawForm({ setSignRequest }) {
   const [txResult, setTxResult] = useState(null)
 
   const withdrawModes = [
-    { value: 'tfLPToken', label: 'LP Token Withdrawal', description: 'Return the specified amount of LP Tokens and receive both assets from the AMM\'s pool in amounts based on the returned LP Tokens\' share of the total LP Tokens issued.' },
-    { value: 'tfWithdrawAll', label: 'Withdraw All', description: 'Return all of your LP Tokens and receive as much as you can of both assets in the AMM\'s pool.' },
-    { value: 'tfTwoAsset', label: 'Double Asset Withdrawal', description: 'Withdraw both of this AMM\'s assets, in up to the specified amounts. The actual amounts received maintains the balance of assets in the AMM\'s pool.' },
-    { value: 'tfSingleAsset', label: 'Single Asset Withdrawal', description: 'Withdraw exactly the specified amount of one asset, by returning as many LP Tokens as necessary.' },
-    { value: 'tfOneAssetWithdrawAll', label: 'Single Asset Withdraw All', description: 'Withdraw at least the specified amount of one asset, by returning all of your LP Tokens. Fails if you can\'t receive at least the specified amount.' },
-    { value: 'tfOneAssetLPToken', label: 'Single Asset + LP Token', description: 'Withdraw up to the specified amount of one asset, by returning up to the specified amount of LP Tokens.' },
-    { value: 'tfLimitLPToken', label: 'Single Asset + Price Limit', description: 'Withdraw up to the specified amount of one asset, but pay no more than the specified effective price in LP Tokens per unit of the asset received.' }
+    {
+      value: 'tfLPToken',
+      label: 'LP Token Withdrawal',
+      description:
+        "Return the specified amount of LP Tokens and receive both assets from the AMM's pool in amounts based on the returned LP Tokens' share of the total LP Tokens issued."
+    },
+    {
+      value: 'tfWithdrawAll',
+      label: 'Withdraw All',
+      description: "Return all of your LP Tokens and receive as much as you can of both assets in the AMM's pool."
+    },
+    {
+      value: 'tfTwoAsset',
+      label: 'Double Asset Withdrawal',
+      description:
+        "Withdraw both of this AMM's assets, in up to the specified amounts. The actual amounts received maintains the balance of assets in the AMM's pool."
+    },
+    {
+      value: 'tfSingleAsset',
+      label: 'Single Asset Withdrawal',
+      description: 'Withdraw exactly the specified amount of one asset, by returning as many LP Tokens as necessary.'
+    },
+    {
+      value: 'tfOneAssetWithdrawAll',
+      label: 'Single Asset Withdraw All',
+      description:
+        "Withdraw at least the specified amount of one asset, by returning all of your LP Tokens. Fails if you can't receive at least the specified amount."
+    },
+    {
+      value: 'tfOneAssetLPToken',
+      label: 'Single Asset + LP Token',
+      description:
+        'Withdraw up to the specified amount of one asset, by returning up to the specified amount of LP Tokens.'
+    },
+    {
+      value: 'tfLimitLPToken',
+      label: 'Single Asset + Price Limit',
+      description:
+        'Withdraw up to the specified amount of one asset, but pay no more than the specified effective price in LP Tokens per unit of the asset received.'
+    }
   ]
 
   const validateForm = () => {
@@ -93,7 +135,7 @@ export default function AMMWithdrawForm({ setSignRequest }) {
         // No validation needed for withdraw all
         break
     }
-    
+
     if (!agreeToRisks) {
       setError('Please agree to the risks.')
       return false
@@ -110,7 +152,7 @@ export default function AMMWithdrawForm({ setSignRequest }) {
   const onSubmit = () => {
     setTxResult(null)
     setError('')
-    
+
     if (!validateForm()) {
       return
     }
@@ -118,14 +160,20 @@ export default function AMMWithdrawForm({ setSignRequest }) {
     try {
       const ammWithdraw = {
         TransactionType: 'AMMWithdraw',
-        Asset: asset1.currency === nativeCurrency ? { currency: nativeCurrency } : {
-          currency: asset1.currency,
-          issuer: asset1.issuer
-        },
-        Asset2: asset2.currency === nativeCurrency ? { currency: nativeCurrency } : {
-          currency: asset2.currency,
-          issuer: asset2.issuer
-        }
+        Asset:
+          asset1.currency === nativeCurrency
+            ? { currency: nativeCurrency }
+            : {
+                currency: asset1.currency,
+                issuer: asset1.issuer
+              },
+        Asset2:
+          asset2.currency === nativeCurrency
+            ? { currency: nativeCurrency }
+            : {
+                currency: asset2.currency,
+                issuer: asset2.issuer
+              }
       }
 
       // Add fields based on withdraw mode
@@ -220,7 +268,7 @@ export default function AMMWithdrawForm({ setSignRequest }) {
               issuer: asset1.issuer,
               value: ePrice
             }
-          }          
+          }
           break
         case 'tfWithdrawAll':
           // No additional fields needed for withdraw all
@@ -428,13 +476,13 @@ export default function AMMWithdrawForm({ setSignRequest }) {
               </div>
               <div className="w-full sm:w-1/2">
                 <span className="input-title">Asset to Withdraw</span>
-                <TokenSelector value={asset1} onChange={setAsset1} />
+                <TokenSelector value={asset1} onChange={setAsset1} currencyQueryName="currency" />
               </div>
             </div>
             <br />
             <div className="w-full">
               <span className="input-title">Other Asset in Pool</span>
-              <TokenSelector value={asset2} onChange={setAsset2} />
+              <TokenSelector value={asset2} onChange={setAsset2} currencyQueryName="currency2" />
             </div>
             <br />
             <FormInput
@@ -478,7 +526,7 @@ export default function AMMWithdrawForm({ setSignRequest }) {
           <span className="input-title">Withdraw Mode</span>
           <SimpleSelect value={withdrawMode} setValue={setWithdrawMode} optionsList={withdrawModes} />
           <p className="text-sm text-gray-600 mt-1">
-            {withdrawModes.find(m => m.value === withdrawMode)?.description}
+            {withdrawModes.find((m) => m.value === withdrawMode)?.description}
           </p>
         </div>
         <br />
@@ -487,8 +535,8 @@ export default function AMMWithdrawForm({ setSignRequest }) {
         <CheckBox checked={agreeToRisks} setChecked={setAgreeToRisks} name="amm-withdraw-risks">
           <span className="orange bold">
             I acknowledge and understand the risks associated with XRPL AMMs, including impermanent loss, fund
-            withdrawal risks, market volatility, and the impact of withdrawing from unbalanced pools. I agree to participate at
-            my own risk.
+            withdrawal risks, market volatility, and the impact of withdrawing from unbalanced pools. I agree to
+            participate at my own risk.
           </span>
         </CheckBox>
         <CheckBox checked={agreeToTerms} setChecked={setAgreeToTerms} name="amm-withdraw-terms">

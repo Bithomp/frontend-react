@@ -153,7 +153,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
   })
 
   return (
-    <>
+    <div id="dex-orders-section">
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
@@ -161,7 +161,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
               {offerList.length > 5 ? (
                 <>
                   The last 5 DEX orders{historicalTitle} [
-                  <a href={`/account/${address}/dex`} className="link bold">
+                  <a href={`/account/${address}/dex`} className="link">
                     View all ({offerList.length} total)
                   </a>{' '}
                   ]
@@ -169,7 +169,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
               ) : (
                 <>
                   {offerList.length} DEX orders{historicalTitle} [
-                  <a href={`/account/${address}/dex`} className="link bold">
+                  <a href={`/account/${address}/dex`} className="link">
                     View details
                   </a>
                   ]
@@ -204,7 +204,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
           {offerList.length > 5 ? (
             <>
               The last 5 DEX orders{historicalTitle} [
-              <a href={`/account/${address}/dex`} className="link bold">
+              <a href={`/account/${address}/dex`} className="link">
                 View all ({offerList.length} total)
               </a>{' '}
               ]
@@ -212,7 +212,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
           ) : (
             <>
               {offerList.length} DEX orders{historicalTitle} [
-              <a href={`/account/${address}/dex`} className="link bold">
+              <a href={`/account/${address}/dex`} className="link">
                 View details
               </a>
               ]
@@ -233,6 +233,6 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         </table>
         <br />
       </div>
-    </>
+    </div>
   )
 }
