@@ -2,8 +2,8 @@ import React from 'react'
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled, amountFormatWithIcon, amountToFiat, shortAddress, showFlags } from '../../utils/format'
-import Link from 'next/link'
+import { AddressWithIconFilled, amountFormatWithIcon, amountToFiat, showFlags } from '../../utils/format'
+import { LinkTx } from '../../utils/links'
 
 export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -45,9 +45,7 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
           <tr>
             <TData>ID</TData>
             <TData>
-              <Link href={`/tx/${transaction.id}`}>
-                {shortAddress(transaction.id)}
-              </Link>
+              <LinkTx tx={transaction?.id} />
             </TData>
           </tr>
           <tr>
