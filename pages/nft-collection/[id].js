@@ -32,7 +32,7 @@ export async function getServerSideProps(context) {
   let errorMessage = ''
 
   try {
-    [dataRes, nftRes] = await Promise.all([
+    ;[dataRes, nftRes] = await Promise.all([
       axiosServer({
         method: 'get',
         url: `/v2/nft-collection/${encodeURIComponent(collectionId)}?floorPrice=true&statistics=true`,
@@ -44,8 +44,8 @@ export async function getServerSideProps(context) {
         headers: passHeaders(req)
       })
     ])
-  } catch(error) {
-    errorMessage = "error." + error.message
+  } catch (error) {
+    errorMessage = 'error.' + error.message
   }
 
   if (!dataRes?.data) errorMessage = 'No data found'
@@ -68,7 +68,6 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
   const [mounted, setMounted] = useState(false)
   const collection = data?.collection
   const statistics = collection?.statistics
-  const issuerDetails = collection?.issuerDetails
   const [activityData, setActivityData] = useState({
     sales: [],
     listings: [],
@@ -99,11 +98,15 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
     try {
       const [salesRes, listingsRes] = await Promise.all([
         axios(
-          `/v2/nft-sales?collection=${encodeURIComponent(id)}&list=lastSold&limit=3&convertCurrencies=${selectedCurrency}`
+          `/v2/nft-sales?collection=${encodeURIComponent(
+            id
+          )}&list=lastSold&limit=3&convertCurrencies=${selectedCurrency}`
         ).catch(() => null),
-    
+
         axios(
-          `/v2/nfts?collection=${encodeURIComponent(id)}&list=onSale&order=offerCreatedNew&limit=3&currency=${selectedCurrency}`
+          `/v2/nfts?collection=${encodeURIComponent(
+            id
+          )}&list=onSale&order=offerCreatedNew&limit=3&currency=${selectedCurrency}`
         ).catch(() => null)
       ])
       setActivityData({
@@ -128,8 +131,6 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
       )
     )
   }
-``
-  const collectionDescription = collection?.description
 
   const imageUrl = ipfsUrl(collection?.image)
 
@@ -313,9 +314,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                     <td>
                       {amountFormat(item.amount)}≈ {convertedAmount(item, selectedCurrency, { short: true })}
                     </td>
-                    <td>
-                      {item.acceptedAt ? fullDateAndTime(item.acceptedAt) : 'N/A'}
-                    </td>
+                    <td>{item.acceptedAt ? fullDateAndTime(item.acceptedAt) : 'N/A'}</td>
                   </>
                 )}
                 {kind === 'listings' && (
@@ -327,9 +326,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                       {amountFormat(item?.sellOffers?.[0]?.amount)}
                       {nativeCurrencyToFiat({ amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate })}
                     </td>
-                    <td>
-                      {fullDateAndTime(item.ownerChangedAt)}
-                    </td>
+                    <td>{fullDateAndTime(item.ownerChangedAt)}</td>
                   </>
                 )}
                 {kind === 'mints' && (
@@ -337,9 +334,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                     <td>
                       {item.owner && <AddressWithIconFilled data={item} name="owner" options={{ short: true }} />}
                     </td>
-                    <td>
-                      {fullDateAndTime(item.issuedAt)}
-                    </td>
+                    <td>{fullDateAndTime(item.issuedAt)}</td>
                   </>
                 )}
               </tr>
@@ -362,18 +357,16 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
         page="NFT Collection"
         title={'NFT Collection'}
         description={
-          collectionDescription ||
+          collection?.description ||
           t('desc', { ns: 'nft' }) +
-            (collection?.issuer
-              ? ' - ' + t('table.issuer') + ': ' + usernameOrAddress(collection, 'issuer')
-              : '')
+            (collection?.issuer ? ' - ' + t('table.issuer') + ': ' + usernameOrAddress(collection, 'issuer') : '')
         }
         image={{ file: imageUrl }}
       />
       <div className="content-profile">
         {id && !data?.error ? (
           <>
-            {(!data && !errorMessage) ? (
+            {!data && !errorMessage ? (
               <div className="center" style={{ marginTop: '80px' }}>
                 <span className="waiting"></span>
                 <br />
@@ -402,59 +395,46 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                         </div>
 
                         <div className="column-right">
-                          <div className="collection-info">
-                            <h2 className="collection-name">{collectionName(data)}</h2>
-                            {collectionDescription && (
-                              <p className="collection-description">{collectionDescription}</p>
-                            )}
-                          </div>
-
                           {mounted && collection?.issuer && (
                             <table className="table-details">
                               <thead>
                                 <tr>
-                                  <th colSpan="100">Issuer Information</th>
+                                  <th colSpan="100">Collection information</th>
                                 </tr>
                               </thead>
                               <tbody>
                                 <tr>
-                                  <td>Address</td>
-                                  <td>
-                                    <AddressWithIconFilled data={collection} name="issuer" />
-                                  </td>
+                                  <td>Collection</td>
+                                  <td>{collectionName(data)}</td>
                                 </tr>
-                                {issuerDetails?.username && (
+                                {collection?.description && (
                                   <tr>
-                                    <td>Username</td>
-                                    <td>{issuerDetails.username}</td>
+                                    <td>Description</td>
+                                    <td>{collection?.description}</td>
                                   </tr>
                                 )}
-                                {collection?.issuerDetails?.service && (
-                                  <tr>
-                                    <td>Service</td>
-                                    <td>{issuerDetails.service}</td>
-                                  </tr>
-                                )}
-                                {collection?.taxon ? (
+                                {collection?.taxon !== undefined && (
                                   <tr>
                                     <td>Taxon</td>
                                     <td>{collection?.taxon}</td>
                                   </tr>
-                                ) : null}
+                                )}
+                                <tr>
+                                  <td>Issuer</td>
+                                  <td>
+                                    <AddressWithIconFilled data={collection} name="issuer" />
+                                  </td>
+                                </tr>
                                 {collection?.createdAt && (
                                   <tr>
                                     <td>Created At</td>
-                                    <td>
-                                      {fullDateAndTime(collection.createdAt)}
-                                    </td>
+                                    <td>{fullDateAndTime(collection.createdAt)}</td>
                                   </tr>
                                 )}
                                 {collection?.updatedAt && (
                                   <tr>
                                     <td>Updated At</td>
-                                    <td>
-                                      {fullDateAndTime(collection.updatedAt)}
-                                    </td>
+                                    <td>{fullDateAndTime(collection.updatedAt)}</td>
                                   </tr>
                                 )}
                               </tbody>
@@ -557,11 +537,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                         alignItems: 'start'
                                       }}
                                     >
-                                      {nftList.length === 0 && (
-                                        <span>
-                                          No NFTs found
-                                        </span>
-                                      )}
+                                      {nftList.length === 0 && <span>No NFTs found</span>}
                                       {nftList?.map((nft, i) => (
                                         <Link href={`/nft/${nft.nftokenID}`} key={i}>
                                           <img
