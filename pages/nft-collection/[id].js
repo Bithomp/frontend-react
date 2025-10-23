@@ -22,6 +22,7 @@ import SEO from '../../components/SEO'
 import { nftClass } from '../../styles/pages/nft.module.scss'
 import { useWidth } from '../../utils'
 import { axiosServer, passHeaders } from '../../utils/axios'
+import { LinkTx } from '../../utils/links'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -2151,7 +2152,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                 return (
                   <React.Fragment key={i}>
                     <tr>
-                      <td>NFT</td>
+                      <td style={{ width: 70 }}>NFT</td>
                       <td>
                         <NftImage nft={item} style={{ width: 20, height: 20, objectFit: 'cover', borderRadius: 4 }} />{' '}
                         <Link href={'/nft/' + item.nftokenID}>{nftName(item?.nftoken || item)}</Link>
@@ -2179,7 +2180,9 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                         </tr>
                         <tr>
                           <td>Sold</td>
-                          <td>{timeFromNow(item.acceptedAt, i18n)}</td>
+                          <td>
+                            {timeFromNow(item.acceptedAt, i18n)} <LinkTx tx={item.acceptedTxHash} icon={true} />
+                          </td>
                         </tr>
                       </>
                     )}
@@ -2187,7 +2190,9 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                       <>
                         <tr>
                           <td>Owner</td>
-                          <td>{item.owner && addressUsernameOrServiceLink(item, 'owner', { short: 6 })}</td>
+                          <td>
+                            <AddressWithIconInline data={item} name="owner" options={{ short: true }} />
+                          </td>
                         </tr>
                         <tr>
                           <td>Price</td>
@@ -2201,8 +2206,11 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                           </td>
                         </tr>
                         <tr>
-                          <td>Date</td>
-                          <td>{fullDateAndTime(item.ownerChangedAt)}</td>
+                          <td>Listed</td>
+                          <td>
+                            {timeFromNow(item.sellOffers?.[0]?.createdAt, i18n)}{' '}
+                            <LinkTx tx={item.sellOffers?.[0]?.createdTxHash} icon={true} />
+                          </td>
                         </tr>
                       </>
                     )}
@@ -2210,11 +2218,16 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                       <>
                         <tr>
                           <td>Owner</td>
-                          <td>{item.owner && addressUsernameOrServiceLink(item, 'owner', { short: 6 })}</td>
+                          <td>
+                            <AddressWithIconInline data={item} name="owner" options={{ short: true }} />
+                          </td>
                         </tr>
                         <tr>
-                          <td>Date</td>
-                          <td>{fullDateAndTime(item.issuedAt)}</td>
+                          <td>Minted</td>
+                          <td>
+                            {timeFromNow(item.issuedAt, i18n)}
+                            {/* not ready on the backend <LinkTx tx={item.issuedTxHash} icon={true} /> */}
+                          </td>
                         </tr>
                       </>
                     )}
@@ -2238,9 +2251,9 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
       )
     }
 
-    const nftImageSize = kind === 'sales' ? 40 : 20
+    const nftImageSize = ['sales', 'listings'].includes(kind) ? 40 : 20
 
-    // Desktop: render table
+    // Desktop
     return (
       <table className="table-details" style={{ marginBottom: '20px' }}>
         <thead>
@@ -2279,10 +2292,13 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                       <AddressWithIconInline data={item} name="buyer" options={{ short: true }} />
                     </td>
                     <td className="right">
-                      {amountFormat(item.amount)}{' '}
+                      {amountFormat(item.amount)}
+                      <br />
                       <span className="no-brake">≈{convertedAmount(item, selectedCurrency, { short: true })}</span>
                     </td>
-                    <td className="right">{timeFromNow(item.acceptedAt, i18n)}</td>
+                    <td className="right">
+                      {timeFromNow(item.acceptedAt, i18n)} <LinkTx tx={item.acceptedTxHash} icon={true} />
+                    </td>
                   </>
                 )}
                 {kind === 'listings' && (
@@ -2290,9 +2306,13 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                     <td>{item.owner && <AddressWithIconInline data={item} name="owner" options={{ short: 5 }} />}</td>
                     <td className="right">
                       {amountFormat(item?.sellOffers?.[0]?.amount)}
+                      <br />
                       {nativeCurrencyToFiat({ amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate })}
                     </td>
-                    <td className="right">{timeFromNow(item.ownerChangedAt, i18n)}</td>
+                    <td className="right">
+                      {timeFromNow(item.ownerChangedAt, i18n)}{' '}
+                      <LinkTx tx={item.sellOffers?.[0]?.createdTxHash} icon={true} />
+                    </td>
                   </>
                 )}
                 {kind === 'mints' && (
@@ -2300,7 +2320,10 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                     <td>
                       {item.owner && <AddressWithIconInline data={item} name="owner" options={{ short: true }} />}
                     </td>
-                    <td className="right">{timeFromNow(item.issuedAt, i18n)}</td>
+                    <td className="right">
+                      {timeFromNow(item.issuedAt, i18n)}
+                      {/* not ready on the backend <LinkTx tx={item.issuedTxHash} icon={true} /> */}
+                    </td>
                   </>
                 )}
               </tr>
