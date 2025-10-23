@@ -1,5 +1,5 @@
 import { i18n, useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
@@ -7,16 +7,16 @@ import Link from 'next/link'
 import {
   usernameOrAddress,
   AddressWithIconFilled,
-  shortHash,
   addressUsernameOrServiceLink,
   amountFormat,
   convertedAmount,
   nativeCurrencyToFiat,
   fullDateAndTime,
-  timeFromNow
+  timeFromNow,
+  AddressWithIconInline
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { nftUrl, nftName, ipfsUrl } from '../../utils/nft'
+import { nftName, ipfsUrl, NftImage } from '../../utils/nft'
 
 import SEO from '../../components/SEO'
 import { nftClass } from '../../styles/pages/nft.module.scss'
@@ -48,8 +48,7 @@ export async function getServerSideProps(context) {
     errorMessage = 'error.' + error.message
   }
 
-  //TEST!!!
-  //if (!dataRes?.data) errorMessage = 'No data found'
+  if (!dataRes?.data) errorMessage = 'No data found'
 
   return {
     props: {
@@ -1362,10 +1361,10 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
       }
     }
   ]
+  errorMessage = null
 
   const { t } = useTranslation()
   const width = useWidth()
-  const [mounted, setMounted] = useState(false)
   const collection = data?.collection
   const statistics = collection?.statistics
   const [activityData, setActivityData] = useState({
@@ -1377,7 +1376,6 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
   const [isMobile, setIsMobile] = useState(isSsrMobile)
 
   useEffect(() => {
-    setMounted(true)
     // Client-side viewport fallback for mobile detection
     const updateIsMobile = () => {
       try {
@@ -2126,127 +2124,121 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
     let items = []
     if (kind === 'sales') {
       title = 'Recent Sales'
-      headers = ['NFT', 'Seller / Buyer', 'Price', 'Date']
+      headers = ['NFT', 'Seller / Buyer', 'Price', 'Sold']
       items = activityData.sales || []
     } else if (kind === 'listings') {
       title = 'Recent Listings'
-      headers = ['NFT', 'Owner', 'Price', 'Date']
+      headers = ['NFT', 'Owner', 'Price', 'Listed']
       items = activityData.listings || []
     } else if (kind === 'mints') {
       title = 'Recent Mints'
-      headers = ['NFT', 'Owner', 'Date']
+      headers = ['NFT', 'Owner', 'Minted']
       items = activityData.mints || []
     }
 
     // Mobile: render blocks instead of table
     if (isMobile) {
       return (
-        <div style={{ marginBottom: '20px' }}>
-          <table className="table-details">
-            <thead>
-              <tr>
-                <th colSpan="100">{title}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.length > 0 ? (
-                items.map((item, i) => {
-                  return (
-                    <tr key={i}>
+        <table className="table-details">
+          <thead>
+            <tr>
+              <th colSpan="100">{title}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.length > 0 ? (
+              items.map((item, i) => {
+                return (
+                  <React.Fragment key={i}>
+                    <tr>
+                      <td>NFT</td>
                       <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <span>NFT: </span>
-                          {nftUrl(item?.nftoken || item, 'thumbnail') ? (
-                            <img
-                              src={nftUrl(item?.nftoken || item, 'thumbnail')}
-                              alt={nftName(item?.nftoken || item) || 'NFT thumbnail'}
-                              style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
-                            />
-                          ) : (
-                            ''
-                          )}
-                          <div className="code" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                            <span>{nftName(item?.nftoken || item)}</span>
-                            <Link href={'/nft/' + item.nftokenID}>{shortHash(item.nftokenID, 6)}</Link>
-                          </div>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
-                          {kind === 'sales' && (
-                            <>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <span>Seller: </span>
-                                {item.seller ? (
-                                  <AddressWithIconFilled data={item} name="seller" options={{ short: true }} />
-                                ) : (
-                                  ''
-                                )}
-                              </div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <span>Buyer: </span>
-                                {item.buyer ? (
-                                  <AddressWithIconFilled data={item} name="buyer" options={{ short: true }} />
-                                ) : (
-                                  ''
-                                )}
-                              </div>
-                              <div>
-                                <span>Price: </span>
-                                {amountFormat(item.amount)}≈ {convertedAmount(item, selectedCurrency, { short: true })}
-                              </div>
-                              <div>
-                                <span>Date: </span>
-                                {item.acceptedAt ? fullDateAndTime(item.acceptedAt) : ''}
-                              </div>
-                            </>
-                          )}
-                          {kind === 'listings' && (
-                            <>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <span>Owner: </span>
-                                {item.owner && addressUsernameOrServiceLink(item, 'owner', { short: 12 })}
-                              </div>
-                              <div>
-                                <span>Price: </span>
-                                {amountFormat(item?.sellOffers?.[0]?.amount)}
-                                {nativeCurrencyToFiat({
-                                  amount: item?.sellOffers?.[0]?.amount,
-                                  selectedCurrency,
-                                  fiatRate
-                                })}
-                              </div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <span>Date: </span>
-                                {fullDateAndTime(item.ownerChangedAt)}
-                              </div>
-                            </>
-                          )}
-                          {kind === 'mints' && (
-                            <>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <span>Owner: </span>
-                                {item.owner && addressUsernameOrServiceLink(item, 'owner', { short: 12 })}
-                              </div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <span>Date: </span>
-                                {fullDateAndTime(item.issuedAt)}
-                              </div>
-                            </>
-                          )}
-                        </div>
+                        <NftImage nft={item} style={{ width: 20, height: 20, objectFit: 'cover', borderRadius: 4 }} />{' '}
+                        <Link href={'/nft/' + item.nftokenID}>{nftName(item?.nftoken || item)}</Link>
                       </td>
                     </tr>
-                  )
-                })
-              ) : (
-                <tr>
-                  <td colSpan="100">No information found</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                    {kind === 'sales' && (
+                      <>
+                        <tr>
+                          <td>Seller</td>
+                          <td>
+                            <AddressWithIconInline data={item} name="seller" options={{ short: true }} />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Buyer</td>
+                          <td>
+                            <AddressWithIconInline data={item} name="buyer" options={{ short: true }} />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Price</td>
+                          <td>
+                            {amountFormat(item.amount)}≈ {convertedAmount(item, selectedCurrency, { short: true })}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Sold</td>
+                          <td>{timeFromNow(item.acceptedAt, i18n)}</td>
+                        </tr>
+                      </>
+                    )}
+                    {kind === 'listings' && (
+                      <>
+                        <tr>
+                          <td>Owner</td>
+                          <td>{item.owner && addressUsernameOrServiceLink(item, 'owner', { short: 6 })}</td>
+                        </tr>
+                        <tr>
+                          <td>Price</td>
+                          <td>
+                            {amountFormat(item?.sellOffers?.[0]?.amount)}
+                            {nativeCurrencyToFiat({
+                              amount: item?.sellOffers?.[0]?.amount,
+                              selectedCurrency,
+                              fiatRate
+                            })}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Date</td>
+                          <td>{fullDateAndTime(item.ownerChangedAt)}</td>
+                        </tr>
+                      </>
+                    )}
+                    {kind === 'mints' && (
+                      <>
+                        <tr>
+                          <td>Owner</td>
+                          <td>{item.owner && addressUsernameOrServiceLink(item, 'owner', { short: 6 })}</td>
+                        </tr>
+                        <tr>
+                          <td>Date</td>
+                          <td>{fullDateAndTime(item.issuedAt)}</td>
+                        </tr>
+                      </>
+                    )}
+                    {i !== items.length - 1 && (
+                      <tr>
+                        <td colSpan="100">
+                          <hr />
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                )
+              })
+            ) : (
+              <tr>
+                <td colSpan="100">No information found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       )
     }
+
+    const nftImageSize = kind === 'sales' ? 40 : 20
 
     // Desktop: render table
     return (
@@ -2260,7 +2252,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
           <tr>
             {items.length > 0 &&
               headers.map((h, i) => (
-                <td className="bold" key={i}>
+                <td className={'bold' + (['Price', 'Sold', 'Listed', 'Minted'].includes(h) ? ' right' : '')} key={i}>
                   {h}
                 </td>
               ))}
@@ -2270,55 +2262,45 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
               <tr key={i}>
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
-                    {nftUrl(item?.nftoken || item, 'thumbnail') ? (
-                      <img
-                        src={nftUrl(item?.nftoken || item, 'thumbnail')}
-                        alt={nftName(item?.nftoken || item) || 'NFT thumbnail'}
-                        style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
-                      />
-                    ) : (
-                      ''
-                    )}
+                    <NftImage
+                      nft={item}
+                      style={{ width: nftImageSize, height: nftImageSize, objectFit: 'cover', borderRadius: 4 }}
+                    />
                     <span className="code" style={{ display: 'flex', flexDirection: 'column' }}>
-                      {nftName(item?.nftoken || item)}
-                      <Link href={'/nft/' + item.nftokenID}>{shortHash(item.nftokenID, 6)}</Link>
+                      <Link href={'/nft/' + item.nftokenID}>{nftName(item?.nftoken || item)}</Link>
                     </span>
                   </div>
                 </td>
                 {kind === 'sales' && (
                   <>
                     <td style={{ width: 'fit-content' }}>
-                      {item.seller ? (
-                        <AddressWithIconFilled data={item} name="seller" options={{ short: true }} />
-                      ) : (
-                        '—'
-                      )}
-                      {item.buyer ? <AddressWithIconFilled data={item} name="buyer" options={{ short: true }} /> : '—'}
+                      <AddressWithIconInline data={item} name="seller" options={{ short: true }} />
+                      <br />
+                      <AddressWithIconInline data={item} name="buyer" options={{ short: true }} />
                     </td>
-                    <td>
-                      {amountFormat(item.amount)}≈ {convertedAmount(item, selectedCurrency, { short: true })}
+                    <td className="right">
+                      {amountFormat(item.amount)}{' '}
+                      <span className="no-brake">≈{convertedAmount(item, selectedCurrency, { short: true })}</span>
                     </td>
-                    <td>{item.acceptedAt ? fullDateAndTime(item.acceptedAt) : 'N/A'}</td>
+                    <td className="right">{timeFromNow(item.acceptedAt, i18n)}</td>
                   </>
                 )}
                 {kind === 'listings' && (
                   <>
-                    <td>
-                      {item.owner && <AddressWithIconFilled data={item} name="owner" options={{ short: true }} />}
-                    </td>
-                    <td>
+                    <td>{item.owner && <AddressWithIconInline data={item} name="owner" options={{ short: 5 }} />}</td>
+                    <td className="right">
                       {amountFormat(item?.sellOffers?.[0]?.amount)}
                       {nativeCurrencyToFiat({ amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate })}
                     </td>
-                    <td>{fullDateAndTime(item.ownerChangedAt)}</td>
+                    <td className="right">{timeFromNow(item.ownerChangedAt, i18n)}</td>
                   </>
                 )}
                 {kind === 'mints' && (
                   <>
                     <td>
-                      {item.owner && <AddressWithIconFilled data={item} name="owner" options={{ short: true }} />}
+                      {item.owner && <AddressWithIconInline data={item} name="owner" options={{ short: true }} />}
                     </td>
-                    <td>{fullDateAndTime(item.issuedAt)}</td>
+                    <td className="right">{timeFromNow(item.issuedAt, i18n)}</td>
                   </>
                 )}
               </tr>
@@ -2332,6 +2314,8 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
       </table>
     )
   }
+
+  const statsTdClass = isMobile ? 'right' : ''
 
   return (
     <div className={nftClass}>
@@ -2363,7 +2347,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                     {data && (
                       <>
                         <div className="column-left">
-                          <div className="collection-image">
+                          <div>
                             {imageUrl ? (
                               <img
                                 src={imageUrl}
@@ -2371,7 +2355,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                 style={{ width: '100%', height: 'auto' }}
                               />
                             ) : (
-                              <div className="no-image-placeholder">No Image Available</div>
+                              'No image available'
                             )}
                           </div>
                         </div>
@@ -2398,7 +2382,11 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                 <tr>
                                   <td>Issuer</td>
                                   <td>
-                                    <AddressWithIconFilled data={collection} name="issuer" />
+                                    <AddressWithIconFilled
+                                      data={collection}
+                                      name="issuer"
+                                      options={{ short: isMobile }}
+                                    />
                                   </td>
                                 </tr>
                                 {collection?.taxon !== undefined && (
@@ -2439,127 +2427,122 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                               <tbody>
                                 {statistics?.nfts && (
                                   <tr>
-                                    <td style={{ width: 200 }}>Total NFTs</td>
-                                    <td>{statistics.nfts}</td>
+                                    <td style={isMobile ? null : { width: 200 }}>Total NFTs</td>
+                                    <td className={statsTdClass}>{statistics.nfts}</td>
                                   </tr>
                                 )}
                                 {statistics?.owners && (
                                   <tr>
                                     <td>Unique owners</td>
-                                    <td>{statistics.owners}</td>
+                                    <td className={statsTdClass}>{statistics.owners}</td>
                                   </tr>
                                 )}
                                 {statistics?.all?.buyers && (
                                   <tr>
                                     <td>Total buyers</td>
-                                    <td>{statistics.all.buyers}</td>
+                                    <td className={statsTdClass}>{statistics.all.buyers}</td>
                                   </tr>
                                 )}
                                 {statistics?.all?.tradedNfts && (
                                   <tr>
                                     <td>Total traded NFTs</td>
-                                    <td>{statistics.all.tradedNfts}</td>
+                                    <td className={statsTdClass}>{statistics.all.tradedNfts}</td>
                                   </tr>
                                 )}
                                 {statistics?.month?.tradedNfts && (
                                   <tr>
                                     <td>Monthly traded NFTs</td>
-                                    <td>{statistics.month.tradedNfts}</td>
+                                    <td className={statsTdClass}>{statistics.month.tradedNfts}</td>
                                   </tr>
                                 )}
                                 {statistics?.week?.tradedNfts && (
                                   <tr>
                                     <td>Weekly traded NFTs</td>
-                                    <td>{statistics.week.tradedNfts}</td>
+                                    <td className={statsTdClass}>{statistics.week.tradedNfts}</td>
                                   </tr>
                                 )}
                               </tbody>
                             </table>
                           )}
 
-                          {mounted && (
-                            <table className="table-details">
-                              <thead>
-                                <tr>
-                                  <th colSpan="100">
-                                    NFTs in this Collection
-                                    {collection?.issuer && (collection?.taxon || collection?.taxon === 0) ? (
+                          <table className="table-details">
+                            <thead>
+                              <tr>
+                                <th colSpan="100">
+                                  NFTs in this Collection
+                                  {collection?.issuer && (collection?.taxon || collection?.taxon === 0) ? (
+                                    <>
+                                      {' '}
+                                      [
+                                      <Link
+                                        href={`/nft-explorer?issuer=${collection?.issuer}&taxon=${collection?.taxon}&includeWithoutMediaData=true`}
+                                      >
+                                        View all
+                                      </Link>
+                                      ]
+                                    </>
+                                  ) : (
+                                    collection?.collection && (
                                       <>
                                         {' '}
                                         [
                                         <Link
-                                          href={`/nft-explorer?issuer=${collection?.issuer}&taxon=${collection?.taxon}&includeWithoutMediaData=true`}
+                                          href={`/nft-explorer?collection=${encodeURIComponent(
+                                            data
+                                          )}&includeWithoutMediaData=true`}
                                         >
                                           View all
                                         </Link>
                                         ]
                                       </>
-                                    ) : (
-                                      collection?.collection && (
-                                        <>
-                                          {' '}
-                                          [
-                                          <Link
-                                            href={`/nft-explorer?collection=${encodeURIComponent(
-                                              data
-                                            )}&includeWithoutMediaData=true`}
-                                          >
-                                            View all
-                                          </Link>
-                                          ]
-                                        </>
-                                      )
-                                    )}
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td colSpan={100}>
-                                    <div>
-                                      {nftList.length === 0 && <span>No NFTs found</span>}
-                                      {nftList?.map((nft, i) => (
-                                        <Link href={`/nft/${nft.nftokenID}`} key={i}>
-                                          <img
-                                            src={nftUrl(nft, 'image')}
-                                            alt={nft.sequence}
-                                            style={
-                                              width > 800
-                                                ? {
-                                                    width: '67.3px',
-                                                    height: '67.3px',
-                                                    borderRadius: '4px',
-                                                    margin: '2px'
-                                                  }
-                                                : { width: '51px', height: '51px', borderRadius: '4px', margin: '2px' }
-                                            }
-                                          />
-                                        </Link>
-                                      ))}
-                                    </div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          )}
+                                    )
+                                  )}
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td colSpan={100}>
+                                  <div>
+                                    {nftList.length === 0 && <span>No NFTs found</span>}
+                                    {nftList?.map((nft, i) => (
+                                      <Link href={`/nft/${nft.nftokenID}`} key={i}>
+                                        <NftImage
+                                          nft={nft}
+                                          style={
+                                            width > 800
+                                              ? {
+                                                  width: 67.3,
+                                                  height: 67.3,
+                                                  borderRadius: 4,
+                                                  margin: 2
+                                                }
+                                              : { width: 80.5, height: 80.5, borderRadius: 4, margin: 2 }
+                                          }
+                                        />
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
 
-                          {mounted && (
-                            <div style={{ marginTop: '20px' }}>
-                              {activityLoading && (
-                                <div className="center" style={{ marginTop: '10px' }}>
-                                  <span className="waiting"></span>
-                                </div>
-                              )}
+                          <div style={{ marginTop: '20px' }}>
+                            {activityLoading && (
+                              <div className="center" style={{ marginTop: '10px' }}>
+                                <span className="waiting"></span>
+                              </div>
+                            )}
 
-                              {!activityLoading && (
-                                <div style={{ marginTop: '10px' }}>
-                                  {renderActivityTable('sales')}
-                                  {renderActivityTable('listings')}
-                                  {renderActivityTable('mints')}
-                                </div>
-                              )}
-                            </div>
-                          )}
+                            {!activityLoading && (
+                              <div style={{ marginTop: '10px' }}>
+                                {renderActivityTable('sales')}
+                                {renderActivityTable('listings')}
+                                {renderActivityTable('mints')}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </>
                     )}

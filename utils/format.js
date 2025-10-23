@@ -54,19 +54,33 @@ export const CurrencyWithIcon = ({ token }) => {
 
 export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   const address = data[name]
+  const size = 20
+  const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+     <rect width="100%" height="100%" fill="#ffffff"/>
+     <text x="50%" y="50%" font-family="sans-serif" font-size="8" text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
+      ;(
+     </text>
+   </svg>`
+  )}`
+
   return (
-    <>
+    <span className="no-brake">
       <Link href={'/account/' + address}>
-        <Image
-          src={avatarServer + address}
+        <img
+          src={avatarServer + address || placeholder}
           alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
-          height={20}
-          width={20}
+          height={size}
+          width={size}
           style={{ marginRight: '5px', marginBottom: '-5px' }}
+          onError={(e) => {
+            e.target.onerror = null
+            e.target.src = placeholder
+          }}
         />
       </Link>
       {addressUsernameOrServiceLink(data, name, options)}
-    </>
+    </span>
   )
 }
 
@@ -633,7 +647,7 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
     if (options.url === '/explorer/') {
       return oldExplorerLink(data?.[type], { short: options.short })
     } else {
-      return <Link href={options.url + data?.[type]}>{shortAddress(data?.[type])}</Link>
+      return <Link href={options.url + data?.[type]}>{shortAddress(data?.[type], options.short)}</Link>
     }
   }
   if (options.url === '/explorer/') {
