@@ -1058,22 +1058,28 @@ export const timeFormat = (timestamp, type = null) => {
   if (type === 'ripple') {
     timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
   }
-  return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+  return (
+    <span suppressHydrationWarning>
+      {new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+    </span>
+  )
 }
 
 export const dateFormat = (timestamp, stringParams = {}, params = {}) => {
   if (timestamp) {
-    if (type === 'ripple') {
+    if (params?.type === 'ripple') {
       timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
     }
     if (params.type?.toUpperCase() !== 'ISO') {
       timestamp = timestamp * 1000
     }
-    if (stringParams) {
-      return new Date(timestamp).toLocaleDateString([], stringParams)
-    } else {
-      return new Date(timestamp).toLocaleDateString()
-    }
+    return (
+      <span suppressHydrationWarning>
+        {stringParams
+          ? new Date(timestamp).toLocaleDateString([], stringParams)
+          : new Date(timestamp).toLocaleDateString()}
+      </span>
+    )
   }
   return ''
 }

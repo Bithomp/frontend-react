@@ -2,7 +2,7 @@ import { amountFormat, dateFormat, nativeCurrencyToFiat, timeFormat } from '../.
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../../utils/common'
 import { TxFiatRateContext } from './FiatRateContext'
-import { LinkTx } from '../../utils/links'
+import { LinkTx } from '../../../utils/links'
 import { errorCodeDescription, shortErrorCode, dappBySourceTag } from '../../../utils/transaction'
 import { useWidth } from '../../../utils'
 import { FiCalendar, FiClock } from 'react-icons/fi'

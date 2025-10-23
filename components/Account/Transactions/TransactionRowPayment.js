@@ -65,16 +65,16 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
             {specification?.destination?.address === address ? (
               <>
                 <FiDownload style={{ stroke: 'green', fontSize: 16 }} />
-                <span>{addressUsernameOrServiceLink(specification, 'source')}</span>
+                <span>{addressUsernameOrServiceLink(specification.source, 'address')}</span>
               </>
             ) : specification?.source?.address === address ? (
               <>
                 <FiUpload style={{ stroke: 'red', fontSize: 16 }} />
-                <span>{addressUsernameOrServiceLink(specification, 'destination')}</span>
+                <span>{addressUsernameOrServiceLink(specification.destination, 'address')}</span>
               </>
             ) : (
               <>
-                <span>Payment By {addressUsernameOrServiceLink(specification, 'source')}</span>
+                <span>Payment By {addressUsernameOrServiceLink(specification.source, 'address')}</span>
               </>
             )}
           </div>

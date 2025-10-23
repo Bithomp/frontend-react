@@ -9,7 +9,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getIsSsrMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
-import { useWidth, addAndRemoveQueryParams } from '../../../utils'
+import { useWidth, addAndRemoveQueryParams, isAddressOrUsername } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -41,24 +41,27 @@ import {
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   const { id, fromDate, toDate, txType, initiated, excludeFailures, counterparty, order } = query
-  const account = id || ''
+  let address = ''
   const limit = 20
   let initialErrorMessage = ''
   let userData = null
   let initialData = null
 
-  if (account) {
+  if (isAddressOrUsername(id)) {
     try {
       // Fetch user data (username, service name) for the address
       const userRes = await axiosServer({
         method: 'get',
-        url: `v2/address/${account}?username=true&service=true&verifiedDomain=true`,
+        url: `v2/address/${id}?username=true&service=true&verifiedDomain=true`,
         headers: passHeaders(req)
       })
-      userData = {
-        username: userRes?.data?.username,
-        service: userRes?.data?.service?.name,
-        address: account
+      if (userRes.data) {
+        address = userRes?.data?.address || null
+        userData = {
+          username: userRes?.data?.username || null,
+          service: userRes?.data?.service?.name || null,
+          address
+        }
       }
     } catch (e) {
       // If user data fetch fails, continue without it
@@ -66,24 +69,28 @@ export async function getServerSideProps(context) {
     }
 
     // REMOVE THE previous CALL
-    // GET addressDetails in the transactions call!
+    // Accept a username and GET addressDetails in the transactions call!
 
-    try {
-      // Fetch transactions
-      const res = await axiosServer({
-        method: 'get',
-        url: `v3/transactions/${account}?limit=${limit}`,
-        headers: passHeaders(req)
-      })
-      initialData = res?.data
-    } catch (e) {
-      initialErrorMessage = e?.message || 'Failed to load transactions'
+    // BACKEND should accept USERNAMES here!
+    if (address) {
+      try {
+        const res = await axiosServer({
+          method: 'get',
+          url: `v3/transactions/${address}?limit=${limit}`,
+          headers: passHeaders(req)
+        })
+        initialData = res?.data
+      } catch (e) {
+        initialErrorMessage = e?.message || 'Failed to load transactions'
+      }
     }
+  } else {
+    initialErrorMessage = 'Invalid username or address'
   }
 
   return {
     props: {
-      address: account,
+      address,
       initialData: initialData || null,
       initialErrorMessage,
       userData: userData || {},
