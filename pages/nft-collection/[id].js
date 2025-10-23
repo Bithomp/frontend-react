@@ -2154,7 +2154,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                     <tr>
                       <td style={{ width: 70 }}>NFT</td>
                       <td>
-                        <NftImage nft={item} style={{ width: 20, height: 20, objectFit: 'cover', borderRadius: 4 }} />{' '}
+                        <NftImage nft={item} style={{ width: 20, height: 20, borderRadius: 4 }} />
                         <Link href={'/nft/' + item.nftokenID}>{nftName(item?.nftoken || item)}</Link>
                       </td>
                     </tr>
@@ -2273,16 +2273,11 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
           {items.length > 0 ? (
             items.map((item, i) => (
               <tr key={i}>
-                <td>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
-                    <NftImage
-                      nft={item}
-                      style={{ width: nftImageSize, height: nftImageSize, objectFit: 'cover', borderRadius: 4 }}
-                    />
-                    <span className="code" style={{ display: 'flex', flexDirection: 'column' }}>
-                      <Link href={'/nft/' + item.nftokenID}>{nftName(item?.nftoken || item)}</Link>
-                    </span>
-                  </div>
+                <td style={{ display: 'flex', alignItems: 'center' }}>
+                  <NftImage nft={item} style={{ width: nftImageSize, height: nftImageSize, borderRadius: 4 }} />
+                  <span style={{ verticalAlign: 'middle' }}>
+                    <Link href={'/nft/' + item.nftokenID}>{nftName(item?.nftoken || item)}</Link>
+                  </span>
                 </td>
                 {kind === 'sales' && (
                   <>

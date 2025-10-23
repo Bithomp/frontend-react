@@ -529,11 +529,14 @@ export const NftImage = ({ nft, style }) => {
      </text>
    </svg>`
   )}`
+  if (style?.width === 20) {
+    style.marginBottom = '-5px'
+  }
   return (
     <img
-      src={nftUrl(nft?.nftoken || nft, 'thumbnail') || placeholder}
+      src={nftUrl(nft?.nftoken || nft, size < 32 ? 'thumbnail' : 'preview') || placeholder}
       alt={nftName(nft?.nftoken || nft) || 'NFT thumbnail'}
-      style={style ? style : null}
+      style={{ marginRight: '5px', ...style }}
       onError={(e) => {
         e.target.onerror = null
         e.target.src = placeholder
