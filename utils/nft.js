@@ -517,3 +517,30 @@ export const nftPriceData = (t, sellOffers, loggedInAddress) => {
   }
   return t('table.text.private-offer') //shouldn't be the case
 }
+
+export const NftImage = ({ nft, style }) => {
+  const size = style?.width && typeof style.width !== 'string' && style.width > 0 ? style.width : 70
+  let text = size < 50 ? ';(' : 'No image'
+  const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+     <rect width="100%" height="100%" fill="#ffffff"/>
+     <text x="50%" y="50%" font-family="sans-serif" font-size="10" text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
+      ${text}
+     </text>
+   </svg>`
+  )}`
+  if (style?.width === 20) {
+    style.marginBottom = '-5px'
+  }
+  return (
+    <img
+      src={nftUrl(nft?.nftoken || nft, size < 32 ? 'thumbnail' : 'preview') || placeholder}
+      alt={nftName(nft?.nftoken || nft) || 'NFT thumbnail'}
+      style={{ marginRight: '5px', ...style }}
+      onError={(e) => {
+        e.target.onerror = null
+        e.target.src = placeholder
+      }}
+    />
+  )
+}
