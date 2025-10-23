@@ -171,7 +171,7 @@ export default function IssueAToken() {
                 <>
                   {' '}
                   or set up an AMM (Automated Market Maker) to create a market for your token.{' '}
-                  <Link href="https://bithomp.com/en/services/amm?tab=create">Create an AMM here</Link>
+                  <Link href="https://bithomp.com/en/services/amm/create">Create an AMM here</Link>
                 </>
               )}
               .

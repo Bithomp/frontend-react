@@ -117,7 +117,6 @@
     "actions": {
       "view": "내 계정 페이지",
       "my-transactions": "내 거래",
-      "send": "전송",
       "my-nfts": "내 NFT",
       "my-nft-offers": "내 NFT 제안"
     },

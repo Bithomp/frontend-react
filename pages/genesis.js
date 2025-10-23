@@ -24,12 +24,6 @@ export default function Genesis() {
   const isMobile = useIsMobile()
 
   const [data, setData] = useState({})
-  const [rendered, setRendered] = useState(false)
-
-  useEffect(() => {
-    setRendered(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(() => {
     async function fetchData() {
@@ -96,7 +90,7 @@ export default function Genesis() {
                   </tr>
                   <tr>
                     <td>{t('genesis.inception')}</td>
-                    <td>{rendered && dateFormat('2013-01-01T03:21:00Z', timestampFormatParams, { type: 'ISO' })}</td>
+                    <td>{dateFormat('2013-01-01T03:21:00Z', timestampFormatParams, { type: 'ISO' })}</td>
                   </tr>
                   <tr>
                     <td>{t('table.balance')}</td>
@@ -109,7 +103,7 @@ export default function Genesis() {
                   </tr>
                   <tr>
                     <td>{t('genesis.balance-update')}</td>
-                    <td>{rendered && dateFormat(data.balance_update, timestampFormatParams)}</td>
+                    <td>{dateFormat(data.balance_update, timestampFormatParams)}</td>
                   </tr>
                   <tr>
                     <td>{t('table.balance')}</td>
@@ -143,7 +137,7 @@ export default function Genesis() {
                       {amountFormat(account.genesis_balance)}
                     </p>
                     <p>
-                      {t('table.balance')} {rendered && dateFormat(data.balance_update)}
+                      {t('table.balance')} {dateFormat(data.balance_update)}
                       <br />
                       {amountFormat(account.balance)}
                     </p>
@@ -160,7 +154,7 @@ export default function Genesis() {
                 <th>{t('genesis.address')}</th>
                 <th className="right">{t('genesis.genesis-balance')}</th>
                 <th className="right">
-                  {t('table.balance')} {rendered && dateFormat(data.balance_update)}
+                  {t('table.balance')} {dateFormat(data.balance_update)}
                 </th>
               </tr>
             </thead>

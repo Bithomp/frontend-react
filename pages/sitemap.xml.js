@@ -11,7 +11,12 @@ const pages = [
   { loc: 'amms', changefreq: 'always', priority: '1' },
   { loc: 'whales', changefreq: 'always', priority: '1' },
 
+  { loc: 'services/send', changefreq: 'monthly', priority: '0.9' },
   { loc: 'services/nft-mint', changefreq: 'monthly', priority: '0.9' },
+  { loc: 'services/trustline', changefreq: 'monthly', priority: '1' },
+  { loc: 'services/check', changefreq: 'monthly', priority: '0.8' },
+  { loc: 'services/escrow', changefreq: 'monthly', priority: '0.9' },
+  { loc: 'services/account-settings', changefreq: 'monthly', priority: '0.9' },
 
   { loc: 'whales/receivers', changefreq: 'always', priority: '0.9' },
   { loc: 'whales/senders', changefreq: 'always', priority: '0.9' },
@@ -62,6 +67,12 @@ if (xahauNetwork) {
   )
 } else {
   // only on xrpl
+  pages.push(
+    { loc: 'services/amm/deposit', changefreq: 'monthly', priority: '0.9' },
+    { loc: 'services/amm/create', changefreq: 'monthly', priority: '0.8' },
+    { loc: 'services/amm/withdraw', changefreq: 'monthly', priority: '0.9' },
+    { loc: 'services/amm/vote', changefreq: 'monthly', priority: '0.7' }
+  )
 }
 
 //works only on the mainnet
@@ -111,6 +122,15 @@ function generateSiteMap(posts) {
     'whales/senders',
     'whales/submitters',
     'services/nft-mint',
+    'services/send',
+    'services/trustline',
+    'services/check',
+    'services/escrow',
+    'services/account-settings',
+    'services/amm/deposit',
+    'services/amm/create',
+    'services/amm/withdraw',
+    'services/amm/vote',
     'learn',
     'learn/blackholed-address',
     'learn/blacklisted-address',

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -9,7 +9,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getIsSsrMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
-import { useWidth, addAndRemoveQueryParams } from '../../../utils'
+import { useWidth, addAndRemoveQueryParams, isAddressOrUsername } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -36,53 +36,64 @@ import {
   TransactionRowRemit,
   TransactionRowEnableAmendment,
   TransactionRowDelegateSet
-} from '../../../components/Transactions'
+} from '../../../components/Account/Transactions'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   const { id, fromDate, toDate, txType, initiated, excludeFailures, counterparty, order } = query
-  const account = id || ''
+  let address = ''
   const limit = 20
-  let initialTransactions = []
   let initialErrorMessage = ''
-  let initialMarker = null
-  let initialUserData = null
+  let userData = null
+  let initialData = null
 
-  if (account) {
+  if (isAddressOrUsername(id)) {
     try {
       // Fetch user data (username, service name) for the address
       const userRes = await axiosServer({
         method: 'get',
-        url: `v2/address/${account}?username=true&service=true&verifiedDomain=true`,
+        url: `v2/address/${id}?username=true&service=true&verifiedDomain=true`,
         headers: passHeaders(req)
       })
-      initialUserData = userRes?.data
+      if (userRes.data) {
+        address = userRes?.data?.address || null
+        userData = {
+          username: userRes?.data?.username || null,
+          service: userRes?.data?.service?.name || null,
+          address
+        }
+      }
     } catch (e) {
       // If user data fetch fails, continue without it
       console.error('Failed to fetch user data:', e?.message)
     }
 
-    try {
-      // Fetch transactions
-      const res = await axiosServer({
-        method: 'get',
-        url: `v3/transactions/${initialUserData?.address || account}?limit=${limit}`,
-        headers: passHeaders(req)
-      })
-      initialTransactions = res?.data?.transactions || res?.data || []
-      initialMarker = res?.data?.marker || null
-    } catch (e) {
-      initialErrorMessage = e?.message || 'Failed to load transactions'
+    // REMOVE THE previous CALL
+    // Accept a username and GET addressDetails in the transactions call!
+
+    // BACKEND should accept USERNAMES here!
+    if (address) {
+      try {
+        const res = await axiosServer({
+          method: 'get',
+          url: `v3/transactions/${address}?limit=${limit}`,
+          headers: passHeaders(req)
+        })
+        initialData = res?.data
+      } catch (e) {
+        initialErrorMessage = e?.message || 'Failed to load transactions'
+      }
     }
+  } else {
+    initialErrorMessage = 'Invalid username or address'
   }
 
   return {
     props: {
-      id: account,
-      initialTransactions,
+      address,
+      initialData: initialData || null,
       initialErrorMessage,
-      initialMarker,
-      initialUserData: initialUserData || {},
+      userData: userData || {},
       isSsrMobile: getIsSsrMobile(context),
       fromDateQuery: fromDate || '',
       toDateQuery: toDate || '',
@@ -97,11 +108,10 @@ export async function getServerSideProps(context) {
 }
 
 export default function AccountTransactions({
-  id,
-  initialTransactions,
+  address,
+  initialData,
   initialErrorMessage,
-  initialMarker,
-  initialUserData,
+  userData,
   selectedCurrency,
   fromDateQuery,
   toDateQuery,
@@ -114,17 +124,11 @@ export default function AccountTransactions({
   const { t } = useTranslation()
   const width = useWidth()
   const router = useRouter()
-
-  // User data for SearchBlock
-  const [userData, setUserData] = useState({
-    username: initialUserData?.username,
-    service: initialUserData?.service?.name,
-    address: initialUserData?.address || id
-  })
+  const firstRenderRef = useRef(true)
 
   // State management
-  const [transactions, setTransactions] = useState(initialTransactions || [])
-  const [marker, setMarker] = useState(initialMarker || null)
+  const [transactions, setTransactions] = useState(initialData?.transactions || [])
+  const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState(orderQuery) // newest | oldest
@@ -136,30 +140,19 @@ export default function AccountTransactions({
   const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
   const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
 
-  // Update userData when initialUserData changes
+  // Refresh transactions when order changes
   useEffect(() => {
-    if (!initialUserData?.address) return
-    setUserData({
-      username: initialUserData.username,
-      service: initialUserData.service?.name,
-      address: initialUserData.address
-    })
-  }, [initialUserData])
-
-  useEffect(() => {
-    setTransactions(initialTransactions)
-  }, [initialTransactions])
-
-  // Refresh transactions when order changes (keep this automatic)
-  useEffect(() => {
-    if (userData?.address) {
-      setLoading(true)
-      setTransactions([])
-      setMarker(null)
-      fetchTransactions({ restart: true })
+    // Skip fetch on first render
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false
+      return
     }
+    setLoading(true)
+    setTransactions([])
+    setMarker(null)
+    fetchTransactions({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, userData?.address])
+  }, [order])
 
   // Sync filter changes to URL
   useEffect(() => {
@@ -212,7 +205,7 @@ export default function AccountTransactions({
   // Build API url
   const apiUrl = (opts = {}) => {
     const limit = 20
-    let url = `v3/transactions/${userData?.address}?limit=${limit}`
+    let url = `v3/transactions/${address}?limit=${limit}`
     // pagination marker
     if (opts.marker) {
       const markerString = typeof opts.marker === 'object' ? JSON.stringify(opts.marker) : opts.marker
@@ -325,7 +318,11 @@ export default function AccountTransactions({
 
   return (
     <>
-      <SEO page="Transactions" title={`Transactions of ${id}`} description={`All transactions for address ${id}`} />
+      <SEO
+        page="Transactions"
+        title={`Transactions of ${address}`}
+        description={`All transactions for address ${address}`}
+      />
       <SearchBlock tab="transactions" searchPlaceholderText={t('explorer.enter-address')} userData={userData} />
 
       <FiltersFrame
@@ -335,6 +332,7 @@ export default function AccountTransactions({
         count={transactions.length}
         hasMore={marker}
         data={
+          // for csv export?
           transactions?.map((item) => {
             let dateObj = new Date()
             if (item.outcome.timestamp) {
@@ -359,32 +357,17 @@ export default function AccountTransactions({
           <div className="filters-body-inner">
             <div>
               <span className="input-title">Type</span>
-              <SimpleSelect
-                value={txType}
-                setValue={setTxType}
-                optionsList={txTypeOptions}
-                className="dropdown--filters"
-              />
+              <SimpleSelect value={txType} setValue={setTxType} optionsList={txTypeOptions} />
             </div>
             <br />
             <div>
               <span className="input-title">Direction</span>
-              <SimpleSelect
-                value={initiated}
-                setValue={setInitiated}
-                optionsList={initiatedOptions}
-                className="dropdown--filters"
-              />
+              <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} />
             </div>
             <br />
             <div>
               <span className="input-title">Failures</span>
-              <SimpleSelect
-                value={excludeFailures}
-                setValue={setExcludeFailures}
-                optionsList={failuresOptions}
-                className="dropdown--filters"
-              />
+              <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
             </div>
             <br />
             <div>
@@ -463,7 +446,7 @@ export default function AccountTransactions({
             subscriptionExpired={false}
             sessionToken={true}
           >
-            <table className={width > 600 ? 'table-large no-hover' : 'table-mobile'}>
+            <table className={width > 600 ? 'table-large' : 'table-mobile'}>
               <tbody>
                 {loading ? (
                   <tr className="center">
@@ -516,9 +499,9 @@ export default function AccountTransactions({
 
                     return (
                       <TransactionRowComponent
-                        key={tx.hash || index}
-                        tx={tx}
-                        address={userData?.address}
+                        key={tx.hash}
+                        data={tx}
+                        address={address}
                         index={index}
                         selectedCurrency={selectedCurrency}
                       />

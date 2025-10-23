@@ -17,6 +17,7 @@ import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 
 import VerifiedIcon from '../public/images/verified.svg'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export async function getServerSideProps(context) {
   const { query, locale, req } = context
@@ -462,9 +463,9 @@ export default function Validators({ amendment, initialData, initialErrorMessage
         {a === amendment ? (
           <span className="purple bold">{a.length === 64 ? shortHash(a) : a}</span>
         ) : (
-          <a href={'?amendment=' + a} className="orange">
+          <Link href={'/amendment/' + a} className="orange">
             {a.length === 64 ? shortHash(a) : a}
-          </a>
+          </Link>
         )}
         {i !== amendments.length - 1 && ', '}
       </span>
