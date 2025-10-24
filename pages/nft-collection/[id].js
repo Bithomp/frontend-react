@@ -320,7 +320,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                       {nativeCurrencyToFiat({ amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate })}
                     </td>
                     <td className="right">
-                      {timeFromNow(item.ownerChangedAt, i18n)}{' '}
+                      {timeFromNow(item.sellOffers?.[0]?.createdAt, i18n)}{' '}
                       <LinkTx tx={item.sellOffers?.[0]?.createdTxHash} icon={true} />
                     </td>
                   </>
