@@ -477,7 +477,6 @@ export const TransactionCard = ({
                         })}
                       </>
                     )}
-
                   {outcome?.exchanges?.length > 0 && (
                     <>
                       <tr>
