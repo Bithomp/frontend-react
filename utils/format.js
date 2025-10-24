@@ -272,7 +272,7 @@ export const amountToFiat = (params) => {
   }
 
   return (
-    <span className="tooltip" suppressHydrationWarning>
+    <span className="tooltip no-brake" suppressHydrationWarning>
       {' '}
       ≈ {calculatedAmount}
       <span className="tooltiptext no-brake" suppressHydrationWarning>

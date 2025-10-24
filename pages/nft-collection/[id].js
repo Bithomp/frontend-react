@@ -304,7 +304,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                     <td className="right">
                       {amountFormat(item.amount)}
                       <br />
-                      <span className="no-brake">≈{convertedAmount(item, selectedCurrency, { short: true })}</span>
+                      <span className="no-brake">≈ {convertedAmount(item, selectedCurrency, { short: true })}</span>
                     </td>
                     <td className="right">
                       {timeFromNow(item.acceptedAt, i18n)} <LinkTx tx={item.acceptedTxHash} icon={true} />
