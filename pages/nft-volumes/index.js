@@ -651,17 +651,15 @@ export default function NftVolumes({
   const nftCollectionLink = (data, options = {}) => {
     if (!data) return ''
     const { text } = options
-    
     if (data.collectionDetails?.issuer || data.collectionDetails?.name) {
       let collectionId
-      if(data.collectionDetails.issuer) {
+      if (data.collectionDetails.issuer) {
         collectionId = data.collectionDetails.issuer + ':' + data.collectionDetails.taxon
       } else {
         collectionId = data.collection
       }
       return <Link href={'/nft-collection/' + collectionId}>{text || <LinkIcon />}</Link>
     }
-    
     return ''
   }
 
