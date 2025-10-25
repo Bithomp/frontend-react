@@ -7,9 +7,10 @@ import SEO from '../../components/SEO'
 
 import { network, ledgerName, minLedger } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { fullDateAndTime, AddressWithIconInline } from '../../utils/format'
+import { fullDateAndTime, AddressWithIconInline, shortHash } from '../../utils/format'
 import { LedgerLink, LinkTx } from '../../utils/links'
 import { axiosServer, passHeaders } from '../../utils/axios'
+import CopyButton from '../../components/UI/CopyButton'
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -48,7 +49,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Ledger({ pageMeta, ledgerIndexQuery }) {
+export default function Ledger({ pageMeta, ledgerIndexQuery, isSsrMobile }) {
   const [data, setData] = useState(pageMeta)
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
@@ -144,9 +145,17 @@ export default function Ledger({ pageMeta, ledgerIndexQuery }) {
       <div className="content-center">
         <h1 className="center">
           {t('menu.ledger')} #{ledgerVersion}
-          <br />
-          {data?.close_time ? fullDateAndTime(data.close_time) : <br />}
         </h1>
+        <p>
+          Ledger hash: {isSsrMobile ? shortHash(data?.ledgerHash) : data?.ledgerHash}{' '}
+          <CopyButton text={data?.ledgerHash} />
+          {data.close_time && (
+            <>
+              <br />
+              Close time: {fullDateAndTime(data.close_time)}
+            </>
+          )}
+        </p>
         {ledgerVersion >= minLedger ? (
           <>
             {ledgerNavigation}
