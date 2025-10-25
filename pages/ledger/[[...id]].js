@@ -5,7 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../../components/SEO'
 
-import { network, ledgerName, minLedger } from '../../utils'
+import { network, ledgerName, minLedger, isIdValid } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, AddressWithIconInline, shortHash } from '../../utils/format'
 import { LedgerLink, LinkTx } from '../../utils/links'
@@ -15,16 +15,12 @@ import CopyButton from '../../components/UI/CopyButton'
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
   //keep it from query instead of params, anyway it is an array sometimes
-  const ledgerIndex = query.ledgerIndex
-    ? Array.isArray(query.ledgerIndex)
-      ? query.ledgerIndex[0]
-      : query.ledgerIndex
-    : ''
+  const ledgerIndex = query.id ? (Array.isArray(query.id) ? query.id[0] : query.id) : ''
 
   let pageMeta = { ledgerIndex }
 
   try {
-    if (ledgerIndex === '' || ledgerIndex >= minLedger) {
+    if (ledgerIndex === '' || ledgerIndex >= minLedger || isIdValid(ledgerIndex)) {
       const res = await axiosServer({
         method: 'get',
         url: 'xrpl/next/ledger/' + ledgerIndex,

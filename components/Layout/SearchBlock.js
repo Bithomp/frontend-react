@@ -20,7 +20,8 @@ import {
   server,
   isValidPayString,
   isValidXAddress,
-  performIdSearch
+  performIdSearch,
+  isLedgerIndexValid
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -264,6 +265,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       // if there is a tag -
       // get the new page which we can show an address and a tag
       router.push('/account/' + encodeURI(searchFor) + addParams) //replace with a new page to show a tag
+      return
+    }
+
+    if (isLedgerIndexValid(searchFor)) {
+      router.push('/ledger/' + searchFor)
       return
     }
 
