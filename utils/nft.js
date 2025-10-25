@@ -278,7 +278,7 @@ export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
   }
 }
 
-const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => {
+export const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => {
   uri = uri.toString()
   if (
     type === 'image' &&
