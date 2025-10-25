@@ -41,48 +41,20 @@ import {
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   const { id, fromDate, toDate, txType, initiated, excludeFailures, counterparty, order } = query
-  let address = ''
   const limit = 20
   let initialErrorMessage = ''
-  let userData = null
   let initialData = null
 
   if (isAddressOrUsername(id)) {
     try {
-      // Fetch user data (username, service name) for the address
-      const userRes = await axiosServer({
+      const res = await axiosServer({
         method: 'get',
-        url: `v2/address/${id}?username=true&service=true&verifiedDomain=true`,
+        url: `v3/transactions/${id}?limit=${limit}`,
         headers: passHeaders(req)
       })
-      if (userRes.data) {
-        address = userRes?.data?.address || null
-        userData = {
-          username: userRes?.data?.username || null,
-          service: userRes?.data?.service?.name || null,
-          address
-        }
-      }
+      initialData = res?.data
     } catch (e) {
-      // If user data fetch fails, continue without it
-      console.error('Failed to fetch user data:', e?.message)
-    }
-
-    // REMOVE THE previous CALL
-    // Accept a username and GET addressDetails in the transactions call!
-
-    // BACKEND should accept USERNAMES here!
-    if (address) {
-      try {
-        const res = await axiosServer({
-          method: 'get',
-          url: `v3/transactions/${address}?limit=${limit}`,
-          headers: passHeaders(req)
-        })
-        initialData = res?.data
-      } catch (e) {
-        initialErrorMessage = e?.message || 'Failed to load transactions'
-      }
+      initialErrorMessage = e?.message || 'Failed to load transactions'
     }
   } else {
     initialErrorMessage = 'Invalid username or address'
@@ -90,10 +62,8 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      address,
       initialData: initialData || null,
       initialErrorMessage,
-      userData: userData || {},
       isSsrMobile: getIsSsrMobile(context),
       fromDateQuery: fromDate || '',
       toDateQuery: toDate || '',
@@ -108,10 +78,8 @@ export async function getServerSideProps(context) {
 }
 
 export default function AccountTransactions({
-  address,
   initialData,
   initialErrorMessage,
-  userData,
   selectedCurrency,
   fromDateQuery,
   toDateQuery,
@@ -125,6 +93,8 @@ export default function AccountTransactions({
   const width = useWidth()
   const router = useRouter()
   const firstRenderRef = useRef(true)
+
+  const address = initialData?.address
 
   // State management
   const [transactions, setTransactions] = useState(initialData?.transactions || [])
@@ -323,7 +293,11 @@ export default function AccountTransactions({
         title={`Transactions of ${address}`}
         description={`All transactions for address ${address}`}
       />
-      <SearchBlock tab="transactions" searchPlaceholderText={t('explorer.enter-address')} userData={userData} />
+      <SearchBlock
+        tab="transactions"
+        searchPlaceholderText={t('explorer.enter-address')}
+        userData={initialData?.addressDetails}
+      />
 
       <FiltersFrame
         order={order}
