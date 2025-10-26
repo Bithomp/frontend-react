@@ -469,38 +469,69 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                               <tbody>
                                 {statistics?.nfts && (
                                   <tr>
-                                    <td style={isMobile ? null : { width: 200 }}>Total NFTs</td>
-                                    <td className={statsTdClass}>{statistics.nfts}</td>
+                                    <td style={isMobile ? null : { width: 200 }}>NFTs</td>
+                                    <td className={statsTdClass}>
+                                      <Link
+                                        href={`/nft-explorer?collection=${collection.collection}&includeWithoutMediaData=true`}
+                                      >
+                                        {statistics.nfts}
+                                      </Link>
+                                    </td>
                                   </tr>
                                 )}
                                 {statistics?.owners && (
                                   <tr>
-                                    <td>Unique owners</td>
-                                    <td className={statsTdClass}>{statistics.owners}</td>
+                                    <td>Owners</td>
+                                    <td className={statsTdClass}>
+                                      {/*<Link
+                                        href={`/nft-distribution?collection=${collection.collection}&includeWithoutMediaData=true`}
+                                      >
+                                        {statistics.owners}
+                                      </Link>*/}
+                                      {statistics.owners}
+                                    </td>
                                   </tr>
                                 )}
                                 {statistics?.all?.buyers && (
                                   <tr>
-                                    <td>Total buyers</td>
+                                    <td>Buyers</td>
                                     <td className={statsTdClass}>{statistics.all.buyers}</td>
-                                  </tr>
-                                )}
-                                {statistics?.all?.tradedNfts && (
-                                  <tr>
-                                    <td>Total traded NFTs</td>
-                                    <td className={statsTdClass}>{statistics.all.tradedNfts}</td>
-                                  </tr>
-                                )}
-                                {statistics?.month?.tradedNfts && (
-                                  <tr>
-                                    <td>Monthly traded NFTs</td>
-                                    <td className={statsTdClass}>{statistics.month.tradedNfts}</td>
                                   </tr>
                                 )}
                                 {statistics?.week?.tradedNfts && (
                                   <tr>
-                                    <td>Weekly traded NFTs</td>
-                                    <td className={statsTdClass}>{statistics.week.tradedNfts}</td>
+                                    <td>Traded NFTs (last 7 days)</td>
+                                    <td className={statsTdClass}>
+                                      <Link
+                                        href={`/nft-sales?period=week&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                      >
+                                        {statistics.week.tradedNfts}
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                )}
+                                {statistics?.month?.tradedNfts && (
+                                  <tr>
+                                    <td>Traded NFTs (last 30 days)</td>
+                                    <td className={statsTdClass}>
+                                      <Link
+                                        href={`/nft-sales?period=month&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                      >
+                                        {statistics.month.tradedNfts}
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                )}
+                                {statistics?.all?.tradedNfts && (
+                                  <tr>
+                                    <td>Traded NFTs (all time)</td>
+                                    <td className={statsTdClass}>
+                                      <Link
+                                        href={`/nft-sales?period=all&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                      >
+                                        {statistics.all.tradedNfts}
+                                      </Link>
+                                    </td>
                                   </tr>
                                 )}
                               </tbody>
@@ -511,34 +542,13 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                             <thead>
                               <tr>
                                 <th colSpan="100">
-                                  NFTs in this Collection
-                                  {collection?.issuer && (collection?.taxon || collection?.taxon === 0) ? (
-                                    <>
-                                      {' '}
-                                      [
-                                      <Link
-                                        href={`/nft-explorer?issuer=${collection?.issuer}&taxon=${collection?.taxon}&includeWithoutMediaData=true`}
-                                      >
-                                        View all
-                                      </Link>
-                                      ]
-                                    </>
-                                  ) : (
-                                    collection?.collection && (
-                                      <>
-                                        {' '}
-                                        [
-                                        <Link
-                                          href={`/nft-explorer?collection=${encodeURIComponent(
-                                            data
-                                          )}&includeWithoutMediaData=true`}
-                                        >
-                                          View all
-                                        </Link>
-                                        ]
-                                      </>
-                                    )
-                                  )}
+                                  NFTs in this Collection [
+                                  <Link
+                                    href={`/nft-explorer?collection=${collection.collection}&includeWithoutMediaData=true`}
+                                  >
+                                    View all
+                                  </Link>
+                                  ]
                                 </th>
                               </tr>
                             </thead>
