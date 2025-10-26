@@ -5,7 +5,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
 import {
-  usernameOrAddress,
   AddressWithIconFilled,
   addressUsernameOrServiceLink,
   amountFormat,
@@ -74,18 +73,8 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
     mints: []
   })
   const [activityLoading, setActivityLoading] = useState(false)
-  const [isMobile, setIsMobile] = useState(isSsrMobile)
 
-  useEffect(() => {
-    // Client-side viewport fallback for mobile detection
-    const updateIsMobile = () => {
-      try {
-        setIsMobile(isSsrMobile || width <= 768)
-      } catch (_) {}
-    }
-    updateIsMobile()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width])
+  const isMobile = width !== undefined ? width <= 1000 : isSsrMobile
 
   useEffect(() => {
     fetchActivityData()
@@ -362,16 +351,15 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
   return (
     <div className={nftClass}>
       <SEO
-        page="NFT Collection"
-        title={'NFT Collection'}
-        description={
-          collection?.description ||
-          t('desc', { ns: 'nft' }) +
-            (collection?.issuer ? ' - ' + t('table.issuer') + ': ' + usernameOrAddress(collection, 'issuer') : '')
-        }
+        title={'NFT Collection: ' + collectionName(data)}
+        description={collection?.description || 'NFT collection information.'}
         image={{ file: imageUrl }}
       />
+
       <div className="content-profile">
+        <br />
+        <h1 className="center">NFT collection: {collectionName(data)}</h1>
+        <br />
         {id && !data?.error ? (
           <>
             {!data && !errorMessage ? (
@@ -412,7 +400,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                               </thead>
                               <tbody>
                                 <tr>
-                                  <td>Collection</td>
+                                  <td>Name</td>
                                   <td>{collectionName(data)}</td>
                                 </tr>
                                 {collection?.description && (
@@ -562,7 +550,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                         <NftImage
                                           nft={nft}
                                           style={
-                                            width > 800
+                                            !isMobile
                                               ? {
                                                   width: 67.3,
                                                   height: 67.3,
