@@ -76,6 +76,8 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
 
   const isMobile = width !== undefined ? width <= 1000 : isSsrMobile
 
+  console.log('data', data) //delete
+
   useEffect(() => {
     fetchActivityData()
   }, [selectedCurrency])
@@ -486,42 +488,86 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                     <td className={statsTdClass}>{statistics.all.buyers}</td>
                                   </tr>
                                 )}
-                                {statistics?.week?.tradedNfts && (
-                                  <tr>
-                                    <td>Traded NFTs (last 7 days)</td>
-                                    <td className={statsTdClass}>
-                                      <Link
-                                        href={`/nft-sales?period=week&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
-                                      >
-                                        {statistics.week.tradedNfts}
-                                      </Link>
-                                    </td>
-                                  </tr>
-                                )}
-                                {statistics?.month?.tradedNfts && (
-                                  <tr>
-                                    <td>Traded NFTs (last 30 days)</td>
-                                    <td className={statsTdClass}>
-                                      <Link
-                                        href={`/nft-sales?period=month&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
-                                      >
-                                        {statistics.month.tradedNfts}
-                                      </Link>
-                                    </td>
-                                  </tr>
-                                )}
-                                {statistics?.all?.tradedNfts && (
-                                  <tr>
-                                    <td>Traded NFTs (all time)</td>
-                                    <td className={statsTdClass}>
-                                      <Link
-                                        href={`/nft-sales?period=all&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
-                                      >
-                                        {statistics.all.tradedNfts}
-                                      </Link>
-                                    </td>
-                                  </tr>
-                                )}
+                                <tr>
+                                  <td>Traded NFTs</td>
+                                  <td className={statsTdClass}>
+                                    <table className="sub-table">
+                                      <thead>
+                                        <tr>
+                                          <th className="right">day</th>
+                                          <th className="right">week</th>
+                                          {/* <th className="right">month</th> */}
+                                          <th className="right">year</th>
+                                          <th className="right">all time</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td className="right">
+                                            <Link
+                                              href={`/nft-sales?period=day&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                            >
+                                              {statistics.day.tradedNfts}
+                                            </Link>
+                                          </td>
+                                          <td className="right">
+                                            <Link
+                                              href={`/nft-sales?period=week&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                            >
+                                              {statistics.week.tradedNfts}
+                                            </Link>
+                                          </td>
+                                          {/* <td className="right">
+                                            <Link
+                                              href={`/nft-sales?period=month&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                            >
+                                              {statistics.month.tradedNfts}
+                                            </Link>
+                                          </td>*/}
+                                          <td className="right">
+                                            <Link
+                                              href={`/nft-sales?period=year&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                            >
+                                              {statistics.year.tradedNfts}
+                                            </Link>
+                                          </td>
+                                          <td className="right">
+                                            <Link
+                                              href={`/nft-sales?period=all&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                            >
+                                              {statistics.all.tradedNfts}
+                                            </Link>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td>Buyers</td>
+                                  <td className={statsTdClass}>
+                                    <table className="sub-table">
+                                      <thead>
+                                        <tr>
+                                          <th className="right">day</th>
+                                          <th className="right">week</th>
+                                          {/*<th className="right">month</th> */}
+                                          <th className="right">year</th>
+                                          <th className="right">all time</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td className="right">{statistics.day.buyers}</td>
+                                          <td className="right">{statistics.week.buyers}</td>
+                                          {/* <td className="right">{statistics.month.buyers}</td> */}
+                                          <td className="right">{statistics.year.buyers}</td>
+                                          <td className="right">{statistics.all.buyers}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </td>
+                                </tr>
                               </tbody>
                             </table>
                           )}
