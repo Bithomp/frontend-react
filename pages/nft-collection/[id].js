@@ -494,7 +494,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                         <tr>
                                           <th className="right">day</th>
                                           <th className="right">week</th>
-                                          {/* <th className="right">month</th> */}
+                                          <th className="right">month</th>
                                           <th className="right">year</th>
                                           <th className="right">all time</th>
                                         </tr>
@@ -515,13 +515,13 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                               {statistics.week.tradedNfts}
                                             </Link>
                                           </td>
-                                          {/* <td className="right">
+                                          <td className="right">
                                             <Link
                                               href={`/nft-sales?period=month&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
                                             >
                                               {statistics.month.tradedNfts}
                                             </Link>
-                                          </td>*/}
+                                          </td>
                                           <td className="right">
                                             <Link
                                               href={`/nft-sales?period=year&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
@@ -549,7 +549,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                         <tr>
                                           <th className="right">day</th>
                                           <th className="right">week</th>
-                                          {/*<th className="right">month</th> */}
+                                          <th className="right">month</th>
                                           <th className="right">year</th>
                                           <th className="right">all time</th>
                                         </tr>
@@ -558,7 +558,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                         <tr>
                                           <td className="right">{statistics.day.buyers}</td>
                                           <td className="right">{statistics.week.buyers}</td>
-                                          {/* <td className="right">{statistics.month.buyers}</td> */}
+                                          <td className="right">{statistics.month.buyers}</td>
                                           <td className="right">{statistics.year.buyers}</td>
                                           <td className="right">{statistics.all.buyers}</td>
                                         </tr>
