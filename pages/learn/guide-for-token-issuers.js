@@ -23,10 +23,8 @@ export default function GuideForTokenIssuers() {
   return (
     <>
       <SEO
-        title={'Guide for + explorerName Token Issuers'}
-        description={
-          'Step-by-step guide for + explorerName token issuers: register services, verify domains, set up TOML files, add logos, create AMM pools, and and grow your project’s trust.'
-        }
+        title="Guide for Token Issuers"
+        description="Step-by-step guide for token issuers: register services, verify domains, set up TOML files, add logos, create AMM pools, and and grow your project’s trust."
         noindex={network !== 'mainnet'}
         image={{
           file: '/images/pages/learn/guide-for-token-issuers/cover',
