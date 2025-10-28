@@ -507,10 +507,11 @@ export const nftPriceData = (t, sellOffers, loggedInAddress) => {
   const best = bestNftOffer(sellOffers, loggedInAddress, 'sell')
   if (best) {
     if (mpUrl(best) && !partnerMarketplaces[best?.destination]) {
-      return t('nfts.amount-on-service', {
-        amount: amountFormat(best.amount, { tooltip: 'right' }),
-        service: best.destinationDetails.service
-      })
+      return (
+        <>
+          {amountFormat(best.amount, { tooltip: 'right' })} ({best.destinationDetails.service})
+        </>
+      )
     } else {
       return amountFormat(best.amount, { tooltip: 'right' })
     }
