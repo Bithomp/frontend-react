@@ -480,12 +480,6 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                     </td>
                                   </tr>
                                 )}
-                                {statistics?.all?.buyers && (
-                                  <tr>
-                                    <td>Buyers</td>
-                                    <td className={statsTdClass}>{statistics.all.buyers}</td>
-                                  </tr>
-                                )}
                                 <tr>
                                   <td>Traded NFTs</td>
                                   <td className={statsTdClass}>
