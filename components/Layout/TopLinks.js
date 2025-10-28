@@ -43,7 +43,7 @@ export default function TopLinks({ activatedAccount, countryCode }) {
   if (pathname.includes('transaction') || pathname.includes('/account')) {
     return (
       <div className="top-links">
-        {pathname.includes('/account') && activatedAccount && (
+        {pathname.includes('/transaction') && activatedAccount && (
           <>
             <span className="tooltip">
               <a
