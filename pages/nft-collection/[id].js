@@ -76,8 +76,6 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
 
   const isMobile = width !== undefined ? width <= 1000 : isSsrMobile
 
-  console.log('data', data) //delete
-
   useEffect(() => {
     fetchActivityData()
   }, [selectedCurrency])
