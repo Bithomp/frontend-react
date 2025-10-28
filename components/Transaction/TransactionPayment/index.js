@@ -210,7 +210,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
               ))}
             </TData>
           </tr>
-          {sourceBalanceChangesList.length === 2 && (
+          {sourceBalanceChangesList?.length === 2 && (
             <tr>
               <TData>Exchange rate</TData>
               <TData>
