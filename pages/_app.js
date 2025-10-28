@@ -65,8 +65,6 @@ const MyApp = ({ Component, pageProps }) => {
   const [isOnline, setIsOnline] = useState(true)
   const [countryCode, setCountryCode] = useState('')
 
-  const [activatedAccount, setActivatedAccount] = useState(false)
-
   const { isEmailLoginOpen, openEmailLogin, closeEmailLogin, handleLoginSuccess } = useEmailLogin()
 
   useEffect(() => {
@@ -257,7 +255,7 @@ const MyApp = ({ Component, pageProps }) => {
               )}
               <div className="content">
                 <TopProgressBar />
-                {showTopAds && <TopLinks activatedAccount={activatedAccount} countryCode={countryCode} />}
+                {showTopAds && <TopLinks countryCode={countryCode} />}
                 <Component
                   {...pageProps}
                   refreshPage={refreshPage}
@@ -276,7 +274,6 @@ const MyApp = ({ Component, pageProps }) => {
                   setSessionToken={setSessionToken}
                   fiatRate={fiatRate}
                   openEmailLogin={openEmailLogin}
-                  setActivatedAccount={setActivatedAccount}
                 />
               </div>
               <Footer countryCode={countryCode} />
