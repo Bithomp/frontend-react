@@ -145,7 +145,7 @@ export default function Ledger({ pageMeta, ledgerIndexQuery, isSsrMobile }) {
         <p>
           Ledger hash: {isSsrMobile ? shortHash(data?.ledgerHash) : data?.ledgerHash}{' '}
           <CopyButton text={data?.ledgerHash} />
-          {data.close_time && (
+          {data?.close_time && (
             <>
               <br />
               Close time: {fullDateAndTime(data.close_time)}
