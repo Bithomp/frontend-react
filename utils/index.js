@@ -752,6 +752,18 @@ export const isTagValid = (x) => {
   return true
 }
 
+export const isLedgerIndexValid = (value) => {
+  if (typeof value === 'number') {
+    // numbers don't have "leading zeros" issue
+    return Number.isInteger(value) && value >= 1 && value <= 9999999999
+  }
+  if (typeof value === 'string') {
+    // strict: digits only, no leading zeros, 1–10 digits (caps at 9,999,999,999)
+    return /^[1-9]\d{0,9}$/.test(value)
+  }
+  return false
+}
+
 export const isUsernameValid = (x) => {
   return x && /^(?=.{3,22}$)[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+){0,5}$/.test(x)
 }
@@ -997,7 +1009,10 @@ export const performIdSearch = async ({ searchFor, router, setErrorMessage }) =>
       router.push('/object/' + searchFor)
       return
     }
-
+    if (data.type === 'ledger') {
+      router.push('/ledger/' + searchFor)
+      return
+    }
     if (data.type === 'unknown') {
       setErrorMessage(data.error)
       return

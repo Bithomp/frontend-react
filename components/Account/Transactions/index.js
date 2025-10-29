@@ -11,11 +11,11 @@ export { TransactionRowSetRegularKey } from './TransactionRowSetRegularKey'
 export { TransactionRowTrustSet } from './TransactionRowTrustSet'
 export { TransactionRowEnableAmendment } from './TransactionRowEnableAmendment'
 
-//xrpl
+//XRPL
 export { TransactionRowAMM } from './TransactionRowAMM'
 export { TransactionRowDID } from './TransactionRowDID'
 
-//xahau
+//XAHAU
 export { TransactionRowImport } from './TransactionRowImport'
 export { TransactionRowURIToken } from './TransactionRowURIToken'
-export { TransactionRowRemit } from './TransactionRowRemit' 
+export { TransactionRowRemit } from './TransactionRowRemit'

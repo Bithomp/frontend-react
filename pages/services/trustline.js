@@ -498,7 +498,7 @@ export default function TrustSet({
                 placeholder="Issuer address"
                 name="issuer"
                 hideButton={true}
-                setValue={setIssuer}
+                setInnerValue={setIssuer}
                 type="issuer"
                 rawData={issuer && isAddressValid(issuer) ? { issuer } : {}}
               />

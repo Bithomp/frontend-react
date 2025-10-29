@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
-import { isAddressOrUsername, isIdValid, performIdSearch, server } from '../utils'
+import { isAddressOrUsername, isIdValid, isLedgerIndexValid, performIdSearch, server } from '../utils'
 
 const slugRegex = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 const forbiddenSlugsRegex = /^.((?!\$).)*.?\.(7z|gz|rar|tar)$/i
@@ -61,6 +61,11 @@ export default function Custom404() {
 
       if (isIdValid(slug)) {
         performIdSearching({ searchFor: slug, router, setErrorMessage })
+        return
+      }
+
+      if (isLedgerIndexValid(slug)) {
+        router.push('/ledger/' + slug)
         return
       }
 

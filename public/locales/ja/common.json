@@ -624,7 +624,6 @@
     "search-by-seller": "NFT売却者で検索",
     "no-nfts": "検索条件に該当するNFTは見つかりませんでした。",
     "on-service": "{{service}}",
-    "amount-on-service": "{{service}}にて{{amount}}",
     "load-more": "XRPLからデータを探しています...しばらくお待ちください...",
     "end": "取得できた全てのNFTを表示しています。",
     "change-filters": "異なるフィルターオプションを使用するか、他の検索パラメーターを選択して、興味に合ったNFTをさらに探索してください。"

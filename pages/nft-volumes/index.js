@@ -648,6 +648,21 @@ export default function NftVolumes({
     return <Link href={'/nft-explorer' + params + (onSale ? '&list=onSale' : '')}>{text || <LinkIcon />}</Link>
   }
 
+  const nftCollectionLink = (data, options = {}) => {
+    if (!data) return ''
+    const { text } = options
+    if (data.collectionDetails?.issuer || data.collectionDetails?.name) {
+      let collectionId
+      if (data.collectionDetails.issuer) {
+        collectionId = data.collectionDetails.issuer + ':' + data.collectionDetails.taxon
+      } else {
+        collectionId = data.collection
+      }
+      return <Link href={'/nft-collection/' + collectionId}>{text || <LinkIcon />}</Link>
+    }
+    return ''
+  }
+
   const nftDistributionLink = (data) => {
     if (!data) return ''
     let params = '?issuer='
@@ -917,7 +932,7 @@ export default function NftVolumes({
       )
     }
 
-    let nameLink = nftExplorerLink(data, {
+    let nameLink = nftCollectionLink(data, {
       text: name || collectionNameText(data)
     })
 
