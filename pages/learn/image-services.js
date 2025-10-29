@@ -5,6 +5,7 @@ import { network, explorerName } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import Breadcrumbs from '../../components/Breadcrumbs'
+import Mailto from 'react-protected-mailto'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -58,26 +59,26 @@ export default function ImageServices() {
 
           <h2>What we can offer</h2>
 
-          <h3>1. Free Address Profile Images, Usernames & Service Names</h3>
+          <h3>1. Address Profile Images, Usernames & Service Names</h3>
 
           <p>
-            Our Bithomp Avatar Service lets you easily display profile images, usernames, and registered service names
-            for any {explorerName} address — no registration or API key required.
+            Our Bithomp Avatar Service lets you easily display profile images for any {explorerName} address — no
+            registration or API key required.
           </p>
 
           <p>Supported image sources include:</p>
           <ul>
             <li>
-              <strong>Bithomp Avatars</strong> — anyone (if your account is not blackholed) can set a profile image
-              directly on <Link href="/account">Account Page</Link>. Just enter your address, open your account page,
-              and click “Set avatar” — it works with most popular hardware and software wallets.
+              <strong>Bithomp Avatars</strong> — anyone can set a profile image directly on{' '}
+              <Link href="/account">Account Page</Link>. Just enter your address, open your account page, and click “Set
+              avatar” — it works with most popular hardware and software wallets.
             </li>
             <li>
-              <strong>X (Twitter) Images</strong> — automatically updated profile images for registered projects.
+              <strong>X Images</strong> — automatically updated profile images for{' '}
+              <Link href="/submit-account-information">registered projects</Link>.
             </li>
             <li>
-              <strong>Xaman Pro Profiles</strong> — display user profile photos or token issuer images from Pro
-              profiles.
+              <strong>Xaman Pro Profiles</strong> — display user profile photos from Xaman App profiles.
             </li>
             <li>
               <strong>Gravatar</strong> — if an account’s email hash is linked to a Gravatar image, it will be shown
@@ -109,7 +110,8 @@ export default function ImageServices() {
 
           <p>
             The username will be associated with your address on our explorer and available via the Bithomp API —
-            allowing third-party services and wallets (like Xaman and others) to display them.
+            allowing third-party services and wallets (like Xaman and others) to find addresses by your username and to
+            display them.
           </p>
 
           <h4>How to register your project</h4>
@@ -144,33 +146,31 @@ export default function ImageServices() {
           </p>
           <p>Simply fetch by NFT ID, and you’re ready to display it anywhere.</p>
           <p>
-            Please contact our support team at <a href="mailto:partner@bithomp.com">partner@bithomp.com</a> if you want
-            to use our cached NFT images and videos from our CDN server.
+            Please contact our support team at{' '}
+            <Mailto email="partner@bithomp.com" headers={{ subject: 'Image Service: NFT Images' }} /> if you want to use
+            our cached NFT images and videos from our CDN server.
           </p>
 
           <h3>3. {explorerName} Token Images</h3>
           <p>Need token logos that “just work” and look great? We’ve got you covered.</p>
           <p>
-            <Link href="https://docs.bithomp.com/#free-token-images">Our Free Token Image Service</Link> automatically
+            <Link href="https://docs.bithomp.com/#free-token-images">Our Token Image Service</Link> automatically
             delivers images for tokens across {explorerName}, using trusted and verified sources.
           </p>
 
           <p>Supported image sources include:</p>
           <ul>
             <li>
-              <strong>Bithomp Logos</strong> – uploaded and signed by token issuers
+              <strong>Bithomp logos</strong> – uploaded and signed by token issuers
             </li>
             <li>
               <strong>TOML Files</strong> – from issuers with a verified domain (including FirstLedger TOMLs)
             </li>
             <li>
-              <strong>X (Twitter) Avatars</strong> – for projects registered on Bithomp with an X handle
+              <strong>X Avatars</strong> – for projects registered on Bithomp with an X handle
             </li>
             <li>
               <strong>Gravatar</strong> – for accounts linked via email hash
-            </li>
-            <li>
-              <strong>Xaman Pro User Profiles</strong> – for Pro users’ issued tokens
             </li>
             <li>
               <strong>Hashicons</strong> – auto-generated unique icons based on the address hash
@@ -187,11 +187,6 @@ export default function ImageServices() {
           </pre>
 
           <p>Just embed the link, and your token image appears instantly.</p>
-
-          <p>
-            <strong>Liquidity Pool Tokens</strong> — For LP tokens, the currency pair image is available, providing
-            complete visual context for liquidity pairs.
-          </p>
 
           <h3>4. Multi Purpose Token (MPT) Images & Names</h3>
           <p>We also support Multi Purpose Tokens (MPT) — with the same simplicity and performance.</p>
@@ -242,8 +237,9 @@ export default function ImageServices() {
           </pre>
 
           <p>
-            Contact our support team at <a href="mailto:partner@bithomp.com">partner@bithomp.com</a> if you’d like to
-            enable image hosting on your custom domain.
+            Contact our support team at{' '}
+            <Mailto email="partner@bithomp.com" headers={{ subject: 'Image Service: custom domain' }} /> if you’d like
+            to enable image hosting on your custom domain.
           </p>
 
           <p>
