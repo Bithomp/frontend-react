@@ -18,8 +18,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function IssueAToken() {
-  const serverUrl = ['mainnet', 'testnet', 'devnet'].includes(network) ? 'bithomp.com' : 'xahauexplorer.com'
-
   return (
     <>
       <SEO
@@ -27,7 +25,6 @@ export default function IssueAToken() {
         description="Step-by-step guide on how to issue a token on XRPL or Xahau. Understand XRPL and Xahau tokens, their use cases, and how to get started with tokenization."
         noindex={network !== 'mainnet'}
         image={{ file: '/images/pages/learn/issue-a-token/cover', width: 1520, height: 953, allNetworks: true }}
-        canonical={serverUrl + '/issue-a-token'}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />

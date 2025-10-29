@@ -1,11 +1,12 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { network } from '../../utils'
+import { network, server } from '../../utils'
 import { explorerName, xahauNetwork } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import Breadcrumbs from '../../components/Breadcrumbs'
+import { i18n } from 'next-i18next'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -18,8 +19,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function GuideForTokenIssuers() {
-  const serverUrl = xahauNetwork ? 'xahauexplorer.com' : 'bithomp.com'
-
   return (
     <>
       <SEO
@@ -32,7 +31,6 @@ export default function GuideForTokenIssuers() {
           height: 953,
           allNetworks: true
         }}
-        canonical={serverUrl + '/guide-for-token-issuers'}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
@@ -228,7 +226,7 @@ export default function GuideForTokenIssuers() {
 
             <li>
               Your Token info and Statistics:{' '}
-              <code>{'https://' + serverUrl + '/en/token/[ISSUER ADDRESS]/[CURRENCY CODE]'}</code>
+              <code>{'https://' + server + '/' + i18n.language + '/token/[ISSUER ADDRESS]/[CURRENCY CODE]'}</code>
             </li>
           </ul>
           <p>
