@@ -25,7 +25,9 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
       {outcome?.parentBatchID && (
         <tr>
           <TData>Parent batch ID</TData>
-          <TData>{addressUsernameOrServiceLink(outcome, 'parentBatchID', { short: true, url: '/tx/' })}</TData>
+          <TData>
+            <LinkTx tx={outcome?.parentBatchID} />
+          </TData>
         </tr>
       )}
       <tr>
@@ -67,7 +69,7 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
             </TData>
           </tr>
           {
-            transaction.specification.destination &&
+            transaction?.specification?.destination &&
             <tr>
               <TData>Destination</TData>
               <TData>
