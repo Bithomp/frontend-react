@@ -311,6 +311,7 @@ export default function Header({
             hoverStates={hoverStates}
           >
             <Link href="/learn/the-bithomp-api">{t('menu.developers.api')}</Link>
+            <Link href="/learn/image-services">Token/NFT/Address Images</Link>
             {network === 'mainnet' && (
               <>
                 <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
