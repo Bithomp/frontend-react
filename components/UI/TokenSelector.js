@@ -62,7 +62,7 @@ export default function TokenSelector({
   destinationAddress = null,
   allOrOne,
   currencyQueryName,
-  exludeLPtokens = false
+  excludeLPtokens = false
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -127,7 +127,7 @@ export default function TokenSelector({
     }
 
     const timeout = setTimeout(async () => {
-      const urlLPpart = exludeLPtokens ? '&lptoken=false' : '&currencyDetails=true'
+      const urlLPpart = excludeLPtokens ? '&lptoken=false' : '&currencyDetails=true'
       if (!searchQuery.trim()) {
         // Check if we have cached results for empty search query
         if (lastSearchQuery === '' && cachedSearchResults.length > 0) {
