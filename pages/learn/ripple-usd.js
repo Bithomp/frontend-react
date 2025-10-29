@@ -16,8 +16,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function RLUSD() {
-  const serverUrl = 'bithomp.com'
-
   return (
     <>
       <SEO
@@ -25,7 +23,6 @@ export default function RLUSD() {
         description="What is RLUSD, what are RLUSD advantages and use cases"
         noindex={network !== 'mainnet'}
         image={{ file: 'images/pages/rlusd/rocket.png', width: 'auto', height: 'auto', allNetworks: true }}
-        canonical={serverUrl + '/rlusd'}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
@@ -43,10 +40,10 @@ export default function RLUSD() {
             <em>April 11, 2025</em>
           </p>
           <p>
-            <a href="https://www.mexc.com/price/ripple-usd">Ripple USD (RLUSD)</a> is a stablecoin designed to
-            bring speed, reliability, and dollar-backed stability to global payments. Issued by Ripple in 2024, RLUSD is
-            built for real-world utility — from remittances and trading to financial settlement — all powered by fast
-            and cost-effective blockchain infrastructure.
+            <a href="https://www.mexc.com/price/ripple-usd">Ripple USD (RLUSD)</a> is a stablecoin designed to bring
+            speed, reliability, and dollar-backed stability to global payments. Issued by Ripple in 2024, RLUSD is built
+            for real-world utility — from remittances and trading to financial settlement — all powered by fast and
+            cost-effective blockchain infrastructure.
           </p>
           <h3>RLUSD: A New Stablecoin Backed by Ripple</h3>
           <p>

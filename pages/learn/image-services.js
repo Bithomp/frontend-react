@@ -1,7 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { network, explorerName, xahauNetwork } from '../../utils'
+import { network, explorerName } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import Breadcrumbs from '../../components/Breadcrumbs'
@@ -17,13 +17,11 @@ export async function getServerSideProps(context) {
 }
 
 export default function ImageServices() {
-  const serverUrl = xahauNetwork ? 'xahauexplorer.com' : 'bithomp.com'
-
   return (
     <>
       <SEO
         title="Bithomp Image Services"
-        description="Boost your XRPL and Xahau apps with Bithomp Image Services — free, high-performance avatars, token logos, NFT previews, and MPT images. Fetch usernames, service names, and visuals via Bithomp API."
+        description="Boost your Apps with Bithomp Image Services — free, high-performance avatars, token logos, NFT previews, and MPT images. Fetch usernames, service names, and visuals via Bithomp API."
         noindex={network !== 'mainnet'}
         image={{
           file: '/images/pages/learn/image-services/cover',
@@ -31,7 +29,6 @@ export default function ImageServices() {
           height: 955,
           allNetworks: true
         }}
-        canonical={serverUrl + '/image-services'}
       />
 
       <div className="max-w-4xl mx-auto px-4">
