@@ -8,7 +8,7 @@ import Stake from '../../public/images/sponsored/stake.svg'
 import { useState, useEffect } from 'react'
 import { useWidth } from '../../utils'
 
-export default function Ads() {
+export default function Ads({ countryCode }) {
   const { theme } = useTheme()
   const width = useWidth()
 
@@ -22,7 +22,11 @@ export default function Ads() {
 
   return (
     <div className={brandsBlock}>
-      <a href="https://bithomp.com/go/play-xrp" target="_blank" rel="noreferrer">
+      <a
+        href={'https://bithomp.com/go/play-xrp' + (countryCode === 'US' ? '-us' : '')}
+        target="_blank"
+        rel="noreferrer"
+      >
         <div className="brand-item stake">
           <Stake className="brand-item-icon" fill={rendered ? (theme === 'dark' ? 'white' : '#001d2b') : '#001d2b'} />
           <div className="brand-item-title">Join Stake!{width > 1280 && ' 200% Bonus'}</div>

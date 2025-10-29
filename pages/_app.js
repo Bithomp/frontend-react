@@ -274,6 +274,7 @@ const MyApp = ({ Component, pageProps }) => {
                   setSessionToken={setSessionToken}
                   fiatRate={fiatRate}
                   openEmailLogin={openEmailLogin}
+                  countryCode={countryCode}
                 />
               </div>
               <Footer countryCode={countryCode} />
