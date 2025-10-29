@@ -134,17 +134,9 @@ export default function IssueAToken() {
               <strong>Step 4</strong>
             </p>
             <p>
-              Enable{' '}
-              <code
-                style={{ fontFamily: 'monospace', backgroundColor: '#f0f0f0', padding: '2px 4px', borderRadius: '3px' }}
-              >
-                asfDefaultRipple
-              </code>{' '}
-              on the Issuer Account.
-            </p>
-            <p>
-              You can enable the Rippling (Default Ripple) flag on the{' '}
-              <Link href="/services/account-settings">Account Settings page</Link>.
+              Enable the <span className="bold">Default rippling</span> on the <span className="bold">ISSUER</span>{' '}
+              ACCOUNT. You can do it on the <Link href="/services/account-settings">Account Settings page</Link> (under
+              the <span className="bold">Advanced Options</span>).
             </p>
             <p>
               <strong>Step 5</strong>
