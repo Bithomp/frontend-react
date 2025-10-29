@@ -61,7 +61,8 @@ export default function TokenSelector({
   excludeNative = false,
   destinationAddress = null,
   allOrOne,
-  currencyQueryName
+  currencyQueryName,
+  exludeLPtokens = false
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -126,6 +127,7 @@ export default function TokenSelector({
     }
 
     const timeout = setTimeout(async () => {
+      const urlLPpart = exludeLPtokens ? '&lptoken=false' : '&currencyDetails=true'
       if (!searchQuery.trim()) {
         // Check if we have cached results for empty search query
         if (lastSearchQuery === '' && cachedSearchResults.length > 0) {
@@ -143,7 +145,7 @@ export default function TokenSelector({
           } else {
             // Fallback to original behavior if no destination address
             // &statistics=true - shall we get USD prices and show them?
-            const response = await axios('v2/trustlines/tokens?limit=' + limit + '&currencyDetails=true')
+            const response = await axios('v2/trustlines/tokens?limit=' + limit + urlLPpart)
             tokens = response.data?.tokens || []
             if (!excludeNative) {
               const defaultTokens = [{ currency: nativeCurrency }, ...tokens]
@@ -201,7 +203,7 @@ export default function TokenSelector({
         } else {
           // Fallback to original search behavior
           // &statistics=true - shall we get USD prices and show them?
-          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}&currencyDetails=true`)
+          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}` + urlLPpart)
           const tokens = response.data?.tokens || []
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)

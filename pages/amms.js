@@ -326,6 +326,7 @@ export default function Amms({
             onChange={setToken}
             allOrOne={order !== 'currencyHigh'}
             currencyQueryName="currency"
+            exludeLPtokens={true}
           />
         </>
         <InfiniteScrolling
