@@ -32,68 +32,59 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
       )}
       <tr>
         <TData>Flags</TData>
-        <TData>
-          {showFlags(specification?.flags)}
-        </TData>
+        <TData>{showFlags(specification?.flags)}</TData>
       </tr>
       {specification?.transactions?.map((transaction, index) => {
         const maxAmount = transaction.specification?.source?.maxAmount
-        return <React.Fragment key={transaction.id || index}>
-          <tr>
-            <TData className="bold">
-                Transaction {index + 1}
-            </TData>
-          </tr>
-          <tr>
-            <TData>ID</TData>
-            <TData>
-              <LinkTx tx={transaction?.id} />
-            </TData>
-          </tr>
-          <tr>
-            <TData>Type</TData>
-            <TData>
-              <span className="bold">{transaction?.type}</span>
-            </TData>
-          </tr>
-          <tr>
-            <TData>Sequence</TData>
-            <TData>
-              #{transaction?.sequence}
-            </TData>
-          </tr>
-          <tr>
-            <TData>Flags</TData>
-            <TData>
-              {showFlags(transaction?.specification?.flags)}
-            </TData>
-          </tr>
-          {
-            transaction?.specification?.destination &&
+        return (
+          <React.Fragment key={transaction.id || index}>
             <tr>
-              <TData>Destination</TData>
+              <TData className="bold">Transaction {index + 1}</TData>
+            </tr>
+            <tr>
+              <TData>ID</TData>
               <TData>
-                <AddressWithIconFilled data={transaction.specification.destination} name="address" />
+                <LinkTx tx={transaction?.id} />
               </TData>
             </tr>
-          }
-          {
-            maxAmount &&
             <tr>
-              <TData>Max Amount</TData>
-              <TData style={{ display: 'flex' }}>
-                {amountFormatWithIcon({ amount: maxAmount })}
-                {amountToFiat({
-                  amount: maxAmount,
-                  selectedCurrency: selectedCurrency,
-                  fiatRate: pageFiatRate
-                })}
+              <TData>Type</TData>
+              <TData>
+                <span className="bold">{transaction?.type}</span>
               </TData>
             </tr>
-          }
-        </React.Fragment>
+            <tr>
+              <TData>Sequence</TData>
+              <TData>#{transaction?.sequence}</TData>
+            </tr>
+            <tr>
+              <TData>Flags</TData>
+              <TData>{showFlags(transaction?.specification?.flags)}</TData>
+            </tr>
+            {transaction?.specification?.destination && (
+              <tr>
+                <TData>Destination</TData>
+                <TData>
+                  <AddressWithIconFilled data={transaction.specification.destination} name="address" />
+                </TData>
+              </tr>
+            )}
+            {maxAmount && (
+              <tr>
+                <TData>Max Amount</TData>
+                <TData style={{ display: 'flex' }}>
+                  {amountFormatWithIcon({ amount: maxAmount })}
+                  {amountToFiat({
+                    amount: maxAmount,
+                    selectedCurrency: selectedCurrency,
+                    fiatRate: pageFiatRate
+                  })}
+                </TData>
+              </tr>
+            )}
+          </React.Fragment>
+        )
       })}
     </TransactionCard>
   )
 }
-
