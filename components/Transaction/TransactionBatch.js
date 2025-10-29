@@ -10,12 +10,7 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
   const { specification, outcome } = data
 
   return (
-    <TransactionCard
-      data={data}
-      pageFiatRate={pageFiatRate}
-      selectedCurrency={selectedCurrency}
-      notFullySupported={true}
-    >
+    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <tr>
         <TData>Initiated by</TData>
         <TData>
@@ -34,15 +29,20 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
         <TData>Flags</TData>
         <TData>{showFlags(specification?.flags)}</TData>
       </tr>
+      <tr>
+        <TData colSpan="2">
+          <hr />
+        </TData>
+      </tr>
       {specification?.transactions?.map((transaction, index) => {
         const maxAmount = transaction.specification?.source?.maxAmount
         return (
           <React.Fragment key={transaction.id || index}>
             <tr>
-              <TData className="bold">Transaction {index + 1}</TData>
+              <TData className="bold no-brake">Transaction {index + 1}</TData>
             </tr>
             <tr>
-              <TData>ID</TData>
+              <TData>Tx hash</TData>
               <TData>
                 <LinkTx tx={transaction?.id} />
               </TData>
@@ -82,6 +82,11 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
                 </TData>
               </tr>
             )}
+            <tr>
+              <TData colSpan="2">
+                <hr />
+              </TData>
+            </tr>
           </React.Fragment>
         )
       })}
