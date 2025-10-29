@@ -207,44 +207,6 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
   )
 }
 
-export const amountFormatWithIcon = ({ amount }) => {
-  if (!amount) return ''
-  const { value, currency, valuePrefix } = amountParced(amount)
-
-  let textCurrency = currency
-
-  if (!isNaN(textCurrency?.trim())) {
-    textCurrency = textCurrency?.trim()
-    textCurrency = '"' + textCurrency + '"'
-  }
-
-  let imageUrl = ''
-  if (isNativeCurrency(amount)) {
-    imageUrl = nativeCurrenciesImages[nativeCurrency]
-  } else {
-    imageUrl = tokenImageSrc(amount)
-  }
-
-  return (
-    <span className="inline-flex items-center gap-1">
-      <span className="tooltip" style={{ display: 'inline-flex', alignItems: 'center' }}>
-        <img src={imageUrl} alt={currency} width={18} height={18} />
-        {amount.issuer && (
-          <span className="tooltiptext no-brake right">
-            {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
-          </span>
-        )}
-      </span>
-      <span className="tooltip">
-        {shortNiceNumber(value, 2, 1)} {valuePrefix} {currency}
-        <span className="tooltiptext no-brake right">
-          {fullNiceNumber(value)} {valuePrefix} {textCurrency}
-        </span>
-      </span>
-    </span>
-  )
-}
-
 export const nativeCurrencyToFiat = (params) => {
   if (!isAmountInNativeCurrency(params?.amount)) return ''
   return amountToFiat(params)
@@ -808,9 +770,9 @@ export const amountFormat = (amount, options = {}) => {
       <Image
         src={tokenImageSrc({ issuer, currency: originalCurrency || currency })}
         alt="token"
-        height={16}
-        width={16}
-        style={{ marginRight: '2px', marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }}
+        height={20}
+        width={20}
+        style={{ verticalAlign: 'text-bottom', display: 'inline-block' }}
       />
     )
   }
@@ -862,10 +824,10 @@ export const amountFormat = (amount, options = {}) => {
     )
   } else if (options.icon) {
     return (
-      <>
+      <span className="no-brake">
         {tokenImage}
         <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
-      </>
+      </span>
     )
   } else {
     return showValue + ' ' + valuePrefix + ' ' + textCurrency

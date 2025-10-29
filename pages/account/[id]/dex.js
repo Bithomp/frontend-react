@@ -8,7 +8,7 @@ import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
 import CurrencySearchSelect from '../../../components/UI/CurrencySearchSelect'
-import { niceNumber, niceCurrency, amountFormatWithIcon, fullNiceNumber } from '../../../utils/format'
+import { niceNumber, niceCurrency, fullNiceNumber, amountFormat } from '../../../utils/format'
 import { nativeCurrency, useWidth } from '../../../utils'
 import { divide, multiply } from '../../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
@@ -151,9 +151,13 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
         </td>
         <td className="left">
           <span className={sell ? 'red' : 'green'}>{sell ? 'Selling ' : 'Buying '}</span>
-          <span className="bold">{amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}</span>
+          <span className="bold">
+            {amountFormat(sell ? offer.TakerGets : offer.TakerPays, { precise: 'nice', icon: true })}
+          </span>
           <span className="grey">{' for '}</span>
-          <span className="bold">{amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}</span>
+          <span className="bold">
+            {amountFormat(sell ? offer.TakerPays : offer.TakerGets, { precise: 'nice', icon: true })}
+          </span>
         </td>
         {sell ? (
           <td className="right">

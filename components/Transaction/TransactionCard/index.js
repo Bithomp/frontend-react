@@ -422,8 +422,12 @@ export const TransactionCard = ({
                         <tr>
                           <TData>Affected accounts</TData>
                           <TData>
-                            There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
-                            affected by this transaction.
+                            {filteredBalanceChanges.length > 1 && (
+                              <>
+                                There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that
+                                were affected by this transaction.
+                              </>
+                            )}
                           </TData>
                         </tr>
                         {filteredBalanceChanges?.map((change, index) => {
@@ -477,7 +481,6 @@ export const TransactionCard = ({
                         })}
                       </>
                     )}
-
                   {outcome?.exchanges?.length > 0 && (
                     <>
                       <tr>
