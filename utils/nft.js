@@ -3,7 +3,7 @@ import { stripText, shortName, webSiteName } from '.'
 
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
-import { amountFormat } from './format'
+import { amountFormat, shortHash } from './format'
 
 //partner market places (destinations)
 export const partnerMarketplaces = {
@@ -279,6 +279,7 @@ export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
 }
 
 export const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => {
+  if (!uri) return null
   uri = uri.toString()
   if (
     type === 'image' &&
@@ -544,4 +545,24 @@ export const NftImage = ({ nft, style }) => {
       }}
     />
   )
+}
+
+export const nonSologenic = (data) => {
+  return data?.collectionDetails?.issuer && (data?.collectionDetails?.taxon || data?.collectionDetails?.taxon === 0)
+}
+
+export const collectionNameText = (data) => {
+  if (!data) return ''
+  if (data.collectionDetails?.name) return data.collectionDetails.name.replace(/"/g, '""')
+  const issuerDetails = data.collectionDetails?.issuerDetails || data.issuerDetails
+  if (!issuerDetails) return data.collection
+  const { service, username } = issuerDetails
+  if (service || username) {
+    return service || username // + ' (' + data.collectionDetails.taxon + ')'
+  }
+  if (nonSologenic(data)) {
+    const { issuer, taxon } = data.collectionDetails
+    return shortHash(issuer) + (taxon ? ' (' + taxon + ')' : '')
+  }
+  return data.collection
 }

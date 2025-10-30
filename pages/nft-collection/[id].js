@@ -6,7 +6,6 @@ import Link from 'next/link'
 
 import {
   AddressWithIconFilled,
-  addressUsernameOrServiceLink,
   amountFormat,
   convertedAmount,
   nativeCurrencyToFiat,
@@ -15,7 +14,7 @@ import {
   AddressWithIconInline
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { nftName, NftImage, assetUrl } from '../../utils/nft'
+import { nftName, NftImage, assetUrl, collectionNameText } from '../../utils/nft'
 
 import SEO from '../../components/SEO'
 import { nftClass } from '../../styles/pages/nft.module.scss'
@@ -78,6 +77,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
 
   useEffect(() => {
     fetchActivityData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency])
 
   const fetchActivityData = async () => {
@@ -111,15 +111,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
     }
   }
 
-  const collectionName = (data) => {
-    return (
-      data?.collection?.name || (
-        <>
-          {addressUsernameOrServiceLink(data?.collection, 'issuer', { short: isMobile })} ({data?.collection?.taxon})
-        </>
-      )
-    )
-  }
+  const collectionName = collectionNameText(data.collection)
 
   const mainImagePlaceholder = `data:image/svg+xml;utf8,${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="700" height="700">
@@ -351,14 +343,14 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
   return (
     <div className={nftClass}>
       <SEO
-        title={'NFT Collection: ' + collectionName(data)}
+        title={'NFT Collection: ' + collectionName}
         description={collection?.description || 'NFT collection information.'}
         image={{ file: imageUrl }}
       />
 
       <div className="content-profile">
         <br />
-        <h1 className="center">NFT collection: {collectionName(data)}</h1>
+        <h1 className="center">NFT collection: {collectionName}</h1>
         <br />
         {id && !data?.error ? (
           <>
@@ -379,11 +371,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                         <div className="column-left">
                           <div>
                             {imageUrl ? (
-                              <img
-                                src={imageUrl}
-                                alt={collectionName(data)}
-                                style={{ width: '100%', height: 'auto' }}
-                              />
+                              <img src={imageUrl} alt={collectionName} style={{ width: '100%', height: 'auto' }} />
                             ) : (
                               'No image available'
                             )}
@@ -401,7 +389,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                               <tbody>
                                 <tr>
                                   <td>Name</td>
-                                  <td>{collectionName(data)}</td>
+                                  <td>{collectionName}</td>
                                 </tr>
                                 {collection?.description && (
                                   <tr>

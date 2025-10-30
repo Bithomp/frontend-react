@@ -41,13 +41,12 @@ import {
   usernameOrAddress,
   percentFormat,
   niceNumber,
-  niceCurrency,
-  shortHash
+  niceCurrency
 } from '../../utils/format'
 
 import LinkIcon from '../../public/images/link.svg'
 import RadioOptions from '../../components/UI/RadioOptions'
-import { collectionThumbnail } from '../../utils/nft'
+import { collectionNameText, collectionThumbnail, nonSologenic } from '../../utils/nft'
 import FiltersFrame from '../../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 
@@ -648,17 +647,10 @@ export default function NftVolumes({
     return <Link href={'/nft-explorer' + params + (onSale ? '&list=onSale' : '')}>{text || <LinkIcon />}</Link>
   }
 
-  const nftCollectionLink = (data, options = {}) => {
+  const nftCollectionLink = (data) => {
     if (!data) return ''
-    const { text } = options
-    if (data.collectionDetails?.issuer || data.collectionDetails?.name) {
-      let collectionId
-      if (data.collectionDetails.issuer) {
-        collectionId = data.collectionDetails.issuer + ':' + data.collectionDetails.taxon
-      } else {
-        collectionId = data.collection
-      }
-      return <Link href={'/nft-collection/' + collectionId}>{text || <LinkIcon />}</Link>
+    if (data.collection) {
+      return <Link href={'/nft-collection/' + data.collection}>{collectionNameText(data)}</Link>
     }
     return ''
   }
@@ -876,20 +868,6 @@ export default function NftVolumes({
       ? { flexGrow: 0, flexBasis: 'calc(60% - 20px)' }
       : { width: '100%', marginLeft: 0, marginRight: '10px' }
 
-  const collectionNameText = (data) => {
-    if (data.collectionDetails?.name) return data.collectionDetails.name.replace(/"/g, '""')
-    if (!data?.collectionDetails?.issuerDetails) return data.collection
-    const { service, username } = data.collectionDetails.issuerDetails
-    if (service || username) {
-      return service || username // + ' (' + data.collectionDetails.taxon + ')'
-    }
-    if (nonSologenic(data)) {
-      const { issuer, taxon } = data.collectionDetails
-      return shortHash(issuer) + (taxon ? ' (' + taxon + ')' : '')
-    }
-    return data.collection
-  }
-
   const collectionName = (data, type) => {
     if (!data?.collection) return ''
     if (!data.collectionDetails) return data.collection
@@ -932,9 +910,7 @@ export default function NftVolumes({
       )
     }
 
-    let nameLink = nftCollectionLink(data, {
-      text: name || collectionNameText(data)
-    })
+    let nameLink = nftCollectionLink(data)
 
     if (family) {
       if (
@@ -953,10 +929,6 @@ export default function NftVolumes({
       return <b>{nameLink}</b>
     }
     return nameLink
-  }
-
-  const nonSologenic = (data) => {
-    return data?.collectionDetails?.issuer && (data?.collectionDetails?.taxon || data?.collectionDetails?.taxon === 0)
   }
 
   return (
