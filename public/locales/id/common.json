@@ -624,7 +624,6 @@
     "search-by-seller": "Cari berdasarkan penjual NFT",
     "no-nfts": "Kami tidak dapat menemukan NFT dengan parameter pencarian Anda.",
     "on-service": "di {{service}}",
-    "amount-on-service": "{{amount}} di {{service}}",
     "load-more": "Kami sedang mencari data di XRPL... harap tunggu...",
     "end": "Ini adalah semua NFT yang dapat kami temukan.",
     "change-filters": "Gunakan berbagai opsi filter atau pilih parameter pencarian lainnya untuk menjelajahi lebih banyak NFT yang sesuai dengan minat Anda."

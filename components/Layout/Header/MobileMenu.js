@@ -387,6 +387,9 @@ export default function MobileMenu({
           <Link href="/learn/the-bithomp-api" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.developers.api')}
           </Link>
+          <Link href="/learn/image-services" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Token/NFT/Address Images
+          </Link>
           {devNet && (
             <>
               <a href={'/create/'} className="mobile-menu-item">

@@ -18,8 +18,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function IssueAToken() {
-  const serverUrl = ['mainnet', 'testnet', 'devnet'].includes(network) ? 'bithomp.com' : 'xahauexplorer.com'
-
   return (
     <>
       <SEO
@@ -27,7 +25,6 @@ export default function IssueAToken() {
         description="Step-by-step guide on how to issue a token on XRPL or Xahau. Understand XRPL and Xahau tokens, their use cases, and how to get started with tokenization."
         noindex={network !== 'mainnet'}
         image={{ file: '/images/pages/learn/issue-a-token/cover', width: 1520, height: 953, allNetworks: true }}
-        canonical={serverUrl + '/issue-a-token'}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
@@ -134,19 +131,27 @@ export default function IssueAToken() {
               <strong>Step 4</strong>
             </p>
             <p>
+              Enable the <span className="bold">Default rippling</span> on the <span className="bold">ISSUER</span>{' '}
+              ACCOUNT. You can do it on the <Link href="/services/account-settings">Account Settings page</Link> (under
+              the <span className="bold">Advanced Options</span>).
+            </p>
+            <p>
+              <strong>Step 5</strong>
+            </p>
+            <p>
               Create a trustline – the receiving account (CURRENCY DESTRIBUTION ACCOUNT) must explicitly trust the
               issuing account to hold its token. This trustline must be created with <i>Rippling</i> enabled. You can do
               it <Link href="/services/trustline?mode=advanced&noRipple=false">here</Link>.
             </p>
             <p>
-              <strong>Step 5</strong>
+              <strong>Step 6</strong>
             </p>
             <p>
               Send a payment transaction – the ISSUER ACCOUNT sends a payment of the new token to the CURRENCY
               DESTRIBUTION ACCOUNT.
             </p>
             <p>
-              <strong>Step 6</strong>
+              <strong>Step 7</strong>
             </p>
             <p>
               Follow the guidence to register your token and make it representable.{' '}
@@ -154,7 +159,7 @@ export default function IssueAToken() {
             </p>
             <p></p>
             <p>
-              <strong>Step 7</strong>
+              <strong>Step 8</strong>
             </p>
             <p>
               Users can now create trustlines to your ISSUER ACCOUNT to hold your token. You can share a link to Simple
@@ -162,7 +167,7 @@ export default function IssueAToken() {
               <Link href="/services/trustline">here</Link>.
             </p>
             <p>
-              <strong>Step 8</strong>
+              <strong>Step 9</strong>
             </p>
             <p>
               Now you can distribute your token from the CURRENCY DESTRIBUTION ACCOUNT. You can send payments, create

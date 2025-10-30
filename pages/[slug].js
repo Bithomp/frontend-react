@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
-import { isAddressOrUsername, isIdValid, performIdSearch, server } from '../utils'
+import { isAddressOrUsername, isIdValid, isLedgerIndexValid, isValidCTID, performIdSearch, server } from '../utils'
 
 const slugRegex = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 const forbiddenSlugsRegex = /^.((?!\$).)*.?\.(7z|gz|rar|tar)$/i
@@ -64,6 +64,16 @@ export default function Custom404() {
         return
       }
 
+      if (isValidCTID(slug)) {
+        router.push('/tx/' + slug)
+        return
+      }
+
+      if (isLedgerIndexValid(slug)) {
+        router.push('/ledger/' + slug)
+        return
+      }
+
       if (isAddressOrUsername(slug)) {
         router.push('/account/' + encodeURI(slug))
         return
@@ -72,7 +82,8 @@ export default function Custom404() {
       window.location = server + '/explorer/' + encodeURI(slug)
       return
     }
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="content-text center">

@@ -54,19 +54,33 @@ export const CurrencyWithIcon = ({ token }) => {
 
 export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   const address = data[name]
+  const size = 20
+  const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+     <rect width="100%" height="100%" fill="#ffffff"/>
+     <text x="50%" y="50%" font-family="sans-serif" font-size="8" text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
+      ;(
+     </text>
+   </svg>`
+  )}`
+
   return (
-    <>
+    <span className="no-brake">
       <Link href={'/account/' + address}>
-        <Image
-          src={avatarServer + address}
+        <img
+          src={avatarServer + address || placeholder}
           alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
-          height={20}
-          width={20}
+          height={size}
+          width={size}
           style={{ marginRight: '5px', marginBottom: '-5px' }}
+          onError={(e) => {
+            e.target.onerror = null
+            e.target.src = placeholder
+          }}
         />
       </Link>
       {addressUsernameOrServiceLink(data, name, options)}
-    </>
+    </span>
   )
 }
 
@@ -193,44 +207,6 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
   )
 }
 
-export const amountFormatWithIcon = ({ amount }) => {
-  if (!amount) return ''
-  const { value, currency, valuePrefix } = amountParced(amount)
-
-  let textCurrency = currency
-
-  if (!isNaN(textCurrency?.trim())) {
-    textCurrency = textCurrency?.trim()
-    textCurrency = '"' + textCurrency + '"'
-  }
-
-  let imageUrl = ''
-  if (isNativeCurrency(amount)) {
-    imageUrl = nativeCurrenciesImages[nativeCurrency]
-  } else {
-    imageUrl = tokenImageSrc(amount)
-  }
-
-  return (
-    <span className="inline-flex items-center gap-1">
-      <span className="tooltip" style={{ display: 'inline-flex', alignItems: 'center' }}>
-        <img src={imageUrl} alt={currency} width={18} height={18} />
-        {amount.issuer && (
-          <span className="tooltiptext no-brake right">
-            {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
-          </span>
-        )}
-      </span>
-      <span className="tooltip">
-        {shortNiceNumber(value, 2, 1)} {valuePrefix} {currency}
-        <span className="tooltiptext no-brake right">
-          {fullNiceNumber(value)} {valuePrefix} {textCurrency}
-        </span>
-      </span>
-    </span>
-  )
-}
-
 export const nativeCurrencyToFiat = (params) => {
   if (!isAmountInNativeCurrency(params?.amount)) return ''
   return amountToFiat(params)
@@ -258,7 +234,7 @@ export const amountToFiat = (params) => {
   }
 
   return (
-    <span className="tooltip" suppressHydrationWarning>
+    <span className="tooltip no-brake" suppressHydrationWarning>
       {' '}
       ≈ {calculatedAmount}
       <span className="tooltiptext no-brake" suppressHydrationWarning>
@@ -633,7 +609,7 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
     if (options.url === '/explorer/') {
       return oldExplorerLink(data?.[type], { short: options.short })
     } else {
-      return <Link href={options.url + data?.[type]}>{shortAddress(data?.[type])}</Link>
+      return <Link href={options.url + data?.[type]}>{shortAddress(data?.[type], options.short)}</Link>
     }
   }
   if (options.url === '/explorer/') {
@@ -794,9 +770,9 @@ export const amountFormat = (amount, options = {}) => {
       <Image
         src={tokenImageSrc({ issuer, currency: originalCurrency || currency })}
         alt="token"
-        height={16}
-        width={16}
-        style={{ marginRight: '2px', marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }}
+        height={20}
+        width={20}
+        style={{ verticalAlign: 'text-bottom', display: 'inline-block' }}
       />
     )
   }
@@ -848,10 +824,10 @@ export const amountFormat = (amount, options = {}) => {
     )
   } else if (options.icon) {
     return (
-      <>
+      <span className="no-brake">
         {tokenImage}
         <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
-      </>
+      </span>
     )
   } else {
     return showValue + ' ' + valuePrefix + ' ' + textCurrency
@@ -1054,20 +1030,32 @@ export const fullDateAndTime = (timestamp, type = null, options) => {
   }
 }
 
-export const timeFormat = (timestamp) => {
-  return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+export const timeFormat = (timestamp, type = null) => {
+  if (type === 'ripple') {
+    timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+  }
+  return (
+    <span suppressHydrationWarning>
+      {new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+    </span>
+  )
 }
 
 export const dateFormat = (timestamp, stringParams = {}, params = {}) => {
   if (timestamp) {
+    if (params?.type === 'ripple') {
+      timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+    }
     if (params.type?.toUpperCase() !== 'ISO') {
       timestamp = timestamp * 1000
     }
-    if (stringParams) {
-      return new Date(timestamp).toLocaleDateString([], stringParams)
-    } else {
-      return new Date(timestamp).toLocaleDateString()
-    }
+    return (
+      <span suppressHydrationWarning>
+        {stringParams
+          ? new Date(timestamp).toLocaleDateString([], stringParams)
+          : new Date(timestamp).toLocaleDateString()}
+      </span>
+    )
   }
   return ''
 }

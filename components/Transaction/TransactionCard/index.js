@@ -71,15 +71,17 @@ export const TransactionCard = ({
       try {
         const { networkId: CTIDnetworkId } = decodeCTID(id)
         if (networksIds[CTIDnetworkId]) {
-          errorMessage =
-            'This transaction is from the ' +
-            networksIds[CTIDnetworkId].name +
-            ' network, check the details: ' +
-            networksIds[CTIDnetworkId].server +
-            '/' +
-            i18n.language +
-            '/tx/' +
-            id
+          errorMessage = (
+            <>
+              This transaction is from the <span className="bold">{networksIds[CTIDnetworkId].name}</span> network,
+              check the details:
+              <br />
+              <br />
+              <a href={networksIds[CTIDnetworkId].server + '/' + i18n.language + '/tx/' + id}>
+                {networksIds[CTIDnetworkId].server + '/' + i18n.language + '/tx/' + id}
+              </a>
+            </>
+          )
         } else {
           errorMessage =
             'This transaction is from the ' + CTIDnetworkId + ' network, ' + t('explorer.not-supported-network')
@@ -422,8 +424,12 @@ export const TransactionCard = ({
                         <tr>
                           <TData>Affected accounts</TData>
                           <TData>
-                            There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
-                            affected by this transaction.
+                            {filteredBalanceChanges.length > 1 && (
+                              <>
+                                There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that
+                                were affected by this transaction.
+                              </>
+                            )}
                           </TData>
                         </tr>
                         {filteredBalanceChanges?.map((change, index) => {
@@ -477,7 +483,6 @@ export const TransactionCard = ({
                         })}
                       </>
                     )}
-
                   {outcome?.exchanges?.length > 0 && (
                     <>
                       <tr>
