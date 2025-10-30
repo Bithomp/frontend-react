@@ -117,7 +117,6 @@
     "actions": {
       "view": "Meine Kontoseite",
       "my-transactions": "Meine Transaktionen",
-      "send": "XRP senden",
       "my-nfts": "Meine NFTs",
       "my-nft-offers": "Meine NFT Angebote"
     },
@@ -625,7 +624,6 @@
     "search-by-seller": "Suche nach NFT Verkäufer",
     "no-nfts": "Wir konnten keine NFTs mit Ihren Suchparametern finden.",
     "on-service": "auf {{service}}",
-    "amount-on-service": "{{amount}} auf {{service}}",
     "load-more": "Wir suchen nach Daten auf dem Ledger... bitte warten...",
     "end": "Hier sind alle NFTs die wir finden konnten.",
     "change-filters": "Verwenden Sie verschiedene Filteroptionen oder wählen Sie andere Suchparameter, um mehr NFTs zu entdecken, die Ihren Interessen entsprechen."

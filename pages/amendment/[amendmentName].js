@@ -508,7 +508,7 @@ export default function AmendmentSummary({
                       <h4 className="center">
                         Voted <span className="red">No</span> (or haven't voted yet)
                       </h4>
-                      <table className="table-large" style={{ minWidth: '100%' }}>
+                      <table className="table-large no-hover" style={{ minWidth: '100%' }}>
                         <thead>
                           <tr>
                             <th className="center">Index</th>

@@ -117,7 +117,6 @@
     "actions": {
       "view": "My Account page",
       "my-transactions": "My Transactions",
-      "send": "Send XRP",
       "my-nfts": "My NFTs",
       "my-nft-offers": "My NFT offers"
     },
@@ -625,7 +624,6 @@
     "search-by-seller": "Search by NFT seller",
     "no-nfts": "We couldn't find any NFTs with your search parameters.",
     "on-service": "on {{service}}",
-    "amount-on-service": "{{amount}} on {{service}}",
     "load-more": "We are looking for data on the ledger... please wait...",
     "end": "Here are all the NFTs we could find.",
     "change-filters": "Use different filter options or select other search parameters to explore more NFTs that match your interests."

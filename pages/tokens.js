@@ -10,20 +10,13 @@ import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import SortingArrow from '../components/Tables/SortingArrow'
-import {
-  AddressWithIcon,
-  fullNiceNumber,
-  niceCurrency,
-  niceNumber,
-  shortNiceNumber,
-  shortAddress,
-  userOrServiceName
-} from '../utils/format'
+import { fullNiceNumber, niceCurrency, niceNumber, shortNiceNumber, AddressWithIconFilled } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, setTabParams, validateCurrencyCode, xahauNetwork } from '../utils'
 import { useRouter } from 'next/router'
 import TokenTabs from '../components/Tabs/TokenTabs'
+import Link from 'next/link'
 
 /*
   {
@@ -151,25 +144,12 @@ const orderList = [
 // Helper component to render token with icon
 const TokenCell = ({ token }) => {
   return (
-    <AddressWithIcon address={token?.issuer} currency={token?.currency}>
-      {token.lp_token ? (
-        <b>{token.currencyDetails.currency}</b>
-      ) : (
-        <>
-          <b>{niceCurrency(token.currency)}</b>
-        </>
-      )}
-      {token.issuer && (
-        <>
-          <br />
-          <span className="issuer-address">
-            {token.issuerDetails?.service || token.issuerDetails?.username
-              ? userOrServiceName(token.issuerDetails)
-              : shortAddress(token.issuer)}
-          </span>
-        </>
-      )}
-    </AddressWithIcon>
+    <AddressWithIconFilled
+      data={token}
+      name="issuer"
+      currency={token?.currency}
+      options={{ short: true, currencyDetails: token?.currencyDetails }}
+    />
   )
 }
 
@@ -564,7 +544,7 @@ export default function Tokens({
   return (
     <>
       <SEO title="Tokens" />
-      <h1 className="center">Trustline Tokens</h1>
+      <h1 className="center">Tokens</h1>
 
       {!xahauNetwork && <TokenTabs tab="tokens" />}
 
@@ -605,8 +585,7 @@ export default function Tokens({
           openEmailLogin={openEmailLogin}
         >
           {/* Desktop table */}
-
-          <table className="table-large no-hover expand hide-on-small-w800">
+          <table className="table-large clickable expand hide-on-small-w800">
             <thead>
               <tr>
                 <th className="center">
@@ -615,7 +594,7 @@ export default function Tokens({
                     <SortingArrow sortKey="rating" currentSort={sortConfig} onClick={() => sortTable('rating')} />
                   </span>
                 </th>
-                <th>Token</th>
+                <th className="left">Token</th>
                 <th className="right">
                   <span className="inline-flex items-center">
                     Price
@@ -710,11 +689,7 @@ export default function Tokens({
                     <>
                       {data.map((token, i) => {
                         return (
-                          <tr
-                            key={i}
-                            className="clickable-row"
-                            onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}
-                          >
+                          <tr key={i} onClick={() => router.push(`/token/${token.issuer}/${token.currency}`)}>
                             <td className="center">{i + 1}</td>
                             <td>
                               <TokenCell token={token} />
@@ -857,7 +832,12 @@ export default function Tokens({
                                   <br />
                                   Marketcap: {marketcapToFiat({ marketcap: token.statistics?.marketcap, mobile: true })}
                                   <br />
-                                  Holders: {niceNumber(token.holders)}
+                                  Holders:{' '}
+                                  <Link
+                                    href={`/distribution?currencyIssuer=${token.issuer}&currency=${token.currency}`}
+                                  >
+                                    {niceNumber(token.holders)}
+                                  </Link>
                                   <br />
                                   Trustlines: {niceNumber(token.trustlines)}
                                   <br />
@@ -893,19 +873,6 @@ export default function Tokens({
       </FiltersFrame>
 
       <style jsx>{`
-        .clickable-row {
-          cursor: pointer;
-          transition: background-color 0.2s;
-        }
-
-        .clickable-row:hover {
-          background-color: var(--unaccent-icon);
-        }
-
-        .clickable-row td {
-          position: relative;
-        }
-
         .issuer-address {
           color: var(--text-muted);
           font-size: 0.9em;

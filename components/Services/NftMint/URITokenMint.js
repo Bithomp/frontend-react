@@ -535,7 +535,7 @@ export default function URITokenMint({
                 <AddressInput
                   title={'Destination (' + (mintAndSend ? 'required' : 'optional') + ' - account to receive the NFT)'}
                   placeholder="Destination address"
-                  setValue={onDestinationChange}
+                  setInnerValue={onDestinationChange}
                   name="destination"
                   hideButton={true}
                 />

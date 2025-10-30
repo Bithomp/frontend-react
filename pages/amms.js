@@ -5,10 +5,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { nativeCurrency, stripText, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
-import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import {
-  lpTokenName,
   showAmmPercents,
   addressUsernameOrServiceLink,
   shortNiceNumber,
@@ -17,7 +16,9 @@ import {
   amountFormatNode,
   amountFormat,
   nativeCurrencyToFiat,
-  AddressWithIcon
+  AddressWithIcon,
+  AddressWithIconFilled,
+  niceCurrency
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
 
@@ -43,7 +44,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/amms?order=currencyHigh&limit=100&voteSlots=false&auctionSlot=false' + currencyPart,
+      url: 'v2/amms?order=currencyHigh&limit=100&voteSlots=false&auctionSlot=false&holders=true' + currencyPart,
       headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -74,6 +75,7 @@ import SEO from '../components/SEO'
 import { LinkAmm } from '../utils/links'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
+import TokenTabs from '../components/Tabs/TokenTabs'
 
 // add to the list new parameters for CSV
 const updateListForCsv = (list) => {
@@ -105,7 +107,6 @@ export default function Amms({
   openEmailLogin
 }) {
   const { t, i18n } = useTranslation()
-  const router = useRouter()
 
   let fiatRate = fiatRateServer
   let selectedCurrency = selectedCurrencyServer
@@ -175,7 +176,8 @@ export default function Amms({
       currencyPart = '&sortCurrency=' + nativeCurrency
     }
 
-    let apiUrl = 'v2/amms?order=' + order + '&limit=100&voteSlots=false&auctionSlot=false' + markerPart + currencyPart
+    let apiUrl =
+      'v2/amms?order=' + order + '&limit=100&voteSlots=false&auctionSlot=false&holders=true' + markerPart + currencyPart
 
     if (!markerPart) {
       setLoading(true)
@@ -257,6 +259,29 @@ export default function Amms({
     )
   }
 
+  const LPToken = ({ a }) => {
+    return (
+      <AddressWithIconFilled
+        data={a.lpTokenBalance}
+        name="issuer"
+        currency={a.lpTokenBalance.currency}
+        options={{
+          short: true,
+          currencyDetails: {
+            type: 'lp_token',
+            ammID: a.ammID,
+            asset: a.amount,
+            asset2: a.amount2,
+            currency:
+              niceCurrency(a.amount?.currency || nativeCurrency) +
+              '/' +
+              niceCurrency(a.amount2?.currency || nativeCurrency)
+          }
+        }}
+      />
+    )
+  }
+
   return (
     <>
       <SEO
@@ -273,6 +298,7 @@ export default function Amms({
         twitterImage={xahauNetwork ? null : { file: 'previews/630x630/amms.png' }}
       />
       <h1 className="center">{t('menu.amm.pools')}</h1>
+      {!xahauNetwork && <TokenTabs tab="amms" />}
       <FiltersFrame
         order={order}
         setOrder={setOrder}
@@ -312,16 +338,19 @@ export default function Amms({
           openEmailLogin={openEmailLogin}
         >
           {!windowWidth || windowWidth > 860 ? (
-            <table className="table-large">
+            <table className="table-large expand">
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
+                  <th>LP Token</th>
                   <th>Asset 1</th>
                   <th>Asset 2</th>
-                  <th>LP balance</th>
+                  <th className="right">Holders</th>
+                  <th className="right">LP balance</th>
                   <th>Created</th>
                   <th>{t('table.updated')}</th>
                   <th className="right">Trading fee</th>
+                  <th className="center">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -342,22 +371,49 @@ export default function Amms({
                       <>
                         {data.length > 0 &&
                           data.map((a, i) => (
-                            <tr key={i} onClick={() => router.push('/amm/' + a.ammID)} style={{ cursor: 'pointer' }}>
+                            <tr key={i}>
                               <td className="center">{i + 1}</td>
+                              <td>
+                                <LPToken a={a} />
+                              </td>
                               <td>
                                 <AmountWithIcon amount={a.amount} />
                               </td>
                               <td>
                                 <AmountWithIcon amount={a.amount2} />
                               </td>
-                              <td suppressHydrationWarning>
+                              <td className="right">
+                                <Link
+                                  href={
+                                    '/distribution?currency=' +
+                                    a.lpTokenBalance.currency +
+                                    '&currencyIssuer=' +
+                                    a.account
+                                  }
+                                >
+                                  {a.holders}
+                                </Link>
+                              </td>
+                              <td suppressHydrationWarning className="right">
                                 {shortNiceNumber(a.lpTokenBalance?.value)}
-                                <br />
-                                {lpTokenName(a)}
                               </td>
                               <td>{timeFromNow(a.createdAt, i18n)}</td>
                               <td>{timeFromNow(a.updatedAt, i18n)}</td>
                               <td className="right">{showAmmPercents(a.tradingFee)}</td>
+                              <td className="center">
+                                <Link
+                                  href={
+                                    '/services/amm/deposit?currency=' +
+                                    (a.amount?.currency || nativeCurrency) +
+                                    (a.amount?.issuer ? '&currencyIssuer=' + a.amount?.issuer : '') +
+                                    '&currency2=' +
+                                    (a.amount2?.currency || nativeCurrency) +
+                                    (a.amount2?.issuer ? '&currency2Issuer=' + a.amount2?.issuer : '')
+                                  }
+                                >
+                                  Deposit
+                                </Link>
+                              </td>
                             </tr>
                           ))}
                       </>
@@ -396,8 +452,20 @@ export default function Amms({
                             <b>{i + 1}</b>
                           </td>
                           <td>
+                            <br />
+                            <LPToken a={a} />
                             <p>
                               AMM ID: <LinkAmm ammId={a.ammID} hash={12} />
+                            </p>
+                            <p>
+                              Holders:{' '}
+                              <Link
+                                href={
+                                  '/distribution?currency=' + a.lpTokenBalance.currency + '&currencyIssuer=' + a.account
+                                }
+                              >
+                                {a.holders}
+                              </Link>
                             </p>
                             Assets:
                             <div style={{ height: 10 }} />
@@ -414,12 +482,25 @@ export default function Amms({
                                 </tr>
                               </tbody>
                             </table>
-                            <p suppressHydrationWarning>
-                              LP balance: {shortNiceNumber(a.lpTokenBalance?.value)} {lpTokenName(a)}
-                            </p>
+                            <p suppressHydrationWarning>LP balance: {shortNiceNumber(a.lpTokenBalance?.value)}</p>
                             <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
                             <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
                             <p>Updated: {timeFromNow(a.updatedAt, i18n)}</p>
+                            <Link
+                              href={
+                                '/services/amm/deposit?currency=' +
+                                (a.amount?.currency || nativeCurrency) +
+                                (a.amount?.issuer ? '&currencyIssuer=' + a.amount?.issuer : '') +
+                                '&currency2=' +
+                                (a.amount2?.currency || nativeCurrency) +
+                                (a.amount2?.issuer ? '&currency2Issuer=' + a.amount2?.issuer : '')
+                              }
+                              className="button-action thin narrow"
+                            >
+                              Deposit
+                            </Link>
+                            <br />
+                            <br />
                           </td>
                         </tr>
                       ))

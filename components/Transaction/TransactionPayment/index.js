@@ -14,6 +14,7 @@ import CopyButton from '../../UI/CopyButton'
 import { addressBalanceChanges, dappBySourceTag } from '../../../utils/transaction'
 import DestinationTagProblemSolving from './DestinationTagProblemSolving'
 import PaymentInstructions from './PaymentInstructions'
+import { LinkTx } from '../../../utils/links'
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -169,12 +170,23 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         </tr>
       )}
       {tx?.InvoiceID && (
-        <tr>
-          <TData>Invoice ID</TData>
-          <TData>
-            {shortHash(tx.InvoiceID, 10)} <CopyButton text={tx.InvoiceID} />
-          </TData>
-        </tr>
+        <>
+          {tx.Destination === 'ryouhapPYV5KNHmFUKrjNqsjxhnxvQiVt' ? (
+            <tr>
+              <TData>Invoiced TX</TData>
+              <TData>
+                <LinkTx tx={tx.InvoiceID} /> <CopyButton text={tx.InvoiceID} />
+              </TData>
+            </tr>
+          ) : (
+            <tr>
+              <TData>Invoice ID</TData>
+              <TData>
+                {shortHash(tx.InvoiceID, 10)} <CopyButton text={tx.InvoiceID} />
+              </TData>
+            </tr>
+          )}
+        </>
       )}
       {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
         <>
@@ -198,7 +210,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
               ))}
             </TData>
           </tr>
-          {sourceBalanceChangesList.length === 2 && (
+          {sourceBalanceChangesList?.length === 2 && (
             <tr>
               <TData>Exchange rate</TData>
               <TData>

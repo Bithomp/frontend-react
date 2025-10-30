@@ -300,7 +300,7 @@ table {
     box-shadow: 0px 0px 4px rgb(0 0 0 / 15%);
     width: 100%;
     margin-bottom: 15px;
-    thead {
+    > thead {
       tr {
         th {
           padding: 5px;
@@ -325,6 +325,14 @@ table {
             box-shadow: 0px 0px 4px rgb(0 0 0 / 15%);
           }
         }
+        td {
+          table.sub-table {
+            thead tr th {
+              font-weight: normal !important;
+              color: var(--text-secondary);
+            }
+          }
+        }
       }
     }
     &.autowidth tbody tr td:first-child {
@@ -344,21 +352,9 @@ table {
     &.expand {
       width: calc(100% - 30px);
     }
-    tr {
+    > tbody > tr {
       &:hover {
-        td {
-          background-color: var(--accent-icon);
-          color: var(--text-oposite);
-        }
-        a {
-          color: var(--text-oposite);
-        }
-        svg {
-          stroke: var(--text-oposite);
-          &.change-fill {
-            fill: var(--text-oposite);
-          }
-        }
+        background-color: var(--unaccent-icon);
       }
       th {
         text-align: left;
@@ -383,33 +379,13 @@ table {
       min-width: calc(100% - 20px);
     }
     &.no-hover {
+      > tbody > tr:hover {
+        background-color: unset;
+      }
+    }
+    &.clickable {
       tr {
-        &:hover {
-          td {
-            background-color: inherit;
-            color: inherit;
-          }
-          a {
-            color: var(--accent-link);
-            &:hover {
-              color: inherit;
-            }
-            &.button-action {
-              color: var(--text-contrast);
-            }
-          }
-          svg {
-            stroke: inherit;
-            &.change-fill {
-              fill: var(--accent-link);
-            }
-          }
-          a, .link {
-            svg {
-              stroke: var(--accent-link);
-            }
-          }
-        }
+        cursor: pointer;
       }
     }
   }

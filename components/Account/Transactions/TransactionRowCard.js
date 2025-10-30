@@ -1,17 +1,15 @@
-import { amountFormat, dateFormat, nativeCurrencyToFiat, timeFormat } from '../../utils/format'
+import { amountFormat, dateFormat, nativeCurrencyToFiat, timeFormat } from '../../../utils/format'
 import { useEffect, useState } from 'react'
-import { fetchHistoricalRate } from '../../utils/common'
+import { fetchHistoricalRate } from '../../../utils/common'
 import { TxFiatRateContext } from './FiatRateContext'
-import { LinkTx } from '../../utils/links'
-import { errorCodeDescription, shortErrorCode, dappBySourceTag } from '../../utils/transaction'
-import { useWidth } from '../../utils'
+import { LinkTx } from '../../../utils/links'
+import { errorCodeDescription, shortErrorCode, dappBySourceTag } from '../../../utils/transaction'
+import { useWidth } from '../../../utils'
 import { FiCalendar, FiClock } from 'react-icons/fi'
 
 export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
   const { specification, tx, outcome } = data
-  const date = dateFormat(tx.date + 946684800)
-  const time = timeFormat(tx.date + 946684800)
   const memos = specification?.memos
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
@@ -39,29 +37,27 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
           : ''
       }}
       className="border-b-1"
-      suppressHydrationWarning
     >
       <td className="bold center" style={{ width: 10 }}>
         {index + 1}
       </td>
       <td className="left" style={{ width: 70 }}>
-        <span className="flex items-center gap-1" suppressHydrationWarning>
-          <FiCalendar style={{ stroke: '#666' }} /> {date}
+        <span className="flex items-center gap-1">
+          <FiCalendar style={{ stroke: '#666' }} /> {dateFormat(tx.date, {}, { type: 'ripple' })}
         </span>
-        <span className="flex items-center gap-1" suppressHydrationWarning>
-          <FiClock style={{ stroke: '#666' }} /> {time}
+        <span className="flex items-center gap-1">
+          <FiClock style={{ stroke: '#666' }} /> {timeFormat(tx.date, 'ripple')}
         </span>
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
         <span className="flex items-center gap-1">
-          <span>Transaction hash: </span>
-          {width > 800 ? <LinkTx tx={tx.hash}>{tx.hash}</LinkTx> : <LinkTx tx={tx.hash} short={10} />}
+          <span>Transaction hash: </span> <LinkTx tx={tx.hash} short={width > 800 ? 32 : 10} />
         </span>
         <span>Type: </span>
         <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
         <br />
-
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
+        {/* show SourceBalanceChanges like payments for all tx types */}
         {outcome && !isSuccessful && (
           <>
             <span className="bold">Failure: </span>
@@ -82,12 +78,10 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             <br />
           </>
         )}
-        {tx.Sequence ? (
-          <>
-            <span className="gray">Sequence: {tx.Sequence}</span>
-            <br />
-          </>
-        ) : ''}
+        <span className="gray">
+          {tx.TicketSequence && 'Ticket '}Sequence: {tx.Sequence || tx.TicketSequence}
+        </span>
+        <br />
         {(dapp ||
           (tx?.SourceTag !== undefined &&
             tx.TransactionType !== 'Payment' &&

@@ -1,4 +1,4 @@
-import { fullDateAndTime, niceNumber, niceCurrency, amountFormatWithIcon } from '../../utils/format'
+import { fullDateAndTime, niceNumber, niceCurrency, amountFormat } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 import { divide, multiply } from '../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
@@ -60,7 +60,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
     return (
       <>
         <span className="bold flex">
-          {amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}
+          {amountFormat(sell ? offer.TakerGets : offer.TakerPays, { icon: true })}
         </span>
         <span className="grey flex" style={{alignItems: 'center'}}>
           {' '}
@@ -72,7 +72,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
           {' '}
         </span>
         <span className="bold flex">
-          {amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}
+          {amountFormat(sell ? offer.TakerPays : offer.TakerGets, { icon: true })}
         </span>
       </>
     )

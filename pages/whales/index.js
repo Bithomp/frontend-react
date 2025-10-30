@@ -61,7 +61,7 @@ export default function Whales({ data, selectedCurrency }) {
               {data?.map((tx, i) => (
                 <tr key={i}>
                   <td>{i + 1}</td>
-                  <td suppressHydrationWarning>{timeFormat(tx.timestamp)}</td>
+                  <td>{timeFormat(tx.timestamp)}</td>
                   <td>
                     <AddressWithIconFilled data={tx} name="sourceAddress" />
                   </td>
@@ -93,7 +93,7 @@ export default function Whales({ data, selectedCurrency }) {
                     <b>{i + 1}</b>
                   </td>
                   <td>
-                    <p suppressHydrationWarning>Time: {timeFormat(tx.timestamp)}</p>
+                    <p>Time: {timeFormat(tx.timestamp)}</p>
                     From:
                     <AddressWithIconFilled data={tx} name="sourceAddress" />
                     <br />

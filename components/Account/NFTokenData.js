@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { xahauNetwork, useWidth } from '../../utils'
-import { nftName, nftNameLink, nftThumbnail, nftUrl } from '../../utils/nft'
+import { NftImage, nftName, nftNameLink, nftThumbnail } from '../../utils/nft'
 import LinkIcon from '../../public/images/link.svg'
 import { LinkTx } from '../../utils/links'
 import {
@@ -238,9 +238,8 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                   <td style={{ paddingLeft: 8 }}>
                     {nfts?.map((nft, i) => (
                       <Link href={'/nft/' + nft.nftokenID} key={i}>
-                        <img
-                          src={nftUrl(nft?.nftoken || nft, 'image')}
-                          alt={'NFT ' + (i + 1)}
+                        <NftImage
+                          nft={nft}
                           style={
                             windowWidth > 800
                               ? { width: '61px', height: '61px', borderRadius: '4px', margin: '2px' }
@@ -303,8 +302,8 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                 )}
                 <th className="center">NFT</th>
                 <th className="center">{t('table.type')}</th>
-                <th className="center">{t('table.amount')}</th>
-                <th className="center">{t('table.placed')}</th>
+                <th className="right">{t('table.amount')}</th>
+                <th className="right">{t('table.placed')}</th>
                 {type === 'created' && <th className="center">{t('table.destination')}</th>}
               </tr>
             )}
@@ -338,10 +337,10 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                                 ? t('table.text.sell')
                                 : t('table.text.buy')}
                             </td>
-                            <td className="center">
+                            <td className="right">
                               {amountFormat(offer?.amount, { tooltip: true, maxFractionDigits: 2 })}
                             </td>
-                            <td className="center">
+                            <td className="right">
                               {dateFormat(offer?.createdAt)} <LinkTx tx={offer?.createdTxHash} icon={true} />
                             </td>
                             {type === 'created' && <td className="center">{nftLink(offer, 'destination')}</td>}

@@ -184,14 +184,14 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                 </td>
                 {isIssued ? (
                   <>
-                    <td className="right">{shortNiceNumber(scaleAmount(c.OutstandingAmount, c.AssetScale))}</td>
+                    <td className="right">{shortNiceNumber(scaleAmount(c.OutstandingAmount || 0, c.AssetScale))}</td>
                     <td className="right">
                       {c.MaximumAmount ? shortNiceNumber(scaleAmount(c.MaximumAmount, c.AssetScale)) : 'not set'}
                     </td>
                   </>
                 ) : (
                   <td className="right">
-                    {shortNiceNumber(scaleAmount(c.MPTAmount, c.mptokenCurrencyDetails?.scale))}
+                    {shortNiceNumber(scaleAmount(c.MPTAmount || 0, c.mptokenCurrencyDetails?.scale))}
                   </td>
                 )}
               </tr>
@@ -232,8 +232,12 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                       data={issuerDetails(c)}
                       name="issuer"
                       currency={mptCurrency(c)}
-                      options={{ mptId: cMptId, currencyName: mptName(c), flags: isIssued ? c.flags : null }}
-                      windowWidth={700}
+                      options={{
+                        mptId: cMptId,
+                        currencyName: mptName(c),
+                        flags: isIssued ? c.flags : null,
+                        short: true
+                      }}
                     />
                   </td>
                   <td className="center">
@@ -241,11 +245,13 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                   </td>
                   {isIssued ? (
                     <>
-                      <td className="right">{shortNiceNumber(c.OutstandingAmount)}</td>
-                      <td className="right">{shortNiceNumber(c.MaximumAmount)}</td>
+                      <td className="right">{scaleAmount(c.OutstandingAmount || 0, c.AssetScale)}</td>
+                      <td className="right">
+                        {c.MaximumAmount ? scaleAmount(c.MaximumAmount, c.AssetScale) : 'not set'}
+                      </td>
                     </>
                   ) : (
-                    <td className="right">{c.MPTAmount ? shortNiceNumber(c.MPTAmount) : 0}</td>
+                    <td className="right">{scaleAmount(c.MPTAmount || 0, c.mptokenCurrencyDetails?.scale)}</td>
                   )}
                 </tr>
               )

@@ -446,7 +446,7 @@ export default function Mpts({
           sessionToken={sessionToken}
           openEmailLogin={openEmailLogin}
         >
-          <table className="table-large no-hover expand hide-on-small-w800">
+          <table className="table-large expand hide-on-small-w800">
             <thead>
               <tr>
                 <th className="center">
@@ -529,7 +529,7 @@ export default function Mpts({
                             </td>
                             <td className="right">{token.sequence}</td>
                             <td className="right">{token.transferFee ? token.transferFee / 1000 + '%' : ''}</td>
-                            <td className="right" suppressHydrationWarning>
+                            <td className="right">
                               {dateFormat(token.createdAt)}
                               <br />
                               {timeFormat(token.createdAt)}
@@ -608,7 +608,7 @@ export default function Mpts({
                                 </span>
                                 <br />
                                 <b>Created:</b>{' '}
-                                <span suppressHydrationWarning>
+                                <span>
                                   {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
                                 </span>
                                 <br />

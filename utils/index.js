@@ -649,6 +649,9 @@ export const avatarSrc = (address, refreshPage) => {
 }
 
 export const tokenImageSrc = (token) => {
+  if (!token) return ''
+  if ((!token.issuer && token.currency === nativeCurrency) || typeof token === 'string')
+    return nativeCurrenciesImages[nativeCurrency]
   return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
 }
 
@@ -749,8 +752,24 @@ export const isTagValid = (x) => {
   return true
 }
 
+export const isLedgerIndexValid = (value) => {
+  if (typeof value === 'number') {
+    // numbers don't have "leading zeros" issue
+    return Number.isInteger(value) && value >= 1 && value <= 9999999999
+  }
+  if (typeof value === 'string') {
+    // strict: digits only, no leading zeros, 1–10 digits (caps at 9,999,999,999)
+    return /^[1-9]\d{0,9}$/.test(value)
+  }
+  return false
+}
+
 export const isUsernameValid = (x) => {
-  return x && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(x)
+  return x && /^(?=.{3,22}$)[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+){0,5}$/.test(x)
+}
+
+export const isUsernameValidToRegister = (x) => {
+  return x && /^[a-zA-Z0-9]{3,18}$/.test(x)
 }
 
 export const isAddressOrUsername = (x) => {
@@ -963,4 +982,42 @@ export const objectsCountText = (objects) => {
   let countList = objects.filter((p) => p !== undefined)
   if (countList.length > 1) return countList.length + ' '
   return ''
+}
+
+export const performIdSearch = async ({ searchFor, router, setErrorMessage }) => {
+  //nft nftOffer uriToken
+  if (isIdValid(searchFor)) {
+    const response = await axios('v3/search/' + searchFor)
+    const data = response.data
+    if (data.type === 'transaction') {
+      router.push('/tx/' + searchFor)
+      return
+    }
+    if (data.type === 'nftoken' || data.type === 'uriToken') {
+      router.push('/nft/' + searchFor)
+      return
+    }
+    if (data.type === 'nftokenOffer') {
+      router.push('/nft-offer/' + searchFor)
+      return
+    }
+    if (data.type === 'amm') {
+      router.push('/amm/' + searchFor)
+      return
+    }
+    if (data.type === 'ledgerEntry') {
+      router.push('/object/' + searchFor)
+      return
+    }
+    if (data.type === 'ledger') {
+      router.push('/ledger/' + searchFor)
+      return
+    }
+    if (data.type === 'unknown') {
+      setErrorMessage(data.error)
+      return
+    }
+  } else {
+    setErrorMessage('Invalid ID format')
+  }
 }
