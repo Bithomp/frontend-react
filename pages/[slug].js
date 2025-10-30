@@ -48,44 +48,42 @@ export default function Custom404() {
   const { slug } = router.query
   const [errorMessage, setErrorMessage] = useState('')
 
-  useEffect(
-    () => {
-      const performIdSearching = async ({ searchFor, router, setErrorMessage }) => {
-        await performIdSearch({ searchFor, router, setErrorMessage })
-      }
+  useEffect(() => {
+    const performIdSearching = async ({ searchFor, router, setErrorMessage }) => {
+      await performIdSearch({ searchFor, router, setErrorMessage })
+    }
 
-      if (slugRegex.test(slug)) {
-        if (forbiddenSlugsRegex.test(slug)) {
-          window.location = '/404'
-          return
-        }
-
-        if (isIdValid(slug)) {
-          performIdSearching({ searchFor: slug, router, setErrorMessage })
-          return
-        }
-
-        if (isValidCTID(slug)) {
-          router.push('/tx/' + slug)
-          return
-        }
-
-        if (isLedgerIndexValid(slug)) {
-          router.push('/ledger/' + slug)
-          return
-        }
-
-        if (isAddressOrUsername(slug)) {
-          router.push('/account/' + encodeURI(slug))
-          return
-        }
-
-        window.location = server + '/explorer/' + encodeURI(slug)
+    if (slugRegex.test(slug)) {
+      if (forbiddenSlugsRegex.test(slug)) {
+        window.location = '/404'
         return
       }
+
+      if (isIdValid(slug)) {
+        performIdSearching({ searchFor: slug, router, setErrorMessage })
+        return
+      }
+
+      if (isValidCTID(slug)) {
+        router.push('/tx/' + slug)
+        return
+      }
+
+      if (isLedgerIndexValid(slug)) {
+        router.push('/ledger/' + slug)
+        return
+      }
+
+      if (isAddressOrUsername(slug)) {
+        router.push('/account/' + encodeURI(slug))
+        return
+      }
+
+      window.location = server + '/explorer/' + encodeURI(slug)
+      return
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  )
+  }, [])
 
   return (
     <div className="content-text center">
