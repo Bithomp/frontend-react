@@ -340,6 +340,9 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
 
   const statsTdClass = isMobile ? 'right' : ''
 
+  const privateFloors = collection?.floorPrices?.map((item) => item.private).filter(Boolean)
+  const openFloors = collection?.floorPrices?.map((item) => item.open).filter(Boolean)
+
   return (
     <div className={nftClass}>
       <SEO
@@ -548,6 +551,44 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                     </table>
                                   </td>
                                 </tr>
+                              </tbody>
+                            </table>
+                          )}
+
+                          {(openFloors?.length > 0 || privateFloors?.length > 0) && (
+                            <table className="table-details">
+                              <thead>
+                                <tr>
+                                  <th colSpan="100">Floor prices</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {openFloors?.length > 0 && (
+                                  <tr>
+                                    <td>
+                                      On the open market:{' '}
+                                      {openFloors.map((floor, i) => (
+                                        <span key={i}>
+                                          {amountFormat(floor.amount, { presice: true, icon: true, noSpace: true })}
+                                          {openFloors.length - 1 !== i && ', '}
+                                        </span>
+                                      ))}
+                                    </td>
+                                  </tr>
+                                )}
+                                {privateFloors?.length > 0 && (
+                                  <tr>
+                                    <td>
+                                      On the marketplaces:{' '}
+                                      {privateFloors.map((floor, i) => (
+                                        <span key={i}>
+                                          {amountFormat(floor.amount, { presice: true, icon: true })} (
+                                          {floor?.destinationDetails?.service}){privateFloors.length - 1 !== i && ', '}
+                                        </span>
+                                      ))}
+                                    </td>
+                                  </tr>
+                                )}
                               </tbody>
                             </table>
                           )}

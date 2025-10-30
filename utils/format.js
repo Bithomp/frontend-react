@@ -825,8 +825,7 @@ export const amountFormat = (amount, options = {}) => {
   } else if (options.icon) {
     return (
       <span className="no-brake">
-        {tokenImage}
-        <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
+        {tokenImage} <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
       </span>
     )
   } else {
