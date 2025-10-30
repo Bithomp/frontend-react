@@ -311,7 +311,7 @@ export default function NftVolumes({
             if (listTab === 'collections' && list[i].collectionDetails) {
               list[i].collectionDetails.family = list[i].collectionDetails?.family?.replace(/"/g, '""')
               list[i].collectionDetails.description = list[i].collectionDetails?.description?.replace(/"/g, '""')
-              list[i].collectionDetails.name = collectionNameText(list[i])
+              list[i].collectionDetails.name = collectionNameText(list[i].collectionDetails)
             }
           }
 
@@ -650,7 +650,7 @@ export default function NftVolumes({
   const nftCollectionLink = (data) => {
     if (!data) return ''
     if (data.collection) {
-      return <Link href={'/nft-collection/' + data.collection}>{collectionNameText(data)}</Link>
+      return <Link href={'/nft-collection/' + data.collection}>{collectionNameText(data.collectionDetails)}</Link>
     }
     return ''
   }
@@ -888,7 +888,7 @@ export default function NftVolumes({
           )}
           {!family && !name && (
             <p>
-              {t('table.collection')}: {collectionNameText(data)}
+              {t('table.collection')}: {collectionNameText(data.collectionDetails)}
             </p>
           )}
           {description && (

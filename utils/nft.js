@@ -553,15 +553,15 @@ export const nonSologenic = (data) => {
 
 export const collectionNameText = (data) => {
   if (!data) return ''
-  if (data.collectionDetails?.name) return data.collectionDetails.name.replace(/"/g, '""')
-  const issuerDetails = data.collectionDetails?.issuerDetails || data.issuerDetails
+  if (data?.name) return data.name.replace(/"/g, '""')
+  const issuerDetails = data.issuerDetails
   if (!issuerDetails) return data.collection
   const { service, username } = issuerDetails
   if (service || username) {
     return service || username // + ' (' + data.collectionDetails.taxon + ')'
   }
   if (nonSologenic(data)) {
-    const { issuer, taxon } = data.collectionDetails
+    const { issuer, taxon } = data
     return shortHash(issuer) + (taxon ? ' (' + taxon + ')' : '')
   }
   return data.collection
