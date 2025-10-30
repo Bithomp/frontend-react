@@ -608,7 +608,7 @@ export default function NftVolumes({
     if (!options?.excludeIssuer) {
       if (volume?.issuer) {
         urlPart = urlPart + '&issuer=' + usernameOrAddress(volume, 'issuer')
-      } else if (nonSologenic(volume)) {
+      } else if (nonSologenic(volume.collectionDetails)) {
         urlPart =
           urlPart +
           '&issuer=' +
@@ -896,7 +896,7 @@ export default function NftVolumes({
               {t('table.description')}: {description}
             </p>
           )}
-          {nonSologenic(data) && (
+          {nonSologenic(data.collectionDetails) && (
             <>
               <p>
                 {t('table.issuer')}: {issuer}

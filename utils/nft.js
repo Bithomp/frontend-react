@@ -548,7 +548,7 @@ export const NftImage = ({ nft, style }) => {
 }
 
 export const nonSologenic = (data) => {
-  return data?.collectionDetails?.issuer && (data?.collectionDetails?.taxon || data?.collectionDetails?.taxon === 0)
+  return data?.issuer && (data?.taxon || data?.taxon === 0)
 }
 
 export const collectionNameText = (data) => {
