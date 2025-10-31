@@ -18,9 +18,9 @@ import { nftName, NftImage, assetUrl, collectionNameText } from '../../utils/nft
 
 import SEO from '../../components/SEO'
 import { nftClass } from '../../styles/pages/nft.module.scss'
-import { useWidth } from '../../utils'
+import { nativeCurrency, useWidth } from '../../utils'
 import { axiosServer, passHeaders } from '../../utils/axios'
-import { LinkTx } from '../../utils/links'
+import { LinkListedNfts, LinkTx } from '../../utils/links'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -569,7 +569,16 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                       On the open market:{' '}
                                       {openFloors.map((floor, i) => (
                                         <span key={i}>
-                                          {amountFormat(floor.amount, { presice: true, icon: true, noSpace: true })}
+                                          <LinkListedNfts
+                                            issuer={collection.issuer}
+                                            taxon={collection.taxon}
+                                            collection={collection.collection}
+                                            saleCurrency={floor.amount?.currency || nativeCurrency}
+                                            saleCurrencyIssuer={floor.amount?.issuer}
+                                            saleDestination="public"
+                                          >
+                                            {amountFormat(floor.amount, { presice: true, icon: true, noSpace: true })}
+                                          </LinkListedNfts>
                                           {openFloors.length - 1 !== i && ', '}
                                         </span>
                                       ))}
@@ -582,8 +591,18 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                       On the marketplaces:{' '}
                                       {privateFloors.map((floor, i) => (
                                         <span key={i}>
-                                          {amountFormat(floor.amount, { presice: true, icon: true })} (
-                                          {floor?.destinationDetails?.service}){privateFloors.length - 1 !== i && ', '}
+                                          <LinkListedNfts
+                                            issuer={collection.issuer}
+                                            taxon={collection.taxon}
+                                            collection={collection.collection}
+                                            saleCurrency={floor.amount?.currency || nativeCurrency}
+                                            saleCurrencyIssuer={floor.amount?.issuer}
+                                            saleDestination="knownBrokers"
+                                          >
+                                            {amountFormat(floor.amount, { presice: true, icon: true })} (
+                                            {floor?.destinationDetails?.service})
+                                          </LinkListedNfts>
+                                          {privateFloors.length - 1 !== i && ', '}
                                         </span>
                                       ))}
                                     </td>

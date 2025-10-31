@@ -29,6 +29,7 @@ import AddressInput from './UI/AddressInput'
 import NftTabs from './Tabs/NftTabs'
 import FiltersFrame from './Layout/FiltersFrame'
 import InfiniteScrolling from './Layout/InfiniteScrolling'
+import SimpleSelect from './UI/SimpleSelect'
 
 export default function NftsComponent({
   collectionQuery,
@@ -140,7 +141,10 @@ export default function NftsComponent({
   } else {
     saleDestinationTabList = [
       { value: 'buyNow', label: t('tabs.buyNow') },
-      { value: 'publicAndKnownBrokers', label: t('tabs.publicAndKnownBrokers') }
+      { value: 'publicAndKnownBrokers', label: t('tabs.publicAndKnownBrokers') },
+      { value: 'public', label: t('tabs.public') },
+      { value: 'knownBrokers', label: t('tabs.marketplaces') },
+      { value: 'all', label: t('tabs.all') }
     ]
   }
 
@@ -711,11 +715,11 @@ export default function NftsComponent({
                 <TokenSelector value={selectedToken} onChange={setSelectedToken} currencyQueryName="saleCurrency" />
               </div>
               <br />
-              <RadioOptions
-                tabList={saleDestinationTabList}
-                tab={saleDestinationTab}
-                setTab={setSaleDestinationTab}
-                name="saleDestination"
+              {t('tabs.onSale')}{' '}
+              <SimpleSelect
+                value={saleDestinationTab}
+                setValue={setSaleDestinationTab}
+                optionsList={saleDestinationTabList}
               />
             </div>
           )}
