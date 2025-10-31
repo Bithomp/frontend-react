@@ -684,7 +684,7 @@ export default function NftsComponent({
       {nftExplorer && (
         <>
           <h1 className="center">{t('nft-explorer.header') + ' '}</h1>
-          <NftTabs tab="nft-explorer" url={'/nft-sales' + issuerTaxonUrlPart + collectionUrlPart} />
+          <NftTabs tab="nft-explorer" params={issuerTaxonUrlPart + collectionUrlPart} />
         </>
       )}
 
@@ -733,33 +733,36 @@ export default function NftsComponent({
                   hideButton={true}
                 />
               )}
-              {collectionQuery && (
+              {collectionQuery ? (
                 <FormInput
                   title={t('table.collection')}
                   defaultValue={collectionQuery}
                   disabled={true}
                   hideButton={true}
                 />
+              ) : (
+                <>
+                  <AddressInput
+                    title={t('table.issuer')}
+                    placeholder={t('nfts.search-by-issuer')}
+                    setValue={onIssuerSearch}
+                    rawData={rawData || { issuer: issuerQuery }}
+                    type="issuer"
+                  />
+                  {!xahauNetwork && (
+                    <FormInput
+                      title={t('table.taxon')}
+                      placeholder={t('nfts.search-by-taxon')}
+                      setValue={onTaxonInput}
+                      disabled={issuer ? false : true}
+                      defaultValue={issuer ? rawData?.taxon : ''}
+                      key={issuer || 'empty'}
+                    />
+                  )}
+                </>
               )}
               {serialQuery && (
                 <FormInput title={t('table.serial')} defaultValue={serialQuery} disabled={true} hideButton={true} />
-              )}
-              <AddressInput
-                title={t('table.issuer')}
-                placeholder={t('nfts.search-by-issuer')}
-                setValue={onIssuerSearch}
-                rawData={rawData || { issuer: issuerQuery }}
-                type="issuer"
-              />
-              {!xahauNetwork && (
-                <FormInput
-                  title={t('table.taxon')}
-                  placeholder={t('nfts.search-by-taxon')}
-                  setValue={onTaxonInput}
-                  disabled={issuer ? false : true}
-                  defaultValue={issuer ? rawData?.taxon : ''}
-                  key={issuer || 'empty'}
-                />
               )}
               <AddressInput
                 title={t('table.owner')}

@@ -6,7 +6,7 @@ export default function Tabs({ tabList, tab, setTab, name = 'radio', style = {} 
   return (
     <div className="tabs" style={style}>
       <div className="tabs-list">
-        {tabList.map((tabItem) => (
+        {tabList?.map((tabItem) => (
           <input
             key={tabItem.value}
             type="radio"
