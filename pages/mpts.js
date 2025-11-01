@@ -633,26 +633,6 @@ export default function Mpts({
                                 ) : (
                                   ''
                                 )}
-                                {token.metadata?.weblinks && token.metadata?.weblinks.length > 0 ? (
-                                  <>
-                                    <br />
-                                    {token.metadata.weblinks.map((link, index) => (
-                                      <span key={index}>
-                                        <a
-                                          href={link}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                          style={{ wordBreak: 'break-all' }}
-                                        >
-                                          {link}
-                                        </a>
-                                        <br />
-                                      </span>
-                                    ))}
-                                  </>
-                                ) : (
-                                  ''
-                                )}
                                 <br />
                                 <b>Transfer fee:</b> {token.transferFee ? token.transferFee / 1000 + '%' : 'none'}
                                 <br />
