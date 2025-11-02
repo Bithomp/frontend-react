@@ -20,7 +20,6 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
   const iouPayment = isIOUpayment(data)
-
   //don't show sourcetag if it's the tag of a known dapp
   const dapp = dappBySourceTag(specification.source.tag)
 
@@ -38,17 +37,15 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
             {specification?.destination?.address === address ? (
               <>
                 <FiDownload style={{ stroke: 'green', fontSize: 16 }} />
-                <span>{addressUsernameOrServiceLink(specification.source, 'address')}</span>
+                {addressUsernameOrServiceLink(specification.source, 'address')}
               </>
             ) : specification?.source?.address === address ? (
               <>
                 <FiUpload style={{ stroke: 'red', fontSize: 16 }} />
-                <span>{addressUsernameOrServiceLink(specification.destination, 'address')}</span>
+                {addressUsernameOrServiceLink(specification.destination, 'address')}
               </>
             ) : (
-              <>
-                <span>Payment By {addressUsernameOrServiceLink(specification.source, 'address')}</span>
-              </>
+              <>Payment By {addressUsernameOrServiceLink(specification.source, 'address')}</>
             )}
           </div>
         )}

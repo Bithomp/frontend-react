@@ -62,6 +62,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      id: id || null,
       initialData: initialData || null,
       initialErrorMessage,
       isSsrMobile: getIsSsrMobile(context),
@@ -78,6 +79,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function AccountTransactions({
+  id,
   initialData,
   initialErrorMessage,
   selectedCurrency,
@@ -122,7 +124,7 @@ export default function AccountTransactions({
     setMarker(null)
     fetchTransactions({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order])
+  }, [order, id])
 
   // Sync filter changes to URL
   useEffect(() => {
@@ -140,7 +142,6 @@ export default function AccountTransactions({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, txType, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
 
-  // Helpers
   const orderList = [
     { value: 'newest', label: 'Newest First' },
     { value: 'oldest', label: 'Oldest First' }
@@ -172,7 +173,6 @@ export default function AccountTransactions({
     { value: '1', label: 'Exclude failed' }
   ]
 
-  // Build API url
   const apiUrl = (opts = {}) => {
     const limit = 20
     let url = `v3/transactions/${address}?limit=${limit}`
@@ -242,7 +242,6 @@ export default function AccountTransactions({
     setLoading(false)
   }
 
-  // CSV headers (basic)
   const csvHeaders = [
     { label: 'Date', key: 'date' },
     { label: 'Time', key: 'time' },
@@ -306,7 +305,6 @@ export default function AccountTransactions({
         count={transactions.length}
         hasMore={marker}
         data={
-          // for csv export?
           transactions?.map((item) => {
             let dateObj = new Date()
             if (item.outcome.timestamp) {
@@ -326,7 +324,6 @@ export default function AccountTransactions({
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
       >
-        {/* Left filters placeholder – can be extended later */}
         <>
           <div className="filters-body-inner">
             <div>

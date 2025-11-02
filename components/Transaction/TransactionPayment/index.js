@@ -33,6 +33,8 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
   const isConvertion = isConvertionPayment(specification)
   const isSuccessful = outcome?.result == 'tesSUCCESS'
   const iouPayment = isIOUpayment(data)
+  //don't show sourcetag if it's the tag of a known dapp
+  const dapp = dappBySourceTag(specification.source.tag)
 
   /*
   {
@@ -88,9 +90,6 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
     validated: true
   }
   */
-
-  //don't show sourcetag if it's the tag of a known dapp
-  const dapp = dappBySourceTag(specification.source.tag)
 
   return (
     <TransactionCard
