@@ -64,20 +64,16 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
 
         {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
           <>
-            <div className="flex items-center gap-1">
-              <span>
-                {isConvertion ? (
-                  <>
-                    {' '}
-                    <FaArrowRightArrowLeft style={{ fontSize: 16, marginBottom: -4 }} /> Exchanged:{' '}
-                  </>
-                ) : (
-                  <> Sender spent: </>
-                )}
-                {sourceBalanceChangesList.map((change, index) => {
-                  return <br key={index} />
-                })}
-              </span>
+            <div>
+              {isConvertion ? (
+                <>
+                  {' '}
+                  <FaArrowRightArrowLeft style={{ fontSize: 16, marginBottom: -4 }} /> Exchanged:{' '}
+                </>
+              ) : (
+                <> Sender spent: </>
+              )}
+              <br />
               <span>
                 {sourceBalanceChangesList.map((change, index) => (
                   <div key={index}>
@@ -97,7 +93,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
               </span>
             </div>
             {sourceBalanceChangesList.length === 2 && (
-              <div className="flex items-center gap-1">
+              <div>
                 <span>Exchange rate: </span>
                 <span>
                   {amountFormat(
