@@ -50,12 +50,8 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
         </span>
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
-        Type: <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
+        <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
         <br />
-        Tx hash:{' '}
-        <LinkTx tx={tx.hash} copy={true}>
-          {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
-        </LinkTx>
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
         {outcome && !isSuccessful && (
           <>
@@ -72,11 +68,11 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
         <br />
         {tx.DestinationTag !== undefined && tx.DestinationTag !== null && (
           <>
-            <span className="gray">Destination tag: {tx.DestinationTag}</span>
+            <span>Destination tag: {tx.DestinationTag}</span>
             <br />
           </>
         )}
-        <span className="gray">
+        <span>
           {tx.TicketSequence && 'Ticket '}Sequence: {tx.Sequence || tx.TicketSequence}
         </span>
         <br />
@@ -95,12 +91,12 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
               <div key={idx}>
                 {memo.data ? (
                   <>
-                    <span className="bold">Memo{memos.length > 1 ? ` (${idx + 1})` : ''}:</span>
+                    <span>Memo{memos.length > 1 ? ` (${idx + 1})` : ''}:</span>
                     <span className="gray"> {memo.data}</span>
                   </>
                 ) : (
                   <>
-                    <span className="bold">
+                    <span>
                       {memo.type}
                       {memos.length > 1 ? ` (${idx + 1})` : ''}:
                     </span>
@@ -111,6 +107,10 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             ))}
           </>
         )}
+        Tx hash:{' '}
+        <LinkTx tx={tx.hash} copy={true}>
+          {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
+        </LinkTx>
       </td>
     </tr>
   )

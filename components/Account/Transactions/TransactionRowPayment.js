@@ -1,7 +1,11 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
+import {
+  addressUsernameOrServiceLink,
+  AddressWithIconFilled,
+  amountFormat,
+  nativeCurrencyToFiat
+} from '../../../utils/format'
 import { addressBalanceChanges, dappBySourceTag } from '../../../utils/transaction'
-import { FiDownload, FiUpload } from 'react-icons/fi'
 import { useTxFiatRate } from './FiatRateContext'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 import {
@@ -33,21 +37,23 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
     >
       <>
         {!isConvertion && (
-          <div className="flex items-center gap-1">
+          <>
             {specification?.destination?.address === address ? (
               <>
-                <FiDownload style={{ stroke: 'green', fontSize: 16 }} />
-                {addressUsernameOrServiceLink(specification.source, 'address')}
+                from
+                <br />
+                <AddressWithIconFilled data={specification.source} name="address" />
               </>
             ) : specification?.source?.address === address ? (
               <>
-                <FiUpload style={{ stroke: 'red', fontSize: 16 }} />
-                {addressUsernameOrServiceLink(specification.destination, 'address')}
+                to
+                <br />
+                <AddressWithIconFilled data={specification.destination} name="address" />
               </>
             ) : (
               <>Payment By {addressUsernameOrServiceLink(specification.source, 'address')}</>
             )}
-          </div>
+          </>
         )}
         {specification.source?.tag !== undefined && !dapp && (
           <>

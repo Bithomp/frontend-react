@@ -417,7 +417,7 @@ export default function AccountTransactions({
             subscriptionExpired={false}
             sessionToken={true}
           >
-            <table className={width > 600 ? 'table-large' : 'table-mobile'}>
+            <table className={width > 600 ? 'table-large no-hover' : 'table-mobile'}>
               <tbody>
                 {loading ? (
                   <tr className="center">
