@@ -4,8 +4,22 @@ import { shortHash } from './format'
 import CopyButton from '../components/UI/CopyButton'
 import { isValidTaxon } from './nft'
 
-export const LinkTx = ({ tx, icon, short, children }) =>
-  tx ? <Link href={`/tx/${tx}`}>{children || (icon ? <LinkIcon /> : shortHash(tx, short || 10))}</Link> : ''
+export const LinkTx = ({ tx, icon, short, children, copy }) =>
+  tx ? (
+    <>
+      <Link href={`/tx/${tx}`}>{children || (icon ? <LinkIcon /> : shortHash(tx, short || 10))}</Link>
+      {copy ? (
+        <>
+          {' '}
+          <CopyButton text={tx} />
+        </>
+      ) : (
+        ''
+      )}
+    </>
+  ) : (
+    ''
+  )
 
 export const LedgerLink = ({ version, text, style, onClick }) =>
   version ? (

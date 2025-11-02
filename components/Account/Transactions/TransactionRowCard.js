@@ -1,4 +1,4 @@
-import { amountFormat, dateFormat, nativeCurrencyToFiat, timeFormat } from '../../../utils/format'
+import { amountFormat, dateFormat, nativeCurrencyToFiat, shortHash, timeFormat } from '../../../utils/format'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../../utils/common'
 import { TxFiatRateContext } from './FiatRateContext'
@@ -51,7 +51,10 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
         <span className="flex items-center gap-1">
-          <span>Transaction hash: </span> <LinkTx tx={tx.hash} short={width > 800 ? 32 : 10} />
+          Tx hash:{' '}
+          <LinkTx tx={tx.hash} copy={true}>
+            {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
+          </LinkTx>
         </span>
         <span>Type: </span>
         <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
