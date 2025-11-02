@@ -219,9 +219,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         </thead>
         <tbody>
           <tr>
-            <th className="left" style={{ paddingLeft: '20px' }}>
-              Offer
-            </th>
+            <th className="left">Offer</th>
             <th className="right">Rate</th>
             <th className="center">Action</th>
           </tr>
