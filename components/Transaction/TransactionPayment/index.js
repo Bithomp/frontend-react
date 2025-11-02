@@ -9,12 +9,18 @@ import {
 } from '../../../utils/format'
 
 import { TransactionCard } from '../TransactionCard'
-import { isNativeCurrency, xls14NftValue } from '../../../utils'
+import { isNativeCurrency } from '../../../utils'
 import CopyButton from '../../UI/CopyButton'
 import { addressBalanceChanges, dappBySourceTag } from '../../../utils/transaction'
 import DestinationTagProblemSolving from './DestinationTagProblemSolving'
 import PaymentInstructions from './PaymentInstructions'
 import { LinkTx } from '../../../utils/links'
+import {
+  isConvertionPayment,
+  isIOUpayment,
+  optionalAbsPaymentAmount,
+  paymentTypeName
+} from '../../../utils/transaction/payment'
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -23,35 +29,10 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
 
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
-
-  let txTypeSpecial = 'Payment'
-
-  // sourse address and destination address is the same
-  // sometimes source tag is added to show the dapp
-  // so if there is no destintaion tag, no need the source tag to be the same
-  const isConvertion =
-    specification?.source?.address === specification?.destination?.address &&
-    (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
-
+  const txTypeSpecial = paymentTypeName(data)
+  const isConvertion = isConvertionPayment(specification)
   const isSuccessful = outcome?.result == 'tesSUCCESS'
-
-  let iouPayment = false
-
-  if (isConvertion) {
-    txTypeSpecial = 'Conversion payment'
-  } else {
-    //check if iou involved (pathfinding or iou with fee)
-    if (
-      !outcome?.deliveredAmount?.mpt_issuance_id &&
-      sourceBalanceChangesList?.[0]?.value !== '-' + outcome?.deliveredAmount?.value
-    ) {
-      iouPayment = true
-    }
-  }
-
-  if (xls14NftValue(outcome?.deliveredAmount?.value)) {
-    txTypeSpecial = 'NFT transfer (XLS-14)'
-  }
+  const iouPayment = isIOUpayment(data)
 
   /*
   {
@@ -107,15 +88,6 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
     validated: true
   }
   */
-
-  const optionalAbsAmount = (change) => {
-    return !isConvertion && (change?.value ? change.value.toString()[0] === '-' : change?.toString()[0] === '-')
-      ? {
-          ...change,
-          value: change?.value ? change?.value.toString().slice(1) : change?.toString().slice(1)
-        }
-      : change
-  }
 
   //don't show sourcetag if it's the tag of a known dapp
   const dapp = dappBySourceTag(specification.source.tag)
@@ -200,9 +172,13 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
             <TData>
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
-                  {amountFormat(optionalAbsAmount(change), { withIssuer: true, bold: true, color: 'direction' })}
+                  {amountFormat(optionalAbsPaymentAmount(change, isConvertion), {
+                    withIssuer: true,
+                    bold: true,
+                    color: 'direction'
+                  })}
                   {nativeCurrencyToFiat({
-                    amount: optionalAbsAmount(change),
+                    amount: optionalAbsPaymentAmount(change, isConvertion),
                     selectedCurrency,
                     fiatRate: pageFiatRate
                   })}

@@ -1,55 +1,28 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { xls14NftValue } from '../../../utils'
 import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
 import { addressBalanceChanges, dappBySourceTag } from '../../../utils/transaction'
 import { FiDownload, FiUpload } from 'react-icons/fi'
 import { useTxFiatRate } from './FiatRateContext'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
+import {
+  isConvertionPayment,
+  isIOUpayment,
+  optionalAbsPaymentAmount,
+  paymentTypeName
+} from '../../../utils/transaction/payment'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
   const { outcome, specification } = data
 
-  let txTypeSpecial = 'Payment'
-  const isConvertion =
-    specification?.source?.address === specification?.destination?.address &&
-    (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
-
-  if (isConvertion) {
-    txTypeSpecial = 'Conversion payment'
-  }
-
-  if (xls14NftValue(outcome?.deliveredAmount?.value)) {
-    txTypeSpecial = 'NFT transfer (XLS-14)'
-  }
-
+  const txTypeSpecial = paymentTypeName(data)
+  const isConvertion = isConvertionPayment(specification)
   const pageFiatRate = useTxFiatRate()
-
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
+  const iouPayment = isIOUpayment(data)
 
   //don't show sourcetag if it's the tag of a known dapp
   const dapp = dappBySourceTag(specification.source.tag)
-
-  let iouPayment = false
-
-  if (!isConvertion) {
-    //check if iou involved (pathfinding or iou with fee)
-    if (
-      !outcome?.deliveredAmount?.mpt_issuance_id &&
-      sourceBalanceChangesList?.[0]?.value !== '-' + outcome?.deliveredAmount?.value
-    ) {
-      iouPayment = true
-    }
-  }
-
-  const optionalAbsAmount = (change) => {
-    return !isConvertion && (change?.value ? change.value.toString()[0] === '-' : change?.toString()[0] === '-')
-      ? {
-          ...change,
-          value: change?.value ? change?.value.toString().slice(1) : change?.toString().slice(1)
-        }
-      : change
-  }
 
   return (
     <TransactionRowCard
@@ -105,14 +78,14 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
               <span>
                 {sourceBalanceChangesList.map((change, index) => (
                   <div key={index}>
-                    {amountFormat(optionalAbsAmount(change), {
+                    {amountFormat(optionalAbsPaymentAmount(change, isConvertion), {
                       icon: true,
                       withIssuer: true,
                       bold: true,
                       color: 'direction'
                     })}
                     {nativeCurrencyToFiat({
-                      amount: optionalAbsAmount(change),
+                      amount: optionalAbsPaymentAmount(change, isConvertion),
                       selectedCurrency,
                       fiatRate: pageFiatRate
                     })}
