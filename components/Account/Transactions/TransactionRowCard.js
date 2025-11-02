@@ -50,17 +50,13 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
         </span>
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
-        <span className="flex items-center gap-1">
-          Tx hash:{' '}
-          <LinkTx tx={tx.hash} copy={true}>
-            {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
-          </LinkTx>
-        </span>
-        <span>Type: </span>
-        <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
+        Type: <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
         <br />
+        Tx hash:{' '}
+        <LinkTx tx={tx.hash} copy={true}>
+          {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
+        </LinkTx>
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
-        {/* show SourceBalanceChanges like payments for all tx types */}
         {outcome && !isSuccessful && (
           <>
             <span className="bold">Failure: </span>
@@ -71,9 +67,8 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             <br />
           </>
         )}
-        <span>Fee: </span>
-        <span className="bold">{amountFormat(tx.Fee, { icon: true })}</span>
-        <span>{nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}</span>
+        Fee: {amountFormat(tx.Fee, { icon: true })}{' '}
+        {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
         <br />
         {tx.DestinationTag !== undefined && tx.DestinationTag !== null && (
           <>
