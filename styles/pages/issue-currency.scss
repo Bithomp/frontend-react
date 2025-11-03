@@ -1,5 +1,166 @@
 // Issue Currency Page Styles
 
+.ic-token-metadata {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: var(--background-secondary);
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.ic-token-metadata h3 {
+  color: var(--accent-icon);
+  margin: 0 0 15px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent-icon);
+  font-size: 1.5em;
+}
+
+.ic-image-upload {
+  display: flex;
+  flex-direction: column;
+}
+
+.ic-image-preview-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: left;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.ic-image-preview {
+  width: 100px;
+  height: 100px;
+  border: 2px dashed #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.ic-image-preview:hover {
+  border-color: var(--accent-icon);
+  background-color: #f0f0f0;
+}
+
+.ic-image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.ic-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ic-image-preview:hover .ic-image-overlay {
+  opacity: 1;
+}
+
+.ic-image-overlay span {
+  color: white;
+  font-weight: 500;
+  text-align: center;
+  padding: 4px 8px;
+  font-size: 11px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.ic-image-placeholder {
+  flex-direction: column;
+  border-style: dashed;
+  border-width: 2px;
+}
+
+.ic-upload-icon {
+  font-size: 22px;
+  color: #999;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.ic-image-preview:hover .ic-upload-icon {
+  color: var(--accent-icon);
+}
+
+.ic-image-placeholder small {
+  font-size: 11px;
+  color: #999;
+  text-align: center;
+}
+
+.ic-wallet-signin-info {
+  background-color: #e7f3ff;
+  border: 2px solid #0066cc;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.ic-wallet-signin-info h4 {
+  color: #0066cc;
+  margin: 0 0 10px 0;
+}
+
+.ic-wallet-signin-info p {
+  margin: 8px 0;
+  color: #333;
+}
+
+.ic-wallet-signin-info ul {
+  margin: 10px 0;
+  padding-left: 25px;
+}
+
+.ic-wallet-signin-info li {
+  margin: 5px 0;
+  color: #333;
+}
+
+.ic-warning-text {
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  font-weight: 500;
+}
+
+.ic-success-text {
+  color: #155724;
+  background-color: #d4edda;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  font-weight: 500;
+}
+
+.ic-info-text {
+  color: #004085;
+  background-color: #cce5ff;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  font-weight: 500;
+}
+
 .ic-step-progress {
   display: flex;
   justify-content: center;

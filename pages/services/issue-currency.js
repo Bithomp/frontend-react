@@ -7,6 +7,8 @@ import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import { ledgerName, nativeCurrency } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { shortAddress } from '../../utils/format'
+import { FiUpload } from 'react-icons/fi'
+import axios from 'axios'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -25,9 +27,15 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
   const [hotWalletAddress, setHotWalletAddress] = useState('')
   const [currencyCode, setCurrencyCode] = useState('')
   const [totalSupply, setTotalSupply] = useState('')
-  const [isSettingColdAddress, setIsSettingColdAddress] = useState(false)
   const [coldAddressError, setColdAddressError] = useState('')
   const [coldAddressSuccess, setColdAddressSuccess] = useState('')
+  
+  // Token metadata fields
+  const [tokenName, setTokenName] = useState('')
+  const [tokenTicker, setTokenTicker] = useState('')
+  const [tokenDescription, setTokenDescription] = useState('')
+  const [tokenImage, setTokenImage] = useState(null) // eslint-disable-line no-unused-vars
+  const [tokenImagePreview, setTokenImagePreview] = useState('')
   
   // AccountSet transaction fields for cold wallet
   const [coldTransferRate, setColdTransferRate] = useState(0)
@@ -50,7 +58,6 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
   // Token issuance and sending fields
   const [issueQuantity, setIssueQuantity] = useState('')
   const [destinationTag, setDestinationTag] = useState('1')
-  const [isIssuingTokens, setIsIssuingTokens] = useState(false)
   const [tokenError, setTokenError] = useState('')
   const [tokenSuccess, setTokenSuccess] = useState('')
   
@@ -77,9 +84,8 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
 
   // Update canProceedFromStep1 when dependent values change
   useEffect(() => {
-    setCanProceedFromStep1(supplyType && coldWalletAddress)
-    setIsSettingColdAddress(false)
-  }, [supplyType, coldWalletAddress])
+    setCanProceedFromStep1(!!supplyType)
+  }, [supplyType])
 
   // Update canProceedFromStep2 when dependent values change
   useEffect(() => {
@@ -104,7 +110,7 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
   }, [tickSize])
 
   const handleNextStep = () => {
-    if (currentStep < 3) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1)
     }
   }
@@ -112,6 +118,32 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
   const handlePrevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
+    }
+  }
+
+  // Handle image upload
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file')
+        return
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size should be less than 5MB')
+        return
+      }
+      setTokenImage(file)
+      // Create preview
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setTokenImagePreview(reader.result)
+      }
+      reader.readAsDataURL(file)
+      // TODO: In the future, upload tokenImage to IPFS or another storage service
+      console.log('Token image selected:', file.name, 'Size:', file.size, 'bytes')
     }
   }
 
@@ -160,6 +192,55 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
       .toUpperCase()
   }
 
+  // Save token metadata to TOML file
+  const saveTokenMetadata = async (cfTurnstileResponse = '') => {
+    console.log('saveTokenMetadata =============================================>', cfTurnstileResponse)
+    if (!domain) {
+      return { success: false, error: 'Domain is required to save metadata' }
+    }
+
+    if (!tokenName || !tokenTicker || !currencyCode) {
+      return { success: false, error: 'Token name, ticker, and currency code are required' }
+    }
+
+    try {
+      // Format metadata as TOML
+      const tomlContent = `
+[[CURRENCIES]]
+code = "${currencyCode}"
+issuer = "${coldWalletAddress}"
+display_decimals = ${tickSize || 5}
+name = "${tokenName}"
+symbol = "${tokenTicker}"
+${tokenDescription ? `description = "${tokenDescription}"` : ''}
+
+${tokenImagePreview ? `[CURRENCIES.image]\nurl = "${tokenImagePreview}"` : ''}
+`.trim()
+
+      // Call domain verification endpoint to save TOML
+      const response = await axios.post('/v2/domainVerification', {
+        domain: domain,
+        'cf-turnstile-response': cfTurnstileResponse,
+        toml: tomlContent
+      })
+
+      if (response.data.error) {
+        return { success: false, error: response.data.error }
+      }
+
+      return { 
+        success: true, 
+        data: response.data,
+        message: 'Token metadata saved successfully to TOML file'
+      }
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error?.response?.data?.error || error?.message || 'Failed to save metadata' 
+      }
+    }
+  }
+
   // Handle cold address setting with comprehensive AccountSet
   const handleSetColdAddress = () => {    
     if (!coldWalletAddress) {
@@ -169,6 +250,11 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
 
     if (!account?.address) {
       setColdAddressError('Please connect your wallet first')
+      return
+    }
+
+    if (account.address !== coldWalletAddress) {
+      setColdAddressError(`You must be signed in with the cold wallet address (${shortAddress(coldWalletAddress)}). Currently signed in as ${shortAddress(account.address)}.`)
       return
     }
 
@@ -193,11 +279,11 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
     }
 
     // Validate TransferRate and TickSize
-    const transferRateValue = parseInt(coldTransferRate)
+    const transferRateValue = parseFloat(coldTransferRate)
     const tickSizeValue = parseInt(tickSize)
     
-    if (transferRateValue < 0 || transferRateValue > 100) {
-      setColdAddressError('Transfer rate must be between 0 and 100 percent')
+    if (transferRateValue < 0 || transferRateValue > 1) {
+      setColdAddressError('Transfer rate must be between 0 and 1')
       return
     }
     
@@ -210,10 +296,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
     const tx = {
       TransactionType: 'AccountSet',
       Account: account.address,
-      TransferRate: transferRateValue === 0 ? 0 : transferRateValue * 1000000000, // Convert to drops, 0 means no fee
       TickSize: tickSizeValue,
       WalletLocator: generatedWalletLocator,
-      setFlag: ASF_FLAGS.asfDefaultRipple
+      SetFlag: ASF_FLAGS.asfDefaultRipple
+    }
+
+    if (transferRateValue > 0) {
+      tx.TransferRate = 1000000000 + Math.round(transferRateValue * 1000000000)
     }
 
     // Add domain if provided
@@ -231,19 +320,23 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
       tx.Flags = tfFlags
     }
 
-    setIsSettingColdAddress(true)
-    setSignRequest({
-      request: tx,
-      callback: () => {
-        setColdAddressSuccess('Cold address AccountSet transaction submitted successfully!')
-        setColdAddressError('')
-      },
-      errorCallback: (error) => {
-        setColdAddressError(`Transaction failed: ${error.message || 'Unknown error'}`)
-        setColdAddressSuccess('')
-      }
-    })
-    setIsSettingColdAddress(false)
+    try {
+      setSignRequest({
+        request: tx,
+        data: tx,
+        type: 'transaction',
+        callback: () => {
+          setColdAddressSuccess('Cold address AccountSet transaction submitted successfully!')
+          setColdAddressError('')
+        },
+        errorCallback: (error) => {
+          setColdAddressError(`Transaction failed: ${error?.message || error || 'Unknown error'}`)
+          setColdAddressSuccess('')
+        }
+      })
+    } catch (error) {
+      setColdAddressError(`Error preparing transaction: ${error?.message || error || 'Unknown error'}`)
+    }
   }
 
   // Handle hot wallet AccountSet configuration
@@ -256,6 +349,11 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
 
     if (!account?.address) {
       setHotWalletError('Please connect your wallet first')
+      return
+    }
+
+    if (account.address !== hotWalletAddress) {
+      setHotWalletError(`You must be signed in with the hot wallet address (${shortAddress(hotWalletAddress)}). Currently signed in as ${shortAddress(account.address)}.`)
       return
     }
 
@@ -293,18 +391,37 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
     }
 
     setIsSettingHotWallet(true)
-    setSignRequest({
-      request: tx,
-      callback: () => {
-        setHotWalletSuccess('Hot wallet AccountSet transaction submitted successfully!')
-        setHotWalletError('')
-      },
-      errorCallback: (error) => {
-        setHotWalletError(`Transaction failed: ${error.message || 'Unknown error'}`)
-        setHotWalletSuccess('')
-      }
-    })
-    setIsSettingHotWallet(false)
+    
+    try {
+      setSignRequest({
+        request: tx,
+        data: tx,
+        type: 'transaction',
+        callback: async () => {
+          setHotWalletSuccess('Hot wallet AccountSet transaction submitted successfully!')
+          setHotWalletError('')
+          setIsSettingHotWallet(false)
+          
+          // Save token metadata to TOML file if all required data is available
+          if (domain && tokenName && tokenTicker && currencyCode && coldWalletAddress) {
+            const metadataResult = await saveTokenMetadata()
+            if (metadataResult.success) {
+              setHotWalletSuccess('Hot wallet configured and token metadata saved successfully!')
+            } else {
+              setHotWalletSuccess(`Hot wallet configured successfully, but metadata save failed: ${metadataResult.error}`)
+            }
+          }
+        },
+        errorCallback: (error) => {
+          setHotWalletError(`Transaction failed: ${error?.message || error || 'Unknown error'}`)
+          setHotWalletSuccess('')
+          setIsSettingHotWallet(false)
+        }
+      })
+    } catch (error) {
+      setHotWalletError(`Error preparing transaction: ${error?.message || error || 'Unknown error'}`)
+      setIsSettingHotWallet(false)
+    }
   }
 
   // Handle token issuance from cold to hot wallet
@@ -317,6 +434,11 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
 
     if (!account?.address) {
       setTokenError('Please connect your wallet first')
+      return
+    }
+
+    if (account.address !== coldWalletAddress) {
+      setTokenError(`You must be signed in with the cold wallet address (${shortAddress(coldWalletAddress)}). Currently signed in as ${shortAddress(account.address)}.`)
       return
     }
 
@@ -340,22 +462,23 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
       tx.DestinationTag = parseInt(destinationTag)
     }
 
-    setIsIssuingTokens(true)
     try {
       setSignRequest({
         request: tx,
+        data: tx,
+        type: 'transaction',
         callback: () => {
           setTokenSuccess(`Successfully issued ${issueQuantity} ${currencyCode} to hot wallet!`)
           setTokenError('')
-          setIsIssuingTokens(false)
+        },
+        errorCallback: (error) => {
+          setTokenError(`Token issuance failed: ${error?.message || error || 'Unknown error'}`)
+          setTokenSuccess('')
         }
       })
     } catch (error) {
-      setTokenError(`Token issuance failed: ${error.message || 'Unknown error'}`)
+      setTokenError(`Error preparing transaction: ${error?.message || error || 'Unknown error'}`)
       setTokenSuccess('')
-      setIsIssuingTokens(false)
-    } finally {
-      setIsIssuingTokens(false)
     }
   }
 
@@ -363,9 +486,19 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
     setTrustLineError('')
     setTrustLineSuccess('')
 
+    if (!account?.address) {
+      setTrustLineError('Please connect your wallet first')
+      return
+    }
+
+    if (account.address !== hotWalletAddress) {
+      setTrustLineError(`You must be signed in with the hot wallet address (${shortAddress(hotWalletAddress)}). Currently signed in as ${shortAddress(account.address)}.`)
+      return
+    }
+
     const tx = {
       TransactionType: 'TrustSet',
-      Account: hotWalletAddress,
+      Account: account.address,
       LimitAmount: {
         currency: currencyCode,
         issuer: coldWalletAddress,
@@ -374,19 +507,26 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
     }
 
     setIsCreatingTrustLine(true)
-    setSignRequest({
-      request: tx,
-      callback: () => {
-        setTrustLineSuccess('TrustLine created successfully!')
-        setTrustLineError('')
-        setIsCreatingTrustLine(false)
-      },
-      errorCallback: (error) => {
-        setTrustLineError(`TrustLine creation failed: ${error.message || 'Unknown error'}`)
-        setTrustLineSuccess('')
-        setIsCreatingTrustLine(false)
-      }
-    })
+    try {
+      setSignRequest({
+        request: tx,
+        data: tx,
+        type: 'transaction',
+        callback: () => {
+          setTrustLineSuccess('TrustLine created successfully!')
+          setTrustLineError('')
+          setIsCreatingTrustLine(false)
+        },
+        errorCallback: (error) => {
+          setTrustLineError(`TrustLine creation failed: ${error?.message || error || 'Unknown error'}`)
+          setTrustLineSuccess('')
+          setIsCreatingTrustLine(false)
+        }
+      })
+    } catch (error) {
+      setTrustLineError(`Error preparing transaction: ${error?.message || error || 'Unknown error'}`)
+      setIsCreatingTrustLine(false)
+    }
   }
 
   return (
@@ -409,14 +549,78 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
             <div className={`ic-step ${currentStep >= 1 ? 'active' : ''}`}>1</div>
             <div className={`ic-step ${currentStep >= 2 ? 'active' : ''}`}>2</div>
             <div className={`ic-step ${currentStep >= 3 ? 'active' : ''}`}>3</div>
+            <div className={`ic-step ${currentStep >= 4 ? 'active' : ''}`}>4</div>
           </div>
         </div>
 
-        {/* Step 1: Choose Supply Type and Create Issuer Account */}
+        {/* Step 1: Token Information and Supply Type */}
         {currentStep === 1 && (
           <div className="ic-step-container">
-            <h2>Step 1: Choose Supply Type and Create Issuer Account</h2>
-            <p>First, decide whether you want a Closed Supply or Open Supply currency, and create your Issuer Account (cold wallet).</p>
+            <h2>Step 1: Token Information and Supply Type</h2>
+            <p>First, provide your token information and decide whether you want a Closed Supply or Open Supply currency.</p>
+            
+            <div className="ic-token-metadata">
+              <h3>Token Information:</h3>
+              <p>Provide basic information about your token for identification and display purposes.</p>
+              
+              <div className="ic-form-section">
+                <FormInput
+                  title={<span className="bold">Token Name</span>}
+                  placeholder="e.g., My Custom Token"
+                  setInnerValue={setTokenName}
+                  defaultValue={tokenName}
+                  hideButton={true}
+                />
+                <small>The full name of your token</small>
+                <div className="form-spacing" />
+                
+                <FormInput
+                  title={<span className="bold">Token Ticker/Symbol</span>}
+                  placeholder="e.g., MCT"
+                  setInnerValue={setTokenTicker}
+                  defaultValue={tokenTicker}
+                  hideButton={true}
+                />
+                <small>The short ticker symbol (typically 3-4 characters)</small>
+                <div className="form-spacing" />
+                
+                <FormInput
+                  title={<span className="bold">Token Description</span>}
+                  placeholder="e.g., A utility token for..."
+                  setInnerValue={setTokenDescription}
+                  defaultValue={tokenDescription}
+                  hideButton={true}
+                />
+                <small>Brief description of your token's purpose and use case</small>
+                <div className="form-spacing" />
+                
+                <div className="ic-image-upload">
+                  <label className="bold">Token Image/Logo</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                    id="token-image-upload"
+                  />
+                  <label htmlFor="token-image-upload" className="ic-image-preview-wrapper">
+                    {tokenImagePreview ? (
+                      <div className="ic-image-preview">
+                        <img src={tokenImagePreview} alt="Token preview" />
+                        <div className="ic-image-overlay">
+                          <FiUpload className="ic-upload-icon" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="ic-image-preview ic-image-placeholder">
+                        <FiUpload className="ic-upload-icon" />
+                      </div>
+                    )}
+                  </label>
+                  <small>Upload a square image (PNG, JPG, or SVG) for your token. Max size: 5MB</small>
+                </div>
+              </div>
+            </div>
             
             <div className="ic-supply-type-selection">
               <h3>Choose Your Supply Type:</h3>
@@ -463,16 +667,52 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
               </div>
             </div>
 
+            {/* Cold wallet moved to Step 2 */}
+
+            <div className="ic-step-actions">
+              <button 
+                className="ic-button-action"
+                onClick={handleNextStep}
+                disabled={!canProceedFromStep1}
+              >
+                Continue to Step 2
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Configure Cold Wallet (Issuer) */}
+        {currentStep === 2 && (
+          <div className="ic-step-container">
+            <h2>Step 2: Configure Cold Wallet (Issuer)</h2>
+            <p>Set up your issuer account (cold wallet). This account will issue your currency.</p>
+
+            {/* Cold wallet content moved here */}
             <div className="ic-cold-wallet-setup">
               <h3>Create and Configure Your Issuer Account (Cold Wallet):</h3>
               <p>
                 This will be your cold wallet that issues the currency.
                 {supplyType === 'closed' ?
-                  'It will be blackholed after issuance for maximum security.' :
-                  'You will maintain control over this account.'
+                  ' It will be blackholed after issuance for maximum security.' :
+                  ' You will maintain control over this account.'
                 }
                 Configure comprehensive AccountSet settings including transfer rates, tick size, domain, and security flags.
               </p>
+              
+              <div className="ic-wallet-signin-info">
+                <h4>⚠️ Important: Wallet Sign-In Required</h4>
+                <p><strong>To configure the cold wallet, you must be signed in with the cold wallet address.</strong></p>
+                <p>When you enter the cold wallet address below and click "Configure Cold Wallet", you need to be signed in with that same wallet to authorize the transaction.</p>
+                {!account?.address && (
+                  <p className="ic-warning-text">⚠️ You are not currently signed in. Please sign in with your cold wallet address before configuring.</p>
+                )}
+                {account?.address && coldWalletAddress && account.address !== coldWalletAddress && (
+                  <p className="ic-warning-text">⚠️ You are signed in as {shortAddress(account.address)}, but you entered {shortAddress(coldWalletAddress)} as the cold wallet. Please sign in with the cold wallet address.</p>
+                )}
+                {account?.address && coldWalletAddress && account.address === coldWalletAddress && (
+                  <p className="ic-success-text">✓ You are signed in with the correct wallet ({shortAddress(account.address)})</p>
+                )}
+              </div>
               
               <AddressInput
                 title={<span className="bold">Cold Wallet Address (Issuer Account)</span>}
@@ -500,13 +740,13 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                   <h4>Basic Settings</h4>
 
                   <FormInput
-                    title={<span className="bold">Transfer Rate (%)</span>}
+                    title={<span className="bold">Transfer Rate (0–1)</span>}
                     placeholder="0"
                     setInnerValue={setColdTransferRate}
                     defaultValue={coldTransferRate}
                     hideButton={true}
                     />
-                  <small>Transfer rate is the percentage of the total supply that will be transferred to the hot wallet.</small>
+                  <small>Transfer rate is a fee fraction charged on payments made in this token. Enter a value from 0 to 1 (e.g., 0.01 for 1%).</small>
                   <div className="form-spacing">
                     {!(coldTransferRate >= 0 && coldTransferRate <= 1) && window.innerWidth > 800 &&
                       <span className="error-text red">Transfer rate must be between 0 and 1</span>
@@ -543,7 +783,7 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                     <div className={`ic-flag-option enabled`}>
                       <div className="ic-flag-header">
                         <label>
-                          <input type="checkbox" checked={true}/>
+                          <input type="checkbox" checked={true} readOnly/>
                           <span>Enable Default Ripple</span>
                         </label>
                       </div>
@@ -558,7 +798,6 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                         className={`ic-flag-option ${disallowXRP ? 'enabled' : 'disabled'}`}
                         onClick={() => {
                           setDisallowXRP(!disallowXRP)
-                          setIsSettingColdAddress(false)
                         }}
                       >
                       <div className="ic-flag-header">
@@ -568,7 +807,6 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                             checked={disallowXRP}
                             onChange={(e) => {
                               setDisallowXRP(e.target.checked)
-                              setIsSettingColdAddress(false)
                             }}
                           />
                           <span>Disallow {nativeCurrency}</span>
@@ -585,7 +823,6 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                         className={`ic-flag-option ${requireDestTag ? 'enabled' : 'disabled'}`}
                         onClick={() => {
                           setRequireDestTag(!requireDestTag)
-                          setIsSettingColdAddress(false)
                         }}
                       >
                       <div className="ic-flag-header">
@@ -595,7 +832,6 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                             checked={requireDestTag}
                             onChange={(e) => {
                               setRequireDestTag(e.target.checked)
-                              setIsSettingColdAddress(false)
                             }}
                           />
                           <span>Require Destination Tag</span>
@@ -627,9 +863,9 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                   <button 
                     className="ic-button-action"
                     onClick={handleSetColdAddress}
-                    disabled={!coldWalletAddress || !account?.address || isSettingColdAddress}
+                    disabled={!coldWalletAddress || !account?.address}
                   >
-                    {isSettingColdAddress ? 'Configuring Cold Wallet...' : 'Configure Cold Wallet'}
+                    Configure Cold Wallet
                   </button>
                 </div>
               </div>
@@ -637,25 +873,51 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
 
             <div className="ic-step-actions">
               <button 
+                className="ic-button-action mr-2"
+                onClick={handlePrevStep}
+              >
+                Back to Step 1
+              </button>
+              <button 
                 className="ic-button-action"
                 onClick={handleNextStep}
-                disabled={!canProceedFromStep1}
+                disabled={!coldWalletAddress}
               >
-                Continue to Step 2
+                Continue to Step 3
               </button>
             </div>
           </div>
         )}
 
-        {/* Step 2: Configure Hot Wallet Settings */}
-        {currentStep === 2 && (
+        {/* Step 3: Configure Hot Wallet Settings */}
+        {currentStep === 3 && (
           <div className="ic-step-container">
-            <h2>Step 2: Configure Hot Wallet Settings</h2>
+            <h2>Step 3: Configure Hot Wallet Settings</h2>
             <p>Set up your hot wallet that will hold and manage the issued currency for daily operations.</p>
             
             <div className="ic-hot-wallet-setup">
               <h3>Hot Wallet Configuration:</h3>
               <p>The hot wallet is where you'll store the issued currency for trading, transfers, and other operations. This should be a separate account from your issuer account.</p>
+              
+              <div className="ic-wallet-signin-info">
+                <h4>⚠️ Important: Wallet Sign-In Required</h4>
+                <p><strong>To configure the hot wallet and create the trust line, you must be signed in with the hot wallet address.</strong></p>
+                <p>The following operations require you to be signed in with the hot wallet:</p>
+                <ul>
+                  <li>Configure Hot Wallet AccountSet (current step)</li>
+                  <li>Create TrustLine from hot wallet to cold wallet (Step 3)</li>
+                </ul>
+                {!account?.address && (
+                  <p className="ic-warning-text">⚠️ You are not currently signed in. Please sign in with your hot wallet address before configuring.</p>
+                )}
+                {account?.address && hotWalletAddress && account.address !== hotWalletAddress && (
+                  <p className="ic-warning-text">⚠️ You are signed in as {shortAddress(account.address)}, but you entered {shortAddress(hotWalletAddress)} as the hot wallet. Please sign in with the hot wallet address.</p>
+                )}
+                {account?.address && hotWalletAddress && account.address === hotWalletAddress && (
+                  <p className="ic-success-text">✓ You are signed in with the correct wallet ({shortAddress(account.address)})</p>
+                )}
+              </div>
+              
               <AddressInput
                 title={<span className="bold">Hot Wallet Address</span>}
                 placeholder="r..."
@@ -817,30 +1079,48 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                 className="ic-button-action mr-2"
                 onClick={handlePrevStep}
               >
-                Back to Step 1
+                Back to Step 2
               </button>
               <button 
                 className="ic-button-action"
                 onClick={handleNextStep}
                 disabled={!canProceedFromStep2}
               >
-                Continue to Step 3
+                Continue to Step 4
               </button>
             </div>
           </div>
         )}
 
-        {/* Step 3: Issue Currency and Send to Hot Wallet */}
-        {currentStep === 3 && (
+        {/* Step 4: Create TrustLine and Issue Tokens */}
+        {currentStep === 4 && (
           <div className="ic-step-container">
-            <h2>Step 3: Issue Currency and Send to Customers</h2>
-            <p>Now you'll issue the currency and send it to your hot wallet, then distribute it to customers.</p>
+            <h2>Step 4: Create TrustLine and Issue Tokens</h2>
+            <p>Create a trust line from hot to cold wallet, then issue tokens from cold to hot.</p>
+
+            <div className="ic-wallet-signin-info">
+              <h4>⚠️ Important: Different Wallets for Different Operations</h4>
+              <p>Step 3 involves multiple transactions that require different wallet sign-ins:</p>
+              <ul>
+                <li><strong>Create TrustLine:</strong> Sign in with the <strong>hot wallet</strong> ({hotWalletAddress ? shortAddress(hotWalletAddress) : 'not set'})</li>
+                <li><strong>Issue Tokens (Cold to Hot):</strong> Sign in with the <strong>cold wallet</strong> ({coldWalletAddress ? shortAddress(coldWalletAddress) : 'not set'})</li>
+              </ul>
+              <p>Make sure to switch between wallets as needed for each operation.</p>
+              {account?.address && (
+                <p className="ic-info-text">Currently signed in as: <strong>{shortAddress(account.address)}</strong></p>
+              )}
+            </div>
 
             {/* Step 1: Create TrustLine */}
             <div className="ic-trustline-step">
               <h3>1. Create TrustLine</h3>
-              <p>HotWallet must have Coldwallet address as RegularKey.</p>
-              <p>(Services &gt; Account Settings &gt; RegularKey)</p>
+              <p><strong>Required wallet:</strong> Sign in with the hot wallet ({hotWalletAddress ? shortAddress(hotWalletAddress) : 'not set'})</p>
+              {account?.address && hotWalletAddress && account.address !== hotWalletAddress && (
+                <p className="ic-warning-text">⚠️ You are signed in as {shortAddress(account.address)}. Please sign in with the hot wallet ({shortAddress(hotWalletAddress)}) to create the trust line.</p>
+              )}
+              {account?.address && hotWalletAddress && account.address === hotWalletAddress && (
+                <p className="ic-success-text">✓ You are signed in with the hot wallet ({shortAddress(account.address)})</p>
+              )}
               <div className="ic-trustline-info">
                 <h4>TrustLine Setup Details:</h4>
                 <ul>
@@ -870,7 +1150,14 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
             {/* Step 2: Issue Tokens from Cold to Hot */}
             <div className="ic-issue-tokens-step">
               <h3>2. Issue Tokens (Cold to Hot Wallet)</h3>
+              <p><strong>Required wallet:</strong> Sign in with the cold wallet ({coldWalletAddress ? shortAddress(coldWalletAddress) : 'not set'})</p>
               <p>Issue tokens from your cold wallet to the hot wallet for operational use.</p>
+              {account?.address && coldWalletAddress && account.address !== coldWalletAddress && (
+                <p className="ic-warning-text">⚠️ You are signed in as {shortAddress(account.address)}. Please sign in with the cold wallet ({shortAddress(coldWalletAddress)}) to issue tokens.</p>
+              )}
+              {account?.address && coldWalletAddress && account.address === coldWalletAddress && (
+                <p className="ic-success-text">✓ You are signed in with the cold wallet ({shortAddress(account.address)})</p>
+              )}
               
               <div className="ic-form-section">
                 <h4>Token Issuance Settings</h4>
@@ -897,9 +1184,8 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                 <button 
                   className="ic-button-action"
                   onClick={handleIssueTokens}
-                  disabled={!issueQuantity || !account?.address || isIssuingTokens}
                 >
-                  {isIssuingTokens ? 'Issuing Tokens...' : 'Issue Tokens to Hot Wallet'}
+                  Issue Tokens
                 </button>
               </div>
               {/* Error and Success Messages */}
@@ -921,7 +1207,7 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
                 className="ic-button-action mr-2"
                 onClick={handlePrevStep}
               >
-                Back to Step 2
+                Back to Step 3
               </button>
             </div>
           </div>
