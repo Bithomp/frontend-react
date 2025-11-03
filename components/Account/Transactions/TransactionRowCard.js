@@ -1,4 +1,4 @@
-import { amountFormat, dateFormat, nativeCurrencyToFiat, timeFormat } from '../../../utils/format'
+import { amountFormat, dateFormat, nativeCurrencyToFiat, shortHash, timeFormat } from '../../../utils/format'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../../utils/common'
 import { TxFiatRateContext } from './FiatRateContext'
@@ -50,14 +50,9 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
         </span>
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
-        <span className="flex items-center gap-1">
-          <span>Transaction hash: </span> <LinkTx tx={tx.hash} short={width > 800 ? 32 : 10} />
-        </span>
-        <span>Type: </span>
         <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
         <br />
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
-        {/* show SourceBalanceChanges like payments for all tx types */}
         {outcome && !isSuccessful && (
           <>
             <span className="bold">Failure: </span>
@@ -68,17 +63,16 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             <br />
           </>
         )}
-        <span>Fee: </span>
-        <span className="bold">{amountFormat(tx.Fee, { icon: true })}</span>
-        <span>{nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}</span>
+        Fee: {amountFormat(tx.Fee, { icon: true })}{' '}
+        {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
         <br />
         {tx.DestinationTag !== undefined && tx.DestinationTag !== null && (
           <>
-            <span className="gray">Destination tag: {tx.DestinationTag}</span>
+            <span>Destination tag: {tx.DestinationTag}</span>
             <br />
           </>
         )}
-        <span className="gray">
+        <span>
           {tx.TicketSequence && 'Ticket '}Sequence: {tx.Sequence || tx.TicketSequence}
         </span>
         <br />
@@ -97,12 +91,12 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
               <div key={idx}>
                 {memo.data ? (
                   <>
-                    <span className="bold">Memo{memos.length > 1 ? ` (${idx + 1})` : ''}:</span>
+                    <span>Memo{memos.length > 1 ? ` (${idx + 1})` : ''}:</span>
                     <span className="gray"> {memo.data}</span>
                   </>
                 ) : (
                   <>
-                    <span className="bold">
+                    <span>
                       {memo.type}
                       {memos.length > 1 ? ` (${idx + 1})` : ''}:
                     </span>
@@ -113,6 +107,10 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
             ))}
           </>
         )}
+        Tx hash:{' '}
+        <LinkTx tx={tx.hash} copy={true}>
+          {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
+        </LinkTx>
       </td>
     </tr>
   )

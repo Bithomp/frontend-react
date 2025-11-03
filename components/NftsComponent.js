@@ -29,6 +29,7 @@ import AddressInput from './UI/AddressInput'
 import NftTabs from './Tabs/NftTabs'
 import FiltersFrame from './Layout/FiltersFrame'
 import InfiniteScrolling from './Layout/InfiniteScrolling'
+import SimpleSelect from './UI/SimpleSelect'
 
 export default function NftsComponent({
   collectionQuery,
@@ -140,7 +141,10 @@ export default function NftsComponent({
   } else {
     saleDestinationTabList = [
       { value: 'buyNow', label: t('tabs.buyNow') },
-      { value: 'publicAndKnownBrokers', label: t('tabs.publicAndKnownBrokers') }
+      { value: 'publicAndKnownBrokers', label: t('tabs.publicAndKnownBrokers') },
+      { value: 'public', label: t('tabs.public') },
+      { value: 'knownBrokers', label: t('tabs.marketplaces') },
+      { value: 'all', label: t('tabs.all') }
     ]
   }
 
@@ -680,7 +684,7 @@ export default function NftsComponent({
       {nftExplorer && (
         <>
           <h1 className="center">{t('nft-explorer.header') + ' '}</h1>
-          <NftTabs tab="nft-explorer" url={'/nft-sales' + issuerTaxonUrlPart + collectionUrlPart} />
+          <NftTabs tab="nft-explorer" params={issuerTaxonUrlPart + collectionUrlPart} />
         </>
       )}
 
@@ -711,11 +715,11 @@ export default function NftsComponent({
                 <TokenSelector value={selectedToken} onChange={setSelectedToken} currencyQueryName="saleCurrency" />
               </div>
               <br />
-              <RadioOptions
-                tabList={saleDestinationTabList}
-                tab={saleDestinationTab}
-                setTab={setSaleDestinationTab}
-                name="saleDestination"
+              {t('tabs.onSale')}{' '}
+              <SimpleSelect
+                value={saleDestinationTab}
+                setValue={setSaleDestinationTab}
+                optionsList={saleDestinationTabList}
               />
             </div>
           )}
@@ -729,33 +733,36 @@ export default function NftsComponent({
                   hideButton={true}
                 />
               )}
-              {collectionQuery && (
+              {collectionQuery ? (
                 <FormInput
                   title={t('table.collection')}
                   defaultValue={collectionQuery}
                   disabled={true}
                   hideButton={true}
                 />
+              ) : (
+                <>
+                  <AddressInput
+                    title={t('table.issuer')}
+                    placeholder={t('nfts.search-by-issuer')}
+                    setValue={onIssuerSearch}
+                    rawData={rawData || { issuer: issuerQuery }}
+                    type="issuer"
+                  />
+                  {!xahauNetwork && (
+                    <FormInput
+                      title={t('table.taxon')}
+                      placeholder={t('nfts.search-by-taxon')}
+                      setValue={onTaxonInput}
+                      disabled={issuer ? false : true}
+                      defaultValue={issuer ? rawData?.taxon : ''}
+                      key={issuer || 'empty'}
+                    />
+                  )}
+                </>
               )}
               {serialQuery && (
                 <FormInput title={t('table.serial')} defaultValue={serialQuery} disabled={true} hideButton={true} />
-              )}
-              <AddressInput
-                title={t('table.issuer')}
-                placeholder={t('nfts.search-by-issuer')}
-                setValue={onIssuerSearch}
-                rawData={rawData || { issuer: issuerQuery }}
-                type="issuer"
-              />
-              {!xahauNetwork && (
-                <FormInput
-                  title={t('table.taxon')}
-                  placeholder={t('nfts.search-by-taxon')}
-                  setValue={onTaxonInput}
-                  disabled={issuer ? false : true}
-                  defaultValue={issuer ? rawData?.taxon : ''}
-                  key={issuer || 'empty'}
-                />
               )}
               <AddressInput
                 title={t('table.owner')}

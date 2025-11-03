@@ -14,13 +14,15 @@ import {
   AddressWithIconInline
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { nftName, NftImage, assetUrl, collectionNameText } from '../../utils/nft'
+import { nftName, NftImage, assetUrl, collectionNameText, isValidTaxon } from '../../utils/nft'
 
 import SEO from '../../components/SEO'
 import { nftClass } from '../../styles/pages/nft.module.scss'
-import { useWidth } from '../../utils'
+import { nativeCurrency, useWidth } from '../../utils'
 import { axiosServer, passHeaders } from '../../utils/axios'
-import { LinkTx } from '../../utils/links'
+import { LinkListedNfts, LinkTx } from '../../utils/links'
+import Tabs from '../../components/Tabs'
+import { useRouter } from 'next/router'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -64,6 +66,7 @@ export async function getServerSideProps(context) {
 export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobile, fiatRate, errorMessage, data }) {
   const { t } = useTranslation()
   const width = useWidth()
+  const router = useRouter()
   const collection = data?.collection
   const statistics = collection?.statistics
   const [activityData, setActivityData] = useState({
@@ -340,6 +343,14 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
 
   const statsTdClass = isMobile ? 'right' : ''
 
+  const privateFloors = collection?.floorPrices?.map((item) => item.private).filter(Boolean)
+  const openFloors = collection?.floorPrices?.map((item) => item.open).filter(Boolean)
+
+  const collectionPart =
+    collection?.issuer && isValidTaxon(collection?.taxon)
+      ? `issuer=${collection.issuer}&taxon=${collection.taxon}`
+      : 'collection=' + collection.collection
+
   return (
     <div className={nftClass}>
       <SEO
@@ -349,9 +360,25 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
       />
 
       <div className="content-profile">
-        <br />
         <h1 className="center">NFT collection: {collectionName}</h1>
-        <br />
+        <Tabs
+          style={{ marginTop: 20, marginBottom: 20 }}
+          tabList={[
+            { value: 'collections', label: 'NFT collections' },
+            { value: 'nfts', label: 'View All NFTs' },
+            { value: 'sold', label: 'Last Sold NFTs' },
+            { value: 'listed', label: 'Listed NFTs' }
+          ]}
+          setTab={(value) => {
+            let url = '/nft-volumes?period=week'
+            if (value === 'nfts') url = `/nft-explorer?${collectionPart}&includeWithoutMediaData=true`
+            else if (value === 'sold')
+              url = `/nft-sales?${collectionPart}&sale=primaryAndSecondary&includeWithoutMediaData=true&period=all&order=soldNew`
+            else if (value === 'listed')
+              url = `/nft-explorer?${collectionPart}&list=onSale&includeWithoutMediaData=true&saleDestination=publicAndKnownBrokers`
+            router.push(url)
+          }}
+        />
         {id && !data?.error ? (
           <>
             {!data && !errorMessage ? (
@@ -548,6 +575,63 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                     </table>
                                   </td>
                                 </tr>
+                              </tbody>
+                            </table>
+                          )}
+
+                          {(openFloors?.length > 0 || privateFloors?.length > 0) && (
+                            <table className="table-details">
+                              <thead>
+                                <tr>
+                                  <th colSpan="100">Floor prices</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {openFloors?.length > 0 && (
+                                  <tr>
+                                    <td>
+                                      On the open market:{' '}
+                                      {openFloors.map((floor, i) => (
+                                        <span key={i}>
+                                          <LinkListedNfts
+                                            issuer={collection.issuer}
+                                            taxon={collection.taxon}
+                                            collection={collection.collection}
+                                            saleCurrency={floor.amount?.currency || nativeCurrency}
+                                            saleCurrencyIssuer={floor.amount?.issuer}
+                                            saleDestination="public"
+                                          >
+                                            {amountFormat(floor.amount, { presice: true, icon: true, noSpace: true })}
+                                          </LinkListedNfts>
+                                          {openFloors.length - 1 !== i && ', '}
+                                        </span>
+                                      ))}
+                                    </td>
+                                  </tr>
+                                )}
+                                {privateFloors?.length > 0 && (
+                                  <tr>
+                                    <td>
+                                      On the marketplaces:{' '}
+                                      {privateFloors.map((floor, i) => (
+                                        <span key={i}>
+                                          <LinkListedNfts
+                                            issuer={collection.issuer}
+                                            taxon={collection.taxon}
+                                            collection={collection.collection}
+                                            saleCurrency={floor.amount?.currency || nativeCurrency}
+                                            saleCurrencyIssuer={floor.amount?.issuer}
+                                            saleDestination="knownBrokers"
+                                          >
+                                            {amountFormat(floor.amount, { presice: true, icon: true })} (
+                                            {floor?.destinationDetails?.service})
+                                          </LinkListedNfts>
+                                          {privateFloors.length - 1 !== i && ', '}
+                                        </span>
+                                      ))}
+                                    </td>
+                                  </tr>
+                                )}
                               </tbody>
                             </table>
                           )}

@@ -78,7 +78,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
             <span>{amountFormat(takerPays, { icon: true, withIssuer: true, bold: true })}</span>
           </div>
         )}
-        {myBalanceChangesList.length === 2 && (
+        {myBalanceChangesList?.length === 2 && (
           <>
             <div className="flex gap-1">
               <span>Exchanged: </span>

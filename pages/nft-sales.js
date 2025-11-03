@@ -404,7 +404,7 @@ export default function NftSales({
     search,
     includeWithoutMediaData,
     selectedToken,
-    sessionToken,
+    sessionToken
   ])
 
   useEffect(() => {
@@ -588,7 +588,7 @@ export default function NftSales({
         {t('nft-sales.header')}
         {data?.issuer ? <>, {addressUsernameOrServiceLink(data, 'issuer', { short: true })}</> : ''}
       </h1>
-      <NftTabs tab="nft-sales" url={'/nft-explorer?view=' + activeView + issuerTaxonUrlPart + collectionUrlPart} />
+      <NftTabs tab="nft-sales" params={'?view=' + activeView + issuerTaxonUrlPart + collectionUrlPart} />
 
       <FiltersFrame
         order={order}
@@ -604,23 +604,30 @@ export default function NftSales({
         setFiltersHide={setFiltersHide}
       >
         <>
-          <AddressInput
-            title={t('table.issuer')}
-            placeholder={t('nfts.search-by-issuer')}
-            setValue={checkIssuerValue}
-            rawData={data}
-            type="issuer"
-          />
-          {!xahauNetwork && (
-            <FormInput
-              title={t('table.taxon')}
-              placeholder={t('nfts.search-by-taxon')}
-              setValue={onTaxonInput}
-              disabled={issuer ? false : true}
-              defaultValue={issuer ? data?.taxon : ''}
-              key={issuer || 'empty'}
-            />
+          {collectionQuery ? (
+            <FormInput title={t('table.collection')} defaultValue={collectionQuery} disabled={true} hideButton={true} />
+          ) : (
+            <>
+              <AddressInput
+                title={t('table.issuer')}
+                placeholder={t('nfts.search-by-issuer')}
+                setValue={checkIssuerValue}
+                rawData={data}
+                type="issuer"
+              />
+              {!xahauNetwork && (
+                <FormInput
+                  title={t('table.taxon')}
+                  placeholder={t('nfts.search-by-taxon')}
+                  setValue={onTaxonInput}
+                  disabled={issuer ? false : true}
+                  defaultValue={issuer ? data?.taxon : ''}
+                  key={issuer || 'empty'}
+                />
+              )}
+            </>
           )}
+
           <AddressInput
             title={t('table.buyer')}
             placeholder={t('nfts.search-by-buyer')}

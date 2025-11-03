@@ -1,5 +1,5 @@
-import { nativeCurrency, safeClone } from '.'
-import { add } from './calc'
+import { nativeCurrency, safeClone } from '..'
+import { add } from '../calc'
 
 // Function to get balance changes for a specific address
 const getBalanceChanges = (data, address) => {
