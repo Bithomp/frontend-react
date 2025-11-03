@@ -1299,14 +1299,15 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                   <td>{stripText(data.collectionDetails.description)}</td>
                                 </tr>
                               )}
-                              {data.collectionDetails?.family && (
-                                <tr>
-                                  <td>Family</td>
-                                  <td>{stripText(data.collectionDetails?.family)}</td>
-                                </tr>
-                              )}
+                              {data.collectionDetails?.family &&
+                                data.collectionDetails?.family !== collectionNameText(data.collectionDetails) && (
+                                  <tr>
+                                    <td>Family</td>
+                                    <td>{stripText(data.collectionDetails?.family)}</td>
+                                  </tr>
+                                )}
 
-                              {data.type === 'xls20' && isValidTaxon(data?.collectionDetails.taxon) && (
+                              {data.type === 'xls20' && isValidTaxon(data?.collectionDetails?.taxon) && (
                                 <tr>
                                   <td>View more</td>
                                   <td>
