@@ -1419,6 +1419,19 @@ export default function NftVolumes({
                                       </tbody>
                                     </table>
                                   </div>
+                                  {listTab === 'collections' && (
+                                    <>
+                                      <br />
+                                      <button
+                                        className="button-action narrow thin"
+                                        onClick={() => router.push('/nft-collection/' + volume.collection)}
+                                      >
+                                        Collection Page
+                                      </button>
+                                      <br />
+                                      <br />
+                                    </>
+                                  )}
                                 </td>
                               </tr>
                             ))
