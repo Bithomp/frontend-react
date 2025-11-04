@@ -827,6 +827,8 @@ export default function NftVolumes({
     if (!data.collectionDetails) return data.collection
     const { name, family, description, issuer, taxon } = data.collectionDetails
 
+    const nameLink = nftCollectionLink(data)
+
     if (type === 'mobile') {
       return (
         <>
@@ -837,7 +839,7 @@ export default function NftVolumes({
           )}
           {name && (
             <p>
-              {t('table.name')}: <b>{name}</b>
+              {t('table.name')}: <b>{nameLink}</b>
             </p>
           )}
           {!family && !name && (
@@ -863,8 +865,6 @@ export default function NftVolumes({
         </>
       )
     }
-
-    let nameLink = nftCollectionLink(data)
 
     if (family) {
       if (
