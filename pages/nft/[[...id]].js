@@ -1286,11 +1286,17 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                               <tr>
                                 <td>{t('table.name')}</td>
                                 <td>
-                                  <span className="bold">{collectionNameText(data.collectionDetails)}</span> (
-                                  <Link href={'/nft-collection/' + data.collection} className="bold">
-                                    View collection
-                                  </Link>
-                                  )
+                                  <span className="bold">{collectionNameText(data.collectionDetails)}</span>
+                                  {data.collection && (
+                                    <>
+                                      {' '}
+                                      (
+                                      <Link href={'/nft-collection/' + data.collection} className="bold">
+                                        View collection
+                                      </Link>
+                                      )
+                                    </>
+                                  )}
                                 </td>
                               </tr>
                               {data.collectionDetails?.description && (
