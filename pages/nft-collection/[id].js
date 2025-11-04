@@ -511,39 +511,59 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                       <tbody>
                                         <tr>
                                           <td className="right">
-                                            <Link
-                                              href={`/nft-sales?period=day&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
-                                            >
-                                              {statistics.day.tradedNfts}
-                                            </Link>
+                                            {statistics.day.tradedNfts > 0 ? (
+                                              <Link
+                                                href={`/nft-sales?period=day&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                              >
+                                                {statistics.day.tradedNfts}
+                                              </Link>
+                                            ) : (
+                                              0
+                                            )}
                                           </td>
                                           <td className="right">
-                                            <Link
-                                              href={`/nft-sales?period=week&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
-                                            >
-                                              {statistics.week.tradedNfts}
-                                            </Link>
+                                            {statistics.week.tradedNfts > 0 ? (
+                                              <Link
+                                                href={`/nft-sales?period=week&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                              >
+                                                {statistics.week.tradedNfts}
+                                              </Link>
+                                            ) : (
+                                              0
+                                            )}
                                           </td>
                                           <td className="right">
-                                            <Link
-                                              href={`/nft-sales?period=month&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
-                                            >
-                                              {statistics.month.tradedNfts}
-                                            </Link>
+                                            {statistics.month.tradedNfts > 0 ? (
+                                              <Link
+                                                href={`/nft-sales?period=month&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                              >
+                                                {statistics.month.tradedNfts}
+                                              </Link>
+                                            ) : (
+                                              0
+                                            )}
                                           </td>
                                           <td className="right">
-                                            <Link
-                                              href={`/nft-sales?period=year&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
-                                            >
-                                              {statistics.year.tradedNfts}
-                                            </Link>
+                                            {statistics.year.tradedNfts > 0 ? (
+                                              <Link
+                                                href={`/nft-sales?period=year&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                              >
+                                                {statistics.year.tradedNfts}
+                                              </Link>
+                                            ) : (
+                                              0
+                                            )}
                                           </td>
                                           <td className="right">
-                                            <Link
-                                              href={`/nft-sales?period=all&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
-                                            >
-                                              {statistics.all.tradedNfts}
-                                            </Link>
+                                            {statistics.all.tradedNfts > 0 ? (
+                                              <Link
+                                                href={`/nft-sales?period=all&sale=primaryAndSecondary&issuer=${collection.issuer}&taxon=${collection.taxon}&includeWithoutMediaData=true`}
+                                              >
+                                                {statistics.all.tradedNfts}
+                                              </Link>
+                                            ) : (
+                                              0
+                                            )}
                                           </td>
                                         </tr>
                                       </tbody>
