@@ -217,7 +217,7 @@ export default function Header({
                 href={
                   '/distribution' +
                   (xahauNetwork
-                    ? '?currency=5841585953440000000000000000000000000000&currencyIssuer=rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
+                    ? '?currencyIssuer=rEvernodee8dJLaFsujS6q1EiXvZYmHXr8&currency=EVR'
                     : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
                 }
               >
