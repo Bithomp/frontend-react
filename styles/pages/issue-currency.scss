@@ -5,7 +5,7 @@
   padding: 20px;
   background-color: var(--background-secondary);
   border: 1px solid #e9ecef;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 .ic-token-metadata h3 {
@@ -34,7 +34,7 @@
   width: 100px;
   height: 100px;
   border: 2px dashed #e9ecef;
-  border-radius: 4px;
+  border-radius: 2px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -80,7 +80,7 @@
   padding: 4px 8px;
   font-size: 11px;
   background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 .ic-image-placeholder {
@@ -109,7 +109,7 @@
 .ic-wallet-signin-info {
   background-color: #e7f3ff;
   border: 2px solid #0066cc;
-  border-radius: 8px;
+  border-radius: 2px;
   padding: 15px;
   margin: 15px 0;
 }
@@ -138,7 +138,7 @@
   color: #856404;
   background-color: #fff3cd;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 2px;
   margin: 10px 0;
   font-weight: 500;
 }
@@ -147,7 +147,7 @@
   color: #155724;
   background-color: #d4edda;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 2px;
   margin: 10px 0;
   font-weight: 500;
 }
@@ -156,7 +156,7 @@
   color: #004085;
   background-color: #cce5ff;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 2px;
   margin: 10px 0;
   font-weight: 500;
 }
@@ -175,7 +175,7 @@
 .ic-step {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 2px;
   background-color: #e9ecef;
   color: #6c757d;
   display: flex;
@@ -214,7 +214,7 @@
   align-items: flex-start;
   padding: 20px;
   border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: 2px;
   cursor: pointer;
   transition: all 0.3s ease;
   flex: 1;
@@ -274,7 +274,7 @@
 .ic-blackhole-warning {
   background-color: #fff3cd;
   border: 1px solid #ffeaa7;
-  border-radius: 8px;
+  border-radius: 2px;
   padding: 15px;
   margin: 15px 0;
 }
@@ -304,7 +304,7 @@
   padding: 20px;
   background-color: var(--background-secondary);
   border: 1px solid #e9ecef;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 .ic-cold-wallet-setup h3 {
@@ -324,7 +324,7 @@
   padding: 15px;
   background-color: var(--background-secondary);
   border: 1px solid #e9ecef;
-  border-radius: 6px;
+  border-radius: 2px;
 }
 
 .ic-form-section h4 {
@@ -349,7 +349,7 @@
   padding: 12px;
   background-color: #f8f9fa;
   border: 1px solid #e9ecef;
-  border-radius: 6px;
+  border-radius: 2px;
   transition: all 0.2s ease;
   cursor: pointer;
 }
@@ -403,7 +403,7 @@
   font-size: 12px;
   font-weight: 600;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: 2px;
   transition: all 0.3s ease;
 }
 
@@ -427,7 +427,7 @@
   margin: 15px 0;
   padding: 15px;
   background-color: #e9ecef;
-  border-radius: 6px;
+  border-radius: 2px;
 }
 
 .ic-wallet-locator-preview h4 {
@@ -438,7 +438,7 @@
 .ic-locator-display {
   background-color: #fff;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 2px;
   border: 1px solid #ddd;
   font-family: 'Courier New', monospace;
   font-size: 12px;
@@ -450,7 +450,7 @@
   padding: 20px;
   background-color: var(--background-secondary);
   border: 1px solid #e9ecef;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 .ic-currency-properties {
@@ -467,7 +467,7 @@
   padding: 20px;
   background-color: var(--background-secondary);
   border: 1px solid #b3d9ff;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 .ic-hot-wallet-accountset h3 {
@@ -481,17 +481,17 @@
 
 .ic-trustline-step, .ic-issue-tokens-step, .ic-send-to-customer-step, .ic-blackhole-step {
   margin: 20px 0;
-  padding: 20px;
+  padding: 16px;
   background-color: var(--background-secondary);
   border: 1px solid #e9ecef;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 .ic-trustline-info, .ic-transaction-preview {
   margin: 15px 0;
   padding: 15px;
   background-color: var(--background-secondary);
-  border-radius: 6px;
+  border-radius: 2px;
 }
 
 .ic-trustline-info h4, .ic-transaction-preview h4 {
@@ -511,7 +511,7 @@
 .ic-preview-box {
   background-color: var(--background-secondary);
   padding: 15px;
-  border-radius: 4px;
+  border-radius: 2px;
   border: 1px solid #ddd;
   font-family: 'Courier New', monospace;
   font-size: 13px;
@@ -529,7 +529,7 @@
 .ic-blackhole-warning {
   background-color: #fff3cd;
   border: 1px solid #ffeaa7;
-  border-radius: 6px;
+  border-radius: 2px;
   padding: 15px;
   margin: 15px 0;
 }
@@ -549,12 +549,16 @@
   gap: 15px;
   margin-top: 30px;
   justify-content: center;
+
+  .ic-button-action {
+    width: 200px;
+    min-width: 150px;
+  }
 }
 
 .ic-button-action {
   text-decoration: none;
   display: inline-block;
-  box-sizing: content-box;
   line-height: 38px;
   background-color: var(--accent-icon);
   border: 1px solid var(--accent-icon);
@@ -571,7 +575,7 @@
   .xaman-logo {
     width: 24px;
     height: 24px;
-    border-radius: 5px;
+    border-radius: 2px;
     margin-right: 5px;
     margin-bottom: 5px;
     vertical-align: middle;
@@ -624,7 +628,7 @@
   border: 1px solid #f5c6cb;
   color: #721c24;
   padding: 12px;
-  border-radius: 6px;
+  border-radius: 2px;
   margin: 15px 0;
 }
 
@@ -633,7 +637,7 @@
   border: 1px solid #c3e6cb;
   color: #155724;
   padding: 12px;
-  border-radius: 6px;
+  border-radius: 2px;
   margin: 15px 0;
 }
 
@@ -642,13 +646,13 @@
   padding: 20px;
   background-color: var(--background-secondary);
   border: 1px solid #e9ecef;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 .ic-summary-box {
   background-color: var(--background-secondary);
   padding: 20px;
-  border-radius: 6px;
+  border-radius: 2px;
   border: 1px solid #e9ecef;
 }
 
@@ -768,6 +772,11 @@
   
   .ic-step-actions {
     flex-direction: column;
+
+    .ic-button-action {
+      width: 100%;
+      min-width: 100%;
+    }
   }
   
   .ic-step-indicator {
