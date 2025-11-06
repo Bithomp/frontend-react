@@ -1,4 +1,4 @@
-import { fullDateAndTime, niceNumber, niceCurrency, amountFormat } from '../../utils/format'
+import { fullDateAndTime, niceCurrency, amountFormat } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 import { divide, multiply } from '../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
@@ -78,11 +78,10 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         <span>1 {getCurrency} = </span>
         <span className="no-brake">
           {typeof offer.TakerGets === 'string'
-            ? niceNumber(multiply(offer.quality, 1000000), 0, null, 5)
+            ? amountFormat({value: multiply(offer.quality, 1000000), currency: payCurrency})
             : typeof offer.TakerPays === 'string'
-            ? niceNumber(divide(offer.quality, 1000000), 0, null, 5)
-            : niceNumber(offer.quality, 0, null, 5)}{' '}
-          {payCurrency}
+            ? amountFormat({value: divide(offer.quality, 1000000), currency: payCurrency})
+            : amountFormat({value: offer.quality, currency: payCurrency})}
         </span>
       </>
     ) : (
@@ -90,11 +89,10 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         <span>1 {payCurrency} = </span>
         <span className="no-brake">
           {typeof offer.TakerGets === 'string'
-            ? niceNumber(divide(1, offer.quality * 1000000), 0, null, 2)
+            ? amountFormat({value: divide(1, offer.quality * 1000000), currency: getCurrency})
             : typeof offer.TakerPays === 'string'
-            ? niceNumber(divide(1000000, offer.quality), 0, null, 2)
-            : niceNumber(divide(1, offer.quality), 0, null, 2)}{' '}
-          {getCurrency}
+            ? amountFormat({value: divide(1000000, offer.quality), currency: getCurrency})
+            : amountFormat({value: divide(1, offer.quality), currency: getCurrency})}
         </span>
       </>
     )

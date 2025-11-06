@@ -19,7 +19,6 @@ import {
   xls14NftValue,
   tokenImageSrc,
   mptokenImageSrc,
-  isNativeCurrency,
   shortName
 } from '.'
 import { scaleAmount } from './calc'
