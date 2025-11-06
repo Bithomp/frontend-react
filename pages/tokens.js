@@ -230,7 +230,7 @@ export default function Tokens({
     const oldOrder = rawData?.order
     const oldCurrency = rawData?.currency
     const oldIssuer = rawData?.issuer
-    const oldSelectedCurrency = rawData?.convertCurrencies[0]
+    const oldSelectedCurrency = rawData?.convertCurrencies?.[0]
     if (!oldOrder || !order) return
 
     let loadMoreRequest =
