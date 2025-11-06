@@ -76,8 +76,6 @@ export default function AccountSettings({
   const [currentEmailHash, setCurrentEmailHash] = useState('')
   const [messageKeyInput, setMessageKeyInput] = useState('')
   const [currentMessageKey, setCurrentMessageKey] = useState('')
-  const [regularKeyInput, setRegularKeyInput] = useState('')
-  const [currentRegularKey, setCurrentRegularKey] = useState('')
   const [transferRateInput, setTransferRateInput] = useState('')
   const [currentTransferRate, setCurrentTransferRate] = useState(null)
   const [tickSizeInput, setTickSizeInput] = useState('')
@@ -414,8 +412,6 @@ export default function AccountSettings({
         setEmailHashInput(response.data?.ledgerInfo?.emailHash || '')
         setCurrentMessageKey(response.data?.ledgerInfo?.messageKey || '')
         setMessageKeyInput(response.data?.ledgerInfo?.messageKey || '')
-        setCurrentRegularKey(response.data?.ledgerInfo?.regularKey || '')
-        setRegularKeyInput(response.data?.ledgerInfo?.regularKey || '')
         setCurrentTransferRate(
           typeof response.data?.ledgerInfo?.transferRate === 'number'
             ? multiply(response.data.ledgerInfo.transferRate, 1000000000)
@@ -738,68 +734,6 @@ export default function AccountSettings({
           if (prev && prev.ledgerInfo) {
             const updatedLedgerInfo = { ...prev.ledgerInfo }
             delete updatedLedgerInfo.messageKey
-            return { ...prev, ledgerInfo: updatedLedgerInfo }
-          }
-          return prev
-        })
-      }
-    })
-  }
-
-  const handleSetRegularKey = () => {
-    const value = regularKeyInput.trim()
-    if (!isAddressValid(value)) {
-      setErrorMessage('Please enter a valid RegularKey address.')
-      return
-    }
-    if (account?.address && value === account.address) {
-      setErrorMessage('RegularKey must not be the same as your account address (master key).')
-      return
-    }
-
-    const tx = {
-      TransactionType: 'SetRegularKey',
-      Account: account.address,
-      RegularKey: value
-    }
-
-    setSignRequest({
-      request: tx,
-      callback: () => {
-        setSuccessMessage('RegularKey set successfully.')
-        setErrorMessage('')
-        setCurrentRegularKey(value)
-        setRegularKeyInput('')
-        setAccountData((prev) => {
-          if (prev && prev.ledgerInfo) {
-            return {
-              ...prev,
-              ledgerInfo: { ...prev.ledgerInfo, regularKey: value }
-            }
-          }
-          return prev
-        })
-      }
-    })
-  }
-
-  const handleClearRegularKey = () => {
-    const tx = {
-      TransactionType: 'SetRegularKey',
-      Account: account.address
-    }
-
-    setSignRequest({
-      request: tx,
-      callback: () => {
-        setSuccessMessage('RegularKey cleared successfully.')
-        setErrorMessage('')
-        setCurrentRegularKey('')
-        setRegularKeyInput('')
-        setAccountData((prev) => {
-          if (prev && prev.ledgerInfo) {
-            const updatedLedgerInfo = { ...prev.ledgerInfo }
-            delete updatedLedgerInfo.regularKey
             return { ...prev, ledgerInfo: updatedLedgerInfo }
           }
           return prev
@@ -1358,49 +1292,6 @@ export default function AccountSettings({
                     </div>
                   )}
                 </div>
-              </div>
-
-              <div className="flag-item">
-                <div className="flag-header" style={{marginBottom: '-20px'}}>
-                  <div className="flag-info">
-                    <span className="flag-name">RegularKey</span>
-                    {account?.address && (
-                      <span className="flag-status">{currentRegularKey ? currentRegularKey : 'Not Set'}</span>
-                    )}
-                  </div>
-                  <div className="flag-info-buttons">
-                    {currentRegularKey && (
-                      <button
-                        className="button-action thin"
-                        onClick={handleClearRegularKey}
-                        disabled={!account?.address}
-                      >
-                        Clear
-                      </button>
-                    )}
-                    <button
-                      className="button-action thin"
-                      onClick={handleSetRegularKey}
-                      disabled={!account?.address}
-                    >
-                      Set
-                    </button>
-                  </div>
-                </div>
-                <div className="nft-minter-input">
-                  <AddressInput
-                    title=''
-                    placeholder="Enter RegularKey address"
-                    setInnerValue={setRegularKeyInput}
-                    rawData={currentRegularKey}
-                    disabled={!account?.address}
-                    hideButton={true}
-                  />
-                  <small>
-                    Assign a regular key pair for signing. Must not equal your account address.
-                  </small>
-                </div>
-                {errorMessage && <small className="error-text red">{errorMessage}</small>}
               </div>
 
               <div className="flag-item">
