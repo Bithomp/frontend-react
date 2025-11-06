@@ -23,7 +23,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function IssueCurrency({ subscriptionExpired, openEmailLogin, sessionToken, account, setSignRequest }) {
+export default function IssueCurrency({ account, setSignRequest }) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
   const [currentStep, setCurrentStep] = useState(1)
@@ -84,9 +84,6 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
     disallowXRP: { set: 0x00100000, clear: 0x00200000 }
   }
 
-  // Check if user has Pro subscription
-  const hasProAccess = sessionToken && !subscriptionExpired
-
   // Update canProceedFromStep1 when dependent values change
   useEffect(() => {
     setCanProceedFromStep1(!!supplyType)
@@ -137,31 +134,6 @@ export default function IssueCurrency({ subscriptionExpired, openEmailLogin, ses
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
     }
-  }
-
-  if (!hasProAccess) {
-    return (
-      <>
-        <SEO
-          title="Issue Your Own Currency"
-          description={`Create and issue your own custom currency on the ${ledgerName} - Bithomp Pro feature`}
-        />
-        <div className="content-text content-center">
-          <h1 className="center">Issue Your Own Currency</h1>
-          <div className="ic-pro-access-required">
-            <h2>Bithomp Pro Required</h2>
-            <p>This feature is available exclusively to Bithomp Pro subscribers.</p>
-            <p>Upgrade to Pro to unlock the ability to create and issue your own custom currencies on the {ledgerName}.</p>
-            <br />
-            <center>
-              <button className="button-action" onClick={openEmailLogin}>
-                Register or Sign In
-              </button>
-            </center>
-          </div>
-        </div>
-      </>
-    )
   }
 
   // Convert domain to hex
@@ -687,7 +659,7 @@ ${newTokenEntry}
     <>
       <SEO
         title="Issue Your Own Currency"
-        description={`Create and issue your own custom currency on the ${ledgerName} - Bithomp Pro feature`}
+        description={`Create and issue your own custom currency on the ${ledgerName}`}
       />
 
       <section className="home-section">
@@ -868,7 +840,7 @@ ${newTokenEntry}
                     defaultValue={coldTransferRate}
                     hideButton={true}
                     />
-                  <small>Transfer rate is a fee fraction charged on payments made in this token. Enter a value from 0 to 1 (e.g., 0.01 for 1%).</small>
+                  <small>Transfer rate is a fee fraction charged on payments made in this token. Enter a value from 0 to 1.</small>
                   <div className="form-spacing">
                     {!(coldTransferRate >= 0 && coldTransferRate <= 1) && window.innerWidth > 800 &&
                       <span className="error-text red">Transfer rate must be between 0 and 1</span>
@@ -890,7 +862,7 @@ ${newTokenEntry}
                   </div>
                   
                   <FormInput
-                    title={<span className="bold">Domain (optional)</span>}
+                    title={<span className="bold">Domain</span>}
                     placeholder="example.com"
                     setInnerValue={setDomain}
                     defaultValue={domain}
@@ -981,7 +953,7 @@ ${newTokenEntry}
               <div className="ic-form-section">
                 <h4>Basic Settings</h4>
                 <FormInput
-                  title={<span className="bold">Domain (optional)</span>}
+                  title={<span className="bold">Domain</span>}
                   placeholder="example.com"
                   setInnerValue={setHotDomain}
                   defaultValue={hotDomain}
