@@ -153,10 +153,10 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
     const sell = offer.flags?.sell
     return (
       <tr key={i}>
+        <td className="left" style={{ width: 60 }}>#{offer?.Sequence}</td>
         <td className="left flex align-items-center gap-2" style={{ width: '100%' }}>
           <span className="tooltip">
             <span className={sell ? 'red' : 'green'}>{sell ? 'Selling ' : 'Buying '}</span>
-            <span className="tooltiptext no-brake">Sequence: {offer.Sequence}</span>
           </span>
           {getOfferDetails(sell, offer)}
         </td>
@@ -219,6 +219,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         </thead>
         <tbody>
           <tr>
+            <th className="left">Ids</th>
             <th className="left">Offer</th>
             <th className="right">Rate</th>
             <th className="center">Action</th>
