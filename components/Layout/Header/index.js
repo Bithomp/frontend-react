@@ -213,7 +213,14 @@ export default function Header({
             >
               <Link href="/tokens">{t('menu.tokens')}</Link>
               {!xahauNetwork && <Link href="/mpts">Multi-Purpose {t('menu.tokens')}</Link>}
-              <Link href="/distribution?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De">
+              <Link
+                href={
+                  '/distribution' +
+                  (xahauNetwork
+                    ? '?currency=5841585953440000000000000000000000000000&currencyIssuer=rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
+                    : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
+                }
+              >
                 TOP Holders
               </Link>
               <Link href="/services/trustline">Set Trust (Trustline)</Link>
