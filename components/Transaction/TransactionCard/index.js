@@ -424,7 +424,7 @@ export const TransactionCard = ({
                         <tr>
                           <TData>Affected accounts</TData>
                           <TData>
-                            {filteredBalanceChanges.length > 1 && (
+                            {filteredBalanceChanges?.length > 1 && (
                               <>
                                 There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that
                                 were affected by this transaction.
