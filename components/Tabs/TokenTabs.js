@@ -5,7 +5,8 @@ export default function TokenTabs({ tab }) {
   const router = useRouter()
 
   const mainTabs = [
-    { value: 'tokens', label: 'Trustline Tokens' },
+    { value: 'tokens', label: 'Tokens' },
+    { value: 'amms', label: 'Liqudity Provider Tokens' },
     { value: 'mpts', label: 'Multi-Purpose Tokens' }
   ]
 

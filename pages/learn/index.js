@@ -7,73 +7,60 @@ import SEO from '@/components/SEO'
 import Card from '@/components/UI/Card'
 import styles from '@/styles/pages/learn.module.scss'
 import { getIsSsrMobile } from '@/utils/mobile'
-import { xahauNetwork } from '../../utils'
+import { explorerName, nativeCurrency } from '../../utils'
 
-const learnPageXRP = {
-  title: 'Learn About XRP & The XRP Ledger | Bithomp',
+const pageDetails = {
+  title: 'Learn About ' + nativeCurrency + ' & The ' + explorerName,
   description:
-    'Explore essential concepts behind XRP, the XRP Ledger, Ripple, and wallet activity. Understand how the ecosystem works with these beginner-friendly guides and definitions.',
-  h1: 'Learn About XRP & The XRP Ledger',
-  canonical: 'bithomp.com/learn'
+    'Explore essential concepts behind ' +
+    nativeCurrency +
+    ', the ' +
+    explorerName +
+    ', and wallet activity. Understand how the ecosystem works with these beginner-friendly guides and definitions.',
+  h1: 'Learn About ' + nativeCurrency + ' & ' + explorerName
 }
 
-const learnPageXAHAU = {
-  title: 'Learn About XAH & The XAHAU Ledger | XAHAU Explorer',
-  description:
-    'Explore essential concepts behind XAHAU, and the XAHAU Ledger, and wallet activity. Understand how the ecosystem works with these beginner-friendly guides and definitions.',
-  h1: 'Learn About XAHAU & The XAHAU Ledger',
-  canonical: 'xahauexplorer.com/learn'
-}
-
-const learnContentXRP = [
-  {
-    category: 'XRPL Features & Concepts',
-    description: 'Dive deeper into the features and concepts of the XRP Ledger.',
-    items: [
-      { title: 'XRP, Ripple, XRP Ledger: Key Differencies', slug: 'xrpl-article' },
-      { title: 'Blackholed Address', slug: 'blackholed-address' },
-      { title: 'Blacklisted Address', slug: 'blacklisted-address' },
+const buildLearnContent = () => {
+  let content = [
+    {
+      category: explorerName + ' Features & Concepts',
+      description: 'Dive deeper into the features and concepts of the ' + explorerName + '.',
+      items: [
+        { title: 'Blackholed Address', slug: 'blackholed-address' },
+        { title: 'Blacklisted Address', slug: 'blacklisted-address' },
+        { title: 'Verified Domain', slug: 'verified-domain' }
+      ]
+    },
+    {
+      category: 'Bithomp Tools',
+      description: 'Learn how to get the most out of Bithomp’s powerful explorer.',
+      items: [
+        { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
+        { title: 'How to Mint NFTs on ' + explorerName, slug: 'nft-minting' },
+        { title: 'The Bithomp API', slug: 'the-bithomp-api' },
+        { title: 'XRP and XAH Taxes - get SCV exports for your report', slug: 'xrp-xah-taxes' },
+        { title: 'How to Issue a Token on ' + explorerName, slug: 'issue-a-token' },
+        {
+          title: 'Guide for Token Issuers: Username, Toml file, Project Registration',
+          slug: 'guide-for-token-issuers'
+        },
+        { title: 'Bithomp Image Services', slug: 'image-services' }
+      ]
+    }
+  ]
+  //network specific content
+  //only on xrpl
+  if (nativeCurrency === 'XRP') {
+    // add before and after items to first section
+    const itemsBefore = [{ title: 'XRP, Ripple, XRP Ledger: Key Differencies', slug: 'xrpl-article' }]
+    const itemsAfter = [
       { title: 'Ripple USD', slug: 'ripple-usd' },
-      { title: 'Verified Domain', slug: 'verified-domain' },
       { title: 'XRPL AMM', slug: 'amm' }
     ]
-  },
-  {
-    category: 'Bithomp Tools',
-    description: 'Learn how to get the most out of Bithomp’s powerful explorer.',
-    items: [
-      { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
-      { title: 'How to Mint NFTs on XRPL', slug: 'nft-minting' },
-      { title: 'The Bithomp API', slug: 'the-bithomp-api' },
-      { title: 'XRP and XAH Taxes - get SCV exports for your report', slug: 'xrp-xah-taxes' },
-      { title: 'How to Issue a Token on XRPL', slug: 'issue-a-token' },
-      { title: 'Guide for Token Issuers: Username, Toml file, Project Registration', slug: 'guide-for-token-issuers' }
-    ]
+    content[0].items = [...itemsBefore, ...content[0].items, ...itemsAfter]
   }
-]
-
-const learnContentXAHAU = [
-  {
-    category: 'XAHAU Features & Concepts',
-    description: 'Dive deeper into the features and concepts of the XAHAU Ledger.',
-    items: [
-      { title: 'Blackholed Address', slug: 'blackholed-address' },
-      { title: 'Blacklisted Address', slug: 'blacklisted-address' },
-      { title: 'Verified Domain', slug: 'verified-domain' }
-    ]
-  },
-  {
-    category: 'Bithomp Tools',
-    description: 'Learn how to get the most out of Bithomp’s powerful explorer.',
-    items: [
-      { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
-      { title: 'How to mint NFTs on Xahau', slug: 'nft-minting' },
-      { title: 'The Bithomp API', slug: 'the-bithomp-api' },
-      { title: 'How to Issue a Token on Xahau', slug: 'issue-a-token' },
-      { title: 'Guide for Token Issuers: Username, Toml file, Project Registration', slug: 'guide-for-token-issuers' }
-    ]
-  }
-]
+  return content
+}
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -86,21 +73,22 @@ export async function getServerSideProps(context) {
 }
 
 export default function LearnPage() {
-  const learnPage = !xahauNetwork ? learnPageXRP : learnPageXAHAU
-  const learnContent = !xahauNetwork ? learnContentXRP : learnContentXAHAU
+  const learnContent = buildLearnContent()
 
   return (
     <>
-      <SEO title={learnPage.title} description={learnPage.description} canonical={learnPage.canonical} />
+      <SEO title={pageDetails.title} description={pageDetails.description} />
       <Head>
-        <title>{learnPage.title}</title>
-        <meta name="description" content={learnPage.description} />
+        <title>{pageDetails.title}</title>
+        <meta name="description" content={pageDetails.description} />
       </Head>
 
       <div className="max-w-6xl mx-auto px-4 pb-10">
         <Breadcrumbs />
-        <h1 className="!text-3xl sm:!text-4xl font-bold text-center mb-6">{learnPage.h1}</h1>
-        <p className="text-gray-600 dark:text-gray-400 text-center max-w-4xl mx-auto mb-12">{learnPage.description}</p>
+        <h1 className="!text-3xl sm:!text-4xl font-bold text-center mb-6">{pageDetails.h1}</h1>
+        <p className="text-gray-600 dark:text-gray-400 text-center max-w-4xl mx-auto mb-12">
+          {pageDetails.description}
+        </p>
 
         <div className="space-y-12">
           {learnContent.map((section) => (

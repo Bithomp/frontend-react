@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { devNet, useWidth, avatarServer } from '../../utils'
-import { addressUsernameOrServiceLink, amountFormat, shortNiceNumber, timeFormat } from '../../utils/format'
-import Image from 'next/image'
+import { devNet, useWidth } from '../../utils'
+import { AddressWithIconInline, amountFormat, shortNiceNumber, timeFormat } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import Link from 'next/link'
 
@@ -83,25 +82,15 @@ export default function Whales({ currency, data, setData }) {
                 <span className="tx-time">{timeFormat(tx.timestamp)}</span>
                 <span className="tx-addresses">
                   <span style={styleAddress}>
-                    <Image
-                      src={avatarServer + tx.sourceAddress}
-                      alt={tx.sourceAddressDetails?.service || 'service logo'}
-                      height={20}
-                      width={20}
-                      style={{ marginRight: '5px', marginBottom: '-5px' }}
-                    />
-                    {addressUsernameOrServiceLink(tx, 'sourceAddress', { short: width > 800 ? 9 : 5 })}
+                    <AddressWithIconInline data={tx} name="sourceAddress" options={{ short: width > 800 ? 9 : 5 }} />
                   </span>{' '}
                   →{width < 550 ? <div style={{ height: '8px' }} /> : ' '}
                   <span style={styleAddress}>
-                    <Image
-                      src={avatarServer + tx.destinationAddress}
-                      alt={tx.destinationAddressDetails?.service || 'service logo'}
-                      height={20}
-                      width={20}
-                      style={{ marginRight: '5px', marginBottom: '-5px' }}
+                    <AddressWithIconInline
+                      data={tx}
+                      name="destinationAddress"
+                      options={{ short: width > 800 ? 9 : 6 }}
                     />
-                    {addressUsernameOrServiceLink(tx, 'destinationAddress', { short: width > 800 ? 9 : 6 })}
                   </span>
                 </span>
                 <span className="tx-link">

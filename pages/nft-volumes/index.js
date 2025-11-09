@@ -41,13 +41,12 @@ import {
   usernameOrAddress,
   percentFormat,
   niceNumber,
-  niceCurrency,
-  shortHash
+  niceCurrency
 } from '../../utils/format'
 
 import LinkIcon from '../../public/images/link.svg'
 import RadioOptions from '../../components/UI/RadioOptions'
-import { collectionThumbnail } from '../../utils/nft'
+import { collectionNameText, collectionThumbnail, nonSologenic } from '../../utils/nft'
 import FiltersFrame from '../../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 
@@ -76,7 +75,6 @@ export default function NftVolumes({
   const [period, setPeriod] = useState(periodQuery)
   const [saleTab, setSaleTab] = useState(sale)
   const [listTab, setListTab] = useState(list)
-  const [sortConfig, setSortConfig] = useState({})
   const [extendedStats, setExtendedStats] = useState(extendedStatsQuery)
   const [chartIssuers, setChartIssuers] = useState([])
   const [chartVolumes, setChartVolumes] = useState([])
@@ -312,7 +310,7 @@ export default function NftVolumes({
             if (listTab === 'collections' && list[i].collectionDetails) {
               list[i].collectionDetails.family = list[i].collectionDetails?.family?.replace(/"/g, '""')
               list[i].collectionDetails.description = list[i].collectionDetails?.description?.replace(/"/g, '""')
-              list[i].collectionDetails.name = collectionNameText(list[i])
+              list[i].collectionDetails.name = collectionNameText(list[i].collectionDetails)
             }
           }
 
@@ -547,7 +545,6 @@ export default function NftVolumes({
   useEffect(() => {
     if (!convertCurrency) return
     checkApi()
-    setSortConfig({})
 
     return () => {
       controller.abort()
@@ -609,7 +606,7 @@ export default function NftVolumes({
     if (!options?.excludeIssuer) {
       if (volume?.issuer) {
         urlPart = urlPart + '&issuer=' + usernameOrAddress(volume, 'issuer')
-      } else if (nonSologenic(volume)) {
+      } else if (nonSologenic(volume.collectionDetails)) {
         urlPart =
           urlPart +
           '&issuer=' +
@@ -646,6 +643,14 @@ export default function NftVolumes({
       return ''
     }
     return <Link href={'/nft-explorer' + params + (onSale ? '&list=onSale' : '')}>{text || <LinkIcon />}</Link>
+  }
+
+  const nftCollectionLink = (data) => {
+    if (!data) return ''
+    if (data.collection) {
+      return <Link href={'/nft-collection/' + data.collection}>{collectionNameText(data.collectionDetails)}</Link>
+    }
+    return ''
   }
 
   const nftDistributionLink = (data) => {
@@ -694,50 +699,6 @@ export default function NftVolumes({
           </Link>
         </>
       )
-    }
-  }
-
-  const sortTable = (key) => {
-    if (!data || !data[0] || !(data[0][key] || data[0].volumesInConvertCurrencies[convertCurrency])) return
-    let direction = 'descending'
-    let sortA = 1
-    let sortB = -1
-
-    if (sortConfig.key === key && sortConfig.direction === direction) {
-      direction = 'ascending'
-      sortA = -1
-      sortB = 1
-    }
-    setSortConfig({ key, direction })
-    if (key === 'amount') {
-      setData(
-        data.sort(function (a, b) {
-          if (
-            a.volumesInConvertCurrencies[convertCurrency] === '' ||
-            a.volumesInConvertCurrencies[convertCurrency] === null
-          )
-            return 1
-          if (
-            b.volumesInConvertCurrencies[convertCurrency] === '' ||
-            b.volumesInConvertCurrencies[convertCurrency] === null
-          )
-            return -1
-          if (a.volumesInConvertCurrencies[convertCurrency] === b.volumesInConvertCurrencies[convertCurrency]) return 0
-          return parseFloat(a.volumesInConvertCurrencies[convertCurrency]) <
-            parseFloat(b.volumesInConvertCurrencies[convertCurrency])
-            ? sortA
-            : sortB
-        })
-      )
-    } else if (sortConfig.key?.includes('.')) {
-      const keys = sortConfig.key.split('.')
-      setData(
-        data.sort(function (a, b) {
-          return parseFloat(a[keys[0]]?.[keys[1]]) < parseFloat(b[keys[0]]?.[keys[1]]) ? sortA : sortB
-        })
-      )
-    } else {
-      setData(data.sort((a, b) => (parseFloat(a[key]) < parseFloat(b[key]) ? sortA : sortB)))
     }
   }
 
@@ -861,24 +822,12 @@ export default function NftVolumes({
       ? { flexGrow: 0, flexBasis: 'calc(60% - 20px)' }
       : { width: '100%', marginLeft: 0, marginRight: '10px' }
 
-  const collectionNameText = (data) => {
-    if (data.collectionDetails?.name) return data.collectionDetails.name.replace(/"/g, '""')
-    if (!data?.collectionDetails?.issuerDetails) return data.collection
-    const { service, username } = data.collectionDetails.issuerDetails
-    if (service || username) {
-      return service || username // + ' (' + data.collectionDetails.taxon + ')'
-    }
-    if (nonSologenic(data)) {
-      const { issuer, taxon } = data.collectionDetails
-      return shortHash(issuer) + (taxon ? ' (' + taxon + ')' : '')
-    }
-    return data.collection
-  }
-
   const collectionName = (data, type) => {
     if (!data?.collection) return ''
     if (!data.collectionDetails) return data.collection
     const { name, family, description, issuer, taxon } = data.collectionDetails
+
+    const nameLink = nftCollectionLink(data)
 
     if (type === 'mobile') {
       return (
@@ -890,12 +839,12 @@ export default function NftVolumes({
           )}
           {name && (
             <p>
-              {t('table.name')}: <b>{name}</b>
+              {t('table.name')}: <b>{nameLink}</b>
             </p>
           )}
           {!family && !name && (
             <p>
-              {t('table.collection')}: {collectionNameText(data)}
+              {t('table.collection')}: {collectionNameText(data.collectionDetails)}
             </p>
           )}
           {description && (
@@ -903,7 +852,7 @@ export default function NftVolumes({
               {t('table.description')}: {description}
             </p>
           )}
-          {nonSologenic(data) && (
+          {nonSologenic(data.collectionDetails) && (
             <>
               <p>
                 {t('table.issuer')}: {issuer}
@@ -916,10 +865,6 @@ export default function NftVolumes({
         </>
       )
     }
-
-    let nameLink = nftExplorerLink(data, {
-      text: name || collectionNameText(data)
-    })
 
     if (family) {
       if (
@@ -938,10 +883,6 @@ export default function NftVolumes({
       return <b>{nameLink}</b>
     }
     return nameLink
-  }
-
-  const nonSologenic = (data) => {
-    return data?.collectionDetails?.issuer && (data?.collectionDetails?.taxon || data?.collectionDetails?.taxon === 0)
   }
 
   return (
@@ -1168,72 +1109,26 @@ export default function NftVolumes({
                         {listTab === 'marketplaces' && <th className="right">{t('table.minted')}</th>}
                         {listTab === 'issuers' && <th>{t('table.issuer')}</th>}
                         {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
-                          <th className="right hide-on-mobile">
-                            {t('table.nfts-now')}{' '}
-                            <b
-                              className={'link' + (sortConfig.key === 'nfts' ? ' orange' : '')}
-                              onClick={() => sortTable('nfts')}
-                            >
-                              ⇅
-                            </b>
-                          </th>
+                          <th className="right hide-on-mobile">{t('table.nfts-now')}</th>
                         )}
                         {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
-                          <th className="right hide-on-mobile">
-                            {t('table.owners-now')}{' '}
-                            <b
-                              className={'link' + (sortConfig.key === 'owners' ? ' orange' : '')}
-                              onClick={() => sortTable('owners')}
-                            >
-                              ⇅
-                            </b>
-                          </th>
+                          <th className="right hide-on-mobile">{t('table.owners-now')}</th>
                         )}
                         {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                           <th className="right">{t('table.floor-now')}</th>
                         )}
                         {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
-                          <th className="right hide-on-mobile">
-                            {t('table.traded-nfts')}{' '}
-                            <b
-                              className={'link' + (sortConfig.key === 'tradedNfts' ? ' orange' : '')}
-                              onClick={() => sortTable('tradedNfts')}
-                            >
-                              ⇅
-                            </b>
-                          </th>
+                          <th className="right hide-on-mobile">{t('table.traded-nfts')}</th>
                         )}
                         {listTab === 'brokers' && <th>{t('table.broker')}</th>}
                         {listTab === 'currencies' && <th>{t('table.issuers')}</th>}
-                        <th className="right">
-                          {t('table.sales')}{' '}
-                          <b
-                            className={'link' + (sortConfig.key === 'sales' ? ' orange' : '')}
-                            onClick={() => sortTable('sales')}
-                          >
-                            ⇅
-                          </b>
-                        </th>
+                        <th className="right">{t('table.sales')}</th>
                         {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
-                          <th className="right hide-on-mobile">
-                            {t('table.buyers')}{' '}
-                            <b
-                              className={'link' + (sortConfig.key === 'buyers' ? ' orange' : '')}
-                              onClick={() => sortTable('buyers')}
-                            >
-                              ⇅
-                            </b>
-                          </th>
+                          <th className="right hide-on-mobile">{t('table.buyers')}</th>
                         )}
                         {(listTab === 'currencies' || selectedToken) && <th className="right">{t('table.volume')}</th>}
                         <th className="right">
-                          {t('table.volume')} ({convertCurrency?.toUpperCase()}){' '}
-                          <b
-                            className={'link' + (sortConfig.key === 'amount' ? ' orange' : '')}
-                            onClick={() => sortTable('amount')}
-                          >
-                            ⇅
-                          </b>
+                          {t('table.volume')} ({convertCurrency?.toUpperCase()})
                         </th>
                       </tr>
                     </thead>
@@ -1524,6 +1419,19 @@ export default function NftVolumes({
                                       </tbody>
                                     </table>
                                   </div>
+                                  {listTab === 'collections' && (
+                                    <>
+                                      <br />
+                                      <button
+                                        className="button-action narrow thin"
+                                        onClick={() => router.push('/nft-collection/' + volume.collection)}
+                                      >
+                                        Collection Page
+                                      </button>
+                                      <br />
+                                      <br />
+                                    </>
+                                  )}
                                 </td>
                               </tr>
                             ))

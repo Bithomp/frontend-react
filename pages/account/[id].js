@@ -119,7 +119,6 @@ export default function Account({
   account,
   setSignRequest,
   fiatRate: fiatRateApp,
-  setActivatedAccount,
   fiatRateServer,
   selectedCurrencyServer,
   networkInfo,
@@ -167,8 +166,6 @@ export default function Account({
       address: initialData.address
     })
 
-    setActivatedAccount(initialData?.ledgerInfo?.activated)
-
     if (initialData?.obligations) {
       if (initialData.obligations?.trustlines > 200) {
         setGateway(true)
@@ -212,7 +209,6 @@ export default function Account({
           service: newdata.service?.name,
           address: newdata.address
         })
-        setActivatedAccount(newdata.ledgerInfo?.activated)
       } else {
         if (newdata.error) {
           setErrorMessage(t('error-api.' + newdata.error))

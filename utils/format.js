@@ -23,6 +23,7 @@ import {
   shortName
 } from '.'
 import { scaleAmount } from './calc'
+import { LinkAmm } from './links'
 
 dayjs.extend(durationPlugin)
 dayjs.extend(relativeTimePlugin)
@@ -51,6 +52,38 @@ export const CurrencyWithIcon = ({ token }) => {
   )
 }
 
+export const AddressWithIconInline = ({ data, name = 'address', options }) => {
+  const address = data[name]
+  const size = 20
+  const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+     <rect width="100%" height="100%" fill="#ffffff"/>
+     <text x="50%" y="50%" font-family="sans-serif" font-size="8" text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
+      ;(
+     </text>
+   </svg>`
+  )}`
+
+  return (
+    <span className="no-brake">
+      <Link href={'/account/' + address}>
+        <img
+          src={avatarServer + address || placeholder}
+          alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
+          height={size}
+          width={size}
+          style={{ marginRight: '5px', marginBottom: '-5px' }}
+          onError={(e) => {
+            e.target.onerror = null
+            e.target.src = placeholder
+          }}
+        />
+      </Link>
+      {addressUsernameOrServiceLink(data, name, options)}
+    </span>
+  )
+}
+
 export const AddressWithIcon = ({ children, address, currency, options }) => {
   let imageUrl = avatarServer + address
 
@@ -66,12 +99,60 @@ export const AddressWithIcon = ({ children, address, currency, options }) => {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }
 
+  let doubleIcon = false
+  let assetImageUrl, asset2ImageUrl
+
+  // LP token - show 2 icons
+  if (options?.currencyDetails?.asset && options?.currencyDetails?.asset2) {
+    doubleIcon = true
+    assetImageUrl = tokenImageSrc(options.currencyDetails.asset)
+    asset2ImageUrl = tokenImageSrc(options.currencyDetails.asset2)
+  }
+
   return (
     <table style={{ minWidth: 126 }}>
       <tbody>
         <tr className="no-border">
           <td style={{ padding: 0, width: 35, height: 35 }}>
-            <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+            {doubleIcon ? (
+              <div style={{ position: 'relative', width: 35, height: 35, verticalAlign: 'middle' }}>
+                {/* back coin */}
+                <Image
+                  alt="asset"
+                  src={assetImageUrl}
+                  width={22}
+                  height={22}
+                  style={{
+                    position: 'absolute',
+                    top: 1,
+                    left: 1,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
+                  }}
+                />
+                {/* front coin */}
+                <Image
+                  alt="asset 2"
+                  src={asset2ImageUrl}
+                  width={22}
+                  height={22}
+                  style={{
+                    position: 'absolute',
+                    bottom: 1,
+                    left: 13, // slight shift right to overlap
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    zIndex: 2,
+                    backgroundColor: '#fff',
+                    boxShadow: '0 0 0 1px #fff'
+                  }}
+                />
+              </div>
+            ) : (
+              <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+            )}
           </td>
           <td style={{ padding: '0 0 0 5px' }}>{children}</td>
         </tr>
@@ -80,29 +161,29 @@ export const AddressWithIcon = ({ children, address, currency, options }) => {
   )
 }
 
-export const AddressWithIconFilled = ({ data, name, copyButton, options, currency, windowWidth }) => {
+export const AddressWithIconFilled = ({ data, name, copyButton, options, currency }) => {
   if (!data) return ''
   if (!name) {
     name = 'address'
   }
 
   const fullUrl = currency && !options?.mptId ? '/token/' + data[name] + '/' + currency : null
-
   const link = userOrServiceLink(data, name, { fullUrl })
 
-  if (windowWidth && windowWidth < 800) {
-    if (options) {
-      options.short = true
-    } else {
-      options = { short: true }
-    }
-  }
+  const ammId = options?.currencyDetails?.ammID
+  const lpToken = options?.currencyDetails?.type === 'lp_token'
+
+  const textCurrency = options?.mptId
+    ? currency
+    : lpToken && options?.currencyDetails?.currency
+    ? options.currencyDetails.currency
+    : niceCurrency(currency)
 
   return (
     <AddressWithIcon address={data[name]} currency={currency} options={options}>
       {currency && (
         <>
-          <span className="bold">{options?.mptId ? currency : niceCurrency(currency)}</span>{' '}
+          <span className="bold">{textCurrency}</span>{' '}
         </>
       )}
       {options?.currencyName &&
@@ -112,54 +193,17 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options, currenc
       {options?.currencyName && options.currencyName !== currency && (
         <span>{shortName(options.currencyName, { maxLength: 10 })}</span>
       )}{' '}
-      {link && (
+      {link}
+      {(currency || options?.currencyName || link) && <br />}
+      {ammId ? (
         <>
-          {link}
-          <br />
+          AMM pool: <LinkAmm ammId={ammId} hash={!options?.short} icon={options?.short} />
         </>
-      )}
-      {!link && options?.mptId && <br />}
-      {options?.flags ? showFlags(options.flags) : addressLink(data[name], { ...options, fullUrl })}{' '}
+      ) : (
+        <>{options?.flags ? showFlags(options.flags) : addressLink(data[name], { ...options, fullUrl })}</>
+      )}{' '}
       {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
-  )
-}
-
-export const amountFormatWithIcon = ({ amount }) => {
-  if (!amount) return ''
-  const { value, currency, valuePrefix } = amountParced(amount)
-
-  let textCurrency = currency
-
-  if (!isNaN(textCurrency?.trim())) {
-    textCurrency = textCurrency?.trim()
-    textCurrency = '"' + textCurrency + '"'
-  }
-
-  let imageUrl = ''
-  if (isNativeCurrency(amount)) {
-    imageUrl = nativeCurrenciesImages[nativeCurrency]
-  } else {
-    imageUrl = tokenImageSrc(amount)
-  }
-
-  return (
-    <span className="inline-flex items-center gap-1">
-      <span className="tooltip" style={{ display: 'inline-flex', alignItems: 'center' }}>
-        <img src={imageUrl} alt={currency} width={18} height={18} />
-        {amount.issuer && (
-          <span className="tooltiptext no-brake right">
-            {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
-          </span>
-        )}
-      </span>
-      <span className="tooltip">
-        {shortNiceNumber(value, 2, 1)} {valuePrefix} {currency}
-        <span className="tooltiptext no-brake right">
-          {fullNiceNumber(value)} {valuePrefix} {textCurrency}
-        </span>
-      </span>
-    </span>
   )
 }
 
@@ -190,7 +234,7 @@ export const amountToFiat = (params) => {
   }
 
   return (
-    <span className="tooltip" suppressHydrationWarning>
+    <span className="tooltip no-brake" suppressHydrationWarning>
       {' '}
       ≈ {calculatedAmount}
       <span className="tooltiptext no-brake" suppressHydrationWarning>
@@ -565,7 +609,7 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
     if (options.url === '/explorer/') {
       return oldExplorerLink(data?.[type], { short: options.short })
     } else {
-      return <Link href={options.url + data?.[type]}>{shortAddress(data?.[type])}</Link>
+      return <Link href={options.url + data?.[type]}>{shortAddress(data?.[type], options.short)}</Link>
     }
   }
   if (options.url === '/explorer/') {
@@ -634,15 +678,26 @@ export const percentFormat = (small, big) => {
   return '(' + Math.floor(((small * 100) / big) * 100) / 100 + '%)'
 }
 
-export const trAmountWithGateway = ({ amount, name }) => {
+export const trAmountWithGateway = ({ amount, name, icon }) => {
   if (!amount && amount !== 0) return ''
   return (
     <tr>
       <td>{name}</td>
       <td>
         {amountFormatNode(amount)}
-        {amount?.issuer && <> ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</>}
-        {amount?.counterparty && <> ({addressUsernameOrServiceLink(amount, 'counterparty', { short: true })})</>}
+        {icon ? (
+          <>
+            {amount?.issuer && <AddressWithIconInline data={amount} name="issuer" options={{ short: true }} />}
+            {amount?.counterparty && (
+              <AddressWithIconInline data={amount} name="counterparty" options={{ short: true }} />
+            )}
+          </>
+        ) : (
+          <>
+            {amount?.issuer && <> ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</>}
+            {amount?.counterparty && <> ({addressUsernameOrServiceLink(amount, 'counterparty', { short: true })})</>}
+          </>
+        )}
       </td>
     </tr>
   )
@@ -704,19 +759,20 @@ export const amountFormat = (amount, options = {}) => {
     }
   }
 
+  // do not show icons for native currency
+  if (options?.icon && originalCurrency === nativeCurrency) {
+    options.icon = false
+  }
+
   let tokenImage = ''
   if (options?.icon) {
     tokenImage = (
       <Image
-        src={
-          type === nativeCurrency
-            ? nativeCurrenciesImages[nativeCurrency]
-            : tokenImageSrc({ issuer, currency: originalCurrency || currency })
-        }
+        src={tokenImageSrc({ issuer, currency: originalCurrency || currency })}
         alt="token"
-        height={16}
-        width={16}
-        style={{ marginRight: '2px', marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }}
+        height={20}
+        width={20}
+        style={{ verticalAlign: 'text-bottom', display: 'inline-block' }}
       />
     )
   }
@@ -753,7 +809,13 @@ export const amountFormat = (amount, options = {}) => {
         </StyleAmount>
         {issuer ? (
           <span className="no-inherit">
-            ({addressUsernameOrServiceLink({ issuer, issuerDetails }, 'issuer', { short: true })})
+            (
+            {amount.currencyDetails?.type === 'lp_token' ? (
+              <LinkAmm ammId={issuer} hash={6} style={{ fontWeight: 400 }} />
+            ) : (
+              addressUsernameOrServiceLink({ issuer, issuerDetails }, 'issuer', { short: true })
+            )}
+            )
           </span>
         ) : (
           ''
@@ -762,10 +824,9 @@ export const amountFormat = (amount, options = {}) => {
     )
   } else if (options.icon) {
     return (
-      <>
-        {tokenImage}
-        <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
-      </>
+      <span className="no-brake">
+        {tokenImage} <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
+      </span>
     )
   } else {
     return showValue + ' ' + valuePrefix + ' ' + textCurrency
@@ -850,7 +911,14 @@ export const amountParced = (amount) => {
   let issuerDetails = null
   let originalCurrency = '' // Store original currency for token icons
 
-  if (amount.value && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
+  if (amount.currencyDetails?.type === 'lp_token') {
+    originalCurrency = amount.currency
+    currency = amount.currencyDetails?.currency
+    value = amount.value
+    issuer = amount.issuer
+    issuerDetails = amount.issuerDetails
+    type = 'LPT'
+  } else if (amount.value && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
     originalCurrency = amount.currency // Store original before processing
     currency = amount.currency
     value = amount.value
@@ -877,7 +945,7 @@ export const amountParced = (amount) => {
       value = xls14NftVal
     }
   } else if (amount.mpt_issuance_id) {
-    originalCurrency = amount.mpt_issuance_id // Store original before processing
+    originalCurrency = amount.mpt_issuance_id
     currency = amount.currencyDetails?.currency || '[MPT: ' + shortHash(amount.mpt_issuance_id, 4) + ']'
     value = amount.value
     const scale = amount.currencyDetails?.scale || 0
@@ -961,20 +1029,32 @@ export const fullDateAndTime = (timestamp, type = null, options) => {
   }
 }
 
-export const timeFormat = (timestamp) => {
-  return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+export const timeFormat = (timestamp, type = null) => {
+  if (type === 'ripple') {
+    timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+  }
+  return (
+    <span suppressHydrationWarning>
+      {new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+    </span>
+  )
 }
 
 export const dateFormat = (timestamp, stringParams = {}, params = {}) => {
   if (timestamp) {
+    if (params?.type === 'ripple') {
+      timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+    }
     if (params.type?.toUpperCase() !== 'ISO') {
       timestamp = timestamp * 1000
     }
-    if (stringParams) {
-      return new Date(timestamp).toLocaleDateString([], stringParams)
-    } else {
-      return new Date(timestamp).toLocaleDateString()
-    }
+    return (
+      <span suppressHydrationWarning>
+        {stringParams
+          ? new Date(timestamp).toLocaleDateString([], stringParams)
+          : new Date(timestamp).toLocaleDateString()}
+      </span>
+    )
   }
   return ''
 }

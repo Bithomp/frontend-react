@@ -70,7 +70,7 @@ export const TransactionCredential = ({ data, pageFiatRate, selectedCurrency }) 
               issuer
             </>
           )}
-          {outcome?.credentialChanges.subject === specification?.source && (
+          {outcome?.credentialChanges?.subject === specification?.source && (
             <>
               <br />
               subject
@@ -81,19 +81,19 @@ export const TransactionCredential = ({ data, pageFiatRate, selectedCurrency }) 
           <AddressWithIconFilled data={specification?.source} name="address" />
         </TData>
       </tr>
-      {isDepositPreauth && tx.Authorize && (
+      {isDepositPreauth && specification.authorize && (
         <tr>
           <TData className="bold">Authorize</TData>
           <TData>
-            <AddressWithIconFilled data={tx.Authorize} name="address" />
+            <AddressWithIconFilled data={specification} name="authorize" />
           </TData>
         </tr>
       )}
-      {isDepositPreauth && tx.Unauthorize && (
+      {isDepositPreauth && specification.unauthorize && (
         <tr>
           <TData className="bold">Unauthorize</TData>
           <TData>
-            <AddressWithIconFilled data={tx.Unauthorize} name="address" />
+            <AddressWithIconFilled data={specification} name="unauthorize" />
           </TData>
         </tr>
       )}
