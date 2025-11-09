@@ -517,3 +517,146 @@ export const nftPriceData = (t, sellOffers, loggedInAddress) => {
   }
   return t('table.text.private-offer') //shouldn't be the case
 }
+
+// Check if NFT metadata indicates a panorama/360 image
+export const isPanorama = (metadata) => {
+  if (!metadata) return false
+
+  // Check name and description for panorama keywords
+  const panoramaKeywords = ['360', 'panorama', 'panoramic', 'equirectangular']
+  const name = metadata.name?.toString().toLowerCase() || ''
+  const description = metadata.description?.toString().toLowerCase() || ''
+
+  // Check if name or description contains panorama keywords
+  const hasPanoramaKeyword = panoramaKeywords.some((keyword) => name.includes(keyword) || description.includes(keyword))
+
+  // Check for specific camera types known for panoramas
+  const panoramaCameras = ['gopro fusion', 'insta360', 'ricoh theta']
+  const hasPanoramaCamera = panoramaCameras.some((camera) => description.includes(camera.toLowerCase()))
+
+  return hasPanoramaKeyword || hasPanoramaCamera
+}
+
+// Extract and process 3D model attributes from NFT metadata
+export const processModelAttributes = (nft) => {
+  if (!nft.metadata || (!nft.metadata['3D_attributes'] && !nft.metadata['3d_attributes'])) {
+    return []
+  }
+
+  let modelAttr = nft.metadata['3D_attributes'] || nft.metadata['3d_attributes']
+  const supportedAttr = [
+    'environment-image',
+    'exposure',
+    'shadow-intensity',
+    'shadow-softness',
+    'camera-orbit',
+    'camera-target',
+    'skybox-image',
+    'auto-rotate-delay',
+    'rotation-per-second',
+    'field-of-view',
+    'max-camera-orbit',
+    'min-camera-orbit',
+    'max-field-of-view',
+    'min-field-of-view',
+    'disable-zoom',
+    'orbit-sensitivity',
+    'animation-name',
+    'animation-crossfade-duration',
+    'variant-name',
+    'orientation',
+    'scale'
+  ]
+
+  if (Array.isArray(modelAttr)) {
+    const filtered = []
+    for (let i = 0; i < modelAttr.length; i++) {
+      if (modelAttr[i] && supportedAttr.includes(modelAttr[i].attribute)) {
+        filtered.push({
+          attribute: modelAttr[i].attribute,
+          value: stripText(modelAttr[i].value)
+        })
+      }
+    }
+    return filtered
+  } else if (typeof modelAttr === 'object') {
+    const filtered = []
+    Object.keys(modelAttr).forEach((e) => {
+      if (supportedAttr.includes(e)) {
+        filtered.push({
+          attribute: e,
+          value: stripText(modelAttr[e])
+        })
+      }
+    })
+    return filtered
+  }
+
+  return []
+}
+
+// Build content tab list based on available media types
+export const buildContentTabList = (imageUrl, videoUrl, modelUrl, t) => {
+  const contentTabList = []
+  if (imageUrl) {
+    contentTabList.push({ value: 'image', label: t('tabs.image') })
+  }
+  if (videoUrl) {
+    contentTabList.push({ value: 'video', label: t('tabs.video') })
+  }
+  if (modelUrl) {
+    contentTabList.push({ value: 'model', label: t('tabs.model') })
+  }
+  return contentTabList
+}
+
+// Extract all media URLs from NFT
+export const extractNftUrls = (nft) => {
+  return {
+    image: nftUrl(nft, 'image'),
+    video: nftUrl(nft, 'video'),
+    audio: nftUrl(nft, 'audio'),
+    model: nftUrl(nft, 'model'),
+    viewer: nftUrl(nft, 'viewer'),
+    cl: {
+      image: nftUrl(nft, 'image', 'cl'),
+      video: nftUrl(nft, 'video', 'cl'),
+      audio: nftUrl(nft, 'audio', 'cl'),
+      model: nftUrl(nft, 'model', 'cl')
+    }
+  }
+}
+
+// Determine default tab and URL when image is not available
+export const getDefaultTabAndUrl = (contentTab, imageUrl, clUrl) => {
+  let defaultTab = contentTab
+  let defaultUrl = clUrl[contentTab]
+  
+  if (!imageUrl && contentTab === 'image') {
+    if (clUrl.video) {
+      defaultTab = 'video'
+      defaultUrl = clUrl.video
+    } else if (clUrl.model) {
+      defaultTab = 'model'
+      defaultUrl = clUrl.model
+    }
+  }
+  
+  return { defaultTab, defaultUrl }
+}
+
+// Build image style object with dynamic properties
+export const buildImageStyle = (imageUrl, nft, options = {}) => {
+  const style = options.baseStyle || {}
+  
+  if (imageUrl) {
+    if (imageUrl.slice(0, 10) === 'data:image') {
+      style.imageRendering = 'pixelated'
+    }
+    if (nft.deletedAt) {
+      style.filter = 'grayscale(1)'
+    }
+  }
+  
+  return style
+}

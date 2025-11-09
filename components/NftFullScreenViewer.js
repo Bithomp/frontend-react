@@ -2,8 +2,17 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 
-import { forbid18Plus, stripText } from '../utils'
-import { needNftAgeCheck, nftName, nftUrl } from '../utils/nft'
+import { forbid18Plus } from '../utils'
+import { 
+  needNftAgeCheck, 
+  nftName, 
+  isPanorama, 
+  processModelAttributes, 
+  buildContentTabList, 
+  extractNftUrls, 
+  getDefaultTabAndUrl, 
+  buildImageStyle 
+} from '../utils/nft'
 
 import LoadingGif from '../public/images/loading.gif'
 import { FaCloudDownloadAlt, FaTimes } from 'react-icons/fa'
@@ -12,28 +21,11 @@ import AgeCheck from './UI/AgeCheck'
 import styles from '../styles/components/nftFullScreenViewer.module.scss'
 
 const downloadIcon = (
-  <div style={{ display: 'inline-block', verticalAlign: 'bottom', height: '19px' }}>
+  <div className={styles['fv-download-icon']}>
     <FaCloudDownloadAlt />
   </div>
 )
 
-const isPanorama = (metadata) => {
-  if (!metadata) return false
-
-  // Check name and description for panorama keywords
-  const panoramaKeywords = ['360', 'panorama', 'panoramic', 'equirectangular']
-  const name = metadata.name?.toString().toLowerCase() || ''
-  const description = metadata.description?.toString().toLowerCase() || ''
-
-  // Check if name or description contains panorama keywords
-  const hasPanoramaKeyword = panoramaKeywords.some((keyword) => name.includes(keyword) || description.includes(keyword))
-
-  // Check for specific camera types known for panoramas
-  const panoramaCameras = ['gopro fusion', 'insta360', 'ricoh theta']
-  const hasPanoramaCamera = panoramaCameras.some((camera) => description.includes(camera.toLowerCase()))
-
-  return hasPanoramaKeyword || hasPanoramaCamera
-}
 
 export default function NftFullScreenViewer({ nft, onClose }) {
   const { t } = useTranslation()
@@ -43,99 +35,17 @@ export default function NftFullScreenViewer({ nft, onClose }) {
   const [isPanoramic, setIsPanoramic] = useState(false)
   const [showAgeCheck, setShowAgeCheck] = useState(false)
 
-  const imageUrl = nftUrl(nft, 'image')
-  const videoUrl = nftUrl(nft, 'video')
-  const audioUrl = nftUrl(nft, 'audio')
-  const modelUrl = nftUrl(nft, 'model')
+  const urls = extractNftUrls(nft)
+  const { image: imageUrl, video: videoUrl, audio: audioUrl, model: modelUrl } = urls
+  const { cl: clUrl } = urls
 
-  const clUrl = {
-    image: nftUrl(nft, 'image', 'cl'),
-    video: nftUrl(nft, 'video', 'cl'),
-    audio: nftUrl(nft, 'audio', 'cl'),
-    model: nftUrl(nft, 'model', 'cl')
-  }
+  const contentTabList = buildContentTabList(imageUrl, videoUrl, modelUrl, t)
 
-  const contentTabList = []
-  if (imageUrl) {
-    contentTabList.push({ value: 'image', label: t('tabs.image') })
-  }
-  if (videoUrl) {
-    contentTabList.push({ value: 'video', label: t('tabs.video') })
-  }
-  if (modelUrl) {
-    contentTabList.push({ value: 'model', label: t('tabs.model') })
-  }
+  const imageStyle = buildImageStyle(imageUrl, nft, { baseStyle: { width: '100%', height: 'auto', maxHeight: '76vh' } })
 
-  let imageStyle = { width: '100%', height: 'auto', maxHeight: '76vh' }
-  if (imageUrl) {
-    if (imageUrl.slice(0, 10) === 'data:image') {
-      imageStyle.imageRendering = 'pixelated'
-    }
-    if (nft.deletedAt) {
-      imageStyle.filter = 'grayscale(1)'
-    }
-  }
+  const { defaultTab, defaultUrl } = getDefaultTabAndUrl(contentTab, imageUrl, clUrl)
 
-  let defaultTab = contentTab
-  let defaultUrl = clUrl[contentTab]
-  if (!imageUrl && contentTab === 'image') {
-    if (clUrl['video']) {
-      defaultTab = 'video'
-      defaultUrl = clUrl['video']
-    } else if (clUrl['model']) {
-      defaultTab = 'model'
-      defaultUrl = clUrl['model']
-    }
-  }
-
-  //add attributes for the 3D model viewer
-  let modelAttr = []
-  if (nft.metadata && (nft.metadata['3D_attributes'] || nft.metadata['3d_attributes'])) {
-    modelAttr = nft.metadata['3D_attributes'] || nft.metadata['3d_attributes']
-    const supportedAttr = [
-      'environment-image',
-      'exposure',
-      'shadow-intensity',
-      'shadow-softness',
-      'camera-orbit',
-      'camera-target',
-      'skybox-image',
-      'auto-rotate-delay',
-      'rotation-per-second',
-      'field-of-view',
-      'max-camera-orbit',
-      'min-camera-orbit',
-      'max-field-of-view',
-      'min-field-of-view',
-      'disable-zoom',
-      'orbit-sensitivity',
-      'animation-name',
-      'animation-crossfade-duration',
-      'variant-name',
-      'orientation',
-      'scale'
-    ]
-    if (Array.isArray(modelAttr)) {
-      for (let i = 0; i < modelAttr.length; i++) {
-        if (supportedAttr.includes(modelAttr[i].attribute)) {
-          modelAttr[i].value = stripText(modelAttr[i].value)
-        } else {
-          delete modelAttr[i]
-        }
-      }
-    } else if (typeof modelAttr === 'object') {
-      let metaModelAttr = modelAttr
-      modelAttr = []
-      Object.keys(metaModelAttr).forEach((e) => {
-        if (supportedAttr.includes(e)) {
-          modelAttr.push({
-            attribute: e,
-            value: stripText(metaModelAttr[e])
-          })
-        }
-      })
-    }
-  }
+  const modelAttr = processModelAttributes(nft)
 
   useEffect(() => {
     if (imageUrl || videoUrl) {
@@ -150,7 +60,7 @@ export default function NftFullScreenViewer({ nft, onClose }) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageUrl, videoUrl])
+  }, [imageUrl, videoUrl, nft.metadata])
 
   // Disable body scroll when full-screen viewer is open
   useEffect(() => {
@@ -175,14 +85,14 @@ export default function NftFullScreenViewer({ nft, onClose }) {
   const loadingImage = () => {
     if (errored) {
       return (
-        <div style={{ textAlign: 'center', marginTop: '40px', marginBottom: '20px' }}>
+        <div className={styles['fv-loading-container']}>
           {t('general.load-failed')}
           <br />
         </div>
       )
     } else if (!loaded) {
       return (
-        <div style={{ textAlign: 'center', marginTop: '40px', marginBottom: '20px' }}>
+        <div className={styles['fv-loading-container']}>
           <span className="waiting"></span>
           <br />
           {t('general.loading')}
@@ -264,7 +174,7 @@ export default function NftFullScreenViewer({ nft, onClose }) {
       {/* Header with close button and tabs */}
       <div className={styles['fv-header']}>
         <div className={styles['fv-header-left']}>
-          <h2 className={styles['fv-title']} style={{ color: 'white', margin: 0, fontSize: '24px' }}>
+          <h2 className={styles['fv-title']}>
             {nftName(nft) || 'NFT Viewer'}
           </h2>
           
