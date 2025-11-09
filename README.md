@@ -64,7 +64,8 @@ Runs the app in production
 
 `yarn build`
 
-`pm2 start yarn --name "frontend-react" -- start` // otherwise: `-- start:next` or `PORT=3400 pm2 start /usr/bin/yarn  --name "jshooks.xahau-frontend-react" -- start`
+`PORT=27302 pm2 start /usr/bin/yarn  --name "jshooks.xahau-frontend-react" -- start` or
+`PORT=27303 pm2 start yarn --name “alphanet-frontend-react” --interpreter bash -- start`
 
 `pm2 logs frontend-react --lines 1000` //verify it runs properly
 
