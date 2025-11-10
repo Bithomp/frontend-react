@@ -117,7 +117,6 @@
     "actions": {
       "view": "Ma page de compte",
       "my-transactions": "Mes transactions",
-      "send": "Envoyer XRP",
       "my-nfts": "Mes NFTs",
       "my-nft-offers": "Mes offres NFT"
     },
@@ -487,7 +486,7 @@
     "by-owner": "Par propriétaire",
     "by-taxon": "Par taxon",
     "all-nfts": "Tous les NFTs",
-    "on-sale": "En vente",
+    "listed": "En vente",
     "social-share": "Le partage, c'est bien",
     "marketplace": "Marché",
     "public-key": "Clé publique",
@@ -553,8 +552,10 @@
     "all": "Tout",
     "buy": "Acheter",
     "sell": "Vendre",
-    "buyNow": "Acheter maintenant",
-    "publicAndKnownBrokers": "Public & MP",
+    "buyNow": "Acheter maintenant (Public + places de marché intégrées)",
+    "publicAndKnownBrokers": "Public et places de marché",
+    "public": "Public",
+    "knownBrokers": "Places de marché",
     "onSale": "Sont en vente",
     "all-tokens": "Tous les tokens",
     "single-token": "Token unique",
@@ -625,7 +626,6 @@
     "search-by-seller": "Rechercher par vendeur de NFT",
     "no-nfts": "Nous n'avons trouvé aucun NFT avec vos paramètres de recherche.",
     "on-service": "sur {{service}}",
-    "amount-on-service": "{{amount}} sur {{service}}",
     "load-more": "Nous cherchons des données sur le registre... veuillez patienter...",
     "end": "Voici tous les NFTs que nous avons pu trouver.",
     "change-filters": "Utilisez différentes options de filtres ou sélectionnez d’autres paramètres de recherche pour explorer plus de NFTs correspondant à vos intérêts."

@@ -1,4 +1,5 @@
 import { objectsCountText } from '../../utils'
+import { scaleAmount } from '../../utils/calc'
 import { AddressWithIconFilled, fullDateAndTime, shortNiceNumber } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 
@@ -157,7 +158,7 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
             {isIssued ? (
               <>
                 <th className="right">Outstanding</th>
-                <th className="right">Max</th>
+                <th className="right">Max supply</th>
               </>
             ) : (
               <th className="right">Balance</th>
@@ -183,16 +184,14 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                 </td>
                 {isIssued ? (
                   <>
+                    <td className="right">{shortNiceNumber(scaleAmount(c.OutstandingAmount || 0, c.AssetScale))}</td>
                     <td className="right">
-                      {shortNiceNumber(c.OutstandingAmount * Math.pow(10, -1 * (c.AssetScale || 0)))}
-                    </td>
-                    <td className="right">
-                      {shortNiceNumber(c.MaximumAmount * Math.pow(10, -1 * (c.AssetScale || 0)))}
+                      {c.MaximumAmount ? shortNiceNumber(scaleAmount(c.MaximumAmount, c.AssetScale)) : 'not set'}
                     </td>
                   </>
                 ) : (
                   <td className="right">
-                    {shortNiceNumber(c.MPTAmount * Math.pow(10, -1 * (c.mptokenCurrencyDetails?.scale || 0)) || 0)}
+                    {shortNiceNumber(scaleAmount(c.MPTAmount || 0, c.mptokenCurrencyDetails?.scale))}
                   </td>
                 )}
               </tr>
@@ -233,8 +232,12 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                       data={issuerDetails(c)}
                       name="issuer"
                       currency={mptCurrency(c)}
-                      options={{ mptId: cMptId, currencyName: mptName(c), flags: isIssued ? c.flags : null }}
-                      windowWidth={700}
+                      options={{
+                        mptId: cMptId,
+                        currencyName: mptName(c),
+                        flags: isIssued ? c.flags : null,
+                        short: true
+                      }}
                     />
                   </td>
                   <td className="center">
@@ -242,11 +245,13 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                   </td>
                   {isIssued ? (
                     <>
-                      <td className="right">{shortNiceNumber(c.OutstandingAmount)}</td>
-                      <td className="right">{shortNiceNumber(c.MaximumAmount)}</td>
+                      <td className="right">{scaleAmount(c.OutstandingAmount || 0, c.AssetScale)}</td>
+                      <td className="right">
+                        {c.MaximumAmount ? scaleAmount(c.MaximumAmount, c.AssetScale) : 'not set'}
+                      </td>
                     </>
                   ) : (
-                    <td className="right">{shortNiceNumber(c.MPTAmount || 0)}</td>
+                    <td className="right">{scaleAmount(c.MPTAmount || 0, c.mptokenCurrencyDetails?.scale)}</td>
                   )}
                 </tr>
               )

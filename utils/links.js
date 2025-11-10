@@ -2,9 +2,24 @@ import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
 import { shortHash } from './format'
 import CopyButton from '../components/UI/CopyButton'
+import { isValidTaxon } from './nft'
 
-export const LinkTx = ({ tx, icon, short, children }) =>
-  tx ? <Link href={`/tx/${tx}`}>{children || (icon ? <LinkIcon /> : shortHash(tx, short || 10))}</Link> : ''
+export const LinkTx = ({ tx, icon, short, children, copy }) =>
+  tx ? (
+    <>
+      <Link href={`/tx/${tx}`}>{children || (icon ? <LinkIcon /> : shortHash(tx, short || 10))}</Link>
+      {copy ? (
+        <>
+          {' '}
+          <CopyButton text={tx} />
+        </>
+      ) : (
+        ''
+      )}
+    </>
+  ) : (
+    ''
+  )
 
 export const LedgerLink = ({ version, text, style, onClick }) =>
   version ? (
@@ -42,11 +57,11 @@ export const LinkAccount = ({ address, icon, copy, text, short }) =>
     ''
   )
 
-export const LinkAmm = ({ ammId, hash, icon, copy, text }) =>
+export const LinkAmm = ({ ammId, hash, icon, copy, text, style }) =>
   ammId ? (
     <>
-      <Link href={`/amm/${ammId}`}>
-        {text ? text : hash ? shortHash(ammId, hash > 3 ? hash : 10) : ''}
+      <Link href={`/amm/${ammId}`} style={style ? style : {}}>
+        {text ? text : hash ? shortHash(ammId, hash === true ? 6 : hash) : ''}
         {icon ? (
           <>
             {' '}
@@ -68,3 +83,71 @@ export const LinkAmm = ({ ammId, hash, icon, copy, text }) =>
   ) : (
     ''
   )
+
+export const LinkObject = ({ objectId, ledgerIndex, hash, icon, copy, text, style }) =>
+  objectId ? (
+    <>
+      <Link
+        href={`/object/${objectId}` + (ledgerIndex ? '?ledgerIndex=' + ledgerIndex : '')}
+        style={style ? style : {}}
+      >
+        {text ? text : hash ? shortHash(objectId, hash === true ? 6 : hash) : ''}
+        {icon ? (
+          <>
+            {' '}
+            <LinkIcon />
+          </>
+        ) : (
+          ''
+        )}
+      </Link>
+      {copy ? (
+        <>
+          {' '}
+          <CopyButton text={objectId} />
+        </>
+      ) : (
+        ''
+      )}
+    </>
+  ) : (
+    ''
+  )
+
+export const LinkListedNfts = ({
+  children,
+  issuer,
+  taxon,
+  collection,
+  saleCurrency,
+  saleCurrencyIssuer,
+  saleDestination
+}) => {
+  let collectionPart = ''
+  if (issuer && isValidTaxon(taxon)) {
+    collectionPart = '&issuer=' + issuer + '&taxon=' + taxon
+  } else if (collection) {
+    collectionPart = '&collection=' + collection
+  }
+
+  let currencyPart = ''
+  if (saleCurrency) {
+    currencyPart = '&saleCurrency=' + saleCurrency
+    if (saleCurrencyIssuer) currencyPart += '&saleCurrencyIssuer=' + saleCurrencyIssuer
+  }
+
+  return (
+    <Link
+      href={
+        '/nft-explorer?includeWithoutMediaData=true' +
+        collectionPart +
+        '&list=onSale' +
+        currencyPart +
+        '&saleDestination=' +
+        saleDestination
+      }
+    >
+      {children || <LinkIcon />}
+    </Link>
+  )
+}

@@ -152,8 +152,8 @@ export default function AMM() {
               <span role="img" aria-label="lamp">
                 👉
               </span>{' '}
-              On Bithomp <Link href="/services/amm?tab=deposit">AMM Deposit</Link>, you can easily add liquidity to
-              pools and start earning fees.
+              On Bithomp <Link href="/services/amm/deposit">AMM Deposit</Link>, you can easily add liquidity to pools
+              and start earning fees.
             </p>
           </div>
           <h2>LP Tokens</h2>
@@ -166,7 +166,7 @@ export default function AMM() {
               <span role="img" aria-label="lamp">
                 👉
               </span>{' '}
-              Withdraw your liquidity easily on Bithomp <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
+              Withdraw your liquidity easily on Bithomp <Link href="/services/amm/withdraw">AMM Withdraw</Link>
             </p>
           </div>
           <h2>Impermanent Loss</h2>
@@ -187,7 +187,7 @@ export default function AMM() {
           <ul>
             <li>
               <strong>Fee Voting</strong> – LPs can vote on pool trading fees, making it community-driven. Try it on
-              Bithomp <Link href="/services/amm?tab=vote">AMM Vote</Link>.
+              Bithomp <Link href="/services/amm/vote">AMM Vote</Link>.
             </li>
             <li>
               <strong>Continuous Auction Mechanism </strong>– Rewards liquidity providers while helping offset
@@ -204,7 +204,7 @@ export default function AMM() {
                 👉
               </span>{' '}
               Want to create your own AMM pool? You can do it directly via Bithomp{' '}
-              <Link href="/services/amm?tab=create">AMM Create</Link>
+              <Link href="/services/amm/create">AMM Create</Link>
             </p>
           </div>
           <h3>Auction Rewards </h3>
@@ -251,16 +251,16 @@ export default function AMM() {
             <strong> Ready to explore XRPL’s AMM yourself?</strong>
           </p>
           <p>
-            👉 <Link href="/services/amm?tab=deposit">Deposit liquidity</Link>
+            👉 <Link href="/services/amm/deposit">Deposit liquidity</Link>
           </p>
           <p>
-            👉 <Link href="/services/amm?tab=withdraw">Withdraw your funds</Link>
+            👉 <Link href="/services/amm/withdraw">Withdraw your funds</Link>
           </p>
           <p>
-            👉 <Link href="/services/amm?tab=vote">Vote on pool fees</Link>
+            👉 <Link href="/services/amm/vote">Vote on pool fees</Link>
           </p>
           <p>
-            👉 <Link href="/services/amm?tab=create">Create a new AMM pool</Link>
+            👉 <Link href="/services/amm/create">Create a new AMM pool</Link>
           </p>
           <p>All available directly on Bithomp.❤️</p>
         </article>

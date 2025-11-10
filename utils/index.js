@@ -580,6 +580,16 @@ export const networks = {
     minLedger: 1,
     subname: 'Devnet'
   },
+  alphanet: {
+    id: 21339,
+    server: 'https://alphanet.bithomp.com',
+    nativeCurrency: 'XRP',
+    getCoinsUrl: '/faucet',
+    explorerName: 'XRPL AlphaNet',
+    ledgerName: 'XRPL',
+    minLedger: 1,
+    subname: 'AlphaNet'
+  },
   xahau: {
     id: 21337,
     server: 'https://xahauexplorer.com',
@@ -649,6 +659,9 @@ export const avatarSrc = (address, refreshPage) => {
 }
 
 export const tokenImageSrc = (token) => {
+  if (!token) return ''
+  if ((!token.issuer && token.currency === nativeCurrency) || typeof token === 'string')
+    return nativeCurrenciesImages[nativeCurrency]
   return avatarServer.replace('/avatar/', '/issued-token/') + token.issuer + '/' + token.currency
 }
 
@@ -660,6 +673,7 @@ export const networksIds = {
   0: { server: 'https://bithomp.com', name: 'mainnet' },
   1: { server: 'https://test.bithomp.com', name: 'testnet' },
   2: { server: 'https://dev.bithomp.com', name: 'devnet' },
+  21339: { server: 'https://alphanet.bithomp.com', name: 'alphanet' },
   21337: { server: 'https://xahauexplorer.com', name: 'xahau' },
   21338: { server: 'https://test.xahauexplorer.com', name: 'xahau-testnet' },
   31338: { server: 'https://jshooks.xahauexplorer.com', name: 'xahau-jshooks' }
@@ -690,6 +704,8 @@ export const networkMinimumDate = (type = 'ledger') => {
       minDate = new Date('2023-08-09T01:53:41.000Z') // first nft in history for the testnet
     } else if (network === 'devnet') {
       minDate = new Date('2023-09-19T20:36:40.000Z') // first nft in history for the devnet
+    } else if (network === 'alphanet') {
+      minDate = new Date('2025-11-01T00:00:00.000Z') // first nft in history for the alpanet // update later
     } else {
       minDate = new Date('2013-01-01T03:21:10.000Z') // ledger 32570
     }
@@ -749,8 +765,24 @@ export const isTagValid = (x) => {
   return true
 }
 
+export const isLedgerIndexValid = (value) => {
+  if (typeof value === 'number') {
+    // numbers don't have "leading zeros" issue
+    return Number.isInteger(value) && value >= 1 && value <= 9999999999
+  }
+  if (typeof value === 'string') {
+    // strict: digits only, no leading zeros, 1–10 digits (caps at 9,999,999,999)
+    return /^[1-9]\d{0,9}$/.test(value)
+  }
+  return false
+}
+
 export const isUsernameValid = (x) => {
-  return x && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(x)
+  return x && /^(?=.{3,22}$)[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+){0,5}$/.test(x)
+}
+
+export const isUsernameValidToRegister = (x) => {
+  return x && /^[a-zA-Z0-9]{3,18}$/.test(x)
 }
 
 export const isAddressOrUsername = (x) => {
@@ -963,4 +995,42 @@ export const objectsCountText = (objects) => {
   let countList = objects.filter((p) => p !== undefined)
   if (countList.length > 1) return countList.length + ' '
   return ''
+}
+
+export const performIdSearch = async ({ searchFor, router, setErrorMessage }) => {
+  //nft nftOffer uriToken
+  if (isIdValid(searchFor)) {
+    const response = await axios('v3/search/' + searchFor)
+    const data = response.data
+    if (data.type === 'transaction') {
+      router.push('/tx/' + searchFor)
+      return
+    }
+    if (data.type === 'nftoken' || data.type === 'uriToken') {
+      router.push('/nft/' + searchFor)
+      return
+    }
+    if (data.type === 'nftokenOffer') {
+      router.push('/nft-offer/' + searchFor)
+      return
+    }
+    if (data.type === 'amm') {
+      router.push('/amm/' + searchFor)
+      return
+    }
+    if (data.type === 'ledgerEntry') {
+      router.push('/object/' + searchFor)
+      return
+    }
+    if (data.type === 'ledger') {
+      router.push('/ledger/' + searchFor)
+      return
+    }
+    if (data.type === 'unknown') {
+      setErrorMessage(data.error)
+      return
+    }
+  } else {
+    setErrorMessage('Invalid ID format')
+  }
 }

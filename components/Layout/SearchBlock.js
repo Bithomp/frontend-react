@@ -19,7 +19,9 @@ import {
   isCurrencyHashValid,
   server,
   isValidPayString,
-  isValidXAddress
+  isValidXAddress,
+  performIdSearch,
+  isLedgerIndexValid
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -202,37 +204,13 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    //nft nftOffer uriToken
     if (isIdValid(searchFor)) {
+      //nft nftOffer uriToken
+      //redirect to the right page or sets an error message
       setSearching(true)
-      const response = await axios('v3/search/' + searchFor)
+      await performIdSearch({ searchFor, router, setErrorMessage })
       setSearching(false)
-      const data = response.data
-      if (data.type === 'transaction') {
-        router.push('/tx/' + searchFor)
-        return
-      }
-      if (data.type === 'nftoken' || data.type === 'uriToken') {
-        router.push('/nft/' + searchFor)
-        return
-      }
-      if (data.type === 'nftokenOffer') {
-        router.push('/nft-offer/' + searchFor)
-        return
-      }
-      if (data.type === 'amm') {
-        router.push('/amm/' + searchFor)
-        return
-      }
-      if (data.type === 'ledgerEntry') {
-        router.push('/object/' + searchFor)
-        return
-      }
-
-      if (data.type === 'unknown') {
-        setErrorMessage(data.error)
-        return
-      }
+      return
     }
 
     if (isValidCTID(searchFor)) {
@@ -287,6 +265,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       // if there is a tag -
       // get the new page which we can show an address and a tag
       router.push('/account/' + encodeURI(searchFor) + addParams) //replace with a new page to show a tag
+      return
+    }
+
+    if (isLedgerIndexValid(searchFor)) {
+      router.push('/ledger/' + searchFor)
       return
     }
 

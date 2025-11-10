@@ -26,7 +26,7 @@ function MenuList(props) {
   )
 }
 
-export default function CurrencySearchSelect({ setCurrency, defaultValue = '' }) {
+export default function CurrencySearchSelect({ setCurrency, defaultValue = '', type }) {
   const [inputValue, setInputValue] = useState(defaultValue || '')
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
@@ -49,9 +49,12 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
       }
 
       setSearchingSuggestions(true)
+
       try {
         const res = await axios(
-          `/v2/trustlines/currencies/search/${encodeURIComponent(inputValue)}?limit=${limit}&currencyDetails=true`
+          `/v2/${type === 'mpt' ? 'mptokens' : 'trustlines'}/currencies/search/${encodeURIComponent(
+            inputValue
+          )}?limit=${limit}&currencyDetails=true`
         )
         let list = res?.data
         if (list && list.currencies) list = list.currencies
@@ -103,6 +106,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue])
 
   const searchOnChange = (option) => {
@@ -145,7 +149,7 @@ export default function CurrencySearchSelect({ setCurrency, defaultValue = '' })
         Currency
         {selectedOption && selectedOption.item && (
           <>
-            : <b>{selectedOption.item.currencyDetails.currency}</b>
+            : <b>{selectedOption.item.currencyDetails?.currency}</b>
           </>
         )}
       </span>

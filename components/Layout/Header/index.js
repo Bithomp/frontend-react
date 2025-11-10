@@ -95,15 +95,12 @@ export default function Header({
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
 
-  const [xamanUserToken, setXamanUserToken] = useState(null)
-
   const [hoverStates, setHoverStates] = useState({}) //{ dropdown7: true }
 
   const width = useWidth()
 
   useEffect(() => {
     setRendered(true)
-    setXamanUserToken(localStorage.getItem('xamanUserToken'))
   }, [])
 
   let address, displayName, username, pro, proName
@@ -197,7 +194,7 @@ export default function Header({
             <Link href="/services/trustline">Set Trust (Trustline)</Link>
             <Link href="/services/check">Issue Check</Link>
             <Link href="/services/escrow">Create Escrow</Link>
-            {!xahauNetwork && !devNet && <Link href="/services/amm">AMM Services</Link>}
+            {!xahauNetwork && <Link href="/services/amm/deposit">AMM Services</Link>}
             <Link href="/services/account-settings/">Account Settings</Link>
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
@@ -214,8 +211,16 @@ export default function Header({
               setHoverStates={setHoverStates}
               hoverStates={hoverStates}
             >
-              <Link href="/tokens">TOP {t('menu.tokens')}</Link>
-              <Link href="/distribution?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De">
+              <Link href="/tokens">{t('menu.tokens')}</Link>
+              {!xahauNetwork && <Link href="/mpts">Multi-Purpose {t('menu.tokens')}</Link>}
+              <Link
+                href={
+                  '/distribution' +
+                  (xahauNetwork
+                    ? '?currencyIssuer=rEvernodee8dJLaFsujS6q1EiXvZYmHXr8&currency=EVR'
+                    : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
+                }
+              >
                 TOP Holders
               </Link>
               <Link href="/services/trustline">Set Trust (Trustline)</Link>
@@ -234,10 +239,10 @@ export default function Header({
             >
               <Link href="/amms">{t('menu.amm.pools')}</Link>
               <Link href="/learn/amm">What is AMM?</Link>
-              <Link href="/services/amm?tab=deposit">AMM Deposit</Link>
-              <Link href="/services/amm?tab=withdraw">AMM Withdraw</Link>
-              <Link href="/services/amm?tab=vote">AMM Vote</Link>
-              <Link href="/services/amm?tab=create">AMM Create</Link>
+              <Link href="/services/amm/deposit">AMM Deposit</Link>
+              <Link href="/services/amm/withdraw">AMM Withdraw</Link>
+              <Link href="/services/amm/vote">AMM Vote</Link>
+              <Link href="/services/amm/create">AMM Create</Link>
               <Link href="/amm">{t('menu.amm.explorer')}</Link>
             </MenuDropDown>
           )}
@@ -313,6 +318,7 @@ export default function Header({
             hoverStates={hoverStates}
           >
             <Link href="/learn/the-bithomp-api">{t('menu.developers.api')}</Link>
+            <Link href="/learn/image-services">Token/NFT/Address Images</Link>
             {network === 'mainnet' && (
               <>
                 <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
@@ -459,23 +465,11 @@ export default function Header({
                 </span>
                 <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
                 <a href={server + '/explorer/' + address}>{t('signin.actions.my-transactions')}</a>
+                <Link href="/services/send">Send payment</Link>
                 <Link href="/services/account-settings/">Account Settings</Link>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
                 <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
-
                 {!username && <Link href={'/username?address=' + address}>{t('menu.usernames')}</Link>}
-
-                {/* Hide Send XRP for XAHAU while they are not ready yet */}
-                {!xahauNetwork && (
-                  <>
-                    {account?.wallet === 'xaman' && xamanUserToken && (
-                      <a href={'/explorer/' + address + '?hw=xumm&xummtoken=' + xamanUserToken + '&action=send'}>
-                        {t('signin.actions.send')}
-                      </a>
-                    )}
-                  </>
-                )}
-
                 <span onClick={signOut} className="link">
                   {account?.wallet === 'walletconnect' && (
                     <Image
@@ -624,7 +618,6 @@ export default function Header({
           proName={proName}
           signOut={signOut}
           signOutPro={signOutPro}
-          xamanUserToken={account?.wallet === 'xaman' ? xamanUserToken : null}
           username={username}
           isCopied={isCopied}
           copyToClipboard={copyToClipboard}

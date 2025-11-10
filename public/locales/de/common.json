@@ -117,7 +117,6 @@
     "actions": {
       "view": "Meine Kontoseite",
       "my-transactions": "Meine Transaktionen",
-      "send": "XRP senden",
       "my-nfts": "Meine NFTs",
       "my-nft-offers": "Meine NFT Angebote"
     },
@@ -487,7 +486,7 @@
     "by-owner": "nach Besitzer",
     "by-taxon": "nach Taxon",
     "all-nfts": "Alle NFTs",
-    "on-sale": "Zum Verkauf",
+    "listed": "Zum Verkauf",
     "social-share": "Teilen ist Kümmern",
     "marketplace": "Marktplatz",
     "public-key": "Public Key",
@@ -553,8 +552,10 @@
     "all": "Alle",
     "buy": "Kaufen",
     "sell": "Verkaufen",
-    "buyNow": "Jetzt kaufen",
-    "publicAndKnownBrokers": "Öffentlich & MP",
+    "buyNow": "Jetzt kaufen (Öffentlich + integrierte Marktplätze)",
+    "publicAndKnownBrokers": "Öffentlich & Marktplätze",
+    "public": "Öffentlich",
+    "knownBrokers": "Marktplätze",
     "onSale": "Gelistet",
     "all-tokens": "Alle Tokens",
     "single-token": "Einzelner Token",
@@ -625,7 +626,6 @@
     "search-by-seller": "Suche nach NFT Verkäufer",
     "no-nfts": "Wir konnten keine NFTs mit Ihren Suchparametern finden.",
     "on-service": "auf {{service}}",
-    "amount-on-service": "{{amount}} auf {{service}}",
     "load-more": "Wir suchen nach Daten auf dem Ledger... bitte warten...",
     "end": "Hier sind alle NFTs die wir finden konnten.",
     "change-filters": "Verwenden Sie verschiedene Filteroptionen oder wählen Sie andere Suchparameter, um mehr NFTs zu entdecken, die Ihren Interessen entsprechen."

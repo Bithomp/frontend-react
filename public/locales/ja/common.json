@@ -117,7 +117,6 @@
     "actions": {
       "view": "マイアカウントページ",
       "my-transactions": "トランザクションを確認",
-      "send": "XRPを送信",
       "my-nfts": "NFTを確認",
       "my-nft-offers": "NFTオファーの確認"
     },
@@ -487,7 +486,7 @@
     "by-owner": "保有者情報",
     "by-taxon": "Taxon情報",
     "all-nfts": "全てのNFT",
-    "on-sale": "販売中",
+    "listed": "販売中",
     "social-share": "共有",
     "marketplace": "マーケットプレイス",
     "public-key": "公開鍵",
@@ -553,8 +552,10 @@
     "all": "全て",
     "buy": "購入",
     "sell": "売却",
-    "buyNow": "今すぐ購入",
-    "publicAndKnownBrokers": "パブリック & MP",
+    "buyNow": "今すぐ購入（公開＋統合マーケットプレイス）",
+    "publicAndKnownBrokers": "公開およびマーケットプレイス",
+    "public": "公開",
+    "knownBrokers": "マーケットプレイス",
     "onSale": "販売中です",
     "all-tokens": "全トークン",
     "single-token": "単一トークン",
@@ -625,7 +626,6 @@
     "search-by-seller": "NFT売却者で検索",
     "no-nfts": "検索条件に該当するNFTは見つかりませんでした。",
     "on-service": "{{service}}",
-    "amount-on-service": "{{service}}にて{{amount}}",
     "load-more": "XRPLからデータを探しています...しばらくお待ちください...",
     "end": "取得できた全てのNFTを表示しています。",
     "change-filters": "異なるフィルターオプションを使用するか、他の検索パラメーターを選択して、興味に合ったNFTをさらに探索してください。"

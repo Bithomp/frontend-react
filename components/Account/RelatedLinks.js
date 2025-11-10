@@ -28,6 +28,14 @@ export default function RelatedLinks({ data }) {
           |{' '}
         </>
       )}
+      {network !== 'alphanet' && (
+        <>
+          <a href={'https://alphanet.bithomp.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+            XRPL AlphaNet
+          </a>{' '}
+          |{' '}
+        </>
+      )}
       {network !== 'xahau' && (
         <>
           <a href={'https://xahauexplorer.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
@@ -114,6 +122,14 @@ export default function RelatedLinks({ data }) {
           <a href={'https://devnet.xrpl.org/accounts/' + data?.address} rel="nofollow">
             XRPL.org
           </a>
+        </>
+      )}
+      {network === 'alphanet' && (
+        <>
+          <a href={'https://alphanet.bithomp.com/explorer/' + data?.address} rel="nofollow">
+            Bithomp
+          </a>{' '}
+          (old view)
         </>
       )}
       {network === 'xahau' && (

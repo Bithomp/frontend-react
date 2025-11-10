@@ -17,6 +17,7 @@ import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 
 import VerifiedIcon from '../public/images/verified.svg'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export async function getServerSideProps(context) {
   const { query, locale, req } = context
@@ -116,6 +117,10 @@ export default function Validators({ amendment, initialData, initialErrorMessage
       //in the negative UNL
       if (a.nUnl && !b.nUnl) return -1
       if (!a.nUnl && b.nUnl) return 1
+
+      //without baseFee - offline
+      if (!a.baseFee && b.baseFee) return -1
+      if (a.baseFee && !b.baseFee) return 1
     }
 
     //in the UNL
@@ -462,9 +467,9 @@ export default function Validators({ amendment, initialData, initialErrorMessage
         {a === amendment ? (
           <span className="purple bold">{a.length === 64 ? shortHash(a) : a}</span>
         ) : (
-          <a href={'?amendment=' + a} className="orange">
+          <Link href={'/amendment/' + a} className="orange">
             {a.length === 64 ? shortHash(a) : a}
-          </a>
+          </Link>
         )}
         {i !== amendments.length - 1 && ', '}
       </span>
@@ -818,7 +823,9 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                       {v.domain ? (
                         <p>
                           {t('table.domain')}:<br />
-                          <a href={'https://' + v.domain}>{v.domain}</a>
+                          <a href={'https://' + v.domain} style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
+                            {v.domain}
+                          </a>
                           {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
                         </p>
                       ) : (
@@ -833,71 +840,74 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                           )}
                         </>
                       )}
-                      {v.unl && <p>UNL: ✅</p>}
-                      {v.nUnl && <p>nUNL: ❌</p>}
-                      <p>
-                        {t('table.votes-for', { ns: 'validators' })}:
-                        <br />
-                        {listAmendments(v.amendments)}
-                      </p>
+                      {v.unl && v.baseFee && <p>UNL: ✅</p>}
+                      {(v.nUnl || !v.baseFee) && <p>nUNL: ❌</p>}
                       <p>
                         {t('table.public-key')}:<br />
                         {shortHash(v.publicKey)} <CopyButton text={v.publicKey} />
                       </p>
-                      <p>
-                        {t('table.sequence')}: {v.sequence}
-                      </p>
-                      <p>
-                        {t('last-ledger-information.base-fee')}: {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}
-                      </p>
-                      <p>
-                        {t('last-ledger-information.base-reserve')}:{' '}
-                        {v.reserveBase ? amountFormat(v.reserveBase) : 'N/A'}
-                      </p>
-                      <p>
-                        {t('last-ledger-information.increment-reserve')}:{' '}
-                        {v.reserveIncrement ? amountFormat(v.reserveIncrement) : 'N/A'}
-                      </p>
-                      {v.serverCountry?.length === 2 && (
-                        <p>
-                          {t('table.server-country', { ns: 'validators' })}:{' '}
-                          {countries?.getNameTranslated(fixCountry(v.serverCountry))}{' '}
-                          <ReactCountryFlag
-                            countryCode={fixCountry(v.serverCountry)}
-                            style={{
-                              fontSize: '1.5em',
-                              lineHeight: '1.5em'
-                            }}
-                          />
-                        </p>
-                      )}
+                      {!v.amendments && !v.baseFee ? (
+                        <p className="red bold">Offline</p>
+                      ) : (
+                        <>
+                          <p>
+                            {t('table.votes-for', { ns: 'validators' })}:
+                            <br />
+                            {listAmendments(v.amendments)}
+                          </p>
+                          <p>
+                            {t('last-ledger-information.base-fee')}: {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}
+                          </p>
+                          <p>
+                            {t('last-ledger-information.base-reserve')}:{' '}
+                            {v.reserveBase ? amountFormat(v.reserveBase) : 'N/A'}
+                          </p>
+                          <p>
+                            {t('last-ledger-information.increment-reserve')}:{' '}
+                            {v.reserveIncrement ? amountFormat(v.reserveIncrement) : 'N/A'}
+                          </p>
+                          {v.serverCountry?.length === 2 && (
+                            <p>
+                              {t('table.server-country', { ns: 'validators' })}:{' '}
+                              {countries?.getNameTranslated(fixCountry(v.serverCountry))}{' '}
+                              <ReactCountryFlag
+                                countryCode={fixCountry(v.serverCountry)}
+                                style={{
+                                  fontSize: '1.5em',
+                                  lineHeight: '1.5em'
+                                }}
+                              />
+                            </p>
+                          )}
 
-                      {v.serverLocation && (
-                        <p>
-                          {t('table.server-location', { ns: 'validators' })}: {v.serverLocation}
-                        </p>
-                      )}
+                          {v.serverLocation && (
+                            <p>
+                              {t('table.server-location', { ns: 'validators' })}: {v.serverLocation}
+                            </p>
+                          )}
 
-                      {v.serverCloud?.toString() && (
-                        <p>
-                          {t('table.cloud-private', { ns: 'validators' })}:
-                          {v.serverCloud === true && <span style={{ fontSize: '1.5em' }}> ☁️</span>}
-                          {v.serverCloud === false && <span style={{ fontSize: '1.5em' }}> 🏠</span>}
-                        </p>
-                      )}
+                          {v.serverCloud?.toString() && (
+                            <p>
+                              {t('table.cloud-private', { ns: 'validators' })}:
+                              {v.serverCloud === true && <span style={{ fontSize: '1.5em' }}> ☁️</span>}
+                              {v.serverCloud === false && <span style={{ fontSize: '1.5em' }}> 🏠</span>}
+                            </p>
+                          )}
 
-                      {v.serverLocation && (
-                        <p>
-                          {t('table.network-asn', { ns: 'validators' })}: {v.networkASN}
-                        </p>
-                      )}
+                          {v.serverLocation && (
+                            <p>
+                              {t('table.network-asn', { ns: 'validators' })}: {v.networkASN}
+                            </p>
+                          )}
 
-                      <p>
-                        {t('table.version')}: {v.serverVersion ? v.serverVersion : 'N/A'}
-                      </p>
-                      <p>
-                        {t('table.last-seen', { ns: 'validators' })}: <ShowTimeMemo time={v.lastSeenTime} />
-                      </p>
+                          <p>
+                            {t('table.version')}: {v.serverVersion ? v.serverVersion : 'N/A'}
+                          </p>
+                          <p>
+                            {t('table.last-seen', { ns: 'validators' })}: <ShowTimeMemo time={v.lastSeenTime} />
+                          </p>
+                        </>
+                      )}
                       {xahauNetwork && (
                         <p>
                           {t('table.address')} <CopyButton text={v.address} />
@@ -905,6 +915,9 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                           {addressUsernameOrServiceLink(v, 'address')}
                         </p>
                       )}
+                      <p>
+                        {t('table.sequence')}: {v.sequence}
+                      </p>
                     </td>
                   </tr>
                 ))
@@ -977,16 +990,23 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                         </>
                       )}
                       <br />
-                      {listAmendments(v.amendments)}
-                      <br />
-                      {t('last-ledger-information.base-fee')} {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}|{' '}
-                      {t('last-ledger-information.base-reserve')} {v.reserveBase ? amountFormat(v.reserveBase) : 'N/A'}|{' '}
-                      {t('last-ledger-information.increment-reserve')}{' '}
-                      {v.reserveIncrement ? amountFormat(v.reserveIncrement) : 'N/A'}
+                      {!v.baseFee && !v.reserveBase && !v.reserveIncrement && !v.amendments ? (
+                        <span className="red bold">Offline</span>
+                      ) : (
+                        <>
+                          {listAmendments(v.amendments)}
+                          <br />
+                          {t('last-ledger-information.base-fee')} {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}|{' '}
+                          {t('last-ledger-information.base-reserve')}{' '}
+                          {v.reserveBase ? amountFormat(v.reserveBase) : 'N/A'}|{' '}
+                          {t('last-ledger-information.increment-reserve')}{' '}
+                          {v.reserveIncrement ? amountFormat(v.reserveIncrement) : 'N/A'}
+                        </>
+                      )}
                     </td>
                     <td className="center">
                       {v.unl ? (
-                        v.nUnl ? (
+                        v.nUnl || (!v.baseFee && !v.reserveBase && !v.reserveIncrement && !v.amendments) ? (
                           <span className="tooltip">
                             ❌
                             <span className="tooltiptext right no-brake">
@@ -1029,7 +1049,11 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                       )}
                     </td>
                     <td className="right">
-                      <ShowTimeMemo time={v.lastSeenTime} />
+                      {v.lastSeenTime ? (
+                        <ShowTimeMemo time={v.lastSeenTime} />
+                      ) : (
+                        <span className="red bold">Long time ago</span>
+                      )}
                     </td>
                     {(xahauNetwork || (developerMode && windowWidth > 1560)) && (
                       <td className="left">

@@ -16,7 +16,7 @@ export async function getServerSideProps(context) {
 
   let url = ''
   if (currency && currencyIssuer) {
-    url = `v2/trustlines/token/richlist/${currencyIssuer}/${currency}?summary=true&convertCurrencies=${serverCurrency}`
+    url = `v2/trustlines/token/richlist/${currencyIssuer}/${currency}?summary=true&convertCurrencies=${serverCurrency}&currencyDetails=true`
   } else {
     url = 'v2/addresses/richlist' + (escrow ? `?escrow=${escrow}` : '')
   }
@@ -32,10 +32,15 @@ export async function getServerSideProps(context) {
     data = r?.response?.data
   }
 
+  const token = {
+    currency: currency || nativeCurrency,
+    issuer: currencyIssuer || null,
+    currencyDetails: data?.currencyDetails || null
+  }
+
   return {
     props: {
-      queryCurrency: currency || nativeCurrency,
-      queryCurrencyIssuer: currencyIssuer || null,
+      queryToken: token || null,
       initialRawData: data || null,
       initialData: data?.addresses || data?.trustlines || [],
       isSsrMobile: getIsSsrMobile(context),
@@ -59,17 +64,27 @@ import {
   capitalize
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
+import { useSearchParams } from 'next/navigation'
 
-export default function Distribution({
-  selectedCurrency,
-  fiatRate,
-  initialRawData,
-  initialData,
-  queryCurrency,
-  queryCurrencyIssuer
-}) {
+export default function Distribution({ selectedCurrency, fiatRate, initialRawData, initialData, queryToken }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
+  const searchParams = useSearchParams()
+
+  const currencyQuery = searchParams.get('currency') || ''
+  const currencyIssuerQuery = searchParams.get('currencyIssuer') || ''
+
+  useEffect(() => {
+    if (token?.currency === currencyQuery && token?.issuer === currencyIssuerQuery) {
+      return
+    }
+    setToken({
+      currency: currencyQuery || nativeCurrency,
+      issuer: currencyIssuerQuery || null,
+      currencyDetails: null
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currencyQuery, currencyIssuerQuery])
 
   const [data, setData] = useState(initialData || [])
   const [rawData, setRawData] = useState(initialRawData || {})
@@ -77,7 +92,7 @@ export default function Distribution({
   const [errorMessage, setErrorMessage] = useState('')
   const [escrowMode, setEscrowMode] = useState('none') // 'none', 'short', 'locked'
   const [filtersHide, setFiltersHide] = useState(false)
-  const [token, setToken] = useState({ currency: queryCurrency, issuer: queryCurrencyIssuer })
+  const [token, setToken] = useState(queryToken)
 
   const controller = new AbortController()
 
@@ -164,7 +179,7 @@ export default function Distribution({
         token.issuer +
         '/' +
         token.currency +
-        '?summary=true&convertCurrencies=' +
+        '?summary=true&currencyDetails=true&convertCurrencies=' +
         selectedCurrency
     }
 
@@ -304,7 +319,7 @@ export default function Distribution({
                   data={rawData}
                   name="issuer"
                   currency={rawData.currency}
-                  options={{ short: 12 }}
+                  options={{ short: 12, currencyDetails: rawData.currencyDetails }}
                 />
                 <br />
                 Total supply: {niceNumber(rawData?.summary?.totalCoins || 0)} {currency}
@@ -351,7 +366,7 @@ export default function Distribution({
           )}
         </>
         <>
-          <table className="table-large no-hover hide-on-small-w800">
+          <table className="table-large hide-on-small-w800">
             <thead>
               <tr>
                 <th className="center">{t('table.index')}</th>

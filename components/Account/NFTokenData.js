@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { xahauNetwork, useWidth } from '../../utils'
-import { nftName, nftNameLink, nftThumbnail, nftUrl } from '../../utils/nft'
+import { NftImage, nftName, nftNameLink, nftThumbnail } from '../../utils/nft'
 import LinkIcon from '../../public/images/link.svg'
 import { LinkTx } from '../../utils/links'
 import {
@@ -39,30 +39,12 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
     ''
   )
 
-  const ownedNftsNode = !objects?.nftList ? (
-    'Loading...'
-  ) : objects?.nftList?.length > 0 ? (
-    <>
-      {!ledgerTimestamp ? (
-        <Link href={'/nfts/' + address + '?includeWithoutMediaData=true'} className="bold">
-          View owned NFTs ({objects.nftList.length})
-        </Link>
-      ) : (
-        objects.nftList.length
-      )}
-    </>
-  ) : (
-    "This account doesn't own any NFTs."
-  )
-
   const nftOffersNode = !objects?.nftOfferList ? (
     'Loading...'
   ) : objects?.nftOfferList?.length > 0 ? (
     <>
       {!ledgerTimestamp ? (
-        <Link href={'/nft-offers/' + address} className="bold">
-          View NFT Offers ({objects.nftOfferList.length})
-        </Link>
+        <Link href={'/nft-offers/' + address}>View NFT Offers ({objects.nftOfferList.length})</Link>
       ) : (
         objects.nftOfferList.length
       )}
@@ -256,9 +238,8 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                   <td style={{ paddingLeft: 8 }}>
                     {nfts?.map((nft, i) => (
                       <Link href={'/nft/' + nft.nftokenID} key={i}>
-                        <img
-                          src={nftUrl(nft?.nftoken || nft, 'image')}
-                          alt={'NFT ' + (i + 1)}
+                        <NftImage
+                          nft={nft}
                           style={
                             windowWidth > 800
                               ? { width: '61px', height: '61px', borderRadius: '4px', margin: '2px' }
@@ -321,8 +302,8 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                 )}
                 <th className="center">NFT</th>
                 <th className="center">{t('table.type')}</th>
-                <th className="center">{t('table.amount')}</th>
-                <th className="center">{t('table.placed')}</th>
+                <th className="right">{t('table.amount')}</th>
+                <th className="right">{t('table.placed')}</th>
                 {type === 'created' && <th className="center">{t('table.destination')}</th>}
               </tr>
             )}
@@ -356,10 +337,10 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                                 ? t('table.text.sell')
                                 : t('table.text.buy')}
                             </td>
-                            <td className="center">
+                            <td className="right">
                               {amountFormat(offer?.amount, { tooltip: true, maxFractionDigits: 2 })}
                             </td>
-                            <td className="center">
+                            <td className="right">
                               {dateFormat(offer?.createdAt)} <LinkTx tx={offer?.createdTxHash} icon={true} />
                             </td>
                             {type === 'created' && <td className="center">{nftLink(offer, 'destination')}</td>}
@@ -451,11 +432,7 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                         {errorMessage}
                       </td>
                     )}
-                    {!offers?.length && (
-                      <td colSpan="100" className="center grey">
-                        {t('nft-offers.no-nft-offers')}
-                      </td>
-                    )}
+                    {!offers?.length && <td colSpan="100">{t('nft-offers.no-nft-offers')}</td>}
                   </tr>
                 )}
               </>
@@ -466,12 +443,10 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
     }
   }
 
-  let isEmpty =
-    !data?.ledgerInfo?.nftokenMinter &&
-    !data.ledgerInfo?.burnedNFTokens &&
-    !data.ledgerInfo?.mintedNFTokens &&
-    !(objects?.nftOfferList?.length > 0) &&
-    !(objects?.nftList?.length > 0)
+  const noNftLedgerInfo =
+    !data?.ledgerInfo?.nftokenMinter && !data.ledgerInfo?.burnedNFTokens && !data.ledgerInfo?.mintedNFTokens
+
+  const isEmpty = noNftLedgerInfo && !(objects?.nftOfferList?.length > 0) && !(objects?.nftList?.length > 0)
 
   const getMetaData = () => {
     if (isEmpty) return ''
@@ -481,90 +456,89 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
         {renderNFTSection('sold', 'Sold NFTs', soldNfts, loading.sold)}
         {renderOffersSection('created', 'NFT Offers Created', createdOffers, loading.createdOffers)}
         {renderOffersSection('received', 'Received NFT Offers', receivedOffers, loading.receivedOffers)}
-        {windowWidth < 800 && <br />}
       </>
     )
   }
 
   return (
     <>
-      {!isEmpty && (
-        <table className="table-details hide-on-small-w800">
-          <thead>
-            <tr>
-              <th colSpan="100">{historicalTitle || title}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.ledgerInfo?.mintedNFTokens && (
+      {!noNftLedgerInfo && (
+        <>
+          <table className="table-details hide-on-small-w800">
+            <thead>
               <tr>
-                <td>Minted NFTs</td>
-                <td>{mintedNftsNode}</td>
+                <th colSpan="100">{historicalTitle || title}</th>
               </tr>
-            )}
-            {data.ledgerInfo?.burnedNFTokens && (
-              <tr>
-                <td>Burned NFTs</td>
-                <td>{burnedNftsNode}</td>
-              </tr>
-            )}
-            {data.ledgerInfo?.firstNFTokenSequence && (
-              <tr>
-                <td>First NFT sequence</td>
-                <td>{data.ledgerInfo.firstNFTokenSequence}</td>
-              </tr>
-            )}
-            {data.ledgerInfo?.nftokenMinter && (
-              <tr>
-                <td>NFT minter</td>
-                <td>{nftMinterNode}</td>
-              </tr>
-            )}
-            {data.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
-              <tr>
-                <td>Incoming NFT offers</td>
-                <td className="bold">disallowed</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      )}
-      {getMetaData()}
-
-      <div className="show-on-small-w800">
-        <center>{historicalTitle || title.toUpperCase()}</center>
-        {!isEmpty && (
-          <>
-            {data?.ledgerInfo?.activated && <p>{ownedNftsNode}</p>}
-            {data.ledgerInfo?.mintedNFTokens && <p>{mintedNftsNode}</p>}
-            {data.ledgerInfo?.burnedNFTokens && <p>{burnedNftsNode}</p>}
-            {data?.ledgerInfo?.activated && <p>{nftOffersNode}</p>}
-            {data.ledgerInfo?.firstNFTokenSequence && (
-              <p>
-                <span className="grey">First NFT sequence</span> {data.ledgerInfo.firstNFTokenSequence}
-              </p>
-            )}
-            {data.ledgerInfo?.nftokenMinter && (
+            </thead>
+            <tbody>
+              {data.ledgerInfo?.mintedNFTokens && (
+                <tr>
+                  <td>Minted NFTs</td>
+                  <td>{mintedNftsNode}</td>
+                </tr>
+              )}
+              {data.ledgerInfo?.burnedNFTokens && (
+                <tr>
+                  <td>Burned NFTs</td>
+                  <td>{burnedNftsNode}</td>
+                </tr>
+              )}
+              {data.ledgerInfo?.firstNFTokenSequence && (
+                <tr>
+                  <td>First NFT sequence</td>
+                  <td>{data.ledgerInfo.firstNFTokenSequence}</td>
+                </tr>
+              )}
+              {data.ledgerInfo?.nftokenMinter && (
+                <tr>
+                  <td>NFT minter</td>
+                  <td>{nftMinterNode}</td>
+                </tr>
+              )}
+              {data.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
+                <tr>
+                  <td>Incoming NFT offers</td>
+                  <td className="bold">disallowed</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <div className="show-on-small-w800">
+            <center>{historicalTitle || title.toUpperCase()}</center>
+            {!isEmpty && (
               <>
-                <p>
-                  <span className="grey">NFT minter</span>
-                </p>
-                {nftMinterNode}
+                {data.ledgerInfo?.mintedNFTokens && <p>{mintedNftsNode}</p>}
+                {data.ledgerInfo?.burnedNFTokens && <p>{burnedNftsNode}</p>}
+                {data?.ledgerInfo?.activated && <p>{nftOffersNode}</p>}
+                {data.ledgerInfo?.firstNFTokenSequence && (
+                  <p>
+                    <span className="grey">First NFT sequence</span> {data.ledgerInfo.firstNFTokenSequence}
+                  </p>
+                )}
+                {data.ledgerInfo?.nftokenMinter && (
+                  <>
+                    <p>
+                      <span className="grey">NFT minter</span>
+                    </p>
+                    {nftMinterNode}
+                  </>
+                )}
+                {data.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
+                  <p>
+                    <span className="grey">Incoming NFT offers</span> <span className="bold">disallowed</span>
+                  </p>
+                )}
+                {data.ledgerInfo?.flags?.uriTokenIssuer && (
+                  <p>
+                    <span className="grey">URI token issuer</span> <span className="bold">true</span>
+                  </p>
+                )}
               </>
             )}
-            {data.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
-              <p>
-                <span className="grey">Incoming NFT offers</span> <span className="bold">disallowed</span>
-              </p>
-            )}
-            {data.ledgerInfo?.flags?.uriTokenIssuer && (
-              <p>
-                <span className="grey">URI token issuer</span> <span className="bold">true</span>
-              </p>
-            )}
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
+      {getMetaData()}
     </>
   )
 }

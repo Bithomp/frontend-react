@@ -1,8 +1,6 @@
 @use "select.scss";
 
-$small-screen: 440px; // minimum screen 
-
-//right-now it's only one simple-slect - used for sorting. 
+$small-screen: 440px; // minimum screen
 
 .dropdown {
   @include select.react-select;
@@ -11,12 +9,6 @@ $small-screen: 440px; // minimum screen
   &--desktop {
     @media(max-width: $small-screen) {
       display: none;
-    }
-  }
-
-  &--filters {
-    @media(max-width: $small-screen) {
-      display: block !important;
     }
   }
 
