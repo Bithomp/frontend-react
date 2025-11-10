@@ -1,0 +1,146 @@
+/* Account Tag Page Styles */
+.account-tag-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0px 20px 40px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  box-shadow: 0px 0px 0px 5px rgba(0, 0, 0, 0.15);
+}
+
+.account-tag-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 0px 0px 10px;
+  padding: 10px 0px;
+  border-bottom: 1.5px solid rgb(136, 136, 136);
+}
+
+.account-tag-xaddress {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.account-tag-service-description {
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.account-tag-service-link {
+  color: #28a745;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.account-tag-service-link:hover {
+  text-decoration: underline;
+}
+
+.account-tag-logo-container {
+  margin-bottom: 20px;
+}
+
+.account-tag-logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+.account-tag-social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  font-size: 24px;
+  color: #666;
+  
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    
+    &:hover {
+      color: #007bff;
+    }
+    
+    svg {
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+  }
+}
+
+.account-tag-details {
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+  font-size: 14px;
+}
+
+.account-tag-detail-label {
+  width: 25%;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.account-tag-detail-label span {
+  color: #333;
+}
+
+.account-tag-detail-value {
+  width: 70%;
+  margin-bottom: 20px;
+}
+
+.account-tag-address-link {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+  text-decoration: underline;
+  font-family: 'Courier New', monospace;
+}
+
+.account-tag-destination-tag {
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  color: #333;
+}
+
+.account-tag-header {
+  margin-bottom: 30px;
+}
+
+.account-tag-page-title {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .account-tag-container {
+    padding: 20px 15px;
+  }
+  
+  .account-tag-title {
+    font-size: 16px;
+  }
+  
+  .account-tag-xaddress {
+    font-size: 14px;
+  }
+  
+  .account-tag-service-description {
+    font-size: 13px;
+  }
+  
+  .account-tag-social-icons {
+    gap: 10px;
+    font-size: 20px;
+  }
+  
+  .account-tag-details {
+    font-size: 13px;
+  }
+}
