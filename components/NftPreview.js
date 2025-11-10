@@ -20,14 +20,13 @@ import { FaCloudDownloadAlt, FaExpand } from 'react-icons/fa'
 import ReactPannellum from 'react-pannellum'
 import AgeCheck from './UI/AgeCheck'
 import NftFullScreenViewer from './NftFullScreenViewer'
-import styles from '../styles/components/nftFullScreenViewer.module.scss'
+import { nftFullScreenViewer } from '../styles/components/nftFullScreenViewer.module.scss'
 
 const downloadIcon = (
-  <div className={styles['fv-download-icon']}>
+  <div className="fv-download-icon">
     <FaCloudDownloadAlt />
   </div>
 )
-
 
 export default function NftPreview({ nft, setIsHidden }) {
   const { t } = useTranslation()
@@ -41,14 +40,14 @@ export default function NftPreview({ nft, setIsHidden }) {
   const loadingImage = () => {
     if (errored) {
       return (
-        <div className={styles['fv-loading-container']}>
+        <div className="fv-loading-container">
           {t('general.load-failed')}
           <br />
         </div>
       )
     } else if (!loaded) {
       return (
-        <div className={styles['fv-loading-container']}>
+        <div className="fv-loading-container">
           <span className="waiting"></span>
           <br />
           {t('general.loading')}
@@ -96,7 +95,7 @@ export default function NftPreview({ nft, setIsHidden }) {
         setShowFullScreen(true)
         setIsHidden && setIsHidden(true)
       }}
-      className={styles['fv-preview-button']}
+      className="fv-preview-button"
     >
       <FaExpand /> Full Screen
     </button>
@@ -107,17 +106,17 @@ export default function NftPreview({ nft, setIsHidden }) {
       href={url} 
       target="_blank" 
       rel="noreferrer"
-      className={styles['fv-preview-button']}
+      className="fv-preview-button"
     >
       {label} {downloadIcon}
     </a>
   )
 
   return (
-    <>
+    <div className={nftFullScreenViewer}>
       {contentTabList.length > 1 && (
-        <div className={styles['fv-preview-tabs-container']}>
-          <span className={`tabs-inline ${styles['fv-preview-tabs-inline']}`}>
+        <div className="fv-preview-tabs-container">
+          <span className="tabs-inline fv-preview-tabs-inline">
             <Tabs
               tabList={contentTabList}
               tab={contentTab}
@@ -126,7 +125,7 @@ export default function NftPreview({ nft, setIsHidden }) {
               style={{ margin: 0 }}
             />
           </span>
-          <span className={styles['fv-preview-actions-right']}>
+          <span className="fv-preview-actions-right">
             {renderFullScreenButton()}
             {renderDownloadButton(clUrl[contentTab], t('tabs.' + contentTab))}
           </span>
@@ -136,7 +135,7 @@ export default function NftPreview({ nft, setIsHidden }) {
       {needNftAgeCheck(nft) ? (
         <img
           src="/images/nft/18plus.jpg"
-          className={styles['fv-preview-age-image']}
+          className="fv-preview-age-image"
           onClick={clickOn18PlusImage}
           alt="18 plus content"
         />
@@ -154,12 +153,12 @@ export default function NftPreview({ nft, setIsHidden }) {
                     autoLoad: true,
                     autoRotate: -2
                   }}
-                  className={styles['fv-preview-panorama']}
+                  className="fv-preview-panorama"
                   style={{ display: loaded ? 'inline-block' : 'none' }}
                 />
               ) : (
                 <img
-                  className={styles['fv-preview-image']}
+                  className="fv-preview-image"
                   style={{ ...imageStyle, display: loaded ? 'inline-block' : 'none' }}
                   src={imageUrl}
                   onLoad={() => {
@@ -190,11 +189,11 @@ export default function NftPreview({ nft, setIsHidden }) {
                     autoLoad: true,
                     autoRotate: 0
                   }}
-                  className={styles['fv-preview-panorama']}
+                  className="fv-preview-panorama"
                   style={{ display: loaded ? 'inline-block' : 'none' }}
                 />
               ) : (
-                <video autoPlay playsInline muted loop controls className={styles['fv-preview-video']}>
+                <video autoPlay playsInline muted loop controls className="fv-preview-video">
                   <source src={videoUrl} type="video/mp4" />
                 </video>
               )}
@@ -222,7 +221,7 @@ export default function NftPreview({ nft, setIsHidden }) {
             </>
           )}
           {contentTabList.length < 2 && defaultUrl && (
-            <span className={styles['fv-preview-action-row']}>
+            <span className="fv-preview-action-row">
               {renderFullScreenButton()}
               {renderDownloadButton(defaultUrl, t('tabs.' + defaultTab))}
             </span>
@@ -232,14 +231,14 @@ export default function NftPreview({ nft, setIsHidden }) {
 
       {defaultTab !== 'model' && defaultTab !== 'video' && audioUrl && (
         <>
-          <audio src={audioUrl} controls className={styles['fv-preview-audio']}></audio>
-          <span className={styles['fv-preview-action-row-center']}>
+          <audio src={audioUrl} controls className="fv-preview-audio"></audio>
+          <span className="fv-preview-action-row-center">
             {renderDownloadButton(clUrl.audio, t('tabs.audio'))}
           </span>
         </>
       )}
       {viewerUrl && (
-        <span className={styles['fv-preview-action-row-right']}>
+        <span className="fv-preview-action-row-right">
           <a href={viewerUrl} target="_blank" rel="noreferrer">
             {t('general.viewer')}
           </a>
@@ -258,7 +257,7 @@ export default function NftPreview({ nft, setIsHidden }) {
           )}
         </>
       )}
-      <div className={styles['fv-preview-spacer']}></div>
+      <div className="fv-preview-spacer"></div>
       {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} />}
       
       {/* Full Screen Viewer */}
@@ -271,6 +270,6 @@ export default function NftPreview({ nft, setIsHidden }) {
           }} 
         />
       )}
-    </>
+    </div>
   )
 }
