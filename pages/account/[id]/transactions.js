@@ -470,7 +470,7 @@ export default function AccountTransactions({
 
                     return (
                       <TransactionRowComponent
-                        key={tx.hash}
+                        key={index}
                         data={tx}
                         address={address}
                         index={index}

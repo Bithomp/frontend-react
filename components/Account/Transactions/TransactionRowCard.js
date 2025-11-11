@@ -30,18 +30,19 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
 
   return (
     <tr
-      index={index}
       style={{
         background: !isSuccessful
-          ? 'repeating-linear-gradient(45deg, rgba(129, 111, 77, 0.3), rgba(249, 227, 185, 0.3), transparent 10px, transparent 20px)'
-          : ''
+          ? 'repeating-linear-gradient(45deg, rgba(255, 150, 0, 0.15), rgba(255, 180, 80, 0.15) 10px, transparent 10px, transparent 20px)'
+          : 'none'
       }}
       className="border-b-1"
     >
       <td className="bold center" style={{ width: 10 }}>
         {index + 1}
       </td>
-      <td className="left" style={{ width: 70 }}>
+      <td className="left" style={{ width: 70, verticalAlign: 'top' }}>
+        <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
+        <br />
         <span className="flex items-center gap-1">
           <FiCalendar style={{ stroke: '#666' }} /> {dateFormat(tx.date, {}, { type: 'ripple' })}
         </span>
@@ -50,8 +51,6 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
         </span>
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
-        <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
-        <br />
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
         {outcome && !isSuccessful && (
           <>
