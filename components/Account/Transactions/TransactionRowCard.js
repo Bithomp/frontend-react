@@ -49,16 +49,36 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
       <td className="bold center" style={{ width: 10, verticalAlign: 'top' }}>
         {index + 1}
       </td>
-      <td className="left" style={{ width: 70, verticalAlign: 'top' }}>
-        <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
-        <br />
+      <td className="left" style={{ width: 100, verticalAlign: 'top' }}>
+        <span className="bold">{txTypeSpecial || tx?.TransactionType} </span>
         {!isConvertion && tx?.TransactionType === 'Payment' && (
           <>
+            <br />
             {specification?.destination?.address === address
               ? 'from'
               : specification?.source?.address === address
               ? 'to'
               : 'Payment by'}
+          </>
+        )}
+        {tx?.TransactionType === 'TrustSet' && (
+          <>
+            {specification.limit === '0' ? (
+              <span className="orange bold">removed</span>
+            ) : (
+              <>
+                <span className="bold">set</span>
+                {amountFormat(
+                  {
+                    currency: specification.currency,
+                    issuer: specification.counterparty,
+                    issuerDetails: specification.counterpartyDetails,
+                    value: specification.limit
+                  },
+                  { icon: true, bold: true, color: 'orange', short: true }
+                )}
+              </>
+            )}
           </>
         )}
       </td>
@@ -85,12 +105,9 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
             <br />
           </>
         )}
-        Fee: {amountFormat(tx.Fee, { icon: true })}{' '}
-        {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
-        <br />
         {tx.DestinationTag !== undefined && tx.DestinationTag !== null && (
           <>
-            <span>Destination tag: {tx.DestinationTag}</span>
+            Destination tag: <span className="bold">{tx.DestinationTag}</span>
             <br />
           </>
         )}
@@ -129,6 +146,9 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
             ))}
           </>
         )}
+        Fee: {amountFormat(tx.Fee, { icon: true })}
+        {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
+        <br />
         Tx hash:{' '}
         <LinkTx tx={tx.hash} copy={true}>
           {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
