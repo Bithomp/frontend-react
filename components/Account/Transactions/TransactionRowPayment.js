@@ -1,10 +1,5 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import {
-  addressUsernameOrServiceLink,
-  AddressWithIconFilled,
-  amountFormat,
-  nativeCurrencyToFiat
-} from '../../../utils/format'
+import { amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
 import { addressBalanceChanges, dappBySourceTag, isConvertionTx } from '../../../utils/transaction'
 import { useTxFiatRate } from './FiatRateContext'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
@@ -31,25 +26,6 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
       txTypeSpecial={txTypeSpecial}
     >
       <>
-        {!isConvertion && (
-          <>
-            {specification?.destination?.address === address ? (
-              <>
-                from
-                <br />
-                <AddressWithIconFilled data={specification.source} name="address" />
-              </>
-            ) : specification?.source?.address === address ? (
-              <>
-                to
-                <br />
-                <AddressWithIconFilled data={specification.destination} name="address" />
-              </>
-            ) : (
-              <>Payment By {addressUsernameOrServiceLink(specification.source, 'address')}</>
-            )}
-          </>
-        )}
         {specification.source?.tag !== undefined && !dapp && (
           <>
             <span>Source tag: </span>

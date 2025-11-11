@@ -1,4 +1,5 @@
 import {
+  AddressWithIconFilled,
   amountFormat,
   dateFormat,
   nativeCurrencyToFiat,
@@ -10,15 +11,16 @@ import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../../utils/common'
 import { TxFiatRateContext } from './FiatRateContext'
 import { LinkTx } from '../../../utils/links'
-import { errorCodeDescription, shortErrorCode, dappBySourceTag } from '../../../utils/transaction'
+import { errorCodeDescription, shortErrorCode, dappBySourceTag, isConvertionTx } from '../../../utils/transaction'
 import { useWidth } from '../../../utils'
 import { i18n } from 'next-i18next'
 
-export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selectedCurrency }) => {
+export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
   const { specification, tx, outcome } = data
   const memos = specification?.memos
   const isSuccessful = outcome?.result == 'tesSUCCESS'
+  const isConvertion = isConvertionTx(specification)
 
   const [pageFiatRate, setPageFiatRate] = useState(0)
 
@@ -44,14 +46,34 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
       }}
       className="border-b-1"
     >
-      <td className="bold center" style={{ width: 10 }}>
+      <td className="bold center" style={{ width: 10, verticalAlign: 'top' }}>
         {index + 1}
       </td>
       <td className="left" style={{ width: 70, verticalAlign: 'top' }}>
         <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
         <br />
+        {!isConvertion && tx?.TransactionType === 'Payment' && (
+          <>
+            {specification?.destination?.address === address
+              ? 'from'
+              : specification?.source?.address === address
+              ? 'to'
+              : 'Payment by'}
+          </>
+        )}
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
+        {!isConvertion && tx?.TransactionType === 'Payment' && (
+          <>
+            {specification?.destination?.address === address ? (
+              <AddressWithIconFilled data={specification.source} name="address" />
+            ) : specification?.source?.address === address ? (
+              <AddressWithIconFilled data={specification.destination} name="address" />
+            ) : (
+              addressUsernameOrServiceLink(specification.source, 'address')
+            )}
+          </>
+        )}
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
         {outcome && !isSuccessful && (
           <>
