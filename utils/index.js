@@ -759,6 +759,7 @@ export const isAddressValid = (x) => {
 }
 
 export const isTagValid = (x) => {
+  if (x === 0 || x === '0') return true
   if (!x) return false
   if (!/^[0-9]{1,10}$/.test(x)) return false
   if (parseInt(x) > 4294967295) return false

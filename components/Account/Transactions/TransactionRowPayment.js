@@ -1,10 +1,9 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
-import { addressBalanceChanges, dappBySourceTag, isConvertionTx } from '../../../utils/transaction'
+import { addressBalanceChanges, isConvertionTx } from '../../../utils/transaction'
 import { useTxFiatRate } from './FiatRateContext'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 import { isIOUpayment, optionalAbsPaymentAmount, paymentTypeName } from '../../../utils/transaction/payment'
-import CopyButton from '../../UI/CopyButton'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
   const { outcome, specification } = data
@@ -15,8 +14,6 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
   const iouPayment = isIOUpayment(data)
-  //don't show sourcetag if it's the tag of a known dapp
-  const dapp = dappBySourceTag(specification.source.tag)
 
   if (!isConvertion) {
     txTypeSpecial = (
@@ -40,30 +37,6 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
       txTypeSpecial={txTypeSpecial}
     >
       <>
-        {!isConvertion && (
-          <>
-            {specification?.destination?.address === address ? (
-              <>
-                Sender: <span className="bold">{specification?.source?.address}</span>{' '}
-                <CopyButton text={specification?.source?.address} />{' '}
-              </>
-            ) : specification?.source?.address === address ? (
-              <>
-                Destination: <span className="bold">{specification?.destination?.address}</span>{' '}
-                <CopyButton text={specification?.destination?.address} />{' '}
-              </>
-            ) : (
-              addressUsernameOrServiceLink(specification.source, 'address')
-            )}
-          </>
-        )}
-        {specification.source?.tag !== undefined && !dapp && (
-          <>
-            <span>Source tag: </span>
-            <span className="bold">{specification.source.tag}</span>
-          </>
-        )}
-
         {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
           <>
             <div>
@@ -73,26 +46,25 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                   <FaArrowRightArrowLeft style={{ fontSize: 16, marginBottom: -4 }} /> Exchanged:{' '}
                 </>
               ) : (
-                <>Sender spent: </>
+                <>Spent: </>
               )}
-              <br />
-              <span>
-                {sourceBalanceChangesList.map((change, index) => (
-                  <div key={index}>
-                    {amountFormat(optionalAbsPaymentAmount(change, isConvertion), {
-                      icon: true,
-                      withIssuer: true,
-                      bold: true,
-                      color: 'direction'
-                    })}
-                    {nativeCurrencyToFiat({
-                      amount: optionalAbsPaymentAmount(change, isConvertion),
-                      selectedCurrency,
-                      fiatRate: pageFiatRate
-                    })}
-                  </div>
-                ))}
-              </span>
+              {sourceBalanceChangesList.length > 1 && <br />}
+              {sourceBalanceChangesList.map((change, index) => (
+                <span key={index}>
+                  {amountFormat(optionalAbsPaymentAmount(change, isConvertion), {
+                    icon: true,
+                    withIssuer: true,
+                    bold: true,
+                    color: 'direction',
+                    precise: true
+                  })}
+                  {nativeCurrencyToFiat({
+                    amount: optionalAbsPaymentAmount(change, isConvertion),
+                    selectedCurrency,
+                    fiatRate: pageFiatRate
+                  })}
+                </span>
+              ))}
             </div>
             {sourceBalanceChangesList.length === 2 && (
               <div>
@@ -121,8 +93,14 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
         )}
         {!isConvertion && outcome?.deliveredAmount && (
           <div>
-            <span>Delivered amount: </span>
-            {amountFormat(outcome?.deliveredAmount, { icon: true, withIssuer: true, bold: true, color: 'green' })}
+            Delivered:{' '}
+            {amountFormat(outcome?.deliveredAmount, {
+              icon: true,
+              withIssuer: true,
+              bold: true,
+              color: 'green',
+              precise: true
+            })}
             {nativeCurrencyToFiat({
               amount: outcome?.deliveredAmount,
               selectedCurrency,

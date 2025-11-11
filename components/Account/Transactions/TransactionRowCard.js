@@ -18,9 +18,10 @@ import {
   isConvertionTx,
   addressBalanceChanges
 } from '../../../utils/transaction'
-import { useWidth } from '../../../utils'
+import { isTagValid, useWidth } from '../../../utils'
 import { i18n } from 'next-i18next'
 import { isIOUpayment, optionalAbsPaymentAmount } from '../../../utils/transaction/payment'
+import CopyButton from '../../UI/CopyButton'
 
 export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
@@ -118,7 +119,6 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         )}
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
-        <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
         {outcome && !isSuccessful && (
           <>
             <span className="bold">Failure: </span>
@@ -129,25 +129,38 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
             <br />
           </>
         )}
-        {tx.DestinationTag !== undefined && tx.DestinationTag !== null && (
+        {!isConvertion && specification?.destination?.address && (
           <>
-            Destination tag: <span className="bold">{tx.DestinationTag}</span>
+            {specification?.source?.address === address ? (
+              <>
+                Destination: <span className="bold">{specification?.destination?.address}</span>{' '}
+                <CopyButton text={specification?.destination?.address} />{' '}
+              </>
+            ) : (
+              <>
+                {specification?.destination?.address === address ? 'Sender' : 'Submitter'}:{' '}
+                <span className="bold">{specification?.source?.address}</span>{' '}
+                <CopyButton text={specification?.source?.address} />
+              </>
+            )}
             <br />
           </>
         )}
+        {isTagValid(tx.DestinationTag) && (
+          <>
+            Destination tag: <span className="bold">{tx.DestinationTag}</span>
+          </>
+        )}
+        {isTagValid(tx.SourceTag) && !dapp && (
+          <>
+            Source tag: <span className="bold">{tx.SourceTag}</span>
+          </>
+        )}
+        <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
         <span>
           {tx.TicketSequence && 'Ticket '}Sequence: {tx.Sequence || tx.TicketSequence}
         </span>
         <br />
-        {(dapp ||
-          (tx?.SourceTag !== undefined &&
-            tx.TransactionType !== 'Payment' &&
-            !tx.TransactionType?.includes('Check'))) && (
-          <>
-            <span>Source tag: </span>
-            <span>{tx?.SourceTag}</span>
-          </>
-        )}
         {memos && memos.length > 0 && (
           <>
             {memos.map((memo, idx) => (
