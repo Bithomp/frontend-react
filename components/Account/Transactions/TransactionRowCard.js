@@ -21,7 +21,6 @@ import {
 } from '../../../utils/transaction'
 import { isTagValid, useWidth } from '../../../utils'
 import { i18n } from 'next-i18next'
-import { optionalAbsPaymentAmount } from '../../../utils/transaction/payment'
 import CopyButton from '../../UI/CopyButton'
 
 export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency }) => {
@@ -108,14 +107,13 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
               icon: true,
               bold: true,
               color: 'direction',
-              //absolute: true,
-              showPlus: true,
-              minFractionDigits: 2
+              showPlus: true
             })}
             {nativeCurrencyToFiat({
-              amount: optionalAbsPaymentAmount(change, isConvertion),
+              amount: change,
               selectedCurrency,
-              fiatRate: pageFiatRate
+              fiatRate: pageFiatRate,
+              tooltipDirection: 'right'
             })}
           </div>
         ))}

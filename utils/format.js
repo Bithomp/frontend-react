@@ -255,10 +255,18 @@ export const amountToFiat = (params) => {
 
   if (!amount?.currency) {
     // drops
-    calculatedAmount = shortNiceNumber((amount / 1000000) * fiatRate, 2, 1, selectedCurrency)
+    let initialAmount = amount * 1
+    if (params.absolute) {
+      initialAmount = Math.abs(initialAmount)
+    }
+    calculatedAmount = shortNiceNumber((initialAmount / 1000000) * fiatRate, 2, 1, selectedCurrency)
     currency = nativeCurrency
   } else {
-    calculatedAmount = shortNiceNumber(amount.value * fiatRate, 2, 1, selectedCurrency)
+    let initialAmount = amount.value
+    if (params.absolute) {
+      initialAmount = Math.abs(initialAmount)
+    }
+    calculatedAmount = shortNiceNumber(initialAmount * fiatRate, 2, 1, selectedCurrency)
     currency = niceCurrency(amount.currency)
   }
 
@@ -270,7 +278,10 @@ export const amountToFiat = (params) => {
     <span className="tooltip no-brake" suppressHydrationWarning>
       {' '}
       ≈ {calculatedAmount}
-      <span className="tooltiptext no-brake" suppressHydrationWarning>
+      <span
+        className={'tooltiptext no-brake' + (params?.tooltipDirection ? ' ' + params.tooltipDirection : '')}
+        suppressHydrationWarning
+      >
         1 {currency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
       </span>
     </span>
@@ -793,16 +804,20 @@ export const amountFormat = (amount, options = {}) => {
       }
     } else if (options.maxFractionDigits) {
       showValue = niceNumber(showValue, 0, null, options.maxFractionDigits)
+    } else {
+      showValue = niceNumber(showValue, 2, null, 6)
     }
   }
 
+  let showIcon = options?.icon || false
+
   // do not show icons for native currency
-  if (options?.icon && originalCurrency === nativeCurrency) {
-    options.icon = false
+  if (showIcon && originalCurrency === nativeCurrency) {
+    showIcon = false
   }
 
   let tokenImage = ''
-  if (options?.icon) {
+  if (showIcon) {
     tokenImage = <TokenImage token={{ issuer, currency: originalCurrency || currency }} />
   }
 
@@ -853,7 +868,8 @@ export const amountFormat = (amount, options = {}) => {
         )}
       </>
     )
-  } else if (options.icon) {
+  } else if (options?.icon) {
+    // keep options?.icon as showIcon is false for native currency
     return (
       <span className="no-brake">
         {tokenImage}
