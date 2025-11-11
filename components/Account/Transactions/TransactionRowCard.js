@@ -47,6 +47,8 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
   //don't show sourcetag if it's the tag of a known dapp
   const dapp = dappBySourceTag(tx.SourceTag)
 
+  const sequence = tx.TicketSequence || tx.Sequence
+
   return (
     <tr
       style={{
@@ -157,10 +159,14 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
           </>
         )}
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
-        <span>
-          {tx.TicketSequence && 'Ticket '}Sequence: {tx.Sequence || tx.TicketSequence}
-        </span>
-        <br />
+        {sequence ? (
+          <>
+            {tx.TicketSequence && 'Ticket '}Sequence: {tx.Sequence || tx.TicketSequence}
+            <br />
+          </>
+        ) : (
+          ''
+        )}
         {memos && memos.length > 0 && (
           <>
             {memos.map((memo, idx) => (
