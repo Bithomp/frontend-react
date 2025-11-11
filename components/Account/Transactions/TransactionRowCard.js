@@ -1,6 +1,4 @@
 import {
-  addressUsernameOrServiceLink,
-  AddressWithIconFilled,
   AddressWithIconInline,
   amountFormat,
   dateFormat,
@@ -57,18 +55,13 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
       }}
       className="border-b-1"
     >
-      <td className="bold center" style={{ width: 10, verticalAlign: 'top' }}>
+      <td className="bold center grey" style={{ width: 10, verticalAlign: 'top' }}>
         {index + 1}
       </td>
-      <td className="left" style={{ width: 100, verticalAlign: 'top' }}>
-        <span className="bold">{txTypeSpecial || tx?.TransactionType} </span>
+      <td className="left" style={{ width: 120, verticalAlign: 'top' }}>
+        <span className={tx?.TransactionType !== 'Payment' ? 'bold' : ''}>{txTypeSpecial || tx?.TransactionType} </span>
         {!isConvertion && tx?.TransactionType === 'Payment' && (
           <>
-            {specification?.destination?.address === address
-              ? 'from'
-              : specification?.source?.address === address
-              ? 'to'
-              : 'Payment by'}{' '}
             <AddressWithIconInline
               data={
                 specification?.destination?.address === address
@@ -83,11 +76,8 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         )}
         {tx?.TransactionType === 'TrustSet' && (
           <>
-            {specification.limit === '0' ? (
-              <span className="orange bold">removed</span>
-            ) : (
+            {specification.limit !== '0' && (
               <>
-                <span className="bold">set</span>
                 {amountFormat(
                   {
                     currency: specification.currency,
@@ -128,17 +118,6 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         )}
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
-        {!isConvertion && tx?.TransactionType === 'Payment' && (
-          <>
-            {specification?.destination?.address === address ? (
-              <AddressWithIconFilled data={specification.source} name="address" />
-            ) : specification?.source?.address === address ? (
-              <AddressWithIconFilled data={specification.destination} name="address" />
-            ) : (
-              addressUsernameOrServiceLink(specification.source, 'address')
-            )}
-          </>
-        )}
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
         {outcome && !isSuccessful && (
           <>

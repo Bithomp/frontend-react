@@ -4,11 +4,12 @@ import { addressBalanceChanges, dappBySourceTag, isConvertionTx } from '../../..
 import { useTxFiatRate } from './FiatRateContext'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 import { isIOUpayment, optionalAbsPaymentAmount, paymentTypeName } from '../../../utils/transaction/payment'
+import CopyButton from '../../UI/CopyButton'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
   const { outcome, specification } = data
 
-  const txTypeSpecial = paymentTypeName(data)
+  let txTypeSpecial = paymentTypeName(data)
   const isConvertion = isConvertionTx(specification)
   const pageFiatRate = useTxFiatRate()
   //for payments executor is always the sender, so we can check executor's balance changes.
@@ -16,6 +17,19 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
   const iouPayment = isIOUpayment(data)
   //don't show sourcetag if it's the tag of a known dapp
   const dapp = dappBySourceTag(specification.source.tag)
+
+  if (!isConvertion) {
+    txTypeSpecial = (
+      <>
+        <span className="bold">{txTypeSpecial} </span>
+        {specification?.destination?.address === address
+          ? 'from'
+          : specification?.source?.address === address
+          ? 'to'
+          : 'by'}
+      </>
+    )
+  }
 
   return (
     <TransactionRowCard
@@ -26,6 +40,23 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
       txTypeSpecial={txTypeSpecial}
     >
       <>
+        {!isConvertion && (
+          <>
+            {specification?.destination?.address === address ? (
+              <>
+                Sender: <span className="bold">{specification?.source?.address}</span>{' '}
+                <CopyButton text={specification?.source?.address} />{' '}
+              </>
+            ) : specification?.source?.address === address ? (
+              <>
+                Destination: <span className="bold">{specification?.destination?.address}</span>{' '}
+                <CopyButton text={specification?.destination?.address} />{' '}
+              </>
+            ) : (
+              addressUsernameOrServiceLink(specification.source, 'address')
+            )}
+          </>
+        )}
         {specification.source?.tag !== undefined && !dapp && (
           <>
             <span>Source tag: </span>
