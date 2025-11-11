@@ -38,14 +38,33 @@ export const NiceNativeBalance = ({ amount }) => {
   )
 }
 
+const TokenImage = ({ token }) => {
+  return (
+    <Image
+      src={tokenImageSrc(token)}
+      alt="token"
+      height={16}
+      width={16}
+      style={{
+        verticalAlign: 'text-bottom',
+        display: 'inline-block',
+        borderRadius: '50%',
+        marginBottom: -1,
+        marginRight: 5,
+        backgroundColor: '#fff',
+        boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
+      }}
+    />
+  )
+}
+
 export const CurrencyWithIcon = ({ token }) => {
   if (!token) return ''
   const { lp_token, currencyDetails } = token
-  let imageUrl = tokenImageSrc(token)
 
   return (
     <>
-      <Image src={imageUrl} alt="avatar" height={20} width={20} style={{ marginRight: '5px', marginBottom: '-5px' }} />
+      <TokenImage token={token} />
       {lp_token ? currencyDetails?.currency : niceCurrency(token.currency)}
     </>
   )
@@ -784,23 +803,7 @@ export const amountFormat = (amount, options = {}) => {
 
   let tokenImage = ''
   if (options?.icon) {
-    tokenImage = (
-      <Image
-        src={tokenImageSrc({ issuer, currency: originalCurrency || currency })}
-        alt="token"
-        height={16}
-        width={16}
-        style={{
-          verticalAlign: 'text-bottom',
-          display: 'inline-block',
-          borderRadius: '50%',
-          marginBottom: -1,
-          marginRight: 5,
-          backgroundColor: '#fff',
-          boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
-        }}
-      />
-    )
+    tokenImage = <TokenImage token={{ issuer, currency: originalCurrency || currency }} />
   }
 
   if (options.showPlus && value > 0) {

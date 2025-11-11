@@ -1,6 +1,7 @@
 import {
   AddressWithIconInline,
   amountFormat,
+  CurrencyWithIcon,
   dateFormat,
   nativeCurrencyToFiat,
   shortHash,
@@ -76,7 +77,9 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         )}
         {tx?.TransactionType === 'TrustSet' && (
           <>
-            {specification.limit !== '0' && (
+            <br />
+            <br />
+            {specification.limit !== '0' ? (
               <>
                 {amountFormat(
                   {
@@ -88,6 +91,10 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
                   { icon: true, bold: true, color: 'orange', short: true }
                 )}
               </>
+            ) : (
+              <span className="bold">
+                <CurrencyWithIcon token={{ currency: specification.currency, issuer: specification.counterparty }} />
+              </span>
             )}
           </>
         )}
