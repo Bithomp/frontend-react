@@ -20,7 +20,7 @@ import {
 } from '../../../utils/transaction'
 import { isTagValid, useWidth } from '../../../utils'
 import { i18n } from 'next-i18next'
-import { isIOUpayment, optionalAbsPaymentAmount } from '../../../utils/transaction/payment'
+import { optionalAbsPaymentAmount } from '../../../utils/transaction/payment'
 import CopyButton from '../../UI/CopyButton'
 
 export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency }) => {
@@ -29,7 +29,6 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
   const memos = specification?.memos
   const isSuccessful = outcome?.result == 'tesSUCCESS'
   const isConvertion = isConvertionTx(specification)
-  const iouPayment = isIOUpayment(data)
   const sourceBalanceChangesList = addressBalanceChanges(data, address)
 
   const [pageFiatRate, setPageFiatRate] = useState(0)
@@ -92,31 +91,25 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
             )}
           </>
         )}
-        {tx?.TransactionType === 'Payment' && (
-          <>
-            {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
-              <>
-                <br />
-                <br />
-                {sourceBalanceChangesList.map((change, index) => (
-                  <div key={index}>
-                    {amountFormat(change, {
-                      icon: true,
-                      bold: true,
-                      color: 'direction',
-                      absolute: true
-                    })}
-                    {nativeCurrencyToFiat({
-                      amount: optionalAbsPaymentAmount(change, isConvertion),
-                      selectedCurrency,
-                      fiatRate: pageFiatRate
-                    })}
-                  </div>
-                ))}
-              </>
-            )}
-          </>
-        )}
+        <br />
+        <br />
+        {sourceBalanceChangesList.map((change, index) => (
+          <div key={index}>
+            {amountFormat(change, {
+              icon: true,
+              bold: true,
+              color: 'direction',
+              //absolute: true,
+              showPlus: true,
+              minFractionDigits: 2
+            })}
+            {nativeCurrencyToFiat({
+              amount: optionalAbsPaymentAmount(change, isConvertion),
+              selectedCurrency,
+              fiatRate: pageFiatRate
+            })}
+          </div>
+        ))}
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
         {outcome && !isSuccessful && (
