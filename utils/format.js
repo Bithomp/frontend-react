@@ -839,7 +839,9 @@ export const amountFormat = (amount, options = {}) => {
             {amount.currencyDetails?.type === 'lp_token' ? (
               <LinkAmm ammId={issuer} hash={6} style={{ fontWeight: 400 }} />
             ) : (
-              addressUsernameOrServiceLink({ issuer, issuerDetails }, 'issuer', { short: true })
+              addressUsernameOrServiceLink({ issuer, issuerDetails }, 'issuer', {
+                short: options?.issuerShort !== undefined ? options.issuerShort : true
+              })
             )}
             )
           </span>

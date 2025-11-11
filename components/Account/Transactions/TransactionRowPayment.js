@@ -56,7 +56,8 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                     withIssuer: true,
                     bold: true,
                     color: 'direction',
-                    precise: true
+                    precise: true,
+                    issuerShort: false
                   })}
                   {nativeCurrencyToFiat({
                     amount: optionalAbsPaymentAmount(change, isConvertion),
@@ -99,7 +100,8 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
               withIssuer: true,
               bold: true,
               color: 'green',
-              precise: true
+              precise: true,
+              issuerShort: false
             })}
             {nativeCurrencyToFiat({
               amount: outcome?.deliveredAmount,
