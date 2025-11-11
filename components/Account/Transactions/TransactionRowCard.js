@@ -1,3 +1,5 @@
+'use client'
+
 import {
   AddressWithIconInline,
   amountFormat,
@@ -10,7 +12,6 @@ import {
 } from '../../../utils/format'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../../utils/common'
-import { TxFiatRateContext } from './FiatRateContext'
 import { LinkTx } from '../../../utils/links'
 import {
   errorCodeDescription,
@@ -156,7 +157,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
             Source tag: <span className="bold">{tx.SourceTag}</span>
           </>
         )}
-        <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
+        {typeof children === 'function' ? children(pageFiatRate) : children}
         {sequence ? (
           <>
             {tx.TicketSequence && 'Ticket '}Sequence: {tx.Sequence || tx.TicketSequence}
