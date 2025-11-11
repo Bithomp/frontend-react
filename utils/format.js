@@ -19,7 +19,6 @@ import {
   xls14NftValue,
   tokenImageSrc,
   mptokenImageSrc,
-  isNativeCurrency,
   shortName
 } from '.'
 import { scaleAmount } from './calc'
@@ -772,7 +771,15 @@ export const amountFormat = (amount, options = {}) => {
         alt="token"
         height={20}
         width={20}
-        style={{ verticalAlign: 'text-bottom', display: 'inline-block' }}
+        style={{
+          verticalAlign: 'text-bottom',
+          display: 'inline-block',
+          borderRadius: '50%',
+          marginBottom: -2.5,
+          marginRight: 4,
+          backgroundColor: '#fff',
+          boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
+        }}
       />
     )
   }
@@ -825,7 +832,8 @@ export const amountFormat = (amount, options = {}) => {
   } else if (options.icon) {
     return (
       <span className="no-brake">
-        {tokenImage} <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
+        {tokenImage}
+        <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
       </span>
     )
   } else {

@@ -42,7 +42,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                   <FaArrowRightArrowLeft style={{ fontSize: 16, marginBottom: -4 }} /> Exchanged:{' '}
                 </>
               ) : (
-                <> Sender spent: </>
+                <>Sender spent: </>
               )}
               <br />
               <span>
