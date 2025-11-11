@@ -1,6 +1,17 @@
 import { nativeCurrency, safeClone } from '..'
 import { add } from '../calc'
 
+// sourse address and destination address is the same
+// sometimes source tag is added to show the dapp
+// so if there is no destintaion tag, no need the source tag to be the same
+export const isConvertionTx = (specification) => {
+  if (!specification) return false
+  return (
+    specification?.source?.address === specification?.destination?.address &&
+    (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
+  )
+}
+
 // Function to get balance changes for a specific address
 const getBalanceChanges = (data, address) => {
   const balanceChange = data.filter((entry) => entry.address === address)

@@ -11,16 +11,11 @@ import {
 import { TransactionCard } from '../TransactionCard'
 import { isNativeCurrency } from '../../../utils'
 import CopyButton from '../../UI/CopyButton'
-import { addressBalanceChanges, dappBySourceTag } from '../../../utils/transaction'
+import { addressBalanceChanges, dappBySourceTag, isConvertionTx } from '../../../utils/transaction'
 import DestinationTagProblemSolving from './DestinationTagProblemSolving'
 import PaymentInstructions from './PaymentInstructions'
 import { LinkTx } from '../../../utils/links'
-import {
-  isConvertionPayment,
-  isIOUpayment,
-  optionalAbsPaymentAmount,
-  paymentTypeName
-} from '../../../utils/transaction/payment'
+import { isIOUpayment, optionalAbsPaymentAmount, paymentTypeName } from '../../../utils/transaction/payment'
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -30,7 +25,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
   const txTypeSpecial = paymentTypeName(data)
-  const isConvertion = isConvertionPayment(specification)
+  const isConvertion = isConvertionTx(specification)
   const isSuccessful = outcome?.result == 'tesSUCCESS'
   const iouPayment = isIOUpayment(data)
   //don't show sourcetag if it's the tag of a known dapp

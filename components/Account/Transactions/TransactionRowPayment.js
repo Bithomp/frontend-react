@@ -5,21 +5,16 @@ import {
   amountFormat,
   nativeCurrencyToFiat
 } from '../../../utils/format'
-import { addressBalanceChanges, dappBySourceTag } from '../../../utils/transaction'
+import { addressBalanceChanges, dappBySourceTag, isConvertionTx } from '../../../utils/transaction'
 import { useTxFiatRate } from './FiatRateContext'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
-import {
-  isConvertionPayment,
-  isIOUpayment,
-  optionalAbsPaymentAmount,
-  paymentTypeName
-} from '../../../utils/transaction/payment'
+import { isIOUpayment, optionalAbsPaymentAmount, paymentTypeName } from '../../../utils/transaction/payment'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
   const { outcome, specification } = data
 
   const txTypeSpecial = paymentTypeName(data)
-  const isConvertion = isConvertionPayment(specification)
+  const isConvertion = isConvertionTx(specification)
   const pageFiatRate = useTxFiatRate()
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)

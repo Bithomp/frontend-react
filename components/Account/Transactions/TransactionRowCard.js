@@ -1,11 +1,18 @@
-import { amountFormat, dateFormat, nativeCurrencyToFiat, shortHash, timeFormat } from '../../../utils/format'
+import {
+  amountFormat,
+  dateFormat,
+  nativeCurrencyToFiat,
+  shortHash,
+  timeFormat,
+  timeFromNow
+} from '../../../utils/format'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../../utils/common'
 import { TxFiatRateContext } from './FiatRateContext'
 import { LinkTx } from '../../../utils/links'
 import { errorCodeDescription, shortErrorCode, dappBySourceTag } from '../../../utils/transaction'
 import { useWidth } from '../../../utils'
-import { FiCalendar, FiClock } from 'react-icons/fi'
+import { i18n } from 'next-i18next'
 
 export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
@@ -43,12 +50,6 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
       <td className="left" style={{ width: 70, verticalAlign: 'top' }}>
         <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
         <br />
-        <span className="flex items-center gap-1">
-          <FiCalendar style={{ stroke: '#666' }} /> {dateFormat(tx.date, {}, { type: 'ripple' })}
-        </span>
-        <span className="flex items-center gap-1">
-          <FiClock style={{ stroke: '#666' }} /> {timeFormat(tx.date, 'ripple')}
-        </span>
       </td>
       <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
         <TxFiatRateContext.Provider value={pageFiatRate}>{children}</TxFiatRateContext.Provider>
@@ -110,6 +111,15 @@ export const TransactionRowCard = ({ data, index, txTypeSpecial, children, selec
         <LinkTx tx={tx.hash} copy={true}>
           {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
         </LinkTx>
+      </td>
+      <td className="right" style={{ width: 100, verticalAlign: 'top' }}>
+        <span className="bold">{timeFromNow(tx.date, i18n, 'ripple')}</span>
+        <br />
+        <span className="grey">
+          {dateFormat(tx.date, {}, { type: 'ripple' })}
+          <br />
+          {timeFormat(tx.date, 'ripple')}
+        </span>
       </td>
     </tr>
   )
