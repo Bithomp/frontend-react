@@ -237,7 +237,7 @@ export default function AccountTransactions({
       setMarker(newMarker)
       setErrorMessage('')
     } catch (e) {
-      setErrorMessage(e?.message || 'Failed to load transactions')
+      setErrorMessage(t('error.' + e?.message) || 'Failed to load transactions')
     }
     setLoading(false)
   }
