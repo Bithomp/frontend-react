@@ -1,5 +1,7 @@
 import {
+  addressUsernameOrServiceLink,
   AddressWithIconFilled,
+  AddressWithIconInline,
   amountFormat,
   dateFormat,
   nativeCurrencyToFiat,
@@ -11,9 +13,16 @@ import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../../utils/common'
 import { TxFiatRateContext } from './FiatRateContext'
 import { LinkTx } from '../../../utils/links'
-import { errorCodeDescription, shortErrorCode, dappBySourceTag, isConvertionTx } from '../../../utils/transaction'
+import {
+  errorCodeDescription,
+  shortErrorCode,
+  dappBySourceTag,
+  isConvertionTx,
+  addressBalanceChanges
+} from '../../../utils/transaction'
 import { useWidth } from '../../../utils'
 import { i18n } from 'next-i18next'
+import { isIOUpayment, optionalAbsPaymentAmount } from '../../../utils/transaction/payment'
 
 export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
@@ -21,6 +30,8 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
   const memos = specification?.memos
   const isSuccessful = outcome?.result == 'tesSUCCESS'
   const isConvertion = isConvertionTx(specification)
+  const iouPayment = isIOUpayment(data)
+  const sourceBalanceChangesList = addressBalanceChanges(data, address)
 
   const [pageFiatRate, setPageFiatRate] = useState(0)
 
@@ -53,12 +64,21 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         <span className="bold">{txTypeSpecial || tx?.TransactionType} </span>
         {!isConvertion && tx?.TransactionType === 'Payment' && (
           <>
-            <br />
             {specification?.destination?.address === address
               ? 'from'
               : specification?.source?.address === address
               ? 'to'
-              : 'Payment by'}
+              : 'Payment by'}{' '}
+            <AddressWithIconInline
+              data={
+                specification?.destination?.address === address
+                  ? specification.source
+                  : specification?.source?.address === address
+                  ? specification.destination
+                  : specification.source
+              }
+              options={{ short: 5 }}
+            />
           </>
         )}
         {tx?.TransactionType === 'TrustSet' && (
@@ -77,6 +97,31 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
                   },
                   { icon: true, bold: true, color: 'orange', short: true }
                 )}
+              </>
+            )}
+          </>
+        )}
+        {tx?.TransactionType === 'Payment' && (
+          <>
+            {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
+              <>
+                <br />
+                <br />
+                {sourceBalanceChangesList.map((change, index) => (
+                  <div key={index}>
+                    {amountFormat(change, {
+                      icon: true,
+                      bold: true,
+                      color: 'direction',
+                      absolute: true
+                    })}
+                    {nativeCurrencyToFiat({
+                      amount: optionalAbsPaymentAmount(change, isConvertion),
+                      selectedCurrency,
+                      fiatRate: pageFiatRate
+                    })}
+                  </div>
+                ))}
               </>
             )}
           </>

@@ -66,17 +66,32 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   return (
     <span className="no-brake">
       <Link href={'/account/' + address}>
-        <img
-          src={avatarServer + address || placeholder}
-          alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
-          height={size}
-          width={size}
-          style={{ marginRight: '5px', marginBottom: '-5px' }}
-          onError={(e) => {
-            e.target.onerror = null
-            e.target.src = placeholder
+        <div
+          style={{
+            height: size,
+            width: size,
+            marginRight: 4,
+            marginBottom: -5,
+            borderRadius: '50%',
+            overflow: 'hidden',
+            display: 'inline-block'
           }}
-        />
+        >
+          <img
+            src={avatarServer + address || placeholder}
+            alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
+            height={size}
+            width={size}
+            style={{
+              objectFit: 'cover',
+              transform: !data?.[name?.toLowerCase() + 'Details']?.service ? 'scale(1.14)' : 'scale(1)'
+            }}
+            onError={(e) => {
+              e.target.onerror = null
+              e.target.src = placeholder
+            }}
+          />
+        </div>
       </Link>
       {addressUsernameOrServiceLink(data, name, options)}
     </span>
@@ -738,23 +753,27 @@ export const amountFormat = (amount, options = {}) => {
 
   let showValue = value
 
+  if (options.absolute) {
+    showValue = Math.abs(showValue)
+  }
+
   if (options.precise) {
     if (options.precise === 'nice') {
-      showValue = niceNumber(value, 0, null, 15)
+      showValue = niceNumber(showValue, 0, null, 15)
     }
   } else {
-    if (Math.abs(value) >= 100) {
+    if (Math.abs(showValue) >= 100) {
       if (options.short) {
-        showValue = shortNiceNumber(value, 0, 1)
+        showValue = shortNiceNumber(showValue, 0, 1)
       } else {
         if (options.minFractionDigits) {
-          showValue = niceNumber(value, options.minFractionDigits)
+          showValue = niceNumber(showValue, options.minFractionDigits)
         } else {
-          showValue = niceNumber(value)
+          showValue = niceNumber(showValue)
         }
       }
     } else if (options.maxFractionDigits) {
-      showValue = niceNumber(value, 0, null, options.maxFractionDigits)
+      showValue = niceNumber(showValue, 0, null, options.maxFractionDigits)
     }
   }
 
@@ -769,14 +788,14 @@ export const amountFormat = (amount, options = {}) => {
       <Image
         src={tokenImageSrc({ issuer, currency: originalCurrency || currency })}
         alt="token"
-        height={20}
-        width={20}
+        height={16}
+        width={16}
         style={{
           verticalAlign: 'text-bottom',
           display: 'inline-block',
           borderRadius: '50%',
-          marginBottom: -2.5,
-          marginRight: 4,
+          marginBottom: -1,
+          marginRight: 5,
           backgroundColor: '#fff',
           boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
         }}
