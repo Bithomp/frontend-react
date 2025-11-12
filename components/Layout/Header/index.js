@@ -193,6 +193,7 @@ export default function Header({
             <Link href="/services/send">Send Payment</Link>
             <Link href="/services/trustline">Set Trust (Trustline)</Link>
             <Link href="/services/check">Issue Check</Link>
+            <Link href="/services/issue-currency">Issue Currency</Link>
             <Link href="/services/escrow">Create Escrow</Link>
             {!xahauNetwork && <Link href="/services/amm/deposit">AMM Services</Link>}
             <Link href="/services/account-settings/">Account Settings</Link>
