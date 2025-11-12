@@ -184,7 +184,7 @@ export default function Tokens({
   // States
   const [data, setData] = useState(initialData?.tokens || [])
   const [rawData, setRawData] = useState(initialData || {})
-  const [marker, setMarker] = useState(initialData?.marker)
+  const [marker, setMarker] = useState(initialData?.marker || '')
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState(orderQuery || 'rating')
@@ -246,6 +246,7 @@ export default function Tokens({
 
     let markerPart = ''
     if (loadMoreRequest) {
+      if (!rawData?.marker) return
       markerPart = '&marker=' + rawData?.marker
     }
 
