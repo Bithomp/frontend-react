@@ -102,7 +102,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         )}
         <br />
         <br />
-        {sourceBalanceChangesList.map((change, index) => (
+        {sourceBalanceChangesList?.map((change, index) => (
           <div key={index}>
             {amountFormat(change, {
               icon: true,
