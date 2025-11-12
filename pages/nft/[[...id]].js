@@ -112,6 +112,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   const [isValidDigest, setIsValidDigest] = useState(false)
   const [warnings, setWarnings] = useState([])
   const [rendered, setRendered] = useState(false)
+  const [isHidden, setIsHidden] = useState(false)
 
   useEffect(() => {
     if (!data || !hasJsonMeta(data) || !data.digest) return
@@ -1134,7 +1135,9 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         }
         image={{ file: imageUrl }}
       />
-      <SearchBlock searchPlaceholderText={t('enter-nft-id', { ns: 'nft' })} tab="nft" />
+      <div style={isHidden ? { position: 'relative', zIndex: 0 } : {}}>
+        <SearchBlock searchPlaceholderText={t('enter-nft-id', { ns: 'nft' })} tab="nft" />
+      </div>
       <div className="content-profile">
         {id ? (
           <>
@@ -1155,7 +1158,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                         <div className="column-left">
                           {!notFoundInTheNetwork ? (
                             <>
-                              {rendered && <NftPreview nft={data} />}
+                              {rendered && <NftPreview nft={data} setIsHidden={setIsHidden} />}
                               {setAsAvatarButton(data)}
                               {sellButton(data.buyOffers)}
                               {buyButton(data.sellOffers)}
