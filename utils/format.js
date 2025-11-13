@@ -48,8 +48,7 @@ const TokenImage = ({ token }) => {
         overflow: 'hidden',
         borderRadius: '50%',
         verticalAlign: 'text-bottom',
-        marginBottom: -1,
-        marginRight: 4,
+        marginRight: 3,
         backgroundColor: '#fff',
         boxShadow: '0 0 0 1px #fff'
       }}
@@ -61,7 +60,7 @@ const TokenImage = ({ token }) => {
         width={16}
         style={{
           objectFit: 'cover',
-          transform: !token?.issuerDetails?.service ? 'scale(1.14)' : 'scale(1)'
+          transform: !token?.issuerDetails?.service ? 'scale(1.25)' : 'scale(1)'
         }}
         onError={(e) => {
           e.target.onerror = null
@@ -103,8 +102,8 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
           style={{
             height: size,
             width: size,
-            marginRight: 4,
-            marginBottom: -4,
+            verticalAlign: 'text-bottom',
+            marginRight: 3,
             borderRadius: '50%',
             overflow: 'hidden',
             display: 'inline-block'
@@ -117,7 +116,7 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
             width={size}
             style={{
               objectFit: 'cover',
-              transform: !data?.[name?.toLowerCase() + 'Details']?.service ? 'scale(1.14)' : 'scale(1)'
+              transform: !data?.[name?.toLowerCase() + 'Details']?.service ? 'scale(1.25)' : 'scale(1)'
             }}
             onError={(e) => {
               e.target.onerror = null
