@@ -189,7 +189,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
             ))}
           </>
         )}
-        Fee: {amountFormat(tx.Fee, { icon: true })}
+        Fee: {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
         {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
         <br />
         Tx hash:{' '}

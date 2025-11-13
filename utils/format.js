@@ -250,24 +250,29 @@ export const amountToFiat = (params) => {
   const { amount, selectedCurrency, fiatRate } = params
   if (!amount || amount === '0' || !selectedCurrency || !fiatRate) return ''
 
-  let calculatedAmount = null
   let currency = ''
+  let initialAmount
+  let calculatedAmount
 
   if (!amount?.currency) {
     // drops
-    let initialAmount = amount * 1
-    if (params.absolute) {
-      initialAmount = Math.abs(initialAmount)
-    }
-    calculatedAmount = shortNiceNumber((initialAmount / 1000000) * fiatRate, 2, 1, selectedCurrency)
+    initialAmount = amount / 1000000
     currency = nativeCurrency
   } else {
-    let initialAmount = amount.value
-    if (params.absolute) {
-      initialAmount = Math.abs(initialAmount)
-    }
-    calculatedAmount = shortNiceNumber(initialAmount * fiatRate, 2, 1, selectedCurrency)
+    initialAmount = amount.value
     currency = niceCurrency(amount.currency)
+  }
+
+  const absolute = Math.abs(initialAmount)
+
+  if (params.absolute) {
+    initialAmount = absolute
+  }
+
+  if (absolute > 1) {
+    calculatedAmount = shortNiceNumber(initialAmount * fiatRate, 2, 1, selectedCurrency)
+  } else {
+    calculatedAmount = niceNumber(initialAmount * fiatRate, null, selectedCurrency, 6)
   }
 
   if (params.asText) {
