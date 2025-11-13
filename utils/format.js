@@ -1313,7 +1313,7 @@ export const showAmmPercents = (x) => {
 
 export const showFlags = (flags) => {
   return (
-    <div className="flex flex-wrap gap-1">
+    <div className="flex flex-wrap gap-1 inline-block">
       {Object.entries(flags)
         .filter(([, flagValue]) => flagValue === true)
         .map(([flag]) => (

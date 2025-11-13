@@ -1,22 +1,7 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { addressBalanceChanges } from '../../../utils/transaction'
-import { amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
+import { amountFormat, nativeCurrencyToFiat, showFlags } from '../../../utils/format'
 import { nativeCurrency } from '../../../utils'
-
-const flagList = (flags) => {
-  let flagsString = ''
-
-  if (!flags) return flagsString
-
-  for (let key in flags) {
-    if (flags[key]) {
-      flagsString += key + ', '
-    }
-  }
-  flagsString = flagsString.slice(0, -2) // remove the last comma
-
-  return flagsString
-}
 
 export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) => {
   const { specification, outcome, tx } = data
@@ -53,7 +38,6 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
 
   const takerGets = specification.takerGets || myOrderbookChange?.takerGets
   const takerPays = specification.takerPays || myOrderbookChange?.takerPays
-  const flagsAsString = flagList(specification?.flags)
 
   return (
     <TransactionRowCard
@@ -140,10 +124,9 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
               </div>
             </>
           )}
-          {flagsAsString && (
+          {specification?.flags && (
             <div>
-              <span>Flag{flagsAsString.includes(',') ? 's' : ''}: </span>
-              <span className="bold">{flagsAsString}</span>
+              Flag{specification?.flags?.length > 1 ? 's' : ''}: {showFlags(specification?.flags)}
             </div>
           )}
         </>
