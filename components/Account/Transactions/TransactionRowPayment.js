@@ -36,6 +36,23 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
     >
       {(fiatRate) => (
         <>
+          {!isConvertion && outcome?.deliveredAmount && (
+            <div>
+              {specification?.source?.address === address ? 'Sent' : 'Received'}:{' '}
+              {amountFormat(outcome?.deliveredAmount, {
+                icon: true,
+                withIssuer: true,
+                bold: true,
+                precise: true,
+                issuerShort: false
+              })}
+              {nativeCurrencyToFiat({
+                amount: outcome?.deliveredAmount,
+                selectedCurrency,
+                fiatRate
+              })}
+            </div>
+          )}
           {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
             <>
               <div>
@@ -45,7 +62,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                     <FaArrowRightArrowLeft style={{ fontSize: 16, marginBottom: -4 }} /> Exchanged:{' '}
                   </>
                 ) : (
-                  <>Spent: </>
+                  <>Sender spent: </>
                 )}
                 {sourceBalanceChangesList.length > 1 && <br />}
                 {sourceBalanceChangesList.map((change, index) => (
@@ -90,24 +107,6 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                 </div>
               )}
             </>
-          )}
-          {!isConvertion && outcome?.deliveredAmount && (
-            <div>
-              Delivered:{' '}
-              {amountFormat(outcome?.deliveredAmount, {
-                icon: true,
-                withIssuer: true,
-                bold: true,
-                color: 'green',
-                precise: true,
-                issuerShort: false
-              })}
-              {nativeCurrencyToFiat({
-                amount: outcome?.deliveredAmount,
-                selectedCurrency,
-                fiatRate
-              })}
-            </div>
           )}
         </>
       )}

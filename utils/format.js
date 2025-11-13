@@ -809,8 +809,6 @@ export const amountFormat = (amount, options = {}) => {
       }
     } else if (options.maxFractionDigits) {
       showValue = niceNumber(showValue, 0, null, options.maxFractionDigits)
-    } else {
-      showValue = niceNumber(showValue, 2, null, 6)
     }
   }
 

@@ -109,13 +109,8 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
               icon: true,
               bold: true,
               color: 'direction',
-              showPlus: true
-            })}
-            {nativeCurrencyToFiat({
-              amount: change,
-              selectedCurrency,
-              fiatRate: pageFiatRate,
-              tooltipDirection: 'right'
+              showPlus: true,
+              maxFractionDigits: 6
             })}
           </div>
         ))}
@@ -135,12 +130,12 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
           <>
             {specification?.source?.address === address ? (
               <>
-                Destination: <span className="bold">{specification?.destination?.address}</span>{' '}
+                To: <span className="bold">{specification?.destination?.address}</span>{' '}
                 <CopyButton text={specification?.destination?.address} />{' '}
               </>
             ) : (
               <>
-                {specification?.destination?.address === address ? 'Sender' : 'Submitter'}:{' '}
+                {specification?.destination?.address === address ? 'From' : 'Submitter'}:{' '}
                 <span className="bold">{specification?.source?.address}</span>{' '}
                 <CopyButton text={specification?.source?.address} />
               </>
