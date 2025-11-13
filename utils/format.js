@@ -40,21 +40,35 @@ export const NiceNativeBalance = ({ amount }) => {
 
 const TokenImage = ({ token }) => {
   return (
-    <Image
-      src={tokenImageSrc(token)}
-      alt="token"
-      height={16}
-      width={16}
+    <div
       style={{
-        verticalAlign: 'text-bottom',
+        height: 16,
+        width: 16,
         display: 'inline-block',
+        overflow: 'hidden',
         borderRadius: '50%',
+        verticalAlign: 'text-bottom',
         marginBottom: -1,
         marginRight: 5,
         backgroundColor: '#fff',
-        boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
+        boxShadow: '0 0 0 1px #fff'
       }}
-    />
+    >
+      <img
+        src={tokenImageSrc(token)}
+        alt="token"
+        height={16}
+        width={16}
+        style={{
+          objectFit: 'cover',
+          transform: !token?.issuerDetails?.service ? 'scale(1.14)' : 'scale(1)'
+        }}
+        onError={(e) => {
+          e.target.onerror = null
+          e.target.src = placeholder
+        }}
+      />
+    </div>
   )
 }
 
