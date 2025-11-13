@@ -57,13 +57,13 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
             <>
               {takerGets && (
                 <div>
-                  <span>{direction === 'Sell' ? 'Order to sell exactly' : 'Order that can pay maximum'}: </span>
+                  <span>{direction === 'Sell' ? 'Sell exactly' : 'Pay up to'}: </span>
                   <span>{amountFormat(takerGets, { icon: true, withIssuer: true, bold: true })}</span>
                 </div>
               )}
               {takerPays && (
                 <div>
-                  <span>{direction === 'Sell' ? 'To get minimum' : 'To receive exactly'}: </span>
+                  <span>{direction === 'Sell' ? 'Receive at least' : 'Receive exactly'}: </span>
                   <span>{amountFormat(takerPays, { icon: true, withIssuer: true, bold: true })}</span>
                 </div>
               )}
