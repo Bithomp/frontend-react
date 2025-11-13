@@ -18,7 +18,8 @@ import {
   shortErrorCode,
   dappBySourceTag,
   isConvertionTx,
-  addressBalanceChanges
+  addressBalanceChanges,
+  memoNode
 } from '../../../utils/transaction'
 import { isTagValid, useWidth } from '../../../utils'
 import { i18n } from 'next-i18next'
@@ -27,7 +28,6 @@ import CopyButton from '../../UI/CopyButton'
 export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
   const { specification, tx, outcome } = data
-  const memos = specification?.memos
   const isSuccessful = outcome?.result == 'tesSUCCESS'
   const isConvertion = isConvertionTx(specification)
   const sourceBalanceChangesList = addressBalanceChanges(data, address)
@@ -162,31 +162,10 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         ) : (
           ''
         )}
-        {memos && memos.length > 0 && (
-          <>
-            {memos.map((memo, idx) => (
-              <div key={idx}>
-                {memo.data ? (
-                  <>
-                    <span>Memo{memos.length > 1 ? ` (${idx + 1})` : ''}:</span>
-                    <span className="gray"> {memo.data}</span>
-                  </>
-                ) : (
-                  <>
-                    <span>
-                      {memo.type}
-                      {memos.length > 1 ? ` (${idx + 1})` : ''}:
-                    </span>
-                    <span className="gray"> {memo.format}</span>
-                  </>
-                )}
-              </div>
-            ))}
-          </>
-        )}
         Fee: {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
         {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
         <br />
+        {specification?.memos && memoNode(specification.memos, 'div')}
         Tx hash:{' '}
         <LinkTx tx={tx.hash} copy={true}>
           {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
