@@ -49,7 +49,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
     }
   }
 
-  const txTypeSpecial = tx?.TransactionType + ' - ' + direction + ' Order ' + orderStatus
+  const txTypeSpecial = direction + ' Order ' + orderStatus
 
   const takerGets = specification.takerGets || myOrderbookChange?.takerGets
   const takerPays = specification.takerPays || myOrderbookChange?.takerPays
