@@ -1312,15 +1312,15 @@ export const showAmmPercents = (x) => {
 }
 
 export const showFlags = (flags) => {
+  const trueFlags = Object.entries(flags).filter(([, flagValue]) => flagValue === true)
+  if (!trueFlags?.length) return null
   return (
-    <div className="flex flex-wrap gap-1 inline-block">
-      {Object.entries(flags)
-        .filter(([, flagValue]) => flagValue === true)
-        .map(([flag]) => (
-          <span key={flag} className="flag">
-            {flag}
-          </span>
-        ))}
-    </div>
+    <>
+      {trueFlags.map(([flag]) => (
+        <span key={flag} className="flag">
+          {flag}
+        </span>
+      ))}
+    </>
   )
 }

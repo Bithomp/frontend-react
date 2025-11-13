@@ -14,6 +14,8 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
 
   const myBalanceChangesList = addressBalanceChanges(data, address)
 
+  const flags = showFlags(specification?.flags)
+
   let orderStatus = ''
 
   if (
@@ -34,10 +36,12 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
     }
   }
 
-  const txTypeSpecial = direction + ' Order ' + orderStatus
+  const txTypeSpecial = direction + ' order ' + orderStatus
 
   const takerGets = specification.takerGets || myOrderbookChange?.takerGets
   const takerPays = specification.takerPays || myOrderbookChange?.takerPays
+
+  const myOrder = specification?.source?.address === address
 
   return (
     <TransactionRowCard
@@ -49,17 +53,21 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
     >
       {(fiatRate) => (
         <>
-          {takerGets && (
-            <div>
-              <span>Taker Gets: </span>
-              <span>{amountFormat(takerGets, { icon: true, withIssuer: true, bold: true })}</span>
-            </div>
-          )}
-          {takerPays && (
-            <div>
-              <span>Taker Pays: </span>
-              <span>{amountFormat(takerPays, { icon: true, withIssuer: true, bold: true })}</span>
-            </div>
+          {myOrder && (
+            <>
+              {takerGets && (
+                <div>
+                  <span>{direction === 'Sell' ? 'Order to sell exactly' : 'Order that can pay maximum'}: </span>
+                  <span>{amountFormat(takerGets, { icon: true, withIssuer: true, bold: true })}</span>
+                </div>
+              )}
+              {takerPays && (
+                <div>
+                  <span>{direction === 'Sell' ? 'To get minimum' : 'To receive exactly'}: </span>
+                  <span>{amountFormat(takerPays, { icon: true, withIssuer: true, bold: true })}</span>
+                </div>
+              )}
+            </>
           )}
           {myBalanceChangesList?.length === 2 && (
             <>
@@ -81,7 +89,8 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
                 </span>
               </div>
               <div>
-                <span>Rate: </span>
+                <span>Rates: </span>
+                <br />
                 <span>
                   {amountFormat(
                     {
@@ -124,11 +133,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
               </div>
             </>
           )}
-          {specification?.flags && (
-            <div>
-              Flag{specification?.flags?.length > 1 ? 's' : ''}: {showFlags(specification?.flags)}
-            </div>
-          )}
+          {flags && <div>Flags: {flags}</div>}
         </>
       )}
     </TransactionRowCard>
