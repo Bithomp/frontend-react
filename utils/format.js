@@ -49,7 +49,7 @@ const TokenImage = ({ token }) => {
         borderRadius: '50%',
         verticalAlign: 'text-bottom',
         marginBottom: -1,
-        marginRight: 5,
+        marginRight: 4,
         backgroundColor: '#fff',
         boxShadow: '0 0 0 1px #fff'
       }}
@@ -86,7 +86,7 @@ export const CurrencyWithIcon = ({ token }) => {
 
 export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   const address = data[name]
-  const size = 20
+  const size = 16
   const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
      <rect width="100%" height="100%" fill="#ffffff"/>
@@ -104,7 +104,7 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
             height: size,
             width: size,
             marginRight: 4,
-            marginBottom: -5,
+            marginBottom: -4,
             borderRadius: '50%',
             overflow: 'hidden',
             display: 'inline-block'
