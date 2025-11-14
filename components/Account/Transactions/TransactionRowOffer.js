@@ -71,8 +71,9 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
           )}
           {myBalanceChangesList?.length === 2 && (
             <>
-              <div className="flex gap-1">
+              <div>
                 <span>Exchanged: </span>
+                <br />
                 <span>
                   {myBalanceChangesList.map((change, index) => (
                     <div key={index}>

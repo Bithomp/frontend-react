@@ -49,6 +49,8 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
 
   const sequence = tx.TicketSequence || tx.Sequence
 
+  const addressIsSource = specification?.source?.address === address
+
   return (
     <tr
       style={{
@@ -154,17 +156,21 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
           </>
         )}
         {typeof children === 'function' ? children(pageFiatRate) : children}
-        {sequence ? (
+        {addressIsSource && (
           <>
-            {tx.TicketSequence && 'Ticket '}Sequence: {tx.Sequence || tx.TicketSequence}
+            {sequence ? (
+              <>
+                {tx.TicketSequence && 'Ticket '}Sequence: {tx.Sequence || tx.TicketSequence}
+                <br />
+              </>
+            ) : (
+              ''
+            )}
+            Fee: {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
+            {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
             <br />
           </>
-        ) : (
-          ''
         )}
-        Fee: {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
-        {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
-        <br />
         {specification?.memos && memoNode(specification.memos, 'div')}
         Tx hash:{' '}
         <LinkTx tx={tx.hash} copy={true}>
