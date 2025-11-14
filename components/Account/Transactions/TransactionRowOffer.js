@@ -72,6 +72,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
           {myBalanceChangesList?.length === 2 && (
             <>
               <div>
+                <br />
                 <span>Exchanged: </span>
                 <br />
                 <span>
@@ -82,7 +83,8 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
                         showPlus: true,
                         withIssuer: true,
                         bold: true,
-                        color: 'direction'
+                        color: 'direction',
+                        precise: 'nice'
                       })}
                       {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate })}
                     </div>
@@ -90,6 +92,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
                 </span>
               </div>
               <div>
+                <br />
                 <span>Rates: </span>
                 <br />
                 <span>
@@ -131,6 +134,8 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
                     )}
                   </span>
                 </span>
+                <br />
+                <br />
               </div>
             </>
           )}
