@@ -14,17 +14,9 @@ const nftData = (change, nftInfo, txType) => {
 
   return (
     <>
-      {txType === 'NFTokenBurn' ? (
-        <div>
-          <span>Change: </span>
-          <span>removed NFT {nftIdLink(change.nftokenID)}</span>
-        </div>
-      ) : (
-        <div>
-          <span>NFT: </span>
-          <span>{nftIdLink(change.nftokenID)}</span>
-        </div>
-      )}
+      <div>
+        {txType === 'NFTokenBurn' && 'Burned '}NFT: {nftIdLink(change.nftokenID)}
+      </div>
 
       {nftInfo.transferFee !== undefined && txType !== 'NFTokenBurn' && (
         <div>
