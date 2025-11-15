@@ -809,20 +809,10 @@ export const amountFormat = (amount, options = {}) => {
     if (options.precise === 'nice') {
       showValue = niceNumber(showValue, 0, null, 15)
     }
+  } else if (options.short) {
+    showValue = shortNiceNumber(showValue)
   } else {
-    if (Math.abs(showValue) >= 100) {
-      if (options.short) {
-        showValue = shortNiceNumber(showValue, 0, 1)
-      } else {
-        if (options.minFractionDigits) {
-          showValue = niceNumber(showValue, options.minFractionDigits)
-        } else {
-          showValue = niceNumber(showValue)
-        }
-      }
-    } else if (options.maxFractionDigits) {
-      showValue = niceNumber(showValue, 0, null, options.maxFractionDigits)
-    }
+    showValue = niceNumber(showValue, options.minFractionDigits, null, options.maxFractionDigits || 6)
   }
 
   let showIcon = options?.icon || false
@@ -1163,7 +1153,7 @@ export const duration = (t, seconds, options) => {
 }
 
 //need to make dynamic fraction digits
-export const niceNumber = (n, fractionDigits = 0, currency = null, maxFractionDigits = 0) => {
+export const niceNumber = (n, fractionDigits = null, currency = null, maxFractionDigits = null) => {
   if (typeof n === 'string') {
     if (n.includes('x')) {
       //in case of placeholders xxx
@@ -1174,8 +1164,8 @@ export const niceNumber = (n, fractionDigits = 0, currency = null, maxFractionDi
   }
   if (n || n === 0 || n === '0') {
     let options = {
-      maximumFractionDigits: maxFractionDigits || fractionDigits,
-      minimumFractionDigits: fractionDigits
+      maximumFractionDigits: maxFractionDigits || fractionDigits || 0,
+      minimumFractionDigits: fractionDigits || 0
     }
     if (currency) {
       options.style = 'currency'

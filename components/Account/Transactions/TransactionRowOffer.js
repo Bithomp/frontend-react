@@ -1,7 +1,6 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { addressBalanceChanges } from '../../../utils/transaction'
 import { amountFormat, nativeCurrencyToFiat, showFlags } from '../../../utils/format'
-import { nativeCurrency } from '../../../utils'
 
 export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) => {
   const { specification, outcome, tx } = data
@@ -16,16 +15,14 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
 
   const flags = showFlags(specification?.flags)
 
+  const myOrder = tx?.Account === address
+
   let orderStatus = ''
 
-  if (
-    myBalanceChangesList?.length === 1 &&
-    myBalanceChangesList[0].currency === nativeCurrency &&
-    myBalanceChangesList[0].value === -tx.Fee
-  ) {
+  if (myBalanceChangesList?.length === 0 && myOrder) {
     orderStatus = 'placed'
   } else {
-    if (address !== tx?.Account) {
+    if (!myOrder) {
       orderStatus = 'fullfilled'
       const seq = specification.sequence || specification.ticketSequence
       if (seq) {
@@ -41,8 +38,6 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
   const takerGets = specification.takerGets || myOrderbookChange?.takerGets
   const takerPays = specification.takerPays || myOrderbookChange?.takerPays
 
-  const myOrder = specification?.source?.address === address
-
   return (
     <TransactionRowCard
       data={data}
@@ -55,6 +50,8 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
         <>
           {myOrder && (
             <>
+              Order specification:
+              <br />
               {takerGets && (
                 <div>
                   <span>{direction === 'Sell' ? 'Sell exactly' : 'Pay up to'}: </span>
@@ -69,10 +66,10 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
               )}
             </>
           )}
+          {myOrder && myBalanceChangesList?.length === 2 && <br />}
           {myBalanceChangesList?.length === 2 && (
             <>
               <div>
-                <br />
                 <span>Exchanged: </span>
                 <br />
                 <span>
@@ -111,7 +108,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
                         ...myBalanceChangesList[1],
                         value: Math.abs(myBalanceChangesList[1].value / myBalanceChangesList[0].value)
                       },
-                      { icon: true }
+                      { icon: true, precise: 'nice' }
                     )}
                   </span>
                   <br />

@@ -111,8 +111,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
               icon: true,
               bold: true,
               color: 'direction',
-              showPlus: true,
-              maxFractionDigits: 6
+              showPlus: true
             })}
           </div>
         ))}
