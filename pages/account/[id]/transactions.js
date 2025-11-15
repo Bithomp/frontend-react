@@ -37,6 +37,7 @@ import {
   TransactionRowEnableAmendment,
   TransactionRowDelegateSet
 } from '../../../components/Account/Transactions'
+import { addressBalanceChanges } from '../../../utils/transaction'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -428,56 +429,66 @@ export default function AccountTransactions({
                     </td>
                   </tr>
                 ) : (
-                  transactions?.map((tx, index) => {
-                    let TransactionRowComponent = null
-                    const txType = tx?.tx?.TransactionType
+                  transactions
+                    .filter((tx) => {
+                      const inner = tx?.tx
+                      const myBalance = addressBalanceChanges(tx, address)
+                      return (
+                        inner?.Account === address ||
+                        inner?.Destination === address ||
+                        (myBalance && myBalance.length > 0)
+                      )
+                    })
+                    .map((tx, index) => {
+                      let TransactionRowComponent = null
+                      const txType = tx?.tx?.TransactionType
 
-                    if (txType === 'AccountDelete') {
-                      TransactionRowComponent = TransactionRowAccountDelete
-                    } else if (txType === 'AccountSet') {
-                      TransactionRowComponent = TransactionRowAccountSet
-                    } else if (txType?.includes('AMM')) {
-                      TransactionRowComponent = TransactionRowAMM
-                    } else if (txType?.includes('Check')) {
-                      TransactionRowComponent = TransactionRowCheck
-                    } else if (txType?.includes('Escrow')) {
-                      TransactionRowComponent = TransactionRowEscrow
-                    } else if (txType === 'Import') {
-                      TransactionRowComponent = TransactionRowImport
-                    } else if (txType?.includes('NFToken')) {
-                      TransactionRowComponent = TransactionRowNFToken
-                    } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
-                      TransactionRowComponent = TransactionRowOffer
-                    } else if (txType === 'Payment') {
-                      TransactionRowComponent = TransactionRowPayment
-                    } else if (txType === 'SetRegularKey') {
-                      TransactionRowComponent = TransactionRowSetRegularKey
-                    } else if (txType === 'DelegateSet') {
-                      TransactionRowComponent = TransactionRowDelegateSet
-                    } else if (txType === 'TrustSet') {
-                      TransactionRowComponent = TransactionRowTrustSet
-                    } else if (txType?.includes('DID')) {
-                      TransactionRowComponent = TransactionRowDID
-                    } else if (txType?.includes('URIToken')) {
-                      TransactionRowComponent = TransactionRowURIToken
-                    } else if (txType === 'Remit') {
-                      TransactionRowComponent = TransactionRowRemit
-                    } else if (txType === 'EnableAmendment') {
-                      TransactionRowComponent = TransactionRowEnableAmendment
-                    } else {
-                      TransactionRowComponent = TransactionRowDetails
-                    }
+                      if (txType === 'AccountDelete') {
+                        TransactionRowComponent = TransactionRowAccountDelete
+                      } else if (txType === 'AccountSet') {
+                        TransactionRowComponent = TransactionRowAccountSet
+                      } else if (txType?.includes('AMM')) {
+                        TransactionRowComponent = TransactionRowAMM
+                      } else if (txType?.includes('Check')) {
+                        TransactionRowComponent = TransactionRowCheck
+                      } else if (txType?.includes('Escrow')) {
+                        TransactionRowComponent = TransactionRowEscrow
+                      } else if (txType === 'Import') {
+                        TransactionRowComponent = TransactionRowImport
+                      } else if (txType?.includes('NFToken')) {
+                        TransactionRowComponent = TransactionRowNFToken
+                      } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
+                        TransactionRowComponent = TransactionRowOffer
+                      } else if (txType === 'Payment') {
+                        TransactionRowComponent = TransactionRowPayment
+                      } else if (txType === 'SetRegularKey') {
+                        TransactionRowComponent = TransactionRowSetRegularKey
+                      } else if (txType === 'DelegateSet') {
+                        TransactionRowComponent = TransactionRowDelegateSet
+                      } else if (txType === 'TrustSet') {
+                        TransactionRowComponent = TransactionRowTrustSet
+                      } else if (txType?.includes('DID')) {
+                        TransactionRowComponent = TransactionRowDID
+                      } else if (txType?.includes('URIToken')) {
+                        TransactionRowComponent = TransactionRowURIToken
+                      } else if (txType === 'Remit') {
+                        TransactionRowComponent = TransactionRowRemit
+                      } else if (txType === 'EnableAmendment') {
+                        TransactionRowComponent = TransactionRowEnableAmendment
+                      } else {
+                        TransactionRowComponent = TransactionRowDetails
+                      }
 
-                    return (
-                      <TransactionRowComponent
-                        key={index}
-                        data={tx}
-                        address={address}
-                        index={index}
-                        selectedCurrency={selectedCurrency}
-                      />
-                    )
-                  })
+                      return (
+                        <TransactionRowComponent
+                          key={index}
+                          data={tx}
+                          address={address}
+                          index={index}
+                          selectedCurrency={selectedCurrency}
+                        />
+                      )
+                    })
                 )}
               </tbody>
             </table>
