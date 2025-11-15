@@ -117,7 +117,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
           </div>
         ))}
       </td>
-      <td className="left" style={{ maxWidth: width > 800 ? 800 : '100%', wordBreak: 'break-word' }}>
+      <td className="left" style={{ wordBreak: 'break-word' }}>
         {outcome && !isSuccessful && (
           <>
             <span className="bold">Failure: </span>
@@ -148,6 +148,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         {isTagValid(tx.DestinationTag) && (
           <>
             Destination tag: <span className="bold">{tx.DestinationTag}</span>
+            <br />
           </>
         )}
         {isTagValid(tx.SourceTag) && !dapp && (
@@ -171,7 +172,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
             <br />
           </>
         )}
-        {specification?.memos && memoNode(specification.memos, 'div')}
+        {memoNode(specification?.memos, 'div')}
         Tx hash:{' '}
         <LinkTx tx={tx.hash} copy={true}>
           {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
