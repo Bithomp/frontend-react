@@ -69,7 +69,7 @@ export async function getServerSideProps(context) {
       isSsrMobile: getIsSsrMobile(context),
       fromDateQuery: fromDate || '',
       toDateQuery: toDate || '',
-      typeQuery: type || 'tx',
+      typeQuery: type || 'all',
       initiatedQuery: initiated || '0',
       excludeFailuresQuery: excludeFailures || '0',
       counterpartyQuery: counterparty || '',
@@ -106,7 +106,7 @@ export default function AccountTransactions({
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState(orderQuery) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
-  const [type, setType] = useState(typeQuery) // tx = all types
+  const [type, setType] = useState(typeQuery)
   const [initiated, setInitiated] = useState(initiatedQuery) // 0 = both, 1 = outgoing, 2 = incoming
   const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // 0 = include, 1 = exclude
   const [counterparty, setCounterparty] = useState(counterpartyQuery)
@@ -150,7 +150,7 @@ export default function AccountTransactions({
 
   // transaction type options
   const typeOptions = [
-    { value: 'tx', label: 'All types' },
+    { value: 'all', label: 'All types' },
     { value: 'payment', label: 'Payment' },
     { value: 'nft', label: 'NFT' },
     { value: 'amm', label: 'AMM' },
@@ -185,7 +185,7 @@ export default function AccountTransactions({
     // sorting
     url += `&forward=${order === 'oldest'}`
     // filters
-    if (type && type !== 'tx') {
+    if (type && type !== 'all') {
       url += `&type=${type}`
     }
     if (initiated === '1') {
@@ -276,7 +276,7 @@ export default function AccountTransactions({
     // Process each filter
     Object.keys(newFilters).forEach((key) => {
       const value = newFilters[key]
-      if (value && value !== '' && value !== '0' && value !== 'tx' && value !== 'newest') {
+      if (value && value !== '' && value !== '0' && value !== 'all' && value !== 'newest') {
         addList.push({ name: key, value })
       } else {
         removeList.push(key)
