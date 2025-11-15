@@ -74,12 +74,20 @@ const showAllOfferLinks = (changes) => {
 export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }) => {
   const { specification, outcome, tx } = data
   const txType = tx?.TransactionType
-  const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
-  const txTypeSpecial =
-    txType +
-    (direction && (txType === 'NFTokenAcceptOffer' || txType === 'NFTokenCreateOffer')
-      ? ' - ' + direction + ' Offer'
-      : '')
+  let txTypeSpecial = txType
+
+  if (txType === 'NFTokenAcceptOffer' || txType === 'NFTokenCreateOffer') {
+    const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
+    if (direction) {
+      txTypeSpecial = (txType === 'NFTokenAcceptOffer' ? 'Accept' : 'Create') + ' NFT ' + direction + ' offer'
+    }
+  } else if (txType === 'NFTokenCancelOffer') {
+    txTypeSpecial = 'Cancel NFT offer'
+  } else if (txType === 'NFTokenMint') {
+    txTypeSpecial = 'Mint NFT'
+  } else if (txType === 'NFTokenBurn') {
+    txTypeSpecial = 'Burn NFT'
+  }
 
   const amountChange = addressBalanceChanges(data, address)?.[0]
 
