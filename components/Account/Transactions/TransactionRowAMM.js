@@ -28,7 +28,7 @@ export const TransactionRowAMM = ({ data, address, index, selectedCurrency }) =>
     >
       {(tx.TradingFee || tx.TradingFee === 0) && (
         <>
-          Trading fee: <span className="bold">{tx.TradingFee}%</span>
+          Trading fee: <span className="bold">{tx.TradingFee / 100000}%</span>
           <br />
         </>
       )}
