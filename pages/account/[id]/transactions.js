@@ -41,7 +41,7 @@ import { addressBalanceChanges } from '../../../utils/transaction'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  const { id, fromDate, toDate, txType, initiated, excludeFailures, counterparty, order } = query
+  const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order } = query
   const limit = 20
   let initialErrorMessage = ''
   let initialData = null
@@ -69,7 +69,7 @@ export async function getServerSideProps(context) {
       isSsrMobile: getIsSsrMobile(context),
       fromDateQuery: fromDate || '',
       toDateQuery: toDate || '',
-      txTypeQuery: txType || 'tx',
+      typeQuery: type || 'tx',
       initiatedQuery: initiated || '0',
       excludeFailuresQuery: excludeFailures || '0',
       counterpartyQuery: counterparty || '',
@@ -86,7 +86,7 @@ export default function AccountTransactions({
   selectedCurrency,
   fromDateQuery,
   toDateQuery,
-  txTypeQuery,
+  typeQuery,
   initiatedQuery,
   excludeFailuresQuery,
   counterpartyQuery,
@@ -106,7 +106,7 @@ export default function AccountTransactions({
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState(orderQuery) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
-  const [txType, setTxType] = useState(txTypeQuery) // tx = all types
+  const [type, setType] = useState(typeQuery) // tx = all types
   const [initiated, setInitiated] = useState(initiatedQuery) // 0 = both, 1 = outgoing, 2 = incoming
   const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // 0 = include, 1 = exclude
   const [counterparty, setCounterparty] = useState(counterpartyQuery)
@@ -132,7 +132,7 @@ export default function AccountTransactions({
     if (router.isReady) {
       updateURL({
         order,
-        txType,
+        type,
         initiated,
         excludeFailures,
         counterparty,
@@ -141,7 +141,7 @@ export default function AccountTransactions({
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, txType, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
+  }, [order, type, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
 
   const orderList = [
     { value: 'newest', label: 'Newest First' },
@@ -149,7 +149,7 @@ export default function AccountTransactions({
   ]
 
   // transaction type options
-  const txTypeOptions = [
+  const typeOptions = [
     { value: 'tx', label: 'All types' },
     { value: 'payment', label: 'Payment' },
     { value: 'nft', label: 'NFT' },
@@ -185,8 +185,8 @@ export default function AccountTransactions({
     // sorting
     url += `&forward=${order === 'oldest'}`
     // filters
-    if (txType && txType !== 'tx') {
-      url += `&type=${txType}`
+    if (type && type !== 'tx') {
+      url += `&type=${type}`
     }
     if (initiated === '1') {
       url += `&initiated=true`
@@ -329,7 +329,7 @@ export default function AccountTransactions({
           <div className="filters-body-inner">
             <div>
               <span className="input-title">Type</span>
-              <SimpleSelect value={txType} setValue={setTxType} optionsList={txTypeOptions} />
+              <SimpleSelect value={type} setValue={setType} optionsList={typeOptions} />
             </div>
             <br />
             <div>
@@ -441,39 +441,39 @@ export default function AccountTransactions({
                     })
                     .map((tx, index) => {
                       let TransactionRowComponent = null
-                      const txType = tx?.tx?.TransactionType
+                      const type = tx?.tx?.TransactionType
 
-                      if (txType === 'AccountDelete') {
+                      if (type === 'AccountDelete') {
                         TransactionRowComponent = TransactionRowAccountDelete
-                      } else if (txType === 'AccountSet') {
+                      } else if (type === 'AccountSet') {
                         TransactionRowComponent = TransactionRowAccountSet
-                      } else if (txType?.includes('AMM')) {
+                      } else if (type?.includes('AMM')) {
                         TransactionRowComponent = TransactionRowAMM
-                      } else if (txType?.includes('Check')) {
+                      } else if (type?.includes('Check')) {
                         TransactionRowComponent = TransactionRowCheck
-                      } else if (txType?.includes('Escrow')) {
+                      } else if (type?.includes('Escrow')) {
                         TransactionRowComponent = TransactionRowEscrow
-                      } else if (txType === 'Import') {
+                      } else if (type === 'Import') {
                         TransactionRowComponent = TransactionRowImport
-                      } else if (txType?.includes('NFToken')) {
+                      } else if (type?.includes('NFToken')) {
                         TransactionRowComponent = TransactionRowNFToken
-                      } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
+                      } else if (type === 'OfferCreate' || type === 'OfferCancel') {
                         TransactionRowComponent = TransactionRowOffer
-                      } else if (txType === 'Payment') {
+                      } else if (type === 'Payment') {
                         TransactionRowComponent = TransactionRowPayment
-                      } else if (txType === 'SetRegularKey') {
+                      } else if (type === 'SetRegularKey') {
                         TransactionRowComponent = TransactionRowSetRegularKey
-                      } else if (txType === 'DelegateSet') {
+                      } else if (type === 'DelegateSet') {
                         TransactionRowComponent = TransactionRowDelegateSet
-                      } else if (txType === 'TrustSet') {
+                      } else if (type === 'TrustSet') {
                         TransactionRowComponent = TransactionRowTrustSet
-                      } else if (txType?.includes('DID')) {
+                      } else if (type?.includes('DID')) {
                         TransactionRowComponent = TransactionRowDID
-                      } else if (txType?.includes('URIToken')) {
+                      } else if (type?.includes('URIToken')) {
                         TransactionRowComponent = TransactionRowURIToken
-                      } else if (txType === 'Remit') {
+                      } else if (type === 'Remit') {
                         TransactionRowComponent = TransactionRowRemit
-                      } else if (txType === 'EnableAmendment') {
+                      } else if (type === 'EnableAmendment') {
                         TransactionRowComponent = TransactionRowEnableAmendment
                       } else {
                         TransactionRowComponent = TransactionRowDetails
