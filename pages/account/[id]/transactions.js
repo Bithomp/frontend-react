@@ -358,15 +358,13 @@ export default function AccountTransactions({
               <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
             </div>
             <br />
-            <div>
-              <span className="input-title">Counterparty</span>
-              <AddressInput
-                setValue={setCounterparty}
-                rawData={counterparty ? { counterparty } : {}}
-                type="counterparty"
-                hideButton={true}
-              />
-            </div>
+            <AddressInput
+              title="Counterparty"
+              setValue={setCounterparty}
+              rawData={counterparty ? { counterparty } : {}}
+              type="counterparty"
+              hideButton={true}
+            />
             <br />
             <div>
               <span className="input-title">From</span>
