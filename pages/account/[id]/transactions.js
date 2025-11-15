@@ -39,6 +39,12 @@ import {
 } from '../../../components/Account/Transactions'
 import { addressBalanceChanges } from '../../../utils/transaction'
 
+const shouldShowTxForAddress = (tx, address) => {
+  const inner = tx?.tx
+  const myBalance = addressBalanceChanges(tx, address)
+  return inner?.Account === address || inner?.Destination === address || (myBalance && myBalance.length > 0)
+}
+
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order } = query
@@ -47,15 +53,23 @@ export async function getServerSideProps(context) {
   let initialData = null
 
   if (isAddressOrUsername(id)) {
+    let url = `v3/transactions/${id}?limit=${limit}`
+    if (type && type !== 'all') {
+      url += `&type=${type}`
+    }
     try {
       const res = await axiosServer({
         method: 'get',
-        url: `v3/transactions/${id}?limit=${limit}`,
+        url,
         headers: passHeaders(req)
       })
       initialData = res?.data
     } catch (e) {
-      initialErrorMessage = e?.message || 'Failed to load transactions'
+      if (e?.message === 'read ECONNRESET') {
+        initialErrorMessage = 'The request timed out. Try changing your filters or try again later.'
+      } else {
+        initialErrorMessage = e?.message || 'Failed to load transactions'
+      }
     }
   } else {
     initialErrorMessage = 'Invalid username or address'
@@ -100,7 +114,9 @@ export default function AccountTransactions({
   const address = initialData?.address
 
   // State management
-  const [transactions, setTransactions] = useState(initialData?.transactions || [])
+  const [transactions, setTransactions] = useState(
+    initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, address)) || []
+  )
   const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
@@ -224,7 +240,7 @@ export default function AccountTransactions({
         setLoading(false)
         return
       }
-      const newData = response?.data?.transactions || response?.data || []
+      const newData = response?.data?.transactions?.filter((tx) => shouldShowTxForAddress(tx, address)) || []
       const newMarker = response?.data?.marker || null
 
       if (markerToUse && transactions.length > 0) {
@@ -429,66 +445,56 @@ export default function AccountTransactions({
                     </td>
                   </tr>
                 ) : (
-                  transactions
-                    .filter((tx) => {
-                      const inner = tx?.tx
-                      const myBalance = addressBalanceChanges(tx, address)
-                      return (
-                        inner?.Account === address ||
-                        inner?.Destination === address ||
-                        (myBalance && myBalance.length > 0)
-                      )
-                    })
-                    .map((tx, index) => {
-                      let TransactionRowComponent = null
-                      const type = tx?.tx?.TransactionType
+                  transactions.map((tx, index) => {
+                    let TransactionRowComponent = null
+                    const type = tx?.tx?.TransactionType
 
-                      if (type === 'AccountDelete') {
-                        TransactionRowComponent = TransactionRowAccountDelete
-                      } else if (type === 'AccountSet') {
-                        TransactionRowComponent = TransactionRowAccountSet
-                      } else if (type?.includes('AMM')) {
-                        TransactionRowComponent = TransactionRowAMM
-                      } else if (type?.includes('Check')) {
-                        TransactionRowComponent = TransactionRowCheck
-                      } else if (type?.includes('Escrow')) {
-                        TransactionRowComponent = TransactionRowEscrow
-                      } else if (type === 'Import') {
-                        TransactionRowComponent = TransactionRowImport
-                      } else if (type?.includes('NFToken')) {
-                        TransactionRowComponent = TransactionRowNFToken
-                      } else if (type === 'OfferCreate' || type === 'OfferCancel') {
-                        TransactionRowComponent = TransactionRowOffer
-                      } else if (type === 'Payment') {
-                        TransactionRowComponent = TransactionRowPayment
-                      } else if (type === 'SetRegularKey') {
-                        TransactionRowComponent = TransactionRowSetRegularKey
-                      } else if (type === 'DelegateSet') {
-                        TransactionRowComponent = TransactionRowDelegateSet
-                      } else if (type === 'TrustSet') {
-                        TransactionRowComponent = TransactionRowTrustSet
-                      } else if (type?.includes('DID')) {
-                        TransactionRowComponent = TransactionRowDID
-                      } else if (type?.includes('URIToken')) {
-                        TransactionRowComponent = TransactionRowURIToken
-                      } else if (type === 'Remit') {
-                        TransactionRowComponent = TransactionRowRemit
-                      } else if (type === 'EnableAmendment') {
-                        TransactionRowComponent = TransactionRowEnableAmendment
-                      } else {
-                        TransactionRowComponent = TransactionRowDetails
-                      }
+                    if (type === 'AccountDelete') {
+                      TransactionRowComponent = TransactionRowAccountDelete
+                    } else if (type === 'AccountSet') {
+                      TransactionRowComponent = TransactionRowAccountSet
+                    } else if (type?.includes('AMM')) {
+                      TransactionRowComponent = TransactionRowAMM
+                    } else if (type?.includes('Check')) {
+                      TransactionRowComponent = TransactionRowCheck
+                    } else if (type?.includes('Escrow')) {
+                      TransactionRowComponent = TransactionRowEscrow
+                    } else if (type === 'Import') {
+                      TransactionRowComponent = TransactionRowImport
+                    } else if (type?.includes('NFToken')) {
+                      TransactionRowComponent = TransactionRowNFToken
+                    } else if (type === 'OfferCreate' || type === 'OfferCancel') {
+                      TransactionRowComponent = TransactionRowOffer
+                    } else if (type === 'Payment') {
+                      TransactionRowComponent = TransactionRowPayment
+                    } else if (type === 'SetRegularKey') {
+                      TransactionRowComponent = TransactionRowSetRegularKey
+                    } else if (type === 'DelegateSet') {
+                      TransactionRowComponent = TransactionRowDelegateSet
+                    } else if (type === 'TrustSet') {
+                      TransactionRowComponent = TransactionRowTrustSet
+                    } else if (type?.includes('DID')) {
+                      TransactionRowComponent = TransactionRowDID
+                    } else if (type?.includes('URIToken')) {
+                      TransactionRowComponent = TransactionRowURIToken
+                    } else if (type === 'Remit') {
+                      TransactionRowComponent = TransactionRowRemit
+                    } else if (type === 'EnableAmendment') {
+                      TransactionRowComponent = TransactionRowEnableAmendment
+                    } else {
+                      TransactionRowComponent = TransactionRowDetails
+                    }
 
-                      return (
-                        <TransactionRowComponent
-                          key={index}
-                          data={tx}
-                          address={address}
-                          index={index}
-                          selectedCurrency={selectedCurrency}
-                        />
-                      )
-                    })
+                    return (
+                      <TransactionRowComponent
+                        key={index}
+                        data={tx}
+                        address={address}
+                        index={index}
+                        selectedCurrency={selectedCurrency}
+                      />
+                    )
+                  })
                 )}
               </tbody>
             </table>
