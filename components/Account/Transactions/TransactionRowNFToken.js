@@ -78,14 +78,34 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
 
   const amountChange = addressBalanceChanges(data, address)?.[0]
 
+  const nftSource =
+    outcome?.nftokenChanges?.length === 2
+      ? outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'removed')
+      : null
+
+  const nftDestination =
+    outcome?.nftokenChanges?.length === 2
+      ? outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'added')
+      : null
+
   if (txType === 'NFTokenAcceptOffer') {
     if (!amountChange) {
       txTypeSpecial = (
         <>
-          NFT transfer {tx?.Destination === address ? 'from' : 'to'} <br />
+          NFT{' '}
+          {nftDestination?.address === address
+            ? 'received from'
+            : nftSource?.address === address
+            ? 'transfer to'
+            : 'transfer by'}
+          <br />
           <AddressWithIconInline
             data={
-              tx?.Destination === address ? specification?.source : specification?.destination || specification?.source
+              nftDestination?.address === address
+                ? nftSource
+                : nftSource?.address === address
+                ? nftDestination
+                : specification.source
             }
             options={{ short: 5 }}
           />
@@ -179,7 +199,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
             </div>
           )}
 
-          {txType === 'NFTokenCreateOffer' && (!specification?.flags?.sellToken || tx?.Destination === address) && (
+          {txType === 'NFTokenCreateOffer' && (
             <>
               {tx?.Owner && (
                 <>
@@ -236,7 +256,6 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
                   <br />
                 </>
               )}
-              {/* Show broker fee for broker sells */}
               {tx?.NFTokenBrokerFee && tx?.NFTokenBrokerFee !== '0' && (
                 <>
                   <span>Broker fee: </span>
@@ -246,25 +265,14 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
                   <br />
                 </>
               )}
-              {/* Show NFT transfer details */}
               {outcome?.nftokenChanges?.length === 2 && (
                 <>
-                  <span>NFT transfered from: </span>
-                  <span>
-                    {addressUsernameOrServiceLink(
-                      outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'removed'),
-                      'address'
-                    )}
-                  </span>
-                  <br />
-                  <span>NFT transfered to: </span>
-                  <span>
-                    {addressUsernameOrServiceLink(
-                      outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'added'),
-                      'address'
-                    )}
-                  </span>
-                  <br />
+                  {nftSource.address !== address && (
+                    <div>Sender: {addressUsernameOrServiceLink(nftSource, 'address')}</div>
+                  )}
+                  {nftDestination.address !== address && (
+                    <div>Sent to: {addressUsernameOrServiceLink(nftDestination, 'address')}</div>
+                  )}
                 </>
               )}
             </>
