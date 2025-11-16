@@ -166,27 +166,26 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
             </div>
           )}
 
-          {/* For buy offers, show NFT owner, NFT ID, and destination */}
-          {txType === 'NFTokenCreateOffer' && !specification?.flags?.sellToken && (
+          {txType === 'NFTokenCreateOffer' && (!specification?.flags?.sellToken || tx?.Destination === address) && (
             <>
               {tx?.Owner && (
                 <>
                   <span>NFT Owner: </span>
-                  <span className="bold">{addressUsernameOrServiceLink(specification, 'owner')}</span>
+                  <span>{addressUsernameOrServiceLink(specification, 'owner')}</span>
                   <br />
                 </>
               )}
               {tx?.NFTokenID && (
                 <>
                   <span>NFT: </span>
-                  <span className="bold">{nftIdLink(tx?.NFTokenID)}</span>
+                  <span>{nftIdLink(tx?.NFTokenID)}</span>
                   <br />
                 </>
               )}
-              {tx?.Destination && (
+              {tx?.Destination && tx?.Destination !== address && (
                 <>
                   <span>Destination: </span>
-                  <span className="bold">{addressUsernameOrServiceLink(specification?.destination, 'address')}</span>
+                  <span>{addressUsernameOrServiceLink(specification?.destination, 'address')}</span>
                   <br />
                 </>
               )}
@@ -238,7 +237,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
               {outcome?.nftokenChanges?.length === 2 && (
                 <>
                   <span>NFT transfered from: </span>
-                  <span className="bold">
+                  <span>
                     {addressUsernameOrServiceLink(
                       outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'removed'),
                       'address'
@@ -246,7 +245,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
                   </span>
                   <br />
                   <span>NFT transfer to: </span>
-                  <span className="bold">
+                  <span>
                     {addressUsernameOrServiceLink(
                       outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'added'),
                       'address'
