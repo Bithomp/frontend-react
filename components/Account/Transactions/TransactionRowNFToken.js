@@ -76,10 +76,15 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
   const txType = tx?.TransactionType
   let txTypeSpecial = txType
 
+  const amountChange = addressBalanceChanges(data, address)?.[0]
+
   if (txType === 'NFTokenAcceptOffer' || txType === 'NFTokenCreateOffer') {
     const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
     if (direction) {
       txTypeSpecial = (txType === 'NFTokenAcceptOffer' ? 'Accept' : 'Create') + ' NFT ' + direction + ' offer'
+      if (amountChange?.value < 0 && txType === 'NFTokenAcceptOffer' && direction === 'Buy') {
+        txTypeSpecial = 'NFT purchase'
+      }
     }
   } else if (txType === 'NFTokenCancelOffer') {
     txTypeSpecial = 'Cancel NFT offer'
@@ -88,8 +93,6 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
   } else if (txType === 'NFTokenBurn') {
     txTypeSpecial = 'Burn NFT'
   }
-
-  const amountChange = addressBalanceChanges(data, address)?.[0]
 
   return (
     <TransactionRowCard
@@ -144,12 +147,19 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
               {/* For cancel offers not initiated by this account, show who initiated the cancel */}
               {specification?.source?.address !== address && (
                 <>
-                  <span>NFTokenCancelOffer by </span>
+                  <span>NFT offer Canceled by: </span>
                   <span className="bold">{addressUsernameOrServiceLink(specification?.source, 'address')}</span>
                   <br />
                 </>
               )}
             </>
+          )}
+
+          {outcome?.nftokenOfferChanges?.length > 0 && txType !== 'NFTokenAcceptOffer' && (
+            <div>
+              <span>Offer: </span>
+              <span>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</span>
+            </div>
           )}
 
           {/* For buy offers, show NFT owner, NFT ID, and destination */}
@@ -242,13 +252,6 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
                 </>
               )}
             </>
-          )}
-
-          {outcome?.nftokenOfferChanges?.length > 0 && txType !== 'NFTokenAcceptOffer' && (
-            <div>
-              <span>Offer: </span>
-              <span>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</span>
-            </div>
           )}
 
           {/* show 0 Amounts */}
