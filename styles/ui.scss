@@ -669,7 +669,8 @@ table {
     position: absolute;
     z-index: 1;
 
-    white-space: nowrap;
+    white-space: normal;
+    word-break: break-word;
     pointer-events: none;
 
     opacity: 1;
@@ -715,7 +716,6 @@ table {
     .tooltiptext {
       display: inline-block;
       opacity: 1;
-      word-break: normal;
     }
   }
 }
