@@ -346,23 +346,14 @@ export default function AccountTransactions({
       >
         <>
           <div className="filters-body-inner">
-            <div>
-              <span className="input-title">Type</span>
-              <SimpleSelect value={type} setValue={setType} optionsList={typeOptions} />
-            </div>
+            <SimpleSelect value={type} setValue={setType} optionsList={typeOptions} />
             <br />
-            <div>
-              <span className="input-title">Direction</span>
-              <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} />
-            </div>
+            <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} />
             <br />
-            <div>
-              <span className="input-title">Failures</span>
-              <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
-            </div>
+            <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
             <br />
             <AddressInput
-              title="Counterparty"
+              placeholder="Counterparty"
               setValue={setCounterparty}
               rawData={counterparty ? { counterparty } : {}}
               type="counterparty"
