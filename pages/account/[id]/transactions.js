@@ -173,13 +173,13 @@ export default function AccountTransactions({
     { value: 'payment', label: 'Payment' },
     { value: 'nft', label: 'NFT' },
     { value: 'amm', label: 'AMM' },
-    { value: 'order', label: 'Order' },
+    { value: 'order', label: 'DEX' },
     { value: 'escrow', label: 'Escrow' },
     { value: 'channel', label: 'Channel' },
     { value: 'check', label: 'Check' },
     { value: 'trustline', label: 'Trustline' },
     { value: 'settings', label: 'Settings' },
-    { value: 'accountDelete', label: 'Account Delete' }
+    { value: 'accountDelete', label: 'Account delete' }
   ]
 
   const initiatedOptions = [

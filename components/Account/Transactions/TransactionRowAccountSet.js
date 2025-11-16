@@ -17,6 +17,13 @@ export const TransactionRowAccountSet = ({ data, address, index, selectedCurrenc
       {tx.MessageKey !== undefined && (
         <div className="bold">Message key: {specification.messageKey || <span className="orange">removed</span>}</div>
       )}
+
+      {tx.Domain !== undefined && (
+        <div className="bold">
+          Domain: <span className="orange">{specification.domain || 'removed'}</span>
+        </div>
+      )}
+
       {specification.defaultRipple !== undefined && (
         <div className="bold">
           Default ripple: <span className="orange">{specification.defaultRipple ? 'enabled' : 'disabled'}</span>
@@ -35,6 +42,12 @@ export const TransactionRowAccountSet = ({ data, address, index, selectedCurrenc
         </div>
       )}
 
+      {specification.depositAuth !== undefined && (
+        <div className="bold">
+          Deposit authorization: <span className="orange">{specification.depositAuth ? 'enabled' : 'disabled'}</span>
+        </div>
+      )}
+
       {specification.disableMaster !== undefined && (
         <div className="bold">
           Master key: <span className="red">{specification.disableMaster ? 'disabled' : 'enabled'}</span>
@@ -43,79 +56,79 @@ export const TransactionRowAccountSet = ({ data, address, index, selectedCurrenc
 
       {specification.noFreeze && (
         <div className="bold">
-          No freeze: <span>enabled</span>
-        </div>
-      )}
-
-      {specification.depositAuth !== undefined && (
-        <div className="bold">
-          Deposit authorization: <span>{specification.depositAuth ? 'enabled' : 'disabled'}</span>
+          No freeze: <span className="orange">enabled</span>
         </div>
       )}
 
       {specification.requireAuth !== undefined && (
         <div className="bold">
-          Require authorization: <span>{specification.requireAuth ? 'enabled' : 'disabled'}</span>
+          Require authorization: <span className="orange">{specification.requireAuth ? 'enabled' : 'disabled'}</span>
         </div>
       )}
 
       {specification.disallowIncomingCheck !== undefined && (
         <div className="bold">
-          Incoming check: <span>{specification.disallowIncomingCheck ? 'disallow' : 'allow'}</span>
+          Incoming check: <span className="orange">{specification.disallowIncomingCheck ? 'disallow' : 'allow'}</span>
         </div>
       )}
 
       {specification.disallowIncomingPayChan !== undefined && (
         <div className="bold">
-          Incoming payment channel: <span>{specification.disallowIncomingPayChan ? 'disallow' : 'allow'}</span>
+          Incoming payment channel:{' '}
+          <span className="orange">{specification.disallowIncomingPayChan ? 'disallow' : 'allow'}</span>
         </div>
       )}
 
       {specification.disallowIncomingNFTokenOffer !== undefined && (
         <div className="bold">
-          Incoming NFT offer: <span>{specification.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}</span>
+          Incoming NFT offer:{' '}
+          <span className="orange">{specification.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}</span>
         </div>
       )}
 
       {specification.disallowIncomingTrustline !== undefined && (
         <div className="bold">
-          Incoming trust line: <span>{specification.disallowIncomingTrustline ? 'disallow' : 'allow'}</span>
+          Incoming trust line:{' '}
+          <span className="orange">{specification.disallowIncomingTrustline ? 'disallow' : 'allow'}</span>
         </div>
       )}
 
       {specification.enableTransactionIDTracking !== undefined && (
         <div className="bold">
-          Transaction ID tracking: <span>{specification.enableTransactionIDTracking ? 'enabled' : 'disabled'}</span>
+          Transaction ID tracking:{' '}
+          <span className="orange">{specification.enableTransactionIDTracking ? 'enabled' : 'disabled'}</span>
         </div>
       )}
 
       {specification.globalFreeze !== undefined && (
         <div className="bold">
-          Global freeze: <span>{specification.globalFreeze ? 'enabled' : 'disabled'}</span>
+          Global freeze: <span className="orange">{specification.globalFreeze ? 'enabled' : 'disabled'}</span>
         </div>
       )}
 
       {specification.authorizedMinter !== undefined && (
         <div className="bold">
-          Authorized minter: <span>{specification.authorizedMinter ? 'enabled' : 'disabled'}</span>
+          Authorized minter: <span className="orange">{specification.authorizedMinter ? 'enabled' : 'disabled'}</span>
         </div>
       )}
 
-      {tx.NFTokenMinter !== undefined && (
+      {specification.nftokenMinter !== undefined && (
         <div className="bold">
-          NFT minter: <span>{specification.nftokenMinter || <span className="orange">removed</span>}</span>
+          NFT minter:{' '}
+          <span className="orange">{specification.nftokenMinter || <span className="orange">removed</span>}</span>
         </div>
       )}
 
       {specification.allowTrustLineClawback !== undefined && (
         <div className="bold">
-          Trustline Clawback: <span>{specification.allowTrustLineClawback ? 'allowed' : 'disallow'}</span>
+          Trustline Clawback:{' '}
+          <span className="orange">{specification.allowTrustLineClawback ? 'allowed' : 'disallow'}</span>
         </div>
       )}
 
       {specification.disallowIncomingRemit !== undefined && (
         <div className="bold">
-          Incoming Remit: <span>{specification.disallowIncomingRemit ? 'disallow' : 'allow'}</span>
+          Incoming Remit: <span className="orange">{specification.disallowIncomingRemit ? 'disallow' : 'allow'}</span>
         </div>
       )}
     </TransactionRowCard>
