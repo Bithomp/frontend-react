@@ -5,7 +5,9 @@ import { TransactionRowCard } from './TransactionRowCard'
 export const TransactionRowTrustSet = ({ data, address, index, selectedCurrency }) => {
   const { specification } = data
   const serviceOruser = userOrServiceName(specification.counterpartyDetails)
-  const txTypeSpecial = <>Trust {specification.limit === '0' ? <span className="orange">removed</span> : 'set'}</>
+  const txTypeSpecial = (
+    <span className="bold">Trust {specification.limit === '0' ? <span className="orange">removed</span> : 'set'}</span>
+  )
   return (
     <TransactionRowCard
       data={data}

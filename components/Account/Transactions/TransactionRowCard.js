@@ -1,7 +1,6 @@
 'use client'
 
 import {
-  AddressWithIconInline,
   amountFormat,
   CurrencyWithIcon,
   dateFormat,
@@ -64,22 +63,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         {index + 1}
       </td>
       <td className="left" style={{ width: 120, verticalAlign: 'top' }}>
-        <span className={tx?.TransactionType !== 'Payment' ? 'bold' : ''}>{txTypeSpecial || tx?.TransactionType}</span>
-        {!isConvertion && tx?.TransactionType === 'Payment' && (
-          <>
-            <br />
-            <AddressWithIconInline
-              data={
-                specification?.destination?.address === address
-                  ? specification.source
-                  : specification?.source?.address === address
-                  ? specification.destination
-                  : specification.source
-              }
-              options={{ short: 5 }}
-            />
-          </>
-        )}
+        {txTypeSpecial || <span className="bold">{tx?.TransactionType}</span>}
         {tx?.TransactionType === 'TrustSet' && (
           <>
             <br />

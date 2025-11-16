@@ -12,7 +12,7 @@ export const TransactionRowAMM = ({ data, address, index, selectedCurrency }) =>
     AMMVote: 'AMM Vote'
   }
 
-  const txTypeSpecial = ammTypeLabels[tx?.TransactionType] // it will fallback to tx?.TransactionType if not found
+  const txTypeSpecial = <span className="bold">{ammTypeLabels[tx?.TransactionType] || tx?.TransactionType}</span>
 
   const sourceBalanceChangesList = addressBalanceChanges(data, address) || []
   const depositedList = sourceBalanceChangesList.filter((c) => Number(c?.value) < 0)

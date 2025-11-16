@@ -4,7 +4,7 @@ import { nativeCurrency } from '../../../utils'
 export const TransactionRowAccountSet = ({ data, address, index, selectedCurrency }) => {
   const { specification, tx } = data
 
-  const txTypeSpecial = 'Account settings update'
+  const txTypeSpecial = <span className="bold">Account settings update</span>
 
   return (
     <TransactionRowCard

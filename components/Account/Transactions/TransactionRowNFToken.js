@@ -5,7 +5,8 @@ import {
   nftOfferLink,
   amountFormat,
   addressUsernameOrServiceLink,
-  nativeCurrencyToFiat
+  nativeCurrencyToFiat,
+  AddressWithIconInline
 } from '../../../utils/format'
 import { addressBalanceChanges } from '../../../utils/transaction'
 
@@ -82,8 +83,23 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
     const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
     if (direction) {
       txTypeSpecial = (txType === 'NFTokenAcceptOffer' ? 'Accept' : 'Create') + ' NFT ' + direction + ' offer'
-      if (amountChange?.value < 0 && txType === 'NFTokenAcceptOffer' && direction === 'Buy') {
-        txTypeSpecial = 'NFT purchase'
+
+      if (txType === 'NFTokenAcceptOffer') {
+        if (amountChange?.value < 0 && direction === 'Buy') {
+          txTypeSpecial = 'NFT purchase'
+        }
+      }
+
+      if (txType === 'NFTokenCreateOffer') {
+        if (direction === 'Sell' && tx?.Account !== address) {
+          txTypeSpecial = (
+            <>
+              {tx?.Amount === '0' ? 'Free NFT offer' : 'NFT Sell offer'} from
+              <br />
+              <AddressWithIconInline data={specification.source} options={{ short: 5 }} />
+            </>
+          )
+        }
       }
     }
   } else if (txType === 'NFTokenCancelOffer') {
@@ -93,6 +109,8 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
   } else if (txType === 'NFTokenBurn') {
     txTypeSpecial = 'Burn NFT'
   }
+
+  txTypeSpecial = <span className="bold">{txTypeSpecial}</span>
 
   return (
     <TransactionRowCard
@@ -125,20 +143,6 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
                       )
                     })
                   })}
-            </>
-          )}
-
-          {/* For sell offers, show NFT owner, NFT ID, and destination */}
-          {txType === 'NFTokenCreateOffer' && (
-            <>
-              {/* For sell offers not initiated by this account, show who created the offer */}
-              {specification?.flags?.sellToken && specification?.source?.address !== address && (
-                <>
-                  <span>Sell Offer by: </span>
-                  <span className="bold">{addressUsernameOrServiceLink(specification?.source, 'address')}</span>
-                  <br />
-                </>
-              )}
             </>
           )}
 

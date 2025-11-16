@@ -1,27 +1,33 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
+import { AddressWithIconInline, amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
 import { addressBalanceChanges, isConvertionTx } from '../../../utils/transaction'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 import { isIOUpayment, optionalAbsPaymentAmount, paymentTypeName } from '../../../utils/transaction/payment'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
-  const { outcome, specification } = data
+  const { outcome, specification, tx } = data
 
   let txTypeSpecial = paymentTypeName(data)
   const isConvertion = isConvertionTx(specification)
-  //for payments executor is always the sender, so we can check executor's balance changes.
-  const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
+  const sourceBalanceChangesList = addressBalanceChanges(data, address)
   const iouPayment = isIOUpayment(data)
 
   if (!isConvertion) {
     txTypeSpecial = (
       <>
         <span className="bold">{txTypeSpecial} </span>
-        {specification?.destination?.address === address
-          ? 'from'
-          : specification?.source?.address === address
-          ? 'to'
-          : 'by'}
+        {tx?.Destination === address ? 'from' : tx?.Account === address ? 'to' : 'by'}
+        <br />
+        <AddressWithIconInline
+          data={
+            tx?.Destination === address
+              ? specification.source
+              : tx?.Account === address
+              ? specification.destination
+              : specification.source
+          }
+          options={{ short: 5 }}
+        />
       </>
     )
   }
