@@ -79,27 +79,25 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
 
   const amountChange = addressBalanceChanges(data, address)?.[0]
 
-  if (txType === 'NFTokenAcceptOffer' || txType === 'NFTokenCreateOffer') {
+  if (txType === 'NFTokenAcceptOffer') {
+    if (amountChange?.value < 0) {
+      txTypeSpecial = 'NFT purchase'
+    } else {
+      txTypeSpecial = 'NFT offer accept'
+    }
+  } else if (txType === 'NFTokenCreateOffer') {
     const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
     if (direction) {
-      txTypeSpecial = (txType === 'NFTokenAcceptOffer' ? 'Accept' : 'Create') + ' NFT ' + direction + ' offer'
+      txTypeSpecial = 'Create NFT ' + direction + ' offer'
 
-      if (txType === 'NFTokenAcceptOffer') {
-        if (amountChange?.value < 0 && direction === 'Buy') {
-          txTypeSpecial = 'NFT purchase'
-        }
-      }
-
-      if (txType === 'NFTokenCreateOffer') {
-        if (direction === 'Sell' && tx?.Account !== address) {
-          txTypeSpecial = (
-            <>
-              {tx?.Amount === '0' ? 'Free NFT offer' : 'NFT Sell offer'} from
-              <br />
-              <AddressWithIconInline data={specification.source} options={{ short: 5 }} />
-            </>
-          )
-        }
+      if (direction === 'Sell' && tx?.Account !== address) {
+        txTypeSpecial = (
+          <>
+            {tx?.Amount === '0' ? 'Free NFT offer' : 'NFT Sell offer'} from
+            <br />
+            <AddressWithIconInline data={specification.source} options={{ short: 5 }} />
+          </>
+        )
       }
     }
   } else if (txType === 'NFTokenCancelOffer') {
@@ -149,7 +147,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
           {txType === 'NFTokenCancelOffer' && (
             <>
               {/* For cancel offers not initiated by this account, show who initiated the cancel */}
-              {specification?.source?.address !== address && (
+              {tx?.Account !== address && (
                 <>
                   <span>NFT offer Canceled by: </span>
                   <span className="bold">{addressUsernameOrServiceLink(specification?.source, 'address')}</span>
