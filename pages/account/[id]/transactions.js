@@ -57,6 +57,9 @@ export async function getServerSideProps(context) {
     if (type && type !== 'all') {
       url += `&type=${type}`
     }
+    if (order && order === 'oldest') {
+      url += `&forward=true`
+    }
     try {
       const res = await axiosServer({
         method: 'get',
@@ -160,8 +163,8 @@ export default function AccountTransactions({
   }, [order, type, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
 
   const orderList = [
-    { value: 'newest', label: 'Newest First' },
-    { value: 'oldest', label: 'Oldest First' }
+    { value: 'newest', label: 'Newest first' },
+    { value: 'oldest', label: 'Oldest first' }
   ]
 
   // transaction type options
