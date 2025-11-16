@@ -244,7 +244,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
                     )}
                   </span>
                   <br />
-                  <span>NFT transfer to: </span>
+                  <span>NFT transfered to: </span>
                   <span>
                     {addressUsernameOrServiceLink(
                       outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'added'),
@@ -257,7 +257,6 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
             </>
           )}
 
-          {/* show 0 Amounts */}
           {specification.amount !== undefined && (
             <div>
               <span>{txType === 'NFTokenMint' ? 'Price: ' : 'Amount: '}</span>
