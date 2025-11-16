@@ -10,7 +10,7 @@ import {
 } from '../../../utils/format'
 import { addressBalanceChanges } from '../../../utils/transaction'
 
-const nftData = (change, nftInfo, txType) => {
+const nftData = (change, nftInfo, txType, amountChange) => {
   const flagsAsString = flagList(nftInfo.flags)
 
   return (
@@ -18,8 +18,7 @@ const nftData = (change, nftInfo, txType) => {
       <div>
         {txType === 'NFTokenBurn' && 'Burned '}NFT: {nftIdLink(change.nftokenID)}
       </div>
-
-      {nftInfo.transferFee !== undefined && txType !== 'NFTokenBurn' && (
+      {nftInfo.transferFee !== undefined && txType !== 'NFTokenBurn' && amountChange && (
         <div>
           <span>Royalty: </span>
           <span>{nftInfo.transferFee / 1000}%</span>
@@ -80,7 +79,19 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
   const amountChange = addressBalanceChanges(data, address)?.[0]
 
   if (txType === 'NFTokenAcceptOffer') {
-    if (amountChange?.value < 0) {
+    if (!amountChange) {
+      txTypeSpecial = (
+        <>
+          NFT transfer {tx?.Destination === address ? 'from' : 'to'} <br />
+          <AddressWithIconInline
+            data={
+              tx?.Destination === address ? specification?.source : specification?.destination || specification?.source
+            }
+            options={{ short: 5 }}
+          />
+        </>
+      )
+    } else if (amountChange?.value < 0) {
       txTypeSpecial = 'NFT purchase'
     } else {
       txTypeSpecial = 'NFT offer accept'
@@ -128,7 +139,9 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
                     const firstChange = outcome.nftokenChanges[0]?.nftokenChanges[0]
                     const nftInfo = firstChange ? outcome?.affectedObjects?.nftokens?.[firstChange.nftokenID] : null
                     return firstChange && nftInfo ? (
-                      <React.Fragment key="nft-info">{nftData(firstChange, nftInfo, txType)}</React.Fragment>
+                      <React.Fragment key="nft-info">
+                        {nftData(firstChange, nftInfo, txType, amountChange)}
+                      </React.Fragment>
                     ) : null
                   })()
                 : /* For other transaction types, show NFT info for each change */
@@ -137,7 +150,9 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
                     return nftChanges.map((nftChange, j) => {
                       const nftInfo = outcome?.affectedObjects?.nftokens?.[nftChange.nftokenID]
                       return (
-                        <React.Fragment key={'t' + i + '-' + j}>{nftData(nftChange, nftInfo, txType)}</React.Fragment>
+                        <React.Fragment key={'t' + i + '-' + j}>
+                          {nftData(nftChange, nftInfo, txType, amountChange)}
+                        </React.Fragment>
                       )
                     })
                   })}
@@ -194,7 +209,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
             <>
               {tx?.NFTokenSellOffer && (
                 <>
-                  <span>Sell offer: </span>
+                  <span>{amountChange ? 'Sell' : 'Transfer'} offer: </span>
                   <span>{nftOfferLink(tx?.NFTokenSellOffer)}</span>
                   <br />
                 </>

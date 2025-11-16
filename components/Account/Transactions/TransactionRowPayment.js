@@ -20,11 +20,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
         <br />
         <AddressWithIconInline
           data={
-            tx?.Destination === address
-              ? specification.source
-              : tx?.Account === address
-              ? specification.destination
-              : specification.source
+            tx?.Account === address && specification?.destination ? specification?.destination : specification?.source
           }
           options={{ short: 5 }}
         />

@@ -84,6 +84,7 @@ export const CurrencyWithIcon = ({ token }) => {
 }
 
 export const AddressWithIconInline = ({ data, name = 'address', options }) => {
+  if (!data || !data[name]) return ''
   const address = data[name]
   const size = 16
   const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
