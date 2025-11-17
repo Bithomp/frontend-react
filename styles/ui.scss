@@ -467,7 +467,7 @@ table {
 }
 
 .no-brake {
-  white-space: nowrap;
+  white-space: nowrap !important;
 }
 
 .uppercase {
@@ -659,6 +659,7 @@ table {
   }
 
   .tooltiptext {
+    font-size: 12px;
     display: none;
     top: -5px;
     right: 120%;
