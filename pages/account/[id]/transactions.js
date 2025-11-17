@@ -67,6 +67,12 @@ export async function getServerSideProps(context) {
         headers: passHeaders(req)
       })
       initialData = res?.data
+      if (
+        !initialData?.marker &&
+        initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, address)).length === 0
+      ) {
+        initialErrorMessage = 'No transactions found for the specified filters.'
+      }
     } catch (e) {
       if (e?.message === 'read ECONNRESET') {
         initialErrorMessage = 'The request timed out. Try changing your filters or try again later.'
@@ -251,7 +257,14 @@ export default function AccountTransactions({
         const combined = [...transactions, ...newData]
         setTransactions(combined)
       } else {
-        setTransactions(newData)
+        if (newData.length === 0 && !newMarker) {
+          setErrorMessage('Account has no transactions with the specified filters.')
+          setMarker(newMarker)
+          setLoading(false)
+          return
+        } else {
+          setTransactions(newData)
+        }
       }
 
       setMarker(newMarker)
@@ -413,7 +426,6 @@ export default function AccountTransactions({
         </>
         {/* Main content */}
         <>
-          {errorMessage && <div className="center orange bold">{errorMessage}</div>}
           <InfiniteScrolling
             dataLength={transactions.length}
             loadMore={() => {
