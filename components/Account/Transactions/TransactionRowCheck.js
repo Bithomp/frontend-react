@@ -1,37 +1,63 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
+import { AddressWithIconInline, amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
 import { dappBySourceTag } from '../../../utils/transaction'
 
 export const TransactionRowCheck = ({ data, address, index, selectedCurrency }) => {
-  const { outcome, specification } = data
+  const { outcome, specification, tx } = data
 
-  const checkChanges = outcome?.checkChanges
+  const checkTypeLabels = {
+    CheckCreate: 'Check creation',
+    CheckCash: 'Check cashing',
+    CheckCancel: 'Check cancelation'
+  }
+
+  const txTypeSpecial = (
+    <span className="bold">
+      {tx?.Destination === address ? (
+        <>
+          Incoming Check from
+          <br />
+          <AddressWithIconInline data={specification.source} options={{ short: 5 }} />
+        </>
+      ) : (
+        checkTypeLabels[tx?.TransactionType] || tx?.TransactionType
+      )}
+    </span>
+  )
 
   //don't show sourcetag if it's the tag of a known dapp
   const dapp = dappBySourceTag(specification.source.tag)
   return (
-    <TransactionRowCard data={data} address={address} index={index} selectedCurrency={selectedCurrency}>
+    <TransactionRowCard
+      data={data}
+      address={address}
+      index={index}
+      selectedCurrency={selectedCurrency}
+      txTypeSpecial={txTypeSpecial}
+    >
       {(fiatRate) => (
         <>
-          {checkChanges?.sendMax && (
-            <div>
-              <span>Max amount: </span>
-              <span>
-                {amountFormat(checkChanges.sendMax, { icon: true, withIssuer: true, bold: true, color: 'orange' })}
-                {nativeCurrencyToFiat({
-                  amount: checkChanges.sendMax,
-                  selectedCurrency,
-                  fiatRate
-                })}
-              </span>
-            </div>
-          )}
-
-          {checkChanges?.source?.tag !== undefined && !dapp && (
+          {tx?.SourceTag !== undefined && !dapp && (
             <>
               <span>Source tag:</span>
-              <span className="bold">{checkChanges.source.tag}</span>
+              <span className="bold">{tx?.SourceTag}</span>
             </>
+          )}
+          {outcome?.deliveredAmount && (
+            <div>
+              {tx?.Account === address ? 'Received' : 'Amount'}:{' '}
+              {amountFormat(outcome?.deliveredAmount, {
+                icon: true,
+                bold: true,
+                color: 'direction',
+                precise: true
+              })}
+              {nativeCurrencyToFiat({
+                amount: outcome?.deliveredAmount,
+                selectedCurrency,
+                fiatRate
+              })}
+            </div>
           )}
         </>
       )}
