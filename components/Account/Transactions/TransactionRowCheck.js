@@ -15,7 +15,7 @@ export const TransactionRowCheck = ({ data, address, index, selectedCurrency }) 
     <span className="bold">
       {tx?.Destination === address ? (
         <>
-          Incoming Check from
+          Incoming check from
           <br />
           <AddressWithIconInline data={specification.source} options={{ short: 5 }} />
         </>
