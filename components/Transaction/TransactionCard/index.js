@@ -431,6 +431,12 @@ export const TransactionCard = ({
                           <TData>{tx.Flags}</TData>
                         </tr>
                       )}
+                      {tx.ClearFlag !== undefined && (
+                        <tr>
+                          <TData tooltip="Unique identifier of a flag to disable for this account.">Clear flag</TData>
+                          <TData>{tx.ClearFlag}</TData>
+                        </tr>
+                      )}
                       {tx?.TransactionType !== 'UNLReport' && (
                         <>
                           {tx.TicketSequence ? (

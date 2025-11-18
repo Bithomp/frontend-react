@@ -52,14 +52,6 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
-      {tx.ClearFlag !== undefined && (
-        <tr>
-          <TData className="bold" tooltip="Unique identifier of a flag to disable for this account.">
-            Clear flag
-          </TData>
-          <TData className="bold">{tx.ClearFlag}</TData>
-        </tr>
-      )}
       {tx.Domain !== undefined && (
         <tr>
           <TData className="bold">Domain</TData>
@@ -246,7 +238,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold">{specification.authorizedMinter ? 'enabled' : 'disabled'}</TData>
         </tr>
       )}
-      {tx.NFTokenMinter !== undefined && (
+      {specification.nftokenMinter !== undefined && (
         <tr>
           <TData className="bold" tooltip="Another account that can mint NFTs for that account.">
             NFT minter
