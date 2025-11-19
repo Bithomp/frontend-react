@@ -544,7 +544,15 @@ export default function Tokens({
 
   return (
     <>
-      <SEO title="Tokens" />
+      <SEO
+        title="Tokens"
+        image={{
+          width: 1200,
+          height: 630,
+          file: 'previews/1200x630/tokens.png'
+        }}
+        twitterImage={{ file: 'previews/630x630/tokens.png' }}
+      />
       <h1 className="center">Tokens</h1>
 
       {!xahauNetwork && <TokenTabs tab="tokens" />}
