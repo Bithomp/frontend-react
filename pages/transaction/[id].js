@@ -25,7 +25,8 @@ import {
   TransactionRemit,
   TransactionEnableAmendment,
   TransactionDelegateSet,
-  TransactionBatch
+  TransactionBatch,
+  TransactionSignerListSet
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
@@ -137,6 +138,8 @@ export default function Transaction({ data, selectedCurrency, initialErrorMessag
     TransactionComponent = TransactionEnableAmendment
   } else if (txType === 'Batch') {
     TransactionComponent = TransactionBatch
+  } else if (txType === 'SignerListSet') {
+    TransactionComponent = TransactionSignerListSet
   } else {
     TransactionComponent = TransactionDetails
   }
