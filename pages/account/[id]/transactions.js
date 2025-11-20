@@ -9,7 +9,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
-import { addAndRemoveQueryParams, errorT, isAddressOrUsername } from '../../../utils'
+import { addAndRemoveQueryParams, errorT, isAddressOrUsername, isAddressValid } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -73,7 +73,8 @@ export async function getServerSideProps(context) {
       initialData = res?.data
       if (
         !initialData?.marker &&
-        initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, address)).length === 0
+        isAddressValid(id) &&
+        initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, id)).length === 0
       ) {
         initialErrorMessage = 'No transactions found for the specified filters.'
       }
