@@ -108,7 +108,7 @@ export const errorCodeDescription = (code) => {
     tecINSUFFICIENT_PAYMENT:
       'The amount specified is not enough to pay all fees involved in the transaction. For example, when trading a non-fungible token, the buy amount may not be enough to pay both the broker fee and the sell amount.',
     tecINSUFFICIENT_RESERVE:
-      "The transaction would increase the reserve requirement higher than the sending account's balance. SignerListSet, PaymentChannelCreate, PaymentChannelFund, and EscrowCreate can return this error code. See Signer Lists and Reserves for more information.",
+      "The transaction would increase the reserve requirement higher than the sending account's balance.",
     tecINTERNAL:
       'Unspecified internal error, with transaction cost applied. This error code should not normally be returned. If you can reproduce this error, please report an issue .',
     tecINVARIANT_FAILED:
