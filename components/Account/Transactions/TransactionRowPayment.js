@@ -1,7 +1,6 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { AddressWithIconInline, amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
 import { addressBalanceChanges, isConvertionTx } from '../../../utils/transaction'
-import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 import { isIOUpayment, optionalAbsPaymentAmount, paymentTypeName } from '../../../utils/transaction/payment'
 import { useIsMobile } from '../../../utils/mobile'
 
@@ -29,6 +28,8 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
         />
       </>
     )
+  } else {
+    txTypeSpecial = <span className="bold">{txTypeSpecial}</span>
   }
 
   return (
@@ -61,17 +62,9 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
           {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
             <>
               <div>
-                {isConvertion ? (
-                  <>
-                    {' '}
-                    <FaArrowRightArrowLeft style={{ fontSize: 16, marginBottom: -4 }} /> Exchanged:{' '}
-                  </>
-                ) : (
-                  <>Sender spent: </>
-                )}
-                {sourceBalanceChangesList.length > 1 && <br />}
+                {isConvertion ? 'Exchanged' : 'Sender spent'}: {sourceBalanceChangesList.length > 1 && <br />}
                 {sourceBalanceChangesList.map((change, index) => (
-                  <span key={index}>
+                  <div key={index}>
                     {amountFormat(optionalAbsPaymentAmount(change, isConvertion), {
                       icon: true,
                       withIssuer: true,
@@ -85,7 +78,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                       selectedCurrency,
                       fiatRate
                     })}
-                  </span>
+                  </div>
                 ))}
               </div>
               {sourceBalanceChangesList.length === 2 && (

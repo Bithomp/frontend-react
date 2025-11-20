@@ -1,4 +1,4 @@
-import { fullNiceNumber, showFlags, userOrServiceName, CurrencyWithIcon } from '../../../utils/format'
+import { fullNiceNumber, showFlags, userOrServiceName, CurrencyWithIcon, amountFormat } from '../../../utils/format'
 import CopyButton from '../../UI/CopyButton'
 import { TransactionRowCard } from './TransactionRowCard'
 import { useIsMobile } from '../../../utils/mobile'
@@ -20,7 +20,6 @@ export const TransactionRowTrustSet = ({ data, address, index, selectedCurrency 
       ) : (
         ' '
       )}
-
       {specification?.limit !== '0' ? (
         <>
           {amountFormat(

@@ -449,10 +449,10 @@ export default function AccountTransactions({
             subscriptionExpired={false}
             sessionToken={true}
           >
-            <table className={isMobile ? 'table-mobile' : 'table-large expand no-hover'}>
+            <table className={isMobile ? 'table-mobile wide' : 'table-large expand no-hover'}>
               <tbody>
                 {loading ? (
-                  <tr className="center" style={{ width: 'calc (100% - 30px)' }}>
+                  <tr className="center">
                     <td colSpan="100">
                       <br />
                       <br />
