@@ -38,6 +38,12 @@ export default function SimpleSelect({ value, setValue, optionsList, className }
       isSearchable={false}
       className={`dropdown ${className}`}
       classNamePrefix="react-select"
+      styles={{
+        menuList: (provided) => ({
+          ...provided,
+          maxHeight: 200
+        })
+      }}
     />
   )
 }
