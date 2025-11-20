@@ -63,6 +63,9 @@ export async function getServerSideProps(context) {
     if (initiated) {
       url += `&initiated=${initiated}`
     }
+    if (counterparty) {
+      url += `&counterparty=${counterparty}`
+    }
 
     try {
       const res = await axiosServer({
@@ -219,10 +222,10 @@ export default function AccountTransactions({
     if (excludeFailures) {
       url += `&excludeFailures=true`
     }
-
     if (counterparty) {
-      url += `&counterparty=${encodeURIComponent(counterparty.trim())}`
+      url += `&counterparty=${counterparty}`
     }
+
     if (fromDate) {
       url += `&fromDate=${encodeURIComponent(fromDate.toISOString())}`
     }
