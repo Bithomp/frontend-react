@@ -13,12 +13,12 @@ import {
   timeFromNow,
   AddressWithIconInline
 } from '../../utils/format'
-import { getIsSsrMobile } from '../../utils/mobile'
+import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
 import { nftName, NftImage, assetUrl, collectionNameText, isValidTaxon } from '../../utils/nft'
 
 import SEO from '../../components/SEO'
 import { nftClass } from '../../styles/pages/nft.module.scss'
-import { nativeCurrency, useWidth } from '../../utils'
+import { nativeCurrency } from '../../utils'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { LinkListedNfts, LinkTx } from '../../utils/links'
 import Tabs from '../../components/Tabs'
@@ -63,9 +63,8 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobile, fiatRate, errorMessage, data }) {
+export default function NftCollection({ id, nftList, selectedCurrency, fiatRate, errorMessage, data }) {
   const { t } = useTranslation()
-  const width = useWidth()
   const router = useRouter()
   const collection = data?.collection
   const statistics = collection?.statistics
@@ -76,7 +75,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
   })
   const [activityLoading, setActivityLoading] = useState(false)
 
-  const isMobile = width !== undefined ? width <= 1000 : isSsrMobile
+  const isMobile = useIsMobile(1000)
 
   useEffect(() => {
     fetchActivityData()

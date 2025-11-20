@@ -7,9 +7,9 @@ import { IoMdClose } from 'react-icons/io'
 import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { getIsSsrMobile } from '../../../utils/mobile'
+import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
-import { useWidth, addAndRemoveQueryParams, isAddressOrUsername } from '../../../utils'
+import { addAndRemoveQueryParams, isAddressOrUsername } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -116,7 +116,6 @@ export default function AccountTransactions({
   orderQuery
 }) {
   const { t } = useTranslation()
-  const width = useWidth()
   const router = useRouter()
   const firstRenderRef = useRef(true)
 
@@ -318,6 +317,8 @@ export default function AccountTransactions({
     addAndRemoveQueryParams(router, addList, removeList)
   }
 
+  const isMobile = useIsMobile(600)
+
   return (
     <>
       <SEO
@@ -438,7 +439,7 @@ export default function AccountTransactions({
             subscriptionExpired={false}
             sessionToken={true}
           >
-            <table className={width > 600 ? 'table-large expand no-hover' : 'table-mobile'}>
+            <table className={isMobile ? 'table-mobile' : 'table-large expand no-hover'}>
               <tbody>
                 {loading ? (
                   <tr className="center">
