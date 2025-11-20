@@ -3,45 +3,53 @@ import Select from 'react-select'
 
 export default function SimpleSelect({ value, setValue, optionsList, className }) {
   const [rendered, setRendered] = useState(false)
-  const [choosenOption, setChoosenOption] = useState()
+  const [choosenOption, setChoosenOption] = useState(undefined)
 
+  // Ensure we only render on client (avoid SSR/hydration issues)
   useEffect(() => {
     setRendered(true)
-    if (optionsList?.length === 0) return
-    let found = false
-    if (value) {
-      for (let i = 0; i < optionsList.length; i++) {
-        if (optionsList[i].value.toLowerCase() === value.toLowerCase()) {
-          setChoosenOption(optionsList[i])
-          found = true
-          break
-        }
-      }
-    }
-    if (!found) {
-      setValue(optionsList?.[0].value)
-      setChoosenOption(optionsList?.[0])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
+  }, [])
 
-  if (!rendered) return ''
+  useEffect(() => {
+    if (!rendered) return
+
+    if (!Array.isArray(optionsList) || optionsList.length === 0) {
+      setChoosenOption(undefined)
+      return
+    }
+
+    const targetValue = value ?? optionsList[0].value
+
+    const match = optionsList.find((opt) => String(opt.value).toLowerCase() === String(targetValue).toLowerCase())
+
+    const finalOption = match || optionsList[0]
+
+    setChoosenOption(finalOption)
+
+    if (value !== finalOption.value) {
+      setValue(finalOption.value)
+    }
+  }, [rendered, value, optionsList, setValue])
+
+  if (!rendered) return null
 
   return (
     <Select
       instanceId="dropdown"
       value={choosenOption}
       options={optionsList}
-      onChange={(a) => {
-        setValue(a.value)
+      onChange={(option) => {
+        setValue(option.value)
+        setChoosenOption(option)
       }}
       isSearchable={false}
-      className={`dropdown ${className}`}
+      className={`dropdown ${className || ''}`}
       classNamePrefix="react-select"
       styles={{
         menuList: (provided) => ({
           ...provided,
-          maxHeight: 200
+          maxHeight: 200,
+          overflowY: 'auto'
         })
       }}
     />

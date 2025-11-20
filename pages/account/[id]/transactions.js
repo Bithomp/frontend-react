@@ -60,6 +60,10 @@ export async function getServerSideProps(context) {
     if (order && order === 'oldest') {
       url += `&forward=true`
     }
+    if (initiated) {
+      url += `&initiated=${initiated}`
+    }
+
     try {
       const res = await axiosServer({
         method: 'get',
@@ -93,7 +97,7 @@ export async function getServerSideProps(context) {
       fromDateQuery: fromDate || '',
       toDateQuery: toDate || '',
       typeQuery: type || 'all',
-      initiatedQuery: initiated || '0',
+      initiatedQuery: initiated || null,
       excludeFailuresQuery: excludeFailures || '0',
       counterpartyQuery: counterparty || '',
       orderQuery: order || 'newest',
@@ -131,7 +135,7 @@ export default function AccountTransactions({
   const [order, setOrder] = useState(orderQuery) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
   const [type, setType] = useState(typeQuery)
-  const [initiated, setInitiated] = useState(initiatedQuery) // 0 = both, 1 = outgoing, 2 = incoming
+  const [initiated, setInitiated] = useState(initiatedQuery) // null = both, 'true' = initiated, 'false' = non-initiated
   const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // 0 = include, 1 = exclude
   const [counterparty, setCounterparty] = useState(counterpartyQuery)
   const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
@@ -188,9 +192,9 @@ export default function AccountTransactions({
   ]
 
   const initiatedOptions = [
-    { value: '0', label: 'Both directions' },
-    { value: '1', label: 'Outgoing' },
-    { value: '2', label: 'Incoming' }
+    { value: null, label: 'Incoming & outgoing' },
+    { value: true, label: 'Outgoing only' },
+    { value: false, label: 'Incoming only' }
   ]
 
   const failuresOptions = [
@@ -212,10 +216,8 @@ export default function AccountTransactions({
     if (type && type !== 'all') {
       url += `&type=${type}`
     }
-    if (initiated === '1') {
-      url += `&initiated=true`
-    } else if (initiated === '2') {
-      url += `&initiated=false`
+    if (initiated !== undefined && initiated !== null) {
+      url += `&initiated=${initiated}`
     }
 
     if (excludeFailures === '1') {
@@ -307,7 +309,14 @@ export default function AccountTransactions({
     // Process each filter
     Object.keys(newFilters).forEach((key) => {
       const value = newFilters[key]
-      if (value && value !== '' && value !== '0' && value !== 'all' && value !== 'newest') {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== '' &&
+        value !== '0' &&
+        value !== 'all' &&
+        value !== 'newest'
+      ) {
         addList.push({ name: key, value })
       } else {
         removeList.push(key)
