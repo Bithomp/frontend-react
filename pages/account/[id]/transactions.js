@@ -50,7 +50,8 @@ const apiUrl = ({ address, marker, order, type, initiated, excludeFailures, coun
   let url = `v3/transactions/${address}?limit=${limit}`
   // pagination marker
   if (marker) {
-    url += `&marker=${marker}`
+    const markerString = typeof marker === 'object' ? JSON.stringify(marker) : marker
+    url += `&marker=${encodeURIComponent(markerString)}`
   }
   // sorting
   url += `&forward=${order === 'oldest'}`
