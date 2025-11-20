@@ -98,7 +98,7 @@ export async function getServerSideProps(context) {
       toDateQuery: toDate || '',
       typeQuery: type || 'all',
       initiatedQuery: initiated || null,
-      excludeFailuresQuery: excludeFailures || '0',
+      excludeFailuresQuery: excludeFailures || null,
       counterpartyQuery: counterparty || '',
       orderQuery: order || 'newest',
       ...(await serverSideTranslations(locale, ['common']))
@@ -136,7 +136,7 @@ export default function AccountTransactions({
   const [filtersHide, setFiltersHide] = useState(false)
   const [type, setType] = useState(typeQuery)
   const [initiated, setInitiated] = useState(initiatedQuery) // null = both, 'true' = initiated, 'false' = non-initiated
-  const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // 0 = include, 1 = exclude
+  const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // false = include, true = exclude
   const [counterparty, setCounterparty] = useState(counterpartyQuery)
   const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
   const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
@@ -198,8 +198,8 @@ export default function AccountTransactions({
   ]
 
   const failuresOptions = [
-    { value: '0', label: 'Include failed' },
-    { value: '1', label: 'Exclude failed' }
+    { value: null, label: 'Include failed' },
+    { value: true, label: 'Exclude failed' }
   ]
 
   const apiUrl = (opts = {}) => {
@@ -219,10 +219,10 @@ export default function AccountTransactions({
     if (initiated !== undefined && initiated !== null) {
       url += `&initiated=${initiated}`
     }
-
-    if (excludeFailures === '1') {
-      url += `&excludeFailures=1`
+    if (excludeFailures) {
+      url += `&excludeFailures=true`
     }
+
     if (counterparty) {
       url += `&counterparty=${encodeURIComponent(counterparty.trim())}`
     }
