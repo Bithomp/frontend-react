@@ -1,12 +1,44 @@
-import { fullNiceNumber, showFlags, userOrServiceName } from '../../../utils/format'
+import { fullNiceNumber, showFlags, userOrServiceName, CurrencyWithIcon } from '../../../utils/format'
 import CopyButton from '../../UI/CopyButton'
 import { TransactionRowCard } from './TransactionRowCard'
+import { useIsMobile } from '../../../utils/mobile'
 
 export const TransactionRowTrustSet = ({ data, address, index, selectedCurrency }) => {
   const { specification } = data
-  const serviceOruser = userOrServiceName(specification.counterpartyDetails)
+  const serviceOruser = userOrServiceName(specification?.counterpartyDetails)
+  const isMobile = useIsMobile(600)
   const txTypeSpecial = (
-    <span className="bold">Trust {specification.limit === '0' ? <span className="orange">removed</span> : 'set'}</span>
+    <>
+      <span className="bold">
+        Trust {specification?.limit === '0' ? <span className="orange">removed</span> : 'set'}
+      </span>
+      {!isMobile ? (
+        <>
+          <br />
+          <br />
+        </>
+      ) : (
+        ' '
+      )}
+
+      {specification?.limit !== '0' ? (
+        <>
+          {amountFormat(
+            {
+              currency: specification?.currency,
+              issuer: specification?.counterparty,
+              issuerDetails: specification?.counterpartyDetails,
+              value: specification?.limit
+            },
+            { icon: true, bold: true, color: 'orange', short: true }
+          )}
+        </>
+      ) : (
+        <span className="bold">
+          <CurrencyWithIcon token={{ currency: specification?.currency, issuer: specification?.counterparty }} />
+        </span>
+      )}
+    </>
   )
   return (
     <TransactionRowCard

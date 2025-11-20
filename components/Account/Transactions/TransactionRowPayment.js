@@ -3,6 +3,7 @@ import { AddressWithIconInline, amountFormat, nativeCurrencyToFiat } from '../..
 import { addressBalanceChanges, isConvertionTx } from '../../../utils/transaction'
 import { FaArrowRightArrowLeft } from 'react-icons/fa6'
 import { isIOUpayment, optionalAbsPaymentAmount, paymentTypeName } from '../../../utils/transaction/payment'
+import { useIsMobile } from '../../../utils/mobile'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
   const { outcome, specification, tx } = data
@@ -12,12 +13,14 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
   const sourceBalanceChangesList = addressBalanceChanges(data, address)
   const iouPayment = isIOUpayment(data)
 
+  const isMobile = useIsMobile(600)
+
   if (!isConvertion) {
     txTypeSpecial = (
       <>
         <span className="bold">{txTypeSpecial} </span>
         {tx?.Destination === address ? 'from' : tx?.Account === address ? 'to' : 'by'}
-        <br />
+        {isMobile ? ' ' : <br />}
         <AddressWithIconInline
           data={
             tx?.Account === address && specification?.destination ? specification?.destination : specification?.source

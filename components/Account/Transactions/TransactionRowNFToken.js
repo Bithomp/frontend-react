@@ -9,6 +9,7 @@ import {
   AddressWithIconInline
 } from '../../../utils/format'
 import { addressBalanceChanges } from '../../../utils/transaction'
+import { useIsMobile } from '../../../utils/mobile'
 
 const nftData = (change, nftInfo, txType, amountChange) => {
   const flagsAsString = flagList(nftInfo.flags)
@@ -75,6 +76,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
   const { specification, outcome, tx } = data
   const txType = tx?.TransactionType
   let txTypeSpecial = txType
+  const isMobile = useIsMobile(600)
 
   const amountChange = addressBalanceChanges(data, address)?.[0]
 
@@ -98,7 +100,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
             : nftSource?.address === address
             ? 'transfer to'
             : 'transfer by'}
-          <br />
+          {isMobile ? ' ' : <br />}
           <AddressWithIconInline
             data={
               nftDestination?.address === address
@@ -125,7 +127,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
         txTypeSpecial = (
           <>
             {tx?.Amount === '0' ? 'Free NFT offer' : 'NFT Sell offer'} from
-            <br />
+            {isMobile ? ' ' : <br />}
             <AddressWithIconInline data={specification.source} options={{ short: 5 }} />
           </>
         )

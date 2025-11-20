@@ -1,9 +1,7 @@
-'use client'
-
 import {
   amountFormat,
-  CurrencyWithIcon,
   dateFormat,
+  fullDateAndTime,
   nativeCurrencyToFiat,
   shortHash,
   timeFormat,
@@ -23,6 +21,7 @@ import {
 import { isTagValid, useWidth } from '../../../utils'
 import { i18n } from 'next-i18next'
 import CopyButton from '../../UI/CopyButton'
+import { useIsMobile } from '../../../utils/mobile'
 
 export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
@@ -50,6 +49,10 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
 
   const addressIsSource = specification?.source?.address === address
 
+  const isMobile = useIsMobile(600)
+
+  const typeNode = txTypeSpecial || <span className="bold">{tx?.TransactionType}</span>
+
   return (
     <tr
       style={{
@@ -62,46 +65,33 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
       <td className="bold center grey" style={{ width: 10, verticalAlign: 'top' }}>
         {index + 1}
       </td>
-      <td style={{ width: 120, verticalAlign: 'top' }}>
-        {txTypeSpecial || <span className="bold">{tx?.TransactionType}</span>}
-        {tx?.TransactionType === 'TrustSet' && (
+      {!isMobile && (
+        <td style={{ width: 120, verticalAlign: 'top' }}>
+          {typeNode}
+          <br />
+          <br />
+          {sourceBalanceChangesList?.map((change, index) => (
+            <div key={index}>
+              {amountFormat(change, {
+                icon: true,
+                bold: true,
+                color: 'direction',
+                showPlus: true,
+                short: true
+              })}
+            </div>
+          ))}
+        </td>
+      )}
+      <td>
+        {isMobile && (
           <>
+            {typeNode}
             <br />
+            {timeFromNow(tx.date, i18n, 'ripple')}, {fullDateAndTime(tx.date, 'ripple')}
             <br />
-            {specification.limit !== '0' ? (
-              <>
-                {amountFormat(
-                  {
-                    currency: specification.currency,
-                    issuer: specification.counterparty,
-                    issuerDetails: specification.counterpartyDetails,
-                    value: specification.limit
-                  },
-                  { icon: true, bold: true, color: 'orange', short: true }
-                )}
-              </>
-            ) : (
-              <span className="bold">
-                <CurrencyWithIcon token={{ currency: specification.currency, issuer: specification.counterparty }} />
-              </span>
-            )}
           </>
         )}
-        <br />
-        <br />
-        {sourceBalanceChangesList?.map((change, index) => (
-          <div key={index}>
-            {amountFormat(change, {
-              icon: true,
-              bold: true,
-              color: 'direction',
-              showPlus: true,
-              short: true
-            })}
-          </div>
-        ))}
-      </td>
-      <td>
         {outcome && !isSuccessful && (
           <>
             <span className="bold">Failure: </span>
@@ -162,15 +152,17 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
           {width > 800 ? tx.hash : shortHash(tx.hash, 12)}
         </LinkTx>
       </td>
-      <td className="right" style={{ width: 100, verticalAlign: 'top' }}>
-        <span className="bold">{timeFromNow(tx.date, i18n, 'ripple')}</span>
-        <br />
-        <span className="grey">
-          {dateFormat(tx.date, {}, { type: 'ripple' })}
+      {!isMobile && (
+        <td className="right" style={{ width: 100, verticalAlign: 'top' }}>
+          <span className="bold">{timeFromNow(tx.date, i18n, 'ripple')}</span>
           <br />
-          {timeFormat(tx.date, 'ripple')}
-        </span>
-      </td>
+          <span className="grey">
+            {dateFormat(tx.date, {}, { type: 'ripple' })}
+            <br />
+            {timeFormat(tx.date, 'ripple')}
+          </span>
+        </td>
+      )}
     </tr>
   )
 }
