@@ -352,7 +352,8 @@
     "Request failed with status code 429": "요청사항이 너무 많습니다. 나중에 다시 시도하세요",
     "Request failed with status code 404": "해당 네트워크에서는 이 API 호출이 허용되지 않습니다",
     "Request failed with status code 403": "로그아웃된 것 같습니다. 다시 로그인해주세요.",
-    "Request aborted": "요청이 취소되었습니다"
+    "Request aborted": "요청이 취소되었습니다",
+    "read ECONNRESET": "요청이 시간 초과되었습니다. 필터를 변경하거나 나중에 다시 시도하세요."
   },
   "errors": {
     "token": {

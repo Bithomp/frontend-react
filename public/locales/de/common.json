@@ -352,7 +352,8 @@
     "Request failed with status code 429": "Sie senden uns zu viele Anfragen. Versuchen Sie es später erneut!",
     "Request failed with status code 404": "Dieser API Aufruf ist auf diesem Netzwerk nicht erlaubt",
     "Request failed with status code 403": "Es sieht so aus, als wären Sie abgemeldet. Bitte loggen Sie sich erneut ein",
-    "Request aborted": "Anfrage abgebrochen"
+    "Request aborted": "Anfrage abgebrochen",
+    "read ECONNRESET": "Die Anfrage hat zu lange gedauert. Versuchen Sie, Ihre Filter zu ändern oder es später erneut."
   },
   "errors": {
     "token": {

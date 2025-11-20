@@ -9,7 +9,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
-import { addAndRemoveQueryParams, isAddressOrUsername } from '../../../utils'
+import { addAndRemoveQueryParams, errorT, isAddressOrUsername } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -78,11 +78,7 @@ export async function getServerSideProps(context) {
         initialErrorMessage = 'No transactions found for the specified filters.'
       }
     } catch (e) {
-      if (e?.message === 'read ECONNRESET') {
-        initialErrorMessage = 'The request timed out. Try changing your filters or try again later.'
-      } else {
-        initialErrorMessage = e?.message || 'Failed to load transactions'
-      }
+      initialErrorMessage = e?.message || 'Failed to load transactions'
     }
   } else {
     initialErrorMessage = 'Invalid username or address'
@@ -375,13 +371,7 @@ export default function AccountTransactions({
             <br />
             <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
             <br />
-            <AddressInput
-              placeholder="Counterparty"
-              setValue={setCounterparty}
-              rawData={counterparty ? { counterparty } : {}}
-              type="counterparty"
-              hideButton={true}
-            />
+            <AddressInput placeholder="Counterparty" setValue={setCounterparty} hideButton={true} />
             <br />
             <div>
               <span className="input-title">From</span>
@@ -444,7 +434,7 @@ export default function AccountTransactions({
               }
             }}
             hasMore={marker}
-            errorMessage={errorMessage}
+            errorMessage={errorT(t, errorMessage)}
             subscriptionExpired={false}
             sessionToken={true}
           >

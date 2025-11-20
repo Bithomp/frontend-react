@@ -352,7 +352,8 @@
     "Request failed with status code 429": "¡Nos estáis mandando demasiadas peticiones, prueba más tarde!",
     "Request failed with status code 404": "Este tipo de llamada a la API no está permitida en esa red.",
     "Request failed with status code 403": "Parece que has cerrado sesión, por favor, inicia sesión nuevamente.",
-    "Request aborted": "Solicitud abortada"
+    "Request aborted": "Solicitud abortada",
+    "read ECONNRESET": "La solicitud ha caducado. Intenta cambiar tus filtros o inténtalo de nuevo más tarde."
   },
   "errors": {
     "token": {
