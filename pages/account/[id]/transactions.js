@@ -442,11 +442,13 @@ export default function AccountTransactions({
             <table className={isMobile ? 'table-mobile' : 'table-large expand no-hover'}>
               <tbody>
                 {loading ? (
-                  <tr className="center">
+                  <tr className="center" style={{ width: 'calc (100% - 30px)' }}>
                     <td colSpan="100">
+                      <br />
+                      <br />
                       <span className="waiting"></span>
                       <br />
-                      {t('general.loading')}
+                      <br />
                     </td>
                   </tr>
                 ) : (
