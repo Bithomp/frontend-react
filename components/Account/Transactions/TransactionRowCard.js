@@ -62,7 +62,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
       <td className="bold center grey" style={{ width: 10, verticalAlign: 'top' }}>
         {index + 1}
       </td>
-      <td className="left" style={{ width: 120, verticalAlign: 'top' }}>
+      <td style={{ width: 120, verticalAlign: 'top' }}>
         {txTypeSpecial || <span className="bold">{tx?.TransactionType}</span>}
         {tx?.TransactionType === 'TrustSet' && (
           <>
@@ -101,7 +101,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
           </div>
         ))}
       </td>
-      <td className="left" style={{ wordBreak: 'break-word' }}>
+      <td>
         {outcome && !isSuccessful && (
           <>
             <span className="bold">Failure: </span>
