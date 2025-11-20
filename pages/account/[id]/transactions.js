@@ -45,27 +45,54 @@ const shouldShowTxForAddress = (tx, address) => {
   return inner?.Account === address || inner?.Destination === address || (myBalance && myBalance.length > 0)
 }
 
+const apiUrl = ({ address, marker, order, type, initiated, excludeFailures, counterparty, fromDate, toDate }) => {
+  const limit = 20
+  let url = `v3/transactions/${address}?limit=${limit}`
+  // pagination marker
+  if (marker) {
+    url += `&marker=${marker}`
+  }
+  // sorting
+  url += `&forward=${order === 'oldest'}`
+  // filters
+  if (type && type !== 'all') {
+    url += `&type=${type}`
+  }
+  if (initiated !== undefined && initiated !== null) {
+    url += `&initiated=${initiated}`
+  }
+  if (excludeFailures) {
+    url += `&excludeFailures=true`
+  }
+  if (counterparty) {
+    url += `&counterparty=${counterparty}`
+  }
+  if (fromDate) {
+    url += `&fromDate=${encodeURIComponent(new Date(fromDate).toISOString())}`
+  }
+  if (toDate) {
+    url += `&toDate=${encodeURIComponent(new Date(toDate).toISOString())}`
+  }
+  return url
+}
+
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order } = query
-  const limit = 20
   let initialErrorMessage = ''
   let initialData = null
 
   if (isAddressOrUsername(id)) {
-    let url = `v3/transactions/${id}?limit=${limit}`
-    if (type && type !== 'all') {
-      url += `&type=${type}`
-    }
-    if (order && order === 'oldest') {
-      url += `&forward=true`
-    }
-    if (initiated) {
-      url += `&initiated=${initiated}`
-    }
-    if (counterparty) {
-      url += `&counterparty=${counterparty}`
-    }
+    let url = apiUrl({
+      address: id,
+      order,
+      type,
+      initiated,
+      excludeFailures,
+      counterparty,
+      fromDate,
+      toDate
+    })
 
     try {
       const res = await axiosServer({
@@ -202,49 +229,28 @@ export default function AccountTransactions({
     { value: true, label: 'Exclude failed' }
   ]
 
-  const apiUrl = (opts = {}) => {
-    const limit = 20
-    let url = `v3/transactions/${address}?limit=${limit}`
-    // pagination marker
-    if (opts.marker) {
-      const markerString = typeof opts.marker === 'object' ? JSON.stringify(opts.marker) : opts.marker
-      url += `&marker=${encodeURIComponent(markerString)}`
-    }
-    // sorting
-    url += `&forward=${order === 'oldest'}`
-    // filters
-    if (type && type !== 'all') {
-      url += `&type=${type}`
-    }
-    if (initiated !== undefined && initiated !== null) {
-      url += `&initiated=${initiated}`
-    }
-    if (excludeFailures) {
-      url += `&excludeFailures=true`
-    }
-    if (counterparty) {
-      url += `&counterparty=${counterparty}`
-    }
-
-    if (fromDate) {
-      url += `&fromDate=${encodeURIComponent(fromDate.toISOString())}`
-    }
-    if (toDate) {
-      url += `&toDate=${encodeURIComponent(toDate.toISOString())}`
-    }
-    return url
-  }
-
-  const fetchTransactions = async (opts = {}) => {
+  const fetchTransactions = async (options = {}) => {
     if (loading) return
 
     let markerToUse = undefined
-    if (!opts.restart) {
-      markerToUse = opts.marker || marker
+    if (!options.restart) {
+      markerToUse = options.marker || marker
     }
 
     try {
-      const response = await axios.get(apiUrl({ marker: markerToUse }))
+      const response = await axios.get(
+        apiUrl({
+          marker: markerToUse,
+          address,
+          order,
+          type,
+          initiated,
+          excludeFailures,
+          counterparty,
+          fromDate,
+          toDate
+        })
+      )
       if (response?.data?.status === 'error') {
         setErrorMessage(response?.data?.error)
         setLoading(false)
