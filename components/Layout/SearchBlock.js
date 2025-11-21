@@ -17,7 +17,6 @@ import {
   networksIds,
   isValidNftXls20,
   isCurrencyHashValid,
-  server,
   isValidPayString,
   isValidXAddress,
   performIdSearch,
@@ -500,7 +499,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             {tab == 'transactions' ? (
               <b>{t('explorer.menu.transactions')}</b>
             ) : (
-              <a href={server + '/explorer/' + searchItem}>{t('explorer.menu.transactions')}</a>
+              <Link href={'/account/' + searchItem + '/transactions'}>{t('explorer.menu.transactions')}</Link>
             )}
           </div>
           <div className="explorer-tabs-shadow"></div>
