@@ -454,7 +454,7 @@ export default function CreateEscrow({
                     We do not save/keep the Fulfillment. Please copy and save it securely.
                     <br />
                     <br />
-                    <b>If you lose it, you won't be able to relase the funds.</b>
+                    <b>If you lose it, you won't be able to release the funds.</b>
                   </div>
                   <br />
                 </>
