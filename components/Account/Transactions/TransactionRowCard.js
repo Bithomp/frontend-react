@@ -128,6 +128,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
         {isTagValid(tx.SourceTag) && !dapp && (
           <>
             Source tag: <span className="bold">{tx.SourceTag}</span>
+            <br />
           </>
         )}
         {typeof children === 'function' ? children(pageFiatRate) : children}

@@ -534,7 +534,7 @@ export const memoNode = (memos, type = 'tr') => {
               } else {
                 output.push(
                   <React.Fragment key={'a1' + j}>
-                    Memo{memos.length > 1 ? ' ' + j + 1 : ''}:{' '}
+                    Memo {memos.length > 1 ? j + 1 : ''}:{' '}
                     {memotype && memotype.toLowerCase() !== 'memo' && <>{memotype + ': '}</>}
                     {memopiece}
                     <br />
