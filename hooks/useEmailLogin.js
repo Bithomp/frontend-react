@@ -15,9 +15,6 @@ export const useEmailLogin = () => {
   }, [])
 
   const handleLoginSuccess = useCallback(() => {
-    if (onLoginSuccess) {
-      onLoginSuccess()
-    }
     closeEmailLogin()
   }, [onLoginSuccess, closeEmailLogin])
 
