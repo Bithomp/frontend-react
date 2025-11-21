@@ -416,7 +416,16 @@ export default function TrustSet({
 
   return (
     <>
-      <SEO title="Set Trustline" description="Trustset: Set a Trustline to an address" />
+      <SEO
+        title="Set Trustline"
+        description="Trustset: Set a Trustline to an address"
+        image={{
+          width: 1200,
+          height: 630,
+          file: 'previews/1200x630/services/trustlines.png'
+        }}
+        twitterImage={{ file: 'previews/630x630/services/trustlines.png' }}
+      />
       <div className="content-text content-center">
         <h1 className="center">Set/Update Trust (Trustlines)</h1>
         <p className="center">Create or modify a Trustline linking two accounts.</p>

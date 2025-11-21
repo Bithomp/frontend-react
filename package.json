@@ -73,8 +73,9 @@
     "xrpl-binary-codec-prerelease": "^8.0.1"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "clean": "rm -rf .next/cache",
+    "dev": "npm run clean && next dev",
+    "build": "npm run clean && next build",
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky install",

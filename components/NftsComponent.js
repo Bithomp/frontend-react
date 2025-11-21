@@ -100,10 +100,14 @@ export default function NftsComponent({
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
   const [filtersHide, setFiltersHide] = useState(false)
-  const [selectedToken, setSelectedToken] = useState({
-    currency: saleCurrency,
-    issuer: saleCurrencyIssuer
-  })
+  const [selectedToken, setSelectedToken] = useState(
+    saleCurrency && saleCurrencyIssuer
+      ? {
+          currency: saleCurrency,
+          issuer: saleCurrencyIssuer
+        }
+      : { currency: nativeCurrency }
+  )
 
   const controller = new AbortController()
 
@@ -534,6 +538,11 @@ export default function NftsComponent({
         setTab: setOrder,
         paramName: 'order'
       })
+
+      if (!selectedToken?.issuer) {
+        queryRemoveList.push('saleCurrency')
+        queryRemoveList.push('saleCurrencyIssuer')
+      }
     } else {
       queryRemoveList.push('saleDestination')
       queryRemoveList.push('saleCurrency')
@@ -567,7 +576,7 @@ export default function NftsComponent({
 
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
+  }, [order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData, selectedToken])
 
   const onTaxonInput = (value) => {
     if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {

@@ -65,7 +65,12 @@ export default function TopLinks({ countryCode }) {
           </a>
           <span className="tooltiptext right small">{t('sponsored.sponsored')}</span>
         </span>{' '}
-        💰 {isMobile ? <br /> : ' | '}
+        💰 |{' '}
+        <a href="https://bithomp.com/en/learn/xrp-xah-taxes" className="top-link orange">
+          Tax reports
+        </a>{' '}
+        🧾
+        {isMobile ? <br /> : ' | '}
         {stakeAd}
         {isMobile ? <br /> : ' | '}
         <span className="tooltip">

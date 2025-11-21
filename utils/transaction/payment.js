@@ -1,23 +1,12 @@
-import { addressBalanceChanges } from '.'
+import { addressBalanceChanges, isConvertionTx } from '.'
 import { xls14NftValue } from '..'
-
-// sourse address and destination address is the same
-// sometimes source tag is added to show the dapp
-// so if there is no destintaion tag, no need the source tag to be the same
-export const isConvertionPayment = (specification) => {
-  if (!specification) return false
-  return (
-    specification?.source?.address === specification?.destination?.address &&
-    (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
-  )
-}
 
 export const paymentTypeName = (data) => {
   if (!data) return 'Payment'
   const { outcome, specification } = data
   let type = 'Payment'
-  if (isConvertionPayment(specification)) {
-    type = 'Conversion payment'
+  if (isConvertionTx(specification)) {
+    type = 'Currency exchange'
   }
   if (xls14NftValue(outcome?.deliveredAmount?.value)) {
     type = 'NFT transfer (XLS-14)'
@@ -30,7 +19,7 @@ export const isIOUpayment = (data) => {
   const { outcome, specification } = data
   let iouPayment = false
   const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
-  if (!isConvertionPayment(specification)) {
+  if (!isConvertionTx(specification)) {
     //check if iou involved (pathfinding or iou with fee)
     if (
       !outcome?.deliveredAmount?.mpt_issuance_id &&

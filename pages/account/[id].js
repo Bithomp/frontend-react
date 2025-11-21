@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 
-import { devNet, xahauNetwork, avatarSrc, nativeCurrency } from '../../utils'
+import { devNet, xahauNetwork, avatarSrc, nativeCurrency, errorT } from '../../utils'
 import { shortNiceNumber } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 
@@ -44,6 +44,7 @@ export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let initialData = null
   let networkInfo = {}
+  let initialErrorMessage = null
   const { id, ledgerTimestamp } = query
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ''
@@ -67,8 +68,8 @@ export async function getServerSideProps(context) {
         headers: passHeaders(req)
       })
       networkInfo = networkData?.data
-    } catch (error) {
-      console.error(error)
+    } catch (e) {
+      initialErrorMessage = e?.message || 'Failed to load transactions'
     }
   }
 
@@ -86,6 +87,7 @@ export async function getServerSideProps(context) {
       balanceListServer: balanceList || {},
       isSsrMobile: getIsSsrMobile(context),
       initialData: initialData || {},
+      initialErrorMessage: initialErrorMessage || null,
       ...(await serverSideTranslations(locale, ['common', 'account']))
     }
   }
@@ -112,6 +114,7 @@ import MPTData from '../../components/Account/MPTData'
 
 export default function Account({
   initialData,
+  initialErrorMessage,
   refreshPage,
   id,
   selectedCurrency: selectedCurrencyApp,
@@ -144,7 +147,7 @@ export default function Account({
 
   const [data, setData] = useState(initialData)
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState(initialErrorMessage)
   const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(ledgerTimestampQuery)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRate : 0)
@@ -305,7 +308,7 @@ export default function Account({
             ) : (
               <>
                 {errorMessage ? (
-                  <div className="center orange bold">{errorMessage}</div>
+                  <div className="center orange bold">{errorT(t, errorMessage)}</div>
                 ) : (
                   <>
                     {data?.address && (

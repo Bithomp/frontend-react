@@ -188,6 +188,7 @@ export default function NftVolumes({
 
     let markerPart = ''
     if (loadMoreRequest) {
+      if (!rawData?.marker) return
       markerPart = '&marker=' + rawData?.marker
     } else {
       marker = 'first'
