@@ -9,7 +9,7 @@ import SearchBlock from '../../../components/Layout/SearchBlock'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
 import CurrencySearchSelect from '../../../components/UI/CurrencySearchSelect'
 import { niceNumber, niceCurrency, fullNiceNumber, amountFormat } from '../../../utils/format'
-import { nativeCurrency, useWidth } from '../../../utils'
+import { avatarSrc, nativeCurrency, useWidth } from '../../../utils'
 import { divide, multiply } from '../../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
 
@@ -249,6 +249,7 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
         page="DEX Orders"
         title={`DEX Orders - ${accountData?.username || accountData?.service?.name || id}`}
         description={`DEX orders for ${accountData?.username || accountData?.service?.name || id}`}
+        image={{ file: avatarSrc(id) }}
       />
       <SearchBlock
         searchPlaceholderText={t('explorer.enter-address')}

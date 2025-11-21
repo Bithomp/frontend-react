@@ -9,7 +9,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
-import { addAndRemoveQueryParams, errorT, isAddressOrUsername, isAddressValid } from '../../../utils'
+import { addAndRemoveQueryParams, avatarSrc, errorT, isAddressOrUsername, isAddressValid } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -341,6 +341,7 @@ export default function AccountTransactions({
         page="Transactions"
         title={`Transactions of ${address}`}
         description={`All transactions for address ${address}`}
+        image={{ file: avatarSrc(address) }}
       />
       <SearchBlock
         tab="transactions"
