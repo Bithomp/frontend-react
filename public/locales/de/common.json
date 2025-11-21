@@ -161,7 +161,6 @@
     "description": "{{nativeCurrency}} Preisdiagramm | {{explorerName}} Statistiken | NFT Explorer | Wallet Adresssuche | {{explorerName}} NFT Volumen | NFT kaufen und verkaufen | {{explorerName}} Services",
     "search-placeholder": "Suche nach Adresse / Transaktion / NFT / Benutzername / PayString / Angebot",
     "search-placeholder-short": "Suche nach Adresse / Transaktion",
-    "scan-qr": "CODE SCANNEN",
     "price": {
       "header": "{{nativeCurrency}} Live Preis & Konverter"
     },

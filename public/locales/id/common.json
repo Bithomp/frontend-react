@@ -161,7 +161,6 @@
     "description": "Grafik harga {{nativeCurrency}} | Statistik {{explorerName}} | Penjelajah NFT | Pencarian alamat dompet | Volume NFT {{explorerName}} | Beli dan Jual NFT | Layanan {{explorerName}}",
     "search-placeholder": "Cari berdasarkan Alamat / Transaksi / NFT / Username / PayString / Penawaran",
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
-    "scan-qr": "PINDAI KODE",
     "price": {
       "header": "Harga {{nativeCurrency}} Langsung & Konverter"
     },

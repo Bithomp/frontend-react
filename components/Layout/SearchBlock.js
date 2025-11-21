@@ -479,12 +479,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               {errorMessage}
             </div>
           )}
-          {/*
-          <a className="search-scan-qr" href="/explorer/?scanqr">
-            <IoQr className="search-scan-qr-icon" />
-            <span className="search-scan-qr-text">{t("home.scan-qr")}</span>
-          </a>
-        */}
         </div>
       </div>
       {showTabs && (

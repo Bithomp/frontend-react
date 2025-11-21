@@ -161,7 +161,6 @@
     "description": "Bithomp - The best {{nativeCurrency}} Explorer. Track Ripple USD (RLUSD), {{nativeCurrency}} accounts. Search {{nativeCurrency}} transactions. NFTs on {{explorerName}}. Validators, Amendments and much more.",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
-    "scan-qr": "SCAN A CODE",
     "price": {
       "header": "{{nativeCurrency}} Live Price & Converter"
     },

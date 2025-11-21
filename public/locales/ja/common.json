@@ -161,7 +161,6 @@
     "description": "{{nativeCurrency}}価格アラート | {{explorerName}}統計情報 | NFTエクスプローラ | ウォレットアドレス検索 | {{explorerName}} NFT 情報 | NFTのトレード | {{explorerName}}サービス",
     "search-placeholder": "アドレス/トランザクション/NFT/ユーザネーム/PayString/オファー/通貨のハッシュで検索",
     "search-placeholder-short": "アドレス/トランザクション/ユーザで検索",
-    "scan-qr": "QRコードをスキャン",
     "price": {
       "header": "{{nativeCurrency}} 価格 & 変換"
     },

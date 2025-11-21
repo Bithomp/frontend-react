@@ -161,7 +161,6 @@
     "description": "{{nativeCurrency}} 가격 차트 | {{nativeCurrency}} 통계 | NFT 탐색기 | 지갑 주소 조회 | {{explorerName}} NFT 거래량 | NFT 구매 및 판매 | {{explorerName}} 서비스",
     "search-placeholder": "주소/거래/NFT/사용자명/페이스트링/제안/통화 해시로 검색하기",
     "search-placeholder-short": "주소/거래/사용자별 검색",
-    "scan-qr": "QR코드를 스캔하세요",
     "price": {
       "header": "{{nativeCurrency}} 실시간 가격 & 변환"
     },

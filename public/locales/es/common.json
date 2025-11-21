@@ -161,7 +161,6 @@
     "description": "Gráfica de precio {{nativeCurrency}} | Estadísticas | Explorador NFT | Buscar dirección de cartera",
     "search-placeholder": "Buscar por Dirección / Transacción / NFT / Nombre de usuario / PayString / Oferta",
     "search-placeholder-short": "Dirección / Transacción / Usuario",
-    "scan-qr": "ESCANEA UN CÓDIGO",
     "price": {
       "header": "Precio en Vivo de {{nativeCurrency}} & Convertidor"
     },

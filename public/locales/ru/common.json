@@ -161,7 +161,6 @@
     "description": "Курс {{nativeCurrency}}, график цены {{nativeCurrency}}, статистика по {{nativeCurrency}} леджеру, NFT эксплорер, проверка адреса {{nativeCurrency}} кошелька, объёмы продаж {{explorerName}} NFT, покупка и продажа NFT, {{explorerName}} сервисы",
     "search-placeholder": "Поиск по Адресу / Транзакции / Псевдониму / PayString / NFT / Offer ID",
     "search-placeholder-short": "Адрес / Транзакция / Псевдоним",
-    "scan-qr": "СКАНИРОВАТЬ КОД",
     "price": {
       "header": "{{nativeCurrency}} Текущий курс & Конвертер"
     },
