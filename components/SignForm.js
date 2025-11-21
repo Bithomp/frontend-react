@@ -90,6 +90,7 @@ export default function SignForm({
   const [erase, setErase] = useState(false)
   const [awaiting, setAwaiting] = useState(false)
   const [preparedTx, setPreparedTx] = useState(null)
+  const [autoSend, setAutoSend] = useState(false)
 
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
@@ -97,7 +98,7 @@ export default function SignForm({
   const [choosenWallet, setChoosenWallet] = useState(null)
 
   useEffect(() => {
-    if (!signRequest) return
+    if (!signRequest || autoSend) return
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile) {
       txSend()
@@ -171,8 +172,8 @@ export default function SignForm({
     }
 
     if (signRequest.action === 'nftTransfer') {
-      if (!tx.TransactionType === 'Remit') tx.Amount = '0'
-      // For Remit transactions, no Amount field is needed
+      tx.Amount = '0'
+      // For Remitf transactions, no Amount field is needed
       if (!agreedToRisks) {
         setScreen('nftTransfer')
         return
@@ -1010,6 +1011,7 @@ export default function SignForm({
                     setSignRequest={setSignRequest}
                     setStatus={setStatus}
                     setFormError={setFormError}
+                    setAutoSend={setAutoSend}
                   />
                 )}
 

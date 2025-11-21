@@ -5,7 +5,7 @@ import AddressInput from '../UI/AddressInput'
 import CheckBox from '../UI/CheckBox'
 import axios from 'axios'
 
-export default function NftTransfer({ setSignRequest, signRequest, setStatus, setFormError }) {
+export default function NftTransfer({ setSignRequest, signRequest, setStatus, setFormError, setAutoSend }) {
   const { t } = useTranslation()
   const [useRemit, setUseRemit] = useState(false)
   const [destinationRemitDisabled, setDestinationRemitDisabled] = useState(false)
@@ -41,10 +41,8 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
 
   useEffect(() => {
     if (xahauNetwork) {
+      setAutoSend(true)
       setSignRequest({ ...signRequest, request: { ...signRequest.request, TransactionType: useRemit ? 'Remit' : 'URITokenCreateSellOffer' } })
-      if(useRemit) {
-        setSignRequest({ ...signRequest, request: { ...signRequest.request, URITokenIDs: [signRequest.request.URITokenID] } })
-      }
     } 
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useRemit])
