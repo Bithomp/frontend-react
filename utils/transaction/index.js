@@ -418,14 +418,14 @@ export const memoNode = (memos, type = 'tr') => {
       let clientname = ''
 
       if (memopiece) {
-        if (memopiece.slice(0, 16) === 'xrplexplorer.com' || memopiece.slice(0, 11) === 'bithomp.com') {
+        if (memopiece.includes('xrplexplorer.com') || memopiece.includes('bithomp.com')) {
+          clientname = memopiece.replace(/xrplexplorer\.com/g, 'bithomp.com')
           memopiece = ''
-          clientname = 'bithomp.com'
         }
 
-        if (memopiece.slice(0, 17) === 'xahauexplorer.com') {
+        if (memopiece.includes('xahauexplorer.com')) {
+          clientname = memopiece
           memopiece = ''
-          clientname = 'xahauexplorer.com'
         }
 
         if (memotype) {
