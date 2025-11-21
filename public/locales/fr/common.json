@@ -161,7 +161,6 @@
     "description": "Scannez le Registre {{nativeCurrency}}",
     "search-placeholder": "Rechercher par Adresse / Transaction / NFT / Nom d'utilisateur / PayString / Offre / Hash",
     "search-placeholder-short": "Adresse / Transaction / Nom d'utilisateur",
-    "scan-qr": "SCANNER UN CODE",
     "price": {
       "header": "Prix en direct {{nativeCurrency}} & Convertisseur"
     },
@@ -352,7 +351,8 @@
     "Request failed with status code 429": "Vous nous envoyez trop de demandes, essayez plus tard !",
     "Request failed with status code 404": "Cet appel API n'est pas autorisé sur ce réseau",
     "Request failed with status code 403": "Il semble que vous soyez déconnecté, veuillez vous reconnecter",
-    "Request aborted": "Demande annulée"
+    "Request aborted": "Demande annulée",
+    "read ECONNRESET": "La demande a expiré. Essayez de modifier vos filtres ou réessayez plus tard."
   },
   "errors": {
     "token": {
@@ -486,7 +486,7 @@
     "by-owner": "Par propriétaire",
     "by-taxon": "Par taxon",
     "all-nfts": "Tous les NFTs",
-    "on-sale": "En vente",
+    "listed": "En vente",
     "social-share": "Le partage, c'est bien",
     "marketplace": "Marché",
     "public-key": "Clé publique",
@@ -552,8 +552,10 @@
     "all": "Tout",
     "buy": "Acheter",
     "sell": "Vendre",
-    "buyNow": "Acheter maintenant",
-    "publicAndKnownBrokers": "Public & MP",
+    "buyNow": "Acheter maintenant (Public + places de marché intégrées)",
+    "publicAndKnownBrokers": "Public et places de marché",
+    "public": "Public",
+    "knownBrokers": "Places de marché",
     "onSale": "Sont en vente",
     "all-tokens": "Tous les tokens",
     "single-token": "Token unique",

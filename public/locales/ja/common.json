@@ -161,7 +161,6 @@
     "description": "{{nativeCurrency}}価格アラート | {{explorerName}}統計情報 | NFTエクスプローラ | ウォレットアドレス検索 | {{explorerName}} NFT 情報 | NFTのトレード | {{explorerName}}サービス",
     "search-placeholder": "アドレス/トランザクション/NFT/ユーザネーム/PayString/オファー/通貨のハッシュで検索",
     "search-placeholder-short": "アドレス/トランザクション/ユーザで検索",
-    "scan-qr": "QRコードをスキャン",
     "price": {
       "header": "{{nativeCurrency}} 価格 & 変換"
     },
@@ -352,7 +351,8 @@
     "Request failed with status code 429": "リクエストの送信数が多すぎます、後ほどお試しください！",
     "Request failed with status code 404": "そのようなAPIコールはそのネットワークでは許可されていません",
     "Request failed with status code 403": "ログアウトしています。再度ログインしてください。",
-    "Request aborted": "リクエストが中止されました"
+    "Request aborted": "リクエストが中止されました",
+    "read ECONNRESET": "リクエストのタイムアウト。フィルターを変更するか、後で再試行してください。"
   },
   "errors": {
     "token": {
@@ -486,7 +486,7 @@
     "by-owner": "保有者情報",
     "by-taxon": "Taxon情報",
     "all-nfts": "全てのNFT",
-    "on-sale": "販売中",
+    "listed": "販売中",
     "social-share": "共有",
     "marketplace": "マーケットプレイス",
     "public-key": "公開鍵",
@@ -552,8 +552,10 @@
     "all": "全て",
     "buy": "購入",
     "sell": "売却",
-    "buyNow": "今すぐ購入",
-    "publicAndKnownBrokers": "パブリック & MP",
+    "buyNow": "今すぐ購入（公開＋統合マーケットプレイス）",
+    "publicAndKnownBrokers": "公開およびマーケットプレイス",
+    "public": "公開",
+    "knownBrokers": "マーケットプレイス",
     "onSale": "販売中です",
     "all-tokens": "全トークン",
     "single-token": "単一トークン",

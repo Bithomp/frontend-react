@@ -411,7 +411,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           </TData>
         </tr>
       )}
-      {tradingFee ? (
+      {tradingFee || tradingFee === 0 ? (
         <tr>
           <TData>Trading fee</TData>
           <TData className="bold">{divide(tradingFee, 100000)}%</TData>

@@ -20,13 +20,9 @@ module.exports = withBundleAnalyzer({
     return config
   },
   images: {
+    unoptimized: process.env.NEXT_PUBLIC_NETWORK_NAME !== 'mainnet', // do not generate files in .next/cache/images for testnets and xahau
     deviceSizes: [640, 750, 1080, 1200, 1920],
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'cdn.xrplexplorer.com',
-        port: ''
-      },
       {
         protocol: 'https',
         hostname: 'cdn.xahauexplorer.com',

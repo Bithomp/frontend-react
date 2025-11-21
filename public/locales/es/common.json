@@ -161,7 +161,6 @@
     "description": "Gráfica de precio {{nativeCurrency}} | Estadísticas | Explorador NFT | Buscar dirección de cartera",
     "search-placeholder": "Buscar por Dirección / Transacción / NFT / Nombre de usuario / PayString / Oferta",
     "search-placeholder-short": "Dirección / Transacción / Usuario",
-    "scan-qr": "ESCANEA UN CÓDIGO",
     "price": {
       "header": "Precio en Vivo de {{nativeCurrency}} & Convertidor"
     },
@@ -352,7 +351,8 @@
     "Request failed with status code 429": "¡Nos estáis mandando demasiadas peticiones, prueba más tarde!",
     "Request failed with status code 404": "Este tipo de llamada a la API no está permitida en esa red.",
     "Request failed with status code 403": "Parece que has cerrado sesión, por favor, inicia sesión nuevamente.",
-    "Request aborted": "Solicitud abortada"
+    "Request aborted": "Solicitud abortada",
+    "read ECONNRESET": "La solicitud ha caducado. Intenta cambiar tus filtros o inténtalo de nuevo más tarde."
   },
   "errors": {
     "token": {
@@ -486,7 +486,7 @@
     "by-owner": "Por dueño",
     "by-taxon": "Por taxon",
     "all-nfts": "Todos los NFTs",
-    "on-sale": "En venta",
+    "listed": "En venta",
     "social-share": "Compartir es vivir",
     "marketplace": "Mercado",
     "public-key": "Clave pública",
@@ -552,8 +552,10 @@
     "all": "Todo",
     "buy": "Compra",
     "sell": "Venta",
-    "buyNow": "Comprar ya",
-    "publicAndKnownBrokers": "Público Y Mercado",
+    "buyNow": "Comprar ahora (Público + mercados integrados)",
+    "publicAndKnownBrokers": "Público y mercados",
+    "public": "Público",
+    "knownBrokers": "Mercados",
     "onSale": "Listado",
     "all-tokens": "Todos los tokens",
     "single-token": "Token único",

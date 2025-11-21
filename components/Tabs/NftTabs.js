@@ -3,7 +3,7 @@ import Tabs from '.'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
-export default function NftTabs({ tab, url }) {
+export default function NftTabs({ tab, params }) {
   const router = useRouter()
   const { t } = useTranslation()
 
@@ -15,11 +15,12 @@ export default function NftTabs({ tab, url }) {
 
   const mainTabs = [
     { value: 'nft-explorer', label: t('nft-explorer.header') },
-    { value: 'nft-sales', label: t('nft-sales.header') }
+    { value: 'nft-sales', label: t('nft-sales.header') },
+    { value: 'nft-volumes', label: 'NFT collections' }
   ]
 
-  const changePage = () => {
-    router.push(url)
+  const changePage = (tab) => {
+    router.push('/' + tab + (params ? params : ''))
   }
 
   if (!rendered) return <div style={{ height: '51px' }}></div>

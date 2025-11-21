@@ -184,7 +184,7 @@ export default function Tokens({
   // States
   const [data, setData] = useState(initialData?.tokens || [])
   const [rawData, setRawData] = useState(initialData || {})
-  const [marker, setMarker] = useState(initialData?.marker)
+  const [marker, setMarker] = useState(initialData?.marker || '')
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState(orderQuery || 'rating')
@@ -230,7 +230,7 @@ export default function Tokens({
     const oldOrder = rawData?.order
     const oldCurrency = rawData?.currency
     const oldIssuer = rawData?.issuer
-    const oldSelectedCurrency = rawData?.convertCurrencies[0]
+    const oldSelectedCurrency = rawData?.convertCurrencies?.[0]
     if (!oldOrder || !order) return
 
     let loadMoreRequest =
@@ -246,6 +246,7 @@ export default function Tokens({
 
     let markerPart = ''
     if (loadMoreRequest) {
+      if (!rawData?.marker) return
       markerPart = '&marker=' + rawData?.marker
     }
 
@@ -543,7 +544,15 @@ export default function Tokens({
 
   return (
     <>
-      <SEO title="Tokens" />
+      <SEO
+        title="Tokens"
+        image={{
+          width: 1200,
+          height: 630,
+          file: 'previews/1200x630/tokens.png'
+        }}
+        twitterImage={{ file: 'previews/630x630/tokens.png' }}
+      />
       <h1 className="center">Tokens</h1>
 
       {!xahauNetwork && <TokenTabs tab="tokens" />}

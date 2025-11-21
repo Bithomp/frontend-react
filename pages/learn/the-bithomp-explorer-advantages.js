@@ -123,7 +123,7 @@ export default function UnderstandingTheBithompExplorer() {
             <li>Live balance updates</li>
             <li>Instant offer and NFT listing tracking</li>
           </ul>
-          <h3>5. Support for Mainnet, Devnet, and Testnet</h3>
+          <h3>5. Support for Mainnet, Devnet, AlphaNet and Testnet</h3>
           <p>
             Developers working on new tools or testing integrations often need to switch between networks. Many
             explorers only support mainnet, limiting their usefulness.
@@ -148,6 +148,11 @@ export default function UnderstandingTheBithompExplorer() {
             <li>
               <a href={'https://dev.bithomp.com/'} target="_blank" rel="noreferrer">
                 XRPL Devnet
+              </a>
+            </li>
+            <li>
+              <a href={'https://alphanet.bithomp.com/'} target="_blank" rel="noreferrer">
+                XRPL AlphaNet
               </a>
             </li>
             <li>

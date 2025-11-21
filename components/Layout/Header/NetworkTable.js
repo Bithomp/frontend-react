@@ -37,6 +37,7 @@ export default function NetworkTable({ close }) {
     { value: 'xahau', label: networks['xahau'].explorerName },
     { value: 'testnet', label: networks['testnet'].explorerName },
     { value: 'devnet', label: networks['devnet'].explorerName },
+    { value: 'alphanet', label: networks['alphanet'].explorerName },
     { value: 'xahau-testnet', label: networks['xahau-testnet'].explorerName },
     { value: 'xahau-jshooks', label: networks['xahau-jshooks'].explorerName }
   ]

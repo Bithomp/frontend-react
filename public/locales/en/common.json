@@ -29,7 +29,7 @@
       "volumes": "Volumes",
       "sales": "Sales",
       "minters": "Minters",
-      "distribution": "Distribution (holders)",
+      "distribution": "Holders",
       "statistics": "Live statistics",
       "nfts": "Account's NFTs",
       "offers": "Account's Offers",
@@ -161,7 +161,6 @@
     "description": "Bithomp - The best {{nativeCurrency}} Explorer. Track Ripple USD (RLUSD), {{nativeCurrency}} accounts. Search {{nativeCurrency}} transactions. NFTs on {{explorerName}}. Validators, Amendments and much more.",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
-    "scan-qr": "SCAN A CODE",
     "price": {
       "header": "{{nativeCurrency}} Live Price & Converter"
     },
@@ -352,7 +351,8 @@
     "Request failed with status code 429": "You are sending us too many requests, try later!",
     "Request failed with status code 404": "Such API call is not allowed on that network",
     "Request failed with status code 403": "It seems you're logged out, please log in again",
-    "Request aborted": "Request aborted"
+    "Request aborted": "Request aborted",
+    "read ECONNRESET": "The request timed out. Try changing your filters or try again later."
   },
   "errors": {
     "token": {
@@ -486,7 +486,7 @@
     "by-owner": "By owner",
     "by-taxon": "By taxon",
     "all-nfts": "All NFTs",
-    "on-sale": "On sale",
+    "listed": "Listed",
     "social-share": "Sharing is caring",
     "marketplace": "Marketplace",
     "public-key": "Public key",
@@ -552,8 +552,10 @@
     "all": "All",
     "buy": "Buy",
     "sell": "Sell",
-    "buyNow": "Buy now",
-    "publicAndKnownBrokers": "Public & MP",
+    "buyNow": "Buy now (Public + integrated MPs)",
+    "publicAndKnownBrokers": "Public & Marketplaces",
+    "public": "Public",
+    "knownBrokers": "Marketplaces",
     "onSale": "Listed",
     "all-tokens": "All tokens",
     "single-token": "Single token",

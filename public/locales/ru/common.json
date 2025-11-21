@@ -161,7 +161,6 @@
     "description": "Курс {{nativeCurrency}}, график цены {{nativeCurrency}}, статистика по {{nativeCurrency}} леджеру, NFT эксплорер, проверка адреса {{nativeCurrency}} кошелька, объёмы продаж {{explorerName}} NFT, покупка и продажа NFT, {{explorerName}} сервисы",
     "search-placeholder": "Поиск по Адресу / Транзакции / Псевдониму / PayString / NFT / Offer ID",
     "search-placeholder-short": "Адрес / Транзакция / Псевдоним",
-    "scan-qr": "СКАНИРОВАТЬ КОД",
     "price": {
       "header": "{{nativeCurrency}} Текущий курс & Конвертер"
     },
@@ -352,7 +351,8 @@
     "Request failed with status code 429": "Вы нам шлете слишком много запросов, попробуйте вернуться позже.",
     "Request failed with status code 404": "Этот API запрос не разрешен в этой сети",
     "Request failed with status code 403": "Похоже, что вышли из аккаунта, пожалуйста, войдите снова.",
-    "Request aborted": "Запрос отменен"
+    "Request aborted": "Запрос отменен",
+    "read ECONNRESET": "Время запроса истекло. Попробуйте изменить фильтры или повторите попытку позже."
   },
   "errors": {
     "token": {
@@ -486,7 +486,7 @@
     "by-owner": "По владельцу",
     "by-taxon": "По таксону",
     "all-nfts": "Все NFT",
-    "on-sale": "На продаже",
+    "listed": "На продаже",
     "social-share": "Поделиться",
     "marketplace": "Маркетплейс",
     "public-key": "Публичный ключ",
@@ -552,8 +552,10 @@
     "all": "Все",
     "buy": "Покупка",
     "sell": "Продажа",
-    "buyNow": "Купить сейчас",
-    "publicAndKnownBrokers": "Публичные и на MП",
+    "buyNow": "Купить сейчас (Публичные + интегрированные маркетплейсы)",
+    "publicAndKnownBrokers": "Публичные и маркетплейсы",
+    "public": "Публичные предложения",
+    "knownBrokers": "Маркетплейсы",
     "onSale": "На продаже",
     "all-tokens": "Все токены",
     "single-token": "Один токен",

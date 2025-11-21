@@ -173,7 +173,7 @@ export default function Mpts({
 
   const [data, setData] = useState(initialData?.issuances || [])
   const [rawData, setRawData] = useState(initialData || {})
-  const [marker, setMarker] = useState(initialData?.marker)
+  const [marker, setMarker] = useState(initialData?.marker || '')
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState(orderQuery || 'holdersHight') //'rating
@@ -222,7 +222,8 @@ export default function Mpts({
 
     let markerPart = ''
     if (loadMoreRequest) {
-      markerPart = '&marker=' + rawData?.marker
+      if (!rawData?.marker) return
+      markerPart = '&marker=' + rawData.marker
     }
 
     if (!markerPart) {
@@ -629,26 +630,6 @@ export default function Mpts({
                                   <>
                                     <br />
                                     <b>Description:</b> {token.metadata?.description}
-                                  </>
-                                ) : (
-                                  ''
-                                )}
-                                {token.metadata?.weblinks && token.metadata?.weblinks.length > 0 ? (
-                                  <>
-                                    <br />
-                                    {token.metadata.weblinks.map((link, index) => (
-                                      <span key={index}>
-                                        <a
-                                          href={link}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                          style={{ wordBreak: 'break-all' }}
-                                        >
-                                          {link}
-                                        </a>
-                                        <br />
-                                      </span>
-                                    ))}
                                   </>
                                 ) : (
                                   ''
