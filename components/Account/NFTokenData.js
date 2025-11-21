@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { xahauNetwork, useWidth } from '../../utils'
-import { nftName, nftNameLink, nftThumbnail, nftUrl } from '../../utils/nft'
+import { NftImage, nftName, nftNameLink, nftThumbnail } from '../../utils/nft'
 import LinkIcon from '../../public/images/link.svg'
 import { LinkTx } from '../../utils/links'
 import {
@@ -15,17 +15,6 @@ import {
   AddressWithIconFilled,
   dateFormat
 } from '../../utils/format'
-
-const size = 60
-const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
-  `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
-     <rect width="100%" height="100%" fill="#ffffff"/>
-     <text x="50%" y="50%" font-family="sans-serif" font-size="10"
-           text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
-       No image
-     </text>
-   </svg>`
-)}`
 
 export default function NFTokenData({ data, address, objects, ledgerTimestamp, selectedCurrency }) {
   const windowWidth = useWidth()
@@ -249,19 +238,13 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
                   <td style={{ paddingLeft: 8 }}>
                     {nfts?.map((nft, i) => (
                       <Link href={'/nft/' + nft.nftokenID} key={i}>
-                        <img
-                          src={nftUrl(nft?.nftoken || nft, 'image') || placeholder}
-                          alt={'NFT ' + (i + 1)}
+                        <NftImage
+                          nft={nft}
                           style={
                             windowWidth > 800
                               ? { width: '61px', height: '61px', borderRadius: '4px', margin: '2px' }
                               : { width: '51px', height: '51px', borderRadius: '4px', margin: '2px' }
                           }
-                          onError={(e) => {
-                            e.target.onerror = null
-                            console.log('Error loading NFT image:', e.target.src)
-                            e.target.src = placeholder
-                          }}
                         />
                       </Link>
                     ))}

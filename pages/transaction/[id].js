@@ -24,7 +24,9 @@ import {
   TransactionURIToken,
   TransactionRemit,
   TransactionEnableAmendment,
-  TransactionDelegateSet
+  TransactionDelegateSet,
+  TransactionBatch,
+  TransactionSignerListSet
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
@@ -33,31 +35,39 @@ export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let data = null
   const { id } = query
+
+  let initialErrorMessage = null
+
   try {
     const res = await axiosServer({
       method: 'get',
       url: 'v3/transaction/' + id,
       headers: passHeaders(req)
+    }).catch((error) => {
+      initialErrorMessage = error.message
     })
     data = res?.data
   } catch (r) {
     data = r?.response?.data
   }
 
-  if (data) {
+  if (typeof data === 'object') {
     data.id = id
+  } else {
+    initialErrorMessage = data
   }
 
   return {
     props: {
       data: data || null,
+      initialErrorMessage: initialErrorMessage || null,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
 
-export default function Transaction({ data, selectedCurrency }) {
+export default function Transaction({ data, selectedCurrency, initialErrorMessage }) {
   const { t } = useTranslation()
 
   const [pageFiatRate, setPageFiatRate] = useState(0)
@@ -71,11 +81,11 @@ export default function Transaction({ data, selectedCurrency }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, data])
 
-  if (!data)
+  if (!data || initialErrorMessage)
     return (
       <center>
         <br />
-        No data received. Are you online?
+        {initialErrorMessage || 'No data received. Are you online?'}
         <br />
         <br />
       </center>
@@ -95,7 +105,12 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionAMM
   } else if (txType?.includes('Check')) {
     TransactionComponent = TransactionCheck
-  } else if (txType === 'CredentialCreate' || txType === 'CredentialAccept' || txType === 'CredentialDelete' || txType === 'DepositPreauth') {
+  } else if (
+    txType === 'CredentialCreate' ||
+    txType === 'CredentialAccept' ||
+    txType === 'CredentialDelete' ||
+    txType === 'DepositPreauth'
+  ) {
     TransactionComponent = TransactionCredential
   } else if (txType?.includes('Escrow')) {
     TransactionComponent = TransactionEscrow
@@ -121,6 +136,10 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionRemit
   } else if (txType === 'EnableAmendment') {
     TransactionComponent = TransactionEnableAmendment
+  } else if (txType === 'Batch') {
+    TransactionComponent = TransactionBatch
+  } else if (txType === 'SignerListSet') {
+    TransactionComponent = TransactionSignerListSet
   } else {
     TransactionComponent = TransactionDetails
   }

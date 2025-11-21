@@ -143,7 +143,20 @@ export default function NFTokenMint({
     }
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taxon, uri, flags, transferFee, createSellOffer, amount, selectedToken?.currency, selectedToken?.issuer, destination, issuer, mintForOtherAccount, expiration])
+  }, [
+    taxon,
+    uri,
+    flags,
+    transferFee,
+    createSellOffer,
+    amount,
+    selectedToken?.currency,
+    selectedToken?.issuer,
+    destination,
+    issuer,
+    mintForOtherAccount,
+    expiration
+  ])
 
   // Reset selected token to XRP when tfOnlyXRP flag is enabled
   useEffect(() => {
@@ -465,7 +478,7 @@ export default function NFTokenMint({
                 <AddressInput
                   title="Destination (optional - account to receive the NFT):"
                   placeholder="Destination address"
-                  setValue={onDestinationChange}
+                  setInnerValue={onDestinationChange}
                   name="destination"
                   hideButton={true}
                   rawData={destination ? { address: destination } : {}}
@@ -501,7 +514,7 @@ export default function NFTokenMint({
                 <AddressInput
                   title="Issuer address (account you're minting for):"
                   placeholder="Issuer address"
-                  setValue={onIssuerChange}
+                  setInnerValue={onIssuerChange}
                   rawData={issuer ? { address: issuer } : {}}
                   name="issuer"
                   hideButton={true}

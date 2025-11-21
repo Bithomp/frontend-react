@@ -3,6 +3,7 @@ export { TransactionDetails } from './TransactionDetails'
 
 export { TransactionAccountDelete } from './TransactionAccountDelete'
 export { TransactionAccountSet } from './TransactionAccountSet'
+export { TransactionSignerListSet } from './TransactionSignerListSet'
 export { TransactionCheck } from './TransactionCheck'
 export { TransactionCredential } from './TransactionCredential'
 export { TransactionDelegateSet } from './TransactionDelegateSet'
@@ -13,6 +14,7 @@ export { TransactionPayment } from './TransactionPayment'
 export { TransactionSetRegularKey } from './TransactionSetRegularKey'
 export { TransactionTrustSet } from './TransactionTrustSet'
 export { TransactionEnableAmendment } from './TransactionEnableAmendment'
+export { TransactionBatch } from './TransactionBatch'
 
 //xrpl
 export { TransactionAMM } from './TransactionAmm'

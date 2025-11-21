@@ -161,7 +161,6 @@
     "description": "{{nativeCurrency}} Preisdiagramm | {{explorerName}} Statistiken | NFT Explorer | Wallet Adresssuche | {{explorerName}} NFT Volumen | NFT kaufen und verkaufen | {{explorerName}} Services",
     "search-placeholder": "Suche nach Adresse / Transaktion / NFT / Benutzername / PayString / Angebot",
     "search-placeholder-short": "Suche nach Adresse / Transaktion",
-    "scan-qr": "CODE SCANNEN",
     "price": {
       "header": "{{nativeCurrency}} Live Preis & Konverter"
     },
@@ -352,7 +351,8 @@
     "Request failed with status code 429": "Sie senden uns zu viele Anfragen. Versuchen Sie es später erneut!",
     "Request failed with status code 404": "Dieser API Aufruf ist auf diesem Netzwerk nicht erlaubt",
     "Request failed with status code 403": "Es sieht so aus, als wären Sie abgemeldet. Bitte loggen Sie sich erneut ein",
-    "Request aborted": "Anfrage abgebrochen"
+    "Request aborted": "Anfrage abgebrochen",
+    "read ECONNRESET": "Die Anfrage hat zu lange gedauert. Versuchen Sie, Ihre Filter zu ändern oder es später erneut."
   },
   "errors": {
     "token": {
@@ -486,7 +486,7 @@
     "by-owner": "nach Besitzer",
     "by-taxon": "nach Taxon",
     "all-nfts": "Alle NFTs",
-    "on-sale": "Zum Verkauf",
+    "listed": "Zum Verkauf",
     "social-share": "Teilen ist Kümmern",
     "marketplace": "Marktplatz",
     "public-key": "Public Key",
@@ -552,8 +552,10 @@
     "all": "Alle",
     "buy": "Kaufen",
     "sell": "Verkaufen",
-    "buyNow": "Jetzt kaufen",
-    "publicAndKnownBrokers": "Öffentlich & MP",
+    "buyNow": "Jetzt kaufen (Öffentlich + integrierte Marktplätze)",
+    "publicAndKnownBrokers": "Öffentlich & Marktplätze",
+    "public": "Öffentlich",
+    "knownBrokers": "Marktplätze",
     "onSale": "Gelistet",
     "all-tokens": "Alle Tokens",
     "single-token": "Einzelner Token",
@@ -624,7 +626,6 @@
     "search-by-seller": "Suche nach NFT Verkäufer",
     "no-nfts": "Wir konnten keine NFTs mit Ihren Suchparametern finden.",
     "on-service": "auf {{service}}",
-    "amount-on-service": "{{amount}} auf {{service}}",
     "load-more": "Wir suchen nach Daten auf dem Ledger... bitte warten...",
     "end": "Hier sind alle NFTs die wir finden konnten.",
     "change-filters": "Verwenden Sie verschiedene Filteroptionen oder wählen Sie andere Suchparameter, um mehr NFTs zu entdecken, die Ihren Interessen entsprechen."

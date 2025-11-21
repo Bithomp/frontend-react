@@ -308,7 +308,7 @@ export default function CreateEscrow({
             placeholder="Destination address"
             name="destination"
             hideButton={true}
-            setValue={setAddress}
+            setInnerValue={setAddress}
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
           />

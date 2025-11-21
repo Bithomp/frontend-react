@@ -414,7 +414,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
         <thead>
           <tr>
             <th colSpan="100">
-              {title} [<a href={'/explorer/' + address}>View all</a>]{historicalTitle}
+              {title} [<Link href={'/account/' + address + '/transactions'}>View all</Link>]{historicalTitle}
             </th>
           </tr>
         </thead>
@@ -463,7 +463,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       <div className="show-on-small-w800">
         <br />
         <center>
-          {title.toUpperCase()} [<a href={'/explorer/' + address}>View all</a>]{historicalTitle}
+          {title.toUpperCase()} [<Link href={'/account/' + address + '/transactions'}>View all</Link>]{historicalTitle}
         </center>
         <br />
         {loading && <span className="grey">Loading recent transactions...</span>}

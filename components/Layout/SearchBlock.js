@@ -17,10 +17,10 @@ import {
   networksIds,
   isValidNftXls20,
   isCurrencyHashValid,
-  server,
   isValidPayString,
   isValidXAddress,
-  performIdSearch
+  performIdSearch,
+  isLedgerIndexValid
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -267,6 +267,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
+    if (isLedgerIndexValid(searchFor)) {
+      router.push('/ledger/' + searchFor)
+      return
+    }
+
     if (isAddressOrUsername(searchFor)) {
       if (tab === 'nfts') {
         router.push('/nfts/' + encodeURI(searchFor) + addParams)
@@ -474,12 +479,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               {errorMessage}
             </div>
           )}
-          {/*
-          <a className="search-scan-qr" href="/explorer/?scanqr">
-            <IoQr className="search-scan-qr-icon" />
-            <span className="search-scan-qr-text">{t("home.scan-qr")}</span>
-          </a>
-        */}
         </div>
       </div>
       {showTabs && (
@@ -494,7 +493,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             {tab == 'transactions' ? (
               <b>{t('explorer.menu.transactions')}</b>
             ) : (
-              <a href={server + '/explorer/' + searchItem}>{t('explorer.menu.transactions')}</a>
+              <Link href={'/account/' + searchItem + '/transactions'}>{t('explorer.menu.transactions')}</Link>
             )}
           </div>
           <div className="explorer-tabs-shadow"></div>

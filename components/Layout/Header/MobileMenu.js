@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, xahauNetwork, nativeCurrency, server, avatarServer } from '../../../utils'
+import { devNet, xahauNetwork, nativeCurrency, avatarServer } from '../../../utils'
 
 import Image from 'next/image'
 
@@ -61,9 +61,13 @@ export default function MobileMenu({
               <Link href={'/account/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.view')}
               </Link>
-              <a href={server + '/explorer/' + address} className="mobile-menu-item">
+              <Link
+                href={'/account/' + address + '/transactions'}
+                className="mobile-menu-item"
+                onClick={mobileMenuToggle}
+              >
                 {t('signin.actions.my-transactions')}
-              </a>
+              </Link>
               <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 Send payment
               </Link>
@@ -201,7 +205,12 @@ export default function MobileMenu({
             </Link>
           )}
           <Link
-            href="/distribution?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De"
+            href={
+              '/distribution' +
+              (xahauNetwork
+                ? '?currencyIssuer=rEvernodee8dJLaFsujS6q1EiXvZYmHXr8&currency=EVR'
+                : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
+            }
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
@@ -383,6 +392,9 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           <Link href="/learn/the-bithomp-api" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.developers.api')}
+          </Link>
+          <Link href="/learn/image-services" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Token/NFT/Address Images
           </Link>
           {devNet && (
             <>

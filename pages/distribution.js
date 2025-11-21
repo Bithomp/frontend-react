@@ -64,10 +64,27 @@ import {
   capitalize
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
+import { useSearchParams } from 'next/navigation'
 
 export default function Distribution({ selectedCurrency, fiatRate, initialRawData, initialData, queryToken }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
+  const searchParams = useSearchParams()
+
+  const currencyQuery = searchParams.get('currency') || ''
+  const currencyIssuerQuery = searchParams.get('currencyIssuer') || ''
+
+  useEffect(() => {
+    if (token?.currency === currencyQuery && token?.issuer === currencyIssuerQuery) {
+      return
+    }
+    setToken({
+      currency: currencyQuery || nativeCurrency,
+      issuer: currencyIssuerQuery || null,
+      currencyDetails: null
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currencyQuery, currencyIssuerQuery])
 
   const [data, setData] = useState(initialData || [])
   const [rawData, setRawData] = useState(initialRawData || {})

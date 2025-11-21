@@ -5,6 +5,14 @@ import Cookies from 'universal-cookie'
 import axios from 'axios'
 import SparkMD5 from 'spark-md5'
 
+export const errorT = (t, errorMessage, defaultMessage) => {
+  const translation = t(`error.${errorMessage}`)
+  if (translation === `error.${errorMessage}`) {
+    return defaultMessage || errorMessage
+  }
+  return translation
+}
+
 export const forbid18Plus = async () => {
   //check if we have a saved country for the user
   let savedCountry = localStorage.getItem('country')
@@ -580,6 +588,16 @@ export const networks = {
     minLedger: 1,
     subname: 'Devnet'
   },
+  alphanet: {
+    id: 21465,
+    server: 'https://alphanet.bithomp.com',
+    nativeCurrency: 'XRP',
+    getCoinsUrl: '/faucet',
+    explorerName: 'XRPL AlphaNet',
+    ledgerName: 'XRPL',
+    minLedger: 1,
+    subname: 'AlphaNet'
+  },
   xahau: {
     id: 21337,
     server: 'https://xahauexplorer.com',
@@ -663,6 +681,7 @@ export const networksIds = {
   0: { server: 'https://bithomp.com', name: 'mainnet' },
   1: { server: 'https://test.bithomp.com', name: 'testnet' },
   2: { server: 'https://dev.bithomp.com', name: 'devnet' },
+  21465: { server: 'https://alphanet.bithomp.com', name: 'alphanet' },
   21337: { server: 'https://xahauexplorer.com', name: 'xahau' },
   21338: { server: 'https://test.xahauexplorer.com', name: 'xahau-testnet' },
   31338: { server: 'https://jshooks.xahauexplorer.com', name: 'xahau-jshooks' }
@@ -693,6 +712,8 @@ export const networkMinimumDate = (type = 'ledger') => {
       minDate = new Date('2023-08-09T01:53:41.000Z') // first nft in history for the testnet
     } else if (network === 'devnet') {
       minDate = new Date('2023-09-19T20:36:40.000Z') // first nft in history for the devnet
+    } else if (network === 'alphanet') {
+      minDate = new Date('2025-11-01T00:00:00.000Z') // first nft in history for the alpanet // update later
     } else {
       minDate = new Date('2013-01-01T03:21:10.000Z') // ledger 32570
     }
@@ -746,10 +767,23 @@ export const isAddressValid = (x) => {
 }
 
 export const isTagValid = (x) => {
+  if (x === 0 || x === '0') return true
   if (!x) return false
   if (!/^[0-9]{1,10}$/.test(x)) return false
   if (parseInt(x) > 4294967295) return false
   return true
+}
+
+export const isLedgerIndexValid = (value) => {
+  if (typeof value === 'number') {
+    // numbers don't have "leading zeros" issue
+    return Number.isInteger(value) && value >= 1 && value <= 9999999999
+  }
+  if (typeof value === 'string') {
+    // strict: digits only, no leading zeros, 1–10 digits (caps at 9,999,999,999)
+    return /^[1-9]\d{0,9}$/.test(value)
+  }
+  return false
 }
 
 export const isUsernameValid = (x) => {
@@ -997,7 +1031,10 @@ export const performIdSearch = async ({ searchFor, router, setErrorMessage }) =>
       router.push('/object/' + searchFor)
       return
     }
-
+    if (data.type === 'ledger') {
+      router.push('/ledger/' + searchFor)
+      return
+    }
     if (data.type === 'unknown') {
       setErrorMessage(data.error)
       return

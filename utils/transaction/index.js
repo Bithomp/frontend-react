@@ -1,5 +1,19 @@
-import { nativeCurrency, safeClone } from '.'
-import { add } from './calc'
+import React from 'react'
+import { nativeCurrency, safeClone } from '..'
+import { TData } from '../../components/Table'
+import { add } from '../calc'
+import { decodeJsonMemo } from '../format'
+
+// sourse address and destination address is the same
+// sometimes source tag is added to show the dapp
+// so if there is no destintaion tag, no need the source tag to be the same
+export const isConvertionTx = (specification) => {
+  if (!specification) return false
+  return (
+    specification?.source?.address === specification?.destination?.address &&
+    (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
+  )
+}
 
 // Function to get balance changes for a specific address
 const getBalanceChanges = (data, address) => {
@@ -94,7 +108,7 @@ export const errorCodeDescription = (code) => {
     tecINSUFFICIENT_PAYMENT:
       'The amount specified is not enough to pay all fees involved in the transaction. For example, when trading a non-fungible token, the buy amount may not be enough to pay both the broker fee and the sell amount.',
     tecINSUFFICIENT_RESERVE:
-      "The transaction would increase the reserve requirement higher than the sending account's balance. SignerListSet, PaymentChannelCreate, PaymentChannelFund, and EscrowCreate can return this error code. See Signer Lists and Reserves for more information.",
+      "The transaction would increase the reserve requirement higher than the sending account's balance.",
     tecINTERNAL:
       'Unspecified internal error, with transaction cost applied. This error code should not normally be returned. If you can reproduce this error, please report an issue .',
     tecINVARIANT_FAILED:
@@ -382,4 +396,184 @@ export const dappBySourceTag = (sourceTag) => {
   }
   //max sourceTag is 4294967295, more than that are invalid.
   return dapps[sourceTag] || null
+}
+
+export const memoNode = (memos, type = 'tr') => {
+  let output = []
+  if (memos && Array.isArray(memos)) {
+    for (let j = 0; j < memos.length; j++) {
+      const memo = memos[j]
+      let memotype = memo?.type
+      let memopiece = memo?.data
+      let memoformat = memo?.format
+
+      if (memopiece?.toString().toLowerCase().includes('airdrop') && type !== 'tr') {
+        continue
+      }
+
+      if (!memopiece && memoformat?.slice(0, 2) === 'rt') {
+        memopiece = memoformat
+      }
+
+      let clientname = ''
+
+      if (memopiece) {
+        if (memopiece.includes('xrplexplorer.com') || memopiece.includes('bithomp.com')) {
+          clientname = memopiece.replace(/xrplexplorer\.com/g, 'bithomp.com')
+          memopiece = ''
+        }
+
+        if (memopiece.includes('xahauexplorer.com')) {
+          clientname = memopiece
+          memopiece = ''
+        }
+
+        if (memotype) {
+          if (memotype.slice(0, 25) === '[https://xumm.community]-') {
+            memotype = memotype.slice(25)
+            clientname = 'xumm.community'
+          } else if (memotype.slice(0, 24) === '[https://xrpl.services]-') {
+            memotype = memotype.slice(24)
+            clientname = 'xrpl.services'
+          } else {
+            memotype = memotype.charAt(0).toUpperCase() + memotype.slice(1)
+          }
+        }
+
+        if (decodeJsonMemo(memopiece)) {
+          if (type === 'tr') {
+            output.push(
+              <tr key={'a2' + j}>
+                <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
+                <TData>
+                  {memotype && (
+                    <>
+                      {memotype}
+                      <br />
+                    </>
+                  )}
+                  {decodeJsonMemo(memopiece)}
+                </TData>
+              </tr>
+            )
+          } else {
+            output.push(
+              <React.Fragment key={'a2' + j}>
+                Memo {memos.length > 1 ? j + 1 : ''}:
+                <br />
+                {memotype && (
+                  <>
+                    <strong>{memotype}</strong>
+                    <br />
+                  </>
+                )}
+                {decodeJsonMemo(memopiece)}
+                <br />
+              </React.Fragment>
+            )
+          }
+        } else {
+          if (memopiece.length > 100 && memopiece.split(' ').length === 1 && memopiece.includes('.')) {
+            //jwt
+            memopiece = memopiece.replace('"', '')
+            const pieces = memopiece.split('.')
+            if (type === 'tr') {
+              output.push(
+                <React.Fragment key={'jwt' + j}>
+                  <tr>
+                    <TData>JWT Header</TData>
+                    <TData>{decodeJsonMemo(pieces[0], { code: 'base64' })}</TData>
+                  </tr>
+                  <tr>
+                    <TData>JWT Payload</TData>
+                    <TData>{decodeJsonMemo(pieces[1], { code: 'base64' })}</TData>
+                  </tr>
+                  <tr>
+                    <TData>JWT Signature</TData>
+                    <TData>
+                      <pre>{pieces[2]}</pre>
+                    </TData>
+                  </tr>
+                </React.Fragment>
+              )
+            } else {
+              output.push(
+                <React.Fragment key={'jwt' + j}>
+                  JWT Header:
+                  <br />
+                  {decodeJsonMemo(pieces[0], { code: 'base64' })}
+                  <br />
+                  JWT Payload:
+                  <br />
+                  {decodeJsonMemo(pieces[1], { code: 'base64' })}
+                  <br />
+                  JWT Signature:
+                  <br />
+                  <pre>{pieces[2]}</pre>
+                  <br />
+                </React.Fragment>
+              )
+            }
+          } else {
+            if (memopiece) {
+              if (type === 'tr') {
+                output.push(
+                  <tr key={'a1' + j}>
+                    <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
+                    <TData>
+                      {memotype && memotype.toLowerCase() !== 'memo' && (
+                        <span className="bold">
+                          {memotype}
+                          <br />
+                        </span>
+                      )}
+                      {memopiece}
+                    </TData>
+                  </tr>
+                )
+              } else {
+                output.push(
+                  <React.Fragment key={'a1' + j}>
+                    Memo {memos.length > 1 ? j + 1 : ''}:{' '}
+                    {memotype && memotype.toLowerCase() !== 'memo' && <>{memotype + ': '}</>}
+                    {memopiece}
+                    <br />
+                  </React.Fragment>
+                )
+              }
+            }
+          }
+        }
+
+        if (clientname) {
+          if (type === 'tr') {
+            output.push(
+              <tr key="a3">
+                <TData>Client web</TData>
+                <TData>
+                  <a href={'https://' + clientname} rel="nofollow">
+                    {clientname}
+                  </a>
+                </TData>
+              </tr>
+            )
+          } else {
+            output.push(
+              <React.Fragment key="a3">
+                Client web:{' '}
+                <a href={'https://' + clientname} rel="nofollow">
+                  {clientname}
+                </a>
+                <br />
+              </React.Fragment>
+            )
+          }
+        }
+      }
+    }
+  }
+  if (output.length === 0) {
+    return null
+  }
+  return output
 }
