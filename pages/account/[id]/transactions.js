@@ -105,7 +105,7 @@ export async function getServerSideProps(context) {
       if (
         !initialData?.marker &&
         isAddressValid(id) &&
-        initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, id)).length === 0
+        initialData?.transactions?.filter((tx) => shouldShowTxForAddress(tx, id)).length === 0
       ) {
         initialErrorMessage = 'No transactions found for the specified filters.'
       }
@@ -155,7 +155,7 @@ export default function AccountTransactions({
 
   // State management
   const [transactions, setTransactions] = useState(
-    initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, address)) || []
+    initialData?.transactions?.filter((tx) => shouldShowTxForAddress(tx, address)) || []
   )
   const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)

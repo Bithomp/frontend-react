@@ -62,12 +62,17 @@ export async function getServerSideProps(context) {
       })
       initialData = res?.data
 
-      const networkData = await axiosServer({
-        method: 'get',
-        url: 'v2/server',
-        headers: passHeaders(req)
-      })
-      networkInfo = networkData?.data
+      if (initialData?.error) {
+        initialErrorMessage = initialData.error
+        initialData = null
+      } else {
+        const networkData = await axiosServer({
+          method: 'get',
+          url: 'v2/server',
+          headers: passHeaders(req)
+        })
+        networkInfo = networkData?.data
+      }
     } catch (e) {
       initialErrorMessage = e?.message || 'Failed to load transactions'
     }
