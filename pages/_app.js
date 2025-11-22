@@ -92,11 +92,9 @@ const MyApp = ({ Component, pageProps }) => {
 
     const sendPageView = (url) => {
       const mainPath = getMainPath(url)
-
       if (!window.gtag) return
 
-      // GA4 SPA page view
-      window.gtag('event', mainPath, {
+      window.gtag('event', 'page_view', {
         page_path: mainPath,
         page_location: window.location.origin + mainPath,
         page_title: document.title
