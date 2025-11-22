@@ -50,11 +50,13 @@ function useIsBot() {
   return isBot
 }
 
-// Helper to extract main route: "/account/xyz/123" -> "/account"
+// Helper to extract main route: "/en/account/xyz/123" -> "/account"
 const getMainPath = (url) => {
   const path = url.split('?')[0] // remove query
   const parts = path.split('/').filter(Boolean) // remove empty segments
-  return parts.length ? `/${parts[0]}` : '/'
+  // If first part is a 2-letter locale, skip it
+  const startIndex = parts[0] && parts[0].length === 2 ? 1 : 0
+  return parts.length > startIndex ? `/${parts[startIndex]}` : '/'
 }
 
 const MyApp = ({ Component, pageProps }) => {
