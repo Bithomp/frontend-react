@@ -93,13 +93,16 @@ const MyApp = ({ Component, pageProps }) => {
     const sendPageEvent = (url) => {
       if (!window.gtag) return
 
-      const path = getMainPath(url) // "/account"
+      const path = getMainPath(url)
       const eventName = 'page' + (path === '/' ? '_home' : path.replace(/\//g, '_'))
 
-      // GA4 custom event
       window.gtag('event', eventName, {
         page_path: path,
-        page_location: window.location.origin + path,
+        page_title: document.title
+      })
+
+      window.gtag('event', 'page_' + eventName, {
+        page_path: path,
         page_title: document.title
       })
     }
