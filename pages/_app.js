@@ -93,16 +93,11 @@ const MyApp = ({ Component, pageProps }) => {
     const sendPageEvent = (url) => {
       if (!window.gtag) return
 
-      const path = getMainPath(url)
-      const eventName = 'page' + (path === '/' ? '_home' : path.replace(/\//g, '_'))
+      const mainPath = getMainPath(url)
 
-      window.gtag('event', eventName, {
-        page_path: path,
-        page_title: document.title
-      })
-
-      window.gtag('event', 'page_' + eventName, {
-        page_path: path,
+      window.gtag('event', mainPath, {
+        page_path: mainPath,
+        page_location: window.location.origin + mainPath,
         page_title: document.title
       })
     }
