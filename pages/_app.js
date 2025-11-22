@@ -86,19 +86,27 @@ const MyApp = ({ Component, pageProps }) => {
 
   useEffect(() => {
     if (!GA_ID) return
+    if (typeof window === 'undefined') return
 
-    const handleRouteChange = (url) => {
+    const sendPageView = (url) => {
       const mainPath = getMainPath(url)
 
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('config', GA_ID, {
-          page_path: mainPath
-        })
-      }
+      if (!window.gtag) return
+
+      // GA4 SPA page view
+      window.gtag('event', mainPath, {
+        page_path: mainPath,
+        page_location: window.location.origin + mainPath,
+        page_title: document.title
+      })
     }
 
     // Initial load
-    handleRouteChange(window.location.pathname + window.location.search)
+    sendPageView(window.location.pathname + window.location.search)
+
+    const handleRouteChange = (url) => {
+      sendPageView(url)
+    }
 
     router.events.on('routeChangeComplete', handleRouteChange)
     return () => {
