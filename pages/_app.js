@@ -90,23 +90,23 @@ const MyApp = ({ Component, pageProps }) => {
     if (!GA_ID) return
     if (typeof window === 'undefined') return
 
-    const sendPageView = (url) => {
-      const mainPath = getMainPath(url)
+    const sendPageEvent = (url) => {
       if (!window.gtag) return
 
-      window.gtag('event', 'page_view', {
-        page_path: mainPath,
-        page_location: window.location.origin + mainPath,
+      const path = getMainPath(url) // "/account"
+      const eventName = 'page' + (path === '/' ? '_home' : path.replace(/\//g, '_'))
+
+      // GA4 custom event
+      window.gtag('event', eventName, {
+        page_path: path,
+        page_location: window.location.origin + path,
         page_title: document.title
       })
     }
 
-    // Initial load
-    sendPageView(window.location.pathname + window.location.search)
+    sendPageEvent(window.location.pathname + window.location.search)
 
-    const handleRouteChange = (url) => {
-      sendPageView(url)
-    }
+    const handleRouteChange = (url) => sendPageEvent(url)
 
     router.events.on('routeChangeComplete', handleRouteChange)
     return () => {
