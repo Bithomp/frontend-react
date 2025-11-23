@@ -168,18 +168,17 @@ export default function TokenPage({
           {price < 0.0001 ? (
             <>
               <span className="no-brake">
-                1M <span className="green">{token?.currencyDetails?.currency}</span> = {niceNumber(price * 1000000, 6)}{' '}
+                1M {token?.currencyDetails?.currency} = {niceNumber(price * 1000000, 6)}{' '}
               </span>
-              <span className="red no-brake">{nativeCurrency}</span>,{' '}
+              <span className="no-brake">{nativeCurrency}</span>,{' '}
             </>
           ) : (
             <span className="no-brake">
-              {niceNumber(price, 6)} <span className="red">{nativeCurrency}</span>,{' '}
+              {niceNumber(price, 6)} {nativeCurrency},{' '}
             </span>
           )}
           <span className="no-brake">
-            1 <span className="red">{nativeCurrency}</span> = {niceNumber(1 / price, 6)}{' '}
-            <span className="green">{token?.currencyDetails?.currency}</span>
+            1 {nativeCurrency} = {niceNumber(1 / price, 6)} {token?.currencyDetails?.currency}
           </span>
           {!isSsrMobile && ')'}
         </span>
