@@ -53,7 +53,7 @@ const apiUrl = ({
   convertCurrency
 }) => {
   const limit = 20
-  let url = `v3/transactions/${address}?limit=${limit}&relevantOnly=true&convertCurrency=${convertCurrency}`
+  let url = `v3/transactions/${address}?limit=${limit}&relevantOnly=true&convertCurrencies=${convertCurrency}`
 
   if (filterSpam === 'false' || filterSpam === false) {
     url += `&filterSpam=false`
@@ -167,6 +167,27 @@ export default function AccountTransactions({
   const firstRenderRef = useRef(true)
 
   const address = initialData?.address
+
+  /*
+    {
+      "result": "tesSUCCESS",
+      "timestamp": "2025-11-21T17:20:10.000Z",
+      "fee": "0.000011",
+      "ledgerIndex": 100363821,
+      "indexInLedger": 51,
+      "deliveredAmount": {
+        "currency": "XRP",
+        "value": "0.000001",
+        "valueInConvertCurrencies": {
+          "eur": "0.00000169979"
+        }
+      },
+      "ledgerTimestamp": 1763745610,
+      "feeInFiats": {
+        "eur": "0.00001869769"
+      }
+    }
+  */
 
   // State management
   const [transactions, setTransactions] = useState(initialData?.transactions || [])
