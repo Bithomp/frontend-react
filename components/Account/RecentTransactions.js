@@ -3,7 +3,7 @@ import { fullDateAndTime, timeOrDate, amountFormat, nftIdLink, shortAddress } fr
 import { LinkTx } from '../../utils/links'
 import axios from 'axios'
 import { addressBalanceChanges } from '../../utils/transaction'
-import { isNativeCurrency, xls14NftValue } from '../../utils'
+import { xls14NftValue } from '../../utils'
 import Link from 'next/link'
 
 export default function RecentTransactions({ userData, ledgerTimestamp }) {
@@ -36,46 +36,6 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       </span>
     </span>
   )
-
-  // Function to detect spam transactions (incoming payments for 0.000001/0.0001 XRP)
-  const skipTx = (txdata) => {
-    //check if no balance, nft changes and if addres is not a sender/receiver - skip
-    const balanceChanges = addressBalanceChanges(txdata, address)
-    const { specification, outcome } = txdata
-    const senderOrReceiver =
-      specification?.destination?.address === address || specification?.source?.address === address
-
-    if (!balanceChanges?.length && !senderOrReceiver) {
-      // if not sender and not receiver and balance is not effected..
-      //shall we check for burned nfts, so for nft changes?
-      return true
-    }
-
-    // discard payments with 1 drop (spamm)
-
-    if (txdata.tx?.TransactionType !== 'Payment') {
-      return false
-    }
-
-    // Check if it's an incoming payment to the user
-    const isIncoming = specification?.destination?.address === address
-
-    if (!isIncoming) {
-      return false
-    }
-
-    const deliveredAmount = outcome?.deliveredAmount
-
-    if (
-      deliveredAmount &&
-      isNativeCurrency(deliveredAmount) &&
-      (deliveredAmount === '1' || deliveredAmount.value === '0.000001' || deliveredAmount.value === '0.0001')
-    ) {
-      return true
-    }
-
-    return false
-  }
 
   // Function to get transaction status
   const getTransactionStatus = (txdata) => {
@@ -381,18 +341,13 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     setLoading(true)
     setError(null)
     const res = await axios(
-      `/v3/transactions/${address}?limit=15` +
+      `/v3/transactions/${address}?limit=15&relevantOnly=true&filterSpam=true` +
         (ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
       setError(error.message)
       setLoading(false)
     })
-    const allTransactions = Array.isArray(res?.data) ? res.data : res?.data?.transactions
-
-    // Filter out spam transactions and take the latest 5
-    const filteredTransactions = (allTransactions || []).filter((txdata) => !skipTx(txdata)).slice(0, 5)
-
-    setTransactions(filteredTransactions)
+    setTransactions((res?.data?.transactions || [])?.slice(0, 5))
     setLoading(false)
   }
 

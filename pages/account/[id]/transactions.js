@@ -37,17 +37,10 @@ import {
   TransactionRowEnableAmendment,
   TransactionRowDelegateSet
 } from '../../../components/Account/Transactions'
-import { addressBalanceChanges } from '../../../utils/transaction'
-
-const shouldShowTxForAddress = (tx, address) => {
-  const inner = tx?.tx
-  const myBalance = addressBalanceChanges(tx, address)
-  return inner?.Account === address || inner?.Destination === address || (myBalance && myBalance.length > 0)
-}
 
 const apiUrl = ({ address, marker, order, type, initiated, excludeFailures, counterparty, fromDate, toDate }) => {
   const limit = 20
-  let url = `v3/transactions/${address}?limit=${limit}`
+  let url = `v3/transactions/${address}?limit=${limit}&relevantOnly=true`
   // pagination marker
   if (marker) {
     const markerString = typeof marker === 'object' ? JSON.stringify(marker) : marker
@@ -102,11 +95,7 @@ export async function getServerSideProps(context) {
         headers: passHeaders(req)
       })
       initialData = res?.data
-      if (
-        !initialData?.marker &&
-        isAddressValid(id) &&
-        initialData?.transactions?.filter((tx) => shouldShowTxForAddress(tx, id)).length === 0
-      ) {
+      if (!initialData?.marker && isAddressValid(id) && initialData?.transactions?.length === 0) {
         initialErrorMessage = 'No transactions found for the specified filters.'
       }
     } catch (e) {
@@ -154,9 +143,7 @@ export default function AccountTransactions({
   const address = initialData?.address
 
   // State management
-  const [transactions, setTransactions] = useState(
-    initialData?.transactions?.filter((tx) => shouldShowTxForAddress(tx, address)) || []
-  )
+  const [transactions, setTransactions] = useState(initialData?.transactions || [])
   const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
@@ -257,7 +244,7 @@ export default function AccountTransactions({
         setLoading(false)
         return
       }
-      const newData = response?.data?.transactions?.filter((tx) => shouldShowTxForAddress(tx, address)) || []
+      const newData = response?.data?.transactions || []
       const newMarker = response?.data?.marker || null
 
       if (markerToUse && transactions.length > 0) {
