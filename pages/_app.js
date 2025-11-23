@@ -90,26 +90,25 @@ const MyApp = ({ Component, pageProps }) => {
     if (!GA_ID) return
     if (typeof window === 'undefined') return
 
-    const sendPageEvent = (url) => {
+    const sendPageView = (url) => {
       if (!window.gtag) return
 
-      const mainPath = getMainPath(url)
+      const mainPath = getMainPath(url) // e.g. "/account", "/nft", "/tokens"
 
-      window.gtag('event', mainPath, {
+      window.gtag('event', 'page_view', {
         page_path: mainPath,
         page_location: window.location.origin + mainPath,
-        page_title: document.title
+        page_title: document.title,
+        main_route: mainPath
       })
     }
 
-    sendPageEvent(window.location.pathname + window.location.search)
+    sendPageView(window.location.pathname + window.location.search)
 
-    const handleRouteChange = (url) => sendPageEvent(url)
+    const handleRouteChange = (url) => sendPageView(url)
 
     router.events.on('routeChangeComplete', handleRouteChange)
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
-    }
+    return () => router.events.off('routeChangeComplete', handleRouteChange)
   }, [router])
 
   //check country
