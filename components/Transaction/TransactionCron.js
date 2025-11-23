@@ -44,7 +44,8 @@ export const TransactionCron = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData tooltip="Time interval in seconds between each execution.">Delay seconds</TData>
           <TData>
-            {tx.DelaySeconds} <span className="grey">({duration(t, tx.DelaySeconds, { seconds: true })})</span>
+            {tx.DelaySeconds}{' '}
+            {tx.DelaySeconds > 59 && <span className="grey">({duration(t, tx.DelaySeconds, { seconds: true })})</span>}
           </TData>
         </tr>
       )}
