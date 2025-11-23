@@ -17,6 +17,7 @@ export const isConvertionTx = (specification) => {
 
 // Function to get balance changes for a specific address
 const getBalanceChanges = (data, address) => {
+  if (!data || !address) return null
   const balanceChange = data.filter((entry) => entry.address === address)
   return balanceChange[0]?.balanceChanges
 }
