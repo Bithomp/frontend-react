@@ -317,7 +317,7 @@ table {
       tr {
         td, th {
           padding: 5px;
-          &:nth-child(2) {
+          > &:nth-child(2) {
             word-break: break-word;
           }
           hr {

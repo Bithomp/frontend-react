@@ -1262,6 +1262,7 @@ export const showAmmPercents = (x) => {
 }
 
 export const showFlags = (flags) => {
+  if (!flags || Object.keys(flags).length === 0) return null
   const trueFlags = Object.entries(flags).filter(([, flagValue]) => flagValue === true)
   if (!trueFlags?.length) return null
   return (

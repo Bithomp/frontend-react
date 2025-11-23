@@ -6,6 +6,7 @@ import { AddressWithIconFilled, showFlags } from '../../utils/format'
 export const TransactionDetails = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { specification } = data
+  const flags = showFlags(specification?.flags)
 
   return (
     <TransactionCard
@@ -20,10 +21,10 @@ export const TransactionDetails = ({ data, pageFiatRate, selectedCurrency }) => 
           <AddressWithIconFilled data={specification?.source} name="address" />
         </TData>
       </tr>
-      {specification?.flags && (
+      {flags && (
         <tr>
           <TData>Flags</TData>
-          <TData>{showFlags(specification?.flags)}</TData>
+          <TData>{flags}</TData>
         </tr>
       )}
     </TransactionCard>
