@@ -37,10 +37,29 @@ import {
   TransactionRowEnableAmendment,
   TransactionRowDelegateSet
 } from '../../../components/Account/Transactions'
+import CheckBox from '../../../components/UI/CheckBox'
 
-const apiUrl = ({ address, marker, order, type, initiated, excludeFailures, counterparty, fromDate, toDate }) => {
+const apiUrl = ({
+  address,
+  marker,
+  order,
+  type,
+  initiated,
+  excludeFailures,
+  counterparty,
+  fromDate,
+  toDate,
+  filterSpam
+}) => {
   const limit = 20
   let url = `v3/transactions/${address}?limit=${limit}&relevantOnly=true`
+
+  if (filterSpam === 'false' || filterSpam === false) {
+    url += `&filterSpam=false`
+  } else {
+    url += `&filterSpam=true`
+  }
+
   // pagination marker
   if (marker) {
     const markerString = typeof marker === 'object' ? JSON.stringify(marker) : marker
@@ -72,7 +91,7 @@ const apiUrl = ({ address, marker, order, type, initiated, excludeFailures, coun
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order } = query
+  const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order, filterSpam } = query
   let initialErrorMessage = ''
   let initialData = null
 
@@ -85,7 +104,8 @@ export async function getServerSideProps(context) {
       excludeFailures,
       counterparty,
       fromDate,
-      toDate
+      toDate,
+      filterSpam
     })
 
     try {
@@ -118,6 +138,7 @@ export async function getServerSideProps(context) {
       excludeFailuresQuery: excludeFailures || null,
       counterpartyQuery: counterparty || '',
       orderQuery: order || 'newest',
+      filterSpamQuery: filterSpam || 'true',
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -134,7 +155,8 @@ export default function AccountTransactions({
   initiatedQuery,
   excludeFailuresQuery,
   counterpartyQuery,
-  orderQuery
+  orderQuery,
+  filterSpamQuery
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -155,6 +177,7 @@ export default function AccountTransactions({
   const [counterparty, setCounterparty] = useState(counterpartyQuery)
   const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
   const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
+  const [filterSpam, setFilterSpam] = useState(filterSpamQuery) // true = exclude spam, false = include spam
 
   // Refresh transactions when order changes
   useEffect(() => {
@@ -180,11 +203,12 @@ export default function AccountTransactions({
         excludeFailures,
         counterparty,
         fromDate: fromDate ? fromDate.toISOString() : '',
-        toDate: toDate ? toDate.toISOString() : ''
+        toDate: toDate ? toDate.toISOString() : '',
+        filterSpam: filterSpam ? '' : 'false'
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, type, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
+  }, [order, type, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady, filterSpam])
 
   const orderList = [
     { value: 'newest', label: 'Newest first' },
@@ -236,7 +260,8 @@ export default function AccountTransactions({
           excludeFailures,
           counterparty,
           fromDate,
-          toDate
+          toDate,
+          filterSpam
         })
       )
       if (response?.data?.status === 'error') {
@@ -416,8 +441,12 @@ export default function AccountTransactions({
                 )}
               </div>
             </div>
+            <CheckBox checked={filterSpam === 'true' || filterSpam === true} setChecked={setFilterSpam}>
+              Exclude spam transactions
+            </CheckBox>
+            <br />
             <div className="center">
-              <button className="button-action" onClick={applyFilters} style={{ marginTop: '10px' }}>
+              <button className="button-action" onClick={applyFilters}>
                 Search
               </button>
             </div>
