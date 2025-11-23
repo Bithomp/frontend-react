@@ -352,6 +352,9 @@ table {
     &.expand {
       width: calc(100% - 30px);
     }
+    > thead > tr > th {
+      font-size: 12px;
+    }
     > tbody > tr {
       &:hover {
         background-color: var(--unaccent-icon);
