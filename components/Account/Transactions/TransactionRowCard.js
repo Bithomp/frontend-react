@@ -23,6 +23,36 @@ import { i18n } from 'next-i18next'
 import CopyButton from '../../UI/CopyButton'
 import { useIsMobile } from '../../../utils/mobile'
 
+/*
+  {
+    "result": "tesSUCCESS",
+    "timestamp": "2025-11-21T17:20:10.000Z",
+    "fee": "0.000011",
+    "ledgerIndex": 100363821,
+    "indexInLedger": 51,
+    "deliveredAmount": {
+      "currency": "XRP",
+      "value": "0.000001",
+      "valueInConvertCurrencies": {
+        "eur": "0.00000169979"
+      }
+    },
+    "ledgerTimestamp": 1763745610,
+    "feeInFiats": {
+      "eur": "0.00001869769"
+    },
+    "balanceChanges": [
+      {
+        "currency": "XRP",
+        "value": "0.000001",
+        "valueInConvertCurrencies": {
+          "eur": "0.00000169979"
+        }
+      }
+    ]
+  }
+*/
+
 export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
   const { specification, tx, outcome } = data

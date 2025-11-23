@@ -168,27 +168,6 @@ export default function AccountTransactions({
 
   const address = initialData?.address
 
-  /*
-    {
-      "result": "tesSUCCESS",
-      "timestamp": "2025-11-21T17:20:10.000Z",
-      "fee": "0.000011",
-      "ledgerIndex": 100363821,
-      "indexInLedger": 51,
-      "deliveredAmount": {
-        "currency": "XRP",
-        "value": "0.000001",
-        "valueInConvertCurrencies": {
-          "eur": "0.00000169979"
-        }
-      },
-      "ledgerTimestamp": 1763745610,
-      "feeInFiats": {
-        "eur": "0.00001869769"
-      }
-    }
-  */
-
   // State management
   const [transactions, setTransactions] = useState(initialData?.transactions || [])
   const [marker, setMarker] = useState(initialData?.marker || null)
