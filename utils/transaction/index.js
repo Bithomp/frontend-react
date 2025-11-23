@@ -407,7 +407,11 @@ export const memoNode = (memos, type = 'tr') => {
       let memopiece = memo?.data
       let memoformat = memo?.format
 
-      if (memopiece?.toString().toLowerCase().includes('airdrop') && type !== 'tr') {
+      const redFlags = ['airdrop', 'claim']
+
+      const memop = memopiece?.toString().toLowerCase() || ''
+
+      if (redFlags.some((flag) => memop.includes(flag)) && type !== 'tr') {
         continue
       }
 
