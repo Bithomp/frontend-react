@@ -49,7 +49,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                 icon: true,
                 withIssuer: true,
                 bold: true,
-                precise: true,
+                precise: 'nice',
                 issuerShort: false
               })}
               {nativeCurrencyToFiat({

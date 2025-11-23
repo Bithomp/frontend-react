@@ -41,7 +41,7 @@ export const TransactionRowCheck = ({ data, address, index, selectedCurrency }) 
                 icon: true,
                 bold: true,
                 color: 'direction',
-                precise: true
+                precise: 'nice'
               })}
               {nativeCurrencyToFiat({
                 amount: outcome?.deliveredAmount,
