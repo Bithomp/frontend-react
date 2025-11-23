@@ -8,7 +8,7 @@ import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
-import { axiosServer, passHeaders } from '../../../utils/axios'
+import { axiosServer, currencyServer, passHeaders } from '../../../utils/axios'
 import { addAndRemoveQueryParams, avatarSrc, errorT, isAddressOrUsername, isAddressValid } from '../../../utils'
 
 import SEO from '../../../components/SEO'
@@ -49,10 +49,11 @@ const apiUrl = ({
   counterparty,
   fromDate,
   toDate,
-  filterSpam
+  filterSpam,
+  convertCurrency
 }) => {
   const limit = 20
-  let url = `v3/transactions/${address}?limit=${limit}&relevantOnly=true`
+  let url = `v3/transactions/${address}?limit=${limit}&relevantOnly=true&convertCurrency=${convertCurrency}`
 
   if (filterSpam === 'false' || filterSpam === false) {
     url += `&filterSpam=false`
@@ -96,6 +97,8 @@ export async function getServerSideProps(context) {
   let initialData = null
 
   if (isAddressOrUsername(id)) {
+    const serverCurrency = currencyServer(req) || 'usd'
+
     let url = apiUrl({
       address: id,
       order,
@@ -105,7 +108,8 @@ export async function getServerSideProps(context) {
       counterparty,
       fromDate,
       toDate,
-      filterSpam
+      filterSpam,
+      convertCurrency: serverCurrency
     })
 
     try {
@@ -261,7 +265,8 @@ export default function AccountTransactions({
           counterparty,
           fromDate,
           toDate,
-          filterSpam
+          filterSpam,
+          convertCurrency: selectedCurrency
         })
       )
       if (response?.data?.status === 'error') {
