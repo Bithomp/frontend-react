@@ -6,11 +6,24 @@ import { isValidTaxon } from './nft'
 
 export const LinkToken = ({ token, icon, copy, children }) => {
   if (!token) return ''
-  const { lp_token, currencyDetails } = token
-  const currencyText = lp_token ? currencyDetails?.currency : niceCurrency(token.currency)
+  const { currencyDetails, issuer, mptId, currency } = token
+
+  const tokenUrl = '/token/' + issuer + '/' + currency
+  const lpToken = currencyDetails?.type === 'lp_token'
+
+  const textCurrency = mptId
+    ? currency
+    : lpToken && currencyDetails?.currency
+    ? currencyDetails.currency
+    : niceCurrency(currency)
+
   return (
     <>
-      <Link href={`/token/${token.issuer}/${token.currency}`}>{children || icon ? <LinkIcon /> : currencyText}</Link>
+      {!lpToken && !mptId ? (
+        <Link href={tokenUrl}>{children || icon ? <LinkIcon /> : textCurrency}</Link>
+      ) : (
+        <>{lpToken ? <LinkAmm ammId={currencyDetails?.ammID} text={currencyDetails?.currency} /> : textCurrency}</>
+      )}
       {copy && (
         <>
           {' '}

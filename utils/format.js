@@ -71,6 +71,85 @@ const TokenImage = ({ token }) => {
   )
 }
 
+export const CurrencyWithIcon = ({ token }) => {
+  if (!token) return ''
+  const { currencyDetails, issuer, mptId } = token
+  let imageUrl = avatarServer + issuer
+
+  if (mptId) {
+    imageUrl = mptokenImageSrc(mptId)
+  } else {
+    imageUrl = tokenImageSrc(token)
+  }
+
+  if (!issuer) {
+    imageUrl = nativeCurrenciesImages[nativeCurrency]
+  }
+
+  let doubleIcon = false
+  let assetImageUrl, asset2ImageUrl
+
+  // LP token - show 2 icons
+  if (currencyDetails?.asset && currencyDetails?.asset2) {
+    doubleIcon = true
+    assetImageUrl = tokenImageSrc(currencyDetails.asset)
+    asset2ImageUrl = tokenImageSrc(currencyDetails.asset2)
+  }
+
+  return (
+    <table style={{ minWidth: 126 }}>
+      <tbody>
+        <tr className="no-border">
+          <td style={{ padding: 0, width: 35, height: 35 }}>
+            {doubleIcon ? (
+              <div style={{ position: 'relative', width: 35, height: 35, verticalAlign: 'middle' }}>
+                {/* back coin */}
+                <Image
+                  alt="asset"
+                  src={assetImageUrl}
+                  width={22}
+                  height={22}
+                  style={{
+                    position: 'absolute',
+                    top: 1,
+                    left: 1,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
+                  }}
+                />
+                {/* front coin */}
+                <Image
+                  alt="asset 2"
+                  src={asset2ImageUrl}
+                  width={22}
+                  height={22}
+                  style={{
+                    position: 'absolute',
+                    bottom: 1,
+                    left: 13, // slight shift right to overlap
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    zIndex: 2,
+                    backgroundColor: '#fff',
+                    boxShadow: '0 0 0 1px #fff'
+                  }}
+                />
+              </div>
+            ) : (
+              <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+            )}
+          </td>
+          <td style={{ padding: '0 0 0 5px' }} className="bold">
+            <LinkToken token={token} />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}
+
 export const CurrencyWithIconInline = ({ token, copy, link }) => {
   if (!token) return ''
   const { lp_token, currencyDetails } = token

@@ -4,7 +4,7 @@ import {
   shortNiceNumber,
   amountFormat,
   fullNiceNumber,
-  AddressWithIconFilled
+  CurrencyWithIcon
 } from '../../utils/format'
 import { objectsCountText, useWidth } from '../../utils'
 import { FaSnowflake, FaLock, FaIcicles, FaShieldAlt, FaInfoCircle } from 'react-icons/fa'
@@ -246,12 +246,7 @@ export default function IOUData({
               {i + 1}
             </td>
             <td className="left">
-              <AddressWithIconFilled
-                data={issuer}
-                name="issuer"
-                currency={tl.Balance?.currency}
-                options={{ short: true, currencyDetails: tl.Balance?.currencyDetails }}
-              />
+              <CurrencyWithIcon token={{ ...tl.Balance, ...issuer }} />
             </td>
             {type === 'lp' ? (
               <td className="right">
