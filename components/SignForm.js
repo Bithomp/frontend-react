@@ -172,7 +172,9 @@ export default function SignForm({
     }
 
     if (signRequest.action === 'nftTransfer') {
-      tx.Amount = '0'
+      if (tx.TransactionType !== 'Remit') {
+        tx.Amount = '0'
+      }
       // For Remitf transactions, no Amount field is needed
       if (!agreedToRisks) {
         setScreen('nftTransfer')
