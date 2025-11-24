@@ -74,7 +74,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
           </td>
           {mobile ? (
             <td className="left">
-              <CurrencyWithIcon token={token} copy={true} />
+              <CurrencyWithIcon token={token} copy={true} link={true} />
               <br />
               <span>Price: {fullNiceNumber(stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}</span>
               <br />
@@ -103,7 +103,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
           ) : (
             <>
               <td className="left">
-                <CurrencyWithIcon token={token} copy={true} />
+                <CurrencyWithIcon token={token} copy={true} link={true} />
               </td>
               <td className="right">
                 <span className="tooltip">

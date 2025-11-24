@@ -22,7 +22,7 @@ import {
   shortName
 } from '.'
 import { scaleAmount } from './calc'
-import { LinkAmm } from './links'
+import { LinkAmm, LinkToken } from './links'
 
 dayjs.extend(durationPlugin)
 dayjs.extend(relativeTimePlugin)
@@ -71,14 +71,15 @@ const TokenImage = ({ token }) => {
   )
 }
 
-export const CurrencyWithIcon = ({ token, copy }) => {
+export const CurrencyWithIcon = ({ token, copy, link }) => {
   if (!token) return ''
   const { lp_token, currencyDetails } = token
+  const currencyText = lp_token ? currencyDetails?.currency : niceCurrency(token.currency)
 
   return (
     <>
       <TokenImage token={token} />
-      {lp_token ? currencyDetails?.currency : niceCurrency(token.currency)}
+      {link && !lp_token ? <LinkToken token={token} /> : currencyText}
       {copy && (
         <>
           {' '}

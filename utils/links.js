@@ -1,8 +1,25 @@
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
-import { shortHash } from './format'
+import { niceCurrency, shortHash } from './format'
 import CopyButton from '../components/UI/CopyButton'
 import { isValidTaxon } from './nft'
+
+export const LinkToken = ({ token, icon, copy, children }) => {
+  if (!token) return ''
+  const { lp_token, currencyDetails } = token
+  const currencyText = lp_token ? currencyDetails?.currency : niceCurrency(token.currency)
+  return (
+    <>
+      <Link href={`/token/${token.issuer}/${token.currency}`}>{children || icon ? <LinkIcon /> : currencyText}</Link>
+      {copy && (
+        <>
+          {' '}
+          <CopyButton text={token.currency} copyText="Copy code" />
+        </>
+      )}
+    </>
+  )
+}
 
 export const LinkTx = ({ tx, icon, short, children, copy }) =>
   tx ? (
