@@ -71,7 +71,7 @@ const TokenImage = ({ token }) => {
   )
 }
 
-export const CurrencyWithIcon = ({ token, copy, link }) => {
+export const CurrencyWithIconInline = ({ token, copy, link }) => {
   if (!token) return ''
   const { lp_token, currencyDetails } = token
   const currencyText = lp_token ? currencyDetails?.currency : niceCurrency(token.currency)
