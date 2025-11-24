@@ -18,9 +18,10 @@ import {
   networksIds,
   isValidNftXls20,
   isCurrencyHashValid,
-  server,
   isValidPayString,
-  isValidXAddress
+  isValidXAddress,
+  performIdSearch,
+  isLedgerIndexValid
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -203,37 +204,13 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    //nft nftOffer uriToken
     if (isIdValid(searchFor)) {
+      //nft nftOffer uriToken
+      //redirect to the right page or sets an error message
       setSearching(true)
-      const response = await axios('v3/search/' + searchFor)
+      await performIdSearch({ searchFor, router, setErrorMessage })
       setSearching(false)
-      const data = response.data
-      if (data.type === 'transaction') {
-        router.push('/tx/' + searchFor)
-        return
-      }
-      if (data.type === 'nftoken' || data.type === 'uriToken') {
-        router.push('/nft/' + searchFor)
-        return
-      }
-      if (data.type === 'nftokenOffer') {
-        router.push('/nft-offer/' + searchFor)
-        return
-      }
-      if (data.type === 'amm') {
-        router.push('/amm/' + searchFor)
-        return
-      }
-      if (data.type === 'ledgerEntry') {
-        router.push('/object/' + searchFor)
-        return
-      }
-
-      if (data.type === 'unknown') {
-        setErrorMessage(data.error)
-        return
-      }
+      return
     }
 
     if (isValidCTID(searchFor)) {
@@ -289,6 +266,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       } else {
         router.push('/account/' + encodeURI(searchFor) + addParams)
       }
+      return
+    }
+
+    if (isLedgerIndexValid(searchFor)) {
+      router.push('/ledger/' + searchFor)
       return
     }
 
@@ -499,12 +481,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               {errorMessage}
             </div>
           )}
-          {/*
-          <a className="search-scan-qr" href="/explorer/?scanqr">
-            <IoQr className="search-scan-qr-icon" />
-            <span className="search-scan-qr-text">{t("home.scan-qr")}</span>
-          </a>
-        */}
         </div>
       </div>
       {showTabs && (
@@ -519,7 +495,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             {tab == 'transactions' ? (
               <b>{t('explorer.menu.transactions')}</b>
             ) : (
-              <a href={server + '/explorer/' + searchItem}>{t('explorer.menu.transactions')}</a>
+              <Link href={'/account/' + searchItem + '/transactions'}>{t('explorer.menu.transactions')}</Link>
             )}
           </div>
           <div className="explorer-tabs-shadow"></div>

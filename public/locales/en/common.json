@@ -29,7 +29,7 @@
       "volumes": "Volumes",
       "sales": "Sales",
       "minters": "Minters",
-      "distribution": "Distribution (holders)",
+      "distribution": "Holders",
       "statistics": "Live statistics",
       "nfts": "Account's NFTs",
       "offers": "Account's Offers",
@@ -41,7 +41,7 @@
       "nodes": "Nodes",
       "governance": "Governance",
       "activations": "Activated accounts (chart)",
-      "distribution": "{{nativeCurrency}} distribution",
+      "distribution": "{{currency}} distribution",
       "last-ledger-information": "Last ledger information",
       "last-ledger-transactions": "Last ledger transactions",
       "top-transfers-24h": "Top transfers (24h)",
@@ -67,8 +67,7 @@
     "sponsored": {
       "title": "Sponsored",
       "buy": "Buy XRP",
-      "earn": "Earn on XRP",
-      "play": "Play XRP"
+      "earn": "Earn on XRP"
     },
     "learn-more": {
       "title": "Learn more"
@@ -118,7 +117,6 @@
     "actions": {
       "view": "My Account page",
       "my-transactions": "My Transactions",
-      "send": "Send XRP",
       "my-nfts": "My NFTs",
       "my-nft-offers": "My NFT offers"
     },
@@ -163,7 +161,6 @@
     "description": "Bithomp - The best {{nativeCurrency}} Explorer. Track Ripple USD (RLUSD), {{nativeCurrency}} accounts. Search {{nativeCurrency}} transactions. NFTs on {{explorerName}}. Validators, Amendments and much more.",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
-    "scan-qr": "SCAN A CODE",
     "price": {
       "header": "{{nativeCurrency}} Live Price & Converter"
     },
@@ -354,7 +351,8 @@
     "Request failed with status code 429": "You are sending us too many requests, try later!",
     "Request failed with status code 404": "Such API call is not allowed on that network",
     "Request failed with status code 403": "It seems you're logged out, please log in again",
-    "Request aborted": "Request aborted"
+    "Request aborted": "Request aborted",
+    "read ECONNRESET": "The request timed out. Try changing your filters or try again later."
   },
   "errors": {
     "token": {
@@ -488,7 +486,7 @@
     "by-owner": "By owner",
     "by-taxon": "By taxon",
     "all-nfts": "All NFTs",
-    "on-sale": "On sale",
+    "listed": "Listed",
     "social-share": "Sharing is caring",
     "marketplace": "Marketplace",
     "public-key": "Public key",
@@ -554,8 +552,10 @@
     "all": "All",
     "buy": "Buy",
     "sell": "Sell",
-    "buyNow": "Buy now",
-    "publicAndKnownBrokers": "Public & MP",
+    "buyNow": "Buy now (Public + integrated MPs)",
+    "publicAndKnownBrokers": "Public & Marketplaces",
+    "public": "Public",
+    "knownBrokers": "Marketplaces",
     "onSale": "Listed",
     "all-tokens": "All tokens",
     "single-token": "Single token",
@@ -626,7 +626,6 @@
     "search-by-seller": "Search by NFT seller",
     "no-nfts": "We couldn't find any NFTs with your search parameters.",
     "on-service": "on {{service}}",
-    "amount-on-service": "{{amount}} on {{service}}",
     "load-more": "We are looking for data on the ledger... please wait...",
     "end": "Here are all the NFTs we could find.",
     "change-filters": "Use different filter options or select other search parameters to explore more NFTs that match your interests."

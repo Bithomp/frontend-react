@@ -17,3 +17,7 @@ export const divide = (a, b) => {
   }
   return new BigNumber(a).div(new BigNumber(b)).toString()
 }
+
+export const scaleAmount = (amount, scale) => {
+  return amount * Math.pow(10, -1 * (scale || 0))
+}

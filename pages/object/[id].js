@@ -13,10 +13,11 @@ import { axiosServer, passHeaders } from '../../utils/axios'
 import {
   codeHighlight,
   AddressWithIconFilled,
-  amountFormatNode,
-  addressUsernameOrServiceLink,
   shortAddress,
-  fullDateAndTime
+  fullDateAndTime,
+  amountFormat,
+  showFlags,
+  capitalize
 } from '../../utils/format'
 import { LinkTx, LedgerLink } from '../../utils/links'
 import { object } from '../../styles/pages/object.module.scss'
@@ -94,6 +95,10 @@ export async function getServerSideProps(context) {
   return {
     props: {
       data,
+      id: id || null,
+      ledgerIndexQuery: ledgerIndex || null,
+      dateQuery: date || null,
+      previousTxHashQuery: previousTxHash || null,
       initialErrorMessage: errorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
@@ -101,7 +106,14 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function LedgerObject({ data: initialData, initialErrorMessage }) {
+export default function LedgerObject({
+  id,
+  data: initialData,
+  initialErrorMessage,
+  ledgerIndexQuery,
+  dateQuery,
+  previousTxHashQuery
+}) {
   const router = useRouter()
 
   // data states (will be updated by the time-machine)
@@ -114,7 +126,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
   const [showRaw, setShowRaw] = useState(false)
 
   // time-machine states
-  const qsDate = router.query.date ? new Date(router.query.date) : null
+  const qsDate = dateQuery ? new Date(dateQuery) : null
   const [ledgerDate, setLedgerDate] = useState(qsDate)
   const [ledgerDateInput, setLedgerDateInput] = useState(qsDate)
   const isFirstRender = useRef(true)
@@ -198,10 +210,7 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
           return (
             <tr key={key}>
               <td>{key}</td>
-              <td>
-                {amountFormatNode(value)}{' '}
-                {value?.issuer && <>({addressUsernameOrServiceLink(value, 'issuer', { short: true })})</>}
-              </td>
+              <td>{amountFormat(value, { withIssuer: true })}</td>
             </tr>
           )
         }
@@ -218,10 +227,8 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
         if (key === 'previousTxAt') {
           return (
             <tr key={key}>
-              <td>{key}</td>
-              <td>
-                {fullDateAndTime(value * 1000)} ({value})
-              </td>
+              <td>Previous Tx at</td>
+              <td>{fullDateAndTime(value)}</td>
             </tr>
           )
         }
@@ -238,27 +245,20 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
         }
 
         if (key === 'flags' && typeof value === 'object') {
-          return (
-            <tr key={key}>
-              <td>{key}</td>
-              <td>
-                <div className="flex flex-wrap gap-1">
-                  {Object.entries(value)
-                    .filter(([, flagValue]) => flagValue === true)
-                    .map(([flag]) => (
-                      <span key={flag} className="flag">
-                        {flag}
-                      </span>
-                    ))}
-                </div>
-              </td>
-            </tr>
-          )
+          if (Object.values(value).some(Boolean)) {
+            return (
+              <tr key={key}>
+                <td>Flags</td>
+                <td>{showFlags(value)}</td>
+              </tr>
+            )
+          }
+          return null
         }
 
         return (
           <tr key={key}>
-            <td>{key}</td>
+            <td>{capitalize(key)}</td>
             <td>{renderValue(value)}</td>
           </tr>
         )
@@ -269,9 +269,9 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
         <table className="table-details">
           <thead>
             <tr>
-              {router.query.ledgerIndex || router.query.previousTxHash || router.query.date ? (
+              {ledgerIndexQuery || previousTxHashQuery || dateQuery ? (
                 <th colSpan="2" className="red bold">
-                  Historical Data {router.query.date ? `(${router.query.date})` : ''}
+                  Historical Data {dateQuery ? `(${dateQuery})` : ''}
                 </th>
               ) : (
                 <th colSpan="2">Ledger Entry Details</th>
@@ -294,8 +294,6 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
     if (ledgerDate) {
       query = '?date=' + ledgerDate.toISOString()
     }
-
-    const id = router.query.id
 
     try {
       const res = await axios('/v2/ledgerEntry/' + id + query)
@@ -414,9 +412,9 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                   <button
                     onClick={() => {
                       if (data?.node?.PreviousTxnLgrSeq && data?.node?.PreviousTxnLgrSeq !== data?.ledger_index) {
-                        router.push(`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`)
+                        router.push(`/object/${id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`)
                       } else if (data?.node?.PreviousTxnID) {
-                        router.push(`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`)
+                        router.push(`/object/${id}?previousTxHash=${data.node.PreviousTxnID}`)
                       }
                     }}
                     className={`button-action center ${
@@ -444,8 +442,8 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                         <td>Current Ledger</td>
                         <td>
                           <Link
-                            href={`/object/${router.query.id}?ledgerIndex=${data?.ledger_index}`}
-                            className={router.query.ledgerIndex === data?.ledger_index?.toString() ? 'active' : ''}
+                            href={`/object/${id}?ledgerIndex=${data?.ledger_index}`}
+                            className={ledgerIndexQuery === data?.ledger_index?.toString() ? 'active' : ''}
                           >
                             {data?.ledger_index}
                           </Link>
@@ -456,10 +454,8 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                           <td>Previous Ledger</td>
                           <td>
                             <Link
-                              href={`/object/${router.query.id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`}
-                              className={
-                                router.query.ledgerIndex === data.node.PreviousTxnLgrSeq?.toString() ? 'active' : ''
-                              }
+                              href={`/object/${id}?ledgerIndex=${data.node.PreviousTxnLgrSeq}`}
+                              className={ledgerIndexQuery === data.node.PreviousTxnLgrSeq?.toString() ? 'active' : ''}
                             >
                               {data.node.PreviousTxnLgrSeq}
                             </Link>
@@ -467,15 +463,15 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                         </tr>
                       )}
 
-                      {router.query.previousTxHash && (
+                      {previousTxHashQuery && (
                         <tr>
                           <td>Current Transaction</td>
                           <td>
                             <Link
-                              href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
-                              className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
+                              href={`/object/${id}?previousTxHash=${data.node.PreviousTxnID}`}
+                              className={previousTxHashQuery === data.node.PreviousTxnID ? 'active' : ''}
                             >
-                              {shortAddress(router.query.previousTxHash)}
+                              {shortAddress(previousTxHashQuery)}
                             </Link>
                           </td>
                         </tr>
@@ -485,8 +481,8 @@ export default function LedgerObject({ data: initialData, initialErrorMessage })
                           <td>Previous Transaction</td>
                           <td>
                             <Link
-                              href={`/object/${router.query.id}?previousTxHash=${data.node.PreviousTxnID}`}
-                              className={router.query.previousTxHash === data.node.PreviousTxnID ? 'active' : ''}
+                              href={`/object/${id}?previousTxHash=${data.node.PreviousTxnID}`}
+                              className={previousTxHashQuery === data.node.PreviousTxnID ? 'active' : ''}
                             >
                               {shortAddress(data.node.PreviousTxnID)}
                             </Link>

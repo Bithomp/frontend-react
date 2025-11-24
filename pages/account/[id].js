@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 
-import { devNet, xahauNetwork, avatarSrc, nativeCurrency } from '../../utils'
+import { devNet, xahauNetwork, avatarSrc, nativeCurrency, errorT } from '../../utils'
 import { shortNiceNumber } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 
@@ -44,6 +44,7 @@ export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let initialData = null
   let networkInfo = {}
+  let initialErrorMessage = null
   const { id, ledgerTimestamp } = query
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ''
@@ -61,14 +62,19 @@ export async function getServerSideProps(context) {
       })
       initialData = res?.data
 
-      const networkData = await axiosServer({
-        method: 'get',
-        url: 'v2/server',
-        headers: passHeaders(req)
-      })
-      networkInfo = networkData?.data
-    } catch (error) {
-      console.error(error)
+      if (initialData?.error) {
+        initialErrorMessage = initialData.error
+        initialData = null
+      } else {
+        const networkData = await axiosServer({
+          method: 'get',
+          url: 'v2/server',
+          headers: passHeaders(req)
+        })
+        networkInfo = networkData?.data
+      }
+    } catch (e) {
+      initialErrorMessage = e?.message || 'Failed to load transactions'
     }
   }
 
@@ -86,6 +92,7 @@ export async function getServerSideProps(context) {
       balanceListServer: balanceList || {},
       isSsrMobile: getIsSsrMobile(context),
       initialData: initialData || {},
+      initialErrorMessage: initialErrorMessage || null,
       ...(await serverSideTranslations(locale, ['common', 'account']))
     }
   }
@@ -108,9 +115,11 @@ import IssuedTokensData from '../../components/Account/IssuedTokensData'
 import EscrowData from '../../components/Account/EscrowData'
 import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
+import MPTData from '../../components/Account/MPTData'
 
 export default function Account({
   initialData,
+  initialErrorMessage,
   refreshPage,
   id,
   selectedCurrency: selectedCurrencyApp,
@@ -118,7 +127,6 @@ export default function Account({
   account,
   setSignRequest,
   fiatRate: fiatRateApp,
-  setActivatedAccount,
   fiatRateServer,
   selectedCurrencyServer,
   networkInfo,
@@ -144,7 +152,7 @@ export default function Account({
 
   const [data, setData] = useState(initialData)
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState(initialErrorMessage)
   const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(ledgerTimestampQuery)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRate : 0)
@@ -165,8 +173,6 @@ export default function Account({
       service: initialData.service?.name,
       address: initialData.address
     })
-
-    setActivatedAccount(initialData?.ledgerInfo?.activated)
 
     if (initialData?.obligations) {
       if (initialData.obligations?.trustlines > 200) {
@@ -211,7 +217,6 @@ export default function Account({
           service: newdata.service?.name,
           address: newdata.address
         })
-        setActivatedAccount(newdata.ledgerInfo?.activated)
       } else {
         if (newdata.error) {
           setErrorMessage(t('error-api.' + newdata.error))
@@ -308,7 +313,7 @@ export default function Account({
             ) : (
               <>
                 {errorMessage ? (
-                  <div className="center orange bold">{errorMessage}</div>
+                  <div className="center orange bold">{errorT(t, errorMessage)}</div>
                 ) : (
                   <>
                     {data?.address && (
@@ -572,17 +577,15 @@ export default function Account({
                           />
                           <PublicData data={data} />
                           {data?.ledgerInfo?.activated && (
-                            <div id="tokens-section">
-                              <IOUData
-                                rippleStateList={objects?.rippleStateList}
-                                ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                                address={data?.address}
-                                pageFiatRate={pageFiatRate}
-                                selectedCurrency={selectedCurrency}
-                                account={account}
-                                setSignRequest={setSignRequest}
-                              />
-                            </div>
+                            <IOUData
+                              rippleStateList={objects?.rippleStateList}
+                              ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              address={data?.address}
+                              pageFiatRate={pageFiatRate}
+                              selectedCurrency={selectedCurrency}
+                              account={account}
+                              setSignRequest={setSignRequest}
+                            />
                           )}
                           {/* don't show yet obligations historically */}
                           {data?.obligations?.trustlines > 0 && !data?.ledgerInfo?.ledgerTimestamp && (
@@ -593,34 +596,38 @@ export default function Account({
                             />
                           )}
 
-                          <div id="dex-orders-section">
-                            <DexOrdersData
-                              account={account}
-                              ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                              offerList={objects?.offerList}
-                              setSignRequest={setSignRequest}
-                              address={data?.address}
-                            />
-                          </div>
+                          <MPTData
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            mptIssuanceList={objects?.mptIssuanceList}
+                            mptList={objects?.mptList}
+                          />
+
+                          <DexOrdersData
+                            account={account}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            offerList={objects?.offerList}
+                            setSignRequest={setSignRequest}
+                            address={data?.address}
+                          />
 
                           {xahauNetwork ? (
                             <URITokenData data={data} uriTokenList={objects?.uriTokenList} />
                           ) : (
                             <NFTokenData
                               data={data}
+                              address={data?.address}
                               objects={objects}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              selectedCurrency={selectedCurrency}
                             />
                           )}
 
-                          <div id="escrows-section">
-                            <EscrowData
-                              setSignRequest={setSignRequest}
-                              address={data?.address}
-                              ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
-                              escrowList={objects?.escrowList}
-                            />
-                          </div>
+                          <EscrowData
+                            setSignRequest={setSignRequest}
+                            address={data?.address}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                            escrowList={objects?.escrowList}
+                          />
 
                           <RecentTransactions userData={userData} ledgerTimestamp={ledgerTimestamp} />
                           {data?.ledgerInfo?.activated && !gateway && (

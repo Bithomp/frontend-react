@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { IoMdClose } from 'react-icons/io'
 
 import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-
-import { getIsSsrMobile } from '../../../utils/mobile'
-import { axiosServer, passHeaders } from '../../../utils/axios'
-import { useWidth } from '../../../utils'
+import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
+import { axiosServer, currencyServer, passHeaders } from '../../../utils/axios'
+import { addAndRemoveQueryParams, avatarSrc, errorT, isAddressOrUsername, isAddressValid } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -35,54 +36,113 @@ import {
   TransactionRowRemit,
   TransactionRowEnableAmendment,
   TransactionRowDelegateSet
-} from '../../../components/Transactions'
+} from '../../../components/Account/Transactions'
+import CheckBox from '../../../components/UI/CheckBox'
+
+const apiUrl = ({
+  address,
+  marker,
+  order,
+  type,
+  initiated,
+  excludeFailures,
+  counterparty,
+  fromDate,
+  toDate,
+  filterSpam,
+  convertCurrency
+}) => {
+  const limit = 20
+  let url = `v3/transactions/${address}?limit=${limit}&relevantOnly=true&convertCurrencies=${convertCurrency}`
+
+  if (filterSpam === 'false' || filterSpam === false) {
+    url += `&filterSpam=false`
+  } else {
+    url += `&filterSpam=true`
+  }
+
+  // pagination marker
+  if (marker) {
+    const markerString = typeof marker === 'object' ? JSON.stringify(marker) : marker
+    url += `&marker=${encodeURIComponent(markerString)}`
+  }
+  // sorting
+  url += `&forward=${order === 'oldest'}`
+  // filters
+  if (type && type !== 'all') {
+    url += `&type=${type}`
+  }
+  if (initiated !== undefined && initiated !== null) {
+    url += `&initiated=${initiated}`
+  }
+  if (excludeFailures) {
+    url += `&excludeFailures=true`
+  }
+  if (counterparty) {
+    url += `&counterparty=${counterparty}`
+  }
+  if (fromDate) {
+    url += `&fromDate=${encodeURIComponent(new Date(fromDate).toISOString())}`
+  }
+  if (toDate) {
+    url += `&toDate=${encodeURIComponent(new Date(toDate).toISOString())}`
+  }
+  return url
+}
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  const { id } = query
-  const account = id || ''
-  const limit = 20
-  let initialTransactions = []
+  const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order, filterSpam } = query
   let initialErrorMessage = ''
-  let initialMarker = null
-  let initialUserData = null
+  let initialData = null
 
-  if (account) {
-    try {
-      // Fetch user data (username, service name) for the address
-      const userRes = await axiosServer({
-        method: 'get',
-        url: `v2/address/${account}?username=true&service=true&verifiedDomain=true`,
-        headers: passHeaders(req)
-      })
-      initialUserData = userRes?.data
-    } catch (e) {
-      // If user data fetch fails, continue without it
-      console.error('Failed to fetch user data:', e?.message)
-    }
+  if (isAddressOrUsername(id)) {
+    const serverCurrency = currencyServer(req) || 'usd'
+
+    let url = apiUrl({
+      address: id,
+      order,
+      type,
+      initiated,
+      excludeFailures,
+      counterparty,
+      fromDate,
+      toDate,
+      filterSpam,
+      convertCurrency: serverCurrency
+    })
 
     try {
-      // Fetch transactions
       const res = await axiosServer({
         method: 'get',
-        url: `v3/transactions/${initialUserData?.address || account}?limit=${limit}`,
+        url,
         headers: passHeaders(req)
       })
-      initialTransactions = res?.data?.transactions || res?.data || []
-      initialMarker = res?.data?.marker || null
+      initialData = res?.data
+      if (!initialData?.marker && isAddressValid(id) && initialData?.transactions?.length === 0) {
+        initialErrorMessage = 'No transactions found for the specified filters.'
+      }
     } catch (e) {
       initialErrorMessage = e?.message || 'Failed to load transactions'
     }
+  } else {
+    initialErrorMessage = 'Invalid username or address'
   }
 
   return {
     props: {
-      id: account,
-      initialTransactions,
+      id: id || null,
+      initialData: initialData || null,
       initialErrorMessage,
-      initialMarker,
-      initialUserData: initialUserData || {},
       isSsrMobile: getIsSsrMobile(context),
+      fromDateQuery: fromDate || '',
+      toDateQuery: toDate || '',
+      typeQuery: type || 'all',
+      initiatedQuery: initiated || null,
+      excludeFailuresQuery: excludeFailures || null,
+      counterpartyQuery: counterparty || '',
+      orderQuery: order || 'newest',
+      filterSpamQuery: filterSpam || 'true',
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -90,145 +150,131 @@ export async function getServerSideProps(context) {
 
 export default function AccountTransactions({
   id,
-  initialTransactions,
+  initialData,
   initialErrorMessage,
-  initialMarker,
-  initialUserData,
-  selectedCurrency
+  selectedCurrency,
+  fromDateQuery,
+  toDateQuery,
+  typeQuery,
+  initiatedQuery,
+  excludeFailuresQuery,
+  counterpartyQuery,
+  orderQuery,
+  filterSpamQuery
 }) {
   const { t } = useTranslation()
-  const width = useWidth()
+  const router = useRouter()
+  const firstRenderRef = useRef(true)
 
-  // User data for SearchBlock
-  const [userData, setUserData] = useState({
-    username: initialUserData?.username,
-    service: initialUserData?.service?.name,
-    address: initialUserData?.address || id
-  })
+  const address = initialData?.address
 
   // State management
-  const [transactions, setTransactions] = useState(initialTransactions || [])
-  const [marker, setMarker] = useState(initialMarker || null)
+  const [transactions, setTransactions] = useState(initialData?.transactions || [])
+  const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [order, setOrder] = useState('newest') // newest | oldest
+  const [order, setOrder] = useState(orderQuery) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
-  const [txType, setTxType] = useState('tx') // tx = all types
-  const [initiated, setInitiated] = useState('0') // 0 = both, 1 = outgoing, 2 = incoming
-  const [excludeFailures, setExcludeFailures] = useState('0') // 0 = include, 1 = exclude
-  const [counterparty, setCounterparty] = useState('')
-  const [fromDate, setFromDate] = useState('')
-  const [toDate, setToDate] = useState('')
+  const [type, setType] = useState(typeQuery)
+  const [initiated, setInitiated] = useState(initiatedQuery) // null = both, 'true' = initiated, 'false' = non-initiated
+  const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // false = include, true = exclude
+  const [counterparty, setCounterparty] = useState(counterpartyQuery)
+  const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
+  const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
+  const [filterSpam, setFilterSpam] = useState(filterSpamQuery) // true = exclude spam, false = include spam
 
-  // Update userData when initialUserData changes
+  // Refresh transactions when order changes
   useEffect(() => {
-    if (!initialUserData?.address) return
-    setUserData({
-      username: initialUserData.username,
-      service: initialUserData.service?.name,
-      address: initialUserData.address
-    })
-  }, [initialUserData])
+    // Skip fetch on first render
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false
+      return
+    }
+    setLoading(true)
+    setTransactions([])
+    setMarker(null)
+    fetchTransactions({ restart: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, id])
 
+  // Sync filter changes to URL
   useEffect(() => {
-    setTransactions(initialTransactions)
-  }, [initialTransactions])
-
-  // Refresh transactions when order changes (keep this automatic)
-  useEffect(() => {
-    if (userData?.address) {
-      setLoading(true)
-      setTransactions([])
-      setMarker(null)
-      fetchTransactions({ restart: true })
+    if (router.isReady) {
+      updateURL({
+        order,
+        type,
+        initiated,
+        excludeFailures,
+        counterparty,
+        fromDate: fromDate ? fromDate.toISOString() : '',
+        toDate: toDate ? toDate.toISOString() : '',
+        filterSpam: filterSpam ? '' : 'false'
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, userData?.address])
+  }, [order, type, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady, filterSpam])
 
-  // Helpers
   const orderList = [
-    { value: 'newest', label: 'Newest First' },
-    { value: 'oldest', label: 'Oldest First' }
+    { value: 'newest', label: 'Newest first' },
+    { value: 'oldest', label: 'Oldest first' }
   ]
 
   // transaction type options
-  const txTypeOptions = [
-    { value: 'tx', label: 'All types' },
+  const typeOptions = [
+    { value: 'all', label: 'All types' },
     { value: 'payment', label: 'Payment' },
     { value: 'nft', label: 'NFT' },
     { value: 'amm', label: 'AMM' },
-    { value: 'order', label: 'Order' },
+    { value: 'order', label: 'DEX' },
     { value: 'escrow', label: 'Escrow' },
     { value: 'channel', label: 'Channel' },
     { value: 'check', label: 'Check' },
     { value: 'trustline', label: 'Trustline' },
     { value: 'settings', label: 'Settings' },
-    { value: 'accountDelete', label: 'Account Delete' }
+    { value: 'accountDelete', label: 'Account delete' }
   ]
 
   const initiatedOptions = [
-    { value: '0', label: 'Both directions' },
-    { value: '1', label: 'Outgoing' },
-    { value: '2', label: 'Incoming' }
+    { value: null, label: 'Incoming & outgoing' },
+    { value: true, label: 'Outgoing only' },
+    { value: false, label: 'Incoming only' }
   ]
 
   const failuresOptions = [
-    { value: '0', label: 'Include failed' },
-    { value: '1', label: 'Exclude failed' }
+    { value: null, label: 'Include failed' },
+    { value: true, label: 'Exclude failed' }
   ]
 
-  // Build API url
-  const apiUrl = (opts = {}) => {
-    const limit = 20
-    let url = `v3/transactions/${userData?.address}?limit=${limit}`
-    // pagination marker
-    if (opts.marker) {
-      const markerString = typeof opts.marker === 'object' ? JSON.stringify(opts.marker) : opts.marker
-      url += `&marker=${encodeURIComponent(markerString)}`
-    }
-    // sorting
-    url += `&forward=${order === 'oldest'}`
-    // filters
-    if (txType && txType !== 'tx') {
-      url += `&type=${txType}`
-    }
-    if (initiated === '1') {
-      url += `&initiated=true`
-    } else if (initiated === '2') {
-      url += `&initiated=false`
-    }
-
-    if (excludeFailures === '1') {
-      url += `&excludeFailures=1`
-    }
-    if (counterparty) {
-      url += `&counterparty=${encodeURIComponent(counterparty.trim())}`
-    }
-    if (fromDate) {
-      url += `&fromDate=${encodeURIComponent(fromDate.toISOString())}`
-    }
-    if (toDate) {
-      url += `&toDate=${encodeURIComponent(toDate.toISOString())}`
-    }
-    return url
-  }
-
-  const fetchTransactions = async (opts = {}) => {
+  const fetchTransactions = async (options = {}) => {
     if (loading) return
 
     let markerToUse = undefined
-    if (!opts.restart) {
-      markerToUse = opts.marker || marker
+    if (!options.restart) {
+      markerToUse = options.marker || marker
     }
 
     try {
-      const response = await axios.get(apiUrl({ marker: markerToUse }))
+      const response = await axios.get(
+        apiUrl({
+          marker: markerToUse,
+          address,
+          order,
+          type,
+          initiated,
+          excludeFailures,
+          counterparty,
+          fromDate,
+          toDate,
+          filterSpam,
+          convertCurrency: selectedCurrency
+        })
+      )
       if (response?.data?.status === 'error') {
         setErrorMessage(response?.data?.error)
         setLoading(false)
         return
       }
-      const newData = response?.data?.transactions || response?.data || []
+      const newData = response?.data?.transactions || []
       const newMarker = response?.data?.marker || null
 
       if (markerToUse && transactions.length > 0) {
@@ -236,18 +282,24 @@ export default function AccountTransactions({
         const combined = [...transactions, ...newData]
         setTransactions(combined)
       } else {
-        setTransactions(newData)
+        if (newData.length === 0 && !newMarker) {
+          setErrorMessage('Account has no transactions with the specified filters.')
+          setMarker(newMarker)
+          setLoading(false)
+          return
+        } else {
+          setTransactions(newData)
+        }
       }
 
       setMarker(newMarker)
       setErrorMessage('')
     } catch (e) {
-      setErrorMessage(e?.message || 'Failed to load transactions')
+      setErrorMessage(t('error.' + e?.message) || 'Failed to load transactions')
     }
     setLoading(false)
   }
 
-  // CSV headers (basic)
   const csvHeaders = [
     { label: 'Date', key: 'date' },
     { label: 'Time', key: 'time' },
@@ -263,10 +315,56 @@ export default function AccountTransactions({
     fetchTransactions({ restart: true })
   }
 
+  const clearFromDate = () => {
+    setFromDate('')
+  }
+
+  const clearToDate = () => {
+    setToDate('')
+  }
+
+  // URL synchronization functions
+  const updateURL = (newFilters) => {
+    if (!router.isReady) return
+
+    const addList = []
+    const removeList = []
+
+    // Process each filter
+    Object.keys(newFilters).forEach((key) => {
+      const value = newFilters[key]
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== '' &&
+        value !== '0' &&
+        value !== 'all' &&
+        value !== 'newest'
+      ) {
+        addList.push({ name: key, value })
+      } else {
+        removeList.push(key)
+      }
+    })
+
+    addAndRemoveQueryParams(router, addList, removeList)
+  }
+
+  const isMobile = useIsMobile(600)
+
   return (
     <>
-      <SEO page="Transactions" title={`Transactions of ${id}`} description={`All transactions for address ${id}`} />
-      <SearchBlock tab="transactions" searchPlaceholderText={t('explorer.enter-address')} userData={userData} />
+      <SEO
+        page="Transactions"
+        title={`Transactions of ${address}`}
+        description={`All transactions for address ${address}`}
+        image={{ file: avatarSrc(address) }}
+      />
+      <SearchBlock
+        tab="transactions"
+        searchPlaceholderText={t('explorer.enter-address')}
+        userData={initialData?.addressDetails}
+      />
 
       <FiltersFrame
         order={order}
@@ -294,81 +392,66 @@ export default function AccountTransactions({
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
       >
-        {/* Left filters placeholder – can be extended later */}
         <>
           <div className="filters-body-inner">
-            <div>
-              <span className="input-title">Type</span>
-              <SimpleSelect
-                value={txType}
-                setValue={setTxType}
-                optionsList={txTypeOptions}
-                className="dropdown--filters"
-              />
-            </div>
+            <SimpleSelect value={type} setValue={setType} optionsList={typeOptions} />
             <br />
-            <div>
-              <span className="input-title">Direction</span>
-              <SimpleSelect
-                value={initiated}
-                setValue={setInitiated}
-                optionsList={initiatedOptions}
-                className="dropdown--filters"
-              />
-            </div>
+            <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} />
             <br />
-            <div>
-              <span className="input-title">Failures</span>
-              <SimpleSelect
-                value={excludeFailures}
-                setValue={setExcludeFailures}
-                optionsList={failuresOptions}
-                className="dropdown--filters"
-              />
-            </div>
+            <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
             <br />
-            <div>
-              <span className="input-title">Counterparty</span>
-              <AddressInput
-                setValue={setCounterparty}
-                rawData={counterparty ? { counterparty } : {}}
-                type="counterparty"
-                hideButton={true}
-              />
-            </div>
+            <AddressInput placeholder="Counterparty" setValue={setCounterparty} hideButton={true} />
             <br />
             <div>
               <span className="input-title">From</span>
-              <DatePicker
-                selected={fromDate}
-                onChange={(date) => setFromDate(date)}
-                selectsStart
-                showTimeInput
-                timeInputLabel={t('table.time')}
-                dateFormat="yyyy/MM/dd HH:mm:ss"
-                className="dateAndTimeRange"
-                maxDate={new Date()}
-                showMonthDropdown
-                showYearDropdown
-              />
+              <div className="date-picker-container">
+                <DatePicker
+                  selected={fromDate}
+                  onChange={(date) => setFromDate(date)}
+                  selectsStart
+                  showTimeInput
+                  timeInputLabel={t('table.time')}
+                  dateFormat="yyyy/MM/dd HH:mm:ss"
+                  className="dateAndTimeRange"
+                  maxDate={new Date()}
+                  showMonthDropdown
+                  showYearDropdown
+                />
+                {fromDate && (
+                  <button className="date-picker-clear" onClick={clearFromDate}>
+                    <IoMdClose />
+                  </button>
+                )}
+              </div>
             </div>
             <div>
               <span className="input-title">To</span>
-              <DatePicker
-                selected={toDate}
-                onChange={(date) => setToDate(date)}
-                selectsEnd
-                showTimeInput
-                timeInputLabel={t('table.time')}
-                dateFormat="yyyy/MM/dd HH:mm:ss"
-                className="dateAndTimeRange"
-                maxDate={new Date()}
-                showMonthDropdown
-                showYearDropdown
-              />
+              <div className="date-picker-container">
+                <DatePicker
+                  selected={toDate}
+                  onChange={(date) => setToDate(date)}
+                  selectsEnd
+                  showTimeInput
+                  timeInputLabel={t('table.time')}
+                  dateFormat="yyyy/MM/dd HH:mm:ss"
+                  className="dateAndTimeRange"
+                  maxDate={new Date()}
+                  showMonthDropdown
+                  showYearDropdown
+                />
+                {toDate && (
+                  <button className="date-picker-clear" onClick={clearToDate}>
+                    <IoMdClose />
+                  </button>
+                )}
+              </div>
             </div>
+            <CheckBox checked={filterSpam === 'true' || filterSpam === true} setChecked={setFilterSpam}>
+              Exclude spam transactions
+            </CheckBox>
+            <br />
             <div className="center">
-              <button className="button-action" onClick={applyFilters} style={{ marginTop: '10px' }}>
+              <button className="button-action" onClick={applyFilters}>
                 Search
               </button>
             </div>
@@ -376,7 +459,6 @@ export default function AccountTransactions({
         </>
         {/* Main content */}
         <>
-          {errorMessage && <div className="center orange bold">{errorMessage}</div>}
           <InfiniteScrolling
             dataLength={transactions.length}
             loadMore={() => {
@@ -385,56 +467,58 @@ export default function AccountTransactions({
               }
             }}
             hasMore={marker}
-            errorMessage={errorMessage}
+            errorMessage={errorT(t, errorMessage)}
             subscriptionExpired={false}
             sessionToken={true}
           >
-            <table className={width > 600 ? 'table-large no-hover' : 'table-mobile'}>
+            <table className={isMobile ? 'table-mobile wide' : 'table-large expand no-hover'}>
               <tbody>
                 {loading ? (
                   <tr className="center">
                     <td colSpan="100">
+                      <br />
+                      <br />
                       <span className="waiting"></span>
                       <br />
-                      {t('general.loading')}
+                      <br />
                     </td>
                   </tr>
                 ) : (
-                  transactions?.map((tx, index) => {
+                  transactions.map((tx, index) => {
                     let TransactionRowComponent = null
-                    const txType = tx?.tx?.TransactionType
+                    const type = tx?.tx?.TransactionType
 
-                    if (txType === 'AccountDelete') {
+                    if (type === 'AccountDelete') {
                       TransactionRowComponent = TransactionRowAccountDelete
-                    } else if (txType === 'AccountSet') {
+                    } else if (type === 'AccountSet') {
                       TransactionRowComponent = TransactionRowAccountSet
-                    } else if (txType?.includes('AMM')) {
+                    } else if (type?.includes('AMM')) {
                       TransactionRowComponent = TransactionRowAMM
-                    } else if (txType?.includes('Check')) {
+                    } else if (type?.includes('Check')) {
                       TransactionRowComponent = TransactionRowCheck
-                    } else if (txType?.includes('Escrow')) {
+                    } else if (type?.includes('Escrow')) {
                       TransactionRowComponent = TransactionRowEscrow
-                    } else if (txType === 'Import') {
+                    } else if (type === 'Import') {
                       TransactionRowComponent = TransactionRowImport
-                    } else if (txType?.includes('NFToken')) {
+                    } else if (type?.includes('NFToken')) {
                       TransactionRowComponent = TransactionRowNFToken
-                    } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
+                    } else if (type === 'OfferCreate' || type === 'OfferCancel') {
                       TransactionRowComponent = TransactionRowOffer
-                    } else if (txType === 'Payment') {
+                    } else if (type === 'Payment') {
                       TransactionRowComponent = TransactionRowPayment
-                    } else if (txType === 'SetRegularKey') {
+                    } else if (type === 'SetRegularKey') {
                       TransactionRowComponent = TransactionRowSetRegularKey
-                    } else if (txType === 'DelegateSet') {
+                    } else if (type === 'DelegateSet') {
                       TransactionRowComponent = TransactionRowDelegateSet
-                    } else if (txType === 'TrustSet') {
+                    } else if (type === 'TrustSet') {
                       TransactionRowComponent = TransactionRowTrustSet
-                    } else if (txType?.includes('DID')) {
+                    } else if (type?.includes('DID')) {
                       TransactionRowComponent = TransactionRowDID
-                    } else if (txType?.includes('URIToken')) {
+                    } else if (type?.includes('URIToken')) {
                       TransactionRowComponent = TransactionRowURIToken
-                    } else if (txType === 'Remit') {
+                    } else if (type === 'Remit') {
                       TransactionRowComponent = TransactionRowRemit
-                    } else if (txType === 'EnableAmendment') {
+                    } else if (type === 'EnableAmendment') {
                       TransactionRowComponent = TransactionRowEnableAmendment
                     } else {
                       TransactionRowComponent = TransactionRowDetails
@@ -442,9 +526,9 @@ export default function AccountTransactions({
 
                     return (
                       <TransactionRowComponent
-                        key={tx.hash || index}
-                        tx={tx}
-                        address={userData?.address}
+                        key={index}
+                        data={tx}
+                        address={address}
                         index={index}
                         selectedCurrency={selectedCurrency}
                       />

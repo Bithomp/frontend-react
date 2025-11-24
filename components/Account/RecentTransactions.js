@@ -1,10 +1,10 @@
-import React from 'react'
 import { useState, useEffect } from 'react'
-import { fullDateAndTime, timeOrDate, amountFormat, nftIdLink, shortAddress, nftOfferLink } from '../../utils/format'
+import { fullDateAndTime, timeOrDate, amountFormat, nftIdLink, shortAddress } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import axios from 'axios'
 import { addressBalanceChanges } from '../../utils/transaction'
-import { isNativeCurrency, xls14NftValue } from '../../utils'
+import { xls14NftValue } from '../../utils'
+import Link from 'next/link'
 
 export default function RecentTransactions({ userData, ledgerTimestamp }) {
   const [transactions, setTransactions] = useState([])
@@ -19,16 +19,12 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     ''
   )
 
-  const showAllOfferLinks = (changes) => {
-    const indexes = []
+  const showOfferLink = (changes, title) => {
     for (let i = 0; i < changes?.length; i++) {
       for (let j = 0; j < changes[i]?.nftokenOfferChanges?.length; j++) {
-        indexes.push(
-          <React.Fragment key={i + '-' + j}>{nftOfferLink(changes[i].nftokenOfferChanges[j].index)}</React.Fragment>
-        )
+        return <Link href={'/nft-offer/' + changes[i].nftokenOfferChanges[j].index}>{title}</Link>
       }
     }
-    return indexes
   }
 
   // Tooltip function for AccountSet fields
@@ -40,46 +36,6 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       </span>
     </span>
   )
-
-  // Function to detect spam transactions (incoming payments for 0.000001/0.0001 XRP)
-  const skipTx = (txdata) => {
-    //check if no balance, nft changes and if addres is not a sender/receiver - skip
-    const balanceChanges = addressBalanceChanges(txdata, address)
-    const { specification, outcome } = txdata
-    const senderOrReceiver =
-      specification?.destination?.address === address || specification?.source?.address === address
-
-    if (!balanceChanges?.length && !senderOrReceiver) {
-      // if not sender and not receiver and balance is not effected..
-      //shall we check for burned nfts, so for nft changes?
-      return true
-    }
-
-    // discard payments with 1 drop (spamm)
-
-    if (txdata.tx?.TransactionType !== 'Payment') {
-      return false
-    }
-
-    // Check if it's an incoming payment to the user
-    const isIncoming = specification?.destination?.address === address
-
-    if (!isIncoming) {
-      return false
-    }
-
-    const deliveredAmount = outcome?.deliveredAmount
-
-    if (
-      deliveredAmount &&
-      isNativeCurrency(deliveredAmount) &&
-      (deliveredAmount === '1' || deliveredAmount.value === '0.000001' || deliveredAmount.value === '0.0001')
-    ) {
-      return true
-    }
-
-    return false
-  }
 
   // Function to get transaction status
   const getTransactionStatus = (txdata) => {
@@ -117,14 +73,9 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       const nftoken_id = txdata.meta?.nftoken_id
       if (nftoken_id) {
         return (
-          <span className="tooltip">
-            <span className="inline-flex items-center gap-1">
-              <span className="text-purple-600">NFT</span>
-              {nftoken_id && <span className="bold">{nftIdLink(nftoken_id, 4)}</span>}
-            </span>
-            <span className="tooltiptext">
-              <span>NFT: {nftoken_id || 'N/A'}</span>
-            </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="text-purple-600">NFT</span>
+            {nftoken_id && <span className="bold">{nftIdLink(nftoken_id, 4)}</span>}
           </span>
         )
       }
@@ -135,14 +86,9 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       const nftoken_id = txdata.tx?.NFTokenID
       if (nftoken_id) {
         return (
-          <span className="tooltip">
-            <span className="inline-flex items-center gap-1">
-              <span className="text-red-600">NFT removed: </span>
-              <span className="bold">{nftIdLink(nftoken_id, 4)}</span>
-            </span>
-            <span className="tooltiptext">
-              <span>NFT removed: {nftoken_id || 'N/A'}</span>
-            </span>
+          <span className="inline-flex items-center gap-1">
+            <Link href={'/nft/' + nftoken_id}>NFT</Link>
+            <span className="text-red-600">burned</span>
           </span>
         )
       }
@@ -159,14 +105,9 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
           const nftId = addedNft.nftokenChanges.find((nftChange) => nftChange.status === 'added')?.nftokenID
           if (nftId) {
             return (
-              <span className="tooltip">
-                <span className="inline-flex items-center gap-1">
-                  <span className="text-green-600">NFT added: </span>
-                  <span className="bold">{nftIdLink(nftId, 4)}</span>
-                </span>
-                <span className="tooltiptext">
-                  <span>NFT added: {nftId || 'N/A'}</span>
-                </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="text-green-600">NFT added: </span>
+                <span className="bold">{nftIdLink(nftId, 4)}</span>
               </span>
             )
           }
@@ -179,13 +120,8 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       const specification = txdata.specification
       const direction = specification?.flags?.sell ? 'Sell' : 'Buy'
       return (
-        <span className="tooltip">
-          <span className="inline-flex items-center gap-1">
-            <span className="text-blue-600">{direction} order created</span>
-          </span>
-          <span className="tooltiptext">
-            <span>{direction} order created</span>
-          </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="text-blue-600">{direction} order created</span>
         </span>
       )
     }
@@ -198,13 +134,8 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
 
       const direction = sourceOrderbookChange?.direction ? 'Sell' : 'Buy'
       return (
-        <span className="tooltip">
-          <span className="inline-flex items-center gap-1">
-            <span className="text-orange-600">{direction} order cancelled</span>
-          </span>
-          <span className="tooltiptext">
-            <span>{direction} order cancelled</span>
-          </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="text-orange-600">{direction} order cancelled</span>
         </span>
       )
     }
@@ -214,16 +145,8 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       const specification = txdata.specification
       const direction = specification?.flags?.sellToken ? 'Sell' : 'Buy'
       return (
-        <span className="tooltip">
-          <span className="inline-flex items-center gap-1">
-            <span className="text-purple-600">{direction} offer created</span>
-            {showAllOfferLinks(txdata.outcome?.nftokenOfferChanges)}
-          </span>
-          <span className="tooltiptext">
-            <span>
-              NFT {direction} offer created: {showAllOfferLinks(txdata.outcome?.nftokenOfferChanges)}
-            </span>
-          </span>
+        <span className="inline-flex items-center gap-1 text-purple-600">
+          {showOfferLink(txdata.outcome?.nftokenOfferChanges, direction + ' offer')} created
         </span>
       )
     }
@@ -418,18 +341,13 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     setLoading(true)
     setError(null)
     const res = await axios(
-      `/v3/transactions/${address}?limit=15` +
+      `/v3/transactions/${address}?limit=15&relevantOnly=true&filterSpam=true` +
         (ledgerTimestamp ? '&toDate=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
       setError(error.message)
       setLoading(false)
     })
-    const allTransactions = Array.isArray(res?.data) ? res.data : res?.data?.transactions
-
-    // Filter out spam transactions and take the latest 5
-    const filteredTransactions = (allTransactions || []).filter((txdata) => !skipTx(txdata)).slice(0, 5)
-
-    setTransactions(filteredTransactions)
+    setTransactions((res?.data?.transactions || [])?.slice(0, 5))
     setLoading(false)
   }
 
@@ -442,13 +360,16 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
     return null
   }
 
+  const transactionCount = transactions.length < 5 ? transactions.length : 5
+  const title = `Last ${transactionCount} transactions`
+
   return (
     <>
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
             <th colSpan="100">
-              Last 5 transactions [<a href={'/explorer/' + address}>View all</a>]{historicalTitle}
+              {title} [<Link href={'/account/' + address + '/transactions'}>View all</Link>]{historicalTitle}
             </th>
           </tr>
         </thead>
@@ -497,7 +418,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       <div className="show-on-small-w800">
         <br />
         <center>
-          {'Last 5 Transactions'.toUpperCase()} [<a href={'/explorer/' + address}>View all</a>]{historicalTitle}
+          {title.toUpperCase()} [<Link href={'/account/' + address + '/transactions'}>View all</Link>]{historicalTitle}
         </center>
         <br />
         {loading && <span className="grey">Loading recent transactions...</span>}

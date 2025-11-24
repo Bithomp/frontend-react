@@ -16,7 +16,17 @@ import {
   usernameOrAddress
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl, isNftExplicit } from '../../utils/nft'
+import {
+  nftName,
+  mpUrl,
+  bestNftOffer,
+  nftUrl,
+  partnerMarketplaces,
+  ipfsUrl,
+  isNftExplicit,
+  collectionNameText,
+  isValidTaxon
+} from '../../utils/nft'
 import {
   shortHash,
   trWithFlags,
@@ -47,7 +57,7 @@ export async function getServerSideProps(context) {
       //const selectedCurrency = req.cookies['selectedCurrency']
       const res = await axiosServer({
         method: 'get',
-        url: 'v2/nft/' + nftId + '?uri=true&metadata=true', //&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true&convertCurrencies=' +
+        url: 'v2/nft/' + nftId + '?uri=true&metadata=true&collectionDetails=true', //&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true&convertCurrencies=' +
         //selectedCurrency?.toLowerCase(),
         headers: passHeaders(req)
       })
@@ -134,7 +144,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     const response = await axios(
       '/v2/nft/' +
         id +
-        '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true' +
+        '?uri=true&metadata=true&collectionDetails=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true' +
         noCache +
         '&convertCurrencies=' +
         selectedCurrency?.toLowerCase() +
@@ -989,7 +999,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   }
 
   const updateUriButton = () => {
-    if (!id || !data.flags?.mutable || data.type === 'xls35') return '' //if it is not mutable
+    if (!id || !data.flags?.mutable || data.type === 'xls35' || data.deletedAt) return '' //if it is not mutable or deleted
 
     // if not signed, or signed but not an issuer - do not show the button
     if (!(data?.issuer && account?.address && account.address === data.issuer)) return ''
@@ -1026,6 +1036,8 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     if (!id || data.deletedAt) return '' //if it is already burned do not offer to burn
 
     if (isNftExplicit(data)) return '' //if it is explicit, do not offer to set as avatar
+
+    if (!imageUrl) return '' //if there is no image, do not offer to set as avatar
 
     //if devnet, or signed, but not an owner or issuer - do not show set as avatar button
     if (devNet || (account?.address && account.address !== data.owner && account.address !== data.issuer)) return ''
@@ -1233,7 +1245,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                 {nftName(data) && (
                                   <tr>
                                     <td>{t('table.name')}</td>
-                                    <td>{nftName(data)}</td>
+                                    <td className="bold">{nftName(data)}</td>
                                   </tr>
                                 )}
                                 {nftDescription(data.metadata) && (
@@ -1241,23 +1253,6 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                     <td>{t('table.description')}</td>
                                     <td>{nftDescription(data.metadata)}</td>
                                   </tr>
-                                )}
-                                {!!data.metadata.collection && (
-                                  <>
-                                    {!!data.metadata.collection.name && (
-                                      <tr>
-                                        <td>{t('table.collection')}</td>
-                                        <td>{stripText(data.metadata.collection.name)}</td>
-                                      </tr>
-                                    )}
-                                    {!!data.metadata.collection.description &&
-                                      data.metadata.collection.description !== data.metadata.description && (
-                                        <tr>
-                                          <td>{t('table.description')}</td>
-                                          <td>{stripText(data.metadata.collection.description)}</td>
-                                        </tr>
-                                      )}
-                                  </>
                                 )}
                                 {externalUrl(data.metadata) && (
                                   <tr>
@@ -1280,6 +1275,81 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                           <div className={'slide ' + (showRawMetadata ? 'opened' : 'closed')}>
                             {codeHighlight(data.metadata)}
                           </div>
+                          {data.collectionDetails && (
+                            <table className="table-details">
+                              <thead>
+                                <tr>
+                                  <th colSpan="100">{t('table.collection')}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>{t('table.name')}</td>
+                                  <td>
+                                    <span className="bold">{collectionNameText(data.collectionDetails)}</span>
+                                    {data.collection && (
+                                      <>
+                                        {' '}
+                                        (
+                                        <Link href={'/nft-collection/' + data.collection} className="bold">
+                                          View collection
+                                        </Link>
+                                        )
+                                      </>
+                                    )}
+                                  </td>
+                                </tr>
+                                {data.collectionDetails?.description && (
+                                  <tr>
+                                    <td>{t('table.description')}</td>
+                                    <td>{stripText(data.collectionDetails.description)}</td>
+                                  </tr>
+                                )}
+                                {data.collectionDetails?.family &&
+                                  data.collectionDetails?.family !== collectionNameText(data.collectionDetails) && (
+                                    <tr>
+                                      <td>Family</td>
+                                      <td>{stripText(data.collectionDetails?.family)}</td>
+                                    </tr>
+                                  )}
+
+                                {data.type === 'xls20' && isValidTaxon(data?.collectionDetails?.taxon) && (
+                                  <tr>
+                                    <td>View more</td>
+                                    <td>
+                                      <Link
+                                        href={'/nft-distribution?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}
+                                      >
+                                        {t('holders', { ns: 'nft' })}
+                                      </Link>
+                                      ,{' '}
+                                      <Link
+                                        href={'/nft-explorer?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}
+                                      >
+                                        {t('table.all-nfts')}
+                                      </Link>
+                                      ,{' '}
+                                      <Link href={'/nft-sales?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}>
+                                        {t('table.sold_few')}
+                                      </Link>
+                                      ,{' '}
+                                      <Link
+                                        href={
+                                          '/nft-explorer?issuer=' +
+                                          data.issuer +
+                                          '&taxon=' +
+                                          data.nftokenTaxon +
+                                          '&list=onSale&&saleDestination=publicAndKnownBrokers'
+                                        }
+                                      >
+                                        {t('table.listed')}
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </table>
+                          )}
 
                           <table className="table-details">
                             <thead>
@@ -1479,10 +1549,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                             data.issuer +
                                             '&taxon=' +
                                             data.nftokenTaxon +
-                                            '&list=onSale'
+                                            '&list=onSale&saleDestination=publicAndKnownBrokers'
                                           }
                                         >
-                                          {t('table.on-sale')}
+                                          {t('table.listed')}
                                         </Link>
                                       </td>
                                     </tr>
@@ -1499,7 +1569,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                         <>
                                           ,{' '}
                                           <Link href={'/nft-explorer?issuer=' + data.issuer + '&list=onSale'}>
-                                            {t('table.on-sale')}
+                                            {t('table.listed')}
                                           </Link>
                                           ,{' '}
                                           <Link href={'/nft-volumes/' + data.issuer + '?period=year'}>
@@ -1517,8 +1587,14 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                         {data.type === 'xls20' && (
                                           <>
                                             ,{' '}
-                                            <Link href={'/nft-explorer?owner=' + data.owner + '&list=onSale'}>
-                                              {t('table.on-sale')}
+                                            <Link
+                                              href={
+                                                '/nft-explorer?owner=' +
+                                                data.owner +
+                                                '&list=onSale&saleDestination=publicAndKnownBrokers'
+                                              }
+                                            >
+                                              {t('table.listed')}
                                             </Link>
                                           </>
                                         )}

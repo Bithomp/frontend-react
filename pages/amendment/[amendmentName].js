@@ -3,7 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { shortHash, fullDateAndTime } from '../../utils/format'
+import { shortHash, fullDateAndTime, timeFromNow } from '../../utils/format'
 import { avatarServer, xahauNetwork, useWidth, countriesTranslated, explorerName } from '../../utils'
 import Image from 'next/image'
 import SEO from '../../components/SEO'
@@ -12,6 +12,7 @@ import ReactCountryFlag from 'react-country-flag'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import VerifiedIcon from '../../public/images/verified.svg'
 import NetworkPagesTab from '../../components/Tabs/NetworkPagesTabs'
+import { LinkTx } from '../../utils/links'
 
 export async function getServerSideProps(context) {
   const { params, locale, req } = context
@@ -371,9 +372,17 @@ export default function AmendmentSummary({
                           <span className="bold">{consensus}%</span> / 80%
                         </>
                       ) : (
-                        <span className={status === 'ENABLED' && !obsolete ? 'green bold' : 'red bold'}>
-                          {obsolete ? 'Obsolete' : status}
-                        </span>
+                        <>
+                          {amendmentData?.enabledAt ? (
+                            <span className="green bold">
+                              Enabled {timeFromNow(amendmentData.enabledAt, i18n)} (
+                              {fullDateAndTime(amendmentData.enabledAt)}){' '}
+                              <LinkTx tx={amendmentData?.txHash} icon={true} />
+                            </span>
+                          ) : (
+                            <span className="red bold">Obsolete</span>
+                          )}
+                        </>
                       )}
                     </td>
                   </tr>
@@ -456,9 +465,18 @@ export default function AmendmentSummary({
                       {showVotingData ? (
                         <span className="bold">{consensus}% / 80%</span>
                       ) : (
-                        <span className={status === 'ENABLED' ? 'green bold' : 'red bold'}>
-                          {obsolete ? 'Obsolete' : status}
-                        </span>
+                        <>
+                          {amendmentData?.enabledAt ? (
+                            <span className="green bold">
+                              Enabled {timeFromNow(amendmentData.enabledAt, i18n)}
+                              <br />
+                              {fullDateAndTime(amendmentData.enabledAt)}{' '}
+                              <LinkTx tx={amendmentData?.txHash} icon={true} />
+                            </span>
+                          ) : (
+                            <span className="red bold">Obsolete</span>
+                          )}
+                        </>
                       )}
                     </td>
                   </tr>
@@ -490,7 +508,7 @@ export default function AmendmentSummary({
                       <h4 className="center">
                         Voted <span className="red">No</span> (or haven't voted yet)
                       </h4>
-                      <table className="table-large" style={{ minWidth: '100%' }}>
+                      <table className="table-large no-hover" style={{ minWidth: '100%' }}>
                         <thead>
                           <tr>
                             <th className="center">Index</th>

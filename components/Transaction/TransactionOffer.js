@@ -1,7 +1,6 @@
 import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
 import {
-  addressUsernameOrServiceLink,
   AddressWithIconFilled,
   amountFormat,
   capitalize,
@@ -59,19 +58,13 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
       {takerGets && (
         <tr>
           <TData tooltip="The amount and type of currency being sold.">Taker Gets</TData>
-          <TData className="bold">
-            {amountFormat(takerGets, { precise: true })}
-            {takerGets?.issuer && <>({addressUsernameOrServiceLink(takerGets, 'issuer', { short: true })})</>}
-          </TData>
+          <TData>{amountFormat(takerGets, { precise: true, withIssuer: true, bold: true })}</TData>
         </tr>
       )}
       {takerPays && (
         <tr>
           <TData tooltip="The amount and type of currency being bought.">Taker Pays</TData>
-          <TData className="bold">
-            {amountFormat(takerPays, { precise: true })}
-            {takerPays?.issuer && <>({addressUsernameOrServiceLink(takerPays, 'issuer', { short: true })})</>}
-          </TData>
+          <TData>{amountFormat(takerPays, { precise: true, withIssuer: true, bold: true })}</TData>
         </tr>
       )}
 
@@ -128,11 +121,13 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
             <TData>
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
-                  <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                    {Number(change?.value) > 0 && '+'}
-                    {amountFormat(change, { precise: 'nice' })}
-                  </span>
-                  {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  {amountFormat(change, {
+                    precise: 'nice',
+                    withIssuer: true,
+                    bold: true,
+                    color: 'direction',
+                    showPlus: true
+                  })}
                   {nativeCurrencyToFiat({
                     amount: change,
                     selectedCurrency,

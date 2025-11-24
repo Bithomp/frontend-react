@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, xahauNetwork, nativeCurrency, server, avatarServer } from '../../../utils'
+import { devNet, xahauNetwork, nativeCurrency, avatarServer } from '../../../utils'
 
 import Image from 'next/image'
 
@@ -26,11 +26,11 @@ export default function MobileMenu({
   setSignRequest,
   proName,
   signOutPro,
-  xamanUserToken,
   signOut,
   isCopied,
   copyToClipboard,
-  account
+  account,
+  countryCode
 }) {
   const { t } = useTranslation('common')
 
@@ -61,9 +61,16 @@ export default function MobileMenu({
               <Link href={'/account/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.view')}
               </Link>
-              <a href={server + '/explorer/' + address} className="mobile-menu-item">
+              <Link
+                href={'/account/' + address + '/transactions'}
+                className="mobile-menu-item"
+                onClick={mobileMenuToggle}
+              >
                 {t('signin.actions.my-transactions')}
-              </a>
+              </Link>
+              <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                Send payment
+              </Link>
               <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 My Account Settings
               </Link>
@@ -73,27 +80,11 @@ export default function MobileMenu({
               <Link href={'/nft-offers/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.my-nft-offers')}
               </Link>
-
               {!username && (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                   {t('menu.usernames')}
                 </Link>
               )}
-
-              {/* Hide Send XRP for XAHAU while they are not ready yet */}
-              {!xahauNetwork && (
-                <>
-                  {xamanUserToken && (
-                    <a
-                      href={server + '/explorer/' + address + '?hw=xumm&xummtoken=' + xamanUserToken + '&action=send'}
-                      className="mobile-menu-item"
-                    >
-                      {t('signin.actions.send')}
-                    </a>
-                  )}
-                </>
-              )}
-
               <span onClick={signOut} className="mobile-menu-item link">
                 {t('signin.signout')}
                 <span style={{ display: 'inline-block', width: 10 }}></span>
@@ -167,8 +158,8 @@ export default function MobileMenu({
           <Link href="/services/escrow" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Create Escrow
           </Link>
-          {!xahauNetwork && !devNet && (
-            <Link href="/services/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {!xahauNetwork && (
+            <Link href="/services/amm/deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
               AMM Services
             </Link>
           )}
@@ -206,7 +197,33 @@ export default function MobileMenu({
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            TOP {t('menu.tokens')}
+            {t('menu.tokens')}
+          </Link>
+          {!xahauNetwork && (
+            <Link href="/mpts" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              Multi-Purpose {t('menu.tokens')}
+            </Link>
+          )}
+          <Link
+            href={
+              '/distribution' +
+              (xahauNetwork
+                ? '?currencyIssuer=rEvernodee8dJLaFsujS6q1EiXvZYmHXr8&currency=EVR'
+                : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
+            }
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            TOP Holders
+          </Link>
+          <Link href="/services/trustline" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Set Trust (Trustline)
+          </Link>
+          <Link href="/learn/issue-a-token" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            How to Issue a Token
+          </Link>
+          <Link href="/learn/guide-for-token-issuers" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Guide for Token Issuers
           </Link>
         </div>
 
@@ -220,20 +237,23 @@ export default function MobileMenu({
               <Link href="/amms" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('menu.amm.pools')}
               </Link>
-              <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('menu.amm.explorer')}
+              <Link href="/learn/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                What is AMM?
               </Link>
-              <Link href="/services/amm?tab=deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Deposit
               </Link>
-              <Link href="/services/amm?tab=withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/withdraw" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Withdraw
               </Link>
-              <Link href="/services/amm?tab=vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/vote" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Vote
               </Link>
-              <Link href="/services/amm?tab=create" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/services/amm/create" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 AMM Create
+              </Link>
+              <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t('menu.amm.explorer')}
               </Link>
             </div>
           </>
@@ -330,7 +350,7 @@ export default function MobileMenu({
             {t('menu.network.activations')}
           </Link>
           <Link href="/distribution" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t('menu.network.distribution', { nativeCurrency })}
+            {t('menu.network.distribution', { currency: nativeCurrency })}
           </Link>
           <Link href="/last-ledger-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.network.last-ledger-information')}
@@ -372,6 +392,9 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           <Link href="/learn/the-bithomp-api" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.developers.api')}
+          </Link>
+          <Link href="/learn/image-services" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Token/NFT/Address Images
           </Link>
           {devNet && (
             <>
@@ -474,17 +497,20 @@ export default function MobileMenu({
           {t('menu.sponsored.title')}
         </div>
         <div className="mobile-menu__submenu">
-          <a href="/go/fm-buy" target="_blank" rel="noreferrer" className="mobile-menu-item">
+          <a href="https://bithomp.com/go/fm-buy" target="_blank" rel="noreferrer" className="mobile-menu-item">
             {t('menu.sponsored.buy')}
           </a>
-          <a href="/go/fm-earn" target="_blank" rel="noreferrer" className="mobile-menu-item">
+          <a href="https://bithomp.com/go/fm-earn" target="_blank" rel="noreferrer" className="mobile-menu-item">
             {t('menu.sponsored.earn')}
           </a>
-          {/*
-          <a href="/go/fm-play" target="_blank" rel="noreferrer" className="mobile-menu-item">
-            {t('menu.sponsored.play')}
+          <a
+            href={countryCode === 'US' ? 'https://bithomp.com/go/fm-play-us' : 'https://bithomp.com/go/fm-play'}
+            target="_blank"
+            rel="noreferrer"
+            className="mobile-menu-item"
+          >
+            {countryCode === 'US' ? 'Join Drake on Stake' : 'Join Stake'}
           </a>
-          */}
         </div>
       </div>
     </div>

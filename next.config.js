@@ -20,13 +20,9 @@ module.exports = withBundleAnalyzer({
     return config
   },
   images: {
+    unoptimized: process.env.NEXT_PUBLIC_NETWORK_NAME !== 'mainnet', // do not generate files in .next/cache/images for testnets and xahau
     deviceSizes: [640, 750, 1080, 1200, 1920],
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'cdn.xrplexplorer.com',
-        port: ''
-      },
       {
         protocol: 'https',
         hostname: 'cdn.xahauexplorer.com',
@@ -106,6 +102,11 @@ module.exports = withBundleAnalyzer({
         source: '/xrpl-article',
         destination: '/learn/xrpl-article',
         permanent: true
+      },
+      {
+        source: '/services/amm',
+        destination: '/services/amm/deposit',
+        permanent: true
       }
     ]
   },
@@ -122,6 +123,14 @@ module.exports = withBundleAnalyzer({
       {
         source: '/tx',
         destination: '/transaction'
+      },
+      {
+        source: '/address/:id/dex',
+        destination: '/account/:id/dex'
+      },
+      {
+        source: '/address/:id/transactions',
+        destination: '/account/:id/transactions'
       },
       {
         source: '/address/:id',

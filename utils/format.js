@@ -18,8 +18,11 @@ import {
   stripText,
   xls14NftValue,
   tokenImageSrc,
-  isNativeCurrency
+  mptokenImageSrc,
+  shortName
 } from '.'
+import { scaleAmount } from './calc'
+import { LinkAmm, LinkToken } from './links'
 
 dayjs.extend(durationPlugin)
 dayjs.extend(relativeTimePlugin)
@@ -35,28 +38,62 @@ export const NiceNativeBalance = ({ amount }) => {
   )
 }
 
-export const CurrencyWithIcon = ({ token }) => {
-  if (!token) return ''
-  const { lp_token, currencyDetails } = token
-  let imageUrl = tokenImageSrc(token)
-
+const TokenImage = ({ token }) => {
   return (
-    <>
-      <Image src={imageUrl} alt="avatar" height={20} width={20} style={{ marginRight: '5px', marginBottom: '-5px' }} />
-      {lp_token ? currencyDetails?.currency : niceCurrency(token.currency)}
-    </>
+    <div
+      style={{
+        height: 16,
+        width: 16,
+        display: 'inline-block',
+        overflow: 'hidden',
+        borderRadius: '50%',
+        verticalAlign: 'text-bottom',
+        marginRight: 3,
+        backgroundColor: '#fff',
+        boxShadow: '0 0 0 1px #fff'
+      }}
+    >
+      <img
+        src={tokenImageSrc(token)}
+        alt="token"
+        height={16}
+        width={16}
+        style={{
+          objectFit: 'cover',
+          transform: !token?.issuerDetails?.service ? 'scale(1.25)' : 'scale(1)'
+        }}
+        onError={(e) => {
+          e.target.onerror = null
+          e.target.src = placeholder
+        }}
+      />
+    </div>
   )
 }
 
-export const AddressWithIcon = ({ children, address, currency }) => {
-  let imageUrl = avatarServer + address
+export const CurrencyWithIcon = ({ token }) => {
+  if (!token) return ''
+  const { currencyDetails, issuer, mptId } = token
+  let imageUrl = avatarServer + issuer
 
-  if (currency) {
-    imageUrl = tokenImageSrc({ issuer: address, currency })
+  if (mptId) {
+    imageUrl = mptokenImageSrc(mptId)
+  } else {
+    imageUrl = tokenImageSrc(token)
   }
 
-  if (!address) {
+  if (!issuer) {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
+  }
+
+  let doubleIcon = false
+  let assetImageUrl, asset2ImageUrl
+
+  // LP token - show 2 icons
+  if (currencyDetails?.asset && currencyDetails?.asset2) {
+    doubleIcon = true
+    assetImageUrl = tokenImageSrc(currencyDetails.asset)
+    asset2ImageUrl = tokenImageSrc(currencyDetails.asset2)
   }
 
   return (
@@ -64,7 +101,191 @@ export const AddressWithIcon = ({ children, address, currency }) => {
       <tbody>
         <tr className="no-border">
           <td style={{ padding: 0, width: 35, height: 35 }}>
-            <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+            {doubleIcon ? (
+              <div style={{ position: 'relative', width: 35, height: 35, verticalAlign: 'middle' }}>
+                {/* back coin */}
+                <Image
+                  alt="asset"
+                  src={assetImageUrl}
+                  width={22}
+                  height={22}
+                  style={{
+                    position: 'absolute',
+                    top: 1,
+                    left: 1,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
+                  }}
+                />
+                {/* front coin */}
+                <Image
+                  alt="asset 2"
+                  src={asset2ImageUrl}
+                  width={22}
+                  height={22}
+                  style={{
+                    position: 'absolute',
+                    bottom: 1,
+                    left: 13, // slight shift right to overlap
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    zIndex: 2,
+                    backgroundColor: '#fff',
+                    boxShadow: '0 0 0 1px #fff'
+                  }}
+                />
+              </div>
+            ) : (
+              <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+            )}
+          </td>
+          <td style={{ padding: '0 0 0 5px' }} className="bold">
+            <LinkToken token={token} />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}
+
+export const CurrencyWithIconInline = ({ token, copy, link }) => {
+  if (!token) return ''
+  const { lp_token, currencyDetails } = token
+  const currencyText = lp_token ? currencyDetails?.currency : niceCurrency(token.currency)
+
+  return (
+    <>
+      <TokenImage token={token} />
+      {link && !lp_token ? <LinkToken token={token} /> : currencyText}
+      {copy && (
+        <>
+          {' '}
+          <CopyButton text={token.currency} copyText="Copy code" />
+        </>
+      )}
+    </>
+  )
+}
+
+export const AddressWithIconInline = ({ data, name = 'address', options }) => {
+  if (!data || !data[name]) return ''
+  const address = data[name]
+  const size = 16
+  const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+     <rect width="100%" height="100%" fill="#ffffff"/>
+     <text x="50%" y="50%" font-family="sans-serif" font-size="8" text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
+      ;(
+     </text>
+   </svg>`
+  )}`
+
+  return (
+    <span className="no-brake">
+      <Link href={'/account/' + address}>
+        <div
+          style={{
+            height: size,
+            width: size,
+            verticalAlign: 'text-bottom',
+            marginRight: 3,
+            borderRadius: '50%',
+            overflow: 'hidden',
+            display: 'inline-block'
+          }}
+        >
+          <img
+            src={avatarServer + address || placeholder}
+            alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
+            height={size}
+            width={size}
+            style={{
+              objectFit: 'cover',
+              transform: !data?.[name?.toLowerCase() + 'Details']?.service ? 'scale(1.25)' : 'scale(1)'
+            }}
+            onError={(e) => {
+              e.target.onerror = null
+              e.target.src = placeholder
+            }}
+          />
+        </div>
+      </Link>
+      {addressUsernameOrServiceLink(data, name, options)}
+    </span>
+  )
+}
+
+export const AddressWithIcon = ({ children, address, currency, options }) => {
+  let imageUrl = avatarServer + address
+
+  if (currency) {
+    if (options?.mptId) {
+      imageUrl = mptokenImageSrc(options.mptId)
+    } else {
+      imageUrl = tokenImageSrc({ issuer: address, currency })
+    }
+  }
+
+  if (!address) {
+    imageUrl = nativeCurrenciesImages[nativeCurrency]
+  }
+
+  let doubleIcon = false
+  let assetImageUrl, asset2ImageUrl
+
+  // LP token - show 2 icons
+  if (options?.currencyDetails?.asset && options?.currencyDetails?.asset2) {
+    doubleIcon = true
+    assetImageUrl = tokenImageSrc(options.currencyDetails.asset)
+    asset2ImageUrl = tokenImageSrc(options.currencyDetails.asset2)
+  }
+
+  return (
+    <table style={{ minWidth: 126 }}>
+      <tbody>
+        <tr className="no-border">
+          <td style={{ padding: 0, width: 35, height: 35 }}>
+            {doubleIcon ? (
+              <div style={{ position: 'relative', width: 35, height: 35, verticalAlign: 'middle' }}>
+                {/* back coin */}
+                <Image
+                  alt="asset"
+                  src={assetImageUrl}
+                  width={22}
+                  height={22}
+                  style={{
+                    position: 'absolute',
+                    top: 1,
+                    left: 1,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
+                  }}
+                />
+                {/* front coin */}
+                <Image
+                  alt="asset 2"
+                  src={asset2ImageUrl}
+                  width={22}
+                  height={22}
+                  style={{
+                    position: 'absolute',
+                    bottom: 1,
+                    left: 13, // slight shift right to overlap
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    zIndex: 2,
+                    backgroundColor: '#fff',
+                    boxShadow: '0 0 0 1px #fff'
+                  }}
+                />
+              </div>
+            ) : (
+              <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+            )}
           </td>
           <td style={{ padding: '0 0 0 5px' }}>{children}</td>
         </tr>
@@ -73,73 +294,85 @@ export const AddressWithIcon = ({ children, address, currency }) => {
   )
 }
 
-export const AddressWithIconFilled = ({ data, name, copyButton, options }) => {
+export const AddressWithIconFilled = ({ data, name, copyButton, options, currency }) => {
   if (!data) return ''
   if (!name) {
     name = 'address'
   }
+
+  const fullUrl = currency && !options?.mptId ? '/token/' + data[name] + '/' + currency : null
+  const link = userOrServiceLink(data, name, { fullUrl })
+
+  const ammId = options?.currencyDetails?.ammID
+  const lpToken = options?.currencyDetails?.type === 'lp_token'
+
+  const textCurrency = options?.mptId
+    ? currency
+    : lpToken && options?.currencyDetails?.currency
+    ? options.currencyDetails.currency
+    : niceCurrency(currency)
+
   return (
-    <AddressWithIcon address={data[name]}>
-      {userOrServiceLink(data, name) && (
+    <AddressWithIcon address={data[name]} currency={currency} options={options}>
+      {currency && (
         <>
-          {userOrServiceLink(data, name)}
-          <br />
+          <span className="bold">{textCurrency}</span>{' '}
         </>
       )}
-      {addressLink(data[name], options)} {copyButton && <CopyButton text={data[name]} />}
+      {options?.currencyName &&
+        options.currencyName.length > 10 &&
+        currency.length > 10 &&
+        options.currencyName !== currency && <br />}
+      {options?.currencyName && options.currencyName !== currency && (
+        <span>{shortName(options.currencyName, { maxLength: 10 })}</span>
+      )}{' '}
+      {link}
+      {(currency || options?.currencyName || link) && <br />}
+      {ammId ? (
+        <>
+          AMM pool: <LinkAmm ammId={ammId} hash={!options?.short} icon={options?.short} />
+        </>
+      ) : (
+        <>{options?.flags ? showFlags(options.flags) : addressLink(data[name], { ...options, fullUrl })}</>
+      )}{' '}
+      {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
   )
 }
 
-export const amountFormatWithIcon = ({ amount }) => {
-  if (!amount) return ''
-  const { value, currency, valuePrefix } = amountParced(amount)
-
-  let textCurrency = currency
-
-  if (!isNaN(textCurrency?.trim())) {
-    textCurrency = textCurrency?.trim()
-    textCurrency = '"' + textCurrency + '"'
-  }
-
-  let imageUrl = ''
-  if (isNativeCurrency(amount)) {
-    imageUrl = nativeCurrenciesImages[nativeCurrency]
-  } else {
-    imageUrl = tokenImageSrc(amount)
-  }
-
-  return (
-    <span className="inline-flex items-center gap-1">
-      <span className="tooltip" style={{ display: 'inline-flex', alignItems: 'center' }}>
-        <img src={imageUrl} alt={currency} width={18} height={18} />
-        {amount.issuer && (
-          <span className="tooltiptext no-brake right">
-            {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
-          </span>
-        )}
-      </span>
-      <span className="tooltip">
-        {shortNiceNumber(value, 2, 1)} {valuePrefix} {currency}
-        <span className="tooltiptext no-brake right">
-          {fullNiceNumber(value)} {valuePrefix} {textCurrency}
-        </span>
-      </span>
-    </span>
-  )
+export const nativeCurrencyToFiat = (params) => {
+  if (!isAmountInNativeCurrency(params?.amount)) return ''
+  return amountToFiat(params)
 }
 
-export const nativeCurrencyToFiat = (params) => {
+export const amountToFiat = (params) => {
   if (devNet) return ''
   const { amount, selectedCurrency, fiatRate } = params
-  if (!amount || amount === '0' || !selectedCurrency || !fiatRate || !isAmountInNativeCurrency(amount)) return ''
+  if (!amount || amount === '0' || !selectedCurrency || !fiatRate) return ''
 
-  let calculatedAmount = null
+  let currency = ''
+  let initialAmount
+  let calculatedAmount
 
-  if (amount.currency === nativeCurrency) {
-    calculatedAmount = shortNiceNumber(amount.value * fiatRate, 2, 1, selectedCurrency)
+  if (!amount?.currency) {
+    // drops
+    initialAmount = amount / 1000000
+    currency = nativeCurrency
   } else {
-    calculatedAmount = shortNiceNumber((amount / 1000000) * fiatRate, 2, 1, selectedCurrency)
+    initialAmount = amount.value
+    currency = niceCurrency(amount.currency)
+  }
+
+  const absolute = Math.abs(initialAmount)
+
+  if (params.absolute) {
+    initialAmount = absolute
+  }
+
+  if (absolute > 1) {
+    calculatedAmount = shortNiceNumber(initialAmount * fiatRate, 2, 1, selectedCurrency)
+  } else {
+    calculatedAmount = niceNumber(initialAmount * fiatRate, null, selectedCurrency, 6)
   }
 
   if (params.asText) {
@@ -147,11 +380,14 @@ export const nativeCurrencyToFiat = (params) => {
   }
 
   return (
-    <span className="tooltip" suppressHydrationWarning>
+    <span className="tooltip no-brake" suppressHydrationWarning>
       {' '}
       ≈ {calculatedAmount}
-      <span className="tooltiptext no-brake" suppressHydrationWarning>
-        1 {nativeCurrency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
+      <span
+        className={'tooltiptext no-brake' + (params?.tooltipDirection ? ' ' + params.tooltipDirection : '')}
+        suppressHydrationWarning
+      >
+        1 {currency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
       </span>
     </span>
   )
@@ -362,7 +598,7 @@ export const nftIdLink = (nftId, chars = 10) => {
 export const nftLink = (nft, type, options = {}) => {
   if (!nft || !type || !nft[type]) return ''
 
-  let link = '/explorer/'
+  let link = '/account/'
   if (type === 'issuer') {
     link = '/nft-explorer?issuer='
   } else if (type === 'owner' || type === 'seller' || type === 'buyer') {
@@ -398,19 +634,11 @@ export const nftLink = (nft, type, options = {}) => {
       }
     }
     const showName = userOrServiceName(nft[type + 'Details'])
-    if (link === '/explorer/') {
-      return <a href={link + (nft[type + 'Details'].username || nft[type])}>{showName ? showName : defaultContent}</a>
-    } else {
-      return (
-        <Link href={link + (nft[type + 'Details'].username || nft[type])}>{showName ? showName : defaultContent}</Link>
-      )
-    }
+    return (
+      <Link href={link + (nft[type + 'Details'].username || nft[type])}>{showName ? showName : defaultContent}</Link>
+    )
   }
-  if (link === '/explorer/') {
-    return <a href={link + nft[type]}>{defaultContent}</a>
-  } else {
-    return <Link href={link + nft[type]}>{defaultContent}</Link>
-  }
+  return <Link href={link + nft[type]}>{defaultContent}</Link>
 }
 
 export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails, taxon }) => {
@@ -459,51 +687,28 @@ export const userOrServiceLink = (data, type, options = {}) => {
   if (data[typeDetails]) {
     const { username, service } = data[typeDetails]
     let link = username ? username : data[type]
+
+    let buildLink = options?.fullUrl || options?.url + link
     if (service) {
       let serviceName = service
       if (options.short && serviceName.length > 18) {
         serviceName = service.substring(0, 15).trim() + '...'
       }
-      if (options.url === '/explorer/') {
-        return (
-          <a href={options.url + link} className="bold green">
-            {serviceName}
-          </a>
-        )
-      } else {
-        return (
-          <Link href={options.url + link} className="bold green">
-            {serviceName}
-          </Link>
-        )
-      }
+      return (
+        <Link href={buildLink} className="bold green">
+          {serviceName}
+        </Link>
+      )
     }
     if (username) {
-      if (options.url === '/explorer/') {
-        return (
-          <a href={options.url + link} className="bold blue">
-            {username}
-          </a>
-        )
-      } else {
-        return (
-          <Link href={options.url + link} className="bold blue">
-            {username}
-          </Link>
-        )
-      }
+      return (
+        <Link href={buildLink} className="bold blue">
+          {username}
+        </Link>
+      )
     }
   }
   return ''
-}
-
-const oldExplorerLink = (address, options = {}) => {
-  if (!address) return ''
-  return (
-    <a href={'/explorer/' + address} aria-label="address link">
-      {options.short ? shortAddress(address, options.short) : address}
-    </a>
-  )
 }
 
 export const addressUsernameOrServiceLink = (data, type, options = {}) => {
@@ -517,23 +722,15 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
     return userOrServiceLink(data, type, options)
   }
   if (options.short) {
-    if (options.url === '/explorer/') {
-      return oldExplorerLink(data[type], { short: options.short })
-    } else {
-      return <Link href={options.url + data[type]}>{shortAddress(data[type])}</Link>
-    }
+    return <Link href={options.url + data?.[type]}>{shortAddress(data?.[type], options.short)}</Link>
   }
-  if (options.url === '/explorer/') {
-    return oldExplorerLink(data[type])
-  } else {
-    return <Link href={options.url + data[type]}>{data[type]}</Link>
-  }
+  return <Link href={options.url + data?.[type]}>{data?.[type]}</Link>
 }
 
 export const addressLink = (address, options = {}) => {
   if (!address) return ''
   return (
-    <Link href={'/account/' + address} aria-label="address link">
+    <Link href={options?.fullUrl || '/account/' + address} aria-label="address link">
       {options?.short ? shortAddress(address, options.short) : address}
     </Link>
   )
@@ -589,36 +786,50 @@ export const percentFormat = (small, big) => {
   return '(' + Math.floor(((small * 100) / big) * 100) / 100 + '%)'
 }
 
-export const trAmountWithGateway = ({ amount, name }) => {
+export const trAmountWithGateway = ({ amount, name, icon }) => {
   if (!amount && amount !== 0) return ''
   return (
     <tr>
       <td>{name}</td>
       <td>
         {amountFormatNode(amount)}
-        {amount?.issuer && <> ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</>}
-        {amount?.counterparty && <> ({addressUsernameOrServiceLink(amount, 'counterparty', { short: true })})</>}
+        {icon ? (
+          <>
+            {amount?.issuer && <AddressWithIconInline data={amount} name="issuer" options={{ short: true }} />}
+            {amount?.counterparty && (
+              <AddressWithIconInline data={amount} name="counterparty" options={{ short: true }} />
+            )}
+          </>
+        ) : (
+          <>
+            {amount?.issuer && <> ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</>}
+            {amount?.counterparty && <> ({addressUsernameOrServiceLink(amount, 'counterparty', { short: true })})</>}
+          </>
+        )}
       </td>
     </tr>
   )
 }
 
-export const amountFormat = (amount, options = { icon: false }) => {
+export const amountFormat = (amount, options = {}) => {
   if (!amount && amount !== '0' && amount !== 0) {
     return ''
   }
-  const { value, currency, valuePrefix, issuer, type, originalCurrency } = amountParced(amount)
-  let icon = options?.icon
+  const { value, currency, valuePrefix, issuer, issuerDetails, type, originalCurrency } = amountParced(amount)
 
-  // For all tokens including native currency, show icon
-  let imageUrl
-  if (type === nativeCurrency) {
-    // Use native currency icon
-    imageUrl = nativeCurrenciesImages[nativeCurrency]
-  } else {
-    // Use IOU token icon
-    // Use originalCurrency for token icon to avoid processed currency issues
-    imageUrl = tokenImageSrc({ issuer, currency: originalCurrency || currency })
+  const StyleAmount = ({ children }) => {
+    if (options?.color === 'direction') {
+      if (Number(value) > 0) {
+        options.color = 'green'
+      } else if (Number(value) < 0) {
+        options.color = 'red'
+      } else {
+        options.color = null
+      }
+    }
+    if (!options?.color && !options?.bold) return <>{children}</>
+    const classes = [options.bold && 'bold', options.color].filter(Boolean).join(' ')
+    return <span className={classes}>{children}</span>
   }
 
   let textCurrency = currency
@@ -634,49 +845,50 @@ export const amountFormat = (amount, options = { icon: false }) => {
     }
   }
 
-  if (options.precise) {
-    if (options.precise === 'nice') {
-      return niceNumber(value, 0, null, 15) + ' ' + valuePrefix + ' ' + textCurrency
-    }
-    return value + ' ' + valuePrefix + ' ' + textCurrency
-  }
-
   let showValue = value
 
-  if (Math.abs(value) >= 100) {
-    if (options.short) {
-      showValue = shortNiceNumber(value, 0, 1)
-    } else {
-      if (options.minFractionDigits) {
-        showValue = niceNumber(value, options.minFractionDigits)
-      } else {
-        showValue = niceNumber(value)
-      }
-    }
-  } else if (options.maxFractionDigits) {
-    showValue = niceNumber(value, 0, null, options.maxFractionDigits)
+  if (options.absolute) {
+    showValue = Math.abs(showValue)
   }
 
-  let tokenImage = icon && (
-    <Image
-      src={imageUrl}
-      alt="token"
-      height={16}
-      width={16}
-      style={{ marginRight: '2px', marginBottom: '1px', verticalAlign: 'text-bottom', display: 'inline-block' }}
-    />
-  )
+  if (options.precise) {
+    if (options.precise === 'nice') {
+      showValue = niceNumber(showValue, 0, null, 15)
+    }
+  } else if (options.short) {
+    showValue = shortNiceNumber(showValue)
+  } else {
+    showValue = niceNumber(showValue, options.minFractionDigits, null, options.maxFractionDigits || 6)
+  }
+
+  let showIcon = options?.icon || false
+
+  // do not show icons for native currency
+  if (showIcon && originalCurrency === nativeCurrency) {
+    showIcon = false
+  }
+
+  let tokenImage = ''
+  if (showIcon) {
+    tokenImage = <TokenImage token={{ issuer, currency: originalCurrency || currency }} />
+  }
+
+  if (options.showPlus && value > 0) {
+    showValue = '+' + showValue
+  }
 
   if (options.tooltip) {
     return (
       <span suppressHydrationWarning>
         {tokenImage}
-        {showValue} {valuePrefix}{' '}
+        <StyleAmount>
+          {showValue} {valuePrefix}{' '}
+        </StyleAmount>
         {type === nativeCurrency ? (
-          textCurrency
+          <StyleAmount>{textCurrency}</StyleAmount>
         ) : (
           <span className="tooltip">
-            <Link href={'/account/' + issuer}>{currency}</Link>
+            <Link href={'/account/' + issuer}>{textCurrency}</Link>
             <span className={'tooltiptext ' + options.tooltip}>
               {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
             </span>
@@ -686,21 +898,38 @@ export const amountFormat = (amount, options = { icon: false }) => {
     )
   } else if (options.withIssuer) {
     return (
-      <span>
+      <>
         {tokenImage}
-        {showValue} {valuePrefix} {currency}
-        {amount.issuer ? <>({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</> : ''}
-      </span>
+        <StyleAmount>
+          {showValue} {valuePrefix} {textCurrency}
+        </StyleAmount>
+        {issuer ? (
+          <span className="no-inherit">
+            (
+            {amount.currencyDetails?.type === 'lp_token' ? (
+              <LinkAmm ammId={issuer} hash={6} style={{ fontWeight: 400 }} />
+            ) : (
+              addressUsernameOrServiceLink({ issuer, issuerDetails }, 'issuer', {
+                short: options?.issuerShort !== undefined ? options.issuerShort : true
+              })
+            )}
+            )
+          </span>
+        ) : (
+          ''
+        )}
+      </>
     )
-  } else if (options.icon) {
+  } else if (options?.icon) {
+    // keep options?.icon as showIcon is false for native currency
     return (
-      <span>
+      <span className="no-brake">
         {tokenImage}
-        {showValue + ' ' + valuePrefix + ' ' + textCurrency}
+        <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
       </span>
     )
   } else {
-    return showValue + '' + valuePrefix + ' ' + textCurrency
+    return showValue + ' ' + valuePrefix + ' ' + textCurrency
   }
 }
 
@@ -779,13 +1008,22 @@ export const amountParced = (amount) => {
   let valuePrefix = ''
   let type = ''
   let issuer = null
+  let issuerDetails = null
   let originalCurrency = '' // Store original currency for token icons
 
-  if (amount.value && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
+  if (amount.currencyDetails?.type === 'lp_token') {
+    originalCurrency = amount.currency
+    currency = amount.currencyDetails?.currency
+    value = amount.value
+    issuer = amount.issuer
+    issuerDetails = amount.issuerDetails
+    type = 'LPT'
+  } else if (amount.value && amount.currency && !(!amount.issuer && amount.currency === nativeCurrency)) {
     originalCurrency = amount.currency // Store original before processing
     currency = amount.currency
     value = amount.value
     issuer = amount.issuer
+    issuerDetails = amount.issuerDetails
     type = 'IOU'
     const xls14NftVal = xls14NftValue(value)
     let realXls14 = false
@@ -807,11 +1045,16 @@ export const amountParced = (amount) => {
       value = xls14NftVal
     }
   } else if (amount.mpt_issuance_id) {
-    originalCurrency = amount.mpt_issuance_id // Store original before processing
-    currency = amount.mpt_issuance_id
+    originalCurrency = amount.mpt_issuance_id
+    currency = amount.currencyDetails?.currency || '[MPT: ' + shortHash(amount.mpt_issuance_id, 4) + ']'
     value = amount.value
+    const scale = amount.currencyDetails?.scale || 0
+    if (scale > 0) {
+      value = scaleAmount(value, scale)
+    }
+    issuer = amount.currencyDetails?.account
+    issuerDetails = amount.currencyDetails?.accountDetails
     type = 'MPT'
-    valuePrefix = 'MPT'
   } else {
     type = nativeCurrency
     originalCurrency = nativeCurrency // Store original before processing
@@ -836,6 +1079,7 @@ export const amountParced = (amount) => {
     valuePrefix,
     currency,
     issuer,
+    issuerDetails,
     originalCurrency // Return original currency for token icons
   }
 }
@@ -885,20 +1129,32 @@ export const fullDateAndTime = (timestamp, type = null, options) => {
   }
 }
 
-export const timeFormat = (timestamp) => {
-  return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+export const timeFormat = (timestamp, type = null) => {
+  if (type === 'ripple') {
+    timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+  }
+  return (
+    <span suppressHydrationWarning>
+      {new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
+    </span>
+  )
 }
 
 export const dateFormat = (timestamp, stringParams = {}, params = {}) => {
   if (timestamp) {
+    if (params?.type === 'ripple') {
+      timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+    }
     if (params.type?.toUpperCase() !== 'ISO') {
       timestamp = timestamp * 1000
     }
-    if (stringParams) {
-      return new Date(timestamp).toLocaleDateString([], stringParams)
-    } else {
-      return new Date(timestamp).toLocaleDateString()
-    }
+    return (
+      <span suppressHydrationWarning>
+        {stringParams
+          ? new Date(timestamp).toLocaleDateString([], stringParams)
+          : new Date(timestamp).toLocaleDateString()}
+      </span>
+    )
   }
   return ''
 }
@@ -943,7 +1199,7 @@ export const duration = (t, seconds, options) => {
 }
 
 //need to make dynamic fraction digits
-export const niceNumber = (n, fractionDigits = 0, currency = null, maxFractionDigits = 0) => {
+export const niceNumber = (n, fractionDigits = null, currency = null, maxFractionDigits = null) => {
   if (typeof n === 'string') {
     if (n.includes('x')) {
       //in case of placeholders xxx
@@ -954,8 +1210,8 @@ export const niceNumber = (n, fractionDigits = 0, currency = null, maxFractionDi
   }
   if (n || n === 0 || n === '0') {
     let options = {
-      maximumFractionDigits: maxFractionDigits || fractionDigits,
-      minimumFractionDigits: fractionDigits
+      maximumFractionDigits: maxFractionDigits || fractionDigits || 0,
+      minimumFractionDigits: fractionDigits || 0
     }
     if (currency) {
       options.style = 'currency'
@@ -1089,4 +1345,19 @@ export const decodeJsonMemo = (memopiece, options) => {
 export const showAmmPercents = (x) => {
   x = x ? x / 1000 : '0'
   return x + '%'
+}
+
+export const showFlags = (flags) => {
+  if (!flags || Object.keys(flags).length === 0) return null
+  const trueFlags = Object.entries(flags).filter(([, flagValue]) => flagValue === true)
+  if (!trueFlags?.length) return null
+  return (
+    <>
+      {trueFlags.map(([flag]) => (
+        <span key={flag} className="flag">
+          {flag}
+        </span>
+      ))}
+    </>
+  )
 }

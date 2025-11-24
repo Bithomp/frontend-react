@@ -9,7 +9,7 @@ const copyTextToClipboard = async (text) => {
   }
 }
 
-export default function CopyButton({ text }) {
+export default function CopyButton({ text, copyText }) {
   const { t } = useTranslation()
 
   const [isCopied, setIsCopied] = useState(false)
@@ -69,7 +69,9 @@ export default function CopyButton({ text }) {
           />
         </g>
       </svg>
-      {isTooltipEnabled && <span className="tooltiptext">{isCopied ? t('button.copied') : t('button.copy')}</span>}
+      {isTooltipEnabled && (
+        <span className="tooltiptext">{isCopied ? t('button.copied') : copyText || t('button.copy')}</span>
+      )}
     </span>
   )
 }

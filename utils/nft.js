@@ -3,7 +3,7 @@ import { stripText, shortName, webSiteName } from '.'
 
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
-import { amountFormat } from './format'
+import { amountFormat, shortHash } from './format'
 
 //partner market places (destinations)
 export const partnerMarketplaces = {
@@ -264,7 +264,11 @@ export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
     url = url.replace('#', '%23')
     if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail' || type === 'preview')) {
       return 'https://cdn.' + webSiteName + '/' + type + '/' + url + filename
-    } else if (gateway === 'cl' && type === 'model') {
+    } else if (
+      gateway === 'cl' &&
+      type === 'model' &&
+      url.includes('QmUR2XyUZvGvsNMmLBA5joPduT4f95jSMGzzzmCkckKSF4/?object=')
+    ) {
       return stripText(uri)
     } else if (gateway === 'cl' || type === 'audio' || type === 'model' || type === 'viewer') {
       return 'https://ipfs.io/ipfs/' + url + filename
@@ -274,7 +278,8 @@ export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
   }
 }
 
-const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => {
+export const assetUrl = (uri, type = 'image', gateway = 'our', flags = null) => {
+  if (!uri) return null
   uri = uri.toString()
   if (
     type === 'image' &&
@@ -344,8 +349,8 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
       }
     }
     //image from animation
-    if (meta.animation) return assetUrl(meta.animation, 'preview', gateway, flags)
-    if (meta.animation_url) return assetUrl(meta.animation_url, 'preview', gateway, flags)
+    if (meta.animation) return assetUrl(meta.animation, type, gateway, flags)
+    if (meta.animation_url) return assetUrl(meta.animation_url, type, gateway, flags)
   }
   if (type === 'video' || type === 'thumbnail' || type === 'preview') {
     if (meta.video) return assetUrl(meta.video, type, gateway, flags)
@@ -503,13 +508,61 @@ export const nftPriceData = (t, sellOffers, loggedInAddress) => {
   const best = bestNftOffer(sellOffers, loggedInAddress, 'sell')
   if (best) {
     if (mpUrl(best) && !partnerMarketplaces[best?.destination]) {
-      return t('nfts.amount-on-service', {
-        amount: amountFormat(best.amount, { tooltip: 'right' }),
-        service: best.destinationDetails.service
-      })
+      return (
+        <>
+          {amountFormat(best.amount, { tooltip: 'right' })} ({best.destinationDetails.service})
+        </>
+      )
     } else {
       return amountFormat(best.amount, { tooltip: 'right' })
     }
   }
   return t('table.text.private-offer') //shouldn't be the case
+}
+
+export const NftImage = ({ nft, style }) => {
+  const size = style?.width && typeof style.width !== 'string' && style.width > 0 ? style.width : 70
+  let text = size < 50 ? ';(' : 'No image'
+  const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+     <rect width="100%" height="100%" fill="#ffffff"/>
+     <text x="50%" y="50%" font-family="sans-serif" font-size="10" text-anchor="middle" dominant-baseline="central" fill="#9aa0a6">
+      ${text}
+     </text>
+   </svg>`
+  )}`
+  if (style?.width === 20) {
+    style.marginBottom = '-5px'
+  }
+  return (
+    <img
+      src={nftUrl(nft?.nftoken || nft, size < 32 ? 'thumbnail' : 'preview') || placeholder}
+      alt={nftName(nft?.nftoken || nft) || 'NFT thumbnail'}
+      style={{ marginRight: '5px', ...style }}
+      onError={(e) => {
+        e.target.onerror = null
+        e.target.src = placeholder
+      }}
+    />
+  )
+}
+
+export const nonSologenic = (data) => {
+  return data?.issuer && (data?.taxon || data?.taxon === 0)
+}
+
+export const collectionNameText = (data) => {
+  if (!data) return ''
+  if (data?.name) return data.name.replace(/"/g, '""')
+  const issuerDetails = data.issuerDetails
+  if (!issuerDetails) return data.collection
+  const { service, username } = issuerDetails
+  if (service || username) {
+    return service || username // + ' (' + data.collectionDetails.taxon + ')'
+  }
+  if (nonSologenic(data)) {
+    const { issuer, taxon } = data
+    return shortHash(issuer) + (taxon ? ' (' + taxon + ')' : '')
+  }
+  return data.collection
 }

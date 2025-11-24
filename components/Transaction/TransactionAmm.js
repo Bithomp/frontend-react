@@ -3,6 +3,7 @@ import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
 import {
   AddressWithIconFilled,
+  AddressWithIconInline,
   addressUsernameOrServiceLink,
   amountFormat,
   nativeCurrencyToFiat,
@@ -131,6 +132,104 @@ const AMMFlags = ({ flags, txType }) => {
   )
 }
 
+function statusBadgeClasses(status) {
+  switch (status) {
+    case 'added':
+      return 'bg-green-100 text-green-800'
+    case 'removed':
+      return 'bg-red-100 text-red-800'
+    case 'modified':
+    default:
+      return 'bg-amber-100 text-amber-800'
+  }
+}
+
+function VoteSlotsChangesTable({ voteSlotsChanges = [] }) {
+  return (
+    <>
+      <div className="overflow-x-auto rounded-lg border border-gray-200 hide-on-small-w800">
+        <table className="min-w-full text-sm text-center mx-auto">
+          <thead className="text-left">
+            <tr>
+              <th className="px-3 py-2 font-semibold text-gray-600">#</th>
+              <th className="px-3 py-2 font-semibold text-gray-600 left">Account</th>
+              <th className="px-3 py-2 font-semibold text-gray-600 center">Status</th>
+              <th className="px-3 py-2 font-semibold text-gray-600 right">Trading Fee</th>
+              <th className="px-3 py-2 font-semibold text-gray-600 right">Vote Weight</th>
+              <th className="px-3 py-2 font-semibold text-gray-600 right">Δ Weight</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {voteSlotsChanges
+              .sort((a, b) => b.voteWeight - a.voteWeight)
+              .map((v, i) => {
+                const delta = v.voteWeightChange ? v.voteWeightChange / 1000 : 0
+                const deltaColor = delta > 0 ? 'text-green-600' : delta < 0 ? 'text-red-600' : 'text-gray-500'
+                return (
+                  <tr key={`${v.account}-${i}`} className="hover:bg-gray-50">
+                    <td className="px-3 py-2 text-gray-500">{i + 1}</td>
+                    <td className="px-3 py-2 left">
+                      <AddressWithIconInline data={v} name="account" options={{ short: 6 }} />
+                    </td>
+                    <td className="px-3 py-2 center">
+                      <span
+                        className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${statusBadgeClasses(
+                          v.status
+                        )}`}
+                      >
+                        {v.status || 'modified'}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 tabular-nums right">{v.tradingFee ? v.tradingFee / 1000 + '%' : '—'}</td>
+                    <td className="px-3 py-2 tabular-nums right">
+                      {v.voteWeight !== undefined ? v.voteWeight / 1000 + '%' : '—'}
+                    </td>
+                    <td className={`right px-3 py-2 tabular-nums ${deltaColor}`}>{delta > 0 ? `+${delta}` : delta}%</td>
+                  </tr>
+                )
+              })}
+          </tbody>
+        </table>
+      </div>
+      <div className="show-on-small-w800 space-y-3">
+        {voteSlotsChanges
+          .slice()
+          .sort((a, b) => b.voteWeight - a.voteWeight)
+          .map((v, i) => {
+            const delta = v.voteWeightChange ? v.voteWeightChange / 1000 : 0
+            const deltaColor = delta > 0 ? 'green' : delta < 0 ? 'red' : 'gray'
+
+            return (
+              <div key={`${v.account}-${i}`} className="border border-gray-200 rounded-xl p-3 shadow-sm">
+                <div className="flex justify-between text-sm mb-1">
+                  <span>#{i + 1}</span>
+                  <span className={deltaColor}>{delta > 0 ? `+${delta}` : delta}%</span>
+                </div>
+                <div className="mb-2 flex items-center justify-between">
+                  <div className="flex-shrink-0 text-left">
+                    <AddressWithIconInline data={v} name="account" options={{ short: true }} />
+                  </div>
+                  <span className={`ml-2 rounded-full px-2 py-0.5 text-xs font-medium ${statusBadgeClasses(v.status)}`}>
+                    {v.status || 'modified'}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <div>
+                    <span className="font-medium">Trading Fee:</span> {v.tradingFee ? v.tradingFee / 1000 + '%' : '—'}
+                  </div>
+                  <div>
+                    <span className="font-medium">Vote:</span>{' '}
+                    {v.voteWeight !== undefined ? v.voteWeight / 1000 + '%' : '—'}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+      </div>
+    </>
+  )
+}
+
 export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { specification, tx, outcome } = data
@@ -158,14 +257,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   // Helper function to render amount with issuer
   const renderAmountWithIssuer = (amountData, options) => (
     <>
-      {amountFormat(amountData)}
-      {amountData.issuer && (
-        <>
-          {'('}
-          {addressUsernameOrServiceLink(amountData, 'issuer', { short: true })}
-          {')'}
-        </>
-      )}
+      {amountFormat(amountData, { withIssuer: true, bold: true, precise: 'nice' })}
       {options?.includeFiat &&
         selectedCurrency &&
         amountData?.value &&
@@ -183,12 +275,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
   )
 
   return (
-    <TransactionCard
-      data={data}
-      pageFiatRate={pageFiatRate}
-      selectedCurrency={selectedCurrency}
-      notFullySupported={true}
-    >
+    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <tr>
         <TData>Initiated by</TData>
         <TData>
@@ -227,7 +314,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
               <TData>Received</TData>
               <TData className="bold">
                 {receivedList.map((change, idx) => (
-                  <div key={idx}>{renderAmountWithIssuer(change, { includeFiat: true })}</div>
+                  <div key={idx}>{amountFormat(change, { withIssuer: true, bold: true, precise: 'nice' })}</div>
                 ))}
               </TData>
             </tr>
@@ -239,11 +326,13 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           {depositedList.length > 0 && (
             <tr>
               <TData>Deposited</TData>
-              <TData className="bold">
+              <TData>
                 {depositedList.map((change, idx) => (
                   <div key={idx}>
-                    {amountFormat({ ...change, value: Math.abs(Number(change.value)).toString() })}
-                    {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                    {amountFormat(
+                      { ...change, value: Math.abs(Number(change.value)).toString() },
+                      { withIssuer: true, bold: true, precise: 'nice' }
+                    )}
                   </div>
                 ))}
               </TData>
@@ -256,11 +345,15 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
             return targetReceivedList.length > 0 ? (
               <tr>
                 <TData>Withdrawn</TData>
-                <TData className="bold">
+                <TData>
                   {targetReceivedList.map((change, idx) => (
                     <div key={idx}>
-                      {amountFormat(change)}
-                      {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                      {amountFormat(change, { withIssuer: true, bold: true, precise: 'nice' })}
+                      {nativeCurrencyToFiat({
+                        amount: change,
+                        selectedCurrency,
+                        fiatRate: pageFiatRate
+                      })}
                     </div>
                   ))}
                 </TData>
@@ -318,7 +411,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           </TData>
         </tr>
       )}
-      {tradingFee ? (
+      {tradingFee || tradingFee === 0 ? (
         <tr>
           <TData>Trading fee</TData>
           <TData className="bold">{divide(tradingFee, 100000)}%</TData>
@@ -326,7 +419,7 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
       ) : (
         ''
       )}
-      {specification?.flags && Object.entries(specification?.flags).length > 0 && (
+      {specification?.flags && Object.values(specification.flags).some((v) => v === true) && (
         <tr>
           <TData>Flags</TData>
           <TData>
@@ -334,12 +427,12 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
           </TData>
         </tr>
       )}
-
       {txType === 'AMMDeposit' || txType === 'AMMCreate' || txType === 'AMMWithdraw' ? (
         <tr>
-          <TData>Specification </TData>
+          <TData>Specification</TData>
           <TData>
-            It was instructed to {txType === 'AMMDeposit' || txType === 'AMMCreate' ? 'deposit' : 'withdraw'} maximum{' '}
+            It was instructed to{' '}
+            {txType === 'AMMDeposit' || txType === 'AMMCreate' ? 'deposit maximum' : 'withdraw minimum'}{' '}
             {amount?.currency && amount?.value && (
               <>
                 {renderAmountWithIssuer(amount)}
@@ -364,6 +457,18 @@ export const TransactionAMM = ({ data, pageFiatRate, selectedCurrency }) => {
             </tr>
           )}
         </>
+      )}
+      {outcome?.ammChanges?.voteSlotsChanges?.length > 0 && (
+        <tr>
+          <TData colSpan={2}>
+            <br />
+            <center className="bold">Vote Slots Changes</center>
+            <br />
+            <VoteSlotsChangesTable voteSlotsChanges={outcome.ammChanges.voteSlotsChanges} />
+            <br />
+            <br />
+          </TData>
+        </tr>
       )}
     </TransactionCard>
   )

@@ -4,6 +4,7 @@
   "author": "Bithomp AB",
   "description": "Bithomp Frontend for XRPL and XAHAU Explorers",
   "private": true,
+  "license": "UNLICENSED",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Bithomp/frontend-react.git"
@@ -72,8 +73,9 @@
     "xrpl-binary-codec-prerelease": "^8.0.1"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "clean": "rm -rf .next/cache",
+    "dev": "npm run clean && next dev",
+    "build": "npm run clean && next build",
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky install",
@@ -108,5 +110,8 @@
     "is-core-module": "2.13.1",
     "error-ex": "1.3.2",
     "has-ansi": "5.0.1"
+  },
+  "engines": {
+    "node": ">=20.19.2"
   }
 }

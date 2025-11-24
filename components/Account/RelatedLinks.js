@@ -28,6 +28,14 @@ export default function RelatedLinks({ data }) {
           |{' '}
         </>
       )}
+      {network !== 'alphanet' && (
+        <>
+          <a href={'https://alphanet.bithomp.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+            XRPL AlphaNet
+          </a>{' '}
+          |{' '}
+        </>
+      )}
       {network !== 'xahau' && (
         <>
           <a href={'https://xahauexplorer.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
@@ -57,10 +65,6 @@ export default function RelatedLinks({ data }) {
     <>
       {network === 'mainnet' && (
         <>
-          <a href={'https://bithomp.com/explorer/' + data?.address} rel="nofollow">
-            Bithomp
-          </a>{' '}
-          (old view) |{' '}
           <a href={'https://livenet.xrpl.org/accounts/' + data?.address} rel="nofollow">
             XRPL.org
           </a>{' '}
@@ -79,23 +83,11 @@ export default function RelatedLinks({ data }) {
           |{' '}
           <a href={'https://blockchair.com/xrp-ledger/account/' + data?.address} rel="nofollow">
             Blockchair
-          </a>{' '}
-          |{' '}
-          <a href={'https://gatehub.net/explorer/' + data?.address} rel="nofollow">
-            Gatehub
-          </a>{' '}
-          |{' '}
-          <a href={'https://explorer.bitquery.io/ripple/address/' + data?.address} rel="nofollow">
-            BitQuery
           </a>
         </>
       )}
       {network === 'testnet' && (
         <>
-          <a href={'https://test.bithomp.com/explorer/' + data?.address} rel="nofollow">
-            Bithomp
-          </a>{' '}
-          (old view) |{' '}
           <a href={'https://testnet.xrpl.org/accounts/' + data?.address} rel="nofollow">
             XRPL.org
           </a>{' '}
@@ -107,21 +99,14 @@ export default function RelatedLinks({ data }) {
       )}
       {network === 'devnet' && (
         <>
-          <a href={'https://dev.bithomp.com/explorer/' + data?.address} rel="nofollow">
-            Bithomp
-          </a>{' '}
-          (old view) |{' '}
           <a href={'https://devnet.xrpl.org/accounts/' + data?.address} rel="nofollow">
             XRPL.org
           </a>
         </>
       )}
+      {network === 'alphanet' && <></>}
       {network === 'xahau' && (
         <>
-          <a href={'https://xahauexplorer.com/explorer/' + data?.address} rel="nofollow">
-            Xahau Explorer
-          </a>{' '}
-          (old view) |{' '}
           <a href={'https://xahau.xrpl.org/accounts/' + data?.address} rel="nofollow">
             XRPL.org
           </a>{' '}
@@ -133,10 +118,6 @@ export default function RelatedLinks({ data }) {
       )}
       {network === 'xahau-testnet' && (
         <>
-          <a href={'https://test.xahauexplorer.com/explorer/' + data?.address} rel="nofollow">
-            Xahau Explorer
-          </a>{' '}
-          (old view) |
           <a href={'https://xahau-testnet.xrpl.org/accounts/' + data?.address} rel="nofollow">
             XRPL.org
           </a>{' '}
@@ -148,10 +129,6 @@ export default function RelatedLinks({ data }) {
       )}
       {network === 'xahau-jshooks' && (
         <>
-          <a href={'https://jshooks.xahauexplorer.com/explorer/' + data?.address} rel="nofollow">
-            Xahau Explorer
-          </a>{' '}
-          (old view) |
           <a href={'https://jshooks.xahau-test.net/' + data?.address} rel="nofollow">
             XRPLF
           </a>

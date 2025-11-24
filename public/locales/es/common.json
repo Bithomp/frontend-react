@@ -41,7 +41,7 @@
       "nodes": "Nodos",
       "governance": "Gobierno",
       "activations": "Cuentas activadas (gráfica)",
-      "distribution": "Distribución de {{nativeCurrency}}",
+      "distribution": "Distribución de {{currency}}",
       "last-ledger-information": "Información del último libro contable",
       "last-ledger-transactions": "Transacciones del último libro contable",
       "top-transfers-24h": "Top transferencias (24h)",
@@ -67,8 +67,7 @@
     "sponsored": {
       "title": "Patrocinado",
       "buy": "Compra XRP",
-      "earn": "Gana en XRP",
-      "play": "Juega con XRP"
+      "earn": "Gana en XRP"
     },
     "learn-more": {
       "title": "Aprende más"
@@ -118,7 +117,6 @@
     "actions": {
       "view": "Mi página de cuenta",
       "my-transactions": "Mis transacciones",
-      "send": "Enviar XRP",
       "my-nfts": "Mis NFTs",
       "my-nft-offers": "Mis ofertas NFT"
     },
@@ -163,7 +161,6 @@
     "description": "Gráfica de precio {{nativeCurrency}} | Estadísticas | Explorador NFT | Buscar dirección de cartera",
     "search-placeholder": "Buscar por Dirección / Transacción / NFT / Nombre de usuario / PayString / Oferta",
     "search-placeholder-short": "Dirección / Transacción / Usuario",
-    "scan-qr": "ESCANEA UN CÓDIGO",
     "price": {
       "header": "Precio en Vivo de {{nativeCurrency}} & Convertidor"
     },
@@ -354,7 +351,8 @@
     "Request failed with status code 429": "¡Nos estáis mandando demasiadas peticiones, prueba más tarde!",
     "Request failed with status code 404": "Este tipo de llamada a la API no está permitida en esa red.",
     "Request failed with status code 403": "Parece que has cerrado sesión, por favor, inicia sesión nuevamente.",
-    "Request aborted": "Solicitud abortada"
+    "Request aborted": "Solicitud abortada",
+    "read ECONNRESET": "La solicitud ha caducado. Intenta cambiar tus filtros o inténtalo de nuevo más tarde."
   },
   "errors": {
     "token": {
@@ -488,7 +486,7 @@
     "by-owner": "Por dueño",
     "by-taxon": "Por taxon",
     "all-nfts": "Todos los NFTs",
-    "on-sale": "En venta",
+    "listed": "En venta",
     "social-share": "Compartir es vivir",
     "marketplace": "Mercado",
     "public-key": "Clave pública",
@@ -554,8 +552,10 @@
     "all": "Todo",
     "buy": "Compra",
     "sell": "Venta",
-    "buyNow": "Comprar ya",
-    "publicAndKnownBrokers": "Público Y Mercado",
+    "buyNow": "Comprar ahora (Público + mercados integrados)",
+    "publicAndKnownBrokers": "Público y mercados",
+    "public": "Público",
+    "knownBrokers": "Mercados",
     "onSale": "Listado",
     "all-tokens": "Todos los tokens",
     "single-token": "Token único",
@@ -626,7 +626,6 @@
     "search-by-seller": "Buscar por vendedor del NFT",
     "no-nfts": "No pudimos encontrar ningún NFT con tus parámetros de búsqueda.",
     "on-service": "en {{service}}",
-    "amount-on-service": "{{amount}} en {{service}}",
     "load-more": "Estamos buscando información en el XRPL... por favor, espera...",
     "end": "Aquí están todos los NFTs que pudimos encontrar.",
     "change-filters": "Usa diferentes opciones de filtro o selecciona otros parámetros de búsqueda para explorar más NFTs que coincidan con tus intereses."

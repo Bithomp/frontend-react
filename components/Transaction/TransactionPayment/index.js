@@ -9,11 +9,13 @@ import {
 } from '../../../utils/format'
 
 import { TransactionCard } from '../TransactionCard'
-import { isNativeCurrency, xls14NftValue } from '../../../utils'
+import { isNativeCurrency } from '../../../utils'
 import CopyButton from '../../UI/CopyButton'
-import { addressBalanceChanges, dappBySourceTag } from '../../../utils/transaction'
+import { addressBalanceChanges, dappBySourceTag, isConvertionTx } from '../../../utils/transaction'
 import DestinationTagProblemSolving from './DestinationTagProblemSolving'
 import PaymentInstructions from './PaymentInstructions'
+import { LinkTx } from '../../../utils/links'
+import { isIOUpayment, optionalAbsPaymentAmount, paymentTypeName } from '../../../utils/transaction/payment'
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -22,35 +24,12 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
 
   //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
-
-  let txTypeSpecial = 'Payment'
-
-  // sourse address and destination address is the same
-  // sometimes source tag is added to show the dapp
-  // so if there is no destintaion tag, no need the source tag to be the same
-  const isConvertion =
-    specification?.source?.address === specification?.destination?.address &&
-    (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
-
+  const txTypeSpecial = paymentTypeName(data)
+  const isConvertion = isConvertionTx(specification)
   const isSuccessful = outcome?.result == 'tesSUCCESS'
-
-  let iouPayment = false
-
-  if (isConvertion) {
-    txTypeSpecial = 'Conversion payment'
-  } else {
-    //check if iou involved (pathfinding or iou with fee)
-    if (
-      !outcome?.deliveredAmount?.mpt_issuance_id &&
-      sourceBalanceChangesList?.[0]?.value !== '-' + outcome?.deliveredAmount?.value
-    ) {
-      iouPayment = true
-    }
-  }
-
-  if (xls14NftValue(outcome?.deliveredAmount?.value)) {
-    txTypeSpecial = 'NFT transfer (XLS-14)'
-  }
+  const iouPayment = isIOUpayment(data)
+  //don't show sourcetag if it's the tag of a known dapp
+  const dapp = dappBySourceTag(specification.source.tag)
 
   /*
   {
@@ -107,18 +86,6 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
   }
   */
 
-  const optionalAbsAmount = (change) => {
-    return !isConvertion && (change?.value ? change.value.toString()[0] === '-' : change?.toString()[0] === '-')
-      ? {
-          ...change,
-          value: change?.value ? change?.value.toString().slice(1) : change?.toString().slice(1)
-        }
-      : change
-  }
-
-  //don't show sourcetag if it's the tag of a known dapp
-  const dapp = dappBySourceTag(specification.source.tag)
-
   return (
     <TransactionCard
       data={data}
@@ -130,7 +97,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         <tr>
           <TData className="bold orange">Problem solving</TData>
           <TData className="bold">
-            The transaction <span class="red">FAILED</span>, if your balance changed, contact{' '}
+            The transaction <span className="red">FAILED</span>, if your balance changed, contact{' '}
             {addressUsernameOrServiceLink(specification.source, 'address')} support.
           </TData>
         </tr>
@@ -169,12 +136,23 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         </tr>
       )}
       {tx?.InvoiceID && (
-        <tr>
-          <TData>Invoice ID</TData>
-          <TData>
-            {shortHash(tx.InvoiceID, 10)} <CopyButton text={tx.InvoiceID} />
-          </TData>
-        </tr>
+        <>
+          {tx.Destination === 'ryouhapPYV5KNHmFUKrjNqsjxhnxvQiVt' ? (
+            <tr>
+              <TData>Invoiced TX</TData>
+              <TData>
+                <LinkTx tx={tx.InvoiceID} /> <CopyButton text={tx.InvoiceID} />
+              </TData>
+            </tr>
+          ) : (
+            <tr>
+              <TData>Invoice ID</TData>
+              <TData>
+                {shortHash(tx.InvoiceID, 10)} <CopyButton text={tx.InvoiceID} />
+              </TData>
+            </tr>
+          )}
+        </>
       )}
       {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
         <>
@@ -188,12 +166,13 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
             <TData>
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
-                  <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                    {amountFormat(optionalAbsAmount(change))}
-                  </span>
-                  {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  {amountFormat(optionalAbsPaymentAmount(change, isConvertion), {
+                    withIssuer: true,
+                    bold: true,
+                    color: 'direction'
+                  })}
                   {nativeCurrencyToFiat({
-                    amount: optionalAbsAmount(change),
+                    amount: optionalAbsPaymentAmount(change, isConvertion),
                     selectedCurrency,
                     fiatRate: pageFiatRate
                   })}
@@ -201,22 +180,17 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
               ))}
             </TData>
           </tr>
-          {sourceBalanceChangesList.length === 2 && (
+          {sourceBalanceChangesList?.length === 2 && (
             <tr>
               <TData>Exchange rate</TData>
               <TData>
                 1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
-                <span className="bold">
-                  {amountFormat(
-                    {
-                      ...sourceBalanceChangesList[1],
-                      value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
-                    },
-                    { precise: 'nice' }
-                  )}
-                </span>
-                {sourceBalanceChangesList[1].issuer && (
-                  <>({addressUsernameOrServiceLink(sourceBalanceChangesList[1], 'issuer', { short: true })})</>
+                {amountFormat(
+                  {
+                    ...sourceBalanceChangesList[1],
+                    value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                  },
+                  { precise: 'nice', withIssuer: true, bold: true }
                 )}
               </TData>
             </tr>
@@ -227,10 +201,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         <tr>
           <TData>Delivered amount</TData>
           <TData>
-            <span className="bold green">{amountFormat(outcome?.deliveredAmount, { precise: 'nice' })}</span>
-            {outcome?.deliveredAmount?.issuer && (
-              <>({addressUsernameOrServiceLink(outcome?.deliveredAmount, 'issuer', { short: true })})</>
-            )}
+            {amountFormat(outcome?.deliveredAmount, { precise: 'nice', withIssuer: true, bold: true, color: 'green' })}
             {nativeCurrencyToFiat({
               amount: outcome?.deliveredAmount,
               selectedCurrency,

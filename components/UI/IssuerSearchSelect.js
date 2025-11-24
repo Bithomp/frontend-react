@@ -6,7 +6,7 @@ import { IoSearch } from 'react-icons/io5'
 import { shortAddress, amountFormat } from '../../utils/format'
 import { useWidth } from '../../utils'
 
-export default function IssuerSearchSelect({ setIssuer, defaultValue = '' }) {
+export default function IssuerSearchSelect({ setIssuer, defaultValue = '', type }) {
   // Core states
   const [inputValue, setInputValue] = useState(defaultValue || '')
   const [searchSuggestions, setSearchSuggestions] = useState([])
@@ -32,8 +32,11 @@ export default function IssuerSearchSelect({ setIssuer, defaultValue = '' }) {
       }
 
       setSearchingSuggestions(true)
+
       try {
-        const res = await axios(`/v2/trustlines/issuers/search/${encodeURIComponent(inputValue)}`)
+        const res = await axios(
+          `/v2/${type === 'mpt' ? 'mptokens' : 'trustlines'}/issuers/search/${encodeURIComponent(inputValue)}`
+        )
         let list = res?.data
         if (list && list.issuers) list = list.issuers
         if (!Array.isArray(list)) list = []
@@ -51,7 +54,7 @@ export default function IssuerSearchSelect({ setIssuer, defaultValue = '' }) {
               name = item.username || item.name || null
             }
             if (!address) return null
-            return { 
+            return {
               value: address,
               label: name ? `${name} (${shortAddress(address, 6)})` : shortAddress(address, 10),
               address,
@@ -76,6 +79,7 @@ export default function IssuerSearchSelect({ setIssuer, defaultValue = '' }) {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue])
 
   // Select handlers
@@ -186,4 +190,4 @@ export default function IssuerSearchSelect({ setIssuer, defaultValue = '' }) {
       </div>
     </div>
   )
-} 
+}

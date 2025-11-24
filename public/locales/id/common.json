@@ -41,7 +41,7 @@
       "nodes": "Node",
       "governance": "Governance",
       "activations": "Akun yang Telah Aktif (grafik)",
-      "distribution": "Distribusi {{nativeCurrency}}",
+      "distribution": "Distribusi {{currency}}",
       "last-ledger-information": "Informasi Ledger Terbaru",
       "last-ledger-transactions": "Transaksi Ledger Terbaru",
       "top-transfers-24h": "Transfer terbesar (24j)",
@@ -67,8 +67,7 @@
     "sponsored": {
       "title": "Disponsori",
       "buy": "Beli XRP",
-      "earn": "Dapatkan dari XRP",
-      "play": "Mainkan XRP"
+      "earn": "Dapatkan dari XRP"
     },
     "learn-more": {
       "title": "Pelajari lebih lanjut"
@@ -118,7 +117,6 @@
     "actions": {
       "view": "Halaman akun saya",
       "my-transactions": "Transaksi saya",
-      "send": "Kirim XRP",
       "my-nfts": "NFT Saya",
       "my-nft-offers": "Penawaran NFT Saya"
     },
@@ -163,7 +161,6 @@
     "description": "Grafik harga {{nativeCurrency}} | Statistik {{explorerName}} | Penjelajah NFT | Pencarian alamat dompet | Volume NFT {{explorerName}} | Beli dan Jual NFT | Layanan {{explorerName}}",
     "search-placeholder": "Cari berdasarkan Alamat / Transaksi / NFT / Username / PayString / Penawaran",
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
-    "scan-qr": "PINDAI KODE",
     "price": {
       "header": "Harga {{nativeCurrency}} Langsung & Konverter"
     },
@@ -354,7 +351,8 @@
     "Request failed with status code 429": "Anda mengirimkan terlalu banyak permintaan kepada kami, coba lagi nanti!",
     "Request failed with status code 404": "Panggilan API seperti itu tidak diizinkan di jaringan tersebut.",
     "Request failed with status code 403": "Sepertinya Anda telah keluar, silakan masuk kembali.",
-    "Request aborted": "Permintaan dibatalkan"
+    "Request aborted": "Permintaan dibatalkan",
+    "read ECONNRESET": "Permintaan telah habis waktu. Coba ubah filter Anda atau coba lagi nanti."
   },
   "errors": {
     "token": {
@@ -488,7 +486,7 @@
     "by-owner": "Menurut Pemilik",
     "by-taxon": "Menurut Taksonomi",
     "all-nfts": "Semua NFT",
-    "on-sale": "Sedang Dijual",
+    "listed": "Sedang Dijual",
     "social-share": "Berbagi adalah Peduli",
     "marketplace": "Pasar",
     "public-key": "Kunci Publik",
@@ -554,8 +552,10 @@
     "all": "Semua",
     "buy": "Beli",
     "sell": "Jual",
-    "buyNow": "Buy now",
-    "publicAndKnownBrokers": "Publik & Broker Terkenal",
+    "buyNow": "Beli sekarang (Publik + pasar terintegrasi)",
+    "publicAndKnownBrokers": "Publik & pasar",
+    "public": "Publik",
+    "knownBrokers": "Pasar",
     "onSale": "Sedang dijual",
     "all-tokens": "Semua Token",
     "single-token": "Token Tunggal",
@@ -626,7 +626,6 @@
     "search-by-seller": "Cari berdasarkan penjual NFT",
     "no-nfts": "Kami tidak dapat menemukan NFT dengan parameter pencarian Anda.",
     "on-service": "di {{service}}",
-    "amount-on-service": "{{amount}} di {{service}}",
     "load-more": "Kami sedang mencari data di XRPL... harap tunggu...",
     "end": "Ini adalah semua NFT yang dapat kami temukan.",
     "change-filters": "Gunakan berbagai opsi filter atau pilih parameter pencarian lainnya untuk menjelajahi lebih banyak NFT yang sesuai dengan minat Anda."
