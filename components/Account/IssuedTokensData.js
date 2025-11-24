@@ -103,7 +103,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
           ) : (
             <>
               <td className="left">
-                <CurrencyWithIcon token={token} />
+                <CurrencyWithIcon token={token} copy={true} />
               </td>
               <td className="right">
                 <span className="tooltip">
