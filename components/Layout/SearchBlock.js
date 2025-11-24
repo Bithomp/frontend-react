@@ -155,9 +155,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const searchOnChange = (option) => {
     if (!option) return
     if (option.username && !option.username.includes('-')) {
-      onSearch(option.username, option?.tag)
+      onSearch(option.username, option.tag)
     } else {
-      onSearch(option.address, option?.tag)
+      onSearch(option.address, option.tag)
     }
   }
 
