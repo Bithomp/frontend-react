@@ -62,7 +62,8 @@ export const TransactionRowTrustSet = ({ data, address, index, selectedCurrency 
       {serviceOruser ? 'Address' : 'Counterparty'}: <span className="bold">{specification.counterparty}</span>{' '}
       <CopyButton text={specification.counterparty} />
       <br />
-      Currency code: <span className="bold">{specification.currency}</span> <CopyButton text={specification.currency} />
+      Currency code: <span className="bold brake">{specification.currency}</span>{' '}
+      <CopyButton text={specification.currency} />
       <br />
       Limit: <span className="bold">{fullNiceNumber(specification.limit)}</span>
       <br />
