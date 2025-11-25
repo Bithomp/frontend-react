@@ -165,7 +165,7 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
           {historicalTitle}
         </center>
         <br />
-        <table className="table-mobile wide">
+        <table className="table-mobile">
           <tbody>
             <tr>
               <th>#</th>

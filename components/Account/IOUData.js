@@ -414,7 +414,7 @@ export default function IOUData({
             <br />
           </>
         ) : (
-          <table className="table-mobile wide">{tokenTbody(list, type)}</table>
+          <table className="table-mobile">{tokenTbody(list, type)}</table>
         )}
         <br />
       </>

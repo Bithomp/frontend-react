@@ -551,7 +551,7 @@ export default function Mpts({
           </table>
 
           <div className="show-on-small-w800">
-            <table className="table-mobile wide">
+            <table className="table-mobile">
               <thead></thead>
               <tbody>
                 {loading ? (

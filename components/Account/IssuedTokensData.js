@@ -246,7 +246,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
         ) : error ? (
           <div className="center orange bold">{error}</div>
         ) : issuedTokens.length > 0 ? (
-          <table className="table-mobile wide">
+          <table className="table-mobile">
             <tbody>
               <tr>
                 <th>#</th>

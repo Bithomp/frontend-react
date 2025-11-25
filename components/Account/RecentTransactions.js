@@ -424,7 +424,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
         {loading && <span className="grey">Loading recent transactions...</span>}
         {error && <span className="red">Error: {error}</span>}
         {!loading && !error && transactions.length > 0 && (
-          <table className="table-mobile wide">
+          <table className="table-mobile">
             <tbody>
               <tr>
                 <th className="center">Status</th>

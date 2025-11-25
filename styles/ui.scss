@@ -395,9 +395,7 @@ table {
   &.table-mobile {
     margin: auto;
     font-size: 12px;
-    &.wide {
-      width: 100%;
-    }
+    width: calc(100% - 30px);
     tr {
       border: 1px solid var(--accent-link);
       > td:last-child,
@@ -419,9 +417,6 @@ table {
       @media only screen and (max-width: 800px) {
         min-width: 100%;
       }
-    }
-    &.table-mobile {
-      width: 100%;
     }
   }
 }
