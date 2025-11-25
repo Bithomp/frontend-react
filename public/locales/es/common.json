@@ -310,7 +310,7 @@
     "error": "Error",
     "no-data": "Datos no disponibles",
     "loading": "Cargando...",
-    "login-to-bithomp-pro": "Cargar más datos está disponible para los suscriptores de Bithomp Pro <1>con sesión iniciada</1>.",
+    "login-to-bithomp-pro": "Cargar más datos está disponible para los suscriptores de Bithomp Pro <2>con sesión iniciada</2>.",
     "renew-bithomp-pro": "Tu suscripción a Bithomp Pro ha expirado. <1>Renueva tu suscripción</1>.",
     "load-failed": "Fallo al cargar",
     "all-issuers": "Todos los emisores",

@@ -310,7 +310,7 @@
     "error": "エラー",
     "no-data": "データがありません",
     "loading": "読み込み中...",
-    "login-to-bithomp-pro": "Bithomp Proの<1>サブスクリプション加入者</1>は、さらに多くのデータを読み込むことができます。",
+    "login-to-bithomp-pro": "Bithomp Proの<2>サブスクリプション加入者</2>は、さらに多くのデータを読み込むことができます。",
     "renew-bithomp-pro": "Bithomp Proのサブスクリプション期間が終了しました。<1>サブスクリプションを更新してください。</1>.",
     "load-failed": "読み込みに失敗しました",
     "all-issuers": "全ての発行者",

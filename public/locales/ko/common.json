@@ -310,7 +310,7 @@
     "error": "오류",
     "no-data": "데이터를 찾을 수 없습니다",
     "loading": "대기 중",
-    "login-to-bithomp-pro": "더 많은 데이터를 로드하려면 <1>로그인한</1> Bithomp Pro 구독자가 필요합니다.",
+    "login-to-bithomp-pro": "더 많은 데이터를 로드하려면 <2>로그인한</2> Bithomp Pro 구독자가 필요합니다.",
     "renew-bithomp-pro": "귀하의 Bithomp Pro 구독이 만료되었습니다. <1>구독을 갱신하세요</1>",
     "load-failed": "로딩에 실패했습니다",
     "all-issuers": "모든 발행자",

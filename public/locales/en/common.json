@@ -310,7 +310,7 @@
     "error": "Error",
     "no-data": "No data available",
     "loading": "Loading...",
-    "login-to-bithomp-pro": "Loading more data is available to <1>logged-in</1> Bithomp Pro subscribers.",
+    "login-to-bithomp-pro": "Loading more data is available to <2>logged-in</2> Bithomp Pro subscribers.",
     "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
     "load-failed": "Failed to load",
     "all-issuers": "All issuers",

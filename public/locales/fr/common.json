@@ -310,7 +310,7 @@
     "error": "Erreur",
     "no-data": "Aucune donnée disponible",
     "loading": "Chargement...",
-    "login-to-bithomp-pro": "Charger plus de données est disponible pour les abonnés connectés à Bithomp Pro.",
+    "login-to-bithomp-pro": "Charger plus de données est disponible pour les <2>abonnés connectés</2> à Bithomp Pro.",
     "renew-bithomp-pro": "Votre abonnement Bithomp Pro a expiré. <1>Renouveler votre abonnement</1>.",
     "load-failed": "Échec du chargement",
     "all-issuers": "Tous les émetteurs",
