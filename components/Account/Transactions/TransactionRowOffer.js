@@ -19,7 +19,9 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
 
   let orderStatus = ''
 
-  if (myBalanceChangesList?.length === 0 && myOrder) {
+  if (tx?.TransactionType === 'OfferCancel') {
+    orderStatus = 'canceled'
+  } else if (myBalanceChangesList?.length === 0 && myOrder) {
     orderStatus = 'placed'
   } else {
     if (!myOrder) {
