@@ -21,10 +21,10 @@ export default function Paystrings() {
   return (
     <>
       <SEO
-        title={'PayStrings on' + explorerName}
-        description="Learn what PayString on XRPL and Xahau is and how to register yours on Bithomp. Send, receive, deposit, and withdraw XRP easily with a simple PayString name."
+        title={'PayStrings'}
+        description="Learn what PayString is and how to register yours on Bithomp. Send, receive, deposit, and withdraw funds easily with a simple PayString name."
         noindex={network !== 'mainnet'}
-        image={{ file: '/images/pages/learn/paystrings/cover', width: 1520, height: 855, allNetworks: true }}
+        image={{ file: '/images/xrplexplorer/learn/paystrings/cover', width: 1520, height: 855, allNetworks: true }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
@@ -33,8 +33,12 @@ export default function Paystrings() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={'/images/pages/learn/paystrings/cover' + (xahauNetwork ? '-xahau' : '') + '.jpg'}
-                alt="Paystrings on XRPL and Xahau"
+                src={
+                  xahauNetwork
+                    ? '/images/xahauexplorer/learn/paystrings/cover.jpg'
+                    : '/images/xrplexplorer/learn/paystrings/cover.jpg'
+                }
+                alt="Paystrings"
                 width={1520}
                 height={855}
                 className="max-w-full h-auto object-contain"
@@ -56,8 +60,8 @@ export default function Paystrings() {
           </p>
           <p>
             Instead of sending {nativeCurrency} to a long address, you can use something like{' '}
-            <strong>{xahauNetwork ? 'bob$xahauexplorer.com' : 'bob$bithomp.com'}</strong> or{' '}
-            <strong>{xahauNetwork ? 'kingkong@xahauexplorer.com' : 'kingkong@bithomp.com'}</strong>.
+            <strong>{xahauNetwork ? 'mainfortesting$xahauexplorer.com' : 'love0139$bithomp.com'}</strong> or{' '}
+            <strong>{xahauNetwork ? 'drewrobertslive$xahauexplorer.com' : 'kingkong$bithomp.com'}</strong>.
           </p>
           <h3>Get your PayString on Bithomp</h3>
           <div className="p-4 my-4 border-l-4 rounded bg-white dark:bg-gray-900 border-[#4BA8B6] shadow-sm">

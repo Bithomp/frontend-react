@@ -100,7 +100,7 @@ if (network === 'mainnet') {
     { loc: 'learn/issue-a-token', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/guide-for-token-issuers', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/image-services', changefreq: 'monthly', priority: '0.6' },
-    { loc: 'learn/paystrings', changefreq: 'monthly', priority: '0.7' }
+    { loc: 'learn/paystrings', changefreq: 'monthly', priority: '0.5' }
   )
 }
 
