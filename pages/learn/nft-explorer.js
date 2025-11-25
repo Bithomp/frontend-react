@@ -21,10 +21,10 @@ export default function NftExplorer() {
   return (
     <>
       <SEO
-        title={'Search, buy, sell, mint NFTs on  ' + explorerName}
-        description="Explore all XRPL and Xahau NFTs in one place. Discover, buy, sell, and manage NFTs with Bithomp — the fastest and most complete XRPL and Xahau NFT explorer."
+        title={'Search, buy, sell, mint NFTs'}
+        description="Explore all NFTs in one place. Discover, buy, sell, and manage NFTs with Bithomp — the fastest and most complete NFT explorer."
         noindex={network !== 'mainnet'}
-        image={{ file: '/images/pages/learn/nft-explorer/cover', width: 1520, height: 855, allNetworks: true }}
+        image={{ file: '/images/xrplexplorer/learn/nft-explorer/cover', width: 1520, height: 855, allNetworks: true }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
@@ -36,7 +36,11 @@ export default function NftExplorer() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={'/images/pages/learn/nft-explorer/cover' + (xahauNetwork ? '-xahau' : '') + '.jpg'}
+                src={
+                  xahauNetwork
+                    ? '/images/xahauexplorer/learn/nft-explorer/cover.jpg'
+                    : '/images/xrplexplorer/learn/nft-explorer/cover.jpg'
+                }
                 alt="NFT Explorer"
                 width={1520}
                 height={855}
@@ -96,7 +100,11 @@ export default function NftExplorer() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={'/images/pages/learn/nft-explorer/history-screen' + (xahauNetwork ? '-xahau' : '') + '.png'}
+                src={
+                  xahauNetwork
+                    ? '/images/xahauexplorer/learn/nft-explorer/history-screen.png'
+                    : '/images/xrplexplorer/learn/nft-explorer/history-screen.png'
+                }
                 alt="NFT sales history and offers"
                 width={1520}
                 height={950}
@@ -121,7 +129,11 @@ export default function NftExplorer() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={'/images/pages/learn/nft-explorer/screen' + (xahauNetwork ? '-xahau' : '') + '.png'}
+                src={
+                  xahauNetwork
+                    ? '/images/xahauexplorer/learn/nft-explorer/screen.png'
+                    : '/images/xrplexplorer/learn/nft-explorer/screen.png'
+                }
                 alt="NFT Explorer"
                 width={1520}
                 height={950}
@@ -168,7 +180,11 @@ export default function NftExplorer() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={'/images/pages/learn/nft-explorer/nft-options' + (xahauNetwork ? '-xahau' : '') + '.png'}
+                src={
+                  xahauNetwork
+                    ? '/images/xahauexplorer/learn/nft-explorer/nft-options.png'
+                    : '/images/xrplexplorer/learn/nft-explorer/nft-options.png'
+                }
                 alt="Manage your NFTs"
                 width={1520}
                 height={950}
@@ -199,7 +215,7 @@ export default function NftExplorer() {
 
             {!xahauNetwork && (
               <>
-                <li>Modify the URI if the NFT is mutable (Dynamic NFTs have the "mutable" flag enabled" </li>)
+                <li>Modify the URI if the NFT is mutable (Dynamic NFTs have the "mutable" flag enabled") </li>
               </>
             )}
 
