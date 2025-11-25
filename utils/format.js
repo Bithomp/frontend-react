@@ -266,6 +266,9 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
 
 export const AddressWithIcon = ({ children, address }) => {
   let imageUrl = avatarServer + address
+  if (!address) {
+    imageUrl = nativeCurrenciesImages[nativeCurrency]
+  }
   return (
     <table style={{ minWidth: 126 }}>
       <tbody>
