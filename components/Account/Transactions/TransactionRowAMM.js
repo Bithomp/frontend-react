@@ -6,10 +6,10 @@ export const TransactionRowAMM = ({ data, address, index, selectedCurrency }) =>
   const { tx } = data
 
   const ammTypeLabels = {
-    AMMCreate: 'AMM Create',
-    AMMDeposit: 'AMM Deposit',
-    AMMWithdraw: 'AMM Withdraw',
-    AMMVote: 'AMM Vote'
+    AMMCreate: 'AMM create',
+    AMMDeposit: 'AMM deposit',
+    AMMWithdraw: 'AMM withdraw',
+    AMMVote: 'AMM vote'
   }
 
   const txTypeSpecial = <span className="bold">{ammTypeLabels[tx?.TransactionType] || tx?.TransactionType}</span>

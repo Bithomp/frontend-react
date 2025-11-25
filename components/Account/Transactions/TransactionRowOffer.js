@@ -33,7 +33,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
     }
   }
 
-  const txTypeSpecial = direction + ' order ' + orderStatus
+  const txTypeSpecial = <span className="bold">{direction + ' order ' + orderStatus}</span>
 
   const takerGets = specification.takerGets || myOrderbookChange?.takerGets
   const takerPays = specification.takerPays || myOrderbookChange?.takerPays
