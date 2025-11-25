@@ -5,8 +5,9 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
+import { isValidXAddress } from 'ripple-address-codec'
 
-import { devNet, xahauNetwork, avatarSrc, nativeCurrency, errorT } from '../../utils'
+import { devNet, xahauNetwork, avatarSrc, nativeCurrency, errorT, isValidPayString } from '../../utils'
 import { shortNiceNumber } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 
@@ -49,7 +50,10 @@ export async function getServerSideProps(context) {
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ''
 
-  if (account) {
+  // Check if input is an xAddress or payString
+  const isPayString = isValidPayString(account)
+  const isXAddress = isValidXAddress(account)
+  if (!isXAddress && !isPayString && account) {
     try {
       const res = await axiosServer({
         method: 'get',
@@ -93,6 +97,7 @@ export async function getServerSideProps(context) {
       isSsrMobile: getIsSsrMobile(context),
       initialData: initialData || {},
       initialErrorMessage: initialErrorMessage || null,
+      xAddressInput: isXAddress || isPayString,
       ...(await serverSideTranslations(locale, ['common', 'account']))
     }
   }
@@ -116,6 +121,7 @@ import EscrowData from '../../components/Account/EscrowData'
 import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
 import MPTData from '../../components/Account/MPTData'
+import XAddressDetails from '../../components/Account/XAddressDetails'
 
 export default function Account({
   initialData,
@@ -130,7 +136,8 @@ export default function Account({
   fiatRateServer,
   selectedCurrencyServer,
   networkInfo,
-  balanceListServer
+  balanceListServer,
+  xAddressInput
 }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
@@ -229,12 +236,12 @@ export default function Account({
 
   useEffect(() => {
     if (!selectedCurrency || !id) return
-
     if (isFirstRender.current) {
       isFirstRender.current = false
       return
     }
     setObjects({})
+    setErrorMessage(initialErrorMessage)
     checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, refreshPage, ledgerTimestamp, selectedCurrency])
@@ -278,6 +285,11 @@ export default function Account({
   const resetTimeMachine = () => {
     setLedgerTimestampInput(null)
     setLedgerTimestamp(null)
+  }
+
+  // If we have xAddressInput with a destination tag, render XAddressDetails
+  if (xAddressInput) {
+    return <XAddressDetails xAddressInput={id} />
   }
 
   return (

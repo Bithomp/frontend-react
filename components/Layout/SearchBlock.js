@@ -5,7 +5,6 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { classicAddressToXAddress } from 'ripple-address-codec'
 import { IoMdClose } from 'react-icons/io'
 
 import {
@@ -117,9 +116,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       typingTimer = setTimeout(async () => {
         if (value && value.length > 2) {
           setSearchingSuggestions(true)
-          const suggestionsResponse = await axios('v2/address/search/' + value).catch((error) => {
+          const suggestionsResponse = await axios('v2/address/search/' + value).catch(() => {
             setSearchingSuggestions(false)
-            console.log(error.message)
           })
           if (suggestionsResponse) {
             const suggestions = suggestionsResponse.data
@@ -155,9 +153,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const searchOnChange = (option) => {
     if (!option) return
     if (option.username && !option.username.includes('-')) {
-      onSearch(option.username, option.tag)
+      onSearch(option.username)
     } else {
-      onSearch(option.address, option.tag)
+      onSearch(option.address)
     }
   }
 
@@ -180,7 +178,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
-  const onSearch = async (si, tag = null) => {
+  const onSearch = async (si) => {
     setErrorMessage('')
     let searchFor = null
 
@@ -258,14 +256,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     if (isValidPayString(searchItem) || isValidXAddress(searchItem)) {
-      // the check for paystring/xAddress should be before the check for addressOrUsername,
-      // as if there is no destination tag, we will treat it as an address or username
-      if(tag) {
-        const xAddress = classicAddressToXAddress(searchFor, tag)
-        router.push('/account/tag/' + encodeURI(xAddress) + addParams)
-      } else {
-        router.push('/account/' + encodeURI(searchFor) + addParams)
-      }
+      router.push('/account/' + encodeURI(searchItem) + addParams)
       return
     }
 

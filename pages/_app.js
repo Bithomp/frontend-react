@@ -27,7 +27,7 @@ const WalletConnectModalSign = dynamic(
 import '../styles/globals.css'
 import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
-import '../styles/pages/account-tag.scss'
+import '../styles/pages/xaddress-details.scss'
 
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
