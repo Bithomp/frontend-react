@@ -21,10 +21,15 @@ export default function IssueAToken() {
   return (
     <>
       <SEO
-        title={'Set Trustline on ' + explorerName}
+        title={'Set Trustline'}
         description="How trustlines work on {explorerName} and how to set them up"
         noindex={network !== 'mainnet'}
-        image={{ file: '/images/pages/learn/issue-a-token/cover', width: 1520, height: 855, allNetworks: true }}
+        image={{
+          file: '/public/images/xrplexplorer/learn/trustlines/cover.jpg',
+          width: 1520,
+          height: 855,
+          allNetworks: true
+        }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
@@ -33,8 +38,12 @@ export default function IssueAToken() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={'/images/pages/learn/trustlines/cover' + (xahauNetwork ? '-xahau' : '') + '.jpg'}
-                alt="Set Trustline on XRPL and Xahau"
+                src={
+                  xahauNetwork
+                    ? '/images/xahauexplorer/learn/trustlines/cover.jpg'
+                    : '/images/xrplexplorer/learn/trustlines/cover.jpg'
+                }
+                alt="Set Trustline"
                 width={1520}
                 height={855}
                 className="max-w-full h-auto object-contain"
@@ -88,7 +97,11 @@ export default function IssueAToken() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={'/images/pages/learn/trustlines/screen-simple' + (xahauNetwork ? '-xahau' : '') + '.png'}
+                src={
+                  xahauNetwork
+                    ? '/images/xahauexplorer/learn/trustlines/screen-simple.png'
+                    : '/images/xrplexplorer/learn/trustlines/screen-simple.png'
+                }
                 alt="Set Trustline on XRPL and Xahau"
                 width={1520}
                 height={855}
@@ -109,7 +122,11 @@ export default function IssueAToken() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={'/images/pages/learn/trustlines/screen-advanced' + (xahauNetwork ? '-xahau' : '') + '.png'}
+                src={
+                  xahauNetwork
+                    ? '/images/xahauexplorer/learn/trustlines/screen-advanced.png'
+                    : '/images/xrplexplorer/learn/trustlines/screen-advanced.png'
+                }
                 alt="Set Trustline on XRPL and Xahau"
                 width={2376}
                 height={2786}
