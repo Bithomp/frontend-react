@@ -31,7 +31,7 @@ export const LinkToken = ({ token, icon, copy, children }) => {
   return (
     <>
       {!linkAmm && !mpt ? (
-        <Link href={tokenUrl} className="bold">
+        <Link href={tokenUrl} className="bold" style={{ textDecoration: 'none' }}>
           {children || icon ? <LinkIcon /> : textCurrency}
         </Link>
       ) : (
