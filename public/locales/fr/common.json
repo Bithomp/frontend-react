@@ -348,6 +348,7 @@
   "error": {
     "payment-partly": "Veuillez envoyer le reste du montant, jusqu'à présent nous n'avons reçu que {{received}} {{currency}} alors que <b>{{required}} {{currency}}</b> est requis.",
     "Network Error": "Il semble qu'il n'y ait pas de connexion Internet ;(",
+    "Request failed with status code 522": "Le serveur est actuellement inaccessible, essayez de nouveau plus tard.",
     "Request failed with status code 429": "Vous nous envoyez trop de demandes, essayez plus tard !",
     "Request failed with status code 404": "Cet appel API n'est pas autorisé sur ce réseau",
     "Request failed with status code 403": "Il semble que vous soyez déconnecté, veuillez vous reconnecter",

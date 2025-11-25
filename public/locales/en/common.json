@@ -348,6 +348,7 @@
   "error": {
     "payment-partly": "Please send the rest of the amount, so far we only received {{received}} {{currency}} when <b>{{required}} {{currency}}</b> is required.",
     "Network Error": "It seems there is no internet connection ;(",
+    "Request failed with status code 522": "The server is currently unreachable, try again later.",
     "Request failed with status code 429": "You are sending us too many requests, try later!",
     "Request failed with status code 404": "Such API call is not allowed on that network",
     "Request failed with status code 403": "It seems you're logged out, please log in again",

@@ -348,6 +348,7 @@
   "error": {
     "payment-partly": "Bitte überweisen Sie den Rest des Betrages. Bis jetzt haben wir erst {{received}} {{currency}} erhalten, obwohl <b>{{required}} {{currency}}</b> erwartet wird.",
     "Network Error": "Es scheint keine Internetverbindung zu bestehen ;(",
+    "Request failed with status code 522": "Der Server ist momentan nicht erreichbar, versuchen Sie es später erneut.",
     "Request failed with status code 429": "Sie senden uns zu viele Anfragen. Versuchen Sie es später erneut!",
     "Request failed with status code 404": "Dieser API Aufruf ist auf diesem Netzwerk nicht erlaubt",
     "Request failed with status code 403": "Es sieht so aus, als wären Sie abgemeldet. Bitte loggen Sie sich erneut ein",
