@@ -368,7 +368,7 @@ export const TransactionCard = ({
                         })}
                       </>
                     )}
-                  {outcome?.exchanges?.length > 0 && (
+                  {!tx?.TransactionType.includes('AMM') && outcome?.exchanges?.length > 0 && (
                     <>
                       <tr>
                         <TData style={{ verticalAlign: 'top' }}>Exchange{outcome?.exchanges?.length > 1 && 's'}</TData>
