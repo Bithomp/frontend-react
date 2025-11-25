@@ -3,15 +3,18 @@ import LinkIcon from '../public/images/link.svg'
 import { niceCurrency, shortHash } from './format'
 import CopyButton from '../components/UI/CopyButton'
 import { isValidTaxon } from './nft'
+import { shortName } from '.'
 
 export const LinkToken = ({ token, icon, copy, children }) => {
   if (!token) return ''
-  const { currencyDetails, issuer, mptId, currency } = token
+  const { currencyDetails, issuer, mptokenIssuanceID, currency, metadata } = token
+  const mpt = mptokenIssuanceID
+  let currencyName = metadata?.name // MPT
 
   const tokenUrl = '/token/' + issuer + '/' + currency
   const lpToken = currencyDetails?.type === 'lp_token'
 
-  const textCurrency = mptId
+  const textCurrency = mpt
     ? currency
     : lpToken && currencyDetails?.currency
     ? currencyDetails.currency
@@ -21,12 +24,29 @@ export const LinkToken = ({ token, icon, copy, children }) => {
 
   const linkAmm = lpToken && ammId
 
+  if (currencyName) {
+    currencyName = currencyName !== textCurrency ? shortName(currencyName, { maxLength: 10 }) : null
+  }
+
   return (
     <>
-      {!linkAmm && !mptId ? (
-        <Link href={tokenUrl}>{children || icon ? <LinkIcon /> : textCurrency}</Link>
+      {!linkAmm && !mpt ? (
+        <Link href={tokenUrl} className="bold">
+          {children || icon ? <LinkIcon /> : textCurrency}
+        </Link>
       ) : (
-        <>{linkAmm ? <LinkAmm ammId={ammId} text={currencyDetails?.currency} /> : textCurrency}</>
+        <>
+          {linkAmm ? (
+            <span className="bold">
+              <LinkAmm ammId={ammId} text={textCurrency} />
+            </span>
+          ) : (
+            <>
+              <span className="bold">{textCurrency}</span>
+              {mpt && <> {currencyName}</>}
+            </>
+          )}
+        </>
       )}
       {copy && (
         <>
