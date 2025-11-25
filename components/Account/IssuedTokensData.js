@@ -5,9 +5,9 @@ import {
   fullDateAndTime,
   shortNiceNumber,
   fullNiceNumber,
-  CurrencyWithIconInline,
   niceCurrency,
-  niceNumber
+  niceNumber,
+  CurrencyWithIcon
 } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 
@@ -74,8 +74,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
           </td>
           {mobile ? (
             <td className="left">
-              <CurrencyWithIconInline token={token} copy={true} link={true} />
-              <br />
+              <CurrencyWithIcon token={token} copy={true} />
               <span>Price: {fullNiceNumber(stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}</span>
               <br />
               <span>
@@ -103,7 +102,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
           ) : (
             <>
               <td className="left">
-                <CurrencyWithIconInline token={token} copy={true} link={true} />
+                <CurrencyWithIcon token={token} copy={true} hideIssuer={true} />
               </td>
               <td className="right">
                 <span className="tooltip">

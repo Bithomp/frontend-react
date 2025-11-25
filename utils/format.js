@@ -27,6 +27,21 @@ import { LinkAmm, LinkToken } from './links'
 dayjs.extend(durationPlugin)
 dayjs.extend(relativeTimePlugin)
 
+export const serviceUsernameOrAddressText = (data, name = 'address', options) => {
+  if (!data || !data[name]) return ''
+  const address = data[name]
+  const { service, username } = data[name + 'Details'] || {}
+  if (service) {
+    return service
+  } else if (username) {
+    return username
+  } else if (options?.fullAddress) {
+    return address
+  } else {
+    return shortHash(address)
+  }
+}
+
 export const NiceNativeBalance = ({ amount }) => {
   return (
     <span className="tooltip">
@@ -71,9 +86,9 @@ const TokenImage = ({ token }) => {
   )
 }
 
-export const CurrencyWithIcon = ({ token }) => {
+export const CurrencyWithIcon = ({ token, copy, hideIssuer }) => {
   if (!token) return ''
-  const { currencyDetails, issuer, mptId } = token
+  const { currencyDetails, issuer, mptId, currency } = token
   let imageUrl = avatarServer + issuer
 
   if (mptId) {
@@ -141,8 +156,22 @@ export const CurrencyWithIcon = ({ token }) => {
               <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
             )}
           </td>
-          <td style={{ padding: '0 0 0 5px' }} className="bold">
-            <LinkToken token={token} />
+          <td className="left" style={{ padding: '0 0 0 5px' }}>
+            <span className="bold">
+              <LinkToken token={token} />
+            </span>
+            {copy && (
+              <>
+                {' '}
+                <CopyButton text={currency} copyText="Copy code" />
+              </>
+            )}
+            {!doubleIcon && !hideIssuer && (
+              <>
+                <br />
+                <span className="grey text-xs">{serviceUsernameOrAddressText(token, 'issuer')}</span>
+              </>
+            )}
           </td>
         </tr>
       </tbody>

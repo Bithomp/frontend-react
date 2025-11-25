@@ -17,12 +17,16 @@ export const LinkToken = ({ token, icon, copy, children }) => {
     ? currencyDetails.currency
     : niceCurrency(currency)
 
+  const ammId = currencyDetails?.ammID
+
+  const linkAmm = lpToken && ammId
+
   return (
     <>
-      {!lpToken && !mptId ? (
+      {!linkAmm && !mptId ? (
         <Link href={tokenUrl}>{children || icon ? <LinkIcon /> : textCurrency}</Link>
       ) : (
-        <>{lpToken ? <LinkAmm ammId={currencyDetails?.ammID} text={currencyDetails?.currency} /> : textCurrency}</>
+        <>{linkAmm ? <LinkAmm ammId={ammId} text={currencyDetails?.currency} /> : textCurrency}</>
       )}
       {copy && (
         <>
