@@ -17,8 +17,8 @@ import {
   amountFormat,
   nativeCurrencyToFiat,
   AddressWithIcon,
-  AddressWithIconFilled,
-  niceCurrency
+  niceCurrency,
+  CurrencyWithIcon
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
 
@@ -262,12 +262,9 @@ export default function Amms({
 
   const LPToken = ({ a }) => {
     return (
-      <AddressWithIconFilled
-        data={a.lpTokenBalance}
-        name="issuer"
-        currency={a.lpTokenBalance.currency}
-        options={{
-          short: true,
+      <CurrencyWithIcon
+        token={{
+          ...a.lpTokenBalance,
           currencyDetails: {
             type: 'lp_token',
             ammID: a.ammID,

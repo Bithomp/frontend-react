@@ -38,7 +38,7 @@ export const LinkToken = ({ token, icon, copy, children }) => {
         <>
           {linkAmm ? (
             <span className="bold">
-              <LinkAmm ammId={ammId} text={textCurrency} />
+              <LinkAmm ammId={ammId} text={textCurrency} style={{ textDecoration: 'none' }} />
             </span>
           ) : (
             <>
