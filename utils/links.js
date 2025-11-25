@@ -7,15 +7,14 @@ import { shortName } from '.'
 
 export const LinkToken = ({ token, icon, copy, children }) => {
   if (!token) return ''
-  const { currencyDetails, issuer, mptokenIssuanceID, currency, metadata } = token
-  const mpt = mptokenIssuanceID
-  let currencyName = metadata?.name // MPT
+  const { currencyDetails, issuer, mptId, currency, metadata } = token
 
   const tokenUrl = '/token/' + issuer + '/' + currency
   const lpToken = currencyDetails?.type === 'lp_token'
+  const mptCurrency = metadata?.currency || metadata?.c || currency || 'N/A'
 
-  const textCurrency = mpt
-    ? currency
+  const textCurrency = mptId
+    ? mptCurrency
     : lpToken && currencyDetails?.currency
     ? currencyDetails.currency
     : niceCurrency(currency)
@@ -24,13 +23,14 @@ export const LinkToken = ({ token, icon, copy, children }) => {
 
   const linkAmm = lpToken && ammId
 
+  let currencyName = metadata?.name
   if (currencyName) {
     currencyName = currencyName !== textCurrency ? shortName(currencyName, { maxLength: 10 }) : null
   }
 
   return (
     <>
-      {!linkAmm && !mpt ? (
+      {!linkAmm && !mptId ? (
         <Link href={tokenUrl} className="bold" style={{ textDecoration: 'none' }}>
           {children || icon ? <LinkIcon /> : textCurrency}
         </Link>
@@ -43,7 +43,7 @@ export const LinkToken = ({ token, icon, copy, children }) => {
           ) : (
             <>
               <span className="bold">{textCurrency}</span>
-              {mpt && <> {currencyName}</>}
+              {mptId && <> {currencyName}</>}
             </>
           )}
         </>

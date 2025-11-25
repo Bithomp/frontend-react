@@ -86,15 +86,27 @@ const TokenImage = ({ token }) => {
   )
 }
 
-export const CurrencyWithIcon = ({ token, copy, hideIssuer }) => {
+export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
   if (!token) return ''
-  const { currencyDetails, issuer, mptokenIssuanceID, currency } = token
-  const mpt = mptokenIssuanceID
+
+  if (!token?.mptId) token.mptId = token.mptokenIssuanceID || token.MPTokenIssuanceID || token.mpt_issuance_id
+
+  if (token.mptId) {
+    if (!token.issuer) {
+      token.issuer = token.mptokenCurrencyDetails?.account || token.Issuer || null
+      token.issuerDetails = token.mptokenCurrencyDetails?.accountDetails || token.issuerDetails || null
+    }
+    if (!token.metadata) {
+      token.metadata = token.mptokenCurrencyDetails?.metadata || null
+    }
+  }
+
+  const { currencyDetails, issuer, mptId, currency } = token
 
   let imageUrl = avatarServer + issuer
 
-  if (mpt) {
-    imageUrl = mptokenImageSrc(mpt)
+  if (mptId) {
+    imageUrl = mptokenImageSrc(mptId)
   } else {
     imageUrl = tokenImageSrc(token)
   }
@@ -170,8 +182,8 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer }) => {
               {!doubleIcon && !hideIssuer && (
                 <>
                   <br />
-                  {mpt ? (
-                    <>{addressUsernameOrServiceLink(token, 'issuer')}</>
+                  {mptId ? (
+                    <>{addressUsernameOrServiceLink(token, 'issuer', options)}</>
                   ) : (
                     <span className="grey text-xs">{serviceUsernameOrAddressText(token, 'issuer')}</span>
                   )}
