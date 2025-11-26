@@ -5,6 +5,8 @@ import axios from 'axios'
 import { addressBalanceChanges } from '../../utils/transaction'
 import { xls14NftValue } from '../../utils'
 import Link from 'next/link'
+import { isRipplingOnIssuer } from '../../utils/transaction/payment'
+import { add } from '../../utils/calc'
 
 export default function RecentTransactions({ userData, ledgerTimestamp }) {
   const [transactions, setTransactions] = useState([])
@@ -50,22 +52,51 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
   }
 
   // Function to get all transaction changes
-  const getAllTransactionChanges = (txdata) => {
-    // Check for balance changes first
-    const balanceChanges = addressBalanceChanges(txdata, address)
-    if (balanceChanges && balanceChanges.length > 0) {
-      return balanceChanges.map((change, index) => (
-        <span key={index}>
-          <span className={Number(change.value) > 0 ? 'green' : 'red'}>
+  const getAllTransactionChanges = (balanceChanges, rippling) => {
+    if (!balanceChanges || balanceChanges.length === 0) return null
+
+    if (rippling) {
+      const total = balanceChanges.reduce((sum, change) => {
+        return add(sum, Number(change.value || 0))
+      }, 0)
+
+      const totalChange = {
+        ...balanceChanges[0],
+        value: total
+      }
+
+      return (
+        <span>
+          <span className={total > 0 ? 'green' : total < 0 ? 'red' : ''}>
             <span className="tooltip">
-              {Number(change.value) > 0 ? '+' : ''}
-              <span>{amountFormat(change, { short: true, maxFractionDigits: 2, noSpace: true })}</span>
-              <span className="tooltiptext no-brake">{amountFormat(change, { precise: 'nice' })}</span>
+              {total > 0 ? '+' : ''}
+              <span>
+                {amountFormat(totalChange, {
+                  short: true,
+                  maxFractionDigits: 2,
+                  noSpace: true
+                })}
+              </span>
+              <span className="tooltiptext no-brake">{amountFormat(totalChange, { precise: 'nice' })}</span>
             </span>
           </span>
-          {index < balanceChanges.length - 1 && ', '}
         </span>
-      ))
+      )
+    } else {
+      if (balanceChanges && balanceChanges.length > 0) {
+        return balanceChanges.map((change, index) => (
+          <span key={index}>
+            <span className={Number(change.value) > 0 ? 'green' : 'red'}>
+              <span className="tooltip">
+                {Number(change.value) > 0 ? '+' : ''}
+                <span>{amountFormat(change, { short: true, maxFractionDigits: 2, noSpace: true })}</span>
+                <span className="tooltiptext no-brake">{amountFormat(change, { precise: 'nice' })}</span>
+              </span>
+            </span>
+            {index < balanceChanges.length - 1 && ', '}
+          </span>
+        ))
+      }
     }
 
     // Check for NFTokenMint transactions
@@ -312,12 +343,16 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
   }
 
   // Function to get specific payment type
-  const getPaymentType = (txdata) => {
+  const getPaymentType = (txdata, rippling) => {
     if (txdata.tx?.TransactionType !== 'Payment') {
       return txdata.tx?.TransactionType
     }
 
     const { outcome, specification } = txdata
+
+    if (rippling) {
+      return 'Rippling'
+    }
 
     // Check if it's a conversion payment (same source and destination)
     const isConversion =
@@ -397,17 +432,19 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
               </tr>
               {transactions.map((txdata, i) => {
                 const status = getTransactionStatus(txdata)
+                const balanceChanges = addressBalanceChanges(txdata, address)
+                const rippling = isRipplingOnIssuer(balanceChanges, address)
                 return (
                   <tr key={txdata.tx?.hash || i}>
                     <td className="center" style={{ width: 65 }}>
                       <span className={status.color}>{status.status}</span>
                     </td>
                     <td className="right no-brake">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
-                    <td className="right no-brake">{getPaymentType(txdata)}</td>
+                    <td className="right no-brake">{getPaymentType(txdata, rippling)}</td>
                     <td className="right">
                       <LinkTx tx={txdata.tx?.hash} short={4} />
                     </td>
-                    <td className="right">{getAllTransactionChanges(txdata, address)}</td>
+                    <td className="right">{getAllTransactionChanges(balanceChanges, rippling)}</td>
                   </tr>
                 )
               })}
@@ -435,17 +472,19 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
               </tr>
               {transactions.map((txdata, i) => {
                 const status = getTransactionStatus(txdata)
+                const balanceChanges = addressBalanceChanges(txdata, address)
+                const rippling = isRipplingOnIssuer(balanceChanges, address)
                 return (
                   <tr key={txdata.tx?.hash || i}>
                     <td className="center" style={{ width: 20 }}>
                       <span className={status.color}>{status.status}</span>
                     </td>
                     <td className="right">{txdata.tx?.date ? timeOrDate(txdata.tx.date, 'ripple') : '-'}</td>
-                    <td className="right">{getPaymentType(txdata)}</td>
+                    <td className="right">{getPaymentType(txdata, rippling)}</td>
                     <td className="center">
                       <LinkTx tx={txdata.tx?.hash} icon={true} />
                     </td>
-                    <td className="right">{getAllTransactionChanges(txdata, address)}</td>
+                    <td className="right">{getAllTransactionChanges(balanceChanges, rippling)}</td>
                   </tr>
                 )
               })}
