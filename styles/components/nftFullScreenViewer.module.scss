@@ -1,5 +1,11 @@
-.nftFullScreenViewer :global {
-  .fv-root {
+@import './NftViewer.scss';
+
+.nftFullScreenView :global {
+  // Shared styles (from NftViewer.scss)
+  @include shared-nft-viewer-styles;
+
+  // Fullscreen-specific styles
+  .fv-fullscreen-root {
     position: fixed;
     top: 0;
     left: 0;
@@ -14,7 +20,7 @@
     }
   }
   
-  .fv-header {
+  .fv-fullscreen-header {
     position: sticky;
     top: 80px;
     padding: 15px 20px;
@@ -23,24 +29,24 @@
     align-items: center;
   }
   
-  .fv-header-left {
+  .fv-fullscreen-header-left {
     display: flex;
     align-items: center;
     gap: 20px;
   }
   
-  .fv-tabs-container {
+  .fv-fullscreen-tabs-container {
     display: flex;
     gap: 10px;
   }
   
-  .fv-actions-container {
+  .fv-fullscreen-actions-container {
     display: flex;
     align-items: center;
     gap: 15px;
   }
   
-  .fv-button {
+  .fv-fullscreen-button {
     background-color: transparent;
     border: 1px solid var(--accent-link);
     border-radius: 4px;
@@ -52,21 +58,21 @@
     box-sizing: border-box;
   }
   
-  .fv-action-button {
+  .fv-fullscreen-action-button {
     padding: 8px 16px;
     min-height: 40px;
     font-size: 14px;
     color: white;
   }
   
-  .fv-close-button {
+  .fv-fullscreen-close-button {
     padding: 8px 16px;
     min-height: 40px;
     font-size: 16px;
     color: white;
   }
   
-  .fv-tab-button {
+  .fv-fullscreen-tab-button {
     padding: 8px 16px;
     font-size: 14px;
     border: 1px solid var(--accent-link);
@@ -75,11 +81,11 @@
     color: white;
   }
   
-  .fv-tab-button-active {
+  .fv-fullscreen-tab-button-active {
     background-color: var(--accent-link);
   }
   
-  .fv-content {
+  .fv-fullscreen-content {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -87,13 +93,13 @@
     overflow: hidden;
   }
   
-  .fv-age-image {
+  .fv-fullscreen-age-image {
     max-width: 100%;
     max-height: 76vh;
     height: auto;
   }
   
-  .fv-media-image {
+  .fv-fullscreen-media-image {
     padding-top: 60px;
     max-width: 90vw;
     max-height: 76vh;
@@ -102,19 +108,19 @@
     object-fit: contain;
   }
   
-  .fv-panorama {
+  .fv-fullscreen-panorama {
     width: 90vw;
     height: 76vh;
     max-width: 1200px;
   }
   
-  .fv-model {
+  .fv-fullscreen-model {
     width: 90vw;
     height: 76vh;
     max-width: 1200px;
   }
   
-  .fv-video {
+  .fv-fullscreen-video {
     padding-top: 60px;
     max-width: 90vw;
     max-height: 76vh;
@@ -123,7 +129,7 @@
     object-fit: contain;
   }
   
-  .fv-audio-bar {
+  .fv-fullscreen-audio-bar {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -133,140 +139,50 @@
     backdrop-filter: blur(10px);
   }
   
-  .fv-audio-row {
+  .fv-fullscreen-audio-row {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 20px;
   }
   
-  .fv-audio {
+  .fv-fullscreen-audio {
     max-width: 600px;
     width: 100%;
   }
   
-  .fv-title {
+  .fv-fullscreen-title {
     color: white;
     margin: 0;
     font-size: 24px;
   }
   
-  .fv-mobile-buttons {
+  .fv-fullscreen-mobile-buttons {
     display: none;
   }
   
-  // Common styles for both fullscreen and preview
-  .fv-download-icon {
-    display: inline-block;
-    vertical-align: bottom;
-    height: 19px;
-  }
-  
-  .fv-loading-container {
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 20px;
-  }
-  
-  .fv-preview-button {
-    background-color: transparent;
-    color: var(--accent-link);
-    border: 1px solid var(--accent-link);
-    border-radius: 4px;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    height: 32px;
-    box-sizing: border-box;
-    text-decoration: none;
-  }
-  
-  .fv-preview-image, .fv-preview-video, .fv-preview-age-image {
-    width: 100%;
-    height: auto;
-  }
-  
-  .fv-preview-panorama {
-    width: 100%;
-    aspect-ratio: 2/1;
-  }
-  
-  .fv-preview-audio {
-    display: block;
-    margin: 20px auto;
-  }
-  
-  .fv-preview-actions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  
-  .fv-preview-tabs-container {
-    height: 31px;
-    margin-bottom: 10px;
-  }
-  
-  .fv-preview-tabs-inline {
-    float: left;
-  }
-  
-  .fv-preview-actions-right {
-    float: right;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  
-  .fv-preview-action-row {
-    padding: 4px 0px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  
-  .fv-preview-action-row-center {
-    padding: 4px 0px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .fv-preview-action-row-right {
-    padding: 4px 0px;
-    float: right;
-  }
-  
-  .fv-preview-spacer {
-    height: 15px;
-  }
-  
   @media (max-width: 768px) {
-    .fv-header {
+    .fv-fullscreen-header {
       flex-direction: column;
       align-items: center;
       gap: 12px;
     }
   
-    .fv-header-left {
+    .fv-fullscreen-header-left {
       flex-direction: column;
       align-items: center;
       gap: 8px;
     }
   
-    .fv-header-left .fv-tabs-container {
+    .fv-fullscreen-header-left .fv-fullscreen-tabs-container {
       display: none;
     }
   
-    .fv-actions-container {
+    .fv-fullscreen-actions-container {
       display: none;
     }
   
-    .fv-mobile-buttons {
+    .fv-fullscreen-mobile-buttons {
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
@@ -275,22 +191,22 @@
       width: 100%;
     }
   
-    .fv-mobile-buttons .fv-tabs-container {
+    .fv-fullscreen-mobile-buttons .fv-fullscreen-tabs-container {
       flex-wrap: nowrap;
       justify-content: center;
       gap: 4px;
       display: flex;
     }
   
-    .fv-mobile-buttons .fv-actions-container {
+    .fv-fullscreen-mobile-buttons .fv-fullscreen-actions-container {
       justify-content: center;
       flex-wrap: nowrap;
       gap: 4px;
       display: flex;
     }
   
-    .fv-tab-button,
-    .fv-button {
+    .fv-fullscreen-tab-button,
+    .fv-fullscreen-button {
       font-size: 10px;
       padding: 3px 6px;
       min-height: 26px;
@@ -298,11 +214,11 @@
       flex-shrink: 1;
     }
   
-    .fv-close-button {
+    .fv-fullscreen-close-button {
       font-size: 11px;
     }
   
-    .fv-title {
+    .fv-fullscreen-title {
       font-size: 18px !important;
       margin: 0 0 8px 0 !important;
     }

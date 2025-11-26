@@ -1,9 +1,11 @@
+import React from 'react'
 import { Buffer } from 'buffer'
-import { stripText, shortName, webSiteName } from '.'
+import { stripText, shortName, webSiteName, forbid18Plus } from '.'
 
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
 import { amountFormat, shortHash } from './format'
+import { FaCloudDownloadAlt } from 'react-icons/fa'
 
 //partner market places (destinations)
 export const partnerMarketplaces = {
@@ -662,12 +664,12 @@ export const buildContentTabList = (imageUrl, videoUrl, modelUrl, t) => {
 // Extract all media URLs from NFT
 export const extractNftUrls = (nft) => {
   return {
-    image: nftUrl(nft, 'image'),
-    video: nftUrl(nft, 'video'),
-    audio: nftUrl(nft, 'audio'),
-    model: nftUrl(nft, 'model'),
-    viewer: nftUrl(nft, 'viewer'),
-    cl: {
+    imageUrl: nftUrl(nft, 'image'),
+    videoUrl: nftUrl(nft, 'video'),
+    audioUrl: nftUrl(nft, 'audio'),
+    modelUrl: nftUrl(nft, 'model'),
+    viewerUrl: nftUrl(nft, 'viewer'),
+    clUrl: {
       image: nftUrl(nft, 'image', 'cl'),
       video: nftUrl(nft, 'video', 'cl'),
       audio: nftUrl(nft, 'audio', 'cl'),
@@ -708,4 +710,46 @@ export const buildImageStyle = (imageUrl, nft, options = {}) => {
   }
   
   return style
+}
+
+// Render loading/error state for NFT media
+export const renderLoadingImage = (errored, loaded, t) => {
+  if (errored) {
+    return (
+      <div className="fv-loading-container">
+        {t('general.load-failed')}
+        <br />
+      </div>
+    )
+  } else if (!loaded) {
+    return (
+      <div className="fv-loading-container">
+        <span className="waiting"></span>
+        <br />
+        {t('general.loading')}
+      </div>
+    )
+  }
+  return null
+}
+
+// Handle 18+ content age check click
+export const handle18PlusClick = async (setShowAgeCheck) => {
+  const forbid = await forbid18Plus()
+  if (forbid) return
+  setShowAgeCheck(true)
+}
+
+// Render download button component
+export const renderDownloadButton = (url, label, className = 'fv-preview-button') => {
+  return (
+    <a 
+      href={url} 
+      target="_blank" 
+      rel="noreferrer"
+      className={className}
+    >
+      {label} <FaCloudDownloadAlt />
+    </a>
+  )
 }

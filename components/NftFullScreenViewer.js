@@ -1,116 +1,62 @@
-import { useState, useEffect } from 'react'
-import { useTranslation } from 'next-i18next'
+import { useEffect } from 'react'
 import Head from 'next/head'
 
-import { forbid18Plus } from '../utils'
 import { 
-  needNftAgeCheck, 
   nftName, 
-  isPanorama, 
-  processModelAttributes, 
-  buildContentTabList, 
-  extractNftUrls, 
-  getDefaultTabAndUrl, 
-  buildImageStyle 
+  renderDownloadButton
 } from '../utils/nft'
 
-import LoadingGif from '../public/images/loading.gif'
-import { FaCloudDownloadAlt, FaTimes } from 'react-icons/fa'
-import ReactPannellum from 'react-pannellum'
+import { useNftContent } from '../hooks/useNftContent'
+import { FaTimes } from 'react-icons/fa'
 import AgeCheck from './UI/AgeCheck'
-import { nftFullScreenViewer } from '../styles/components/nftFullScreenViewer.module.scss'
-
-
-const downloadIcon = (
-  <div className="fv-download-icon">
-    <FaCloudDownloadAlt />
-  </div>
-)
-
+import NftContentRenderer from './Nft/NftContentRenderer'
+import styles from '../styles/components/nftFullScreenViewer.module.scss'
 
 export default function NftFullScreenViewer({ nft, onClose }) {
-  const { t } = useTranslation()
-  const [contentTab, setContentTab] = useState('image')
-  const [loaded, setLoaded] = useState(false)
-  const [errored, setErrored] = useState(false)
-  const [isPanoramic, setIsPanoramic] = useState(false)
-  const [showAgeCheck, setShowAgeCheck] = useState(false)
+  const {
+    contentTab,
+    setContentTab,
+    loaded,
+    setLoaded,
+    errored,
+    setErrored,
+    isPanoramic,
+    showAgeCheck,
+    setShowAgeCheck,
+    imageUrl,
+    videoUrl,
+    audioUrl,
+    modelUrl,
+    clUrl,
+    contentTabList,
+    imageStyle,
+    defaultTab,
+    defaultUrl,
+    modelAttr,
+    t
+  } = useNftContent(nft, { baseStyle: { width: '100%', height: 'auto', maxHeight: '76vh' } })
 
-  const urls = extractNftUrls(nft)
-  const { image: imageUrl, video: videoUrl, audio: audioUrl, model: modelUrl } = urls
-  const { cl: clUrl } = urls
-
-  const contentTabList = buildContentTabList(imageUrl, videoUrl, modelUrl, t)
-
-  const imageStyle = buildImageStyle(imageUrl, nft, { baseStyle: { width: '100%', height: 'auto', maxHeight: '76vh' } })
-
-  const { defaultTab, defaultUrl } = getDefaultTabAndUrl(contentTab, imageUrl, clUrl)
-
-  const modelAttr = processModelAttributes(nft)
-
-  useEffect(() => {
-    if (imageUrl || videoUrl) {
-      const panoramic = isPanorama(nft.metadata)
-      setIsPanoramic(panoramic)
-      if (panoramic) {
-        setLoaded(true)
-      }
-      // if no image, but there is a video, don't show loading spinner
-      if (!imageUrl) {
-        setLoaded(true)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageUrl, videoUrl, nft.metadata])
-
-  // Disable body scroll when full-screen viewer is open
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     
-    // Set search block visibility flag to false when full screen opens
     document.body.setAttribute('data-fullscreen-open', 'true')
 
     return () => {
       document.body.style.overflow = 'unset'
-      // Set search block visibility flag to true when full screen closes
       document.body.setAttribute('data-fullscreen-open', 'false')
     }
   }, [])
 
-  const clickOn18PlusImage = async () => {
-    const forbid = await forbid18Plus()
-    if (forbid) return
-    setShowAgeCheck(true)
-  }
-
-  const loadingImage = () => {
-    if (errored) {
-      return (
-        <div className="fv-loading-container">
-          {t('general.load-failed')}
-          <br />
-        </div>
-      )
-    } else if (!loaded) {
-      return (
-        <div className="fv-loading-container">
-          <span className="waiting"></span>
-          <br />
-          {t('general.loading')}
-        </div>
-      )
-    }
-  }
 
   // Reusable button rendering functions
   const renderTabButtons = (containerClass = '') => (
     contentTabList.length > 1 && (
-      <div className={`fv-tabs-container ${containerClass}`}>
+      <div className={`fv-fullscreen-tabs-container ${containerClass}`}>
         {contentTabList.map(tab => (
           <button
             key={tab.value}
             onClick={() => setContentTab(tab.value)}
-            className={`fv-tab-button ${contentTab === tab.value ? 'fv-tab-button-active' : ''}`}
+            className={`fv-fullscreen-tab-button ${contentTab === tab.value ? 'fv-fullscreen-tab-button-active' : ''}`}
           >
             {tab.label}
           </button>
@@ -133,21 +79,12 @@ export default function NftFullScreenViewer({ nft, onClose }) {
     }
 
     return (
-      <div className={`fv-actions-container ${containerClass}`}>
-        {downloadUrl && (
-          <a 
-            href={downloadUrl} 
-            target="_blank" 
-            rel="noreferrer"
-            className="fv-button fv-action-button"
-          >
-            {t('tabs.' + contentTab)} {downloadIcon}
-          </a>
-        )}
+      <div className={`fv-fullscreen-actions-container ${containerClass}`}>
+        {downloadUrl && renderDownloadButton(downloadUrl, t('tabs.' + contentTab), 'fv-fullscreen-button fv-fullscreen-action-button')}
         
         <button
           onClick={onClose}
-          className="fv-button fv-close-button"
+          className="fv-fullscreen-button fv-fullscreen-close-button"
         >
           <FaTimes /> Close
         </button>
@@ -155,28 +92,18 @@ export default function NftFullScreenViewer({ nft, onClose }) {
     );
   };
 
-  const renderDownloadButton = (url, label) => (
-    <a 
-      href={url} 
-      target="_blank" 
-      rel="noreferrer"
-      className="fv-button fv-action-button"
-    >
-      {label} {downloadIcon}
-    </a>
-  );
 
   return (
-    <div className={nftFullScreenViewer}>
-      <div className="fv-root">
+    <div className={styles.nftFullScreenView}>
+      <div className="fv-fullscreen-root">
         <Head>
           <title>{nftName(nft) || 'NFT Viewer'} - Full Screen</title>
         </Head>
         
         {/* Header with close button and tabs */}
-        <div className="fv-header">
-          <div className="fv-header-left">
-            <h2 className="fv-title">
+        <div className="fv-fullscreen-header">
+          <div className="fv-fullscreen-header-left">
+            <h2 className="fv-fullscreen-title">
               {nftName(nft) || 'NFT Viewer'}
             </h2>
             
@@ -186,129 +113,47 @@ export default function NftFullScreenViewer({ nft, onClose }) {
           {renderActionButtons()}
 
           {/* Mobile buttons row */}
-          <div className="fv-mobile-buttons">
+          <div className="fv-fullscreen-mobile-buttons">
             {renderTabButtons()}
             {renderActionButtons()}
           </div>
         </div>
 
         {/* Content Area */}
-        <div className="fv-content">
-          {needNftAgeCheck(nft) ? (
-            <img
-              src="/images/nft/18plus.jpg"
-              className="fv-age-image"
-              onClick={clickOn18PlusImage}
-              alt="18 plus content"
-            />
-          ) : (
-            <>
-              {imageUrl && contentTab === 'image' && (
-                <>
-                  {loadingImage()}
-                  {isPanoramic ? (
-                    <ReactPannellum
-                      id="fullscreen-panorama"
-                      sceneId="fullscreenScene"
-                      imageSource={defaultUrl}
-                      config={{
-                        autoLoad: true,
-                        autoRotate: -2
-                      }}
-                      className="fv-panorama"
-                      style={{ display: loaded ? 'inline-block' : 'none' }}
-                    />
-                  ) : (
-                    <img
-                      className="fv-media-image"
-                      style={{ 
-                        imageRendering: imageStyle.imageRendering,
-                        filter: imageStyle.filter,
-                        display: loaded ? 'inline-block' : 'none'
-                      }}
-                      src={imageUrl}
-                      onLoad={() => {
-                        setLoaded(true)
-                        setErrored(false)
-                      }}
-                      onError={({ currentTarget }) => {
-                        if (currentTarget.src === imageUrl && imageUrl !== clUrl.image) {
-                          currentTarget.src = clUrl.image
-                        } else {
-                          setErrored(true)
-                        }
-                      }}
-                      alt={nftName(nft)}
-                    />
-                  )}
-                </>
-              )}
-              
-              {videoUrl && contentTab === 'video' && (
-                <>
-                  {loadingImage()}
-                  {isPanoramic ? (
-                    <ReactPannellum
-                      id="fullscreen-video-panorama"
-                      sceneId="fullscreenVideoScene"
-                      imageSource={videoUrl}
-                      config={{
-                        autoLoad: true,
-                        autoRotate: 0
-                      }}
-                      className="fv-panorama"
-                      style={{ display: loaded ? 'inline-block' : 'none' }}
-                    />
-                  ) : (
-                    <video 
-                      autoPlay 
-                      playsInline 
-                      muted 
-                      loop 
-                      controls 
-                      className="fv-video"
-                    >
-                      <source src={videoUrl} type="video/mp4" />
-                    </video>
-                  )}
-                </>
-              )}
-              
-              {modelUrl && contentTab === 'model' && (
-                <>
-                  <Head>
-                    <script type="module" src="/js/model-viewer.min.js?v=2" defer />
-                  </Head>
-                  <model-viewer
-                    className="model-viewer fv-model"
-                    src={modelUrl}
-                    camera-controls
-                    auto-rotate
-                    ar
-                    poster={LoadingGif}
-                    autoplay
-                    ar-modes="webxr scene-viewer quick-look"
-                    {...modelAttr?.reduce((prev, curr) => {
-                      prev[curr.attribute] = curr.value
-                      return prev
-                    }, {})}
-                  ></model-viewer>
-                </>
-              )}
-            </>
-          )}
+        <div className="fv-fullscreen-content">
+          <NftContentRenderer
+            nft={nft}
+            contentTab={contentTab}
+            imageUrl={imageUrl}
+            videoUrl={videoUrl}
+            modelUrl={modelUrl}
+            defaultTab={defaultTab}
+            defaultUrl={defaultUrl}
+            clUrl={clUrl}
+            imageStyle={imageStyle}
+            modelAttr={modelAttr}
+            isPanoramic={isPanoramic}
+            loaded={loaded}
+            errored={errored}
+            setLoaded={setLoaded}
+            setErrored={setErrored}
+            setShowAgeCheck={setShowAgeCheck}
+            classNamePrefix="fv-fullscreen"
+            panoramaIds={{ image: 'fullscreen-panorama', video: 'fullscreen-video-panorama' }}
+            panoramaSceneIds={{ image: 'fullscreenScene', video: 'fullscreenVideoScene' }}
+          />
         </div>
 
         {/* Audio player at bottom if applicable */}
         {defaultTab !== 'model' && defaultTab !== 'video' && audioUrl && (
-          <div className="fv-audio-bar">
-            <div className="fv-audio-row">
+          <div className="fv-fullscreen-audio-bar">
+            <div className="fv-fullscreen-audio-row">
               <audio 
                 src={audioUrl} 
                 controls 
-                className="fv-audio"
+                className="fv-fullscreen-audio"
               />
-              {renderDownloadButton(audioUrl, t('tabs.audio'))}
+              {renderDownloadButton(audioUrl, t('tabs.audio'), 'fv-fullscreen-button fv-fullscreen-action-button')}
             </div>
           </div>
         )}
