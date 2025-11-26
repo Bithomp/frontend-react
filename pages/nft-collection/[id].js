@@ -485,12 +485,9 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
                                   <tr>
                                     <td>Owners</td>
                                     <td className={statsTdClass}>
-                                      {/*<Link
-                                        href={`/nft-distribution?collection=${collection.collection}&includeWithoutMediaData=true`}
-                                      >
+                                      <Link href={`/nft-distribution?${collectionPart}&includeWithoutMediaData=true`}>
                                         {statistics.owners}
-                                      </Link>*/}
-                                      {statistics.owners}
+                                      </Link>
                                     </td>
                                   </tr>
                                 )}
