@@ -102,7 +102,7 @@ export default function IssueAToken() {
                     ? '/images/xahauexplorer/learn/trustlines/screen-simple.png'
                     : '/images/xrplexplorer/learn/trustlines/screen-simple.png'
                 }
-                alt="Set Trustline on XRPL and Xahau"
+                alt="Set Trustline"
                 width={1520}
                 height={855}
                 className="max-w-full h-auto object-contain"
@@ -127,7 +127,7 @@ export default function IssueAToken() {
                     ? '/images/xahauexplorer/learn/trustlines/screen-advanced.png'
                     : '/images/xrplexplorer/learn/trustlines/screen-advanced.png'
                 }
-                alt="Set Trustline on XRPL and Xahau"
+                alt="Set Trustline"
                 width={2376}
                 height={2786}
                 className="max-w-full h-auto object-contain"
