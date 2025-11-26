@@ -22,6 +22,7 @@ import { isTagValid, useWidth } from '../../../utils'
 import { i18n } from 'next-i18next'
 import CopyButton from '../../UI/CopyButton'
 import { useIsMobile } from '../../../utils/mobile'
+import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
 
 /*
   {
@@ -83,6 +84,8 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
 
   const typeNode = txTypeSpecial || <span className="bold">{tx?.TransactionType}</span>
 
+  const rippling = isRipplingOnIssuer(sourceBalanceChangesList, address)
+
   return (
     <tr
       style={{
@@ -100,17 +103,18 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
           {typeNode}
           <br />
           <br />
-          {sourceBalanceChangesList?.map((change, index) => (
-            <div key={index}>
-              {amountFormat(change, {
-                icon: true,
-                bold: true,
-                color: 'direction',
-                showPlus: true,
-                short: true
-              })}
-            </div>
-          ))}
+          {!rippling &&
+            sourceBalanceChangesList?.map((change, index) => (
+              <div key={index}>
+                {amountFormat(change, {
+                  icon: true,
+                  bold: true,
+                  color: 'direction',
+                  showPlus: true,
+                  short: true
+                })}
+              </div>
+            ))}
         </td>
       )}
       <td>
@@ -132,7 +136,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
             <br />
           </>
         )}
-        {!isConvertion && specification?.destination?.address && (
+        {!rippling && !isConvertion && specification?.destination?.address && (
           <>
             {specification?.source?.address === address ? (
               <>
@@ -149,13 +153,13 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
             <br />
           </>
         )}
-        {isTagValid(tx.DestinationTag) && (
+        {!rippling && isTagValid(tx.DestinationTag) && (
           <>
             Destination tag: <span className="bold">{tx.DestinationTag}</span>
             <br />
           </>
         )}
-        {isTagValid(tx.SourceTag) && !dapp && (
+        {!rippling && isTagValid(tx.SourceTag) && !dapp && (
           <>
             Source tag: <span className="bold">{tx.SourceTag}</span>
             <br />
