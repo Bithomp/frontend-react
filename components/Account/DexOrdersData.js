@@ -224,7 +224,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
           )}
         </center>
         <br />
-        <table className="table-mobile wide">
+        <table className="table-mobile">
           <tbody>
             <tr>
               <th>#</th>
