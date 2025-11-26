@@ -830,7 +830,7 @@ export default function LedgerData({
             </p>
           </>
         )}
-        {data?.ledgerInfo?.activated && (
+        {data?.ledgerInfo?.activated && !gateway && (
           <>
             {showObjectSection(objects?.rippleStateList) && (
               <p>
