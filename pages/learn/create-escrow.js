@@ -18,16 +18,13 @@ export async function getServerSideProps(context) {
 }
 
 export default function CreateEscrow() {
-  const serverUrl = ['mainnet', 'testnet', 'devnet'].includes(network) ? 'bithomp.com' : 'xahauexplorer.com'
-
   return (
     <>
       <SEO
-        title={'How to create an escrow on ' + explorerName}
-        description="Step-by-step guide on how to create an escrow on XRPL or Xahau. Understand XRPL and Xahau escrows, their use cases."
+        title={'How to create an escrow'}
+        description="Step-by-step guide on how to create an escrow. Understanding escrows, their use cases."
         noindex={network !== 'mainnet'}
         image={{ file: '/images/pages/learn/create-escrow/cover', width: 1520, height: 855, allNetworks: true }}
-        canonical={serverUrl + '/create-escrow'}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
@@ -37,7 +34,7 @@ export default function CreateEscrow() {
             <figure>
               <Image
                 src={'/images/pages/learn/create-escrow/cover' + (xahauNetwork ? '-xahau' : '') + '.jpg'}
-                alt="Create an escrow on XRPL and Xahau"
+                alt="Create an escrow"
                 width={1520}
                 height={855}
                 className="max-w-full h-auto object-contain"
@@ -120,7 +117,7 @@ export default function CreateEscrow() {
             <figure>
               <Image
                 src={'/images/pages/learn/create-escrow/screen' + (xahauNetwork ? '-xahau' : '') + '.png'}
-                alt="Create an escrow on XRPL and Xahau"
+                alt="Create an escrow"
                 width={1520}
                 height={1697}
                 className="max-w-full h-auto object-contain"
@@ -134,7 +131,10 @@ export default function CreateEscrow() {
               <strong>Step 1. Enter the Recipient Address</strong>
             </p>
             <p>Fill in the destination wallet address.</p>
-            <p>👉 If the recipient is using an exchange or a service, you may also need to enter a Destination Tag.</p>
+            <p>
+              👉 Avoid sending funds to exchange or service addresses—if the address changes or the exchange shuts down,
+              the escrow may never reach the recipient.
+            </p>
             <p>
               <strong>Step 2. Enter the Amount</strong>
             </p>
@@ -186,7 +186,7 @@ export default function CreateEscrow() {
             <figure>
               <Image
                 src={'/images/pages/learn/create-escrow/screen-cancel.png'}
-                alt="cancel an escrow on XRPL and Xahau"
+                alt="cancel an escrow"
                 width={1520}
                 height={791}
                 className="max-w-full h-auto object-contain"
