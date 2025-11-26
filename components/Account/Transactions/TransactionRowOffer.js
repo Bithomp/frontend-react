@@ -2,6 +2,7 @@ import { TransactionRowCard } from './TransactionRowCard'
 import { addressBalanceChanges } from '../../../utils/transaction'
 import { amountFormat, nativeCurrencyToFiat, showFlags } from '../../../utils/format'
 import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
+import { RipplingChanges } from './Elements/RipplingChanges'
 
 export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) => {
   const { specification, outcome, tx } = data
@@ -39,7 +40,6 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
   }
 
   const ripplingTitle = rippling ? 'Rippling through ' : ''
-
   const txTypeSpecial = <span className="bold">{ripplingTitle + direction + ' order ' + orderStatus}</span>
 
   const takerGets = specification.takerGets || myOrderbookChange?.takerGets
@@ -55,104 +55,104 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
     >
       {(fiatRate) => (
         <>
-          {myOrder && (
+          {rippling ? (
+            <RipplingChanges balanceChanges={myBalanceChangesList} />
+          ) : (
             <>
-              Order specification:
-              <br />
-              {takerGets && (
-                <div>
-                  <span>{direction === 'Sell' ? 'Sell exactly' : 'Pay up to'}: </span>
-                  <span>{amountFormat(takerGets, { icon: true, withIssuer: true, bold: true })}</span>
-                </div>
-              )}
-              {takerPays && (
-                <div>
-                  <span>{direction === 'Sell' ? 'Receive at least' : 'Receive exactly'}: </span>
-                  <span>{amountFormat(takerPays, { icon: true, withIssuer: true, bold: true })}</span>
-                </div>
-              )}
-            </>
-          )}
-          {myOrder && myBalanceChangesList?.length === 2 && <br />}
-          {myBalanceChangesList?.length === 2 && (
-            <>
-              <div>
-                <span>{rippling ? 'Affected accounts' : 'Exchanged'}: </span>
-                <br />
-                <span>
-                  {myBalanceChangesList.map((change, index) => {
-                    //if rippling, use counterparty as issuer
-                    const formattedChange = rippling
-                      ? { ...change, issuer: change.counterparty, issuerDetails: change.counterpartyDetails }
-                      : change
-                    return (
-                      <div key={index}>
-                        {amountFormat(formattedChange, {
-                          icon: true,
-                          showPlus: true,
-                          withIssuer: true,
-                          bold: true,
-                          color: 'direction',
-                          precise: 'nice',
-                          issuerShort: false
-                        })}
-                        {!rippling && nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate })}
-                      </div>
-                    )
-                  })}
-                </span>
-              </div>
-              {!rippling && (
-                <div>
+              {myOrder && (
+                <>
+                  Order specification:
                   <br />
-                  <span>Rates: </span>
-                  <br />
-                  <span>
-                    {amountFormat(
-                      {
-                        currency: myBalanceChangesList[0].currency,
-                        issuer: myBalanceChangesList[0].issuer,
-                        value: 1
-                      },
-                      { icon: true }
-                    )}{' '}
-                    ={' '}
-                    <span className="bold">
-                      {amountFormat(
-                        {
-                          ...myBalanceChangesList[1],
-                          value: Math.abs(myBalanceChangesList[1].value / myBalanceChangesList[0].value)
-                        },
-                        { icon: true, precise: 'nice' }
-                      )}
-                    </span>
+                  {takerGets && (
+                    <div>
+                      <span>{direction === 'Sell' ? 'Sell exactly' : 'Pay up to'}: </span>
+                      <span>{amountFormat(takerGets, { icon: true, withIssuer: true, bold: true })}</span>
+                    </div>
+                  )}
+                  {takerPays && (
+                    <div>
+                      <span>{direction === 'Sell' ? 'Receive at least' : 'Receive exactly'}: </span>
+                      <span>{amountFormat(takerPays, { icon: true, withIssuer: true, bold: true })}</span>
+                    </div>
+                  )}
+                </>
+              )}
+              {myOrder && myBalanceChangesList?.length === 2 && <br />}
+              {myBalanceChangesList?.length === 2 && (
+                <>
+                  <div>
+                    <span>Exchanged: </span>
                     <br />
-                    {amountFormat(
-                      {
-                        currency: myBalanceChangesList[1].currency,
-                        issuer: myBalanceChangesList[1].issuer,
-                        value: 1
-                      },
-                      { icon: true }
-                    )}{' '}
-                    ={' '}
-                    <span className="bold">
+                    <span>
+                      {myBalanceChangesList.map((change, index) => {
+                        return (
+                          <div key={index}>
+                            {amountFormat(change, {
+                              icon: true,
+                              showPlus: true,
+                              withIssuer: true,
+                              bold: true,
+                              color: 'direction',
+                              precise: 'nice',
+                              issuerShort: false
+                            })}
+                            {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate })}
+                          </div>
+                        )
+                      })}
+                    </span>
+                  </div>
+                  <div>
+                    <br />
+                    <span>Rates: </span>
+                    <br />
+                    <span>
                       {amountFormat(
                         {
-                          ...myBalanceChangesList[0],
-                          value: Math.abs(myBalanceChangesList[0].value / myBalanceChangesList[1].value)
+                          currency: myBalanceChangesList[0].currency,
+                          issuer: myBalanceChangesList[0].issuer,
+                          value: 1
                         },
                         { icon: true }
-                      )}
+                      )}{' '}
+                      ={' '}
+                      <span className="bold">
+                        {amountFormat(
+                          {
+                            ...myBalanceChangesList[1],
+                            value: Math.abs(myBalanceChangesList[1].value / myBalanceChangesList[0].value)
+                          },
+                          { icon: true, precise: 'nice' }
+                        )}
+                      </span>
+                      <br />
+                      {amountFormat(
+                        {
+                          currency: myBalanceChangesList[1].currency,
+                          issuer: myBalanceChangesList[1].issuer,
+                          value: 1
+                        },
+                        { icon: true }
+                      )}{' '}
+                      ={' '}
+                      <span className="bold">
+                        {amountFormat(
+                          {
+                            ...myBalanceChangesList[0],
+                            value: Math.abs(myBalanceChangesList[0].value / myBalanceChangesList[1].value)
+                          },
+                          { icon: true }
+                        )}
+                      </span>
                     </span>
-                  </span>
-                  <br />
-                  <br />
-                </div>
+                    <br />
+                    <br />
+                  </div>
+                </>
               )}
+              {flags && <div>Flags: {flags}</div>}
             </>
           )}
-          {!rippling && flags && <div>Flags: {flags}</div>}
         </>
       )}
     </TransactionRowCard>

@@ -1,7 +1,7 @@
-import { add } from '../../../utils/calc'
 import { amountFormat } from '../../../utils/format'
 import { addressBalanceChanges } from '../../../utils/transaction'
 import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
+import { RipplingChanges } from './Elements/RipplingChanges'
 import { TransactionRowCard } from './TransactionRowCard'
 
 export const TransactionRowAMM = ({ data, address, index, selectedCurrency }) => {
@@ -19,16 +19,7 @@ export const TransactionRowAMM = ({ data, address, index, selectedCurrency }) =>
   const receivedList = sourceBalanceChangesList.filter((c) => Number(c?.value) > 0)
 
   const rippling = isRipplingOnIssuer(sourceBalanceChangesList, address)
-
-  let gatewayAmountChange = null
-  let ripplingTitle = ''
-  if (rippling) {
-    ripplingTitle = 'Rippling through '
-    gatewayAmountChange = sourceBalanceChangesList.reduce((sum, item) => {
-      return add(sum, Number(item.value || 0))
-    }, 0)
-  }
-
+  const ripplingTitle = rippling ? 'Rippling through ' : ''
   const txTypeSpecial = (
     <span className="bold">{ripplingTitle + (ammTypeLabels[tx?.TransactionType] || tx?.TransactionType)}</span>
   )
@@ -42,46 +33,7 @@ export const TransactionRowAMM = ({ data, address, index, selectedCurrency }) =>
       txTypeSpecial={txTypeSpecial}
     >
       {rippling ? (
-        <div>
-          Affected accounts:
-          <br />
-          {sourceBalanceChangesList.map((change, index) => {
-            //if rippling, use counterparty as issuer
-            const formattedChange = {
-              ...change,
-              issuer: change.counterparty,
-              issuerDetails: change.counterpartyDetails
-            }
-            return (
-              <div key={index}>
-                {amountFormat(formattedChange, {
-                  icon: true,
-                  withIssuer: true,
-                  bold: true,
-                  color: 'direction',
-                  precise: 'nice',
-                  issuerShort: false
-                })}
-              </div>
-            )
-          })}
-          {gatewayAmountChange !== null && (
-            <div>
-              <span>Total gateway change: </span>
-              <span>
-                {amountFormat(
-                  { ...sourceBalanceChangesList[0], value: gatewayAmountChange },
-                  {
-                    icon: true,
-                    bold: true,
-                    color: 'direction',
-                    precise: 'nice'
-                  }
-                )}
-              </span>
-            </div>
-          )}
-        </div>
+        <RipplingChanges balanceChanges={sourceBalanceChangesList} />
       ) : (
         <>
           {(tx.TradingFee || tx.TradingFee === 0) && (
