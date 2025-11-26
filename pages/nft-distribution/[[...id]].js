@@ -123,6 +123,7 @@ export default function NftDistribution({
 
     let markerPart = ''
     if (loadMoreRequest) {
+      if (!data?.marker) return
       markerPart = '&marker=' + data?.marker
     } else {
       marker = 'first'

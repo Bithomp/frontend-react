@@ -7,9 +7,9 @@ import { IoMdClose } from 'react-icons/io'
 import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { getIsSsrMobile } from '../../../utils/mobile'
+import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
-import { useWidth, addAndRemoveQueryParams, isAddressOrUsername } from '../../../utils'
+import { addAndRemoveQueryParams, avatarSrc, errorT, isAddressOrUsername, isAddressValid } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -37,22 +37,78 @@ import {
   TransactionRowEnableAmendment,
   TransactionRowDelegateSet
 } from '../../../components/Account/Transactions'
+import { addressBalanceChanges } from '../../../utils/transaction'
+
+const shouldShowTxForAddress = (tx, address) => {
+  const inner = tx?.tx
+  const myBalance = addressBalanceChanges(tx, address)
+  return inner?.Account === address || inner?.Destination === address || (myBalance && myBalance.length > 0)
+}
+
+const apiUrl = ({ address, marker, order, type, initiated, excludeFailures, counterparty, fromDate, toDate }) => {
+  const limit = 20
+  let url = `v3/transactions/${address}?limit=${limit}`
+  // pagination marker
+  if (marker) {
+    const markerString = typeof marker === 'object' ? JSON.stringify(marker) : marker
+    url += `&marker=${encodeURIComponent(markerString)}`
+  }
+  // sorting
+  url += `&forward=${order === 'oldest'}`
+  // filters
+  if (type && type !== 'all') {
+    url += `&type=${type}`
+  }
+  if (initiated !== undefined && initiated !== null) {
+    url += `&initiated=${initiated}`
+  }
+  if (excludeFailures) {
+    url += `&excludeFailures=true`
+  }
+  if (counterparty) {
+    url += `&counterparty=${counterparty}`
+  }
+  if (fromDate) {
+    url += `&fromDate=${encodeURIComponent(new Date(fromDate).toISOString())}`
+  }
+  if (toDate) {
+    url += `&toDate=${encodeURIComponent(new Date(toDate).toISOString())}`
+  }
+  return url
+}
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  const { id, fromDate, toDate, txType, initiated, excludeFailures, counterparty, order } = query
-  const limit = 20
+  const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order } = query
   let initialErrorMessage = ''
   let initialData = null
 
   if (isAddressOrUsername(id)) {
+    let url = apiUrl({
+      address: id,
+      order,
+      type,
+      initiated,
+      excludeFailures,
+      counterparty,
+      fromDate,
+      toDate
+    })
+
     try {
       const res = await axiosServer({
         method: 'get',
-        url: `v3/transactions/${id}?limit=${limit}`,
+        url,
         headers: passHeaders(req)
       })
       initialData = res?.data
+      if (
+        !initialData?.marker &&
+        isAddressValid(id) &&
+        initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, id)).length === 0
+      ) {
+        initialErrorMessage = 'No transactions found for the specified filters.'
+      }
     } catch (e) {
       initialErrorMessage = e?.message || 'Failed to load transactions'
     }
@@ -68,9 +124,9 @@ export async function getServerSideProps(context) {
       isSsrMobile: getIsSsrMobile(context),
       fromDateQuery: fromDate || '',
       toDateQuery: toDate || '',
-      txTypeQuery: txType || 'tx',
-      initiatedQuery: initiated || '0',
-      excludeFailuresQuery: excludeFailures || '0',
+      typeQuery: type || 'all',
+      initiatedQuery: initiated || null,
+      excludeFailuresQuery: excludeFailures || null,
       counterpartyQuery: counterparty || '',
       orderQuery: order || 'newest',
       ...(await serverSideTranslations(locale, ['common']))
@@ -85,29 +141,30 @@ export default function AccountTransactions({
   selectedCurrency,
   fromDateQuery,
   toDateQuery,
-  txTypeQuery,
+  typeQuery,
   initiatedQuery,
   excludeFailuresQuery,
   counterpartyQuery,
   orderQuery
 }) {
   const { t } = useTranslation()
-  const width = useWidth()
   const router = useRouter()
   const firstRenderRef = useRef(true)
 
   const address = initialData?.address
 
   // State management
-  const [transactions, setTransactions] = useState(initialData?.transactions || [])
+  const [transactions, setTransactions] = useState(
+    initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, address)) || []
+  )
   const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState(orderQuery) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
-  const [txType, setTxType] = useState(txTypeQuery) // tx = all types
-  const [initiated, setInitiated] = useState(initiatedQuery) // 0 = both, 1 = outgoing, 2 = incoming
-  const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // 0 = include, 1 = exclude
+  const [type, setType] = useState(typeQuery)
+  const [initiated, setInitiated] = useState(initiatedQuery) // null = both, 'true' = initiated, 'false' = non-initiated
+  const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // false = include, true = exclude
   const [counterparty, setCounterparty] = useState(counterpartyQuery)
   const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
   const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
@@ -131,7 +188,7 @@ export default function AccountTransactions({
     if (router.isReady) {
       updateURL({
         order,
-        txType,
+        type,
         initiated,
         excludeFailures,
         counterparty,
@@ -140,90 +197,67 @@ export default function AccountTransactions({
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, txType, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
+  }, [order, type, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
 
   const orderList = [
-    { value: 'newest', label: 'Newest First' },
-    { value: 'oldest', label: 'Oldest First' }
+    { value: 'newest', label: 'Newest first' },
+    { value: 'oldest', label: 'Oldest first' }
   ]
 
   // transaction type options
-  const txTypeOptions = [
-    { value: 'tx', label: 'All types' },
+  const typeOptions = [
+    { value: 'all', label: 'All types' },
     { value: 'payment', label: 'Payment' },
     { value: 'nft', label: 'NFT' },
     { value: 'amm', label: 'AMM' },
-    { value: 'order', label: 'Order' },
+    { value: 'order', label: 'DEX' },
     { value: 'escrow', label: 'Escrow' },
     { value: 'channel', label: 'Channel' },
     { value: 'check', label: 'Check' },
     { value: 'trustline', label: 'Trustline' },
     { value: 'settings', label: 'Settings' },
-    { value: 'accountDelete', label: 'Account Delete' }
+    { value: 'accountDelete', label: 'Account delete' }
   ]
 
   const initiatedOptions = [
-    { value: '0', label: 'Both directions' },
-    { value: '1', label: 'Outgoing' },
-    { value: '2', label: 'Incoming' }
+    { value: null, label: 'Incoming & outgoing' },
+    { value: true, label: 'Outgoing only' },
+    { value: false, label: 'Incoming only' }
   ]
 
   const failuresOptions = [
-    { value: '0', label: 'Include failed' },
-    { value: '1', label: 'Exclude failed' }
+    { value: null, label: 'Include failed' },
+    { value: true, label: 'Exclude failed' }
   ]
 
-  const apiUrl = (opts = {}) => {
-    const limit = 20
-    let url = `v3/transactions/${address}?limit=${limit}`
-    // pagination marker
-    if (opts.marker) {
-      const markerString = typeof opts.marker === 'object' ? JSON.stringify(opts.marker) : opts.marker
-      url += `&marker=${encodeURIComponent(markerString)}`
-    }
-    // sorting
-    url += `&forward=${order === 'oldest'}`
-    // filters
-    if (txType && txType !== 'tx') {
-      url += `&type=${txType}`
-    }
-    if (initiated === '1') {
-      url += `&initiated=true`
-    } else if (initiated === '2') {
-      url += `&initiated=false`
-    }
-
-    if (excludeFailures === '1') {
-      url += `&excludeFailures=1`
-    }
-    if (counterparty) {
-      url += `&counterparty=${encodeURIComponent(counterparty.trim())}`
-    }
-    if (fromDate) {
-      url += `&fromDate=${encodeURIComponent(fromDate.toISOString())}`
-    }
-    if (toDate) {
-      url += `&toDate=${encodeURIComponent(toDate.toISOString())}`
-    }
-    return url
-  }
-
-  const fetchTransactions = async (opts = {}) => {
+  const fetchTransactions = async (options = {}) => {
     if (loading) return
 
     let markerToUse = undefined
-    if (!opts.restart) {
-      markerToUse = opts.marker || marker
+    if (!options.restart) {
+      markerToUse = options.marker || marker
     }
 
     try {
-      const response = await axios.get(apiUrl({ marker: markerToUse }))
+      const response = await axios.get(
+        apiUrl({
+          marker: markerToUse,
+          address,
+          order,
+          type,
+          initiated,
+          excludeFailures,
+          counterparty,
+          fromDate,
+          toDate
+        })
+      )
       if (response?.data?.status === 'error') {
         setErrorMessage(response?.data?.error)
         setLoading(false)
         return
       }
-      const newData = response?.data?.transactions || response?.data || []
+      const newData = response?.data?.transactions?.filter((tx) => shouldShowTxForAddress(tx, address)) || []
       const newMarker = response?.data?.marker || null
 
       if (markerToUse && transactions.length > 0) {
@@ -231,13 +265,20 @@ export default function AccountTransactions({
         const combined = [...transactions, ...newData]
         setTransactions(combined)
       } else {
-        setTransactions(newData)
+        if (newData.length === 0 && !newMarker) {
+          setErrorMessage('Account has no transactions with the specified filters.')
+          setMarker(newMarker)
+          setLoading(false)
+          return
+        } else {
+          setTransactions(newData)
+        }
       }
 
       setMarker(newMarker)
       setErrorMessage('')
     } catch (e) {
-      setErrorMessage(e?.message || 'Failed to load transactions')
+      setErrorMessage(t('error.' + e?.message) || 'Failed to load transactions')
     }
     setLoading(false)
   }
@@ -275,7 +316,14 @@ export default function AccountTransactions({
     // Process each filter
     Object.keys(newFilters).forEach((key) => {
       const value = newFilters[key]
-      if (value && value !== '' && value !== '0' && value !== 'tx' && value !== 'newest') {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== '' &&
+        value !== '0' &&
+        value !== 'all' &&
+        value !== 'newest'
+      ) {
         addList.push({ name: key, value })
       } else {
         removeList.push(key)
@@ -285,12 +333,15 @@ export default function AccountTransactions({
     addAndRemoveQueryParams(router, addList, removeList)
   }
 
+  const isMobile = useIsMobile(600)
+
   return (
     <>
       <SEO
         page="Transactions"
         title={`Transactions of ${address}`}
         description={`All transactions for address ${address}`}
+        image={{ file: avatarSrc(address) }}
       />
       <SearchBlock
         tab="transactions"
@@ -326,30 +377,13 @@ export default function AccountTransactions({
       >
         <>
           <div className="filters-body-inner">
-            <div>
-              <span className="input-title">Type</span>
-              <SimpleSelect value={txType} setValue={setTxType} optionsList={txTypeOptions} />
-            </div>
+            <SimpleSelect value={type} setValue={setType} optionsList={typeOptions} />
             <br />
-            <div>
-              <span className="input-title">Direction</span>
-              <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} />
-            </div>
+            <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} />
             <br />
-            <div>
-              <span className="input-title">Failures</span>
-              <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
-            </div>
+            <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
             <br />
-            <div>
-              <span className="input-title">Counterparty</span>
-              <AddressInput
-                setValue={setCounterparty}
-                rawData={counterparty ? { counterparty } : {}}
-                type="counterparty"
-                hideButton={true}
-              />
-            </div>
+            <AddressInput placeholder="Counterparty" setValue={setCounterparty} hideButton={true} />
             <br />
             <div>
               <span className="input-title">From</span>
@@ -404,7 +438,6 @@ export default function AccountTransactions({
         </>
         {/* Main content */}
         <>
-          {errorMessage && <div className="center orange bold">{errorMessage}</div>}
           <InfiniteScrolling
             dataLength={transactions.length}
             loadMore={() => {
@@ -413,56 +446,58 @@ export default function AccountTransactions({
               }
             }}
             hasMore={marker}
-            errorMessage={errorMessage}
+            errorMessage={errorT(t, errorMessage)}
             subscriptionExpired={false}
             sessionToken={true}
           >
-            <table className={width > 600 ? 'table-large expand no-hover' : 'table-mobile'}>
+            <table className={isMobile ? 'table-mobile wide' : 'table-large expand no-hover'}>
               <tbody>
                 {loading ? (
                   <tr className="center">
                     <td colSpan="100">
+                      <br />
+                      <br />
                       <span className="waiting"></span>
                       <br />
-                      {t('general.loading')}
+                      <br />
                     </td>
                   </tr>
                 ) : (
-                  transactions?.map((tx, index) => {
+                  transactions.map((tx, index) => {
                     let TransactionRowComponent = null
-                    const txType = tx?.tx?.TransactionType
+                    const type = tx?.tx?.TransactionType
 
-                    if (txType === 'AccountDelete') {
+                    if (type === 'AccountDelete') {
                       TransactionRowComponent = TransactionRowAccountDelete
-                    } else if (txType === 'AccountSet') {
+                    } else if (type === 'AccountSet') {
                       TransactionRowComponent = TransactionRowAccountSet
-                    } else if (txType?.includes('AMM')) {
+                    } else if (type?.includes('AMM')) {
                       TransactionRowComponent = TransactionRowAMM
-                    } else if (txType?.includes('Check')) {
+                    } else if (type?.includes('Check')) {
                       TransactionRowComponent = TransactionRowCheck
-                    } else if (txType?.includes('Escrow')) {
+                    } else if (type?.includes('Escrow')) {
                       TransactionRowComponent = TransactionRowEscrow
-                    } else if (txType === 'Import') {
+                    } else if (type === 'Import') {
                       TransactionRowComponent = TransactionRowImport
-                    } else if (txType?.includes('NFToken')) {
+                    } else if (type?.includes('NFToken')) {
                       TransactionRowComponent = TransactionRowNFToken
-                    } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
+                    } else if (type === 'OfferCreate' || type === 'OfferCancel') {
                       TransactionRowComponent = TransactionRowOffer
-                    } else if (txType === 'Payment') {
+                    } else if (type === 'Payment') {
                       TransactionRowComponent = TransactionRowPayment
-                    } else if (txType === 'SetRegularKey') {
+                    } else if (type === 'SetRegularKey') {
                       TransactionRowComponent = TransactionRowSetRegularKey
-                    } else if (txType === 'DelegateSet') {
+                    } else if (type === 'DelegateSet') {
                       TransactionRowComponent = TransactionRowDelegateSet
-                    } else if (txType === 'TrustSet') {
+                    } else if (type === 'TrustSet') {
                       TransactionRowComponent = TransactionRowTrustSet
-                    } else if (txType?.includes('DID')) {
+                    } else if (type?.includes('DID')) {
                       TransactionRowComponent = TransactionRowDID
-                    } else if (txType?.includes('URIToken')) {
+                    } else if (type?.includes('URIToken')) {
                       TransactionRowComponent = TransactionRowURIToken
-                    } else if (txType === 'Remit') {
+                    } else if (type === 'Remit') {
                       TransactionRowComponent = TransactionRowRemit
-                    } else if (txType === 'EnableAmendment') {
+                    } else if (type === 'EnableAmendment') {
                       TransactionRowComponent = TransactionRowEnableAmendment
                     } else {
                       TransactionRowComponent = TransactionRowDetails
@@ -470,7 +505,7 @@ export default function AccountTransactions({
 
                     return (
                       <TransactionRowComponent
-                        key={tx.hash}
+                        key={index}
                         data={tx}
                         address={address}
                         index={index}

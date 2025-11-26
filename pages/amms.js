@@ -162,6 +162,7 @@ export default function Amms({
 
     let markerPart = ''
     if (loadMoreRequest) {
+      if (!rawData?.marker) return
       markerPart = '&marker=' + rawData?.marker
     }
 

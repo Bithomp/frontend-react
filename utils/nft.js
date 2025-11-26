@@ -351,8 +351,8 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
       }
     }
     //image from animation
-    if (meta.animation) return assetUrl(meta.animation, 'preview', gateway, flags)
-    if (meta.animation_url) return assetUrl(meta.animation_url, 'preview', gateway, flags)
+    if (meta.animation) return assetUrl(meta.animation, type, gateway, flags)
+    if (meta.animation_url) return assetUrl(meta.animation_url, type, gateway, flags)
   }
   if (type === 'video' || type === 'thumbnail' || type === 'preview') {
     if (meta.video) return assetUrl(meta.video, type, gateway, flags)

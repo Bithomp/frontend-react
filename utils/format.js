@@ -19,7 +19,6 @@ import {
   xls14NftValue,
   tokenImageSrc,
   mptokenImageSrc,
-  isNativeCurrency,
   shortName
 } from '.'
 import { scaleAmount } from './calc'
@@ -39,22 +38,55 @@ export const NiceNativeBalance = ({ amount }) => {
   )
 }
 
+const TokenImage = ({ token }) => {
+  return (
+    <div
+      style={{
+        height: 16,
+        width: 16,
+        display: 'inline-block',
+        overflow: 'hidden',
+        borderRadius: '50%',
+        verticalAlign: 'text-bottom',
+        marginRight: 3,
+        backgroundColor: '#fff',
+        boxShadow: '0 0 0 1px #fff'
+      }}
+    >
+      <img
+        src={tokenImageSrc(token)}
+        alt="token"
+        height={16}
+        width={16}
+        style={{
+          objectFit: 'cover',
+          transform: !token?.issuerDetails?.service ? 'scale(1.25)' : 'scale(1)'
+        }}
+        onError={(e) => {
+          e.target.onerror = null
+          e.target.src = placeholder
+        }}
+      />
+    </div>
+  )
+}
+
 export const CurrencyWithIcon = ({ token }) => {
   if (!token) return ''
   const { lp_token, currencyDetails } = token
-  let imageUrl = tokenImageSrc(token)
 
   return (
     <>
-      <Image src={imageUrl} alt="avatar" height={20} width={20} style={{ marginRight: '5px', marginBottom: '-5px' }} />
+      <TokenImage token={token} />
       {lp_token ? currencyDetails?.currency : niceCurrency(token.currency)}
     </>
   )
 }
 
 export const AddressWithIconInline = ({ data, name = 'address', options }) => {
+  if (!data || !data[name]) return ''
   const address = data[name]
-  const size = 20
+  const size = 16
   const placeholder = `data:image/svg+xml;utf8,${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
      <rect width="100%" height="100%" fill="#ffffff"/>
@@ -67,17 +99,32 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   return (
     <span className="no-brake">
       <Link href={'/account/' + address}>
-        <img
-          src={avatarServer + address || placeholder}
-          alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
-          height={size}
-          width={size}
-          style={{ marginRight: '5px', marginBottom: '-5px' }}
-          onError={(e) => {
-            e.target.onerror = null
-            e.target.src = placeholder
+        <div
+          style={{
+            height: size,
+            width: size,
+            verticalAlign: 'text-bottom',
+            marginRight: 3,
+            borderRadius: '50%',
+            overflow: 'hidden',
+            display: 'inline-block'
           }}
-        />
+        >
+          <img
+            src={avatarServer + address || placeholder}
+            alt={data?.[name?.toLowerCase() + 'Details']?.service || 'service logo'}
+            height={size}
+            width={size}
+            style={{
+              objectFit: 'cover',
+              transform: !data?.[name?.toLowerCase() + 'Details']?.service ? 'scale(1.25)' : 'scale(1)'
+            }}
+            onError={(e) => {
+              e.target.onerror = null
+              e.target.src = placeholder
+            }}
+          />
+        </div>
       </Link>
       {addressUsernameOrServiceLink(data, name, options)}
     </span>
@@ -217,16 +264,29 @@ export const amountToFiat = (params) => {
   const { amount, selectedCurrency, fiatRate } = params
   if (!amount || amount === '0' || !selectedCurrency || !fiatRate) return ''
 
-  let calculatedAmount = null
   let currency = ''
+  let initialAmount
+  let calculatedAmount
 
   if (!amount?.currency) {
     // drops
-    calculatedAmount = shortNiceNumber((amount / 1000000) * fiatRate, 2, 1, selectedCurrency)
+    initialAmount = amount / 1000000
     currency = nativeCurrency
   } else {
-    calculatedAmount = shortNiceNumber(amount.value * fiatRate, 2, 1, selectedCurrency)
+    initialAmount = amount.value
     currency = niceCurrency(amount.currency)
+  }
+
+  const absolute = Math.abs(initialAmount)
+
+  if (params.absolute) {
+    initialAmount = absolute
+  }
+
+  if (absolute > 1) {
+    calculatedAmount = shortNiceNumber(initialAmount * fiatRate, 2, 1, selectedCurrency)
+  } else {
+    calculatedAmount = niceNumber(initialAmount * fiatRate, null, selectedCurrency, 6)
   }
 
   if (params.asText) {
@@ -237,7 +297,10 @@ export const amountToFiat = (params) => {
     <span className="tooltip no-brake" suppressHydrationWarning>
       {' '}
       ≈ {calculatedAmount}
-      <span className="tooltiptext no-brake" suppressHydrationWarning>
+      <span
+        className={'tooltiptext no-brake' + (params?.tooltipDirection ? ' ' + params.tooltipDirection : '')}
+        suppressHydrationWarning
+      >
         1 {currency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
       </span>
     </span>
@@ -449,7 +512,7 @@ export const nftIdLink = (nftId, chars = 10) => {
 export const nftLink = (nft, type, options = {}) => {
   if (!nft || !type || !nft[type]) return ''
 
-  let link = '/explorer/'
+  let link = '/account/'
   if (type === 'issuer') {
     link = '/nft-explorer?issuer='
   } else if (type === 'owner' || type === 'seller' || type === 'buyer') {
@@ -485,19 +548,11 @@ export const nftLink = (nft, type, options = {}) => {
       }
     }
     const showName = userOrServiceName(nft[type + 'Details'])
-    if (link === '/explorer/') {
-      return <a href={link + (nft[type + 'Details'].username || nft[type])}>{showName ? showName : defaultContent}</a>
-    } else {
-      return (
-        <Link href={link + (nft[type + 'Details'].username || nft[type])}>{showName ? showName : defaultContent}</Link>
-      )
-    }
+    return (
+      <Link href={link + (nft[type + 'Details'].username || nft[type])}>{showName ? showName : defaultContent}</Link>
+    )
   }
-  if (link === '/explorer/') {
-    return <a href={link + nft[type]}>{defaultContent}</a>
-  } else {
-    return <Link href={link + nft[type]}>{defaultContent}</Link>
-  }
+  return <Link href={link + nft[type]}>{defaultContent}</Link>
 }
 
 export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails, taxon }) => {
@@ -553,46 +608,21 @@ export const userOrServiceLink = (data, type, options = {}) => {
       if (options.short && serviceName.length > 18) {
         serviceName = service.substring(0, 15).trim() + '...'
       }
-      if (options.url === '/explorer/') {
-        return (
-          <a href={buildLink} className="bold green">
-            {serviceName}
-          </a>
-        )
-      } else {
-        return (
-          <Link href={buildLink} className="bold green">
-            {serviceName}
-          </Link>
-        )
-      }
+      return (
+        <Link href={buildLink} className="bold green">
+          {serviceName}
+        </Link>
+      )
     }
     if (username) {
-      if (options.url === '/explorer/') {
-        return (
-          <a href={buildLink} className="bold blue">
-            {username}
-          </a>
-        )
-      } else {
-        return (
-          <Link href={buildLink} className="bold blue">
-            {username}
-          </Link>
-        )
-      }
+      return (
+        <Link href={buildLink} className="bold blue">
+          {username}
+        </Link>
+      )
     }
   }
   return ''
-}
-
-const oldExplorerLink = (address, options = {}) => {
-  if (!address) return ''
-  return (
-    <a href={'/explorer/' + address} aria-label="address link">
-      {options.short ? shortAddress(address, options.short) : address}
-    </a>
-  )
 }
 
 export const addressUsernameOrServiceLink = (data, type, options = {}) => {
@@ -606,17 +636,9 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
     return userOrServiceLink(data, type, options)
   }
   if (options.short) {
-    if (options.url === '/explorer/') {
-      return oldExplorerLink(data?.[type], { short: options.short })
-    } else {
-      return <Link href={options.url + data?.[type]}>{shortAddress(data?.[type], options.short)}</Link>
-    }
+    return <Link href={options.url + data?.[type]}>{shortAddress(data?.[type], options.short)}</Link>
   }
-  if (options.url === '/explorer/') {
-    return oldExplorerLink(data[type])
-  } else {
-    return <Link href={options.url + data?.[type]}>{data?.[type]}</Link>
-  }
+  return <Link href={options.url + data?.[type]}>{data?.[type]}</Link>
 }
 
 export const addressLink = (address, options = {}) => {
@@ -739,42 +761,30 @@ export const amountFormat = (amount, options = {}) => {
 
   let showValue = value
 
-  if (options.precise) {
-    if (options.precise === 'nice') {
-      showValue = niceNumber(value, 0, null, 15)
-    }
-  } else {
-    if (Math.abs(value) >= 100) {
-      if (options.short) {
-        showValue = shortNiceNumber(value, 0, 1)
-      } else {
-        if (options.minFractionDigits) {
-          showValue = niceNumber(value, options.minFractionDigits)
-        } else {
-          showValue = niceNumber(value)
-        }
-      }
-    } else if (options.maxFractionDigits) {
-      showValue = niceNumber(value, 0, null, options.maxFractionDigits)
-    }
+  if (options.absolute) {
+    showValue = Math.abs(showValue)
   }
 
+  if (options.precise) {
+    if (options.precise === 'nice') {
+      showValue = niceNumber(showValue, 0, null, 15)
+    }
+  } else if (options.short) {
+    showValue = shortNiceNumber(showValue)
+  } else {
+    showValue = niceNumber(showValue, options.minFractionDigits, null, options.maxFractionDigits || 6)
+  }
+
+  let showIcon = options?.icon || false
+
   // do not show icons for native currency
-  if (options?.icon && originalCurrency === nativeCurrency) {
-    options.icon = false
+  if (showIcon && originalCurrency === nativeCurrency) {
+    showIcon = false
   }
 
   let tokenImage = ''
-  if (options?.icon) {
-    tokenImage = (
-      <Image
-        src={tokenImageSrc({ issuer, currency: originalCurrency || currency })}
-        alt="token"
-        height={20}
-        width={20}
-        style={{ verticalAlign: 'text-bottom', display: 'inline-block' }}
-      />
-    )
+  if (showIcon) {
+    tokenImage = <TokenImage token={{ issuer, currency: originalCurrency || currency }} />
   }
 
   if (options.showPlus && value > 0) {
@@ -813,7 +823,9 @@ export const amountFormat = (amount, options = {}) => {
             {amount.currencyDetails?.type === 'lp_token' ? (
               <LinkAmm ammId={issuer} hash={6} style={{ fontWeight: 400 }} />
             ) : (
-              addressUsernameOrServiceLink({ issuer, issuerDetails }, 'issuer', { short: true })
+              addressUsernameOrServiceLink({ issuer, issuerDetails }, 'issuer', {
+                short: options?.issuerShort !== undefined ? options.issuerShort : true
+              })
             )}
             )
           </span>
@@ -822,10 +834,12 @@ export const amountFormat = (amount, options = {}) => {
         )}
       </>
     )
-  } else if (options.icon) {
+  } else if (options?.icon) {
+    // keep options?.icon as showIcon is false for native currency
     return (
       <span className="no-brake">
-        {tokenImage} <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
+        {tokenImage}
+        <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
       </span>
     )
   } else {
@@ -1099,7 +1113,7 @@ export const duration = (t, seconds, options) => {
 }
 
 //need to make dynamic fraction digits
-export const niceNumber = (n, fractionDigits = 0, currency = null, maxFractionDigits = 0) => {
+export const niceNumber = (n, fractionDigits = null, currency = null, maxFractionDigits = null) => {
   if (typeof n === 'string') {
     if (n.includes('x')) {
       //in case of placeholders xxx
@@ -1110,8 +1124,8 @@ export const niceNumber = (n, fractionDigits = 0, currency = null, maxFractionDi
   }
   if (n || n === 0 || n === '0') {
     let options = {
-      maximumFractionDigits: maxFractionDigits || fractionDigits,
-      minimumFractionDigits: fractionDigits
+      maximumFractionDigits: maxFractionDigits || fractionDigits || 0,
+      minimumFractionDigits: fractionDigits || 0
     }
     if (currency) {
       options.style = 'currency'
@@ -1248,15 +1262,15 @@ export const showAmmPercents = (x) => {
 }
 
 export const showFlags = (flags) => {
+  const trueFlags = Object.entries(flags).filter(([, flagValue]) => flagValue === true)
+  if (!trueFlags?.length) return null
   return (
-    <div className="flex flex-wrap gap-1">
-      {Object.entries(flags)
-        .filter(([, flagValue]) => flagValue === true)
-        .map(([flag]) => (
-          <span key={flag} className="flag">
-            {flag}
-          </span>
-        ))}
-    </div>
+    <>
+      {trueFlags.map(([flag]) => (
+        <span key={flag} className="flag">
+          {flag}
+        </span>
+      ))}
+    </>
   )
 }

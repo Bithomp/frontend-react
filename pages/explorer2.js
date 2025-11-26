@@ -87,6 +87,18 @@ const examples = {
     object: null
   },
 
+  alphanet: {
+    nft: '000900007CDA3D523C8D4CA25F55439D447FBF4D4F26AC3B82C9E47C005429E1',
+    amm: '33072CA199E75633CD9C174D9DC731C773303A834AF4B3FF8EB28BE30EAA0AE1',
+    txHash: '100D2346C65FF4C681B5AD805EC54419FF38ECDD824006D0E050D2A68808475B',
+    txCTID: 'C0546A8800120002',
+    account: 'rh1HPuRVsYYvThxG2Bs1MfjmrVC73S16Fb',
+    payString: ['gemtesting$dev.bithomp.com', 'mainfortesting$dev.bithomp.com'],
+    xAddress: null,
+    username: ['xrpdomains'],
+    object: null
+  },
+
   xahau: {
     nft: 'CE67EA90A55AACD603B5B44C56B44A56D9FA792EB8E872638FF570B31F0ED143',
     amm: null, // not enabled on xahau

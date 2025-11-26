@@ -467,7 +467,7 @@ table {
 }
 
 .no-brake {
-  white-space: nowrap;
+  white-space: nowrap !important;
 }
 
 .uppercase {
@@ -659,6 +659,7 @@ table {
   }
 
   .tooltiptext {
+    font-size: 12px;
     display: none;
     top: -5px;
     right: 120%;
@@ -669,7 +670,7 @@ table {
     position: absolute;
     z-index: 1;
 
-    white-space: nowrap;
+    white-space: normal;
     pointer-events: none;
 
     opacity: 1;
@@ -715,7 +716,6 @@ table {
     .tooltiptext {
       display: inline-block;
       opacity: 1;
-      word-break: normal;
     }
   }
 }
@@ -827,7 +827,8 @@ body.dark {
   font-size: 11px;
   font-weight: 500;
   border: 1px solid #008000;
-  margin: 0;
+  margin-right: 5px;
+  cursor: default;
 }
 
 //common ui
