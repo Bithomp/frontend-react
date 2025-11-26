@@ -44,6 +44,7 @@ export const addressBalanceChanges = (data, address) => {
       balanceChanges.push(change)
     }
   }
+
   return balanceChanges
 }
 
@@ -449,7 +450,7 @@ export const memoNode = (memos, type = 'tr') => {
           if (type === 'tr') {
             output.push(
               <tr key={'a2' + j}>
-                <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
+                <TData>Memo{memos.length > 1 ? ' ' + (j + 1) : ''}</TData>
                 <TData>
                   {memotype && (
                     <>
@@ -464,7 +465,7 @@ export const memoNode = (memos, type = 'tr') => {
           } else {
             output.push(
               <React.Fragment key={'a2' + j}>
-                Memo {memos.length > 1 ? j + 1 : ''}:
+                Memo{memos.length > 1 ? ' ' + (j + 1) : ''}:
                 <br />
                 {memotype && (
                   <>
@@ -524,7 +525,7 @@ export const memoNode = (memos, type = 'tr') => {
               if (type === 'tr') {
                 output.push(
                   <tr key={'a1' + j}>
-                    <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
+                    <TData>Memo{memos.length > 1 ? ' ' + (j + 1) : ''}</TData>
                     <TData>
                       {memotype && memotype.toLowerCase() !== 'memo' && (
                         <span className="bold">
@@ -539,7 +540,7 @@ export const memoNode = (memos, type = 'tr') => {
               } else {
                 output.push(
                   <React.Fragment key={'a1' + j}>
-                    Memo {memos.length > 1 ? j + 1 : ''}:{' '}
+                    Memo{memos.length > 1 ? ' ' + (j + 1) : ''}:{' '}
                     {memotype && memotype.toLowerCase() !== 'memo' && <>{memotype + ': '}</>}
                     {memopiece}
                     <br />
