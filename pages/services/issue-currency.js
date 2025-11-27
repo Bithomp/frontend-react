@@ -786,19 +786,17 @@ ${newTokenEntry}
         {/* Step 2: Configure Cold Wallet (Issuer) */}
         {currentStep === 2 && (
           <div className="ic-step-container">
-            <h2>Step 2: Configure Cold Wallet (Issuer)</h2>
-            <p>Set up your issuer account (cold wallet). This account will issue your currency.</p>
+            <h2>Step 2:  Set Up Issuer (Cold Wallet)</h2>
 
             {/* Cold wallet content moved here */}
             <div className="ic-cold-wallet-setup">
               <h3>Create and Configure Your Issuer Account (Cold Wallet):</h3>
               <p>
-                This will be your cold wallet that issues the currency.
+                Configure your issuer (cold) wallet by setting the required AccountSet fields
                 {supplyType === 'closed' ?
-                  ' It will be blackholed after issuance for maximum security.' :
-                  ' You will maintain control over this account.'
+                  '. For closed supply, the issuer account will be blackholed — permanently and irreversibly. Proceed with caution.' :
+                  '. For open supply, the issuer account won\'t be blackholed— it must remain active to allow future token issuance and management.'
                 }
-                Configure comprehensive AccountSet settings including transfer rates, tick size, domain, and security flags.
               </p>
               
               <WalletSignInInfo
@@ -815,19 +813,6 @@ ${newTokenEntry}
                 rawData={coldWalletAddress}
                 hideButton={true}
               />
-              
-              {supplyType === 'closed' && (
-                <div className="ic-blackhole-warning">
-                  <h4>⚠️ Blackhole Warning</h4>
-                  <p>For Closed Supply, the issuer account will be blackholed (keys destroyed) after issuance. This means:</p>
-                  <ul>
-                    <li>No one can ever mint new tokens</li>
-                    <li>No one can freeze or modify the currency</li>
-                    <li>The total supply becomes permanently fixed</li>
-                    <li>This action is irreversible</li>
-                  </ul>
-                </div>
-              )}
               
               <div className="ic-cold-address-form">
                 <div className="ic-form-section">
