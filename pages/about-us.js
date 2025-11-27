@@ -54,6 +54,12 @@ export default function AboutUs() {
             ,
           </li>
           <li>
+            <a href={'https://alphanet.bithomp.com/' + i18n.language} target="_blank" rel="noreferrer">
+              XRPL AlphaNet
+            </a>
+            ,
+          </li>
+          <li>
             <a href={'https://test.xahauexplorer.com/' + i18n.language} target="_blank" rel="noreferrer">
               XAHAU Testnet
             </a>
@@ -118,6 +124,10 @@ export default function AboutUs() {
               ,{' '}
               <a href={'https://dev.bithomp.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
                 XRPL Devnet
+              </a>
+              ,{' '}
+              <a href={'https://alphanet.bithomp.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
+                XRPL AlphaNet
               </a>
               , and{' '}
               <a href={'https://test.xahauexplorer.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">

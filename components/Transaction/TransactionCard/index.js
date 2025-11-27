@@ -10,7 +10,6 @@ import {
   AddressWithIconFilled,
   amountFormat,
   codeHighlight,
-  decodeJsonMemo,
   fullDateAndTime,
   nativeCurrencyToFiat,
   niceCurrency,
@@ -18,7 +17,7 @@ import {
   timeFromNow
 } from '../../../utils/format'
 import { decodeCTID, isValidCTID, networksIds, server, xahauNetwork } from '../../../utils'
-import { dappBySourceTag, errorCodeDescription, shortErrorCode } from '../../../utils/transaction'
+import { dappBySourceTag, errorCodeDescription, memoNode, shortErrorCode } from '../../../utils/transaction'
 import { add } from '../../../utils/calc'
 import ExchangesTable from './ExchangeTable'
 
@@ -105,120 +104,6 @@ export const TransactionCard = ({
   const waitLedgers = outcome ? tx?.LastLedgerSequence - outcome?.ledgerIndex : null
 
   const txLink = server + '/tx/' + (tx?.ctid || tx?.hash)
-
-  const memoNode = (memos) => {
-    let output = []
-    if (memos && Array.isArray(memos)) {
-      for (let j = 0; j < memos.length; j++) {
-        const memo = memos[j]
-        let memotype = memo?.type
-        let memopiece = memo?.data
-        let memoformat = memo?.format
-
-        if (!memopiece && memoformat?.slice(0, 2) === 'rt') {
-          memopiece = memoformat
-        }
-
-        let clientname = ''
-
-        if (memopiece) {
-          if (memopiece.slice(0, 16) === 'xrplexplorer.com' || memopiece.slice(0, 11) === 'bithomp.com') {
-            memopiece = ''
-            clientname = 'bithomp.com'
-          }
-
-          if (memopiece.slice(0, 17) === 'xahauexplorer.com') {
-            memopiece = ''
-            clientname = 'xahauexplorer.com'
-          }
-
-          if (memotype) {
-            if (memotype.slice(0, 25) === '[https://xumm.community]-') {
-              memotype = memotype.slice(25)
-              clientname = 'xumm.community'
-            } else if (memotype.slice(0, 24) === '[https://xrpl.services]-') {
-              memotype = memotype.slice(24)
-              clientname = 'xrpl.services'
-            } else {
-              memotype = memotype.charAt(0).toUpperCase() + memotype.slice(1)
-            }
-          }
-
-          if (decodeJsonMemo(memopiece)) {
-            output.push(
-              <tr key={'a2' + j}>
-                <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
-                <TData>
-                  {memotype && (
-                    <>
-                      {memotype}
-                      <br />
-                    </>
-                  )}
-                  {decodeJsonMemo(memopiece)}
-                </TData>
-              </tr>
-            )
-          } else {
-            if (memopiece.length > 100 && memopiece.split(' ').length === 1 && memopiece.includes('.')) {
-              //jwt
-              memopiece = memopiece.replace('"', '')
-              const pieces = memopiece.split('.')
-              output.push(
-                <React.Fragment key={'jwt' + j}>
-                  <tr>
-                    <TData>JWT Header</TData>
-                    <TData>{decodeJsonMemo(pieces[0], { code: 'base64' })}</TData>
-                  </tr>
-                  <tr>
-                    <TData>JWT Payload</TData>
-                    <TData>{decodeJsonMemo(pieces[1], { code: 'base64' })}</TData>
-                  </tr>
-                  <tr>
-                    <TData>JWT Signature</TData>
-                    <TData>
-                      <pre>{pieces[2]}</pre>
-                    </TData>
-                  </tr>
-                </React.Fragment>
-              )
-            } else {
-              if (memopiece) {
-                output.push(
-                  <tr key={'a1' + j}>
-                    <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
-                    <TData>
-                      {memotype && memotype.toLowerCase() !== 'memo' && (
-                        <span className="bold">
-                          {memotype}
-                          <br />
-                        </span>
-                      )}
-                      {memopiece}
-                    </TData>
-                  </tr>
-                )
-              }
-            }
-          }
-
-          if (clientname) {
-            output.push(
-              <tr key="a3">
-                <TData>Client web</TData>
-                <TData>
-                  <a href={'https://' + clientname} rel="nofollow">
-                    {clientname}
-                  </a>
-                </TData>
-              </tr>
-            )
-          }
-        }
-      }
-    }
-    return output
-  }
 
   const filteredBalanceChanges = outcome?.balanceChanges?.filter((change) => !noBalanceChange(change))
 
@@ -424,7 +309,7 @@ export const TransactionCard = ({
                         <tr>
                           <TData>Affected accounts</TData>
                           <TData>
-                            {filteredBalanceChanges.length > 1 && (
+                            {filteredBalanceChanges?.length > 1 && (
                               <>
                                 There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that
                                 were affected by this transaction.
@@ -483,7 +368,7 @@ export const TransactionCard = ({
                         })}
                       </>
                     )}
-                  {outcome?.exchanges?.length > 0 && (
+                  {!tx?.TransactionType.includes('AMM') && outcome?.exchanges?.length > 0 && (
                     <>
                       <tr>
                         <TData style={{ verticalAlign: 'top' }}>Exchange{outcome?.exchanges?.length > 1 && 's'}</TData>
@@ -544,6 +429,12 @@ export const TransactionCard = ({
                         <tr>
                           <TData tooltip="Set of bit-flags for this transaction (UInt32)">Flags value</TData>
                           <TData>{tx.Flags}</TData>
+                        </tr>
+                      )}
+                      {tx.ClearFlag !== undefined && (
+                        <tr>
+                          <TData tooltip="Unique identifier of a flag to disable for this account.">Clear flag</TData>
+                          <TData>{tx.ClearFlag}</TData>
                         </tr>
                       )}
                       {tx?.TransactionType !== 'UNLReport' && (

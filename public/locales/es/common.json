@@ -161,7 +161,6 @@
     "description": "Gráfica de precio {{nativeCurrency}} | Estadísticas | Explorador NFT | Buscar dirección de cartera",
     "search-placeholder": "Buscar por Dirección / Transacción / NFT / Nombre de usuario / PayString / Oferta",
     "search-placeholder-short": "Dirección / Transacción / Usuario",
-    "scan-qr": "ESCANEA UN CÓDIGO",
     "price": {
       "header": "Precio en Vivo de {{nativeCurrency}} & Convertidor"
     },
@@ -311,7 +310,7 @@
     "error": "Error",
     "no-data": "Datos no disponibles",
     "loading": "Cargando...",
-    "login-to-bithomp-pro": "Cargar más datos está disponible para los suscriptores de Bithomp Pro <1>con sesión iniciada</1>.",
+    "login-to-bithomp-pro": "Cargar más datos está disponible para los suscriptores de Bithomp Pro <2>con sesión iniciada</2>.",
     "renew-bithomp-pro": "Tu suscripción a Bithomp Pro ha expirado. <1>Renueva tu suscripción</1>.",
     "load-failed": "Fallo al cargar",
     "all-issuers": "Todos los emisores",
@@ -349,10 +348,12 @@
   "error": {
     "payment-partly": "Por favor envia el resto de la cantidad, por el momento solo hemos recibido {{received}} {{currency}} de <b>{{required}} {{currency}}</b> requeridos.",
     "Network Error": "Parece que no hay conexión a internet ;(",
+    "Request failed with status code 522": "El servidor no está disponible en este momento, inténtalo de nuevo más tarde.",
     "Request failed with status code 429": "¡Nos estáis mandando demasiadas peticiones, prueba más tarde!",
     "Request failed with status code 404": "Este tipo de llamada a la API no está permitida en esa red.",
     "Request failed with status code 403": "Parece que has cerrado sesión, por favor, inicia sesión nuevamente.",
-    "Request aborted": "Solicitud abortada"
+    "Request aborted": "Solicitud abortada",
+    "read ECONNRESET": "La solicitud ha caducado. Intenta cambiar tus filtros o inténtalo de nuevo más tarde."
   },
   "errors": {
     "token": {

@@ -133,7 +133,6 @@ $width: 340px;
     td {
       @media (max-width: 1550px) {
         padding: 5px;
-        font-size: 12px;
       }
     }
   }
@@ -159,7 +158,7 @@ $width: 340px;
 
     .filter-header-title {
       @media (min-width: 1300px) {
-        margin-left: 55px;
+        margin-left: 98px;
         width: calc(100% - 140px);
         text-align: center;
       }
@@ -218,42 +217,57 @@ $width: 340px;
       }
     }
   }
+}
 
-  &__toggle {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    top: 20px;
-    left: 15px;
-    background-color: var(--background-input);
-    margin: 0;
-    font-size: 20px;
-    padding: 4px;
-    border: 1px solid var(--unaccent-icon);
-    cursor: pointer;
-    color: var(--text-main);
+.filters-toggle {
+  position: absolute;
+  top: 20px;
+  left: 15px;
 
-    @media (min-width: 440px) {
-      width: 38px;
-      height: 38px;
-    }
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
-    @media (max-width: 440px) {
-      padding: 5px;
-    }
+  background: var(--background-input);
+  color: var(--text-main);
+  border: 1px solid var(--unaccent-icon);
 
-    @media (max-width: 1300px) {
-      position: sticky;
-      top: 95px;
-      pointer-events: all;
-    }
+  font-size: 15px;
+  padding: 8px 12px;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: var(--hover-bg, rgba(255,255,255,0.08));
+    border-color: var(--text-main);
   }
-  
+
+  .filters-icon {
+    font-size: 18px;
+    opacity: 0.9;
+  }
+
+  @media (max-width: 440px) {
+    padding: 6px 8px;
+  }
+
+  @media (min-width: 440px) {
+    padding: 8px 14px;
+  }
+
+  @media (max-width: 1300px) {
+    position: sticky;
+    top: 95px;
+    pointer-events: all;
+  }
 }
 
 .filters-nav {
   & ~ .content-text {
     margin-top: 64px;
+    @media (max-width: 440px) {
+      margin-top: 56px;
+    }
   }
 }

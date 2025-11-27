@@ -42,7 +42,7 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
       txTypeSpecial={txTypeSpecial}
     >
       <tr>
-        <TData>Offer Maker</TData>
+        <TData>Offer maker</TData>
         <TData>
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>

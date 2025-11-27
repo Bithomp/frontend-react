@@ -61,13 +61,31 @@ import {
   nativeCurrencyToFiat,
   AddressWithIconFilled,
   niceCurrency,
-  capitalize
+  capitalize,
+  CurrencyWithIcon
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
+import { useSearchParams } from 'next/navigation'
 
 export default function Distribution({ selectedCurrency, fiatRate, initialRawData, initialData, queryToken }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
+  const searchParams = useSearchParams()
+
+  const currencyQuery = searchParams.get('currency') || ''
+  const currencyIssuerQuery = searchParams.get('currencyIssuer') || ''
+
+  useEffect(() => {
+    if (token?.currency === currencyQuery && token?.issuer === currencyIssuerQuery) {
+      return
+    }
+    setToken({
+      currency: currencyQuery || nativeCurrency,
+      issuer: currencyIssuerQuery || null,
+      currencyDetails: null
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currencyQuery, currencyIssuerQuery])
 
   const [data, setData] = useState(initialData || [])
   const [rawData, setRawData] = useState(initialRawData || {})
@@ -298,12 +316,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
               t('general.loading')
             ) : token?.issuer ? (
               <>
-                <AddressWithIconFilled
-                  data={rawData}
-                  name="issuer"
-                  currency={rawData.currency}
-                  options={{ short: 12, currencyDetails: rawData.currencyDetails }}
-                />
+                <CurrencyWithIcon token={rawData} />
                 <br />
                 Total supply: {niceNumber(rawData?.summary?.totalCoins || 0)} {currency}
                 <br />

@@ -168,18 +168,17 @@ export default function TokenPage({
           {price < 0.0001 ? (
             <>
               <span className="no-brake">
-                1M <span className="green">{token?.currencyDetails?.currency}</span> = {niceNumber(price * 1000000, 6)}{' '}
+                1M {token?.currencyDetails?.currency} = {niceNumber(price * 1000000, 6)}{' '}
               </span>
-              <span className="red no-brake">{nativeCurrency}</span>,{' '}
+              <span className="no-brake">{nativeCurrency}</span>,{' '}
             </>
           ) : (
             <span className="no-brake">
-              {niceNumber(price, 6)} <span className="red">{nativeCurrency}</span>,{' '}
+              {niceNumber(price, 6)} {nativeCurrency},{' '}
             </span>
           )}
           <span className="no-brake">
-            1 <span className="red">{nativeCurrency}</span> = {niceNumber(1 / price, 6)}{' '}
-            <span className="green">{token?.currencyDetails?.currency}</span>
+            1 {nativeCurrency} = {niceNumber(1 / price, 6)} {token?.currencyDetails?.currency}
           </span>
           {!isSsrMobile && ')'}
         </span>
@@ -366,7 +365,7 @@ export default function TokenPage({
                   </td>
                 </tr>
                 <tr>
-                  <td>Currency Code</td>
+                  <td>Currency code</td>
                   <td>
                     {token.currencyDetails?.currencyCode} <CopyButton text={token.currencyDetails?.currencyCode} />
                   </td>
@@ -523,15 +522,15 @@ export default function TokenPage({
               </thead>
               <tbody>
                 <tr>
-                  <td>Volume (Total)</td>
+                  <td>Volume (total)</td>
                   <td>{volumeLine({ token, type: 'total' })}</td>
                 </tr>
                 <tr>
-                  <td>Volume (Buy)</td>
+                  <td>Volume (buy)</td>
                   <td>{volumeLine({ token, type: 'buy' })}</td>
                 </tr>
                 <tr>
-                  <td>Volume (Sell)</td>
+                  <td>Volume (sell)</td>
                   <td>{volumeLine({ token, type: 'sell' })}</td>
                 </tr>
                 <tr>
@@ -539,7 +538,7 @@ export default function TokenPage({
                   <td>{fullNiceNumber(statistics?.dexes || 0)}</td>
                 </tr>
                 <tr>
-                  <td>DEX TXs</td>
+                  <td>DEX txs</td>
                   <td>{fullNiceNumber(statistics?.dexTxs || 0)}</td>
                 </tr>
                 <tr>
@@ -555,11 +554,11 @@ export default function TokenPage({
                   <td>{fullNiceNumber(statistics?.uniqueDexAccounts || 0)}</td>
                 </tr>
                 <tr>
-                  <td>Transfer Volume</td>
+                  <td>Transfer volume</td>
                   <td>{volumeLine({ token, type: 'transfer' })}</td>
                 </tr>
                 <tr>
-                  <td>Transfer Transactions</td>
+                  <td>Transfer transactions</td>
                   <td>{niceNumber(statistics?.transferTxs || 0)}</td>
                 </tr>
                 <tr>
@@ -567,19 +566,19 @@ export default function TokenPage({
                   <td>{fullNiceNumber(statistics?.ripplingTxs || 0)}</td>
                 </tr>
                 <tr>
-                  <td>Mint Volume</td>
+                  <td>Mint volume</td>
                   <td>{volumeLine({ token, type: 'mint' })}</td>
                 </tr>
                 <tr>
-                  <td>Mint Transactions</td>
+                  <td>Mint transactions</td>
                   <td>{shortNiceNumber(statistics?.mintTxs || 0, 0, 1)}</td>
                 </tr>
                 <tr>
-                  <td>Burn Volume</td>
+                  <td>Burn volume</td>
                   <td>{volumeLine({ token, type: 'burn' })}</td>
                 </tr>
                 <tr>
-                  <td>Burn Transactions</td>
+                  <td>Burn transactions</td>
                   <td>{shortNiceNumber(statistics?.burnTxs || 0, 0, 1)}</td>
                 </tr>
                 <tr>
@@ -588,7 +587,7 @@ export default function TokenPage({
                 </tr>
                 {!xahauNetwork && (
                   <tr>
-                    <td>AMM Pools</td>
+                    <td>AMM pools</td>
                     <td>
                       <Link href={`/amms?currency=${token.currency}&currencyIssuer=${token.issuer}`}>
                         {statistics?.ammPools || 0}
@@ -608,20 +607,20 @@ export default function TokenPage({
               </thead>
               <tbody>
                 <tr>
-                  <td>Trading Pairs</td>
+                  <td>Trading pairs</td>
                   <td>{fullNiceNumber(statistics?.activeCounters || 0)}</td>
                 </tr>
                 <tr>
-                  <td>Active Holders</td>
+                  <td>Active holders</td>
                   <td>{fullNiceNumber(statistics?.activeHolders || 0)}</td>
                 </tr>
                 <tr>
-                  <td>Active Offers</td>
+                  <td>Active offers</td>
                   <td>{fullNiceNumber(statistics?.activeOffers || 0)}</td>
                 </tr>
                 {!xahauNetwork && (
                   <tr>
-                    <td>Active AMM Pools</td>
+                    <td>Active AMM pools</td>
                     <td>{niceNumber(statistics?.activeAmmPools || 0)}</td>
                   </tr>
                 )}

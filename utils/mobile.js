@@ -9,9 +9,9 @@ export const getIsSsrMobile = (context) => {
   return Boolean(md.mobile())
 }
 
-export const useIsMobile = () => {
+export const useIsMobile = (width = 992) => {
   const isSsrMobile = useContext(IsSsrMobileContext)
   const windowWidth = useWidth()
-  const isBrowserMobile = !!windowWidth && windowWidth < 992
+  const isBrowserMobile = !!windowWidth && windowWidth < width
   return isSsrMobile || isBrowserMobile
 }

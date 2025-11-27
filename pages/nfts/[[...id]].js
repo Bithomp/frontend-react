@@ -32,7 +32,7 @@ export const getServerSideProps = async (context) => {
       view: view || 'tiles',
       list: list || 'nfts',
       saleDestination: saleDestination || (xahauNetwork ? 'public' : 'buyNow'),
-      saleCurrency: saleCurrency || 'xrp',
+      saleCurrency: saleCurrency || '',
       saleCurrencyIssuer: saleCurrencyIssuer || '',
       searchQuery: search || '',
       issuerQuery: issuer || '',

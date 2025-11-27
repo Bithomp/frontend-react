@@ -40,7 +40,11 @@ export default function InfiniteScrolling({
                 {!sessionToken ? (
                   <>
                     <Trans i18nKey="general.login-to-bithomp-pro">
-                      Loading more data is available to <span className="link" onClick={() => openEmailLogin()}>logged-in</span> Bithomp Pro subscribers.
+                      Loading more data is available to{' '}
+                      <span className="link" onClick={() => openEmailLogin()}>
+                        logged-in
+                      </span>{' '}
+                      Bithomp Pro subscribers.
                     </Trans>
                     {noSessionTokenMessage && (
                       <>
@@ -68,7 +72,7 @@ export default function InfiniteScrolling({
           </p>
         )
       }
-      endMessage={<p className="center">{endMessage || 'End of list'}</p>}
+      endMessage={<p className="center">{errorMessage || endMessage || 'End of list.'}</p>}
     >
       {children}
     </InfiniteScroll>

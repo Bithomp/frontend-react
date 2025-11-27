@@ -235,9 +235,11 @@ export default function AddressInput({
 
   return (
     <div className="center">
-      <span className="input-title">
-        {title} {link}
-      </span>
+      {(title || link) && (
+        <span className="input-title">
+          {title} {link}
+        </span>
+      )}
       <div className={`form-input${disabled ? ' disabled' : ''}`}>
         {isMounted ? (
           <div className="form-input__wrap" onKeyUp={searchOnKeyUp}>

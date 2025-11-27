@@ -20,8 +20,12 @@ export default function BlacklistedAddress() {
   return (
     <>
       <SEO
-        title={'Blacklisted Addresses on ' + explorerName}
-        description="What are blacklisted addresses on XRP and Xahau Ledgers, why fraud alert is displayed, how and why accounts become blacklisted."
+        title="Blacklisted Addresses"
+        description={
+          'What are blacklisted addresses on ' +
+          explorerName +
+          ', why fraud alert is displayed, how and why accounts become blacklisted.'
+        }
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/blacklisted-picture.jpg', width: 1520, height: 1084, allNetworks: true }}
       />

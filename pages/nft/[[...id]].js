@@ -1275,71 +1275,81 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                           <div className={'slide ' + (showRawMetadata ? 'opened' : 'closed')}>
                             {codeHighlight(data.metadata)}
                           </div>
-
-                          <table className="table-details">
-                            <thead>
-                              <tr>
-                                <th colSpan="100">{t('table.collection')}</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>{t('table.name')}</td>
-                                <td>
-                                  <span className="bold">{collectionNameText(data.collectionDetails)}</span> (
-                                  <Link href={'/nft-collection/' + data.collection} className="bold">
-                                    View collection
-                                  </Link>
-                                  )
-                                </td>
-                              </tr>
-                              {data.collectionDetails?.description && (
+                          {data.collectionDetails && (
+                            <table className="table-details">
+                              <thead>
                                 <tr>
-                                  <td>{t('table.description')}</td>
-                                  <td>{stripText(data.collectionDetails.description)}</td>
+                                  <th colSpan="100">{t('table.collection')}</th>
                                 </tr>
-                              )}
-                              {data.collectionDetails?.family && (
+                              </thead>
+                              <tbody>
                                 <tr>
-                                  <td>Family</td>
-                                  <td>{stripText(data.collectionDetails?.family)}</td>
-                                </tr>
-                              )}
-
-                              {data.type === 'xls20' && isValidTaxon(data?.collectionDetails.taxon) && (
-                                <tr>
-                                  <td>View more</td>
+                                  <td>{t('table.name')}</td>
                                   <td>
-                                    <Link
-                                      href={'/nft-distribution?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}
-                                    >
-                                      {t('holders', { ns: 'nft' })}
-                                    </Link>
-                                    ,{' '}
-                                    <Link href={'/nft-explorer?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}>
-                                      {t('table.all-nfts')}
-                                    </Link>
-                                    ,{' '}
-                                    <Link href={'/nft-sales?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}>
-                                      {t('table.sold_few')}
-                                    </Link>
-                                    ,{' '}
-                                    <Link
-                                      href={
-                                        '/nft-explorer?issuer=' +
-                                        data.issuer +
-                                        '&taxon=' +
-                                        data.nftokenTaxon +
-                                        '&list=onSale&&saleDestination=publicAndKnownBrokers'
-                                      }
-                                    >
-                                      {t('table.listed')}
-                                    </Link>
+                                    <span className="bold">{collectionNameText(data.collectionDetails)}</span>
+                                    {data.collection && (
+                                      <>
+                                        {' '}
+                                        (
+                                        <Link href={'/nft-collection/' + data.collection} className="bold">
+                                          View collection
+                                        </Link>
+                                        )
+                                      </>
+                                    )}
                                   </td>
                                 </tr>
-                              )}
-                            </tbody>
-                          </table>
+                                {data.collectionDetails?.description && (
+                                  <tr>
+                                    <td>{t('table.description')}</td>
+                                    <td>{stripText(data.collectionDetails.description)}</td>
+                                  </tr>
+                                )}
+                                {data.collectionDetails?.family &&
+                                  data.collectionDetails?.family !== collectionNameText(data.collectionDetails) && (
+                                    <tr>
+                                      <td>Family</td>
+                                      <td>{stripText(data.collectionDetails?.family)}</td>
+                                    </tr>
+                                  )}
+
+                                {data.type === 'xls20' && isValidTaxon(data?.collectionDetails?.taxon) && (
+                                  <tr>
+                                    <td>View more</td>
+                                    <td>
+                                      <Link
+                                        href={'/nft-distribution?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}
+                                      >
+                                        {t('holders', { ns: 'nft' })}
+                                      </Link>
+                                      ,{' '}
+                                      <Link
+                                        href={'/nft-explorer?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}
+                                      >
+                                        {t('table.all-nfts')}
+                                      </Link>
+                                      ,{' '}
+                                      <Link href={'/nft-sales?issuer=' + data.issuer + '&taxon=' + data.nftokenTaxon}>
+                                        {t('table.sold_few')}
+                                      </Link>
+                                      ,{' '}
+                                      <Link
+                                        href={
+                                          '/nft-explorer?issuer=' +
+                                          data.issuer +
+                                          '&taxon=' +
+                                          data.nftokenTaxon +
+                                          '&list=onSale&&saleDestination=publicAndKnownBrokers'
+                                        }
+                                      >
+                                        {t('table.listed')}
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </table>
+                          )}
 
                           <table className="table-details">
                             <thead>

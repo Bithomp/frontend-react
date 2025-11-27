@@ -16,7 +16,7 @@ import {
 } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isValidTaxon } from '../../utils/nft'
-import { nftsExplorerLink, niceNumber, AddressWithIconFilled } from '../../utils/format'
+import { nftsExplorerLink, niceNumber, AddressWithIconFilled, percentFormat } from '../../utils/format'
 
 import FiltersFrame from '../../components/Layout/FiltersFrame'
 
@@ -44,6 +44,7 @@ import SEO from '../../components/SEO'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
+import NftCollectionTabs from '../../components/Tabs/NftCollectionTabs'
 
 export default function NftDistribution({
   issuerQuery,
@@ -123,6 +124,7 @@ export default function NftDistribution({
 
     let markerPart = ''
     if (loadMoreRequest) {
+      if (!data?.marker) return
       markerPart = '&marker=' + data?.marker
     } else {
       marker = 'first'
@@ -257,6 +259,8 @@ export default function NftDistribution({
     }
   }
 
+  const collectionPart = issuer && isValidTaxon(taxon) ? `issuer=${issuer}&taxon=${taxon}` : 'collection=' + collection
+
   return (
     <>
       <SEO
@@ -269,6 +273,7 @@ export default function NftDistribution({
         }
       />
       <h1 className="center">{t('header', { ns: 'nft-distribution' })}</h1>
+      <NftCollectionTabs tab="holders" collectionPart={collectionPart} />
       <FiltersFrame
         contentStyle={{}}
         count={owners?.length}
@@ -413,7 +418,7 @@ export default function NftDistribution({
                             </>
                           )}
                           <td className="right">
-                            {niceNumber(user.total)}{' '}
+                            {niceNumber(user.total)} {percentFormat(user.total, data?.summary?.totalNfts)}{' '}
                             {nftsExplorerLink({
                               owner: user.address,
                               ownerDetails: user.addressDetails,
@@ -470,7 +475,7 @@ export default function NftDistribution({
                             )}
                             <p>
                               {issuer ? t('table.nfts') : t('table.total', { ns: 'nft-distribution' })}:{' '}
-                              {niceNumber(user.total)}{' '}
+                              {niceNumber(user.total)} {percentFormat(user.total, data?.summary?.totalNfts)}{' '}
                               {nftsExplorerLink({
                                 owner: user.address,
                                 ownerDetails: user.addressDetails,
