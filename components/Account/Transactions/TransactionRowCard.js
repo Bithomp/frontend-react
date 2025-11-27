@@ -23,6 +23,7 @@ import { i18n } from 'next-i18next'
 import CopyButton from '../../UI/CopyButton'
 import { useIsMobile } from '../../../utils/mobile'
 import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
+import Link from 'next/link'
 
 /*
   {
@@ -140,13 +141,18 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
           <>
             {specification?.source?.address === address ? (
               <>
-                To: <span className="bold">{specification?.destination?.address}</span>{' '}
+                To:{' '}
+                <Link className="bold" href={'/account/' + specification?.destination?.address}>
+                  {specification?.destination?.address}
+                </Link>{' '}
                 <CopyButton text={specification?.destination?.address} />{' '}
               </>
             ) : (
               <>
                 {specification?.destination?.address === address ? 'From' : 'Submitter'}:{' '}
-                <span className="bold">{specification?.source?.address}</span>{' '}
+                <Link className="bold" href={'/account/' + specification?.source?.address}>
+                  {specification?.source?.address}
+                </Link>{' '}
                 <CopyButton text={specification?.source?.address} />
               </>
             )}
