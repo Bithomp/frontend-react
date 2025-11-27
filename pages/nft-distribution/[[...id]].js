@@ -16,7 +16,7 @@ import {
 } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isValidTaxon } from '../../utils/nft'
-import { nftsExplorerLink, niceNumber, AddressWithIconFilled } from '../../utils/format'
+import { nftsExplorerLink, niceNumber, AddressWithIconFilled, percentFormat } from '../../utils/format'
 
 import FiltersFrame from '../../components/Layout/FiltersFrame'
 
@@ -414,7 +414,7 @@ export default function NftDistribution({
                             </>
                           )}
                           <td className="right">
-                            {niceNumber(user.total)}{' '}
+                            {niceNumber(user.total)} {percentFormat(user.total, data?.summary?.totalNfts)}{' '}
                             {nftsExplorerLink({
                               owner: user.address,
                               ownerDetails: user.addressDetails,
@@ -471,7 +471,7 @@ export default function NftDistribution({
                             )}
                             <p>
                               {issuer ? t('table.nfts') : t('table.total', { ns: 'nft-distribution' })}:{' '}
-                              {niceNumber(user.total)}{' '}
+                              {niceNumber(user.total)} {percentFormat(user.total, data?.summary?.totalNfts)}{' '}
                               {nftsExplorerLink({
                                 owner: user.address,
                                 ownerDetails: user.addressDetails,
