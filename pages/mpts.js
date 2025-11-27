@@ -164,7 +164,7 @@ export default function Mpts({
   const [rawData, setRawData] = useState(initialData || {})
   const [marker, setMarker] = useState(initialData?.marker || '')
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
+  const [errorMessage, setErrorMessage] = useState(t('error.' + initialErrorMessage) || '')
   const [order, setOrder] = useState(orderQuery || 'holdersHight') //'rating
   const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState(issuerQuery)
