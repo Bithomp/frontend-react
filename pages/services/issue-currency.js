@@ -236,9 +236,24 @@ export default function IssueCurrency({ account, setSignRequest }) {
 
   // Reusable WalletSignInInfo component
   const WalletSignInInfo = ({ title, description, walletAddress, walletType, operations }) => {
+    const needsSignIn = !account?.address || (walletAddress && account.address !== walletAddress)
+    
     return (
       <div className="ic-wallet-signin-info">
-        <h4>{title || '⚠️ Important: Wallet Sign-In Required'}</h4>
+        <h4>
+          {title || '⚠️ Important: Wallet Sign-In Required'}
+          {needsSignIn && (
+            <>
+              {' '}[<span
+                className="link"
+                onClick={() => setSignRequest({ redirect: 'issue-currency' })}
+                style={{ textDecoration: 'underline', color: 'var(--accent-icon)' }}
+              >
+                Sign In with Wallet
+              </span>]
+            </>
+          )}
+        </h4>
         {description && <p><strong>{description}</strong></p>}
         {operations && (
           <>
