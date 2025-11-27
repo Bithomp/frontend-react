@@ -3,14 +3,14 @@ import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import Link from 'next/link'
 
-import { server, explorerName, nativeCurrency, network } from '../utils'
-import { getIsSsrMobile } from '../utils/mobile'
+import { server, explorerName, nativeCurrency, network } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
 
-import SEO from '../components/SEO'
-import SearchBlock from '../components/Layout/SearchBlock'
-import Ads from '../components/Layout/Ads'
-import CopyButton from '../components/UI/CopyButton'
-import { shortHash } from '../utils/format'
+import SEO from '../../components/SEO'
+import SearchBlock from '../../components/Layout/SearchBlock'
+import Ads from '../../components/Layout/Ads'
+import CopyButton from '../../components/UI/CopyButton'
+import { shortHash } from '../../utils/format'
 
 export async function getServerSideProps(context) {
   const { locale } = context
