@@ -44,6 +44,7 @@ import SEO from '../../components/SEO'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
+import NftCollectionTabs from '../../components/Tabs/NftCollectionTabs'
 
 export default function NftDistribution({
   issuerQuery,
@@ -258,6 +259,8 @@ export default function NftDistribution({
     }
   }
 
+  const collectionPart = issuer && isValidTaxon(taxon) ? `issuer=${issuer}&taxon=${taxon}` : 'collection=' + collection
+
   return (
     <>
       <SEO
@@ -270,6 +273,7 @@ export default function NftDistribution({
         }
       />
       <h1 className="center">{t('header', { ns: 'nft-distribution' })}</h1>
+      <NftCollectionTabs tab="holders" collectionPart={collectionPart} />
       <FiltersFrame
         contentStyle={{}}
         count={owners?.length}
