@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
-import { isAddressOrUsername, isIdValid, isLedgerIndexValid, isValidCTID, performIdSearch } from '../utils'
+import { isAddressOrUsername, isIdValid, isLedgerIndexValid, isValidCTID, performIdSearch } from '../../utils'
 
 const slugRegex = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 const forbiddenSlugsRegex = /^.((?!\$).)*.?\.(7z|gz|rar|tar)$/i
@@ -23,7 +23,7 @@ export const getStaticPaths = async () => {
   }
 }
 
-export default function Custom404() {
+export default function ExplorerRedirect() {
   const router = useRouter()
   const { t } = useTranslation()
   const { slug } = router.query

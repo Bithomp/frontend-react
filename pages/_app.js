@@ -231,8 +231,7 @@ const MyApp = ({ Component, pageProps }) => {
     '/press',
     '/404',
     '/faucet',
-    '/explorer',
-    '/explorer2' //remove later
+    '/explorer'
   ]
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(pathname) && !pathname.includes('/admin')
