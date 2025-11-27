@@ -122,7 +122,9 @@ export default function Amms({
   const [rawData, setRawData] = useState(initialData || {})
   const [order, setOrder] = useState(orderQuery)
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState(t('error.' + initialErrorMessage) || '')
+  const [errorMessage, setErrorMessage] = useState(
+    t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
+  )
   const [marker, setMarker] = useState(initialData?.marker)
   const [filtersHide, setFiltersHide] = useState(false)
   const [token, setToken] = useState({
