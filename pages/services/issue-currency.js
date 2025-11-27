@@ -787,18 +787,16 @@ ${newTokenEntry}
         {currentStep === 2 && (
           <div className="ic-step-container">
             <h2>Step 2:  Set Up Issuer (Cold Wallet)</h2>
+            <p>
+              Configure your issuer (cold) wallet by setting the required AccountSet fields
+              {supplyType === 'closed' ?
+                '. For closed supply, the issuer account will be blackholed — permanently and irreversibly. Proceed with caution.' :
+                '. For open supply, the issuer account won\'t be blackholed— it must remain active to allow future token issuance and management.'
+              }
+            </p>
 
             {/* Cold wallet content moved here */}
             <div className="ic-cold-wallet-setup">
-              <h3>Create and Configure Your Issuer Account (Cold Wallet):</h3>
-              <p>
-                Configure your issuer (cold) wallet by setting the required AccountSet fields
-                {supplyType === 'closed' ?
-                  '. For closed supply, the issuer account will be blackholed — permanently and irreversibly. Proceed with caution.' :
-                  '. For open supply, the issuer account won\'t be blackholed— it must remain active to allow future token issuance and management.'
-                }
-              </p>
-              
               <WalletSignInInfo
                 description="To configure the cold wallet, you must be signed in with the cold wallet address."
                 walletAddress={coldWalletAddress}
