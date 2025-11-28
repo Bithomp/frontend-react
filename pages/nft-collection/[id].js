@@ -346,7 +346,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
   const collectionPart =
     collection?.issuer && isValidTaxon(collection?.taxon)
       ? `issuer=${collection.issuer}&taxon=${collection.taxon}`
-      : 'collection=' + collection.collection
+      : 'collection=' + collection?.collection
 
   return (
     <div className={nftClass}>
