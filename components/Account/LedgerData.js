@@ -405,8 +405,8 @@ export default function LedgerData({
     </>
   ) : account?.address === data?.address ? (
     <>
-      You don't have any NFTs. You can <Link href="/services/nft-mint">Mint NFT</Link> or{' '}
-      <Link href="/nft-explorer?saleCurrency=xrp&list=onSale">Buy NFT</Link>
+      You don't have any NFTs. You can [<Link href="/services/nft-mint">Mint NFT</Link>] or [
+      <Link href="/nft-explorer?saleCurrency=xrp&list=onSale">Buy NFT</Link>].
     </>
   ) : (
     "This account doesn't hold NFTs."
