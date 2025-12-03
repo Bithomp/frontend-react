@@ -19,7 +19,8 @@ import {
   isAddressValid,
   removeQueryParams,
   webSiteName,
-  xahauNetwork
+  xahauNetwork,
+  nativeCurrency
 } from '../utils'
 import { duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
@@ -388,7 +389,9 @@ export default function SignForm({
   const ledgerwalletTxSending = (tx) => {
     setScreen('ledgerwallet')
     setStatus(
-      'Please, connect your Ledger Wallet and open the XRP app. Note: Nano S does not support some transactions.'
+      'Please, connect your Ledger Wallet and open the ' +
+        nativeCurrency +
+        ' app. Note: Nano S does not support some transactions.'
     )
     ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
   }

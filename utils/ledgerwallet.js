@@ -2,16 +2,28 @@ import TransportWebHID from '@ledgerhq/hw-transport-webhid'
 import Xrp from '@ledgerhq/hw-app-xrp'
 import { broadcastTransaction, getNextTransactionParams } from './user'
 import { encode } from 'xrpl-binary-codec-prerelease'
-import { xahauNetwork } from '.'
+import { nativeCurrency, xahauNetwork } from '.'
 import { xahauDefinitions } from './xahau'
 
 const errorHandle = (error) => {
   const msg = String(error?.message || error)
+  const statusCode = error?.statusCode
 
+  // App-level status from Ledger (e.g. 0x650f when app is not open)
+  if (error?.name === 'TransportStatusError' && typeof statusCode === 'number') {
+    console.error('Ledger TransportStatusError:', statusCode, error.statusText)
+
+    if (statusCode === 0x650f) {
+      throw new Error('Please unlock your Ledger device and open the ' + nativeCurrency + ' app, then try again.')
+    }
+
+    throw new Error(`Ledger error: ${error.statusText || 'Unknown status'} (0x${statusCode.toString(16)})`)
+  }
+
+  // Device already in use (other tab/app)
   if (msg.includes('already open') || error?.name === 'InvalidStateError') {
-    // just a message without throwing an error
-    console.warn('Ledger WebHID: device is already open, reusing existing connection.')
-    return
+    console.warn('Ledger WebHID: device is already open somewhere else.')
+    throw new Error('Ledger device is already in use. Close other Ledger apps or browser tabs and try again.')
   }
 
   if (msg.includes('Locked device')) {
@@ -30,6 +42,7 @@ const errorHandle = (error) => {
 
 // 🔒 one instance for module
 let xrpAppPromise = null
+let xrpAppInstance = null
 
 const connectLedgerHID = async () => {
   // if already connected - reuse it
@@ -38,11 +51,13 @@ const connectLedgerHID = async () => {
   xrpAppPromise = TransportWebHID.create()
     .then((transport) => {
       const app = new Xrp(transport)
+      xrpAppInstance = app
 
-      // if transport support 'on' method - listen for disconnect event
+      // if transport supports 'on' method - listen for disconnect event
       if (typeof transport.on === 'function') {
         transport.on('disconnect', () => {
           xrpAppPromise = null
+          xrpAppInstance = null
         })
       }
 
@@ -50,6 +65,7 @@ const connectLedgerHID = async () => {
     })
     .catch((error) => {
       xrpAppPromise = null
+      xrpAppInstance = null
       errorHandle(error)
     })
 
@@ -109,7 +125,7 @@ const ledgerwalletSign = async ({
 
     if (!tx || tx?.TransactionType === 'SignIn') {
       onSignIn({ address, wallet, redirectName: signRequest.redirect })
-      //keept afterSubmitExe here to close the dialog form when signedin
+      // keep afterSubmitExe here to close the dialog form when signed in
       afterSubmitExe({})
       return
     }
@@ -185,5 +201,19 @@ export const ledgerwalletTxSend = async ({
     })
   } catch (err) {
     setStatus(err.message)
+  }
+}
+
+// 🔌 explicit disconnect for sign-out
+export const ledgerwalletDisconnect = async () => {
+  if (!xrpAppInstance) return
+
+  try {
+    await xrpAppInstance.transport.close()
+  } catch (e) {
+    console.warn('Error while closing Ledger transport', e)
+  } finally {
+    xrpAppInstance = null
+    xrpAppPromise = null
   }
 }

@@ -31,6 +31,7 @@ import '../styles/components/nprogress.css'
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
 import ErrorBoundary from '../components/ErrorBoundary'
+import { ledgerwalletDisconnect } from '../utils/ledgerwallet'
 
 const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
@@ -172,8 +173,11 @@ const MyApp = ({ Component, pageProps }) => {
 
   const { uuid } = router.query
 
-  const signOut = () => {
+  const signOut = async () => {
     localStorage.removeItem('xamanUserToken')
+    if (account?.wallet === 'ledgerwallet') {
+      await ledgerwalletDisconnect()
+    }
     setWcSession(null)
     setAccount({
       ...account,
