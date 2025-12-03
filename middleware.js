@@ -53,11 +53,6 @@ export async function middleware(req) {
     }
   }
 
-  // ✅ Do NOT localize /explorer and /explorer/*
-  if (req.nextUrl.pathname === '/explorer' || req.nextUrl.pathname.startsWith('/explorer/')) {
-    return NextResponse.next()
-  }
-
   //import to have this case: reactLocale === 'default'
   if (reactLocale !== viewLocale) {
     const url = req.nextUrl.clone()
