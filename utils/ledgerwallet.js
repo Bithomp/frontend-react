@@ -2,36 +2,58 @@ import TransportWebHID from '@ledgerhq/hw-transport-webhid'
 import Xrp from '@ledgerhq/hw-app-xrp'
 import { broadcastTransaction, getNextTransactionParams } from './user'
 import { encode } from 'xrpl-binary-codec-prerelease'
+import { xahauNetwork } from '.'
+import { xahauDefinitions } from './xahau'
 
 const errorHandle = (error) => {
-  // Handle specific errors based on the message or error type
-  if (error.message.includes('already open')) {
-    throw new Error('Something went wrong connecting to your Ledger. Please refresh your page and try again.')
+  const msg = String(error?.message || error)
+
+  if (msg.includes('already open') || error?.name === 'InvalidStateError') {
+    // just a message without throwing an error
+    console.warn('Ledger WebHID: device is already open, reusing existing connection.')
+    return
   }
 
-  // Handle LockedDeviceError: Device requires PIN entry
-  if (error.message.includes('Locked device')) {
+  if (msg.includes('Locked device')) {
     console.error('Ledger device is locked. Please enter your PIN.')
     throw new Error('Ledger device is locked. Please unlock it by entering your PIN.')
   }
 
-  // Handle TransportError (WebHID issues)
-  if (error.message.includes('TransportError')) {
+  if (msg.includes('TransportError')) {
     console.error('Transport error: Unable to communicate with Ledger device.')
     throw new Error('Transport error. Ensure your device is connected properly.')
   }
 
-  // General fallback for other errors
   console.error('An unexpected error occurred:', error)
   throw new Error('An unexpected error occurred while connecting to the Ledger device.')
 }
 
+// 🔒 one instance for module
+let xrpAppPromise = null
+
 const connectLedgerHID = async () => {
-  return TransportWebHID.create()
-    .then((transport) => new Xrp(transport))
+  // if already connected - reuse it
+  if (xrpAppPromise) return xrpAppPromise
+
+  xrpAppPromise = TransportWebHID.create()
+    .then((transport) => {
+      const app = new Xrp(transport)
+
+      // if transport support 'on' method - listen for disconnect event
+      if (typeof transport.on === 'function') {
+        transport.on('disconnect', () => {
+          xrpAppPromise = null
+        })
+      }
+
+      return app
+    })
     .catch((error) => {
+      xrpAppPromise = null
       errorHandle(error)
     })
+
+  return xrpAppPromise
 }
 
 const getLedgerAddress = async (xrpApp, path = "44'/144'/0'/0/0") => {
@@ -43,14 +65,17 @@ const getLedgerAddress = async (xrpApp, path = "44'/144'/0'/0/0") => {
   }
 }
 
+// one helper for both XRPL & Xahau
+const encodeTx = (tx) => (xahauNetwork ? encode(tx, xahauDefinitions) : encode(tx))
+
 const signTransactionWithLedger = async (xrpApp, tx, path = "44'/144'/0'/0/0") => {
   try {
-    const encodetx = encode(tx) //, DEFAULT_DEFINITIONS
+    const encodetx = encodeTx(tx)
     const signature = await xrpApp.signTransaction(path, encodetx)
     return signature.toUpperCase()
   } catch (error) {
     console.error('Failed to sign transaction:', error)
-    throw new Error('Unable to sign transaction with Ledger via WebHID.', error)
+    throw new Error('Unable to sign transaction with Ledger via WebHID.')
   }
 }
 
@@ -68,14 +93,12 @@ const ledgerwalletSign = async ({
 }) => {
   const signRequestData = signRequest.data
 
-  // If the transaction field Account is not set, the account of the user's wallet will be used.
-
   if (signRequestData?.signOnly) {
     setStatus('Sign the transaction in Ledger Wallet.')
     try {
       const signature = await signTransactionWithLedger(xrpApp, tx)
       tx.TxnSignature = signature
-      const blob = encode(tx)
+      const blob = encodeTx(tx)
       afterSigning({ signRequestData, blob, address })
     } catch (err) {
       setStatus(err.message)
@@ -107,8 +130,10 @@ const ledgerwalletSign = async ({
     try {
       const signature = await signTransactionWithLedger(xrpApp, tx)
       tx.TxnSignature = signature
-      const blob = encode(tx) // , DEFAULT_DEFINITIONS
-      //now submit transaction
+
+      // use same encoding as for signing
+      const blob = encodeTx(tx)
+
       setStatus('Submitting transaction to the network...')
       setAwaiting(true)
       broadcastTransaction({
