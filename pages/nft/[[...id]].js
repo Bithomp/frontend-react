@@ -1421,7 +1421,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                               {!notFoundInTheNetwork && (
                                 <tr>
                                   <td>{t('table.uri')}</td>
-                                  <td>
+                                  <td className="brake">
                                     {data.uri ? (
                                       <>
                                         {isValidJson(decodedUri) ? (
