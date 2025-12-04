@@ -14,7 +14,7 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
   useEffect(() => {
     // Check if destination allows incoming remit when address changes
     const checkDestinationRemit = async () => {
-      if (!signRequest.request?.Destination || !xahauNetwork) {
+      if (!signRequest.request?.Destination) {
         setDestinationRemitDisabled(false)
         return
       }
