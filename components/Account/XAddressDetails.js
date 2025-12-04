@@ -16,6 +16,7 @@ import {
   FaYoutube,
   FaXTwitter
 } from 'react-icons/fa6'
+import {xAddressDetails} from '../../styles/components/xaddress-details.module.scss'
 
 export default function XAddressDetails({ xAddressInput }) {
   const { t } = useTranslation()
@@ -221,7 +222,7 @@ export default function XAddressDetails({ xAddressInput }) {
   }
 
   return (
-    <>
+    <div className={xAddressDetails}>
       <SEO
         page="X-Address information"
         title={`${t('explorer.header.account')} ${userData.service || userData.username || userData.address}`}
@@ -280,6 +281,6 @@ export default function XAddressDetails({ xAddressInput }) {
           )}
         </div>
       </div>
-    </>
+    </div>
   )
 }
