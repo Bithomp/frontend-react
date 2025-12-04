@@ -11,8 +11,8 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
   const [destinationRemitDisabled, setDestinationRemitDisabled] = useState(false)
   const [touched, setTouched] = useState(false)
 
-  // Check if destination allows incoming remit when address changes
   useEffect(() => {
+    // Check if destination allows incoming remit when address changes
     const checkDestinationRemit = async () => {
       if (!signRequest.request?.Destination || !xahauNetwork) {
         setDestinationRemitDisabled(false)
@@ -36,7 +36,10 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
       }
     }
 
-    checkDestinationRemit()
+    if (xahauNetwork) {
+      // check only on xahau network
+      checkDestinationRemit()
+    }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signRequest.request?.Destination])
 
