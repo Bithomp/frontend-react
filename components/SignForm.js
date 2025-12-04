@@ -91,7 +91,6 @@ export default function SignForm({
   const [erase, setErase] = useState(false)
   const [awaiting, setAwaiting] = useState(false)
   const [preparedTx, setPreparedTx] = useState(null)
-  const [autoSend, setAutoSend] = useState(false)
 
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
@@ -99,7 +98,7 @@ export default function SignForm({
   const [choosenWallet, setChoosenWallet] = useState(null)
 
   useEffect(() => {
-    if (!signRequest || autoSend) return
+    if (!signRequest) return
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile) {
       txSend()
@@ -916,7 +915,9 @@ export default function SignForm({
         return (
           <span>
             I'm sending this NFT directly to the Destination account using Remit.{' '}
-            <span className="orange bold">The destination will receive the NFT immediately, and I will pay for the NFT reserve requirements.</span>
+            <span className="orange bold">
+              The destination will receive the NFT immediately, and I will pay for the NFT reserve requirements.
+            </span>
           </span>
         )
       } else {
@@ -1016,7 +1017,6 @@ export default function SignForm({
                     setSignRequest={setSignRequest}
                     setStatus={setStatus}
                     setFormError={setFormError}
-                    setAutoSend={setAutoSend}
                   />
                 )}
 

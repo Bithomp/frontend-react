@@ -5,7 +5,7 @@ import AddressInput from '../UI/AddressInput'
 import CheckBox from '../UI/CheckBox'
 import axios from 'axios'
 
-export default function NftTransfer({ setSignRequest, signRequest, setStatus, setFormError, setAutoSend }) {
+export default function NftTransfer({ setSignRequest, signRequest, setStatus, setFormError }) {
   const { t } = useTranslation()
   const [useRemit, setUseRemit] = useState(false)
   const [destinationRemitDisabled, setDestinationRemitDisabled] = useState(false)
@@ -41,14 +41,13 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
 
   useEffect(() => {
     if (xahauNetwork) {
-      setAutoSend(true)
       const newRequest = { ...signRequest.request, TransactionType: useRemit ? 'Remit' : 'URITokenCreateSellOffer' }
       if (useRemit && newRequest.URITokenID) {
         delete newRequest.URITokenID
         delete newRequest.Amount
       }
       setSignRequest({ ...signRequest, request: newRequest })
-    } 
+    }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useRemit])
 
@@ -80,22 +79,14 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
           hideButton={true}
         />
       </span>
-      
+
       {/* Remit option for Xahau network */}
       {xahauNetwork && (
         <div className="terms-checkbox">
-          <CheckBox 
-            checked={useRemit} 
-            setChecked={setUseRemit} 
-            name="use-remit"
-            disabled={destinationRemitDisabled}
-          >
-            Use Remit (Xahau)
+          <CheckBox checked={useRemit} setChecked={setUseRemit} name="use-remit" disabled={destinationRemitDisabled}>
+            Use Remit
             {destinationRemitDisabled && (
-              <span className="red">
-                {' '}
-                (Disabled - destination has incoming remit disabled)
-              </span>
+              <span className="red"> (Disabled - destination has incoming remit disabled)</span>
             )}
           </CheckBox>
         </div>
