@@ -16,7 +16,7 @@ import {
   FaYoutube,
   FaXTwitter
 } from 'react-icons/fa6'
-import {xAddressDetails} from '../../styles/components/xaddress-details.module.scss'
+import {xAddressDetails} from '../../styles/components/Account/xaddress-details.module.scss'
 
 export default function XAddressDetails({ xAddressInput }) {
   const { t } = useTranslation()
