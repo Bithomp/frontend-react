@@ -9,6 +9,7 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
   const { t } = useTranslation()
   const [useRemit, setUseRemit] = useState(false)
   const [destinationRemitDisabled, setDestinationRemitDisabled] = useState(false)
+  const [touched, setTouched] = useState(false)
 
   // Check if destination allows incoming remit when address changes
   useEffect(() => {
@@ -52,18 +53,30 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
   }, [useRemit])
 
   const onAddressChange = (value) => {
-    let newRequest = signRequest
+    if (!touched && !value) return
+
+    setTouched(true)
+
+    const newRequest = { ...signRequest, request: { ...signRequest.request } }
+
+    if (!value) {
+      delete newRequest.request.Destination
+      setFormError(false)
+      setStatus('')
+      setSignRequest(newRequest)
+      return
+    }
+
     if (isAddressValid(value)) {
       newRequest.request.Destination = value
       setFormError(false)
       setStatus('')
     } else {
-      if (newRequest.request.Destination) {
-        delete newRequest.request.Destination
-      }
+      delete newRequest.request.Destination
       setStatus(t('form.error.address-invalid'))
       setFormError(true)
     }
+
     setSignRequest(newRequest)
   }
 
