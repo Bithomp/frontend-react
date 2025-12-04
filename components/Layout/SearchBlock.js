@@ -116,9 +116,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       typingTimer = setTimeout(async () => {
         if (value && value.length > 2) {
           setSearchingSuggestions(true)
-          const suggestionsResponse = await axios('v2/address/search/' + value).catch((error) => {
+          const suggestionsResponse = await axios('v2/address/search/' + value).catch(() => {
             setSearchingSuggestions(false)
-            console.log(error.message)
           })
           if (suggestionsResponse) {
             const suggestions = suggestionsResponse.data
@@ -256,14 +255,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    if (isValidPayString(searchFor) || isValidXAddress(searchFor)) {
-      // the check for paystring/xAddress should be before the check for addressOrUsername,
-      // as if there is no destination tag, we will treat it as an address or username
-
-      // we need to resolve paystring and x-address first before redirecting!
-      // if there is a tag -
-      // get the new page which we can show an address and a tag
-      router.push('/account/' + encodeURI(searchFor) + addParams) //replace with a new page to show a tag
+    if (isValidPayString(searchItem) || isValidXAddress(searchItem)) {
+      router.push('/account/' + encodeURI(searchItem) + addParams)
       return
     }
 
