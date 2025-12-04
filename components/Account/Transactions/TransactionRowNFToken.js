@@ -5,29 +5,21 @@ import {
   nftOfferLink,
   amountFormat,
   addressUsernameOrServiceLink,
-  nativeCurrencyToFiat
+  nativeCurrencyToFiat,
+  AddressWithIconInline
 } from '../../../utils/format'
 import { addressBalanceChanges } from '../../../utils/transaction'
-import { useTxFiatRate } from './FiatRateContext'
+import { useIsMobile } from '../../../utils/mobile'
 
-const nftData = (change, nftInfo, txType) => {
+const nftData = (change, nftInfo, txType, amountChange) => {
   const flagsAsString = flagList(nftInfo.flags)
 
   return (
     <>
-      {txType === 'NFTokenBurn' ? (
-        <div>
-          <span>Change: </span>
-          <span>removed NFT {nftIdLink(change.nftokenID)}</span>
-        </div>
-      ) : (
-        <div>
-          <span>NFT: </span>
-          <span>{nftIdLink(change.nftokenID)}</span>
-        </div>
-      )}
-
-      {nftInfo.transferFee !== undefined && txType !== 'NFTokenBurn' && (
+      <div>
+        {txType === 'NFTokenBurn' && 'Burned '}NFT: {nftIdLink(change.nftokenID)}
+      </div>
+      {nftInfo.transferFee !== undefined && txType !== 'NFTokenBurn' && amountChange && (
         <div>
           <span>Royalty: </span>
           <span>{nftInfo.transferFee / 1000}%</span>
@@ -83,15 +75,73 @@ const showAllOfferLinks = (changes) => {
 export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }) => {
   const { specification, outcome, tx } = data
   const txType = tx?.TransactionType
-  const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
-  const txTypeSpecial =
-    txType +
-    (direction && (txType === 'NFTokenAcceptOffer' || txType === 'NFTokenCreateOffer')
-      ? ' - ' + direction + ' Offer'
-      : '')
+  let txTypeSpecial = txType
+  const isMobile = useIsMobile(600)
 
-  const pageFiatRate = useTxFiatRate()
   const amountChange = addressBalanceChanges(data, address)?.[0]
+
+  const nftSource =
+    outcome?.nftokenChanges?.length === 2
+      ? outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'removed')
+      : null
+
+  const nftDestination =
+    outcome?.nftokenChanges?.length === 2
+      ? outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'added')
+      : null
+
+  if (txType === 'NFTokenAcceptOffer') {
+    if (!amountChange) {
+      txTypeSpecial = (
+        <>
+          NFT{' '}
+          {nftDestination?.address === address
+            ? 'received from'
+            : nftSource?.address === address
+            ? 'transfer to'
+            : 'transfer by'}
+          {isMobile ? ' ' : <br />}
+          <AddressWithIconInline
+            data={
+              nftDestination?.address === address
+                ? nftSource
+                : nftSource?.address === address
+                ? nftDestination
+                : specification.source
+            }
+            options={{ short: 5 }}
+          />
+        </>
+      )
+    } else if (amountChange?.value < 0) {
+      txTypeSpecial = 'NFT purchase'
+    } else {
+      txTypeSpecial = 'NFT offer accept'
+    }
+  } else if (txType === 'NFTokenCreateOffer') {
+    const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
+    if (direction) {
+      txTypeSpecial = 'Create NFT ' + direction + ' offer'
+
+      if (direction === 'Sell' && tx?.Account !== address) {
+        txTypeSpecial = (
+          <>
+            {tx?.Amount === '0' ? 'Free NFT offer' : 'NFT Sell offer'} from
+            {isMobile ? ' ' : <br />}
+            <AddressWithIconInline data={specification.source} options={{ short: 5 }} />
+          </>
+        )
+      }
+    }
+  } else if (txType === 'NFTokenCancelOffer') {
+    txTypeSpecial = 'Cancel NFT offer'
+  } else if (txType === 'NFTokenMint') {
+    txTypeSpecial = 'Mint NFT'
+  } else if (txType === 'NFTokenBurn') {
+    txTypeSpecial = 'Burn NFT'
+  }
+
+  txTypeSpecial = <span className="bold">{txTypeSpecial}</span>
 
   return (
     <TransactionRowCard
@@ -101,172 +151,150 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
     >
-      <>
-        {outcome?.nftokenChanges?.length > 0 && (
-          <>
-            {/* For NFTokenAcceptOffer, show NFT info only once */}
-            {txType === 'NFTokenAcceptOffer'
-              ? (() => {
-                  const firstChange = outcome.nftokenChanges[0]?.nftokenChanges[0]
-                  const nftInfo = firstChange ? outcome?.affectedObjects?.nftokens?.[firstChange.nftokenID] : null
-                  return firstChange && nftInfo ? (
-                    <React.Fragment key="nft-info">{nftData(firstChange, nftInfo, txType)}</React.Fragment>
-                  ) : null
-                })()
-              : /* For other transaction types, show NFT info for each change */
-                outcome.nftokenChanges.map((change, i) => {
-                  const nftChanges = change.nftokenChanges
-                  return nftChanges.map((nftChange, j) => {
-                    const nftInfo = outcome?.affectedObjects?.nftokens?.[nftChange.nftokenID]
-                    return (
-                      <React.Fragment key={'t' + i + '-' + j}>{nftData(nftChange, nftInfo, txType)}</React.Fragment>
-                    )
-                  })
-                })}
-          </>
-        )}
-
-        {/* For sell offers, show NFT owner, NFT ID, and destination */}
-        {txType === 'NFTokenCreateOffer' && (
-          <>
-            {/* For sell offers not initiated by this account, show who created the offer */}
-            {specification?.flags?.sellToken && specification?.source?.address !== address && (
-              <>
-                <span>Sell Offer by: </span>
-                <span className="bold">{addressUsernameOrServiceLink(specification?.source, 'address')}</span>
-                <br />
-              </>
-            )}
-          </>
-        )}
-
-        {txType === 'NFTokenCancelOffer' && (
-          <>
-            {/* For cancel offers not initiated by this account, show who initiated the cancel */}
-            {specification?.source?.address !== address && (
-              <>
-                <span>NFTokenCancelOffer by </span>
-                <span className="bold">{addressUsernameOrServiceLink(specification?.source, 'address')}</span>
-                <br />
-              </>
-            )}
-          </>
-        )}
-
-        {/* For buy offers, show NFT owner, NFT ID, and destination */}
-        {txType === 'NFTokenCreateOffer' && !specification?.flags?.sellToken && (
-          <>
-            {tx?.Owner && (
-              <>
-                <span>NFT Owner: </span>
-                <span className="bold">{addressUsernameOrServiceLink(specification, 'owner')}</span>
-                <br />
-              </>
-            )}
-            {tx?.NFTokenID && (
-              <>
-                <span>NFT: </span>
-                <span className="bold">{nftIdLink(tx?.NFTokenID)}</span>
-                <br />
-              </>
-            )}
-            {tx?.Destination && (
-              <>
-                <span>Destination: </span>
-                <span className="bold">{addressUsernameOrServiceLink(specification?.destination, 'address')}</span>
-                <br />
-              </>
-            )}
-          </>
-        )}
-
-        {txType === 'NFTokenAcceptOffer' && (
-          <>
-            {tx?.NFTokenSellOffer && (
-              <>
-                <span>Sell offer: </span>
-                <span>{nftOfferLink(tx?.NFTokenSellOffer)}</span>
-                <br />
-              </>
-            )}
-            {tx?.NFTokenBuyOffer && (
-              <>
-                <span>Buy offer: </span>
-                <span>{nftOfferLink(tx?.NFTokenBuyOffer)}</span>
-                <br />
-              </>
-            )}
-            {/* Show amount spent for the NFT */}
-            {amountChange && (
-              <>
-                <span>Amount: </span>
-                <span className="bold">{amountFormat(amountChange, { icon: true })}</span>
-                <span>
-                  {nativeCurrencyToFiat({
-                    amount: amountChange,
-                    selectedCurrency,
-                    fiatRate: pageFiatRate
+      {(fiatRate) => (
+        <>
+          {outcome?.nftokenChanges?.length > 0 && (
+            <>
+              {/* For NFTokenAcceptOffer, show NFT info only once */}
+              {txType === 'NFTokenAcceptOffer'
+                ? (() => {
+                    const firstChange = outcome.nftokenChanges[0]?.nftokenChanges[0]
+                    const nftInfo = firstChange ? outcome?.affectedObjects?.nftokens?.[firstChange.nftokenID] : null
+                    return firstChange && nftInfo ? (
+                      <React.Fragment key="nft-info">
+                        {nftData(firstChange, nftInfo, txType, amountChange)}
+                      </React.Fragment>
+                    ) : null
+                  })()
+                : /* For other transaction types, show NFT info for each change */
+                  outcome.nftokenChanges.map((change, i) => {
+                    const nftChanges = change.nftokenChanges
+                    return nftChanges.map((nftChange, j) => {
+                      const nftInfo = outcome?.affectedObjects?.nftokens?.[nftChange.nftokenID]
+                      return (
+                        <React.Fragment key={'t' + i + '-' + j}>
+                          {nftData(nftChange, nftInfo, txType, amountChange)}
+                        </React.Fragment>
+                      )
+                    })
                   })}
-                </span>
-                <br />
-              </>
-            )}
-            {/* Show broker fee for broker sells */}
-            {tx?.NFTokenBrokerFee && tx?.NFTokenBrokerFee !== '0' && (
-              <>
-                <span>Broker fee: </span>
-                <span className="bold">
-                  {amountFormat(specification.nftokenBrokerFee, { tooltip: 'right', icon: true })}
-                </span>
-                <br />
-              </>
-            )}
-            {/* Show NFT transfer details */}
-            {outcome?.nftokenChanges?.length === 2 && (
-              <>
-                <span>Transfer From: </span>
-                <span className="bold">
-                  {addressUsernameOrServiceLink(
-                    outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'removed'),
-                    'address'
-                  )}
-                </span>
-                <br />
-                <span>Transfer To: </span>
-                <span className="bold">
-                  {addressUsernameOrServiceLink(
-                    outcome.nftokenChanges.find((change) => change.nftokenChanges[0]?.status === 'added'),
-                    'address'
-                  )}
-                </span>
-                <br />
-              </>
-            )}
-          </>
-        )}
+            </>
+          )}
 
-        {outcome?.nftokenOfferChanges?.length > 0 && txType !== 'NFTokenAcceptOffer' && (
-          <div>
-            <span>Offer: </span>
-            <span>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</span>
-          </div>
-        )}
+          {txType === 'NFTokenCancelOffer' && (
+            <>
+              {/* For cancel offers not initiated by this account, show who initiated the cancel */}
+              {tx?.Account !== address && (
+                <>
+                  <span>NFT offer Canceled by: </span>
+                  <span className="bold">{addressUsernameOrServiceLink(specification?.source, 'address')}</span>
+                  <br />
+                </>
+              )}
+            </>
+          )}
 
-        {/* show 0 Amounts */}
-        {specification.amount !== undefined && (
-          <div>
-            <span>{txType === 'NFTokenMint' ? 'Price: ' : 'Amount: '}</span>
-            <span className="bold">{amountFormat(specification.amount, { tooltip: 'right', icon: true })}</span>
-            <span>
-              {nativeCurrencyToFiat({
-                amount: specification.amount,
-                selectedCurrency,
-                fiatRate: pageFiatRate
-              })}
-            </span>
-          </div>
-        )}
-      </>
+          {outcome?.nftokenOfferChanges?.length > 0 && txType !== 'NFTokenAcceptOffer' && (
+            <div>
+              <span>Offer: </span>
+              <span>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</span>
+            </div>
+          )}
+
+          {txType === 'NFTokenCreateOffer' && (
+            <>
+              {tx?.Owner && (
+                <>
+                  <span>NFT Owner: </span>
+                  <span>{addressUsernameOrServiceLink(specification, 'owner')}</span>
+                  <br />
+                </>
+              )}
+              {tx?.NFTokenID && (
+                <>
+                  <span>NFT: </span>
+                  <span>{nftIdLink(tx?.NFTokenID)}</span>
+                  <br />
+                </>
+              )}
+              {tx?.Destination && tx?.Destination !== address && (
+                <>
+                  <span>Destination: </span>
+                  <span>{addressUsernameOrServiceLink(specification?.destination, 'address')}</span>
+                  <br />
+                </>
+              )}
+            </>
+          )}
+
+          {txType === 'NFTokenAcceptOffer' && (
+            <>
+              {tx?.NFTokenSellOffer && (
+                <>
+                  <span>{amountChange ? 'Sell' : 'Transfer'} offer: </span>
+                  <span>{nftOfferLink(tx?.NFTokenSellOffer)}</span>
+                  <br />
+                </>
+              )}
+              {tx?.NFTokenBuyOffer && (
+                <>
+                  <span>Buy offer: </span>
+                  <span>{nftOfferLink(tx?.NFTokenBuyOffer)}</span>
+                  <br />
+                </>
+              )}
+              {/* Show amount spent for the NFT */}
+              {amountChange && (
+                <>
+                  <span>Amount: </span>
+                  <span className="bold">{amountFormat(amountChange, { icon: true })}</span>
+                  <span>
+                    {nativeCurrencyToFiat({
+                      amount: amountChange,
+                      selectedCurrency,
+                      fiatRate
+                    })}
+                  </span>
+                  <br />
+                </>
+              )}
+              {tx?.NFTokenBrokerFee && tx?.NFTokenBrokerFee !== '0' && (
+                <>
+                  <span>Broker fee: </span>
+                  <span className="bold">
+                    {amountFormat(specification.nftokenBrokerFee, { tooltip: 'right', icon: true })}
+                  </span>
+                  <br />
+                </>
+              )}
+              {outcome?.nftokenChanges?.length === 2 && (
+                <>
+                  {nftSource.address !== address && (
+                    <div>Sender: {addressUsernameOrServiceLink(nftSource, 'address')}</div>
+                  )}
+                  {nftDestination.address !== address && (
+                    <div>Sent to: {addressUsernameOrServiceLink(nftDestination, 'address')}</div>
+                  )}
+                </>
+              )}
+            </>
+          )}
+
+          {specification.amount !== undefined && (
+            <div>
+              <span>{txType === 'NFTokenMint' ? 'Price: ' : 'Amount: '}</span>
+              <span className="bold">{amountFormat(specification.amount, { tooltip: 'right', icon: true })}</span>
+              <span>
+                {nativeCurrencyToFiat({
+                  amount: specification.amount,
+                  selectedCurrency,
+                  fiatRate
+                })}
+              </span>
+            </div>
+          )}
+        </>
+      )}
     </TransactionRowCard>
   )
 }

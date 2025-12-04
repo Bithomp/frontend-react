@@ -159,6 +159,8 @@ export default function Header({
 
   const bithomp = server.includes('bithomp')
 
+  const lang = i18n.language === 'default' ? 'en' : i18n.language
+
   return (
     <div className={menuOpen ? 'mobile-menu-open' : ''}>
       <header>
@@ -322,7 +324,7 @@ export default function Header({
             {network === 'mainnet' && (
               <>
                 <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
-                <a href={'https://test.bithomp.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
+                <a href={'https://test.bithomp.com/' + lang + '/faucet'}>{t('menu.developers.faucet')}</a>
                 <a href={'https://test.bithomp.com/tools/'}>Bithomp tools</a>
               </>
             )}
@@ -464,7 +466,7 @@ export default function Header({
                   {isCopied ? t('button.copied') : t('button.copy-my-address')}
                 </span>
                 <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
-                <a href={server + '/explorer/' + address}>{t('signin.actions.my-transactions')}</a>
+                <Link href={'/account/' + address + '/transactions'}>{t('signin.actions.my-transactions')}</Link>
                 <Link href="/services/send">Send payment</Link>
                 <Link href="/services/account-settings/">Account Settings</Link>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
@@ -589,7 +591,7 @@ export default function Header({
 
           <MenuDropDown
             id="dropdown10"
-            title={i18n.language?.toUpperCase()}
+            title={lang?.toUpperCase()}
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
             type="top-switch"

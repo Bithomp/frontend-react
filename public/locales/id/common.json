@@ -161,7 +161,6 @@
     "description": "Grafik harga {{nativeCurrency}} | Statistik {{explorerName}} | Penjelajah NFT | Pencarian alamat dompet | Volume NFT {{explorerName}} | Beli dan Jual NFT | Layanan {{explorerName}}",
     "search-placeholder": "Cari berdasarkan Alamat / Transaksi / NFT / Username / PayString / Penawaran",
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
-    "scan-qr": "PINDAI KODE",
     "price": {
       "header": "Harga {{nativeCurrency}} Langsung & Konverter"
     },
@@ -311,7 +310,7 @@
     "error": "Kesalahan",
     "no-data": "Tidak ada data tersedia",
     "loading": "Memuat...",
-    "login-to-bithomp-pro": "Memuat lebih banyak data tersedia untuk pelanggan Bithomp Pro yang <1>termasuk login</1>.",
+    "login-to-bithomp-pro": "Memuat lebih banyak data tersedia untuk pelanggan Bithomp Pro yang <2>termasuk login</2>.",
     "renew-bithomp-pro": "Langganan Bithomp Pro Anda telah kedaluwarsa. <1>Perbarui langganan Anda</1>.",
     "load-failed": "Gagal memuat",
     "all-issuers": "Semua penerbit",
@@ -349,10 +348,12 @@
   "error": {
     "payment-partly": "Silahkan kirim sisa jumlahnya, sejauh ini kami hanya menerima {{received}} {{currency}} saat <b>{{required}} {{currency}}</b> dibutuhkan.",
     "Network Error": "Sepertinya tidak ada koneksi internet ;(",
+    "Request failed with status code 522": "Server saat ini tidak dapat dijangkau, coba lagi nanti.",
     "Request failed with status code 429": "Anda mengirimkan terlalu banyak permintaan kepada kami, coba lagi nanti!",
     "Request failed with status code 404": "Panggilan API seperti itu tidak diizinkan di jaringan tersebut.",
     "Request failed with status code 403": "Sepertinya Anda telah keluar, silakan masuk kembali.",
-    "Request aborted": "Permintaan dibatalkan"
+    "Request aborted": "Permintaan dibatalkan",
+    "read ECONNRESET": "Permintaan telah habis waktu. Coba ubah filter Anda atau coba lagi nanti."
   },
   "errors": {
     "token": {

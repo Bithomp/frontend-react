@@ -5,6 +5,14 @@ import Cookies from 'universal-cookie'
 import axios from 'axios'
 import SparkMD5 from 'spark-md5'
 
+export const errorT = (t, errorMessage, defaultMessage) => {
+  const translation = t(`error.${errorMessage}`)
+  if (translation === `error.${errorMessage}`) {
+    return defaultMessage || errorMessage
+  }
+  return translation
+}
+
 export const forbid18Plus = async () => {
   //check if we have a saved country for the user
   let savedCountry = localStorage.getItem('country')
@@ -545,7 +553,7 @@ export const networks = {
     server: 'https://bithomp.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/go/buy-first-xrp',
-    explorerName: 'XRP Ledger',
+    explorerName: 'XRPL',
     ledgerName: 'XRPL',
     minLedger: 32570,
     subname: ''
@@ -581,7 +589,7 @@ export const networks = {
     subname: 'Devnet'
   },
   alphanet: {
-    id: 21339,
+    id: 21465,
     server: 'https://alphanet.bithomp.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/faucet',
@@ -673,7 +681,7 @@ export const networksIds = {
   0: { server: 'https://bithomp.com', name: 'mainnet' },
   1: { server: 'https://test.bithomp.com', name: 'testnet' },
   2: { server: 'https://dev.bithomp.com', name: 'devnet' },
-  21339: { server: 'https://alphanet.bithomp.com', name: 'alphanet' },
+  21465: { server: 'https://alphanet.bithomp.com', name: 'alphanet' },
   21337: { server: 'https://xahauexplorer.com', name: 'xahau' },
   21338: { server: 'https://test.xahauexplorer.com', name: 'xahau-testnet' },
   31338: { server: 'https://jshooks.xahauexplorer.com', name: 'xahau-jshooks' }
@@ -759,6 +767,7 @@ export const isAddressValid = (x) => {
 }
 
 export const isTagValid = (x) => {
+  if (x === 0 || x === '0') return true
   if (!x) return false
   if (!/^[0-9]{1,10}$/.test(x)) return false
   if (parseInt(x) > 4294967295) return false

@@ -13,16 +13,15 @@ import {
   timeFromNow,
   AddressWithIconInline
 } from '../../utils/format'
-import { getIsSsrMobile } from '../../utils/mobile'
+import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
 import { nftName, NftImage, assetUrl, collectionNameText, isValidTaxon } from '../../utils/nft'
 
 import SEO from '../../components/SEO'
 import { nftClass } from '../../styles/pages/nft.module.scss'
-import { nativeCurrency, useWidth } from '../../utils'
+import { nativeCurrency } from '../../utils'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { LinkListedNfts, LinkTx } from '../../utils/links'
-import Tabs from '../../components/Tabs'
-import { useRouter } from 'next/router'
+import NftCollectionTabs from '../../components/Tabs/NftCollectionTabs'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -63,10 +62,8 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobile, fiatRate, errorMessage, data }) {
+export default function NftCollection({ id, nftList, selectedCurrency, fiatRate, errorMessage, data }) {
   const { t } = useTranslation()
-  const width = useWidth()
-  const router = useRouter()
   const collection = data?.collection
   const statistics = collection?.statistics
   const [activityData, setActivityData] = useState({
@@ -76,7 +73,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
   })
   const [activityLoading, setActivityLoading] = useState(false)
 
-  const isMobile = width !== undefined ? width <= 1000 : isSsrMobile
+  const isMobile = useIsMobile(1000)
 
   useEffect(() => {
     fetchActivityData()
@@ -349,7 +346,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
   const collectionPart =
     collection?.issuer && isValidTaxon(collection?.taxon)
       ? `issuer=${collection.issuer}&taxon=${collection.taxon}`
-      : 'collection=' + collection.collection
+      : 'collection=' + collection?.collection
 
   return (
     <div className={nftClass}>
@@ -361,24 +358,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
 
       <div className="content-profile">
         <h1 className="center">NFT collection: {collectionName}</h1>
-        <Tabs
-          style={{ marginTop: 20, marginBottom: 20 }}
-          tabList={[
-            { value: 'collections', label: 'NFT collections' },
-            { value: 'nfts', label: 'View All NFTs' },
-            { value: 'sold', label: 'Last Sold NFTs' },
-            { value: 'listed', label: 'Listed NFTs' }
-          ]}
-          setTab={(value) => {
-            let url = '/nft-volumes?period=week'
-            if (value === 'nfts') url = `/nft-explorer?${collectionPart}&includeWithoutMediaData=true`
-            else if (value === 'sold')
-              url = `/nft-sales?${collectionPart}&sale=primaryAndSecondary&includeWithoutMediaData=true&period=all&order=soldNew`
-            else if (value === 'listed')
-              url = `/nft-explorer?${collectionPart}&list=onSale&includeWithoutMediaData=true&saleDestination=publicAndKnownBrokers`
-            router.push(url)
-          }}
-        />
+        <NftCollectionTabs tab="collection" collectionPart={collectionPart} />
         {id && !data?.error ? (
           <>
             {!data && !errorMessage ? (
@@ -486,12 +466,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, isSsrMobi
                                   <tr>
                                     <td>Owners</td>
                                     <td className={statsTdClass}>
-                                      {/*<Link
-                                        href={`/nft-distribution?collection=${collection.collection}&includeWithoutMediaData=true`}
-                                      >
-                                        {statistics.owners}
-                                      </Link>*/}
-                                      {statistics.owners}
+                                      <Link href={`/nft-distribution?${collectionPart}`}>{statistics.owners}</Link>
                                     </td>
                                   </tr>
                                 )}

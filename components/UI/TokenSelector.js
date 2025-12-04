@@ -84,14 +84,11 @@ export default function TokenSelector({
     if (!currencyQueryName) return
     let queryAddList = []
     let queryRemoveList = []
-    if (value?.currency && value.currency !== nativeCurrency) {
+    if (value?.currency && value.currency !== nativeCurrency && value?.issuer) {
       queryAddList.push({ name: currencyQueryName, value: value.currency })
-    } else {
-      queryRemoveList.push(currencyQueryName)
-    }
-    if (value?.issuer) {
       queryAddList.push({ name: currencyQueryName + 'Issuer', value: value.issuer })
     } else {
+      queryRemoveList.push(currencyQueryName)
       queryRemoveList.push(currencyQueryName + 'Issuer')
     }
     setTabParams(router, [], queryAddList, queryRemoveList)

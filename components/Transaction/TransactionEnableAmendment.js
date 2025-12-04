@@ -1,14 +1,14 @@
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled } from '../../utils/format'
+import { AddressWithIconFilled, capitalize } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 import { xahauNetwork } from '../../utils'
 import Link from 'next/link'
 
 export const TransactionEnableAmendment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification } = data
+  const { specification, outcome } = data
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
@@ -38,6 +38,12 @@ export const TransactionEnableAmendment = ({ data, pageFiatRate, selectedCurrenc
               </span>
             )}
           </TData>
+        </tr>
+      )}
+      {outcome?.amendmentChanges?.amendment === specification.amendment && (
+        <tr>
+          <TData>New status</TData>
+          <TData className="bold">{capitalize(outcome?.amendmentChanges.status)}</TData>
         </tr>
       )}
       <tr>

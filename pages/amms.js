@@ -17,8 +17,8 @@ import {
   amountFormat,
   nativeCurrencyToFiat,
   AddressWithIcon,
-  AddressWithIconFilled,
-  niceCurrency
+  niceCurrency,
+  CurrencyWithIcon
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
 
@@ -122,7 +122,9 @@ export default function Amms({
   const [rawData, setRawData] = useState(initialData || {})
   const [order, setOrder] = useState(orderQuery)
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
+  const [errorMessage, setErrorMessage] = useState(
+    t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
+  )
   const [marker, setMarker] = useState(initialData?.marker)
   const [filtersHide, setFiltersHide] = useState(false)
   const [token, setToken] = useState({
@@ -162,6 +164,7 @@ export default function Amms({
 
     let markerPart = ''
     if (loadMoreRequest) {
+      if (!rawData?.marker) return
       markerPart = '&marker=' + rawData?.marker
     }
 
@@ -261,12 +264,9 @@ export default function Amms({
 
   const LPToken = ({ a }) => {
     return (
-      <AddressWithIconFilled
-        data={a.lpTokenBalance}
-        name="issuer"
-        currency={a.lpTokenBalance.currency}
-        options={{
-          short: true,
+      <CurrencyWithIcon
+        token={{
+          ...a.lpTokenBalance,
           currencyDetails: {
             type: 'lp_token',
             ammID: a.ammID,

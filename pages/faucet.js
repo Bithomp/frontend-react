@@ -51,7 +51,7 @@ export default function FaucetPage({ account, showAds, sessionTokenData }) {
   return (
     <>
       <SEO
-        title={'Faucet. Free ' + nativeCurrency + ' from ' + explorerName + ' Faucet for Developers.'}
+        title={'Faucet. Free ' + nativeCurrency + ' for Developers.'}
         description={
           'Get free ' +
           nativeCurrency +

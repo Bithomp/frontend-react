@@ -61,7 +61,8 @@ import {
   nativeCurrencyToFiat,
   AddressWithIconFilled,
   niceCurrency,
-  capitalize
+  capitalize,
+  CurrencyWithIcon
 } from '../utils/format'
 import TokenSelector from '../components/UI/TokenSelector'
 import { useSearchParams } from 'next/navigation'
@@ -315,12 +316,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
               t('general.loading')
             ) : token?.issuer ? (
               <>
-                <AddressWithIconFilled
-                  data={rawData}
-                  name="issuer"
-                  currency={rawData.currency}
-                  options={{ short: 12, currencyDetails: rawData.currencyDetails }}
-                />
+                <CurrencyWithIcon token={rawData} />
                 <br />
                 Total supply: {niceNumber(rawData?.summary?.totalCoins || 0)} {currency}
                 <br />
