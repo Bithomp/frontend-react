@@ -172,6 +172,7 @@ export default function SignForm({
     }
 
     if (signRequest.action === 'nftTransfer') {
+      tx.Amount = '0'
       if (!agreedToRisks) {
         setScreen('nftTransfer')
         return
