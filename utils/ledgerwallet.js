@@ -17,6 +17,17 @@ const errorHandle = (error) => {
       throw new Error('Please unlock your Ledger device and open the ' + nativeCurrency + ' app, then try again.')
     }
 
+    // CLA_NOT_SUPPORTED
+    if (statusCode === 0x6e00) {
+      throw new Error(
+        'This Ledger app does not support the requested command. Make sure the ' + nativeCurrency + ' app is open.'
+      )
+    }
+
+    if (statusCode === 0x6985) {
+      throw new Error('Signing cancelled on your Ledger device.')
+    }
+
     throw new Error(`Ledger error: ${error.statusText || 'Unknown status'} (0x${statusCode.toString(16)})`)
   }
 
