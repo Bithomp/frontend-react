@@ -5,9 +5,8 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
-import { isValidXAddress } from 'ripple-address-codec'
 
-import { devNet, xahauNetwork, avatarSrc, nativeCurrency, errorT, isValidPayString } from '../../utils'
+import { devNet, xahauNetwork, avatarSrc, nativeCurrency, errorT, isValidPayString, isValidXAddress } from '../../utils'
 import { shortNiceNumber } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 
