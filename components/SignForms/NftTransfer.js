@@ -84,9 +84,9 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
       {xahauNetwork && (
         <div className="terms-checkbox">
           <CheckBox checked={useRemit} setChecked={setUseRemit} name="use-remit" disabled={destinationRemitDisabled}>
-            Use Remit
+            Pay the NFT reserve for the destination (immediate NFT transfer).
             {destinationRemitDisabled && (
-              <span className="red"> (Disabled - destination has incoming remit disabled)</span>
+              <span className="red"> (Disabled - destination has incoming Remit disabled)</span>
             )}
           </CheckBox>
         </div>

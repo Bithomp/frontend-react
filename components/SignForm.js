@@ -912,14 +912,7 @@ export default function SignForm({
   const checkBoxText = (screen, signRequest) => {
     if (screen === 'nftTransfer') {
       if (signRequest.request?.TransactionType === 'Remit') {
-        return (
-          <span>
-            I'm sending this NFT directly to the Destination account using Remit.{' '}
-            <span className="orange bold">
-              The destination will receive the NFT immediately, and I will pay for the NFT reserve requirements.
-            </span>
-          </span>
-        )
+        return "I'm sending this NFT for FREE."
       } else {
         return (
           <Trans i18nKey="signin.confirm.nft-transfer">
