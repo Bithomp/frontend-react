@@ -45,10 +45,21 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
 
   useEffect(() => {
     if (xahauNetwork) {
-      const newRequest = { ...signRequest.request, TransactionType: useRemit ? 'Remit' : 'URITokenCreateSellOffer' }
-      if (useRemit && newRequest.URITokenID) {
-        delete newRequest.URITokenID
+      const newRequest = { ...signRequest.request }
+      if (useRemit) {
+        newRequest.TransactionType = 'Remit'
+        if (newRequest.URITokenID) {
+          newRequest.URITokenIDs = [newRequest.URITokenID]
+          delete newRequest.URITokenID
+        }
         delete newRequest.Amount
+      } else {
+        newRequest.TransactionType = 'URITokenCreateSellOffer'
+        newRequest.Amount = '0'
+        if (newRequest.URITokenIDs?.[0]) {
+          newRequest.URITokenID = newRequest.URITokenIDs[0]
+          delete newRequest.URITokenIDs
+        }
       }
       setSignRequest({ ...signRequest, request: newRequest })
     }
