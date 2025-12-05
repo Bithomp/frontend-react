@@ -463,7 +463,7 @@ export default function Subscriptions({
     const response = await axios('v2/bid/partner:' + partnerId + '/' + destinationTag + '/status').catch((error) => {
       setErrorMessage(t('error.' + error.message))
     })
-    const data = response.data
+    const data = response?.data
     if (data) {
       updateBid(data)
     }
