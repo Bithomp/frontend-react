@@ -365,6 +365,26 @@ export default function AccountDelete({
             </p>
 
             <div>
+              {account?.address && (
+                <>
+                  <FormInput
+                    defaultValue={account.address}
+                    hideButton={true}
+                    title={
+                      <>
+                        <span className="red">Deleting account</span> [
+                        <span onClick={signOut} className="link bold">
+                          {t('signin.signout')}
+                        </span>
+                        ]
+                      </>
+                    }
+                    disabled={true}
+                  />
+                  <br />
+                </>
+              )}
+
               <AddressInput
                 title={t('table.destination')}
                 placeholder="Destination address"
