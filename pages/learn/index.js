@@ -44,7 +44,8 @@ const buildLearnContent = () => {
           title: 'Guide for Token Issuers: Username, Toml file, Project Registration',
           slug: 'guide-for-token-issuers'
         },
-        { title: 'Bithomp Image Services', slug: 'image-services' }
+        { title: 'Bithomp Image Services', slug: 'image-services' },
+        { title: 'Understanding Trustlines', slug: 'trustlines' }
       ]
     }
   ]
