@@ -44,10 +44,13 @@ export default function AccountDelete({
   sourceTagQuery,
   sessionToken,
   subscriptionExpired,
-  openEmailLogin
+  openEmailLogin,
+  signOut
 }) {
   const { t } = useTranslation()
   const router = useRouter()
+
+  const [accountData, setAccountData] = useState(null)
   const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
   const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
   const [memo, setMemo] = useState(memoQuery)
@@ -59,7 +62,7 @@ export default function AccountDelete({
   const [sourceTag, setSourceTag] = useState(
     isTagValid(sourceTagQuery) && sessionToken && !subscriptionExpired ? sourceTagQuery : null
   )
-  const [error, setError] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
   const [isNonActive, setIsNonActive] = useState(false)
@@ -83,6 +86,24 @@ export default function AccountDelete({
 
     fetchNetworkInfo()
   }, [])
+
+  useEffect(() => {
+    const fetchAccountData = async () => {
+      try {
+        const response = await axios(`/v2/address/${account.address}?ledgerInfo=true`)
+        setAccountData(response?.data)
+      } catch (error) {
+        setErrorMessage('Error fetching account data')
+      }
+    }
+
+    if (account?.address) {
+      fetchAccountData()
+    } else {
+      setAccountData(null)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account])
 
   useEffect(() => {
     let queryAddList = []
@@ -184,60 +205,60 @@ export default function AccountDelete({
   }
 
   const handleSend = async () => {
-    setError('')
+    errorMessage('')
     setTxResult(null)
 
     if (!address || !isAddressValid(address)) {
-      setError(t('form.error.address-invalid'))
+      errorMessage(t('form.error.address-invalid'))
       return
     }
 
     // Check if destination requires a tag but none is provided
     if (requireDestTag && !destinationTag) {
-      setError('This destination account requires a destination tag. Please enter a destination tag.')
+      errorMessage('This destination account requires a destination tag. Please enter a destination tag.')
       return
     }
 
     // Check if advanced options are being used without proper subscription
     if ((fee || sourceTag || destinationTag) && (!sessionToken || subscriptionExpired)) {
-      setError(
+      errorMessage(
         'Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.'
       )
       return
     }
 
     if (Number(fee) > requiredFee / 1000000) {
-      setError('Minimum fee is ' + requiredFee / 1000000 + ' ' + nativeCurrency)
+      errorMessage('Minimum fee is ' + requiredFee / 1000000 + ' ' + nativeCurrency)
       return
     }
 
     if (Number(fee) > 1) {
-      setError('Maximum fee is 1 ' + nativeCurrency)
+      errorMessage('Maximum fee is 1 ' + nativeCurrency)
       return
     }
 
     if (destinationTag && !isTagValid(destinationTag)) {
-      setError('Please enter a valid destination tag.')
+      errorMessage('Please enter a valid destination tag.')
       return
     }
 
     if (sourceTag && !isTagValid(sourceTag)) {
-      setError('Please enter a valid source tag.')
+      errorMessage('Please enter a valid source tag.')
       return
     }
 
     if (!agreeToSiteTerms) {
-      setError('Please agree to the Terms and conditions')
+      errorMessage('Please agree to the Terms and conditions')
       return
     }
 
     if (isNonActive) {
-      setError('You can send funds only to already activated account.')
+      errorMessage('You can send funds only to already activated account.')
       return
     }
 
     if (destinationStatus === 3) {
-      setError('This account has been flagged as FRAUD. Sending is not allowed.')
+      errorMessage('This account has been flagged as FRAUD. Sending is not allowed.')
       return
     }
 
@@ -312,280 +333,296 @@ export default function AccountDelete({
       <div className="content-text content-center">
         <h1 className="center red">Account delete</h1>
 
-        <p>
-          An Account delete transaction permanently deletes an account and any objects it owns on the {explorerName}{' '}
-          Ledger, if possible, and transfers the account’s remaining {nativeCurrency} to a specified destination
-          account.
-        </p>
-        <p>
-          The fee to execute this transaction is{' '}
-          <span className="bold">{amountFormat(requiredFee, { noSpace: true })}</span>. This is a protocol requirement
-          of the {explorerName} Ledger, and the {amountFormat(requiredFee, { noSpace: true })} is permanently burned as
-          part of the process.
-        </p>
+        {accountData?.ledgerInfo?.deleted ? (
+          <>
+            The account <span className="bold">{account?.address}</span> has already been deleted on the {explorerName}{' '}
+            Ledger.
+            <br />
+            <br />
+            <center>
+              <button onClick={signOut} className="button-action">
+                {t('signin.signout')}
+              </button>
+            </center>
+          </>
+        ) : (
+          <>
+            <p>
+              An Account delete transaction permanently deletes an account and any objects it owns on the {explorerName}{' '}
+              Ledger, if possible, and transfers the account’s remaining {nativeCurrency} to a specified destination
+              account.
+            </p>
+            <p>
+              The fee to execute this transaction is{' '}
+              <span className="bold">{amountFormat(requiredFee, { noSpace: true })}</span>. This is a protocol
+              requirement of the {explorerName} Ledger, and the {amountFormat(requiredFee, { noSpace: true })} is
+              permanently burned as part of the process.
+            </p>
 
-        <p className="red bold">
-          ⚠️ Attention: Do NOT use an exchange or custodial wallet as the destination address. You may permanently lose
-          your funds.
-        </p>
+            <p className="red bold">
+              ⚠️ Attention: Do NOT use an exchange or custodial wallet as the destination address. You may permanently
+              lose your funds.
+            </p>
 
-        <div>
-          <AddressInput
-            title={t('table.destination')}
-            placeholder="Destination address"
-            name="destination"
-            hideButton={true}
-            setValue={(value) => {
-              setAddress(value)
-            }}
-            setInnerValue={setAddress}
-            rawData={isAddressValid(address) ? { address } : {}}
-            type="address"
-          />
-
-          {/* Show warning if destination account is flagged (status 1,2,3) */}
-          {(destinationStatus === 1 || destinationStatus === 2 || destinationStatus === 3) && (
             <div>
-              <div className="form-spacing" />
-              <div className="red center p-2 rounded-md border border-red-200 mb-4 sm:mb-0">
-                <strong>
-                  ⚠️{' '}
-                  {destinationStatus === 1
-                    ? 'Spam Alert'
-                    : destinationStatus === 2
-                    ? 'Potential Fraud Alert'
-                    : 'Fraud Alert'}
-                </strong>
-                <br />
-                {destinationStatus === 1 && (
-                  <>
-                    This account has been flagged for spam. Proceed with caution.
-                    <br />
-                  </>
-                )}
-                {destinationStatus === 2 && (
-                  <>
-                    This account has been flagged as potentially involved in fraud, scams, or phishing.{' '}
-                    <strong>Proceed with caution.</strong>
-                    <br />
-                  </>
-                )}
-                {destinationStatus === 3 && (
-                  <>
-                    <strong>This account has been flagged as FRAUD. Sending is not allowed.</strong>
-                    <br />
-                  </>
-                )}
-                <Link
-                  href="/blacklisted-address"
-                  target="_blank"
-                  style={{ color: '#ff6b6b', textDecoration: 'underline' }}
-                >
-                  Learn more about flagged accounts
-                </Link>
-              </div>
-            </div>
-          )}
+              <AddressInput
+                title={t('table.destination')}
+                placeholder="Destination address"
+                name="destination"
+                hideButton={true}
+                setValue={(value) => {
+                  setAddress(value)
+                }}
+                setInnerValue={setAddress}
+                rawData={isAddressValid(address) ? { address } : {}}
+                type="address"
+              />
 
-          {/* Show warning if destination account is non-activated */}
-          {isNonActive && (
-            <div>
-              <div className="form-spacing" />
-              <div className="orange center p-2 rounded-md border border-orange-200 mb-4 sm:mb-0">
-                <strong>⚠️ Non-activated account</strong>
-                <br />
-                You can not send funds to a non-activated account.
-              </div>
-            </div>
-          )}
-          <br />
-          <FormInput
-            title={
-              <>
-                {t('table.memo')} (<span className="orange">It will be public</span>)
-              </>
-            }
-            placeholder="Enter a memo (optional)"
-            setInnerValue={setMemo}
-            hideButton={true}
-            defaultValue={memo}
-            maxLength={100}
-            type="text"
-          />
+              {/* Show warning if destination account is flagged (status 1,2,3) */}
+              {(destinationStatus === 1 || destinationStatus === 2 || destinationStatus === 3) && (
+                <div>
+                  <div className="form-spacing" />
+                  <div className="red center p-2 rounded-md border border-red-200 mb-4 sm:mb-0">
+                    <strong>
+                      ⚠️{' '}
+                      {destinationStatus === 1
+                        ? 'Spam Alert'
+                        : destinationStatus === 2
+                        ? 'Potential Fraud Alert'
+                        : 'Fraud Alert'}
+                    </strong>
+                    <br />
+                    {destinationStatus === 1 && (
+                      <>
+                        This account has been flagged for spam. Proceed with caution.
+                        <br />
+                      </>
+                    )}
+                    {destinationStatus === 2 && (
+                      <>
+                        This account has been flagged as potentially involved in fraud, scams, or phishing.{' '}
+                        <strong>Proceed with caution.</strong>
+                        <br />
+                      </>
+                    )}
+                    {destinationStatus === 3 && (
+                      <>
+                        <strong>This account has been flagged as FRAUD. Sending is not allowed.</strong>
+                        <br />
+                      </>
+                    )}
+                    <Link
+                      href="/blacklisted-address"
+                      target="_blank"
+                      style={{ color: '#ff6b6b', textDecoration: 'underline' }}
+                    >
+                      Learn more about flagged accounts
+                    </Link>
+                  </div>
+                </div>
+              )}
 
-          <CheckBox
-            checked={showAdvanced}
-            setChecked={() => {
-              setShowAdvanced(!showAdvanced)
-              setFee(null)
-              setSourceTag(null)
-            }}
-            name="advanced-options"
-          >
-            Advanced options
-            {!sessionToken ? (
-              <>
-                {' '}
-                <span className="orange">
-                  (available to{' '}
-                  <span className="link" onClick={() => openEmailLogin()}>
-                    logged-in
-                  </span>{' '}
-                  Bithomp Pro subscribers)
-                </span>
-              </>
-            ) : (
-              subscriptionExpired && (
-                <>
-                  {' '}
-                  <span className="orange">
-                    Your Bithomp Pro subscription has expired.{' '}
-                    <Link href="/admin/subscriptions">Renew your subscription</Link>
-                  </span>
-                </>
-              )
-            )}
-          </CheckBox>
-
-          {showAdvanced && (
-            <>
+              {/* Show warning if destination account is non-activated */}
+              {isNonActive && (
+                <div>
+                  <div className="form-spacing" />
+                  <div className="orange center p-2 rounded-md border border-orange-200 mb-4 sm:mb-0">
+                    <strong>⚠️ Non-activated account</strong>
+                    <br />
+                    You can not send funds to a non-activated account.
+                  </div>
+                </div>
+              )}
               <br />
               <FormInput
                 title={
                   <>
-                    {t('table.destination-tag')}
-                    <br />
-                    <span className="red">
-                      I acknowledge that the destination account MUST NOT be an exchange or custodial wallet, as this
-                      may lead to a loss of funds.
-                    </span>
-                    {requireDestTag ? (
-                      <>
-                        {' '}
-                        (<span className="orange bold">required</span>)
-                      </>
-                    ) : (
-                      ''
-                    )}
+                    {t('table.memo')} (<span className="orange">It will be public</span>)
                   </>
                 }
-                placeholder={t('form.placeholder.destination-tag')}
-                setInnerValue={setDestinationTag}
+                placeholder="Enter a memo (optional)"
+                setInnerValue={setMemo}
                 hideButton={true}
-                onKeyPress={typeNumberOnly}
-                defaultValue={destinationTag}
-                disabled={!sessionToken || subscriptionExpired}
-              />
-              <br />
-              <FormInput
-                title="Fee"
-                placeholder={'Enter fee in ' + nativeCurrency}
-                setInnerValue={handleFeeChange}
-                hideButton={true}
-                onKeyPress={typeNumberOnly}
-                defaultValue={fee}
-                maxLength={35}
-                min={0}
-                inputMode="decimal"
+                defaultValue={memo}
+                maxLength={100}
                 type="text"
-                disabled={!sessionToken || subscriptionExpired}
-                className={feeError ? 'error' : ''}
               />
-              {feeError && <div className="red">{feeError}</div>}
-              <div className="form-spacing" />
-              <FormInput
-                title="Source Tag"
-                placeholder="Enter source tag"
-                setInnerValue={setSourceTag}
-                hideButton={true}
-                onKeyPress={typeNumberOnly}
-                defaultValue={sourceTag}
-                maxLength={35}
-                type="text"
-                disabled={!sessionToken || subscriptionExpired}
-              />
-            </>
-          )}
 
-          <br />
-          <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
-            I agree with the{' '}
-            <Link href="/terms-and-conditions" target="_blank">
-              Terms and conditions
-            </Link>
-            .
-          </CheckBox>
-
-          {/* Show additional checkbox for flagged accounts (only for status 1 and 2) */}
-          {(destinationStatus === 1 || destinationStatus === 2 || isNonActive) && (
-            <div className="orange">
-              <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
-                I understand the risks and I want to proceed with sending funds to this flagged account
+              <CheckBox
+                checked={showAdvanced}
+                setChecked={() => {
+                  setShowAdvanced(!showAdvanced)
+                  setFee(null)
+                  setSourceTag(null)
+                }}
+                name="advanced-options"
+              >
+                Advanced options
+                {!sessionToken ? (
+                  <>
+                    {' '}
+                    <span className="orange">
+                      (available to{' '}
+                      <span className="link" onClick={() => openEmailLogin()}>
+                        logged-in
+                      </span>{' '}
+                      Bithomp Pro subscribers)
+                    </span>
+                  </>
+                ) : (
+                  subscriptionExpired && (
+                    <>
+                      {' '}
+                      <span className="orange">
+                        Your Bithomp Pro subscription has expired.{' '}
+                        <Link href="/admin/subscriptions">Renew your subscription</Link>
+                      </span>
+                    </>
+                  )
+                )}
               </CheckBox>
-            </div>
-          )}
 
-          <br />
-          {error && (
-            <>
-              <div className="red center">{error}</div>
+              {showAdvanced && (
+                <>
+                  <br />
+                  <FormInput
+                    title={
+                      <>
+                        {t('table.destination-tag')}
+                        <br />
+                        <span className="red">
+                          I acknowledge that the destination account MUST NOT be an exchange or custodial wallet, as
+                          this may lead to a loss of funds.
+                        </span>
+                        {requireDestTag ? (
+                          <>
+                            {' '}
+                            (<span className="orange bold">required</span>)
+                          </>
+                        ) : (
+                          ''
+                        )}
+                      </>
+                    }
+                    placeholder={t('form.placeholder.destination-tag')}
+                    setInnerValue={setDestinationTag}
+                    hideButton={true}
+                    onKeyPress={typeNumberOnly}
+                    defaultValue={destinationTag}
+                    disabled={!sessionToken || subscriptionExpired}
+                  />
+                  <br />
+                  <FormInput
+                    title="Fee"
+                    placeholder={'Enter fee in ' + nativeCurrency}
+                    setInnerValue={handleFeeChange}
+                    hideButton={true}
+                    onKeyPress={typeNumberOnly}
+                    defaultValue={fee}
+                    maxLength={35}
+                    min={0}
+                    inputMode="decimal"
+                    type="text"
+                    disabled={!sessionToken || subscriptionExpired}
+                    className={feeError ? 'error' : ''}
+                  />
+                  {feeError && <div className="red">{feeError}</div>}
+                  <div className="form-spacing" />
+                  <FormInput
+                    title="Source Tag"
+                    placeholder="Enter source tag"
+                    setInnerValue={setSourceTag}
+                    hideButton={true}
+                    onKeyPress={typeNumberOnly}
+                    defaultValue={sourceTag}
+                    maxLength={35}
+                    type="text"
+                    disabled={!sessionToken || subscriptionExpired}
+                  />
+                </>
+              )}
+
               <br />
-            </>
-          )}
-          <div className="center">
-            <button
-              className="button-action"
-              onClick={handleSend}
-              disabled={destinationStatus === 3}
-              style={{ backgroundColor: '#ff4d4d' }}
-            >
-              Delete my account
-            </button>
-          </div>
-          {txResult?.status === 'tesSUCCESS' && (
-            <>
-              <br />
-              <div>
-                <h3 className="center">Transaction Successful</h3>
-                <div>
-                  <p>
-                    <strong>{t('table.date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')} (
-                    {fullDateAndTime(txResult.date, 'ripple')})
-                  </p>
-                  <p>
-                    <strong>{t('table.destination')}:</strong> <LinkAccount address={txResult.destination} />{' '}
-                    <CopyButton text={txResult.destination} />
-                  </p>
-                  {txResult.destinationTag && (
-                    <p>
-                      <strong>{t('table.destination-tag')}:</strong> {txResult.destinationTag}
-                    </p>
-                  )}
-                  {txResult.sourceTag && (
-                    <p>
-                      <strong>Source Tag:</strong> {txResult.sourceTag}
-                    </p>
-                  )}
-                  <p>
-                    <strong>Fee:</strong> {txResult.fee}
-                  </p>
-                  <p>
-                    <strong>{t('table.sequence')}:</strong> #{txResult.sequence}
-                  </p>
-                  {txResult.memo && (
-                    <p>
-                      <strong>{t('table.memo')}:</strong> {txResult.memo}
-                    </p>
-                  )}
-                  <p>
-                    <strong>{t('table.hash')}: </strong>
-                    <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
-                  </p>
+              <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
+                I agree with the{' '}
+                <Link href="/terms-and-conditions" target="_blank">
+                  Terms and conditions
+                </Link>
+                .
+              </CheckBox>
+
+              {/* Show additional checkbox for flagged accounts (only for status 1 and 2) */}
+              {(destinationStatus === 1 || destinationStatus === 2 || isNonActive) && (
+                <div className="orange">
+                  <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
+                    I understand the risks and I want to proceed with sending funds to this flagged account
+                  </CheckBox>
                 </div>
+              )}
+
+              <br />
+              {errorMessage && (
+                <>
+                  <div className="red center">{errorMessage}</div>
+                  <br />
+                </>
+              )}
+              <div className="center">
+                <button
+                  className="button-action"
+                  onClick={handleSend}
+                  disabled={destinationStatus === 3}
+                  style={{ backgroundColor: '#ff4d4d' }}
+                >
+                  Delete my account
+                </button>
               </div>
-            </>
-          )}
-        </div>
+              {txResult?.status === 'tesSUCCESS' && (
+                <>
+                  <br />
+                  <div>
+                    <h3 className="center">Transaction Successful</h3>
+                    <div>
+                      <p>
+                        <strong>{t('table.date')}:</strong> {timeFromNow(txResult.date, i18n, 'ripple')} (
+                        {fullDateAndTime(txResult.date, 'ripple')})
+                      </p>
+                      <p>
+                        <strong>{t('table.destination')}:</strong> <LinkAccount address={txResult.destination} />{' '}
+                        <CopyButton text={txResult.destination} />
+                      </p>
+                      {txResult.destinationTag && (
+                        <p>
+                          <strong>{t('table.destination-tag')}:</strong> {txResult.destinationTag}
+                        </p>
+                      )}
+                      {txResult.sourceTag && (
+                        <p>
+                          <strong>Source Tag:</strong> {txResult.sourceTag}
+                        </p>
+                      )}
+                      <p>
+                        <strong>Fee:</strong> {txResult.fee}
+                      </p>
+                      <p>
+                        <strong>{t('table.sequence')}:</strong> #{txResult.sequence}
+                      </p>
+                      {txResult.memo && (
+                        <p>
+                          <strong>{t('table.memo')}:</strong> {txResult.memo}
+                        </p>
+                      )}
+                      <p>
+                        <strong>{t('table.hash')}: </strong>
+                        <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
+                      </p>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </>
   )
