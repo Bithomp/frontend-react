@@ -191,6 +191,7 @@ export default function Subscriptions({
   const { t } = useTranslation()
   const router = useRouter()
   const width = useWidth()
+  const ref = router.query?.ref
 
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(true) // keep true in order not to have hydr error for rendering the select
@@ -310,7 +311,8 @@ export default function Subscriptions({
     let options = {
       type: tabTotype(subscriptionsTab),
       period,
-      periodCount: 1 * periodCount
+      periodCount: 1 * periodCount,
+      ...(ref ? { referralCode: ref } : {})
     }
 
     if (subscriptionsTab === 'api') {
