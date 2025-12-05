@@ -17,6 +17,7 @@ const pages = [
   { loc: 'services/check', changefreq: 'monthly', priority: '0.8' },
   { loc: 'services/escrow', changefreq: 'monthly', priority: '0.9' },
   { loc: 'services/account-settings', changefreq: 'monthly', priority: '0.9' },
+  { loc: 'services/account-delete', changefreq: 'monthly', priority: '0.5' },
 
   { loc: 'whales/receivers', changefreq: 'always', priority: '0.9' },
   { loc: 'whales/senders', changefreq: 'always', priority: '0.9' },
@@ -128,6 +129,7 @@ function generateSiteMap(posts) {
     'services/check',
     'services/escrow',
     'services/account-settings',
+    'services/account-delete',
     'services/amm/deposit',
     'services/amm/create',
     'services/amm/withdraw',

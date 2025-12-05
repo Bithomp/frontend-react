@@ -1,7 +1,7 @@
 import { i18n, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
-import { addAndRemoveQueryParams } from '../../utils'
+import { addAndRemoveQueryParams, explorerName } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import CheckBox from '../../components/UI/CheckBox'
 import AddressInput from '../../components/UI/AddressInput'
@@ -9,73 +9,49 @@ import FormInput from '../../components/UI/FormInput'
 import CopyButton from '../../components/UI/CopyButton'
 import { LinkTx, LinkAccount } from '../../utils/links'
 import { multiply } from '../../utils/calc'
-import {
-  typeNumberOnly,
-  isAddressValid,
-  isTagValid,
-  isIdValid,
-  nativeCurrency,
-  isNativeCurrency,
-  encode,
-  decode,
-  xahauNetwork
-} from '../../utils'
-import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../utils/format'
+import { typeNumberOnly, isAddressValid, isTagValid, nativeCurrency, encode, decode } from '../../utils'
+import { fullDateAndTime, timeFromNow, amountFormat } from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import axios from 'axios'
 import { errorCodeDescription } from '../../utils/transaction'
-import TokenSelector from '../../components/UI/TokenSelector'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
-  const { address, amount, destinationTag, memo, fee, sourceTag, invoiceId, currency, currencyIssuer, remit } = query
+  const { address, destinationTag, memo, fee, sourceTag } = query
 
   return {
     props: {
       addressQuery: address || '',
-      amountQuery: amount || '',
       destinationTagQuery: destinationTag || '',
       memoQuery: memo || '',
       feeQuery: fee || '',
       sourceTagQuery: sourceTag || '',
-      invoiceIdQuery: invoiceId || '',
-      remitQuery: remit === 'true',
       isSsrMobile: getIsSsrMobile(context),
-      currencyQuery: currency || nativeCurrency,
-      currencyIssuerQuery: currencyIssuer || '',
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
 
-export default function Send({
+export default function AccountDelete({
   account,
   setSignRequest,
   addressQuery,
-  amountQuery,
   destinationTagQuery,
   memoQuery,
   feeQuery,
   sourceTagQuery,
-  invoiceIdQuery,
-  remitQuery,
   sessionToken,
   subscriptionExpired,
-  openEmailLogin,
-  currencyQuery,
-  currencyIssuerQuery
+  openEmailLogin
 }) {
   const { t } = useTranslation()
   const router = useRouter()
   const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
   const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
-  const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
   const [memo, setMemo] = useState(memoQuery)
-  const [showAdvanced, setShowAdvanced] = useState(
-    Number(feeQuery) > 0 || isTagValid(sourceTagQuery) || isIdValid(invoiceIdQuery)
-  )
+  const [showAdvanced, setShowAdvanced] = useState(Number(feeQuery) > 0 || isTagValid(sourceTagQuery))
   const [fee, setFee] = useState(
     Number(feeQuery) > 0 && Number(feeQuery) <= 1 && sessionToken && !subscriptionExpired ? feeQuery : null
   )
@@ -83,42 +59,30 @@ export default function Send({
   const [sourceTag, setSourceTag] = useState(
     isTagValid(sourceTagQuery) && sessionToken && !subscriptionExpired ? sourceTagQuery : null
   )
-  const [invoiceId, setInvoiceId] = useState(
-    isIdValid(invoiceIdQuery) && sessionToken && !subscriptionExpired ? invoiceIdQuery : null
-  )
   const [error, setError] = useState('')
   const [txResult, setTxResult] = useState(null)
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
   const [isNonActive, setIsNonActive] = useState(false)
   const [agreeToSendToFlagged, setAgreeToSendToFlagged] = useState(false)
   const [requireDestTag, setRequireDestTag] = useState(false)
-  const [agreeToSendToNonActive, setAgreeToSendToNonActive] = useState(false)
-  const [selectedToken, setSelectedToken] = useState({ currency: currencyQuery, issuer: currencyIssuerQuery })
-  const [networkInfo, setNetworkInfo] = useState({})
+  const [requiredFee, setRequiredFee] = useState('200000') // default fee if network info is not loaded
   const [destinationStatus, setDestinationStatus] = useState(0)
-  const [useRemit, setUseRemit] = useState(remitQuery)
-  const [destinationRemitDisabled, setDestinationRemitDisabled] = useState(false)
 
-  const onTokenChange = (token) => {
-    setSelectedToken(token)
-  }
-
-  // Fetch network info for reserve amounts only when account is not activated
+  // Fetch network info for reserve amounts
   useEffect(() => {
     const fetchNetworkInfo = async () => {
       try {
         const response = await axios('/v2/server')
-        setNetworkInfo(response?.data || {})
+        if (response?.data?.reserveIncrement) {
+          setRequiredFee(response.data.reserveIncrement)
+        }
       } catch (error) {
         console.error('Error fetching network info:', error)
       }
     }
 
-    // Only fetch network info if the destination account is not activated
-    if (isNonActive) {
-      fetchNetworkInfo()
-    }
-  }, [isNonActive])
+    fetchNetworkInfo()
+  }, [])
 
   useEffect(() => {
     let queryAddList = []
@@ -136,19 +100,13 @@ export default function Send({
       queryRemoveList.push('destinationTag')
     }
 
-    if (amount && Number(amount) > 0) {
-      queryAddList.push({ name: 'amount', value: amount })
-    } else {
-      queryRemoveList.push('amount')
-    }
-
     if (memo) {
       queryAddList.push({ name: 'memo', value: memo })
     } else {
       queryRemoveList.push('memo')
     }
 
-    if (fee && Number(fee) > 0 && Number(fee) <= 1) {
+    if (fee && Number(fee) > requiredFee / 1000000 && Number(fee) <= 1) {
       queryAddList.push({ name: 'fee', value: fee })
     } else {
       queryRemoveList.push('fee')
@@ -160,21 +118,9 @@ export default function Send({
       queryRemoveList.push('sourceTag')
     }
 
-    if (isIdValid(invoiceId)) {
-      queryAddList.push({ name: 'invoiceId', value: invoiceId })
-    } else {
-      queryRemoveList.push('invoiceId')
-    }
-
-    if (useRemit) {
-      queryAddList.push({ name: 'remit', value: 'true' })
-    } else {
-      queryRemoveList.push('remit')
-    }
-
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, destinationTag, amount, memo, fee, sourceTag, invoiceId, useRemit])
+  }, [address, destinationTag, memo, fee, sourceTag, requiredFee])
 
   // Fetch destination account data when address changes
   useEffect(() => {
@@ -184,7 +130,6 @@ export default function Send({
         setAgreeToSendToFlagged(false)
         setRequireDestTag(false)
         setIsNonActive(false)
-        setAgreeToSendToNonActive(false)
         return
       }
 
@@ -201,14 +146,10 @@ export default function Send({
           if (status === 0) {
             setAgreeToSendToFlagged(false)
           }
-          if (!isNonActivated) {
-            setAgreeToSendToNonActive(false)
-          }
         } else {
           setDestinationStatus(0)
           setAgreeToSendToFlagged(false)
           setIsNonActive(false)
-          setAgreeToSendToNonActive(false)
         }
 
         // Fetch destination tag requirement from new endpoint
@@ -219,22 +160,12 @@ export default function Send({
         } else {
           setRequireDestTag(false)
         }
-
-        // Check if destination has incoming remit disabled (Xahau only)
-        if (xahauNetwork && data?.ledgerInfo?.flags) {
-          const flags = data.ledgerInfo.flags
-          const disallowIncomingRemit = flags.disallowIncomingRemit
-          setDestinationRemitDisabled(disallowIncomingRemit)
-        } else {
-          setDestinationRemitDisabled(false)
-        }
       } catch (error) {
         setError('Error fetching destination account data')
         setDestinationStatus(0)
         setAgreeToSendToFlagged(false)
         setRequireDestTag(false)
         setIsNonActive(false)
-        setAgreeToSendToNonActive(false)
       }
     }
 
@@ -261,35 +192,22 @@ export default function Send({
       return
     }
 
-    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-      setError('Please enter a valid amount.')
-      return
-    }
-
     // Check if destination requires a tag but none is provided
     if (requireDestTag && !destinationTag) {
       setError('This destination account requires a destination tag. Please enter a destination tag.')
       return
     }
 
-    if (destinationTag && !isTagValid(destinationTag)) {
-      setError('Please enter a valid destination tag.')
-      return
-    }
-
-    // Check remit validation for Xahau
-    if (xahauNetwork && useRemit) {
-      if (destinationRemitDisabled) {
-        setError('Cannot use Remit: Destination account has incoming remit disabled.')
-        return
-      }
-    }
-
     // Check if advanced options are being used without proper subscription
-    if ((fee || sourceTag || invoiceId) && (!sessionToken || subscriptionExpired)) {
+    if ((fee || sourceTag || destinationTag) && (!sessionToken || subscriptionExpired)) {
       setError(
         'Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.'
       )
+      return
+    }
+
+    if (Number(fee) > requiredFee / 1000000) {
+      setError('Minimum fee is ' + requiredFee / 1000000 + ' ' + nativeCurrency)
       return
     }
 
@@ -298,13 +216,13 @@ export default function Send({
       return
     }
 
-    if (sourceTag && !isTagValid(sourceTag)) {
-      setError('Please enter a valid source tag.')
+    if (destinationTag && !isTagValid(destinationTag)) {
+      setError('Please enter a valid destination tag.')
       return
     }
 
-    if (invoiceId && !isIdValid(invoiceId)) {
-      setError('Invoice ID must be a 64-character hexadecimal string.')
+    if (sourceTag && !isTagValid(sourceTag)) {
+      setError('Please enter a valid source tag.')
       return
     }
 
@@ -313,8 +231,8 @@ export default function Send({
       return
     }
 
-    if (isNonActive && !agreeToSendToNonActive) {
-      setError('Please acknowledge that you understand the risks of sending to a non-activated account')
+    if (isNonActive) {
+      setError('You can send funds only to already activated account.')
       return
     }
 
@@ -324,52 +242,23 @@ export default function Send({
     }
 
     try {
-      let payment = {}
+      let tx = {}
 
-      let amountData = null
-
-      if (isNativeCurrency(selectedToken)) {
-        amountData = multiply(amount, 1000000)
-      } else {
-        amountData = {
-          currency: selectedToken.currency,
-          issuer: selectedToken.issuer,
-          value: amount
-        }
-      }
-
-      if (xahauNetwork && useRemit) {
-        // Use Remit transaction for Xahau
-        payment = {
-          TransactionType: 'Remit',
-          Destination: address,
-          Amounts: [
-            {
-              AmountEntry: {
-                Amount: amountData
-              }
-            }
-          ]
-        }
-      } else {
-        // Use regular Payment transaction
-        payment = {
-          TransactionType: 'Payment',
-          Destination: address,
-          Amount: amountData
-        }
+      tx = {
+        TransactionType: 'AccountDelete',
+        Destination: address
       }
 
       if (account?.address) {
-        payment.Account = account.address
+        tx.Account = account.address
       }
 
       if (destinationTag) {
-        payment.DestinationTag = parseInt(destinationTag)
+        tx.DestinationTag = parseInt(destinationTag)
       }
 
       if (memo) {
-        payment.Memos = [
+        tx.Memos = [
           {
             Memo: {
               MemoData: encode(memo)
@@ -378,20 +267,18 @@ export default function Send({
         ]
       }
 
-      if (fee) {
-        payment.Fee = multiply(fee, 1000000)
+      if (fee && Number(fee) > requiredFee / 1000000) {
+        tx.Fee = multiply(fee, 1000000)
+      } else {
+        tx.Fee = requiredFee
       }
 
       if (sourceTag) {
-        payment.SourceTag = parseInt(sourceTag)
-      }
-
-      if (invoiceId) {
-        payment.InvoiceID = invoiceId
+        tx.SourceTag = parseInt(sourceTag)
       }
 
       setSignRequest({
-        request: payment,
+        request: tx,
         callback: (result) => {
           const status = result.meta?.TransactionResult
           if (status !== 'tesSUCCESS') {
@@ -401,10 +288,6 @@ export default function Send({
               status,
               date: result.date,
               destination: result.Destination,
-              amount:
-                xahauNetwork && useRemit && result.Amounts
-                  ? amountFormat(result.Amounts[0]?.AmountEntry?.Amount)
-                  : amountFormat(result.Amount),
               destinationTag: result.DestinationTag,
               sourceTag: result.SourceTag,
               fee: amountFormat(result.Fee),
@@ -413,8 +296,7 @@ export default function Send({
               hash: result.hash,
               validated: result.validated,
               ledgerIndex: result.ledger_index,
-              invoiceId: result.InvoiceID,
-              transactionType: xahauNetwork && useRemit ? 'Remit' : 'Payment'
+              transactionType: 'AccountDelete'
             })
           }
         }
@@ -426,18 +308,26 @@ export default function Send({
 
   return (
     <>
-      <SEO
-        title="Send payment"
-        description="Send a payment to a destination address"
-        image={{
-          width: 1200,
-          height: 630,
-          file: 'previews/1200x630/services/send.png'
-        }}
-        twitterImage={{ file: 'previews/630x630/services/send.png' }}
-      />
+      <SEO title="Account delete" description="Delete your account by sending all funds to another account." />
       <div className="content-text content-center">
-        <h1 className="center">Send payment</h1>
+        <h1 className="center red">Account delete</h1>
+
+        <p>
+          An Account delete transaction permanently deletes an account and any objects it owns on the {explorerName}{' '}
+          Ledger, if possible, and transfers the account’s remaining {nativeCurrency} to a specified destination
+          account.
+        </p>
+        <p>
+          The fee to execute this transaction is{' '}
+          <span className="bold">{amountFormat(requiredFee, { noSpace: true })}</span>. This is a protocol requirement
+          of the {explorerName} Ledger, and the {amountFormat(requiredFee, { noSpace: true })} is permanently burned as
+          part of the process.
+        </p>
+
+        <p className="red bold">
+          ⚠️ Attention: Do NOT use an exchange or custodial wallet as the destination address. You may permanently lose
+          your funds.
+        </p>
 
         <div>
           <AddressInput
@@ -447,7 +337,6 @@ export default function Send({
             hideButton={true}
             setValue={(value) => {
               setAddress(value)
-              setSelectedToken({ currency: nativeCurrency })
             }}
             setInnerValue={setAddress}
             rawData={isAddressValid(address) ? { address } : {}}
@@ -503,124 +392,12 @@ export default function Send({
             <div>
               <div className="form-spacing" />
               <div className="orange center p-2 rounded-md border border-orange-200 mb-4 sm:mb-0">
-                <strong>⚠️ Non-Activated Account</strong>
+                <strong>⚠️ Non-activated account</strong>
                 <br />
-                You are attempting to send funds to a non-activated account.
-                <br />
-                This account has never been used and currently has a zero balance.
-                <br />
-                <strong>Proceed with caution.</strong>
-                <br />
-                If you continue, {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate the
-                account on the ledger.
+                You can not send funds to a non-activated account.
               </div>
             </div>
           )}
-
-          {/* Show warning if destination has incoming remit disabled and user wants to use remit */}
-          {xahauNetwork && useRemit && destinationRemitDisabled && (
-            <div>
-              <div className="form-spacing" />
-              <div className="red center p-2 rounded-md border border-red-200 mb-4 sm:mb-0">
-                <strong>🚫 Remit Not Available</strong>
-                <br />
-                This destination account has incoming remit disabled.
-                <br />
-                <strong>You cannot use Remit to send tokens to this account.</strong>
-                <br />
-                Please uncheck the "Use Remit" option or choose a different destination.
-              </div>
-            </div>
-          )}
-
-          <div className="form-spacing" />
-          <FormInput
-            title={
-              <>
-                {t('table.destination-tag')}{' '}
-                {requireDestTag ? (
-                  <>
-                    {' '}
-                    (<span className="orange bold">required</span>)
-                  </>
-                ) : (
-                  ''
-                )}
-              </>
-            }
-            placeholder={t('form.placeholder.destination-tag')}
-            setInnerValue={setDestinationTag}
-            hideButton={true}
-            onKeyPress={typeNumberOnly}
-            defaultValue={destinationTag}
-          />
-          {/* Remit option for Xahau network */}
-          {xahauNetwork && (
-            <>
-              <CheckBox
-                checked={useRemit}
-                setChecked={setUseRemit}
-                name="use-remit"
-                disabled={destinationRemitDisabled && !useRemit}
-              >
-                Use Remit
-                <span className="orange"> - Send any token and pay for destination reserves.</span>
-                {destinationRemitDisabled && (
-                  <span className="red"> (Disabled - destination has incoming remit disabled)</span>
-                )}
-              </CheckBox>
-
-              {useRemit && (
-                <>
-                  <br />
-                  <div className="grey p-2 rounded-md border border-grey-200 mb-4 sm:mb-0">
-                    <strong>ℹ️ Remit Transaction</strong>
-                    <br />
-                    <br />
-                    When using Remit, you can send any token to the destination account, even if they don't have a
-                    trustline for it.
-                    <br />
-                    <br />
-                    <strong>Note:</strong> You will pay for the destination account's reserve requirements if the
-                    account needs to be activated.
-                    <br />
-                    <br />
-                    <strong>Token Selection:</strong> All available tokens (including native XAH) are shown since remit
-                    allows sending any token regardless of trustlines.
-                    <br />
-                    <br />
-                    This feature is only available on the Xahau network.
-                  </div>
-                </>
-              )}
-            </>
-          )}
-          <br />
-          <div className="flex flex-col gap-x-4 sm:flex-row">
-            <div className="flex-1">
-              <FormInput
-                title={t('table.amount')}
-                placeholder="Enter amount"
-                setInnerValue={setAmount}
-                hideButton={true}
-                onKeyPress={typeNumberOnly}
-                defaultValue={amount}
-                maxLength={35}
-                min={0}
-                inputMode="decimal"
-                type="text"
-              />
-            </div>
-            <div className="w-full sm:w-1/2">
-              <span className="input-title">Currency</span>
-              <TokenSelector
-                value={selectedToken}
-                onChange={onTokenChange}
-                destinationAddress={useRemit ? null : address}
-                currencyQueryName="currency"
-              />
-            </div>
-          </div>
           <br />
           <FormInput
             title={
@@ -642,11 +419,10 @@ export default function Send({
               setShowAdvanced(!showAdvanced)
               setFee(null)
               setSourceTag(null)
-              setInvoiceId(null)
             }}
-            name="advanced-payment"
+            name="advanced-options"
           >
-            Advanced Payment Options
+            Advanced options
             {!sessionToken ? (
               <>
                 {' '}
@@ -675,6 +451,33 @@ export default function Send({
             <>
               <br />
               <FormInput
+                title={
+                  <>
+                    {t('table.destination-tag')}
+                    <br />
+                    <span className="red">
+                      I acknowledge that the destination account MUST NOT be an exchange or custodial wallet, as this
+                      may lead to a loss of funds.
+                    </span>
+                    {requireDestTag ? (
+                      <>
+                        {' '}
+                        (<span className="orange bold">required</span>)
+                      </>
+                    ) : (
+                      ''
+                    )}
+                  </>
+                }
+                placeholder={t('form.placeholder.destination-tag')}
+                setInnerValue={setDestinationTag}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={destinationTag}
+                disabled={!sessionToken || subscriptionExpired}
+              />
+              <br />
+              <FormInput
                 title="Fee"
                 placeholder={'Enter fee in ' + nativeCurrency}
                 setInnerValue={handleFeeChange}
@@ -701,17 +504,6 @@ export default function Send({
                 type="text"
                 disabled={!sessionToken || subscriptionExpired}
               />
-              <div className="form-spacing" />
-              <FormInput
-                title="Invoice ID"
-                placeholder="Enter invoice ID"
-                setInnerValue={setInvoiceId}
-                hideButton={true}
-                defaultValue={invoiceId}
-                maxLength={64}
-                type="text"
-                disabled={!sessionToken || subscriptionExpired}
-              />
             </>
           )}
 
@@ -725,24 +517,10 @@ export default function Send({
           </CheckBox>
 
           {/* Show additional checkbox for flagged accounts (only for status 1 and 2) */}
-          {(destinationStatus === 1 || destinationStatus === 2) && (
+          {(destinationStatus === 1 || destinationStatus === 2 || isNonActive) && (
             <div className="orange">
               <CheckBox checked={agreeToSendToFlagged} setChecked={setAgreeToSendToFlagged} name="agree-to-flagged">
                 I understand the risks and I want to proceed with sending funds to this flagged account
-              </CheckBox>
-            </div>
-          )}
-
-          {/* Show additional checkbox for non-activated accounts */}
-          {isNonActive && (
-            <div className="orange">
-              <CheckBox
-                checked={agreeToSendToNonActive}
-                setChecked={setAgreeToSendToNonActive}
-                name="agree-to-non-active"
-              >
-                I understand that {amountFormat(networkInfo?.reserveBase || '1000000')} will be used to activate this
-                account and I want to proceed
               </CheckBox>
             </div>
           )}
@@ -755,8 +533,13 @@ export default function Send({
             </>
           )}
           <div className="center">
-            <button className="button-action" onClick={handleSend} disabled={destinationStatus === 3}>
-              Send Payment
+            <button
+              className="button-action"
+              onClick={handleSend}
+              disabled={destinationStatus === 3}
+              style={{ backgroundColor: '#ff4d4d' }}
+            >
+              Delete my account
             </button>
           </div>
           {txResult?.status === 'tesSUCCESS' && (
@@ -772,9 +555,6 @@ export default function Send({
                   <p>
                     <strong>{t('table.destination')}:</strong> <LinkAccount address={txResult.destination} />{' '}
                     <CopyButton text={txResult.destination} />
-                  </p>
-                  <p>
-                    <strong>{t('table.amount')}:</strong> {txResult.amount}
                   </p>
                   {txResult.destinationTag && (
                     <p>
@@ -801,17 +581,6 @@ export default function Send({
                     <strong>{t('table.hash')}: </strong>
                     <LinkTx tx={txResult.hash} /> <CopyButton text={txResult.hash} />
                   </p>
-                  {txResult.invoiceId && (
-                    <p>
-                      <strong>Invoice ID:</strong> {shortHash(txResult.invoiceId)}{' '}
-                      <CopyButton text={txResult.invoiceId} />
-                    </p>
-                  )}
-                  {txResult.transactionType === 'Remit' && (
-                    <p>
-                      <strong>Transaction Type:</strong> <span className="bold">Remit</span>
-                    </p>
-                  )}
                 </div>
               </div>
             </>
