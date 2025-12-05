@@ -209,7 +209,7 @@ export default function AccountDelete({
     setTxResult(null)
 
     if (!address || !isAddressValid(address)) {
-      setErrorMessage(t('form.error.address-invalid'))
+      setErrorMessage('Please enter a valid Destination address.')
       return
     }
 
@@ -333,7 +333,7 @@ export default function AccountDelete({
       <div className="content-text content-center">
         <h1 className="center red">Account delete</h1>
 
-        {accountData?.ledgerInfo?.deleted ? (
+        {!txResult && accountData?.ledgerInfo?.deleted ? (
           <>
             The account <span className="bold">{account?.address}</span> has already been deleted on the {explorerName}{' '}
             Ledger.
