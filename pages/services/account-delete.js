@@ -205,60 +205,60 @@ export default function AccountDelete({
   }
 
   const handleSend = async () => {
-    errorMessage('')
+    setErrorMessage('')
     setTxResult(null)
 
     if (!address || !isAddressValid(address)) {
-      errorMessage(t('form.error.address-invalid'))
+      setErrorMessage(t('form.error.address-invalid'))
       return
     }
 
     // Check if destination requires a tag but none is provided
     if (requireDestTag && !destinationTag) {
-      errorMessage('This destination account requires a destination tag. Please enter a destination tag.')
+      setErrorMessage('This destination account requires a destination tag. Please enter a destination tag.')
       return
     }
 
     // Check if advanced options are being used without proper subscription
     if ((fee || sourceTag || destinationTag) && (!sessionToken || subscriptionExpired)) {
-      errorMessage(
+      setErrorMessage(
         'Advanced options (fee, source tag, invoice ID) are available only to logged-in Bithomp Pro subscribers.'
       )
       return
     }
 
     if (Number(fee) > requiredFee / 1000000) {
-      errorMessage('Minimum fee is ' + requiredFee / 1000000 + ' ' + nativeCurrency)
+      setErrorMessage('Minimum fee is ' + requiredFee / 1000000 + ' ' + nativeCurrency)
       return
     }
 
     if (Number(fee) > 1) {
-      errorMessage('Maximum fee is 1 ' + nativeCurrency)
+      setErrorMessage('Maximum fee is 1 ' + nativeCurrency)
       return
     }
 
     if (destinationTag && !isTagValid(destinationTag)) {
-      errorMessage('Please enter a valid destination tag.')
+      setErrorMessage('Please enter a valid destination tag.')
       return
     }
 
     if (sourceTag && !isTagValid(sourceTag)) {
-      errorMessage('Please enter a valid source tag.')
+      setErrorMessage('Please enter a valid source tag.')
       return
     }
 
     if (!agreeToSiteTerms) {
-      errorMessage('Please agree to the Terms and conditions')
+      setErrorMessage('Please agree to the Terms and conditions')
       return
     }
 
     if (isNonActive) {
-      errorMessage('You can send funds only to already activated account.')
+      setErrorMessage('You can send funds only to already activated account.')
       return
     }
 
     if (destinationStatus === 3) {
-      errorMessage('This account has been flagged as FRAUD. Sending is not allowed.')
+      setErrorMessage('This account has been flagged as FRAUD. Sending is not allowed.')
       return
     }
 
