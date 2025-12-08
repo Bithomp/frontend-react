@@ -95,10 +95,9 @@ export async function getServerSideProps(context) {
   const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order, filterSpam } = query
   let initialErrorMessage = ''
   let initialData = null
+  const selectedCurrencyServer = currencyServer(req) || 'usd'
 
   if (isAddressOrUsername(id)) {
-    const serverCurrency = currencyServer(req) || 'usd'
-
     let url = apiUrl({
       address: id,
       order,
@@ -109,7 +108,7 @@ export async function getServerSideProps(context) {
       fromDate,
       toDate,
       filterSpam,
-      convertCurrency: serverCurrency
+      convertCurrency: selectedCurrencyServer
     })
 
     try {
@@ -143,6 +142,7 @@ export async function getServerSideProps(context) {
       counterpartyQuery: counterparty || '',
       orderQuery: order || 'newest',
       filterSpamQuery: filterSpam || 'true',
+      selectedCurrencyServer,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -152,7 +152,8 @@ export default function AccountTransactions({
   id,
   initialData,
   initialErrorMessage,
-  selectedCurrency,
+  selectedCurrency: selectedCurrencyApp,
+  selectedCurrencyServer,
   fromDateQuery,
   toDateQuery,
   typeQuery,
@@ -165,6 +166,8 @@ export default function AccountTransactions({
   const { t } = useTranslation()
   const router = useRouter()
   const firstRenderRef = useRef(true)
+
+  const selectedCurrency = selectedCurrencyApp || selectedCurrencyServer
 
   const address = initialData?.address
 
