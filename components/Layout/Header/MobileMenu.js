@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, xahauNetwork, nativeCurrency, server, avatarServer } from '../../../utils'
+import { devNet, xahauNetwork, nativeCurrency, avatarServer } from '../../../utils'
 
 import Image from 'next/image'
 
@@ -61,9 +61,13 @@ export default function MobileMenu({
               <Link href={'/account/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.view')}
               </Link>
-              <a href={server + '/explorer/' + address} className="mobile-menu-item">
+              <Link
+                href={'/account/' + address + '/transactions'}
+                className="mobile-menu-item"
+                onClick={mobileMenuToggle}
+              >
                 {t('signin.actions.my-transactions')}
-              </a>
+              </Link>
               <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 Send payment
               </Link>
@@ -161,6 +165,9 @@ export default function MobileMenu({
           )}
           <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Account Settings
+          </Link>
+          <Link className="mobile-menu-item" onClick={mobileMenuToggle} href="/services/account-delete">
+            Account Delete
           </Link>
           <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.nft-mint')}

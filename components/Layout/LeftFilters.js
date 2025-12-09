@@ -43,7 +43,8 @@ export default function LeftFilters({
         data={data}
         headers={csvHeaders}
         filename={'export ' + dateAndTimeNow + '.csv'}
-        className={'button-action thin narrow' + (!(data?.length > 0) ? ' disabled' : '')}
+        className={'button-action narrow' + (!(data?.length > 0) ? ' disabled' : '')}
+        style={{ height: 34, display: 'flex', alignItems: 'center', padding: '0 12px', gap: 5, marginTop: -2 }}
       >
         <DownloadIcon /> CSV
       </CSVLink>
@@ -59,8 +60,9 @@ export default function LeftFilters({
       ) : (
         <div className="filters">
           <div className="filters__box">
-            <button className="filters__toggle" onClick={() => toggleFilters()}>
-              <BsFilter />
+            <button className="filters-toggle" onClick={toggleFilters}>
+              <BsFilter className="filters-icon" />
+              <span className="filters-text">Filters</span>
             </button>
             <div className="filters__wrap">
               <div className="filters-head">

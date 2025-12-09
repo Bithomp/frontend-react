@@ -10,7 +10,7 @@ import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import SortingArrow from '../components/Tables/SortingArrow'
-import { fullNiceNumber, niceCurrency, niceNumber, shortNiceNumber, AddressWithIconFilled } from '../utils/format'
+import { fullNiceNumber, niceCurrency, niceNumber, shortNiceNumber, CurrencyWithIcon } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { isAddressOrUsername, nativeCurrency, setTabParams, validateCurrencyCode, xahauNetwork } from '../utils'
@@ -143,14 +143,7 @@ const orderList = [
 
 // Helper component to render token with icon
 const TokenCell = ({ token }) => {
-  return (
-    <AddressWithIconFilled
-      data={token}
-      name="issuer"
-      currency={token?.currency}
-      options={{ short: true, currencyDetails: token?.currencyDetails }}
-    />
-  )
+  return <CurrencyWithIcon token={token} />
 }
 
 export default function Tokens({
@@ -186,7 +179,9 @@ export default function Tokens({
   const [rawData, setRawData] = useState(initialData || {})
   const [marker, setMarker] = useState(initialData?.marker || '')
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
+  const [errorMessage, setErrorMessage] = useState(
+    t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
+  )
   const [order, setOrder] = useState(orderQuery || 'rating')
   const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState(issuerQuery)
@@ -792,7 +787,7 @@ export default function Tokens({
 
           {/* Mobile table */}
           <div className="show-on-small-w800">
-            <table className="table-mobile wide">
+            <table className="table-mobile">
               <thead></thead>
               <tbody>
                 {loading ? (

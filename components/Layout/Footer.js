@@ -14,6 +14,8 @@ export default function Footer({ countryCode }) {
   const { t, i18n } = useTranslation()
   const footerRef = useRef()
 
+  const lang = i18n.language === 'default' ? 'en' : i18n.language
+
   return (
     <footer ref={footerRef}>
       <CookieMessage />
@@ -35,7 +37,7 @@ export default function Footer({ countryCode }) {
           {network === 'mainnet' && (
             <>
               <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
-              <a href={'https://test.bithomp.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
+              <a href={'https://test.bithomp.com/' + lang + '/faucet'}>{t('menu.developers.faucet')}</a>
               <a href={'https://test.bithomp.com/tools/'}>Bithomp tools</a>
             </>
           )}

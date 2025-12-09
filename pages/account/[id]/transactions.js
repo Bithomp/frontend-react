@@ -8,8 +8,8 @@ import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
-import { axiosServer, passHeaders } from '../../../utils/axios'
-import { addAndRemoveQueryParams, isAddressOrUsername } from '../../../utils'
+import { axiosServer, currencyServer, passHeaders } from '../../../utils/axios'
+import { addAndRemoveQueryParams, avatarSrc, errorT, isAddressOrUsername, isAddressValid } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -37,29 +37,80 @@ import {
   TransactionRowEnableAmendment,
   TransactionRowDelegateSet
 } from '../../../components/Account/Transactions'
-import { addressBalanceChanges } from '../../../utils/transaction'
+import CheckBox from '../../../components/UI/CheckBox'
 
-const shouldShowTxForAddress = (tx, address) => {
-  const inner = tx?.tx
-  const myBalance = addressBalanceChanges(tx, address)
-  return inner?.Account === address || inner?.Destination === address || (myBalance && myBalance.length > 0)
+const apiUrl = ({
+  address,
+  marker,
+  order,
+  type,
+  initiated,
+  excludeFailures,
+  counterparty,
+  fromDate,
+  toDate,
+  filterSpam,
+  convertCurrency
+}) => {
+  const limit = 20
+  let url = `v3/transactions/${address}?limit=${limit}&relevantOnly=true&convertCurrencies=${convertCurrency}`
+
+  if (filterSpam === 'false' || filterSpam === false) {
+    url += `&filterSpam=false`
+  } else {
+    url += `&filterSpam=true`
+  }
+
+  // pagination marker
+  if (marker) {
+    const markerString = typeof marker === 'object' ? JSON.stringify(marker) : marker
+    url += `&marker=${encodeURIComponent(markerString)}`
+  }
+  // sorting
+  url += `&forward=${order === 'oldest'}`
+  // filters
+  if (type && type !== 'all') {
+    url += `&type=${type}`
+  }
+  if (initiated !== undefined && initiated !== null) {
+    url += `&initiated=${initiated}`
+  }
+  if (excludeFailures) {
+    url += `&excludeFailures=true`
+  }
+  if (counterparty) {
+    url += `&counterparty=${counterparty}`
+  }
+  if (fromDate) {
+    url += `&fromDate=${encodeURIComponent(new Date(fromDate).toISOString())}`
+  }
+  if (toDate) {
+    url += `&toDate=${encodeURIComponent(new Date(toDate).toISOString())}`
+  }
+  return url
 }
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order } = query
-  const limit = 20
+  const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order, filterSpam } = query
   let initialErrorMessage = ''
   let initialData = null
+  const selectedCurrencyServer = currencyServer(req) || 'usd'
 
   if (isAddressOrUsername(id)) {
-    let url = `v3/transactions/${id}?limit=${limit}`
-    if (type && type !== 'all') {
-      url += `&type=${type}`
-    }
-    if (order && order === 'oldest') {
-      url += `&forward=true`
-    }
+    let url = apiUrl({
+      address: id,
+      order,
+      type,
+      initiated,
+      excludeFailures,
+      counterparty,
+      fromDate,
+      toDate,
+      filterSpam,
+      convertCurrency: selectedCurrencyServer
+    })
+
     try {
       const res = await axiosServer({
         method: 'get',
@@ -67,18 +118,11 @@ export async function getServerSideProps(context) {
         headers: passHeaders(req)
       })
       initialData = res?.data
-      if (
-        !initialData?.marker &&
-        initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, address)).length === 0
-      ) {
+      if (!initialData?.marker && isAddressValid(id) && initialData?.transactions?.length === 0) {
         initialErrorMessage = 'No transactions found for the specified filters.'
       }
     } catch (e) {
-      if (e?.message === 'read ECONNRESET') {
-        initialErrorMessage = 'The request timed out. Try changing your filters or try again later.'
-      } else {
-        initialErrorMessage = e?.message || 'Failed to load transactions'
-      }
+      initialErrorMessage = e?.message || 'Failed to load transactions'
     }
   } else {
     initialErrorMessage = 'Invalid username or address'
@@ -93,10 +137,12 @@ export async function getServerSideProps(context) {
       fromDateQuery: fromDate || '',
       toDateQuery: toDate || '',
       typeQuery: type || 'all',
-      initiatedQuery: initiated || '0',
-      excludeFailuresQuery: excludeFailures || '0',
+      initiatedQuery: initiated || null,
+      excludeFailuresQuery: excludeFailures || null,
       counterpartyQuery: counterparty || '',
       orderQuery: order || 'newest',
+      filterSpamQuery: filterSpam || 'true',
+      selectedCurrencyServer,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -106,36 +152,39 @@ export default function AccountTransactions({
   id,
   initialData,
   initialErrorMessage,
-  selectedCurrency,
+  selectedCurrency: selectedCurrencyApp,
+  selectedCurrencyServer,
   fromDateQuery,
   toDateQuery,
   typeQuery,
   initiatedQuery,
   excludeFailuresQuery,
   counterpartyQuery,
-  orderQuery
+  orderQuery,
+  filterSpamQuery
 }) {
   const { t } = useTranslation()
   const router = useRouter()
   const firstRenderRef = useRef(true)
 
+  const selectedCurrency = selectedCurrencyApp || selectedCurrencyServer
+
   const address = initialData?.address
 
   // State management
-  const [transactions, setTransactions] = useState(
-    initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, address)) || []
-  )
+  const [transactions, setTransactions] = useState(initialData?.transactions || [])
   const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [order, setOrder] = useState(orderQuery) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
   const [type, setType] = useState(typeQuery)
-  const [initiated, setInitiated] = useState(initiatedQuery) // 0 = both, 1 = outgoing, 2 = incoming
-  const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // 0 = include, 1 = exclude
+  const [initiated, setInitiated] = useState(initiatedQuery) // null = both, 'true' = initiated, 'false' = non-initiated
+  const [excludeFailures, setExcludeFailures] = useState(excludeFailuresQuery) // false = include, true = exclude
   const [counterparty, setCounterparty] = useState(counterpartyQuery)
   const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
   const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
+  const [filterSpam, setFilterSpam] = useState(filterSpamQuery) // true = exclude spam, false = include spam
 
   // Refresh transactions when order changes
   useEffect(() => {
@@ -161,11 +210,12 @@ export default function AccountTransactions({
         excludeFailures,
         counterparty,
         fromDate: fromDate ? fromDate.toISOString() : '',
-        toDate: toDate ? toDate.toISOString() : ''
+        toDate: toDate ? toDate.toISOString() : '',
+        filterSpam: filterSpam ? '' : 'false'
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, type, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
+  }, [order, type, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady, filterSpam])
 
   const orderList = [
     { value: 'newest', label: 'Newest first' },
@@ -188,67 +238,46 @@ export default function AccountTransactions({
   ]
 
   const initiatedOptions = [
-    { value: '0', label: 'Both directions' },
-    { value: '1', label: 'Outgoing' },
-    { value: '2', label: 'Incoming' }
+    { value: null, label: 'Incoming & outgoing' },
+    { value: true, label: 'Outgoing only' },
+    { value: false, label: 'Incoming only' }
   ]
 
   const failuresOptions = [
-    { value: '0', label: 'Include failed' },
-    { value: '1', label: 'Exclude failed' }
+    { value: null, label: 'Include failed' },
+    { value: true, label: 'Exclude failed' }
   ]
 
-  const apiUrl = (opts = {}) => {
-    const limit = 20
-    let url = `v3/transactions/${address}?limit=${limit}`
-    // pagination marker
-    if (opts.marker) {
-      const markerString = typeof opts.marker === 'object' ? JSON.stringify(opts.marker) : opts.marker
-      url += `&marker=${encodeURIComponent(markerString)}`
-    }
-    // sorting
-    url += `&forward=${order === 'oldest'}`
-    // filters
-    if (type && type !== 'all') {
-      url += `&type=${type}`
-    }
-    if (initiated === '1') {
-      url += `&initiated=true`
-    } else if (initiated === '2') {
-      url += `&initiated=false`
-    }
-
-    if (excludeFailures === '1') {
-      url += `&excludeFailures=1`
-    }
-    if (counterparty) {
-      url += `&counterparty=${encodeURIComponent(counterparty.trim())}`
-    }
-    if (fromDate) {
-      url += `&fromDate=${encodeURIComponent(fromDate.toISOString())}`
-    }
-    if (toDate) {
-      url += `&toDate=${encodeURIComponent(toDate.toISOString())}`
-    }
-    return url
-  }
-
-  const fetchTransactions = async (opts = {}) => {
+  const fetchTransactions = async (options = {}) => {
     if (loading) return
 
     let markerToUse = undefined
-    if (!opts.restart) {
-      markerToUse = opts.marker || marker
+    if (!options.restart) {
+      markerToUse = options.marker || marker
     }
 
     try {
-      const response = await axios.get(apiUrl({ marker: markerToUse }))
+      const response = await axios.get(
+        apiUrl({
+          marker: markerToUse,
+          address,
+          order,
+          type,
+          initiated,
+          excludeFailures,
+          counterparty,
+          fromDate,
+          toDate,
+          filterSpam,
+          convertCurrency: selectedCurrency
+        })
+      )
       if (response?.data?.status === 'error') {
         setErrorMessage(response?.data?.error)
         setLoading(false)
         return
       }
-      const newData = response?.data?.transactions?.filter((tx) => shouldShowTxForAddress(tx, address)) || []
+      const newData = response?.data?.transactions || []
       const newMarker = response?.data?.marker || null
 
       if (markerToUse && transactions.length > 0) {
@@ -307,7 +336,14 @@ export default function AccountTransactions({
     // Process each filter
     Object.keys(newFilters).forEach((key) => {
       const value = newFilters[key]
-      if (value && value !== '' && value !== '0' && value !== 'all' && value !== 'newest') {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== '' &&
+        value !== '0' &&
+        value !== 'all' &&
+        value !== 'newest'
+      ) {
         addList.push({ name: key, value })
       } else {
         removeList.push(key)
@@ -325,6 +361,7 @@ export default function AccountTransactions({
         page="Transactions"
         title={`Transactions of ${address}`}
         description={`All transactions for address ${address}`}
+        image={{ file: avatarSrc(address) }}
       />
       <SearchBlock
         tab="transactions"
@@ -366,13 +403,7 @@ export default function AccountTransactions({
             <br />
             <SimpleSelect value={excludeFailures} setValue={setExcludeFailures} optionsList={failuresOptions} />
             <br />
-            <AddressInput
-              placeholder="Counterparty"
-              setValue={setCounterparty}
-              rawData={counterparty ? { counterparty } : {}}
-              type="counterparty"
-              hideButton={true}
-            />
+            <AddressInput placeholder="Counterparty" setValue={setCounterparty} hideButton={true} />
             <br />
             <div>
               <span className="input-title">From</span>
@@ -418,8 +449,12 @@ export default function AccountTransactions({
                 )}
               </div>
             </div>
+            <CheckBox checked={filterSpam === 'true' || filterSpam === true} setChecked={setFilterSpam}>
+              Exclude spam transactions
+            </CheckBox>
+            <br />
             <div className="center">
-              <button className="button-action" onClick={applyFilters} style={{ marginTop: '10px' }}>
+              <button className="button-action" onClick={applyFilters}>
                 Search
               </button>
             </div>
@@ -435,14 +470,14 @@ export default function AccountTransactions({
               }
             }}
             hasMore={marker}
-            errorMessage={errorMessage}
+            errorMessage={errorT(t, errorMessage)}
             subscriptionExpired={false}
             sessionToken={true}
           >
             <table className={isMobile ? 'table-mobile' : 'table-large expand no-hover'}>
               <tbody>
                 {loading ? (
-                  <tr className="center" style={{ width: 'calc (100% - 30px)' }}>
+                  <tr className="center">
                     <td colSpan="100">
                       <br />
                       <br />

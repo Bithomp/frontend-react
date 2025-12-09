@@ -317,7 +317,7 @@ table {
       tr {
         td, th {
           padding: 5px;
-          &:nth-child(2) {
+          > &:nth-child(2) {
             word-break: break-word;
           }
           hr {
@@ -351,6 +351,9 @@ table {
     }
     &.expand {
       width: calc(100% - 30px);
+    }
+    > thead > tr > th {
+      font-size: 12px;
     }
     > tbody > tr {
       &:hover {
@@ -392,9 +395,7 @@ table {
   &.table-mobile {
     margin: auto;
     font-size: 12px;
-    &.wide {
-      width: 100%;
-    }
+    width: calc(100% - 30px);
     tr {
       border: 1px solid var(--accent-link);
       > td:last-child,
@@ -416,9 +417,6 @@ table {
       @media only screen and (max-width: 800px) {
         min-width: 100%;
       }
-    }
-    &.table-mobile {
-      width: 100%;
     }
   }
 }
@@ -764,7 +762,7 @@ pre {
     transition: max-height 0.5s ease-out;
   }
   &.opened {
-    max-height: 20000px;
+    max-height: 30000px;
     transition: max-height 0.5s ease-in;
   }
 }

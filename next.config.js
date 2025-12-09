@@ -25,11 +25,6 @@ module.exports = withBundleAnalyzer({
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'cdn.xrplexplorer.com',
-        port: ''
-      },
-      {
-        protocol: 'https',
         hostname: 'cdn.xahauexplorer.com',
         port: ''
       },

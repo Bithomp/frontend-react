@@ -372,7 +372,7 @@ export default function ObjectsData({
           <br />
           <br />
           {payChannelList.map((c, i) => (
-            <table className="table-mobile wide" key={i}>
+            <table className="table-mobile" key={i}>
               <tbody>
                 <tr>
                   <td className="center">{i + 1}</td>
@@ -477,7 +477,7 @@ export default function ObjectsData({
                 </center>
                 <br />
                 {checkList.length > 0 && (
-                  <table className="table-mobile wide">
+                  <table className="table-mobile">
                     <tbody>{checkListNode(checkList, { mobile: true })}</tbody>
                   </table>
                 )}
@@ -514,7 +514,7 @@ export default function ObjectsData({
                   {historicalTitle}
                 </center>
                 <br />
-                <table className="table-mobile wide">
+                <table className="table-mobile">
                   <tbody>{checkListNode(issuedCheckList, { type: 'issued', mobile: true })}</tbody>
                 </table>
               </div>
@@ -560,7 +560,7 @@ export default function ObjectsData({
                 </center>
                 <br />
                 {depositPreauthList.map((c, i) => (
-                  <table className="table-mobile wide" key={i}>
+                  <table className="table-mobile" key={i}>
                     <tbody>
                       <tr>
                         <td className="center">{i + 1}</td>

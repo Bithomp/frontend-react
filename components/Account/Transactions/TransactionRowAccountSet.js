@@ -15,7 +15,9 @@ export const TransactionRowAccountSet = ({ data, address, index, selectedCurrenc
       txTypeSpecial={txTypeSpecial}
     >
       {tx.MessageKey !== undefined && (
-        <div className="bold">Message key: {specification.messageKey || <span className="orange">removed</span>}</div>
+        <div className="bold brake">
+          Message key: {specification.messageKey || <span className="orange">removed</span>}
+        </div>
       )}
 
       {tx.Domain !== undefined && (

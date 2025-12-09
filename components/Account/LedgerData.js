@@ -15,7 +15,7 @@ import {
 import { devNet, getCoinsUrl, isDomainValid, nativeCurrency, stripDomain, xahauNetwork } from '../../utils'
 
 import CopyButton from '../UI/CopyButton'
-import { LinkAmm, LinkTx } from '../../utils/links'
+import { LinkAmm, LinkObject, LinkTx } from '../../utils/links'
 
 import { MdDeleteForever, MdVerified } from 'react-icons/md'
 import { FiEdit } from 'react-icons/fi'
@@ -405,8 +405,8 @@ export default function LedgerData({
     </>
   ) : account?.address === data?.address ? (
     <>
-      You don't have any NFTs. You can <Link href="/services/nft-mint">Mint NFT</Link> or
-      <Link href="/nft-explorer?saleCurrency=xrp&list=onSale">Buy NFT</Link>
+      You don't have any NFTs. You can [<Link href="/services/nft-mint">Mint NFT</Link>] or [
+      <Link href="/nft-explorer?saleCurrency=xrp&list=onSale">Buy NFT</Link>].
     </>
   ) : (
     "This account doesn't hold NFTs."
@@ -463,6 +463,12 @@ export default function LedgerData({
     if (missing.length > 0) {
       noObjectsNode = <span className="grey">{`This account doesn't have ${missing.join(', ')}.`}</span>
     }
+  }
+
+  let cronNode = null
+
+  if (xahauNetwork && data?.ledgerInfo?.cron) {
+    cronNode = <LinkObject objectId={data?.ledgerInfo?.cron} hash={true} copy={true} />
   }
 
   return (
@@ -583,6 +589,12 @@ export default function LedgerData({
                 <tr>
                   <td>Hook state count</td>
                   <td>{data.ledgerInfo?.hookStateCount}</td>
+                </tr>
+              )}
+              {data.ledgerInfo?.cron && (
+                <tr>
+                  <td>Cron</td>
+                  <td>{cronNode}</td>
                 </tr>
               )}
             </>
@@ -818,7 +830,7 @@ export default function LedgerData({
             </p>
           </>
         )}
-        {data?.ledgerInfo?.activated && (
+        {data?.ledgerInfo?.activated && !gateway && (
           <>
             {showObjectSection(objects?.rippleStateList) && (
               <p>
@@ -888,6 +900,11 @@ export default function LedgerData({
             {data.ledgerInfo?.hookStateCount && (
               <p>
                 <span className="grey">Hook state count</span> {data.ledgerInfo?.hookStateCount}
+              </p>
+            )}
+            {data.ledgerInfo?.cron && (
+              <p>
+                <span className="grey">Cron</span> {cronNode}
               </p>
             )}
           </>

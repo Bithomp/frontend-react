@@ -45,7 +45,8 @@ const buildLearnContent = () => {
           slug: 'guide-for-token-issuers'
         },
         { title: 'Bithomp Image Services', slug: 'image-services' },
-        { title: 'Understanding Trustlines', slug: 'trustlines' }
+        { title: 'Understanding Trustlines', slug: 'trustlines' },
+        { title: 'NFT Explorer', slug: 'nft-explorer' }
       ]
     }
   ]

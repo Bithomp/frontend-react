@@ -5,6 +5,14 @@ import Cookies from 'universal-cookie'
 import axios from 'axios'
 import SparkMD5 from 'spark-md5'
 
+export const errorT = (t, errorMessage, defaultMessage) => {
+  const translation = t(`error.${errorMessage}`)
+  if (translation === `error.${errorMessage}`) {
+    return defaultMessage || errorMessage
+  }
+  return translation
+}
+
 export const forbid18Plus = async () => {
   //check if we have a saved country for the user
   let savedCountry = localStorage.getItem('country')
@@ -545,7 +553,7 @@ export const networks = {
     server: 'https://bithomp.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/go/buy-first-xrp',
-    explorerName: 'XRP Ledger',
+    explorerName: 'XRPL',
     ledgerName: 'XRPL',
     siteName: 'Bithomp',
     minLedger: 32570,

@@ -1,23 +1,96 @@
 import { useTranslation } from 'next-i18next'
-import { isAddressValid } from '../../utils'
+import { useState, useEffect } from 'react'
+import { isAddressValid, xahauNetwork } from '../../utils'
 import AddressInput from '../UI/AddressInput'
+import CheckBox from '../UI/CheckBox'
+import axios from 'axios'
 
 export default function NftTransfer({ setSignRequest, signRequest, setStatus, setFormError }) {
   const { t } = useTranslation()
+  const [useRemit, setUseRemit] = useState(false)
+  const [destinationRemitDisabled, setDestinationRemitDisabled] = useState(false)
+  const [touched, setTouched] = useState(false)
+
+  useEffect(() => {
+    // Check if destination allows incoming remit when address changes
+    const checkDestinationRemit = async () => {
+      if (!signRequest.request?.Destination) {
+        setDestinationRemitDisabled(false)
+        return
+      }
+
+      try {
+        const response = await axios(`/v2/address/${signRequest.request.Destination}?ledgerInfo=true`)
+        const accountData = response?.data
+
+        if (accountData?.ledgerInfo?.flags) {
+          const flags = accountData.ledgerInfo.flags
+          const disallowIncomingRemit = flags.disallowIncomingRemit
+          setDestinationRemitDisabled(disallowIncomingRemit)
+        } else {
+          setDestinationRemitDisabled(false)
+        }
+      } catch (error) {
+        console.error('Error checking destination remit status:', error)
+        setDestinationRemitDisabled(false)
+      }
+    }
+
+    if (xahauNetwork) {
+      // check only on xahau network
+      checkDestinationRemit()
+    }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signRequest.request?.Destination])
+
+  useEffect(() => {
+    if (xahauNetwork) {
+      const newRequest = { ...signRequest.request }
+      if (useRemit) {
+        newRequest.TransactionType = 'Remit'
+        if (newRequest.URITokenID) {
+          newRequest.URITokenIDs = [newRequest.URITokenID]
+          delete newRequest.URITokenID
+        }
+        delete newRequest.Amount
+      } else {
+        newRequest.TransactionType = 'URITokenCreateSellOffer'
+        newRequest.Amount = '0'
+        if (newRequest.URITokenIDs?.[0]) {
+          newRequest.URITokenID = newRequest.URITokenIDs[0]
+          delete newRequest.URITokenIDs
+        }
+      }
+      setSignRequest({ ...signRequest, request: newRequest })
+    }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useRemit])
 
   const onAddressChange = (value) => {
-    let newRequest = signRequest
+    if (!touched && !value) return
+
+    setTouched(true)
+
+    const newRequest = { ...signRequest, request: { ...signRequest.request } }
+
+    if (!value) {
+      delete newRequest.request.Destination
+      setFormError(false)
+      setStatus('')
+      setSignRequest(newRequest)
+      return
+    }
+
     if (isAddressValid(value)) {
       newRequest.request.Destination = value
       setFormError(false)
       setStatus('')
     } else {
-      if (newRequest.request.Destination) {
-        delete newRequest.request.Destination
-      }
+      delete newRequest.request.Destination
       setStatus(t('form.error.address-invalid'))
       setFormError(true)
     }
+
     setSignRequest(newRequest)
   }
 
@@ -33,6 +106,18 @@ export default function NftTransfer({ setSignRequest, signRequest, setStatus, se
           hideButton={true}
         />
       </span>
+
+      {/* Remit option for Xahau network */}
+      {xahauNetwork && (
+        <div className="terms-checkbox">
+          <CheckBox checked={useRemit} setChecked={setUseRemit} name="use-remit" disabled={destinationRemitDisabled}>
+            Pay the NFT reserve for the destination (immediate NFT transfer).
+            {destinationRemitDisabled && (
+              <span className="red"> (Disabled - destination has incoming Remit disabled)</span>
+            )}
+          </CheckBox>
+        </div>
+      )}
     </div>
   )
 }

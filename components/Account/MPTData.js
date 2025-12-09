@@ -1,44 +1,7 @@
 import { objectsCountText } from '../../utils'
 import { scaleAmount } from '../../utils/calc'
-import { AddressWithIconFilled, fullDateAndTime, shortNiceNumber } from '../../utils/format'
+import { CurrencyWithIcon, fullDateAndTime, shortNiceNumber } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
-
-const mptCurrency = (data) => {
-  if (!data) return 'N/A'
-  let meta = data.metadata
-  // MPT tokens
-  if (data.mptokenCurrencyDetails) {
-    const details = data.mptokenCurrencyDetails
-    if (details.currency) return details.currency
-    if (!meta) meta = details.metadata
-  }
-  // Issued mpttokens
-  if (meta) {
-    return meta.currency || meta.c || 'N/A'
-  }
-  return 'N/A'
-}
-
-const mptName = (data) => {
-  if (!data) return 'N/A'
-  // Issued mpttokens
-  let meta = data.metadata
-  // MPT tokens
-  if (!meta && data.mptokenCurrencyDetails) {
-    meta = data.mptokenCurrencyDetails.metadata
-  }
-
-  if (!meta) return 'N/A'
-  return meta.name || meta.n || 'N/A'
-}
-
-const issuerDetails = (data) => {
-  if (!data) return null
-  return {
-    issuer: data.mptokenCurrencyDetails?.account || data.Issuer || null,
-    issuerDetails: data.mptokenCurrencyDetails?.accountDetails || data.issuerDetails || null
-  }
-}
 
 const mptId = (data) => {
   if (!data) return null
@@ -172,12 +135,7 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                   {i + 1}
                 </td>
                 <td className="left">
-                  <AddressWithIconFilled
-                    data={issuerDetails(c)}
-                    name="issuer"
-                    currency={mptCurrency(c)}
-                    options={{ mptId: cMptId, currencyName: mptName(c), flags: isIssued ? c.flags : null }}
-                  />
+                  <CurrencyWithIcon token={c} hideIssuer={isIssued} />
                 </td>
                 <td className="center">
                   <CopyButton text={cMptId} />
@@ -207,7 +165,7 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
           {historicalTitle}
         </center>
         <br />
-        <table className="table-mobile wide">
+        <table className="table-mobile">
           <tbody>
             <tr>
               <th>#</th>
@@ -228,30 +186,22 @@ const showMPTs = ({ list, ledgerTimestamp, isIssued = false }) => {
                 <tr key={i}>
                   <td className="center">{i + 1}</td>
                   <td>
-                    <AddressWithIconFilled
-                      data={issuerDetails(c)}
-                      name="issuer"
-                      currency={mptCurrency(c)}
-                      options={{
-                        mptId: cMptId,
-                        currencyName: mptName(c),
-                        flags: isIssued ? c.flags : null,
-                        short: true
-                      }}
-                    />
+                    <CurrencyWithIcon token={c} options={{ short: true }} hideIssuer={isIssued} />
                   </td>
                   <td className="center">
                     <CopyButton text={cMptId} />
                   </td>
                   {isIssued ? (
                     <>
-                      <td className="right">{scaleAmount(c.OutstandingAmount || 0, c.AssetScale)}</td>
+                      <td className="right">{shortNiceNumber(scaleAmount(c.OutstandingAmount || 0, c.AssetScale))}</td>
                       <td className="right">
-                        {c.MaximumAmount ? scaleAmount(c.MaximumAmount, c.AssetScale) : 'not set'}
+                        {c.MaximumAmount ? shortNiceNumber(scaleAmount(c.MaximumAmount, c.AssetScale)) : 'not set'}
                       </td>
                     </>
                   ) : (
-                    <td className="right">{scaleAmount(c.MPTAmount || 0, c.mptokenCurrencyDetails?.scale)}</td>
+                    <td className="right">
+                      {shortNiceNumber(scaleAmount(c.MPTAmount || 0, c.mptokenCurrencyDetails?.scale))}
+                    </td>
                   )}
                 </tr>
               )

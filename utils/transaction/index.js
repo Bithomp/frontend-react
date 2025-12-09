@@ -17,6 +17,7 @@ export const isConvertionTx = (specification) => {
 
 // Function to get balance changes for a specific address
 const getBalanceChanges = (data, address) => {
+  if (!data || !address) return null
   const balanceChange = data.filter((entry) => entry.address === address)
   return balanceChange[0]?.balanceChanges
 }
@@ -43,6 +44,7 @@ export const addressBalanceChanges = (data, address) => {
       balanceChanges.push(change)
     }
   }
+
   return balanceChanges
 }
 
@@ -108,7 +110,7 @@ export const errorCodeDescription = (code) => {
     tecINSUFFICIENT_PAYMENT:
       'The amount specified is not enough to pay all fees involved in the transaction. For example, when trading a non-fungible token, the buy amount may not be enough to pay both the broker fee and the sell amount.',
     tecINSUFFICIENT_RESERVE:
-      "The transaction would increase the reserve requirement higher than the sending account's balance. SignerListSet, PaymentChannelCreate, PaymentChannelFund, and EscrowCreate can return this error code. See Signer Lists and Reserves for more information.",
+      "The transaction would increase the reserve requirement higher than the sending account's balance.",
     tecINTERNAL:
       'Unspecified internal error, with transaction cost applied. This error code should not normally be returned. If you can reproduce this error, please report an issue .',
     tecINVARIANT_FAILED:
@@ -311,6 +313,7 @@ export const dappBySourceTag = (sourceTag) => {
     5523279: 'Things Go Online',
     10000001: 'MetaTV',
     10011001: 'Myrkle',
+    10011010: 'Magnetic',
     10102021: 'Junction',
     10509910: 'xLux',
     11782013: 'Anodos',
@@ -407,7 +410,11 @@ export const memoNode = (memos, type = 'tr') => {
       let memopiece = memo?.data
       let memoformat = memo?.format
 
-      if (memopiece?.toString().toLowerCase().includes('airdrop') && type !== 'tr') {
+      const redFlags = ['airdrop', 'claim']
+
+      const memop = memopiece?.toString().toLowerCase() || ''
+
+      if (redFlags.some((flag) => memop.includes(flag)) && type !== 'tr') {
         continue
       }
 
@@ -418,14 +425,15 @@ export const memoNode = (memos, type = 'tr') => {
       let clientname = ''
 
       if (memopiece) {
-        if (memopiece.slice(0, 16) === 'xrplexplorer.com' || memopiece.slice(0, 11) === 'bithomp.com') {
+        if (memopiece.includes('xrplexplorer.com') || memopiece.includes('bithomp.com')) {
+          clientname = memopiece.replace(/xrplexplorer\.com/g, 'bithomp.com')
           memopiece = ''
-          clientname = 'bithomp.com'
-        }
-
-        if (memopiece.slice(0, 17) === 'xahauexplorer.com') {
+        } else if (memopiece.includes('xahauexplorer.com')) {
+          clientname = memopiece
           memopiece = ''
-          clientname = 'xahauexplorer.com'
+        } else if (memopiece.includes('initiated via xmagnetic.org')) {
+          clientname = 'xmagnetic.org'
+          memopiece = ''
         }
 
         if (memotype) {
@@ -444,7 +452,7 @@ export const memoNode = (memos, type = 'tr') => {
           if (type === 'tr') {
             output.push(
               <tr key={'a2' + j}>
-                <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
+                <TData>Memo{memos.length > 1 ? ' ' + (j + 1) : ''}</TData>
                 <TData>
                   {memotype && (
                     <>
@@ -459,7 +467,7 @@ export const memoNode = (memos, type = 'tr') => {
           } else {
             output.push(
               <React.Fragment key={'a2' + j}>
-                Memo {memos.length > 1 ? j + 1 : ''}:
+                Memo{memos.length > 1 ? ' ' + (j + 1) : ''}:
                 <br />
                 {memotype && (
                   <>
@@ -519,7 +527,7 @@ export const memoNode = (memos, type = 'tr') => {
               if (type === 'tr') {
                 output.push(
                   <tr key={'a1' + j}>
-                    <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
+                    <TData>Memo{memos.length > 1 ? ' ' + (j + 1) : ''}</TData>
                     <TData>
                       {memotype && memotype.toLowerCase() !== 'memo' && (
                         <span className="bold">
@@ -534,7 +542,7 @@ export const memoNode = (memos, type = 'tr') => {
               } else {
                 output.push(
                   <React.Fragment key={'a1' + j}>
-                    Memo{memos.length > 1 ? ' ' + j + 1 : ''}:{' '}
+                    Memo{memos.length > 1 ? ' ' + (j + 1) : ''}:{' '}
                     {memotype && memotype.toLowerCase() !== 'memo' && <>{memotype + ': '}</>}
                     {memopiece}
                     <br />

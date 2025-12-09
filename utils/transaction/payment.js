@@ -1,12 +1,16 @@
 import { addressBalanceChanges, isConvertionTx } from '.'
 import { xls14NftValue } from '..'
 
+export const isRipplingOnIssuer = (sourceBalanceChangesList, address) => {
+  return sourceBalanceChangesList?.length > 1 && sourceBalanceChangesList.every((item) => item.issuer === address)
+}
+
 export const paymentTypeName = (data) => {
   if (!data) return 'Payment'
   const { outcome, specification } = data
   let type = 'Payment'
   if (isConvertionTx(specification)) {
-    type = 'Conversion payment'
+    type = 'Currency exchange'
   }
   if (xls14NftValue(outcome?.deliveredAmount?.value)) {
     type = 'NFT transfer (XLS-14)'

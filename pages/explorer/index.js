@@ -3,14 +3,14 @@ import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import Link from 'next/link'
 
-import { server, explorerName, nativeCurrency, network } from '../utils'
-import { getIsSsrMobile } from '../utils/mobile'
+import { server, explorerName, nativeCurrency, network } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
 
-import SEO from '../components/SEO'
-import SearchBlock from '../components/Layout/SearchBlock'
-import Ads from '../components/Layout/Ads'
-import CopyButton from '../components/UI/CopyButton'
-import { shortHash } from '../utils/format'
+import SEO from '../../components/SEO'
+import SearchBlock from '../../components/Layout/SearchBlock'
+import Ads from '../../components/Layout/Ads'
+import CopyButton from '../../components/UI/CopyButton'
+import { shortHash } from '../../utils/format'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -45,8 +45,8 @@ const examples = {
     txHash: '29C56EB4A9E6C6F16A54968EC7DC8DAE92A95348EC583F2B82A028C3EAE627C0',
     txCTID: 'C5DB956000090000',
     account: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
-    payString: ['username$paystring.crypto.com', 'vbuterin$bithomp.com'],
-    xAddress: 'XVVFXHFdehYhofb7XRWeJYV6kjTEwbq2mLScCiYyDTHKu9E',
+    //payString: ['username$paystring.crypto.com', 'vbuterin$bithomp.com'],
+    //xAddress: 'XVVFXHFdehYhofb7XRWeJYV6kjTEwbq2mLScCiYyDTHKu9E',
     username: ['bitstamp', 'vbuterin', 'JoelKatz'],
     object: '0802E4E7EACC17414747174474487E9DF24CFDB61DD12C58B09D9EFB42C7F8C8'
   },
@@ -57,8 +57,8 @@ const examples = {
     txHash: '3EA3434D60F7B78BBACE9074858202FB5CDDA003FC3F98622CEE8797D32EF0C4',
     txCTID: 'C0547DD100070002',
     account: 'rwxuXYidJrbqWCEzvTipswauoKTiDfoatK',
-    payString: ['gemtesting2$staging.bithomp.com'],
-    xAddress: null,
+    //payString: ['gemtesting2$staging.bithomp.com'],
+    //xAddress: null,
     username: ['GemTesting2'],
     object: null
   },
@@ -69,8 +69,8 @@ const examples = {
     txHash: '5A8F7913DDB7C8B7DA3A9329C397599C89978437445AE5D748DDC9A8FA016A4A',
     txCTID: 'C097E2D200010001',
     account: 'rMA8uFhm1hRRu2e9huxjR62gMw4PY2uQAP',
-    payString: ['mainfortesting$test.bithomp.com', 'gemtesting$test.bithomp.com'],
-    xAddress: 'TVE26TYGhfLC7tQDno7G8dGtxSkYQnTMgJJYfAbsiPsc6Zg',
+    //payString: ['mainfortesting$test.bithomp.com', 'gemtesting$test.bithomp.com'],
+    //xAddress: 'TVE26TYGhfLC7tQDno7G8dGtxSkYQnTMgJJYfAbsiPsc6Zg',
     username: ['xrpdomains', 'faucet'],
     object: null
   },
@@ -81,8 +81,8 @@ const examples = {
     txHash: '100D2346C65FF4C681B5AD805EC54419FF38ECDD824006D0E050D2A68808475B',
     txCTID: 'C0546A8800120002',
     account: 'rh1HPuRVsYYvThxG2Bs1MfjmrVC73S16Fb',
-    payString: ['gemtesting$dev.bithomp.com', 'mainfortesting$dev.bithomp.com'],
-    xAddress: null,
+    //payString: ['gemtesting$dev.bithomp.com', 'mainfortesting$dev.bithomp.com'],
+    //xAddress: null,
     username: ['xrpdomains'],
     object: null
   },
@@ -93,8 +93,8 @@ const examples = {
     txHash: '100D2346C65FF4C681B5AD805EC54419FF38ECDD824006D0E050D2A68808475B',
     txCTID: 'C0546A8800120002',
     account: 'rh1HPuRVsYYvThxG2Bs1MfjmrVC73S16Fb',
-    payString: ['gemtesting$dev.bithomp.com', 'mainfortesting$dev.bithomp.com'],
-    xAddress: null,
+    //payString: ['gemtesting$dev.bithomp.com', 'mainfortesting$dev.bithomp.com'],
+    //xAddress: null,
     username: ['xrpdomains'],
     object: null
   },
@@ -105,7 +105,7 @@ const examples = {
     txHash: '658D0ADF47AAF039EB5AAD516AA7C77105E5BC1FC7D42C0F89E15C9DFD65EDA7',
     txCTID: 'C0FBEE5600435359',
     account: 'rPNFrWbZG7mPenXAEBjAkPezE5N6NKy4W',
-    payString: ['xrpmoon$xahauexplorer.com', 'joelkatz$xahauexplorer.com'],
+    //payString: ['xrpmoon$xahauexplorer.com', 'joelkatz$xahauexplorer.com'],
     xAddress: null,
     username: ['JoelKatz', 'XRPMOON'],
     object: null
@@ -117,7 +117,7 @@ const examples = {
     txHash: '542DE886216DBC774E018D33D6B4CD188DFE2171521A7EC0EB4AADD1BAE0DD04',
     txCTID: 'C00A0DC50000535A',
     account: 'rh9ebhNHB4s7tJ7y66B5gmZ6aEnnhNDsgT',
-    payString: ['gemtesting$test.xahauexplorer.com'],
+    //payString: ['gemtesting$test.xahauexplorer.com'],
     xAddress: null,
     username: ['MainForTesting'],
     object: null
@@ -129,7 +129,7 @@ const examples = {
     txHash: '9189121BF648B984D7E63C4E737E0269DC9AA45CBECB79D5D0F3B9F0C2C963B0',
     txCTID: 'C077168800007A6A',
     account: 'rp52uvJuR8PzTG1RRDvCxwXW7o56bPSwbG',
-    payString: ['mainfortesting$jshooks.xahauexplorer.com'],
+    //payString: ['mainfortesting$jshooks.xahauexplorer.com'],
     xAddress: null,
     username: ['faucet'],
     object: null
@@ -187,36 +187,46 @@ export default function Explorer({ isSsrMobile, showAds }) {
           with such domains) <Link href="/domains">Verify your domain.</Link>
           <br />
           <br />
-          <b>X-Address</b> example: {shortingHash(examples[network]?.xAddress)}{' '}
-          <CopyButton text={examples[network]?.xAddress} />
-          <br />
-          <br />
-          <b>PayString</b> example: {examples[network]?.payString?.[0]}{' '}
-          <CopyButton text={examples[network]?.payString?.[0]} />, {examples[network]?.payString?.[1]}{' '}
-          <CopyButton text={examples[network]?.payString?.[1]} /> <Link href="/username">Get your PayString.</Link>
-          <br />
-          <br />
+          {examples[network]?.xAddress && (
+            <>
+              <b>X-Address</b> example: <span className="brake">{shortingHash(examples[network]?.xAddress)} </span>
+              <CopyButton text={examples[network]?.xAddress} />
+              <br />
+              <br />
+            </>
+          )}
+          {examples[network]?.payString?.[0] && (
+            <>
+              <b>PayString</b> example: {examples[network]?.payString?.[0]}{' '}
+              <CopyButton text={examples[network]?.payString?.[0]} />, {examples[network]?.payString?.[1]}{' '}
+              <CopyButton text={examples[network]?.payString?.[1]} /> <Link href="/username">Get your PayString.</Link>
+              <br />
+              <br />
+            </>
+          )}
           <h2>Transaction</h2>
           <b>CTID</b> (compact transaction ID) example: {examples[network]?.txCTID}{' '}
           <CopyButton text={examples[network]?.txCTID} />
           <br />
           <br />
-          <b>Transaction Hash</b> example: {shortingHash(examples[network]?.txHash)}{' '}
+          <b>Transaction Hash</b> example: <span className="brake">{shortingHash(examples[network]?.txHash)} </span>
           <CopyButton text={examples[network]?.txHash} />
           <br />
           <br />
           <h2>NFT, {examples[network]?.amm && 'AMM, '}Object</h2>
-          <b>NFT</b> example: {shortingHash(examples[network]?.nft)} <CopyButton text={examples[network]?.nft} />
+          <b>NFT</b> example: <span className="brake">{shortingHash(examples[network]?.nft)} </span>
+          <CopyButton text={examples[network]?.nft} />
           <br />
           <br />
           {examples[network]?.amm && (
             <>
-              <b>AMM</b> example: {shortingHash(examples[network]?.amm)} <CopyButton text={examples[network]?.amm} />
+              <b>AMM</b> example: <span className="brake">{shortingHash(examples[network]?.amm)} </span>
+              <CopyButton text={examples[network]?.amm} />
               <br />
               <br />
             </>
           )}
-          <b>Object</b> example: {shortingHash(examples[network]?.object)}{' '}
+          <b>Object</b> example: <span className="brake">{shortingHash(examples[network]?.object)} </span>
           <CopyButton text={examples[network]?.object} />
           <br />
           <br />

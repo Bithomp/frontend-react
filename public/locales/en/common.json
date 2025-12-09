@@ -161,7 +161,6 @@
     "description": "Bithomp - The best {{nativeCurrency}} Explorer. Track Ripple USD (RLUSD), {{nativeCurrency}} accounts. Search {{nativeCurrency}} transactions. NFTs on {{explorerName}}. Validators, Amendments and much more.",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
-    "scan-qr": "SCAN A CODE",
     "price": {
       "header": "{{nativeCurrency}} Live Price & Converter"
     },
@@ -311,7 +310,7 @@
     "error": "Error",
     "no-data": "No data available",
     "loading": "Loading...",
-    "login-to-bithomp-pro": "Loading more data is available to <1>logged-in</1> Bithomp Pro subscribers.",
+    "login-to-bithomp-pro": "Loading more data is available to <2>logged-in</2> Bithomp Pro subscribers.",
     "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
     "load-failed": "Failed to load",
     "all-issuers": "All issuers",
@@ -349,10 +348,12 @@
   "error": {
     "payment-partly": "Please send the rest of the amount, so far we only received {{received}} {{currency}} when <b>{{required}} {{currency}}</b> is required.",
     "Network Error": "It seems there is no internet connection ;(",
+    "Request failed with status code 522": "The server is currently unreachable, try again later.",
     "Request failed with status code 429": "You are sending us too many requests, try later!",
     "Request failed with status code 404": "Such API call is not allowed on that network",
     "Request failed with status code 403": "It seems you're logged out, please log in again",
-    "Request aborted": "Request aborted"
+    "Request aborted": "Request aborted",
+    "read ECONNRESET": "The request timed out. Try changing your filters or try again later."
   },
   "errors": {
     "token": {

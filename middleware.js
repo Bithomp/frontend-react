@@ -55,14 +55,14 @@ export async function middleware(req) {
 
   //import to have this case: reactLocale === 'default'
   if (reactLocale !== viewLocale) {
-    // do not add "/" after locale if it's the root
-    return NextResponse.redirect(
-      new URL(
-        `/${viewLocale}${req.nextUrl.pathname !== '/' ? req.nextUrl.pathname : req.nextUrl.search ? '/' : ''}${
-          req.nextUrl.search
-        }`,
-        req.url
-      )
-    )
+    const url = req.nextUrl.clone()
+
+    url.pathname = `/${viewLocale}${url.pathname !== '/' ? url.pathname : ''}`
+
+    if (url.searchParams.has('id')) {
+      url.searchParams.delete('id')
+    }
+
+    return NextResponse.redirect(url)
   }
 }
