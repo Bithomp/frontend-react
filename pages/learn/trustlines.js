@@ -1,7 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { network } from '../../utils'
+import { ledgerName, network, siteName } from '../../utils'
 import { nativeCurrency, explorerName, xahauNetwork } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -18,6 +18,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function IssueAToken() {
+  const imagePath = '/images/' + (xahauNetwork ? 'xahau' : 'xrpl') + 'explorer/learn/trustlines/'
   return (
     <>
       <SEO
@@ -38,11 +39,7 @@ export default function IssueAToken() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={
-                  xahauNetwork
-                    ? '/images/xahauexplorer/learn/trustlines/cover.jpg'
-                    : '/images/xrplexplorer/learn/trustlines/cover.jpg'
-                }
+                src={imagePath + 'cover.jpg'}
                 alt="Set Trustline"
                 width={1520}
                 height={855}
@@ -53,15 +50,15 @@ export default function IssueAToken() {
             </figure>
           </div>
           <p>
-            In the {xahauNetwork ? 'Xahau' : 'XRPL'} ecosystem, trustlines are one of the most important concepts —
-            especially for anyone working with issued tokens (IOUs). If you want to hold tokens on {explorerName}, you
-            must first create a trustline. In this guide, we’ll explain what a trustline is, why trustlines matter, and
-            how to add it in just a few clicks using {xahauNetwork ? 'Xahau Explorer' : 'Bithomp'}.
+            In the {ledgerName} ecosystem, trustlines are one of the most important concepts — especially for anyone
+            working with issued tokens (IOUs). If you want to hold tokens on {explorerName}, you must first create a
+            trustline. In this guide, we’ll explain what a trustline is, why trustlines matter, and how to add it in
+            just a few clicks using {siteName}.
           </p>
-          <h2>What Is a Trustline on {xahauNetwork ? 'Xahau' : 'XRPL'} ?</h2>
+          <h2>What Is a Trustline on {ledgerName} ?</h2>
           <p>
-            A trustline on the {xahauNetwork ? 'Xahau' : 'XRPL'} is a connection between two accounts that specifies the
-            maximum amount of an issued asset (IOU) one account is willing to hold from a particular issuer.
+            A trustline on the {ledgerName} is a connection between two accounts that specifies the maximum amount of an
+            issued asset (IOU) one account is willing to hold from a particular issuer.
           </p>
           <ul>
             A trustline tells the ledger two things:
@@ -79,15 +76,13 @@ export default function IssueAToken() {
             <li>Transparency — you always know which assets your wallet interacts with.</li>
             <li>Stability — they prevent “token flooding” and wallet spam common in other networks.</li>
           </ul>
-          <h2>Setting Up {xahauNetwork ? 'Xahau' : 'XRPL'} Trustlines</h2>
+          <h2>Setting Up {ledgerName} Trustlines</h2>
           <div className="p-4 my-4 border-l-4 rounded bg-white dark:bg-gray-900 border-[#4BA8B6] shadow-sm">
             <p className="text-gray-800 dark:text-gray-200">
               <span role="img" aria-label="lamp">
                 👉
               </span>{' '}
-              <Link href="/services/trustline">
-                Here you can add a trustline to any {xahauNetwork ? 'Xahau' : 'XRPL'} token
-              </Link>
+              <Link href="/services/trustline">Here you can add a trustline to any {ledgerName} token</Link>
             </p>
           </div>
           <p>
@@ -97,11 +92,7 @@ export default function IssueAToken() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={
-                  xahauNetwork
-                    ? '/images/xahauexplorer/learn/trustlines/screen-simple.png'
-                    : '/images/xrplexplorer/learn/trustlines/screen-simple.png'
-                }
+                src={imagePath + 'screen-simple.png'}
                 alt="Set Trustline"
                 width={1520}
                 height={855}
@@ -111,22 +102,17 @@ export default function IssueAToken() {
               <figcaption>Set Trustline on {explorerName}</figcaption>
             </figure>
           </div>
-          <p></p>If you need more control over your trustline settings — for example, changing the limit or
-          enabling/disabling specific flags such as Rippling, Freeze, Deep Freeze, and others — you can switch to our
-          Advanced Mode.
+          If you need more control over your trustline settings — for example, changing the limit or enabling/disabling
+          specific flags such as Rippling, Freeze, Deep Freeze, and others — you can switch to our Advanced Mode.
           <p>
             <Link href="/services/trustline?mode=advanced">In Advanced Mode</Link>, you can customize your trustline and
             even create a trustline for a token that doesn’t exist yet. This is useful if you're willing to issue a new
-            token on {xahauNetwork ? 'Xahau' : 'XRPL'}.
+            token on {ledgerName}.
           </p>
           <div className="flex justify-center">
             <figure>
               <Image
-                src={
-                  xahauNetwork
-                    ? '/images/xahauexplorer/learn/trustlines/screen-advanced.png'
-                    : '/images/xrplexplorer/learn/trustlines/screen-advanced.png'
-                }
+                src={imagePath + 'screen-advanced.png'}
                 alt="Set Trustline"
                 width={2376}
                 height={2786}
@@ -191,10 +177,9 @@ export default function IssueAToken() {
             1 unit is retained.
           </p>
           <p>
-            These are <strong>not token transfer fees</strong> — they are part of {xahauNetwork ? 'Xahau' : 'XRPL'}'s
-            built-in trustline quality mechanics and affect exchange rates rather than applying a fee to the
-            transaction. A default value of <strong>0</strong> means the token is exchanged at face value, with no
-            percentage retained.
+            These are <strong>not token transfer fees</strong> — they are part of {ledgerName}'s built-in trustline
+            quality mechanics and affect exchange rates rather than applying a fee to the transaction. A default value
+            of <strong>0</strong> means the token is exchanged at face value, with no percentage retained.
           </p>
           <h2>Share Button — Send Ready-to-Use Trustline Links</h2>
           <h3>Share Trustlines Easily</h3>
@@ -209,7 +194,7 @@ export default function IssueAToken() {
             <li>And they’ll open a ready-to-submit trustline form instantly.</li>
           </ul>
           <p>No manual typing, no mistakes — just fast and accurate onboarding.</p>
-          <h3>Why Use {xahauNetwork ? 'Xahau Explorer' : 'Bithomp'} for Trustlines?</h3>
+          <h3>Why Use {siteName} for Trustlines?</h3>
           <ul>
             <li>Fast trustline creation for any token</li>
             <li>Sign transactions with Ledger, Xaman, Gem Wallet, MetaMask, and more</li>
@@ -218,10 +203,9 @@ export default function IssueAToken() {
             <li>Easy sharing with auto-generated links</li>
           </ul>
           <p>
-            {xahauNetwork ? 'Xahau Explorer' : 'Bithomp'} offers the fastest and most user-friendly way to add
-            trustlines on {explorerName} — from simple mode to advanced flag settings and shareable trustline links.
-            Whether you're a beginner or an experienced issuer, {xahauNetwork ? 'Xahau Explorer' : 'Bithomp'} gives you
-            all the tools you need to manage trustlines securely.
+            {siteName} offers the fastest and most user-friendly way to add trustlines on {explorerName} — from simple
+            mode to advanced flag settings and shareable trustline links. Whether you're a beginner or an experienced
+            issuer, {siteName} gives you all the tools you need to manage trustlines securely.
           </p>
           <h3>FAQ</h3>
           <h4>Do I need a trustline to hold any {explorerName} token on my account?</h4>

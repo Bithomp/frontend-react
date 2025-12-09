@@ -547,6 +547,7 @@ export const networks = {
     getCoinsUrl: '/go/buy-first-xrp',
     explorerName: 'XRP Ledger',
     ledgerName: 'XRPL',
+    siteName: 'Bithomp',
     minLedger: 32570,
     subname: ''
   },
@@ -557,6 +558,7 @@ export const networks = {
     getCoinsUrl: '/faucet',
     explorerName: 'XRPL Staging',
     ledgerName: 'XRPL',
+    siteName: 'Bithomp',
     minLedger: 32570,
     subname: ''
   },
@@ -567,6 +569,7 @@ export const networks = {
     getCoinsUrl: '/faucet',
     explorerName: 'XRPL Testnet',
     ledgerName: 'XRPL',
+    siteName: 'Bithomp',
     minLedger: 1,
     subname: 'Testnet'
   },
@@ -577,6 +580,7 @@ export const networks = {
     getCoinsUrl: '/faucet',
     explorerName: 'XRPL Devnet',
     ledgerName: 'XRPL',
+    siteName: 'Bithomp',
     minLedger: 1,
     subname: 'Devnet'
   },
@@ -587,6 +591,7 @@ export const networks = {
     getCoinsUrl: '/faucet',
     explorerName: 'XRPL AlphaNet',
     ledgerName: 'XRPL',
+    siteName: 'Bithomp',
     minLedger: 1,
     subname: 'AlphaNet'
   },
@@ -597,6 +602,7 @@ export const networks = {
     getCoinsUrl: null,
     explorerName: 'Xahau',
     ledgerName: 'Xahau',
+    siteName: 'Xahau Explorer',
     minLedger: 1,
     subname: ''
   },
@@ -607,6 +613,7 @@ export const networks = {
     getCoinsUrl: '/faucet',
     explorerName: 'Xahau Testnet',
     ledgerName: 'Xahau',
+    siteName: 'Xahau Explorer',
     minLedger: 3,
     subname: 'Testnet'
   },
@@ -617,6 +624,7 @@ export const networks = {
     getCoinsUrl: '/faucet',
     explorerName: 'Xahau JS Hooks',
     ledgerName: 'Xahau',
+    siteName: 'Xahau Explorer',
     minLedger: 12,
     subname: 'JS Hooks'
   }
@@ -637,6 +645,7 @@ export const nativeCurrency = networks[network]?.nativeCurrency
 export const getCoinsUrl = networks[network]?.getCoinsUrl
 export const explorerName = networks[network]?.explorerName
 export const ledgerName = networks[network]?.ledgerName
+export const siteName = networks[network]?.siteName
 export const ledgerSubName = networks[network]?.subname
 export const minLedger = networks[network]?.minLedger
 const webAddressParts = server?.replace('http://', '').replace('https://', '').split('.')
