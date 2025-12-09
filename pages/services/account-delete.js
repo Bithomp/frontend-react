@@ -199,6 +199,8 @@ export default function AccountDelete({
 
     if (Number(value) > 1) {
       setFeeError('Maximum fee is 1 ' + nativeCurrency)
+    } else if (Number(value) < requiredFee / 1000000) {
+      setFeeError('Minimum fee is ' + requiredFee / 1000000 + ' ' + nativeCurrency)
     } else {
       setFeeError('')
     }
@@ -227,7 +229,7 @@ export default function AccountDelete({
       return
     }
 
-    if (Number(fee) > requiredFee / 1000000) {
+    if (Number(fee) < requiredFee / 1000000) {
       setErrorMessage('Minimum fee is ' + requiredFee / 1000000 + ' ' + nativeCurrency)
       return
     }
