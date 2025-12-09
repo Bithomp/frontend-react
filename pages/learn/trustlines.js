@@ -22,7 +22,7 @@ export default function IssueAToken() {
   return (
     <>
       <SEO
-        title={'Set Trustline'}
+        title="Set Trustline"
         description="How trustlines work on {explorerName} and how to set them up"
         noindex={network !== 'mainnet'}
         image={{
