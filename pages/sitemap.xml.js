@@ -101,6 +101,7 @@ if (network === 'mainnet') {
     { loc: 'learn/issue-a-token', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/guide-for-token-issuers', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/image-services', changefreq: 'monthly', priority: '0.6' },
+    { loc: 'learn/trustlines', changefreq: 'monthly', priority: '0.6' },
     { loc: 'learn/nft-explorer', changefreq: 'monthly', priority: '0.7' }
   )
 }
@@ -146,6 +147,7 @@ function generateSiteMap(posts) {
     'learn/issue-a-token',
     'learn/guide-for-token-issuers',
     'learn/image-services',
+    'learn/trustlines',
     'learn/nft-explorer'
   ]
   const oldPages = ['explorer/']
