@@ -132,8 +132,8 @@ export default function CreateEscrow() {
             </p>
             <p>Fill in the destination wallet address.</p>
             <p>
-              👉 Avoid sending funds to exchange or service addresses—if the address changes or the exchange shuts down,
-              the escrow may never reach the recipient.
+              👉 Avoid sending funds to exchange or service addresses — if the address changes or the exchange shuts
+              down, the funds can be locked in escrow.
             </p>
             <p>
               <strong>Step 2. Enter the Amount</strong>
