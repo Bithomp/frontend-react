@@ -18,13 +18,14 @@ export async function getServerSideProps(context) {
 }
 
 export default function CreateEscrow() {
+  const imagePath = '/images/' + (xahauNetwork ? 'xahau' : 'xrpl') + 'explorer/learn/create-escrow/'
   return (
     <>
       <SEO
-        title={'How to create an escrow'}
+        title="How to create an escrow"
         description="Step-by-step guide on how to create an escrow. Understanding escrows, their use cases."
         noindex={network !== 'mainnet'}
-        image={{ file: '/images/pages/learn/create-escrow/cover', width: 1520, height: 855, allNetworks: true }}
+        image={{ file: imagePath + 'cover.jpg', width: 1520, height: 855, allNetworks: true }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
@@ -33,7 +34,7 @@ export default function CreateEscrow() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={'/images/pages/learn/create-escrow/cover' + (xahauNetwork ? '-xahau' : '') + '.jpg'}
+                src={imagePath + 'cover.jpg'}
                 alt="Create an escrow"
                 width={1520}
                 height={855}
@@ -52,7 +53,6 @@ export default function CreateEscrow() {
             <li>
               a certain date and time has passed (<strong>time-based escrow</strong>), or
             </li>
-
             <li>
               a cryptographic condition is fulfilled (<strong>condition-based escrow</strong>).
             </li>
@@ -63,7 +63,7 @@ export default function CreateEscrow() {
             after that time, and the funds are returned to the sender. <strong>If there is no cancelAfter time</strong>,
             the escrow cannot be canceled and will remain locked forever unless the condition is fulfilled. This ensures
             that funds are <strong>safe, transparent, and trustless</strong>—no third party is required to hold or
-            manage them.{' '}
+            manage them.
           </p>
 
           <h2>Why use Escrows?</h2>
@@ -116,7 +116,7 @@ export default function CreateEscrow() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={'/images/pages/learn/create-escrow/screen' + (xahauNetwork ? '-xahau' : '') + '.png'}
+                src={imagePath + 'screen.png'}
                 alt="Create an escrow"
                 width={1520}
                 height={1697}
@@ -179,7 +179,7 @@ export default function CreateEscrow() {
             {' '}
             After the cancelAfter time has passed, the escrow does not expire or return funds automatically —{' '}
             <strong>any account</strong> may submit an EscrowCancel transaction to return the funds to the escrow
-            sender. On our website you can perform this from the <Link href="/account"> Account Page</Link> by selecting
+            sender. On our website you can perform this from the <Link href="/account">Account Page</Link> by selecting
             the escrow and signing a cancel transaction with your wallet.{' '}
           </p>
           <div className="flex justify-center">
@@ -196,7 +196,6 @@ export default function CreateEscrow() {
             </figure>
           </div>
           <p>
-            {' '}
             We make it simple and secure to create escrows on {explorerName}. You can use it for delayed or conditional
             payments, or safely test the feature on the testnet without risking your real funds.
           </p>
