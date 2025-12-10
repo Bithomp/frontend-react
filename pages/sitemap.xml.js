@@ -102,7 +102,8 @@ if (network === 'mainnet') {
     { loc: 'learn/guide-for-token-issuers', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/image-services', changefreq: 'monthly', priority: '0.6' },
     { loc: 'learn/trustlines', changefreq: 'monthly', priority: '0.6' },
-    { loc: 'learn/nft-explorer', changefreq: 'monthly', priority: '0.7' }
+    { loc: 'learn/nft-explorer', changefreq: 'monthly', priority: '0.7' },
+    { loc: 'learn/paystrings', changefreq: 'monthly', priority: '0.5' }
   )
 }
 
@@ -148,7 +149,8 @@ function generateSiteMap(posts) {
     'learn/guide-for-token-issuers',
     'learn/image-services',
     'learn/trustlines',
-    'learn/nft-explorer'
+    'learn/nft-explorer',
+    'learn/paystrings'
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]

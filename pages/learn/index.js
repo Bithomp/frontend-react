@@ -28,7 +28,8 @@ const buildLearnContent = () => {
       items: [
         { title: 'Blackholed Address', slug: 'blackholed-address' },
         { title: 'Blacklisted Address', slug: 'blacklisted-address' },
-        { title: 'Verified Domain', slug: 'verified-domain' }
+        { title: 'Verified Domain', slug: 'verified-domain' },
+        { title: 'PayStrings', slug: 'paystrings' }
       ]
     },
     {
