@@ -229,8 +229,8 @@ export default function AccountDelete({
       return
     }
 
-    if (Number(fee) < requiredFee / 1000000) {
-      setErrorMessage('Minimum fee is ' + requiredFee / 1000000 + ' ' + nativeCurrency)
+    if (fee && Number(fee) < requiredFee / 1000000) {
+      setErrorMessage('Minimum fee is ' + requiredFee / 1000000 + ' ' + nativeCurrency + ' ' + fee + ' ' + requiredFee)
       return
     }
 
@@ -535,12 +535,12 @@ export default function AccountDelete({
                   />
                   <br />
                   <FormInput
-                    title="Fee"
+                    title={'Fee in ' + nativeCurrency}
                     placeholder={'Enter fee in ' + nativeCurrency}
                     setInnerValue={handleFeeChange}
                     hideButton={true}
                     onKeyPress={typeNumberOnly}
-                    defaultValue={fee}
+                    defaultValue={requiredFee / 1000000}
                     maxLength={35}
                     min={0}
                     inputMode="decimal"
@@ -551,7 +551,7 @@ export default function AccountDelete({
                   {feeError && <div className="red">{feeError}</div>}
                   <div className="form-spacing" />
                   <FormInput
-                    title="Source Tag"
+                    title="Source tag"
                     placeholder="Enter source tag"
                     setInnerValue={setSourceTag}
                     hideButton={true}
