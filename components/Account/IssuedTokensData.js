@@ -5,9 +5,9 @@ import {
   fullDateAndTime,
   shortNiceNumber,
   fullNiceNumber,
-  CurrencyWithIcon,
   niceCurrency,
-  niceNumber
+  niceNumber,
+  CurrencyWithIcon
 } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 
@@ -74,8 +74,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
           </td>
           {mobile ? (
             <td className="left">
-              <CurrencyWithIcon token={token} />
-              <br />
+              <CurrencyWithIcon token={token} copy={true} />
               <span>Price: {fullNiceNumber(stats.priceNativeCurrency * pageFiatRate, selectedCurrency)}</span>
               <br />
               <span>
@@ -103,7 +102,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
           ) : (
             <>
               <td className="left">
-                <CurrencyWithIcon token={token} />
+                <CurrencyWithIcon token={token} copy={true} hideIssuer={true} />
               </td>
               <td className="right">
                 <span className="tooltip">
@@ -247,7 +246,7 @@ export default function IssuedTokensData({ data, selectedCurrency, pageFiatRate 
         ) : error ? (
           <div className="center orange bold">{error}</div>
         ) : issuedTokens.length > 0 ? (
-          <table className="table-mobile wide">
+          <table className="table-mobile">
             <tbody>
               <tr>
                 <th>#</th>

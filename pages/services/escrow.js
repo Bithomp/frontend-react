@@ -270,8 +270,7 @@ export default function CreateEscrow({
               finishAfter: result.FinishAfter,
               cancelAfter: result.CancelAfter,
               condition: result.Condition,
-              ledgerIndex: result.ledger_index,
-              balanceChanges: result.balanceChanges
+              ledgerIndex: result.ledger_index
             })
           } else {
             setError(errorCodeDescription(status))

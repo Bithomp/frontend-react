@@ -131,9 +131,9 @@ export default function LedgerObject({
   const [ledgerDateInput, setLedgerDateInput] = useState(qsDate)
   const isFirstRender = useRef(true)
 
-  const addressFields = ['Account', 'Owner', 'Destination', 'Issuer', 'SendMax', 'RegularKey']
+  const addressFields = ['Account', 'Owner', 'Destination', 'Issuer', 'RegularKey']
 
-  const amountFields = ['Balance', 'LowLimit', 'HighLimit']
+  const amountFields = ['Balance', 'LowLimit', 'HighLimit', 'SendMax']
 
   const txIdFields = ['PreviousTxnID']
   const ledgerSeqFields = ['PreviousTxnLgrSeq']
@@ -206,7 +206,7 @@ export default function LedgerObject({
         }
 
         // Amount-like fields (objects with value/currency/issuer)
-        if (amountFields.includes(key) && typeof value === 'object') {
+        if (amountFields.includes(key)) {
           return (
             <tr key={key}>
               <td>{key}</td>
@@ -227,7 +227,7 @@ export default function LedgerObject({
         if (key === 'previousTxAt') {
           return (
             <tr key={key}>
-              <td>Previous Tx at</td>
+              <td>PreviousTxnAt</td>
               <td>{fullDateAndTime(value)}</td>
             </tr>
           )

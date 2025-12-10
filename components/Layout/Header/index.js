@@ -159,6 +159,8 @@ export default function Header({
 
   const bithomp = server.includes('bithomp')
 
+  const lang = i18n.language === 'default' ? 'en' : i18n.language
+
   return (
     <div className={menuOpen ? 'mobile-menu-open' : ''}>
       <header>
@@ -196,6 +198,7 @@ export default function Header({
             <Link href="/services/escrow">Create Escrow</Link>
             {!xahauNetwork && <Link href="/services/amm/deposit">AMM Services</Link>}
             <Link href="/services/account-settings/">Account Settings</Link>
+            <Link href="/services/account-delete">Account Delete</Link>
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
             <Link href="/learn/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
@@ -322,7 +325,7 @@ export default function Header({
             {network === 'mainnet' && (
               <>
                 <a href={'https://test.bithomp.com/create/'}>{t('menu.developers.account-generation')}</a>
-                <a href={'https://test.bithomp.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
+                <a href={'https://test.bithomp.com/' + lang + '/faucet'}>{t('menu.developers.faucet')}</a>
                 <a href={'https://test.bithomp.com/tools/'}>Bithomp tools</a>
               </>
             )}
@@ -589,7 +592,7 @@ export default function Header({
 
           <MenuDropDown
             id="dropdown10"
-            title={i18n.language?.toUpperCase()}
+            title={lang?.toUpperCase()}
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
             type="top-switch"

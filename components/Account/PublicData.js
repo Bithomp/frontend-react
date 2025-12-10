@@ -259,8 +259,6 @@ export default function PublicData({ data }) {
     </>
   )
 
-
-
   return (
     <>
       <table className="table-details hide-on-small-w800">
@@ -331,13 +329,14 @@ export default function PublicData({ data }) {
               </tr>
             )
           )}
-          {!data.genesis && data.initialBalance && (
+          {!data.genesis && data.initialBalance ? (
             <tr>
               <td>Activated with</td>
               <td>{activatedWithNode}</td>
             </tr>
+          ) : (
+            ''
           )}
-
         </tbody>
       </table>
       <div className="show-on-small-w800">
@@ -402,7 +401,6 @@ export default function PublicData({ data }) {
             </>
           )
         )}
-
       </div>
     </>
   )

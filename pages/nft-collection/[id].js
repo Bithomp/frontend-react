@@ -21,8 +21,7 @@ import { nftClass } from '../../styles/pages/nft.module.scss'
 import { nativeCurrency } from '../../utils'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { LinkListedNfts, LinkTx } from '../../utils/links'
-import Tabs from '../../components/Tabs'
-import { useRouter } from 'next/router'
+import NftCollectionTabs from '../../components/Tabs/NftCollectionTabs'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -65,7 +64,6 @@ export async function getServerSideProps(context) {
 
 export default function NftCollection({ id, nftList, selectedCurrency, fiatRate, errorMessage, data }) {
   const { t } = useTranslation()
-  const router = useRouter()
   const collection = data?.collection
   const statistics = collection?.statistics
   const [activityData, setActivityData] = useState({
@@ -348,7 +346,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
   const collectionPart =
     collection?.issuer && isValidTaxon(collection?.taxon)
       ? `issuer=${collection.issuer}&taxon=${collection.taxon}`
-      : 'collection=' + collection.collection
+      : 'collection=' + collection?.collection
 
   return (
     <div className={nftClass}>
@@ -360,24 +358,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
 
       <div className="content-profile">
         <h1 className="center">NFT collection: {collectionName}</h1>
-        <Tabs
-          style={{ marginTop: 20, marginBottom: 20 }}
-          tabList={[
-            { value: 'collections', label: 'NFT collections' },
-            { value: 'nfts', label: 'View All NFTs' },
-            { value: 'sold', label: 'Last Sold NFTs' },
-            { value: 'listed', label: 'Listed NFTs' }
-          ]}
-          setTab={(value) => {
-            let url = '/nft-volumes?period=week'
-            if (value === 'nfts') url = `/nft-explorer?${collectionPart}&includeWithoutMediaData=true`
-            else if (value === 'sold')
-              url = `/nft-sales?${collectionPart}&sale=primaryAndSecondary&includeWithoutMediaData=true&period=all&order=soldNew`
-            else if (value === 'listed')
-              url = `/nft-explorer?${collectionPart}&list=onSale&includeWithoutMediaData=true&saleDestination=publicAndKnownBrokers`
-            router.push(url)
-          }}
-        />
+        <NftCollectionTabs tab="collection" collectionPart={collectionPart} />
         {id && !data?.error ? (
           <>
             {!data && !errorMessage ? (
@@ -485,12 +466,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
                                   <tr>
                                     <td>Owners</td>
                                     <td className={statsTdClass}>
-                                      {/*<Link
-                                        href={`/nft-distribution?collection=${collection.collection}&includeWithoutMediaData=true`}
-                                      >
-                                        {statistics.owners}
-                                      </Link>*/}
-                                      {statistics.owners}
+                                      <Link href={`/nft-distribution?${collectionPart}`}>{statistics.owners}</Link>
                                     </td>
                                   </tr>
                                 )}

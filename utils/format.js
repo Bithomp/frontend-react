@@ -18,14 +18,28 @@ import {
   stripText,
   xls14NftValue,
   tokenImageSrc,
-  mptokenImageSrc,
-  shortName
+  mptokenImageSrc
 } from '.'
 import { scaleAmount } from './calc'
-import { LinkAmm } from './links'
+import { LinkAmm, LinkToken } from './links'
 
 dayjs.extend(durationPlugin)
 dayjs.extend(relativeTimePlugin)
+
+export const serviceUsernameOrAddressText = (data, name = 'address', options) => {
+  if (!data || !data[name]) return ''
+  const address = data[name]
+  const { service, username } = data[name + 'Details'] || {}
+  if (service) {
+    return service
+  } else if (username) {
+    return username
+  } else if (options?.fullAddress) {
+    return address
+  } else {
+    return shortHash(address)
+  }
+}
 
 export const NiceNativeBalance = ({ amount }) => {
   return (
@@ -71,14 +85,133 @@ const TokenImage = ({ token }) => {
   )
 }
 
-export const CurrencyWithIcon = ({ token }) => {
+export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
+  if (!token) return ''
+
+  if (!token?.mptId) token.mptId = token.mptokenIssuanceID || token.MPTokenIssuanceID || token.mpt_issuance_id
+
+  if (token.mptId) {
+    if (!token.issuer) {
+      token.issuer = token.mptokenCurrencyDetails?.account || token.Issuer || null
+      token.issuerDetails = token.mptokenCurrencyDetails?.accountDetails || token.issuerDetails || null
+    }
+    if (!token.metadata) {
+      token.metadata = token.mptokenCurrencyDetails?.metadata || null
+    }
+  }
+
+  const { currencyDetails, issuer, mptId, currency } = token
+
+  let imageUrl = avatarServer + issuer
+
+  if (mptId) {
+    imageUrl = mptokenImageSrc(mptId)
+  } else {
+    imageUrl = tokenImageSrc(token)
+  }
+
+  if (!issuer) {
+    imageUrl = nativeCurrenciesImages[nativeCurrency]
+  }
+
+  let doubleIcon = false
+  let assetImageUrl, asset2ImageUrl
+
+  // LP token - show 2 icons
+  if (currencyDetails?.asset && currencyDetails?.asset2) {
+    doubleIcon = true
+    assetImageUrl = tokenImageSrc(currencyDetails.asset)
+    asset2ImageUrl = tokenImageSrc(currencyDetails.asset2)
+  }
+
+  return (
+    <>
+      <table style={{ minWidth: 126 }}>
+        <tbody>
+          <tr className="no-border">
+            <td style={{ padding: 0, width: 35, height: 35 }}>
+              {doubleIcon ? (
+                <div style={{ position: 'relative', width: 35, height: 35, verticalAlign: 'middle' }}>
+                  {/* back coin */}
+                  <Image
+                    alt="asset"
+                    src={assetImageUrl}
+                    width={22}
+                    height={22}
+                    style={{
+                      position: 'absolute',
+                      top: 1,
+                      left: 1,
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      backgroundColor: '#fff',
+                      boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
+                    }}
+                  />
+                  {/* front coin */}
+                  <Image
+                    alt="asset 2"
+                    src={asset2ImageUrl}
+                    width={22}
+                    height={22}
+                    style={{
+                      position: 'absolute',
+                      bottom: 1,
+                      left: 13, // slight shift right to overlap
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      zIndex: 2,
+                      backgroundColor: '#fff',
+                      boxShadow: '0 0 0 1px #fff'
+                    }}
+                  />
+                </div>
+              ) : (
+                <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+              )}
+            </td>
+            <td className="left" style={{ padding: '0 0 0 5px' }}>
+              <LinkToken token={token} />
+              {copy && (
+                <>
+                  {' '}
+                  <CopyButton text={currency} copyText="Copy code" />
+                </>
+              )}
+              {!doubleIcon && !hideIssuer && (
+                <>
+                  <br />
+                  {mptId ? (
+                    <>{addressUsernameOrServiceLink(token, 'issuer', options)}</>
+                  ) : (
+                    <span className="grey text-xs">{serviceUsernameOrAddressText(token, 'issuer')}</span>
+                  )}
+                </>
+              )}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      {token?.flags && <div>{showFlags(token.flags)}</div>}
+    </>
+  )
+}
+
+export const CurrencyWithIconInline = ({ token, copy, link }) => {
   if (!token) return ''
   const { lp_token, currencyDetails } = token
+  const currencyText = lp_token ? currencyDetails?.currency : niceCurrency(token.currency)
 
   return (
     <>
       <TokenImage token={token} />
-      {lp_token ? currencyDetails?.currency : niceCurrency(token.currency)}
+      {link && !lp_token ? <LinkToken token={token} /> : currencyText}
+      {copy && (
+        <>
+          {' '}
+          <CopyButton text={token.currency} copyText="Copy code" />
+        </>
+      )}
     </>
   )
 }
@@ -131,75 +264,17 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
   )
 }
 
-export const AddressWithIcon = ({ children, address, currency, options }) => {
+export const AddressWithIcon = ({ children, address }) => {
   let imageUrl = avatarServer + address
-
-  if (currency) {
-    if (options?.mptId) {
-      imageUrl = mptokenImageSrc(options.mptId)
-    } else {
-      imageUrl = tokenImageSrc({ issuer: address, currency })
-    }
-  }
-
   if (!address) {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }
-
-  let doubleIcon = false
-  let assetImageUrl, asset2ImageUrl
-
-  // LP token - show 2 icons
-  if (options?.currencyDetails?.asset && options?.currencyDetails?.asset2) {
-    doubleIcon = true
-    assetImageUrl = tokenImageSrc(options.currencyDetails.asset)
-    asset2ImageUrl = tokenImageSrc(options.currencyDetails.asset2)
-  }
-
   return (
     <table style={{ minWidth: 126 }}>
       <tbody>
         <tr className="no-border">
           <td style={{ padding: 0, width: 35, height: 35 }}>
-            {doubleIcon ? (
-              <div style={{ position: 'relative', width: 35, height: 35, verticalAlign: 'middle' }}>
-                {/* back coin */}
-                <Image
-                  alt="asset"
-                  src={assetImageUrl}
-                  width={22}
-                  height={22}
-                  style={{
-                    position: 'absolute',
-                    top: 1,
-                    left: 1,
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    backgroundColor: '#fff',
-                    boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
-                  }}
-                />
-                {/* front coin */}
-                <Image
-                  alt="asset 2"
-                  src={asset2ImageUrl}
-                  width={22}
-                  height={22}
-                  style={{
-                    position: 'absolute',
-                    bottom: 1,
-                    left: 13, // slight shift right to overlap
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    zIndex: 2,
-                    backgroundColor: '#fff',
-                    boxShadow: '0 0 0 1px #fff'
-                  }}
-                />
-              </div>
-            ) : (
-              <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
-            )}
+            <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
           </td>
           <td style={{ padding: '0 0 0 5px' }}>{children}</td>
         </tr>
@@ -208,48 +283,21 @@ export const AddressWithIcon = ({ children, address, currency, options }) => {
   )
 }
 
-export const AddressWithIconFilled = ({ data, name, copyButton, options, currency }) => {
+export const AddressWithIconFilled = ({ data, name, copyButton, options }) => {
   if (!data) return ''
   if (!name) {
     name = 'address'
   }
-
-  const fullUrl = currency && !options?.mptId ? '/token/' + data[name] + '/' + currency : null
-  const link = userOrServiceLink(data, name, { fullUrl })
-
-  const ammId = options?.currencyDetails?.ammID
-  const lpToken = options?.currencyDetails?.type === 'lp_token'
-
-  const textCurrency = options?.mptId
-    ? currency
-    : lpToken && options?.currencyDetails?.currency
-    ? options.currencyDetails.currency
-    : niceCurrency(currency)
-
+  const link = userOrServiceLink(data, name)
   return (
-    <AddressWithIcon address={data[name]} currency={currency} options={options}>
-      {currency && (
+    <AddressWithIcon address={data[name]}>
+      {link && (
         <>
-          <span className="bold">{textCurrency}</span>{' '}
+          {link}
+          <br />
         </>
       )}
-      {options?.currencyName &&
-        options.currencyName.length > 10 &&
-        currency.length > 10 &&
-        options.currencyName !== currency && <br />}
-      {options?.currencyName && options.currencyName !== currency && (
-        <span>{shortName(options.currencyName, { maxLength: 10 })}</span>
-      )}{' '}
-      {link}
-      {(currency || options?.currencyName || link) && <br />}
-      {ammId ? (
-        <>
-          AMM pool: <LinkAmm ammId={ammId} hash={!options?.short} icon={options?.short} />
-        </>
-      ) : (
-        <>{options?.flags ? showFlags(options.flags) : addressLink(data[name], { ...options, fullUrl })}</>
-      )}{' '}
-      {copyButton && <CopyButton text={data[name]} />}
+      <span className="brake">{addressLink(data[name], options)}</span> {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
   )
 }
@@ -602,7 +650,7 @@ export const userOrServiceLink = (data, type, options = {}) => {
     const { username, service } = data[typeDetails]
     let link = username ? username : data[type]
 
-    let buildLink = options?.fullUrl || options?.url + link
+    let buildLink = options?.url + link
     if (service) {
       let serviceName = service
       if (options.short && serviceName.length > 18) {
@@ -644,7 +692,7 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
 export const addressLink = (address, options = {}) => {
   if (!address) return ''
   return (
-    <Link href={options?.fullUrl || '/account/' + address} aria-label="address link">
+    <Link href={'/account/' + address} aria-label="address link">
       {options?.short ? shortAddress(address, options.short) : address}
     </Link>
   )
@@ -1262,6 +1310,7 @@ export const showAmmPercents = (x) => {
 }
 
 export const showFlags = (flags) => {
+  if (!flags || Object.keys(flags).length === 0) return null
   const trueFlags = Object.entries(flags).filter(([, flagValue]) => flagValue === true)
   if (!trueFlags?.length) return null
   return (

@@ -19,7 +19,8 @@ import {
   isAddressValid,
   removeQueryParams,
   webSiteName,
-  xahauNetwork
+  xahauNetwork,
+  nativeCurrency
 } from '../utils'
 import { duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
@@ -388,7 +389,9 @@ export default function SignForm({
   const ledgerwalletTxSending = (tx) => {
     setScreen('ledgerwallet')
     setStatus(
-      'Please, connect your Ledger Wallet and open the XRP app. Note: Nano S does not support some transactions.'
+      'Please, connect your Ledger Wallet and open the ' +
+        nativeCurrency +
+        ' app. Note: Nano S does not support some transactions.'
     )
     ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
   }
@@ -904,13 +907,18 @@ export default function SignForm({
   const xls35Sell = signRequest?.request?.TransactionType === 'URITokenCreateSellOffer'
 
   const checkBoxText = (screen, signRequest) => {
-    if (screen === 'nftTransfer')
-      return (
-        <Trans i18nKey="signin.confirm.nft-transfer">
-          I'm offering that NFT for FREE to the Destination account,{' '}
-          <span className="orange bold">the destination account would need to accept the NFT transfer</span>.
-        </Trans>
-      )
+    if (screen === 'nftTransfer') {
+      if (signRequest.request?.TransactionType === 'Remit') {
+        return "I'm sending this NFT for FREE."
+      } else {
+        return (
+          <Trans i18nKey="signin.confirm.nft-transfer">
+            I'm offering that NFT for FREE to the Destination account,{' '}
+            <span className="orange bold">the destination account would need to accept the NFT transfer</span>.
+          </Trans>
+        )
+      }
+    }
 
     if (screen === 'NFTokenBurn') return t('signin.confirm.nft-burn')
     if (screen === 'NFTokenModify') return 'I understand that URI will be updated for this NFT.'

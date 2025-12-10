@@ -1,8 +1,62 @@
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
-import { shortHash } from './format'
+import { niceCurrency, shortHash } from './format'
 import CopyButton from '../components/UI/CopyButton'
 import { isValidTaxon } from './nft'
+import { shortName } from '.'
+
+export const LinkToken = ({ token, icon, copy, children }) => {
+  if (!token) return ''
+  const { currencyDetails, issuer, mptId, currency, metadata } = token
+
+  const tokenUrl = '/token/' + issuer + '/' + currency
+  const lpToken = currencyDetails?.type === 'lp_token'
+  const mptCurrency = metadata?.currency || metadata?.c || currency || 'N/A'
+
+  const textCurrency = mptId
+    ? mptCurrency
+    : lpToken && currencyDetails?.currency
+    ? currencyDetails.currency
+    : niceCurrency(currency)
+
+  const ammId = currencyDetails?.ammID
+
+  const linkAmm = lpToken && ammId
+
+  let currencyName = metadata?.name
+  if (currencyName) {
+    currencyName = currencyName !== textCurrency ? shortName(currencyName, { maxLength: 10 }) : null
+  }
+
+  return (
+    <>
+      {!linkAmm && !mptId ? (
+        <Link href={tokenUrl} className="bold" style={{ textDecoration: 'none' }}>
+          {children || icon ? <LinkIcon /> : textCurrency}
+        </Link>
+      ) : (
+        <>
+          {linkAmm ? (
+            <span className="bold">
+              <LinkAmm ammId={ammId} text={textCurrency} style={{ textDecoration: 'none' }} />
+            </span>
+          ) : (
+            <>
+              <span className="bold">{textCurrency}</span>
+              {mptId && <> {currencyName}</>}
+            </>
+          )}
+        </>
+      )}
+      {copy && (
+        <>
+          {' '}
+          <CopyButton text={token.currency} copyText="Copy code" />
+        </>
+      )}
+    </>
+  )
+}
 
 export const LinkTx = ({ tx, icon, short, children, copy }) =>
   tx ? (

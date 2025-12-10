@@ -222,8 +222,7 @@ export default function IssueCheck({
               hash: result.hash,
               invoiceID: result.InvoiceID,
               expiration: result.Expiration,
-              ledgerIndex: result.ledger_index,
-              balanceChanges: result.balanceChanges
+              ledgerIndex: result.ledger_index
             })
           } else {
             setError(errorCodeDescription(status))

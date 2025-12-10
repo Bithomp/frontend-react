@@ -179,7 +179,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
               {historicalTitle}
             </center>
             <br />
-            <table className="table-mobile wide">
+            <table className="table-mobile">
               <tbody>{escrowListNode(receivedEscrowList, { type: 'received', mobile: true })}</tbody>
             </table>
           </div>
@@ -205,7 +205,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
               {historicalTitle}
             </center>
             <br />
-            <table className="table-mobile wide">
+            <table className="table-mobile">
               <tbody>{escrowListNode(sentEscrowList, { type: 'sent', mobile: true })}</tbody>
             </table>
           </div>
@@ -231,7 +231,7 @@ export default function EscrowData({ setSignRequest, address, escrowList, ledger
               {historicalTitle}
             </center>
             <br />
-            <table className="table-mobile wide">
+            <table className="table-mobile">
               <tbody>{escrowListNode(selfEscrowList, { type: 'self', mobile: true })}</tbody>
             </table>
           </div>

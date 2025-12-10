@@ -3,14 +3,14 @@ import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import Link from 'next/link'
 
-import { server, explorerName, nativeCurrency, network } from '../utils'
-import { getIsSsrMobile } from '../utils/mobile'
+import { server, explorerName, nativeCurrency, network } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
 
-import SEO from '../components/SEO'
-import SearchBlock from '../components/Layout/SearchBlock'
-import Ads from '../components/Layout/Ads'
-import CopyButton from '../components/UI/CopyButton'
-import { shortHash } from '../utils/format'
+import SEO from '../../components/SEO'
+import SearchBlock from '../../components/Layout/SearchBlock'
+import Ads from '../../components/Layout/Ads'
+import CopyButton from '../../components/UI/CopyButton'
+import { shortHash } from '../../utils/format'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -187,36 +187,46 @@ export default function Explorer({ isSsrMobile, showAds }) {
           with such domains) <Link href="/domains">Verify your domain.</Link>
           <br />
           <br />
-          <b>X-Address</b> example: {shortingHash(examples[network]?.xAddress)}{' '}
-          <CopyButton text={examples[network]?.xAddress} />
-          <br />
-          <br />
-          <b>PayString</b> example: {examples[network]?.payString?.[0]}{' '}
-          <CopyButton text={examples[network]?.payString?.[0]} />, {examples[network]?.payString?.[1]}{' '}
-          <CopyButton text={examples[network]?.payString?.[1]} /> <Link href="/username">Get your PayString.</Link>
-          <br />
-          <br />
+          {examples[network]?.xAddress && (
+            <>
+              <b>X-Address</b> example: <span className="brake">{shortingHash(examples[network]?.xAddress)} </span>
+              <CopyButton text={examples[network]?.xAddress} />
+              <br />
+              <br />
+            </>
+          )}
+          {examples[network]?.payString?.[0] && (
+            <>
+              <b>PayString</b> example: {examples[network]?.payString?.[0]}{' '}
+              <CopyButton text={examples[network]?.payString?.[0]} />, {examples[network]?.payString?.[1]}{' '}
+              <CopyButton text={examples[network]?.payString?.[1]} /> <Link href="/username">Get your PayString.</Link>
+              <br />
+              <br />
+            </>
+          )}
           <h2>Transaction</h2>
           <b>CTID</b> (compact transaction ID) example: {examples[network]?.txCTID}{' '}
           <CopyButton text={examples[network]?.txCTID} />
           <br />
           <br />
-          <b>Transaction Hash</b> example: {shortingHash(examples[network]?.txHash)}{' '}
+          <b>Transaction Hash</b> example: <span className="brake">{shortingHash(examples[network]?.txHash)} </span>
           <CopyButton text={examples[network]?.txHash} />
           <br />
           <br />
           <h2>NFT, {examples[network]?.amm && 'AMM, '}Object</h2>
-          <b>NFT</b> example: {shortingHash(examples[network]?.nft)} <CopyButton text={examples[network]?.nft} />
+          <b>NFT</b> example: <span className="brake">{shortingHash(examples[network]?.nft)} </span>
+          <CopyButton text={examples[network]?.nft} />
           <br />
           <br />
           {examples[network]?.amm && (
             <>
-              <b>AMM</b> example: {shortingHash(examples[network]?.amm)} <CopyButton text={examples[network]?.amm} />
+              <b>AMM</b> example: <span className="brake">{shortingHash(examples[network]?.amm)} </span>
+              <CopyButton text={examples[network]?.amm} />
               <br />
               <br />
             </>
           )}
-          <b>Object</b> example: {shortingHash(examples[network]?.object)}{' '}
+          <b>Object</b> example: <span className="brake">{shortingHash(examples[network]?.object)} </span>
           <CopyButton text={examples[network]?.object} />
           <br />
           <br />

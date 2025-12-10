@@ -166,6 +166,9 @@ export default function MobileMenu({
           <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Account Settings
           </Link>
+          <Link className="mobile-menu-item" onClick={mobileMenuToggle} href="/services/account-delete">
+            Account Delete
+          </Link>
           <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.nft-mint')}
           </Link>

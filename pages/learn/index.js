@@ -28,7 +28,8 @@ const buildLearnContent = () => {
       items: [
         { title: 'Blackholed Address', slug: 'blackholed-address' },
         { title: 'Blacklisted Address', slug: 'blacklisted-address' },
-        { title: 'Verified Domain', slug: 'verified-domain' }
+        { title: 'Verified Domain', slug: 'verified-domain' },
+        { title: 'PayStrings', slug: 'paystrings' }
       ]
     },
     {
@@ -45,7 +46,9 @@ const buildLearnContent = () => {
           title: 'Guide for Token Issuers: Username, Toml file, Project Registration',
           slug: 'guide-for-token-issuers'
         },
-        { title: 'Bithomp Image Services', slug: 'image-services' }
+        { title: 'Bithomp Image Services', slug: 'image-services' },
+        { title: 'Understanding Trustlines', slug: 'trustlines' },
+        { title: 'NFT Explorer', slug: 'nft-explorer' }
       ]
     }
   ]

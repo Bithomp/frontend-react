@@ -1,4 +1,10 @@
-import { fullNiceNumber, showFlags, userOrServiceName, CurrencyWithIcon, amountFormat } from '../../../utils/format'
+import {
+  fullNiceNumber,
+  showFlags,
+  userOrServiceName,
+  CurrencyWithIconInline,
+  amountFormat
+} from '../../../utils/format'
 import CopyButton from '../../UI/CopyButton'
 import { TransactionRowCard } from './TransactionRowCard'
 import { useIsMobile } from '../../../utils/mobile'
@@ -34,7 +40,7 @@ export const TransactionRowTrustSet = ({ data, address, index, selectedCurrency 
         </>
       ) : (
         <span className="bold">
-          <CurrencyWithIcon token={{ currency: specification?.currency, issuer: specification?.counterparty }} />
+          <CurrencyWithIconInline token={{ currency: specification?.currency, issuer: specification?.counterparty }} />
         </span>
       )}
     </>
@@ -56,7 +62,8 @@ export const TransactionRowTrustSet = ({ data, address, index, selectedCurrency 
       {serviceOruser ? 'Address' : 'Counterparty'}: <span className="bold">{specification.counterparty}</span>{' '}
       <CopyButton text={specification.counterparty} />
       <br />
-      Currency code: <span className="bold">{specification.currency}</span> <CopyButton text={specification.currency} />
+      Currency code: <span className="bold brake">{specification.currency}</span>{' '}
+      <CopyButton text={specification.currency} />
       <br />
       Limit: <span className="bold">{fullNiceNumber(specification.limit)}</span>
       <br />

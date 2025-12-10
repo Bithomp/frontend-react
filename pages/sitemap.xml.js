@@ -17,6 +17,7 @@ const pages = [
   { loc: 'services/check', changefreq: 'monthly', priority: '0.8' },
   { loc: 'services/escrow', changefreq: 'monthly', priority: '0.9' },
   { loc: 'services/account-settings', changefreq: 'monthly', priority: '0.9' },
+  { loc: 'services/account-delete', changefreq: 'monthly', priority: '0.5' },
 
   { loc: 'whales/receivers', changefreq: 'always', priority: '0.9' },
   { loc: 'whales/senders', changefreq: 'always', priority: '0.9' },
@@ -100,7 +101,10 @@ if (network === 'mainnet') {
     { loc: 'learn/issue-a-token', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/guide-for-token-issuers', changefreq: 'monthly', priority: '0.9' },
     { loc: 'learn/create-escrow', changefreq: 'monthly', priority: '0.5' },
-    { loc: 'learn/image-services', changefreq: 'monthly', priority: '0.6' }
+    { loc: 'learn/image-services', changefreq: 'monthly', priority: '0.6' },
+    { loc: 'learn/trustlines', changefreq: 'monthly', priority: '0.6' },
+    { loc: 'learn/nft-explorer', changefreq: 'monthly', priority: '0.7' },
+    { loc: 'learn/paystrings', changefreq: 'monthly', priority: '0.5' }
   )
 }
 
@@ -129,6 +133,7 @@ function generateSiteMap(posts) {
     'services/check',
     'services/escrow',
     'services/account-settings',
+    'services/account-delete',
     'services/amm/deposit',
     'services/amm/create',
     'services/amm/withdraw',
@@ -144,7 +149,10 @@ function generateSiteMap(posts) {
     'learn/issue-a-token',
     'learn/guide-for-token-issuers',
     'learn/create-escrow',
-    'learn/image-services'
+    'learn/image-services',
+    'learn/trustlines',
+    'learn/nft-explorer',
+    'learn/paystrings'
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]

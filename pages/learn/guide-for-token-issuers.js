@@ -1,7 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { network, server } from '../../utils'
+import { network, server, siteName } from '../../utils'
 import { explorerName, xahauNetwork } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -51,9 +51,8 @@ export default function GuideForTokenIssuers() {
           </div>
           <p>
             So, you’ve successfully created your token on the {explorerName}. What’s next? If you want your token to
-            look professional, gain more trust from users, and be discoverable on{' '}
-            {xahauNetwork ? 'Xahau Explorer' : 'Bithomp'} or other platforms which are using our API, there are{' '}
-            <strong>several important steps </strong>the issuer should take:
+            look professional, gain more trust from users, and be discoverable on {siteName} or other platforms which
+            are using our API, there are <strong>several important steps </strong>the issuer should take:
           </p>
           <p>A public username makes it easier for users to recognize your project.</p>
           <p>

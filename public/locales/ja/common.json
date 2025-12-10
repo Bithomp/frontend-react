@@ -310,7 +310,7 @@
     "error": "エラー",
     "no-data": "データがありません",
     "loading": "読み込み中...",
-    "login-to-bithomp-pro": "Bithomp Proの<1>サブスクリプション加入者</1>は、さらに多くのデータを読み込むことができます。",
+    "login-to-bithomp-pro": "Bithomp Proの<2>サブスクリプション加入者</2>は、さらに多くのデータを読み込むことができます。",
     "renew-bithomp-pro": "Bithomp Proのサブスクリプション期間が終了しました。<1>サブスクリプションを更新してください。</1>.",
     "load-failed": "読み込みに失敗しました",
     "all-issuers": "全ての発行者",
@@ -348,6 +348,7 @@
   "error": {
     "payment-partly": "<b>{{currency}} {{required}}</b>が必要ですが、{{received}} {{currency}}しか受け取っていません。残りの金額を送金してください。",
     "Network Error": "インターネットに接続していないようです ;(",
+    "Request failed with status code 522": "サーバーに現在アクセスできません。後ほど再試行してください。",
     "Request failed with status code 429": "リクエストの送信数が多すぎます、後ほどお試しください！",
     "Request failed with status code 404": "そのようなAPIコールはそのネットワークでは許可されていません",
     "Request failed with status code 403": "ログアウトしています。再度ログインしてください。",

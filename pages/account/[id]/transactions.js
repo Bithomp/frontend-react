@@ -8,7 +8,7 @@ import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
-import { axiosServer, passHeaders } from '../../../utils/axios'
+import { axiosServer, currencyServer, passHeaders } from '../../../utils/axios'
 import { addAndRemoveQueryParams, avatarSrc, errorT, isAddressOrUsername, isAddressValid } from '../../../utils'
 
 import SEO from '../../../components/SEO'
@@ -37,17 +37,30 @@ import {
   TransactionRowEnableAmendment,
   TransactionRowDelegateSet
 } from '../../../components/Account/Transactions'
-import { addressBalanceChanges } from '../../../utils/transaction'
+import CheckBox from '../../../components/UI/CheckBox'
 
-const shouldShowTxForAddress = (tx, address) => {
-  const inner = tx?.tx
-  const myBalance = addressBalanceChanges(tx, address)
-  return inner?.Account === address || inner?.Destination === address || (myBalance && myBalance.length > 0)
-}
-
-const apiUrl = ({ address, marker, order, type, initiated, excludeFailures, counterparty, fromDate, toDate }) => {
+const apiUrl = ({
+  address,
+  marker,
+  order,
+  type,
+  initiated,
+  excludeFailures,
+  counterparty,
+  fromDate,
+  toDate,
+  filterSpam,
+  convertCurrency
+}) => {
   const limit = 20
-  let url = `v3/transactions/${address}?limit=${limit}`
+  let url = `v3/transactions/${address}?limit=${limit}&relevantOnly=true&convertCurrencies=${convertCurrency}`
+
+  if (filterSpam === 'false' || filterSpam === false) {
+    url += `&filterSpam=false`
+  } else {
+    url += `&filterSpam=true`
+  }
+
   // pagination marker
   if (marker) {
     const markerString = typeof marker === 'object' ? JSON.stringify(marker) : marker
@@ -79,9 +92,11 @@ const apiUrl = ({ address, marker, order, type, initiated, excludeFailures, coun
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order } = query
+  const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order, filterSpam } = query
   let initialErrorMessage = ''
   let initialData = null
+  let initialNoRelevantTransactions = false
+  const selectedCurrencyServer = currencyServer(req) || 'usd'
 
   if (isAddressOrUsername(id)) {
     let url = apiUrl({
@@ -92,7 +107,9 @@ export async function getServerSideProps(context) {
       excludeFailures,
       counterparty,
       fromDate,
-      toDate
+      toDate,
+      filterSpam,
+      convertCurrency: selectedCurrencyServer
     })
 
     try {
@@ -102,12 +119,12 @@ export async function getServerSideProps(context) {
         headers: passHeaders(req)
       })
       initialData = res?.data
-      if (
-        !initialData?.marker &&
-        isAddressValid(id) &&
-        initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, id)).length === 0
-      ) {
-        initialErrorMessage = 'No transactions found for the specified filters.'
+      if (isAddressValid(id) && initialData?.transactions?.length === 0) {
+        if (!initialData?.marker) {
+          initialErrorMessage = 'No transactions found for the specified filters.'
+        } else {
+          initialNoRelevantTransactions = true
+        }
       }
     } catch (e) {
       initialErrorMessage = e?.message || 'Failed to load transactions'
@@ -121,6 +138,7 @@ export async function getServerSideProps(context) {
       id: id || null,
       initialData: initialData || null,
       initialErrorMessage,
+      initialNoRelevantTransactions,
       isSsrMobile: getIsSsrMobile(context),
       fromDateQuery: fromDate || '',
       toDateQuery: toDate || '',
@@ -129,6 +147,8 @@ export async function getServerSideProps(context) {
       excludeFailuresQuery: excludeFailures || null,
       counterpartyQuery: counterparty || '',
       orderQuery: order || 'newest',
+      filterSpamQuery: filterSpam || 'true',
+      selectedCurrencyServer,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -138,28 +158,32 @@ export default function AccountTransactions({
   id,
   initialData,
   initialErrorMessage,
-  selectedCurrency,
+  initialNoRelevantTransactions,
+  selectedCurrency: selectedCurrencyApp,
+  selectedCurrencyServer,
   fromDateQuery,
   toDateQuery,
   typeQuery,
   initiatedQuery,
   excludeFailuresQuery,
   counterpartyQuery,
-  orderQuery
+  orderQuery,
+  filterSpamQuery
 }) {
   const { t } = useTranslation()
   const router = useRouter()
   const firstRenderRef = useRef(true)
 
+  const selectedCurrency = selectedCurrencyApp || selectedCurrencyServer
+
   const address = initialData?.address
 
   // State management
-  const [transactions, setTransactions] = useState(
-    initialData?.transactions.filter((tx) => shouldShowTxForAddress(tx, address)) || []
-  )
+  const [transactions, setTransactions] = useState(initialData?.transactions || [])
   const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
+  const [noRelevantTransactions, setNoRelevantTransactions] = useState(initialNoRelevantTransactions)
   const [order, setOrder] = useState(orderQuery) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
   const [type, setType] = useState(typeQuery)
@@ -168,6 +192,7 @@ export default function AccountTransactions({
   const [counterparty, setCounterparty] = useState(counterpartyQuery)
   const [fromDate, setFromDate] = useState(fromDateQuery ? new Date(fromDateQuery) : '')
   const [toDate, setToDate] = useState(toDateQuery ? new Date(toDateQuery) : '')
+  const [filterSpam, setFilterSpam] = useState(filterSpamQuery) // true = exclude spam, false = include spam
 
   // Refresh transactions when order changes
   useEffect(() => {
@@ -179,6 +204,7 @@ export default function AccountTransactions({
     setLoading(true)
     setTransactions([])
     setMarker(null)
+    setNoRelevantTransactions(false)
     fetchTransactions({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, id])
@@ -193,11 +219,12 @@ export default function AccountTransactions({
         excludeFailures,
         counterparty,
         fromDate: fromDate ? fromDate.toISOString() : '',
-        toDate: toDate ? toDate.toISOString() : ''
+        toDate: toDate ? toDate.toISOString() : '',
+        filterSpam: filterSpam ? '' : 'false'
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, type, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady])
+  }, [order, type, initiated, excludeFailures, counterparty, fromDate, toDate, router.isReady, filterSpam])
 
   const orderList = [
     { value: 'newest', label: 'Newest first' },
@@ -249,7 +276,9 @@ export default function AccountTransactions({
           excludeFailures,
           counterparty,
           fromDate,
-          toDate
+          toDate,
+          filterSpam,
+          convertCurrency: selectedCurrency
         })
       )
       if (response?.data?.status === 'error') {
@@ -257,17 +286,23 @@ export default function AccountTransactions({
         setLoading(false)
         return
       }
-      const newData = response?.data?.transactions?.filter((tx) => shouldShowTxForAddress(tx, address)) || []
+      const newData = response?.data?.transactions || []
       const newMarker = response?.data?.marker || null
 
+      if (newData?.length === 0 && newMarker) {
+        setNoRelevantTransactions(true)
+      }
+
       if (markerToUse && transactions.length > 0) {
-        // pagination – append
-        const combined = [...transactions, ...newData]
-        setTransactions(combined)
+        // adding data to existing list
+        if (newData.length > 0) {
+          const combined = [...transactions, ...newData]
+          setTransactions(combined)
+        }
       } else {
         if (newData.length === 0 && !newMarker) {
           setErrorMessage('Account has no transactions with the specified filters.')
-          setMarker(newMarker)
+          setMarker(null)
           setLoading(false)
           return
         } else {
@@ -348,7 +383,6 @@ export default function AccountTransactions({
         searchPlaceholderText={t('explorer.enter-address')}
         userData={initialData?.addressDetails}
       />
-
       <FiltersFrame
         order={order}
         setOrder={setOrder}
@@ -429,8 +463,12 @@ export default function AccountTransactions({
                 )}
               </div>
             </div>
+            <CheckBox checked={filterSpam === 'true' || filterSpam === true} setChecked={setFilterSpam}>
+              Exclude spam transactions
+            </CheckBox>
+            <br />
             <div className="center">
-              <button className="button-action" onClick={applyFilters} style={{ marginTop: '10px' }}>
+              <button className="button-action" onClick={applyFilters}>
                 Search
               </button>
             </div>
@@ -441,18 +479,38 @@ export default function AccountTransactions({
           <InfiniteScrolling
             dataLength={transactions.length}
             loadMore={() => {
-              if (marker && marker !== 'first') {
+              if (marker && marker !== 'first' && !noRelevantTransactions) {
                 fetchTransactions({ marker })
               }
             }}
-            hasMore={marker}
-            errorMessage={errorT(t, errorMessage)}
+            hasMore={marker && !noRelevantTransactions}
+            errorMessage={
+              noRelevantTransactions ? (
+                <>
+                  It takes too long to find relevant transactions. Searched up to ledger{' '}
+                  <span className="bold">{marker?.ledger}</span>.
+                  <br />
+                  <br />
+                  <button
+                    className="button-action"
+                    onClick={() => {
+                      setLoading(true)
+                      fetchTransactions({ marker })
+                    }}
+                  >
+                    Continue searching
+                  </button>
+                </>
+              ) : (
+                errorT(t, errorMessage)
+              )
+            }
             subscriptionExpired={false}
             sessionToken={true}
           >
-            <table className={isMobile ? 'table-mobile wide' : 'table-large expand no-hover'}>
+            <table className={isMobile ? 'table-mobile' : 'table-large expand no-hover'}>
               <tbody>
-                {loading ? (
+                {loading && (!marker || marker === 'first') ? (
                   <tr className="center">
                     <td colSpan="100">
                       <br />

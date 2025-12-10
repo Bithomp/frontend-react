@@ -1,9 +1,12 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { addressBalanceChanges } from '../../../utils/transaction'
 import { amountFormat, nativeCurrencyToFiat, showFlags } from '../../../utils/format'
+import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
+import { RipplingChanges } from './Elements/RipplingChanges'
 
 export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) => {
-  const { specification, outcome, tx } = data
+  const { specification, outcome, tx, fiatRates } = data
+  const fiatRate = fiatRates?.[selectedCurrency]
 
   const myOrderbookChange = outcome?.orderbookChanges
     ?.filter((entry) => entry.address === address)?.[0]
@@ -17,9 +20,13 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
 
   const myOrder = tx?.Account === address
 
+  const rippling = isRipplingOnIssuer(myBalanceChangesList, address)
+
   let orderStatus = ''
 
-  if (myBalanceChangesList?.length === 0 && myOrder) {
+  if (tx?.TransactionType === 'OfferCancel') {
+    orderStatus = 'canceled'
+  } else if (myBalanceChangesList?.length === 0 && myOrder) {
     orderStatus = 'placed'
   } else {
     if (!myOrder) {
@@ -33,7 +40,8 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
     }
   }
 
-  const txTypeSpecial = direction + ' order ' + orderStatus
+  const ripplingTitle = rippling ? 'Rippling through ' : ''
+  const txTypeSpecial = <span className="bold">{ripplingTitle + direction + ' order ' + orderStatus}</span>
 
   const takerGets = specification.takerGets || myOrderbookChange?.takerGets
   const takerPays = specification.takerPays || myOrderbookChange?.takerPays
@@ -46,7 +54,9 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
     >
-      {(fiatRate) => (
+      {rippling ? (
+        <RipplingChanges balanceChanges={myBalanceChangesList} />
+      ) : (
         <>
           {myOrder && (
             <>
@@ -73,19 +83,22 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
                 <span>Exchanged: </span>
                 <br />
                 <span>
-                  {myBalanceChangesList.map((change, index) => (
-                    <div key={index}>
-                      {amountFormat(change, {
-                        icon: true,
-                        showPlus: true,
-                        withIssuer: true,
-                        bold: true,
-                        color: 'direction',
-                        precise: 'nice'
-                      })}
-                      {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate })}
-                    </div>
-                  ))}
+                  {myBalanceChangesList.map((change, index) => {
+                    return (
+                      <div key={index}>
+                        {amountFormat(change, {
+                          icon: true,
+                          showPlus: true,
+                          withIssuer: true,
+                          bold: true,
+                          color: 'direction',
+                          precise: 'nice',
+                          issuerShort: false
+                        })}
+                        {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate })}
+                      </div>
+                    )
+                  })}
                 </span>
               </div>
               <div>

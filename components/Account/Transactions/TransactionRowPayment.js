@@ -1,11 +1,18 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { AddressWithIconInline, amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
 import { addressBalanceChanges, isConvertionTx } from '../../../utils/transaction'
-import { isIOUpayment, optionalAbsPaymentAmount, paymentTypeName } from '../../../utils/transaction/payment'
+import {
+  isIOUpayment,
+  isRipplingOnIssuer,
+  optionalAbsPaymentAmount,
+  paymentTypeName
+} from '../../../utils/transaction/payment'
 import { useIsMobile } from '../../../utils/mobile'
+import { RipplingChanges } from './Elements/RipplingChanges'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
-  const { outcome, specification, tx } = data
+  const { outcome, specification, tx, fiatRates } = data
+  const fiatRate = fiatRates?.[selectedCurrency]
 
   let txTypeSpecial = paymentTypeName(data)
   const isConvertion = isConvertionTx(specification)
@@ -14,23 +21,31 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
 
   const isMobile = useIsMobile(600)
 
-  if (!isConvertion) {
-    txTypeSpecial = (
-      <>
-        <span className="bold">{txTypeSpecial} </span>
-        {tx?.Destination === address ? 'from' : tx?.Account === address ? 'to' : 'by'}
-        {isMobile ? ' ' : <br />}
-        <AddressWithIconInline
-          data={
-            tx?.Account === address && specification?.destination ? specification?.destination : specification?.source
-          }
-          options={{ short: 5 }}
-        />
-      </>
-    )
+  const rippling = isRipplingOnIssuer(sourceBalanceChangesList, address)
+
+  if (rippling) {
+    txTypeSpecial = <span className="bold">Rippling through payment</span>
   } else {
-    txTypeSpecial = <span className="bold">{txTypeSpecial}</span>
+    if (!isConvertion) {
+      txTypeSpecial = (
+        <>
+          <span className="bold">{txTypeSpecial} </span>
+          {tx?.Destination === address ? 'from' : tx?.Account === address ? 'to' : 'by'}
+          {isMobile ? ' ' : <br />}
+          <AddressWithIconInline
+            data={
+              tx?.Account === address && specification?.destination ? specification?.destination : specification?.source
+            }
+            options={{ short: 5 }}
+          />
+        </>
+      )
+    } else {
+      txTypeSpecial = <span className="bold">{txTypeSpecial}</span>
+    }
   }
+
+  const balancesTitle = isConvertion ? 'Exchanged' : 'Sender spent'
 
   return (
     <TransactionRowCard
@@ -40,7 +55,9 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
     >
-      {(fiatRate) => (
+      {rippling ? (
+        <RipplingChanges balanceChanges={sourceBalanceChangesList} />
+      ) : (
         <>
           {!isConvertion && outcome?.deliveredAmount && (
             <div>
@@ -49,7 +66,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                 icon: true,
                 withIssuer: true,
                 bold: true,
-                precise: true,
+                precise: 'nice',
                 issuerShort: false
               })}
               {nativeCurrencyToFiat({
@@ -62,24 +79,26 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
           {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
             <>
               <div>
-                {isConvertion ? 'Exchanged' : 'Sender spent'}: {sourceBalanceChangesList.length > 1 && <br />}
-                {sourceBalanceChangesList.map((change, index) => (
-                  <div key={index}>
-                    {amountFormat(optionalAbsPaymentAmount(change, isConvertion), {
-                      icon: true,
-                      withIssuer: true,
-                      bold: true,
-                      color: 'direction',
-                      precise: true,
-                      issuerShort: false
-                    })}
-                    {nativeCurrencyToFiat({
-                      amount: optionalAbsPaymentAmount(change, isConvertion),
-                      selectedCurrency,
-                      fiatRate
-                    })}
-                  </div>
-                ))}
+                {balancesTitle}: {sourceBalanceChangesList.length > 1 && <br />}
+                {sourceBalanceChangesList.map((change, index) => {
+                  return (
+                    <div key={index}>
+                      {amountFormat(optionalAbsPaymentAmount(change, isConvertion), {
+                        icon: true,
+                        withIssuer: true,
+                        bold: true,
+                        color: 'direction',
+                        precise: 'nice',
+                        issuerShort: false
+                      })}
+                      {nativeCurrencyToFiat({
+                        amount: optionalAbsPaymentAmount(change, isConvertion),
+                        selectedCurrency,
+                        fiatRate
+                      })}
+                    </div>
+                  )
+                })}
               </div>
               {sourceBalanceChangesList.length === 2 && (
                 <div>

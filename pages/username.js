@@ -427,7 +427,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     const response = await axios(
       'v1/bithompid/' + username + '/status?address=' + address + '&dt=' + destinationTag
     ).catch((error) => {
-      setErrorMessage(t('error.' + error.message))
+      setErrorMessage(t(`error.${error.message}`, { defaultValue: error.message }))
     })
     const data = response.data
     if (data) {

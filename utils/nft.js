@@ -38,8 +38,8 @@ export const mpUrl = (offer) => {
     url = 'https://nftmarketplace.opulencex.io/nft/'
   } else if (service === 'Art Dept') {
     url = 'https://artdept.fun/nft/'
-  } else if (service === 'DeXfi') {
-    url = 'https://dexfi.pro' // so far there no nft specific url :(
+  } else if (service === 'OPMarket.ai') {
+    url = 'https://opmarket.ai/nft/'
   }
   if (url) {
     return url + offer.nftokenID

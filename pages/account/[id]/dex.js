@@ -307,7 +307,7 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
               </table>
             ) : (
               /* Mobile view */
-              <table className="table-mobile wide">
+              <table className="table-mobile">
                 <tbody>
                   <tr>
                     <th className="center">#</th>

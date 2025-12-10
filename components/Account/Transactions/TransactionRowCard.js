@@ -7,8 +7,6 @@ import {
   timeFormat,
   timeFromNow
 } from '../../../utils/format'
-import { useEffect, useState } from 'react'
-import { fetchHistoricalRate } from '../../../utils/common'
 import { LinkTx } from '../../../utils/links'
 import {
   errorCodeDescription,
@@ -22,25 +20,46 @@ import { isTagValid, useWidth } from '../../../utils'
 import { i18n } from 'next-i18next'
 import CopyButton from '../../UI/CopyButton'
 import { useIsMobile } from '../../../utils/mobile'
+import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
+import Link from 'next/link'
+
+/*
+  {
+    "result": "tesSUCCESS",
+    "timestamp": "2025-11-21T17:20:10.000Z",
+    "fee": "0.000011",
+    "ledgerIndex": 100363821,
+    "indexInLedger": 51,
+    "deliveredAmount": {
+      "currency": "XRP",
+      "value": "0.000001",
+      "valueInConvertCurrencies": {
+        "eur": "0.00000169979"
+      }
+    },
+    "ledgerTimestamp": 1763745610,
+    "feeInFiats": {
+      "eur": "0.00001869769"
+    },
+    "balanceChanges": [
+      {
+        "currency": "XRP",
+        "value": "0.000001",
+        "valueInConvertCurrencies": {
+          "eur": "0.00000169979"
+        }
+      }
+    ]
+  }
+*/
 
 export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
-  const { specification, tx, outcome } = data
+  const { specification, tx, outcome, fiatRates } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
   const isConvertion = isConvertionTx(specification)
   const sourceBalanceChangesList = addressBalanceChanges(data, address)
-
-  const [pageFiatRate, setPageFiatRate] = useState(0)
-
-  useEffect(() => {
-    if (!selectedCurrency || !outcome?.ledgerTimestamp) return
-    fetchHistoricalRate({
-      timestamp: outcome.ledgerTimestamp * 1000,
-      selectedCurrency,
-      setPageFiatRate
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, outcome?.ledgerTimestamp])
+  const pageFiatRate = fiatRates?.[selectedCurrency]
 
   //don't show sourcetag if it's the tag of a known dapp
   const dapp = dappBySourceTag(tx.SourceTag)
@@ -52,6 +71,8 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
   const isMobile = useIsMobile(600)
 
   const typeNode = txTypeSpecial || <span className="bold">{tx?.TransactionType}</span>
+
+  const rippling = isRipplingOnIssuer(sourceBalanceChangesList, address)
 
   return (
     <tr
@@ -70,17 +91,18 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
           {typeNode}
           <br />
           <br />
-          {sourceBalanceChangesList?.map((change, index) => (
-            <div key={index}>
-              {amountFormat(change, {
-                icon: true,
-                bold: true,
-                color: 'direction',
-                showPlus: true,
-                short: true
-              })}
-            </div>
-          ))}
+          {!rippling &&
+            sourceBalanceChangesList?.map((change, index) => (
+              <div key={index}>
+                {amountFormat(change, {
+                  icon: true,
+                  bold: true,
+                  color: 'direction',
+                  showPlus: true,
+                  short: true
+                })}
+              </div>
+            ))}
         </td>
       )}
       <td>
@@ -102,36 +124,41 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
             <br />
           </>
         )}
-        {!isConvertion && specification?.destination?.address && (
+        {!rippling && !isConvertion && specification?.destination?.address && (
           <>
             {specification?.source?.address === address ? (
               <>
-                To: <span className="bold">{specification?.destination?.address}</span>{' '}
+                To:{' '}
+                <Link className="bold" href={'/account/' + specification?.destination?.address}>
+                  {specification?.destination?.address}
+                </Link>{' '}
                 <CopyButton text={specification?.destination?.address} />{' '}
               </>
             ) : (
               <>
                 {specification?.destination?.address === address ? 'From' : 'Submitter'}:{' '}
-                <span className="bold">{specification?.source?.address}</span>{' '}
+                <Link className="bold" href={'/account/' + specification?.source?.address}>
+                  {specification?.source?.address}
+                </Link>{' '}
                 <CopyButton text={specification?.source?.address} />
               </>
             )}
             <br />
           </>
         )}
-        {isTagValid(tx.DestinationTag) && (
+        {!rippling && isTagValid(tx.DestinationTag) && (
           <>
             Destination tag: <span className="bold">{tx.DestinationTag}</span>
             <br />
           </>
         )}
-        {isTagValid(tx.SourceTag) && !dapp && (
+        {!rippling && isTagValid(tx.SourceTag) && !dapp && (
           <>
             Source tag: <span className="bold">{tx.SourceTag}</span>
             <br />
           </>
         )}
-        {typeof children === 'function' ? children(pageFiatRate) : children}
+        {children}
         {addressIsSource && (
           <>
             {sequence ? (
@@ -143,7 +170,11 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
               ''
             )}
             Fee: {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
-            {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
+            {nativeCurrencyToFiat({
+              amount: tx.Fee,
+              selectedCurrency,
+              fiatRate: pageFiatRate
+            })}
             <br />
           </>
         )}

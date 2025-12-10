@@ -15,7 +15,8 @@ import {
   trAmountWithGateway,
   showAmmPercents,
   timeFromNow,
-  AddressWithIconFilled
+  AddressWithIconFilled,
+  CurrencyWithIcon
 } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import DatePicker from 'react-datepicker'
@@ -258,12 +259,11 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                         <tr>
                           <td>LP Token</td>
                           <td>
-                            <AddressWithIconFilled
-                              data={data}
-                              name="account"
-                              currency={data.lpTokenBalance.currency}
-                              options={{
-                                short: isSsrMobile,
+                            <CurrencyWithIcon
+                              token={{
+                                issuer: data.account,
+                                issuerDetails: data.accountDetails,
+                                currency: data.lpTokenBalance.currency,
                                 currencyDetails: {
                                   type: 'lp_token',
                                   asset: data.amount,
@@ -271,7 +271,19 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                                   currency: lpToken
                                 }
                               }}
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>AMM address</td>
+                          <td>
+                            <AddressWithIconFilled
+                              data={data}
+                              name="account"
                               copyButton={true}
+                              options={{
+                                short: isSsrMobile
+                              }}
                             />
                           </td>
                         </tr>
