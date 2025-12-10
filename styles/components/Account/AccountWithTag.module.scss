@@ -1,0 +1,167 @@
+.accountWithTag :global {
+  .account-tag-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0px 20px 40px;
+    text-align: center;
+    box-shadow: 0px 0px 0px 5px rgba(0, 0, 0, 0.15);
+    
+    .dark & {
+      box-shadow: 0px 0px 0px 5px rgba(255, 255, 255, 0.1);
+    }
+  }
+  
+  .account-tag-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-main);
+    margin: 0px 0px 10px;
+    padding: 10px 0px;
+    border-bottom: 1.5px solid var(--text-secondary);
+    
+    .dark & {
+      border-bottom-color: var(--text-secondary);
+    }
+  }
+  
+  .account-tag-xaddress {
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--text-main);
+    word-break: break-all;
+    padding: 0 10px;
+  }
+  
+  .account-tag-service-description {
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: var(--text-main);
+  }
+  
+  .account-tag-service-link {
+    color: var(--green);
+    text-decoration: none;
+    font-weight: bold;
+    
+    .dark & {
+      color: var(--green);
+    }
+  }
+  
+  .account-tag-service-link:hover {
+    text-decoration: underline;
+  }
+  
+  .account-tag-logo-container {
+    margin-bottom: 20px;
+  }
+  
+  .account-tag-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+  }
+  
+  .account-tag-details {
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    font-size: 14px;
+    margin-top: 12px;
+  }
+  
+  .account-tag-detail-label {
+    width: 25%;
+    text-align: right;
+  }
+  
+  .account-tag-detail-label span {
+    color: var(--text-main);
+  }
+  
+  .account-tag-detail-value {
+    width: 70%;
+    color: var(--text-main);
+    word-break: break-all;
+  }
+  
+  .account-tag-address-link {
+    font-weight: bold;
+    font-size: 16px;
+    color: var(--text-main);
+    text-decoration: underline;
+    word-break: break-all;
+    
+    &:hover {
+      color: var(--accent-link);
+    }
+    
+    .dark & {
+      color: var(--text-main);
+      
+      &:hover {
+        color: var(--accent-link);
+      }
+    }
+  }
+  
+  .account-tag-destination-tag {
+    font-weight: bold;
+    color: var(--text-main);
+  }
+  
+  .account-tag-header {
+    margin-bottom: 30px;
+  }
+  
+  .account-tag-page-title {
+    color: var(--text-main);
+    margin-bottom: 10px;
+  }
+  
+  /* Mobile Responsive */
+  @media (max-width: 767px) {
+    .account-tag-container {
+      padding: 20px 15px;
+    }
+    
+    .account-tag-title {
+      font-size: 16px;
+    }
+    
+    .account-tag-xaddress {
+      font-size: 12px;
+      padding: 0 5px;
+    }
+    
+    .account-tag-service-description {
+      font-size: 13px;
+    }
+    
+    .account-tag-details {
+      flex-direction: column;
+      font-size: 13px;
+      gap: 5px;
+    }
+    
+    .account-tag-detail-label {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 5px;
+      
+      span {
+        font-weight: 600;
+      }
+    }
+    
+    .account-tag-detail-value {
+      width: 100%;
+      text-align: left;
+      font-size: 12px;
+    }
+    
+    .account-tag-address-link {
+      font-size: 12px;
+    }
+  }  
+}

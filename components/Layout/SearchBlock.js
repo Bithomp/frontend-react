@@ -116,9 +116,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       typingTimer = setTimeout(async () => {
         if (value && value.length > 2) {
           setSearchingSuggestions(true)
-          const suggestionsResponse = await axios('v2/address/search/' + value).catch((error) => {
+          const suggestionsResponse = await axios('v2/address/search/' + value).catch(() => {
             setSearchingSuggestions(false)
-            console.log(error.message)
           })
           if (suggestionsResponse) {
             const suggestions = suggestionsResponse.data
@@ -256,19 +255,15 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    if (isValidPayString(searchFor) || isValidXAddress(searchFor)) {
-      // the check for paystring/xAddress should be before the check for addressOrUsername,
-      // as if there is no destination tag, we will treat it as an address or username
-
-      // we need to resolve paystring and x-address first before redirecting!
-      // if there is a tag -
-      // get the new page which we can show an address and a tag
-      router.push('/account/' + encodeURI(searchFor) + addParams) //replace with a new page to show a tag
+    if (isLedgerIndexValid(searchFor)) {
+      router.push('/ledger/' + searchFor)
       return
     }
 
-    if (isLedgerIndexValid(searchFor)) {
-      router.push('/ledger/' + searchFor)
+    if (isValidPayString(searchFor) || isValidXAddress(searchFor)) {
+      // the check for paystring/xAddress should be before the check for addressOrUsername
+      // as if there is no destination tag, we will treat it as an address or username
+      router.push('/account/' + encodeURI(searchFor) + addParams)
       return
     }
 
@@ -309,25 +304,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
     return
   }
-
-  /*
-  PayID
-  searchItem.indexOf("$") > -1
-   
-  username
-  <18 
-   
-  CurrencyCode, XLS14
-  searchItem.length == 40
-   
-  TX, NFT, NFT Offer
-  searchItem.length == 64
-   
-  X-address
-  searchItem.length > 36
-  searchItem.charAt(0) == "T"
-  searchItem.charAt(0) == "X"
-  */
 
   const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account', 'transactions', 'dex'].includes(tab)
 
