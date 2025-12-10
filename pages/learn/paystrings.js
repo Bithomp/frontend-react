@@ -70,7 +70,7 @@ export default function Paystrings() {
               <Link href="/username">Here, you can easily register your PayString (Bithomp username)</Link>
             </p>
           </div>
-          <p></p>Once registered, your PayString is linked to your {explorerName} address, allowing you to:
+          Once registered, your PayString is linked to your {explorerName} address, allowing you to:
           <ul>
             <li>Receive {nativeCurrency} with a name instead of a long wallet address</li>
             <li>Make deposits and withdrawals on exchanges that support PayString</li>
