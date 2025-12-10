@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import SEO from '../SEO'
 import SearchBlock from '../Layout/SearchBlock'
-import { isValidXAddress, xAddressToClassicAddress } from 'ripple-address-codec'
-import { isValidPayString } from '../../utils'
 import { useRouter } from 'next/router'
 import {
   FaFacebook,
@@ -16,9 +14,9 @@ import {
   FaYoutube,
   FaXTwitter
 } from 'react-icons/fa6'
-import {xAddressDetails} from '../../styles/components/Account/xaddress-details.module.scss'
+import { accountWithTag } from '../../styles/components/Account/AccountWithTag.module.scss'
 
-export default function XAddressDetails({ xAddressInput }) {
+export default function AccountWithTag({ data }) {
   const { t } = useTranslation()
   const router = useRouter()
   const [accountData, setAccountData] = useState(null)
@@ -29,60 +27,26 @@ export default function XAddressDetails({ xAddressInput }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!xAddressInput) return
-
+      if (!data) return
+      const address = data.address
+      setTag(data.tag)
+      setAddress(data.address)
       setLoading(true)
       setErrorMessage(null)
-
       try {
-        const isPayString = isValidPayString(xAddressInput)
-        const isXAddress = isValidXAddress(xAddressInput)
-        let address = null
-
-        // Extract address and destination tag from xAddress
-        if (isXAddress) {
-          try {
-            const decoded = xAddressToClassicAddress(xAddressInput)
-            address = decoded.classicAddress
-            setTag(decoded.tag)
-          } catch (error) {
-            setErrorMessage('Invalid xAddress format')
-            setLoading(false)
-            return
-          }
-        } else if (isPayString) {
-          const suggestionsResponse = await axios('v2/address/search/' + xAddressInput).catch(() => {
-            setErrorMessage('Invalid payString format')
-            setLoading(false)
-            return
-          })
-          if (suggestionsResponse) {
-            address = suggestionsResponse.data.addresses[0].address
-            setTag(suggestionsResponse.data.addresses[0].tag)
-          }
-        } else {
-          setErrorMessage('Invalid input format')
-          setLoading(false)
-          return
-        }
-
         // Fetch account data from backend
         const response = await axios(
           '/v2/address/' + address + '?username=true&service=true&verifiedDomain=true&bithomp=true'
         )
-
-        const data = response?.data
-
-        if (data?.error) {
-          setErrorMessage(data.error)
+        const accountData = response?.data
+        if (accountData?.error) {
+          setErrorMessage(accountData.error)
           setLoading(false)
           return
         }
-
-        if (data?.address) {
+        if (accountData?.address) {
           // Use the resolved address from the API response
-          setAddress(data.address)
-          setAccountData(data)
+          setAccountData(accountData)
         } else {
           setErrorMessage('Failed to resolve address')
         }
@@ -92,9 +56,8 @@ export default function XAddressDetails({ xAddressInput }) {
         setLoading(false)
       }
     }
-
     fetchData()
-  }, [xAddressInput])
+  }, [data])
 
   // Function to render social links dynamically based on account data
   const renderSocialLinks = (socialAccounts) => {
@@ -222,20 +185,21 @@ export default function XAddressDetails({ xAddressInput }) {
   }
 
   return (
-    <div className={xAddressDetails}>
+    <div className={accountWithTag}>
       <SEO
-        page="X-Address information"
+        page="Account with tag information"
         title={`${t('explorer.header.account')} ${userData.service || userData.username || userData.address}`}
-        description={`XAddress details for ${userData.service || userData.username || ''} ${userData.address}`}
+        description={`Details for ${userData.service || userData.username || ''} ${userData.address}`}
       />
-      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" userData={userData} />
+      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} userData={userData} />
+      {/* add tab="account" to show transactions link */}
 
       <div className="content-profile account">
         <div className="account-tag-container">
-          <div className="account-tag-title">X-ADDRESS DETAILS</div>
+          <div className="account-tag-title">{data?.payId ? 'PAYSTRING ' : 'X-ADDRESS'} DETAILS</div>
 
           <div className="account-tag-xaddress">
-            <b>{accountData.xAddress}</b>
+            <b>{data.xAddress}</b>
           </div>
 
           <div className="account-tag-service-description">
@@ -259,6 +223,15 @@ export default function XAddressDetails({ xAddressInput }) {
 
           {renderSocialLinks(accountData?.service?.socialAccounts)}
 
+          {data?.payId && (
+            <div className="account-tag-details">
+              <div className="account-tag-detail-label">
+                <span>PayString:</span>
+              </div>
+              <div className="account-tag-detail-value bold">{data.payId}</div>
+            </div>
+          )}
+
           <div className="account-tag-details">
             <div className="account-tag-detail-label">
               <span>Service address:</span>
@@ -274,9 +247,7 @@ export default function XAddressDetails({ xAddressInput }) {
               <div className="account-tag-detail-label">
                 <span>User destination tag:</span>
               </div>
-              <div className="account-tag-detail-value">
-                <b>{tag}</b>
-              </div>
+              <div className="account-tag-detail-value bold">{tag}</div>
             </div>
           )}
         </div>
