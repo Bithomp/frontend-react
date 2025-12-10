@@ -255,13 +255,15 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    if (isValidPayString(searchItem) || isValidXAddress(searchItem)) {
-      router.push('/account/' + encodeURI(searchItem) + addParams)
+    if (isLedgerIndexValid(searchFor)) {
+      router.push('/ledger/' + searchFor)
       return
     }
 
-    if (isLedgerIndexValid(searchFor)) {
-      router.push('/ledger/' + searchFor)
+    if (isValidPayString(searchFor) || isValidXAddress(searchFor)) {
+      // the check for paystring/xAddress should be before the check for addressOrUsername
+      // as if there is no destination tag, we will treat it as an address or username
+      router.push('/account/' + encodeURI(searchFor) + addParams)
       return
     }
 
@@ -302,25 +304,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
     return
   }
-
-  /*
-  PayID
-  searchItem.indexOf("$") > -1
-   
-  username
-  <18 
-   
-  CurrencyCode, XLS14
-  searchItem.length == 40
-   
-  TX, NFT, NFT Offer
-  searchItem.length == 64
-   
-  X-address
-  searchItem.length > 36
-  searchItem.charAt(0) == "T"
-  searchItem.charAt(0) == "X"
-  */
 
   const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account', 'transactions', 'dex'].includes(tab)
 
