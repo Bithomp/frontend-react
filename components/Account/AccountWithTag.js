@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import SEO from '../SEO'
 import SearchBlock from '../Layout/SearchBlock'
-import { useRouter } from 'next/router'
 import {
   FaFacebook,
   FaInstagram,
@@ -18,7 +17,6 @@ import { accountWithTag } from '../../styles/components/Account/AccountWithTag.m
 
 export default function AccountWithTag({ data }) {
   const { t } = useTranslation()
-  const router = useRouter()
   const [accountData, setAccountData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
@@ -34,7 +32,6 @@ export default function AccountWithTag({ data }) {
       setLoading(true)
       setErrorMessage(null)
       try {
-        // Fetch account data from backend
         const response = await axios(
           '/v2/address/' + address + '?username=true&service=true&verifiedDomain=true&bithomp=true'
         )
@@ -45,7 +42,6 @@ export default function AccountWithTag({ data }) {
           return
         }
         if (accountData?.address) {
-          // Use the resolved address from the API response
           setAccountData(accountData)
         } else {
           setErrorMessage('Failed to resolve address')
@@ -132,7 +128,7 @@ export default function AccountWithTag({ data }) {
   if (loading) {
     return (
       <>
-        <SEO page="X-Address" title="X-Address" />
+        <SEO page="Account with tag" />
         <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" />
         <div className="content-center">
           <div className="center" style={{ marginTop: '50px' }}>
@@ -148,8 +144,8 @@ export default function AccountWithTag({ data }) {
   if (errorMessage) {
     return (
       <>
-        <SEO page="X-Address" title="X-Address" />
-        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" />
+        <SEO page="Account with tag" />
+        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} />
         <div className="content-center">
           <div className="center orange bold" style={{ marginTop: '50px' }}>
             {errorMessage}
@@ -162,8 +158,8 @@ export default function AccountWithTag({ data }) {
   if (!address || !accountData) {
     return (
       <>
-        <SEO page="XAddress" title="XAddress Details" />
-        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" />
+        <SEO page="Account with tag" />
+        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} />
         <div className="content-center">
           <div className="center orange bold" style={{ marginTop: '50px' }}>
             Invalid address or missing data
@@ -173,25 +169,14 @@ export default function AccountWithTag({ data }) {
     )
   }
 
-  const userData = {
-    username: accountData?.username,
-    service: accountData?.service?.name,
-    address: accountData?.address || address
-  }
-
-  if (!tag) {
-    router.push('/account/' + encodeURI(address))
-    return
-  }
-
   return (
     <div className={accountWithTag}>
       <SEO
         page="Account with tag information"
-        title={`${t('explorer.header.account')} ${userData.service || userData.username || userData.address}`}
-        description={`Details for ${userData.service || userData.username || ''} ${userData.address}`}
+        title={`${t('explorer.header.account')} ${data?.payId || data?.xAddress || ''}`}
+        description={`Details for ${data?.payId || data?.xAddress || ''}`}
       />
-      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} userData={userData} />
+      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} />
       {/* add tab="account" to show transactions link */}
 
       <div className="content-profile account">

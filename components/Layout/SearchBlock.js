@@ -76,6 +76,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const windowWidth = useWidth()
 
   const { id } = router.query
+
   const [searchItem, setSearchItem] = useState(id || userData?.address || '')
   const [searching, setSearching] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
@@ -152,7 +153,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const searchOnChange = (option) => {
     if (!option) return
-    if (option.username && !option.username.includes('-')) {
+    if (option.payString) {
+      onSearch(option.payString)
+    } else if (option.xAddress) {
+      onSearch(option.xAddress)
+    } else if (option.username && !option.username.includes('-')) {
       onSearch(option.username)
     } else {
       onSearch(option.address)
@@ -409,7 +414,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                   option.xaman +
                   option.verifiedDomain +
                   option.serviceDomain +
-                  option.xAddress
+                  option.xAddress +
+                  option.tag
                 }
                 inputValue={searchItem}
                 onInputChange={searchOnInputChange}

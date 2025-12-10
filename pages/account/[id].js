@@ -69,7 +69,7 @@ export async function getServerSideProps(context) {
       } else {
         accountWithTag = {
           address: decoded.classicAddress,
-          xaddress: account,
+          xAddress: account,
           tag: decoded.tag
         }
       }
