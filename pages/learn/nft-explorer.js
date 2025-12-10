@@ -64,7 +64,7 @@ export default function NftExplorer() {
             videos, animated 3D models, panoramic views, and more.
           </p>
           {!xahauNetwork && (
-            <section className="prose my-8">
+            <section className="my-8">
               <p>
                 <strong>NFT with music and video</strong>
                 <br />
