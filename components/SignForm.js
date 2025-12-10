@@ -948,6 +948,11 @@ export default function SignForm({
     crossmark: 'Crossmark'
   }
 
+  const supportedByCrossmark = signRequest?.request?.TransactionType !== 'Remit'
+  const supportedByMetamask = signRequest?.request?.TransactionType !== 'Remit'
+  const supportedByTrezor =
+    signRequest?.request?.TransactionType === 'SignIn' || signRequest?.request?.TransactionType === 'Payment'
+
   return (
     <>
       {(networkId === 0 || networkId === 1) && (
@@ -1243,9 +1248,14 @@ export default function SignForm({
                           <Image
                             alt="Crossmark"
                             src="/images/wallets/crossmark-large.png"
-                            onClick={() => txSend({ wallet: 'crossmark' })}
+                            onClick={supportedByMetamask ? () => txSend({ wallet: 'crossmark' }) : undefined}
                             width={169}
                             height={80}
+                            style={
+                              !supportedByCrossmark
+                                ? { filter: 'grayscale(100%)', cursor: 'not-allowed' }
+                                : { maxWidth: '100%', maxHeight: '100%' }
+                            }
                           />
                         </div>
                       )}
@@ -1280,10 +1290,15 @@ export default function SignForm({
                             <Image
                               alt="Metamask"
                               src="/images/wallets/metamask.svg"
-                              onClick={() => txSend({ wallet: 'metamask' })}
+                              onClick={supportedByMetamask ? () => txSend({ wallet: 'metamask' }) : undefined}
                               width={80}
                               height={80}
-                              style={{ maxWidth: '100%', maxHeight: '100%' }}
+                              style={{
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                cursor: !supportedByMetamask ? 'not-allowed' : 'pointer',
+                                filter: !supportedByMetamask ? 'grayscale(100%)' : 'none'
+                              }}
                             />
                           </div>
                           <div className="signin-app-logo">
@@ -1300,10 +1315,15 @@ export default function SignForm({
                             <Image
                               alt="Trezor Wallet"
                               src="/images/wallets/trezor-large.svg"
-                              onClick={() => txSend({ wallet: 'trezor' })}
+                              onClick={supportedByTrezor ? () => txSend({ wallet: 'trezor' }) : undefined}
                               width={169}
                               height={80}
-                              style={{ maxWidth: '100%', maxHeight: '100%' }}
+                              style={{
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                cursor: !supportedByTrezor ? 'not-allowed' : 'pointer',
+                                filter: !supportedByTrezor ? 'grayscale(100%)' : 'none'
+                              }}
                             />
                           </div>
                         </>
