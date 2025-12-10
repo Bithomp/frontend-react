@@ -60,10 +60,11 @@ const pages = [
 
 //network specific pages
 if (xahauNetwork) {
-  //only o xahau
+  //only on xahau
   pages.push(
     { loc: 'governance', changefreq: 'hourly', priority: '0.9' },
-    { loc: 'unl-report', changefreq: 'always', priority: '0.8' }
+    { loc: 'unl-report', changefreq: 'always', priority: '0.8' },
+    { loc: 'learn/claim-reward', changefreq: 'always', priority: '0.5' }
   )
 } else {
   // only on xrpl
@@ -142,7 +143,8 @@ function generateSiteMap(posts) {
     'learn/amm',
     'learn/issue-a-token',
     'learn/guide-for-token-issuers',
-    'learn/image-services'
+    'learn/image-services',
+    'learn/claim-reward'
   ]
   const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]

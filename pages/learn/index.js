@@ -48,10 +48,10 @@ const buildLearnContent = () => {
       ]
     }
   ]
-  //network specific content
-  //only on xrpl
+  // network specific content
+
+  // only on xrpl
   if (nativeCurrency === 'XRP') {
-    // add before and after items to first section
     const itemsBefore = [{ title: 'XRP, Ripple, XRP Ledger: Key Differencies', slug: 'xrpl-article' }]
     const itemsAfter = [
       { title: 'Ripple USD', slug: 'ripple-usd' },
@@ -59,9 +59,15 @@ const buildLearnContent = () => {
     ]
     content[0].items = [...itemsBefore, ...content[0].items, ...itemsAfter]
   }
+
+  // only on xahau
+  if (nativeCurrency === 'XAH') {
+    const xahauItem = [{ title: 'Xahau Balance Adjustments. Claim Reward.', slug: 'claim-reward' }]
+    content[0].items = [...xahauItem, ...content[0].items]
+  }
+
   return content
 }
-
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
