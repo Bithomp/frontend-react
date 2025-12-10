@@ -38,6 +38,7 @@ const buildLearnContent = () => {
       items: [
         { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
         { title: 'How to Mint NFTs on ' + explorerName, slug: 'nft-minting' },
+        { title: 'How to Create an Escrow on XRPL', slug: 'create-escrow' },
         { title: 'The Bithomp API', slug: 'the-bithomp-api' },
         { title: 'XRP and XAH Taxes - get SCV exports for your report', slug: 'xrp-xah-taxes' },
         { title: 'How to Issue a Token on ' + explorerName, slug: 'issue-a-token' },
