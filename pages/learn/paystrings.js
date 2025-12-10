@@ -17,16 +17,14 @@ export async function getServerSideProps(context) {
   }
 }
 
-const pagePath = '/images/' + (xahauNetwork ? 'xahau' : 'xrpl') + 'explorer/learn/paystrings/'
-
 export default function Paystrings() {
   return (
     <>
       <SEO
-        title="PayStrings"
+        title={'PayStrings'}
         description="Learn what PayString is and how to register yours on Bithomp. Send, receive, deposit, and withdraw funds easily with a simple PayString name."
         noindex={network !== 'mainnet'}
-        image={{ file: pagePath + 'cover.jpg', width: 1520, height: 855, allNetworks: true }}
+        image={{ file: '/images/xrplexplorer/learn/paystrings/cover', width: 1520, height: 855, allNetworks: true }}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
@@ -35,7 +33,11 @@ export default function Paystrings() {
           <div className="flex justify-center">
             <figure>
               <Image
-                src={pagePath + 'cover.jpg'}
+                src={
+                  xahauNetwork
+                    ? '/images/xahauexplorer/learn/paystrings/cover.jpg'
+                    : '/images/xrplexplorer/learn/paystrings/cover.jpg'
+                }
                 alt="Paystrings"
                 width={1520}
                 height={855}
