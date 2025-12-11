@@ -62,8 +62,8 @@ const buildLearnContent = () => {
 
   // only on xahau
   if (nativeCurrency === 'XAH') {
-    const xahauItem = [{ title: 'Xahau Balance Adjustments. Claim Reward.', slug: 'claim-reward' }]
-    content[0].items = [...xahauItem, ...content[0].items]
+    const itemsBefore = [{ title: 'Xahau Balance Adjustments. Claim Reward.', slug: 'claim-reward' }]
+    content[0].items = [...itemsBefore, ...content[0].items]
   }
 
   return content

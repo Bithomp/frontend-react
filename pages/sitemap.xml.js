@@ -63,8 +63,8 @@ if (xahauNetwork) {
   //only on xahau
   pages.push(
     { loc: 'governance', changefreq: 'hourly', priority: '0.9' },
-    { loc: 'unl-report', changefreq: 'always', priority: '0.8' },
-    { loc: 'learn/claim-reward', changefreq: 'always', priority: '0.5' }
+    { loc: 'unl-report', changefreq: 'always', priority: '0.5' },
+    { loc: 'learn/claim-reward', changefreq: 'always', priority: '0.9' }
   )
 } else {
   // only on xrpl

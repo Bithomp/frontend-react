@@ -16,7 +16,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function ClaimReward() {
-  const imagePath = '/images/pages/learn/claim-reward'
+  const imagePath = '/images/xahauexplorer/learn/claim-reward'
   return (
     <>
       <SEO
