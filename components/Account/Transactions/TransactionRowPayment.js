@@ -11,7 +11,8 @@ import { useIsMobile } from '../../../utils/mobile'
 import { RipplingChanges } from './Elements/RipplingChanges'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
-  const { outcome, specification, tx } = data
+  const { outcome, specification, tx, fiatRates } = data
+  const fiatRate = fiatRates?.[selectedCurrency]
 
   let txTypeSpecial = paymentTypeName(data)
   const isConvertion = isConvertionTx(specification)
@@ -54,77 +55,73 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
     >
-      {(fiatRate) => (
+      {rippling ? (
+        <RipplingChanges balanceChanges={sourceBalanceChangesList} />
+      ) : (
         <>
-          {rippling ? (
-            <RipplingChanges balanceChanges={sourceBalanceChangesList} />
-          ) : (
+          {!isConvertion && outcome?.deliveredAmount && (
+            <div>
+              {specification?.source?.address === address ? 'Sent' : 'Received'}:{' '}
+              {amountFormat(outcome?.deliveredAmount, {
+                icon: true,
+                withIssuer: true,
+                bold: true,
+                precise: 'nice',
+                issuerShort: false
+              })}
+              {nativeCurrencyToFiat({
+                amount: outcome?.deliveredAmount,
+                selectedCurrency,
+                fiatRate
+              })}
+            </div>
+          )}
+          {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
             <>
-              {!isConvertion && outcome?.deliveredAmount && (
-                <div>
-                  {specification?.source?.address === address ? 'Sent' : 'Received'}:{' '}
-                  {amountFormat(outcome?.deliveredAmount, {
-                    icon: true,
-                    withIssuer: true,
-                    bold: true,
-                    precise: 'nice',
-                    issuerShort: false
-                  })}
-                  {nativeCurrencyToFiat({
-                    amount: outcome?.deliveredAmount,
-                    selectedCurrency,
-                    fiatRate
-                  })}
-                </div>
-              )}
-              {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
-                <>
-                  <div>
-                    {balancesTitle}: {sourceBalanceChangesList.length > 1 && <br />}
-                    {sourceBalanceChangesList.map((change, index) => {
-                      return (
-                        <div key={index}>
-                          {amountFormat(optionalAbsPaymentAmount(change, isConvertion), {
-                            icon: true,
-                            withIssuer: true,
-                            bold: true,
-                            color: 'direction',
-                            precise: 'nice',
-                            issuerShort: false
-                          })}
-                          {nativeCurrencyToFiat({
-                            amount: optionalAbsPaymentAmount(change, isConvertion),
-                            selectedCurrency,
-                            fiatRate
-                          })}
-                        </div>
-                      )
-                    })}
-                  </div>
-                  {sourceBalanceChangesList.length === 2 && (
-                    <div>
-                      <span>Exchange rate: </span>
-                      <span>
-                        {amountFormat(
-                          {
-                            currency: sourceBalanceChangesList[0].currency,
-                            issuer: sourceBalanceChangesList[0].issuer,
-                            value: 1
-                          },
-                          { icon: true }
-                        )}{' '}
-                        ={' '}
-                        {amountFormat(
-                          {
-                            ...sourceBalanceChangesList[1],
-                            value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
-                          },
-                          { icon: true, withIssuer: true, bold: true }
-                        )}
-                      </span>
+              <div>
+                {balancesTitle}: {sourceBalanceChangesList.length > 1 && <br />}
+                {sourceBalanceChangesList.map((change, index) => {
+                  return (
+                    <div key={index}>
+                      {amountFormat(optionalAbsPaymentAmount(change, isConvertion), {
+                        icon: true,
+                        withIssuer: true,
+                        bold: true,
+                        color: 'direction',
+                        precise: 'nice',
+                        issuerShort: false
+                      })}
+                      {nativeCurrencyToFiat({
+                        amount: optionalAbsPaymentAmount(change, isConvertion),
+                        selectedCurrency,
+                        fiatRate
+                      })}
                     </div>
-                  )}
-                </>
+                  )
+                })}
+              </div>
+              {sourceBalanceChangesList.length === 2 && (
+                <div>
+                  <span>Exchange rate: </span>
+                  <span>
+                    {amountFormat(
+                      {
+                        currency: sourceBalanceChangesList[0].currency,
+                        issuer: sourceBalanceChangesList[0].issuer,
+                        value: 1
+                      },
+                      { icon: true }
+                    )}{' '}
+                    ={' '}
+                    {amountFormat(
+                      {
+                        ...sourceBalanceChangesList[1],
+                        value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                      },
+                      { icon: true, withIssuer: true, bold: true }
+                    )}
+                  </span>
+                </div>
               )}
             </>
           )}

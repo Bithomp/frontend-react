@@ -313,6 +313,7 @@ export const dappBySourceTag = (sourceTag) => {
     5523279: 'Things Go Online',
     10000001: 'MetaTV',
     10011001: 'Myrkle',
+    10011010: 'Magnetic',
     10102021: 'Junction',
     10509910: 'xLux',
     11782013: 'Anodos',
@@ -427,10 +428,11 @@ export const memoNode = (memos, type = 'tr') => {
         if (memopiece.includes('xrplexplorer.com') || memopiece.includes('bithomp.com')) {
           clientname = memopiece.replace(/xrplexplorer\.com/g, 'bithomp.com')
           memopiece = ''
-        }
-
-        if (memopiece.includes('xahauexplorer.com')) {
+        } else if (memopiece.includes('xahauexplorer.com')) {
           clientname = memopiece
+          memopiece = ''
+        } else if (memopiece.includes('initiated via xmagnetic.org')) {
+          clientname = 'xmagnetic.org'
           memopiece = ''
         }
 

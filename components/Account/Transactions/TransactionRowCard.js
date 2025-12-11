@@ -7,8 +7,6 @@ import {
   timeFormat,
   timeFromNow
 } from '../../../utils/format'
-import { useEffect, useState } from 'react'
-import { fetchHistoricalRate } from '../../../utils/common'
 import { LinkTx } from '../../../utils/links'
 import {
   errorCodeDescription,
@@ -57,22 +55,11 @@ import Link from 'next/link'
 
 export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency }) => {
   const width = useWidth()
-  const { specification, tx, outcome } = data
+  const { specification, tx, outcome, fiatRates } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
   const isConvertion = isConvertionTx(specification)
   const sourceBalanceChangesList = addressBalanceChanges(data, address)
-
-  const [pageFiatRate, setPageFiatRate] = useState(0)
-
-  useEffect(() => {
-    if (!selectedCurrency || !outcome?.ledgerTimestamp) return
-    fetchHistoricalRate({
-      timestamp: outcome.ledgerTimestamp * 1000,
-      selectedCurrency,
-      setPageFiatRate
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, outcome?.ledgerTimestamp])
+  const pageFiatRate = fiatRates?.[selectedCurrency]
 
   //don't show sourcetag if it's the tag of a known dapp
   const dapp = dappBySourceTag(tx.SourceTag)
@@ -171,7 +158,7 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
             <br />
           </>
         )}
-        {typeof children === 'function' ? children(pageFiatRate) : children}
+        {children}
         {addressIsSource && (
           <>
             {sequence ? (
@@ -183,7 +170,11 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
               ''
             )}
             Fee: {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
-            {nativeCurrencyToFiat({ amount: tx.Fee, selectedCurrency, fiatRate: pageFiatRate })}
+            {nativeCurrencyToFiat({
+              amount: tx.Fee,
+              selectedCurrency,
+              fiatRate: pageFiatRate
+            })}
             <br />
           </>
         )}

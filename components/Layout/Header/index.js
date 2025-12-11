@@ -198,6 +198,7 @@ export default function Header({
             <Link href="/services/escrow">Create Escrow</Link>
             {!xahauNetwork && <Link href="/services/amm/deposit">AMM Services</Link>}
             <Link href="/services/account-settings/">Account Settings</Link>
+            <Link href="/services/account-delete">Account Delete</Link>
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
             <Link href="/learn/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>

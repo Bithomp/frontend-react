@@ -191,6 +191,7 @@ export default function Subscriptions({
   const { t } = useTranslation()
   const router = useRouter()
   const width = useWidth()
+  const ref = router.query?.ref
 
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(true) // keep true in order not to have hydr error for rendering the select
@@ -310,7 +311,8 @@ export default function Subscriptions({
     let options = {
       type: tabTotype(subscriptionsTab),
       period,
-      periodCount: 1 * periodCount
+      periodCount: 1 * periodCount,
+      ...(ref ? { referralCode: ref } : {})
     }
 
     if (subscriptionsTab === 'api') {
@@ -461,7 +463,7 @@ export default function Subscriptions({
     const response = await axios('v2/bid/partner:' + partnerId + '/' + destinationTag + '/status').catch((error) => {
       setErrorMessage(t('error.' + error.message))
     })
-    const data = response.data
+    const data = response?.data
     if (data) {
       updateBid(data)
     }

@@ -144,7 +144,7 @@ export default function NftSales({
 
   const controller = new AbortController()
 
-  const sortCurrency = sortCurrencyQuery.toLowerCase() || selectedCurrency
+  const sortCurrency = sortCurrencyQuery?.toLowerCase() || selectedCurrency
 
   const orderList = [
     { value: 'priceHigh', label: t('dropdown.priceHigh', { ns: 'nft-sort' }) },

@@ -907,13 +907,18 @@ export default function SignForm({
   const xls35Sell = signRequest?.request?.TransactionType === 'URITokenCreateSellOffer'
 
   const checkBoxText = (screen, signRequest) => {
-    if (screen === 'nftTransfer')
-      return (
-        <Trans i18nKey="signin.confirm.nft-transfer">
-          I'm offering that NFT for FREE to the Destination account,{' '}
-          <span className="orange bold">the destination account would need to accept the NFT transfer</span>.
-        </Trans>
-      )
+    if (screen === 'nftTransfer') {
+      if (signRequest.request?.TransactionType === 'Remit') {
+        return "I'm sending this NFT for FREE."
+      } else {
+        return (
+          <Trans i18nKey="signin.confirm.nft-transfer">
+            I'm offering that NFT for FREE to the Destination account,{' '}
+            <span className="orange bold">the destination account would need to accept the NFT transfer</span>.
+          </Trans>
+        )
+      }
+    }
 
     if (screen === 'NFTokenBurn') return t('signin.confirm.nft-burn')
     if (screen === 'NFTokenModify') return 'I understand that URI will be updated for this NFT.'
@@ -942,6 +947,11 @@ export default function SignForm({
     walletconnect: 'WalletConnect',
     crossmark: 'Crossmark'
   }
+
+  const supportedByCrossmark = signRequest?.request?.TransactionType !== 'Remit'
+  const supportedByMetamask = signRequest?.request?.TransactionType !== 'Remit'
+  const supportedByTrezor =
+    signRequest?.request?.TransactionType === 'SignIn' || signRequest?.request?.TransactionType === 'Payment'
 
   return (
     <>
@@ -1238,9 +1248,14 @@ export default function SignForm({
                           <Image
                             alt="Crossmark"
                             src="/images/wallets/crossmark-large.png"
-                            onClick={() => txSend({ wallet: 'crossmark' })}
+                            onClick={supportedByMetamask ? () => txSend({ wallet: 'crossmark' }) : undefined}
                             width={169}
                             height={80}
+                            style={
+                              !supportedByCrossmark
+                                ? { filter: 'grayscale(100%)', cursor: 'not-allowed' }
+                                : { maxWidth: '100%', maxHeight: '100%' }
+                            }
                           />
                         </div>
                       )}
@@ -1275,10 +1290,15 @@ export default function SignForm({
                             <Image
                               alt="Metamask"
                               src="/images/wallets/metamask.svg"
-                              onClick={() => txSend({ wallet: 'metamask' })}
+                              onClick={supportedByMetamask ? () => txSend({ wallet: 'metamask' }) : undefined}
                               width={80}
                               height={80}
-                              style={{ maxWidth: '100%', maxHeight: '100%' }}
+                              style={{
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                cursor: !supportedByMetamask ? 'not-allowed' : 'pointer',
+                                filter: !supportedByMetamask ? 'grayscale(100%)' : 'none'
+                              }}
                             />
                           </div>
                           <div className="signin-app-logo">
@@ -1295,10 +1315,15 @@ export default function SignForm({
                             <Image
                               alt="Trezor Wallet"
                               src="/images/wallets/trezor-large.svg"
-                              onClick={() => txSend({ wallet: 'trezor' })}
+                              onClick={supportedByTrezor ? () => txSend({ wallet: 'trezor' }) : undefined}
                               width={169}
                               height={80}
-                              style={{ maxWidth: '100%', maxHeight: '100%' }}
+                              style={{
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                cursor: !supportedByTrezor ? 'not-allowed' : 'pointer',
+                                filter: !supportedByTrezor ? 'grayscale(100%)' : 'none'
+                              }}
                             />
                           </div>
                         </>

@@ -28,7 +28,8 @@ const buildLearnContent = () => {
       items: [
         { title: 'Blackholed Address', slug: 'blackholed-address' },
         { title: 'Blacklisted Address', slug: 'blacklisted-address' },
-        { title: 'Verified Domain', slug: 'verified-domain' }
+        { title: 'Verified Domain', slug: 'verified-domain' },
+        { title: 'PayStrings', slug: 'paystrings' }
       ]
     },
     {
@@ -37,6 +38,7 @@ const buildLearnContent = () => {
       items: [
         { title: 'The Bithomp Explorer Advantages', slug: 'the-bithomp-explorer-advantages' },
         { title: 'How to Mint NFTs on ' + explorerName, slug: 'nft-minting' },
+        { title: 'How to Create an Escrow on XRPL', slug: 'create-escrow' },
         { title: 'The Bithomp API', slug: 'the-bithomp-api' },
         { title: 'XRP and XAH Taxes - get SCV exports for your report', slug: 'xrp-xah-taxes' },
         { title: 'How to Issue a Token on ' + explorerName, slug: 'issue-a-token' },
@@ -44,7 +46,9 @@ const buildLearnContent = () => {
           title: 'Guide for Token Issuers: Username, Toml file, Project Registration',
           slug: 'guide-for-token-issuers'
         },
-        { title: 'Bithomp Image Services', slug: 'image-services' }
+        { title: 'Bithomp Image Services', slug: 'image-services' },
+        { title: 'Understanding Trustlines', slug: 'trustlines' },
+        { title: 'NFT Explorer', slug: 'nft-explorer' }
       ]
     }
   ]

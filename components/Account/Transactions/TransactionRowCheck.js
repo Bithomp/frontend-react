@@ -2,7 +2,9 @@ import { TransactionRowCard } from './TransactionRowCard'
 import { AddressWithIconInline, amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
 
 export const TransactionRowCheck = ({ data, address, index, selectedCurrency }) => {
-  const { outcome, specification, tx } = data
+  const { outcome, specification, tx, fiatRates } = data
+
+  const fiatRate = fiatRates?.[selectedCurrency]
 
   const checkTypeLabels = {
     CheckCreate: 'Check creation',
@@ -32,25 +34,21 @@ export const TransactionRowCheck = ({ data, address, index, selectedCurrency }) 
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
     >
-      {(fiatRate) => (
-        <>
-          {outcome?.deliveredAmount && (
-            <div>
-              {tx?.Account === address ? 'Received' : 'Amount'}:{' '}
-              {amountFormat(outcome?.deliveredAmount, {
-                icon: true,
-                bold: true,
-                color: 'direction',
-                precise: 'nice'
-              })}
-              {nativeCurrencyToFiat({
-                amount: outcome?.deliveredAmount,
-                selectedCurrency,
-                fiatRate
-              })}
-            </div>
-          )}
-        </>
+      {outcome?.deliveredAmount && (
+        <div>
+          {tx?.Account === address ? 'Received' : 'Amount'}:{' '}
+          {amountFormat(outcome?.deliveredAmount, {
+            icon: true,
+            bold: true,
+            color: 'direction',
+            precise: 'nice'
+          })}
+          {nativeCurrencyToFiat({
+            amount: outcome?.deliveredAmount,
+            selectedCurrency,
+            fiatRate
+          })}
+        </div>
       )}
     </TransactionRowCard>
   )
