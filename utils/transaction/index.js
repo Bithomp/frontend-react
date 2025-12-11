@@ -426,10 +426,17 @@ export const memoNode = (memos, type = 'tr') => {
 
       if (memopiece) {
         if (memopiece.includes('xrplexplorer.com') || memopiece.includes('bithomp.com')) {
+          // keep it for testnetworks
           clientname = memopiece.replace(/xrplexplorer\.com/g, 'bithomp.com')
+          if (memopiece.includes(' faucet')) {
+            clientname = memopiece.replace(' faucet', '/faucet')
+          }
           memopiece = ''
         } else if (memopiece.includes('xahauexplorer.com')) {
           clientname = memopiece
+          if (memopiece.includes(' faucet')) {
+            clientname = memopiece.replace(' faucet', '/faucet')
+          }
           memopiece = ''
         } else if (memopiece.includes('initiated via xmagnetic.org')) {
           clientname = 'xmagnetic.org'
