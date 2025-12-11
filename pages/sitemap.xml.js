@@ -150,7 +150,7 @@ function generateSiteMap(posts) {
     'learn/issue-a-token',
     'learn/guide-for-token-issuers',
     'learn/image-services',
-    'learn/claim-reward'
+    'learn/claim-reward',
     'learn/create-escrow',
     'learn/trustlines',
     'learn/nft-explorer',
