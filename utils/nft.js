@@ -1,9 +1,11 @@
+import React from 'react'
 import { Buffer } from 'buffer'
-import { stripText, shortName, webSiteName } from '.'
+import { stripText, shortName, webSiteName, forbid18Plus } from '.'
 
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
 import { amountFormat, shortHash } from './format'
+import { FaCloudDownloadAlt } from 'react-icons/fa'
 
 //partner market places (destinations)
 export const partnerMarketplaces = {
@@ -565,4 +567,189 @@ export const collectionNameText = (data) => {
     return shortHash(issuer) + (taxon ? ' (' + taxon + ')' : '')
   }
   return data.collection
+}
+
+// Check if NFT metadata indicates a panorama/360 image
+export const isPanorama = (metadata) => {
+  if (!metadata) return false
+
+  // Check name and description for panorama keywords
+  const panoramaKeywords = ['360', 'panorama', 'panoramic', 'equirectangular']
+  const name = metadata.name?.toString().toLowerCase() || ''
+  const description = metadata.description?.toString().toLowerCase() || ''
+
+  // Check if name or description contains panorama keywords
+  const hasPanoramaKeyword = panoramaKeywords.some((keyword) => name.includes(keyword) || description.includes(keyword))
+
+  // Check for specific camera types known for panoramas
+  const panoramaCameras = ['gopro fusion', 'insta360', 'ricoh theta']
+  const hasPanoramaCamera = panoramaCameras.some((camera) => description.includes(camera.toLowerCase()))
+
+  return hasPanoramaKeyword || hasPanoramaCamera
+}
+
+// Extract and process 3D model attributes from NFT metadata
+export const processModelAttributes = (nft) => {
+  if (!nft.metadata || (!nft.metadata['3D_attributes'] && !nft.metadata['3d_attributes'])) {
+    return []
+  }
+
+  let modelAttr = nft.metadata['3D_attributes'] || nft.metadata['3d_attributes']
+  const supportedAttr = [
+    'environment-image',
+    'exposure',
+    'shadow-intensity',
+    'shadow-softness',
+    'camera-orbit',
+    'camera-target',
+    'skybox-image',
+    'auto-rotate-delay',
+    'rotation-per-second',
+    'field-of-view',
+    'max-camera-orbit',
+    'min-camera-orbit',
+    'max-field-of-view',
+    'min-field-of-view',
+    'disable-zoom',
+    'orbit-sensitivity',
+    'animation-name',
+    'animation-crossfade-duration',
+    'variant-name',
+    'orientation',
+    'scale'
+  ]
+
+  if (Array.isArray(modelAttr)) {
+    const filtered = []
+    for (let i = 0; i < modelAttr.length; i++) {
+      if (modelAttr[i] && supportedAttr.includes(modelAttr[i].attribute)) {
+        filtered.push({
+          attribute: modelAttr[i].attribute,
+          value: stripText(modelAttr[i].value)
+        })
+      }
+    }
+    return filtered
+  } else if (typeof modelAttr === 'object') {
+    const filtered = []
+    Object.keys(modelAttr).forEach((e) => {
+      if (supportedAttr.includes(e)) {
+        filtered.push({
+          attribute: e,
+          value: stripText(modelAttr[e])
+        })
+      }
+    })
+    return filtered
+  }
+
+  return []
+}
+
+// Build content tab list based on available media types
+export const buildContentTabList = (imageUrl, videoUrl, modelUrl, t) => {
+  const contentTabList = []
+  if (imageUrl) {
+    contentTabList.push({ value: 'image', label: t('tabs.image') })
+  }
+  if (videoUrl) {
+    contentTabList.push({ value: 'video', label: t('tabs.video') })
+  }
+  if (modelUrl) {
+    contentTabList.push({ value: 'model', label: t('tabs.model') })
+  }
+  return contentTabList
+}
+
+// Extract all media URLs from NFT
+export const extractNftUrls = (nft) => {
+  return {
+    imageUrl: nftUrl(nft, 'image'),
+    videoUrl: nftUrl(nft, 'video'),
+    audioUrl: nftUrl(nft, 'audio'),
+    modelUrl: nftUrl(nft, 'model'),
+    viewerUrl: nftUrl(nft, 'viewer'),
+    clUrl: {
+      image: nftUrl(nft, 'image', 'cl'),
+      video: nftUrl(nft, 'video', 'cl'),
+      audio: nftUrl(nft, 'audio', 'cl'),
+      model: nftUrl(nft, 'model', 'cl')
+    }
+  }
+}
+
+// Determine default tab and URL when image is not available
+export const getDefaultTabAndUrl = (contentTab, imageUrl, clUrl) => {
+  let defaultTab = contentTab
+  let defaultUrl = clUrl[contentTab]
+  
+  if (!imageUrl && contentTab === 'image') {
+    if (clUrl.video) {
+      defaultTab = 'video'
+      defaultUrl = clUrl.video
+    } else if (clUrl.model) {
+      defaultTab = 'model'
+      defaultUrl = clUrl.model
+    }
+  }
+  
+  return { defaultTab, defaultUrl }
+}
+
+// Build image style object with dynamic properties
+export const buildImageStyle = (imageUrl, nft, options = {}) => {
+  const style = options.baseStyle || {}
+  
+  if (imageUrl) {
+    if (imageUrl.slice(0, 10) === 'data:image') {
+      style.imageRendering = 'pixelated'
+    }
+    if (nft.deletedAt) {
+      style.filter = 'grayscale(1)'
+    }
+  }
+  
+  return style
+}
+
+// Render loading/error state for NFT media
+export const renderLoadingImage = (errored, loaded, t) => {
+  if (errored) {
+    return (
+      <div className="fv-loading-container">
+        {t('general.load-failed')}
+        <br />
+      </div>
+    )
+  } else if (!loaded) {
+    return (
+      <div className="fv-loading-container">
+        <span className="waiting"></span>
+        <br />
+        {t('general.loading')}
+      </div>
+    )
+  }
+  return null
+}
+
+// Handle 18+ content age check click
+export const handle18PlusClick = async (setShowAgeCheck) => {
+  const forbid = await forbid18Plus()
+  if (forbid) return
+  setShowAgeCheck(true)
+}
+
+// Render download button component
+export const renderDownloadButton = (url, label, className = 'fv-preview-button') => {
+  return (
+    <a 
+      href={url} 
+      target="_blank" 
+      rel="noreferrer"
+      className={className}
+    >
+      {label} <FaCloudDownloadAlt />
+    </a>
+  )
 }

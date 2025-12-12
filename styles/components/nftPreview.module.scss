@@ -1,0 +1,85 @@
+@import './NftViewer.scss';
+
+.nftPreview :global {
+  // Shared styles (from NftViewer.scss)
+  @include shared-nft-viewer-styles;
+
+  // Preview-specific styles
+  .fv-preview-button {
+    background-color: transparent;
+    color: var(--accent-link);
+    border: 1px solid var(--accent-link);
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    box-sizing: border-box;
+    text-decoration: none;
+  }
+  
+  .fv-preview-image, .fv-preview-video, .fv-preview-age-image {
+    width: 100%;
+    height: auto;
+  }
+  
+  .fv-preview-panorama {
+    width: 100%;
+    aspect-ratio: 2/1;
+  }
+  
+  .fv-preview-audio {
+    display: block;
+    margin: 20px auto;
+  }
+  
+  .fv-preview-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .fv-preview-tabs-container {
+    height: 31px;
+    margin-bottom: 10px;
+  }
+  
+  .fv-preview-tabs-inline {
+    float: left;
+  }
+  
+  .fv-preview-actions-right {
+    float: right;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .fv-preview-action-row {
+    padding: 4px 0px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .fv-preview-action-row-center {
+    padding: 4px 0px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .fv-preview-action-row-right {
+    padding: 4px 0px;
+    float: right;
+  }
+  
+  .fv-preview-spacer {
+    height: 15px;
+  }
+}
+

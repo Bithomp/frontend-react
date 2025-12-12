@@ -1,0 +1,17 @@
+// Shared styles for both NftPreview and NftFullScreenViewer
+// This mixin is included in both nftFullScreenViewer.module.scss and nftPreview.module.scss
+
+@mixin shared-nft-viewer-styles {
+  .fv-download-icon {
+    display: inline-block;
+    vertical-align: bottom;
+    height: 19px;
+  }
+
+  .fv-loading-container {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+}
+
