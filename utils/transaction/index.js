@@ -416,7 +416,7 @@ export const memoNode = (memos, type = 'tr') => {
 
       if (redFlags.some((flag) => memop.includes(flag))) {
         if (type === 'tr') {
-          memop = memop.replace(
+          memopiece = memop.replace(
             /\b(https?:\/\/\S+|www\.\S+|[a-z0-9-]+\.(com|net|org|io|xyz|site|app|info|biz|ru|de|fr|es|co)(\/\S*)?)\b/gi,
             '***hidden url***'
           )
