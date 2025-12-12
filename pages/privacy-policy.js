@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: Jun 27, 2025</p>
+        <p>Last updated: Dec 12, 2025</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -263,6 +263,9 @@ export default function PrivacyPolicy() {
         </ul>
         <h4>Cookies</h4>
         <ul>
+          <li>
+            <strong>ref</strong> - referral code (ex. "zsdfawer34").
+          </li>
           <li>
             <strong>showCookie</strong> - show or hide the cookie message. (ex. true).
           </li>

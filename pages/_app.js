@@ -60,7 +60,38 @@ const getMainPath = (url) => {
   return parts.length > startIndex ? `/${parts[startIndex]}` : '/'
 }
 
+function useReferralCookie() {
+  const router = useRouter()
+  const [, setRef] = useCookie('ref')
+
+  useEffect(() => {
+    if (!router.isReady) return
+
+    const handleUrl = (url) => {
+      try {
+        const u = new URL(url, window.location.origin)
+        const ref = u.searchParams.get('ref')
+
+        // Do nothing if ref does not exist or is empty
+        if (!ref || !ref.trim()) return
+
+        setRef(ref.trim().slice(0, 128))
+      } catch (_) {
+        // Ignore URL parsing errors
+      }
+    }
+
+    // Initial page load
+    handleUrl(window.location.href)
+
+    // Client-side navigation
+    router.events.on('routeChangeComplete', handleUrl)
+    return () => router.events.off('routeChangeComplete', handleUrl)
+  }, [router.isReady, router.events, setRef])
+}
+
 const MyApp = ({ Component, pageProps }) => {
+  useReferralCookie()
   const firstRenderRef = useRef(true)
   const [account, setAccount] = useLocalStorage('account')
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
