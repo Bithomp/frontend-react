@@ -155,6 +155,9 @@ export default function MobileMenu({
           <Link href="/services/check" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Issue Check
           </Link>
+          <Link href="/services/issue-currency" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Issue Currency
+          </Link>
           <Link href="/services/escrow" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Create Escrow
           </Link>

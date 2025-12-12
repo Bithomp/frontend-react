@@ -676,6 +676,7 @@ export const avatarSrc = (address, refreshPage) => {
 }
 
 export const tokenImageSrc = (token) => {
+  console.log('token', token)
   if (!token) return ''
   if ((!token.issuer && token.currency === nativeCurrency) || typeof token === 'string')
     return nativeCurrenciesImages[nativeCurrency]
