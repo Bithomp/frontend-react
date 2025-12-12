@@ -410,12 +410,19 @@ export const memoNode = (memos, type = 'tr') => {
       let memopiece = memo?.data
       let memoformat = memo?.format
 
-      const redFlags = ['airdrop', 'claim']
+      const redFlags = ['airdrop', 'claim', 'reward', 'giveaway']
 
       const memop = memopiece?.toString().toLowerCase() || ''
 
-      if (redFlags.some((flag) => memop.includes(flag)) && type !== 'tr') {
-        continue
+      if (redFlags.some((flag) => memop.includes(flag))) {
+        if (type === 'tr') {
+          memop = memop.replace(
+            /\b(https?:\/\/\S+|www\.\S+|[a-z0-9-]+\.(com|net|org|io|xyz|site|app|info|biz|ru|de|fr|es|co)(\/\S*)?)\b/gi,
+            '***hidden url***'
+          )
+        } else {
+          continue
+        }
       }
 
       if (!memopiece && memoformat?.slice(0, 2) === 'rt') {
