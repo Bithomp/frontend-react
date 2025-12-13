@@ -32,6 +32,7 @@ import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
 import ErrorBoundary from '../components/ErrorBoundary'
 import { ledgerwalletDisconnect } from '../utils/ledgerwallet'
+import { isUsernameValid } from '../utils'
 
 const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
@@ -70,12 +71,12 @@ function useReferralCookie() {
     const handleUrl = (url) => {
       try {
         const u = new URL(url, window.location.origin)
-        const ref = u.searchParams.get('ref')
-
-        // Do nothing if ref does not exist or is empty
-        if (!ref || !ref.trim()) return
-
-        setRef(ref.trim().slice(0, 128))
+        let ref = u.searchParams.get('ref')
+        if (!ref) return
+        ref = ref.trim()
+        if (isUsernameValid(ref)) {
+          setRef(ref)
+        }
       } catch (_) {
         // Ignore URL parsing errors
       }
