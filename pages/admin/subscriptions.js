@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../utils/axios'
 
-import { useWidth, encode, wssServer, timestampExpired, addAndRemoveQueryParams } from '../../utils'
+import { useWidth, encode, wssServer, timestampExpired, addAndRemoveQueryParams, useCookie } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortNiceNumber, amountFormat, AddressWithIconFilled, addressLink } from '../../utils/format'
 
@@ -191,8 +191,8 @@ export default function Subscriptions({
   const { t } = useTranslation()
   const router = useRouter()
   const width = useWidth()
-  const ref = router.query?.ref
 
+  const [ref] = useCookie('ref')
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(true) // keep true in order not to have hydr error for rendering the select
   const [newAndActivePackages, setNewAndActivePackages] = useState([])
