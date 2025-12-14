@@ -12,7 +12,6 @@ import {
   network,
   useWidth,
   avatarServer,
-  networkId,
   server
 } from '../../../utils'
 
@@ -29,6 +28,7 @@ import LogoSmall from '../LogoSmall'
 import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
 import XahauExplorer from '../../../public/images/xahauexplorer/long.svg'
 import LogoAnimated from '../LogoAnimated'
+import { IoWalletOutline } from 'react-icons/io5'
 
 let timeoutIds = {}
 
@@ -150,11 +150,6 @@ export default function Header({
         console.error('Could not copy text: ', err)
       }
     )
-  }
-
-  const signinWithWallet = (wallet) => {
-    //redirect to account, if user is on the account page
-    setSignRequest(router.pathname.startsWith('/account') ? { wallet, redirect: 'account' } : { wallet })
   }
 
   const bithomp = server.includes('bithomp')
@@ -368,110 +363,22 @@ export default function Header({
           >
             {(displayName || proName) && <div style={{ minWidth: '250px' }}></div>}
             {!displayName && (
-              <>
-                <span
-                  onClick={() => {
-                    signinWithWallet('xaman')
-                  }}
-                  className="link"
-                >
-                  <Image
-                    src="/images/wallets/xaman.png"
-                    className="wallet-logo xaman-logo"
-                    alt="Xaman"
-                    height={24}
-                    width={24}
-                  />
-                  Xaman
-                </span>
-
-                <span onClick={() => signinWithWallet('crossmark')} className="link">
-                  <Image
-                    src="/images/wallets/crossmark.png"
-                    className="wallet-logo"
-                    alt="Crossmark Wallet"
-                    height={24}
-                    width={24}
-                  />
-                  Crossmark
-                </span>
-
-                <span
-                  onClick={() => {
-                    signinWithWallet('gemwallet')
-                  }}
-                  className="link"
-                >
-                  <Image
-                    src="/images/wallets/gemwallet.svg"
-                    className="wallet-logo"
-                    alt="GemWallet"
-                    height={24}
-                    width={24}
-                  />
-                  GemWallet
-                </span>
-
-                {/* available only on the mainnet and testnet */}
-                {(networkId === 0 || networkId === 1) && (
-                  <span onClick={() => signinWithWallet('walletconnect')} className="link">
-                    <Image
-                      src="/images/wallets/walletconnect.svg"
-                      className="wallet-logo walletconnect-logo"
-                      alt="Wallet Connect"
-                      height={24}
-                      width={24}
-                    />
-                    WalletConnect
-                  </span>
-                )}
-
-                <span onClick={() => signinWithWallet('metamask')} className="link">
-                  <Image
-                    src="/images/wallets/metamask.svg"
-                    className="wallet-logo"
-                    alt="Metamask Wallet"
-                    height={24}
-                    width={24}
-                  />
-                  Metamask
-                </span>
-
-                <span onClick={() => signinWithWallet('ledgerwallet')} className="link">
-                  <Image
-                    src="/images/wallets/ledgerwallet.svg"
-                    className="wallet-logo"
-                    alt="Ledger Wallet"
-                    height={24}
-                    width={24}
-                  />
-                  Ledger
-                </span>
-
-                <span onClick={() => signinWithWallet('trezor')} className="link">
-                  <Image
-                    src="/images/wallets/trezor.svg"
-                    className="wallet-logo"
-                    alt="Trezor Wallet"
-                    height={24}
-                    width={24}
-                  />
-                  Trezor
-                </span>
-              </>
+              <span
+                onClick={() => {
+                  setSignRequest(router.pathname.startsWith('/account') ? { redirect: 'account' } : {})
+                }}
+                className="link"
+              >
+                <IoWalletOutline style={{ height: 24, width: 24, marginTop: -4 }} className="wallet-logo" />
+                Connect Wallet
+              </span>
             )}
-
             {displayName && (
               <>
-                <span onClick={copyToClipboard} className="link">
-                  {isCopied ? t('button.copied') : t('button.copy-my-address')}
-                </span>
                 <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
                 <Link href={'/account/' + address + '/transactions'}>{t('signin.actions.my-transactions')}</Link>
                 <Link href="/services/send">Send payment</Link>
-                <Link href="/services/account-settings/">Account Settings</Link>
-                <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
-                <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
+                <Link href="/services/account-settings/">Account settings</Link>
                 {!username && <Link href={'/username?address=' + address}>{t('menu.usernames')}</Link>}
                 <span onClick={signOut} className="link">
                   {account?.wallet === 'walletconnect' && (

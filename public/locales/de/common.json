@@ -115,8 +115,8 @@
       }
     },
     "actions": {
-      "view": "Meine Kontoseite",
-      "my-transactions": "Meine Transaktionen",
+      "view": "Meine kontoseite",
+      "my-transactions": "Meine transaktionen",
       "my-nfts": "Meine NFTs",
       "my-nft-offers": "Meine NFT Angebote"
     },
@@ -288,7 +288,6 @@
     "download": "Herunterladen",
     "copy": "Kopieren",
     "copied": "Kopiert",
-    "copy-my-address": "Meine Adresse kopieren",
     "sign": "Signieren",
     "nft": {
       "add-another-sell-offer": "Weiteres Verkaufsangebot hinzufügen",

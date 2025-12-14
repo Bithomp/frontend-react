@@ -1101,9 +1101,9 @@ export default function AccountSettings({
   if (account?.address && loading) {
     return (
       <>
-        <SEO title="Account Settings" description="Manage your account settings" />
+        <SEO title="Account settings" description="Manage your account settings" />
         <div className="content-center">
-          <h1 className="center">Account Settings</h1>
+          <h1 className="center">Account settings</h1>
           <div className="center">
             <span className="waiting"></span>
             <br />
@@ -1130,9 +1130,9 @@ export default function AccountSettings({
   return (
     <>
       <div className={accountSettings}>
-        <SEO title="Account Settings" description="Manage your account settings." />
+        <SEO title="Account settings" description="Manage your account settings." />
         <div className="content-center">
-          <h1 className="center">Account Settings</h1>
+          <h1 className="center">Account settings</h1>
           <p className="center">
             {account?.address ? (
               `Manage your account settings on the ${explorerName}.`

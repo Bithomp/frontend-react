@@ -948,10 +948,9 @@ export default function SignForm({
     crossmark: 'Crossmark'
   }
 
-  const supportedByCrossmark = signRequest?.request?.TransactionType !== 'Remit'
-  const supportedByMetamask = signRequest?.request?.TransactionType !== 'Remit'
-  const supportedByTrezor =
-    signRequest?.request?.TransactionType === 'SignIn' || signRequest?.request?.TransactionType === 'Payment'
+  const supportedByCrossmark = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
+  const supportedByMetamask = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
+  const supportedByTrezor = !signRequest?.request?.TransactionType || signRequest.request.TransactionType === 'Payment'
 
   return (
     <>

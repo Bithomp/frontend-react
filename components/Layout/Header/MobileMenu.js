@@ -27,8 +27,6 @@ export default function MobileMenu({
   proName,
   signOutPro,
   signOut,
-  isCopied,
-  copyToClipboard,
   account,
   countryCode
 }) {
@@ -55,9 +53,6 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           {displayName ? (
             <>
-              <span onClick={copyToClipboard} className="mobile-menu-item link">
-                {isCopied ? t('button.copied') : t('button.copy-my-address')}
-              </span>
               <Link href={'/account/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.view')}
               </Link>
@@ -72,13 +67,7 @@ export default function MobileMenu({
                 Send payment
               </Link>
               <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                My Account Settings
-              </Link>
-              <Link href={'/nfts/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('signin.actions.my-nfts')}
-              </Link>
-              <Link href={'/nft-offers/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('signin.actions.my-nft-offers')}
+                My account settings
               </Link>
               {!username && (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -266,27 +255,6 @@ export default function MobileMenu({
           NFT
         </div>
         <div className="mobile-menu__submenu">
-          {!displayName && (
-            <>
-              <span
-                onClick={() => {
-                  setSignRequest({ redirect: 'nfts' })
-                }}
-                className="mobile-menu-item link"
-              >
-                {t('signin.actions.my-nfts')}
-              </span>
-              <span
-                onClick={() => {
-                  setSignRequest({ redirect: 'nft-offers' })
-                }}
-                className="mobile-menu-item link"
-              >
-                {t('signin.actions.my-nft-offers')}
-              </span>
-            </>
-          )}
-
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.nft.explorer')}
           </Link>

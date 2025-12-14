@@ -494,7 +494,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
           <div className="center">
             <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
               <p>- Create and manage your referral code.</p>
-              <p>- Track your referral rewards and payout status.</p>
+              <p>- Track your referral rewards.</p>
             </div>
             <br />
             <center>
