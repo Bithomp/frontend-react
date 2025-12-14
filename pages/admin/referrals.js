@@ -190,6 +190,10 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
     }
   }
 
+  const accountAddress = useMemo(() => {
+    return account?.address ? { address: account.address, addressDetails: { username: account.username } } : null
+  }, [account?.address, account?.username])
+
   return (
     <>
       <SEO title="Referrals" />
@@ -356,11 +360,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                           hideButton={true}
                           type="address"
                           ref={addressRef}
-                          rawData={
-                            account?.address
-                              ? { address: account.address, addressDetails: { username: account.username } }
-                              : null
-                          }
+                          rawData={accountAddress}
                         />
 
                         <div className="center" style={{ marginTop: 16 }}>

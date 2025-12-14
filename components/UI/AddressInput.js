@@ -23,6 +23,8 @@ const AddressInput = forwardRef(function AddressInput(
   const selectRef = useRef(null)
   const fallbackInputRef = useRef(null)
 
+  const userTouchedRef = useRef(false)
+
   useImperativeHandle(
     forwardedRef,
     () => ({
@@ -54,8 +56,13 @@ const AddressInput = forwardRef(function AddressInput(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue])
 
+  const rawValue = rawData?.[type] || ''
+
   useEffect(() => {
     setErrorMessage('')
+
+    // If user started editing, don't override their input with rawData anymore
+    if (userTouchedRef.current) return
 
     const fetchData = async (valueInp) => {
       let url = 'v2/username/' + valueInp
@@ -83,15 +90,15 @@ const AddressInput = forwardRef(function AddressInput(
       }
     }
 
-    if (rawData && rawData[type]) {
+    if (rawValue) {
       setNotEmpty(true)
-      setInputValue(rawData[type])
+      setInputValue(rawValue)
 
       if (!hasRun.current && rawData !== initialRawData.current) {
         hasRun.current = true
         if (!rawData?.[type + 'Details']?.service && !rawData[type + 'Details']?.username) {
           // if no details (like when address is specified in url)
-          fetchData(rawData[type])
+          fetchData(rawValue)
         } else if (rawData[type + 'Details']?.service || rawData[type + 'Details']?.username) {
           setLink(userOrServiceLink(rawData, type))
         }
@@ -108,7 +115,7 @@ const AddressInput = forwardRef(function AddressInput(
       setSearchSuggestions([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rawData])
+  }, [rawValue, rawData?.error])
 
   const searchOnKeyUp = async (e) => {
     setErrorMessage('')
@@ -180,6 +187,7 @@ const AddressInput = forwardRef(function AddressInput(
   }
 
   const searchOnChange = (option) => {
+    userTouchedRef.current = true
     if (!option) {
       if (setValue) setValue('')
       setInputValue('')
@@ -212,12 +220,14 @@ const AddressInput = forwardRef(function AddressInput(
 
   const searchOnInputChange = (value, action) => {
     if (action.action !== 'input-blur' && action.action !== 'menu-close') {
+      userTouchedRef.current = true
       setNotEmpty(true)
       setInputValue(value)
     }
   }
 
   const clearAll = () => {
+    userTouchedRef.current = true
     if (setValue) setValue('')
     setInputValue('')
     setLink('')
