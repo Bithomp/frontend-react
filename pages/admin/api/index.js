@@ -6,10 +6,11 @@ import Link from 'next/link'
 
 import SEO from '../../../components/SEO'
 
-import { isUrlValid } from '../../../utils'
+import { isDomainValid, isUrlValid } from '../../../utils'
 import { getIsSsrMobile } from '../../../utils/mobile'
 import CopyButton from '../../../components/UI/CopyButton'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
+import { IoMdCreate, IoMdCheckmark, IoMdClose } from 'react-icons/io'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -28,6 +29,9 @@ export default function Api({ sessionToken, openEmailLogin }) {
   const [domain, setDomain] = useState('')
   const [apiDescription, setApiDescription] = useState('')
   const [loading, setLoading] = useState(false)
+  const [isEditingDomain, setIsEditingDomain] = useState(false)
+  const [domainEdit, setDomainEdit] = useState('')
+  const [domainSaving, setDomainSaving] = useState(false)
 
   useEffect(() => {
     if (sessionToken) {
@@ -35,6 +39,12 @@ export default function Api({ sessionToken, openEmailLogin }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionToken])
+
+  useEffect(() => {
+    if (apiData?.domain) {
+      setDomainEdit(apiData.domain)
+    }
+  }, [apiData?.domain])
 
   const getApiData = async () => {
     setLoading(true)
@@ -69,7 +79,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
       return
     }
 
-    if (!isUrlValid(domain) && domain !== 'localhost') {
+    if (!isUrlValid(domain) && !isDomainValid(domain) && domain !== 'localhost') {
       setErrorMessage(t('form.error.domain-invalid'))
       return
     }
@@ -105,6 +115,42 @@ export default function Api({ sessionToken, openEmailLogin }) {
 
   const now = new Date()
   const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+  const saveDomain = async () => {
+    setErrorMessage('')
+
+    if (!domainEdit || !domainEdit.trim()) {
+      setErrorMessage(t('form.error.domain-empty'))
+      return
+    }
+
+    const cleanDomain = domainEdit.trim()
+
+    if (!isUrlValid(cleanDomain) && !isDomainValid(cleanDomain) && cleanDomain !== 'localhost') {
+      setErrorMessage(t('form.error.domain-invalid'))
+      return
+    }
+
+    setDomainSaving(true)
+
+    const resp = await axiosAdmin.put('partner/accessToken', { id: 445, domain: cleanDomain }).catch((error) => {
+      if (error && error.message !== 'canceled') {
+        setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
+      }
+    })
+
+    setDomainSaving(false)
+
+    if (resp?.data) {
+      setApiData(resp.data)
+      setIsEditingDomain(false)
+    } else {
+      await getApiData()
+      setIsEditingDomain(false)
+    }
+  }
+
+  const enableEdit = false // backend does not support domain change for now
 
   return (
     <>
@@ -183,8 +229,64 @@ export default function Api({ sessionToken, openEmailLogin }) {
                         </tr>
                         <tr>
                           <td className="right">{t('table.domain')}</td>
-                          <td className="left">
-                            <b>{apiData.domain}</b>
+                          <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            {!isEditingDomain ? (
+                              <>
+                                <b>{apiData.domain}</b>
+
+                                {enableEdit && (
+                                  <button
+                                    className="icon-button"
+                                    type="button"
+                                    aria-label="Edit domain"
+                                    title="Edit domain"
+                                    onClick={() => {
+                                      setDomainEdit(apiData.domain || '')
+                                      setIsEditingDomain(true)
+                                    }}
+                                  >
+                                    <IoMdCreate />
+                                  </button>
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                <input
+                                  className="input-text"
+                                  value={domainEdit}
+                                  onChange={(e) => setDomainEdit(e.target.value)}
+                                  spellCheck="false"
+                                  maxLength="60"
+                                  style={{ maxWidth: '260px' }}
+                                  disabled={domainSaving}
+                                />
+
+                                <button
+                                  className="icon-button"
+                                  type="button"
+                                  aria-label="Save domain"
+                                  title="Save"
+                                  onClick={saveDomain}
+                                  disabled={domainSaving}
+                                >
+                                  <IoMdCheckmark />
+                                </button>
+
+                                <button
+                                  className="icon-button"
+                                  type="button"
+                                  aria-label="Cancel"
+                                  title="Cancel"
+                                  onClick={() => {
+                                    setDomainEdit(apiData.domain || '')
+                                    setIsEditingDomain(false)
+                                  }}
+                                  disabled={domainSaving}
+                                >
+                                  <IoMdClose />
+                                </button>
+                              </>
+                            )}
                           </td>
                         </tr>
                         <tr>
@@ -234,6 +336,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
               </>
             )}
             <br />
+            <br />
             {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
           </div>
         ) : (
@@ -251,6 +354,28 @@ export default function Api({ sessionToken, openEmailLogin }) {
           </div>
         )}
       </div>
+      <style jsx>{`
+        .icon-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 4px;
+          border: 0;
+          background: transparent;
+          cursor: pointer;
+          line-height: 1;
+          color: var(--text-main);
+        }
+
+        .icon-button:hover:not(:disabled) {
+          opacity: 0.85;
+        }
+
+        .icon-button:disabled {
+          cursor: not-allowed;
+          opacity: 0.5;
+        }
+      `}</style>
     </>
   )
 }
