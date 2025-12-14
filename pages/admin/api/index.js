@@ -150,8 +150,6 @@ export default function Api({ sessionToken, openEmailLogin }) {
     }
   }
 
-  const enableEdit = false // backend does not support domain change for now
-
   return (
     <>
       <SEO title="API" />
@@ -232,22 +230,19 @@ export default function Api({ sessionToken, openEmailLogin }) {
                           <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             {!isEditingDomain ? (
                               <>
-                                <b>{apiData.domain}</b>
-
-                                {enableEdit && (
-                                  <button
-                                    className="button-icon"
-                                    type="button"
-                                    aria-label="Edit domain"
-                                    title="Edit domain"
-                                    onClick={() => {
-                                      setDomainEdit(apiData.domain || '')
-                                      setIsEditingDomain(true)
-                                    }}
-                                  >
-                                    <IoMdCreate />
-                                  </button>
-                                )}
+                                <span className="bold">{apiData.domain}</span>
+                                <button
+                                  className="button-icon"
+                                  type="button"
+                                  aria-label="Edit domain"
+                                  title="Edit domain"
+                                  onClick={() => {
+                                    setDomainEdit(apiData.domain || '')
+                                    setIsEditingDomain(true)
+                                  }}
+                                >
+                                  <IoMdCreate />
+                                </button>
                               </>
                             ) : (
                               <>
