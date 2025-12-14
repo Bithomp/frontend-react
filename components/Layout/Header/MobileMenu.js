@@ -28,11 +28,13 @@ export default function MobileMenu({
   signOutPro,
   signOut,
   account,
-  countryCode
+  countryCode,
+  sessionToken
 }) {
   const { t } = useTranslation('common')
 
   const iconStyle = { marginRight: '6px', fontSize: '1.1em' }
+  const proLoggedIn = proName && sessionToken
 
   return (
     <div className="mobile-menu" onClick={handleClick}>
@@ -95,15 +97,15 @@ export default function MobileMenu({
           )}
         </div>
 
-        <div className="mobile-menu-directory" data-expanded={proName ? 'false' : 'true'}>
+        <div className="mobile-menu-directory" data-expanded={proLoggedIn ? 'false' : 'true'}>
           <IoIosRocket /> Bithomp Pro
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            <FaUserLarge style={iconStyle} /> {proName || t('signin.signin')}
+            <FaUserLarge style={iconStyle} /> {proLoggedIn || t('signin.signin')}
           </Link>
 
-          {proName && (
+          {proLoggedIn && (
             <>
               <Link href="/admin/watchlist" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <FaEye style={{ ...iconStyle, marginTop: '2px' }} /> Watchlist

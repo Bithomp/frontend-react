@@ -296,6 +296,7 @@ const MyApp = ({ Component, pageProps }) => {
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
                 countryCode={countryCode}
+                sessionToken={sessionToken}
               />
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}

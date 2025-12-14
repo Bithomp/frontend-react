@@ -85,7 +85,8 @@ export default function Header({
   signOutPro,
   selectedCurrency,
   setSelectedCurrency,
-  countryCode
+  countryCode,
+  sessionToken
 }) {
   const { i18n, t } = useTranslation()
 
@@ -127,6 +128,8 @@ export default function Header({
     }
     proName = emailPart1 + '@' + emailPart2
   }
+
+  const proLoggedIn = proName && sessionToken
 
   const mobileMenuToggle = () => {
     // remove scrollbar when menu is open
@@ -354,14 +357,14 @@ export default function Header({
                     {displayName}
                   </>
                 ) : (
-                  <>{!proName ? t('signin.signin') : proName}</>
+                  <>{!proLoggedIn ? t('signin.signin') : proName}</>
                 )}
               </>
             }
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            {(displayName || proName) && <div style={{ minWidth: '250px' }}></div>}
+            {(displayName || proLoggedIn) && <div style={{ minWidth: '250px' }}></div>}
             {!displayName && (
               <span
                 onClick={() => {
@@ -453,7 +456,7 @@ export default function Header({
             <Link href="/admin">
               <IoIosRocket style={{ fontSize: '1.2em', marginBottom: '-2px' }} /> Bithomp Pro
             </Link>
-            {proName && (
+            {proLoggedIn && (
               <>
                 <hr />
                 <Link href="/admin">{displayName ? proName : 'Profile'}</Link>
@@ -526,6 +529,7 @@ export default function Header({
           address={address}
           setSignRequest={setSignRequest}
           proName={proName}
+          sessionToken={sessionToken}
           signOut={signOut}
           signOutPro={signOutPro}
           username={username}
