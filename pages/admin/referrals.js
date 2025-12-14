@@ -1,10 +1,10 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation } from 'next-i18next'
+import { i18n, useTranslation } from 'next-i18next'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { axiosAdmin } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { isAddressValid, ledgerName, useWidth, webSiteName } from '../../utils'
+import { isAddressValid, ledgerName, siteName, useWidth, webSiteName } from '../../utils'
 import { fullDateAndTime, shortNiceNumber } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 
@@ -50,9 +50,18 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
 
   const referral = codesData?.referrals?.[0] || null // currently only one allowed
 
-  const referralLink = useMemo(() => {
-    if (!referral?.referralCode) return ''
-    return `https://${webSiteName}/?ref=${referral.referralCode}`
+  const referralLinks = useMemo(() => {
+    if (!referral?.referralCode) return null
+
+    const ref = referral.referralCode
+    const base = `https://${webSiteName}`
+
+    return {
+      api: `${base}/${i18n.language}/admin/subscriptions?tab=api&ref=${ref}`,
+      pro: `${base}/${i18n.language}/admin/subscriptions?ref=${ref}`,
+      username: `${base}/${i18n.language}/username?ref=${ref}`,
+      landing: `${base}/${i18n.language}/?ref=${ref}`
+    }
   }, [referral?.referralCode])
 
   useEffect(() => {
@@ -216,18 +225,40 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
 
                   {referral ? (
                     <>
-                      <p style={{ marginBottom: 8 }}>
+                      <p>
                         Code:{' '}
                         <b className="orange" style={{ fontSize: '18px' }}>
                           {referral.referralCode}
-                        </b>{' '}
-                        <CopyButton text={referral.referralCode} />
+                        </b>
                       </p>
-
-                      <p style={{ marginTop: 0, marginBottom: 16 }}>
-                        Link: <b>{referralLink}</b> <CopyButton text={referralLink} />
+                      <p>
+                        If someone opens any page on {siteName} using a link with your referral code like
+                        <br />
+                        <br />
+                        <div className="bold">{referralLinks.landing}</div>
+                        <br />
+                        the referral code is immediately saved in their browser. It doesn’t matter which page they land
+                        on — it can be the homepage, a transaction page, an account page, or any other page on{' '}
+                        {webSiteName}. Even if the user doesn’t purchase anything right away and comes back later to buy
+                        a <span className="bold">username</span>, <span className="bold">Bithomp Pro</span>, or{' '}
+                        <span className="bold">API access</span>, your referral code will still be applied
+                        automatically, and you’ll receive the referral reward.
                       </p>
+                      {referralLinks && (
+                        <>
+                          <p>
+                            API link: <b>{referralLinks.api}</b> <CopyButton text={referralLinks.api} />
+                          </p>
 
+                          <p>
+                            Bithomp Pro link: <b>{referralLinks.pro}</b> <CopyButton text={referralLinks.pro} />
+                          </p>
+
+                          <p>
+                            Username link: <b>{referralLinks.username}</b> <CopyButton text={referralLinks.username} />
+                          </p>
+                        </>
+                      )}
                       <table className="table-large no-hover">
                         <tbody>
                           <tr>
