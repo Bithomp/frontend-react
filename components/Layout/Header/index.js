@@ -61,7 +61,7 @@ const MenuDropDown = ({ children, id, title, subtitle, setHoverStates, hoverStat
       <div
         className={'menu-dropdown-button' + (type === 'top-switch' ? ' switch-container contrast' : '')}
         style={style}
-        onClick={() => setHoverStates((state) => ({ ...state, [id]: !hoverStates[id] }))}
+        onClick={() => setHoverStates((state) => ({ ...state, [id]: true }))}
       >
         {title}
         <FaAngleDown className="chevron" />
