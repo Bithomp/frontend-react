@@ -236,7 +236,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
 
                                 {enableEdit && (
                                   <button
-                                    className="icon-button"
+                                    className="button-icon"
                                     type="button"
                                     aria-label="Edit domain"
                                     title="Edit domain"
@@ -262,7 +262,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
                                 />
 
                                 <button
-                                  className="icon-button"
+                                  className="button-icon"
                                   type="button"
                                   aria-label="Save domain"
                                   title="Save"
@@ -273,7 +273,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
                                 </button>
 
                                 <button
-                                  className="icon-button"
+                                  className="button-icon"
                                   type="button"
                                   aria-label="Cancel"
                                   title="Cancel"
@@ -354,28 +354,6 @@ export default function Api({ sessionToken, openEmailLogin }) {
           </div>
         )}
       </div>
-      <style jsx>{`
-        .icon-button {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 4px;
-          border: 0;
-          background: transparent;
-          cursor: pointer;
-          line-height: 1;
-          color: var(--text-main);
-        }
-
-        .icon-button:hover:not(:disabled) {
-          opacity: 0.85;
-        }
-
-        .icon-button:disabled {
-          cursor: not-allowed;
-          opacity: 0.5;
-        }
-      `}</style>
     </>
   )
 }

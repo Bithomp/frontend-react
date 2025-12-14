@@ -9,7 +9,8 @@ export default function AdminTabs({ name, tab }) {
     { value: 'watchlist', label: 'Watchlist' },
     { value: 'subscriptions', label: 'Subscriptions' },
     { value: 'pro', label: 'My addresses' },
-    { value: 'api', label: 'API' },
+    { value: 'referrals', label: 'Referrals' },
+    { value: 'api', label: 'API' }
     // { value: 'notifications', label: 'Notifications' },
   ]
 
@@ -41,6 +42,8 @@ export default function AdminTabs({ name, tab }) {
       router.push('/admin/watchlist')
     } else if (tab === 'notifications') {
       router.push('/admin/notifications')
+    } else if (tab === 'referrals') {
+      router.push('/admin/referrals')
     }
   }
 
