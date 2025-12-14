@@ -60,7 +60,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
       api: `${base}/${i18n.language}/admin/subscriptions?tab=api&ref=${ref}`,
       pro: `${base}/${i18n.language}/admin/subscriptions?ref=${ref}`,
       username: `${base}/${i18n.language}/username?ref=${ref}`,
-      landing: `${base}/${i18n.language}/?ref=${ref}`
+      landing: `${base}?ref=${ref}`
     }
   }, [referral?.referralCode])
 
@@ -259,6 +259,12 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                           </p>
                         </>
                       )}
+                      <p>
+                        ⚠️ Important: The destination address for referral rewards must be a self-custody wallet that
+                        you fully control. Do not use exchange or custodial addresses, those that require a Destination
+                        Tag, as referral rewards are sent via on-ledger Checks and may be lost if an exchange address is
+                        used.
+                      </p>
                       <table className="table-large no-hover">
                         <tbody>
                           <tr>
