@@ -295,115 +295,114 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                           </p>
                         </>
                       )}
-                      <p>
-                        ⚠️ Important: The destination address for referral rewards must be a self-custody wallet that
-                        you fully control. Do not use exchange or custodial addresses, those that require a Destination
-                        Tag, as referral rewards are sent via on-ledger Checks and may be lost if an exchange address is
-                        used.
-                      </p>
-                      <table className="table-large no-hover">
-                        <tbody>
-                          <tr>
-                            <td className="right" style={{ width: 220 }}>
-                              Created
-                            </td>
-                            <td className="left">{fullDateAndTime(referral.createdAt)}</td>
-                          </tr>
-                          <tr>
-                            <td className="right">Updated</td>
-                            <td className="left">{fullDateAndTime(referral.updatedAt)}</td>
-                          </tr>
-                          <tr>
-                            <td className="right">Payout address</td>
-                            <td className="left">
-                              {!editingAddress ? (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                                  <b>{referral.address}</b>
-
-                                  <button
-                                    className="button-icon"
-                                    type="button"
-                                    aria-label="Edit destination address"
-                                    title="Edit"
-                                    onClick={() => {
-                                      setEditingAddress(true)
-                                      setTimeout(() => addressRef.current?.focus?.(), 0)
-                                    }}
-                                  >
-                                    <IoMdCreate />
-                                  </button>
-                                </div>
-                              ) : (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                                  <div style={{ minWidth: 320, flex: '1 1 420px' }}>
-                                    <AddressInput
-                                      placeholder={'Enter ' + ledgerName + ' address'}
-                                      setInnerValue={setAddress}
-                                      hideButton={true}
-                                      rawData={referral}
-                                      type="address"
-                                      ref={addressRef}
-                                    />
-                                  </div>
-
-                                  <button
-                                    className="button-icon"
-                                    type="button"
-                                    aria-label="Save destination address"
-                                    title="Save"
-                                    onClick={savePayoutAddress}
-                                    disabled={savingAddress}
-                                  >
-                                    <IoMdCheckmark />
-                                  </button>
-
-                                  <button
-                                    className="button-icon"
-                                    type="button"
-                                    aria-label="Cancel"
-                                    title="Cancel"
-                                    onClick={() => {
-                                      setAddress(referral.address || '')
-                                      setEditingAddress(false)
-                                    }}
-                                    disabled={savingAddress}
-                                  >
-                                    <IoMdClose />
-                                  </button>
-
-                                  {savingAddress && <span className="waiting inline" />}
-                                </div>
-                              )}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
                     </>
                   ) : (
-                    <>
-                      <p>
-                        You don’t have a referral code yet. Enter a destination address for rewards and request one.
-                      </p>
-
-                      <div style={{ width: 520, maxWidth: '100%', margin: '20px auto 0' }}>
-                        <AddressInput
-                          placeholder={'Enter ' + ledgerName + ' address'}
-                          setInnerValue={setAddress}
-                          hideButton={true}
-                          type="address"
-                          ref={addressRef}
-                          rawData={accountAddress}
-                        />
-
-                        <div className="center" style={{ marginTop: 16 }}>
-                          <button className="button-action" onClick={requestCode} disabled={savingAddress}>
-                            Request referral code {savingAddress && <span className="waiting inline"></span>}
-                          </button>
-                        </div>
-                      </div>
-                    </>
+                    <p>You don’t have a referral code yet. Enter a destination address for rewards and request one.</p>
                   )}
                 </div>
+
+                <p>
+                  ⚠️ Important: The destination address for referral rewards must be a self-custody wallet that you
+                  fully control. Do not use exchange or custodial addresses, those that require a Destination Tag, as
+                  referral rewards are sent via on-ledger Checks and may be lost if an exchange address is used.
+                </p>
+
+                {referral ? (
+                  <table className="table-large no-hover">
+                    <tbody>
+                      <tr>
+                        <td className="right" style={{ width: 220 }}>
+                          Created
+                        </td>
+                        <td className="left">{fullDateAndTime(referral.createdAt)}</td>
+                      </tr>
+                      <tr>
+                        <td className="right">Updated</td>
+                        <td className="left">{fullDateAndTime(referral.updatedAt)}</td>
+                      </tr>
+                      <tr>
+                        <td className="right">Payout address</td>
+                        <td className="left">
+                          {!editingAddress ? (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                              <b>{referral.address}</b>
+
+                              <button
+                                className="button-icon"
+                                type="button"
+                                aria-label="Edit destination address"
+                                title="Edit"
+                                onClick={() => {
+                                  setEditingAddress(true)
+                                  setTimeout(() => addressRef.current?.focus?.(), 0)
+                                }}
+                              >
+                                <IoMdCreate />
+                              </button>
+                            </div>
+                          ) : (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                              <div style={{ minWidth: 320, flex: '1 1 420px' }}>
+                                <AddressInput
+                                  placeholder={'Enter ' + ledgerName + ' address'}
+                                  setInnerValue={setAddress}
+                                  hideButton={true}
+                                  rawData={referral}
+                                  type="address"
+                                  ref={addressRef}
+                                />
+                              </div>
+
+                              <button
+                                className="button-icon"
+                                type="button"
+                                aria-label="Save destination address"
+                                title="Save"
+                                onClick={savePayoutAddress}
+                                disabled={savingAddress}
+                              >
+                                <IoMdCheckmark />
+                              </button>
+
+                              <button
+                                className="button-icon"
+                                type="button"
+                                aria-label="Cancel"
+                                title="Cancel"
+                                onClick={() => {
+                                  setAddress(referral.address || '')
+                                  setEditingAddress(false)
+                                }}
+                                disabled={savingAddress}
+                              >
+                                <IoMdClose />
+                              </button>
+
+                              {savingAddress && <span className="waiting inline" />}
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                ) : (
+                  <div style={{ width: 520, maxWidth: '100%', margin: '20px auto 0' }}>
+                    <AddressInput
+                      placeholder={'Enter ' + ledgerName + ' address'}
+                      setInnerValue={setAddress}
+                      hideButton={true}
+                      type="address"
+                      ref={addressRef}
+                      rawData={accountAddress}
+                    />
+
+                    <div className="center" style={{ marginTop: 16 }}>
+                      <button className="button-action" onClick={requestCode} disabled={savingAddress}>
+                        Request referral code {savingAddress && <span className="waiting inline"></span>}
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 <br />
 
