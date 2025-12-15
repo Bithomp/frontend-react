@@ -13,6 +13,7 @@ import AdminTabs from '../../components/Tabs/AdminTabs'
 import CopyButton from '../../components/UI/CopyButton'
 import AddressInput from '../../components/UI/AddressInput'
 import { IoMdClose, IoMdCheckmark, IoMdCreate } from 'react-icons/io'
+import Link from 'next/link'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -212,13 +213,13 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
         <p>You earn 10% when your referral purchases:</p>
         <ul>
           <li>
-            a <b>username</b>
+            a <Link href="/username">username</Link>
           </li>
           <li>
-            a <b>Bithomp Pro</b> subscription
+            a <Link href="/admin/subscriptions">Bithomp Pro</Link> subscription
           </li>
           <li>
-            <b>API access</b>
+            <Link href="/admin/subscriptions?tab=api">API access</Link>
           </li>
         </ul>
 
@@ -227,12 +228,16 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
           to receive your funds.
         </p>
 
-        <p>How it works:</p>
-        <ul>
-          <li>Get your personal referral link</li>
-          <li>Share it with your audience</li>
-          <li>Earn 10% commission on every completed purchase</li>
-        </ul>
+        {!referral && (
+          <>
+            <p>How it works:</p>
+            <ul>
+              <li>Get your personal referral link</li>
+              <li>Share it with your audience</li>
+              <li>Earn 10% commission on every completed purchase</li>
+            </ul>
+          </>
+        )}
 
         <p>
           There is <b>no limit</b> to your earnings.
@@ -309,7 +314,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                             <td className="left">{fullDateAndTime(referral.updatedAt)}</td>
                           </tr>
                           <tr>
-                            <td className="right">Destination address</td>
+                            <td className="right">Payout address</td>
                             <td className="left">
                               {!editingAddress ? (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>

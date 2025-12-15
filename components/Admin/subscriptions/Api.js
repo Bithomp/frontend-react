@@ -94,12 +94,12 @@ export default function Api({ setPayPeriod, setTier, tier }) {
       <div style={{ textAlign: 'left' }}>
         <p>Purchasing an API subscription can be beneficial for several reasons:</p>
         <p>
-          ✅ <b>Increased Rate Limits</b>: Paid plans offer higher request limits, which include more requests per
+          ✅ <b>Increased rate limits</b>: Paid plans offer higher request limits, which include more requests per
           minute as well as more requests per day. This is particularly crucial for applications requiring real-time
           data.
         </p>
         <p>
-          ✅ <b>Access to Advanced Features</b>: Subscribing to a paid plan grants access to additional features,
+          ✅ <b>Access to advanced features</b>: Subscribing to a paid plan grants access to additional features,
           including specialized endpoints that are not available in the Free tier.
         </p>
       </div>
