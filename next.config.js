@@ -117,6 +117,10 @@ module.exports = withBundleAnalyzer({
         destination: '/api/robots'
       },
       {
+        source: '/referrals',
+        destination: '/admin/referrals'
+      },
+      {
         source: '/tx/:id',
         destination: '/transaction/:id'
       },
