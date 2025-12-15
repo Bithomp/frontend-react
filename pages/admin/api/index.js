@@ -242,7 +242,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
                           </td>
                         </tr>
                         <tr>
-                          <td className="right">Status</td>
+                          <td className="right">{t('table.status')}</td>
                           <td className="left">
                             {apiData.locked ? (
                               <b className="red">locked</b>
@@ -277,7 +277,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
                           <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             {!isEditingDomain ? (
                               <>
-                                <span className="bold">{apiData.domain}</span>
+                                {apiData.domain}
                                 <button
                                   className="button-icon"
                                   type="button"
@@ -332,11 +332,11 @@ export default function Api({ sessionToken, openEmailLogin }) {
                           </td>
                         </tr>
                         <tr>
-                          <td className="right">Description</td>
+                          <td className="right">{t('table.description')}</td>
                           <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             {!isEditingDescription ? (
                               <>
-                                <span className="bold">{apiData.memo || ''}</span>
+                                {apiData.memo || apiData.description || ''}
                                 <button
                                   className="button-icon"
                                   type="button"
