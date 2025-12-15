@@ -156,13 +156,15 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
 
-      {/*Always show executor, as it can be destination/source aor anyone when expired */}
-      <tr>
-        <TData>Executor</TData>
-        <TData>
-          <AddressWithIconFilled data={specification.source} name="address" />
-        </TData>
-      </tr>
+      {/*Always show executor, as it can be destination/source or anyone when expired */}
+      {tx?.TransactionType !== 'CheckCreate' && (
+        <tr>
+          <TData>Executor</TData>
+          <TData>
+            <AddressWithIconFilled data={specification.source} name="address" />
+          </TData>
+        </tr>
+      )}
     </TransactionCard>
   )
 }
