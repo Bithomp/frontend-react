@@ -50,10 +50,10 @@ export default function Api({ sessionToken, openEmailLogin }) {
   }, [apiData?.domain])
 
   useEffect(() => {
-    if (apiData?.memo) {
-      setDescriptionEdit(apiData.memo)
+    if (apiData?.description) {
+      setDescriptionEdit(apiData.description)
     }
-  }, [apiData?.memo])
+  }, [apiData?.description])
 
   const getApiData = async () => {
     setLoading(true)
@@ -178,7 +178,6 @@ export default function Api({ sessionToken, openEmailLogin }) {
     const resp = await axiosAdmin
       .put('partner/accessToken', {
         id: apiData.id,
-        memo: cleanDescription,
         description: cleanDescription
       })
       .catch((error) => {
@@ -336,14 +335,14 @@ export default function Api({ sessionToken, openEmailLogin }) {
                           <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             {!isEditingDescription ? (
                               <>
-                                {apiData.memo || apiData.description || ''}
+                                {apiData.description || ''}
                                 <button
                                   className="button-icon"
                                   type="button"
                                   aria-label="Edit description"
                                   title="Edit description"
                                   onClick={() => {
-                                    setDescriptionEdit(apiData.memo || '')
+                                    setDescriptionEdit(apiData.description || '')
                                     setIsEditingDescription(true)
                                   }}
                                 >
@@ -378,7 +377,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
                                   aria-label="Cancel"
                                   title="Cancel"
                                   onClick={() => {
-                                    setDescriptionEdit(apiData.memo || '')
+                                    setDescriptionEdit(apiData.description || '')
                                     setIsEditingDescription(false)
                                   }}
                                   disabled={descriptionSaving}
