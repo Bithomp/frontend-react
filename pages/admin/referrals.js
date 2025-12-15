@@ -5,8 +5,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { axiosAdmin } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isAddressValid, ledgerName, server, siteName, useWidth, webSiteName } from '../../utils'
-import { amountFormat, fullDateAndTime, shortHash, shortNiceNumber } from '../../utils/format'
-import { LinkTx } from '../../utils/links'
+import { amountFormat, fullDateAndTime, shortNiceNumber } from '../../utils/format'
+import { LinkObject, LinkTx } from '../../utils/links'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Tabs/AdminTabs'
@@ -435,7 +435,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                                 <td className="right">{amountFormat(r.amount)}</td>
                                 <td className="right">{shortNiceNumber(r.amountInEUR, 2, 2)}</td>
                                 <td className="left">
-                                  <span className="mono">{shortHash(r.checkID)}</span> <CopyButton text={r.checkID} />
+                                  <LinkObject objectId={r.checkID} hash={true} />
                                   {r.expirationAt ? (
                                     <>
                                       <br />
