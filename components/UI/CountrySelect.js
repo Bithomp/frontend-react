@@ -22,7 +22,12 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
   }, [i18n.language])
 
   async function fetchData() {
-    const response = await axios('client/info')
+    let response
+    try {
+      response = await axios('client/info')
+    } catch (error) {
+      return
+    }
     const json = response.data
     if (json && json.country) {
       const countryCode = json.country.toUpperCase()

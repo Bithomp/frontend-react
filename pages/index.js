@@ -2,7 +2,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect, useRef } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
- 
 
 import { server, explorerName, nativeCurrency, devNet, xahauNetwork, wssServer, ledgerName } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -33,8 +32,6 @@ export async function getServerSideProps(context) {
     }
   }
 }
-
- 
 
 function sendData(selectedCurrency) {
   if (ws && ws.readyState === WebSocket.OPEN) {
@@ -72,7 +69,8 @@ export default function Home({
   fiatRate: fiatRateApp,
   isSsrMobile,
   selectedCurrencyServer,
-  fiatRateServer
+  fiatRateServer,
+  countryCode
 }) {
   const { t } = useTranslation()
 
@@ -205,13 +203,13 @@ export default function Home({
         twitterImage={{
           file: 'previews/630x630/index.png'
         }}
-      /> 
+      />
 
       <section className="home-section">
         <h1 className="center">{t('explorer.header.main', { explorerName })}</h1>
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
         <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} />
-        {showAds && <Ads />}
+        {showAds && <Ads countryCode={countryCode} />}
       </section>
 
       {!devNet && (

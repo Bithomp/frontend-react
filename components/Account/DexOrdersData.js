@@ -1,4 +1,4 @@
-import { fullDateAndTime, niceNumber, niceCurrency, amountFormatWithIcon, fullNiceNumber } from '../../utils/format'
+import { fullDateAndTime, niceNumber, niceCurrency, fullNiceNumber, amountFormat } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 import { divide, multiply } from '../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
@@ -64,9 +64,13 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
         </td>
         <td className="left">
           <span className={sell ? 'red' : 'green'}>{sell ? 'Selling ' : 'Buying '}</span>
-          <span className="bold">{amountFormatWithIcon({ amount: sell ? offer.TakerGets : offer.TakerPays })}</span>
+          <span className="bold">
+            {amountFormat(sell ? offer.TakerGets : offer.TakerPays, { short: true, icon: true })}
+          </span>
           <span className="grey">{' for '}</span>
-          <span className="bold">{amountFormatWithIcon({ amount: sell ? offer.TakerPays : offer.TakerGets })}</span>
+          <span className="bold">
+            {amountFormat(sell ? offer.TakerPays : offer.TakerGets, { short: true, icon: true })}
+          </span>
         </td>
         {sell ? (
           <td className="right">
@@ -206,7 +210,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
               The last 5 DEX orders{historicalTitle} [
               <a href={`/account/${address}/dex`} className="link">
                 View all ({offerList.length} total)
-              </a>{' '}
+              </a>
               ]
             </>
           ) : (
@@ -220,7 +224,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
           )}
         </center>
         <br />
-        <table className="table-mobile wide">
+        <table className="table-mobile">
           <tbody>
             <tr>
               <th>#</th>

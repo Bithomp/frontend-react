@@ -24,6 +24,7 @@ import { addressLink, amountFormat, capitalize, duration, fullNiceNumber } from 
 import { LedgerLink, LinkTx } from '../utils/links'
 import Link from 'next/link'
 import Image from 'next/image'
+import { errorCodeDescription } from '../utils/transaction'
 
 const convertToDrops = (amount) => {
   return parseInt(amount * 1000000).toString()
@@ -207,7 +208,9 @@ export default function Faucet({ account, type, sessionTokenData }) {
       } else if (response?.data?.state === 'tecNO_DST_INSUF_XRP') {
         setErrorMessage('The destination address is not activated, send a larger amount to activate it!')
       } else {
-        setErrorMessage(response?.data?.message || response?.data?.state || t('error-occured', { ns: 'faucet' }))
+        setErrorMessage(
+          response?.data?.message || errorCodeDescription(response?.data?.state) || t('error-occured', { ns: 'faucet' })
+        )
       }
     }
   }

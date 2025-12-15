@@ -270,8 +270,7 @@ export default function CreateEscrow({
               finishAfter: result.FinishAfter,
               cancelAfter: result.CancelAfter,
               condition: result.Condition,
-              ledgerIndex: result.ledger_index,
-              balanceChanges: result.balanceChanges
+              ledgerIndex: result.ledger_index
             })
           } else {
             setError(errorCodeDescription(status))
@@ -308,7 +307,7 @@ export default function CreateEscrow({
             placeholder="Destination address"
             name="destination"
             hideButton={true}
-            setValue={setAddress}
+            setInnerValue={setAddress}
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
           />
@@ -454,7 +453,7 @@ export default function CreateEscrow({
                     We do not save/keep the Fulfillment. Please copy and save it securely.
                     <br />
                     <br />
-                    <b>If you lose it, you won't be able to relase the funds.</b>
+                    <b>If you lose it, you won't be able to release the funds.</b>
                   </div>
                   <br />
                 </>

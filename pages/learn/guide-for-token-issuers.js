@@ -1,11 +1,12 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { network } from '../../utils'
+import { network, server, siteName } from '../../utils'
 import { explorerName, xahauNetwork } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import Breadcrumbs from '../../components/Breadcrumbs'
+import { i18n } from 'next-i18next'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -18,15 +19,11 @@ export async function getServerSideProps(context) {
 }
 
 export default function GuideForTokenIssuers() {
-  const serverUrl = xahauNetwork ? 'xahauexplorer.com' : 'bithomp.com'
-
   return (
     <>
       <SEO
-        title={'Guide for + explorerName Token Issuers'}
-        description={
-          'Step-by-step guide for + explorerName token issuers: register services, verify domains, set up TOML files, add logos, create AMM pools, and and grow your project’s trust.'
-        }
+        title="Guide for Token Issuers"
+        description="Step-by-step guide for token issuers: register services, verify domains, set up TOML files, add logos, create AMM pools, and and grow your project’s trust."
         noindex={network !== 'mainnet'}
         image={{
           file: '/images/pages/learn/guide-for-token-issuers/cover',
@@ -34,7 +31,6 @@ export default function GuideForTokenIssuers() {
           height: 953,
           allNetworks: true
         }}
-        canonical={serverUrl + '/guide-for-token-issuers'}
       />
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs />
@@ -55,9 +51,8 @@ export default function GuideForTokenIssuers() {
           </div>
           <p>
             So, you’ve successfully created your token on the {explorerName}. What’s next? If you want your token to
-            look professional, gain more trust from users, and be discoverable on{' '}
-            {xahauNetwork ? 'Xahau Explorer' : 'Bithomp'} or other platforms which are using our API, there are{' '}
-            <strong>several important steps </strong>the issuer should take:
+            look professional, gain more trust from users, and be discoverable on {siteName} or other platforms which
+            are using our API, there are <strong>several important steps </strong>the issuer should take:
           </p>
           <p>A public username makes it easier for users to recognize your project.</p>
           <p>
@@ -230,7 +225,7 @@ export default function GuideForTokenIssuers() {
 
             <li>
               Your Token info and Statistics:{' '}
-              <code>{'https://' + serverUrl + '/en/token/[ISSUER ADDRESS]/[CURRENCY CODE]'}</code>
+              <code>{'https://' + server + '/' + i18n.language + '/token/[ISSUER ADDRESS]/[CURRENCY CODE]'}</code>
             </li>
           </ul>
           <p>

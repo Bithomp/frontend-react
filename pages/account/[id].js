@@ -6,7 +6,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 
-import { devNet, xahauNetwork, avatarSrc, nativeCurrency } from '../../utils'
+import {
+  devNet,
+  xahauNetwork,
+  avatarSrc,
+  nativeCurrency,
+  errorT,
+  isValidPayString,
+  isValidXAddress,
+  isTagValid
+} from '../../utils'
 import { shortNiceNumber } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 
@@ -44,11 +53,62 @@ export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let initialData = null
   let networkInfo = {}
+  let initialErrorMessage = null
   const { id, ledgerTimestamp } = query
   //keep it from query instead of params, anyway it is an array sometimes
-  const account = id ? (Array.isArray(id) ? id[0] : id) : ''
+  let account = id ? (Array.isArray(id) ? id[0] : id) : ''
+  let accountWithTag = null
 
-  if (account) {
+  if (isValidXAddress(account)) {
+    //xAddress
+    try {
+      const decoded = xAddressToClassicAddress(account)
+      console.log('decoded xaddress', decoded) // delete
+      if (!isTagValid(decoded.tag)) {
+        account = decoded.classicAddress
+      } else {
+        accountWithTag = {
+          address: decoded.classicAddress,
+          xAddress: account,
+          tag: decoded.tag
+        }
+      }
+    } catch {
+      initialErrorMessage = 'Invalid xAddress format'
+    }
+  } else if (isValidPayString(account)) {
+    //payString
+    const payStringData = await axios('v2/payId/' + account).catch(() => {
+      initialErrorMessage = 'Invalid payString format'
+    })
+    if (payStringData?.data) {
+      if (!isTagValid(payStringData.data.tag) && payStringData.data.address) {
+        account = payStringData.data.address
+      } else if (payStringData.data.address) {
+        accountWithTag = payStringData.data
+      } else {
+        initialErrorMessage = 'We could not resolve your payString ' + account
+      }
+    } else {
+      initialErrorMessage = 'Invalid payString response'
+    }
+    /*
+      {
+        address: 'rPdvC6ccq8hCdPKSPJkPmyZ4Mi1oG2FFkT',
+        xAddress: 'XVjKs2ae5EgCyKL4oPoNo7RoeBKFCbndk8gq6W6n93WeYZG',
+        payId: 'wietse$bithomp.com'
+      }
+      {
+        address: 'rKV8HEL3vLc6q9waTiJcewdRdSFyx67QFb',
+        tag: '1520062694',
+        xAddress: 'XVVFXHFdehYhofb7XRWeJYV6kjTEwbq2mLScCiYyDTHKu9E',
+        payId: 'username$paystring.crypto.com',
+        publicKey: 'nHUqivgp2vt98M6aZ4faiDh2sNSjJ3qXL9HZSpexRZhvb3vtTEJk'
+      }
+    */
+  }
+
+  if (!accountWithTag && !initialErrorMessage) {
     try {
       const res = await axiosServer({
         method: 'get',
@@ -61,32 +121,48 @@ export async function getServerSideProps(context) {
       })
       initialData = res?.data
 
-      const networkData = await axiosServer({
-        method: 'get',
-        url: 'v2/server',
-        headers: passHeaders(req)
-      })
-      networkInfo = networkData?.data
-    } catch (error) {
-      console.error(error)
+      if (initialData?.error) {
+        initialErrorMessage = initialData.error
+        initialData = null
+      } else {
+        const networkData = await axiosServer({
+          method: 'get',
+          url: 'v2/server',
+          headers: passHeaders(req)
+        })
+        networkInfo = networkData?.data
+      }
+    } catch (e) {
+      initialErrorMessage = e?.message || 'Failed to load transactions'
     }
-  }
 
-  const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
+    const balanceListServer = setBalancesFunction(networkInfo, initialData)
+    const { fiatRateServer, selectedCurrencyServer } = await getFiatRateServer(req)
 
-  const balanceList = setBalancesFunction(networkInfo, initialData)
-
-  return {
-    props: {
-      id: account,
-      fiatRateServer,
-      selectedCurrencyServer,
-      ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
-      networkInfo,
-      balanceListServer: balanceList || {},
-      isSsrMobile: getIsSsrMobile(context),
-      initialData: initialData || {},
-      ...(await serverSideTranslations(locale, ['common', 'account']))
+    return {
+      props: {
+        id: account || null,
+        fiatRateServer,
+        selectedCurrencyServer,
+        ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
+        networkInfo,
+        balanceListServer: balanceListServer || {},
+        isSsrMobile: getIsSsrMobile(context),
+        initialData: initialData || {},
+        initialErrorMessage: initialErrorMessage || null,
+        ...(await serverSideTranslations(locale, ['common', 'account']))
+      }
+    }
+  } else {
+    //we have account with tag
+    return {
+      props: {
+        id: account || null,
+        accountWithTag: accountWithTag || null,
+        isSsrMobile: getIsSsrMobile(context),
+        initialErrorMessage: initialErrorMessage || null,
+        ...(await serverSideTranslations(locale, ['common', 'account']))
+      }
     }
   }
 }
@@ -109,9 +185,12 @@ import EscrowData from '../../components/Account/EscrowData'
 import DexOrdersData from '../../components/Account/DexOrdersData'
 import RecentTransactions from '../../components/Account/RecentTransactions'
 import MPTData from '../../components/Account/MPTData'
+import AccountWithTag from '../../components/Account/AccountWithTag'
+import { xAddressToClassicAddress } from 'ripple-address-codec'
 
 export default function Account({
   initialData,
+  initialErrorMessage,
   refreshPage,
   id,
   selectedCurrency: selectedCurrencyApp,
@@ -119,11 +198,11 @@ export default function Account({
   account,
   setSignRequest,
   fiatRate: fiatRateApp,
-  setActivatedAccount,
   fiatRateServer,
   selectedCurrencyServer,
   networkInfo,
-  balanceListServer
+  balanceListServer,
+  accountWithTag
 }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
@@ -136,16 +215,16 @@ export default function Account({
   }
 
   /*
-  obligations: {
-    "trustlines": 44799,
-    "holders": 12131,
-    "tokens": 7
-  }
+    obligations: {
+      "trustlines": 44799,
+      "holders": 12131,
+      "tokens": 7
+    }
   */
 
   const [data, setData] = useState(initialData)
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState(initialErrorMessage)
   const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(ledgerTimestampQuery)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRate : 0)
@@ -166,8 +245,6 @@ export default function Account({
       service: initialData.service?.name,
       address: initialData.address
     })
-
-    setActivatedAccount(initialData?.ledgerInfo?.activated)
 
     if (initialData?.obligations) {
       if (initialData.obligations?.trustlines > 200) {
@@ -212,7 +289,6 @@ export default function Account({
           service: newdata.service?.name,
           address: newdata.address
         })
-        setActivatedAccount(newdata.ledgerInfo?.activated)
       } else {
         if (newdata.error) {
           setErrorMessage(t('error-api.' + newdata.error))
@@ -225,12 +301,12 @@ export default function Account({
 
   useEffect(() => {
     if (!selectedCurrency || !id) return
-
     if (isFirstRender.current) {
       isFirstRender.current = false
       return
     }
     setObjects({})
+    setErrorMessage(initialErrorMessage)
     checkApi({ noCache: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, refreshPage, ledgerTimestamp, selectedCurrency])
@@ -276,6 +352,8 @@ export default function Account({
     setLedgerTimestamp(null)
   }
 
+  if (accountWithTag) return <>{errorMessage || <AccountWithTag data={accountWithTag} />}</>
+
   return (
     <>
       <SEO
@@ -297,6 +375,7 @@ export default function Account({
         image={{ file: avatarSrc(initialData?.address) }}
       />
       <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" userData={userData} />
+
       <div className="content-profile account">
         {id ? (
           <>
@@ -309,7 +388,7 @@ export default function Account({
             ) : (
               <>
                 {errorMessage ? (
-                  <div className="center orange bold">{errorMessage}</div>
+                  <div className="center orange bold">{errorT(t, errorMessage)}</div>
                 ) : (
                   <>
                     {data?.address && (

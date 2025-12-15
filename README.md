@@ -12,7 +12,7 @@ In the project directory, you can run:
 
 `NEXT_PUBLIC_NETWORK_NAME=mainnet yarn dev`
 
-mainnet | staging | testnet | devnet | xahau | xahau-testnet | xahau-jshooks
+mainnet | staging | testnet | devnet | alphanet | xahau | xahau-testnet | xahau-jshooks
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
@@ -64,7 +64,7 @@ Runs the app in production
 
 `yarn build`
 
-`pm2 start yarn --name "frontend-react" -- start` // otherwise: `-- start:next` or `PORT=3400 pm2 start /usr/bin/yarn  --name "jshooks.xahau-frontend-react" -- start`
+`PORT=3300 pm2 start /usr/bin/yarn  --name alphanet-frontend-react -- start` // from inside the frontend-react directory
 
 `pm2 logs frontend-react --lines 1000` //verify it runs properly
 

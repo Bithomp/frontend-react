@@ -6,6 +6,8 @@ import { appWithTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
 import { GoogleAnalytics } from '@next/third-parties/google'
 
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+
 const SignForm = dynamic(() => import('../components/SignForm'), { ssr: false })
 const EmailLoginPopup = dynamic(() => import('../components/EmailLoginPopup'), { ssr: false })
 import TopLinks from '../components/Layout/TopLinks'
@@ -29,6 +31,8 @@ import '../styles/components/nprogress.css'
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
 import ErrorBoundary from '../components/ErrorBoundary'
+import { ledgerwalletDisconnect } from '../utils/ledgerwallet'
+import { isUsernameValid } from '../utils'
 
 const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
@@ -48,7 +52,47 @@ function useIsBot() {
   return isBot
 }
 
+// Helper to extract main route: "/en/account/xyz/123" -> "/account"
+const getMainPath = (url) => {
+  const path = url.split('?')[0] // remove query
+  const parts = path.split('/').filter(Boolean) // remove empty segments
+  // If first part is a 2-letter locale, skip it
+  const startIndex = parts[0] && parts[0].length === 2 ? 1 : 0
+  return parts.length > startIndex ? `/${parts[startIndex]}` : '/'
+}
+
+function useReferralCookie() {
+  const router = useRouter()
+  const [, setRef] = useCookie('ref')
+
+  useEffect(() => {
+    if (!router.isReady) return
+
+    const handleUrl = (url) => {
+      try {
+        const u = new URL(url, window.location.origin)
+        let ref = u.searchParams.get('ref')
+        if (!ref) return
+        ref = ref.trim()
+        if (isUsernameValid(ref)) {
+          setRef(ref)
+        }
+      } catch (_) {
+        // Ignore URL parsing errors
+      }
+    }
+
+    // Initial page load
+    handleUrl(window.location.href)
+
+    // Client-side navigation
+    router.events.on('routeChangeComplete', handleUrl)
+    return () => router.events.off('routeChangeComplete', handleUrl)
+  }, [router.isReady, router.events, setRef])
+}
+
 const MyApp = ({ Component, pageProps }) => {
+  useReferralCookie()
   const firstRenderRef = useRef(true)
   const [account, setAccount] = useLocalStorage('account')
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
@@ -65,8 +109,6 @@ const MyApp = ({ Component, pageProps }) => {
   const [isOnline, setIsOnline] = useState(true)
   const [countryCode, setCountryCode] = useState('')
 
-  const [activatedAccount, setActivatedAccount] = useState(false)
-
   const { isEmailLoginOpen, openEmailLogin, closeEmailLogin, handleLoginSuccess } = useEmailLogin()
 
   useEffect(() => {
@@ -76,6 +118,31 @@ const MyApp = ({ Component, pageProps }) => {
 
   const router = useRouter()
   const isBot = useIsBot()
+
+  useEffect(() => {
+    if (!GA_ID) return
+    if (typeof window === 'undefined') return
+
+    const sendPageView = (url) => {
+      if (!window.gtag) return
+
+      const mainPath = getMainPath(url) // e.g. "/account", "/nft", "/tokens"
+
+      window.gtag('event', 'page_view', {
+        page_path: mainPath,
+        page_location: window.location.origin + mainPath,
+        page_title: document.title,
+        main_route: mainPath
+      })
+    }
+
+    sendPageView(window.location.pathname + window.location.search)
+
+    const handleRouteChange = (url) => sendPageView(url)
+
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => router.events.off('routeChangeComplete', handleRouteChange)
+  }, [router])
 
   //check country
   useEffect(() => {
@@ -101,6 +168,7 @@ const MyApp = ({ Component, pageProps }) => {
       '/admin/watchlist',
       '/nft/[[...id]]',
       '/tokens',
+      '/nft-collection/[id]',
       '/token/[[...id]]'
     ]
     const skipOnFirstRender = [
@@ -137,8 +205,11 @@ const MyApp = ({ Component, pageProps }) => {
 
   const { uuid } = router.query
 
-  const signOut = () => {
+  const signOut = async () => {
     localStorage.removeItem('xamanUserToken')
+    if (account?.wallet === 'ledgerwallet') {
+      await ledgerwalletDisconnect()
+    }
     setWcSession(null)
     setAccount({
       ...account,
@@ -196,8 +267,7 @@ const MyApp = ({ Component, pageProps }) => {
     '/press',
     '/404',
     '/faucet',
-    '/explorer',
-    '/explorer2' //remove later
+    '/explorer'
   ]
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(pathname) && !pathname.includes('/admin')
@@ -214,6 +284,7 @@ const MyApp = ({ Component, pageProps }) => {
         <meta charSet="utf-8" />
       </Head>
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
+        {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
         <ThemeProvider>
           <ErrorBoundary>
             <div className="body" data-network={network} style={{ backgroundImage: getBackgroundImage() }}>
@@ -225,6 +296,7 @@ const MyApp = ({ Component, pageProps }) => {
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
                 countryCode={countryCode}
+                sessionToken={sessionToken}
               />
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}
@@ -256,7 +328,7 @@ const MyApp = ({ Component, pageProps }) => {
               )}
               <div className="content">
                 <TopProgressBar />
-                {showTopAds && <TopLinks activatedAccount={activatedAccount} countryCode={countryCode} />}
+                {showTopAds && <TopLinks countryCode={countryCode} />}
                 <Component
                   {...pageProps}
                   refreshPage={refreshPage}
@@ -275,16 +347,13 @@ const MyApp = ({ Component, pageProps }) => {
                   setSessionToken={setSessionToken}
                   fiatRate={fiatRate}
                   openEmailLogin={openEmailLogin}
-                  setActivatedAccount={setActivatedAccount}
+                  countryCode={countryCode}
                 />
               </div>
               <Footer countryCode={countryCode} />
             </div>
           </ErrorBoundary>
         </ThemeProvider>
-        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
-        )}
       </IsSsrMobileContext.Provider>
     </>
   )

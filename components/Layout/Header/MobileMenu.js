@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, xahauNetwork, nativeCurrency, server, avatarServer } from '../../../utils'
+import { devNet, xahauNetwork, nativeCurrency, avatarServer } from '../../../utils'
 
 import Image from 'next/image'
 
@@ -27,14 +27,14 @@ export default function MobileMenu({
   proName,
   signOutPro,
   signOut,
-  isCopied,
-  copyToClipboard,
   account,
-  countryCode
+  countryCode,
+  sessionToken
 }) {
   const { t } = useTranslation('common')
 
   const iconStyle = { marginRight: '6px', fontSize: '1.1em' }
+  const proLoggedIn = proName && sessionToken
 
   return (
     <div className="mobile-menu" onClick={handleClick}>
@@ -55,26 +55,21 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           {displayName ? (
             <>
-              <span onClick={copyToClipboard} className="mobile-menu-item link">
-                {isCopied ? t('button.copied') : t('button.copy-my-address')}
-              </span>
               <Link href={'/account/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.view')}
               </Link>
-              <a href={server + '/explorer/' + address} className="mobile-menu-item">
+              <Link
+                href={'/account/' + address + '/transactions'}
+                className="mobile-menu-item"
+                onClick={mobileMenuToggle}
+              >
                 {t('signin.actions.my-transactions')}
-              </a>
+              </Link>
               <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 Send payment
               </Link>
               <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                My Account Settings
-              </Link>
-              <Link href={'/nfts/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('signin.actions.my-nfts')}
-              </Link>
-              <Link href={'/nft-offers/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('signin.actions.my-nft-offers')}
+                My account settings
               </Link>
               {!username && (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -102,15 +97,15 @@ export default function MobileMenu({
           )}
         </div>
 
-        <div className="mobile-menu-directory" data-expanded={proName ? 'false' : 'true'}>
+        <div className="mobile-menu-directory" data-expanded={proLoggedIn ? 'false' : 'true'}>
           <IoIosRocket /> Bithomp Pro
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            <FaUserLarge style={iconStyle} /> {proName || t('signin.signin')}
+            <FaUserLarge style={iconStyle} /> {proLoggedIn || t('signin.signin')}
           </Link>
 
-          {proName && (
+          {proLoggedIn && (
             <>
               <Link href="/admin/watchlist" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <FaEye style={{ ...iconStyle, marginTop: '2px' }} /> Watchlist
@@ -162,6 +157,9 @@ export default function MobileMenu({
           <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Account Settings
           </Link>
+          <Link className="mobile-menu-item" onClick={mobileMenuToggle} href="/services/account-delete">
+            Account Delete
+          </Link>
           <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.nft-mint')}
           </Link>
@@ -204,7 +202,12 @@ export default function MobileMenu({
             </Link>
           )}
           <Link
-            href="/distribution?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De"
+            href={
+              '/distribution' +
+              (xahauNetwork
+                ? '?currencyIssuer=rEvernodee8dJLaFsujS6q1EiXvZYmHXr8&currency=EVR'
+                : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
+            }
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
@@ -257,27 +260,6 @@ export default function MobileMenu({
           NFT
         </div>
         <div className="mobile-menu__submenu">
-          {!displayName && (
-            <>
-              <span
-                onClick={() => {
-                  setSignRequest({ redirect: 'nfts' })
-                }}
-                className="mobile-menu-item link"
-              >
-                {t('signin.actions.my-nfts')}
-              </span>
-              <span
-                onClick={() => {
-                  setSignRequest({ redirect: 'nft-offers' })
-                }}
-                className="mobile-menu-item link"
-              >
-                {t('signin.actions.my-nft-offers')}
-              </span>
-            </>
-          )}
-
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.nft.explorer')}
           </Link>
@@ -386,6 +368,9 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           <Link href="/learn/the-bithomp-api" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.developers.api')}
+          </Link>
+          <Link href="/learn/image-services" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Token/NFT/Address Images
           </Link>
           {devNet && (
             <>

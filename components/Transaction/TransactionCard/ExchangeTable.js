@@ -1,12 +1,35 @@
 import { amountFormat, AddressWithIconInline } from '../../../utils/format'
 import { LinkAmm, LinkObject } from '../../../utils/links'
 
+const rates = (a, b) => {
+  return (
+    <>
+      {amountFormat(
+        {
+          currency: a.currency,
+          issuer: a?.issuer || undefined,
+          value: 1
+        },
+        { icon: true, bold: true, noSpace: true }
+      )}{' '}
+      ={' '}
+      {amountFormat(
+        {
+          ...b,
+          value: Math.abs((b.value || b / 1000000) / (a.value || a / 1000000))
+        },
+        { icon: true, bold: true, noSpace: true }
+      )}
+    </>
+  )
+}
+
 export default function ExchangesTable({ exchanges = [], ledgerIndex = null }) {
   const keyOf = (e, i) => e.offer_id || e.amm_id || `${e.type}-${e.address1}-${e.address2}-${i}`
 
   return (
     <div className="space-y-2">
-      {exchanges.map((e, i) => {
+      {exchanges?.map((e, i) => {
         const sent = amountFormat(e.asset1, { withIssuer: true, icon: true }) ?? '—'
         const received = amountFormat(e.asset2, { withIssuer: true, icon: true }) ?? '—'
 
@@ -32,11 +55,12 @@ export default function ExchangesTable({ exchanges = [], ledgerIndex = null }) {
 
         return (
           <div key={keyOf(e, i)} className="text-sm leading-6">
-            {exchanges.length > 1 && <>{i + 1}. </>}
+            {exchanges?.length > 1 && <>{i + 1}. </>}
             <AddressWithIconInline data={e} name="address1" options={{ short: true }} /> exchanged{' '}
             <b className="tabular-nums">{sent}</b> for <b className="tabular-nums">{received}</b> with{' '}
             <AddressWithIconInline data={e} name="address2" options={{ short: true }} />
-            {by}.
+            {by}.<br />
+            Rates: {rates(e.asset1, e.asset2)}, {rates(e.asset2, e.asset1)}.
           </div>
         )
       })}

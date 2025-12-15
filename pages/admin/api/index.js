@@ -6,10 +6,11 @@ import Link from 'next/link'
 
 import SEO from '../../../components/SEO'
 
-import { isUrlValid } from '../../../utils'
+import { isDomainValid, isUrlValid } from '../../../utils'
 import { getIsSsrMobile } from '../../../utils/mobile'
 import CopyButton from '../../../components/UI/CopyButton'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
+import { IoMdCreate, IoMdCheckmark, IoMdClose } from 'react-icons/io'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -28,6 +29,12 @@ export default function Api({ sessionToken, openEmailLogin }) {
   const [domain, setDomain] = useState('')
   const [apiDescription, setApiDescription] = useState('')
   const [loading, setLoading] = useState(false)
+  const [isEditingDomain, setIsEditingDomain] = useState(false)
+  const [domainEdit, setDomainEdit] = useState('')
+  const [domainSaving, setDomainSaving] = useState(false)
+  const [isEditingDescription, setIsEditingDescription] = useState(false)
+  const [descriptionEdit, setDescriptionEdit] = useState('')
+  const [descriptionSaving, setDescriptionSaving] = useState(false)
 
   useEffect(() => {
     if (sessionToken) {
@@ -35,6 +42,18 @@ export default function Api({ sessionToken, openEmailLogin }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionToken])
+
+  useEffect(() => {
+    if (apiData?.domain) {
+      setDomainEdit(apiData.domain)
+    }
+  }, [apiData?.domain])
+
+  useEffect(() => {
+    if (apiData?.description) {
+      setDescriptionEdit(apiData.description)
+    }
+  }, [apiData?.description])
 
   const getApiData = async () => {
     setLoading(true)
@@ -69,7 +88,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
       return
     }
 
-    if (!isUrlValid(domain) && domain !== 'localhost') {
+    if (!isUrlValid(domain) && !isDomainValid(domain) && domain !== 'localhost') {
       setErrorMessage(t('form.error.domain-invalid'))
       return
     }
@@ -105,6 +124,77 @@ export default function Api({ sessionToken, openEmailLogin }) {
 
   const now = new Date()
   const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+  const saveDomain = async () => {
+    setErrorMessage('')
+
+    if (!domainEdit || !domainEdit.trim()) {
+      setErrorMessage(t('form.error.domain-empty'))
+      return
+    }
+
+    const cleanDomain = domainEdit.trim()
+
+    if (!isUrlValid(cleanDomain) && !isDomainValid(cleanDomain) && cleanDomain !== 'localhost') {
+      setErrorMessage(t('form.error.domain-invalid'))
+      return
+    }
+
+    setDomainSaving(true)
+
+    const resp = await axiosAdmin.put('partner/accessToken', { id: apiData.id, domain: cleanDomain }).catch((error) => {
+      if (error && error.message !== 'canceled') {
+        setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
+      }
+    })
+
+    setDomainSaving(false)
+
+    if (resp?.data) {
+      setApiData(resp.data)
+      setIsEditingDomain(false)
+    } else {
+      setIsEditingDomain(false)
+    }
+  }
+
+  const saveDescription = async () => {
+    setErrorMessage('')
+
+    if (!descriptionEdit || !descriptionEdit.trim()) {
+      setErrorMessage(t('form.error.description-empty'))
+      return
+    }
+
+    const cleanDescription = descriptionEdit.trim()
+
+    if (cleanDescription.length < 10) {
+      setErrorMessage(t('form.error.description-short'))
+      return
+    }
+
+    setDescriptionSaving(true)
+
+    const resp = await axiosAdmin
+      .put('partner/accessToken', {
+        id: apiData.id,
+        description: cleanDescription
+      })
+      .catch((error) => {
+        if (error && error.message !== 'canceled') {
+          setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
+        }
+      })
+
+    setDescriptionSaving(false)
+
+    if (resp?.data) {
+      setApiData(resp.data)
+      setIsEditingDescription(false)
+    } else {
+      setIsEditingDescription(false)
+    }
+  }
 
   return (
     <>
@@ -151,7 +241,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
                           </td>
                         </tr>
                         <tr>
-                          <td className="right">Status</td>
+                          <td className="right">{t('table.status')}</td>
                           <td className="left">
                             {apiData.locked ? (
                               <b className="red">locked</b>
@@ -183,8 +273,119 @@ export default function Api({ sessionToken, openEmailLogin }) {
                         </tr>
                         <tr>
                           <td className="right">{t('table.domain')}</td>
-                          <td className="left">
-                            <b>{apiData.domain}</b>
+                          <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            {!isEditingDomain ? (
+                              <>
+                                {apiData.domain}
+                                <button
+                                  className="button-icon"
+                                  type="button"
+                                  aria-label="Edit domain"
+                                  title="Edit domain"
+                                  onClick={() => {
+                                    setDomainEdit(apiData.domain || '')
+                                    setIsEditingDomain(true)
+                                  }}
+                                >
+                                  <IoMdCreate />
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <input
+                                  className="input-text"
+                                  value={domainEdit}
+                                  onChange={(e) => setDomainEdit(e.target.value)}
+                                  spellCheck="false"
+                                  maxLength="60"
+                                  style={{ maxWidth: '260px' }}
+                                  disabled={domainSaving}
+                                />
+
+                                <button
+                                  className="button-icon"
+                                  type="button"
+                                  aria-label="Save domain"
+                                  title="Save"
+                                  onClick={saveDomain}
+                                  disabled={domainSaving}
+                                >
+                                  <IoMdCheckmark />
+                                </button>
+
+                                <button
+                                  className="button-icon"
+                                  type="button"
+                                  aria-label="Cancel"
+                                  title="Cancel"
+                                  onClick={() => {
+                                    setDomainEdit(apiData.domain || '')
+                                    setIsEditingDomain(false)
+                                  }}
+                                  disabled={domainSaving}
+                                >
+                                  <IoMdClose />
+                                </button>
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="right">{t('table.description')}</td>
+                          <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            {!isEditingDescription ? (
+                              <>
+                                {apiData.description || ''}
+                                <button
+                                  className="button-icon"
+                                  type="button"
+                                  aria-label="Edit description"
+                                  title="Edit description"
+                                  onClick={() => {
+                                    setDescriptionEdit(apiData.description || '')
+                                    setIsEditingDescription(true)
+                                  }}
+                                >
+                                  <IoMdCreate />
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <input
+                                  className="input-text"
+                                  value={descriptionEdit}
+                                  onChange={(e) => setDescriptionEdit(e.target.value)}
+                                  maxLength="120"
+                                  disabled={descriptionSaving}
+                                  style={{ maxWidth: '360px' }}
+                                />
+
+                                <button
+                                  className="button-icon"
+                                  type="button"
+                                  aria-label="Save description"
+                                  title="Save"
+                                  onClick={saveDescription}
+                                  disabled={descriptionSaving}
+                                >
+                                  <IoMdCheckmark />
+                                </button>
+
+                                <button
+                                  className="button-icon"
+                                  type="button"
+                                  aria-label="Cancel"
+                                  title="Cancel"
+                                  onClick={() => {
+                                    setDescriptionEdit(apiData.description || '')
+                                    setIsEditingDescription(false)
+                                  }}
+                                  disabled={descriptionSaving}
+                                >
+                                  <IoMdClose />
+                                </button>
+                              </>
+                            )}
                           </td>
                         </tr>
                         <tr>
@@ -233,6 +434,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
                 )}
               </>
             )}
+            <br />
             <br />
             {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
           </div>

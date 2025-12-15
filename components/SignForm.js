@@ -19,7 +19,8 @@ import {
   isAddressValid,
   removeQueryParams,
   webSiteName,
-  xahauNetwork
+  xahauNetwork,
+  nativeCurrency
 } from '../utils'
 import { duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
@@ -388,7 +389,9 @@ export default function SignForm({
   const ledgerwalletTxSending = (tx) => {
     setScreen('ledgerwallet')
     setStatus(
-      'Please, connect your Ledger Wallet and open the XRP app. Note: Nano S does not support some transactions.'
+      'Please, connect your Ledger Wallet and open the ' +
+        nativeCurrency +
+        ' app. Note: Nano S does not support some transactions.'
     )
     ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
   }
@@ -904,13 +907,18 @@ export default function SignForm({
   const xls35Sell = signRequest?.request?.TransactionType === 'URITokenCreateSellOffer'
 
   const checkBoxText = (screen, signRequest) => {
-    if (screen === 'nftTransfer')
-      return (
-        <Trans i18nKey="signin.confirm.nft-transfer">
-          I'm offering that NFT for FREE to the Destination account,{' '}
-          <span className="orange bold">the destination account would need to accept the NFT transfer</span>.
-        </Trans>
-      )
+    if (screen === 'nftTransfer') {
+      if (signRequest.request?.TransactionType === 'Remit') {
+        return "I'm sending this NFT for FREE."
+      } else {
+        return (
+          <Trans i18nKey="signin.confirm.nft-transfer">
+            I'm offering that NFT for FREE to the Destination account,{' '}
+            <span className="orange bold">the destination account would need to accept the NFT transfer</span>.
+          </Trans>
+        )
+      }
+    }
 
     if (screen === 'NFTokenBurn') return t('signin.confirm.nft-burn')
     if (screen === 'NFTokenModify') return 'I understand that URI will be updated for this NFT.'
@@ -938,6 +946,32 @@ export default function SignForm({
     metamask: 'Metamask',
     walletconnect: 'WalletConnect',
     crossmark: 'Crossmark'
+  }
+
+  const supportedByCrossmark = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
+  const supportedByMetamask = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
+  const supportedByTrezor = !signRequest?.request?.TransactionType || signRequest.request.TransactionType === 'Payment'
+
+  const WalletTile = ({ name, alt, src, onClick, disabled, width, height }) => {
+    return (
+      <div
+        className={`signin-app-logo${disabled ? ' disabled' : ''}`}
+        onClick={disabled ? undefined : onClick}
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-disabled={disabled ? 'true' : 'false'}
+        onKeyDown={(e) => {
+          if (disabled) return
+          if (e.key === 'Enter' || e.key === ' ') onClick?.()
+        }}
+        title={disabled ? `${name} is not supported in this environment` : name}
+      >
+        <div className="signin-app-inner">
+          <Image alt={alt} src={src} width={width} height={height} />
+          <div className="signin-app-name">{name}</div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -1219,88 +1253,90 @@ export default function SignForm({
                 {screen === 'choose-app' ? (
                   <>
                     <div className="header">{t('signin.choose-app')}</div>
+
                     <div className="signin-apps">
-                      <div className="signin-app-logo">
-                        <Image
-                          alt="xaman"
-                          src="/images/wallets/xaman-large.svg"
-                          onClick={() => txSend({ wallet: 'xaman' })}
-                          width={169}
-                          height={80}
-                          style={{ maxWidth: '100%', maxHeight: '100%' }}
+                      <WalletTile
+                        name="Xaman (Mobile app)"
+                        alt="xaman"
+                        src="/images/wallets/xaman-large.svg"
+                        width={110}
+                        height={48}
+                        onClick={() => txSend({ wallet: 'xaman' })}
+                        disabled={false}
+                      />
+
+                      {!isMobile && (
+                        <WalletTile
+                          name="Ledger (Hardware wallet)"
+                          alt="Ledger Wallet"
+                          src="/images/wallets/ledgerwallet-large.svg"
+                          width={110}
+                          height={48}
+                          onClick={() => txSend({ wallet: 'ledgerwallet' })}
+                          disabled={false}
                         />
-                      </div>
-                      {!isMobile && (
-                        <div className="signin-app-logo">
-                          <Image
-                            alt="Crossmark"
-                            src="/images/wallets/crossmark-large.png"
-                            onClick={() => txSend({ wallet: 'crossmark' })}
-                            width={169}
-                            height={80}
-                          />
-                        </div>
                       )}
+
                       {!isMobile && (
-                        <div className="signin-app-logo">
-                          <Image
-                            alt="GemWallet"
-                            src="/images/wallets/gemwallet.svg"
-                            onClick={() => txSend({ wallet: 'gemwallet' })}
-                            width={80}
-                            height={80}
-                            style={{ maxWidth: '100%', maxHeight: '100%' }}
-                          />
-                        </div>
+                        <WalletTile
+                          name="Crossmark (Browser wallet)"
+                          alt="Crossmark"
+                          src="/images/wallets/crossmark-large.png"
+                          width={110}
+                          height={48}
+                          onClick={() => txSend({ wallet: 'crossmark' })}
+                          disabled={!supportedByCrossmark}
+                        />
                       )}
+
+                      {!isMobile && (
+                        <WalletTile
+                          name="Gem (Browser wallet)"
+                          alt="GemWallet"
+                          src="/images/wallets/gemwallet.svg"
+                          width={44}
+                          height={44}
+                          onClick={() => txSend({ wallet: 'gemwallet' })}
+                          disabled={false}
+                        />
+                      )}
+
                       {/* available only for mainnet and testnet */}
                       {(networkId === 0 || networkId === 1) && (
-                        <div className="signin-app-logo">
-                          <Image
-                            alt="WalletConnect"
-                            src="/images/wallets/walletconnect-large.svg"
-                            onClick={() => txSend({ wallet: 'walletconnect' })}
-                            width={169}
-                            height={80}
-                            style={{ maxWidth: '100%', maxHeight: '100%' }}
-                          />
-                        </div>
+                        <WalletTile
+                          name="Multiple wallets"
+                          alt="WalletConnect"
+                          src="/images/wallets/walletconnect-large.svg"
+                          width={110}
+                          height={48}
+                          onClick={() => txSend({ wallet: 'walletconnect' })}
+                          disabled={false}
+                        />
                       )}
+
                       {!isMobile && (
                         <>
-                          <div className="signin-app-logo">
-                            <Image
-                              alt="Metamask"
-                              src="/images/wallets/metamask.svg"
-                              onClick={() => txSend({ wallet: 'metamask' })}
-                              width={80}
-                              height={80}
-                              style={{ maxWidth: '100%', maxHeight: '100%' }}
-                            />
-                          </div>
-                          <div className="signin-app-logo">
-                            <Image
-                              alt="Ledger Wallet"
-                              src="/images/wallets/ledgerwallet-large.svg"
-                              onClick={() => txSend({ wallet: 'ledgerwallet' })}
-                              width={169}
-                              height={80}
-                              style={{ maxWidth: '100%', maxHeight: '100%' }}
-                            />
-                          </div>
-                          <div className="signin-app-logo">
-                            <Image
-                              alt="Trezor Wallet"
-                              src="/images/wallets/trezor-large.svg"
-                              onClick={() => txSend({ wallet: 'trezor' })}
-                              width={169}
-                              height={80}
-                              style={{ maxWidth: '100%', maxHeight: '100%' }}
-                            />
-                          </div>
+                          <WalletTile
+                            name="MetaMask (Browser wallet)"
+                            alt="Metamask"
+                            src="/images/wallets/metamask.svg"
+                            width={44}
+                            height={44}
+                            onClick={() => txSend({ wallet: 'metamask' })}
+                            disabled={!supportedByMetamask}
+                          />
+
+                          <WalletTile
+                            name="Trezor (Hardware wallet)"
+                            alt="Trezor Wallet"
+                            src="/images/wallets/trezor-large.svg"
+                            width={110}
+                            height={48}
+                            onClick={() => txSend({ wallet: 'trezor' })}
+                            disabled={!supportedByTrezor}
+                          />
                         </>
                       )}
-                      {/* '/images/wallets/ellipal-large.svg' */}
                     </div>
                   </>
                 ) : (

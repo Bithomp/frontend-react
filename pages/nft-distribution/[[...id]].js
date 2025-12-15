@@ -16,13 +16,13 @@ import {
 } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isValidTaxon } from '../../utils/nft'
-import { nftsExplorerLink, niceNumber, AddressWithIconFilled } from '../../utils/format'
+import { nftsExplorerLink, niceNumber, AddressWithIconFilled, percentFormat } from '../../utils/format'
 
 import FiltersFrame from '../../components/Layout/FiltersFrame'
 
 export async function getServerSideProps(context) {
   const { locale, query } = context
-  const { taxon, issuer, id, order } = query
+  const { taxon, issuer, id, order, collection } = query
   //keep query instead of params, anyway it is an array sometimes
   const idQuery = id ? (Array.isArray(id) ? id[0] : id) : ''
   let issuerQuery = isAddressOrUsername(idQuery) ? idQuery : issuer
@@ -33,6 +33,7 @@ export async function getServerSideProps(context) {
       issuerQuery,
       orderQuery: issuerQuery ? 'total' : order || 'nonSelfIssued',
       taxonQuery: taxon || '',
+      collectionQuery: collection || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft-distribution']))
     }
@@ -43,6 +44,7 @@ import SEO from '../../components/SEO'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
+import NftCollectionTabs from '../../components/Tabs/NftCollectionTabs'
 
 export default function NftDistribution({
   issuerQuery,
@@ -52,7 +54,8 @@ export default function NftDistribution({
   subscriptionExpired,
   sessionToken,
   signOutPro,
-  openEmailLogin
+  openEmailLogin,
+  collectionQuery
 }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
@@ -69,6 +72,8 @@ export default function NftDistribution({
   const [order, setOrder] = useState(orderQuery)
   const [hasMore, setHasMore] = useState('first')
   const [filtersHide, setFiltersHide] = useState(false)
+  //const [collection, setCollection] = useState(collectionQuery)
+  const collection = collectionQuery // while there is no search for collections in filters
 
   const checkApi = async () => {
     /*
@@ -100,10 +105,12 @@ export default function NftDistribution({
     const oldIssuer = data?.issuer
     const oldTaxon = data?.taxon
     const oldOrder = data?.order
+    const oldCollection = data?.collection
     const loadMoreRequest =
       hasMore !== 'first' &&
       (issuer ? oldIssuer === issuer : !oldIssuer) &&
       (isValidTaxon(taxon) ? Number(oldTaxon) === Number(taxon) : !isValidTaxon(oldTaxon)) &&
+      (collection ? oldCollection === collection : !oldCollection) &&
       (order ? oldOrder === order : !oldOrder)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
@@ -117,6 +124,7 @@ export default function NftDistribution({
 
     let markerPart = ''
     if (loadMoreRequest) {
+      if (!data?.marker) return
       markerPart = '&marker=' + data?.marker
     } else {
       marker = 'first'
@@ -124,31 +132,26 @@ export default function NftDistribution({
     }
 
     setData({})
-    let taxonUrlPart = ''
-    if (isValidTaxon(taxon)) {
-      taxonUrlPart = '&taxon=' + taxon
-    }
 
     if (!markerPart) {
       setLoading(true)
     }
 
     let orderPart = order
-    let issuerPart = ''
+    let collectionPart = ''
     if (issuer) {
-      issuerPart = '&issuer=' + issuer
+      collectionPart = '&issuer=' + issuer
       orderPart = 'total'
       setOrder('total')
+      if (isValidTaxon(taxon)) {
+        collectionPart += '&taxon=' + taxon
+      }
+    } else if (collection) {
+      collectionPart = '&collection=' + collection
     }
 
     const response = await axios(
-      'v2/' +
-        (xahauNetwork ? 'uritoken' : 'nft') +
-        '-owners?order=' +
-        orderPart +
-        issuerPart +
-        taxonUrlPart +
-        markerPart
+      'v2/' + (xahauNetwork ? 'uritoken' : 'nft') + '-owners?order=' + orderPart + collectionPart + markerPart
     ).catch((error) => {
       setErrorMessage(t('error.' + error.message))
     })
@@ -256,6 +259,8 @@ export default function NftDistribution({
     }
   }
 
+  const collectionPart = issuer && isValidTaxon(taxon) ? `issuer=${issuer}&taxon=${taxon}` : 'collection=' + collection
+
   return (
     <>
       <SEO
@@ -268,6 +273,7 @@ export default function NftDistribution({
         }
       />
       <h1 className="center">{t('header', { ns: 'nft-distribution' })}</h1>
+      <NftCollectionTabs tab="holders" collectionPart={collectionPart} />
       <FiltersFrame
         contentStyle={{}}
         count={owners?.length}
@@ -412,7 +418,7 @@ export default function NftDistribution({
                             </>
                           )}
                           <td className="right">
-                            {niceNumber(user.total)}{' '}
+                            {niceNumber(user.total)} {percentFormat(user.total, data?.summary?.totalNfts)}{' '}
                             {nftsExplorerLink({
                               owner: user.address,
                               ownerDetails: user.addressDetails,
@@ -469,7 +475,7 @@ export default function NftDistribution({
                             )}
                             <p>
                               {issuer ? t('table.nfts') : t('table.total', { ns: 'nft-distribution' })}:{' '}
-                              {niceNumber(user.total)}{' '}
+                              {niceNumber(user.total)} {percentFormat(user.total, data?.summary?.totalNfts)}{' '}
                               {nftsExplorerLink({
                                 owner: user.address,
                                 ownerDetails: user.addressDetails,

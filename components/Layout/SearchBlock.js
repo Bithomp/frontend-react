@@ -17,10 +17,10 @@ import {
   networksIds,
   isValidNftXls20,
   isCurrencyHashValid,
-  server,
   isValidPayString,
   isValidXAddress,
-  performIdSearch
+  performIdSearch,
+  isLedgerIndexValid
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -76,6 +76,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const windowWidth = useWidth()
 
   const { id } = router.query
+
   const [searchItem, setSearchItem] = useState(id || userData?.address || '')
   const [searching, setSearching] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
@@ -116,9 +117,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       typingTimer = setTimeout(async () => {
         if (value && value.length > 2) {
           setSearchingSuggestions(true)
-          const suggestionsResponse = await axios('v2/address/search/' + value).catch((error) => {
+          const suggestionsResponse = await axios('v2/address/search/' + value).catch(() => {
             setSearchingSuggestions(false)
-            console.log(error.message)
           })
           if (suggestionsResponse) {
             const suggestions = suggestionsResponse.data
@@ -153,7 +153,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const searchOnChange = (option) => {
     if (!option) return
-    if (option.username && !option.username.includes('-')) {
+    if (option.payString) {
+      onSearch(option.payString)
+    } else if (option.xAddress) {
+      onSearch(option.xAddress)
+    } else if (option.username && !option.username.includes('-')) {
       onSearch(option.username)
     } else {
       onSearch(option.address)
@@ -256,14 +260,15 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    if (isValidPayString(searchFor) || isValidXAddress(searchFor)) {
-      // the check for paystring/xAddress should be before the check for addressOrUsername,
-      // as if there is no destination tag, we will treat it as an address or username
+    if (isLedgerIndexValid(searchFor)) {
+      router.push('/ledger/' + searchFor)
+      return
+    }
 
-      // we need to resolve paystring and x-address first before redirecting!
-      // if there is a tag -
-      // get the new page which we can show an address and a tag
-      router.push('/account/' + encodeURI(searchFor) + addParams) //replace with a new page to show a tag
+    if (isValidPayString(searchFor) || isValidXAddress(searchFor)) {
+      // the check for paystring/xAddress should be before the check for addressOrUsername
+      // as if there is no destination tag, we will treat it as an address or username
+      router.push('/account/' + encodeURI(searchFor) + addParams)
       return
     }
 
@@ -304,25 +309,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
     return
   }
-
-  /*
-  PayID
-  searchItem.indexOf("$") > -1
-   
-  username
-  <18 
-   
-  CurrencyCode, XLS14
-  searchItem.length == 40
-   
-  TX, NFT, NFT Offer
-  searchItem.length == 64
-   
-  X-address
-  searchItem.length > 36
-  searchItem.charAt(0) == "T"
-  searchItem.charAt(0) == "X"
-  */
 
   const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account', 'transactions', 'dex'].includes(tab)
 
@@ -428,7 +414,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                   option.xaman +
                   option.verifiedDomain +
                   option.serviceDomain +
-                  option.xAddress
+                  option.xAddress +
+                  option.tag
                 }
                 inputValue={searchItem}
                 onInputChange={searchOnInputChange}
@@ -474,12 +461,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               {errorMessage}
             </div>
           )}
-          {/*
-          <a className="search-scan-qr" href="/explorer/?scanqr">
-            <IoQr className="search-scan-qr-icon" />
-            <span className="search-scan-qr-text">{t("home.scan-qr")}</span>
-          </a>
-        */}
         </div>
       </div>
       {showTabs && (
@@ -494,7 +475,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             {tab == 'transactions' ? (
               <b>{t('explorer.menu.transactions')}</b>
             ) : (
-              <a href={server + '/explorer/' + searchItem}>{t('explorer.menu.transactions')}</a>
+              <Link href={'/account/' + searchItem + '/transactions'}>{t('explorer.menu.transactions')}</Link>
             )}
           </div>
           <div className="explorer-tabs-shadow"></div>

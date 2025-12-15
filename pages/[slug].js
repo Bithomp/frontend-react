@@ -3,31 +3,12 @@ import { useEffect, useState } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
-import { isAddressOrUsername, isIdValid, performIdSearch, server } from '../utils'
+import { isAddressOrUsername, isIdValid, isLedgerIndexValid, isValidCTID, performIdSearch } from '../utils'
 
 const slugRegex = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 const forbiddenSlugsRegex = /^.((?!\$).)*.?\.(7z|gz|rar|tar)$/i
 
-export async function getStaticProps({ locale, params }) {
-  const { slug } = params
-  //redirects
-  if (slug === 'top-nft-sales') {
-    return {
-      redirect: {
-        destination: '/nft-sales',
-        permanent: true
-      }
-    }
-  }
-  if (slug === 'latest-nft-sales') {
-    return {
-      redirect: {
-        destination: '/nft-sales?order=soldNew&period=week',
-        permanent: true
-      }
-    }
-  }
-
+export async function getStaticProps({ locale }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common']))
@@ -37,8 +18,8 @@ export async function getStaticProps({ locale, params }) {
 
 export const getStaticPaths = async () => {
   return {
-    paths: [], //indicates that no page needs be created at build time
-    fallback: 'blocking' //indicates the type of fallback
+    paths: [],
+    fallback: 'blocking'
   }
 }
 
@@ -47,32 +28,61 @@ export default function Custom404() {
   const { t } = useTranslation()
   const { slug } = router.query
   const [errorMessage, setErrorMessage] = useState('')
+  const [processing, setProcessing] = useState(true)
 
   useEffect(() => {
-    const performIdSearching = async ({ searchFor, router, setErrorMessage }) => {
+    if (!router.isReady) return
+    if (typeof slug !== 'string') {
+      setProcessing(false)
+      return
+    }
+
+    const performIdSearching = async ({ searchFor }) => {
       await performIdSearch({ searchFor, router, setErrorMessage })
     }
 
     if (slugRegex.test(slug)) {
       if (forbiddenSlugsRegex.test(slug)) {
-        window.location = '/404'
+        window.location.href = '/404'
         return
       }
 
       if (isIdValid(slug)) {
-        performIdSearching({ searchFor: slug, router, setErrorMessage })
+        performIdSearching({ searchFor: slug })
+        return
+      }
+
+      if (isValidCTID(slug)) {
+        router.replace('/tx/' + slug)
+        return
+      }
+
+      if (isLedgerIndexValid(slug)) {
+        router.replace('/ledger/' + slug)
         return
       }
 
       if (isAddressOrUsername(slug)) {
-        router.push('/account/' + encodeURI(slug))
+        router.replace('/account/' + encodeURI(slug))
         return
       }
-
-      window.location = server + '/explorer/' + encodeURI(slug)
-      return
     }
-  })
+
+    setProcessing(false)
+  }, [router.isReady, slug, router])
+
+  if (processing) {
+    return (
+      <div className="content-text center">
+        <br />
+        <span className="waiting"></span>
+        <br />
+        {t('general.loading')}
+        <br />
+        <br />
+      </div>
+    )
+  }
 
   return (
     <div className="content-text center">

@@ -46,6 +46,13 @@
         height: 24px;
       }
     }
+    &.stake {
+      .brand-item-icon {
+        height: 45px;
+        width: 45px;
+        left: 5px
+      }
+    }
     &.xbit {
       .brand-item-icon {
         height: 24px;
@@ -56,7 +63,7 @@
     }
   }
   /* 1100 - 3 brands, 1279 px when 4 brands */
-  @media only screen and (max-width: 1100px) {
+  @media only screen and (max-width: 1279px) {
     .brand-item {
       height: 40px;
       width: 154px;
@@ -103,6 +110,13 @@
         }
         .brand-item-title {
           left: 47px;
+        }
+      }
+      &.stake {
+        .brand-item-icon {
+          height: 40px;
+          width: 40px;
+          left: 10px;
         }
       }
     }

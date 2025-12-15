@@ -161,7 +161,6 @@
     "description": "Scannez le Registre {{nativeCurrency}}",
     "search-placeholder": "Rechercher par Adresse / Transaction / NFT / Nom d'utilisateur / PayString / Offre / Hash",
     "search-placeholder-short": "Adresse / Transaction / Nom d'utilisateur",
-    "scan-qr": "SCANNER UN CODE",
     "price": {
       "header": "Prix en direct {{nativeCurrency}} & Convertisseur"
     },
@@ -289,7 +288,6 @@
     "download": "Télécharger",
     "copy": "Copier",
     "copied": "Copié",
-    "copy-my-address": "Copier mon adresse",
     "sign": "Signer",
     "nft": {
       "add-another-sell-offer": "Ajouter une autre offre de vente",
@@ -311,7 +309,7 @@
     "error": "Erreur",
     "no-data": "Aucune donnée disponible",
     "loading": "Chargement...",
-    "login-to-bithomp-pro": "Charger plus de données est disponible pour les abonnés connectés à Bithomp Pro.",
+    "login-to-bithomp-pro": "Charger plus de données est disponible pour les <2>abonnés connectés</2> à Bithomp Pro.",
     "renew-bithomp-pro": "Votre abonnement Bithomp Pro a expiré. <1>Renouveler votre abonnement</1>.",
     "load-failed": "Échec du chargement",
     "all-issuers": "Tous les émetteurs",
@@ -349,10 +347,12 @@
   "error": {
     "payment-partly": "Veuillez envoyer le reste du montant, jusqu'à présent nous n'avons reçu que {{received}} {{currency}} alors que <b>{{required}} {{currency}}</b> est requis.",
     "Network Error": "Il semble qu'il n'y ait pas de connexion Internet ;(",
+    "Request failed with status code 522": "Le serveur est actuellement inaccessible, essayez de nouveau plus tard.",
     "Request failed with status code 429": "Vous nous envoyez trop de demandes, essayez plus tard !",
     "Request failed with status code 404": "Cet appel API n'est pas autorisé sur ce réseau",
     "Request failed with status code 403": "Il semble que vous soyez déconnecté, veuillez vous reconnecter",
-    "Request aborted": "Demande annulée"
+    "Request aborted": "Demande annulée",
+    "read ECONNRESET": "La demande a expiré. Essayez de modifier vos filtres ou réessayez plus tard."
   },
   "errors": {
     "token": {
@@ -486,7 +486,7 @@
     "by-owner": "Par propriétaire",
     "by-taxon": "Par taxon",
     "all-nfts": "Tous les NFTs",
-    "on-sale": "En vente",
+    "listed": "En vente",
     "social-share": "Le partage, c'est bien",
     "marketplace": "Marché",
     "public-key": "Clé publique",
@@ -552,8 +552,10 @@
     "all": "Tout",
     "buy": "Acheter",
     "sell": "Vendre",
-    "buyNow": "Acheter maintenant",
-    "publicAndKnownBrokers": "Public & MP",
+    "buyNow": "Acheter maintenant (Public + places de marché intégrées)",
+    "publicAndKnownBrokers": "Public et places de marché",
+    "public": "Public",
+    "knownBrokers": "Places de marché",
     "onSale": "Sont en vente",
     "all-tokens": "Tous les tokens",
     "single-token": "Token unique",
@@ -624,7 +626,6 @@
     "search-by-seller": "Rechercher par vendeur de NFT",
     "no-nfts": "Nous n'avons trouvé aucun NFT avec vos paramètres de recherche.",
     "on-service": "sur {{service}}",
-    "amount-on-service": "{{amount}} sur {{service}}",
     "load-more": "Nous cherchons des données sur le registre... veuillez patienter...",
     "end": "Voici tous les NFTs que nous avons pu trouver.",
     "change-filters": "Utilisez différentes options de filtres ou sélectionnez d’autres paramètres de recherche pour explorer plus de NFTs correspondant à vos intérêts."

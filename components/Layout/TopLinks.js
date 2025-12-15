@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 //import { useWidth } from '../../utils'
 //import Image from 'next/image'
 
-export default function TopLinks({ activatedAccount, countryCode }) {
+export default function TopLinks({ countryCode }) {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
   const router = useRouter()
@@ -38,12 +38,11 @@ export default function TopLinks({ activatedAccount, countryCode }) {
     )
   }
 
-  //explorer links
   //includes /address and /tx
-  if (pathname.includes('transaction') || pathname.includes('/account')) {
+  if (pathname.includes('/transaction') || pathname.includes('/account')) {
     return (
       <div className="top-links">
-        {pathname.includes('/account') && activatedAccount && (
+        {pathname.includes('/transaction') && (
           <>
             <span className="tooltip">
               <a
@@ -63,9 +62,14 @@ export default function TopLinks({ activatedAccount, countryCode }) {
           <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer" className="top-link orange">
             Earn on XRP
           </a>
-          <span className="tooltiptext left small">{t('sponsored.sponsored')}</span>
+          <span className="tooltiptext right small">{t('sponsored.sponsored')}</span>
         </span>{' '}
-        💰 {isMobile ? <br /> : ' | '}
+        💰 |{' '}
+        <a href="https://bithomp.com/en/learn/xrp-xah-taxes" className="top-link orange">
+          Tax reports
+        </a>{' '}
+        🧾
+        {isMobile ? <br /> : ' | '}
         {stakeAd}
         {isMobile ? <br /> : ' | '}
         <span className="tooltip">

@@ -12,11 +12,10 @@ import {
   fullNiceNumber,
   niceNumber,
   shortNiceNumber,
-  AddressWithIconFilled,
   dateFormat,
   timeFormat,
   timeFromNow,
-  showFlags
+  CurrencyWithIcon
 } from '../utils/format'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -143,17 +142,7 @@ const orderList = [
 // Helper component to render token with icon
 const TokenCell = ({ token }) => {
   if (!token) return 'N/A'
-  return (
-    <AddressWithIconFilled
-      data={token}
-      name="issuer"
-      currency={token.currency}
-      options={{
-        mptId: token.mptokenIssuanceID,
-        currencyName: token.metadata?.name
-      }}
-    />
-  )
+  return <CurrencyWithIcon token={token} />
 }
 
 export default function Mpts({
@@ -173,9 +162,11 @@ export default function Mpts({
 
   const [data, setData] = useState(initialData?.issuances || [])
   const [rawData, setRawData] = useState(initialData || {})
-  const [marker, setMarker] = useState(initialData?.marker)
+  const [marker, setMarker] = useState(initialData?.marker || '')
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
+  const [errorMessage, setErrorMessage] = useState(
+    t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
+  )
   const [order, setOrder] = useState(orderQuery || 'holdersHight') //'rating
   const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState(issuerQuery)
@@ -222,7 +213,8 @@ export default function Mpts({
 
     let markerPart = ''
     if (loadMoreRequest) {
-      markerPart = '&marker=' + rawData?.marker
+      if (!rawData?.marker) return
+      markerPart = '&marker=' + rawData.marker
     }
 
     if (!markerPart) {
@@ -510,8 +502,6 @@ export default function Mpts({
                             <td className="center">{i + 1}</td>
                             <td>
                               <TokenCell token={token} />
-                              <div style={{ height: 5 }} />
-                              {showFlags(token.flags)}
                             </td>
                             <td className="right">
                               <span className="tooltip green">
@@ -529,7 +519,7 @@ export default function Mpts({
                             </td>
                             <td className="right">{token.sequence}</td>
                             <td className="right">{token.transferFee ? token.transferFee / 1000 + '%' : ''}</td>
-                            <td className="right" suppressHydrationWarning>
+                            <td className="right">
                               {dateFormat(token.createdAt)}
                               <br />
                               {timeFormat(token.createdAt)}
@@ -563,7 +553,7 @@ export default function Mpts({
           </table>
 
           <div className="show-on-small-w800">
-            <table className="table-mobile wide">
+            <table className="table-mobile">
               <thead></thead>
               <tbody>
                 {loading ? (
@@ -592,8 +582,6 @@ export default function Mpts({
                                 <br />
                                 <TokenCell token={token} />
                                 <br />
-                                {showFlags(token.flags)}
-                                <br />
                                 <b>MPT ID:</b> <CopyButton text={token.mptokenIssuanceID} /> <br />
                                 <b>Holders:</b>{' '}
                                 <span className="tooltip">
@@ -608,7 +596,7 @@ export default function Mpts({
                                 </span>
                                 <br />
                                 <b>Created:</b>{' '}
-                                <span suppressHydrationWarning>
+                                <span>
                                   {dateFormat(token.createdAt)} {timeFormat(token.createdAt)}
                                 </span>
                                 <br />
@@ -629,26 +617,6 @@ export default function Mpts({
                                   <>
                                     <br />
                                     <b>Description:</b> {token.metadata?.description}
-                                  </>
-                                ) : (
-                                  ''
-                                )}
-                                {token.metadata?.weblinks && token.metadata?.weblinks.length > 0 ? (
-                                  <>
-                                    <br />
-                                    {token.metadata.weblinks.map((link, index) => (
-                                      <span key={index}>
-                                        <a
-                                          href={link}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                          style={{ wordBreak: 'break-all' }}
-                                        >
-                                          {link}
-                                        </a>
-                                        <br />
-                                      </span>
-                                    ))}
                                   </>
                                 ) : (
                                   ''

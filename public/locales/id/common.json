@@ -161,7 +161,6 @@
     "description": "Grafik harga {{nativeCurrency}} | Statistik {{explorerName}} | Penjelajah NFT | Pencarian alamat dompet | Volume NFT {{explorerName}} | Beli dan Jual NFT | Layanan {{explorerName}}",
     "search-placeholder": "Cari berdasarkan Alamat / Transaksi / NFT / Username / PayString / Penawaran",
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
-    "scan-qr": "PINDAI KODE",
     "price": {
       "header": "Harga {{nativeCurrency}} Langsung & Konverter"
     },
@@ -289,7 +288,6 @@
     "download": "Unduh",
     "copy": "Salin",
     "copied": "Tersalin",
-    "copy-my-address": "Salin alamat saya",
     "sign": "Tanda tangan",
     "nft": {
       "add-another-sell-offer": "Tambahkan penawaran penjualan lainnya",
@@ -311,7 +309,7 @@
     "error": "Kesalahan",
     "no-data": "Tidak ada data tersedia",
     "loading": "Memuat...",
-    "login-to-bithomp-pro": "Memuat lebih banyak data tersedia untuk pelanggan Bithomp Pro yang <1>termasuk login</1>.",
+    "login-to-bithomp-pro": "Memuat lebih banyak data tersedia untuk pelanggan Bithomp Pro yang <2>termasuk login</2>.",
     "renew-bithomp-pro": "Langganan Bithomp Pro Anda telah kedaluwarsa. <1>Perbarui langganan Anda</1>.",
     "load-failed": "Gagal memuat",
     "all-issuers": "Semua penerbit",
@@ -349,10 +347,12 @@
   "error": {
     "payment-partly": "Silahkan kirim sisa jumlahnya, sejauh ini kami hanya menerima {{received}} {{currency}} saat <b>{{required}} {{currency}}</b> dibutuhkan.",
     "Network Error": "Sepertinya tidak ada koneksi internet ;(",
+    "Request failed with status code 522": "Server saat ini tidak dapat dijangkau, coba lagi nanti.",
     "Request failed with status code 429": "Anda mengirimkan terlalu banyak permintaan kepada kami, coba lagi nanti!",
     "Request failed with status code 404": "Panggilan API seperti itu tidak diizinkan di jaringan tersebut.",
     "Request failed with status code 403": "Sepertinya Anda telah keluar, silakan masuk kembali.",
-    "Request aborted": "Permintaan dibatalkan"
+    "Request aborted": "Permintaan dibatalkan",
+    "read ECONNRESET": "Permintaan telah habis waktu. Coba ubah filter Anda atau coba lagi nanti."
   },
   "errors": {
     "token": {
@@ -486,7 +486,7 @@
     "by-owner": "Menurut Pemilik",
     "by-taxon": "Menurut Taksonomi",
     "all-nfts": "Semua NFT",
-    "on-sale": "Sedang Dijual",
+    "listed": "Sedang Dijual",
     "social-share": "Berbagi adalah Peduli",
     "marketplace": "Pasar",
     "public-key": "Kunci Publik",
@@ -552,8 +552,10 @@
     "all": "Semua",
     "buy": "Beli",
     "sell": "Jual",
-    "buyNow": "Buy now",
-    "publicAndKnownBrokers": "Publik & Broker Terkenal",
+    "buyNow": "Beli sekarang (Publik + pasar terintegrasi)",
+    "publicAndKnownBrokers": "Publik & pasar",
+    "public": "Publik",
+    "knownBrokers": "Pasar",
     "onSale": "Sedang dijual",
     "all-tokens": "Semua Token",
     "single-token": "Token Tunggal",
@@ -624,7 +626,6 @@
     "search-by-seller": "Cari berdasarkan penjual NFT",
     "no-nfts": "Kami tidak dapat menemukan NFT dengan parameter pencarian Anda.",
     "on-service": "di {{service}}",
-    "amount-on-service": "{{amount}} di {{service}}",
     "load-more": "Kami sedang mencari data di XRPL... harap tunggu...",
     "end": "Ini adalah semua NFT yang dapat kami temukan.",
     "change-filters": "Gunakan berbagai opsi filter atau pilih parameter pencarian lainnya untuk menjelajahi lebih banyak NFT yang sesuai dengan minat Anda."

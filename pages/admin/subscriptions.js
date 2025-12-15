@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../utils/axios'
 
-import { useWidth, encode, wssServer, timestampExpired, addAndRemoveQueryParams } from '../../utils'
+import { useWidth, encode, wssServer, timestampExpired, addAndRemoveQueryParams, useCookie } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortNiceNumber, amountFormat, AddressWithIconFilled, addressLink } from '../../utils/format'
 
@@ -192,6 +192,7 @@ export default function Subscriptions({
   const router = useRouter()
   const width = useWidth()
 
+  const [ref] = useCookie('ref')
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(true) // keep true in order not to have hydr error for rendering the select
   const [newAndActivePackages, setNewAndActivePackages] = useState([])
@@ -310,7 +311,8 @@ export default function Subscriptions({
     let options = {
       type: tabTotype(subscriptionsTab),
       period,
-      periodCount: 1 * periodCount
+      periodCount: 1 * periodCount,
+      ...(ref ? { referralCode: ref } : {})
     }
 
     if (subscriptionsTab === 'api') {
@@ -461,7 +463,7 @@ export default function Subscriptions({
     const response = await axios('v2/bid/partner:' + partnerId + '/' + destinationTag + '/status').catch((error) => {
       setErrorMessage(t('error.' + error.message))
     })
-    const data = response.data
+    const data = response?.data
     if (data) {
       updateBid(data)
     }

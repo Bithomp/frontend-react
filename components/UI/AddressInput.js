@@ -1,31 +1,44 @@
 import { IoMdClose } from 'react-icons/io'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
 import Select from 'react-select'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
 import { isAddressOrUsername, isAddressValid, useWidth } from '../../utils'
-
 import { amountFormat, userOrServiceLink } from '../../utils/format'
-
 import { IoSearch } from 'react-icons/io5'
 
 let typingTimer
 
-export default function AddressInput({
-  placeholder,
-  title,
-  setValue,
-  rawData,
-  type,
-  disabled,
-  hideButton,
-  setInnerValue
-}) {
+const AddressInput = forwardRef(function AddressInput(
+  { placeholder, title, setValue, rawData, type, disabled, hideButton, setInnerValue },
+  forwardedRef
+) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
   const hasRun = useRef(false)
   const initialRawData = useRef(rawData)
+
+  // Keep refs internal and expose a stable API to the parent
+  const selectRef = useRef(null)
+  const fallbackInputRef = useRef(null)
+
+  const userTouchedRef = useRef(false)
+
+  useImperativeHandle(
+    forwardedRef,
+    () => ({
+      // Focus the react-select input when mounted, otherwise focus the fallback input
+      focus: () => {
+        if (selectRef.current?.focus) {
+          selectRef.current.focus()
+          return
+        }
+        fallbackInputRef.current?.focus?.()
+      }
+    }),
+    []
+  )
 
   const [inputValue, setInputValue] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -35,28 +48,25 @@ export default function AddressInput({
   const [link, setLink] = useState('')
   const [notEmpty, setNotEmpty] = useState(false)
 
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
+  useEffect(() => setIsMounted(true), [])
 
   useEffect(() => {
-    if (setInnerValue) {
-      setInnerValue(inputValue)
-    }
-    if (!isAddressValid(inputValue)) {
-      setLink('')
-    }
+    if (setInnerValue) setInnerValue(inputValue)
+    if (!isAddressValid(inputValue)) setLink('')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue])
+
+  const rawValue = rawData?.[type] || ''
 
   useEffect(() => {
     setErrorMessage('')
 
+    // If user started editing, don't override their input with rawData anymore
+    if (userTouchedRef.current) return
+
     const fetchData = async (valueInp) => {
       let url = 'v2/username/' + valueInp
-      if (isAddressValid(valueInp)) {
-        url = 'v2/address/' + valueInp
-      }
+      if (isAddressValid(valueInp)) url = 'v2/address/' + valueInp
 
       const response = await axios(url + '?username=true&service=true').catch((error) => {
         console.log(error.message)
@@ -80,24 +90,23 @@ export default function AddressInput({
       }
     }
 
-    if (rawData && rawData[type]) {
+    if (rawValue) {
       setNotEmpty(true)
-      setInputValue(rawData[type])
+      setInputValue(rawValue)
 
       if (!hasRun.current && rawData !== initialRawData.current) {
         hasRun.current = true
         if (!rawData?.[type + 'Details']?.service && !rawData[type + 'Details']?.username) {
-          //if no details (like when address is specified in url)
-          fetchData(rawData[type])
+          // if no details (like when address is specified in url)
+          fetchData(rawValue)
         } else if (rawData[type + 'Details']?.service || rawData[type + 'Details']?.username) {
           setLink(userOrServiceLink(rawData, type))
         }
       }
 
-      if (disabled) {
-        clearAll()
-      }
+      if (disabled) clearAll()
     }
+
     if (!rawData || rawData?.error) {
       setInputValue('')
       setLink('')
@@ -106,30 +115,24 @@ export default function AddressInput({
       setSearchSuggestions([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rawData])
+  }, [rawValue, rawData?.error])
 
   const searchOnKeyUp = async (e) => {
     setErrorMessage('')
     const valueInp = e.target.value
     const maxCount = 2
 
-    if (valueInp.length > 0) {
-      setNotEmpty(true)
-    } else {
-      clearAll()
-    }
+    if (valueInp.length > 0) setNotEmpty(true)
+    else clearAll()
 
     if (e.key === 'Enter' && isAddressOrUsername(valueInp)) {
       //request one address/username and set link, check if it's valid
-
       clearTimeout(typingTimer)
       setSearchingSuggestions(false)
       setSearchSuggestions([])
 
       let url = 'v2/username/' + valueInp
-      if (isAddressValid(valueInp)) {
-        url = 'v2/address/' + valueInp
-      }
+      if (isAddressValid(valueInp)) url = 'v2/address/' + valueInp
 
       const response = await axios(url + '?username=true&service=true').catch((error) => {
         console.log(error.message)
@@ -175,17 +178,16 @@ export default function AddressInput({
 
           if (suggestionsResponse) {
             const suggestions = suggestionsResponse.data
-            if (suggestions?.addresses?.length > 0) {
-              setSearchSuggestions(suggestions.addresses)
-            }
+            if (suggestions?.addresses?.length > 0) setSearchSuggestions(suggestions.addresses)
           }
           setSearchingSuggestions(false)
         }
-      }, 500) // 0.5 sec
+      }, 500) //0.5 second delay after user stops typing
     }
   }
 
   const searchOnChange = (option) => {
+    userTouchedRef.current = true
     if (!option) {
       if (setValue) setValue('')
       setInputValue('')
@@ -208,7 +210,6 @@ export default function AddressInput({
         'address'
       )
     )
-
     setSearchSuggestions([])
   }
 
@@ -219,12 +220,14 @@ export default function AddressInput({
 
   const searchOnInputChange = (value, action) => {
     if (action.action !== 'input-blur' && action.action !== 'menu-close') {
+      userTouchedRef.current = true
       setNotEmpty(true)
       setInputValue(value)
     }
   }
 
   const clearAll = () => {
+    userTouchedRef.current = true
     if (setValue) setValue('')
     setInputValue('')
     setLink('')
@@ -235,13 +238,17 @@ export default function AddressInput({
 
   return (
     <div className="center">
-      <span className="input-title">
-        {title} {link}
-      </span>
+      {(title || link) && (
+        <span className="input-title">
+          {title} {link}
+        </span>
+      )}
+
       <div className={`form-input${disabled ? ' disabled' : ''}`}>
         {isMounted ? (
           <div className="form-input__wrap" onKeyUp={searchOnKeyUp}>
             <Select
+              ref={selectRef} // IMPORTANT: keep react-select instance ref
               className={`address-input ${notEmpty ? ' not-empty' : ''}`}
               placeholder={placeholder}
               onChange={searchOnChange}
@@ -306,6 +313,7 @@ export default function AddressInput({
               instanceId="address-input"
               noOptionsMessage={() => (searchingSuggestions ? t('explorer.searching-for-addresses') : null)}
             />
+
             <div className="form-input__btns">
               <button className="form-input__clear" onClick={clearAll}>
                 <IoMdClose />
@@ -326,6 +334,7 @@ export default function AddressInput({
               className="input-text input-text-no-border"
               spellCheck="false"
               disabled={disabled}
+              ref={fallbackInputRef} // IMPORTANT: allow focus before mount
             />
             <div className="form-input__btns">
               <button className="form-input__clear" onClick={clearAll}>
@@ -351,4 +360,6 @@ export default function AddressInput({
       </div>
     </div>
   )
-}
+})
+
+export default AddressInput

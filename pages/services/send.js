@@ -413,7 +413,6 @@ export default function Send({
               hash: result.hash,
               validated: result.validated,
               ledgerIndex: result.ledger_index,
-              balanceChanges: result.balanceChanges,
               invoiceId: result.InvoiceID,
               transactionType: xahauNetwork && useRemit ? 'Remit' : 'Payment'
             })
@@ -427,7 +426,16 @@ export default function Send({
 
   return (
     <>
-      <SEO title="Send payment" description="Send a payment to a destination address" />
+      <SEO
+        title="Send payment"
+        description="Send a payment to a destination address"
+        image={{
+          width: 1200,
+          height: 630,
+          file: 'previews/1200x630/services/send.png'
+        }}
+        twitterImage={{ file: 'previews/630x630/services/send.png' }}
+      />
       <div className="content-text content-center">
         <h1 className="center">Send payment</h1>
 
@@ -801,7 +809,7 @@ export default function Send({
                   )}
                   {txResult.transactionType === 'Remit' && (
                     <p>
-                      <strong>Transaction Type:</strong> <span className="blue bold">Remit (Xahau)</span>
+                      <strong>Transaction Type:</strong> <span className="bold">Remit</span>
                     </p>
                   )}
                 </div>

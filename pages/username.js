@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -16,7 +16,8 @@ import {
   encode,
   network,
   ledgerName,
-  isUsernameValidToRegister
+  isUsernameValidToRegister,
+  useCookie
 } from '../utils'
 
 let registrtaionCompleted = false
@@ -38,6 +39,7 @@ export const getServerSideProps = async (context) => {
 import CheckBox from '../components/UI/CheckBox'
 import Receipt from '../components/Receipt'
 import SEO from '../components/SEO'
+import AddressInput from '../components/UI/AddressInput'
 
 const CountrySelect = dynamic(() => import('../components/UI/CountrySelect'), { ssr: false })
 
@@ -52,6 +54,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
   const { t, i18n } = useTranslation()
   const router = useRouter()
 
+  const [ref] = useCookie('ref')
   const [address, setAddress] = useState('')
   const [username, setUsername] = useState('')
   const [receipt, setReceipt] = useState(false)
@@ -68,7 +71,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
   const [update, setUpdate] = useState(false)
   const [xamanUserToken, setXamanUserToken] = useState(null)
 
-  let addressRef
+  const addressRef = useRef(null)
   let usernameRef
 
   useEffect(() => {
@@ -141,8 +144,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [receipt, username, address, countryCode])
 
-  const onAddressChange = (e) => {
-    let address = e.target.value
+  const onAddressChange = (address) => {
     address = address.replace(/[^0-9a-zA-Z.]/g, '')
     setAddress(address)
     let queryAddList = []
@@ -204,13 +206,13 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     registrtaionCompleted = false
     if (!address) {
       setErrorMessage(t('error.address-empty', { ns: 'username' }))
-      addressRef?.focus()
+      addressRef.current?.focus()
       return
     }
 
     if (!isAddressValid(address)) {
       setErrorMessage(t('error.address-invalid', { ns: 'username' }))
-      addressRef?.focus()
+      addressRef.current?.focus()
       return
     }
 
@@ -246,7 +248,8 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     const postData = {
       bithompid: username,
       address,
-      countryCode
+      countryCode,
+      ...(ref ? { referralCode: ref } : {})
     }
     const apiData = await axios.post('v1/bithompid', postData).catch((error) => {
       setErrorMessage(t('error.' + error.message))
@@ -268,7 +271,6 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     }
 
     if (data?.error) {
-      let addressInput = addressRef
       let usernameInput = usernameRef
       if (data.error === 'Username is already registered') {
         setErrorMessage(t('error.username-taken', { username, ns: 'username' }))
@@ -286,12 +288,12 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
       }
       if (data.error === 'Address is invalid') {
         setErrorMessage(t('error.address-invalid', { ns: 'username' }))
-        addressInput?.focus()
+        addressRef.current?.focus()
         return
       }
       if (data.error === 'Sorry, you already have a registered username on that address. Try another address') {
         setErrorMessage(t('error.address-done', { ns: 'username' }))
-        addressInput?.focus()
+        addressRef.current?.focus()
         return
       }
       setErrorMessage(data.error)
@@ -427,7 +429,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     const response = await axios(
       'v1/bithompid/' + username + '/status?address=' + address + '&dt=' + destinationTag
     ).catch((error) => {
-      setErrorMessage(t('error.' + error.message))
+      setErrorMessage(t(`error.${error.message}`, { defaultValue: error.message }))
     })
     const data = response.data
     if (data) {
@@ -560,31 +562,27 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                             </div>
                           </>
                         ) : (
-                          <>
-                            <p>
-                              {t('step0.enter-address-or', { ns: 'username' })}{' '}
-                              <b className="link" onClick={() => setSignRequest({})}>
-                                {t('step0.sign-in', { ns: 'username' })}
-                              </b>
-                              :
-                            </p>
-                            <div className="input-validation">
-                              <input
-                                placeholder={t('step0.your-address', { ns: 'username' })}
-                                value={address}
-                                onChange={onAddressChange}
-                                className="input-text"
-                                ref={(node) => {
-                                  addressRef = node
-                                }}
-                                spellCheck="false"
-                                maxLength="36"
-                              />
-                              {isAddressValid(address) && (
-                                <img src={checkmark} className="validation-icon" alt="validated" />
-                              )}
-                            </div>
-                          </>
+                          <AddressInput
+                            title={
+                              <div style={{ display: 'inline-block', marginBottom: '10px' }}>
+                                {t('step0.enter-address-or', { ns: 'username' })}{' '}
+                                <b className="link" onClick={() => setSignRequest({})}>
+                                  {t('step0.sign-in', { ns: 'username' })}
+                                </b>
+                                :
+                              </div>
+                            }
+                            placeholder={t('step0.your-address', { ns: 'username' })}
+                            setInnerValue={onAddressChange}
+                            rawData={
+                              account
+                                ? { address: account.address, addressDetails: { username: account.username } }
+                                : null
+                            }
+                            type="address"
+                            hideButton={true}
+                            ref={addressRef}
+                          />
                         )}
                         <p>{t('step0.enter-username', { ns: 'username' })}:</p>
                         <div className="input-validation">

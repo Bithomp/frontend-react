@@ -2,7 +2,16 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
-import { xahauNetwork, explorerName, nativeCurrency, isAddressValid, encode, isEmailValid, md5, isHexString } from '../../utils'
+import {
+  xahauNetwork,
+  explorerName,
+  nativeCurrency,
+  isAddressValid,
+  encode,
+  isEmailValid,
+  md5,
+  isHexString
+} from '../../utils'
 import { multiply, subtract } from '../../utils/calc'
 import SEO from '../../components/SEO'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -73,20 +82,14 @@ export default function AccountSettings({
   const [currentTickSize, setCurrentTickSize] = useState(null)
   const [walletLocatorInput, setWalletLocatorInput] = useState('')
   const [currentWalletLocator, setCurrentWalletLocator] = useState('')
-  
+
   // Validation states
   const [messageKeyValidation, setMessageKeyValidation] = useState({ isValid: true, message: '' })
   const [walletLocatorValidation, setWalletLocatorValidation] = useState({ isValid: true, message: '' })
   const [tickSizeValidation, setTickSizeValidation] = useState({ isValid: true, message: '' })
 
   const validateInput = (value, options = {}) => {
-    const {
-      allowEmpty = true,
-      evenLength = true,
-      minChars,
-      exactChars,
-      successMessage = 'Valid input'
-    } = options
+    const { allowEmpty = true, evenLength = true, minChars, exactChars, successMessage = 'Valid input' } = options
 
     const trimmed = value.trim()
 
@@ -133,7 +136,7 @@ export default function AccountSettings({
     // Check the first byte for valid key type prefixes
     const firstByte = trimmed.substring(0, 2).toUpperCase()
     const validPrefixes = ['02', '03', 'ED']
-    
+
     if (!validPrefixes.includes(firstByte)) {
       return {
         isValid: false,
@@ -159,45 +162,45 @@ export default function AccountSettings({
 
   const validateTickSize = (value) => {
     const trimmed = value.trim()
-    
+
     if (!trimmed) {
       return { isValid: true, message: '' } // Empty is valid (will be cleared)
     }
-    
+
     const numValue = Number(trimmed)
-    
+
     if (isNaN(numValue)) {
-      return { 
-        isValid: false, 
-        message: 'Must be a valid number' 
+      return {
+        isValid: false,
+        message: 'Must be a valid number'
       }
     }
-    
+
     if (!Number.isInteger(numValue)) {
-      return { 
-        isValid: false, 
-        message: 'Must be a whole number (integer)' 
+      return {
+        isValid: false,
+        message: 'Must be a whole number (integer)'
       }
     }
-    
+
     if (numValue < 0) {
-      return { 
-        isValid: false, 
-        message: 'Must be 0 or positive' 
+      return {
+        isValid: false,
+        message: 'Must be 0 or positive'
       }
     }
-    
+
     if (numValue === 0) {
       return { isValid: true, message: 'Valid (will clear tick size)' }
     }
-    
+
     if (numValue < 3 || numValue > 15) {
-      return { 
-        isValid: false, 
-        message: 'Must be between 3 and 15 (or 0 to clear)' 
+      return {
+        isValid: false,
+        message: 'Must be between 3 and 15 (or 0 to clear)'
       }
     }
-    
+
     return { isValid: true, message: 'Valid tick size' }
   }
 
@@ -350,13 +353,13 @@ export default function AccountSettings({
 
     // ASF Flags - Advanced
     asfDefaultRipple: {
-      name: 'Rippling (default ripple)',
-      displayName: 'Rippling (default ripple)',
+      name: 'Default rippling',
+      displayName: 'Default rippling',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
       description:
-        'If enabled, allows rippling on all trustlines by default. This can affect how payments flow through your account.',
+        'This a setting that Token issuers need to enable. If enabled, allows rippling on all trustlines by default. This affect how payments flow through your account.',
       isDefault: (value) => !value, // Rippling DISABLED is the default state (orange highlight when enabled)
       isAdvanced: true
     },
@@ -1098,9 +1101,9 @@ export default function AccountSettings({
   if (account?.address && loading) {
     return (
       <>
-        <SEO title="Account Settings" description="Manage your account settings" />
+        <SEO title="Account settings" description="Manage your account settings" />
         <div className="content-center">
-          <h1 className="center">Account Settings</h1>
+          <h1 className="center">Account settings</h1>
           <div className="center">
             <span className="waiting"></span>
             <br />
@@ -1127,9 +1130,9 @@ export default function AccountSettings({
   return (
     <>
       <div className={accountSettings}>
-        <SEO title="Account Settings" description="Manage your account settings." />
+        <SEO title="Account settings" description="Manage your account settings." />
         <div className="content-center">
-          <h1 className="center">Account Settings</h1>
+          <h1 className="center">Account settings</h1>
           <p className="center">
             {account?.address ? (
               `Manage your account settings on the ${explorerName}.`
@@ -1246,9 +1249,9 @@ export default function AccountSettings({
                         Clear
                       </button>
                     )}
-                    <button 
-                      className="button-action thin" 
-                      onClick={handleSetMessageKey} 
+                    <button
+                      className="button-action thin"
+                      onClick={handleSetMessageKey}
                       disabled={!account?.address || (messageKeyInput && !messageKeyValidation.isValid)}
                     >
                       Set
@@ -1257,7 +1260,13 @@ export default function AccountSettings({
                 </div>
                 <div className="nft-minter-input">
                   <input
-                    className={`input-text ${messageKeyInput && !messageKeyValidation.isValid ? 'input-error' : messageKeyInput && messageKeyValidation.isValid ? 'input-valid' : ''}`}
+                    className={`input-text ${
+                      messageKeyInput && !messageKeyValidation.isValid
+                        ? 'input-error'
+                        : messageKeyInput && messageKeyValidation.isValid
+                        ? 'input-valid'
+                        : ''
+                    }`}
                     placeholder="e.g., 020000000000000000000000000000000000000000000000000000000000000000"
                     value={messageKeyInput}
                     onChange={(e) => {
@@ -1269,9 +1278,16 @@ export default function AccountSettings({
                     disabled={!account?.address}
                     maxLength={66}
                   />
-                  <small>Provide a hex-encoded public key (exactly 66 characters/33 bytes). First byte must be 0x02 or 0x03 for secp256k1 keys, or 0xED for Ed25519 keys. Used for encrypted messaging.</small>
+                  <small>
+                    Provide a hex-encoded public key (exactly 66 characters/33 bytes). First byte must be 0x02 or 0x03
+                    for secp256k1 keys, or 0xED for Ed25519 keys. Used for encrypted messaging.
+                  </small>
                   {messageKeyInput && messageKeyValidation.message && (
-                    <div className={`validation-message ${messageKeyValidation.isValid ? 'validation-success' : 'validation-error'}`}>
+                    <div
+                      className={`validation-message ${
+                        messageKeyValidation.isValid ? 'validation-success' : 'validation-error'
+                      }`}
+                    >
                       {messageKeyValidation.message}
                     </div>
                   )}
@@ -1328,9 +1344,9 @@ export default function AccountSettings({
                     )}
                   </div>
                   <div className="flag-info-buttons">
-                    <button 
-                      className="button-action thin" 
-                      onClick={handleSetTickSize} 
+                    <button
+                      className="button-action thin"
+                      onClick={handleSetTickSize}
                       disabled={!account?.address || (tickSizeInput && !tickSizeValidation.isValid)}
                     >
                       Set
@@ -1339,7 +1355,13 @@ export default function AccountSettings({
                 </div>
                 <div className="nft-minter-input">
                   <input
-                    className={`input-text ${tickSizeInput && !tickSizeValidation.isValid ? 'input-error' : tickSizeInput && tickSizeValidation.isValid ? 'input-valid' : ''}`}
+                    className={`input-text ${
+                      tickSizeInput && !tickSizeValidation.isValid
+                        ? 'input-error'
+                        : tickSizeInput && tickSizeValidation.isValid
+                        ? 'input-valid'
+                        : ''
+                    }`}
                     placeholder="0 to clear, or 3-15"
                     value={tickSizeInput}
                     onChange={(e) => {
@@ -1353,7 +1375,11 @@ export default function AccountSettings({
                   />
                   <small>Controls significant digits for order book prices. 0 clears.</small>
                   {tickSizeInput && tickSizeValidation.message && (
-                    <div className={`validation-message ${tickSizeValidation.isValid ? 'validation-success' : 'validation-error'}`}>
+                    <div
+                      className={`validation-message ${
+                        tickSizeValidation.isValid ? 'validation-success' : 'validation-error'
+                      }`}
+                    >
                       {tickSizeValidation.message}
                     </div>
                   )}
@@ -1389,7 +1415,13 @@ export default function AccountSettings({
                 </div>
                 <div className="nft-minter-input">
                   <input
-                    className={`input-text ${walletLocatorInput && !walletLocatorValidation.isValid ? 'input-error' : walletLocatorInput && walletLocatorValidation.isValid ? 'input-valid' : ''}`}
+                    className={`input-text ${
+                      walletLocatorInput && !walletLocatorValidation.isValid
+                        ? 'input-error'
+                        : walletLocatorInput && walletLocatorValidation.isValid
+                        ? 'input-valid'
+                        : ''
+                    }`}
                     placeholder="e.g., 0000000000000000000000000000000000000000000000000000000000000000"
                     value={walletLocatorInput}
                     onChange={(e) => {
@@ -1403,7 +1435,11 @@ export default function AccountSettings({
                   />
                   <small>Optional 64-character hexadecimal hash locator for your wallet application.</small>
                   {walletLocatorInput && walletLocatorValidation.message && (
-                    <div className={`validation-message ${walletLocatorValidation.isValid ? 'validation-success' : 'validation-error'}`}>
+                    <div
+                      className={`validation-message ${
+                        walletLocatorValidation.isValid ? 'validation-success' : 'validation-error'
+                      }`}
+                    >
                       {walletLocatorValidation.message}
                     </div>
                   )}

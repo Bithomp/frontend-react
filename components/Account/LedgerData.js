@@ -15,7 +15,7 @@ import {
 import { devNet, getCoinsUrl, isDomainValid, nativeCurrency, stripDomain, xahauNetwork } from '../../utils'
 
 import CopyButton from '../UI/CopyButton'
-import { LinkAmm, LinkTx } from '../../utils/links'
+import { LinkAmm, LinkObject, LinkTx } from '../../utils/links'
 
 import { MdDeleteForever, MdVerified } from 'react-icons/md'
 import { FiEdit } from 'react-icons/fi'
@@ -405,12 +405,16 @@ export default function LedgerData({
     </>
   ) : account?.address === data?.address ? (
     <>
-      You don't have any NFTs. You can <Link href="/services/nft-mint">Mint NFT</Link> or
-      <Link href="/nft-explorer?saleCurrency=xrp&list=onSale">Buy NFT</Link>
+      You don't have any NFTs. You can [<Link href="/services/nft-mint">Mint NFT</Link>] or [
+      <Link href="/nft-explorer?saleCurrency=xrp&list=onSale">Buy NFT</Link>].
     </>
   ) : (
     "This account doesn't hold NFTs."
   )
+
+  const showObjectSection = (objects) => {
+    return !objects || objects?.length > 0 || account?.address === data?.address
+  }
 
   const dexOrdersNode = !objects?.offerList ? (
     'Loading...'
@@ -445,6 +449,27 @@ export default function LedgerData({
   ) : (
     "This account doesn't have Escrows."
   )
+
+  let noObjectsNode = ''
+  if (account?.address !== data?.address) {
+    const missing = []
+
+    if (objects?.rippleStateList?.length === 0) missing.push('Tokens')
+    if (objects?.nftList?.length === 0) missing.push('NFTs')
+    if (objects?.escrowList?.length === 0) missing.push('Escrows')
+    if (objects?.offerList?.length === 0) missing.push('DEX orders')
+    if (objects?.mptList?.length === 0 && objects?.mptIssuanceList?.length === 0) missing.push('Multi Purpose Tokens')
+
+    if (missing.length > 0) {
+      noObjectsNode = <span className="grey">{`This account doesn't have ${missing.join(', ')}.`}</span>
+    }
+  }
+
+  let cronNode = null
+
+  if (xahauNetwork && data?.ledgerInfo?.cron) {
+    cronNode = <LinkObject objectId={data?.ledgerInfo?.cron} hash={true} copy={true} />
+  }
 
   return (
     <>
@@ -489,26 +514,36 @@ export default function LedgerData({
           )}
           {data?.ledgerInfo?.activated && !gateway && (
             <>
-              <tr>
-                <td>{t('menu.tokens')}</td>
-                <td>{tokensNode}</td>
-              </tr>
-              <tr>
-                <td>MP Tokens</td>
-                <td>{mptNode}</td>
-              </tr>
-              <tr>
-                <td>NFTs</td>
-                <td>{nftNode}</td>
-              </tr>
-              <tr>
-                <td>DEX orders</td>
-                <td>{dexOrdersNode}</td>
-              </tr>
-              <tr>
-                <td>Escrows</td>
-                <td>{escrowNode}</td>
-              </tr>
+              {showObjectSection(objects?.rippleStateList) && (
+                <tr>
+                  <td>{t('menu.tokens')}</td>
+                  <td>{tokensNode}</td>
+                </tr>
+              )}
+              {showObjectSection(objects?.mptList) && (
+                <tr>
+                  <td>MP Tokens</td>
+                  <td>{mptNode}</td>
+                </tr>
+              )}
+              {showObjectSection(objects?.nftList) && (
+                <tr>
+                  <td>NFTs</td>
+                  <td>{nftNode}</td>
+                </tr>
+              )}
+              {showObjectSection(objects?.offerList) && (
+                <tr>
+                  <td>DEX orders</td>
+                  <td>{dexOrdersNode}</td>
+                </tr>
+              )}
+              {showObjectSection(objects?.escrowList) && (
+                <tr>
+                  <td>Escrows</td>
+                  <td>{escrowNode}</td>
+                </tr>
+              )}
             </>
           )}
           {data.ledgerInfo?.domain && (
@@ -554,6 +589,12 @@ export default function LedgerData({
                 <tr>
                   <td>Hook state count</td>
                   <td>{data.ledgerInfo?.hookStateCount}</td>
+                </tr>
+              )}
+              {data.ledgerInfo?.cron && (
+                <tr>
+                  <td>Cron</td>
+                  <td>{cronNode}</td>
                 </tr>
               )}
             </>
@@ -753,6 +794,11 @@ export default function LedgerData({
               ))}
             </>
           )}
+          {noObjectsNode && (
+            <tr>
+              <td colSpan={2}>{noObjectsNode}</td>
+            </tr>
+          )}
         </tbody>
       </table>
       <div className="show-on-small-w800">
@@ -784,25 +830,34 @@ export default function LedgerData({
             </p>
           </>
         )}
-        {data?.ledgerInfo?.activated && (
+        {data?.ledgerInfo?.activated && !gateway && (
           <>
-            <p>
-              {objects?.rippleStateList?.length > 0 && (
-                <>
-                  <span className="grey">{t('explorer.menu.tokens')}</span>{' '}
-                </>
-              )}
-              {tokensNode}
-            </p>
-            <p>
-              {objects?.mptList?.length > 0 && <span className="grey">MP Tokens</span>} {mptNode}
-            </p>
-            <p>
-              {objects?.offerList?.length > 0 && <span className="grey">DEX orders</span>} {dexOrdersNode}
-            </p>
-            <p>
-              {objects?.escrowList?.length > 0 && <span className="grey">Escrows</span>} {escrowNode}
-            </p>
+            {showObjectSection(objects?.rippleStateList) && (
+              <p>
+                {objects?.rippleStateList?.length > 0 && <span className="grey">{t('explorer.menu.tokens')}</span>}{' '}
+                {tokensNode}
+              </p>
+            )}
+            {showObjectSection(objects?.nftList) && (
+              <p>
+                {objects?.nftList?.length > 0 && <span className="grey">NFTs</span>} {nftNode}
+              </p>
+            )}
+            {showObjectSection(objects?.offerList) && (
+              <p>
+                {objects?.offerList?.length > 0 && <span className="grey">DEX orders</span>} {dexOrdersNode}
+              </p>
+            )}
+            {showObjectSection(objects?.escrowList) && (
+              <p>
+                {objects?.escrowList?.length > 0 && <span className="grey">Escrows</span>} {escrowNode}
+              </p>
+            )}
+            {showObjectSection(objects?.mptList) && (
+              <p>
+                {objects?.mptList?.length > 0 && <span className="grey">MP Tokens</span>} {mptNode}
+              </p>
+            )}
           </>
         )}
         {data.ledgerInfo?.domain && (
@@ -845,6 +900,11 @@ export default function LedgerData({
             {data.ledgerInfo?.hookStateCount && (
               <p>
                 <span className="grey">Hook state count</span> {data.ledgerInfo?.hookStateCount}
+              </p>
+            )}
+            {data.ledgerInfo?.cron && (
+              <p>
+                <span className="grey">Cron</span> {cronNode}
               </p>
             )}
           </>
@@ -1018,6 +1078,7 @@ export default function LedgerData({
             ))}
           </>
         )}
+        {noObjectsNode && <p>{noObjectsNode}</p>}
       </div>
     </>
   )
