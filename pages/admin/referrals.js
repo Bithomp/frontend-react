@@ -304,7 +304,8 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                   ⚠️ <b>Important:</b> The destination address for referral rewards must be an <b>activated</b>,
                   self-custody wallet that you fully control. Do <b>not</b> use exchange or custodial addresses, or any
                   address that requires a Destination Tag. Referral rewards are sent via on-ledger <b>Checks</b> and may
-                  be <b>lost</b> if an exchange address is used.
+                  be <b>lost</b> if an exchange address is used. <b>Self-referrals are not allowed</b> — you cannot earn
+                  rewards from your own purchases.
                 </p>
 
                 {referral ? (
