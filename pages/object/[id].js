@@ -17,11 +17,13 @@ import {
   fullDateAndTime,
   amountFormat,
   showFlags,
-  capitalize
+  capitalize,
+  shortHash
 } from '../../utils/format'
 import { LinkTx, LedgerLink } from '../../utils/links'
 import { object } from '../../styles/pages/object.module.scss'
 import { network } from '../../utils'
+import CopyButton from '../../components/UI/CopyButton'
 
 const errorNotFoundMessage =
   'Such Object is not found on the current Ledger of the ' +
@@ -137,7 +139,6 @@ export default function LedgerObject({
 
   const txIdFields = ['PreviousTxnID']
   const ledgerSeqFields = ['PreviousTxnLgrSeq']
-  const objectIdFields = ['index']
 
   const detailsTable = () => {
     if (!data?.node) return null
@@ -193,13 +194,13 @@ export default function LedgerObject({
           )
         }
 
-        // Link for object index (hash)
-        if (objectIdFields.includes(key) && typeof value === 'string') {
+        // Long hash fields
+        if (key === 'index' || key === 'InvoiceID') {
           return (
             <tr key={key}>
-              <td>{key}</td>
+              <td>{capitalize(key)}</td>
               <td>
-                <Link href={`/object/${value}`}>{value}</Link>
+                {shortHash(value)} <CopyButton text={value} />
               </td>
             </tr>
           )
@@ -224,21 +225,27 @@ export default function LedgerObject({
             </tr>
           )
         }
+        if (key === 'expiration') {
+          // we have Expiration too, so skip duplicate
+          return null
+        }
         if (key === 'previousTxAt') {
           return (
             <tr key={key}>
-              <td>PreviousTxnAt</td>
-              <td>{fullDateAndTime(value)}</td>
+              <td>{capitalize(key)}</td>
+              <td>
+                {fullDateAndTime(value)} [{value}]
+              </td>
             </tr>
           )
         }
 
-        if (key === 'CancelAfter' || key === 'FinishAfter') {
+        if (key === 'CancelAfter' || key === 'FinishAfter' || key === 'Expiration') {
           return (
             <tr key={key}>
               <td>{key}</td>
               <td>
-                {fullDateAndTime(value, 'ripple')} ({value})
+                {fullDateAndTime(value, 'ripple')} [{value}]
               </td>
             </tr>
           )
