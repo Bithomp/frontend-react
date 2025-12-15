@@ -500,6 +500,12 @@ export default function Subscriptions({
     }
   }
 
+  const setSubscriptionsTabAndRestartSteps = (tab) => {
+    setSubscriptionsTab(tab)
+    setStep(0)
+    setPayData(null)
+  }
+
   return (
     <>
       <SEO title="Subscription" />
@@ -551,7 +557,7 @@ export default function Subscriptions({
                   <Tabs
                     tabList={subscriptionsTabList}
                     tab={subscriptionsTab}
-                    setTab={setSubscriptionsTab}
+                    setTab={setSubscriptionsTabAndRestartSteps}
                     name="subscriptions"
                     style={{ marginTop: '20px' }}
                   />
@@ -681,7 +687,8 @@ export default function Subscriptions({
                                           }
                                         }
                                       ]
-                                    }
+                                    },
+                                    receipt: true
                                   })
                                 }
                               >
