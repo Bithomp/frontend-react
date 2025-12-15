@@ -32,6 +32,9 @@ export default function Api({ sessionToken, openEmailLogin }) {
   const [isEditingDomain, setIsEditingDomain] = useState(false)
   const [domainEdit, setDomainEdit] = useState('')
   const [domainSaving, setDomainSaving] = useState(false)
+  const [isEditingDescription, setIsEditingDescription] = useState(false)
+  const [descriptionEdit, setDescriptionEdit] = useState('')
+  const [descriptionSaving, setDescriptionSaving] = useState(false)
 
   useEffect(() => {
     if (sessionToken) {
@@ -45,6 +48,12 @@ export default function Api({ sessionToken, openEmailLogin }) {
       setDomainEdit(apiData.domain)
     }
   }, [apiData?.domain])
+
+  useEffect(() => {
+    if (apiData?.memo) {
+      setDescriptionEdit(apiData.memo)
+    }
+  }, [apiData?.memo])
 
   const getApiData = async () => {
     setLoading(true)
@@ -133,7 +142,7 @@ export default function Api({ sessionToken, openEmailLogin }) {
 
     setDomainSaving(true)
 
-    const resp = await axiosAdmin.put('partner/accessToken', { id: 445, domain: cleanDomain }).catch((error) => {
+    const resp = await axiosAdmin.put('partner/accessToken', { id: apiData.id, domain: cleanDomain }).catch((error) => {
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
       }
@@ -145,8 +154,46 @@ export default function Api({ sessionToken, openEmailLogin }) {
       setApiData(resp.data)
       setIsEditingDomain(false)
     } else {
-      await getApiData()
       setIsEditingDomain(false)
+    }
+  }
+
+  const saveDescription = async () => {
+    setErrorMessage('')
+
+    if (!descriptionEdit || !descriptionEdit.trim()) {
+      setErrorMessage(t('form.error.description-empty'))
+      return
+    }
+
+    const cleanDescription = descriptionEdit.trim()
+
+    if (cleanDescription.length < 10) {
+      setErrorMessage(t('form.error.description-short'))
+      return
+    }
+
+    setDescriptionSaving(true)
+
+    const resp = await axiosAdmin
+      .put('partner/accessToken', {
+        id: apiData.id,
+        memo: cleanDescription,
+        description: cleanDescription
+      })
+      .catch((error) => {
+        if (error && error.message !== 'canceled') {
+          setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
+        }
+      })
+
+    setDescriptionSaving(false)
+
+    if (resp?.data) {
+      setApiData(resp.data)
+      setIsEditingDescription(false)
+    } else {
+      setIsEditingDescription(false)
     }
   }
 
@@ -277,6 +324,64 @@ export default function Api({ sessionToken, openEmailLogin }) {
                                     setIsEditingDomain(false)
                                   }}
                                   disabled={domainSaving}
+                                >
+                                  <IoMdClose />
+                                </button>
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="right">Description</td>
+                          <td className="left" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            {!isEditingDescription ? (
+                              <>
+                                <span className="bold">{apiData.memo || ''}</span>
+                                <button
+                                  className="button-icon"
+                                  type="button"
+                                  aria-label="Edit description"
+                                  title="Edit description"
+                                  onClick={() => {
+                                    setDescriptionEdit(apiData.memo || '')
+                                    setIsEditingDescription(true)
+                                  }}
+                                >
+                                  <IoMdCreate />
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <input
+                                  className="input-text"
+                                  value={descriptionEdit}
+                                  onChange={(e) => setDescriptionEdit(e.target.value)}
+                                  maxLength="120"
+                                  disabled={descriptionSaving}
+                                  style={{ maxWidth: '360px' }}
+                                />
+
+                                <button
+                                  className="button-icon"
+                                  type="button"
+                                  aria-label="Save description"
+                                  title="Save"
+                                  onClick={saveDescription}
+                                  disabled={descriptionSaving}
+                                >
+                                  <IoMdCheckmark />
+                                </button>
+
+                                <button
+                                  className="button-icon"
+                                  type="button"
+                                  aria-label="Cancel"
+                                  title="Cancel"
+                                  onClick={() => {
+                                    setDescriptionEdit(apiData.memo || '')
+                                    setIsEditingDescription(false)
+                                  }}
+                                  disabled={descriptionSaving}
                                 >
                                   <IoMdClose />
                                 </button>
