@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { axiosAdmin } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isAddressValid, ledgerName, server, siteName, useWidth, webSiteName } from '../../utils'
-import { fullDateAndTime, shortNiceNumber } from '../../utils/format'
+import { amountFormat, fullDateAndTime, shortHash, shortNiceNumber } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 
 import SEO from '../../components/SEO'
@@ -422,7 +422,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                               <th className="right">Amount</th>
                               <th className="right">EUR</th>
                               <th>Check</th>
-                              <th className="center">Create</th>
+                              <th className="center">Created</th>
                               <th className="center">Cashed</th>
                               <th className="center">Canceled</th>
                             </tr>
@@ -432,12 +432,10 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                               <tr key={r.id}>
                                 <td>{fullDateAndTime(r.createdAt)}</td>
                                 <td>{statusBadge(r.status)}</td>
-                                <td className="right">
-                                  {shortNiceNumber(r.amount, 6, 6)} {r.currency}
-                                </td>
+                                <td className="right">{amountFormat(r.amount)}</td>
                                 <td className="right">{shortNiceNumber(r.amountInEUR, 2, 2)}</td>
                                 <td className="left">
-                                  <span className="mono">{r.checkID}</span> <CopyButton text={r.checkID} />
+                                  <span className="mono">{shortHash(r.checkID)}</span> <CopyButton text={r.checkID} />
                                   {r.expirationAt ? (
                                     <>
                                       <br />
