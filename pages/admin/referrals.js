@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { axiosAdmin } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { isAddressValid, ledgerName, siteName, useWidth, webSiteName } from '../../utils'
+import { isAddressValid, ledgerName, server, siteName, useWidth, webSiteName } from '../../utils'
 import { fullDateAndTime, shortNiceNumber } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 
@@ -55,13 +55,12 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
     if (!referral?.referralCode) return null
 
     const ref = referral.referralCode
-    const base = `https://${webSiteName}`
 
     return {
-      api: `${base}/${i18n.language}/admin/subscriptions?tab=api&ref=${ref}`,
-      pro: `${base}/${i18n.language}/admin/subscriptions?ref=${ref}`,
-      username: `${base}/${i18n.language}/username?ref=${ref}`,
-      landing: `${base}?ref=${ref}`
+      api: `${server}/${i18n.language}/admin/subscriptions?tab=api&ref=${ref}`,
+      pro: `${server}/${i18n.language}/admin/subscriptions?ref=${ref}`,
+      username: `${server}/${i18n.language}/username?ref=${ref}`,
+      landing: `${server}?ref=${ref}`
     }
   }, [referral?.referralCode])
 
