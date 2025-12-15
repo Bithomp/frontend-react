@@ -203,16 +203,43 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
 
         <AdminTabs name="mainTabs" tab="referrals" />
 
+        <h4 className="center">Affiliate program</h4>
+
+        <p>
+          Join our Affiliate Program and earn <b>10% commission</b> on paid services.
+        </p>
+
+        <p>You earn 10% when your referral purchases:</p>
+        <ul>
+          <li>
+            a <b>username</b>
+          </li>
+          <li>
+            a <b>Bithomp Pro</b> subscription
+          </li>
+          <li>
+            <b>API access</b>
+          </li>
+        </ul>
+
+        <p>
+          Commissions are paid <b>instantly</b> as an <b>{ledgerName} Check</b>, which you can <b>redeem immediately</b>{' '}
+          to receive your funds.
+        </p>
+
+        <p>How it works:</p>
+        <ul>
+          <li>Get your personal referral link</li>
+          <li>Share it with your audience</li>
+          <li>Earn 10% commission on every completed purchase</li>
+        </ul>
+
+        <p>
+          There is <b>no limit</b> to your earnings.
+        </p>
+
         {sessionToken ? (
           <div>
-            <h4 className="center">Earn with referrals</h4>
-
-            <p>
-              Share your referral link. When someone purchases a username or subscription using your link, you{' '}
-              <b>earn rewards</b> that are paid instantly to your destination address via an {ledgerName} Check, which
-              you can cash out right away.
-            </p>
-
             {loading ? (
               <div className="center">
                 <span className="waiting"></span>
@@ -492,11 +519,6 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
           </div>
         ) : (
           <div className="center">
-            <div style={{ maxWidth: '440px', margin: 'auto', textAlign: 'left' }}>
-              <p>- Create and manage your referral code.</p>
-              <p>- Track your referral rewards.</p>
-            </div>
-            <br />
             <center>
               <button className="button-action" onClick={() => openEmailLogin()}>
                 Register or Sign In
