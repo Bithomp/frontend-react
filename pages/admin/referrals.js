@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { axiosAdmin } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { isAddressValid, ledgerName, server, siteName, useWidth, webSiteName } from '../../utils'
+import { isAddressValid, ledgerName, server, siteName, useWidth } from '../../utils'
 import { amountFormat, fullDateAndTime, timeFromNow } from '../../utils/format'
 import { LinkAccount, LinkTx } from '../../utils/links'
 
@@ -335,31 +335,33 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                         </b>
                       </p>
                       <p>
-                        If someone opens any page on {siteName} using a link with your referral code like
+                        Your referral code works on <b>any</b> link on {siteName} — not just purchase pages. You can
+                        share links to a <b>transaction</b>, <b>account</b>, <b>nft</b>, or any other page and simply
+                        add <b>?ref=</b>
+                        {referral.referralCode}.
                         <br />
                         <br />
-                        <div className="bold">{referralLinks?.landing}</div>
-                        <br />
-                        the referral code is immediately saved in their browser. It doesn’t matter which page they land
-                        on — it can be the homepage, a transaction page, an account page, or any other page on{' '}
-                        {webSiteName}. Even if the user doesn’t purchase anything right away and comes back later to buy
-                        a <span className="bold">username</span>, <span className="bold">Bithomp Pro</span>, or{' '}
-                        <span className="bold">API access</span>, your referral code will still be applied
-                        automatically, and you’ll receive the referral reward.
+                        When someone opens such a link, the referral code is{' '}
+                        <span className="bold">saved in their browser</span>. They can come back later (even days or
+                        weeks later) and if they purchase a <span className="bold">username</span>,{' '}
+                        <span className="bold">Bithomp Pro</span>, or <span className="bold">API access</span>, your
+                        referral code will be applied automatically and you’ll receive the referral reward.
                       </p>
 
                       {referralLinks && (
                         <>
                           <p>
+                            Landing link: <span className="brake bold">{referralLinks.landing}</span>{' '}
+                            <CopyButton text={referralLinks.landing} />
+                          </p>
+                          <p>
                             API link: <span className="brake bold">{referralLinks.api}</span>{' '}
                             <CopyButton text={referralLinks.api} />
                           </p>
-
                           <p>
                             Bithomp Pro link: <span className="brake bold">{referralLinks.pro}</span>{' '}
                             <CopyButton text={referralLinks.pro} />
                           </p>
-
                           <p>
                             Username link: <span className="brake bold">{referralLinks.username}</span>{' '}
                             <CopyButton text={referralLinks.username} />
@@ -372,14 +374,16 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                   )}
                 </div>
 
-                <p>
-                  ⚠️ <b>Important:</b> The destination address for referral rewards must be an <b>activated</b>,
-                  self-custody wallet that you fully control. Do <b>not</b> use exchange or custodial addresses, or any
-                  address that requires a Destination Tag. Referral rewards are sent via on-ledger <b>Checks</b> and may
-                  be <b>lost</b> if an exchange address is used. <b>Self-referrals are not allowed</b> — you cannot earn
-                  rewards from your own purchases.
-                </p>
-
+                <div>
+                  <h4 className="center">Payout address</h4>
+                  <p>
+                    ⚠️ <b>Important:</b> The destination address for referral rewards must be an <b>activated</b>,
+                    self-custody wallet that you fully control. Do <b>not</b> use exchange or custodial addresses, or
+                    any address that requires a Destination Tag. Referral rewards are sent via on-ledger <b>Checks</b>{' '}
+                    and may be <b>lost</b> if an exchange address is used. <b>Self-referrals are not allowed</b> — you
+                    cannot earn rewards from your own purchases.
+                  </p>
+                </div>
                 {referral ? (
                   <table className="table-large no-hover">
                     <tbody>
@@ -495,10 +499,11 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                   <h4 className="center">Payments</h4>
 
                   <p>
-                    This table shows all payments made using your referral code. If <b>Reward</b> is missing, the
-                    payment is not eligible (self-purchase). If Reward exists but the <b>Check</b> is <b>not issued</b>,
-                    we could not create the on-ledger Check (for example: destination wallet is not activated, requires
-                    a Destination Tag, or is custodial).
+                    This table shows all payments made using your referral code. If <span className="bold">Reward</span>{' '}
+                    is missing, the payment is not eligible (self-purchase). If Reward exists but the{' '}
+                    <span className="bold">Check</span> is <span className="bold">not issued</span>, we could not create
+                    the on-ledger Check (for example: destination wallet is not activated, requires a Destination Tag,
+                    or is custodial).
                   </p>
 
                   {Array.isArray(paymentsData?.payments) && paymentsData.payments.length ? (
