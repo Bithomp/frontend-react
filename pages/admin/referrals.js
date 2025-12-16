@@ -522,7 +522,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                                 <td className="right">{p.reward?.amount ? amountFormat(p.reward.amount) : ''}</td>
                                 <td>{checkCell(p.reward)}</td>
                                 <td>
-                                  {p.reward?.checkCreateTxHash && p.reward?.expirationAt ? (
+                                  {getRewardStatus(p.reward) === 'issued' ? (
                                     <>
                                       {timeFromNow(p.reward.expirationAt, i18n)}
                                       <br />
@@ -549,7 +549,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                                   <p>Service: {bidFullServiceName(p)}</p>
                                   {p.reward?.amount ? <p>Reward amount: {amountFormat(p.reward.amount)}</p> : null}
                                   <p>Check: {checkCell(p.reward)}</p>
-                                  {p.reward?.checkCreateTxHash && p.reward?.expirationAt ? (
+                                  {getRewardStatus(p.reward) === 'issued' ? (
                                     <p>
                                       Check expires: {timeFromNow(p.reward.expirationAt, i18n)}
                                       <br />
