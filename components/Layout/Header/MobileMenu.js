@@ -9,7 +9,7 @@ import { IoIosRocket } from 'react-icons/io'
 import { FaUserLarge } from 'react-icons/fa6'
 import { GrMoney } from 'react-icons/gr'
 import { IoStatsChart, IoWallet } from 'react-icons/io5'
-import { FaSignOutAlt, FaEye, FaUserCheck } from 'react-icons/fa'
+import { FaSignOutAlt, FaEye, FaUserCheck, FaUserFriends } from 'react-icons/fa'
 import { FiLink } from 'react-icons/fi'
 
 const handleClick = (e) => {
@@ -102,7 +102,7 @@ export default function MobileMenu({
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            <FaUserLarge style={iconStyle} /> {proLoggedIn || t('signin.signin')}
+            <FaUserLarge style={iconStyle} /> {proName || t('signin.signin')}
           </Link>
 
           {proLoggedIn && (
@@ -113,6 +113,10 @@ export default function MobileMenu({
 
               <Link href="/admin/subscriptions" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <GrMoney style={iconStyle} /> Subscriptions
+              </Link>
+
+              <Link href="/admin/referrals" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                <FaUserFriends style={iconStyle} /> Referrals
               </Link>
 
               <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>

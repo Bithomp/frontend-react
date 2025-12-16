@@ -57,6 +57,7 @@ export default function Footer({ countryCode }) {
           <Link href="/learn/the-bithomp-explorer-advantages">Why Our Explorer</Link>
           <Link href="/about-us">{t('menu.company.about-us')}</Link>
           <Link href="/advertise">{t('menu.business.advertise')}</Link>
+          <Link href="/admin/referrals">Affiliate program 💰</Link>
           <Link href="/customer-support">{t('menu.customer-support')}</Link>
           <Link href="/press">{t('menu.press')}</Link>
           <Link href="/jobs">Join our team</Link>
