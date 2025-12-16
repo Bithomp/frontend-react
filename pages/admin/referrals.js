@@ -5,8 +5,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { axiosAdmin } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isAddressValid, ledgerName, server, siteName, useWidth, webSiteName } from '../../utils'
-import { amountFormat, fullDateAndTime } from '../../utils/format'
-import { LinkTx } from '../../utils/links'
+import { amountFormat, fullDateAndTime, timeFromNow } from '../../utils/format'
+import { LinkAccount, LinkTx } from '../../utils/links'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Tabs/AdminTabs'
@@ -14,6 +14,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import AddressInput from '../../components/UI/AddressInput'
 import { IoMdClose, IoMdCheckmark, IoMdCreate } from 'react-icons/io'
 import Link from 'next/link'
+import { bidFullServiceName } from '../../utils/bids'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -43,12 +44,7 @@ const getRewardStatus = (reward) => {
   return 'issued'
 }
 
-const formatTs = (tsInS) => {
-  if (!tsInS) return ''
-  return fullDateAndTime(new Date(tsInS * 1000))
-}
-
-const badge = (text, colorClass) => <b className={colorClass}>{text}</b>
+const badge = (text, colorClass) => <span className={colorClass}>{text}</span>
 
 const checkCell = (reward) => {
   // No reward => self purchase => not eligible
@@ -261,6 +257,11 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
     return account?.address ? { address: account.address, addressDetails: { username: account.username } } : null
   }, [account?.address, account?.username])
 
+  const issuedChecksCount = useMemo(() => {
+    const list = paymentsData?.payments || []
+    return list.filter((p) => getRewardStatus(p?.reward) === 'issued').length
+  }, [paymentsData])
+
   return (
     <>
       <SEO title="Referrals" />
@@ -350,15 +351,18 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                       {referralLinks && (
                         <>
                           <p>
-                            API link: <b>{referralLinks.api}</b> <CopyButton text={referralLinks.api} />
+                            API link: <span className="brake bold">{referralLinks.api}</span>{' '}
+                            <CopyButton text={referralLinks.api} />
                           </p>
 
                           <p>
-                            Bithomp Pro link: <b>{referralLinks.pro}</b> <CopyButton text={referralLinks.pro} />
+                            Bithomp Pro link: <span className="brake bold">{referralLinks.pro}</span>{' '}
+                            <CopyButton text={referralLinks.pro} />
                           </p>
 
                           <p>
-                            Username link: <b>{referralLinks.username}</b> <CopyButton text={referralLinks.username} />
+                            Username link: <span className="brake bold">{referralLinks.username}</span>{' '}
+                            <CopyButton text={referralLinks.username} />
                           </p>
                         </>
                       )}
@@ -380,15 +384,15 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                   <table className="table-large no-hover">
                     <tbody>
                       <tr>
-                        <td className="right" style={{ width: 220 }}>
-                          Created
-                        </td>
+                        <td className="right">Created</td>
                         <td className="left">{fullDateAndTime(referral.createdAt)}</td>
                       </tr>
-                      <tr>
-                        <td className="right">Updated</td>
-                        <td className="left">{fullDateAndTime(referral.updatedAt)}</td>
-                      </tr>
+                      {referral.createdAt !== referral.updatedAt && (
+                        <tr>
+                          <td className="right">Updated</td>
+                          <td className="left">{fullDateAndTime(referral.updatedAt)}</td>
+                        </tr>
+                      )}
                       <tr>
                         <td className="right">Payout address</td>
                         <td className="left">
@@ -475,6 +479,17 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
 
                 <br />
 
+                {issuedChecksCount > 0 && referral?.address ? (
+                  <p className="center">
+                    Go to your address and{' '}
+                    <span className="orange bold">
+                      redeem {issuedChecksCount > 1 ? issuedChecksCount : 'your'} received check
+                      {issuedChecksCount > 1 ? 's' : ''}
+                    </span>
+                    : <LinkAccount address={referral.address} />
+                  </p>
+                ) : null}
+
                 {/* Payments */}
                 <div>
                   <h4 className="center">Payments</h4>
@@ -486,52 +501,36 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                     a Destination Tag, or is custodial).
                   </p>
 
-                  {paymentsData ? (
-                    <p className="center">
-                      Total: <b>{paymentsData.total ?? paymentsData.payments?.length ?? ''}</b>
-                      {paymentsData.total !== paymentsData.count && (
-                        <>
-                          {' '}
-                          · Showing: <b>{paymentsData.count}</b>
-                        </>
-                      )}
-                    </p>
-                  ) : null}
-
                   {Array.isArray(paymentsData?.payments) && paymentsData.payments.length ? (
                     <>
                       {width > 750 ? (
                         <table className="table-large no-hover">
                           <thead>
                             <tr>
-                              <th>Paid</th>
-                              <th>Action</th>
-                              <th className="right">Amount</th>
-
+                              <th>Date & Time</th>
+                              <th>Service</th>
+                              <th>Reward amount</th>
                               <th>Check</th>
-
-                              <th className="right">Reward amount</th>
-                              <th className="right">EUR</th>
-
-                              <th className="center">Expires</th>
+                              <th>Check expires</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {paymentsData.payments.map((p) => (
-                              <tr key={`${p.bidID || 'bid'}-${p.paidAt}-${p.referralCode || ''}`}>
-                                <td>{formatTs(p.paidAt)}</td>
-                                <td>{p.action || ''}</td>
-                                <td className="right">{amountFormat(p.amount)}</td>
-
-                                <td className="left">{checkCell(p.reward)}</td>
-
+                            {paymentsData.payments.map((p, i) => (
+                              <tr key={i}>
+                                <td>{fullDateAndTime(p.paidAt)}</td>
+                                <td>{bidFullServiceName(p)}</td>
                                 <td className="right">{p.reward?.amount ? amountFormat(p.reward.amount) : ''}</td>
-                                <td className="right">{p.reward?.amountInEUR ? p.reward.amountInEUR : ''}</td>
-
-                                <td className="center">
-                                  {p.reward?.checkCreateTxHash && p.reward?.expirationAt
-                                    ? formatTs(p.reward.expirationAt)
-                                    : ''}
+                                <td>{checkCell(p.reward)}</td>
+                                <td>
+                                  {p.reward?.checkCreateTxHash && p.reward?.expirationAt ? (
+                                    <>
+                                      {timeFromNow(p.reward.expirationAt, i18n)}
+                                      <br />
+                                      {fullDateAndTime(p.reward.expirationAt, 'expiration')}
+                                    </>
+                                  ) : (
+                                    ''
+                                  )}
                                 </td>
                               </tr>
                             ))}
@@ -541,24 +540,21 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                         <table className="table-mobile">
                           <tbody>
                             {paymentsData.payments.map((p, i) => (
-                              <tr key={`${p.bidID || 'bid'}-${p.paidAt}-${i}`}>
+                              <tr key={i}>
                                 <td style={{ padding: '10px 6px', verticalAlign: 'top' }} className="center">
                                   <b>{i + 1}</b>
                                 </td>
                                 <td>
-                                  <p>Paid: {formatTs(p.paidAt)}</p>
-                                  <p>Action: {p.action || ''}</p>
-                                  <p>
-                                    Amount: <b>{amountFormat(p.amount)}</b>
-                                  </p>
-
-                                  <p>Check: {checkCell(p.reward)}</p>
-
+                                  <p>Paid: {fullDateAndTime(p.paidAt)}</p>
+                                  <p>Service: {bidFullServiceName(p)}</p>
                                   {p.reward?.amount ? <p>Reward amount: {amountFormat(p.reward.amount)}</p> : null}
-                                  {p.reward?.amountInEUR ? <p>EUR: {p.reward.amountInEUR}</p> : null}
-
+                                  <p>Check: {checkCell(p.reward)}</p>
                                   {p.reward?.checkCreateTxHash && p.reward?.expirationAt ? (
-                                    <p>Expires: {formatTs(p.reward.expirationAt)}</p>
+                                    <p>
+                                      Check expires: {timeFromNow(p.reward.expirationAt, i18n)}
+                                      <br />
+                                      {fullDateAndTime(p.reward.expirationAt, 'expiration')}
+                                    </p>
                                   ) : null}
                                 </td>
                               </tr>

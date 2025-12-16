@@ -19,6 +19,7 @@ import Pro from '../../components/Admin/subscriptions/BithompPro'
 import Api from '../../components/Admin/subscriptions/Api'
 import ListTransactions from '../../components/ListTransactions'
 import { LinkTx } from '../../utils/links'
+import { bidFullServiceName, bidTypeToName } from '../../utils/bids'
 
 //PayPal option starts
 /*
@@ -84,19 +85,6 @@ export const getServerSideProps = async (context) => {
 let interval
 let ws = null
 
-const typeName = (type) => {
-  switch (type) {
-    case 'bithomp_pro':
-      return 'Bithomp Pro'
-    case 'token':
-      return 'API'
-    case 'bot':
-      return 'Bot'
-    default:
-      return type
-  }
-}
-
 const tabTotype = (tab) => {
   switch (tab) {
     case 'pro':
@@ -127,7 +115,7 @@ const packageList = (packages, width) => {
             {packages?.map((row, index) => {
               return (
                 <tr key={index}>
-                  <td>{typeName(row.type)}</td>
+                  <td>{bidTypeToName(row.type)}</td>
                   <td>{fullDateAndTime(row.createdAt)}</td>
                   <td>{fullDateAndTime(row.startedAt)}</td>
                   <td>
@@ -673,17 +661,7 @@ export default function Subscriptions({
                                       Memos: [
                                         {
                                           Memo: {
-                                            MemoData: encode(
-                                              'Payment for ' +
-                                                typeName(payData.bid.type) +
-                                                (payData.bid.tier ? ' ' + payData.bid.tier.toUpperCase() : '') +
-                                                ' (' +
-                                                payData.bid.periodCount +
-                                                ' ' +
-                                                payData.bid.period +
-                                                (payData.bid.periodCount > 1 ? 's' : '') +
-                                                ')'
-                                            )
+                                            MemoData: encode('Payment for ' + bidFullServiceName(payData.bid))
                                           }
                                         }
                                       ]
