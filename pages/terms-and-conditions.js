@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
       <SEO title={t('menu.terms-and-conditions')} noindex={true} />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: June 27, 2025</p>
+        <p>Last updated: December 16, 2025</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h2>Interpretation and Definitions</h2>
         <h2>Interpretation</h2>
@@ -801,6 +801,37 @@ export default function TermsAndConditions() {
         <p>
           By using Bithomp Pro paid services, you acknowledge that you have read, understood, and agree to be bound by
           these terms and conditions.
+        </p>
+        <h2>Affiliate Program</h2>
+        <p>
+          Bithomp may offer an affiliate program under which users may receive rewards for qualifying actions, subject
+          to the conditions described on the related pages of the Website.
+        </p>
+        <p>Participation in the affiliate program is voluntary and at the sole discretion of Bithomp.</p>
+        <h3>Rewards and Payments</h3>
+        <p>Any rewards, commissions, or other compensation under the affiliate program are not guaranteed.</p>
+        <p>Bithomp reserves the absolute right, at its sole discretion, to:</p>
+        <ul>
+          <li>reduce, withhold, delay, or deny any affiliate reward or payment;</li>
+          <li>determine eligibility for rewards;</li>
+          <li>set minimum thresholds, conditions, or verification requirements for payments.</li>
+        </ul>
+        <p>
+          Bithomp is not responsible if rewards are not received due to incorrect, incomplete, or outdated payment
+          details provided by the user.
+        </p>
+        <p>
+          Bithomp is not liable if payment cannot be completed due to technical issues, third-party services,
+          blockchain/network failures, wallet issues, regulatory restrictions, or any other reasons beyond its control.
+        </p>
+        <h3>Program Changes and Termination</h3>
+        <p>
+          Bithomp reserves the right to modify, suspend, or terminate the affiliate program, in whole or in part, at any
+          time, without prior notice, and without any obligation to pay pending or expected rewards.
+        </p>
+        <p>
+          Continued participation in the affiliate program after changes are made constitutes acceptance of the updated
+          terms.
         </p>
         <h2>NFT Minting Terms of Use</h2>
         <p>By using the NFT minting feature on our website, you agree to the following terms:</p>
