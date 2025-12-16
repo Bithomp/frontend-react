@@ -5,8 +5,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { axiosAdmin } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isAddressValid, ledgerName, server, siteName, useWidth, webSiteName } from '../../utils'
-import { amountFormat, fullDateAndTime, shortNiceNumber } from '../../utils/format'
-import { LinkObject, LinkTx } from '../../utils/links'
+import { amountFormat, fullDateAndTime } from '../../utils/format'
+import { LinkTx } from '../../utils/links'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Tabs/AdminTabs'
@@ -25,12 +25,76 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-const statusBadge = (status) => {
-  const s = (status || '').toLowerCase()
-  if (s === 'paid' || s === 'completed') return <b className="green">{status}</b>
-  if (s === 'pending') return <b className="orange">{status}</b>
-  if (s === 'expired' || s === 'canceled' || s === 'failed') return <b className="red">{status}</b>
-  return <b>{status || '-'}</b>
+const nowInS = () => Math.floor(Date.now() / 1000)
+
+const getRewardStatus = (reward) => {
+  if (!reward) return null
+
+  // Backend rules:
+  // - if no checkID => failed
+  // - if cashed => cashed
+  // - if canceled => canceled
+  // - if expired => expired
+  // - else => issued
+  if (!reward.checkID) return 'failed'
+  if (reward.checkCashedAt) return 'cashed'
+  if (reward.checkCanceledAt) return 'canceled'
+  if (reward.expirationAt && reward.expirationAt < nowInS()) return 'expired'
+  return 'issued'
+}
+
+const formatTs = (tsInS) => {
+  if (!tsInS) return ''
+  return fullDateAndTime(new Date(tsInS * 1000))
+}
+
+const badge = (text, colorClass) => <b className={colorClass}>{text}</b>
+
+const checkCell = (reward) => {
+  // No reward => self purchase => not eligible
+  if (!reward) return badge('not eligible', 'orange')
+
+  // Reward exists but cannot issue (no create tx hash) => not issued (no links)
+  // This is separate from "failed" status (which is missing checkID).
+  if (!reward.checkCreateTxHash) return badge('not issued', 'red')
+
+  const st = getRewardStatus(reward)
+
+  // Decide which tx to link to based on final state
+  if (st === 'cashed' && reward.checkCashedTxHash) {
+    return (
+      <>
+        {badge('cashed', 'green')} <LinkTx tx={reward.checkCashedTxHash} icon={true} />
+      </>
+    )
+  }
+
+  if (st === 'canceled' && reward.checkCanceledTxHash) {
+    return (
+      <>
+        {badge('canceled', 'red')} <LinkTx tx={reward.checkCanceledTxHash} icon={true} />
+      </>
+    )
+  }
+
+  if (st === 'failed') {
+    return badge('failed', 'red')
+  }
+
+  if (st === 'expired') {
+    return (
+      <>
+        {badge('expired', 'red')} <LinkTx tx={reward.checkCreateTxHash} icon={true} />
+      </>
+    )
+  }
+
+  // issued
+  return (
+    <>
+      {badge('issued', 'green')} <LinkTx tx={reward.checkCreateTxHash} icon={true} />
+    </>
+  )
 }
 
 export default function Referrals({ account, sessionToken, openEmailLogin }) {
@@ -41,7 +105,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
   const [errorMessage, setErrorMessage] = useState('')
 
   const [codesData, setCodesData] = useState(null)
-  const [rewardsData, setRewardsData] = useState(null)
+  const [paymentsData, setPaymentsData] = useState(null)
 
   const [address, setAddress] = useState('')
   const [editingAddress, setEditingAddress] = useState(false)
@@ -72,7 +136,6 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
   }, [sessionToken])
 
   useEffect(() => {
-    // Prefer saved referral payout address; fallback to logged-in account address
     if (referral?.address) {
       setAddress(referral.address)
       return
@@ -84,7 +147,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
   }, [referral?.address, account?.address])
 
   const loadAll = async () => {
-    await Promise.all([getCodes(), getRewards()])
+    await Promise.all([getCodes(), getPayments()])
   }
 
   const getCodes = async () => {
@@ -110,8 +173,8 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
     setLoading(false)
   }
 
-  const getRewards = async () => {
-    const resp = await axiosAdmin.get('partner/referrals/rewards').catch((error) => {
+  const getPayments = async () => {
+    const resp = await axiosAdmin.get('partner/referrals/payments').catch((error) => {
       if (error && error.message !== 'canceled') {
         if (error.response?.data?.error === 'errors.token.required') {
           openEmailLogin()
@@ -122,7 +185,12 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
     })
 
     if (resp?.data) {
-      setRewardsData(resp.data)
+      const payments = Array.isArray(resp.data) ? resp.data : resp.data?.payments || []
+      setPaymentsData({
+        payments,
+        total: resp.data?.total ?? payments.length,
+        count: resp.data?.count ?? payments.length
+      })
     }
   }
 
@@ -152,7 +220,6 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
     setSavingAddress(false)
 
     if (resp?.data) {
-      // Refresh to ensure consistency (and to follow your "only one allowed" rule)
       await loadAll()
     }
   }
@@ -270,7 +337,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                         If someone opens any page on {siteName} using a link with your referral code like
                         <br />
                         <br />
-                        <div className="bold">{referralLinks.landing}</div>
+                        <div className="bold">{referralLinks?.landing}</div>
                         <br />
                         the referral code is immediately saved in their browser. It doesn’t matter which page they land
                         on — it can be the homepage, a transaction page, an account page, or any other page on{' '}
@@ -279,6 +346,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                         <span className="bold">API access</span>, your referral code will still be applied
                         automatically, and you’ll receive the referral reward.
                       </p>
+
                       {referralLinks && (
                         <>
                           <p>
@@ -407,50 +475,63 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
 
                 <br />
 
-                {/* Stats / details */}
+                {/* Payments */}
                 <div>
-                  <h4 className="center">Rewards</h4>
+                  <h4 className="center">Payments</h4>
 
-                  {rewardsData?.rewards?.length ? (
+                  <p>
+                    This table shows all payments made using your referral code. If <b>Reward</b> is missing, the
+                    payment is not eligible (self-purchase). If Reward exists but the <b>Check</b> is <b>not issued</b>,
+                    we could not create the on-ledger Check (for example: destination wallet is not activated, requires
+                    a Destination Tag, or is custodial).
+                  </p>
+
+                  {paymentsData ? (
+                    <p className="center">
+                      Total: <b>{paymentsData.total ?? paymentsData.payments?.length ?? ''}</b>
+                      {paymentsData.total !== paymentsData.count && (
+                        <>
+                          {' '}
+                          · Showing: <b>{paymentsData.count}</b>
+                        </>
+                      )}
+                    </p>
+                  ) : null}
+
+                  {Array.isArray(paymentsData?.payments) && paymentsData.payments.length ? (
                     <>
                       {width > 750 ? (
                         <table className="table-large no-hover">
                           <thead>
                             <tr>
-                              <th>Date</th>
-                              <th>Status</th>
+                              <th>Paid</th>
+                              <th>Action</th>
                               <th className="right">Amount</th>
-                              <th className="right">EUR</th>
+
                               <th>Check</th>
-                              <th className="center">Created</th>
-                              <th className="center">Cashed</th>
-                              <th className="center">Canceled</th>
+
+                              <th className="right">Reward amount</th>
+                              <th className="right">EUR</th>
+
+                              <th className="center">Expires</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {rewardsData.rewards.map((r) => (
-                              <tr key={r.id}>
-                                <td>{fullDateAndTime(r.createdAt)}</td>
-                                <td>{statusBadge(r.status)}</td>
-                                <td className="right">{amountFormat(r.amount)}</td>
-                                <td className="right">{shortNiceNumber(r.amountInEUR, 2, 2)}</td>
-                                <td className="left">
-                                  <LinkObject objectId={r.checkID} hash={true} />
-                                  {r.expirationAt ? (
-                                    <>
-                                      <br />
-                                      Expires: {fullDateAndTime(r.expirationAt)}
-                                    </>
-                                  ) : null}
-                                </td>
+                            {paymentsData.payments.map((p) => (
+                              <tr key={`${p.bidID || 'bid'}-${p.paidAt}-${p.referralCode || ''}`}>
+                                <td>{formatTs(p.paidAt)}</td>
+                                <td>{p.action || ''}</td>
+                                <td className="right">{amountFormat(p.amount)}</td>
+
+                                <td className="left">{checkCell(p.reward)}</td>
+
+                                <td className="right">{p.reward?.amount ? amountFormat(p.reward.amount) : ''}</td>
+                                <td className="right">{p.reward?.amountInEUR ? p.reward.amountInEUR : ''}</td>
+
                                 <td className="center">
-                                  {r.checkCreateTxHash ? <LinkTx tx={r.checkCreateTxHash} icon={true} /> : '-'}
-                                </td>
-                                <td className="center">
-                                  {r.checkCashedTxHash ? <LinkTx tx={r.checkCashedTxHash} icon={true} /> : '-'}
-                                </td>
-                                <td className="center">
-                                  {r.checkCanceledTxHash ? <LinkTx tx={r.checkCanceledTxHash} icon={true} /> : '-'}
+                                  {p.reward?.checkCreateTxHash && p.reward?.expirationAt
+                                    ? formatTs(p.reward.expirationAt)
+                                    : ''}
                                 </td>
                               </tr>
                             ))}
@@ -459,34 +540,26 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                       ) : (
                         <table className="table-mobile">
                           <tbody>
-                            {rewardsData.rewards.map((r, i) => (
-                              <tr key={r.id}>
+                            {paymentsData.payments.map((p, i) => (
+                              <tr key={`${p.bidID || 'bid'}-${p.paidAt}-${i}`}>
                                 <td style={{ padding: '10px 6px', verticalAlign: 'top' }} className="center">
                                   <b>{i + 1}</b>
                                 </td>
                                 <td>
-                                  <p>Date: {fullDateAndTime(r.createdAt)}</p>
-                                  <p>Status: {statusBadge(r.status)}</p>
+                                  <p>Paid: {formatTs(p.paidAt)}</p>
+                                  <p>Action: {p.action || ''}</p>
                                   <p>
-                                    Amount: <b>{shortNiceNumber(r.amount, 6, 6)}</b> {r.currency} (
-                                    {shortNiceNumber(r.amountInEUR, 2, 2)} EUR)
+                                    Amount: <b>{amountFormat(p.amount)}</b>
                                   </p>
-                                  <p>
-                                    Check: <span className="mono">{r.checkID}</span> <CopyButton text={r.checkID} />
-                                  </p>
-                                  <p>Expires: {r.expirationAt ? fullDateAndTime(r.expirationAt) : '-'}</p>
-                                  <p>
-                                    Create:{' '}
-                                    {r.checkCreateTxHash ? <LinkTx tx={r.checkCreateTxHash} icon={true} /> : '-'}
-                                  </p>
-                                  <p>
-                                    Cashed:{' '}
-                                    {r.checkCashedTxHash ? <LinkTx tx={r.checkCashedTxHash} icon={true} /> : '-'}
-                                  </p>
-                                  <p>
-                                    Canceled:{' '}
-                                    {r.checkCanceledTxHash ? <LinkTx tx={r.checkCanceledTxHash} icon={true} /> : '-'}
-                                  </p>
+
+                                  <p>Check: {checkCell(p.reward)}</p>
+
+                                  {p.reward?.amount ? <p>Reward amount: {amountFormat(p.reward.amount)}</p> : null}
+                                  {p.reward?.amountInEUR ? <p>EUR: {p.reward.amountInEUR}</p> : null}
+
+                                  {p.reward?.checkCreateTxHash && p.reward?.expirationAt ? (
+                                    <p>Expires: {formatTs(p.reward.expirationAt)}</p>
+                                  ) : null}
                                 </td>
                               </tr>
                             ))}
@@ -495,7 +568,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                       )}
                     </>
                   ) : (
-                    <p>No rewards yet.</p>
+                    <p>No payments yet.</p>
                   )}
                 </div>
               </>
@@ -506,12 +579,6 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
             </div>
 
             <style jsx>{`
-              .box {
-                border: 1px solid var(--border-main);
-                border-radius: 10px;
-                padding: 16px;
-                background: var(--bg-main);
-              }
               .mono {
                 font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
                   monospace;
