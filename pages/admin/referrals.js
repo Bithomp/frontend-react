@@ -324,50 +324,48 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
               <>
                 {/* Code section */}
                 <div>
-                  <h4 className="center">Your referral code</h4>
+                  <h4 className="center">Your referral links</h4>
 
                   {referral ? (
                     <>
-                      <p>
-                        Code:{' '}
-                        <b className="orange" style={{ fontSize: '18px' }}>
-                          {referral.referralCode}
-                        </b>
-                      </p>
-                      <p>
-                        Your referral code works on <b>any</b> link on {siteName} — not just purchase pages. You can
-                        share links to a <b>transaction</b>, <b>account</b>, <b>nft</b>, or any other page and simply
-                        add <b>?ref=</b>
-                        {referral.referralCode}.
-                        <br />
-                        <br />
-                        When someone opens such a link, the referral code is{' '}
-                        <span className="bold">saved in their browser</span>. They can come back later (even days or
-                        weeks later) and if they purchase a <span className="bold">username</span>,{' '}
-                        <span className="bold">Bithomp Pro</span>, or <span className="bold">API access</span>, your
-                        referral code will be applied automatically and you’ll receive the referral reward.
-                      </p>
+                      <details className="box" style={{ maxWidth: 900, margin: '0 auto 16px' }}>
+                        <summary style={{ cursor: 'pointer' }}>
+                          <b>How it works</b> (links, tracking, examples)
+                        </summary>
 
-                      {referralLinks && (
-                        <>
+                        <div style={{ marginTop: 10 }}>
                           <p>
-                            Landing link: <span className="brake bold">{referralLinks.landing}</span>{' '}
-                            <CopyButton text={referralLinks.landing} />
+                            Your referral code works on <b>any</b> link on {siteName}. Add{' '}
+                            <b>?ref={referral?.referralCode}</b> to links to a <b>transaction</b>, <b>account</b>,{' '}
+                            <b>NFT</b>, or any other page.
                           </p>
                           <p>
-                            API link: <span className="brake bold">{referralLinks.api}</span>{' '}
-                            <CopyButton text={referralLinks.api} />
+                            When someone opens such a link, the code is <b>saved in their browser</b>. If they purchase
+                            later, you receive the reward automatically.
                           </p>
-                          <p>
-                            Bithomp Pro link: <span className="brake bold">{referralLinks.pro}</span>{' '}
-                            <CopyButton text={referralLinks.pro} />
-                          </p>
-                          <p>
-                            Username link: <span className="brake bold">{referralLinks.username}</span>{' '}
-                            <CopyButton text={referralLinks.username} />
-                          </p>
-                        </>
-                      )}
+
+                          {referralLinks && (
+                            <>
+                              <p>
+                                Pro: <span className="brake bold">{referralLinks.pro}</span>{' '}
+                                <CopyButton text={referralLinks.pro} />
+                              </p>
+                              <p>
+                                API: <span className="brake bold">{referralLinks.api}</span>{' '}
+                                <CopyButton text={referralLinks.api} />
+                              </p>
+                              <p>
+                                Username: <span className="brake bold">{referralLinks.username}</span>{' '}
+                                <CopyButton text={referralLinks.username} />
+                              </p>
+                            </>
+                          )}
+                        </div>
+                      </details>
+                      <p>
+                        Example: <span className="brake bold">{referralLinks.landing}</span>{' '}
+                        <CopyButton text={referralLinks.landing} />
+                      </p>
                     </>
                   ) : (
                     <p>You don’t have a referral code yet. Enter a destination address for rewards and request one.</p>
@@ -376,13 +374,19 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
 
                 <div>
                   <h4 className="center">Payout address</h4>
-                  <p>
-                    ⚠️ <b>Important:</b> The destination address for referral rewards must be an <b>activated</b>,
-                    self-custody wallet that you fully control. Do <b>not</b> use exchange or custodial addresses, or
-                    any address that requires a Destination Tag. Referral rewards are sent via on-ledger <b>Checks</b>{' '}
-                    and may be <b>lost</b> if an exchange address is used. <b>Self-referrals are not allowed</b> — you
-                    cannot earn rewards from your own purchases.
-                  </p>
+
+                  <details className="box" style={{ maxWidth: 900, margin: '0 auto 16px' }}>
+                    <summary style={{ cursor: 'pointer' }}>
+                      <b>Important requirements</b> (activated wallet, no exchanges, no self-referrals)
+                    </summary>
+
+                    <p style={{ marginTop: 10 }}>
+                      ⚠️ The destination address for referral rewards must be an <b>activated</b>, self-custody wallet
+                      you control. Do
+                      <b> not</b> use exchange/custodial addresses or addresses that require a Destination Tag. Rewards
+                      are sent via on-ledger <b>Checks</b> and may be lost. <b>Self-referrals are not allowed</b>.
+                    </p>
+                  </details>
                 </div>
                 {referral ? (
                   <table className="table-large no-hover">
@@ -484,14 +488,13 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                 <br />
 
                 {issuedChecksCount > 0 && referral?.address ? (
-                  <p className="center">
-                    Go to your address and{' '}
+                  <div className="box center" style={{ maxWidth: 900, margin: '0 auto 16px' }}>
                     <span className="orange bold">
-                      redeem {issuedChecksCount > 1 ? issuedChecksCount : 'your'} received check
-                      {issuedChecksCount > 1 ? 's' : ''}
-                    </span>
-                    : <LinkAccount address={referral.address} />
-                  </p>
+                      You have {issuedChecksCount} unredeemed Check{issuedChecksCount > 1 ? 's' : ''}.
+                    </span>{' '}
+                    Go to your address and redeem {issuedChecksCount > 1 ? 'them' : 'it'}:{' '}
+                    <LinkAccount address={referral.address} />
+                  </div>
                 ) : null}
 
                 {/* Payments */}
@@ -502,8 +505,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                     This table shows all payments made using your referral code. If <span className="bold">Reward</span>{' '}
                     is missing, the payment is not eligible (self-purchase). If Reward exists but the{' '}
                     <span className="bold">Check</span> is <span className="bold">not issued</span>, we could not create
-                    the on-ledger Check (for example: destination wallet is not activated, requires a Destination Tag,
-                    or is custodial).
+                    the on-ledger Check. 🕒 Checks expire in <span className="bold">1 month</span>.
                   </p>
 
                   {Array.isArray(paymentsData?.payments) && paymentsData.payments.length ? (
@@ -550,7 +552,7 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                                   <b>{i + 1}</b>
                                 </td>
                                 <td>
-                                  <p>Paid: {fullDateAndTime(p.paidAt)}</p>
+                                  <p>Date & Time: {fullDateAndTime(p.paidAt)}</p>
                                   <p>Service: {bidFullServiceName(p)}</p>
                                   {p.reward?.amount ? <p>Reward amount: {amountFormat(p.reward.amount)}</p> : null}
                                   <p>Check: {checkCell(p.reward)}</p>
@@ -578,15 +580,6 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
             <div className="center orange bold" style={{ marginTop: 20 }}>
               {errorMessage || <br />}
             </div>
-
-            <style jsx>{`
-              .mono {
-                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
-                  monospace;
-                font-size: 12px;
-                word-break: break-all;
-              }
-            `}</style>
           </div>
         ) : (
           <div className="center">
@@ -598,6 +591,20 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
           </div>
         )}
       </div>
+      <style jsx>{`
+        .mono {
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+            monospace;
+          font-size: 12px;
+          word-break: break-all;
+        }
+        .box {
+          border: 1px solid var(--border-main);
+          border-radius: 10px;
+          padding: 14px 16px;
+          background: var(--bg-main);
+        }
+      `}</style>
     </>
   )
 }
