@@ -53,6 +53,7 @@ const isKnownSeoOrPreviewBot = (ua) =>
 const isClearlyBadClient = (ua) =>
   !ua ||
   ua.length < 8 ||
+  /headless/i.test(ua) ||
   /(curl|wget|python|httpclient|axios|node|go-http-client|java|libwww-perl|scrapy|selenium|playwright|puppeteer)/i.test(
     ua
   )
@@ -72,14 +73,10 @@ export async function middleware(req) {
 
   const ua = req.headers.get('user-agent') || ''
 
-  // ✅ allow known SEO & social preview bots
-  if (isKnownSeoOrPreviewBot(ua)) {
-    return NextResponse.next()
-  }
+  if (isKnownSeoOrPreviewBot(ua)) return NextResponse.next()
 
-  // 🚫 block obvious junk clients
   if (isClearlyBadClient(ua)) {
-    return new NextResponse('403 Forbidden', { status: 403 })
+    return new NextResponse(null, { status: 204 })
   }
 
   const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value
