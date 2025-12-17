@@ -45,15 +45,41 @@ function applyLocale(pathname, locale) {
   return normalizeSlashes(`/${locale}${cleanPath}`)
 }
 
+const isKnownSeoOrPreviewBot = (ua) =>
+  /(googlebot|google-inspectiontool|adsbot-google|mediapartners-google|bingbot|msnbot|duckduckbot|yandexbot|yandeximages|baiduspider|applebot|facebookexternalhit|twitterbot|linkedinbot|slackbot|telegrambot|discordbot)/i.test(
+    ua
+  )
+
+const isClearlyBadClient = (ua) =>
+  !ua ||
+  ua.length < 8 ||
+  /(curl|wget|python|httpclient|axios|node|go-http-client|java|libwww-perl|scrapy|selenium|playwright|puppeteer)/i.test(
+    ua
+  )
+
 export async function middleware(req) {
   if (
     req.nextUrl.pathname === '/favicon.ico' ||
+    req.nextUrl.pathname === '/robots.txt' ||
+    req.nextUrl.pathname === '/sitemap.xml' ||
     req.nextUrl.pathname.startsWith('/_next') ||
     req.nextUrl.pathname.startsWith('/api/') ||
     PUBLIC_FILE.test(req.nextUrl.pathname) ||
     req.nextUrl.pathname.includes('/manifest.json')
   ) {
     return NextResponse.next()
+  }
+
+  const ua = req.headers.get('user-agent') || ''
+
+  // ✅ allow known SEO & social preview bots
+  if (isKnownSeoOrPreviewBot(ua)) {
+    return NextResponse.next()
+  }
+
+  // 🚫 block obvious junk clients
+  if (isClearlyBadClient(ua)) {
+    return new NextResponse('403 Forbidden', { status: 403 })
   }
 
   const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value
