@@ -365,12 +365,21 @@ export default function SignForm({
   }
 
   const gemwalletTxSending = (tx) => {
-    gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, account, setAwaiting, t })
     setScreen('gemwallet')
+    if (tx.TransactionType.includes('Remit') && (tx.URITokenID || tx.URITokenIDs)) {
+      setStatus('Unfortunatelly, Gem Wallet does not support Remit Transaction that can send NFT (URI Token).')
+      return
+    }
+    gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, account, setAwaiting, t })
     setStatus(t('signin.statuses.check-app', { appName: 'GemWallet' }))
   }
 
   const crossmarkTxSending = (tx) => {
+    setScreen('crossmark')
+    if (tx.TransactionType.includes('Remit')) {
+      setStatus('Unfortunatelly, Crossmark does not support Remit Transaction Types yet.')
+      return
+    }
     crossmarkTxSend({
       tx,
       signRequest,
@@ -382,7 +391,6 @@ export default function SignForm({
       setAwaiting,
       t
     })
-    setScreen('crossmark')
     setStatus(t('signin.statuses.check-app', { appName: 'Crossmark' }))
   }
 
