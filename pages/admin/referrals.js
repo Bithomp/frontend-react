@@ -280,10 +280,10 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
         <p>You earn 10% when your referral purchases:</p>
         <ul>
           <li>
-            a <Link href="/username">username</Link>
+            <Link href="/username">Username</Link>
           </li>
           <li>
-            a <Link href="/admin/subscriptions">Bithomp Pro</Link> subscription
+            <Link href="/admin/subscriptions">Bithomp Pro</Link> subscription
           </li>
           <li>
             <Link href="/admin/subscriptions?tab=api">API access</Link>
@@ -328,12 +328,12 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
 
                   {referral ? (
                     <>
-                      <details className="box" style={{ maxWidth: 900, margin: '0 auto 16px' }}>
+                      <details>
                         <summary style={{ cursor: 'pointer' }}>
-                          <b>How it works</b> (links, tracking, examples)
+                          <span className="link bold">How it works</span> (links, tracking, examples)
                         </summary>
 
-                        <div style={{ marginTop: 10 }}>
+                        <div>
                           <p>
                             Your referral code works on <b>any</b> link on {siteName}. Add{' '}
                             <b>?ref={referral?.referralCode}</b> to links to a <b>transaction</b>, <b>account</b>,{' '}
@@ -347,15 +347,9 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                           {referralLinks && (
                             <>
                               <p>
-                                Pro: <span className="brake bold">{referralLinks.pro}</span>{' '}
-                                <CopyButton text={referralLinks.pro} />
-                              </p>
-                              <p>
-                                API: <span className="brake bold">{referralLinks.api}</span>{' '}
-                                <CopyButton text={referralLinks.api} />
-                              </p>
-                              <p>
-                                Username: <span className="brake bold">{referralLinks.username}</span>{' '}
+                                Your <span className="bold">Bithomp Pro</span> link{' '}
+                                <CopyButton text={referralLinks.pro} />, <span className="bold">API</span> link{' '}
+                                <CopyButton text={referralLinks.api} />, <span className="bold">Username</span> link{' '}
                                 <CopyButton text={referralLinks.username} />
                               </p>
                             </>
@@ -373,11 +367,12 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
                 </div>
 
                 <div>
+                  <br />
                   <h4 className="center">Payout address</h4>
-
-                  <details className="box" style={{ maxWidth: 900, margin: '0 auto 16px' }}>
+                  <details style={{ margin: '0 auto 16px' }}>
                     <summary style={{ cursor: 'pointer' }}>
-                      <b>Important requirements</b> (activated wallet, no exchanges, no self-referrals)
+                      <span className="bold blue">Important requirements</span> (activated wallet, no exchanges, no
+                      self-referrals)
                     </summary>
 
                     <p style={{ marginTop: 10 }}>
@@ -592,17 +587,17 @@ export default function Referrals({ account, sessionToken, openEmailLogin }) {
         )}
       </div>
       <style jsx>{`
-        .mono {
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
-            monospace;
-          font-size: 12px;
-          word-break: break-all;
+        summary::marker {
+          color: var(--accent-link);
         }
-        .box {
-          border: 1px solid var(--border-main);
-          border-radius: 10px;
-          padding: 14px 16px;
-          background: var(--bg-main);
+        summary:hover::marker {
+          color: var(--main-text);
+        }
+        details[open] > summary::marker {
+          color: var(--main-text);
+        }
+        details[open] > summary > span {
+          color: var(--main-text);
         }
       `}</style>
     </>
