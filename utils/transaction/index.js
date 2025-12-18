@@ -313,6 +313,7 @@ export const dappBySourceTag = (sourceTag) => {
     5523279: 'Things Go Online',
     10000001: 'MetaTV',
     10011001: 'Myrkle',
+    10011010: 'Magnetic',
     10102021: 'Junction',
     10509910: 'xLux',
     11782013: 'Anodos',
@@ -409,12 +410,19 @@ export const memoNode = (memos, type = 'tr') => {
       let memopiece = memo?.data
       let memoformat = memo?.format
 
-      const redFlags = ['airdrop', 'claim']
+      const redFlags = ['airdrop', 'claim', 'reward', 'giveaway']
 
       const memop = memopiece?.toString().toLowerCase() || ''
 
-      if (redFlags.some((flag) => memop.includes(flag)) && type !== 'tr') {
-        continue
+      if (redFlags.some((flag) => memop.includes(flag))) {
+        if (type === 'tr') {
+          memopiece = memop.replace(
+            /\b(https?:\/\/\S+|www\.\S+|[a-z0-9-]+\.(com|net|org|io|xyz|site|app|info|biz|ru|de|fr|es|co)(\/\S*)?)\b/gi,
+            '***hidden url***'
+          )
+        } else {
+          continue
+        }
       }
 
       if (!memopiece && memoformat?.slice(0, 2) === 'rt') {
@@ -425,12 +433,20 @@ export const memoNode = (memos, type = 'tr') => {
 
       if (memopiece) {
         if (memopiece.includes('xrplexplorer.com') || memopiece.includes('bithomp.com')) {
+          // keep it for testnetworks
           clientname = memopiece.replace(/xrplexplorer\.com/g, 'bithomp.com')
+          if (memopiece.includes(' faucet')) {
+            clientname = memopiece.replace(' faucet', '/faucet')
+          }
           memopiece = ''
-        }
-
-        if (memopiece.includes('xahauexplorer.com')) {
+        } else if (memopiece.includes('xahauexplorer.com')) {
           clientname = memopiece
+          if (memopiece.includes(' faucet')) {
+            clientname = memopiece.replace(' faucet', '/faucet')
+          }
+          memopiece = ''
+        } else if (memopiece.includes('initiated via xmagnetic.org')) {
+          clientname = 'xmagnetic.org'
           memopiece = ''
         }
 

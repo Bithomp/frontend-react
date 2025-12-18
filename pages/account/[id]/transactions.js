@@ -95,10 +95,10 @@ export async function getServerSideProps(context) {
   const { id, fromDate, toDate, type, initiated, excludeFailures, counterparty, order, filterSpam } = query
   let initialErrorMessage = ''
   let initialData = null
+  let initialNoRelevantTransactions = false
+  const selectedCurrencyServer = currencyServer(req) || 'usd'
 
   if (isAddressOrUsername(id)) {
-    const serverCurrency = currencyServer(req) || 'usd'
-
     let url = apiUrl({
       address: id,
       order,
@@ -109,7 +109,7 @@ export async function getServerSideProps(context) {
       fromDate,
       toDate,
       filterSpam,
-      convertCurrency: serverCurrency
+      convertCurrency: selectedCurrencyServer
     })
 
     try {
@@ -119,8 +119,12 @@ export async function getServerSideProps(context) {
         headers: passHeaders(req)
       })
       initialData = res?.data
-      if (!initialData?.marker && isAddressValid(id) && initialData?.transactions?.length === 0) {
-        initialErrorMessage = 'No transactions found for the specified filters.'
+      if (isAddressValid(id) && initialData?.transactions?.length === 0) {
+        if (!initialData?.marker) {
+          initialErrorMessage = 'No transactions found for the specified filters.'
+        } else {
+          initialNoRelevantTransactions = true
+        }
       }
     } catch (e) {
       initialErrorMessage = e?.message || 'Failed to load transactions'
@@ -134,6 +138,7 @@ export async function getServerSideProps(context) {
       id: id || null,
       initialData: initialData || null,
       initialErrorMessage,
+      initialNoRelevantTransactions,
       isSsrMobile: getIsSsrMobile(context),
       fromDateQuery: fromDate || '',
       toDateQuery: toDate || '',
@@ -143,6 +148,7 @@ export async function getServerSideProps(context) {
       counterpartyQuery: counterparty || '',
       orderQuery: order || 'newest',
       filterSpamQuery: filterSpam || 'true',
+      selectedCurrencyServer,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -152,7 +158,9 @@ export default function AccountTransactions({
   id,
   initialData,
   initialErrorMessage,
-  selectedCurrency,
+  initialNoRelevantTransactions,
+  selectedCurrency: selectedCurrencyApp,
+  selectedCurrencyServer,
   fromDateQuery,
   toDateQuery,
   typeQuery,
@@ -166,6 +174,8 @@ export default function AccountTransactions({
   const router = useRouter()
   const firstRenderRef = useRef(true)
 
+  const selectedCurrency = selectedCurrencyApp || selectedCurrencyServer
+
   const address = initialData?.address
 
   // State management
@@ -173,6 +183,7 @@ export default function AccountTransactions({
   const [marker, setMarker] = useState(initialData?.marker || null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
+  const [noRelevantTransactions, setNoRelevantTransactions] = useState(initialNoRelevantTransactions)
   const [order, setOrder] = useState(orderQuery) // newest | oldest
   const [filtersHide, setFiltersHide] = useState(false)
   const [type, setType] = useState(typeQuery)
@@ -193,6 +204,7 @@ export default function AccountTransactions({
     setLoading(true)
     setTransactions([])
     setMarker(null)
+    setNoRelevantTransactions(false)
     fetchTransactions({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, id])
@@ -277,14 +289,20 @@ export default function AccountTransactions({
       const newData = response?.data?.transactions || []
       const newMarker = response?.data?.marker || null
 
+      if (newData?.length === 0 && newMarker) {
+        setNoRelevantTransactions(true)
+      }
+
       if (markerToUse && transactions.length > 0) {
-        // pagination – append
-        const combined = [...transactions, ...newData]
-        setTransactions(combined)
+        // adding data to existing list
+        if (newData.length > 0) {
+          const combined = [...transactions, ...newData]
+          setTransactions(combined)
+        }
       } else {
         if (newData.length === 0 && !newMarker) {
           setErrorMessage('Account has no transactions with the specified filters.')
-          setMarker(newMarker)
+          setMarker(null)
           setLoading(false)
           return
         } else {
@@ -365,7 +383,6 @@ export default function AccountTransactions({
         searchPlaceholderText={t('explorer.enter-address')}
         userData={initialData?.addressDetails}
       />
-
       <FiltersFrame
         order={order}
         setOrder={setOrder}
@@ -462,18 +479,38 @@ export default function AccountTransactions({
           <InfiniteScrolling
             dataLength={transactions.length}
             loadMore={() => {
-              if (marker && marker !== 'first') {
+              if (marker && marker !== 'first' && !noRelevantTransactions) {
                 fetchTransactions({ marker })
               }
             }}
-            hasMore={marker}
-            errorMessage={errorT(t, errorMessage)}
+            hasMore={marker && !noRelevantTransactions}
+            errorMessage={
+              noRelevantTransactions ? (
+                <>
+                  It takes too long to find relevant transactions. Searched up to ledger{' '}
+                  <span className="bold">{marker?.ledger}</span>.
+                  <br />
+                  <br />
+                  <button
+                    className="button-action"
+                    onClick={() => {
+                      setLoading(true)
+                      fetchTransactions({ marker })
+                    }}
+                  >
+                    Continue searching
+                  </button>
+                </>
+              ) : (
+                errorT(t, errorMessage)
+              )
+            }
             subscriptionExpired={false}
             sessionToken={true}
           >
             <table className={isMobile ? 'table-mobile' : 'table-large expand no-hover'}>
               <tbody>
-                {loading ? (
+                {loading && (!marker || marker === 'first') ? (
                   <tr className="center">
                     <td colSpan="100">
                       <br />

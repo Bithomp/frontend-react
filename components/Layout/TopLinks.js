@@ -38,7 +38,6 @@ export default function TopLinks({ countryCode }) {
     )
   }
 
-  //explorer links
   //includes /address and /tx
   if (pathname.includes('/transaction') || pathname.includes('/account')) {
     return (

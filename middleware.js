@@ -2,9 +2,67 @@ import { NextResponse } from 'next/server'
 
 const PUBLIC_FILE = /\.(.*)$/
 
+// Locales removed from support
+const removedLocales = ['ca', 'da', 'nn', 'my', 'hr']
+
+// Currently supported locales
+const currentLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr']
+
+// All known locales
+const allLocales = [...currentLocales, ...removedLocales]
+
+// Normalize accidental multiple slashes in path
+function normalizeSlashes(path) {
+  return path.replace(/\/+/g, '/')
+}
+
+// Remove any existing locale from the beginning of the path
+function stripLeadingLocale(pathname) {
+  const segments = pathname.split('/')
+  const maybeLocale = segments[1]
+
+  if (allLocales.includes(maybeLocale)) {
+    segments.splice(1, 1)
+    let newPath = segments.join('/') || '/'
+    newPath = normalizeSlashes(newPath)
+    if (!newPath.startsWith('/')) {
+      newPath = '/' + newPath
+    }
+    return newPath
+  }
+
+  return normalizeSlashes(pathname)
+}
+
+// Apply the desired locale to the cleaned path
+function applyLocale(pathname, locale) {
+  const cleanPath = stripLeadingLocale(pathname)
+
+  if (cleanPath === '/' || cleanPath === '') {
+    return `/${locale}`
+  }
+
+  return normalizeSlashes(`/${locale}${cleanPath}`)
+}
+
+const isKnownSeoOrPreviewBot = (ua) =>
+  /(googlebot|google-inspectiontool|adsbot-google|mediapartners-google|bingbot|msnbot|duckduckbot|yandexbot|yandeximages|baiduspider|applebot|facebookexternalhit|twitterbot|linkedinbot|slackbot|telegrambot|discordbot)/i.test(
+    ua
+  )
+
+const isClearlyBadClient = (ua) =>
+  !ua ||
+  ua.length < 8 ||
+  /headless/i.test(ua) ||
+  /(curl|wget|python|httpclient|axios|node|go-http-client|java|libwww-perl|scrapy|selenium|playwright|puppeteer)/i.test(
+    ua
+  )
+
 export async function middleware(req) {
   if (
     req.nextUrl.pathname === '/favicon.ico' ||
+    req.nextUrl.pathname === '/robots.txt' ||
+    req.nextUrl.pathname === '/sitemap.xml' ||
     req.nextUrl.pathname.startsWith('/_next') ||
     req.nextUrl.pathname.startsWith('/api/') ||
     PUBLIC_FILE.test(req.nextUrl.pathname) ||
@@ -13,56 +71,59 @@ export async function middleware(req) {
     return NextResponse.next()
   }
 
+  const ua = req.headers.get('user-agent') || ''
+
+  if (isKnownSeoOrPreviewBot(ua)) return NextResponse.next()
+
+  if (isClearlyBadClient(ua)) {
+    return new NextResponse(null, { status: 204 })
+  }
+
   const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value
-
-  //if someone has an old link with old locale that was removed.
-  const removedLocales = ['ca', 'da', 'nn', 'my', 'hr']
-  const currentLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr']
-
   const reactLocale = req.nextUrl.locale
 
-  //default option
+  // Default locale
   let viewLocale = 'en'
 
-  if (currentLocales.includes(reactLocale)) {
-    // exlude 'default' locale
+  // Cookie locale has the highest priority
+  if (cookieLocale && currentLocales.includes(cookieLocale)) {
+    viewLocale = cookieLocale
+  } else if (currentLocales.includes(reactLocale)) {
+    // Fallback to Next.js detected locale (excluding 'default')
     viewLocale = reactLocale
   }
 
-  // if the cookie locale is set and is one of the currently supported locales - then it's a priority
-  if (cookieLocale && currentLocales.includes(cookieLocale)) {
-    viewLocale = cookieLocale
-  }
-
-  //redirect old page to github
-  if (req.nextUrl.pathname.startsWith(`/paperwallet`)) {
+  // Redirect legacy paper wallet page to GitHub
+  if (req.nextUrl.pathname.startsWith('/paperwallet')) {
     return NextResponse.redirect(new URL('https://bithomp.github.io/xrp-paper-wallet/'))
   }
 
-  //if locale is one of the deleted ones
+  // Redirect links that use removed locales
   for (const locale of removedLocales) {
     if (req.nextUrl.pathname.startsWith(`/${locale}/`)) {
-      return NextResponse.redirect(
-        new URL(`${req.nextUrl.pathname.replace(`/${locale}/`, `/${viewLocale}/`)}${req.nextUrl.search}`, req.url)
-      )
+      const url = req.nextUrl.clone()
+      url.pathname = applyLocale(req.nextUrl.pathname, viewLocale)
+      url.locale = viewLocale // IMPORTANT: keep URL locale in sync
+      return NextResponse.redirect(url)
     }
+
     if (req.nextUrl.pathname === `/${locale}` && locale !== viewLocale) {
-      return NextResponse.redirect(
-        new URL(`${req.nextUrl.pathname.replace(`/${locale}`, `/${viewLocale}`)}${req.nextUrl.search}`, req.url)
-      )
+      const url = req.nextUrl.clone()
+      url.pathname = applyLocale(req.nextUrl.pathname, viewLocale)
+      url.locale = viewLocale // IMPORTANT: keep URL locale in sync
+      return NextResponse.redirect(url)
     }
   }
 
-  // ✅ Do NOT localize /explorer and /explorer/*
-  if (req.nextUrl.pathname === '/explorer' || req.nextUrl.pathname.startsWith('/explorer/')) {
-    return NextResponse.next()
-  }
-
-  //import to have this case: reactLocale === 'default'
+  // Normalize locale according to cookie / detected locale
   if (reactLocale !== viewLocale) {
     const url = req.nextUrl.clone()
 
-    url.pathname = `/${viewLocale}${url.pathname !== '/' ? url.pathname : ''}`
+    // Respect cookie locale but strip any old locale from the path
+    url.pathname = applyLocale(url.pathname, viewLocale)
+
+    // This is the key line: make Next.js stop prefixing with the old locale
+    url.locale = viewLocale
 
     if (url.searchParams.has('id')) {
       url.searchParams.delete('id')
@@ -70,4 +131,15 @@ export async function middleware(req) {
 
     return NextResponse.redirect(url)
   }
+
+  // Normalize double slashes even when no locale change is needed
+  const normalizedPath = normalizeSlashes(req.nextUrl.pathname)
+  if (normalizedPath !== req.nextUrl.pathname) {
+    const url = req.nextUrl.clone()
+    url.pathname = normalizedPath
+    // Keep locale as-is here
+    return NextResponse.redirect(url)
+  }
+
+  return NextResponse.next()
 }

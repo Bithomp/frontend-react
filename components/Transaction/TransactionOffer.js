@@ -57,14 +57,14 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
 
       {takerGets && (
         <tr>
-          <TData tooltip="The amount and type of currency being sold.">Taker Gets</TData>
-          <TData>{amountFormat(takerGets, { precise: true, withIssuer: true, bold: true })}</TData>
+          <TData tooltip="The amount and type of currency being sold.">Taker gets</TData>
+          <TData>{amountFormat(takerGets, { precise: 'nice', withIssuer: true, bold: true })}</TData>
         </tr>
       )}
       {takerPays && (
         <tr>
-          <TData tooltip="The amount and type of currency being bought.">Taker Pays</TData>
-          <TData>{amountFormat(takerPays, { precise: true, withIssuer: true, bold: true })}</TData>
+          <TData tooltip="The amount and type of currency being bought.">Taker pays</TData>
+          <TData>{amountFormat(takerPays, { precise: 'nice', withIssuer: true, bold: true })}</TData>
         </tr>
       )}
 

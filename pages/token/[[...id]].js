@@ -11,7 +11,7 @@ import {
   shortNiceNumber,
   fullNiceNumber,
   AddressWithIconFilled,
-  userOrServiceLink
+  addressUsernameOrServiceLink
 } from '../../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -282,7 +282,7 @@ export default function TokenPage({
 
   const title = (
     <>
-      {token?.currencyDetails?.currency} issued by {userOrServiceLink(token, 'issuer') || token?.issuer}
+      {token?.currencyDetails?.currency} issued by {addressUsernameOrServiceLink(token, 'issuer', { short: true })}
     </>
   )
 

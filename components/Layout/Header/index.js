@@ -12,7 +12,6 @@ import {
   network,
   useWidth,
   avatarServer,
-  networkId,
   server
 } from '../../../utils'
 
@@ -29,6 +28,7 @@ import LogoSmall from '../LogoSmall'
 import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
 import XahauExplorer from '../../../public/images/xahauexplorer/long.svg'
 import LogoAnimated from '../LogoAnimated'
+import { IoWalletOutline } from 'react-icons/io5'
 
 let timeoutIds = {}
 
@@ -61,7 +61,7 @@ const MenuDropDown = ({ children, id, title, subtitle, setHoverStates, hoverStat
       <div
         className={'menu-dropdown-button' + (type === 'top-switch' ? ' switch-container contrast' : '')}
         style={style}
-        onClick={() => setHoverStates((state) => ({ ...state, [id]: !hoverStates[id] }))}
+        onClick={() => setHoverStates((state) => ({ ...state, [id]: true }))}
       >
         {title}
         <FaAngleDown className="chevron" />
@@ -85,7 +85,8 @@ export default function Header({
   signOutPro,
   selectedCurrency,
   setSelectedCurrency,
-  countryCode
+  countryCode,
+  sessionToken
 }) {
   const { i18n, t } = useTranslation()
 
@@ -128,6 +129,8 @@ export default function Header({
     proName = emailPart1 + '@' + emailPart2
   }
 
+  const proLoggedIn = proName && sessionToken
+
   const mobileMenuToggle = () => {
     // remove scrollbar when menu is open
     if (!menuOpen) {
@@ -150,11 +153,6 @@ export default function Header({
         console.error('Could not copy text: ', err)
       }
     )
-  }
-
-  const signinWithWallet = (wallet) => {
-    //redirect to account, if user is on the account page
-    setSignRequest(router.pathname.startsWith('/account') ? { wallet, redirect: 'account' } : { wallet })
   }
 
   const bithomp = server.includes('bithomp')
@@ -199,6 +197,7 @@ export default function Header({
             <Link href="/services/escrow">Create Escrow</Link>
             {!xahauNetwork && <Link href="/services/amm/deposit">AMM Services</Link>}
             <Link href="/services/account-settings/">Account Settings</Link>
+            <Link href="/services/account-delete">Account Delete</Link>
             <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
             <Link href="/username">{t('menu.usernames')}</Link>
             <Link href="/learn/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
@@ -359,119 +358,31 @@ export default function Header({
                     {displayName}
                   </>
                 ) : (
-                  <>{!proName ? t('signin.signin') : proName}</>
+                  <>{!proLoggedIn ? t('signin.signin') : proName}</>
                 )}
               </>
             }
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            {(displayName || proName) && <div style={{ minWidth: '250px' }}></div>}
+            {(displayName || proLoggedIn) && <div style={{ minWidth: '250px' }}></div>}
             {!displayName && (
-              <>
-                <span
-                  onClick={() => {
-                    signinWithWallet('xaman')
-                  }}
-                  className="link"
-                >
-                  <Image
-                    src="/images/wallets/xaman.png"
-                    className="wallet-logo xaman-logo"
-                    alt="Xaman"
-                    height={24}
-                    width={24}
-                  />
-                  Xaman
-                </span>
-
-                <span onClick={() => signinWithWallet('crossmark')} className="link">
-                  <Image
-                    src="/images/wallets/crossmark.png"
-                    className="wallet-logo"
-                    alt="Crossmark Wallet"
-                    height={24}
-                    width={24}
-                  />
-                  Crossmark
-                </span>
-
-                <span
-                  onClick={() => {
-                    signinWithWallet('gemwallet')
-                  }}
-                  className="link"
-                >
-                  <Image
-                    src="/images/wallets/gemwallet.svg"
-                    className="wallet-logo"
-                    alt="GemWallet"
-                    height={24}
-                    width={24}
-                  />
-                  GemWallet
-                </span>
-
-                {/* available only on the mainnet and testnet */}
-                {(networkId === 0 || networkId === 1) && (
-                  <span onClick={() => signinWithWallet('walletconnect')} className="link">
-                    <Image
-                      src="/images/wallets/walletconnect.svg"
-                      className="wallet-logo walletconnect-logo"
-                      alt="Wallet Connect"
-                      height={24}
-                      width={24}
-                    />
-                    WalletConnect
-                  </span>
-                )}
-
-                <span onClick={() => signinWithWallet('metamask')} className="link">
-                  <Image
-                    src="/images/wallets/metamask.svg"
-                    className="wallet-logo"
-                    alt="Metamask Wallet"
-                    height={24}
-                    width={24}
-                  />
-                  Metamask
-                </span>
-
-                <span onClick={() => signinWithWallet('ledgerwallet')} className="link">
-                  <Image
-                    src="/images/wallets/ledgerwallet.svg"
-                    className="wallet-logo"
-                    alt="Ledger Wallet"
-                    height={24}
-                    width={24}
-                  />
-                  Ledger
-                </span>
-
-                <span onClick={() => signinWithWallet('trezor')} className="link">
-                  <Image
-                    src="/images/wallets/trezor.svg"
-                    className="wallet-logo"
-                    alt="Trezor Wallet"
-                    height={24}
-                    width={24}
-                  />
-                  Trezor
-                </span>
-              </>
+              <span
+                onClick={() => {
+                  setSignRequest(router.pathname.startsWith('/account') ? { redirect: 'account' } : {})
+                }}
+                className="link"
+              >
+                <IoWalletOutline style={{ height: 24, width: 24, marginTop: -4 }} className="wallet-logo" />
+                Connect Wallet
+              </span>
             )}
-
             {displayName && (
               <>
-                <span onClick={copyToClipboard} className="link">
-                  {isCopied ? t('button.copied') : t('button.copy-my-address')}
-                </span>
                 <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
                 <Link href={'/account/' + address + '/transactions'}>{t('signin.actions.my-transactions')}</Link>
                 <Link href="/services/send">Send payment</Link>
-                <Link href="/services/account-settings/">Account Settings</Link>
-                <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
-                <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
+                <Link href="/services/account-settings/">Account settings</Link>
                 {!username && <Link href={'/username?address=' + address}>{t('menu.usernames')}</Link>}
                 <span onClick={signOut} className="link">
                   {account?.wallet === 'walletconnect' && (
@@ -546,12 +457,13 @@ export default function Header({
             <Link href="/admin">
               <IoIosRocket style={{ fontSize: '1.2em', marginBottom: '-2px' }} /> Bithomp Pro
             </Link>
-            {proName && (
+            {proLoggedIn && (
               <>
                 <hr />
                 <Link href="/admin">{displayName ? proName : 'Profile'}</Link>
                 <Link href="/admin/watchlist">Watchlist</Link>
                 <Link href="/admin/subscriptions">Subscriptions</Link>
+                <Link href="/admin/referrals">Referrals</Link>
                 <Link href="/admin/pro">My addresses</Link>
                 <Link href="/admin/api">API management</Link>
                 <span onClick={signOutPro} className="link">
@@ -619,6 +531,7 @@ export default function Header({
           address={address}
           setSignRequest={setSignRequest}
           proName={proName}
+          sessionToken={sessionToken}
           signOut={signOut}
           signOutPro={signOutPro}
           username={username}

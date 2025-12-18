@@ -422,9 +422,9 @@ export default function TrustSet({
         image={{
           width: 1200,
           height: 630,
-          file: 'previews/1200x630/services/trustlines.png'
+          file: 'previews/1200x630/services/trustline.png'
         }}
-        twitterImage={{ file: 'previews/630x630/services/trustlines.png' }}
+        twitterImage={{ file: 'previews/630x630/services/trustline.png' }}
       />
       <div className="content-text content-center">
         <h1 className="center">Set/Update Trust (Trustlines)</h1>

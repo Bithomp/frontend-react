@@ -25,7 +25,7 @@ export const getServerSideProps = async (context) => {
 
 const amendmentLink = (a, options) => {
   let name = options?.short ? shortName(a.name, { maxLength: xahauNetwork ? 12 : 18 }) : a.name
-  return <Link href={'amendment/' + name || a.amendment}>{name || shortHash(a.amendment)}</Link>
+  return <Link href={'amendment/' + (name || a.amendment)}>{name || shortHash(a.amendment)}</Link>
 }
 
 export default function Amendment() {

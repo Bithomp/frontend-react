@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../utils/axios'
 
-import { useWidth, encode, wssServer, timestampExpired, addAndRemoveQueryParams } from '../../utils'
+import { useWidth, encode, wssServer, timestampExpired, addAndRemoveQueryParams, useCookie } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortNiceNumber, amountFormat, AddressWithIconFilled, addressLink } from '../../utils/format'
 
@@ -19,6 +19,7 @@ import Pro from '../../components/Admin/subscriptions/BithompPro'
 import Api from '../../components/Admin/subscriptions/Api'
 import ListTransactions from '../../components/ListTransactions'
 import { LinkTx } from '../../utils/links'
+import { bidFullServiceName, bidTypeToName } from '../../utils/bids'
 
 //PayPal option starts
 /*
@@ -84,19 +85,6 @@ export const getServerSideProps = async (context) => {
 let interval
 let ws = null
 
-const typeName = (type) => {
-  switch (type) {
-    case 'bithomp_pro':
-      return 'Bithomp Pro'
-    case 'token':
-      return 'API'
-    case 'bot':
-      return 'Bot'
-    default:
-      return type
-  }
-}
-
 const tabTotype = (tab) => {
   switch (tab) {
     case 'pro':
@@ -127,7 +115,7 @@ const packageList = (packages, width) => {
             {packages?.map((row, index) => {
               return (
                 <tr key={index}>
-                  <td>{typeName(row.type)}</td>
+                  <td>{bidTypeToName(row.type)}</td>
                   <td>{fullDateAndTime(row.createdAt)}</td>
                   <td>{fullDateAndTime(row.startedAt)}</td>
                   <td>
@@ -192,6 +180,7 @@ export default function Subscriptions({
   const router = useRouter()
   const width = useWidth()
 
+  const [ref] = useCookie('ref')
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(true) // keep true in order not to have hydr error for rendering the select
   const [newAndActivePackages, setNewAndActivePackages] = useState([])
@@ -310,7 +299,8 @@ export default function Subscriptions({
     let options = {
       type: tabTotype(subscriptionsTab),
       period,
-      periodCount: 1 * periodCount
+      periodCount: 1 * periodCount,
+      ...(ref ? { referralCode: ref } : {})
     }
 
     if (subscriptionsTab === 'api') {
@@ -461,7 +451,7 @@ export default function Subscriptions({
     const response = await axios('v2/bid/partner:' + partnerId + '/' + destinationTag + '/status').catch((error) => {
       setErrorMessage(t('error.' + error.message))
     })
-    const data = response.data
+    const data = response?.data
     if (data) {
       updateBid(data)
     }
@@ -496,6 +486,12 @@ export default function Subscriptions({
         checkPaymentWs(partnerId, destinationTag)
       }
     }
+  }
+
+  const setSubscriptionsTabAndRestartSteps = (tab) => {
+    setSubscriptionsTab(tab)
+    setStep(0)
+    setPayData(null)
   }
 
   return (
@@ -549,7 +545,7 @@ export default function Subscriptions({
                   <Tabs
                     tabList={subscriptionsTabList}
                     tab={subscriptionsTab}
-                    setTab={setSubscriptionsTab}
+                    setTab={setSubscriptionsTabAndRestartSteps}
                     name="subscriptions"
                     style={{ marginTop: '20px' }}
                   />
@@ -665,21 +661,12 @@ export default function Subscriptions({
                                       Memos: [
                                         {
                                           Memo: {
-                                            MemoData: encode(
-                                              'Payment for ' +
-                                                typeName(payData.bid.type) +
-                                                (payData.bid.tier ? ' ' + payData.bid.tier.toUpperCase() : '') +
-                                                ' (' +
-                                                payData.bid.periodCount +
-                                                ' ' +
-                                                payData.bid.period +
-                                                (payData.bid.periodCount > 1 ? 's' : '') +
-                                                ')'
-                                            )
+                                            MemoData: encode('Payment for ' + bidFullServiceName(payData.bid))
                                           }
                                         }
                                       ]
-                                    }
+                                    },
+                                    receipt: true
                                   })
                                 }
                               >

@@ -32,6 +32,8 @@ import '../styles/pages/issue-currency.scss'
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 import { fetchCurrentFiatRate } from '../utils/common'
 import ErrorBoundary from '../components/ErrorBoundary'
+import { ledgerwalletDisconnect } from '../utils/ledgerwallet'
+import { isUsernameValid } from '../utils'
 
 const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
@@ -60,7 +62,38 @@ const getMainPath = (url) => {
   return parts.length > startIndex ? `/${parts[startIndex]}` : '/'
 }
 
+function useReferralCookie() {
+  const router = useRouter()
+  const [, setRef] = useCookie('ref')
+
+  useEffect(() => {
+    if (!router.isReady) return
+
+    const handleUrl = (url) => {
+      try {
+        const u = new URL(url, window.location.origin)
+        let ref = u.searchParams.get('ref')
+        if (!ref) return
+        ref = ref.trim()
+        if (isUsernameValid(ref)) {
+          setRef(ref)
+        }
+      } catch (_) {
+        // Ignore URL parsing errors
+      }
+    }
+
+    // Initial page load
+    handleUrl(window.location.href)
+
+    // Client-side navigation
+    router.events.on('routeChangeComplete', handleUrl)
+    return () => router.events.off('routeChangeComplete', handleUrl)
+  }, [router.isReady, router.events, setRef])
+}
+
 const MyApp = ({ Component, pageProps }) => {
+  useReferralCookie()
   const firstRenderRef = useRef(true)
   const [account, setAccount] = useLocalStorage('account')
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
@@ -173,8 +206,11 @@ const MyApp = ({ Component, pageProps }) => {
 
   const { uuid } = router.query
 
-  const signOut = () => {
+  const signOut = async () => {
     localStorage.removeItem('xamanUserToken')
+    if (account?.wallet === 'ledgerwallet') {
+      await ledgerwalletDisconnect()
+    }
     setWcSession(null)
     setAccount({
       ...account,
@@ -261,6 +297,7 @@ const MyApp = ({ Component, pageProps }) => {
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
                 countryCode={countryCode}
+                sessionToken={sessionToken}
               />
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}

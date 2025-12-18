@@ -297,7 +297,7 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options }) => {
           <br />
         </>
       )}
-      {addressLink(data[name], options)} {copyButton && <CopyButton text={data[name]} />}
+      <span className="brake">{addressLink(data[name], options)}</span> {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
   )
 }

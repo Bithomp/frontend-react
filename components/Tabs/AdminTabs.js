@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
 import Tabs from '.'
+import { devNet } from '../../utils'
 
 export default function AdminTabs({ name, tab }) {
   const router = useRouter()
@@ -7,11 +8,15 @@ export default function AdminTabs({ name, tab }) {
   const mainTabs = [
     { value: 'profile', label: 'Profile' },
     { value: 'watchlist', label: 'Watchlist' },
-    { value: 'subscriptions', label: 'Subscriptions' },
     { value: 'pro', label: 'My addresses' },
-    { value: 'api', label: 'API' },
+    { value: 'api', label: 'API' }
     // { value: 'notifications', label: 'Notifications' },
   ]
+
+  if (!devNet) {
+    mainTabs.splice(2, 0, { value: 'subscriptions', label: 'Subscriptions' })
+    mainTabs.splice(4, 0, { value: 'referrals', label: 'Referrals' })
+  }
 
   const apiTabs = [
     { value: 'api-info', label: 'Information' },
@@ -41,6 +46,8 @@ export default function AdminTabs({ name, tab }) {
       router.push('/admin/watchlist')
     } else if (tab === 'notifications') {
       router.push('/admin/notifications')
+    } else if (tab === 'referrals') {
+      router.push('/admin/referrals')
     }
   }
 

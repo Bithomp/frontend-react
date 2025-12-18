@@ -9,7 +9,7 @@ import { IoIosRocket } from 'react-icons/io'
 import { FaUserLarge } from 'react-icons/fa6'
 import { GrMoney } from 'react-icons/gr'
 import { IoStatsChart, IoWallet } from 'react-icons/io5'
-import { FaSignOutAlt, FaEye, FaUserCheck } from 'react-icons/fa'
+import { FaSignOutAlt, FaEye, FaUserCheck, FaUserFriends } from 'react-icons/fa'
 import { FiLink } from 'react-icons/fi'
 
 const handleClick = (e) => {
@@ -27,14 +27,14 @@ export default function MobileMenu({
   proName,
   signOutPro,
   signOut,
-  isCopied,
-  copyToClipboard,
   account,
-  countryCode
+  countryCode,
+  sessionToken
 }) {
   const { t } = useTranslation('common')
 
   const iconStyle = { marginRight: '6px', fontSize: '1.1em' }
+  const proLoggedIn = proName && sessionToken
 
   return (
     <div className="mobile-menu" onClick={handleClick}>
@@ -55,9 +55,6 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           {displayName ? (
             <>
-              <span onClick={copyToClipboard} className="mobile-menu-item link">
-                {isCopied ? t('button.copied') : t('button.copy-my-address')}
-              </span>
               <Link href={'/account/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.view')}
               </Link>
@@ -72,13 +69,7 @@ export default function MobileMenu({
                 Send payment
               </Link>
               <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                My Account Settings
-              </Link>
-              <Link href={'/nfts/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('signin.actions.my-nfts')}
-              </Link>
-              <Link href={'/nft-offers/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('signin.actions.my-nft-offers')}
+                My account settings
               </Link>
               {!username && (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -106,7 +97,7 @@ export default function MobileMenu({
           )}
         </div>
 
-        <div className="mobile-menu-directory" data-expanded={proName ? 'false' : 'true'}>
+        <div className="mobile-menu-directory" data-expanded={proLoggedIn ? 'false' : 'true'}>
           <IoIosRocket /> Bithomp Pro
         </div>
         <div className="mobile-menu__submenu">
@@ -114,7 +105,7 @@ export default function MobileMenu({
             <FaUserLarge style={iconStyle} /> {proName || t('signin.signin')}
           </Link>
 
-          {proName && (
+          {proLoggedIn && (
             <>
               <Link href="/admin/watchlist" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <FaEye style={{ ...iconStyle, marginTop: '2px' }} /> Watchlist
@@ -122,6 +113,10 @@ export default function MobileMenu({
 
               <Link href="/admin/subscriptions" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <GrMoney style={iconStyle} /> Subscriptions
+              </Link>
+
+              <Link href="/admin/referrals" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                <FaUserFriends style={iconStyle} /> Referrals
               </Link>
 
               <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -168,6 +163,9 @@ export default function MobileMenu({
           )}
           <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Account Settings
+          </Link>
+          <Link className="mobile-menu-item" onClick={mobileMenuToggle} href="/services/account-delete">
+            Account Delete
           </Link>
           <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.nft-mint')}
@@ -266,27 +264,6 @@ export default function MobileMenu({
           NFT
         </div>
         <div className="mobile-menu__submenu">
-          {!displayName && (
-            <>
-              <span
-                onClick={() => {
-                  setSignRequest({ redirect: 'nfts' })
-                }}
-                className="mobile-menu-item link"
-              >
-                {t('signin.actions.my-nfts')}
-              </span>
-              <span
-                onClick={() => {
-                  setSignRequest({ redirect: 'nft-offers' })
-                }}
-                className="mobile-menu-item link"
-              >
-                {t('signin.actions.my-nft-offers')}
-              </span>
-            </>
-          )}
-
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.nft.explorer')}
           </Link>

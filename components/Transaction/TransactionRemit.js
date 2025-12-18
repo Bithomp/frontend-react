@@ -166,7 +166,7 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
   const dapp = dappBySourceTag(specification.source.tag)
 
   //find the first nft with status added
-  const mintedTokenInfo = outcome?.uritokenChanges
+  const deliveredTokenInfo = outcome?.uritokenChanges
     ?.filter((entry) => entry.address === specification.destination.address)?.[0]
     ?.uritokenChanges.filter((entry) => entry.status === 'added')?.[0]
 
@@ -245,12 +245,12 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
           </TData>
         </tr>
       )}
-      {mintedTokenInfo && (
+      {deliveredTokenInfo && (
         <>
           <tr>
             <TData className="bold">
               <br />
-              Minted & Delivered NFT
+              Delivered NFT
             </TData>
             <TData>
               <br />
@@ -264,9 +264,9 @@ export const TransactionRemit = ({ data, pageFiatRate, selectedCurrency }) => {
           </tr>
           <tr>
             <TData>NFT ID</TData>
-            <TData>{nftIdLink(mintedTokenInfo.uritokenID)}</TData>
+            <TData>{nftIdLink(deliveredTokenInfo.uritokenID)}</TData>
           </tr>
-          {mintedTokenInfo.flags?.burnable && (
+          {deliveredTokenInfo.flags?.burnable && (
             <tr>
               <TData>Flag</TData>
               <TData className="orange">burnable</TData>

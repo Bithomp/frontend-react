@@ -413,7 +413,6 @@ export default function Send({
               hash: result.hash,
               validated: result.validated,
               ledgerIndex: result.ledger_index,
-              balanceChanges: result.balanceChanges,
               invoiceId: result.InvoiceID,
               transactionType: xahauNetwork && useRemit ? 'Remit' : 'Payment'
             })
@@ -810,7 +809,7 @@ export default function Send({
                   )}
                   {txResult.transactionType === 'Remit' && (
                     <p>
-                      <strong>Transaction Type:</strong> <span className="blue bold">Remit (Xahau)</span>
+                      <strong>Transaction Type:</strong> <span className="bold">Remit</span>
                     </p>
                   )}
                 </div>
