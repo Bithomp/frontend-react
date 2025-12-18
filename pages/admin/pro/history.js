@@ -481,7 +481,8 @@ export default function History({
           orderPart +
           '&limit=1000' +
           (options?.marker ? '&marker=' + options.marker : '') +
-          (sortCurrency ? '&sortCurrency=' + sortCurrency : '')
+          (sortCurrency ? '&sortCurrency=' + sortCurrency : '') +
+          '&removeDust=' + removeDust
       )
       .catch((error) => {
         setLoading(false)
@@ -626,7 +627,7 @@ export default function History({
     setLoading(true)
     getProAddressHistory()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressesToCheck, selectedCurrency, period, order, sessionToken])
+  }, [addressesToCheck, selectedCurrency, period, order, sessionToken, removeDust])
 
   const addressName = (address) => {
     for (let a of verifiedAddresses) {
