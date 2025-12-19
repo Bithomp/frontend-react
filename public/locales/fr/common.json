@@ -351,6 +351,7 @@
     "Request failed with status code 429": "Vous nous envoyez trop de demandes, essayez plus tard !",
     "Request failed with status code 404": "Cet appel API n'est pas autorisé sur ce réseau",
     "Request failed with status code 403": "Il semble que vous soyez déconnecté, veuillez vous reconnecter",
+    "Request failed with status code 408": "La demande a expiré. Essayez de modifier vos filtres ou réessayez plus tard.",
     "Request aborted": "Demande annulée",
     "read ECONNRESET": "La demande a expiré. Essayez de modifier vos filtres ou réessayez plus tard."
   },

@@ -351,6 +351,7 @@
     "Request failed with status code 429": "リクエストの送信数が多すぎます、後ほどお試しください！",
     "Request failed with status code 404": "そのようなAPIコールはそのネットワークでは許可されていません",
     "Request failed with status code 403": "ログアウトしています。再度ログインしてください。",
+    "Request failed with status code 408": "リクエストがタイムアウトしました。フィルターを変更するか、後で再試行してください。",
     "Request aborted": "リクエストが中止されました",
     "read ECONNRESET": "リクエストのタイムアウト。フィルターを変更するか、後で再試行してください。"
   },
