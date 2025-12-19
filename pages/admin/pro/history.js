@@ -111,8 +111,67 @@ const isSending = (a) => {
   return a.amount[0] === '-'
 }
 
+// Helper: build CoinLedger "Trade" rows where a single tx produces both sent and received legs
+const mergeCoinLedgerTrades = (activities = []) => {
+  // Group by tx hash + address (address is safer if list contains multiple addresses)
+  const byKey = new Map()
+
+  for (const a of activities) {
+    const key = `${a.hash || ''}:${a.address || ''}`
+    if (!byKey.has(key)) byKey.set(key, [])
+    byKey.get(key).push(a)
+  }
+
+  const out = []
+
+  for (const list of byKey.values()) {
+    // In most cases, a "trade-like" tx will have 2 legs in history (sent + received) with same hash.
+    const sentLeg = list.find(
+      (x) => (x.sentAmount !== '' && x.sentAmount !== null && x.sentAmount !== undefined) || isSending(x)
+    )
+    const receivedLeg = list.find(
+      (x) => x.receivedAmount !== '' && x.receivedAmount !== null && x.receivedAmount !== undefined
+    )
+
+    // If we have both legs, emit one Trade row
+    if (
+      sentLeg &&
+      receivedLeg &&
+      (sentLeg.sentCurrency || sentLeg.currencyCode) &&
+      (receivedLeg.receivedCurrency || receivedLeg.currencyCode)
+    ) {
+      const base = { ...sentLeg }
+
+      // Force correct Trade fields
+      base.type = 'Trade'
+      base.sentAmount = sentLeg.sentAmount || sentLeg.amountNumber || ''
+      base.sentCurrency = sentLeg.sentCurrency || sentLeg.currencyCode || ''
+      base.receivedAmount = receivedLeg.receivedAmount || receivedLeg.amountNumber || ''
+      base.receivedCurrency = receivedLeg.receivedCurrency || receivedLeg.currencyCode || ''
+
+      // Prefer fee fields from any leg (usually identical)
+      base.txFeeNumber = sentLeg.txFeeNumber ?? receivedLeg.txFeeNumber
+      base.txFeeCurrencyCode = sentLeg.txFeeCurrencyCode ?? receivedLeg.txFeeCurrencyCode
+
+      // Merge memo if needed
+      base.memo = (sentLeg.memo || receivedLeg.memo || '').toString()
+
+      out.push(base)
+      continue
+    }
+
+    // Otherwise, keep the original rows (Deposit/Withdrawal logic later)
+    for (const a of list) out.push({ ...a })
+  }
+
+  return out
+}
+
 const processDataForExport = (activities, platform) => {
-  return activities.map((activity) => {
+  // --- CoinLedger: merge "trade-like" txs into one row first ---
+  const baseList = platform === 'CoinLedger' ? mergeCoinLedgerTrades(activities || []) : activities || []
+
+  return baseList.map((activity) => {
     const sending = isSending(activity)
 
     const processedActivity = { ...activity }
@@ -128,10 +187,11 @@ const processDataForExport = (activities, platform) => {
       }
     } else if (platform === 'CoinLedger') {
       // https://help.coinledger.io/en/articles/6028758-universal-manual-import-template-guide
-      // Deposit and Withdrawals are a non-taxable self-transfers
-      // Trades need to be in one line as Trade type.
-      // NFTs should be as Trades too
-      processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
+      // If merged as Trade, keep it.
+      // Otherwise fallback to Deposit/Withdrawal.
+      if (processedActivity.type !== 'Trade') {
+        processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
+      }
     } else if (platform === 'CoinTracking') {
       processedActivity.type = sending
         ? 'Withdrawal'
