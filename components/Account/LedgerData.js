@@ -576,7 +576,7 @@ export default function LedgerData({
               {data.ledgerInfo?.importSequence && (
                 <tr>
                   <td>Import sequence</td>
-                  <td>#{data.ledgerInfo.importSequence}</td>
+                  <td>{data.ledgerInfo.importSequence}</td>
                 </tr>
               )}
               {data.ledgerInfo?.hookNamespaces && (
@@ -883,7 +883,7 @@ export default function LedgerData({
           <>
             {data.ledgerInfo?.importSequence && (
               <p>
-                <span className="grey">Import sequence</span> #{data.ledgerInfo.importSequence}
+                <span className="grey">Import sequence</span> {data.ledgerInfo.importSequence}
               </p>
             )}
             <XahauRewardTr

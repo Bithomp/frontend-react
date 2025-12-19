@@ -34,7 +34,7 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
       {(outcome?.escrowChanges?.escrowSequence || specification?.escrowSequence) && (
         <tr>
           <TData>Escrow sequence</TData>
-          <TData>#{outcome?.escrowChanges?.escrowSequence || specification?.escrowSequence}</TData>
+          <TData>{outcome?.escrowChanges?.escrowSequence || specification?.escrowSequence}</TData>
         </tr>
       )}
 

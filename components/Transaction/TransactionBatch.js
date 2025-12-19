@@ -55,7 +55,7 @@ export const TransactionBatch = ({ data, pageFiatRate, selectedCurrency }) => {
             </tr>
             <tr>
               <TData>Sequence</TData>
-              <TData>#{transaction?.sequence}</TData>
+              <TData>{transaction?.sequence}</TData>
             </tr>
             <tr>
               <TData>Flags</TData>

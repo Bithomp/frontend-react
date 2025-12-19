@@ -51,7 +51,7 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
       {tx.TransactionType === 'OfferCreate' && (
         <tr>
           <TData>Offer sequence</TData>
-          <TData>#{tx.Sequence || tx.TicketSequence}</TData>
+          <TData>{tx.Sequence || tx.TicketSequence}</TData>
         </tr>
       )}
 
@@ -100,7 +100,7 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
           >
             {offerCreate ? 'Offer to Cancel' : 'Offer sequence'}
           </TData>
-          <TData>#{tx.OfferSequence}</TData>
+          <TData>{tx.OfferSequence}</TData>
         </tr>
       )}
 
