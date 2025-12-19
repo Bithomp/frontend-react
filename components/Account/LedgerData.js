@@ -727,7 +727,9 @@ export default function LedgerData({
           {data.ledgerInfo?.sequence && (
             <tr>
               <td>Next sequence</td>
-              <td>#{data.ledgerInfo.sequence}</td>
+              <td>
+                {data.ledgerInfo.sequence} <CopyButton text={data.ledgerInfo.sequence} />
+              </td>
             </tr>
           )}
           {showLastEffectedTx && (
@@ -1017,7 +1019,8 @@ export default function LedgerData({
         )}
         {data.ledgerInfo?.sequence && (
           <p>
-            <span className="grey">Next sequence</span> #{data.ledgerInfo.sequence}
+            <span className="grey">Next sequence</span> {data.ledgerInfo.sequence}{' '}
+            <CopyButton text={data.ledgerInfo.sequence} />
           </p>
         )}
         {showLastEffectedTx && (
