@@ -400,10 +400,11 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                 </div>
 
                 <div className="flag-description">
-                  <div style={{ marginBottom: 6 }}>
-                    <span className="grey">RewardTime</span>:{' '}
-                    <b>{ledgerInfo?.rewardTime ? String(ledgerInfo.rewardTime) : '—'}</b>
-                  </div>
+                  {ledgerInfo?.rewardTime && (
+                    <div style={{ marginBottom: 6 }}>
+                      <span className="grey">Reward time</span>: <b>{ledgerInfo.rewardTime}</b>
+                    </div>
+                  )}
 
                   {remainingSec !== null && !claimable && (
                     <div style={{ marginBottom: 6 }}>
@@ -413,8 +414,21 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                   )}
 
                   <div className="grey">
-                    Manual claim is optional. If Cron + Hook are installed, claims will be emitted automatically on
-                    schedule.
+                    {hookInstalled && cronActive ? (
+                      <>
+                        Automatic claiming is <b>enabled</b>. Rewards will be claimed on schedule.
+                      </>
+                    ) : hookInstalled ? (
+                      <>
+                        Hook is installed, but Cron is not active. Rewards will <b>not</b> be claimed automatically.
+                      </>
+                    ) : cronActive ? (
+                      <>Cron is active, but the ClaimReward Hook is missing. No automatic claims will occur.</>
+                    ) : (
+                      <>
+                        Automatic claiming is <b>disabled</b>.
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
