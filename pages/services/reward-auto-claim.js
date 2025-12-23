@@ -54,6 +54,16 @@ export const getServerSideProps = async (context) => {
   }
 }
 
+const ToggleButton = ({ isOn, onEnable, onDisable, labels, disabled }) => (
+  <button
+    className={'button-action thin' + (isOn ? ' warning' : '')}
+    onClick={() => (isOn ? onDisable() : onEnable())}
+    disabled={disabled}
+  >
+    {isOn ? labels.off : labels.on}
+  </button>
+)
+
 export default function RewardAutoClaim({ account, setSignRequest, networkInfo }) {
   const [loading, setLoading] = useState(true)
   const [loadingObjects, setLoadingObjects] = useState(true)
@@ -383,22 +393,24 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
             <div className="form-container">
               {/* Rewards */}
               <div className="flag-item">
-                <div className="flag-header">
-                  <div className="flag-info">
-                    <span className="flag-name">Rewards status</span>
-                    <span className="flag-status">
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
+                  <div>
+                    <span className="bold">Rewards status</span>{' '}
+                    <span className={ledgerInfo?.rewardTime ? (claimable ? 'green' : 'grey') : 'orange'}>
                       {ledgerInfo?.rewardTime ? (claimable ? 'Claimable now' : 'Not claimable yet') : 'Not opted-in'}
                     </span>
                   </div>
-                  <div className="flag-info-buttons">
+
+                  <div style={{ flexShrink: 0 }}>
                     {claimable && (
                       <button
                         className="button-action thin"
                         onClick={() =>
-                          sign(
-                            { TransactionType: 'ClaimReward', Issuer: CLAIM_ISSUER, Account: account.address },
-                            'ClaimReward signed.'
-                          )
+                          sign({
+                            TransactionType: 'ClaimReward',
+                            Issuer: CLAIM_ISSUER,
+                            Account: account.address
+                          })
                         }
                       >
                         <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} /> Claim now
@@ -446,28 +458,21 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
 
               {/* asfTshCollect */}
               <div className="flag-item">
-                <div className="flag-header">
-                  <div className="flag-info">
-                    <span className="flag-name">asfTshCollect</span>
-                    <span className={`flag-status ${tshCollectEnabled ? 'green' : 'orange'}`}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
+                  <div className="bold">
+                    asfTshCollect{' '}
+                    <span className={`${tshCollectEnabled ? 'green' : 'orange'}`}>
                       {tshCollectEnabled ? 'Enabled' : 'Disabled'}
                     </span>
                   </div>
-                  <div className="flag-info-buttons">
-                    <button
-                      className="button-action thin"
-                      onClick={() => sign(txEnableTshCollect(), 'asfTshCollect enabled')}
-                      disabled={tshCollectEnabled}
-                    >
-                      Enable
-                    </button>
-                    <button
-                      className="button-action thin"
-                      onClick={() => sign(txDisableTshCollect(), 'asfTshCollect disabled')}
-                      disabled={!tshCollectEnabled}
-                    >
-                      Disable
-                    </button>
+
+                  <div style={{ flexShrink: 0 }}>
+                    <ToggleButton
+                      isOn={tshCollectEnabled}
+                      onEnable={() => sign(txEnableTshCollect(), { refreshAccount: true })}
+                      onDisable={() => sign(txDisableTshCollect(), { refreshAccount: true })}
+                      labels={{ on: 'Enable', off: 'Disable' }}
+                    />
                   </div>
                 </div>
 
@@ -483,28 +488,25 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                 <>
                   {/* Hook */}
                   <div className="flag-item">
-                    <div className="flag-header">
-                      <div className="flag-info">
-                        <span className="flag-name">ClaimReward Hook</span>
-                        <span className={`flag-status ${hookInstalled ? 'green' : 'orange'}`}>
+                    <div
+                      className="flex-row"
+                      style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}
+                    >
+                      <div className="bold">
+                        ClaimReward Hook{' '}
+                        <span className={`${hookInstalled ? 'green' : 'orange'}`}>
                           {hookInstalled ? 'Installed' : 'Not installed'}
                         </span>
                       </div>
-                      <div className="flag-info-buttons">
-                        <button
-                          className="button-action thin"
-                          onClick={() => sign(txInstallOrUpdateHook(), { refreshObjects: true })}
-                          disabled={hookInstalled}
-                        >
-                          Install
-                        </button>
-                        <button
-                          className="button-action thin"
-                          onClick={() => sign(txRemoveHook(), { refreshObjects: true })}
-                          disabled={!hookInstalled}
-                        >
-                          Remove
-                        </button>
+
+                      <div style={{ flexShrink: 0 }}>
+                        <ToggleButton
+                          isOn={hookInstalled}
+                          onEnable={() => sign(txInstallOrUpdateHook(), { refreshObjects: true })}
+                          onDisable={() => sign(txRemoveHook(), { refreshObjects: true })}
+                          labels={{ on: 'Install', off: 'Remove' }}
+                          disabled={!objectsFetched}
+                        />
                       </div>
                     </div>
 
@@ -512,9 +514,11 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                       <div style={{ marginBottom: 6 }}>
                         This hook emits a <b>ClaimReward</b> transaction when triggered by Cron.
                       </div>
+
                       <div className="grey">
-                        HookHash: <span className="grey">{CLAIM_HOOK_HASH}</span>
+                        HookHash: <span className="brake">{CLAIM_HOOK_HASH}</span>
                       </div>
+
                       <div className="orange" style={{ marginTop: 10 }}>
                         Security note: the hook hash shown above matches the known ClaimReward hook described in{' '}
                         <a
@@ -531,28 +535,25 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
 
                   {/* Cron */}
                   <div className="flag-item">
-                    <div className="flag-header">
-                      <div className="flag-info">
-                        <span className="flag-name">Cron schedule</span>
-                        <span className={`flag-status ${cronActive ? 'green' : 'orange'}`}>
-                          {cronActive ? `Active` : 'Not active'}
+                    <div
+                      className="flex-row"
+                      style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}
+                    >
+                      <div className="bold">
+                        Cron schedule{' '}
+                        <span className={`${cronActive ? 'green' : 'orange'}`}>
+                          {cronActive ? 'Active' : 'Not active'}
                         </span>
                       </div>
-                      <div className="flag-info-buttons">
-                        <button
-                          className="button-action thin"
-                          onClick={() => sign(txInstallOrUpdateCron(), { refreshObjects: true })}
-                          disabled={cronActive}
-                        >
-                          Activate
-                        </button>
-                        <button
-                          className="button-action thin"
-                          onClick={() => sign(txRemoveCron(), { refreshObjects: true })}
-                          disabled={!cronActive}
-                        >
-                          Deactivate
-                        </button>
+
+                      <div style={{ flexShrink: 0 }}>
+                        <ToggleButton
+                          isOn={cronActive}
+                          onEnable={() => sign(txInstallOrUpdateCron(), { refreshObjects: true })}
+                          onDisable={() => sign(txRemoveCron(), { refreshObjects: true })}
+                          labels={{ on: 'Activate', off: 'Deactivate' }}
+                          disabled={!objectsFetched || startTime === null}
+                        />
                       </div>
                     </div>
 
@@ -561,22 +562,20 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                         Cron will trigger your hook repeatedly. The hook then emits ClaimReward.
                       </div>
 
-                      <div>
-                        <div className="grey">
-                          Start:{' '}
-                          <span className="bold">
-                            {startTime === 0 ? 'immediate' : fullDateAndTime(startTime + RIPPLED_EPOCH_OFFSET)}
-                          </span>
-                        </div>
+                      <div className="grey">
+                        Start:{' '}
+                        <span className="bold">
+                          {startTime === 0 ? 'immediate' : fullDateAndTime(startTime + RIPPLED_EPOCH_OFFSET)}
+                        </span>
+                      </div>
 
-                        <div className="grey" style={{ marginTop: 10 }}>
-                          Repeat every: <span className="bold">{duration(t, CRON_DELAY_SECONDS)}</span> (includes 1 hour
-                          margin).
-                        </div>
+                      <div className="grey" style={{ marginTop: 10 }}>
+                        Repeat every: <span className="bold">{duration(t, CRON_DELAY_SECONDS)}</span> (includes 1 hour
+                        margin).
+                      </div>
 
-                        <div className="grey" style={{ marginTop: 10 }}>
-                          Repeat count: <b>{REPEAT_COUNT_MAX}</b> (maximum)
-                        </div>
+                      <div className="grey" style={{ marginTop: 10 }}>
+                        Repeat count: <b>{REPEAT_COUNT_MAX}</b> (maximum)
                       </div>
 
                       <div className="orange" style={{ marginTop: 12 }}>

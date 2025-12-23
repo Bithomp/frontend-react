@@ -602,6 +602,15 @@ table {
     cursor: default;
     pointer-events: none;
   }
+  &.warning {
+    color: var(--red);
+    background: #eeeeee;
+    border: 1px solid var(--red);
+    &:hover:not(:disabled) {
+      background: var(--red);
+      color: white;
+    }
+  }
 }
 
 .main-box {
