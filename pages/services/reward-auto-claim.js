@@ -10,6 +10,7 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import { rewardAutoClaim } from '../../styles/pages/reward-auto-claim.module.scss'
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { useTranslation } from 'next-i18next'
+import { LinkAccount } from '../../utils/links'
 
 // Constants
 const RIPPLED_EPOCH_OFFSET = 946684800
@@ -269,9 +270,8 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
         <h1 className="center">Auto-claim Xahau rewards</h1>
 
         <p className="center grey">
-          This page helps you automate monthly reward claiming using a <b>Hook</b> + <b>CronSet</b>.
-          <br />
-          You will sign up to 3 transactions (AccountSet, SetHook, CronSet).
+          This page helps you automate monthly reward claiming using a <span className="bold">Hook</span> +{' '}
+          <span className="bold">CronSet</span>. You will sign up 3 transactions: AccountSet, SetHook, CronSet.
         </p>
 
         {!isLoggedIn ? (
@@ -285,13 +285,12 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
         ) : (
           <>
             <p className="center">
-              Address: <b>{account.address}</b>
+              Address: <LinkAccount address={account.address} short={8} text={account?.username || account.address} />
             </p>
 
             {canConfigure ? (
               <div className="center" style={{ marginTop: 18 }}>
-                <b className="grey">{amountFormat(ledgerInfo.balance)}</b> •{' '}
-                <Link href={`/account/${account.address}`}>View account</Link>
+                <span className="grey bold">{amountFormat(ledgerInfo.balance)}</span>
               </div>
             ) : (
               <div className="form-container">
@@ -411,14 +410,16 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                 <div className="flag-description">
                   {ledgerInfo?.rewardTime && (
                     <div style={{ marginBottom: 6 }}>
-                      <span className="grey">Reward time</span>: <b>{ledgerInfo.rewardTime}</b>
+                      <span className="grey">Reward time</span>: <span className="bold">{ledgerInfo.rewardTime}</span> (
+                      {fullDateAndTime(ledgerInfo.rewardTime + RIPPLED_EPOCH_OFFSET)})
                     </div>
                   )}
 
                   {remainingSec !== null && !claimable && (
                     <div style={{ marginBottom: 6 }}>
-                      <span className="grey">Next claim in</span>: <b>{Math.max(0, Math.floor(remainingSec))}</b>{' '}
-                      seconds
+                      <span className="grey">Next claim in</span>:{' '}
+                      <span className="bold">{Math.max(0, Math.floor(remainingSec))}</span> seconds (
+                      {duration(t, Math.max(0, Math.floor(remainingSec)))})
                     </div>
                   )}
 

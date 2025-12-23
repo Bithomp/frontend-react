@@ -147,6 +147,11 @@ export default function MobileMenu({
           <Link href="/services/trustline" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Set Trust (Trustline)
           </Link>
+          {xahauNetwork && (
+            <Link href="/services/reward-auto-claim" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              Reward Auto Claim
+            </Link>
+          )}
           <Link href="/services/check" className="mobile-menu-item" onClick={mobileMenuToggle}>
             Issue Check
           </Link>
