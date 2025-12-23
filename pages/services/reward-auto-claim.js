@@ -3,13 +3,13 @@ import SEO from '../../components/SEO'
 import Link from 'next/link'
 import axios from 'axios'
 import { devNet, xahauNetwork } from '../../utils'
-import CheckBox from '../../components/UI/CheckBox'
-import { amountFormat } from '../../utils/format'
+import { amountFormat, duration } from '../../utils/format'
 import { TbPigMoney } from 'react-icons/tb'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { rewardAutoClaim } from '../../styles/pages/reward-auto-claim.module.scss'
 import { axiosServer, passHeaders } from '../../utils/axios'
+import { useTranslation } from 'next-i18next'
 
 // Constants
 const RIPPLED_EPOCH_OFFSET = 946684800
@@ -64,9 +64,9 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
   const [objectsFetched, setObjectsFetched] = useState(false)
 
   // User options
-  const [useSafetyMargin, setUseSafetyMargin] = useState(true)
   const [repeatCount, setRepeatCount] = useState(REPEAT_COUNT_MAX)
-  const [delaySeconds, setDelaySeconds] = useState(CRON_DELAY_SECONDS)
+
+  const { t } = useTranslation()
 
   const isLoggedIn = !!account?.address
 
@@ -162,8 +162,8 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
     // For first-time (not opted-in): use 0
     if (!ledgerInfo?.rewardTime) return 0
     const base = Number(ledgerInfo.rewardTime) + REWARD_DELAY_SECONDS
-    return useSafetyMargin ? base + SAFETY_MARGIN_SECONDS : base
-  }, [ledgerInfo?.rewardTime, useSafetyMargin])
+    return base + SAFETY_MARGIN_SECONDS // always +1h
+  }, [ledgerInfo?.rewardTime])
 
   // === Build TXs ===
   const txEnableTshCollect = () => ({
@@ -210,9 +210,9 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
   const txInstallOrUpdateCron = () => ({
     TransactionType: 'CronSet',
     Account: account.address,
-    StartTime: startTime, // 0 if first time / not opted-in yet
+    StartTime: startTime,
     RepeatCount: Math.max(1, Math.min(REPEAT_COUNT_MAX, Number(repeatCount) || 1)),
-    DelaySeconds: Math.max(1, Number(delaySeconds) || CRON_DELAY_SECONDS)
+    DelaySeconds: CRON_DELAY_SECONDS
   })
 
   const txRemoveCron = () => ({
@@ -555,35 +555,16 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                         Cron will trigger your hook repeatedly. The hook then emits ClaimReward.
                       </div>
 
-                      <div style={{ marginBottom: 10 }}>
-                        <CheckBox checked={useSafetyMargin} setChecked={() => setUseSafetyMargin(!useSafetyMargin)}>
-                          Use +1 hour safety margin (recommended)
-                        </CheckBox>
-                        <div className="grey" style={{ marginTop: 6 }}>
-                          Adds 3600 seconds to StartTime to avoid edge cases when claiming too early.
-                        </div>
-                      </div>
-
-                      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-                        <div>
-                          <div className="grey">StartTime</div>
-                          <b>{String(startTime)}</b>
-                          <div className="grey" style={{ marginTop: 4 }}>
-                            0 = immediate start (use when not opted-in yet)
-                          </div>
+                      <div>
+                        <div className="grey">
+                          Start time: <b>{String(startTime)}</b>{' '}
+                          {startTime === 0 ? '(immediate)' : '(unix epoch seconds)'}
                         </div>
 
                         <div>
-                          <div className="grey">DelaySeconds</div>
-                          <input
-                            className="input-text"
-                            style={{ maxWidth: 180 }}
-                            value={String(delaySeconds)}
-                            onChange={(e) => setDelaySeconds(e.target.value)}
-                            inputMode="numeric"
-                          />
-                          <div className="grey" style={{ marginTop: 4 }}>
-                            Time between triggers. Default includes safety margin.
+                          <div className="grey">
+                            Delay: <b>{CRON_DELAY_SECONDS}</b> seconds ({duration(t, CRON_DELAY_SECONDS)}, includes 1
+                            hour margin).
                           </div>
                         </div>
 
@@ -603,7 +584,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                       </div>
 
                       <div className="orange" style={{ marginTop: 12 }}>
-                        Note: “Remove” will stop future triggers. It does not undo past claims.
+                        Note: “Remove” will stop future triggers.
                       </div>
                     </div>
                   </div>
