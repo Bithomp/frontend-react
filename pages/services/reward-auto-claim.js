@@ -63,9 +63,6 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
   const [objects, setObjects] = useState([]) // /v2/objects raw list
   const [objectsFetched, setObjectsFetched] = useState(false)
 
-  // User options
-  const [repeatCount, setRepeatCount] = useState(REPEAT_COUNT_MAX)
-
   const { t } = useTranslation()
 
   const isLoggedIn = !!account?.address
@@ -211,7 +208,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
     TransactionType: 'CronSet',
     Account: account.address,
     StartTime: startTime,
-    RepeatCount: Math.max(1, Math.min(REPEAT_COUNT_MAX, Number(repeatCount) || 1)),
+    RepeatCount: REPEAT_COUNT_MAX,
     DelaySeconds: CRON_DELAY_SECONDS
   })
 
@@ -561,25 +558,13 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                           {startTime === 0 ? '(immediate)' : '(unix epoch seconds)'}
                         </div>
 
-                        <div>
-                          <div className="grey">
-                            Delay: <b>{CRON_DELAY_SECONDS}</b> seconds ({duration(t, CRON_DELAY_SECONDS)}, includes 1
-                            hour margin).
-                          </div>
+                        <div className="grey" style={{ marginTop: 10 }}>
+                          Delay: <b>{CRON_DELAY_SECONDS}</b> seconds ({duration(t, CRON_DELAY_SECONDS)}, includes 1 hour
+                          margin).
                         </div>
 
-                        <div>
-                          <div className="grey">RepeatCount</div>
-                          <input
-                            className="input-text"
-                            style={{ maxWidth: 180 }}
-                            value={String(repeatCount)}
-                            onChange={(e) => setRepeatCount(e.target.value)}
-                            inputMode="numeric"
-                          />
-                          <div className="grey" style={{ marginTop: 4 }}>
-                            12 ≈ 1 year • 256 ≈ 21 years
-                          </div>
+                        <div className="grey" style={{ marginTop: 10 }}>
+                          Repeat count: <b>{REPEAT_COUNT_MAX}</b> (maximum)
                         </div>
                       </div>
 
