@@ -3,7 +3,7 @@ import SEO from '../../components/SEO'
 import Link from 'next/link'
 import axios from 'axios'
 import { devNet, xahauNetwork } from '../../utils'
-import { amountFormat, duration } from '../../utils/format'
+import { amountFormat, duration, fullDateAndTime } from '../../utils/format'
 import { TbPigMoney } from 'react-icons/tb'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -83,6 +83,23 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
     [account?.address]
   )
 
+  const refetchObjects = useCallback(
+    async (signal) => {
+      if (!account?.address) return
+      setErrorMessage('')
+      try {
+        const resp = await axios.get(`v2/objects/${account.address}?limit=1000`, { signal })
+        setObjects(resp.data?.objects || [])
+        setObjectsFetched(true)
+      } catch (e) {
+        if (e?.message !== 'canceled') setErrorMessage('Error fetching account objects.')
+        setObjects([])
+        setObjectsFetched(false)
+      }
+    },
+    [account?.address]
+  )
+
   // 1) Load ledgerInfo
   useEffect(() => {
     const controller = new AbortController()
@@ -106,23 +123,13 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
       if (!account?.address) return
       setLoadingObjects(true)
       setObjectsFetched(false)
-      setErrorMessage('')
-      try {
-        const resp = await axios.get(`v2/objects/${account.address}?limit=1000`, { signal: controller.signal })
-        setObjects(resp.data?.objects || [])
-        setObjectsFetched(true)
-      } catch (e) {
-        if (e?.message !== 'canceled') setErrorMessage('Error fetching account objects.')
-        setObjects([])
-        setObjectsFetched(false)
-      } finally {
-        setLoadingObjects(false)
-      }
+      await refetchObjects(controller.signal)
+      setLoadingObjects(false)
     }
 
     loadObjects()
     return () => controller.abort()
-  }, [account?.address])
+  }, [account?.address, refetchObjects])
 
   const ledgerInfo = addressInfo?.ledgerInfo
 
@@ -190,7 +197,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
           HookHash: CLAIM_HOOK_HASH,
           HookNamespace: '0000000000000000000000000000000000000000000000000000000000000000',
           HookOn: 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFFFFFFFFFFFBFFFFF',
-          HookCanEmit: 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFFFFFFFFFFFFFFFFFBFFFFF',
+          //HookCanEmit: 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFFFFFFFFFFFFFFFFFBFFFFF', // not supported in xaman yet
           Flags: 4
         }
       }
@@ -224,16 +231,20 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
     Flags: CRON_UNSET_FLAG
   })
 
-  const sign = (request) => {
+  const sign = (request, { refreshAccount = true, refreshObjects = false } = {}) => {
     setErrorMessage('')
     setSignRequest({
       request,
       callback: (result) => {
         const status = result?.meta?.TransactionResult
-        if (status && status !== 'tesSUCCESS') setErrorMessage(`Transaction failed: ${status}`)
-        else {
-          refetchAccount()
+        if (status && status !== 'tesSUCCESS') {
+          setErrorMessage(`Transaction failed: ${status}`)
+          return
         }
+
+        // refresh latest states from API
+        if (refreshAccount) refetchAccount()
+        if (refreshObjects) refetchObjects()
       }
     })
   }
@@ -482,15 +493,14 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                       <div className="flag-info-buttons">
                         <button
                           className="button-action thin"
-                          onClick={() =>
-                            sign(txInstallOrUpdateHook(), hookInstalled ? 'Hook updated.' : 'Hook installed.')
-                          }
+                          onClick={() => sign(txInstallOrUpdateHook(), { refreshObjects: true })}
+                          disabled={hookInstalled}
                         >
-                          {hookInstalled ? 'Update' : 'Install'}
+                          Install
                         </button>
                         <button
                           className="button-action thin"
-                          onClick={() => sign(txRemoveHook(), 'Hook removed.')}
+                          onClick={() => sign(txRemoveHook(), { refreshObjects: true })}
                           disabled={!hookInstalled}
                         >
                           Remove
@@ -525,24 +535,23 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                       <div className="flag-info">
                         <span className="flag-name">Cron schedule</span>
                         <span className={`flag-status ${cronActive ? 'green' : 'orange'}`}>
-                          {cronActive ? `Active (${cronObjects.length})` : 'Not active'}
+                          {cronActive ? `Active` : 'Not active'}
                         </span>
                       </div>
                       <div className="flag-info-buttons">
                         <button
                           className="button-action thin"
-                          onClick={() =>
-                            sign(txInstallOrUpdateCron(), cronActive ? 'Cron updated.' : 'Cron installed.')
-                          }
+                          onClick={() => sign(txInstallOrUpdateCron(), { refreshObjects: true })}
+                          disabled={cronActive}
                         >
-                          {cronActive ? 'Update' : 'Install'}
+                          Activate
                         </button>
                         <button
                           className="button-action thin"
-                          onClick={() => sign(txRemoveCron(), 'Cron removed.')}
+                          onClick={() => sign(txRemoveCron(), { refreshObjects: true })}
                           disabled={!cronActive}
                         >
-                          Remove
+                          Deactivate
                         </button>
                       </div>
                     </div>
@@ -554,8 +563,8 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
 
                       <div>
                         <div className="grey">
-                          Start time: <b>{String(startTime)}</b>{' '}
-                          {startTime === 0 ? '(immediate)' : '(unix epoch seconds)'}
+                          Start time: <b>{String(startTime)}</b> (
+                          {startTime === 0 ? 'immediate' : fullDateAndTime(startTime + RIPPLED_EPOCH_OFFSET)})
                         </div>
 
                         <div className="grey" style={{ marginTop: 10 }}>
@@ -569,7 +578,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                       </div>
 
                       <div className="orange" style={{ marginTop: 12 }}>
-                        Note: “Remove” will stop future triggers.
+                        Note: “Deactivate” will stop future triggers.
                       </div>
                     </div>
                   </div>
