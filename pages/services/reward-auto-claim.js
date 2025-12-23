@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import SEO from '../../components/SEO'
 import Link from 'next/link'
 import axios from 'axios'
@@ -57,7 +57,6 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
   const [loading, setLoading] = useState(true)
   const [loadingObjects, setLoadingObjects] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
 
   const [addressInfo, setAddressInfo] = useState(null) // /v2/address
   const [objects, setObjects] = useState([]) // /v2/objects raw list
@@ -67,6 +66,23 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
 
   const isLoggedIn = !!account?.address
 
+  const refetchAccount = useCallback(
+    async (signal) => {
+      if (!account?.address) return
+      setErrorMessage('')
+      try {
+        const resp = await axios.get(
+          `/v2/address/${account.address}?ledgerInfo=true&username=true&service=true&verifiedDomain=true`,
+          { signal }
+        )
+        setAddressInfo(resp.data || null)
+      } catch (e) {
+        if (e?.message !== 'canceled') setErrorMessage('Error fetching account data.')
+      }
+    },
+    [account?.address]
+  )
+
   // 1) Load ledgerInfo
   useEffect(() => {
     const controller = new AbortController()
@@ -74,23 +90,13 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
     async function loadAddress() {
       if (!account?.address) return
       setLoading(true)
-      setErrorMessage('')
-      try {
-        const resp = await axios.get(
-          `/v2/address/${account.address}?ledgerInfo=true&username=true&service=true&verifiedDomain=true`,
-          { signal: controller.signal }
-        )
-        setAddressInfo(resp.data || null)
-      } catch (e) {
-        if (e?.message !== 'canceled') setErrorMessage('Error fetching account data.')
-      } finally {
-        setLoading(false)
-      }
+      await refetchAccount(controller.signal)
+      setLoading(false)
     }
 
     loadAddress()
     return () => controller.abort()
-  }, [account?.address])
+  }, [account?.address, refetchAccount])
 
   // 2) Load objects (Hook + Cron)
   useEffect(() => {
@@ -218,15 +224,16 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
     Flags: CRON_UNSET_FLAG
   })
 
-  const sign = (request, okMsg) => {
+  const sign = (request) => {
     setErrorMessage('')
-    setSuccessMessage('')
     setSignRequest({
       request,
       callback: (result) => {
         const status = result?.meta?.TransactionResult
         if (status && status !== 'tesSUCCESS') setErrorMessage(`Transaction failed: ${status}`)
-        else setSuccessMessage(okMsg || 'Transaction signed successfully.')
+        else {
+          refetchAccount()
+        }
       }
     })
   }
@@ -353,12 +360,6 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
         )}
 
         {errorMessage && <p className="red center">{errorMessage}</p>}
-        {successMessage && (
-          <p className="green center">
-            <br />
-            {successMessage}
-          </p>
-        )}
 
         {!xahauNetwork ? (
           <p className="center red">This page is available only on Xahau network.</p>
@@ -447,14 +448,14 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                       onClick={() => sign(txEnableTshCollect(), 'asfTshCollect enabled')}
                       disabled={tshCollectEnabled}
                     >
-                      Install
+                      Enable
                     </button>
                     <button
                       className="button-action thin"
                       onClick={() => sign(txDisableTshCollect(), 'asfTshCollect disabled')}
                       disabled={!tshCollectEnabled}
                     >
-                      Remove
+                      Disable
                     </button>
                   </div>
                 </div>

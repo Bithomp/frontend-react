@@ -714,7 +714,7 @@ export default function LedgerData({
           )}
           {data.ledgerInfo?.flags?.tshCollect && (
             <tr>
-              <td>Transactional Stakeholder Collect</td>
+              <td>TshCollect</td>
               <td className="bold">enabled</td>
             </tr>
           )}
@@ -1009,7 +1009,7 @@ export default function LedgerData({
         )}
         {data.ledgerInfo?.flags?.tshCollect && (
           <p>
-            <span className="grey">Transactional Stakeholder Collect</span> enabled
+            <span className="grey">TshCollect</span> enabled
           </p>
         )}
         {data.ledgerInfo?.flags?.passwordSpent && (
