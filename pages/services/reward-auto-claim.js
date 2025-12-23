@@ -61,6 +61,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
 
   const [addressInfo, setAddressInfo] = useState(null) // /v2/address
   const [objects, setObjects] = useState([]) // /v2/objects raw list
+  const [objectsFetched, setObjectsFetched] = useState(false)
 
   // User options
   const [useSafetyMargin, setUseSafetyMargin] = useState(true)
@@ -84,7 +85,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
         )
         setAddressInfo(resp.data || null)
       } catch (e) {
-        if (e?.message !== 'canceled') setErrorMessage('Error fetching account data')
+        if (e?.message !== 'canceled') setErrorMessage('Error fetching account data.')
       } finally {
         setLoading(false)
       }
@@ -101,15 +102,16 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
     async function loadObjects() {
       if (!account?.address) return
       setLoadingObjects(true)
+      setObjectsFetched(false)
       setErrorMessage('')
       try {
-        const resp = await axios.get(
-          `v2/objects/${account.address}?limit=1000&priceNativeCurrencySpot=true&currencyDetails=true`,
-          { signal: controller.signal }
-        )
+        const resp = await axios.get(`v2/objects/${account.address}?limit=1000`, { signal: controller.signal })
         setObjects(resp.data?.objects || [])
+        setObjectsFetched(true)
       } catch (e) {
-        if (e?.message !== 'canceled') setErrorMessage('Error fetching account objects')
+        if (e?.message !== 'canceled') setErrorMessage('Error fetching account objects.')
+        setObjects([])
+        setObjectsFetched(false)
       } finally {
         setLoadingObjects(false)
       }
@@ -140,10 +142,9 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
     return hooks.map((h) => h?.Hook?.HookHash).filter(Boolean)
   }, [objects])
 
-  const hookInstalled = hookHashes.some((h) => String(h).toUpperCase() === CLAIM_HOOK_HASH)
-
+  const hookInstalled = objectsFetched && hookHashes.some((h) => String(h).toUpperCase() === CLAIM_HOOK_HASH)
   const cronObjects = useMemo(() => objects?.filter((o) => o.LedgerEntryType === 'Cron') || [], [objects])
-  const cronActive = cronObjects.length > 0
+  const cronActive = objectsFetched && cronObjects.length > 0
 
   // === ClaimReward-style timing (same as your XahauRewardTr) ===
   const timeNow = Math.floor(Date.now() / 1000)
@@ -413,23 +414,25 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                     </div>
                   )}
 
-                  <div className="grey">
-                    {hookInstalled && cronActive ? (
-                      <>
-                        Automatic claiming is <b>enabled</b>. Rewards will be claimed on schedule.
-                      </>
-                    ) : hookInstalled ? (
-                      <>
-                        Hook is installed, but Cron is not active. Rewards will <b>not</b> be claimed automatically.
-                      </>
-                    ) : cronActive ? (
-                      <>Cron is active, but the ClaimReward Hook is missing. No automatic claims will occur.</>
-                    ) : (
-                      <>
-                        Automatic claiming is <b>disabled</b>.
-                      </>
-                    )}
-                  </div>
+                  {objectsFetched && (
+                    <div className="grey">
+                      {hookInstalled && cronActive ? (
+                        <>
+                          Automatic claiming is <b>enabled</b>. Rewards will be claimed on schedule.
+                        </>
+                      ) : hookInstalled ? (
+                        <>
+                          Hook is installed, but Cron is not active. Rewards will <b>not</b> be claimed automatically.
+                        </>
+                      ) : cronActive ? (
+                        <>Cron is active, but the ClaimReward Hook is missing. No automatic claims will occur.</>
+                      ) : (
+                        <>
+                          Automatic claiming is <b>disabled</b>.
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -471,128 +474,136 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                 </div>
               </div>
 
-              {/* Hook */}
-              <div className="flag-item">
-                <div className="flag-header">
-                  <div className="flag-info">
-                    <span className="flag-name">ClaimReward Hook</span>
-                    <span className={`flag-status ${hookInstalled ? 'green' : 'orange'}`}>
-                      {hookInstalled ? 'Installed' : 'Not installed'}
-                    </span>
-                  </div>
-                  <div className="flag-info-buttons">
-                    <button
-                      className="button-action thin"
-                      onClick={() => sign(txInstallOrUpdateHook(), hookInstalled ? 'Hook updated.' : 'Hook installed.')}
-                    >
-                      {hookInstalled ? 'Update' : 'Install'}
-                    </button>
-                    <button
-                      className="button-action thin"
-                      onClick={() => sign(txRemoveHook(), 'Hook removed.')}
-                      disabled={!hookInstalled}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flag-description">
-                  <div style={{ marginBottom: 6 }}>
-                    This hook emits a <b>ClaimReward</b> transaction when triggered by Cron.
-                  </div>
-                  <div className="grey">
-                    HookHash: <span className="grey">{CLAIM_HOOK_HASH}</span>
-                  </div>
-                  <div className="orange" style={{ marginTop: 10 }}>
-                    Security tip: use only hooks you trust. The hash above should match the known ClaimReward hook.
-                  </div>
-                </div>
-              </div>
-
-              {/* Cron */}
-              <div className="flag-item">
-                <div className="flag-header">
-                  <div className="flag-info">
-                    <span className="flag-name">Cron schedule</span>
-                    <span className={`flag-status ${cronActive ? 'green' : 'orange'}`}>
-                      {cronActive ? `Active (${cronObjects.length})` : 'Not active'}
-                    </span>
-                  </div>
-                  <div className="flag-info-buttons">
-                    <button
-                      className="button-action thin"
-                      onClick={() => sign(txInstallOrUpdateCron(), cronActive ? 'Cron updated.' : 'Cron installed.')}
-                    >
-                      {cronActive ? 'Update' : 'Install'}
-                    </button>
-                    <button
-                      className="button-action thin"
-                      onClick={() => sign(txRemoveCron(), 'Cron removed.')}
-                      disabled={!cronActive}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flag-description">
-                  <div style={{ marginBottom: 10 }}>
-                    Cron will trigger your hook repeatedly. The hook then emits ClaimReward.
-                  </div>
-
-                  <div style={{ marginBottom: 10 }}>
-                    <CheckBox checked={useSafetyMargin} setChecked={() => setUseSafetyMargin(!useSafetyMargin)}>
-                      Use +1 hour safety margin (recommended)
-                    </CheckBox>
-                    <div className="grey" style={{ marginTop: 6 }}>
-                      Adds 3600 seconds to StartTime to avoid edge cases when claiming too early.
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-                    <div>
-                      <div className="grey">StartTime</div>
-                      <b>{String(startTime)}</b>
-                      <div className="grey" style={{ marginTop: 4 }}>
-                        0 = immediate start (use when not opted-in yet)
+              {objectsFetched && (
+                <>
+                  {/* Hook */}
+                  <div className="flag-item">
+                    <div className="flag-header">
+                      <div className="flag-info">
+                        <span className="flag-name">ClaimReward Hook</span>
+                        <span className={`flag-status ${hookInstalled ? 'green' : 'orange'}`}>
+                          {hookInstalled ? 'Installed' : 'Not installed'}
+                        </span>
+                      </div>
+                      <div className="flag-info-buttons">
+                        <button
+                          className="button-action thin"
+                          onClick={() =>
+                            sign(txInstallOrUpdateHook(), hookInstalled ? 'Hook updated.' : 'Hook installed.')
+                          }
+                        >
+                          {hookInstalled ? 'Update' : 'Install'}
+                        </button>
+                        <button
+                          className="button-action thin"
+                          onClick={() => sign(txRemoveHook(), 'Hook removed.')}
+                          disabled={!hookInstalled}
+                        >
+                          Remove
+                        </button>
                       </div>
                     </div>
 
-                    <div>
-                      <div className="grey">DelaySeconds</div>
-                      <input
-                        className="input-text"
-                        style={{ maxWidth: 180 }}
-                        value={String(delaySeconds)}
-                        onChange={(e) => setDelaySeconds(e.target.value)}
-                        inputMode="numeric"
-                      />
-                      <div className="grey" style={{ marginTop: 4 }}>
-                        Time between triggers. Default includes safety margin.
+                    <div className="flag-description">
+                      <div style={{ marginBottom: 6 }}>
+                        This hook emits a <b>ClaimReward</b> transaction when triggered by Cron.
                       </div>
-                    </div>
-
-                    <div>
-                      <div className="grey">RepeatCount</div>
-                      <input
-                        className="input-text"
-                        style={{ maxWidth: 180 }}
-                        value={String(repeatCount)}
-                        onChange={(e) => setRepeatCount(e.target.value)}
-                        inputMode="numeric"
-                      />
-                      <div className="grey" style={{ marginTop: 4 }}>
-                        12 ≈ 1 year • 256 ≈ 21 years
+                      <div className="grey">
+                        HookHash: <span className="grey">{CLAIM_HOOK_HASH}</span>
+                      </div>
+                      <div className="orange" style={{ marginTop: 10 }}>
+                        Security tip: use only hooks you trust. The hash above should match the known ClaimReward hook.
                       </div>
                     </div>
                   </div>
 
-                  <div className="orange" style={{ marginTop: 12 }}>
-                    Note: “Remove” will stop future triggers. It does not undo past claims.
+                  {/* Cron */}
+                  <div className="flag-item">
+                    <div className="flag-header">
+                      <div className="flag-info">
+                        <span className="flag-name">Cron schedule</span>
+                        <span className={`flag-status ${cronActive ? 'green' : 'orange'}`}>
+                          {cronActive ? `Active (${cronObjects.length})` : 'Not active'}
+                        </span>
+                      </div>
+                      <div className="flag-info-buttons">
+                        <button
+                          className="button-action thin"
+                          onClick={() =>
+                            sign(txInstallOrUpdateCron(), cronActive ? 'Cron updated.' : 'Cron installed.')
+                          }
+                        >
+                          {cronActive ? 'Update' : 'Install'}
+                        </button>
+                        <button
+                          className="button-action thin"
+                          onClick={() => sign(txRemoveCron(), 'Cron removed.')}
+                          disabled={!cronActive}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flag-description">
+                      <div style={{ marginBottom: 10 }}>
+                        Cron will trigger your hook repeatedly. The hook then emits ClaimReward.
+                      </div>
+
+                      <div style={{ marginBottom: 10 }}>
+                        <CheckBox checked={useSafetyMargin} setChecked={() => setUseSafetyMargin(!useSafetyMargin)}>
+                          Use +1 hour safety margin (recommended)
+                        </CheckBox>
+                        <div className="grey" style={{ marginTop: 6 }}>
+                          Adds 3600 seconds to StartTime to avoid edge cases when claiming too early.
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                        <div>
+                          <div className="grey">StartTime</div>
+                          <b>{String(startTime)}</b>
+                          <div className="grey" style={{ marginTop: 4 }}>
+                            0 = immediate start (use when not opted-in yet)
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="grey">DelaySeconds</div>
+                          <input
+                            className="input-text"
+                            style={{ maxWidth: 180 }}
+                            value={String(delaySeconds)}
+                            onChange={(e) => setDelaySeconds(e.target.value)}
+                            inputMode="numeric"
+                          />
+                          <div className="grey" style={{ marginTop: 4 }}>
+                            Time between triggers. Default includes safety margin.
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="grey">RepeatCount</div>
+                          <input
+                            className="input-text"
+                            style={{ maxWidth: 180 }}
+                            value={String(repeatCount)}
+                            onChange={(e) => setRepeatCount(e.target.value)}
+                            inputMode="numeric"
+                          />
+                          <div className="grey" style={{ marginTop: 4 }}>
+                            12 ≈ 1 year • 256 ≈ 21 years
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="orange" style={{ marginTop: 12 }}>
+                        Note: “Remove” will stop future triggers. It does not undo past claims.
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           )
         )}
