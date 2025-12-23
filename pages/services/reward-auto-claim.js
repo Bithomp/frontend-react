@@ -563,14 +563,14 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
 
                       <div>
                         <div className="grey">
-                          Start time:{' '}
+                          Start:{' '}
                           <span className="bold">
                             {startTime === 0 ? 'immediate' : fullDateAndTime(startTime + RIPPLED_EPOCH_OFFSET)}
                           </span>
                         </div>
 
                         <div className="grey" style={{ marginTop: 10 }}>
-                          Delay: <span className="bold">{duration(t, CRON_DELAY_SECONDS)}</span> (includes 1 hour
+                          Repeat every: <span className="bold">{duration(t, CRON_DELAY_SECONDS)}</span> (includes 1 hour
                           margin).
                         </div>
 
