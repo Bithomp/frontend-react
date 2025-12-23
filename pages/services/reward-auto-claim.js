@@ -336,30 +336,29 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
               </div>
             )}
 
-            <div className="flag-item">
-              <div className="flag-header">
-                <div className="flag-info">
-                  <span className="flag-name">Recommended order</span>
-                </div>
-              </div>
-
-              <div className="flag-description">
-                <div style={{ marginBottom: 6 }}>
-                  1) Enable <b>asfTshCollect</b> (allows your account to cover fees for hook executions)
-                </div>
-                <div style={{ marginBottom: 6 }}>
-                  2) Install the <b>ClaimReward Hook</b> (hook that emits the ClaimReward transaction)
-                </div>
-                <div>
-                  3) Install <b>Cron</b> (it triggers the hook repeatedly on schedule)
-                </div>
-              </div>
+            <br />
+            <h4>Recommended order</h4>
+            <div style={{ margin: '0 15px' }}>
+              <p>
+                1) Enable <b>asfTshCollect</b> (allows your account to cover fees for hook executions)
+              </p>
+              <p>
+                2) Install the <b>ClaimReward Hook</b> (hook that emits the ClaimReward transaction)
+              </p>
+              <p>
+                3) Install <b>Cron</b> (it triggers the hook repeatedly on schedule)
+              </p>
             </div>
           </>
         )}
 
         {errorMessage && <p className="red center">{errorMessage}</p>}
-        {successMessage && <p className="green center">{successMessage}</p>}
+        {successMessage && (
+          <p className="green center">
+            <br />
+            {successMessage}
+          </p>
+        )}
 
         {!xahauNetwork ? (
           <p className="center red">This page is available only on Xahau network.</p>
@@ -445,14 +444,14 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                   <div className="flag-info-buttons">
                     <button
                       className="button-action thin"
-                      onClick={() => sign(txEnableTshCollect(), 'asfTshCollect enabled.')}
+                      onClick={() => sign(txEnableTshCollect(), 'asfTshCollect enabled')}
                       disabled={tshCollectEnabled}
                     >
                       Install
                     </button>
                     <button
                       className="button-action thin"
-                      onClick={() => sign(txDisableTshCollect(), 'asfTshCollect disabled.')}
+                      onClick={() => sign(txDisableTshCollect(), 'asfTshCollect disabled')}
                       disabled={!tshCollectEnabled}
                     >
                       Remove
