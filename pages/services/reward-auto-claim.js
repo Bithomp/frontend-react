@@ -410,16 +410,15 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                 <div className="flag-description">
                   {ledgerInfo?.rewardTime && (
                     <div style={{ marginBottom: 6 }}>
-                      <span className="grey">Reward time</span>: <span className="bold">{ledgerInfo.rewardTime}</span> (
-                      {fullDateAndTime(ledgerInfo.rewardTime + RIPPLED_EPOCH_OFFSET)})
+                      <span className="grey">Reward time</span>:{' '}
+                      <span className="bold">{fullDateAndTime(ledgerInfo.rewardTime + RIPPLED_EPOCH_OFFSET)}</span>
                     </div>
                   )}
 
                   {remainingSec !== null && !claimable && (
                     <div style={{ marginBottom: 6 }}>
                       <span className="grey">Next claim in</span>:{' '}
-                      <span className="bold">{Math.max(0, Math.floor(remainingSec))}</span> seconds (
-                      {duration(t, Math.max(0, Math.floor(remainingSec)))})
+                      <span className="bold">{duration(t, Math.max(0, Math.floor(remainingSec)))}</span>
                     </div>
                   )}
 
@@ -564,12 +563,14 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
 
                       <div>
                         <div className="grey">
-                          Start time: <b>{String(startTime)}</b> (
-                          {startTime === 0 ? 'immediate' : fullDateAndTime(startTime + RIPPLED_EPOCH_OFFSET)})
+                          Start time:{' '}
+                          <span className="bold">
+                            {startTime === 0 ? 'immediate' : fullDateAndTime(startTime + RIPPLED_EPOCH_OFFSET)}
+                          </span>
                         </div>
 
                         <div className="grey" style={{ marginTop: 10 }}>
-                          Delay: <b>{CRON_DELAY_SECONDS}</b> seconds ({duration(t, CRON_DELAY_SECONDS)}, includes 1 hour
+                          Delay: <span className="bold">{duration(t, CRON_DELAY_SECONDS)}</span> (includes 1 hour
                           margin).
                         </div>
 
