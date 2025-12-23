@@ -1,0 +1,85 @@
+.rewardAutoClaim :global {
+  .flag-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .flag-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+
+  .flag-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    @media (max-width: 600px) {
+      width: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+  }
+
+  .flag-info-buttons {
+    display: flex;
+    gap: 0.5rem;
+
+    @media (max-width: 600px) {
+      width: 100%;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+  }
+
+  .flag-name {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .flag-status {
+    color: var(--text-secondary);
+    font-size: 14px;
+
+    &.orange {
+      color: var(--orange);
+      font-weight: 500;
+    }
+
+    &.green {
+      color: var(--green);
+      font-weight: 500;
+    }
+  }
+
+  .flag-description {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 600px) {
+    .flag-item {
+      padding: 0.75rem;
+    }
+
+    .flag-name {
+      font-size: 0.95rem;
+    }
+
+    .flag-status {
+      font-size: 13px;
+    }
+  }
+}
