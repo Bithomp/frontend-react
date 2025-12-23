@@ -464,12 +464,9 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                 </div>
 
                 <div className="flag-description">
-                  <div style={{ marginBottom: 6 }}>
-                    Enables Transaction Signature Hook Collection on your account (required by this automation
-                    approach).
-                  </div>
-                  <div className="grey">
-                    Source: <b>ledgerInfo.flags.tshCollect</b>
+                  <div style={{ marginBottom: 6 }}>AccountSet flag: Transaction Signature Hook Collect.</div>
+                  <div>
+                    Required for automation. This allows your account to pay small fees so hooks can run automatically.
                   </div>
                 </div>
               </div>
@@ -512,7 +509,15 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                         HookHash: <span className="grey">{CLAIM_HOOK_HASH}</span>
                       </div>
                       <div className="orange" style={{ marginTop: 10 }}>
-                        Security tip: use only hooks you trust. The hash above should match the known ClaimReward hook.
+                        Security note: the hook hash shown above matches the known ClaimReward hook described in{' '}
+                        <a
+                          href="https://dev.to/ekiserrepe/learning-xahau-automating-reward-claims-with-hooks-and-cronset-n4k"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          this article
+                        </a>
+                        .
                       </div>
                     </div>
                   </div>

@@ -49,15 +49,10 @@
   .flag-status {
     color: var(--text-secondary);
     font-size: 14px;
-
-    &.orange {
-      color: var(--orange);
-      font-weight: 500;
-    }
+    font-weight: 500;
 
     &.green {
       color: var(--green);
-      font-weight: 500;
     }
   }
 
