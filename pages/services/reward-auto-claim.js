@@ -269,10 +269,15 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
         ) : (
           <>
             <p className="center">
-              Address: <b>{account.address}</b> • <Link href={`/account/${account.address}`}>View account</Link>
+              Address: <b>{account.address}</b>
             </p>
 
-            {isLoggedIn && !canConfigure && (
+            {canConfigure ? (
+              <div className="center" style={{ marginTop: 18 }}>
+                <b className="grey">{amountFormat(ledgerInfo.balance)}</b> •{' '}
+                <Link href={`/account/${account.address}`}>View account</Link>
+              </div>
+            ) : (
               <div className="form-container">
                 <div className="flag-item">
                   <div className="flag-header">
@@ -337,23 +342,18 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
               <div className="flag-header">
                 <div className="flag-info">
                   <span className="flag-name">Recommended order</span>
-                  <span className="flag-status grey">Do this once</span>
                 </div>
               </div>
 
               <div className="flag-description">
                 <div style={{ marginBottom: 6 }}>
-                  1) Enable <b>asfTshCollect</b> (required for this automation flow)
+                  1) Enable <b>asfTshCollect</b> (allows your account to cover fees for hook executions)
                 </div>
                 <div style={{ marginBottom: 6 }}>
-                  2) Install the <b>ClaimReward Hook</b> (it emits the ClaimReward transaction)
+                  2) Install the <b>ClaimReward Hook</b> (hook that emits the ClaimReward transaction)
                 </div>
                 <div>
                   3) Install <b>Cron</b> (it triggers the hook repeatedly on schedule)
-                </div>
-
-                <div className="orange" style={{ marginTop: 10 }}>
-                  Tip: Keep some XAH for fees and reserves. If your account is low on balance, cron executions may fail.
                 </div>
               </div>
             </div>
@@ -578,10 +578,6 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                     Note: “Remove” will stop future triggers. It does not undo past claims.
                   </div>
                 </div>
-              </div>
-
-              <div className="center grey" style={{ marginTop: 18 }}>
-                Balance: <b>{amountFormat(ledgerInfo.balance)}</b>
               </div>
             </div>
           )
