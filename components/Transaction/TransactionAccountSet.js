@@ -262,6 +262,17 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold">{specification.disallowIncomingRemit ? 'disallow' : 'allow'}</TData>
         </tr>
       )}
+      {specification.tshCollect !== undefined && (
+        <tr>
+          <TData
+            className="bold"
+            tooltip="Transaction Signature Hook Collection, allowing automated procedures (e.g., Hooks triggered by Cron) to automatically pay required network fees for their generated transactions."
+          >
+            TshCollect
+          </TData>
+          <TData className="bold">{specification.tshCollect ? 'allowed' : 'disallow'}</TData>
+        </tr>
+      )}
     </TransactionCard>
   )
 }
