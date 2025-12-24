@@ -475,7 +475,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             {tab == 'transactions' ? (
               <b>{t('explorer.menu.transactions')}</b>
             ) : (
-              <Link href={'/account/' + searchItem + '/transactions'}>{t('explorer.menu.transactions')}</Link>
+              <Link href={searchItem ? '/account/' + searchItem + '/transactions' : ''}>
+                {t('explorer.menu.transactions')}
+              </Link>
             )}
           </div>
           <div className="explorer-tabs-shadow"></div>

@@ -52,10 +52,8 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
   }
 
   // Function to get all transaction changes
-  const getAllTransactionChanges = (balanceChanges, rippling) => {
-    if (!balanceChanges || balanceChanges.length === 0) return null
-
-    if (rippling) {
+  const getAllTransactionChanges = (balanceChanges, rippling, txdata) => {
+    if (rippling && balanceChanges?.length > 0) {
       const total = balanceChanges.reduce((sum, change) => {
         return add(sum, Number(change.value || 0))
       }, 0)
@@ -289,6 +287,9 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       if (specification?.authorizedMinter !== undefined) {
         changes.push(`Authorized minter ${specification.authorizedMinter ? 'enabled' : 'disabled'}`)
       }
+      if (specification?.tshCollect !== undefined) {
+        changes.push(`TSH collect ${specification.tshCollect ? 'allowed' : 'disallowed'}`)
+      }
       if (accountSetData.NFTokenMinter !== undefined) {
         if (specification?.nftokenMinter) {
           changes.push(
@@ -444,7 +445,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                     <td className="right">
                       <LinkTx tx={txdata.tx?.hash} short={4} />
                     </td>
-                    <td className="right">{getAllTransactionChanges(balanceChanges, rippling)}</td>
+                    <td className="right">{getAllTransactionChanges(balanceChanges, rippling, txdata)}</td>
                   </tr>
                 )
               })}
@@ -484,7 +485,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
                     <td className="center">
                       <LinkTx tx={txdata.tx?.hash} icon={true} />
                     </td>
-                    <td className="right">{getAllTransactionChanges(balanceChanges, rippling)}</td>
+                    <td className="right">{getAllTransactionChanges(balanceChanges, rippling, txdata)}</td>
                   </tr>
                 )
               })}
