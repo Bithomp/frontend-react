@@ -53,6 +53,19 @@ const isNegativeBalance = (balance) => {
   },
 */
 
+const hookNames = {
+  '805351CE26FB79DA00647CEFED502F7E15C2ACCCE254F11DEFEDDCE241F8E9CA': 'Claim Rewards'
+}
+
+const hookNameText = (hookHash) => {
+  const hookName = hookNames[hookHash] ? hookNames[hookHash] : shortHash(hookHash, 16)
+  return (
+    <>
+      {hookName} <CopyButton text={hookHash} />
+    </>
+  )
+}
+
 export default function ObjectsData({
   address,
   account,
@@ -593,9 +606,7 @@ export default function ObjectsData({
                     p !== undefined ? (
                       <tr key={i}>
                         <td>{i}</td>
-                        <td>
-                          {p} <CopyButton text={p} />
-                        </td>
+                        <td>{hookNameText(p)}</td>
                       </tr>
                     ) : null
                   )}
@@ -611,7 +622,7 @@ export default function ObjectsData({
                 {hookList.map((p, i) =>
                   p !== undefined ? (
                     <p key={i}>
-                      <span className="grey">{i}</span> {shortHash(p, 16)} <CopyButton text={p} />
+                      <span className="grey">{i}</span> {hookNameText(p)}
                     </p>
                   ) : null
                 )}
