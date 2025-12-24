@@ -985,7 +985,7 @@ export default function NftVolumes({
                 ) : (
                   <div className="flex-container" style={{ marginLeft: '10px', justifyContent: 'center' }}>
                     <div style={chartDivStyle}>
-                      <h3>
+                      <h3 style={{ marginTop: 55 }}>
                         {t('sales-chart', { ns: 'nft-volumes' })} / {t('volumes-chart', { ns: 'nft-volumes' })} (
                         {convertCurrency?.toUpperCase()})
                       </h3>
@@ -1008,87 +1008,92 @@ export default function NftVolumes({
             </>
           ) : (
             <>
-              {listTab !== 'currencies' && (
-                <div className="text-after-filter-toggle" style={{ marginTop: '-15px' }}>
-                  {!xahauNetwork && <p>{t(listTab + '.desc', { ns: 'nft-volumes', explorerName })}</p>}
-                  <p>
-                    {loading ? (
-                      t('general.loading')
-                    ) : (
-                      <>
-                        {rawDataSummary && (
-                          <>
-                            {listTab === 'brokers' ? (
-                              <Trans i18nKey="brokers.text0" ns="nft-volumes">
-                                XRPL had {{ allSales: shortNiceNumber(rawDataSummary.all.sales, 0) }}{' '}
-                                <b>{{ currency: niceCurrency(selectedToken.currency) }}</b> NFT{' '}
-                                {{
-                                  saleType:
-                                    saleTab === 'primaryAndSecondary'
-                                      ? ''
-                                      : ('(' + t('tabs.' + saleTab + '-sales')).toLocaleLowerCase() + ')'
-                                }}{' '}
-                                sales for{' '}
-                                {{
-                                  allVolume: niceNumber(
-                                    rawDataSummary.all.volumesInConvertCurrencies[convertCurrency],
-                                    0,
-                                    convertCurrency
-                                  )
-                                }}
-                                , from which <b>{{ brokerSales: shortNiceNumber(rawDataSummary.brokers?.sales, 0) }}</b>{' '}
-                                {{
-                                  percentBrokerSales: percentFormat(
-                                    rawDataSummary.brokers?.sales,
-                                    rawDataSummary.all.sales
-                                  )
-                                }}{' '}
-                                of trades for{' '}
-                                <b>
+              <div className="text-after-filter-toggle">
+                {listTab !== 'currencies' ? (
+                  <>
+                    {!xahauNetwork && <p>{t(listTab + '.desc', { ns: 'nft-volumes', explorerName })}</p>}
+                    <p>
+                      {loading ? (
+                        t('general.loading')
+                      ) : (
+                        <>
+                          {rawDataSummary && (
+                            <>
+                              {listTab === 'brokers' ? (
+                                <Trans i18nKey="brokers.text0" ns="nft-volumes">
+                                  XRPL had {{ allSales: shortNiceNumber(rawDataSummary.all.sales, 0) }}{' '}
+                                  <b>{{ currency: niceCurrency(selectedToken.currency) }}</b> NFT{' '}
                                   {{
-                                    brokerVolume: niceNumber(
-                                      rawDataSummary.brokers?.volumesInConvertCurrencies[convertCurrency],
+                                    saleType:
+                                      saleTab === 'primaryAndSecondary'
+                                        ? ''
+                                        : ('(' + t('tabs.' + saleTab + '-sales')).toLocaleLowerCase() + ')'
+                                  }}{' '}
+                                  sales for{' '}
+                                  {{
+                                    allVolume: niceNumber(
+                                      rawDataSummary.all.volumesInConvertCurrencies[convertCurrency],
                                       0,
                                       convertCurrency
                                     )
                                   }}
-                                </b>{' '}
-                                {{
-                                  percentBrokerVolume: percentFormat(
-                                    rawDataSummary.brokers?.volumesInConvertCurrencies[convertCurrency],
-                                    rawDataSummary.all.volumesInConvertCurrencies[convertCurrency]
-                                  )
-                                }}{' '}
-                                were through the brokerage model.
-                              </Trans>
-                            ) : (
-                              <Trans i18nKey="text0" ns="nft-volumes">
-                                {{ explorerName }} had {{ allSales: shortNiceNumber(rawDataSummary.all.sales, 0) }}{' '}
-                                {{ currency: niceCurrency(selectedToken?.currency) }} NFT{' '}
-                                {{
-                                  saleType:
-                                    saleTab === 'primaryAndSecondary'
-                                      ? ''
-                                      : ('(' + t('tabs.' + saleTab + '-sales')).toLocaleLowerCase() + ')'
-                                }}{' '}
-                                sales for{' '}
-                                {{
-                                  allVolume: niceNumber(
-                                    rawDataSummary.all.volumesInConvertCurrencies[convertCurrency],
-                                    0,
-                                    convertCurrency
-                                  )
-                                }}
-                                .
-                              </Trans>
-                            )}
-                          </>
-                        )}
-                      </>
-                    )}
-                  </p>
-                </div>
-              )}
+                                  , from which{' '}
+                                  <b>{{ brokerSales: shortNiceNumber(rawDataSummary.brokers?.sales, 0) }}</b>{' '}
+                                  {{
+                                    percentBrokerSales: percentFormat(
+                                      rawDataSummary.brokers?.sales,
+                                      rawDataSummary.all.sales
+                                    )
+                                  }}{' '}
+                                  of trades for{' '}
+                                  <b>
+                                    {{
+                                      brokerVolume: niceNumber(
+                                        rawDataSummary.brokers?.volumesInConvertCurrencies[convertCurrency],
+                                        0,
+                                        convertCurrency
+                                      )
+                                    }}
+                                  </b>{' '}
+                                  {{
+                                    percentBrokerVolume: percentFormat(
+                                      rawDataSummary.brokers?.volumesInConvertCurrencies[convertCurrency],
+                                      rawDataSummary.all.volumesInConvertCurrencies[convertCurrency]
+                                    )
+                                  }}{' '}
+                                  were through the brokerage model.
+                                </Trans>
+                              ) : (
+                                <Trans i18nKey="text0" ns="nft-volumes">
+                                  {{ explorerName }} had {{ allSales: shortNiceNumber(rawDataSummary.all.sales, 0) }}{' '}
+                                  {{ currency: niceCurrency(selectedToken?.currency) }} NFT{' '}
+                                  {{
+                                    saleType:
+                                      saleTab === 'primaryAndSecondary'
+                                        ? ''
+                                        : ('(' + t('tabs.' + saleTab + '-sales')).toLocaleLowerCase() + ')'
+                                  }}{' '}
+                                  sales for{' '}
+                                  {{
+                                    allVolume: niceNumber(
+                                      rawDataSummary.all.volumesInConvertCurrencies[convertCurrency],
+                                      0,
+                                      convertCurrency
+                                    )
+                                  }}
+                                  .
+                                </Trans>
+                              )}
+                            </>
+                          )}
+                        </>
+                      )}
+                    </p>
+                  </>
+                ) : (
+                  <p>&nbsp;</p>
+                )}
+              </div>
 
               <InfiniteScrolling
                 dataLength={data.length}
