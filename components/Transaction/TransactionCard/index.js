@@ -444,7 +444,7 @@ export const TransactionCard = ({
                               <TData tooltip="The sequence number of the ticket to use in place of a Sequence number.">
                                 <span className="bold">Ticket</span> sequence
                               </TData>
-                              <TData>#{tx.TicketSequence}</TData>
+                              <TData>{tx.TicketSequence}</TData>
                             </tr>
                           ) : (
                             <tr>
