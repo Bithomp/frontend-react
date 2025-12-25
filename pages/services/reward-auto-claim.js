@@ -356,20 +356,6 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                 </div>
               </div>
             )}
-
-            <br />
-            <h4>Recommended order</h4>
-            <div style={{ margin: '0 15px' }}>
-              <p>
-                1) Enable <b>asfTshCollect</b> (allows your account to cover fees for hook executions)
-              </p>
-              <p>
-                2) Install the <b>ClaimReward Hook</b> (hook that emits the ClaimReward transaction)
-              </p>
-              <p>
-                3) Install <b>Cron</b> (it triggers the hook repeatedly on schedule)
-              </p>
-            </div>
           </>
         )}
 
@@ -553,7 +539,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
 
                     <div className="flag-description">
                       <div style={{ marginBottom: 10 }}>
-                        Cron will trigger your hook repeatedly. The hook then emits ClaimReward.
+                        Cron will trigger the hook repeatedly on schedule to claim your rewards automatically.
                       </div>
 
                       <div className="grey">
