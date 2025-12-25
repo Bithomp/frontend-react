@@ -418,8 +418,8 @@ export default function SignForm({
   const metamaskTxSending = async (tx) => {
     setScreen('metamask')
 
-    if (tx.TransactionType.includes('URIToken')) {
-      setStatus('Unfortunatelly, Metamask XRPL Snap does not support URIToken Transaction Types yet.')
+    if (tx.TransactionType.includes('URIToken') || tx.TransactionType === 'Cron') {
+      setStatus('Unfortunatelly, Metamask XRPL Snap does not support ' + tx.TransactionType + ' Transaction Types yet.')
       return
     }
 
