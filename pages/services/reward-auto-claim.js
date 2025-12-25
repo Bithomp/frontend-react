@@ -23,13 +23,7 @@ const FEE_BUFFER_DROPS = 2_000_000 // 2 XAH for fees buffer
 
 const CLAIM_HOOK_HASH = '805351CE26FB79DA00647CEFED502F7E15C2ACCCE254F11DEFEDDCE241F8E9CA'
 const CLAIM_ISSUER = 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
-
-// AccountSet / Hook / Cron constants
 const ASF_TSH_COLLECT = 11
-const SET_HOOK_REMOVE_FLAGS = 1 // SetHook delete uses Flags:1 with empty CreateCode (typical pattern)
-
-// Optional: if you want to support cron unset explicitly:
-const CRON_UNSET_FLAG = 1
 
 export const getServerSideProps = async (context) => {
   const { locale, req } = context
@@ -224,7 +218,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
       {
         Hook: {
           CreateCode: '',
-          Flags: SET_HOOK_REMOVE_FLAGS
+          Flags: 1
         }
       }
     ]
@@ -241,7 +235,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
   const txRemoveCron = () => ({
     TransactionType: 'CronSet',
     Account: account.address,
-    Flags: CRON_UNSET_FLAG
+    Flags: 1
   })
 
   const sign = (request, { refreshAccount = true, refreshObjects = false } = {}) => {

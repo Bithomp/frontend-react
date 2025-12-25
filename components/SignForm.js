@@ -377,7 +377,7 @@ export default function SignForm({
 
   const crossmarkTxSending = (tx) => {
     setScreen('crossmark')
-    if (tx.TransactionType === 'Remit' || tx.TransactionType === 'Cron') {
+    if (tx.TransactionType === 'Remit' || tx.TransactionType === 'CronSet') {
       setStatus('Unfortunatelly, Crossmark does not support ' + tx.TransactionType + ' Transaction Types yet.')
       return
     }
@@ -418,7 +418,16 @@ export default function SignForm({
   const metamaskTxSending = async (tx) => {
     setScreen('metamask')
 
-    if (tx.TransactionType.includes('URIToken') || tx.TransactionType === 'Cron') {
+    if (tx.TransactionType === 'AccountSet' && (tx.SetFlag === 11 || tx.ClearFlag === 11)) {
+      setStatus('Unfortunatelly, Metamask XRPL Snap does not support AccountSet with ASF_TSH_COLLECT flag yet.')
+      return
+    }
+
+    if (
+      tx.TransactionType.includes('URIToken') ||
+      tx.TransactionType === 'CronSet' ||
+      tx.TransactionType === 'SetHook'
+    ) {
       setStatus('Unfortunatelly, Metamask XRPL Snap does not support ' + tx.TransactionType + ' Transaction Types yet.')
       return
     }
