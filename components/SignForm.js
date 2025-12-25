@@ -20,7 +20,8 @@ import {
   removeQueryParams,
   webSiteName,
   xahauNetwork,
-  nativeCurrency
+  nativeCurrency,
+  isUrlValid
 } from '../utils'
 import { duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
@@ -613,6 +614,11 @@ export default function SignForm({
               signRequest.callback(response.data || {})
             } else {
               // For mobile, redirect to transaction page
+              if (redirectName && isUrlValid(redirectName)) {
+                //stay on the same page
+                router.push(redirectName)
+                return
+              }
               router.push('/tx/' + txid)
             }
             closeSignInFormAndRefresh()

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import SEO from '../../components/SEO'
 import Link from 'next/link'
 import axios from 'axios'
-import { devNet, xahauNetwork } from '../../utils'
+import { devNet, server, xahauNetwork } from '../../utils'
 import { amountFormat, duration, fullDateAndTime } from '../../utils/format'
 import { TbPigMoney } from 'react-icons/tb'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -11,6 +11,7 @@ import { rewardAutoClaim } from '../../styles/pages/reward-auto-claim.module.scs
 import { axiosServer, passHeaders } from '../../utils/axios'
 import { useTranslation } from 'next-i18next'
 import { LinkAccount } from '../../utils/links'
+import { useRouter } from 'next/router'
 
 // Constants
 const RIPPLED_EPOCH_OFFSET = 946684800
@@ -74,6 +75,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
   const [objectsFetched, setObjectsFetched] = useState(false)
 
   const { t } = useTranslation()
+  const router = useRouter()
 
   const isLoggedIn = !!account?.address
 
@@ -245,6 +247,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
   const sign = (request, { refreshAccount = true, refreshObjects = false } = {}) => {
     setErrorMessage('')
     setSignRequest({
+      redirect: server + router.asPath,
       request,
       callback: (result) => {
         const status = result?.meta?.TransactionResult
