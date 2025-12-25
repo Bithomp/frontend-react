@@ -377,8 +377,8 @@ export default function SignForm({
 
   const crossmarkTxSending = (tx) => {
     setScreen('crossmark')
-    if (tx.TransactionType.includes('Remit')) {
-      setStatus('Unfortunatelly, Crossmark does not support Remit Transaction Types yet.')
+    if (tx.TransactionType === 'Remit' || tx.TransactionType === 'Cron') {
+      setStatus('Unfortunatelly, Crossmark does not support ' + tx.TransactionType + ' Transaction Types yet.')
       return
     }
     crossmarkTxSend({
