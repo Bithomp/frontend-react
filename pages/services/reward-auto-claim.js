@@ -305,15 +305,12 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
             ) : (
               <div className="form-container">
                 <div className="flag-item">
-                  <div className="flag-header">
-                    <div className="flag-info">
-                      <span className="flag-name">Account status</span>
-                      <span className={`flag-status ${isDeleted ? 'red' : 'orange'}`}>
-                        {isDeleted ? 'Account deleted' : 'Not activated'}
-                      </span>
-                    </div>
+                  <div>
+                    <span className="bold">Account status</span>{' '}
+                    <span className={`bold ${isDeleted ? 'red' : 'orange'}`}>
+                      {isDeleted ? 'Account deleted' : 'Not activated'}
+                    </span>
                   </div>
-
                   <div className="flag-description">
                     {isDeleted ? (
                       <>
