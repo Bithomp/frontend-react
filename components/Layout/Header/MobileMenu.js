@@ -266,6 +266,36 @@ export default function MobileMenu({
           NFT
         </div>
         <div className="mobile-menu__submenu">
+          {!displayName ? (
+            <>
+              <span
+                onClick={() => {
+                  setSignRequest({ redirect: 'nfts' })
+                }}
+                className="mobile-menu-item link"
+              >
+                {t('signin.actions.my-nfts')}
+              </span>
+              <span
+                onClick={() => {
+                  setSignRequest({ redirect: 'nft-offers' })
+                }}
+                className="mobile-menu-item link"
+              >
+                {t('signin.actions.my-nft-offers')}
+              </span>
+            </>
+          ) : (
+            <>
+              <Link href={'/nfts/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t('signin.actions.my-nfts')}
+              </Link>
+              <Link href={'/nft-offers/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t('signin.actions.my-nft-offers')}
+              </Link>
+            </>
+          )}
+
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.nft.explorer')}
           </Link>
