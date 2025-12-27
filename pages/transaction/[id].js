@@ -21,6 +21,7 @@ import {
   TransactionPayment,
   TransactionSetRegularKey,
   TransactionSetHook,
+  TransactionInvoke,
   TransactionTrustSet,
   TransactionURIToken,
   TransactionRemit,
@@ -128,6 +129,8 @@ export default function Transaction({ data, selectedCurrency, initialErrorMessag
     TransactionComponent = TransactionSetRegularKey
   } else if (txType === 'SetHook') {
     TransactionComponent = TransactionSetHook
+  } else if (txType === 'Invoke') {
+    TransactionComponent = TransactionInvoke
   } else if (txType === 'DelegateSet') {
     TransactionComponent = TransactionDelegateSet
   } else if (txType === 'TrustSet') {
