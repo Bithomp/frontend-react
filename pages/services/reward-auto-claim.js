@@ -204,7 +204,7 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
           HookHash: CLAIM_HOOK_HASH,
           HookNamespace: '0000000000000000000000000000000000000000000000000000000000000000',
           HookOn: 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFFFFFFFFFFFBFFFFF',
-          //HookCanEmit: 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFFFFFFFFFFFFFFFFFBFFFFF', // not supported in xaman yet
+          HookCanEmit: 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBFFFFFFFFFFFFFFFFFFBFFFFF',
           Flags: 4
         }
       }
@@ -498,6 +498,13 @@ export default function RewardAutoClaim({ account, setSignRequest, networkInfo }
                       <div className="grey">
                         HookHash: <span className="brake">{CLAIM_HOOK_HASH}</span>
                       </div>
+
+                      {account?.wallet === 'xaman' && (
+                        <div className="orange" style={{ marginTop: 10, marginBottom: 10 }}>
+                          ⚠️ Warning: Installing this hook will prevent the Teleport Xaman xApp from working on this
+                          account.
+                        </div>
+                      )}
 
                       <div className="orange" style={{ marginTop: 10 }}>
                         Security note: the hook hash shown above matches the known ClaimReward hook described in{' '}
