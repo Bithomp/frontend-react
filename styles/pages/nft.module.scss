@@ -19,6 +19,7 @@
         }
         &:last-child {
           border-right-width: 5px;
+          word-break: break-all;
         }
       }
       tr:last-child td {
