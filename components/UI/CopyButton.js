@@ -45,7 +45,7 @@ export default function CopyButton({ text, copyText }) {
   }
 
   return (
-    <span className="tooltip">
+    <span className="tooltip" style={{ wordBreak: 'keep-all' }}>
       <svg
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
