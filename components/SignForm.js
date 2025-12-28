@@ -129,6 +129,8 @@ export default function SignForm({
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid])
 
+  if (!signRequest) return null
+
   const txSend = (options) => {
     //when the request is wallet specific it's a priority, logout if not matched
     //when request is not wallet specific, use the account wallet if loggedin
