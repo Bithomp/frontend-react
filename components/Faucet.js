@@ -61,6 +61,7 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
     'CM', // Cameroon
     'ID', // Indonesia
     'IN', // India
+    'PH', // Philippines
     'TG', // Togo
     'VN', // Vietnam
 
@@ -88,7 +89,6 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
     'NE', // Niger
     'NG', // Nigeria
     'NP', // Nepal
-    'PH', // Philippines
     'PK', // Pakistan
     'RW', // Rwanda
     'SD', // Sudan
