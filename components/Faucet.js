@@ -11,7 +11,8 @@ import {
   isAddressValid,
   addAndRemoveQueryParams,
   removeQueryParams,
-  addQueryParams
+  addQueryParams,
+  countriesTranslated
 } from '../utils'
 import { useTheme } from './Layout/ThemeContext'
 import { useRouter } from 'next/router'
@@ -33,7 +34,7 @@ const convertToDrops = (amount) => {
 const maxAmount = 100 // in native currency
 const defaultAmount = 10 // in native currency
 
-export default function Faucet({ account, type, sessionTokenData }) {
+export default function Faucet({ account, type, sessionTokenData, countryCode }) {
   const router = useRouter()
   const { address: queryAddress, amount: queryAmount, destinationTag: queryDestinationTag } = router.query
 
@@ -48,11 +49,74 @@ export default function Faucet({ account, type, sessionTokenData }) {
   const [loading, setLoading] = useState(false)
   const [lastLedgerIndex, setLastLedgerIndex] = useState()
   const [resetKey, setResetKey] = useState(0)
+  const [countries, setCountries] = useState(null)
 
   const { t, i18n } = useTranslation()
   const { theme } = useTheme()
 
   const testPayment = type === 'testPayment'
+
+  const FAUCET_DENIED_COUNTRIES = [
+    'BJ', // Benin
+    'CM', // Cameroon
+    'ID', // Indonesia
+    'IN', // India
+    'TG', // Togo
+    'VN', // Vietnam
+
+    'AF', // Afghanistan
+    'BF', // Burkina Faso
+    'BI', // Burundi
+    'CD', // Democratic Republic of the Congo
+    'CF', // Central African Republic
+    'CG', // Republic of the Congo
+    'CI', // Côte d’Ivoire
+    'ET', // Ethiopia
+    'GH', // Ghana
+    'GM', // Gambia
+    'GN', // Guinea
+    'GW', // Guinea-Bissau
+    'HT', // Haiti
+    'KH', // Cambodia
+    'LA', // Laos
+    'LK', // Sri Lanka
+    'LR', // Liberia
+    'MG', // Madagascar
+    'ML', // Mali
+    'MM', // Myanmar
+    'MZ', // Mozambique
+    'NE', // Niger
+    'NG', // Nigeria
+    'NP', // Nepal
+    'PH', // Philippines
+    'PK', // Pakistan
+    'RW', // Rwanda
+    'SD', // Sudan
+    'SL', // Sierra Leone
+    'SN', // Senegal
+    'SO', // Somalia
+    'SS', // South Sudan
+    'SY', // Syria
+    'TD', // Chad
+    'TZ', // Tanzania
+    'UG', // Uganda
+    'YE', // Yemen
+    'ZM', // Zambia
+    'ZW' // Zimbabwe
+  ]
+
+  const isCountryKnown = Boolean(countryCode)
+  const isBlockedCountry = !isCountryKnown || FAUCET_DENIED_COUNTRIES.includes(countryCode)
+
+  useEffect(() => {
+    const loadCountries = async () => {
+      const data = await countriesTranslated(i18n.language)
+      setCountries(data)
+    }
+    loadCountries()
+  }, [i18n.language])
+
+  const countryName = (countryCode && countries?.getNameTranslated?.(countryCode)) || countryCode || 'Unknown'
 
   useEffect(() => {
     let queryAddList = []
@@ -248,145 +312,163 @@ export default function Faucet({ account, type, sessionTokenData }) {
           ) : (
             <p>{t('faucet-description', { ns: 'faucet', explorerName, nativeCurrency, ledgerName, devNet })}</p>
           )}
-          <div>
-            <AddressInput
-              title={t('table.address')}
-              placeholder={t('form.placeholder.enter-address', { ns: 'faucet', ledgerName })}
-              setInnerValue={setAddressValue}
-              rawData={
-                address === account?.address
-                  ? {
-                      address,
-                      addressDetails: { username: account?.username, service: account?.service }
-                    }
-                  : address === queryAddress && isAddressValid(queryAddress)
-                  ? { address }
-                  : {}
-              }
-              type="address"
-              hideButton={true}
-            />
-            <div className="form-spacing" />
-            <FormInput
-              title={t('table.destination-tag')}
-              placeholder={t('form.placeholder.destination-tag')}
-              setInnerValue={setDestinationTag}
-              hideButton={true}
-              onKeyPress={typeNumberOnly}
-              defaultValue={destinationTag}
-            />
-            {testPayment ? (
+          {!devNet && isBlockedCountry ? (
+            <div className="content-text content-center">
+              {!isCountryKnown ? (
+                <p className="center">Please wait...</p>
+              ) : (
+                <>
+                  <p className="center">
+                    Your country: <b>{countryName}</b>
+                  </p>
+
+                  <p className="center">This page is not available in your country.</p>
+                </>
+              )}
+            </div>
+          ) : (
+            <>
               <div>
-                <div className="form-spacing" />
-                <FormInput
-                  title={
-                    <>
-                      <Image src="/images/pages/faucet/lastLedgerIndex.png" alt="Ledger" width={141} height={55} />{' '}
-                      <Trans
-                        i18nKey="last-ledger-index-find-on-landing-page"
-                        ns="faucet"
-                        components={[
-                          <strong key="strong" />,
-                          <Link key="link" href="/" passHref>
-                            <a />
-                          </Link>
-                        ]}
-                      />
-                    </>
+                <AddressInput
+                  title={t('table.address')}
+                  placeholder={t('form.placeholder.enter-address', { ns: 'faucet', ledgerName })}
+                  setInnerValue={setAddressValue}
+                  rawData={
+                    address === account?.address
+                      ? {
+                          address,
+                          addressDetails: { username: account?.username, service: account?.service }
+                        }
+                      : address === queryAddress && isAddressValid(queryAddress)
+                      ? { address }
+                      : {}
                   }
-                  placeholder={t('form.placeholder.enter-latest-ledger-index', { ns: 'faucet' })}
-                  setInnerValue={setLastLedgerIndex}
+                  type="address"
                   hideButton={true}
-                  onKeyPress={typeNumberOnly}
-                  maxLength={10}
-                  min={0}
-                  type="text"
                 />
-              </div>
-            ) : (
-              <div>
                 <div className="form-spacing" />
                 <FormInput
-                  title={capitalize(t('enter-amount', { ns: 'faucet', nativeCurrency, devNet, maxAmount }))}
-                  placeholder={'Enter amount in ' + nativeCurrency}
-                  setInnerValue={onAmountChange}
+                  title={t('table.destination-tag')}
+                  placeholder={t('form.placeholder.destination-tag')}
+                  setInnerValue={setDestinationTag}
                   hideButton={true}
                   onKeyPress={typeNumberOnly}
-                  defaultValue={amount / 1000000}
-                  maxLength={35}
-                  min={0}
-                  type="text"
+                  defaultValue={destinationTag}
                 />
+                {testPayment ? (
+                  <div>
+                    <div className="form-spacing" />
+                    <FormInput
+                      title={
+                        <>
+                          <Image src="/images/pages/faucet/lastLedgerIndex.png" alt="Ledger" width={141} height={55} />{' '}
+                          <Trans
+                            i18nKey="last-ledger-index-find-on-landing-page"
+                            ns="faucet"
+                            components={[
+                              <strong key="strong" />,
+                              <Link key="link" href="/" passHref>
+                                <a />
+                              </Link>
+                            ]}
+                          />
+                        </>
+                      }
+                      placeholder={t('form.placeholder.enter-latest-ledger-index', { ns: 'faucet' })}
+                      setInnerValue={setLastLedgerIndex}
+                      hideButton={true}
+                      onKeyPress={typeNumberOnly}
+                      maxLength={10}
+                      min={0}
+                      type="text"
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <div className="form-spacing" />
+                    <FormInput
+                      title={capitalize(t('enter-amount', { ns: 'faucet', nativeCurrency, devNet, maxAmount }))}
+                      placeholder={'Enter amount in ' + nativeCurrency}
+                      setInnerValue={onAmountChange}
+                      hideButton={true}
+                      onKeyPress={typeNumberOnly}
+                      defaultValue={amount / 1000000}
+                      maxLength={35}
+                      min={0}
+                      type="text"
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div>
-            {testPayment && (
-              <>
-                <p>{t('how-it-works', { ns: 'faucet' })}</p>
-                <ul>
-                  <li>
-                    <b>{t('activated-wallet-required', { ns: 'faucet' })}</b>:{' '}
-                    {t('ensure-wallet-activated', { ns: 'faucet' })}
-                  </li>
-                  <li>
-                    <b>{t('receive-currency-drops', { ns: 'faucet', nativeCurrency })}</b>:{' '}
-                    {t('get-between-drops', { ns: 'faucet', nativeCurrency })}
-                  </li>
-                  <li>
-                    <b>{t('get-instant-feedback', { ns: 'faucet' })}</b>:{' '}
-                    {t('see-if-payment-succeeded', { ns: 'faucet' })}
-                  </li>
-                  {/*
+              <div>
+                {testPayment && (
+                  <>
+                    <p>{t('how-it-works', { ns: 'faucet' })}</p>
+                    <ul>
+                      <li>
+                        <b>{t('activated-wallet-required', { ns: 'faucet' })}</b>:{' '}
+                        {t('ensure-wallet-activated', { ns: 'faucet' })}
+                      </li>
+                      <li>
+                        <b>{t('receive-currency-drops', { ns: 'faucet', nativeCurrency })}</b>:{' '}
+                        {t('get-between-drops', { ns: 'faucet', nativeCurrency })}
+                      </li>
+                      <li>
+                        <b>{t('get-instant-feedback', { ns: 'faucet' })}</b>:{' '}
+                        {t('see-if-payment-succeeded', { ns: 'faucet' })}
+                      </li>
+                      {/*
                   <li>
                     <b>Get Daily Statistics</b>: See the day's stats, including the total number of transactions, the total
                     amount sent, and the fees paid.
                   </li>
                   */}
-                  <li>
-                    <b>{t('daily-testing-limit', { ns: 'faucet' })}</b>:{' '}
-                    {t('can-test-only-once-per-day', { ns: 'faucet' })}
-                  </li>
-                </ul>
-              </>
-            )}
-            <center>
-              {siteKey && (
-                <>
-                  <br />
-                  <Turnstile
-                    key={resetKey}
-                    siteKey={siteKey}
-                    style={{ margin: 'auto' }}
-                    options={{
-                      theme,
-                      language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
-                    }}
-                    onSuccess={setToken}
-                    onError={() => {
-                      // ignore Turnstile errors
-                    }}
-                  />
-                  <br />
-                  <button
-                    className="center button-action"
-                    disabled={
-                      !token ||
-                      !isAddressValid(address) ||
-                      loading ||
-                      (Number(amount) > maxAmount * 1000000 && !testPayment)
-                    }
-                    onClick={onSubmit}
-                  >
-                    {testPayment
-                      ? t('button.test-now', { ns: 'faucet' })
-                      : 'Get ' + explorerName + ' ' + nativeCurrency}
-                  </button>
-                </>
-              )}
-              {testPayment && <p>{t('try-it-now', { ns: 'faucet', nativeCurrency })}</p>}
-            </center>
-          </div>
+                      <li>
+                        <b>{t('daily-testing-limit', { ns: 'faucet' })}</b>:{' '}
+                        {t('can-test-only-once-per-day', { ns: 'faucet' })}
+                      </li>
+                    </ul>
+                  </>
+                )}
+                <center>
+                  {siteKey && (
+                    <>
+                      <br />
+                      <Turnstile
+                        key={resetKey}
+                        siteKey={siteKey}
+                        style={{ margin: 'auto' }}
+                        options={{
+                          theme,
+                          language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
+                        }}
+                        onSuccess={setToken}
+                        onError={() => {
+                          // ignore Turnstile errors
+                        }}
+                      />
+                      <br />
+                      <button
+                        className="center button-action"
+                        disabled={
+                          !token ||
+                          !isAddressValid(address) ||
+                          loading ||
+                          (Number(amount) > maxAmount * 1000000 && !testPayment)
+                        }
+                        onClick={onSubmit}
+                      >
+                        {testPayment
+                          ? t('button.test-now', { ns: 'faucet' })
+                          : 'Get ' + explorerName + ' ' + nativeCurrency}
+                      </button>
+                    </>
+                  )}
+                  {testPayment && <p>{t('try-it-now', { ns: 'faucet', nativeCurrency })}</p>}
+                </center>
+              </div>
+            </>
+          )}
         </>
       )}
       {loading && (
