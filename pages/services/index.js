@@ -8,12 +8,12 @@ import { devNet, xahauNetwork, explorerName, nativeCurrency, ledgerName } from '
 import styles from '../../styles/pages/services.module.scss'
 
 // Icons
-import { TbSend, TbShieldCheck, TbAlertCircle, TbDroplet } from 'react-icons/tb'
+import { TbSend, TbShieldCheck, TbBell, TbDroplet } from 'react-icons/tb'
 import { RiFilePaper2Line, RiPriceTag3Line, RiDeleteBin6Line, RiBookOpenLine } from 'react-icons/ri'
 import { MdOutlineFactCheck, MdOutlineLockClock, MdOutlineImage, MdOutlineApi } from 'react-icons/md'
 import { IoWalletOutline, IoSparklesOutline } from 'react-icons/io5'
 import { IoIosRocket } from 'react-icons/io'
-import { LuCoins, LuKeyRound } from 'react-icons/lu'
+import { LuCoins } from 'react-icons/lu'
 
 export async function getServerSideProps({ locale }) {
   return {
@@ -36,11 +36,7 @@ function Section({ title, items }) {
               <span className={styles.itemIcon} aria-hidden="true">
                 <Icon />
               </span>
-
-              <span className={styles.itemText}>
-                <span className={styles.itemTitle}>{it.title}</span>
-                {it.hint && <span className={styles.itemHint}>{it.hint}</span>}
-              </span>
+              <span className={styles.itemTitle}>{it.title}</span>
             </Link>
           )
         })}
@@ -53,210 +49,132 @@ export default function ServicesPage() {
   const { t } = useTranslation()
   const [q, setQ] = useState('')
 
+  // Build sections (no stacks)
   const sections = useMemo(() => {
-    // Stacked tile 1
-    const registration = {
-      id: 'registration',
-      title: '🪪 Public registration',
-      items: [
-        { href: '/username', title: t('menu.usernames'), icon: RiPriceTag3Line },
-        { href: '/submit-account-information', title: t('menu.project-registration'), icon: RiFilePaper2Line }
-      ]
-    }
-
     const bithompServices = {
       id: 'bithomp-services',
       title: '🧩 Bithomp Services',
       items: [
         { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: RiFilePaper2Line },
-        !devNet ? { href: '/alerts', title: t('menu.price-alerts', { nativeCurrency }), icon: TbAlertCircle } : null
+        { href: '/username', title: t('menu.usernames'), icon: RiPriceTag3Line },
+        { href: '/submit-account-information', title: t('menu.project-registration'), icon: RiFilePaper2Line },
+        !devNet ? { href: '/alerts', title: t('menu.price-alerts', { nativeCurrency }), icon: TbBell } : null
       ].filter(Boolean)
     }
 
-    // IMPORTANT: Tokens must be 2nd tile in top grid
-    const tokens = {
-      id: 'tokens',
-      title: '🪙 Tokens',
-      items: [
-        { href: '/tokens', title: t('menu.tokens'), icon: LuCoins },
-        { href: '/services/trustline', title: 'Set Trust (Trustline)', icon: TbShieldCheck },
-        { href: '/learn/issue-a-token', title: 'How to Issue a Token', icon: RiBookOpenLine },
-        { href: '/learn/guide-for-token-issuers', title: 'Guide for Token Issuers', icon: RiBookOpenLine }
-      ]
-    }
-
-    // Stacked tile 2
-    const account = {
-      id: 'account',
-      title: '⚙️ Account',
-      items: [
-        { href: '/services/account-settings/', title: 'Account Settings', icon: IoWalletOutline },
-        { href: '/services/account-delete', title: 'Account Delete', icon: RiDeleteBin6Line }
-      ]
-    }
-
-    const nft = {
-      id: 'nft',
-      title: '🖼️ NFT',
-      items: [
-        { href: '/nft-explorer', title: 'NFT Explorer', icon: MdOutlineImage },
-        { href: '/services/nft-mint', title: t('menu.services.nft-mint'), icon: IoSparklesOutline }
-      ]
-    }
-
+    // Payments should be the second section
     const payments = {
       id: 'payments',
-      title: '💸 Payments & conditional',
+      title: '💸 Payments',
       items: [
+        { href: '/services/trustline', title: 'Set Trust (Trustline)', icon: TbShieldCheck },
         { href: '/services/send', title: 'Send Payment', icon: TbSend },
         { href: '/services/check', title: 'Issue Check', icon: MdOutlineFactCheck },
         { href: '/services/escrow', title: 'Create Escrow', icon: MdOutlineLockClock }
       ]
     }
 
-    const xahau = {
-      id: 'xahau',
-      title: '✨ Xahau',
+    // Renamed from Creators -> Issuance, and removed /tokens link
+    const issuance = {
+      id: 'issuance',
+      title: '🏗️ Issuance',
       items: [
-        xahauNetwork ? { href: '/services/reward-auto-claim', title: 'Reward Auto Claim', icon: LuCoins } : null
-      ].filter(Boolean)
+        { href: '/learn/issue-a-token', title: 'How to Issue a Token', icon: RiBookOpenLine },
+        { href: '/learn/guide-for-token-issuers', title: 'Guide for Token Issuers', icon: RiBookOpenLine },
+        { href: '/services/nft-mint', title: t('menu.services.nft-mint'), icon: IoSparklesOutline }
+      ]
     }
 
-    // AMM must be right before Developers (requested order)
+    // Account: on Xahau add Reward Auto Claim here (no separate Xahau section)
+    const account = {
+      id: 'account',
+      title: '⚙️ Account',
+      items: [
+        ...(xahauNetwork ? [{ href: '/services/reward-auto-claim', title: 'Reward Auto Claim', icon: LuCoins }] : []),
+        { href: '/services/account-settings/', title: 'Account Settings', icon: IoWalletOutline },
+        { href: '/services/account-delete', title: 'Account Delete', icon: RiDeleteBin6Line }
+      ]
+    }
+
+    // AMM: fully hidden on Xahau
     const amm = {
       id: 'amm',
       title: '🌊 AMM',
       items: [
-        !xahauNetwork ? { href: '/amms', title: 'AMM Pools', icon: TbDroplet } : null,
-        !xahauNetwork ? { href: '/services/amm/deposit', title: 'AMM Deposit', icon: TbDroplet } : null,
-        !xahauNetwork ? { href: '/services/amm/withdraw', title: 'AMM Withdraw', icon: TbDroplet } : null,
-        !xahauNetwork ? { href: '/services/amm/vote', title: 'AMM Vote', icon: TbDroplet } : null,
-        !xahauNetwork ? { href: '/services/amm/create', title: 'AMM Create', icon: TbDroplet } : null
-      ].filter(Boolean)
+        { href: '/amms', title: 'AMM Pools', icon: TbDroplet },
+        { href: '/services/amm/deposit', title: 'AMM Deposit', icon: TbDroplet },
+        { href: '/services/amm/withdraw', title: 'AMM Withdraw', icon: TbDroplet },
+        { href: '/services/amm/vote', title: 'AMM Vote', icon: TbDroplet },
+        { href: '/services/amm/create', title: 'AMM Create', icon: TbDroplet }
+      ]
     }
 
-    // Developers must be last (requested)
+    // Developers: removed API Key Registration
     const developers = {
-      id: 'dev',
+      id: 'developers',
       title: '🧪 Developers',
       items: [
         { href: '/learn/the-bithomp-api', title: t('menu.developers.api'), icon: MdOutlineApi },
-        { href: '/admin/api', title: 'API Key Registration', icon: LuKeyRound },
         {
           href: '/faucet',
-          title: t('menu.developers.faucet'),
-          icon: IoIosRocket,
-          hint: `${nativeCurrency} / ${ledgerName}`
+          title: `${t('menu.developers.faucet')} (${nativeCurrency} / ${ledgerName})`,
+          icon: IoIosRocket
         },
-        { href: '/learn/image-services', title: 'Token/NFT/Address Images', icon: MdOutlineImage },
+        { href: '/learn/image-services', title: 'Token / NFT / Address Images', icon: MdOutlineImage },
         { href: '/submit/', title: t('menu.submit-offline-tx'), icon: RiFilePaper2Line }
       ]
     }
 
-    // TOP GRID: put many tiles here so 5–6 can actually show on one line
-    // Order: stack(reg+services), tokens, stack(account+nft), payments, xahau, amm, developers
-    const topTiles = [
-      { type: 'stack', id: 'stack-left', sections: [registration, bithompServices] },
-      { type: 'single', id: tokens.id, section: tokens },
-      { type: 'stack', id: 'stack-right', sections: [account, nft] },
-      { type: 'single', id: payments.id, section: payments },
-      ...(xahau.items.length ? [{ type: 'single', id: xahau.id, section: xahau }] : []),
-      ...(amm.items.length ? [{ type: 'single', id: amm.id, section: amm }] : []),
-      { type: 'single', id: developers.id, section: developers }
-    ]
+    const list = [bithompServices, payments, issuance, account]
 
-    // Flat list for search (includes everything visible)
-    const allFlat = [
-      registration,
-      bithompServices,
-      tokens,
-      account,
-      nft,
-      payments,
-      ...(xahau.items.length ? [xahau] : []),
-      ...(amm.items.length ? [amm] : []),
-      developers
-    ]
+    if (!xahauNetwork) {
+      list.push(amm)
+    }
 
-    return { topTiles, allFlat }
+    list.push(developers)
+
+    return list
   }, [t])
 
-  const isSearching = q.trim().length > 0
-
-  const searched = useMemo(() => {
-    if (!isSearching) return null
+  const visibleSections = useMemo(() => {
     const query = q.trim().toLowerCase()
+    if (!query) return sections
 
-    return sections.allFlat
-      .map((sec) => {
-        const items = sec.items.filter((it) => {
-          const hay = `${it.title} ${it.href} ${it.hint || ''}`.toLowerCase()
-          return hay.includes(query)
-        })
-        return { ...sec, items }
-      })
+    return sections
+      .map((sec) => ({
+        ...sec,
+        items: sec.items.filter((it) => `${it.title} ${it.href}`.toLowerCase().includes(query))
+      }))
       .filter((sec) => sec.items.length > 0)
-  }, [isSearching, q, sections.allFlat])
+  }, [q, sections])
 
   return (
     <>
-      <SEO
-        title={`${explorerName} Services`}
-        description={`Services on ${explorerName}.`}
-        descriptionWithNetwork={true}
-      />
+      <SEO title={`${explorerName} Services`} description={`Services on ${explorerName}.`} />
 
-      <div className="content-text">
-        <div className={styles.topRow}>
-          <h1 className={styles.h1}>{explorerName} Services</h1>
+      <div className={styles.pageWrap}>
+        <div className={`content-text ${styles.page}`}>
+          <div className={styles.topRow}>
+            <h1 className={styles.h1}>{explorerName} Services</h1>
 
-          <input
-            className={'input-text ' + styles.search}
-            type="text"
-            placeholder="Search…"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            aria-label="Search services"
-          />
-        </div>
+            <input
+              className={'input-text ' + styles.search}
+              type="text"
+              placeholder="Search by service name..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              aria-label="Search services"
+            />
+          </div>
 
-        {isSearching ? (
-          <>
-            <div className={styles.tilesGrid}>
-              {searched?.map((sec) => (
-                <Section key={sec.id} title={sec.title} items={sec.items} />
-              ))}
-            </div>
-
-            {(!searched || searched.length === 0) && (
-              <div className="center" style={{ marginTop: 14 }}>
-                <b>No services found</b>
+          <div className={styles.tilesGrid}>
+            {visibleSections.map((sec) => (
+              <div key={sec.id} className={styles.tile}>
+                <Section title={sec.title} items={sec.items} />
               </div>
-            )}
-          </>
-        ) : (
-          <>
-            <div className={styles.tilesGrid}>
-              {sections.topTiles.map((tile) => {
-                if (tile.type === 'single') {
-                  return (
-                    <div key={tile.id} className={styles.tile}>
-                      <Section title={tile.section.title} items={tile.section.items} />
-                    </div>
-                  )
-                }
-
-                return (
-                  <div key={tile.id} className={styles.stackTile}>
-                    {tile.sections.map((sec) => (
-                      <Section key={sec.id} title={sec.title} items={sec.items} />
-                    ))}
-                  </div>
-                )
-              })}
-            </div>
-          </>
-        )}
+            ))}
+          </div>
+        </div>
       </div>
     </>
   )

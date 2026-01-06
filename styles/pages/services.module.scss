@@ -1,4 +1,16 @@
-/* styles/pages/services.module.scss */
+/* Page vertical spacing — keeps footer from sticking too close */
+.page {
+  padding-top: 24px;
+  padding-bottom: 32px;
+}
+
+/* Desktop: give more breathing room */
+@media (min-width: 900px) {
+  .page {
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+}
 
 .topRow {
   display: flex;
@@ -49,21 +61,16 @@
   /* Desktop: prefer 5 columns (better for 14") */
   @media (min-width: 1200px) {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+
+    /* ✅ keep natural heights on desktop too */
+    align-items: start;
+    grid-auto-rows: auto;
   }
 }
 
 /* allow grid children to shrink */
-.tile,
-.stackTile {
+.tile {
   min-width: 0;
-}
-
-/* stacked tile takes 2 sections one under another */
-.stackTile {
-  /* ✅ don't force full cell height */
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 /* ===== Section ===== */
