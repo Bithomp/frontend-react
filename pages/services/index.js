@@ -4,12 +4,21 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useMemo, useState } from 'react'
 
-import { devNet, xahauNetwork, explorerName, nativeCurrency, ledgerName } from '../../utils'
+import { devNet, xahauNetwork, explorerName, nativeCurrency } from '../../utils'
 import styles from '../../styles/pages/services.module.scss'
 
 // Icons
-import { TbSend, TbShieldCheck, TbBell, TbDroplet } from 'react-icons/tb'
-import { RiFilePaper2Line, RiPriceTag3Line, RiDeleteBin6Line, RiBookOpenLine } from 'react-icons/ri'
+import { TbSend, TbShieldCheck, TbBell } from 'react-icons/tb'
+import {
+  RiFilePaper2Line,
+  RiPriceTag3Line,
+  RiDeleteBin6Line,
+  RiBookOpenLine,
+  RiArrowDownCircleLine,
+  RiArrowUpCircleLine,
+  RiCheckboxCircleLine,
+  RiAddCircleLine
+} from 'react-icons/ri'
 import { MdOutlineFactCheck, MdOutlineLockClock, MdOutlineImage, MdOutlineApi } from 'react-icons/md'
 import { IoWalletOutline, IoSparklesOutline } from 'react-icons/io5'
 import { IoIosRocket } from 'react-icons/io'
@@ -79,10 +88,10 @@ export default function ServicesPage() {
       id: 'amm',
       title: '🌊 AMM',
       items: [
-        { href: '/services/amm/deposit', title: 'AMM Deposit', icon: TbDroplet },
-        { href: '/services/amm/withdraw', title: 'AMM Withdraw', icon: TbDroplet },
-        { href: '/services/amm/vote', title: 'AMM Vote', icon: TbDroplet },
-        { href: '/services/amm/create', title: 'AMM Create', icon: TbDroplet }
+        { href: '/services/amm/deposit', title: 'AMM Deposit', icon: RiArrowDownCircleLine },
+        { href: '/services/amm/withdraw', title: 'AMM Withdraw', icon: RiArrowUpCircleLine },
+        { href: '/services/amm/vote', title: 'AMM Vote', icon: RiCheckboxCircleLine },
+        { href: '/services/amm/create', title: 'AMM Create', icon: RiAddCircleLine }
       ]
     }
 
@@ -116,7 +125,7 @@ export default function ServicesPage() {
         { href: '/learn/the-bithomp-api', title: t('menu.developers.api'), icon: MdOutlineApi },
         {
           href: '/faucet',
-          title: `${t('menu.developers.faucet')} (${nativeCurrency} / ${ledgerName})`,
+          title: t('menu.developers.faucet'),
           icon: IoIosRocket
         },
         { href: '/learn/image-services', title: 'Token / NFT / Address Images', icon: MdOutlineImage },
