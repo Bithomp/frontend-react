@@ -74,6 +74,18 @@ export default function ServicesPage() {
       ]
     }
 
+    // AMM: fully hidden on Xahau
+    const amm = {
+      id: 'amm',
+      title: '🌊 AMM',
+      items: [
+        { href: '/services/amm/deposit', title: 'AMM Deposit', icon: TbDroplet },
+        { href: '/services/amm/withdraw', title: 'AMM Withdraw', icon: TbDroplet },
+        { href: '/services/amm/vote', title: 'AMM Vote', icon: TbDroplet },
+        { href: '/services/amm/create', title: 'AMM Create', icon: TbDroplet }
+      ]
+    }
+
     // Renamed from Creators -> Issuance, and removed /tokens link
     const issuance = {
       id: 'issuance',
@@ -96,19 +108,6 @@ export default function ServicesPage() {
       ]
     }
 
-    // AMM: fully hidden on Xahau
-    const amm = {
-      id: 'amm',
-      title: '🌊 AMM',
-      items: [
-        { href: '/amms', title: 'AMM Pools', icon: TbDroplet },
-        { href: '/services/amm/deposit', title: 'AMM Deposit', icon: TbDroplet },
-        { href: '/services/amm/withdraw', title: 'AMM Withdraw', icon: TbDroplet },
-        { href: '/services/amm/vote', title: 'AMM Vote', icon: TbDroplet },
-        { href: '/services/amm/create', title: 'AMM Create', icon: TbDroplet }
-      ]
-    }
-
     // Developers: removed API Key Registration
     const developers = {
       id: 'developers',
@@ -125,13 +124,11 @@ export default function ServicesPage() {
       ]
     }
 
-    const list = [bithompServices, payments, issuance, account]
+    const list = [bithompServices, payments, issuance, account, developers]
 
     if (!xahauNetwork) {
-      list.push(amm)
+      list.splice(2, 0, amm)
     }
-
-    list.push(developers)
 
     return list
   }, [t])
