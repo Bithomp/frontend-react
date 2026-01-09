@@ -9,7 +9,14 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
 import { axiosServer, currencyServer, passHeaders } from '../../../utils/axios'
-import { addAndRemoveQueryParams, avatarSrc, errorT, isAddressOrUsername, isAddressValid } from '../../../utils'
+import {
+  addAndRemoveQueryParams,
+  avatarSrc,
+  errorT,
+  isAddressOrUsername,
+  isAddressValid,
+  nativeCurrency
+} from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import SearchBlock from '../../../components/Layout/SearchBlock'
@@ -323,7 +330,13 @@ export default function AccountTransactions({
     { label: 'Time', key: 'time' },
     { label: 'Type', key: 'type' },
     { label: 'Hash', key: 'hash' },
-    { label: 'Status', key: 'status' }
+    { label: 'Status', key: 'status' },
+    { label: 'From', key: 'from' },
+    { label: 'To', key: 'to' },
+    { label: 'Amount', key: 'amount' },
+    { label: 'Currency', key: 'currency' },
+    { label: 'Fee', key: 'fee' },
+    { label: 'Ledger Index', key: 'ledgerIndex' }
   ]
 
   const applyFilters = () => {
@@ -396,12 +409,32 @@ export default function AccountTransactions({
               dateObj = new Date(item.outcome.timestamp)
             }
 
+            // Extract amount and currency
+            let amount = ''
+            let currency = ''
+            if (typeof item.tx.Amount === 'string') {
+              amount = item.tx.Amount
+              currency = nativeCurrency
+            } else if (typeof item.tx.Amount === 'object') {
+              amount = item.tx.Amount?.value || ''
+              currency = item.tx.Amount?.currency || ''
+            }
+
+            // Extract fee
+            const fee = item.tx.Fee ? item.tx.Fee / 1000000 : ''
+
             return {
               date: dateObj.toLocaleDateString(),
               time: dateObj.toLocaleTimeString(),
               type: item.tx.TransactionType || 'Unknown',
               hash: item.txHash || '',
-              status: item.outcome.result || 'Unknown'
+              status: item.outcome.result || 'Unknown',
+              from: item.tx.Account || '',
+              to: item.tx.Destination || '',
+              amount: amount,
+              currency: currency,
+              fee: fee,
+              ledgerIndex: item.outcome.ledgerIndex || ''
             }
           }) || []
         }
