@@ -22,18 +22,7 @@ export default function Ads({ countryCode }) {
 
   return (
     <div className={brandsBlock}>
-      <a
-        href={'https://bithomp.com/go/play-xrp' + (countryCode === 'US' ? '-us' : '')}
-        target="_blank"
-        rel="noreferrer"
-      >
-        <div className="brand-item stake">
-          <Stake className="brand-item-icon" fill={rendered ? (theme === 'dark' ? 'white' : '#001d2b') : '#001d2b'} />
-          <div className="brand-item-title">Join Stake!{width > 1280 && ' 200% Bonus'}</div>
-          <div className="brand-item-text">World’s largest Crypto Casino — instant payouts, $100K daily prizes.</div>
-        </div>
-      </a>
-
+      {/*
       <a href="https://bithomp.com/go/main-buy-swap" target="_blank" rel="noreferrer">
         <div className="brand-item nexo">
           <Nexo className="brand-item-icon" fill={color} />
@@ -41,7 +30,7 @@ export default function Ads({ countryCode }) {
           <div className="brand-item-text">Buy or transfer XRP and earn up to 12% annual interest.</div>
         </div>
       </a>
-
+      */}
       {/* <a href="https://bithomp.com/go/xrp-yield" target="_blank" rel="noreferrer">
           <div className="brand-item doppler">
             <Doppler className="brand-item-icon" fill={color} />
@@ -101,6 +90,17 @@ export default function Ads({ countryCode }) {
           </div>
         </a>
         */}
+      <a
+        href={'https://bithomp.com/go/play-xrp' + (countryCode === 'US' ? '-us' : '')}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <div className="brand-item stake">
+          <Stake className="brand-item-icon" fill={rendered ? (theme === 'dark' ? 'white' : '#001d2b') : '#001d2b'} />
+          <div className="brand-item-title">Join Stake!{width > 1280 && ' 200% Bonus'}</div>
+          <div className="brand-item-text">World’s largest Crypto Casino — instant payouts, $100K daily prizes.</div>
+        </div>
+      </a>
     </div>
   )
 }
