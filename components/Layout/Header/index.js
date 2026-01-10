@@ -176,7 +176,9 @@ export default function Header({
                 <XrplExplorer height="43" width="227" />
               )
             ) : (
-              <LogoSmall width="43" height="43" />
+              <div style={{ height: 46, width: 46, marginTop: -2.5 }}>
+                <LogoSmall />
+              </div>
             )}
           </Link>
         </div>
