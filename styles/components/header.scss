@@ -492,6 +492,12 @@ header {
 
 @media only screen and (max-width: 1470px) and (min-width: 1061px) {
   header {
+    justify-content: space-between;
+    
+    .header-menu-right {
+      margin-left: 0;
+    }
+    
     .header-search-inline {
       z-index: 0;
       order: 3;
