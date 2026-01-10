@@ -169,7 +169,7 @@ export default function Header({
               xahauNetwork ? (
                 <XahauExplorer height="43" width="263" />
               ) : bithomp ? (
-                <div style={{ height: 46, width: 140, marginTop: -2.5 }}>
+                <div style={{ height: 46, width: 125, marginTop: -2.5 }}>
                   <LogoAnimated />
                 </div>
               ) : (
