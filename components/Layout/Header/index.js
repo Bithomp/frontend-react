@@ -29,6 +29,7 @@ import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
 import XahauExplorer from '../../../public/images/xahauexplorer/long.svg'
 import LogoAnimated from '../LogoAnimated'
 import { IoWalletOutline } from 'react-icons/io5'
+import SearchBlock from '../SearchBlock'
 
 let timeoutIds = {}
 
@@ -168,7 +169,7 @@ export default function Header({
               xahauNetwork ? (
                 <XahauExplorer height="43" width="263" />
               ) : bithomp ? (
-                <div style={{ height: 46, width: 160, marginTop: -2.5 }}>
+                <div style={{ height: 46, width: 140, marginTop: -2.5 }}>
                   <LogoAnimated />
                 </div>
               ) : (
@@ -340,6 +341,12 @@ export default function Header({
             <Link href="/build-unl">{t('menu.business.build-unl')}</Link>
           </MenuDropDown>
         </div>
+
+        {width && (
+          <div className="header-search-inline">
+            <SearchBlock compact={true} />
+          </div>
+        )}
 
         <div className="header-menu-right">
           <MenuDropDown
@@ -515,6 +522,7 @@ export default function Header({
 
           <Switch />
         </div>
+
         <div className="header-burger">
           <input type="checkbox" id="header-burger" checked={menuOpen} onChange={mobileMenuToggle} />
           <label htmlFor="header-burger" className="header-burger-elements">

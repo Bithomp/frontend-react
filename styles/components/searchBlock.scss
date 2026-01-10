@@ -5,6 +5,13 @@
   background-color: var(--background-block);
   text-align: center;
   transition: background-color .5s;
+  
+  &.search-block-compact {
+    height: auto;
+    background-color: transparent;
+    padding: 0;
+  }
+  
   .search-box {
     display: inline-block;
     position: relative;
@@ -14,6 +21,13 @@
     width: calc(100% - 40px);
     max-width: 760px;
     z-index: 4;
+    
+    &.search-box-compact {
+      margin: 0;
+      width: auto;
+      max-width: 100%;
+    }
+    
     @media only screen and (max-width: 1024px) {
       margin-left: 10px;
       margin-right: 10px;

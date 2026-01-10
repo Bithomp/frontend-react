@@ -68,7 +68,13 @@ const CustomIndicatorsContainer = (props) => {
     </div>
   )
 }
-export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {}, isSsrMobile }) {
+export default function SearchBlock({
+  searchPlaceholderText,
+  tab = null,
+  userData = {},
+  isSsrMobile,
+  compact = false
+}) {
   const { t, i18n } = useTranslation()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -316,6 +322,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     if (action.action !== 'input-blur' && action.action !== 'menu-close') {
       setSearchItem(inputValue)
     }
+    if (action.action === 'input-change' && inputValue === '') {
+      setSearchItem('')
+    }
   }
 
   const explorerHeader = (tab) => {
@@ -333,20 +342,28 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   return (
     <>
-      <div className="search-block" style={tab === 'explorer' ? { backgroundColor: 'unset', height: 90 } : {}}>
-        <div className="search-box" style={tab === 'explorer' ? { marginTop: '20px' } : {}}>
-          <div className="above-search-box">
-            {searching ? (
-              <span className={tab === 'explorer' ? '' : 'contrast'}>
-                {t('explorer.searching-tx-nft-nftoffer')}
-                <span className="waiting inline"></span>
-              </span>
-            ) : (
-              <div className="bold contrast">
-                {explorerHeader(tab)} {userOrServiceName(userData)}
-              </div>
-            )}
-          </div>
+      <div
+        className={`search-block ${compact ? 'search-block-compact' : ''}`}
+        style={tab === 'explorer' || compact ? { backgroundColor: 'unset', height: compact ? 'auto' : 90 } : {}}
+      >
+        <div
+          className={`search-box ${compact ? 'search-box-compact' : ''}`}
+          style={tab === 'explorer' || compact ? { marginTop: compact ? '0' : '20px' } : {}}
+        >
+          {!compact && (
+            <div className="above-search-box">
+              {searching ? (
+                <span className={tab === 'explorer' ? '' : 'contrast'}>
+                  {t('explorer.searching-tx-nft-nftoffer')}
+                  <span className="waiting inline"></span>
+                </span>
+              ) : (
+                <div className="bold contrast">
+                  {explorerHeader(tab)} {userOrServiceName(userData)}
+                </div>
+              )}
+            </div>
+          )}
           {isMounted ? (
             <div onKeyUp={searchOnKeyUp}>
               <Select
@@ -354,58 +371,69 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 className="search-input search-input-select"
                 placeholder={searchPlaceholderText}
                 onChange={searchOnChange}
+                value={null}
                 spellCheck="false"
                 options={searchSuggestions}
-                getOptionLabel={(option) => (
-                  <>
-                    <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
-                    {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
-                    <b className="blue">{option.username}</b>
-                    {option.service && (
-                      <>
-                        {option.username ? ' (' : ''}
-                        <b className="green">{option.service}</b>
-                        {option.username ? ')' : ''}
-                      </>
-                    )}
-                    {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
-                    {option.verifiedDomain ? (
-                      <span className="green bold"> {option.verifiedDomain}</span>
-                    ) : (
-                      option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
-                    )}
-                    {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
-                      option.xaman && <>, </>}
-                    {option.xaman && (
-                      <>
-                        Xaman{' '}
-                        <span className="orange">
-                          {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
-                        </span>
-                        {option.xamanVerified && <> ✅</>}
-                      </>
-                    )}
-                    {option.tag ? (
-                      <b className="no-brake">
-                        {' '}
-                        [TAG: <span className="orange">{option.tag}</span>]
-                      </b>
-                    ) : (
-                      <>
-                        {option.balance !== null && (
-                          <>
-                            {' '}
-                            [
-                            <b>
-                              {amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) || 'Not activated'}
-                            </b>
-                            ]
-                          </>
-                        )}
-                      </>
-                    )}
-                  </>
-                )}
+                formatOptionLabel={(option, { context }) => {
+                  if (context === 'value') {
+                    // Display simple format when selected
+                    return option.username || option.address
+                  }
+                  // Display full format in dropdown
+                  return (
+                    <>
+                      <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
+                      {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
+                      <b className="blue">{option.username}</b>
+                      {option.service && (
+                        <>
+                          {option.username ? ' (' : ''}
+                          <b className="green">{option.service}</b>
+                          {option.username ? ')' : ''}
+                        </>
+                      )}
+                      {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && (
+                        <>, </>
+                      )}
+                      {option.verifiedDomain ? (
+                        <span className="green bold"> {option.verifiedDomain}</span>
+                      ) : (
+                        option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
+                      )}
+                      {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
+                        option.xaman && <>, </>}
+                      {option.xaman && (
+                        <>
+                          Xaman{' '}
+                          <span className="orange">
+                            {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
+                          </span>
+                          {option.xamanVerified && <> ✅</>}
+                        </>
+                      )}
+                      {option.tag ? (
+                        <b className="no-brake">
+                          {' '}
+                          [TAG: <span className="orange">{option.tag}</span>]
+                        </b>
+                      ) : (
+                        <>
+                          {option.balance !== null && (
+                            <>
+                              {' '}
+                              [
+                              <b>
+                                {amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) ||
+                                  'Not activated'}
+                              </b>
+                              ]
+                            </>
+                          )}
+                        </>
+                      )}
+                    </>
+                  )
+                }}
                 getOptionValue={(option) =>
                   option.address +
                   option.username +
