@@ -215,11 +215,13 @@ header {
                 margin: 0;
                 position: absolute;
                 color: var(--text-main);
+                pointer-events: none;
                 
                 input {
                   font-size: 16px;
                   margin: 0 0 0 2px;
                   color: var(--text-main) !important;
+                  pointer-events: all;
                 }
               }
             }
