@@ -346,7 +346,7 @@ export default function Header({
 
         {width && (
           <div className="header-search-inline">
-            <SearchBlock compact={true} />
+            <SearchBlock compact={true} searchPlaceholderText="Search..." />
           </div>
         )}
 
