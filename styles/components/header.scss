@@ -345,7 +345,7 @@ header {
   right: 0;
   transform: translateX(100%);
   top: 0;
-  z-index: 6;
+  z-index: 20;
   transition: 0.5s;
   overflow: auto;
   display: flex;
@@ -443,15 +443,16 @@ header {
 
 @media only screen and (max-width: 1060px) {
   header {
-    height: 55px;
+    min-height: auto;
+    height: auto;
     
     .header-search-inline {
-      flex: 1 1 auto;
+      flex: 1 1 280px;
       margin-left: 0;
       margin-right: 0;
       margin-top: 11px;
-      min-width: 0;
-      max-width: none;
+      min-width: 200px;
+      max-width: 100%;
     }
     
     .header-menu-left {
@@ -461,11 +462,21 @@ header {
     .header-menu-right {
       right: 60px;
       top: 24.5px;
+      margin-right: 55px;
       .theme-switch {
-        display: none;
+        display: block;
       }
       .menu-dropdown {
-        display: none;
+        display: block;
+        
+        &:first-of-type {
+          display: none;
+        }
+      }
+      .top-switch {
+        .menu-dropdown {
+          display: block;
+        }
       }
     }
 
@@ -481,15 +492,57 @@ header {
   }
 }
 
+@media only screen and (max-width: 780px) {
+  header {
+    .header-search-inline {
+      order: 3;
+      flex: 1 1 100%;
+      margin-left: -20px;
+      margin-right: -20px;
+      margin-top: 0;
+      margin-bottom: 0;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 9px;
+      padding-bottom: 9px;
+      border-top: 1px solid var(--background-menu);
+      min-width: auto;
+      max-width: none;
+    }
+  }
+  
+  .mobile-menu {
+    margin-top: 55px;
+    height: calc(100% - 55px);
+  }
+}
+
 @media only screen and (max-width: 600px) {
+  .mobile-menu-open {
+    header {
+      .header-menu-right {
+        left: 32px;
+        right: unset;
+        display: flex;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  header {
+    .header-menu-right {
+      display: none;
+    }
+  }
+  
   .mobile-menu-open {
     header {
       .header-logo {
         display: none;
       }
       .header-menu-right {
-        left: 32px;
-        right: unset;
+        display: flex;
       }
     }
   }

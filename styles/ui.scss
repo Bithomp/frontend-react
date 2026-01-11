@@ -49,6 +49,10 @@ body.dark {
     border-top: 105px solid var(--background-header);
   }
 
+  @media only screen and (max-width: 780px) {
+    border-top: 107px solid var(--background-header);
+  }
+
   .content-cols {
     display: flex;
     position: relative;
