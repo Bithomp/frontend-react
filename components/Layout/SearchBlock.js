@@ -464,16 +464,15 @@ export default function SearchBlock({
               aria-label="Search"
               ref={searchInput}
               type="text"
-              className="search-input"
+              className="search-input search-input-placeholder"
               placeholder={searchPlaceholderText}
               value={searchItem}
               onChange={(e) => setSearchItem(e.target.value)}
               onKeyUp={searchOnKeyUp}
               spellCheck="false"
               style={{
-                height: 36,
-                paddingLeft: 10,
-                paddingRight: 64
+                height: compact ? 28 : 36,
+                paddingRight: compact ? 38 : 64
               }}
             />
           )}

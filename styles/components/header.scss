@@ -162,6 +162,10 @@ header {
           background-color: white;
           box-sizing: border-box;
           
+          &.search-input-placeholder {
+            padding-left: 10px !important;
+          }
+          
           &.search-input-select {
             padding: 0 !important;
             width: 100% !important;
@@ -202,13 +206,12 @@ header {
               }
               
               .react-select__input-container {
-                padding: 0;
                 margin: 0;
+                position: absolute;
                 
                 input {
                   font-size: 16px;
-                  padding: 0 0 0 8px !important;
-                  margin: 0;
+                  margin: 0 0 0 2px;
                 }
               }
             }
