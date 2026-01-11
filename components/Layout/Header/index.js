@@ -161,7 +161,12 @@ export default function Header({
   const lang = i18n.language === 'default' ? 'en' : i18n.language
 
   return (
-    <div className={menuOpen ? 'mobile-menu-open' : ''}>
+    <div
+      className={
+        (menuOpen ? 'mobile-menu-open ' : '') +
+        ((router?.pathname === '/' || router?.pathname === '/explorer') ? 'hide-secondline' : '')
+      }
+    >
       <header>
         <div className="header-logo">
           <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
@@ -345,7 +350,12 @@ export default function Header({
         </div>
 
         {width && (
-          <div className="header-search-inline">
+          <div
+            className={
+              'header-search-inline ' +
+              (router?.pathname === '/' || router?.pathname === '/explorer' ? 'hide-search-inline' : '')
+            }
+          >
             <SearchBlock compact={true} searchPlaceholderText="Search..." />
           </div>
         )}
