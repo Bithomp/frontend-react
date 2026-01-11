@@ -159,8 +159,10 @@ header {
           max-width: 100% !important;
           border: 1px solid var(--unaccent-icon) !important;
           border-radius: 14px;
-          background-color: white;
+          background-color: var(--background-input);
           box-sizing: border-box;
+          transition: background-color .5s;
+          color: var(--text-main);
           
           &.search-input-placeholder {
             padding-left: 10px !important;
@@ -177,8 +179,10 @@ header {
               height: 28px;
               border: none !important;
               box-shadow: none !important;
-              background-color: transparent;
+              background-color: transparent !important;
               width: 100% !important;
+              border-radius: 14px;
+              cursor: text;
               
               .react-select__value-container {
                 padding: 0px 8px 2px 8px;
@@ -194,6 +198,7 @@ header {
                   max-width: 100%;
                   font-size: 16px;
                   padding: 0;
+                  color: var(--text-secondary);
                 }
                 
                 .react-select__single-value {
@@ -202,16 +207,19 @@ header {
                   overflow: hidden;
                   text-overflow: ellipsis;
                   white-space: nowrap;
+                  color: var(--text-main);
                 }
               }
               
               .react-select__input-container {
                 margin: 0;
                 position: absolute;
+                color: var(--text-main);
                 
                 input {
                   font-size: 16px;
                   margin: 0 0 0 2px;
+                  color: var(--text-main) !important;
                 }
               }
             }
@@ -228,7 +236,7 @@ header {
             .react-select__indicators {
               position: static !important;
               display: flex !important;
-              padding-right: 34px;
+              padding-right: 20px;
               
               > div {
                 position: static !important;
