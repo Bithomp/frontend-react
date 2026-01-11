@@ -443,7 +443,7 @@ header {
 
 @media only screen and (max-width: 1060px) {
   header {
-    min-height: auto;
+    min-height: 55px;
     height: auto;
     
     .header-search-inline {
@@ -539,7 +539,9 @@ header {
   .mobile-menu-open {
     header {
       .header-logo {
-        display: none;
+        width: 0;
+        min-width: 0;
+        overflow: hidden;
       }
       .header-menu-right {
         display: flex;
