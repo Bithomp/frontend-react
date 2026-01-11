@@ -46,11 +46,11 @@ body.dark {
   flex: 1;
 
   @media only screen and (max-width: 1470px) and (min-width: 1061px) {
-    border-top: 105px solid var(--background-header);
+    border-top: 103px solid var(--background-header);
   }
 
   @media only screen and (max-width: 780px) {
-    border-top: 107px solid var(--background-header);
+    border-top: 103px solid var(--background-header);
   }
 
   .content-cols {
