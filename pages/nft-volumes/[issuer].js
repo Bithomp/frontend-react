@@ -5,7 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-import { getIsSsrMobile } from '../../utils/mobile'
+import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -26,12 +26,17 @@ export const getServerSideProps = async (context) => {
 
 import SEO from '../../components/SEO'
 import Tabs from '../../components/Tabs'
-import SearchBlock from '../../components/Layout/SearchBlock'
 import DateAndTimeRange from '../../components/UI/DateAndTimeRange'
 import SimpleChart from '../../components/SimpleChart'
 
 import { setTabParams, stripText, isAddressOrUsername, useWidth, chartSpan } from '../../utils'
-import { niceNumber, shortNiceNumber, usernameOrAddress, amountFormat } from '../../utils/format'
+import {
+  niceNumber,
+  shortNiceNumber,
+  usernameOrAddress,
+  amountFormat,
+  addressUsernameOrServiceLink
+} from '../../utils/format'
 
 import LinkIcon from '../../public/images/link.svg'
 
@@ -48,6 +53,7 @@ export default function NftVolumes({
   const router = useRouter()
   const { isReady } = router
   const windowWidth = useWidth()
+  const isMobile = useIsMobile(600)
 
   const [data, setData] = useState([])
   const [rawData, setRawData] = useState({})
@@ -319,8 +325,18 @@ export default function NftVolumes({
           (period ? ' ' + period : '')
         }
       />
-      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="nft-volumes" userData={userData} />
       <div className="content-text">
+        <h1 className="center" style={{ marginBottom: '20px' }}>
+          {t('header', { ns: 'nft-volumes' })}{' '}
+          {addressUsernameOrServiceLink(
+            {
+              address: userData.address,
+              addressDetails: userData
+            },
+            'address',
+            { short: isMobile }
+          )}
+        </h1>
         <div className="tabs-inline">
           {windowWidth < 720 && <br />}
           {t('table.period')}

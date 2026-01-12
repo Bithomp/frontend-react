@@ -6,7 +6,6 @@ import axios from 'axios'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import SearchBlock from '../../components/Layout/SearchBlock'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { axiosServer, passHeaders } from '../../utils/axios'
@@ -358,8 +357,8 @@ export default function LedgerObject({
     <>
       <div className={object}>
         <SEO title={data?.node?.LedgerEntryType} description="Ledger object details" />
-        <SearchBlock tab="object" searchPlaceholderText="Search by LedgerEntry" />
         <div className="content-profile short-top">
+          <h1 className="center">Object {shortHash(id)}</h1>
           {loading ? (
             <div className="center" style={{ marginTop: '80px' }}>
               <span className="waiting"></span>

@@ -21,10 +21,10 @@ const ObjectSearch = () => {
   return (
     <>
       <SEO title="Object details" description="Object search" />
-      <SearchBlock tab="object" searchPlaceholderText="Search Object by LedgerEntry" />
       <Container>
         <h1 className="center">Object search</h1>
         <p className="center">Search objects on the Ledger.</p>
+        <SearchBlock tab="object" searchPlaceholderText="Search Object by LedgerEntry" type="explorer" />
       </Container>
     </>
   )

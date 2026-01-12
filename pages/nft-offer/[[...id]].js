@@ -186,7 +186,9 @@ export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
   return (
     <>
       {data && <SEO title={t('nft-offer.header') + (data.offerIndex ? ' ' + data.offerIndex : '')} />}
-      <SearchBlock searchPlaceholderText={t('nft-offer.enter-offer-id')} tab="nft-offer" />
+      <h1 className="center" style={{ marginTop: '20px', marginBottom: '20px' }}>
+        {t('nft-offer.header')} {shortHash(id)}
+      </h1>
       <div className="content-profile nft-offer">
         {id ? (
           <>
@@ -343,8 +345,8 @@ export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
           </>
         ) : (
           <>
-            <h2 className="center">{t('nft-offer.header')}</h2>
             <p className="center">{t('nft-offer.desc')}</p>
+            <SearchBlock searchPlaceholderText={t('nft-offer.enter-offer-id')} tab="nft-offer" type="explorer" />
           </>
         )}
       </div>

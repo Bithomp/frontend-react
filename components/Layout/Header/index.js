@@ -31,8 +31,8 @@ import LogoAnimated from '../LogoAnimated'
 import { IoWalletOutline } from 'react-icons/io5'
 import SearchBlock from '../SearchBlock'
 
-const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account', '/amm']
-const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft']
+const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account', '/amm', '/object', '/transaction']
+const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
 
 const ROUTE_TAB_MAP = [
   { prefix: '/account/[id]/transactions', tab: 'transactions' },
@@ -41,9 +41,12 @@ const ROUTE_TAB_MAP = [
   { prefix: '/nft-explorer', tab: 'nfts' },
   { prefix: '/nfts', tab: 'nfts' },
   { prefix: '/nft-offers', tab: 'nft-offers' },
+  { prefix: '/nft-offer', tab: 'nft-offer' },
   { prefix: '/nft-volumes', tab: 'nft-volumes' },
   { prefix: '/amm', tab: 'amm' },
-  { prefix: '/nft', tab: 'nft' }
+  { prefix: '/nft', tab: 'nft' },
+  { prefix: '/object', tab: 'object' },
+  { prefix: '/transaction', tab: 'transaction' }
 ]
 
 let timeoutIds = {}
@@ -177,7 +180,8 @@ export default function Header({
 
   const hideSearchInHeader =
     HIDE_SEARCH_HEADER.includes(router?.pathname) ||
-    (HIDE_SEARCH_WHEN_NO_ID.some((route) => router?.pathname?.startsWith(route)) && !router?.query?.id)
+    (HIDE_SEARCH_WHEN_NO_ID.some((route) => router?.pathname === route || router?.pathname?.startsWith(route + '/')) &&
+      !router?.query?.id)
 
   return (
     <div className={(menuOpen ? 'mobile-menu-open ' : '') + (hideSearchInHeader ? 'hide-secondline' : '')}>
