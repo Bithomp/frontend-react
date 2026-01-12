@@ -31,8 +31,8 @@ import LogoAnimated from '../LogoAnimated'
 import { IoWalletOutline } from 'react-icons/io5'
 import SearchBlock from '../SearchBlock'
 
-const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account']
-const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers']
+const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account', '/amm']
+const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft']
 
 const ROUTE_TAB_MAP = [
   { prefix: '/account/[id]/transactions', tab: 'transactions' },
@@ -41,7 +41,9 @@ const ROUTE_TAB_MAP = [
   { prefix: '/nft-explorer', tab: 'nfts' },
   { prefix: '/nfts', tab: 'nfts' },
   { prefix: '/nft-offers', tab: 'nft-offers' },
-  { prefix: '/nft-volumes', tab: 'nft-volumes' }
+  { prefix: '/nft-volumes', tab: 'nft-volumes' },
+  { prefix: '/amm', tab: 'amm' },
+  { prefix: '/nft', tab: 'nft' }
 ]
 
 let timeoutIds = {}
