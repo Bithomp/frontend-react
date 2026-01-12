@@ -2,7 +2,6 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import SEO from '../SEO'
-import SearchBlock from '../Layout/SearchBlock'
 import {
   FaFacebook,
   FaInstagram,
@@ -129,7 +128,6 @@ export default function AccountWithTag({ data }) {
     return (
       <>
         <SEO page="Account with tag" />
-        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" />
         <div className="content-center">
           <div className="center" style={{ marginTop: '50px' }}>
             <span className="waiting"></span>
@@ -145,7 +143,6 @@ export default function AccountWithTag({ data }) {
     return (
       <>
         <SEO page="Account with tag" />
-        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} />
         <div className="content-center">
           <div className="center orange bold" style={{ marginTop: '50px' }}>
             {errorMessage}
@@ -159,7 +156,6 @@ export default function AccountWithTag({ data }) {
     return (
       <>
         <SEO page="Account with tag" />
-        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} />
         <div className="content-center">
           <div className="center orange bold" style={{ marginTop: '50px' }}>
             Invalid address or missing data
@@ -176,7 +172,6 @@ export default function AccountWithTag({ data }) {
         title={`${t('explorer.header.account')} ${data?.payId || data?.xAddress || ''}`}
         description={`Details for ${data?.payId || data?.xAddress || ''}`}
       />
-      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} />
       {/* add tab="account" to show transactions link */}
 
       <div className="content-profile account">

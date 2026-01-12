@@ -32,7 +32,14 @@ $width: 340px;
     height: calc(100% - 20px);
     pointer-events: none;
     padding-top: 12px;
-    z-index: 4;
+    z-index: 3;
+  }
+
+  /* Raise z-index when filters are open */
+  .content-cols.is-filters-hide & {
+    @media (max-width: 1300px) {
+      z-index: 1000;
+    }
   }
 
   &-nav {
@@ -200,13 +207,14 @@ $width: 340px;
 
     @media (max-width: 1300px) {
       position: fixed;
-      inset: 81px 0 -90px;
+      inset: 0 0 -90px;
       background: #fff;
       padding: 20px 30px 90px;
       overflow-y: scroll;
       transform: translateY(100%);
       pointer-events: all;
       transition: transform 0.3s ease-in-out;
+      z-index: 1000;
 
       .dark & {
         background: #000;
@@ -237,6 +245,7 @@ $width: 340px;
 
   cursor: pointer;
   transition: all 0.25s ease;
+  z-index: 1;
 
   &:hover {
     background: var(--hover-bg, rgba(255,255,255,0.08));
@@ -260,6 +269,7 @@ $width: 340px;
     position: sticky;
     top: 95px;
     pointer-events: all;
+    z-index: 1;
   }
 }
 
@@ -269,5 +279,26 @@ $width: 340px;
     @media (max-width: 440px) {
       margin-top: 56px;
     }
+  }
+}
+
+/* Prevent body scroll when filters are open on mobile */
+@media (max-width: 1300px) {
+  .content-cols.is-filters-hide ~ * {
+    overflow: hidden;
+  }
+}
+
+html.body .content-cols.is-filters-hide {
+  @media (max-width: 1300px) {
+    & ~ * {
+      overflow: hidden;
+    }
+  }
+}
+
+html {
+  &.filters-open {
+    overflow: hidden;
   }
 }

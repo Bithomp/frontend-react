@@ -216,12 +216,23 @@ header {
                 position: absolute;
                 color: var(--text-main);
                 pointer-events: none;
+                left: 0;
+                right: 0;
+                top: -2px;
+                bottom: 0;
+                display: flex;
+                align-items: center;
                 
                 input {
                   font-size: 16px;
-                  margin: 0 0 0 2px;
+                  padding: 0 38px 0 10px !important;
                   color: var(--text-main) !important;
                   pointer-events: all;
+                  width: 100%;
+                  background: transparent;
+                  margin: 0 !important;
+                  border: none !important;
+                  line-height: 28px;
                 }
               }
             }

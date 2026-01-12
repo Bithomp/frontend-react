@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react'
-import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { getIsSsrMobile } from '../../../utils/mobile'
+import { getIsSsrMobile, useIsMobile } from '../../../utils/mobile'
 import { axiosServer, passHeaders } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
-import SearchBlock from '../../../components/Layout/SearchBlock'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
 import CurrencySearchSelect from '../../../components/UI/CurrencySearchSelect'
-import { niceNumber, niceCurrency, fullNiceNumber, amountFormat } from '../../../utils/format'
+import {
+  niceNumber,
+  niceCurrency,
+  fullNiceNumber,
+  amountFormat,
+  addressUsernameOrServiceLink
+} from '../../../utils/format'
 import { avatarSrc, nativeCurrency, useWidth } from '../../../utils'
 import { divide, multiply } from '../../../utils/calc'
 import { MdMoneyOff } from 'react-icons/md'
@@ -55,8 +59,8 @@ export async function getServerSideProps(context) {
 }
 
 export default function AccountDex({ id, initialData, initialAccountData, account, setSignRequest, isSsrMobile }) {
-  const { t } = useTranslation()
   const width = useWidth()
+  const isMobile = useIsMobile(600)
 
   const [rendered, setRendered] = useState(false)
   const [offerList, setOfferList] = useState(initialData?.objects || [])
@@ -251,16 +255,14 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
         description={`DEX orders for ${accountData?.username || accountData?.service?.name || id}`}
         image={{ file: avatarSrc(id) }}
       />
-      <SearchBlock
-        searchPlaceholderText={t('explorer.enter-address')}
-        tab="dex"
-        userData={{
-          username: accountData?.username,
-          service: accountData?.service?.name,
-          address: accountData?.address
-        }}
-      />
-
+      <div style={{ position: 'relative', marginTop: '10px', marginBottom: '20px' }}>
+        <h1 className="center">
+          DEX orders{' '}
+          {addressUsernameOrServiceLink({ address: accountData?.address, addressDetails: accountData }, 'address', {
+            short: isMobile
+          })}
+        </h1>
+      </div>
       {totalOffers === 0 ? (
         <div className="center">
           <h3>No DEX orders found</h3>

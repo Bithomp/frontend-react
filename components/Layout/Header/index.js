@@ -31,6 +31,19 @@ import LogoAnimated from '../LogoAnimated'
 import { IoWalletOutline } from 'react-icons/io5'
 import SearchBlock from '../SearchBlock'
 
+const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account']
+const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers']
+
+const ROUTE_TAB_MAP = [
+  { prefix: '/account/[id]/transactions', tab: 'transactions' },
+  { prefix: '/account/[id]/dex', tab: 'dex' },
+  { prefix: '/account', tab: 'account' },
+  { prefix: '/nft-explorer', tab: 'nfts' },
+  { prefix: '/nfts', tab: 'nfts' },
+  { prefix: '/nft-offers', tab: 'nft-offers' },
+  { prefix: '/nft-volumes', tab: 'nft-volumes' }
+]
+
 let timeoutIds = {}
 
 const MenuDropDown = ({ children, id, title, subtitle, setHoverStates, hoverStates, type, style, direction }) => {
@@ -160,13 +173,12 @@ export default function Header({
 
   const lang = i18n.language === 'default' ? 'en' : i18n.language
 
+  const hideSearchInHeader =
+    HIDE_SEARCH_HEADER.includes(router?.pathname) ||
+    (HIDE_SEARCH_WHEN_NO_ID.some((route) => router?.pathname?.startsWith(route)) && !router?.query?.id)
+
   return (
-    <div
-      className={
-        (menuOpen ? 'mobile-menu-open ' : '') +
-        ((router?.pathname === '/' || router?.pathname === '/explorer') ? 'hide-secondline' : '')
-      }
-    >
+    <div className={(menuOpen ? 'mobile-menu-open ' : '') + (hideSearchInHeader ? 'hide-secondline' : '')}>
       <header>
         <div className="header-logo">
           <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
@@ -350,13 +362,12 @@ export default function Header({
         </div>
 
         {width && (
-          <div
-            className={
-              'header-search-inline ' +
-              (router?.pathname === '/' || router?.pathname === '/explorer' ? 'hide-search-inline' : '')
-            }
-          >
-            <SearchBlock compact={true} searchPlaceholderText="Search..." />
+          <div className={'header-search-inline ' + (hideSearchInHeader ? 'hide-search-inline' : '')}>
+            <SearchBlock
+              compact={true}
+              searchPlaceholderText="Search..."
+              tab={ROUTE_TAB_MAP.find((route) => router?.pathname?.startsWith(route.prefix))?.tab}
+            />
           </div>
         )}
 

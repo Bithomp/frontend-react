@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
+import Link from 'next/link'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 
 import {
@@ -168,7 +169,6 @@ export async function getServerSideProps(context) {
 }
 
 import SEO from '../../components/SEO'
-import SearchBlock from '../../components/Layout/SearchBlock'
 import Did from '../../components/Account/Did'
 import { fetchHistoricalRate } from '../../utils/common'
 import AccountSummary from '../../components/Account/AccountSummary'
@@ -374,7 +374,15 @@ export default function Account({
         }
         image={{ file: avatarSrc(initialData?.address) }}
       />
-      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" userData={userData} />
+      <div className="explorer-tabs-block">
+        <div className="explorer-tabs">
+          <b>{t('explorer.menu.account')}</b>
+          <Link href={userData?.address ? '/account/' + userData.address + '/transactions' : ''}>
+            {t('explorer.menu.transactions')}
+          </Link>
+        </div>
+        <div className="explorer-tabs-shadow"></div>
+      </div>
 
       <div className="content-profile account">
         {id ? (

@@ -4,7 +4,6 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
 import { IoMdClose } from 'react-icons/io'
 
 import {
@@ -73,7 +72,8 @@ export default function SearchBlock({
   tab = null,
   userData = {},
   isSsrMobile,
-  compact = false
+  compact = false,
+  type = ''
 }) {
   const { t, i18n } = useTranslation()
   const searchParams = useSearchParams()
@@ -316,8 +316,6 @@ export default function SearchBlock({
     return
   }
 
-  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account', 'transactions', 'dex'].includes(tab)
-
   const searchOnInputChange = (inputValue, action) => {
     if (action.action !== 'input-blur' && action.action !== 'menu-close') {
       setSearchItem(inputValue)
@@ -344,21 +342,21 @@ export default function SearchBlock({
     <>
       <div
         className={`search-block ${compact ? 'search-block-compact' : ''}`}
-        style={tab === 'explorer' || compact ? { backgroundColor: 'unset', height: compact ? 'auto' : 90 } : {}}
+        style={type === 'explorer' || compact ? { backgroundColor: 'unset', height: compact ? 'auto' : 90 } : {}}
       >
         <div
           className={`search-box ${compact ? 'search-box-compact' : ''}`}
-          style={tab === 'explorer' || compact ? { marginTop: compact ? '0' : '20px' } : {}}
+          style={type === 'explorer' || compact ? { marginTop: compact ? '0' : '20px' } : {}}
         >
           {!compact && (
             <div className="above-search-box">
               {searching ? (
-                <span className={tab === 'explorer' ? '' : 'contrast'}>
+                <span className={type === 'explorer' ? '' : 'contrast'}>
                   {t('explorer.searching-tx-nft-nftoffer')}
                   <span className="waiting inline"></span>
                 </span>
               ) : (
-                <div className="bold contrast">
+                <div className={'bold' + (type === 'explorer' ? '' : ' contrast')}>
                   {explorerHeader(tab)} {userOrServiceName(userData)}
                 </div>
               )}
@@ -490,26 +488,6 @@ export default function SearchBlock({
           )}
         </div>
       </div>
-      {showTabs && (
-        <div className="explorer-tabs-block">
-          <div className="explorer-tabs">
-            {tab == 'account' ? (
-              <b>{t('explorer.menu.account')}</b>
-            ) : (
-              <Link href={'/account/' + searchItem}>{t('explorer.menu.account')}</Link>
-            )}
-            {tab == 'dex' && <b>DEX orders</b>}
-            {tab == 'transactions' ? (
-              <b>{t('explorer.menu.transactions')}</b>
-            ) : (
-              <Link href={searchItem ? '/account/' + searchItem + '/transactions' : ''}>
-                {t('explorer.menu.transactions')}
-              </Link>
-            )}
-          </div>
-          <div className="explorer-tabs-shadow"></div>
-        </div>
-      )}
     </>
   )
 }

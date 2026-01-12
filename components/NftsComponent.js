@@ -13,10 +13,16 @@ import {
   nativeCurrency
 } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink, ipfsUrl, nftPriceData } from '../utils/nft'
-import { nftLink, usernameOrAddress, timeOrDate, fullDateAndTime, capitalize } from '../utils/format'
+import {
+  nftLink,
+  usernameOrAddress,
+  timeOrDate,
+  fullDateAndTime,
+  capitalize,
+  addressUsernameOrServiceLink
+} from '../utils/format'
 
 import SEO from './SEO'
-import SearchBlock from './Layout/SearchBlock'
 import Tiles from './Tiles'
 import IssuerSelect from './UI/IssuerSelect'
 import CheckBox from './UI/CheckBox'
@@ -30,6 +36,8 @@ import NftTabs from './Tabs/NftTabs'
 import FiltersFrame from './Layout/FiltersFrame'
 import InfiniteScrolling from './Layout/InfiniteScrolling'
 import SimpleSelect from './UI/SimpleSelect'
+import { useIsMobile } from '../utils/mobile'
+import SearchBlock from './Layout/SearchBlock'
 
 export default function NftsComponent({
   collectionQuery,
@@ -60,6 +68,7 @@ export default function NftsComponent({
   const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
+  const isMobile = useIsMobile(800)
 
   const orderNftsList = [
     { value: 'mintedNew', label: t('dropdown.mintedNew', { ns: 'nft-sort' }) },
@@ -686,7 +695,20 @@ export default function NftsComponent({
       ) : (
         <>
           <SEO title={t('nfts.header') + (id ? ' ' + id : '')} description={t('nfts.desc') + (id ? ': ' + id : '')} />
-          <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="nfts" userData={userData} />
+          <div style={{ position: 'relative', marginTop: '10px', marginBottom: '20px' }}>
+            <h1 className="center">
+              {!(id || owner) ? (
+                'NFTs owned by an account'
+              ) : (
+                <>
+                  NFTs{' '}
+                  {addressUsernameOrServiceLink({ address: userData?.address, addressDetails: userData }, 'address', {
+                    short: isMobile
+                  })}
+                </>
+              )}
+            </h1>
+          </div>
         </>
       )}
 
@@ -697,177 +719,180 @@ export default function NftsComponent({
         </>
       )}
 
-      <FiltersFrame
-        order={order}
-        setOrder={setOrder}
-        orderList={currentOrderList}
-        activeView={activeView}
-        setActiveView={setActiveView}
-        count={nftCount}
-        hasMore={hasMore}
-        data={data || []}
-        csvHeaders={csvHeaders}
-        filtersHide={filtersHide}
-        setFiltersHide={setFiltersHide}
-      >
-        <>
-          {!burnedPeriod && (
-            <div>
-              {t('general.search')}
-              <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name="saleType" />
-            </div>
-          )}
-          {!burnedPeriod && listTab === 'onSale' && (
-            <div>
+      {/* if accoun't nft explorer and there is no owner or id, ask to provide an address */}
+      {!nftExplorer && !(id || owner) ? (
+        <div className="center" style={{ marginTop: '20px' }}>
+          {t('nfts.desc')}
+          <br />
+          <br />
+          <SearchBlock tab="nfts" searchPlaceholderText={t('explorer.enter-address')} type="explorer" />
+        </div>
+      ) : (
+        <FiltersFrame
+          order={order}
+          setOrder={setOrder}
+          orderList={currentOrderList}
+          activeView={activeView}
+          setActiveView={setActiveView}
+          count={nftCount}
+          hasMore={hasMore}
+          data={data || []}
+          csvHeaders={csvHeaders}
+          filtersHide={filtersHide}
+          setFiltersHide={setFiltersHide}
+        >
+          <>
+            {!burnedPeriod && (
               <div>
-                {t('table.currency')}
-                <TokenSelector value={selectedToken} onChange={setSelectedToken} currencyQueryName="saleCurrency" />
+                {t('general.search')}
+                <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name="saleType" />
               </div>
-              <br />
-              {t('tabs.onSale')}{' '}
-              <SimpleSelect
-                value={saleDestinationTab}
-                setValue={setSaleDestinationTab}
-                optionsList={saleDestinationTabList}
-              />
-            </div>
-          )}
-          {nftExplorer && (
-            <>
-              {mintedByMarketplace && (
-                <FormInput
-                  title={t('table.marketplace')}
-                  defaultValue={mintedByMarketplace}
-                  disabled={true}
-                  hideButton={true}
+            )}
+            {!burnedPeriod && listTab === 'onSale' && (
+              <div>
+                <div>
+                  {t('table.currency')}
+                  <TokenSelector value={selectedToken} onChange={setSelectedToken} currencyQueryName="saleCurrency" />
+                </div>
+                <br />
+                {t('tabs.onSale')}{' '}
+                <SimpleSelect
+                  value={saleDestinationTab}
+                  setValue={setSaleDestinationTab}
+                  optionsList={saleDestinationTabList}
                 />
-              )}
-              {collectionQuery ? (
-                <FormInput
-                  title={t('table.collection')}
-                  defaultValue={collectionQuery}
-                  disabled={true}
-                  hideButton={true}
-                />
-              ) : (
-                <>
-                  <AddressInput
-                    title={t('table.issuer')}
-                    placeholder={t('nfts.search-by-issuer')}
-                    setValue={onIssuerSearch}
-                    rawData={rawData || { issuer: issuerQuery }}
-                    type="issuer"
+              </div>
+            )}
+            {nftExplorer && (
+              <>
+                {mintedByMarketplace && (
+                  <FormInput
+                    title={t('table.marketplace')}
+                    defaultValue={mintedByMarketplace}
+                    disabled={true}
+                    hideButton={true}
                   />
-                  {!xahauNetwork && (
-                    <FormInput
-                      title={t('table.taxon')}
-                      placeholder={t('nfts.search-by-taxon')}
-                      setValue={onTaxonInput}
-                      disabled={issuer ? false : true}
-                      defaultValue={issuer ? rawData?.taxon : ''}
-                      key={issuer || 'empty'}
+                )}
+                {collectionQuery ? (
+                  <FormInput
+                    title={t('table.collection')}
+                    defaultValue={collectionQuery}
+                    disabled={true}
+                    hideButton={true}
+                  />
+                ) : (
+                  <>
+                    <AddressInput
+                      title={t('table.issuer')}
+                      placeholder={t('nfts.search-by-issuer')}
+                      setValue={onIssuerSearch}
+                      rawData={rawData || { issuer: issuerQuery }}
+                      type="issuer"
                     />
-                  )}
+                    {!xahauNetwork && (
+                      <FormInput
+                        title={t('table.taxon')}
+                        placeholder={t('nfts.search-by-taxon')}
+                        setValue={onTaxonInput}
+                        disabled={issuer ? false : true}
+                        defaultValue={issuer ? rawData?.taxon : ''}
+                        key={issuer || 'empty'}
+                      />
+                    )}
+                  </>
+                )}
+                {serialQuery && (
+                  <FormInput title={t('table.serial')} defaultValue={serialQuery} disabled={true} hideButton={true} />
+                )}
+                <AddressInput
+                  title={t('table.owner')}
+                  placeholder={t('nfts.search-by-owner')}
+                  setValue={setOwner}
+                  rawData={rawData || { owner: ownerQuery }}
+                  type="owner"
+                />
+                <FormInput
+                  title={t('table.name')}
+                  placeholder={t('nfts.search-by-name')}
+                  setValue={setSearch}
+                  defaultValue={rawData?.search}
+                />
+
+                {listTab === 'nfts' && (
+                  <div>
+                    {t('table.mint-period')}
+                    <DateAndTimeRange
+                      periodQueryName="mintedPeriod"
+                      period={mintedPeriod}
+                      setPeriod={setMintedPeriod}
+                      defaultPeriod={mintedPeriodQuery}
+                      minDate="nft"
+                      radio={true}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+            {!nftExplorer && rendered && (
+              <div>
+                <span style={{ display: 'inline-block', paddingBottom: '5px' }}>{t('table.issuer')}</span>
+                <IssuerSelect
+                  issuersList={issuersList}
+                  selectedIssuer={issuer}
+                  setSelectedIssuer={setIssuer}
+                  disabled={!(id || owner) || issuersList?.length < 1}
+                />
+              </div>
+            )}
+            <div>
+              {listTab !== 'onSale' && (
+                <>
+                  {t('table.text.include-burned-nfts')}
+                  <RadioOptions
+                    tabList={[
+                      { value: 'existing', label: t('tabs.existing') },
+                      { value: 'all', label: t('tabs.all') },
+                      { value: 'burned', label: t('tabs.burned') }
+                    ]}
+                    tab={burnedPeriod ? 'burned' : includeBurned ? 'all' : 'existing'}
+                    setTab={(tab) => {
+                      if (tab === 'burned') {
+                        setBurnedPeriod('all')
+                      } else if (tab === 'all') {
+                        setIncludeBurned(true)
+                        setBurnedPeriod(null)
+                      } else {
+                        setIncludeBurned(false)
+                        setBurnedPeriod(null)
+                      }
+                    }}
+                    name="ExistingAndBurnedTabs"
+                  />
                 </>
               )}
-              {serialQuery && (
-                <FormInput title={t('table.serial')} defaultValue={serialQuery} disabled={true} hideButton={true} />
-              )}
-              <AddressInput
-                title={t('table.owner')}
-                placeholder={t('nfts.search-by-owner')}
-                setValue={setOwner}
-                rawData={rawData || { owner: ownerQuery }}
-                type="owner"
-              />
-              <FormInput
-                title={t('table.name')}
-                placeholder={t('nfts.search-by-name')}
-                setValue={setSearch}
-                defaultValue={rawData?.search}
-              />
-
-              {listTab === 'nfts' && (
+              {burnedPeriod && (
                 <div>
-                  {t('table.mint-period')}
+                  {t('table.burn-period')}
                   <DateAndTimeRange
-                    periodQueryName="mintedPeriod"
-                    period={mintedPeriod}
-                    setPeriod={setMintedPeriod}
-                    defaultPeriod={mintedPeriodQuery}
+                    periodQueryName="burnedPeriod"
+                    period={burnedPeriod}
+                    setPeriod={setBurnedPeriod}
+                    defaultPeriod={burnedPeriodQuery}
                     minDate="nft"
                     radio={true}
+                    name="burnedPeriod"
                   />
                 </div>
               )}
-            </>
-          )}
-          {!nftExplorer && rendered && (
-            <div>
-              <span style={{ display: 'inline-block', paddingBottom: '5px' }}>{t('table.issuer')}</span>
-              <IssuerSelect
-                issuersList={issuersList}
-                selectedIssuer={issuer}
-                setSelectedIssuer={setIssuer}
-                disabled={!(id || owner) || issuersList?.length < 1}
-              />
-            </div>
-          )}
-          <div>
-            {listTab !== 'onSale' && (
-              <>
-                {t('table.text.include-burned-nfts')}
-                <RadioOptions
-                  tabList={[
-                    { value: 'existing', label: t('tabs.existing') },
-                    { value: 'all', label: t('tabs.all') },
-                    { value: 'burned', label: t('tabs.burned') }
-                  ]}
-                  tab={burnedPeriod ? 'burned' : includeBurned ? 'all' : 'existing'}
-                  setTab={(tab) => {
-                    if (tab === 'burned') {
-                      setBurnedPeriod('all')
-                    } else if (tab === 'all') {
-                      setIncludeBurned(true)
-                      setBurnedPeriod(null)
-                    } else {
-                      setIncludeBurned(false)
-                      setBurnedPeriod(null)
-                    }
-                  }}
-                  name="ExistingAndBurnedTabs"
-                />
-              </>
-            )}
-            {burnedPeriod && (
-              <div>
-                {t('table.burn-period')}
-                <DateAndTimeRange
-                  periodQueryName="burnedPeriod"
-                  period={burnedPeriod}
-                  setPeriod={setBurnedPeriod}
-                  defaultPeriod={burnedPeriodQuery}
-                  minDate="nft"
-                  radio={true}
-                  name="burnedPeriod"
-                />
-              </div>
-            )}
 
-            <div className="filters-check-box">
-              <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
-                {t('table.text.include-without-media-data')}
-              </CheckBox>
+              <div className="filters-check-box">
+                <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
+                  {t('table.text.include-without-media-data')}
+                </CheckBox>
+              </div>
             </div>
-          </div>
-        </>
-        <>
-          {/* if accoun't nft explorer and there is no owner or id, ask to provide an address */}
-          {!nftExplorer && !(id || owner) ? (
-            <div className="center" style={{ marginTop: '20px' }}>
-              {t('nfts.desc')}
-            </div>
-          ) : (
+          </>
+          <>
             <InfiniteScrolling
               dataLength={data?.length}
               loadMore={checkApi}
@@ -1040,9 +1065,9 @@ export default function NftsComponent({
                 </>
               )}
             </InfiniteScrolling>
-          )}
-        </>
-      </FiltersFrame>
+          </>
+        </FiltersFrame>
+      )}
     </>
   )
 }
