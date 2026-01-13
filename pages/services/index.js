@@ -67,7 +67,8 @@ export default function ServicesPage() {
         { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: RiFilePaper2Line },
         { href: '/username', title: t('menu.usernames'), icon: RiPriceTag3Line },
         { href: '/submit-account-information', title: t('menu.project-registration'), icon: RiFilePaper2Line },
-        !devNet ? { href: '/alerts', title: t('menu.price-alerts', { nativeCurrency }), icon: TbBell } : null
+        !devNet ? { href: '/alerts', title: t('menu.price-alerts', { nativeCurrency }), icon: TbBell } : null,
+        !devNet ? { href: '/admin/watchlist', title: 'Watchlist', icon: RiCheckboxCircleLine } : null
       ].filter(Boolean)
     }
 

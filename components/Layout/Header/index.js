@@ -211,28 +211,15 @@ export default function Header({
           className="header-menu-left"
           style={!width || width > 1240 ? { left: xahauNetwork ? 300 : bithomp ? 193 : 260 } : {}}
         >
-          <MenuDropDown
-            id="dropdown1"
-            title={t('menu.services.services')}
-            setHoverStates={setHoverStates}
-            hoverStates={hoverStates}
-          >
-            <Link href="/faucet">{t('menu.developers.faucet')}</Link>
-            <Link href="/services/send">Send Payment</Link>
-            <Link href="/services/trustline">Set Trust (Trustline)</Link>
-            {xahauNetwork && <Link href="/services/reward-auto-claim">Reward Auto Claim</Link>}
-            <Link href="/services/check">Issue Check</Link>
-            <Link href="/services/escrow">Create Escrow</Link>
-            {!xahauNetwork && <Link href="/services/amm/deposit">AMM Services</Link>}
-            <Link href="/services/account-settings/">Account Settings</Link>
-            <Link href="/services/account-delete">Account Delete</Link>
-            <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>
-            <Link href="/username">{t('menu.usernames')}</Link>
-            <Link href="/learn/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
-            <Link href="/submit-account-information">{t('menu.project-registration')}</Link>
-            {!devNet && <Link href="/alerts">{t('menu.price-alerts', { nativeCurrency })}</Link>}
-            <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a>
-          </MenuDropDown>
+          <div className="menu-dropdown">
+            <Link
+              href="/services"
+              className="menu-dropdown-button"
+              style={{ cursor: 'pointer', textDecoration: 'none', color: 'white' }}
+            >
+              {t('menu.services.services')}
+            </Link>
+          </div>
 
           <div className="menu-dropdown">
             <MenuDropDown
