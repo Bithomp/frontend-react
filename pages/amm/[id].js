@@ -3,7 +3,6 @@ import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import SearchBlock from '../../components/Layout/SearchBlock'
 import SEO from '../../components/SEO'
 import { addQueryParams, nativeCurrency, removeQueryParams, useWidth } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -68,7 +67,6 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage)
   const [data, setData] = useState(initialData)
-  const [userData, setUserData] = useState({ ...initialData?.accountDetails, address: initialData?.account })
 
   const checkApi = async () => {
     if (!id) return
@@ -89,7 +87,6 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
     if (newdata) {
       if (newdata.account) {
         setData(newdata)
-        setUserData({ ...newdata.accountDetails, address: newdata.account })
         if (newdata.ledgerTimestamp) {
           const getParamTimestamp = new Date(newdata.ledgerTimestamp * 1000).toISOString()
           addQueryParams(router, [{ name: 'ledgerTimestamp', value: getParamTimestamp }])
@@ -182,17 +179,7 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
           (data?.ledgerTimestamp ? ' ' + fullDateAndTime(data.ledgerTimestamp, null, { asText: true }) : '')
         }
       />
-      <SearchBlock
-        tab="amm"
-        searchPlaceholderText={
-          width > 600
-            ? 'Search by AMM ID, Liquidity Pool (LP) token, AMM owner address'
-            : 'AMM ID, LP token or AMM address'
-        }
-        userData={userData}
-      />
       <div className="content-center amm">
-        <h1 className="center">{lpToken}</h1>
         <AmmTabs
           tab="amm"
           params={{
@@ -202,6 +189,11 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
             currency2Issuer: data.amount2?.issuer || ''
           }}
         />
+        <div style={{ position: 'relative', marginTop: '10px', marginBottom: '20px' }}>
+          <h1 className="center">
+            {t('explorer.header.amm')} {lpToken}
+          </h1>
+        </div>
         <div className={width > 600 ? '' : 'center'}>
           Time machine:{' '}
           <DatePicker

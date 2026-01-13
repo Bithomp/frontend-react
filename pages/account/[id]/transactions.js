@@ -17,9 +17,9 @@ import {
   isAddressValid,
   nativeCurrency
 } from '../../../utils'
+import { addressUsernameOrServiceLink } from '../../../utils/format'
 
 import SEO from '../../../components/SEO'
-import SearchBlock from '../../../components/Layout/SearchBlock'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../../../components/Layout/InfiniteScrolling'
 import SimpleSelect from '../../../components/UI/SimpleSelect'
@@ -391,11 +391,16 @@ export default function AccountTransactions({
         description={`All transactions for address ${address}`}
         image={{ file: avatarSrc(address) }}
       />
-      <SearchBlock
-        tab="transactions"
-        searchPlaceholderText={t('explorer.enter-address')}
-        userData={initialData?.addressDetails}
-      />
+      <div style={{ position: 'relative', marginTop: '10px', marginBottom: '20px' }}>
+        <h1 className="center">
+          {t('explorer.menu.transactions')}{' '}
+          {addressUsernameOrServiceLink(
+            { address: initialData?.address, addressDetails: initialData?.addressDetails },
+            'address',
+            { short: isMobile }
+          )}
+        </h1>
+      </div>
       <FiltersFrame
         order={order}
         setOrder={setOrder}

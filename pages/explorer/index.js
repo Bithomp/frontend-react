@@ -161,7 +161,7 @@ export default function Explorer({ isSsrMobile, showAds }) {
       <section className="home-section">
         <h1 className="center">{t('explorer.header.main', { explorerName })}</h1>
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
-        <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} />
+        <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} type="explorer" />
       </section>
 
       {showAds && <Ads />}

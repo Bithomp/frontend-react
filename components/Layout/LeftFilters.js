@@ -30,6 +30,15 @@ export default function LeftFilters({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Prevent body scroll when filters are open
+  useEffect(() => {
+    if (filtersHide) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+  }, [filtersHide])
+
   const toggleFilters = () => {
     if (setFiltersHide) {
       setFiltersHide(!filtersHide)

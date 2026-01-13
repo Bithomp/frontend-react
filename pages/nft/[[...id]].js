@@ -1134,7 +1134,9 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         }
         image={{ file: imageUrl }}
       />
-      <SearchBlock searchPlaceholderText={t('enter-nft-id', { ns: 'nft' })} tab="nft" />
+      <h1 className="center" style={{ marginTop: '20px', marginBottom: '20px' }}>
+        NFT information {shortHash(id)}
+      </h1>
       <div className="content-profile">
         {id ? (
           <>
@@ -1652,8 +1654,8 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           </>
         ) : (
           <>
-            <h2 className="center">NFT</h2>
             <p className="center">{t('desc', { ns: 'nft' })}</p>
+            <SearchBlock searchPlaceholderText={t('enter-nft-id', { ns: 'nft' })} tab="nft" type="explorer" />
           </>
         )}
       </div>

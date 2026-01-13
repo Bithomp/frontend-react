@@ -29,6 +29,25 @@ import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
 import XahauExplorer from '../../../public/images/xahauexplorer/long.svg'
 import LogoAnimated from '../LogoAnimated'
 import { IoWalletOutline } from 'react-icons/io5'
+import SearchBlock from '../SearchBlock'
+
+const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account', '/amm', '/object', '/transaction']
+const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
+
+const ROUTE_TAB_MAP = [
+  { prefix: '/account/[id]/transactions', tab: 'transactions' },
+  { prefix: '/account/[id]/dex', tab: 'dex' },
+  { prefix: '/account', tab: 'account' },
+  { prefix: '/nft-explorer', tab: 'nfts' },
+  { prefix: '/nfts', tab: 'nfts' },
+  { prefix: '/nft-offers', tab: 'nft-offers' },
+  { prefix: '/nft-offer', tab: 'nft-offer' },
+  { prefix: '/nft-volumes', tab: 'nft-volumes' },
+  { prefix: '/amm', tab: 'amm' },
+  { prefix: '/nft', tab: 'nft' },
+  { prefix: '/object', tab: 'object' },
+  { prefix: '/transaction', tab: 'transaction' }
+]
 
 let timeoutIds = {}
 
@@ -159,8 +178,13 @@ export default function Header({
 
   const lang = i18n.language === 'default' ? 'en' : i18n.language
 
+  const hideSearchInHeader =
+    HIDE_SEARCH_HEADER.includes(router?.pathname) ||
+    (HIDE_SEARCH_WHEN_NO_ID.some((route) => router?.pathname === route || router?.pathname?.startsWith(route + '/')) &&
+      !router?.query?.id)
+
   return (
-    <div className={menuOpen ? 'mobile-menu-open' : ''}>
+    <div className={(menuOpen ? 'mobile-menu-open ' : '') + (hideSearchInHeader ? 'hide-secondline' : '')}>
       <header>
         <div className="header-logo">
           <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
@@ -168,14 +192,16 @@ export default function Header({
               xahauNetwork ? (
                 <XahauExplorer height="43" width="263" />
               ) : bithomp ? (
-                <div style={{ height: 46, width: 160, marginTop: -2.5 }}>
+                <div style={{ height: 46, width: 125, marginTop: -2.5 }}>
                   <LogoAnimated />
                 </div>
               ) : (
                 <XrplExplorer height="43" width="227" />
               )
             ) : (
-              <LogoSmall width="43" height="43" />
+              <div style={{ height: 46, width: 46, marginTop: -2.5 }}>
+                <LogoSmall />
+              </div>
             )}
           </Link>
         </div>
@@ -340,6 +366,16 @@ export default function Header({
             <Link href="/build-unl">{t('menu.business.build-unl')}</Link>
           </MenuDropDown>
         </div>
+
+        {width && (
+          <div className={'header-search-inline ' + (hideSearchInHeader ? 'hide-search-inline' : '')}>
+            <SearchBlock
+              compact={true}
+              searchPlaceholderText="Search..."
+              tab={ROUTE_TAB_MAP.find((route) => router?.pathname?.startsWith(route.prefix))?.tab}
+            />
+          </div>
+        )}
 
         <div className="header-menu-right">
           <MenuDropDown
@@ -515,6 +551,7 @@ export default function Header({
 
           <Switch />
         </div>
+
         <div className="header-burger">
           <input type="checkbox" id="header-burger" checked={menuOpen} onChange={mobileMenuToggle} />
           <label htmlFor="header-burger" className="header-burger-elements">

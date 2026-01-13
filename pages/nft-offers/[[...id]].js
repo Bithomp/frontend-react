@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
 import { setTabParams, useWidth, xahauNetwork } from '../../utils'
-import { getIsSsrMobile } from '../../utils/mobile'
+import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
 import {
   amountFormat,
   fullDateAndTime,
@@ -42,6 +42,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
   const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
+  const isMobile = useIsMobile(600)
 
   const [offers, setOffers] = useState([])
   const [filteredOffers, setFilteredOffers] = useState([])
@@ -259,36 +260,48 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
   return (
     <>
       <SEO title={t('nft-offers.header') + (id ? ' ' + id : '')} />
-      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="nft-offers" userData={userData} />
+      <div style={{ position: 'relative', marginTop: '10px', marginBottom: '20px' }}>
+        <h1 className="center">
+          {id ? (
+            <>
+              {t('nft-offers.header')}{' '}
+              {id &&
+                addressUsernameOrServiceLink({ address: id, addressDetails: userData }, 'address', { short: isMobile })}
+            </>
+          ) : (
+            'NFT offers by account'
+          )}
+        </h1>
+      </div>
       <div className="content-text">
-        <div className="tabs-inline">
-          <Tabs tabList={offerListTabList} tab={offerListTab} setTab={setOfferListTab} name="offerList" />
-          {!xahauNetwork && offerListTab === 'owned' && offersCount.all > 1 && (
-            <Tabs tabList={offerTypeTabList} tab={offerTypeTab} setTab={setOfferTypeTab} name="offerType" />
-          )}
-          {!!offersCount.expired && userData?.address && (
-            <button
-              className="button-action thin narrow"
-              style={{ margin: '10px 10px 20px' }}
-              onClick={() =>
-                setSignRequest({
-                  request: {
-                    TransactionType: 'NFTokenCancelOffer',
-                    Account: userData?.address,
-                    NFTokenOffers:
-                      account?.address && account.address === userData.address ? invalidOffers : expiredOffers
-                  }
-                })
-              }
-            >
-              {account?.address && account.address === userData.address
-                ? t('nft-offers.cancel-invalid-offer', { count: offersCount.invalid })
-                : t('nft-offers.cancel-expired-offer', { count: offersCount.expired })}
-            </button>
-          )}
-        </div>
         {id ? (
           <>
+            <div className="tabs-inline">
+              <Tabs tabList={offerListTabList} tab={offerListTab} setTab={setOfferListTab} name="offerList" />
+              {!xahauNetwork && offerListTab === 'owned' && offersCount.all > 1 && (
+                <Tabs tabList={offerTypeTabList} tab={offerTypeTab} setTab={setOfferTypeTab} name="offerType" />
+              )}
+              {!!offersCount.expired && userData?.address && (
+                <button
+                  className="button-action thin narrow"
+                  style={{ margin: '10px 10px 20px' }}
+                  onClick={() =>
+                    setSignRequest({
+                      request: {
+                        TransactionType: 'NFTokenCancelOffer',
+                        Account: userData?.address,
+                        NFTokenOffers:
+                          account?.address && account.address === userData.address ? invalidOffers : expiredOffers
+                      }
+                    })
+                  }
+                >
+                  {account?.address && account.address === userData.address
+                    ? t('nft-offers.cancel-invalid-offer', { count: offersCount.invalid })
+                    : t('nft-offers.cancel-expired-offer', { count: offersCount.expired })}
+                </button>
+              )}
+            </div>
             {windowWidth > 960 ? (
               <table className="table-large">
                 <thead>
@@ -458,8 +471,9 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
           </>
         ) : (
           <>
-            <h1 className="center">{t('nft-offers.header')}</h1>
             <p className="center">{t('nft-offers.' + offerListTab + '-desc')}</p>
+            <br />
+            <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="nft-offers" type="explorer" />
           </>
         )}
       </div>

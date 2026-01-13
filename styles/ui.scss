@@ -42,8 +42,16 @@ body.dark {
 }
 
 .content {
-  border-top: 81px solid var(--background-header);
+  border-top: 56px solid var(--background-header);
   flex: 1;
+
+  @media only screen and (max-width: 1470px) and (min-width: 1061px) {
+    border-top: 103px solid var(--background-header);
+  }
+
+  @media only screen and (max-width: 780px) {
+    border-top: 103px solid var(--background-header);
+  }
 
   .content-cols {
     display: flex;
@@ -123,6 +131,19 @@ body.dark {
         margin-top: 20px;
       }
     }
+  }
+}
+
+/* On routes where the second line should be hidden, reduce content offset to single-line header height */
+@media only screen and (max-width: 1470px) and (min-width: 1061px) {
+  .hide-secondline ~ .content {
+    border-top: 56px solid var(--background-header);
+  }
+}
+
+@media only screen and (max-width: 780px) {
+  .hide-secondline ~ .content {
+    border-top: 56px solid var(--background-header);
   }
 }
 

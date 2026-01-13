@@ -25,14 +25,15 @@ export default function AccountIndex() {
         title={t('explorer.header.account')}
         description="Account details, transactions, NFTs, Tokens for XRP Ledger accounts"
       />
-      <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" />
       <div className="content-profile account">
         <h1 className="center">{t('explorer.header.account')}</h1>
         <p className="center">
-          Here you will be able to see all the information about the account, including the transactions, tokens,
-          NFTs, and more.
+          Here you will be able to see all the information about the account, including the transactions, tokens, NFTs,
+          and more.
         </p>
+        <br />
+        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" type="explorer" />
       </div>
     </>
   )
-} 
+}

@@ -4,8 +4,59 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
 import { IoMdClose } from 'react-icons/io'
+
+const IndicatorsWithClear = (props) => {
+  const { selectProps } = props
+  const { inputValue, onInputChange, setSearchSuggestions } = selectProps
+
+  const show = !!(inputValue && inputValue.trim())
+
+  const handleClear = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    setSearchSuggestions([])
+
+    // 1) Clear react-select internal state
+    if (props.clearValue) props.clearValue()
+
+    // 2) Clear controlled inputValue
+    onInputChange('', { action: 'input-change' })
+
+    // 3) Put caret at the beginning by focusing the real input after React updates
+    requestAnimationFrame(() => {
+      const inp = document.getElementById('react-select-search-select-input')
+      if (inp) {
+        inp.focus()
+        try {
+          inp.setSelectionRange(0, 0)
+        } catch (_) {}
+      }
+    })
+  }
+
+  return (
+    <components.IndicatorsContainer {...props}>
+      {show && (
+        <div
+          onMouseDown={handleClear}
+          onTouchStart={handleClear}
+          style={{
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0 6px'
+          }}
+          aria-hidden="true"
+        >
+          <IoMdClose size={18} color="#666" />
+        </div>
+      )}
+      {props.children}
+    </components.IndicatorsContainer>
+  )
+}
 
 import {
   isAddressOrUsername,
@@ -29,46 +80,14 @@ import { IoSearch } from 'react-icons/io5'
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 let typingTimer
 
-const CustomClearIndicator = (props) => {
-  const {
-    selectProps: { inputValue, onInputChange },
-    setSearchSuggestions
-  } = props
-
-  if (!inputValue) return null
-
-  const handleClear = (e) => {
-    e.stopPropagation()
-    props.clearValue()
-    setSearchSuggestions([])
-    onInputChange('', { action: 'input-change' })
-  }
-
-  return (
-    <div
-      onClick={handleClear}
-      onTouchEnd={handleClear}
-      style={{
-        cursor: 'pointer',
-        paddingRight: '8px',
-        display: 'flex',
-        alignItems: 'center'
-      }}
-    >
-      <IoMdClose size={18} color="#666" />
-    </div>
-  )
-}
-
-const CustomIndicatorsContainer = (props) => {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <CustomClearIndicator {...props} setSearchSuggestions={props.selectProps.setSearchSuggestions} />
-      <components.IndicatorsContainer {...props} />
-    </div>
-  )
-}
-export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {}, isSsrMobile }) {
+export default function SearchBlock({
+  searchPlaceholderText,
+  tab = null,
+  userData = {},
+  isSsrMobile,
+  compact = false,
+  type = ''
+}) {
   const { t, i18n } = useTranslation()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -310,12 +329,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     return
   }
 
-  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account', 'transactions', 'dex'].includes(tab)
-
-  const searchOnInputChange = (inputValue, action) => {
-    if (action.action !== 'input-blur' && action.action !== 'menu-close') {
+  const searchOnInputChange = (inputValue, meta) => {
+    if (meta.action === 'input-change') {
       setSearchItem(inputValue)
+      if (inputValue === '') setSearchSuggestions([])
     }
+    return inputValue
   }
 
   const explorerHeader = (tab) => {
@@ -333,20 +352,28 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   return (
     <>
-      <div className="search-block" style={tab === 'explorer' ? { backgroundColor: 'unset', height: 90 } : {}}>
-        <div className="search-box" style={tab === 'explorer' ? { marginTop: '20px' } : {}}>
-          <div className="above-search-box">
-            {searching ? (
-              <span className={tab === 'explorer' ? '' : 'contrast'}>
-                {t('explorer.searching-tx-nft-nftoffer')}
-                <span className="waiting inline"></span>
-              </span>
-            ) : (
-              <div className="bold contrast">
-                {explorerHeader(tab)} {userOrServiceName(userData)}
-              </div>
-            )}
-          </div>
+      <div
+        className={`search-block ${compact ? 'search-block-compact' : ''}`}
+        style={type === 'explorer' || compact ? { backgroundColor: 'unset', height: compact ? 'auto' : 90 } : {}}
+      >
+        <div
+          className={`search-box ${compact ? 'search-box-compact' : ''}`}
+          style={type === 'explorer' || compact ? { marginTop: compact ? '0' : '20px' } : {}}
+        >
+          {!compact && (
+            <div className="above-search-box">
+              {searching ? (
+                <span className={type === 'explorer' ? '' : 'contrast'}>
+                  {t('explorer.searching-tx-nft-nftoffer')}
+                  <span className="waiting inline"></span>
+                </span>
+              ) : (
+                <div className={'bold' + (type === 'explorer' ? '' : ' contrast')}>
+                  {explorerHeader(tab)} {userOrServiceName(userData)}
+                </div>
+              )}
+            </div>
+          )}
           {isMounted ? (
             <div onKeyUp={searchOnKeyUp}>
               <Select
@@ -356,56 +383,66 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 onChange={searchOnChange}
                 spellCheck="false"
                 options={searchSuggestions}
-                getOptionLabel={(option) => (
-                  <>
-                    <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
-                    {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
-                    <b className="blue">{option.username}</b>
-                    {option.service && (
-                      <>
-                        {option.username ? ' (' : ''}
-                        <b className="green">{option.service}</b>
-                        {option.username ? ')' : ''}
-                      </>
-                    )}
-                    {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
-                    {option.verifiedDomain ? (
-                      <span className="green bold"> {option.verifiedDomain}</span>
-                    ) : (
-                      option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
-                    )}
-                    {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
-                      option.xaman && <>, </>}
-                    {option.xaman && (
-                      <>
-                        Xaman{' '}
-                        <span className="orange">
-                          {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
-                        </span>
-                        {option.xamanVerified && <> ✅</>}
-                      </>
-                    )}
-                    {option.tag ? (
-                      <b className="no-brake">
-                        {' '}
-                        [TAG: <span className="orange">{option.tag}</span>]
-                      </b>
-                    ) : (
-                      <>
-                        {option.balance !== null && (
-                          <>
-                            {' '}
-                            [
-                            <b>
-                              {amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) || 'Not activated'}
-                            </b>
-                            ]
-                          </>
-                        )}
-                      </>
-                    )}
-                  </>
-                )}
+                formatOptionLabel={(option, { context }) => {
+                  if (context === 'value') {
+                    // Display simple format when selected
+                    return option.username || option.address
+                  }
+                  // Display full format in dropdown
+                  return (
+                    <>
+                      <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
+                      {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
+                      <b className="blue">{option.username}</b>
+                      {option.service && (
+                        <>
+                          {option.username ? ' (' : ''}
+                          <b className="green">{option.service}</b>
+                          {option.username ? ')' : ''}
+                        </>
+                      )}
+                      {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && (
+                        <>, </>
+                      )}
+                      {option.verifiedDomain ? (
+                        <span className="green bold"> {option.verifiedDomain}</span>
+                      ) : (
+                        option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
+                      )}
+                      {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
+                        option.xaman && <>, </>}
+                      {option.xaman && (
+                        <>
+                          Xaman{' '}
+                          <span className="orange">
+                            {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
+                          </span>
+                          {option.xamanVerified && <> ✅</>}
+                        </>
+                      )}
+                      {option.tag ? (
+                        <b className="no-brake">
+                          {' '}
+                          [TAG: <span className="orange">{option.tag}</span>]
+                        </b>
+                      ) : (
+                        <>
+                          {option.balance !== null && (
+                            <>
+                              {' '}
+                              [
+                              <b>
+                                {amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true }) ||
+                                  'Not activated'}
+                              </b>
+                              ]
+                            </>
+                          )}
+                        </>
+                      )}
+                    </>
+                  )
+                }}
                 getOptionValue={(option) =>
                   option.address +
                   option.username +
@@ -427,8 +464,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                   //({ inputValue }) => inputValue.length > 3
                 }
                 aria-label="Search"
-                components={{ IndicatorsContainer: CustomIndicatorsContainer }}
                 setSearchSuggestions={setSearchSuggestions}
+                components={{
+                  IndicatorsContainer: IndicatorsWithClear,
+                  DropdownIndicator: null,
+                  IndicatorSeparator: null
+                }}
               />
             </div>
           ) : (
@@ -436,16 +477,15 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               aria-label="Search"
               ref={searchInput}
               type="text"
-              className="search-input"
+              className="search-input search-input-placeholder"
               placeholder={searchPlaceholderText}
               value={searchItem}
               onChange={(e) => setSearchItem(e.target.value)}
               onKeyUp={searchOnKeyUp}
               spellCheck="false"
               style={{
-                height: 36,
-                paddingLeft: 10,
-                paddingRight: 64
+                height: compact ? 28 : 36,
+                paddingRight: compact ? 38 : 64
               }}
             />
           )}
@@ -463,26 +503,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
           )}
         </div>
       </div>
-      {showTabs && (
-        <div className="explorer-tabs-block">
-          <div className="explorer-tabs">
-            {tab == 'account' ? (
-              <b>{t('explorer.menu.account')}</b>
-            ) : (
-              <Link href={'/account/' + searchItem}>{t('explorer.menu.account')}</Link>
-            )}
-            {tab == 'dex' && <b>DEX orders</b>}
-            {tab == 'transactions' ? (
-              <b>{t('explorer.menu.transactions')}</b>
-            ) : (
-              <Link href={searchItem ? '/account/' + searchItem + '/transactions' : ''}>
-                {t('explorer.menu.transactions')}
-              </Link>
-            )}
-          </div>
-          <div className="explorer-tabs-shadow"></div>
-        </div>
-      )}
     </>
   )
 }

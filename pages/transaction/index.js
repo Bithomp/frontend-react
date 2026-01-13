@@ -22,9 +22,9 @@ const TransactionSearch = () => {
   return (
     <>
       <SEO page="Transaction search" title="Tranasction search" description="Transaction details" />
-      <SearchBlock tab="transaction" />
       <Container>
         <h1 className="center">Transaction search</h1>
+        <SearchBlock tab="transaction" type="explorer" />
       </Container>
     </>
   )
