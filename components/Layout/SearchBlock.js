@@ -10,7 +10,7 @@ const IndicatorsWithClear = (props) => {
   const { selectProps } = props
   const { inputValue, onInputChange, setSearchSuggestions } = selectProps
 
-  const show = !!(inputValue && inputValue.trim())
+  const show = !!(typeof inputValue === 'string' && inputValue.trim())
 
   const handleClear = (e) => {
     e.preventDefault()
