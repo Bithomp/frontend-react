@@ -11,6 +11,14 @@ import { GrMoney } from 'react-icons/gr'
 import { IoStatsChart, IoWallet } from 'react-icons/io5'
 import { FaSignOutAlt, FaEye, FaUserCheck, FaUserFriends } from 'react-icons/fa'
 import { FiLink } from 'react-icons/fi'
+import { MdMiscellaneousServices } from 'react-icons/md'
+import { LuCoins } from 'react-icons/lu'
+import { RiNftLine, RiPuzzleLine } from 'react-icons/ri'
+import { HiOutlineGlobeAlt } from 'react-icons/hi'
+import { FaCode } from 'react-icons/fa'
+import { IoLogoBuffer } from 'react-icons/io'
+import { MdGavel, MdMenuBook } from 'react-icons/md'
+import { AiFillStar } from 'react-icons/ai'
 
 const handleClick = (e) => {
   if (e.target.getAttribute('data-expanded') !== null) {
@@ -134,69 +142,17 @@ export default function MobileMenu({
           )}
         </div>
 
-        <div className="mobile-menu-directory" data-expanded="false">
-          {t('menu.services.services')}
-        </div>
-        <div className="mobile-menu__submenu">
-          <Link href="/faucet" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t('menu.developers.faucet')}
-          </Link>
-          <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            Send Payment
-          </Link>
-          <Link href="/services/trustline" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            Set Trust (Trustline)
-          </Link>
-          {xahauNetwork && (
-            <Link href="/services/reward-auto-claim" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              Reward Auto Claim
-            </Link>
-          )}
-          <Link href="/services/check" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            Issue Check
-          </Link>
-          <Link href="/services/escrow" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            Create Escrow
-          </Link>
-          {!xahauNetwork && (
-            <Link href="/services/amm/deposit" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              AMM Services
-            </Link>
-          )}
-          <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            Account Settings
-          </Link>
-          <Link className="mobile-menu-item" onClick={mobileMenuToggle} href="/services/account-delete">
-            Account Delete
-          </Link>
-          <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t('menu.services.nft-mint')}
-          </Link>
-          {!displayName && (
-            <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t('menu.usernames')}
-            </Link>
-          )}
-          <Link href="/learn/xrp-xah-taxes" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t('menu.services.tax-reports')}
-          </Link>
-
-          <Link href="/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t('menu.project-registration')}
-          </Link>
-
-          {!devNet && (
-            <Link href="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t('menu.price-alerts', { nativeCurrency })}
-            </Link>
-          )}
-          <a href={'/submit/'} className="mobile-menu-item">
-            {t('menu.submit-offline-tx')}
-          </a>
-        </div>
+        <Link
+          href="/services"
+          className="mobile-menu-directory"
+          onClick={mobileMenuToggle}
+          style={{ cursor: 'pointer', display: 'block', textDecoration: 'none' }}
+        >
+          <MdMiscellaneousServices style={{ marginBottom: '-2px' }} /> {t('menu.services.services')}
+        </Link>
 
         <div className="mobile-menu-directory" data-expanded="false">
-          {t('menu.tokens')}
+          <LuCoins style={{ marginBottom: '-2px' }} /> {t('menu.tokens')}
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/tokens" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -234,7 +190,7 @@ export default function MobileMenu({
         {!xahauNetwork && (
           <>
             <div className="mobile-menu-directory" data-expanded="false">
-              {t('menu.amm.amm')}
+              <IoLogoBuffer style={{ marginBottom: '-2px' }} /> {t('menu.amm.amm')}
             </div>
             <div className="mobile-menu__submenu">
               <Link href="/amms" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -263,7 +219,7 @@ export default function MobileMenu({
         )}
 
         <div className="mobile-menu-directory" data-expanded="false">
-          NFT
+          <RiNftLine style={{ marginBottom: '-2px' }} /> NFT
         </div>
         <div className="mobile-menu__submenu">
           {!displayName ? (
@@ -350,7 +306,7 @@ export default function MobileMenu({
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
-          {t('menu.network.blockchain')}
+          <HiOutlineGlobeAlt style={{ marginBottom: '-2px' }} /> {t('menu.network.blockchain')}
         </div>
         <div className="mobile-menu__submenu">
           {xahauNetwork && (
@@ -399,7 +355,7 @@ export default function MobileMenu({
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
-          {t('menu.developers.developers')}
+          <FaCode style={{ marginBottom: '-2px' }} /> {t('menu.developers.developers')}
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/learn/the-bithomp-api" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -439,7 +395,7 @@ export default function MobileMenu({
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
-          Bithomp
+          <RiPuzzleLine style={{ marginBottom: '-2px' }} /> Bithomp
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/learn/the-bithomp-explorer-advantages" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -466,7 +422,7 @@ export default function MobileMenu({
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
-          {t('menu.legal')}
+          <MdGavel style={{ marginBottom: '-2px' }} /> {t('menu.legal')}
         </div>
         <div className="mobile-menu__submenu">
           <Link href="/disclaimer" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -481,7 +437,7 @@ export default function MobileMenu({
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
-          {t('menu.learn-more.title')}
+          <MdMenuBook style={{ marginBottom: '-2px' }} /> {t('menu.learn-more.title')}
         </div>
         <div className="mobile-menu__submenu">
           {!xahauNetwork && (
@@ -508,7 +464,7 @@ export default function MobileMenu({
         {!xahauNetwork && (
           <>
             <div className="mobile-menu-directory" data-expanded="false">
-              {t('menu.sponsored.title')}
+              <AiFillStar style={{ marginBottom: '-2px' }} /> {t('menu.sponsored.title')}
             </div>
             <div className="mobile-menu__submenu">
               <a href="https://bithomp.com/go/fm-buy" target="_blank" rel="noreferrer" className="mobile-menu-item">
