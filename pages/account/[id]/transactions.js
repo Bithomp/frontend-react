@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { niceCurrency } from '../../../utils/format'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { IoMdClose } from 'react-icons/io'
 
@@ -334,7 +335,8 @@ export default function AccountTransactions({
     { label: 'From', key: 'from' },
     { label: 'To', key: 'to' },
     { label: 'Amount', key: 'amount' },
-    { label: 'Currency', key: 'currency' },
+    { label: 'Currency Name', key: 'currencyName' },
+    { label: 'Currency Code', key: 'currency' },
     { label: 'Fee', key: 'fee' },
     { label: 'Ledger Index', key: 'ledgerIndex' }
   ]
@@ -414,15 +416,18 @@ export default function AccountTransactions({
               dateObj = new Date(item.outcome.timestamp)
             }
 
-            // Extract amount and currency
+            // Extract amount, currency code, and currency name
             let amount = ''
             let currency = ''
+            let currencyName = ''
             if (typeof item.tx.Amount === 'string') {
-              amount = item.tx.Amount
+              amount = (Number(item.tx.Amount) / 1000000).toString()
               currency = nativeCurrency
+              currencyName = niceCurrency(nativeCurrency)
             } else if (typeof item.tx.Amount === 'object') {
               amount = item.tx.Amount?.value || ''
               currency = item.tx.Amount?.currency || ''
+              currencyName = niceCurrency(currency)
             }
 
             // Extract fee
@@ -438,6 +443,7 @@ export default function AccountTransactions({
               to: item.tx.Destination || '',
               amount: amount,
               currency: currency,
+              currencyName: currencyName,
               fee: fee,
               ledgerIndex: item.outcome.ledgerIndex || ''
             }
