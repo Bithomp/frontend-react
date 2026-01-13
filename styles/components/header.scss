@@ -699,3 +699,33 @@ header {
     margin-right: 0;
   }
 }
+
+/* When mobile menu is open:
+   - dropdowns in header must be above the menu
+   - BUT the second row (search line) must stay under the opened mobile menu
+   -> Solution: raise header above menu, hide search-inline while menu is open (only on small screens where it becomes 2nd row)
+*/
+.mobile-menu-open {
+  header {
+    z-index: 30; /* > .mobile-menu (20) */
+
+    /* Make sure dropdown popups are also above everything */
+    .menu-dropdown {
+      position: relative;
+      z-index: 31;
+
+      .menu-dropdown-content {
+        z-index: 32;
+      }
+    }
+  }
+
+  /* Only on layouts where search-inline becomes the 2nd line */
+  @media only screen and (max-width: 960px) {
+    header {
+      .header-search-inline {
+        display: none !important; /* keeps it from overlapping the menu */
+      }
+    }
+  }
+}
