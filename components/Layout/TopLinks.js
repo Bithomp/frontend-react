@@ -1,16 +1,22 @@
 import { useTranslation } from 'next-i18next'
 //import { network, useWidth } from '../../utils'
-import { useIsMobile } from '../../utils/mobile'
+//import { useIsMobile } from '../../utils/mobile'
 //import Image from 'next/image'
 
-export default function TopLinks({ countryCode }) {
+export default function TopLinks(
+  {
+    //countryCode
+  }
+) {
   const { t } = useTranslation()
-  const isMobile = useIsMobile()
+  //const isMobile = useIsMobile()
   //const width = useWidth()
 
   /* it is important to have "tooltiptext right" on the first ad, otherwise brakes UI on mobiles, too wide to the left */
   /* it is important to have "tooltiptext left" on the last ad, otherwise brakes UI on mobiles, too wide to the right */
 
+  {
+    /*
   let stakeAd = (
     <span className="tooltip">
       <a href="https://bithomp.com/go/stake-world" target="_blank" rel="noreferrer" className="top-link orange">
@@ -32,6 +38,8 @@ export default function TopLinks({ countryCode }) {
       </span>
     )
   }
+    */
+  }
 
   return (
     <div className="top-links">
@@ -49,8 +57,10 @@ export default function TopLinks({ countryCode }) {
         🧾
         {isMobile ? <br /> : ' | '}
         */}
+      {/*
       {stakeAd}
       {isMobile ? <br /> : ' | '}
+      */}
       <span className="tooltip">
         <a href="https://bithomp.com/go/play-slots" target="_blank" rel="noreferrer" className="top-link orange">
           Play Slots and win 70,000 XRP

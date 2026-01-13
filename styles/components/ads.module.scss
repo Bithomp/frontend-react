@@ -62,8 +62,8 @@
       }
     }
   }
-  /* 1100 - 3 brands, 1279 px when 4 brands */
-  @media only screen and (max-width: 1100px) {
+  /* 970 - 2 brands, 1100 - 3 brands, 1279 px when 4 brands */
+  @media only screen and (max-width: 970px) {
     .brand-item {
       height: 40px;
       width: 154px;

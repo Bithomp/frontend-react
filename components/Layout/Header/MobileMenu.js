@@ -28,7 +28,7 @@ export default function MobileMenu({
   signOutPro,
   signOut,
   account,
-  countryCode,
+  //countryCode,
   sessionToken
 }) {
   const { t } = useTranslation('common')
@@ -505,25 +505,31 @@ export default function MobileMenu({
           </Link>
         </div>
 
-        <div className="mobile-menu-directory" data-expanded="false">
-          {t('menu.sponsored.title')}
-        </div>
-        <div className="mobile-menu__submenu">
-          <a href="https://bithomp.com/go/fm-buy" target="_blank" rel="noreferrer" className="mobile-menu-item">
-            {t('menu.sponsored.buy')}
-          </a>
-          <a href="https://bithomp.com/go/fm-earn" target="_blank" rel="noreferrer" className="mobile-menu-item">
-            {t('menu.sponsored.earn')}
-          </a>
-          <a
-            href={countryCode === 'US' ? 'https://bithomp.com/go/fm-play-us' : 'https://bithomp.com/go/fm-play'}
-            target="_blank"
-            rel="noreferrer"
-            className="mobile-menu-item"
-          >
-            {countryCode === 'US' ? 'Join Drake on Stake' : 'Join Stake'}
-          </a>
-        </div>
+        {!xahauNetwork && (
+          <>
+            <div className="mobile-menu-directory" data-expanded="false">
+              {t('menu.sponsored.title')}
+            </div>
+            <div className="mobile-menu__submenu">
+              <a href="https://bithomp.com/go/fm-buy" target="_blank" rel="noreferrer" className="mobile-menu-item">
+                {t('menu.sponsored.buy')}
+              </a>
+              <a href="https://bithomp.com/go/fm-earn" target="_blank" rel="noreferrer" className="mobile-menu-item">
+                {t('menu.sponsored.earn')}
+              </a>
+              {/*
+              <a
+                href={countryCode === 'US' ? 'https://bithomp.com/go/fm-play-us' : 'https://bithomp.com/go/fm-play'}
+                target="_blank"
+                rel="noreferrer"
+                className="mobile-menu-item"
+              >
+                {countryCode === 'US' ? 'Join Drake on Stake' : 'Join Stake'}
+              </a>
+              */}
+            </div>
+          </>
+        )}
       </div>
     </div>
   )

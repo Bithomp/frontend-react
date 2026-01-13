@@ -3,14 +3,13 @@ import { brandsBlock } from '../../styles/components/ads.module.scss'
 
 import BtcBit from '../../public/images/sponsored/btcbit.svg'
 import Nexo from '../../public/images/sponsored/nexo.svg'
-import Stake from '../../public/images/sponsored/stake.svg'
+//import Stake from '../../public/images/sponsored/stake.svg'
 //import Doppler from '../../public/images/sponsored/doppler.svg'
 import { useState, useEffect } from 'react'
-import { useWidth } from '../../utils'
 
-export default function Ads({ countryCode }) {
+//countryCode
+export default function Ads({}) {
   const { theme } = useTheme()
-  const width = useWidth()
 
   const [rendered, setRendered] = useState(false)
 
@@ -90,6 +89,7 @@ export default function Ads({ countryCode }) {
           </div>
         </a>
         */}
+      {/*
       <a
         href={'https://bithomp.com/go/play-xrp' + (countryCode === 'US' ? '-us' : '')}
         target="_blank"
@@ -97,10 +97,11 @@ export default function Ads({ countryCode }) {
       >
         <div className="brand-item stake">
           <Stake className="brand-item-icon" fill={rendered ? (theme === 'dark' ? 'white' : '#001d2b') : '#001d2b'} />
-          <div className="brand-item-title">Join Stake!{width > 1280 && ' 200% Bonus'}</div>
+          <div className="brand-item-title">Join Stake!</div>
           <div className="brand-item-text">World’s largest Crypto Casino — instant payouts, $100K daily prizes.</div>
         </div>
       </a>
+      */}
     </div>
   )
 }
