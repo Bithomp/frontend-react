@@ -190,7 +190,9 @@ export default function Header({
           <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
             {(width < 1060 && width > 350) || width > 1240 || !width ? (
               xahauNetwork ? (
-                <XahauExplorer height="43" width="263" />
+                <div style={{ height: 43, width: 220, marginTop: -2.5 }}>
+                  <XahauExplorer />
+                </div>
               ) : bithomp ? (
                 <div style={{ height: 46, width: 125, marginTop: -2.5 }}>
                   <LogoAnimated />
