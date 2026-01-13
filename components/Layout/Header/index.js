@@ -83,9 +83,9 @@ const MenuDropDown = ({ children, id, title, subtitle, setHoverStates, hoverStat
         onClick={() => setHoverStates((state) => ({ ...state, [id]: true }))}
       >
         {title}
+        {subtitle && <div className="orange">&nbsp;{subtitle}</div>}
         <FaAngleDown className="chevron" />
       </div>
-      {subtitle && <div className="menu-dropdown-subtitle orange">{subtitle?.toLowerCase()}</div>}
       {hoverStates[id] && <div className={'menu-dropdown-content ' + direction}>{children}</div>}
     </div>
   )
