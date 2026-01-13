@@ -5,14 +5,14 @@ header {
   background-color: var(--background-header);
   border-bottom: 1px solid var(--background-menu);
   z-index: 7;
-  transition: background-color .5s;
+  transition: background-color 0.5s;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   box-sizing: border-box;
   padding: 0 20px;
   gap: 0 20px;
-  
+
   .header-logo {
     margin-left: 0;
     margin-top: 12px;
@@ -25,21 +25,24 @@ header {
   .menu-dropdown {
     position: relative;
     display: inline-block;
+
     .menu-dropdown-button {
       position: relative;
       z-index: 5;
       color: white;
       cursor: pointer;
-      transition: color .5s;
+      transition: color 0.5s;
       display: flex;
       align-items: center;
-      padding-bottom: 1px; //don't cut bottoms of "g" in titles
+      padding-bottom: 1px; // don't cut bottoms of "g" in titles
       height: 20px;
+
       .chevron {
         padding-left: 3px;
         padding-top: 2px;
       }
     }
+
     .menu-dropdown-content {
       position: absolute;
       left: -16px;
@@ -59,7 +62,9 @@ header {
         height: 1px;
         border-top: 1px solid var(--background-menu);
       }
-      a, .link {
+
+      a,
+      .link {
         text-decoration: none;
         display: block;
         margin: 0;
@@ -71,16 +76,19 @@ header {
         border-left: 1px solid var(--background-menu);
         font-size: 16px;
         cursor: pointer;
+
         &:hover {
           color: var(--accent-link);
         }
       }
+
       hr {
         margin: 0;
         border: 0;
         border-top: 1px solid var(--background-menu);
       }
     }
+
     &:hover {
       .menu-dropdown-button {
         color: var(--accent-link);
@@ -101,6 +109,7 @@ header {
     line-height: 16px;
     margin-top: 17px;
     margin-bottom: 3px;
+
     > div {
       margin: 0 4px;
       z-index: 5;
@@ -129,24 +138,24 @@ header {
     flex: 100 1 350px;
     min-width: 280px;
     max-width: 500px;
-    
+
     &.hide-search-inline {
       visibility: hidden;
       opacity: 0;
       pointer-events: none;
     }
-    
+
     .search-block {
       height: auto;
       background-color: transparent;
       padding: 0;
       width: 100%;
-      
+
       .search-box {
         margin: 0;
         position: relative;
         width: 100%;
-        
+
         .search-input {
           height: 28px;
           padding-left: 8px !important;
@@ -161,19 +170,19 @@ header {
           border-radius: 14px;
           background-color: var(--background-input);
           box-sizing: border-box;
-          transition: background-color .5s;
+          transition: background-color 0.5s;
           color: var(--text-main);
-          
+
           &.search-input-placeholder {
             padding-left: 10px !important;
           }
-          
+
           &.search-input-select {
             padding: 0 !important;
             width: 100% !important;
             min-width: 100% !important;
             max-width: 100% !important;
-            
+
             .react-select__control {
               min-height: 28px;
               height: 28px;
@@ -183,60 +192,85 @@ header {
               width: 100% !important;
               border-radius: 14px;
               cursor: text;
-              
-              .react-select__value-container {
-                padding: 0px 8px 2px 8px;
-                min-height: 18px;
-                width: 100%;
-                display: flex;
-                align-items: center;
-                
-                .react-select__placeholder {
-                  white-space: nowrap;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  max-width: 100%;
-                  font-size: 16px;
-                  padding: 0 38px 0 0;
-                  color: var(--text-secondary);
-                }
-                
-                .react-select__single-value {
-                  font-size: 16px;
-                  max-width: calc(100% - 50px);
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
-                  color: var(--text-main);
-                }
-              }
-              
-              .react-select__input-container {
-                margin: 0;
-                position: absolute;
-                color: var(--text-main);
-                pointer-events: none;
-                left: 0;
-                right: 0;
-                top: -2px;
-                bottom: 0;
-                display: flex;
-                align-items: center;
-                
-                input {
-                  font-size: 16px;
-                  padding: 0 38px 0 10px !important;
-                  color: var(--text-main) !important;
-                  pointer-events: all;
-                  width: 100%;
-                  background: transparent;
-                  margin: 0 !important;
-                  border: none !important;
-                  line-height: 28px;
-                }
-              }
+              position: relative; /* for absolute placeholder + indicators */
+              overflow: hidden;
             }
-            
+
+            /* IMPORTANT: do NOT fight react-select grid.
+              Just adjust paddings and positioning. */
+            .react-select__value-container {
+              padding-left: 10px !important;
+              padding-right: 56px !important; /* space for clear + search button */
+              height: 28px;
+            }
+
+            /* Absolute placeholder so it doesn't push the caret */
+            .react-select__placeholder {
+              position: absolute !important;
+              left: 0;
+              right: 56px;
+              top: 50%;
+              transform: translateY(-50%);
+              margin: 0 !important;
+              color: var(--text-secondary);
+              pointer-events: none;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
+            /* Keep selected value aligned like placeholder */
+            .react-select__single-value {
+              margin: 0 !important;
+              color: var(--text-main);
+            }
+
+            /* Fix the "select.scss puts input absolute" issue */
+            .react-select__input {
+              position: static !important;
+            }
+
+            /* Align caret start with placeholder */
+            .react-select__input-container {
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+
+            .react-select__input-container input {
+              padding: 0 !important;
+              margin: 0 !important;
+              border: none !important;
+              width: 100% !important;
+              background: transparent;
+              font-size: 16px;
+              line-height: 28px;
+              color: var(--text-main) !important;
+            }
+
+            /* Indicators area: MUST be visible and clickable */
+            .react-select__indicators {
+              position: absolute;
+              right: 28px; /* left of search button */
+              top: 0;
+              height: 28px;
+              display: flex !important;
+              align-items: center;
+              z-index: 3;
+            }
+
+            .react-select__clear-indicator {
+              padding: 0 6px !important;
+              cursor: pointer;
+            }
+
+            .react-select__dropdown-indicator {
+              display: none;
+            }
+
+            .react-select__indicator-separator {
+              display: none !important;
+            }
+
             .react-select__menu {
               top: 28px !important;
               left: 0 !important;
@@ -245,27 +279,9 @@ header {
               border-radius: 14px;
               overflow: hidden;
             }
-            
-            .react-select__indicators {
-              position: static !important;
-              display: flex !important;
-              padding-right: 20px;
-              
-              > div {
-                position: static !important;
-              }
-            }
-            
-            .react-select__dropdown-indicator {
-              display: none;
-            }
-            
-            .react-select__indicator-separator {
-              display: none !important;
-            }
           }
         }
-        
+
         .search-button {
           position: absolute;
           width: 26px;
@@ -280,11 +296,11 @@ header {
           display: flex;
           align-items: center;
           justify-content: center;
-          
+
           &:hover {
             opacity: 0.7;
           }
-          
+
           .search-icon {
             width: 18px;
             height: 18px;
@@ -303,29 +319,37 @@ header {
         margin-right: 0;
       }
     }
-    a, .link {
+
+    a,
+    .link {
       margin-right: 20px;
       vertical-align: middle;
+
       &:hover {
         color: var(--text-contrast);
       }
     }
+
     .user-icon {
       width: 24px;
       height: 24px;
       margin-right: 5px;
     }
+
     .menu-dropdown-button {
       position: relative;
       z-index: 8;
     }
+
     .top-switch {
       .chevron {
         display: none;
       }
     }
+
     .menu-dropdown-content {
       padding-top: 18px;
+
       &:after {
         top: 17px;
       }
@@ -368,7 +392,7 @@ header {
     #header-burger:checked ~ .header-burger-elements > div:nth-child(2) {
       opacity: 0;
     }
-    #header-burger:checked~ .header-burger-elements > div:nth-child(3) {
+    #header-burger:checked ~ .header-burger-elements > div:nth-child(3) {
       transform: translateY(-9px) rotate(-45deg);
     }
   }
@@ -388,22 +412,26 @@ header {
   overflow: auto;
   display: flex;
   flex-direction: column;
+
   .mobile-menu-wrap {
     padding-top: 5px;
   }
+
   .mobile-menu-item {
     text-decoration: none;
     display: flex;
     margin: 5px 40px;
-    color:#fff;
+    color: #fff;
     font-size: 16px;
     padding-left: 10px;
+
     .user-icon {
       width: 24px;
       height: 24px;
       margin-right: 5px;
     }
   }
+
   .mobile-menu__submenu {
     display: none;
     overflow: hidden;
@@ -439,7 +467,6 @@ header {
     }
 
     &[data-expanded="true"] {
-
       &::after {
         transform: rotate(45deg);
       }
@@ -464,9 +491,11 @@ header {
   header {
     .header-menu-right {
       margin-right: 55px;
+
       .theme-switch {
         display: block;
       }
+
       .top-switch {
         .menu-dropdown {
           display: block;
@@ -474,6 +503,7 @@ header {
       }
     }
   }
+
   .mobile-menu {
     transform: translateX(0);
   }
@@ -483,7 +513,7 @@ header {
   header {
     min-height: 55px;
     height: auto;
-    
+
     .header-search-inline {
       flex: 1 1 280px;
       margin-left: 0;
@@ -492,7 +522,7 @@ header {
       min-width: 200px;
       max-width: 100%;
     }
-    
+
     .header-menu-left {
       display: none;
     }
@@ -501,16 +531,19 @@ header {
       right: 60px;
       top: 25.5px;
       margin-right: 55px;
+
       .theme-switch {
         display: block;
       }
+
       .menu-dropdown {
         display: block;
-        
+
         &:first-of-type {
           display: none;
         }
       }
+
       .top-switch {
         .menu-dropdown {
           display: block;
@@ -523,7 +556,7 @@ header {
       top: 18px;
     }
   }
-  
+
   .mobile-menu {
     margin-top: 55px;
     height: calc(100% - 55px);
@@ -552,7 +585,7 @@ header {
       }
     }
   }
-  
+
   .mobile-menu {
     margin-top: 55px;
     height: calc(100% - 55px);
@@ -577,7 +610,7 @@ header {
       display: none;
     }
   }
-  
+
   .mobile-menu-open {
     header {
       .header-logo {
@@ -585,6 +618,7 @@ header {
         min-width: 0;
         overflow: hidden;
       }
+
       .header-menu-right {
         display: flex;
       }
@@ -595,11 +629,11 @@ header {
 @media only screen and (max-width: 1469px) and (min-width: 1061px) {
   header {
     justify-content: space-between;
-    
+
     .header-menu-right {
       margin-left: 0;
     }
-    
+
     .header-search-inline {
       z-index: 0;
       order: 3;
@@ -637,14 +671,17 @@ header {
     justify-content: space-between;
     padding: 0 20px;
   }
+
   header .header-logo {
     margin-left: 0;
   }
+
   header .header-search-inline {
     z-index: 11;
     margin-left: 0;
     margin-right: 0;
   }
+
   header .header-menu-right {
     margin-left: 0;
     margin-right: 0;

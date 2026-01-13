@@ -6,6 +6,58 @@ import axios from 'axios'
 import { useSearchParams } from 'next/navigation'
 import { IoMdClose } from 'react-icons/io'
 
+const IndicatorsWithClear = (props) => {
+  const { selectProps } = props
+  const { inputValue, onInputChange, setSearchSuggestions } = selectProps
+
+  const show = !!(inputValue && inputValue.trim())
+
+  const handleClear = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    setSearchSuggestions([])
+
+    // 1) Clear react-select internal state
+    if (props.clearValue) props.clearValue()
+
+    // 2) Clear controlled inputValue
+    onInputChange('', { action: 'input-change' })
+
+    // 3) Put caret at the beginning by focusing the real input after React updates
+    requestAnimationFrame(() => {
+      const inp = document.getElementById('react-select-search-select-input')
+      if (inp) {
+        inp.focus()
+        try {
+          inp.setSelectionRange(0, 0)
+        } catch (_) {}
+      }
+    })
+  }
+
+  return (
+    <components.IndicatorsContainer {...props}>
+      {show && (
+        <div
+          onMouseDown={handleClear}
+          onTouchStart={handleClear}
+          style={{
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0 6px'
+          }}
+          aria-hidden="true"
+        >
+          <IoMdClose size={18} color="#666" />
+        </div>
+      )}
+      {props.children}
+    </components.IndicatorsContainer>
+  )
+}
+
 import {
   isAddressOrUsername,
   isIdValid,
@@ -28,45 +80,6 @@ import { IoSearch } from 'react-icons/io5'
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 let typingTimer
 
-const CustomClearIndicator = (props) => {
-  const {
-    selectProps: { inputValue, onInputChange },
-    setSearchSuggestions
-  } = props
-
-  if (!inputValue) return null
-
-  const handleClear = (e) => {
-    e.stopPropagation()
-    props.clearValue()
-    setSearchSuggestions([])
-    onInputChange('', { action: 'input-change' })
-  }
-
-  return (
-    <div
-      onClick={handleClear}
-      onTouchEnd={handleClear}
-      style={{
-        cursor: 'pointer',
-        paddingRight: '8px',
-        display: 'flex',
-        alignItems: 'center'
-      }}
-    >
-      <IoMdClose size={18} color="#666" />
-    </div>
-  )
-}
-
-const CustomIndicatorsContainer = (props) => {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <CustomClearIndicator {...props} setSearchSuggestions={props.selectProps.setSearchSuggestions} />
-      <components.IndicatorsContainer {...props} />
-    </div>
-  )
-}
 export default function SearchBlock({
   searchPlaceholderText,
   tab = null,
@@ -316,13 +329,12 @@ export default function SearchBlock({
     return
   }
 
-  const searchOnInputChange = (inputValue, action) => {
-    if (action.action !== 'input-blur' && action.action !== 'menu-close') {
+  const searchOnInputChange = (inputValue, meta) => {
+    if (meta.action === 'input-change') {
       setSearchItem(inputValue)
+      if (inputValue === '') setSearchSuggestions([])
     }
-    if (action.action === 'input-change' && inputValue === '') {
-      setSearchItem('')
-    }
+    return inputValue
   }
 
   const explorerHeader = (tab) => {
@@ -369,7 +381,6 @@ export default function SearchBlock({
                 className="search-input search-input-select"
                 placeholder={searchPlaceholderText}
                 onChange={searchOnChange}
-                value={null}
                 spellCheck="false"
                 options={searchSuggestions}
                 formatOptionLabel={(option, { context }) => {
@@ -453,8 +464,12 @@ export default function SearchBlock({
                   //({ inputValue }) => inputValue.length > 3
                 }
                 aria-label="Search"
-                components={{ IndicatorsContainer: CustomIndicatorsContainer }}
                 setSearchSuggestions={setSearchSuggestions}
+                components={{
+                  IndicatorsContainer: IndicatorsWithClear,
+                  DropdownIndicator: null,
+                  IndicatorSeparator: null
+                }}
               />
             </div>
           ) : (

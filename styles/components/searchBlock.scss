@@ -70,9 +70,21 @@
         width: 100%;
         max-width: 100%;
         margin: 0;
+
         .react-select__indicators {
-          display: flex;
+          display: flex !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
         }
+
+        .react-select__clear-indicator {
+          display: flex !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
+        }
+
         .react-select__input {
           opacity: 1 !important;
         }
