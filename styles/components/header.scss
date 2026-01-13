@@ -192,23 +192,22 @@ header {
               width: 100% !important;
               border-radius: 14px;
               cursor: text;
-              position: relative; /* for absolute placeholder + indicators */
+              position: relative;
               overflow: hidden;
             }
 
-            /* IMPORTANT: do NOT fight react-select grid.
-              Just adjust paddings and positioning. */
+            /* Do not add paddings here — otherwise the clickable area will not match the input */
             .react-select__value-container {
-              padding-left: 10px !important;
-              padding-right: 56px !important; /* space for clear + search button */
+              position: relative !important;
               height: 28px;
+              padding: 0 !important;
             }
 
-            /* Absolute placeholder so it doesn't push the caret */
+            /* Placeholder: visual only, does not catch clicks */
             .react-select__placeholder {
               position: absolute !important;
-              left: 0;
-              right: 56px;
+              left: 10px;
+              right: 56px; /* space for clear + search button */
               top: 50%;
               transform: translateY(-50%);
               margin: 0 !important;
@@ -219,21 +218,34 @@ header {
               text-overflow: ellipsis;
             }
 
-            /* Keep selected value aligned like placeholder */
             .react-select__single-value {
               margin: 0 !important;
               color: var(--text-main);
             }
 
-            /* Fix the "select.scss puts input absolute" issue */
+            /* select.scss makes input absolute — remove it */
             .react-select__input {
               position: static !important;
             }
 
-            /* Align caret start with placeholder */
+            /*
+              ✅ KEY POINT:
+              Stretch input-container to the entire field area so a click in the "empty" space
+              hits the input (and you can place the caret/select).
+            */
             .react-select__input-container {
+              position: absolute !important;
+              left: 10px;
+              right: 56px;  /* space for clear + search */
+              top: 0;
+              bottom: 0;
+
               margin: 0 !important;
               padding: 0 !important;
+
+              display: flex !important;
+              align-items: center !important;
+              z-index: 2; /* above the placeholder */
             }
 
             .react-select__input-container input {
@@ -247,10 +259,10 @@ header {
               color: var(--text-main) !important;
             }
 
-            /* Indicators area: MUST be visible and clickable */
+            /* Indicators: clickable, to the left of the search button */
             .react-select__indicators {
-              position: absolute;
-              right: 28px; /* left of search button */
+              position: absolute !important;
+              right: 28px;
               top: 0;
               height: 28px;
               display: flex !important;
