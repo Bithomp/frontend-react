@@ -49,7 +49,7 @@ body.dark {
     border-top: 103px solid var(--background-header);
   }
 
-  @media only screen and (max-width: 780px) {
+  @media only screen and (max-width: 960px) {
     border-top: 103px solid var(--background-header);
   }
 
@@ -141,7 +141,7 @@ body.dark {
   }
 }
 
-@media only screen and (max-width: 780px) {
+@media only screen and (max-width: 960px) {
   .hide-secondline ~ .content {
     border-top: 56px solid var(--background-header);
   }
