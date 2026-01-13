@@ -12,6 +12,7 @@ import { RiCoinsFill } from 'react-icons/ri'
 import { GiTakeMyMoney } from 'react-icons/gi'
 import { subtract } from '../../utils/calc'
 import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 import Link from 'next/link'
 
 // Component to display flag icons with tooltips
@@ -105,8 +106,20 @@ export default function IOUData({
   account,
   setSignRequest
 }) {
+  const [copiedBalanceKey, setCopiedBalanceKey] = useState(null)
   const width = useWidth()
   const { t } = useTranslation()
+
+  const copyBalance = (key, value) => {
+    if (!value && value !== 0) return
+    navigator?.clipboard
+      ?.writeText(value.toString())
+      .then(() => {
+        setCopiedBalanceKey(key)
+        setTimeout(() => setCopiedBalanceKey(null), 1200)
+      })
+      .catch((e) => console.error('Copy balance failed', e))
+  }
 
   const totalBalanceCount = (list) => {
     return list?.length
@@ -234,6 +247,22 @@ export default function IOUData({
       </>
     )
 
+  const actionLink = (type) => {
+    return isLoggedIn && account.address === address ? (
+      <> [{type === 'lp' ? <a href={'/amms'}>AMM pools</a> : <a href={'/tokens'}>Add tokens</a>}]</>
+    ) : (
+      !isLoggedIn && (
+        <>
+          [
+          <span className="link" onClick={() => setSignRequest({})}>
+            Sign In
+          </span>
+          ]
+        </>
+      )
+    )
+  }
+
   const tokenRows = (list, type) => {
     return list?.length ? (
       list.map((tl, i) => {
@@ -308,10 +337,20 @@ export default function IOUData({
                   <br />
                 </>
               ) : null}
-              <span className="tooltip grey">
+              <span
+                className="tooltip grey"
+                style={{ cursor: 'pointer' }}
+                onClick={() => copyBalance(`${tl.Balance?.currency}-${tl.Balance?.issuer || ''}-${i}`, balance)}
+              >
                 {shortNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}
                 <span className="tooltiptext no-brake">
-                  {fullNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}
+                  {copiedBalanceKey === `${tl.Balance?.currency}-${tl.Balance?.issuer || ''}-${i}` ? (
+                    'Copied'
+                  ) : (
+                    <>
+                      {fullNiceNumber(balance)} {niceCurrency(tl.Balance?.currency)}
+                    </>
+                  )}
                 </span>
               </span>
             </td>
@@ -340,22 +379,6 @@ export default function IOUData({
         )}
         {tokenRows(list, type)}
       </tbody>
-    )
-  }
-
-  const actionLink = (type) => {
-    return isLoggedIn && account.address === address ? (
-      <> [{type === 'lp' ? <a href={'/amms'}>AMM pools</a> : <a href={'/tokens'}>Add tokens</a>}]</>
-    ) : (
-      !isLoggedIn && (
-        <>
-          [
-          <span className="link" onClick={() => setSignRequest({})}>
-            Sign In
-          </span>
-          ]
-        </>
-      )
     )
   }
 
