@@ -186,28 +186,56 @@ header {
             .react-select__control {
               min-height: 28px;
               height: 28px;
+              width: 100% !important;
               border: none !important;
               box-shadow: none !important;
               background-color: transparent !important;
-              width: 100% !important;
               border-radius: 14px;
               cursor: text;
               position: relative;
               overflow: hidden;
             }
 
-            /* Do not add paddings here — otherwise the clickable area will not match the input */
             .react-select__value-container {
               position: relative !important;
               height: 28px;
               padding: 0 !important;
+              margin: 0 !important;
+              flex: 1 1 auto !important;
+              min-width: 0 !important;
+              overflow: hidden;
             }
 
-            /* Placeholder: visual only, does not catch clicks */
+            /* ✅ FIX ROOT CAUSE:
+              react-select uses: grid-template-columns: 0 min-content;
+              -> makes the input column shrink (~240px)
+              We force the 2nd column to take full width.
+            */
+            .react-select__input-container {
+              position: absolute !important;
+              left: 10px;
+              right: 52px; /* space for clear + search button */
+              top: 0;
+              bottom: 0;
+
+              margin: 0 !important;
+              padding: 0 !important;
+
+              display: grid !important;
+              align-items: center !important;
+
+              grid-template-columns: 0 minmax(0, 1fr) !important; /* KEY */
+              width: auto !important;
+              min-width: 0 !important;
+
+              z-index: 2;
+            }
+
+            /* keep placeholder aligned */
             .react-select__placeholder {
               position: absolute !important;
               left: 10px;
-              right: 56px; /* space for clear + search button */
+              right: 52px;
               top: 50%;
               transform: translateY(-50%);
               margin: 0 !important;
@@ -218,48 +246,32 @@ header {
               text-overflow: ellipsis;
             }
 
-            .react-select__single-value {
-              margin: 0 !important;
-              color: var(--text-main);
-            }
-
-            /* select.scss makes input absolute — remove it */
             .react-select__input {
               position: static !important;
+              opacity: 1 !important;
             }
 
-            /*
-              ✅ KEY POINT:
-              Stretch input-container to the entire field area so a click in the "empty" space
-              hits the input (and you can place the caret/select).
-            */
-            .react-select__input-container {
-              position: absolute !important;
-              left: 10px;
-              right: 56px;  /* space for clear + search */
-              top: 0;
-              bottom: 0;
-
-              margin: 0 !important;
-              padding: 0 !important;
-
-              display: flex !important;
-              align-items: center !important;
-              z-index: 2; /* above the placeholder */
-            }
-
+            /* ensure the input sits in the 2nd column and can expand */
             .react-select__input-container input {
+              grid-column: 2 / 3 !important; /* match react-select layout */
+              width: 100% !important;
+              min-width: 0 !important;
+
               padding: 0 !important;
               margin: 0 !important;
               border: none !important;
-              width: 100% !important;
               background: transparent;
+
               font-size: 16px;
               line-height: 28px;
               color: var(--text-main) !important;
+
+              /* don't fight native input scrolling */
+              overflow: visible !important;
+              text-overflow: clip !important;
+              white-space: nowrap;
             }
 
-            /* Indicators: clickable, to the left of the search button */
             .react-select__indicators {
               position: absolute !important;
               right: 28px;
