@@ -118,11 +118,17 @@ export default function SearchBlock({
     }
   }, [id, searchInput])
 
+  // Clear search field on route change
   useEffect(() => {
-    if (userData?.address) {
-      setSearchItem(userData.address)
+    const handleRouteChange = () => {
+      setSearchItem('')
+      setSearchSuggestions([])
     }
-  }, [userData])
+    if (router && router.events) {
+      router.events.on('routeChangeComplete', handleRouteChange)
+      return () => router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router])
 
   const requestSuggestions = (value) => {
     if (isValidCTID(value)) {
