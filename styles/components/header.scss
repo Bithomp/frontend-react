@@ -146,8 +146,6 @@ header {
     }
 
     .search-block {
-      height: auto;
-      background-color: transparent;
       padding: 0;
       width: 100%;
 
@@ -599,7 +597,7 @@ header {
       padding-left: 20px;
       padding-right: 20px;
       padding-top: 9px;
-      padding-bottom: 9px;
+      padding-bottom: 5px;
       border-top: 1px solid var(--background-menu);
       min-width: auto;
       max-width: none;
@@ -674,7 +672,7 @@ header {
       padding-left: 20px;
       padding-right: 20px;
       padding-top: 9px;
-      padding-bottom: 9px;
+      padding-bottom: 5px;
       border-top: 1px solid var(--background-menu);
 
       .search-block {

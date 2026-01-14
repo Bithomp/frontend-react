@@ -6,12 +6,6 @@
   text-align: center;
   transition: background-color .5s;
   
-  &.search-block-compact {
-    height: auto;
-    background-color: transparent;
-    padding: 0;
-  }
-  
   .search-box {
     display: inline-block;
     position: relative;
