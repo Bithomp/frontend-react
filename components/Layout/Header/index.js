@@ -356,7 +356,7 @@ export default function Header({
           </MenuDropDown>
         </div>
 
-        {width && (
+        {width ? (
           <div className={'header-search-inline ' + (hideSearchInHeader ? 'hide-search-inline' : '')}>
             <SearchBlock
               compact={true}
@@ -364,6 +364,8 @@ export default function Header({
               tab={ROUTE_TAB_MAP.find((route) => router?.pathname?.startsWith(route.prefix))?.tab}
             />
           </div>
+        ) : (
+          ''
         )}
 
         <div className="header-menu-right">
