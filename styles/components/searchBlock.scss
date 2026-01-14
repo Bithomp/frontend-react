@@ -170,3 +170,9 @@
     background: #ccc;
   }
 }
+
+/* Dropdown menu styling (fix unreadable text / wrong background) */
+.react-select__option--is-selected {
+  background-color: var(--background-input) !important;
+  color: var(--text-main) !important;
+}
