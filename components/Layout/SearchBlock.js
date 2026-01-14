@@ -73,21 +73,14 @@ import {
   performIdSearch,
   isLedgerIndexValid
 } from '../../utils'
-import { userOrServiceName, amountFormat } from '../../utils/format'
+import { amountFormat } from '../../utils/format'
 
 import { IoSearch } from 'react-icons/io5'
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 let typingTimer
 
-export default function SearchBlock({
-  searchPlaceholderText,
-  tab = null,
-  userData = {},
-  isSsrMobile,
-  compact = false,
-  type = ''
-}) {
+export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMobile, compact = false, type = '' }) {
   const { t, i18n } = useTranslation()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -96,7 +89,7 @@ export default function SearchBlock({
 
   const { id } = router.query
 
-  const [searchItem, setSearchItem] = useState(id || userData?.address || '')
+  const [searchItem, setSearchItem] = useState(id || '')
   const [searching, setSearching] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
@@ -374,9 +367,7 @@ export default function SearchBlock({
                   <span className="waiting inline"></span>
                 </span>
               ) : (
-                <div className={'bold' + (type === 'explorer' ? '' : ' contrast')}>
-                  {explorerHeader(tab)} {userOrServiceName(userData)}
-                </div>
+                <div className={'bold' + (type === 'explorer' ? '' : ' contrast')}>{explorerHeader(tab)}</div>
               )}
             </div>
           )}
