@@ -23,12 +23,14 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   const [soldNfts, setSoldNfts] = useState([])
   const [createdOffers, setCreatedOffers] = useState([])
   const [receivedOffers, setReceivedOffers] = useState([])
+  const [receivedOffersForOwnedNfts, setReceivedOffersForOwnedNfts] = useState([])
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState({
     owned: false,
     sold: false,
     createdOffers: false,
-    receivedOffers: false
+    receivedOffers: false,
+    receivedOffersForOwnedNfts: false
   })
 
   const title = 'NFT Data'
@@ -117,53 +119,36 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
     }
   }
 
-  const fetchCreatedOffers = async () => {
-    try {
-      setLoading((prev) => ({ ...prev, createdOffers: true }))
-      const response = await axios(`v2/nft-offers/${address}?list=counterOffers&nftoken=true&offersValidate=true`)
-      if (response?.data?.nftOffers) {
-        setCreatedOffers(
-          response.data.nftOffers
-            .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
-            .filter(function (offer) {
-              return offer.valid
-            })
-            .slice(0, 5)
-        )
-      } else {
-        setCreatedOffers([])
-      }
-    } catch (error) {
-      setErrorMessage(t('error.' + error.message))
-      setCreatedOffers([])
-    } finally {
-      setLoading((prev) => ({ ...prev, createdOffers: false }))
+  const fetchOffers = async (type) => {
+    let offers = []
+    setLoading((prev) => ({ ...prev, [type]: true }))
+    let list = ''
+    if (type === 'received' || type === 'receivedOffersForOwnedNfts') {
+      list = '&list='
+      if (type === 'received') list += 'privatelyOfferedToAddress'
+      else if (type === 'receivedOffersForOwnedNfts') list += 'counterOffers'
     }
-  }
-
-  const fetchReceivedOffers = async () => {
     try {
-      setLoading((prev) => ({ ...prev, receivedOffers: true }))
-      const response = await axios(
-        `v2/nft-offers/${address}?list=privatelyOfferedToAddress&nftoken=true&offersValidate=true`
-      )
+      const response = await axios(`v2/nft-offers/${address}?nftoken=true&offersValidate=true&limit=5` + list)
       if (response?.data?.nftOffers) {
-        setReceivedOffers(
-          response.data.nftOffers
-            .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
-            .filter(function (offer) {
-              return offer.valid
-            })
-            .slice(0, 5)
-        )
-      } else {
-        setReceivedOffers([])
+        offers = response.data.nftOffers
+          .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+          .filter(function (offer) {
+            return offer.valid
+          })
+          .slice(0, 5)
       }
     } catch (error) {
       setErrorMessage(t('error.' + error.message))
-      setReceivedOffers([])
     } finally {
-      setLoading((prev) => ({ ...prev, receivedOffers: false }))
+      setLoading((prev) => ({ ...prev, [type]: false }))
+    }
+    if (type === 'created') {
+      setCreatedOffers(offers)
+    } else if (type === 'received') {
+      setReceivedOffers(offers)
+    } else if (type === 'receivedOffersForOwnedNfts') {
+      setReceivedOffersForOwnedNfts(offers)
     }
   }
 
@@ -180,12 +165,14 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
 
     // Fetch created offers
     if (objects?.nftOfferList?.length > 0) {
-      fetchCreatedOffers()
+      fetchOffers('created')
     }
+
+    fetchOffers('received') //transfers to me, privateOffers, me as broker
 
     // Fetch received offers
     if (objects?.nftList?.length > 0) {
-      fetchReceivedOffers()
+      fetchOffers('receivedOffersForOwnedNfts')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [objects])
@@ -263,17 +250,13 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
   const renderOffersSection = (type, title, offers, loading) => {
     const titleNode = (
       <>
+        {offers.length === 5 && 'Latest '}
         {offers?.length > 1 ? offers.length : ''} {title}{' '}
         {offers?.length ? (
           <>
             [
             <Link
-              href={
-                '/nft-offers/' +
-                address +
-                '?offerList=' +
-                (type === 'created' ? 'for-owned-nfts' : 'privately-offered-to-address')
-              }
+              href={'/nft-offers/' + address + (type === 'received' ? '?offerList=privately-offered-to-address' : '')}
             >
               View All
             </Link>
@@ -454,8 +437,15 @@ export default function NFTokenData({ data, address, objects, ledgerTimestamp, s
       <>
         {renderNFTSection('owned', 'Owned NFTs', ownedNfts, loading.owned, objects?.nftList?.length)}
         {renderNFTSection('sold', 'Sold NFTs', soldNfts, loading.sold)}
+        {receivedOffers?.length > 0 &&
+          renderOffersSection('received', 'Received private NFT Offers', receivedOffers, loading.receivedOffers)}
         {renderOffersSection('created', 'NFT Offers Created', createdOffers, loading.createdOffers)}
-        {renderOffersSection('received', 'Received NFT Offers', receivedOffers, loading.receivedOffers)}
+        {renderOffersSection(
+          'receivedOffersForOwnedNfts',
+          'Received Offers for Owned NFTs',
+          receivedOffersForOwnedNfts,
+          loading.receivedOffersForOwnedNfts
+        )}
       </>
     )
   }
