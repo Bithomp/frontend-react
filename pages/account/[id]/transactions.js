@@ -127,7 +127,7 @@ export async function getServerSideProps(context) {
         headers: passHeaders(req)
       })
       initialData = res?.data
-      if (isAddressValid(id) && initialData?.transactions?.length === 0) {
+      if (isAddressValid(id) && (!initialData?.transactions || initialData?.transactions?.length === 0)) {
         if (!initialData?.marker) {
           initialErrorMessage = 'No transactions found for the specified filters.'
         } else {
@@ -135,7 +135,7 @@ export async function getServerSideProps(context) {
         }
       }
     } catch (e) {
-      initialErrorMessage = e?.message || 'Failed to load transactions'
+      initialErrorMessage = e?.response?.data?.error || e?.message || 'Failed to load transactions'
     }
   } else {
     initialErrorMessage = 'Invalid username or address'
@@ -184,7 +184,7 @@ export default function AccountTransactions({
 
   const selectedCurrency = selectedCurrencyApp || selectedCurrencyServer
 
-  const address = initialData?.address
+  const address = id || initialData?.address
 
   // State management
   const [transactions, setTransactions] = useState(initialData?.transactions || [])
@@ -273,6 +273,11 @@ export default function AccountTransactions({
       markerToUse = options.marker || marker
     }
 
+    if (!address) {
+      setErrorMessage('Invalid address')
+      return
+    }
+
     try {
       const response = await axios.get(
         apiUrl({
@@ -289,9 +294,13 @@ export default function AccountTransactions({
           convertCurrency: selectedCurrency
         })
       )
-      if (response?.data?.status === 'error') {
+      if (response?.data?.status === 'error' || response?.data?.error) {
         setErrorMessage(response?.data?.error)
         setLoading(false)
+        if (response?.data?.marker) {
+          setMarker(response?.data?.marker)
+          setNoRelevantTransactions(true)
+        }
         return
       }
       const newData = response?.data?.transactions || []
@@ -343,6 +352,7 @@ export default function AccountTransactions({
 
   const applyFilters = () => {
     setTransactions([])
+    setNoRelevantTransactions(false)
     setMarker('first')
     setLoading(true)
     fetchTransactions({ restart: true })
@@ -396,11 +406,9 @@ export default function AccountTransactions({
       <div style={{ position: 'relative', marginTop: '10px', marginBottom: '20px' }}>
         <h1 className="center">
           {t('explorer.menu.transactions')}{' '}
-          {addressUsernameOrServiceLink(
-            { address: initialData?.address, addressDetails: initialData?.addressDetails },
-            'address',
-            { short: isMobile }
-          )}
+          {addressUsernameOrServiceLink({ address, addressDetails: initialData?.addressDetails }, 'address', {
+            short: isMobile
+          })}
         </h1>
       </div>
       <FiltersFrame
@@ -541,9 +549,17 @@ export default function AccountTransactions({
                       setLoading(true)
                       fetchTransactions({ marker })
                     }}
+                    disabled={loading}
                   >
                     Continue searching
                   </button>
+                  {loading && (
+                    <>
+                      <br />
+                      <br />
+                      <span className="waiting"></span>
+                    </>
+                  )}
                 </>
               ) : (
                 errorT(t, errorMessage)
