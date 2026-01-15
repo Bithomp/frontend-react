@@ -452,6 +452,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
                   option.tag
                 }
                 inputValue={searchItem}
+                value={null}
                 onInputChange={searchOnInputChange}
                 isSearchable={true}
                 classNamePrefix="react-select"
