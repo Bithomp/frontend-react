@@ -75,6 +75,8 @@ export default function NftDistribution({
   //const [collection, setCollection] = useState(collectionQuery)
   const collection = collectionQuery // while there is no search for collections in filters
 
+  const controller = new AbortController()
+
   const checkApi = async () => {
     /*
     "issuer": "rMCfTcW9k2Z21cm4zWj2mgHaTrxxrHtL7n",
@@ -151,7 +153,10 @@ export default function NftDistribution({
     }
 
     const response = await axios(
-      'v2/' + (xahauNetwork ? 'uritoken' : 'nft') + '-owners?order=' + orderPart + collectionPart + markerPart
+      'v2/' + (xahauNetwork ? 'uritoken' : 'nft') + '-owners?order=' + orderPart + collectionPart + markerPart,
+      {
+        signal: controller.signal
+      }
     ).catch((error) => {
       setErrorMessage(t('error.' + error.message))
     })
@@ -173,6 +178,10 @@ export default function NftDistribution({
             setOwners([...ownersData, ...newdata.owners])
           }
         } else {
+          if (marker === 'first') {
+            setData({})
+            setOwners([])
+          }
           setErrorMessage(t('no-nfts', { ns: 'nft-distribution' }))
         }
       } else {
@@ -197,6 +206,12 @@ export default function NftDistribution({
 
   useEffect(() => {
     checkApi()
+
+    return () => {
+      if (controller) {
+        controller.abort()
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [issuer, taxon, order, subscriptionExpired])
 
