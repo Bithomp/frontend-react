@@ -178,3 +178,14 @@
   background-color: var(--background-input) !important;
   color: var(--text-main) !important;
 }
+
+// Error message styling for compact (header) search block
+.search-block-compact .orange {
+  background: var(--background-header);
+  padding: 5px 10px;
+  border-radius: 10px;
+  left: 2px;
+  right: 2px;
+  top: 30px;
+  border: 1px solid var(--unaccent-icon);
+}
