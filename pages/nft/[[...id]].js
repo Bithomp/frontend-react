@@ -1448,7 +1448,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                               {data.digest && (
                                 <tr>
                                   <td>{t('table.digest', { ns: 'nft' })}</td>
-                                  <td>
+                                  <td className="brake">
                                     {isValidDigest ? (
                                       <span className="green">{t('table.text.valid')}</span>
                                     ) : (
