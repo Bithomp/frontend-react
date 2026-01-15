@@ -78,10 +78,14 @@ export async function getServerSideProps(context) {
       initialErrorMessage = 'Invalid xAddress format'
     }
   } else if (isValidPayString(account)) {
-    //payString
-    const payStringData = await axios('v2/payId/' + account).catch(() => {
-      initialErrorMessage = 'Invalid payString format'
+    const payStringData = await axiosServer({
+      method: 'get',
+      url: 'v2/payId/' + account,
+      headers: passHeaders(req)
+    }).catch((error) => {
+      initialErrorMessage = error.message
     })
+
     if (payStringData?.data) {
       if (!isTagValid(payStringData.data.tag) && payStringData.data.address) {
         account = payStringData.data.address
