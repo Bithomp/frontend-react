@@ -31,7 +31,17 @@ import LogoAnimated from '../LogoAnimated'
 import { IoWalletOutline } from 'react-icons/io5'
 import SearchBlock from '../SearchBlock'
 
-const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account', '/amm', '/object', '/transaction']
+const HIDE_SEARCH_HEADER = [
+  '/',
+  '/explorer',
+  '/account',
+  '/amm',
+  '/object',
+  '/transaction',
+  '/tokens',
+  '/mpts',
+  '/nft-volumes'
+]
 const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
 
 const ROUTE_TAB_MAP = [
