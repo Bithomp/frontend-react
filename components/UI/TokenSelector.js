@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'next-i18next'
 import { IoSearch } from 'react-icons/io5'
 import { IoMdClose } from 'react-icons/io'
@@ -302,92 +303,103 @@ export default function TokenSelector({
             </div>
           </div>
 
-          {isOpen && (
-            <div className="token-selector-modal">
-              <div className="token-selector-modal-content">
-                {/* Backdrop */}
-                <div className="token-selector-modal-backdrop" onClick={() => setIsOpen(false)} />
+          {isOpen &&
+            typeof window !== 'undefined' &&
+            createPortal(
+              <div className="token-selector-modal">
+                <div className="token-selector-modal-content">
+                  {/* Backdrop */}
+                  <div className="token-selector-modal-backdrop" onClick={() => setIsOpen(false)} />
 
-                {/* Modal */}
-                <div className="token-selector-modal-container">
-                  <div className="token-selector-modal-header">
-                    <h3 className="token-selector-modal-title">
-                      {destinationAddress ? 'Select Token (Destination can hold)' : 'Select Token'}
-                    </h3>
-                    <IoMdClose className="token-selector-modal-close" onClick={() => setIsOpen(false)} />
-                  </div>
+                  {/* Modal */}
+                  <div className="token-selector-modal-container">
+                    <div className="token-selector-modal-header">
+                      <h3 className="token-selector-modal-title">
+                        {destinationAddress ? 'Select Token (Destination can hold)' : 'Select Token'}
+                      </h3>
+                      <IoMdClose className="token-selector-modal-close" onClick={() => setIsOpen(false)} />
+                    </div>
 
-                  <div className="form-input">
-                    <div className="form-input__wrap">
-                      <input
-                        className="simple-input"
-                        placeholder="Search by currency, issuer, or username"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        autoFocus
-                        spellCheck="false"
-                      />
-                      <div className="form-input__btns">
-                        <div className="search-button">
-                          <IoSearch />
+                    <div className="form-input">
+                      <div className="form-input__wrap">
+                        <input
+                          className="simple-input"
+                          placeholder="Search by currency, issuer, or username"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          autoFocus
+                          spellCheck="false"
+                        />
+                        <div className="form-input__btns">
+                          <div className="search-button">
+                            <IoSearch />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="token-selector-modal-list">
-                    {isLoading ? (
-                      <div className="token-selector-modal-loading">{t('general.loading')}</div>
-                    ) : searchResults.length > 0 ? (
-                      <div className="token-selector-modal-items">
-                        {searchResults.map((token, index) => (
-                          <div
-                            key={`${token.currency}-${token.issuer}-${index}`}
-                            className="token-selector-modal-item"
-                            onClick={() => handleSelect(token)}
-                          >
-                            <div className="token-selector-modal-item-content">
-                              <div className="token-selector-modal-item-icon">
-                                <img
-                                  src={getTokenIcon(token)}
-                                  alt={niceCurrency(token.currency)}
-                                  className="token-selector-modal-icon"
-                                />
-                              </div>
-                              <div className="token-selector-modal-item-name">
-                                <span>
-                                  {getTokenDisplayName(token)}
-                                  {token.holders !== undefined && (
-                                    <span
-                                      style={{ marginLeft: '8px', fontSize: '0.85em', color: 'var(--text-secondary)' }}
-                                    >
-                                      {shortNiceNumber(token.holders, 0)} holders
-                                    </span>
+                    <div className="token-selector-modal-list">
+                      {isLoading ? (
+                        <div className="token-selector-modal-loading">{t('general.loading')}</div>
+                      ) : searchResults.length > 0 ? (
+                        <div className="token-selector-modal-items">
+                          {searchResults.map((token, index) => (
+                            <div
+                              key={`${token.currency}-${token.issuer}-${index}`}
+                              className="token-selector-modal-item"
+                              onClick={() => handleSelect(token)}
+                            >
+                              <div className="token-selector-modal-item-content">
+                                <div className="token-selector-modal-item-icon">
+                                  <img
+                                    src={getTokenIcon(token)}
+                                    alt={niceCurrency(token.currency)}
+                                    className="token-selector-modal-icon"
+                                  />
+                                </div>
+                                <div className="token-selector-modal-item-name">
+                                  <span>
+                                    {getTokenDisplayName(token)}
+                                    {token.holders !== undefined && (
+                                      <span
+                                        style={{
+                                          marginLeft: '8px',
+                                          fontSize: '0.85em',
+                                          color: 'var(--text-secondary)'
+                                        }}
+                                      >
+                                        {shortNiceNumber(token.holders, 0)} holders
+                                      </span>
+                                    )}
+                                  </span>
+                                  {width > 1100 ? (
+                                    <span>{token.issuer}</span>
+                                  ) : (
+                                    <span>{shortAddress(token.issuer)}</span>
                                   )}
-                                </span>
-                                {width > 1100 ? <span>{token.issuer}</span> : <span>{shortAddress(token.issuer)}</span>}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                        {searchResults.length >= limit && (
-                          <p className="center orange">
-                            More than {limit} results found. Please specify an issuer to narrow down the search.
-                          </p>
-                        )}
-                      </div>
-                    ) : searchQuery ? (
-                      <div className="token-selector-modal-empty">{t('general.no-data')}</div>
-                    ) : destinationAddress ? (
-                      <div className="token-selector-modal-empty">
-                        No trustlines found for this destination address.
-                      </div>
-                    ) : null}
+                          ))}
+                          {searchResults.length >= limit && (
+                            <p className="center orange">
+                              More than {limit} results found. Please specify an issuer to narrow down the search.
+                            </p>
+                          )}
+                        </div>
+                      ) : searchQuery ? (
+                        <div className="token-selector-modal-empty">{t('general.no-data')}</div>
+                      ) : destinationAddress ? (
+                        <div className="token-selector-modal-empty">
+                          No trustlines found for this destination address.
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          )}
+              </div>,
+              document.body
+            )}
         </div>
       )}
     </>
