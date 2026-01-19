@@ -257,10 +257,17 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
       />
       <div style={{ position: 'relative', marginTop: '10px', marginBottom: '20px' }}>
         <h1 className="center">
-          DEX orders{' '}
-          {addressUsernameOrServiceLink({ address: accountData?.address, addressDetails: accountData }, 'address', {
-            short: isMobile
-          })}
+          DEX orders {console.log(accountData)}
+          {addressUsernameOrServiceLink(
+            {
+              address: accountData?.address,
+              addressDetails: { username: accountData?.username, service: accountData?.service?.name }
+            },
+            'address',
+            {
+              short: isMobile
+            }
+          )}
         </h1>
       </div>
       {totalOffers === 0 ? (
