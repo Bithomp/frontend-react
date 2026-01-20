@@ -8,7 +8,7 @@ import { IoMdClose } from 'react-icons/io'
 
 const IndicatorsWithClear = (props) => {
   const { selectProps } = props
-  const { inputValue, onInputChange, setSearchSuggestions } = selectProps
+  const { inputValue, onInputChange, setSearchSuggestions, setErrorMessage } = selectProps
 
   const show = !!(typeof inputValue === 'string' && inputValue.trim())
 
@@ -17,6 +17,7 @@ const IndicatorsWithClear = (props) => {
     e.stopPropagation()
 
     setSearchSuggestions([])
+    if (setErrorMessage) setErrorMessage('')
 
     // 1) Clear react-select internal state
     if (props.clearValue) props.clearValue()
@@ -116,6 +117,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
     const handleRouteChange = () => {
       setSearchItem('')
       setSearchSuggestions([])
+      setErrorMessage('')
     }
     if (router && router.events) {
       router.events.on('routeChangeComplete', handleRouteChange)
@@ -463,6 +465,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
                 }
                 aria-label="Search"
                 setSearchSuggestions={setSearchSuggestions}
+                setErrorMessage={setErrorMessage}
                 components={{
                   IndicatorsContainer: IndicatorsWithClear,
                   DropdownIndicator: null,
