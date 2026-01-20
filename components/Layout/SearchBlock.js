@@ -496,7 +496,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, isSsrMo
           </div>
           {errorMessage && (
             <div
-              className="orange"
+              className={compact ? 'search-error' : 'orange'}
               style={{ position: 'absolute', bottom: '-50px', minHeight: '42px', textAlign: 'left' }}
             >
               {errorMessage}

@@ -180,7 +180,7 @@
 }
 
 // Error message styling for compact (header) search block
-.search-block-compact .orange {
+.search-block-compact .search-error {
   background: var(--background-header);
   padding: 5px 10px;
   border-radius: 10px;
@@ -188,4 +188,5 @@
   right: 2px;
   top: 30px;
   border: 1px solid var(--unaccent-icon);
+  color: var(--error-color, #e67c3c);
 }
