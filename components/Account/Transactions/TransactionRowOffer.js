@@ -3,6 +3,7 @@ import { addressBalanceChanges } from '../../../utils/transaction'
 import { amountFormat, nativeCurrencyToFiat, showFlags } from '../../../utils/format'
 import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
 import { RipplingChanges } from './Elements/RipplingChanges'
+import { FaRegHandPaper } from 'react-icons/fa'
 
 export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) => {
   const { specification, outcome, tx, fiatRates } = data
@@ -53,6 +54,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
       index={index}
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
+      icon={<FaRegHandPaper style={{ color: '#f1c40f', fontSize: 18 }} title="Offer" />}
     >
       {rippling ? (
         <RipplingChanges balanceChanges={myBalanceChangesList} />

@@ -8,6 +8,7 @@ import {
 import CopyButton from '../../UI/CopyButton'
 import { TransactionRowCard } from './TransactionRowCard'
 import { useIsMobile } from '../../../utils/mobile'
+import { CiLink } from 'react-icons/ci'
 
 export const TransactionRowTrustSet = ({ data, address, index, selectedCurrency }) => {
   const { specification } = data
@@ -52,6 +53,7 @@ export const TransactionRowTrustSet = ({ data, address, index, selectedCurrency 
       index={index}
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
+      icon={<CiLink style={{ color: '#9b59b6', fontSize: 20 }} title="Trust set/removed" />}
     >
       {serviceOruser && (
         <>

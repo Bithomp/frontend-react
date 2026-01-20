@@ -53,7 +53,7 @@ import Link from 'next/link'
   }
 */
 
-export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency }) => {
+export const TransactionRowCard = ({ data, address, index, txTypeSpecial, children, selectedCurrency, icon }) => {
   const width = useWidth()
   const { specification, tx, outcome, fiatRates } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
@@ -84,7 +84,8 @@ export const TransactionRowCard = ({ data, address, index, txTypeSpecial, childr
       className="border-b-1"
     >
       <td className="bold center grey" style={{ width: 10, verticalAlign: 'top' }}>
-        {index + 1}
+        <div>{index + 1}</div>
+        <div style={{ marginTop: 2 }}>{icon}</div>
       </td>
       {!isMobile && (
         <td style={{ width: 120, verticalAlign: 'top' }}>

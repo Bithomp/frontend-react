@@ -3,6 +3,7 @@ import { addressBalanceChanges } from '../../../utils/transaction'
 import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
 import { RipplingChanges } from './Elements/RipplingChanges'
 import { TransactionRowCard } from './TransactionRowCard'
+import { MdPool } from 'react-icons/md' // Pool icon for all AMM actions
 
 export const TransactionRowAMM = ({ data, address, index, selectedCurrency }) => {
   const { tx } = data
@@ -24,6 +25,18 @@ export const TransactionRowAMM = ({ data, address, index, selectedCurrency }) =>
     <span className="bold">{ripplingTitle + (ammTypeLabels[tx?.TransactionType] || tx?.TransactionType)}</span>
   )
 
+  // Icon logic for AMM (pool icon, different colors)
+  let icon = null
+  if (tx?.TransactionType === 'AMMCreate') {
+    icon = <MdPool style={{ color: '#2980ef', fontSize: 20 }} title="AMM create" />
+  } else if (tx?.TransactionType === 'AMMDeposit') {
+    icon = <MdPool style={{ color: '#e74c3c', fontSize: 20 }} title="AMM deposit (add liquidity)" />
+  } else if (tx?.TransactionType === 'AMMWithdraw') {
+    icon = <MdPool style={{ color: '#27ae60', fontSize: 20 }} title="AMM withdraw (remove liquidity)" />
+  } else if (tx?.TransactionType === 'AMMVote') {
+    icon = <MdPool style={{ color: '#9b59b6', fontSize: 20 }} title="AMM vote" />
+  }
+
   return (
     <TransactionRowCard
       data={data}
@@ -31,6 +44,7 @@ export const TransactionRowAMM = ({ data, address, index, selectedCurrency }) =>
       index={index}
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
+      icon={icon}
     >
       {rippling ? (
         <RipplingChanges balanceChanges={sourceBalanceChangesList} />

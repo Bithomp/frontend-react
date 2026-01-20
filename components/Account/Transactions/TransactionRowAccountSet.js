@@ -1,5 +1,6 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { nativeCurrency } from '../../../utils'
+import { CiSettings } from 'react-icons/ci'
 
 export const TransactionRowAccountSet = ({ data, address, index, selectedCurrency }) => {
   const { specification, tx } = data
@@ -13,6 +14,7 @@ export const TransactionRowAccountSet = ({ data, address, index, selectedCurrenc
       index={index}
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
+      icon={<CiSettings style={{ color: '#888', fontSize: 20 }} title="Account settings" />}
     >
       {tx.MessageKey !== undefined && (
         <div className="bold brake">

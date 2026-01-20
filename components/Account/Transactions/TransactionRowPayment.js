@@ -9,6 +9,7 @@ import {
 } from '../../../utils/transaction/payment'
 import { useIsMobile } from '../../../utils/mobile'
 import { RipplingChanges } from './Elements/RipplingChanges'
+import { MdCompareArrows, MdArrowDownward, MdArrowUpward, MdSwapVert } from 'react-icons/md'
 
 export const TransactionRowPayment = ({ data, address, index, selectedCurrency }) => {
   const { outcome, specification, tx, fiatRates } = data
@@ -45,6 +46,22 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
     }
   }
 
+  // Icon logic for payment (direct icons only)
+  let icon = null
+  if (rippling) {
+    icon = <MdCompareArrows style={{ color: '#9b59b6', transform: 'rotate(90deg)', fontSize: 20 }} title="Rippling" />
+  } else if (sourceBalanceChangesList?.length === 2) {
+    icon = <MdSwapVert style={{ color: '#2980ef', fontSize: 20 }} title="Exchange" />
+  } else if (tx?.TransactionType === 'Payment') {
+    const direction = tx?.Account === address ? 'sent' : 'received'
+    icon =
+      direction === 'sent' ? (
+        <MdArrowDownward style={{ color: '#e74c3c', fontSize: 20 }} title="Sent payment" />
+      ) : (
+        <MdArrowUpward style={{ color: '#27ae60', fontSize: 20 }} title="Received payment" />
+      )
+  }
+
   const balancesTitle = isConvertion ? 'Exchanged' : 'Sender spent'
 
   return (
@@ -54,6 +71,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
       index={index}
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
+      icon={icon}
     >
       {rippling ? (
         <RipplingChanges balanceChanges={sourceBalanceChangesList} />

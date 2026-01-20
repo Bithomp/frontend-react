@@ -1,12 +1,19 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { addressUsernameOrServiceLink, amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
 import { FiDownload, FiUpload } from 'react-icons/fi'
+import { MdDeleteSweep } from 'react-icons/md'
 
 export const TransactionRowAccountDelete = ({ data, address, index, selectedCurrency }) => {
   const { outcome, specification, fiatRates } = data
   const fiatRate = fiatRates?.[selectedCurrency]
   return (
-    <TransactionRowCard data={data} address={address} selectedCurrency={selectedCurrency} index={index}>
+    <TransactionRowCard
+      data={data}
+      address={address}
+      selectedCurrency={selectedCurrency}
+      index={index}
+      icon={<MdDeleteSweep style={{ color: '#111', fontSize: 20 }} title="Account removed" />}
+    >
       <div className="flex items-center gap-1">
         {specification?.destination?.address === address ? (
           <>
