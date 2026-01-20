@@ -10,6 +10,7 @@ import {
 } from '../../../utils/format'
 import { addressBalanceChanges } from '../../../utils/transaction'
 import { useIsMobile } from '../../../utils/mobile'
+import { RiNftFill } from 'react-icons/ri'
 
 const nftData = (change, nftInfo, txType, amountChange) => {
   const flagsAsString = flagList(nftInfo.flags)
@@ -151,6 +152,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
       index={index}
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
+      icon={<RiNftFill style={{ color: '#9b59b6', fontSize: 20 }} title="NFT" />}
     >
       {outcome?.nftokenChanges?.length > 0 && (
         <>
@@ -177,7 +179,6 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
               })}
         </>
       )}
-
       {txType === 'NFTokenCancelOffer' && (
         <>
           {/* For cancel offers not initiated by this account, show who initiated the cancel */}
@@ -190,14 +191,12 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
           )}
         </>
       )}
-
       {outcome?.nftokenOfferChanges?.length > 0 && txType !== 'NFTokenAcceptOffer' && (
         <div>
           <span>Offer: </span>
           <span>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</span>
         </div>
       )}
-
       {txType === 'NFTokenCreateOffer' && (
         <>
           {tx?.Owner && (
@@ -223,7 +222,6 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
           )}
         </>
       )}
-
       {txType === 'NFTokenAcceptOffer' && (
         <>
           {tx?.NFTokenSellOffer && (
@@ -274,7 +272,6 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
           )}
         </>
       )}
-
       {specification.amount !== undefined && (
         <div>
           <span>{txType === 'NFTokenMint' ? 'Price: ' : 'Amount: '}</span>

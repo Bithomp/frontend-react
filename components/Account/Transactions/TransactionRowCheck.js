@@ -1,5 +1,6 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { AddressWithIconInline, amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
+import { FaMoneyCheckAlt } from 'react-icons/fa'
 
 export const TransactionRowCheck = ({ data, address, index, selectedCurrency }) => {
   const { outcome, specification, tx, fiatRates } = data
@@ -33,6 +34,7 @@ export const TransactionRowCheck = ({ data, address, index, selectedCurrency }) 
       index={index}
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
+      icon={<FaMoneyCheckAlt style={{ color: '#27ae60', fontSize: 20 }} title="Check" />}
     >
       {outcome?.deliveredAmount && (
         <div>
