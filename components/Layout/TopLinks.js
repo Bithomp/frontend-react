@@ -45,7 +45,7 @@ export default function TopLinks(
     <div className="top-links">
       <span className="tooltip">
         <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer" className="top-link orange">
-          Earn on XRP
+          Earn 12% on XRP
         </a>
         <span className="tooltiptext right small">{t('sponsored.sponsored')}</span>
       </span>{' '}
