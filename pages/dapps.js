@@ -1,20 +1,13 @@
 import { useTranslation } from 'next-i18next'
 import { useMemo, useState } from 'react'
 import FiltersFrame from '../components/Layout/FiltersFrame'
-import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
+import { axiosServer, passHeaders, currencyServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useWidth } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
-import { shortNiceNumber } from '../utils/format'
-
-const dropsToXrp = (drops) => {
-  if (drops === null || drops === undefined) return ''
-  const n = Number(drops)
-  if (!Number.isFinite(n)) return ''
-  return (n / 1_000_000).toFixed(6)
-}
+import { shortNiceNumber, amountFormat } from '../utils/format'
 
 const calcSuccessRate = (total, success) => {
   const t = Number(total)
@@ -63,7 +56,7 @@ export async function getServerSideProps(context) {
   let initialData = null
   let initialErrorMessage = null
 
-  const { selectedCurrencyServer } = await getFiatRateServer(req)
+  const selectedCurrencyServer = currencyServer(req)
   const convertCurrency = (selectedCurrencyServer || 'usd').toLowerCase()
 
   try {
@@ -163,7 +156,7 @@ export default function Dapps({
                         <td className="right">{shortNiceNumber(d?.totalTransactions)}</td>
                         <td className="right">{shortNiceNumber(d?.successTransactions)}</td>
                         <td className="right">{successRate.toFixed(2)}%</td>
-                        <td className="right">{dropsToXrp(d?.totalFees)}</td>
+                        <td className="right">{amountFormat(d?.totalFees)}</td>
                         <td className="right">{d?.totalFeesInFiats?.[convertCurrency] ?? ''}</td>
                       </tr>
                     )
@@ -200,7 +193,7 @@ export default function Dapps({
                             <b>Success:</b> {shortNiceNumber(d?.successTransactions)} ({successRate.toFixed(2)}%)
                           </p>
                           <p>
-                            <b>Fees (XRP):</b> {dropsToXrp(d?.totalFees)}
+                            <b>Fees:</b> {amountFormat(d?.totalFees)}
                           </p>
                           <p>
                             <b>Fees ({convertCurrency.toUpperCase()}):</b>{' '}
