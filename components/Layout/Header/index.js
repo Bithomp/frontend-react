@@ -286,7 +286,7 @@ export default function Header({
             )}
           </Link>
           {/* fiat price next to logo */}
-          {fiatRate > 0 && (
+          {fiatRate > 0 && !xahauNetwork && (
             <span
               className="header-fiat-rate"
               style={{
