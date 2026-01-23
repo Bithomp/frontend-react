@@ -8,6 +8,7 @@ import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
 import { shortNiceNumber, amountFormat } from '../utils/format'
+import { dappBySourceTag } from '../utils/transaction'
 
 const calcSuccessRate = (total, success) => {
   const t = Number(total)
@@ -108,7 +109,14 @@ export default function Dapps({
   const rawData = useMemo(() => initialData || {}, [initialData])
   const data = useMemo(() => {
     const list = Array.isArray(rawData?.dapps) ? rawData.dapps : []
-    return sortDapps(list, order, convertCurrency)
+    // Filter: if no name and less than 10 totalTransactions, exclude
+    const filtered = list.filter((d) => {
+      if (Number(d?.sourceTag) === 0) return false
+      const hasName = dappBySourceTag(d?.sourceTag)
+      if (hasName) return true
+      return Number(d?.totalTransactions) >= 10
+    })
+    return sortDapps(filtered, order, convertCurrency)
   }, [rawData, order, convertCurrency])
 
   const orderList = [
@@ -139,6 +147,7 @@ export default function Dapps({
                   <th className="center">{t('table.index')}</th>
                   <th>SourceTag</th>
                   <th className="right">Transactions</th>
+                  <th className="right">Types</th>
                   <th className="right">Success</th>
                   <th className="right">Success %</th>
                   <th className="right">Fees (XRP)</th>
@@ -152,8 +161,15 @@ export default function Dapps({
                     return (
                       <tr key={d?.sourceTag ?? idx}>
                         <td className="center">{idx + 1}</td>
-                        <td>{d?.sourceTag}</td>
+                        <td>{dappBySourceTag(d?.sourceTag) || d?.sourceTag}</td>
                         <td className="right">{shortNiceNumber(d?.totalTransactions)}</td>
+                        <td className="right">
+                          {d?.transactionTypes
+                            ? Object.entries(d.transactionTypes)
+                                .map(([type, count]) => `${type}: ${shortNiceNumber(count)}`)
+                                .join(', ')
+                            : ''}
+                        </td>
                         <td className="right">{shortNiceNumber(d?.successTransactions)}</td>
                         <td className="right">{successRate.toFixed(2)}%</td>
                         <td className="right">{amountFormat(d?.totalFees)}</td>
@@ -184,10 +200,18 @@ export default function Dapps({
                         </td>
                         <td>
                           <p>
-                            <b>SourceTag:</b> {d?.sourceTag}
+                            <b>SourceTag:</b> {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
                           </p>
                           <p>
                             <b>Transactions:</b> {shortNiceNumber(d?.totalTransactions)}
+                          </p>
+                          <p>
+                            <b>Types:</b>{' '}
+                            {d?.transactionTypes
+                              ? Object.entries(d.transactionTypes)
+                                  .map(([type, count]) => `${type}: ${shortNiceNumber(count)}`)
+                                  .join(', ')
+                              : ''}
                           </p>
                           <p>
                             <b>Success:</b> {shortNiceNumber(d?.successTransactions)} ({successRate.toFixed(2)}%)
