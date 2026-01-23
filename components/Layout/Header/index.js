@@ -30,6 +30,7 @@ import XahauExplorer from '../../../public/images/xahauexplorer/long.svg'
 import LogoAnimated from '../LogoAnimated'
 import { IoWalletOutline } from 'react-icons/io5'
 import SearchBlock from '../SearchBlock'
+import { niceNumber } from '../../../utils/format'
 
 const HIDE_SEARCH_HEADER = [
   '/',
@@ -39,6 +40,7 @@ const HIDE_SEARCH_HEADER = [
   '/object',
   '/transaction',
   '/tokens',
+  '/amms',
   '/mpts',
   '/nft-volumes'
 ]
@@ -115,7 +117,8 @@ export default function Header({
   selectedCurrency,
   setSelectedCurrency,
   countryCode,
-  sessionToken
+  sessionToken,
+  fiatRate
 }) {
   const { i18n, t } = useTranslation()
 
@@ -196,7 +199,7 @@ export default function Header({
   return (
     <div className={(menuOpen ? 'mobile-menu-open ' : '') + (hideSearchInHeader ? 'hide-secondline' : '')}>
       <header>
-        <div className="header-logo">
+        <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
           <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
             {(width < 1060 && width > 350) || width > 1240 || !width ? (
               xahauNetwork ? (
@@ -216,6 +219,25 @@ export default function Header({
               </div>
             )}
           </Link>
+          {/* fiat price next to logo */}
+          {fiatRate > 0 && (
+            <span
+              className="header-fiat-rate"
+              style={{
+                marginTop: -9,
+                marginLeft: 12,
+                color: 'var(--accent-link)',
+                whiteSpace: 'nowrap',
+                background: 'rgba(255,255,255,0.07)',
+                borderRadius: 7,
+                padding: '2px 6px',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+              }}
+              suppressHydrationWarning
+            >
+              {nativeCurrency} = {niceNumber(fiatRate, null, selectedCurrency, 4)}
+            </span>
+          )}
         </div>
         <div
           className="header-menu-left"

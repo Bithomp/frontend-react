@@ -531,7 +531,7 @@ header {
   }
 }
 
-@media only screen and (max-width: 1060px) {
+@media only screen and (max-width: 1145px) {
   header {
     min-height: 55px;
     height: auto;
@@ -648,7 +648,7 @@ header {
   }
 }
 
-@media only screen and (max-width: 1534px) and (min-width: 1061px) {
+@media only screen and (max-width: 1600px) and (min-width: 1145px) {
   header {
     justify-content: space-between;
 
@@ -688,7 +688,7 @@ header {
 }
 
 /* Desktop: keep logo left, right menu right, equal internal gaps */
-@media only screen and (min-width: 1535px) {
+@media only screen and (min-width: 1600px) {
   header {
     justify-content: space-between;
     padding: 0 20px;

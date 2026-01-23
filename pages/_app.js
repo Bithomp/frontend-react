@@ -33,6 +33,7 @@ import { fetchCurrentFiatRate } from '../utils/common'
 import ErrorBoundary from '../components/ErrorBoundary'
 import { ledgerwalletDisconnect } from '../utils/ledgerwallet'
 import { isUsernameValid } from '../utils'
+import { wssServer } from '../utils'
 
 const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true })
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
@@ -93,11 +94,12 @@ function useReferralCookie() {
 
 const MyApp = ({ Component, pageProps }) => {
   useReferralCookie()
-  const firstRenderRef = useRef(true)
   const [account, setAccount] = useLocalStorage('account')
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
   const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
-  const [fiatRate, setFiatRate] = useState(0)
+  const [liveFiatRate, setLiveFiatRate] = useState(0)
+  const wsRef = useRef(null)
+  const selectedCurrencyRef = useRef(selectedCurrency)
   const [proExpire, setProExpire] = useCookie('pro-expire')
   const [subscriptionExpired, setSubscriptionExpired] = useState(
     proExpire ? Number(proExpire) < new Date().getTime() : true
@@ -157,41 +159,91 @@ const MyApp = ({ Component, pageProps }) => {
   }, [])
 
   useEffect(() => {
-    //pages where we need to show the latest fiat price
-    const allowedRoutes = [
-      '/',
-      '/account',
-      '/account/[id]',
-      '/account/[id]/transactions',
-      '/amms',
-      '/distribution',
-      '/admin/watchlist',
-      '/nft/[[...id]]',
-      '/tokens',
-      '/nft-collection/[id]',
-      '/token/[[...id]]'
-    ]
-    const skipOnFirstRender = [
-      '/',
-      '/account',
-      '/account/[id]',
-      '/account/[id]/transactions',
-      '/amms',
-      '/tokens',
-      '/token/[[...id]]'
-    ]
-
-    // Skip fetch on first render for pages that get on the server side
-    if (firstRenderRef.current && skipOnFirstRender.includes(router.pathname)) {
-      firstRenderRef.current = false
-      return
-    }
-
-    if (allowedRoutes.includes(router.pathname)) {
-      fetchCurrentFiatRate(selectedCurrency, setFiatRate)
+    // If WebSocket is not working or there is no actual value, update via API
+    const shouldUpdateViaApi = !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !liveFiatRate
+    if (shouldUpdateViaApi) {
+      fetchCurrentFiatRate(selectedCurrency, (rate) => {
+        setLiveFiatRate(rate)
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, router.pathname])
+
+  // WebSocket for liveFiatRate
+  useEffect(() => {
+    function sendData(currency) {
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.send(
+          JSON.stringify({
+            command: 'subscribe',
+            streams: ['rates'],
+            currency,
+            id: 1
+          })
+        )
+      } else {
+        setTimeout(() => sendData(currency), 1000)
+      }
+    }
+    function connect() {
+      try {
+        wsRef.current = new window.WebSocket(wssServer)
+        wsRef.current.onopen = () => {
+          sendData(selectedCurrency)
+        }
+        wsRef.current.onmessage = (evt) => {
+          const message = JSON.parse(evt.data)
+          if (message.type === 'rates') {
+            const currentCurrency = selectedCurrencyRef.current
+            if (message[currentCurrency]) setLiveFiatRate(message[currentCurrency])
+          }
+        }
+        wsRef.current.onclose = () => {
+          setTimeout(connect, 3000)
+        }
+        wsRef.current.onerror = () => {
+          if (wsRef.current) wsRef.current.close()
+        }
+      } catch (error) {
+        setTimeout(connect, 3000)
+      }
+    }
+    selectedCurrencyRef.current = selectedCurrency
+    if (typeof window !== 'undefined' && navigator.onLine) {
+      connect()
+    }
+    return () => {
+      if (wsRef.current) wsRef.current.close()
+    }
+  }, [selectedCurrency])
+
+  useEffect(() => {
+    // Unsubscribe from previous currency if it exists
+    if (selectedCurrencyRef.current && selectedCurrencyRef.current !== selectedCurrency) {
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.send(
+          JSON.stringify({
+            command: 'unsubscribe',
+            streams: ['rates'],
+            currency: selectedCurrencyRef.current,
+            id: 2
+          })
+        )
+      }
+    }
+    selectedCurrencyRef.current = selectedCurrency
+    // Subscribe to new currency
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(
+        JSON.stringify({
+          command: 'subscribe',
+          streams: ['rates'],
+          currency: selectedCurrency,
+          id: 1
+        })
+      )
+    }
+  }, [selectedCurrency])
 
   useEffect(() => {
     setSubscriptionExpired(proExpire ? Number(proExpire) < new Date().getTime() : true)
@@ -297,6 +349,7 @@ const MyApp = ({ Component, pageProps }) => {
                 setSelectedCurrency={setSelectedCurrency}
                 countryCode={countryCode}
                 sessionToken={sessionToken}
+                fiatRate={liveFiatRate}
               />
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}
@@ -345,7 +398,7 @@ const MyApp = ({ Component, pageProps }) => {
                   setSubscriptionExpired={setSubscriptionExpired}
                   sessionToken={sessionToken}
                   setSessionToken={setSessionToken}
-                  fiatRate={fiatRate}
+                  fiatRate={liveFiatRate}
                   openEmailLogin={openEmailLogin}
                   countryCode={countryCode}
                 />
