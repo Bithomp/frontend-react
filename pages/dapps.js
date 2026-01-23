@@ -147,6 +147,8 @@ export default function Dapps({
                 <tr>
                   <th className="center">{t('table.index')}</th>
                   <th>SourceTag</th>
+                  <th className="right">Performing</th>
+                  <th className="right">Interacting</th>
                   <th className="right">Transactions</th>
                   <th className="right">Types</th>
                   <th className="right">Success</th>
@@ -161,6 +163,8 @@ export default function Dapps({
                       <tr key={d?.sourceTag ?? idx}>
                         <td className="center">{idx + 1}</td>
                         <td>{dappBySourceTag(d?.sourceTag) || d?.sourceTag}</td>
+                        <td className="right">{shortNiceNumber(d?.uniqueSourceAddresses, 0)}</td>
+                        <td className="right">{shortNiceNumber(d?.uniqueInteractedAddresses, 0)}</td>
                         <td className="right">{shortNiceNumber(d?.totalTransactions, 0)}</td>
                         <td className="right">
                           {d?.transactionTypes
@@ -209,6 +213,9 @@ export default function Dapps({
                           <p>
                             <b>SourceTag:</b> {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
                           </p>
+                          <b>Performing:</b> {shortNiceNumber(d?.uniqueSourceAddresses, 0)}
+                          <br />
+                          <b>Interacting:</b> {shortNiceNumber(d?.uniqueInteractedAddresses, 0)}
                           <p>
                             <b>Transactions:</b> {shortNiceNumber(d?.totalTransactions, 0)}
                           </p>
