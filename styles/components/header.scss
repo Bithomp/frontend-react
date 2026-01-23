@@ -531,6 +531,17 @@ header {
   }
 }
 
+/* Collapse the second-line search row while scrolling (only where it becomes a 2nd row) */
+.header-collapsed {
+  header {
+    /* keep the main bar visible; collapse only the second row area */
+    .header-search-inline {
+      transition: max-height 0.25s ease, padding 0.25s ease, opacity 0.2s ease, margin 0.25s ease,
+        border 0.25s ease, transform 0.25s ease;
+    }
+  }
+}
+
 @media only screen and (max-width: 1145px) {
   header {
     min-height: 55px;
@@ -612,6 +623,23 @@ header {
     margin-top: 55px;
     height: calc(100% - 55px);
   }
+
+  .header-collapsed {
+    header {
+      .header-search-inline {
+        max-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        border-top: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        overflow: hidden !important;
+        transform: translateY(-6px);
+      }
+    }
+  }
 }
 
 @media only screen and (max-width: 600px) {
@@ -682,6 +710,22 @@ header {
 
       &.hide-search-inline {
         display: none;
+      }
+    }
+  }
+    .header-collapsed {
+    header {
+      .header-search-inline {
+        max-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        border-top: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        overflow: hidden !important;
+        transform: translateY(-6px);
       }
     }
   }

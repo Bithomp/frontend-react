@@ -129,12 +129,72 @@ export default function Header({
   const [isCopied, setIsCopied] = useState(false)
 
   const [hoverStates, setHoverStates] = useState({}) //{ dropdown7: true }
+  const [headerCollapsed, setHeaderCollapsed] = useState(false)
 
   const width = useWidth()
 
   useEffect(() => {
     setRendered(true)
   }, [])
+
+  useEffect(() => {
+    // Collapse only when the header likely has a 2nd line (your breakpoints)
+    const shouldUseCollapsingHeader = () => {
+      const w = window.innerWidth
+      // second line happens on <=960, and also on 1145..1600 (your order:3 + full width row)
+      return w <= 960 || (w >= 1145 && w <= 1600)
+    }
+
+    let lastY = window.scrollY
+    let ticking = false
+
+    const onScroll = () => {
+      if (!shouldUseCollapsingHeader()) {
+        // Ensure expanded if we leave those breakpoints
+        if (headerCollapsed) setHeaderCollapsed(false)
+        lastY = window.scrollY
+        return
+      }
+
+      const y = window.scrollY
+      const delta = y - lastY
+
+      // Avoid jitter from tiny scroll changes
+      if (Math.abs(delta) < 6) return
+
+      // If near top -> always expanded
+      if (y < 20) {
+        if (headerCollapsed) setHeaderCollapsed(false)
+        lastY = y
+        return
+      }
+
+      // Scroll down -> collapse; scroll up -> expand
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (delta > 0) {
+            if (!headerCollapsed) setHeaderCollapsed(true)
+          } else {
+            if (headerCollapsed) setHeaderCollapsed(false)
+          }
+          ticking = false
+        })
+        ticking = true
+      }
+
+      lastY = y
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    onScroll()
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [headerCollapsed])
 
   let address, displayName, username, pro, proName
   if (account && account.address) {
@@ -197,7 +257,13 @@ export default function Header({
       !router?.query?.id)
 
   return (
-    <div className={(menuOpen ? 'mobile-menu-open ' : '') + (hideSearchInHeader ? 'hide-secondline' : '')}>
+    <div
+      className={
+        (menuOpen ? 'mobile-menu-open ' : '') +
+        (hideSearchInHeader ? 'hide-secondline ' : '') +
+        (headerCollapsed ? 'header-collapsed ' : '')
+      }
+    >
       <header>
         <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
           <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
