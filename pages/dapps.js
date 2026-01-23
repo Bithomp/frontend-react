@@ -109,9 +109,10 @@ export default function Dapps({
   const rawData = useMemo(() => initialData || {}, [initialData])
   const data = useMemo(() => {
     const list = Array.isArray(rawData?.dapps) ? rawData.dapps : []
-    // Filter: if no name and less than 10 totalTransactions, exclude
+    // Exclude these sourceTags
+    const excludeSourceTags = [0, 222, 4004, 604802567]
     const filtered = list.filter((d) => {
-      if (Number(d?.sourceTag) === 0) return false
+      if (excludeSourceTags.includes(Number(d?.sourceTag))) return false
       const hasName = dappBySourceTag(d?.sourceTag)
       if (hasName) return true
       return Number(d?.totalTransactions) >= 10
@@ -149,9 +150,7 @@ export default function Dapps({
                   <th className="right">Transactions</th>
                   <th className="right">Types</th>
                   <th className="right">Success</th>
-                  <th className="right">Success %</th>
-                  <th className="right">Fees (XRP)</th>
-                  <th className="right">Fees ({convertCurrency.toUpperCase()})</th>
+                  <th className="right">Fees</th>
                 </tr>
               </thead>
               <tbody>
@@ -162,18 +161,26 @@ export default function Dapps({
                       <tr key={d?.sourceTag ?? idx}>
                         <td className="center">{idx + 1}</td>
                         <td>{dappBySourceTag(d?.sourceTag) || d?.sourceTag}</td>
-                        <td className="right">{shortNiceNumber(d?.totalTransactions)}</td>
+                        <td className="right">{shortNiceNumber(d?.totalTransactions, 0)}</td>
                         <td className="right">
                           {d?.transactionTypes
                             ? Object.entries(d.transactionTypes)
-                                .map(([type, count]) => `${type}: ${shortNiceNumber(count)}`)
+                                .map(([type, count]) => `${type}: ${shortNiceNumber(count, 0)}`)
                                 .join(', ')
                             : ''}
                         </td>
-                        <td className="right">{shortNiceNumber(d?.successTransactions)}</td>
-                        <td className="right">{successRate.toFixed(2)}%</td>
-                        <td className="right">{amountFormat(d?.totalFees)}</td>
-                        <td className="right">{d?.totalFeesInFiats?.[convertCurrency] ?? ''}</td>
+                        <td className="right">
+                          {shortNiceNumber(d?.successTransactions, 0)}
+                          <br />
+                          <span style={{ opacity: 0.7 }}>{successRate.toFixed(2)}%</span>
+                        </td>
+                        <td className="right">
+                          {amountFormat(d?.totalFees)}
+                          <br />
+                          <span style={{ opacity: 0.7 }}>
+                            {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
+                          </span>
+                        </td>
                       </tr>
                     )
                   })
@@ -203,25 +210,27 @@ export default function Dapps({
                             <b>SourceTag:</b> {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
                           </p>
                           <p>
-                            <b>Transactions:</b> {shortNiceNumber(d?.totalTransactions)}
+                            <b>Transactions:</b> {shortNiceNumber(d?.totalTransactions, 0)}
                           </p>
                           <p>
                             <b>Types:</b>{' '}
                             {d?.transactionTypes
                               ? Object.entries(d.transactionTypes)
-                                  .map(([type, count]) => `${type}: ${shortNiceNumber(count)}`)
+                                  .map(([type, count]) => `${type}: ${shortNiceNumber(count, 0)}`)
                                   .join(', ')
                               : ''}
                           </p>
                           <p>
-                            <b>Success:</b> {shortNiceNumber(d?.successTransactions)} ({successRate.toFixed(2)}%)
+                            <b>Success:</b> {shortNiceNumber(d?.successTransactions, 0)}
+                            <br />
+                            <span style={{ opacity: 0.7 }}>{successRate.toFixed(2)}%</span>
                           </p>
                           <p>
                             <b>Fees:</b> {amountFormat(d?.totalFees)}
-                          </p>
-                          <p>
-                            <b>Fees ({convertCurrency.toUpperCase()}):</b>{' '}
-                            {d?.totalFeesInFiats?.[convertCurrency] ?? ''}
+                            <br />
+                            <span style={{ opacity: 0.7 }}>
+                              {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
+                            </span>
                           </p>
                           <br />
                         </td>
