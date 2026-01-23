@@ -175,7 +175,7 @@ export default function Dapps({
                           <span style={{ opacity: 0.7 }}>{successRate.toFixed(2)}%</span>
                         </td>
                         <td className="right">
-                          {amountFormat(d?.totalFees)}
+                          {amountFormat(d?.totalFees, { short: true })}
                           <br />
                           <span style={{ opacity: 0.7 }}>
                             {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
@@ -226,7 +226,7 @@ export default function Dapps({
                             <span style={{ opacity: 0.7 }}>{successRate.toFixed(2)}%</span>
                           </p>
                           <p>
-                            <b>Fees:</b> {amountFormat(d?.totalFees)}
+                            <b>Fees:</b> {amountFormat(d?.totalFees, { short: true })}
                             <br />
                             <span style={{ opacity: 0.7 }}>
                               {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
