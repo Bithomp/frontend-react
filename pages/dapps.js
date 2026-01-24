@@ -115,7 +115,7 @@ export default function Dapps({
       if (excludeSourceTags.includes(Number(d?.sourceTag))) return false
       const hasName = dappBySourceTag(d?.sourceTag)
       if (hasName) return true
-      return Number(d?.totalTransactions) >= 10
+      return Number(d?.uniqueSourceAddresses) > 1
     })
     return sortDapps(filtered, order, convertCurrency)
   }, [rawData, order, convertCurrency])
@@ -181,7 +181,7 @@ export default function Dapps({
                         <td className="right">
                           {amountFormat(d?.totalFees, { short: true })}
                           <br />
-                          <span style={{ opacity: 0.7 }}>
+                          <span style={{ opacity: 0.7 }} suppressHydrationWarning>
                             {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
                           </span>
                         </td>
@@ -235,7 +235,7 @@ export default function Dapps({
                           <p>
                             <b>Fees:</b> {amountFormat(d?.totalFees, { short: true })}
                             <br />
-                            <span style={{ opacity: 0.7 }}>
+                            <span style={{ opacity: 0.7 }} suppressHydrationWarning>
                               {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
                             </span>
                           </p>
