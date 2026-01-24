@@ -7,7 +7,7 @@ import { explorerName, useWidth } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
-import { shortNiceNumber, amountFormat, fullDateAndTime, timeFromNow } from '../utils/format'
+import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow } from '../utils/format'
 import { dappBySourceTag } from '../utils/transaction'
 
 const calcSuccessRate = (total, success) => {
@@ -137,7 +137,7 @@ export default function Dapps({
       <h1 className="center">{explorerName} Dapps Radar</h1>
       {rawData?.updatedAt && (
         <div className="center" style={{ marginBottom: 16, fontSize: 15, color: '#888' }}>
-          Last update: {fullDateAndTime(rawData.updatedAt)} ({timeFromNow(rawData.updatedAt, i18n)})
+          Last update: {timeOrDate(rawData.updatedAt)} ({timeFromNow(rawData.updatedAt, i18n)})
         </div>
       )}
 
