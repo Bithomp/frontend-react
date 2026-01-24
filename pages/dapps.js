@@ -17,34 +17,22 @@ const calcSuccessRate = (total, success) => {
   return (s / t) * 100
 }
 
-const sortDapps = (list, order, convertCurrency) => {
+const sortDapps = (list, order) => {
   const arr = Array.isArray(list) ? [...list] : []
-  const cc = (convertCurrency || 'usd').toLowerCase()
-  const getFiat = (a) => Number(a?.totalFeesInFiats?.[cc] ?? 0)
 
   switch (order) {
+    case 'performingHigh':
+      return arr.sort((a, b) => Number(b?.uniqueSourceAddresses ?? 0) - Number(a?.uniqueSourceAddresses ?? 0))
+    case 'interactingHigh':
+      return arr.sort((a, b) => Number(b?.uniqueInteractedAddresses ?? 0) - Number(a?.uniqueInteractedAddresses ?? 0))
     case 'txHigh':
       return arr.sort((a, b) => Number(b?.totalTransactions ?? 0) - Number(a?.totalTransactions ?? 0))
-    case 'txLow':
-      return arr.sort((a, b) => Number(a?.totalTransactions ?? 0) - Number(b?.totalTransactions ?? 0))
     case 'successRateHigh':
       return arr.sort(
         (a, b) =>
           calcSuccessRate(b?.totalTransactions, b?.successTransactions) -
           calcSuccessRate(a?.totalTransactions, a?.successTransactions)
       )
-    case 'feesXrpHigh':
-      return arr.sort((a, b) => Number(b?.totalFees ?? 0) - Number(a?.totalFees ?? 0))
-    case 'feesXrpLow':
-      return arr.sort((a, b) => Number(a?.totalFees ?? 0) - Number(b?.totalFees ?? 0))
-    case 'feesFiatHigh':
-      return arr.sort((a, b) => getFiat(b) - getFiat(a))
-    case 'feesFiatLow':
-      return arr.sort((a, b) => getFiat(a) - getFiat(b))
-    case 'tagHigh':
-      return arr.sort((a, b) => Number(b?.sourceTag ?? 0) - Number(a?.sourceTag ?? 0))
-    case 'tagLow':
-      return arr.sort((a, b) => Number(a?.sourceTag ?? 0) - Number(b?.sourceTag ?? 0))
     default:
       return arr
   }
@@ -76,7 +64,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       initialData: initialData || null,
-      orderQuery: order || 'txHigh',
+      orderQuery: order || 'performingHigh',
       initialErrorMessage: initialErrorMessage || '',
       selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
@@ -103,33 +91,43 @@ export default function Dapps({
 
   const convertCurrency = (selectedCurrency || 'usd').toLowerCase()
 
-  const [order, setOrder] = useState(orderQuery)
+  const [order, setOrder] = useState(orderQuery || 'performingHigh')
   const [errorMessage] = useState(t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || '')
 
   const rawData = useMemo(() => initialData || {}, [initialData])
   const data = useMemo(() => {
     const list = Array.isArray(rawData?.dapps) ? rawData.dapps : []
     // Exclude these sourceTags
-    const excludeSourceTags = [0, 111, 222, 777, 4004, 604802567]
+    const excludeSourceTags = [0, 111, 222, 777, 4004, 19089388, 604802567]
+    // 19089388 - Hummingbot
     const filtered = list.filter((d) => {
       if (excludeSourceTags.includes(Number(d?.sourceTag))) return false
       const hasName = dappBySourceTag(d?.sourceTag)
       if (hasName) return true
       return Number(d?.uniqueSourceAddresses) > 1
     })
-    return sortDapps(filtered, order, convertCurrency)
-  }, [rawData, order, convertCurrency])
+    return sortDapps(filtered, order)
+  }, [rawData, order])
 
   const orderList = [
+    { value: 'performingHigh', label: 'Performing wallets: High to Low' },
+    { value: 'interactingHigh', label: 'Interacting wallets: High to Low' },
     { value: 'txHigh', label: 'Transactions: High to Low' },
-    { value: 'txLow', label: 'Transactions: Low to High' },
-    { value: 'successRateHigh', label: 'Success rate: High to Low' },
-    { value: 'feesXrpHigh', label: 'Fees (XRP): High to Low' },
-    { value: 'feesXrpLow', label: 'Fees (XRP): Low to High' },
-    { value: 'feesFiatHigh', label: `Fees (${convertCurrency.toUpperCase()}): High to Low` },
-    { value: 'feesFiatLow', label: `Fees (${convertCurrency.toUpperCase()}): Low to High` },
-    { value: 'tagHigh', label: 'SourceTag: High to Low' },
-    { value: 'tagLow', label: 'SourceTag: Low to High' }
+    { value: 'successRateHigh', label: 'Success rate: High to Low' }
+  ]
+
+  // CSV headers for export
+  const csvHeaders = [
+    { label: 'SourceTag', key: 'sourceTag' },
+    { label: 'Dapp Name', key: 'dappName' },
+    { label: 'Performing wallets', key: 'uniqueSourceAddresses' },
+    { label: 'Interacting wallets', key: 'uniqueInteractedAddresses' },
+    { label: 'Transactions', key: 'totalTransactions' },
+    { label: 'Types', key: 'transactionTypes' },
+    { label: 'Success', key: 'successTransactions' },
+    { label: 'Success %', key: 'successRate' },
+    { label: 'Fees', key: 'totalFees' },
+    { label: `Fees (${convertCurrency.toUpperCase()})`, key: `totalFeesInFiats.${convertCurrency}` }
   ]
 
   return (
@@ -137,7 +135,14 @@ export default function Dapps({
       <SEO title="Dapps" />
       <h1 className="center">Dapps</h1>
 
-      <FiltersFrame order={order} setOrder={setOrder} orderList={orderList} data={data} onlyCsv={true}>
+      <FiltersFrame
+        order={order}
+        setOrder={setOrder}
+        orderList={orderList}
+        data={data}
+        onlyCsv={true}
+        csvHeaders={csvHeaders}
+      >
         {/* FiltersFrame expects children[0] for filters, children[1] for content */}
         <></>
         {!errorMessage ? (
