@@ -3,11 +3,11 @@ import { useMemo, useState } from 'react'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import { axiosServer, passHeaders, currencyServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useWidth } from '../utils'
+import { explorerName, useWidth } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
-import { shortNiceNumber, amountFormat } from '../utils/format'
+import { shortNiceNumber, amountFormat, fullDateAndTime, timeFromNow } from '../utils/format'
 import { dappBySourceTag } from '../utils/transaction'
 
 const calcSuccessRate = (total, success) => {
@@ -81,7 +81,7 @@ export default function Dapps({
   fiatRate: fiatRateApp,
   selectedCurrencyServer
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
 
   let selectedCurrency = selectedCurrencyServer
@@ -133,7 +133,13 @@ export default function Dapps({
   return (
     <>
       <SEO title="Dapps" />
-      <h1 className="center">Dapps</h1>
+
+      <h1 className="center">{explorerName} Dapps Radar</h1>
+      {rawData?.updatedAt && (
+        <div className="center" style={{ marginBottom: 16, fontSize: 15, color: '#888' }}>
+          Last update: {fullDateAndTime(rawData.updatedAt)} ({timeFromNow(rawData.updatedAt, i18n)})
+        </div>
+      )}
 
       <FiltersFrame
         order={order}
