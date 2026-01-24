@@ -265,6 +265,10 @@ export default function Dapps({
           </div>
         )}
       </FiltersFrame>
+      <div className="note" style={{ maxWidth: 800, margin: '20px auto' }}>
+        <b>Interacting wallets</b> - Unique Interacted Addresses: <code>tx.Address</code>, <code>tx.Destination</code>,
+        actual sender, and actual receiver (the latter two may differ from source and destination in some transactions).
+      </div>
     </>
   )
 }
