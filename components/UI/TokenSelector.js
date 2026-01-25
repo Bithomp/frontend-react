@@ -13,8 +13,12 @@ import { useRouter } from 'next/router'
 const limit = 20
 
 // Helper function to fetch and process trustlines for a destination address
-const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '') => {
-  const response = await axios(`v2/address/${destinationAddress}/acceptedTokens?limit=${limit}`)
+const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '', senderAddress = null) => {
+  let url = `v2/address/${destinationAddress}/acceptedTokens?limit=${limit}`
+  if (senderAddress) {
+    url += `&sender=${senderAddress}`
+  }
+  const response = await axios(url)
   const tokens = response.data?.tokens || []
 
   // Trim the search query to handle whitespace
@@ -61,6 +65,7 @@ export default function TokenSelector({
   onChange,
   excludeNative = false,
   destinationAddress = null,
+  senderAddress = null,
   allOrOne,
   currencyQueryName,
   excludeLPtokens = false
@@ -139,7 +144,7 @@ export default function TokenSelector({
 
           if (destinationAddress) {
             // Fetch tokens that destination can hold based on trustlines
-            tokens = await fetchTrustlinesForDestination(destinationAddress)
+            tokens = await fetchTrustlinesForDestination(destinationAddress, '', senderAddress)
           } else {
             // Fallback to original behavior if no destination address
             // &statistics=true - shall we get USD prices and show them?
@@ -192,7 +197,7 @@ export default function TokenSelector({
       try {
         if (destinationAddress) {
           // For destination-specific search, filter the existing trustlines
-          const tokens = await fetchTrustlinesForDestination(destinationAddress, searchQuery)
+          const tokens = await fetchTrustlinesForDestination(destinationAddress, searchQuery, senderAddress)
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
           // Cache the results

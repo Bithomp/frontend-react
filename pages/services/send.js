@@ -618,6 +618,7 @@ export default function Send({
                 onChange={onTokenChange}
                 destinationAddress={useRemit ? null : address}
                 currencyQueryName="currency"
+                senderAddress={account?.address || null}
               />
             </div>
           </div>
@@ -816,6 +817,12 @@ export default function Send({
               </div>
             </>
           )}
+
+          <br />
+          <div className="grey">
+            To mint a token (by sending a payment to a distribution account that already has a trustline to you), you
+            must be logged in with the issuer address.
+          </div>
         </div>
       </div>
     </>
