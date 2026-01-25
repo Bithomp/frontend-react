@@ -303,12 +303,14 @@ export const errorCodeDescription = (code) => {
   return codes[code] || code
 }
 
+//https://view.ponedelnik.com/4652017081-75a4eea34dfa9b083a4f0c0d5b901530?r=use1
 export const dappBySourceTag = (sourceTag) => {
   if (!sourceTag) return null
   const dapps = {
     16: 'UniversalNFT.dev',
     999999: 'Loansnap',
     1060223: 'Epic Task',
+    1739300: 'Styngr',
     5042137: 'conFIEL',
     5523279: 'Things Go Online',
     10000001: 'MetaTV',
@@ -359,7 +361,7 @@ export const dappBySourceTag = (sourceTag) => {
     83834545: 'D3',
     84190958: 'Multiverse Wallet',
     88122188: 'Breezepay',
-    88807279: 'XRPhone',
+    88807279: 'XRPPhone',
     88888888: 'Mintable',
     88990334: 'VWBL',
     89898989: 'zkLend',
@@ -379,7 +381,7 @@ export const dappBySourceTag = (sourceTag) => {
     310428004: 'Scratch2Hooks (Blockly2Hooks)',
     353353353: 'ProprHome',
     358132134: 'XSGD Stablecoin',
-    369333333: 'Feeturre',
+    369333333: 'Feetture',
     369369369: 'Carbonland Trust',
     418078113: 'Credefi',
     494456745: 'Aigent', // aigent.run
@@ -388,6 +390,7 @@ export const dappBySourceTag = (sourceTag) => {
     524942424: 'Ribble Trading Bot', //@ribble_trading_bot on Telegram
     544841000: 'Thallo Two-Way Carbon Bridge',
     567567567: 'StaykX',
+    589141516: 'DragonKill.online',
     589589589: 'Guardians of the Reefs',
     658879330: 'Filedgr',
     666999666: 'TKTZ',
@@ -400,7 +403,7 @@ export const dappBySourceTag = (sourceTag) => {
     1160305145: 'Ap0cene',
     1741383633: 'Trust wallet', // timestamp 7 March 2025, 21:40:33 UTC
     2310819306: 'Indicator Success Rate',
-    2323232323: 'Chimoney (Unispend)'
+    2323232323: 'Chimoney & Unispend' //23232323236 is invalid tag
   }
   //max sourceTag is 4294967295, more than that are invalid.
   return dapps[sourceTag] || null

@@ -103,7 +103,7 @@ export default function Dapps({
       if (excludeSourceTags.includes(Number(d?.sourceTag))) return false
       const hasName = dappBySourceTag(d?.sourceTag)
       if (hasName) return true
-      return Number(d?.uniqueSourceAddresses) > 1
+      return Number(d?.uniqueSourceAddresses) > 3
     })
     return sortDapps(filtered, order)
   }, [rawData, order])
@@ -117,7 +117,6 @@ export default function Dapps({
 
   // CSV headers for export
   const csvHeaders = [
-    { label: 'SourceTag', key: 'sourceTag' },
     { label: 'Dapp Name', key: 'dappName' },
     { label: 'Performing wallets', key: 'uniqueSourceAddresses' },
     { label: 'Interacting wallets', key: 'uniqueInteractedAddresses' },
