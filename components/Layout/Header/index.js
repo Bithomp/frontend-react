@@ -466,7 +466,7 @@ export default function Header({
           <div className={'header-search-inline ' + (hideSearchInHeader ? 'hide-search-inline' : '')}>
             <SearchBlock
               compact={true}
-              searchPlaceholderText="Search..."
+              //searchPlaceholderText="Search..."
               tab={ROUTE_TAB_MAP.find((route) => router?.pathname?.startsWith(route.prefix))?.tab}
             />
           </div>
