@@ -152,10 +152,6 @@ export default function Transaction({ data, selectedCurrency, initialErrorMessag
     TransactionComponent = TransactionDetails
   }
 
-  const Container = ({ children }) => {
-    return <>{children}</>
-  }
-
   return (
     <>
       <SEO
@@ -163,9 +159,7 @@ export default function Transaction({ data, selectedCurrency, initialErrorMessag
         title={t('explorer.header.transaction') + ' ' + txHash}
         description={'Transaction details for tx: ' + txHash}
       />
-      <Container>
-        <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency} />
-      </Container>
+      <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency} />
     </>
   )
 }
