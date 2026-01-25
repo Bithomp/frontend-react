@@ -98,8 +98,7 @@ export default function Dapps({
   const data = useMemo(() => {
     const list = Array.isArray(rawData?.dapps) ? rawData.dapps : []
     // Exclude these sourceTags
-    const excludeSourceTags = [0, 111, 222, 777, 4004, 19089388, 604802567]
-    // 19089388 - Hummingbot
+    const excludeSourceTags = [0, 111, 222, 777, 4004, 604802567]
     const filtered = list.filter((d) => {
       if (excludeSourceTags.includes(Number(d?.sourceTag))) return false
       const hasName = dappBySourceTag(d?.sourceTag)
@@ -173,7 +172,7 @@ export default function Dapps({
                     return (
                       <tr key={d?.sourceTag ?? idx}>
                         <td className="center">{idx + 1}</td>
-                        <td>{dappBySourceTag(d?.sourceTag) || d?.sourceTag}</td>
+                        <td className="no-brake">{dappBySourceTag(d?.sourceTag) || d?.sourceTag}</td>
                         <td className="right">{shortNiceNumber(d?.uniqueSourceAddresses, 0)}</td>
                         <td className="right">{shortNiceNumber(d?.uniqueInteractedAddresses, 0)}</td>
                         <td className="right">{shortNiceNumber(d?.totalTransactions, 0)}</td>
@@ -189,7 +188,7 @@ export default function Dapps({
                           <br />
                           <span style={{ opacity: 0.7 }}>{successRate.toFixed(2)}%</span>
                         </td>
-                        <td className="right">
+                        <td className="right no-brake">
                           {amountFormat(d?.totalFees, { short: true })}
                           <br />
                           <span style={{ opacity: 0.7 }} suppressHydrationWarning>
@@ -221,7 +220,7 @@ export default function Dapps({
                           <b>{idx + 1}</b>
                         </td>
                         <td>
-                          <p>
+                          <p className="no-brake">
                             <b>SourceTag:</b> {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
                           </p>
                           <b>Performing:</b> {shortNiceNumber(d?.uniqueSourceAddresses, 0)}
@@ -243,7 +242,7 @@ export default function Dapps({
                             <br />
                             <span style={{ opacity: 0.7 }}>{successRate.toFixed(2)}%</span>
                           </p>
-                          <p>
+                          <p className="no-brake">
                             <b>Fees:</b> {amountFormat(d?.totalFees, { short: true })}
                             <br />
                             <span style={{ opacity: 0.7 }} suppressHydrationWarning>

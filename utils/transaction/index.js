@@ -320,6 +320,7 @@ export const dappBySourceTag = (sourceTag) => {
     13888813: 'Zerpmon',
     14655641: 'X-Tokenize',
     19089388: 'Hummingbot',
+    20102305: 'OpulenceX',
     20120513: 'BPM Wallet',
     20220613: 'DalliPay',
     20221212: 'XPMarket',
@@ -345,9 +346,10 @@ export const dappBySourceTag = (sourceTag) => {
     60006000: 'Moai Fianance',
     62423574: 'VNX Stablecoins on the XRPL',
     66666666: 'XRP Carbon Offset Toolkit',
-    69420589: 'onXRP',
+    69420589: 'bidds',
     70000003: 'Axone Universe',
     72587259: 'Fieldboss NFT',
+    74920348: 'First Ledger',
     75437338: 'NGNC',
     75856879: 'Kudos Setler',
     77777777: 'Giving Universe',
@@ -380,8 +382,10 @@ export const dappBySourceTag = (sourceTag) => {
     369333333: 'Feeturre',
     369369369: 'Carbonland Trust',
     418078113: 'Credefi',
+    494456745: 'Aigent', // aigent.run
     510162502: 'Sonar Muse',
     512512512: 'PetProof',
+    524942424: 'Ribble Trading Bot', //@ribble_trading_bot on Telegram
     544841000: 'Thallo Two-Way Carbon Bridge',
     567567567: 'StaykX',
     589589589: 'Guardians of the Reefs',
@@ -394,6 +398,7 @@ export const dappBySourceTag = (sourceTag) => {
     936618804: 'RandX',
     999999007: 'MetaCarbon',
     1160305145: 'Ap0cene',
+    1741383633: 'Trust wallet', // timestamp 7 March 2025, 21:40:33 UTC
     2310819306: 'Indicator Success Rate',
     2323232323: 'Chimoney (Unispend)'
   }
