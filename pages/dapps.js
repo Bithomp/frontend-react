@@ -155,7 +155,7 @@ export default function Dapps({
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
-                  <th>SourceTag</th>
+                  <th>Dapp</th>
                   <th className="right">Performing</th>
                   <th className="right">Interacting</th>
                   <th className="right">Transactions</th>
@@ -220,7 +220,7 @@ export default function Dapps({
                         </td>
                         <td>
                           <p className="no-brake">
-                            <b>SourceTag:</b> {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
+                            <b>Dapp:</b> {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
                           </p>
                           <b>Performing:</b> {shortNiceNumber(d?.uniqueSourceAddresses, 0)}
                           <br />
