@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import {
   devNet,
@@ -133,25 +133,34 @@ export default function Header({
 
   const width = useWidth()
 
+  const headerCollapsedRef = useRef(false)
+  useEffect(() => {
+    headerCollapsedRef.current = headerCollapsed
+  }, [headerCollapsed])
+
   useEffect(() => {
     setRendered(true)
   }, [])
 
   useEffect(() => {
-    // Collapse only when the header likely has a 2nd line (your breakpoints)
+    // Collapse only when header likely has a 2nd line (your breakpoints)
     const shouldUseCollapsingHeader = () => {
       const w = window.innerWidth
-      // second line happens on <=960, and also on 1145..1600 (your order:3 + full width row)
       return w <= 960 || (w >= 1145 && w <= 1600)
     }
 
     let lastY = window.scrollY
     let ticking = false
 
+    const setCollapsedIfChanged = (next) => {
+      if (headerCollapsedRef.current === next) return
+      headerCollapsedRef.current = next
+      setHeaderCollapsed(next)
+    }
+
     const onScroll = () => {
       if (!shouldUseCollapsingHeader()) {
-        // Ensure expanded if we leave those breakpoints
-        if (headerCollapsed) setHeaderCollapsed(false)
+        setCollapsedIfChanged(false)
         lastY = window.scrollY
         return
       }
@@ -159,28 +168,26 @@ export default function Header({
       const y = window.scrollY
       const delta = y - lastY
 
-      // Avoid jitter from tiny scroll changes
+      // avoid jitter
       if (Math.abs(delta) < 6) return
 
-      // If near top -> always expanded
       if (y < 20) {
-        if (headerCollapsed) setHeaderCollapsed(false)
+        setCollapsedIfChanged(false)
         lastY = y
         return
       }
 
-      // Scroll down -> collapse; scroll up -> expand
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          if (delta > 0) {
-            if (!headerCollapsed) setHeaderCollapsed(true)
-          } else {
-            if (headerCollapsed) setHeaderCollapsed(false)
-          }
-          ticking = false
-        })
-        ticking = true
+      if (ticking) {
+        lastY = y
+        return
       }
+
+      ticking = true
+      window.requestAnimationFrame(() => {
+        // down -> collapse, up -> expand
+        setCollapsedIfChanged(delta > 0)
+        ticking = false
+      })
 
       lastY = y
     }
@@ -193,8 +200,9 @@ export default function Header({
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
     }
+    // IMPORTANT: attach once
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerCollapsed])
+  }, [])
 
   let address, displayName, username, pro, proName
   if (account && account.address) {
