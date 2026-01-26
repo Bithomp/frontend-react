@@ -68,7 +68,7 @@ export default function Ads({}) {
       <a href="https://bithomp.com/go/earn-xrp" target="_blank" rel="noreferrer">
         <div className="brand-item nexo">
           <Nexo className="brand-item-icon" fill={color} />
-          <div className="brand-item-title">Earn 12% on XRP</div>
+          <div className="brand-item-title">Earn on XRP</div>
           <div className="brand-item-text">Buy or transfer XRP to Nexo and maximize your yield.</div>
         </div>
       </a>
