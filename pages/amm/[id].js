@@ -317,7 +317,7 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                         </tr>
                         <tr>
                           <td>Currency code</td>
-                          <td>
+                          <td className="brake">
                             {data.lpTokenBalance.currency} <CopyButton text={data.lpTokenBalance.currency} />
                           </td>
                         </tr>
