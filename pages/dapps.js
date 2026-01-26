@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import { axiosServer, passHeaders, currencyServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { explorerName, useWidth } from '../utils'
+import { explorerName, nativeCurrency, useWidth } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -23,6 +23,8 @@ const sortDapps = (list, order) => {
   switch (order) {
     case 'performingHigh':
       return arr.sort((a, b) => Number(b?.uniqueSourceAddresses ?? 0) - Number(a?.uniqueSourceAddresses ?? 0))
+    case 'totalSentHigh':
+      return arr.sort((a, b) => Number(b?.totalSent ?? 0) - Number(a?.totalSent ?? 0))
     case 'interactingHigh':
       return arr.sort((a, b) => Number(b?.uniqueInteractedAddresses ?? 0) - Number(a?.uniqueInteractedAddresses ?? 0))
     case 'txHigh':
@@ -110,6 +112,7 @@ export default function Dapps({
 
   const orderList = [
     { value: 'performingHigh', label: 'Performing wallets: High to Low' },
+    { value: 'totalSentHigh', label: 'Total Sent: High to Low' },
     { value: 'interactingHigh', label: 'Interacting wallets: High to Low' },
     { value: 'txHigh', label: 'Transactions: High to Low' },
     { value: 'successRateHigh', label: 'Success rate: High to Low' }
@@ -125,7 +128,8 @@ export default function Dapps({
     { label: 'Success', key: 'successTransactions' },
     { label: 'Success %', key: 'successRate' },
     { label: 'Fees', key: 'totalFees' },
-    { label: `Fees (${convertCurrency.toUpperCase()})`, key: `totalFeesInFiats.${convertCurrency}` }
+    { label: `Fees (${convertCurrency.toUpperCase()})`, key: `totalFeesInFiats.${convertCurrency}` },
+    { label: `Total sent (${convertCurrency.toUpperCase()})`, key: `totalSentInFiats.${convertCurrency}` }
   ]
 
   return (
@@ -162,6 +166,7 @@ export default function Dapps({
                   <th className="right">Types</th>
                   <th className="right">Success</th>
                   <th className="right">Fees</th>
+                  <th className="right">Total sent</th>
                 </tr>
               </thead>
               <tbody>
@@ -192,6 +197,13 @@ export default function Dapps({
                           <br />
                           <span style={{ opacity: 0.7 }} suppressHydrationWarning>
                             {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
+                          </span>
+                        </td>
+                        <td className="right no-brake">
+                          {amountFormat(d?.totalSent, { short: true })}
+                          <br />
+                          <span style={{ opacity: 0.7 }} suppressHydrationWarning>
+                            {shortNiceNumber(d?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
                           </span>
                         </td>
                       </tr>
@@ -248,6 +260,13 @@ export default function Dapps({
                               {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
                             </span>
                           </p>
+                          <p className="no-brake">
+                            <b>Total sent:</b> {amountFormat(d?.totalSent, { short: true })}
+                            <br />
+                            <span style={{ opacity: 0.7, marginLeft: 4 }} suppressHydrationWarning>
+                              {shortNiceNumber(d?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
+                            </span>
+                          </p>
                           <br />
                         </td>
                       </tr>
@@ -272,6 +291,10 @@ export default function Dapps({
       <div className="note" style={{ maxWidth: 800, margin: '20px auto' }}>
         <b>Interacting wallets</b> - Unique Interacted Addresses: <code>tx.Address</code>, <code>tx.Destination</code>,
         actual sender, and actual receiver (the latter two may differ from source and destination in some transactions).
+        <br />
+        <br />
+        <b>Total sent</b> — This is the sum of all {nativeCurrency} and IOU tokens sent, converted to {nativeCurrency}{' '}
+        at the rate at the time of each transaction.
       </div>
     </>
   )
