@@ -11,19 +11,15 @@
     },
     "services": {
       "services": "サービス",
-      "send": "支払いを送信",
-      "add-token": "トークンを追加 (Trustline)",
-      "account-settings": "アカウント設定",
-      "view-all-services": "すべてのサービスを見る",
       "nft-mint": "NFTのミント",
-      "tax-reports": "税務レポート",
-      "username": "ユーザネームの登録"
+      "tax-reports": "Tax reports"
     },
     "business": {
       "advertise": "広告掲載",
       "eaas": "サービスとしてのエクスプローラー",
       "build-unl": "UNLの作成"
     },
+    "usernames": "ユーザネームの登録",
     "project-registration": "プロジェクトの登録",
     "price-alerts": "{{nativeCurrency}}価格アラート",
     "submit-offline-tx": "オフライントランザクションを送信",

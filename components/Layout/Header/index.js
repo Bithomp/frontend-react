@@ -306,22 +306,15 @@ export default function Header({
           className="header-menu-left"
           style={!width || width > 1240 ? { left: xahauNetwork ? 300 : bithomp ? 193 : 260 } : {}}
         >
-          <MenuDropDown
-            id="dropdown-services"
-            title={t('menu.services.services')}
-            setHoverStates={setHoverStates}
-            hoverStates={hoverStates}
-          >
-            <Link href="/services/send">{t('menu.services.send')}</Link>
-            <Link href="/services/trustline">{t('menu.services.add-token')}</Link>
-            <Link href="/username">{t('menu.services.username')}</Link>
-            <Link href="/learn/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
-            <Link href="/services/account-settings/">{t('menu.services.account-settings')}</Link>
-            <hr className="hr" />
-            <Link href="/services">
-              <b>{t('menu.services.view-all-services')}</b>
+          <div className="menu-dropdown">
+            <Link
+              href="/services"
+              className="menu-dropdown-button"
+              style={{ cursor: 'pointer', textDecoration: 'none', color: 'white' }}
+            >
+              {t('menu.services.services')}
             </Link>
-          </MenuDropDown>
+          </div>
 
           <div className="menu-dropdown">
             <MenuDropDown
@@ -512,7 +505,7 @@ export default function Header({
                 <Link href={'/account/' + address + '/transactions'}>{t('signin.actions.my-transactions')}</Link>
                 <Link href="/services/send">Send payment</Link>
                 <Link href="/services/account-settings/">Account settings</Link>
-                {!username && <Link href={'/username?address=' + address}>{t('menu.services.username')}</Link>}
+                {!username && <Link href={'/username?address=' + address}>{t('menu.usernames')}</Link>}
                 <span onClick={signOut} className="link">
                   {account?.wallet === 'walletconnect' && (
                     <Image

@@ -11,19 +11,15 @@
     },
     "services": {
       "services": "Сервисы",
-      "send": "Отправить платеж",
-      "add-token": "Добавить токен (Trustline)",
-      "account-settings": "Настройки аккаунта",
-      "view-all-services": "Все сервисы",
       "nft-mint": "Чеканка NFT",
-      "tax-reports": "Налоговые отчеты",
-      "username": "Регистрация псевдонима"
+      "tax-reports": "Tax reports"
     },
     "business": {
       "advertise": "Размещение рекламы",
       "eaas": "Explorer как сервис (EaaS)",
       "build-unl": "Создать UNL"
     },
+    "usernames": "Псевдоним",
     "project-registration": "Регистрация проекта",
     "price-alerts": "Мониторинг {{nativeCurrency}} цены",
     "submit-offline-tx": "Отправить офлайн транзакцию",

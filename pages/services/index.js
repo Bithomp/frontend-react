@@ -62,10 +62,10 @@ export default function ServicesPage() {
   const sections = useMemo(() => {
     const bithompServices = {
       id: 'bithomp-services',
-      title: '🦩 Bithomp Services',
+      title: '🧩 Bithomp Services',
       items: [
         { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: RiFilePaper2Line },
-        { href: '/username', title: t('menu.services.username'), icon: RiPriceTag3Line },
+        { href: '/username', title: t('menu.usernames'), icon: RiPriceTag3Line },
         { href: '/submit-account-information', title: t('menu.project-registration'), icon: RiFilePaper2Line },
         !devNet ? { href: '/alerts', title: t('menu.price-alerts', { nativeCurrency }), icon: TbBell } : null,
         !devNet ? { href: '/admin/watchlist', title: 'Watchlist', icon: RiCheckboxCircleLine } : null
@@ -77,8 +77,8 @@ export default function ServicesPage() {
       id: 'payments',
       title: '💸 Payments',
       items: [
-        { href: '/services/trustline', title: t('menu.services.add-token'), icon: TbShieldCheck },
-        { href: '/services/send', title: t('menu.services.send'), icon: TbSend },
+        { href: '/services/trustline', title: 'Set Trust (Trustline)', icon: TbShieldCheck },
+        { href: '/services/send', title: 'Send Payment', icon: TbSend },
         { href: '/services/check', title: 'Issue Check', icon: MdOutlineFactCheck },
         { href: '/services/escrow', title: 'Create Escrow', icon: MdOutlineLockClock }
       ]
@@ -113,7 +113,7 @@ export default function ServicesPage() {
       title: '⚙️ Account',
       items: [
         ...(xahauNetwork ? [{ href: '/services/reward-auto-claim', title: 'Reward Auto Claim', icon: LuCoins }] : []),
-        { href: '/services/account-settings/', title: t('menu.services.account-settings'), icon: IoWalletOutline },
+        { href: '/services/account-settings/', title: 'Account Settings', icon: IoWalletOutline },
         { href: '/services/account-delete', title: 'Account Delete', icon: RiDeleteBin6Line }
       ]
     }

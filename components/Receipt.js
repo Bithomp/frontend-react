@@ -35,7 +35,7 @@ export default function Receipt({ item, details }) {
   let fiatCurrency = ''
 
   if (item === 'username') {
-    serviceName = t('menu.services.username')
+    serviceName = t('menu.usernames')
     if (details) {
       timestamp = details.completedAt
       fiatPrice = details.priceInSEK

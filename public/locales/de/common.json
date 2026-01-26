@@ -11,19 +11,15 @@
     },
     "services": {
       "services": "Dienste",
-      "send": "Zahlung senden",
-      "add-token": "Token hinzufügen (Trustline)",
-      "account-settings": "Kontoeinstellungen",
-      "view-all-services": "Alle Dienste anzeigen",
       "nft-mint": "NFT minten",
-      "tax-reports": "Steuerberichte",
-      "username": "Benutzernamen registrieren"
+      "tax-reports": "Tax reports"
     },
     "business": {
       "advertise": "Werbung",
       "eaas": "Explorer als Dienst",
       "build-unl": "UNL erstellen"
     },
+    "usernames": "Benutzernamen registrieren",
     "project-registration": "Projekt registrieren",
     "price-alerts": "{{nativeCurrency}} Preisalarme",
     "submit-offline-tx": "Offline Transaktion einreichen",

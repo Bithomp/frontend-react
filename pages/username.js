@@ -471,13 +471,11 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     <>
       <SEO
         title={
-          t('menu.services.username') +
-          (usernameQuery ? ' ' + usernameQuery : '') +
-          (addressQuery ? ' ' + addressQuery : '')
+          t('menu.usernames') + (usernameQuery ? ' ' + usernameQuery : '') + (addressQuery ? ' ' + addressQuery : '')
         }
       />
       <div className="page-username content-center">
-        <h1 className="center">{t('menu.services.username')}</h1>
+        <h1 className="center">{t('menu.usernames')}</h1>
         {!step && (
           <>
             <p>

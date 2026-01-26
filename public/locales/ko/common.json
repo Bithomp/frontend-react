@@ -11,19 +11,15 @@
     },
     "services": {
       "services": "서비스",
-      "send": "결제 보내기",
-      "add-token": "토큰 추가 (Trustline)",
-      "account-settings": "계정 설정",
-      "view-all-services": "모든 서비스 보기",
       "nft-mint": "NFT 민팅",
-      "tax-reports": "세금 보고서",
-      "username": "사용자명을 등록하세요"
+      "tax-reports": "Tax reports"
     },
     "business": {
       "advertise": "광고",
       "eaas": "서비스형 탐색기",
       "build-unl": "UNL 생성"
     },
+    "usernames": "사용자명을 등록하세요",
     "project-registration": "프로젝트 등록하세요",
     "price-alerts": "{{nativeCurrency}} 가격 알림",
     "submit-offline-tx": "오프라인 거래 제출",

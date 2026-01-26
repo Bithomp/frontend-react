@@ -11,19 +11,15 @@
     },
     "services": {
       "services": "Layanan",
-      "send": "Kirim pembayaran",
-      "add-token": "Tambah token (Trustline)",
-      "account-settings": "Pengaturan akun",
-      "view-all-services": "Lihat semua layanan",
       "nft-mint": "Mint NFT",
-      "tax-reports": "Laporan pajak",
-      "username": "Pendaftaran Username"
+      "tax-reports": "Tax reports"
     },
     "business": {
       "advertise": "Iklankan",
       "eaas": "Explorer sebagai Layanan",
       "build-unl": "Bangun UNL"
     },
+    "usernames": "Pendaftaran Username",
     "project-registration": "Pendaftaran Proyek",
     "price-alerts": "Peringatan Harga {{nativeCurrency}}",
     "submit-offline-tx": "Kirim Transaksi Offline",
