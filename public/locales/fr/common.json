@@ -11,15 +11,19 @@
     },
     "services": {
       "services": "Services",
+      "send": "Envoyer un paiement",
+      "add-token": "Ajouter un jeton (Trustline)",
+      "account-settings": "Paramètres du compte",
+      "view-all-services": "Voir tous les services",
       "nft-mint": "Frappé NFT",
-      "tax-reports": "Tax reports"
+      "tax-reports": "Rapports fiscaux",
+      "username": "Enregistrement de nom d'utilisateur"
     },
     "business": {
       "advertise": "Annoncer",
       "eaas": "Explorateur en tant que Service",
       "build-unl": "Construire UNL"
     },
-    "usernames": "Enregistrement de nom d'utilisateur",
     "project-registration": "Enregistrement de projet",
     "price-alerts": "Alertes de prix {{nativeCurrency}}",
     "submit-offline-tx": "Soumettre une transaction hors ligne",
