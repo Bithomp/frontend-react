@@ -121,7 +121,7 @@ export default function IssueAToken() {
             </p>
             <p>
               Set up TWO accounts – one will issue the token (ISSUER ACCOUNT), the other will hold and distribute it
-              (CURRENCY DESTRIBUTION ACCOUNT).
+              (CURRENCY DISTRIBUTION ACCOUNT).
             </p>
             <p>
               <strong>Step 3</strong>
@@ -139,7 +139,7 @@ export default function IssueAToken() {
               <strong>Step 5</strong>
             </p>
             <p>
-              Create a trustline – the receiving account (CURRENCY DESTRIBUTION ACCOUNT) must explicitly trust the
+              Create a trustline – the receiving account (CURRENCY DISTRIBUTION ACCOUNT) must explicitly trust the
               issuing account to hold its token. This trustline must be created with <i>Rippling</i> enabled. You can do
               it <Link href="/services/trustline?mode=advanced&noRipple=false">here</Link>.
             </p>
@@ -148,7 +148,13 @@ export default function IssueAToken() {
             </p>
             <p>
               Send a payment transaction – the ISSUER ACCOUNT sends a payment of the new token to the CURRENCY
-              DESTRIBUTION ACCOUNT.
+              DISTRIBUTION ACCOUNT. This action creates the token on the ledger. You can do it{' '}
+              <Link href="/services/send">HERE.</Link>
+            </p>
+            <p>
+              {' '}
+              💡 Please note: You must be logged in with the ISSUER ADDRESS. The token you intend to send will then be
+              available in the token selector.
             </p>
             <p>
               <strong>Step 7</strong>
@@ -170,7 +176,7 @@ export default function IssueAToken() {
               <strong>Step 9</strong>
             </p>
             <p>
-              Now you can distribute your token from the CURRENCY DESTRIBUTION ACCOUNT. You can send payments, create
+              Now you can distribute your token from the CURRENCY DISTRIBUTION ACCOUNT. You can send payments, create
               orders on DEX
               {!xahauNetwork && (
                 <>
@@ -182,7 +188,7 @@ export default function IssueAToken() {
               .
             </p>
             <p>
-              <strong>This creates the token on {explorerName}. 🎉 </strong>
+              <strong>Your token on the {explorerName} is issued! 🎉 </strong>
             </p>
           </ul>
           <h3>Why Trustlines Are Important?</h3>
