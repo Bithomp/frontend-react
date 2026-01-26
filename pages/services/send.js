@@ -327,6 +327,7 @@ export default function Send({
       let payment = {}
 
       let amountData = null
+      let particialPayment = false
 
       if (isNativeCurrency(selectedToken)) {
         amountData = multiply(amount, 1000000)
@@ -336,6 +337,7 @@ export default function Send({
           issuer: selectedToken.issuer,
           value: amount
         }
+        particialPayment = true
       }
 
       if (xahauNetwork && useRemit) {
@@ -357,6 +359,9 @@ export default function Send({
           TransactionType: 'Payment',
           Destination: address,
           Amount: amountData
+        }
+        if (particialPayment) {
+          payment.Flags = 131072 // tfPartialPayment
         }
       }
 
