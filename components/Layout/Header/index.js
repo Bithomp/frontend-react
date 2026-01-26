@@ -32,18 +32,7 @@ import { IoWalletOutline } from 'react-icons/io5'
 import SearchBlock from '../SearchBlock'
 import { niceNumber } from '../../../utils/format'
 
-const HIDE_SEARCH_HEADER = [
-  '/',
-  '/explorer',
-  '/account',
-  '/amm',
-  '/object',
-  '/transaction',
-  '/tokens',
-  '/amms',
-  '/mpts',
-  '/nft-volumes'
-]
+const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
 const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
 
 const ROUTE_TAB_MAP = [
