@@ -81,7 +81,7 @@ export default function MobileMenu({
               </Link>
               {!username && (
                 <Link href={'/username?address=' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
-                  {t('menu.usernames')}
+                  {t('menu.services.username')}
                 </Link>
               )}
               <span onClick={signOut} className="mobile-menu-item link">
@@ -142,14 +142,29 @@ export default function MobileMenu({
           )}
         </div>
 
-        <Link
-          href="/services"
-          className="mobile-menu-directory"
-          onClick={mobileMenuToggle}
-          style={{ cursor: 'pointer', display: 'block', textDecoration: 'none' }}
-        >
+        <div className="mobile-menu-directory" data-expanded="false">
           <MdMiscellaneousServices style={{ marginBottom: '-2px' }} /> {t('menu.services.services')}
-        </Link>
+        </div>
+        <div className="mobile-menu__submenu">
+          <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.services.send')}
+          </Link>
+          <Link href="/services/trustline" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.services.add-token')}
+          </Link>
+          <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.services.username')}
+          </Link>
+          <Link href="/learn/xrp-xah-taxes" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.services.tax-reports')}
+          </Link>
+          <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.services.account-settings')}
+          </Link>
+          <Link href="/services" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            <b>{t('menu.services.view-all-services')}</b>
+          </Link>
+        </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
           <LuCoins style={{ marginBottom: '-2px' }} /> {t('menu.tokens')}
