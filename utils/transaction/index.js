@@ -563,12 +563,12 @@ export const memoNode = (memos, type = 'tr') => {
                 )
               } else {
                 output.push(
-                  <React.Fragment key={'a1' + j}>
+                  <span key={'a1' + j} className="brake">
                     Memo{memos.length > 1 ? ' ' + (j + 1) : ''}:{' '}
                     {memotype && memotype.toLowerCase() !== 'memo' && <>{memotype + ': '}</>}
                     {memopiece}
                     <br />
-                  </React.Fragment>
+                  </span>
                 )
               }
             }
