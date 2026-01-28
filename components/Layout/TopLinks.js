@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 //import { network, useWidth } from '../../utils'
-//import { useIsMobile } from '../../utils/mobile'
+import { useIsMobile } from '../../utils/mobile'
 //import Image from 'next/image'
 
 export default function TopLinks(
@@ -9,7 +9,7 @@ export default function TopLinks(
   }
 ) {
   const { t } = useTranslation()
-  //const isMobile = useIsMobile()
+  const isMobile = useIsMobile(400)
   //const width = useWidth()
 
   /* it is important to have "tooltiptext right" on the first ad, otherwise brakes UI on mobiles, too wide to the left */
@@ -45,7 +45,7 @@ export default function TopLinks(
     <div className="top-links">
       <span className="tooltip">
         <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer" className="top-link orange">
-          Earn 12% on XRP
+          Earn {!isMobile && '12%'} on XRP
         </a>
         <span className="tooltiptext right small">{t('sponsored.sponsored')}</span>
       </span>{' '}

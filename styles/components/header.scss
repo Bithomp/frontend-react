@@ -542,7 +542,7 @@ header {
   }
 }
 
-@media only screen and (max-width: 1145px) {
+@media only screen and (max-width: 1180px) {
   header {
     min-height: 55px;
     height: auto;
@@ -596,7 +596,7 @@ header {
   }
 }
 
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: 1050px) {
   header {
     .header-search-inline {
       order: 3;
@@ -654,7 +654,7 @@ header {
   }
 }
 
-@media only screen and (max-width: 660px) {
+@media only screen and (max-width: 750px) {
   header {
     .header-menu-right {
       display: none;
@@ -676,7 +676,7 @@ header {
   }
 }
 
-@media only screen and (max-width: 1600px) and (min-width: 1145px) {
+@media only screen and (max-width: 1670px) and (min-width: 1180px) {
   header {
     justify-content: space-between;
 
@@ -732,7 +732,7 @@ header {
 }
 
 /* Desktop: keep logo left, right menu right, equal internal gaps */
-@media only screen and (min-width: 1600px) {
+@media only screen and (min-width: 1670px) {
   header {
     justify-content: space-between;
     padding: 0 20px;
@@ -775,7 +775,7 @@ header {
   }
 
   /* Only on layouts where search-inline becomes the 2nd line */
-  @media only screen and (max-width: 960px) {
+  @media only screen and (max-width: 1050px) {
     header {
       .header-search-inline {
         display: none !important; /* keeps it from overlapping the menu */

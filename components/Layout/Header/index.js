@@ -135,7 +135,7 @@ export default function Header({
     // Collapse only when header likely has a 2nd line (your breakpoints)
     const shouldUseCollapsingHeader = () => {
       const w = window.innerWidth
-      return w <= 960 || (w >= 1145 && w <= 1600)
+      return w <= 1050 || (w >= 1180 && w <= 1670)
     }
 
     let lastY = window.scrollY
@@ -264,7 +264,7 @@ export default function Header({
       <header>
         <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
           <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
-            {(width < 1060 && width > 350) || width > 1240 || !width ? (
+            {(width < 1060 && width > 370) || width > 1300 || !width ? (
               xahauNetwork ? (
                 <div style={{ height: 46, width: 220, marginTop: -2.5 }}>
                   <XahauExplorer />
@@ -283,7 +283,7 @@ export default function Header({
             )}
           </Link>
           {/* fiat price next to logo */}
-          {fiatRate > 0 && !xahauNetwork && (
+          {fiatRate > 0 && ((!xahauNetwork && width > 305) || width > 460) && (
             <span
               className="header-fiat-rate"
               style={{
@@ -294,7 +294,9 @@ export default function Header({
                 background: 'rgba(255,255,255,0.07)',
                 borderRadius: 7,
                 padding: '2px 6px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                width: '144px',
+                textAlign: 'center'
               }}
               suppressHydrationWarning
             >
@@ -304,7 +306,7 @@ export default function Header({
         </div>
         <div
           className="header-menu-left"
-          style={!width || width > 1240 ? { left: xahauNetwork ? 300 : bithomp ? 193 : 260 } : {}}
+          style={!width || width > 1300 ? { left: xahauNetwork ? 300 : bithomp ? 193 : 260 } : {}}
         >
           <MenuDropDown
             id="dropdown-services"
