@@ -134,7 +134,7 @@ export default function XRPXAHTaxes() {
               <strong>CoinLedger</strong>
             </li>
             <li>
-              <strong>CryptoTax Calculator</strong>
+              <strong>SUMM (formerly Crypto Tax Calculator)</strong>
             </li>
             <li>
               <strong>TaxBit</strong>
