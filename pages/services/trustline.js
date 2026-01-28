@@ -432,7 +432,11 @@ export default function TrustSet({
 
         <p className="center">
           Trustlines are structures in the {explorerName} for holding tokens. Trustlines enforce the rule that you
-          cannot cause someone else to hold a token they don't want.
+          cannot cause someone else to hold a token they don't want.{' '}
+          <Link href="/learn/trustlines" target="_blank" rel="noreferrer">
+            Learn more about {explorerName} Trustlines
+          </Link>
+          .
         </p>
 
         <div className="center">

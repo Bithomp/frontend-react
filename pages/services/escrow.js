@@ -8,7 +8,8 @@ import {
   isTagValid,
   encode,
   decode,
-  addAndRemoveQueryParams
+  addAndRemoveQueryParams,
+  explorerName
 } from '../../utils'
 import { multiply } from '../../utils/calc'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -299,6 +300,14 @@ export default function CreateEscrow({
       <SEO title="Create Escrow" description="Create an Escrow transaction" />
       <div className="content-text content-center">
         <h1 className="center">Create Escrow</h1>
+        <p>
+          On this page, you can create an escrow to securely lock {nativeCurrency} until time-based or condition-based
+          requirements are met. View our guide:{' '}
+          <Link href="/learn/create-escrow" target="_blank" rel="noreferrer">
+            How to Create Escrows on {explorerName}
+          </Link>
+          .
+        </p>
         <NetworkTabs />
 
         <div>
