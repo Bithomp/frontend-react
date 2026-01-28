@@ -92,7 +92,7 @@ const dateFormatters = {
     const { mm, dd, yyyy, hh, min } = timePieces(timestamp)
     return `${mm}/${dd}/${yyyy} ${hh}:${min}`
   },
-  CryptoTax: (timestamp) => {
+  SUMM: (timestamp) => {
     // Format: YYYY-MM-DD HH:mm:ss
     const { yyyy, mm, dd, hh, min, ss } = timePieces(timestamp)
     return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`
@@ -202,15 +202,15 @@ const processDataForExport = (activities, platform) => {
       processedActivity.type = sending ? 'Sell' : 'Buy'
     } else if (platform === 'TokenTax') {
       processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
-    } else if (platform === 'CryptoTax') {
+    } else if (platform === 'SUMM') {
       processedActivity.type = !sending
         ? 'buy'
         : Math.abs(activity.amountNumber) <= activity.txFeeNumber
         ? 'fee'
         : 'sell'
 
-      processedActivity.cryptoTaxFeeCurrencyCode = processedActivity.txFeeCurrencyCode
-      processedActivity.cryptoTaxFeeNumber = processedActivity.txFeeNumber
+      processedActivity.summFeeCurrencyCode = processedActivity.txFeeCurrencyCode
+      processedActivity.summFeeNumber = processedActivity.txFeeNumber
 
       if (processedActivity.type === 'buy') {
         processedActivity.baseCurrency = processedActivity.receivedCurrency
@@ -220,8 +220,8 @@ const processDataForExport = (activities, platform) => {
         processedActivity.baseAmount = processedActivity.sentAmount
         // don't include this fee amount in the fee column for type 'fee'
         if (processedActivity.type === 'fee') {
-          processedActivity.cryptoTaxFeeCurrencyCode = ''
-          processedActivity.cryptoTaxFeeNumber = ''
+          processedActivity.summFeeCurrencyCode = ''
+          processedActivity.summFeeNumber = ''
         }
       }
     } else if (platform === 'BlockPit') {
@@ -252,7 +252,7 @@ const platformList = [
   { value: 'TaxBit', label: 'TaxBit' },
   { value: 'TokenTax', label: 'TokenTax' },
   { value: 'BlockPit', label: 'BlockPit' },
-  { value: 'CryptoTax', label: 'CryptoTax' }
+  { value: 'SUMM', label: 'SUMM' }
 ]
 
 export default function History({
@@ -383,7 +383,7 @@ export default function History({
         ]
       },
       {
-        platform: 'CryptoTax',
+        platform: 'SUMM',
         headers: [
           { label: 'Timestamp (UTC)', key: 'timestampExport' },
           { label: 'Type', key: 'type' },
@@ -391,8 +391,8 @@ export default function History({
           { label: 'Base Amount', key: 'baseAmount' },
           { label: 'Quote Currency (Optional)', key: '' },
           { label: 'Quote Amount (Optional)', key: '' },
-          { label: 'Fee Currency (Optional)', key: 'cryptoTaxFeeCurrencyCode' },
-          { label: 'Fee Amount (Optional)', key: 'cryptoTaxFeeNumber' },
+          { label: 'Fee Currency (Optional)', key: 'summFeeCurrencyCode' },
+          { label: 'Fee Amount (Optional)', key: 'summFeeNumber' },
           { label: 'From (Optional)', key: 'counterparty' },
           { label: 'To (Optional)', key: 'address' },
           { label: 'Blockchain (Optional)', key: '' },
