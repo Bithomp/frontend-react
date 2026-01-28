@@ -43,7 +43,7 @@ export const getServerSideProps = async (context) => {
       taxonQuery: taxon || '',
       serialQuery: serial || '',
       mintedByMarketplace: mintedByMarketplace || '',
-      mintedPeriod: mintedPeriod || (xahauNetwork ? 'month' : 'all'),
+      mintedPeriod: mintedPeriod || 'all',
       burnedPeriod: burnedPeriod || '',
       includeBurnedQuery: includeBurned || false,
       includeWithoutMediaDataQuery: includeWithoutMediaData || false,
