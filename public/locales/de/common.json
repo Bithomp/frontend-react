@@ -407,6 +407,7 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
+    "ledger": "Ledger",
     "no-value": "kein wert",
     "updated": "Aktualisiert",
     "currency": "Währung",

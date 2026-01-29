@@ -407,6 +407,7 @@
     "day": "直近24時間"
   },
   "table": {
+    "ledger": "レジャー",
     "no-value": "値なし",
     "updated": "最終更新",
     "currency": "通貨",

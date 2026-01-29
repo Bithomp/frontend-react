@@ -407,6 +407,7 @@
     "day": "최근 24시간"
   },
   "table": {
+    "ledger": "레저",
     "no-value": "값 없음",
     "updated": "업데이트됨",
     "currency": "통화",

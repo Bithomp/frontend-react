@@ -407,6 +407,7 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "ledger": "Ledger",
     "no-value": "tidak ada nilai",
     "updated": "Diperbarui",
     "currency": "Mata Uang",
