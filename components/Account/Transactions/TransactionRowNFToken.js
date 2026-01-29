@@ -145,6 +145,23 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
 
   txTypeSpecial = <span className="bold">{txTypeSpecial}</span>
 
+  // Determine icon color
+  let iconColor = '#9b59b6' // default purple
+  if (txType === 'NFTokenBurn') {
+    iconColor = '#222' // black
+  } else if (txType === 'NFTokenMint') {
+    iconColor = '#ff9800' // orange
+  } else if (txType === 'NFTokenAcceptOffer') {
+    // Determine if user sent or received NFT
+    // If nftSource.address === address, user sent NFT (sold)
+    // If nftDestination.address === address, user received NFT (bought)
+    if (nftSource && nftSource.address === address) {
+      iconColor = '#e74c3c' // red (sent NFT)
+    } else if (nftDestination && nftDestination.address === address) {
+      iconColor = '#27ae60' // green (received NFT)
+    }
+  }
+
   return (
     <TransactionRowCard
       data={data}
@@ -152,7 +169,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
       index={index}
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
-      icon={<RiNftFill style={{ color: '#9b59b6', fontSize: 20 }} title="NFT" />}
+      icon={<RiNftFill style={{ color: iconColor, fontSize: 20 }} title="NFT" />}
     >
       {outcome?.nftokenChanges?.length > 0 && (
         <>
