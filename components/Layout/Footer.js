@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useRef } from 'react'
 import dynamic from 'next/dynamic'
 
-import { xahauNetwork } from '../../utils'
+import { xahauNetwork, devNet } from '../../utils'
 import { GrMoney } from 'react-icons/gr'
 import { FaHeart, FaShoppingBag, FaPiggyBank } from 'react-icons/fa'
 import { MdLocationOn } from 'react-icons/md'
@@ -125,6 +125,12 @@ export default function Footer(
           <SocialIcons />
         </div>
       </div>
+
+      {!xahauNetwork && !devNet && (
+        <div style={{ marginLeft: 20, marginBottom: 20 }} className="grey slogan">
+          Bithomp — XRP Ledger Explorer since 2015
+        </div>
+      )}
     </footer>
   )
 }
