@@ -635,7 +635,7 @@ export default function LedgerData({
           )}
           {data.ledgerInfo?.transferRate && (
             <tr>
-              <td>Transfer rate</td>
+              <td>Issuer fee</td>
               <td className="bold">{transferRateNode}</td>
             </tr>
           )}
@@ -943,7 +943,7 @@ export default function LedgerData({
         )}
         {data.ledgerInfo?.transferRate && (
           <p>
-            <span className="grey">Transfer rate</span> <span className="bold">{transferRateNode}</span>
+            <span className="grey">Issuer fee</span> <span className="bold">{transferRateNode}</span>
           </p>
         )}
         {data.ledgerInfo?.flags?.globalFreeze && (

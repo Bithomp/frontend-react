@@ -224,9 +224,9 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
       if (accountSetData.TransferRate !== undefined) {
         if (accountSetData.TransferRate) {
           const rate = accountSetData.TransferRate / 1000000000
-          changes.push(`Set transfer rate to ${rate}`)
+          changes.push(`Set issuer fee to ${rate}`)
         } else {
-          changes.push('Remove transfer rate')
+          changes.push('Remove issuer fee')
         }
       }
       if (accountSetData.TickSize !== undefined) {

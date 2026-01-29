@@ -86,7 +86,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
       {tx.TransferRate !== undefined && (
         <tr>
           <TData className="bold" tooltip="The fee to charge when users transfer this account's tokens.">
-            Transfer rate
+            Issuer Fee (Transfer rate)
           </TData>
           <TData className="bold">{tx.TransferRate ? subtract(tx.TransferRate / 1000000000, 1) * 100 : 0}%</TData>
         </tr>
