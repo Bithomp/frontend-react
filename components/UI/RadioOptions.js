@@ -1,4 +1,4 @@
-export default function RadioOptions({ tabList, tab, setTab, name = 'radio', style = {} }) {
+export default function RadioOptions({ tabList, tab, setTab, name = 'radio', style = {}, getLogo }) {
   const Changed = (e) => {
     setTab(e.currentTarget.value)
   }
@@ -15,7 +15,17 @@ export default function RadioOptions({ tabList, tab, setTab, name = 'radio', sty
             onChange={Changed}
             id={tabItem.value}
           />
-          <label htmlFor={tabItem.value}>{tabItem.label}</label>
+          <label htmlFor={tabItem.value} style={getLogo ? { display: 'flex', alignItems: 'center', gap: 8 } : {}}>
+            {getLogo && (
+              <img
+                src={getLogo(tabItem.value)}
+                alt={tabItem.label + ' logo'}
+                style={{ width: 24, height: 24, objectFit: 'contain', display: 'inline-block' }}
+                onError={(e) => { e.target.style.display = 'none' }}
+              />
+            )}
+            {tabItem.label}
+          </label>
         </div>
       ))}
     </div>

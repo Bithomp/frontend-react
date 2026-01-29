@@ -948,6 +948,7 @@ export default function History({
                     tab={platformCSVExport}
                     setTab={setPlatformCSVExport}
                     name="platformSelect"
+                    getLogo={(value) => `/images/tax-logos/${value.toLowerCase()}.png`}
                   />
                   {rendered && (
                     <CSVLink
