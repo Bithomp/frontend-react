@@ -111,71 +111,191 @@ const isSending = (a) => {
   return a.amount[0] === '-'
 }
 
-// Helper: build CoinLedger "Trade" rows where a single tx produces both sent and received legs
-const mergeCoinLedgerTrades = (activities = []) => {
-  // Group by tx hash + address (address is safer if list contains multiple addresses)
-  const byKey = new Map()
+const EPS = 1e-12
 
+const isFiniteNum = (v) => Number.isFinite(Number(v))
+
+const normAmount = (v) => {
+  const n = Number(v)
+  return Number.isFinite(n) ? n : null
+}
+
+// Use the SAME decoded currency format as sending/receiving rows.
+// Priority:
+// 1) sentCurrency/receivedCurrency already computed via amountParced()
+// 2) fallback: parse on the fly
+// 3) fallback: currencyCode/nativeCurrency
+const getDecodedCurrency = (a) => {
+  if (!a) return ''
+  const sending = isSending(a)
+  const ready = sending ? a.sentCurrency : a.receivedCurrency
+  if (ready) return ready
+
+  try {
+    const { currency } = amountParced(a.amount)
+    if (currency) return currency
+  } catch (e) {
+    // ignore
+  }
+
+  return a.currencyCode || nativeCurrency
+}
+
+const signedLedgerDelta = (a) => {
+  const n = normAmount(a.amountNumber)
+  if (n === null) return null
+  // amountNumber is absolute; direction is expressed via isSending()
+  return isSending(a) ? -Math.abs(n) : Math.abs(n)
+}
+
+const looksLikeNetworkFeeLeg = (a) => {
+  // A ledger delta in native currency equal to txFeeNumber
+  const cur = getDecodedCurrency(a)
+  if (cur !== nativeCurrency) return false
+
+  const amt = normAmount(a.amountNumber)
+  const fee = normAmount(a.txFeeNumber)
+  if (amt === null || fee === null) return false
+
+  return Math.abs(Math.abs(amt) - fee) <= EPS
+}
+
+/**
+ * Merge by hash only.
+ * Trade if (after removing network-fee legs) exactly 2 assets remain with opposite signs.
+ *
+ * NOTE: This computes NET deltas per asset within the tx, so it works for:
+ * - native<->IOU
+ * - IOU<->IOU
+ * - Payment path where it still results in exactly 2 assets net
+ */
+const mergeTwoAssetTradesByHash = (activities = [], { tradeType }) => {
+  const byHash = new Map()
   for (const a of activities) {
-    const key = `${a.hash || ''}:${a.address || ''}`
-    if (!byKey.has(key)) byKey.set(key, [])
-    byKey.get(key).push(a)
+    const h = a.hash || ''
+    if (!byHash.has(h)) byHash.set(h, [])
+    byHash.get(h).push(a)
   }
 
   const out = []
 
-  for (const list of byKey.values()) {
-    // In most cases, a "trade-like" tx will have 2 legs in history (sent + received) with same hash.
-    const sentLeg = list.find(
-      (x) => (x.sentAmount !== '' && x.sentAmount !== null && x.sentAmount !== undefined) || isSending(x)
-    )
-    const receivedLeg = list.find(
-      (x) => x.receivedAmount !== '' && x.receivedAmount !== null && x.receivedAmount !== undefined
-    )
+  for (const list of byHash.values()) {
+    const deltas = new Map()
 
-    // If we have both legs, emit one Trade row
-    if (
-      sentLeg &&
-      receivedLeg &&
-      (sentLeg.sentCurrency || sentLeg.currencyCode) &&
-      (receivedLeg.receivedCurrency || receivedLeg.currencyCode)
-    ) {
-      const base = { ...sentLeg }
+    let hasFeeLeg = false
 
-      // Force correct Trade fields
-      base.type = 'Trade'
-      base.sentAmount = sentLeg.sentAmount || sentLeg.amountNumber || ''
-      base.sentCurrency = sentLeg.sentCurrency || sentLeg.currencyCode || ''
-      base.receivedAmount = receivedLeg.receivedAmount || receivedLeg.amountNumber || ''
-      base.receivedCurrency = receivedLeg.receivedCurrency || receivedLeg.currencyCode || ''
+    for (const a of list) {
+      if (!a?.hash) continue
+      if (looksLikeNetworkFeeLeg(a)) {
+        hasFeeLeg = true
+        continue
+      }
 
-      // Prefer fee fields from any leg (usually identical)
-      base.txFeeNumber = sentLeg.txFeeNumber ?? receivedLeg.txFeeNumber
-      base.txFeeCurrencyCode = sentLeg.txFeeCurrencyCode ?? receivedLeg.txFeeCurrencyCode
+      const key = getDecodedCurrency(a)
+      if (!key) continue
 
-      // Merge memo if needed
-      base.memo = (sentLeg.memo || receivedLeg.memo || '').toString()
+      const d = signedLedgerDelta(a)
+      if (d === null) continue
 
-      out.push(base)
-      continue
+      deltas.set(key, (deltas.get(key) || 0) + d)
     }
 
-    // Otherwise, keep the original rows (Deposit/Withdrawal logic later)
+    const assets = [...deltas.entries()].filter(([, v]) => Math.abs(v) > EPS)
+
+    if (assets.length === 2) {
+      const [[k1, v1], [k2, v2]] = assets
+
+      // require one in, one out, and different assets
+      if (k1 !== k2 && ((v1 > 0 && v2 < 0) || (v2 > 0 && v1 < 0))) {
+        const inKey = v1 > 0 ? k1 : k2
+        const inAmt = Math.abs(v1 > 0 ? v1 : v2)
+        const outKey = v1 < 0 ? k1 : k2
+        const outAmt = Math.abs(v1 < 0 ? v1 : v2)
+
+        // representative row (prefer memo)
+        const base = list.find((x) => x.memo) || list[0]
+
+        // pick the first row that actually has a fee number
+        const feeRow = list.find((x) => isFiniteNum(x?.txFeeNumber) && Number(x.txFeeNumber) > 0) || null
+
+        const fee = normAmount(feeRow?.txFeeNumber ?? base.txFeeNumber) ?? 0
+        // If there was no standalone fee leg, native out may include the fee.
+        // Subtract fee so "trade sent amount" doesn't double-count it in CSV.
+        const outAmtNet = outKey === nativeCurrency && !hasFeeLeg && fee > 0 ? Math.max(0, outAmt - fee) : outAmt
+
+        const merged = { ...base }
+        merged.type = tradeType // 'Trade' for CoinLedger, 'trade' for SUMM mapping stage
+
+        merged.sentCurrency = outKey
+        merged.sentAmount = outAmtNet
+        merged.receivedCurrency = inKey
+        merged.receivedAmount = inAmt
+
+        // Network fee EXACTLY as present in data (no guessing)
+        merged.txFeeNumber = feeRow?.txFeeNumber ?? base.txFeeNumber
+        merged.txFeeCurrencyCode = feeRow?.txFeeCurrencyCode ?? base.txFeeCurrencyCode ?? nativeCurrency
+
+        // Keep memo if any
+        merged.memo = (list.find((x) => x.memo)?.memo || base.memo || '').toString()
+
+        out.push(merged)
+        continue
+      }
+    }
+
+    // Not a 2-asset trade => passthrough
     for (const a of list) out.push({ ...a })
   }
 
   return out
 }
 
+const buildSummTransferFeeRow = (base) => {
+  const feeN = normAmount(base?.transferFeeNumber)
+  const feeC = base?.transferFeeCurrencyCode
+  if (!feeC || feeN === null || feeN === 0) return null
+
+  const r = { ...base }
+  r.type = 'fee'
+
+  // IMPORTANT: no issuer:currency, keep decoded-style currency codes like others
+  r.baseCurrency = feeC
+  r.baseAmount = base.transferFeeNumber
+
+  // SUMM: fee-row keeps fee in base; fee columns empty
+  r.summFeeCurrencyCode = ''
+  r.summFeeNumber = ''
+
+  r.quoteCurrency = ''
+  r.quoteAmount = ''
+
+  return r
+}
+
 const processDataForExport = (activities, platform) => {
-  // --- CoinLedger: merge "trade-like" txs into one row first ---
-  const baseList = platform === 'CoinLedger' ? mergeCoinLedgerTrades(activities || []) : activities || []
+  // merge "trade-like" txs into one row first ---
+  // NOTE:
+  // - Group by hash ONLY (not hash+address). All addresses belong to the same user in export context.
+  // - Merge ONLY when exactly 2 assets are exchanged (net deltas). AMM / multi-asset txs are NOT merged.
+  // - Works for native<->IOU and IOU<->IOU.
+  const baseList =
+    platform === 'CoinLedger'
+      ? mergeTwoAssetTradesByHash(activities || [], { tradeType: 'Trade' })
+      : platform === 'SUMM'
+      ? mergeTwoAssetTradesByHash(activities || [], { tradeType: 'trade' })
+      : activities || []
 
-  return baseList.map((activity) => {
+  // IMPORTANT: SUMM may need additional fee rows for transfer fees (IOU transfer fees).
+  // SUMM supports only one fee currency per row, so we never merge fee currencies:
+  // - Network fee stays in Fee columns on main row.
+  // - Transfer fee is emitted as a separate "fee" row (base holds fee amount/currency).
+  const out = []
+
+  for (const activity of baseList) {
     const sending = isSending(activity)
-
     const processedActivity = { ...activity }
     processedActivity.timestampExport = dateFormatters[platform](activity.timestamp)
+
     if (platform === 'Koinly') {
       if (activity.amount?.issuer) {
         let koinlyId =
@@ -203,27 +323,57 @@ const processDataForExport = (activities, platform) => {
     } else if (platform === 'TokenTax') {
       processedActivity.type = sending ? 'Withdrawal' : 'Deposit'
     } else if (platform === 'SUMM') {
-      processedActivity.type = !sending
-        ? 'buy'
-        : Math.abs(activity.amountNumber) <= activity.txFeeNumber
-        ? 'fee'
-        : 'sell'
+      const isFeeOnly = Math.abs(activity.amountNumber) <= activity.txFeeNumber
 
+      // If merged as trade, output buy/sell (and fill base/quote)
+      if (processedActivity.type === 'trade') {
+        // BUY = you receive Base, pay Quote
+        processedActivity.type = 'buy'
+
+        processedActivity.baseCurrency = processedActivity.receivedCurrency
+        processedActivity.baseAmount = processedActivity.receivedAmount
+
+        processedActivity.quoteCurrency = processedActivity.sentCurrency
+        processedActivity.quoteAmount = processedActivity.sentAmount
+
+        // Network fee EXACTLY (no guessing), in nativeCurrency (XRP/XAH)
+        processedActivity.summFeeCurrencyCode = processedActivity.txFeeCurrencyCode
+        processedActivity.summFeeNumber = processedActivity.txFeeNumber
+
+        out.push(processedActivity)
+
+        // Transfer fee as separate fee row (EXACT)
+        const transferFeeRow = buildSummTransferFeeRow(processedActivity)
+        if (transferFeeRow) out.push(transferFeeRow)
+
+        continue
+      }
+
+      // Otherwise: plain transfer rows
+      processedActivity.type = isFeeOnly ? 'fee' : sending ? 'send' : 'receive'
+
+      // Network fee EXACTLY (no guessing)
       processedActivity.summFeeCurrencyCode = processedActivity.txFeeCurrencyCode
       processedActivity.summFeeNumber = processedActivity.txFeeNumber
 
-      if (processedActivity.type === 'buy') {
-        processedActivity.baseCurrency = processedActivity.receivedCurrency
-        processedActivity.baseAmount = processedActivity.receivedAmount
-      } else {
-        processedActivity.baseCurrency = processedActivity.sentCurrency
-        processedActivity.baseAmount = processedActivity.sentAmount
-        // don't include this fee amount in the fee column for type 'fee'
-        if (processedActivity.type === 'fee') {
-          processedActivity.summFeeCurrencyCode = ''
-          processedActivity.summFeeNumber = ''
-        }
+      processedActivity.baseCurrency = sending ? processedActivity.sentCurrency : processedActivity.receivedCurrency
+      processedActivity.baseAmount = sending ? processedActivity.sentAmount : processedActivity.receivedAmount
+
+      // For fee rows: don't duplicate fee
+      if (processedActivity.type === 'fee') {
+        processedActivity.summFeeCurrencyCode = ''
+        processedActivity.summFeeNumber = ''
+        processedActivity.baseCurrency = processedActivity.txFeeCurrencyCode
+        processedActivity.baseAmount = processedActivity.txFeeNumber
       }
+
+      out.push(processedActivity)
+
+      // Transfer fee as separate fee row (EXACT)
+      const transferFeeRow = buildSummTransferFeeRow(processedActivity)
+      if (transferFeeRow) out.push(transferFeeRow)
+
+      continue
     } else if (platform === 'BlockPit') {
       processedActivity.type = sending
         ? 'Withdrawal'
@@ -241,8 +391,10 @@ const processDataForExport = (activities, platform) => {
       }
     }
 
-    return processedActivity
-  })
+    out.push(processedActivity)
+  }
+
+  return out
 }
 
 const platformList = [
@@ -389,8 +541,8 @@ export default function History({
           { label: 'Type', key: 'type' },
           { label: 'Base Currency', key: 'baseCurrency' },
           { label: 'Base Amount', key: 'baseAmount' },
-          { label: 'Quote Currency (Optional)', key: '' },
-          { label: 'Quote Amount (Optional)', key: '' },
+          { label: 'Quote Currency (Optional)', key: 'quoteCurrency' },
+          { label: 'Quote Amount (Optional)', key: 'quoteAmount' },
           { label: 'Fee Currency (Optional)', key: 'summFeeCurrencyCode' },
           { label: 'Fee Amount (Optional)', key: 'summFeeNumber' },
           { label: 'From (Optional)', key: 'counterparty' },
@@ -583,10 +735,10 @@ export default function History({
         res.activities[i].timestampExport = new Date(res.activities[i].timestamp * 1000).toISOString()
 
         res.activities[i].sentAmount = sending ? res.activities[i].amountNumber : ''
-        res.activities[i].sentCurrency = sending ? currency : ''
+        res.activities[i].sentCurrency = sending ? currency.toString().trim() : ''
 
         res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : ''
-        res.activities[i].receivedCurrency = !sending ? currency : ''
+        res.activities[i].receivedCurrency = !sending ? currency.toString().trim() : ''
 
         res.activities[i].netWorthCurrency = selectedCurrency.toUpperCase()
 
