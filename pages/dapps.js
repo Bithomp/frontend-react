@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import { useMemo, useState } from 'react'
+import RadioOptions from '../components/UI/RadioOptions'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import { axiosServer, passHeaders, currencyServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -94,7 +95,14 @@ export default function Dapps({
   const convertCurrency = (selectedCurrency || 'usd').toLowerCase()
 
   const [order, setOrder] = useState(orderQuery || 'performingHigh')
+  const [period, setPeriod] = useState('week')
+  const periodOptions = [
+    { value: 'day', label: 'Day' },
+    { value: 'week', label: 'Week' },
+    { value: 'month', label: 'Month' }
+  ]
   const [errorMessage] = useState(t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || '')
+  const [filtersHide, setFiltersHide] = useState(false)
 
   const rawData = useMemo(() => initialData || {}, [initialData])
   const data = useMemo(() => {
@@ -142,17 +150,19 @@ export default function Dapps({
           Last update: {timeOrDate(rawData.updatedAt)} ({timeFromNow(rawData.updatedAt, i18n)})
         </div>
       )}
-
       <FiltersFrame
         order={order}
         setOrder={setOrder}
         orderList={orderList}
         data={data}
-        onlyCsv={true}
+        filtersHide={filtersHide}
+        setFiltersHide={setFiltersHide}
         csvHeaders={csvHeaders}
       >
-        {/* FiltersFrame expects children[0] for filters, children[1] for content */}
-        <></>
+        <>
+          Stats period:
+          <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
+        </>
         {!errorMessage ? (
           !windowWidth || windowWidth > 860 ? (
             <table className="table-large expand">
