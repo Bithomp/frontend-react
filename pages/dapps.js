@@ -7,6 +7,8 @@ import { axiosServer, passHeaders, currencyServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { explorerName, nativeCurrency, useWidth } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
+import { useRouter } from 'next/router'
+import { setTabParams } from '../utils'
 
 import SEO from '../components/SEO'
 import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow } from '../utils/format'
@@ -85,6 +87,8 @@ export default function Dapps({
   fiatRate: fiatRateApp,
   selectedCurrencyServer
 }) {
+  const router = useRouter()
+  const defaultPeriod = 'day'
   const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
 
@@ -96,7 +100,7 @@ export default function Dapps({
   const convertCurrency = (selectedCurrency || 'usd').toLowerCase()
 
   const [order, setOrder] = useState(orderQuery || 'performingHigh')
-  const [period, setPeriod] = useState('week')
+  const [period, setPeriod] = useState(router.query.period || defaultPeriod)
   const periodOptions = [
     { value: 'day', label: 'Day' },
     { value: 'week', label: 'Week' },
@@ -173,6 +177,16 @@ export default function Dapps({
     { label: `Fees (${convertCurrency.toUpperCase()})`, key: `totalFeesInFiats.${convertCurrency}` },
     { label: `Total sent (${convertCurrency.toUpperCase()})`, key: `totalSentInFiats.${convertCurrency}` }
   ]
+
+  useEffect(() => {
+    if (!router.isReady) return
+    if (period === defaultPeriod) {
+      setTabParams(router, [], [], ['period'])
+    } else {
+      setTabParams(router, [], [{ name: 'period', value: period }], [])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period, router.isReady])
 
   return (
     <>
