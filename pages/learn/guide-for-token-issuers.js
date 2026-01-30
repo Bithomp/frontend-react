@@ -126,8 +126,8 @@ export default function GuideForTokenIssuers() {
               https://xrpl-labs.com/.well-known/xahau.toml
             </Link>
           ) : (
-            <Link href="https://drippyxrp.com/.well-known/xrp-ledger.toml">
-              https://drippyxrp.com/.well-known/xrp-ledger.toml
+            <Link href="https://hadanft.com/.well-known/xrp-ledger.toml">
+              https://hadanft.com/.well-known/xrp-ledger.toml
             </Link>
           )}
           <p>
