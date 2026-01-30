@@ -46,7 +46,7 @@ const sortDapps = (list, order) => {
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
-  const { order } = query
+  const { order, period } = query
 
   let initialData = null
   let initialErrorMessage = null
@@ -54,10 +54,15 @@ export async function getServerSideProps(context) {
   const selectedCurrencyServer = currencyServer(req)
   const convertCurrency = (selectedCurrencyServer || 'usd').toLowerCase()
 
+  let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}`
+  if (period) {
+    apiUrl += `&period=${encodeURIComponent(period)}`
+  }
+
   try {
     const res = await axiosServer({
       method: 'get',
-      url: `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}`,
+      url: apiUrl,
       headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -71,6 +76,7 @@ export async function getServerSideProps(context) {
     props: {
       initialData: initialData || null,
       orderQuery: order || 'performingHigh',
+      periodQuery: period || 'day',
       initialErrorMessage: initialErrorMessage || '',
       selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
@@ -79,16 +85,22 @@ export async function getServerSideProps(context) {
   }
 }
 
+const periodOptions = [
+  { value: 'day', label: 'Day' },
+  { value: 'week', label: 'Week' },
+  { value: 'month', label: 'Month' }
+]
+
 export default function Dapps({
   initialData,
   initialErrorMessage,
   orderQuery,
+  periodQuery,
   selectedCurrency: selectedCurrencyApp,
   fiatRate: fiatRateApp,
   selectedCurrencyServer
 }) {
   const router = useRouter()
-  const defaultPeriod = 'day'
   const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
 
@@ -100,12 +112,7 @@ export default function Dapps({
   const convertCurrency = (selectedCurrency || 'usd').toLowerCase()
 
   const [order, setOrder] = useState(orderQuery || 'performingHigh')
-  const [period, setPeriod] = useState(router.query.period || defaultPeriod)
-  const periodOptions = [
-    { value: 'day', label: 'Day' },
-    { value: 'week', label: 'Week' },
-    { value: 'month', label: 'Month' }
-  ]
+  const [period, setPeriod] = useState(periodQuery)
   const [errorMessage, setErrorMessage] = useState(
     t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
   )
@@ -180,7 +187,7 @@ export default function Dapps({
 
   useEffect(() => {
     if (!router.isReady) return
-    if (period === defaultPeriod) {
+    if (period === 'day') {
       setTabParams(router, [], [], ['period'])
     } else {
       setTabParams(router, [], [{ name: 'period', value: period }], [])
