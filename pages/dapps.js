@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
+import axios from 'axios'
 import RadioOptions from '../components/UI/RadioOptions'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import { axiosServer, passHeaders, currencyServer } from '../utils/axios'
@@ -101,14 +102,47 @@ export default function Dapps({
     { value: 'week', label: 'Week' },
     { value: 'month', label: 'Month' }
   ]
-  const [errorMessage] = useState(t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || '')
+  const [errorMessage, setErrorMessage] = useState(
+    t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
+  )
   const [filtersHide, setFiltersHide] = useState(false)
+  const [rawData, setRawData] = useState(initialData || {})
+  const [loading, setLoading] = useState(false)
+  const abortControllerRef = useRef()
 
-  const rawData = useMemo(() => initialData || {}, [initialData])
+  useEffect(() => {
+    setLoading(true)
+    setErrorMessage('')
+    setRawData({})
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    const controller = new AbortController()
+    abortControllerRef.current = controller
+    axios
+      .get(`/v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&period=${period}`, {
+        signal: controller.signal
+      })
+      .then((res) => {
+        setRawData(res?.data || {})
+        setLoading(false)
+      })
+      .catch((error) => {
+        if (error?.message !== 'canceled') {
+          setErrorMessage(error?.message || 'Error')
+        }
+        setLoading(false)
+      })
+    return () => {
+      controller.abort()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period, convertCurrency])
+
   const data = useMemo(() => {
     const list = Array.isArray(rawData?.dapps) ? rawData.dapps : []
     // Exclude these sourceTags
-    const excludeSourceTags = [0, 111, 222, 777, 4004, 604802567]
+    const excludeSourceTags = [0, 111, 222, 777, 4004, 604802567, 446588767]
     const filtered = list.filter((d) => {
       if (excludeSourceTags.includes(Number(d?.sourceTag))) return false
       const hasName = dappBySourceTag(d?.sourceTag)
@@ -163,7 +197,22 @@ export default function Dapps({
           Stats period:
           <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
         </>
-        {!errorMessage ? (
+        {loading ? (
+          <table className={windowWidth && windowWidth <= 860 ? 'table-mobile' : 'table-large expand'}>
+            <tbody>
+              <tr className="center">
+                <td colSpan="100">
+                  <br />
+                  <span className="waiting"></span>
+                  <br />
+                  {t('general.loading')}
+                  <br />
+                  <br />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        ) : !errorMessage ? (
           !windowWidth || windowWidth > 860 ? (
             <table className="table-large expand">
               <thead>
