@@ -200,11 +200,17 @@ export default function Dapps({
       <SEO title="Dapps" />
 
       <h1 className="center">{explorerName} Dapps Radar</h1>
-      {rawData?.updatedAt && (
-        <div className="center" style={{ marginBottom: 16, fontSize: 15, color: '#888' }}>
-          Last update: {timeOrDate(rawData.updatedAt)} ({timeFromNow(rawData.updatedAt, i18n)})
-        </div>
-      )}
+
+      <div className="center" style={{ marginBottom: 16, fontSize: 15, color: '#888' }}>
+        {rawData?.updatedAt ? (
+          <>
+            Last update: {timeOrDate(rawData.updatedAt)} ({timeFromNow(rawData.updatedAt, i18n)})
+          </>
+        ) : (
+          <br />
+        )}
+      </div>
+
       <FiltersFrame
         order={order}
         setOrder={setOrder}
