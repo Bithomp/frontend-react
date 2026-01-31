@@ -118,6 +118,16 @@ export default function NftsComponent({
       : { currency: nativeCurrency }
   )
 
+  const [searchError, setSearchError] = useState('')
+
+  const setInnerSearch = (value) => {
+    if (!value || value.length > 2) {
+      setSearchError('')
+    } else {
+      setSearchError(<span className="orange">{t('error-api.search is too short')}</span>)
+    }
+  }
+
   const controller = new AbortController()
 
   let csvHeadersConst = [
@@ -815,7 +825,9 @@ export default function NftsComponent({
                   title={t('table.name')}
                   placeholder={t('nfts.search-by-name')}
                   setValue={setSearch}
+                  setInnerValue={setInnerSearch}
                   defaultValue={rawData?.search}
+                  textUnder={searchError}
                 />
 
                 {listTab === 'nfts' && (

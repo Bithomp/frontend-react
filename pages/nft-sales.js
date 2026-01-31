@@ -142,6 +142,16 @@ export default function NftSales({
     issuer: currencyIssuer
   })
 
+  const [searchError, setSearchError] = useState('')
+
+  const setInnerSearch = (value) => {
+    if (!value || value.length > 2) {
+      setSearchError('')
+    } else {
+      setSearchError(<span className="orange">{t('error-api.search is too short')}</span>)
+    }
+  }
+
   const controller = new AbortController()
 
   const sortCurrency = sortCurrencyQuery?.toLowerCase() || selectedCurrency
@@ -646,7 +656,9 @@ export default function NftSales({
             title={t('table.name')}
             placeholder={t('nfts.search-by-name')}
             setValue={setSearch}
+            setInnerValue={setInnerSearch}
             defaultValue={data?.search}
+            textUnder={searchError}
           />
 
           <div>
