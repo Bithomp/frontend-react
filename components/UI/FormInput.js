@@ -10,7 +10,8 @@ export default function FormInput({
   disabled,
   hideButton,
   setInnerValue,
-  onKeyPress
+  onKeyPress,
+  textUnder
 }) {
   const [inputInnerValue, setInputInnerValue] = useState('')
 
@@ -88,6 +89,11 @@ export default function FormInput({
             </div>
           )}
         </div>
+        {textUnder && (
+          <div className="left" style={{ marginTop: 8 }}>
+            {textUnder}
+          </div>
+        )}
       </div>
     </div>
   )

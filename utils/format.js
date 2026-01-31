@@ -20,11 +20,32 @@ import {
   tokenImageSrc,
   mptokenImageSrc
 } from '.'
-import { scaleAmount } from './calc'
+import { scaleAmount, subtract } from './calc'
 import { LinkAmm, LinkToken } from './links'
 
 dayjs.extend(durationPlugin)
 dayjs.extend(relativeTimePlugin)
+
+export const formatXDigits = (value, x = 10) => {
+  const n = Number(value)
+  if (!Number.isFinite(n)) return ''
+
+  const abs = Math.abs(n)
+
+  // how many digits before the decimal
+  const intDigits = abs >= 1 ? Math.floor(Math.log10(abs)) + 1 : 0
+
+  // how many decimals we need to reach total = x
+  const decimals = Math.max(0, x - intDigits)
+
+  // format + trim trailing zeros + trim dot if needed
+  return n.toFixed(decimals).replace(/\.?0+$/, '')
+}
+
+export const transferRateToPercent = (transferRate) => {
+  if (transferRate === null || transferRate === undefined) return ''
+  return Math.ceil(subtract(transferRate, 1) * 10000) / 100 + '%'
+}
 
 export const serviceUsernameOrAddressText = (data, name = 'address', options) => {
   if (!data || !data[name]) return ''

@@ -10,7 +10,8 @@ import {
   amountFormat,
   fullDateAndTime,
   nativeCurrencyToFiat,
-  timeFromNow
+  timeFromNow,
+  transferRateToPercent
 } from '../../utils/format'
 import { devNet, getCoinsUrl, isDomainValid, nativeCurrency, stripDomain, xahauNetwork } from '../../utils'
 
@@ -19,7 +20,6 @@ import { LinkAmm, LinkObject, LinkTx } from '../../utils/links'
 
 import { MdDeleteForever, MdVerified } from 'react-icons/md'
 import { FiEdit } from 'react-icons/fi'
-import { subtract } from '../../utils/calc'
 
 export default function LedgerData({
   data,
@@ -268,7 +268,7 @@ export default function LedgerData({
 
   const ammIdNode = <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
 
-  const transferRateNode = Math.ceil(subtract(data.ledgerInfo.transferRate, 1) * 10000) / 100 + '%'
+  const transferRateNode = transferRateToPercent(data.ledgerInfo.transferRate)
 
   const regularKeyNode = <AddressWithIconFilled data={data.ledgerInfo} name="regularKey" />
 

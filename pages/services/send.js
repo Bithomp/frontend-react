@@ -20,7 +20,14 @@ import {
   decode,
   xahauNetwork
 } from '../../utils'
-import { fullDateAndTime, timeFromNow, amountFormat, shortHash } from '../../utils/format'
+import {
+  fullDateAndTime,
+  timeFromNow,
+  amountFormat,
+  shortHash,
+  transferRateToPercent,
+  formatXDigits
+} from '../../utils/format'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -69,6 +76,7 @@ export default function Send({
 }) {
   const { t } = useTranslation()
   const router = useRouter()
+
   const [address, setAddress] = useState(isAddressValid(addressQuery) ? addressQuery : null)
   const [destinationTag, setDestinationTag] = useState(isTagValid(destinationTagQuery) ? destinationTagQuery : null)
   const [amount, setAmount] = useState(Number(amountQuery) > 0 ? amountQuery : null)
@@ -600,7 +608,7 @@ export default function Send({
               )}
             </>
           )}
-          <br />
+          <div className="form-spacing" />
           <div className="flex flex-col gap-x-4 sm:flex-row">
             <div className="flex-1">
               <FormInput
@@ -614,9 +622,16 @@ export default function Send({
                 min={0}
                 inputMode="decimal"
                 type="text"
+                textUnder={
+                  selectedToken?.transferFee && amount && !isNaN(parseFloat(amount)) && parseFloat(amount) > 0 ? (
+                    <span className="grey">
+                      To receive ≈ {formatXDigits(parseFloat(amount) / selectedToken.transferFee, 11)}
+                    </span>
+                  ) : null
+                }
               />
             </div>
-            <div className="w-full sm:w-1/2">
+            <div className="flex-1" style={{ marginBottom: 20 }}>
               <span className="input-title">Currency</span>
               <TokenSelector
                 value={selectedToken}
@@ -625,9 +640,14 @@ export default function Send({
                 currencyQueryName="currency"
                 senderAddress={account?.address || null}
               />
+              {selectedToken.transferFee ? (
+                <div style={{ marginTop: 8 }}>
+                  <span className="orange">Issuer fee: {transferRateToPercent(selectedToken.transferFee)}</span>
+                </div>
+              ) : null}
             </div>
           </div>
-          <br />
+
           <FormInput
             title={
               <>
