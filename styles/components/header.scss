@@ -664,9 +664,7 @@ header {
   .mobile-menu-open {
     header {
       .header-logo {
-        width: 0;
-        min-width: 0;
-        overflow: hidden;
+        display: none !important;
       }
 
       .header-menu-right {
