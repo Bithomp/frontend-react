@@ -1185,7 +1185,9 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                             )}
                             {data.metadata?.attributes &&
                               data.metadata?.attributes[0] &&
-                              (data.metadata?.attributes[0].trait_type || data.metadata?.attributes[0].name) && (
+                              (data.metadata?.attributes[0].trait_type ||
+                                data.metadata?.attributes[0].name ||
+                                data.metadata?.attributes[0].traitType) && (
                                 <table className="table-details autowidth">
                                   <thead>
                                     <tr>
@@ -1195,8 +1197,8 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                   <tbody>
                                     {data.metadata.attributes.map((attr, i) => (
                                       <tr key={i}>
-                                        <td>{stripText(attr.trait_type || attr.name)}</td>
-                                        <td>{stripText(attr.value)}</td>
+                                        <td>{stripText(attr.trait_type || attr.name || attr.traitType)}</td>
+                                        <td>{stripText(attr.value || attr.traitValue)}</td>
                                       </tr>
                                     ))}
                                   </tbody>
