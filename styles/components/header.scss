@@ -542,7 +542,7 @@ header {
   }
 }
 
-@media only screen and (max-width: 1180px) {
+@media only screen and (max-width: 1290px) {
   header {
     min-height: 55px;
     height: auto;
@@ -654,7 +654,7 @@ header {
   }
 }
 
-@media only screen and (max-width: 750px) {
+@media only screen and (max-width: 830px) {
   header {
     .header-menu-right {
       display: none;
@@ -674,7 +674,7 @@ header {
   }
 }
 
-@media only screen and (max-width: 1670px) and (min-width: 1180px) {
+@media only screen and (max-width: 1670px) and (min-width: 1290px) {
   header {
     justify-content: space-between;
 

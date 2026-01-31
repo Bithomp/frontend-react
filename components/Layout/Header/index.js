@@ -135,7 +135,7 @@ export default function Header({
     // Collapse only when header likely has a 2nd line (your breakpoints)
     const shouldUseCollapsingHeader = () => {
       const w = window.innerWidth
-      return w <= 1050 || (w >= 1180 && w <= 1670)
+      return w <= 1050 || (w >= 1290 && w <= 1670)
     }
 
     let lastY = window.scrollY
@@ -264,7 +264,7 @@ export default function Header({
       <header>
         <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
           <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
-            {(width < 1060 && width > 370) || width > 1300 || !width ? (
+            {(width < 1050 && width > 370) || width > 1500 || !width ? (
               xahauNetwork ? (
                 <div style={{ height: 46, width: 220, marginTop: -2.5 }}>
                   <XahauExplorer />
