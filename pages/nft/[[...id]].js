@@ -99,7 +99,7 @@ function DescriptionWithShowMore({ text, maxLength = 400 }) {
   return (
     <>
       <span>{expanded ? text : text.slice(0, maxLength) + '... '}</span>
-      <span className="link" style={{ cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
+      <span className="link" onClick={() => setExpanded(!expanded)}>
         {' '}
         {expanded ? 'show less' : 'show more'}
       </span>
