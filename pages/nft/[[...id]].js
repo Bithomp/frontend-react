@@ -92,6 +92,21 @@ const hasJsonMeta = (nft) => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== 'bithomp'
 }
 
+// Show more/less for long descriptions
+function DescriptionWithShowMore({ text, maxLength = 400 }) {
+  const [expanded, setExpanded] = useState(false)
+  if (!text || text.length <= maxLength) return <span>{text}</span>
+  return (
+    <>
+      <span>{expanded ? text : text.slice(0, maxLength) + '... '}</span>
+      <span className="link" style={{ cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
+        {' '}
+        {expanded ? 'show less' : 'show more'}
+      </span>
+    </>
+  )
+}
+
 export default function Nft({ setSignRequest, account, pageMeta, id, selectedCurrency, refreshPage, fiatRate }) {
   const { t, i18n } = useTranslation()
   const isFirstRender = useRef(true)
@@ -1258,7 +1273,9 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                 {nftDescription(data.metadata) && (
                                   <tr>
                                     <td>{t('table.description')}</td>
-                                    <td>{nftDescription(data.metadata)}</td>
+                                    <td>
+                                      <DescriptionWithShowMore text={nftDescription(data.metadata)} />
+                                    </td>
                                   </tr>
                                 )}
                                 {externalUrl(data.metadata) && (
