@@ -312,47 +312,43 @@ export default function Dapps({
                     const successRate = calcSuccessRate(d?.totalTransactions, d?.successTransactions)
                     return (
                       <tr key={d?.sourceTag ?? idx}>
-                        <td style={{ padding: '5px' }} className="center">
-                          <b>{idx + 1}</b>
-                        </td>
-                        <td>
-                          <p className="no-brake">
-                            <b>Dapp:</b> {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
-                          </p>
-                          <b>Performing:</b> {shortNiceNumber(d?.uniqueSourceAddresses, 0)}
-                          <br />
-                          <b>Interacting:</b> {shortNiceNumber(d?.uniqueInteractedAddresses, 0)}
-                          <p>
+                        <td style={{ padding: '10px 5px' }}>
+                          <div style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 4 }}>
+                            {idx + 1}. {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
+                          </div>
+                          <div style={{ marginBottom: 4 }}>
+                            <b>Performing wallets:</b> {shortNiceNumber(d?.uniqueSourceAddresses, 0)}
+                          </div>
+                          <div style={{ marginBottom: 4 }}>
+                            <b>Interacting wallets:</b> {shortNiceNumber(d?.uniqueInteractedAddresses, 0)}
+                          </div>
+                          <div style={{ marginBottom: 4 }}>
                             <b>Transactions:</b> {shortNiceNumber(d?.totalTransactions, 0)}
-                          </p>
-                          <p>
+                          </div>
+                          <div style={{ marginBottom: 4 }}>
                             <b>Types:</b>{' '}
                             {d?.transactionTypes
                               ? Object.entries(d.transactionTypes)
                                   .map(([type, count]) => `${type}: ${shortNiceNumber(count, 0)}`)
                                   .join(', ')
                               : ''}
-                          </p>
-                          <p>
+                          </div>
+                          <div style={{ marginBottom: 4 }}>
                             <b>Success:</b> {shortNiceNumber(d?.successTransactions, 0)}
-                            <br />
-                            <span style={{ opacity: 0.7 }}>{successRate.toFixed(2)}%</span>
-                          </p>
-                          <p className="no-brake">
+                            <span style={{ opacity: 0.7, marginLeft: 8 }}>{successRate.toFixed(2)}%</span>
+                          </div>
+                          <div style={{ marginBottom: 4 }}>
                             <b>Fees:</b> {amountFormat(d?.totalFees, { short: true })}
-                            <br />
-                            <span style={{ opacity: 0.7 }} suppressHydrationWarning>
+                            <span style={{ opacity: 0.7, marginLeft: 8 }} suppressHydrationWarning>
                               {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
                             </span>
-                          </p>
-                          <p className="no-brake">
+                          </div>
+                          <div style={{ marginBottom: 4 }}>
                             <b>Total sent:</b> {amountFormat(d?.totalSent, { short: true })}
-                            <br />
-                            <span style={{ opacity: 0.7, marginLeft: 4 }} suppressHydrationWarning>
+                            <span style={{ opacity: 0.7, marginLeft: 8 }} suppressHydrationWarning>
                               {shortNiceNumber(d?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
                             </span>
-                          </p>
-                          <br />
+                          </div>
                         </td>
                       </tr>
                     )
@@ -373,7 +369,7 @@ export default function Dapps({
           </div>
         )}
       </FiltersFrame>
-      <div className="note" style={{ maxWidth: 800, margin: '20px auto' }}>
+      <div style={{ maxWidth: 800, padding: 20, margin: 'auto' }}>
         <b>Interacting wallets</b> - Unique Interacted Addresses: <code>tx.Address</code>, <code>tx.Destination</code>,
         actual sender, and actual receiver (the latter two may differ from source and destination in some transactions).
         <br />
