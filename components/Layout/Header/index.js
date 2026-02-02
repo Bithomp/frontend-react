@@ -264,7 +264,7 @@ export default function Header({
       <header>
         <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
           <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
-            {(width < 1050 && width > 370) || width > 1500 || !width ? (
+            {(width < 1050 && width > 370) || width > 1439 || !width ? (
               xahauNetwork ? (
                 <div style={{ height: 46, width: 220, marginTop: -2.5 }}>
                   <XahauExplorer />
