@@ -157,7 +157,7 @@ export default function Dapps({
   const data = useMemo(() => {
     const list = Array.isArray(rawData?.dapps) ? rawData.dapps : []
     // Exclude these sourceTags
-    const excludeSourceTags = [0, 111, 222, 777, 4004, 604802567, 446588767]
+    const excludeSourceTags = [0, 222, 777, 4004, 604802567, 446588767]
     const filtered = list.filter((d) => {
       if (excludeSourceTags.includes(Number(d?.sourceTag))) return false
       const hasName = dappBySourceTag(d?.sourceTag)

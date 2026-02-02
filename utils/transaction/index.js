@@ -308,6 +308,8 @@ export const dappBySourceTag = (sourceTag) => {
   if (!sourceTag) return null
   const dapps = {
     16: 'UniversalNFT.dev',
+    111: 'Horizon',
+    589123: 'Katz Wallet',
     999999: 'Loansnap',
     1060223: 'Epic Task',
     1739300: 'Styngr',
@@ -364,10 +366,11 @@ export const dappBySourceTag = (sourceTag) => {
     88807279: 'XRPPhone',
     88888888: 'Mintable',
     88990334: 'VWBL',
-    89898989: 'zkLend',
+    89898989: 'zkLend', //Axelar Bridge
     99819001: 'HubSecure',
     99994200: 'Cryptum',
     99999420: 'Cryptum',
+    100010010: 'StaticBit',
     101102979: 'xrp.cafe',
     110100111: 'Sologenic',
     115102100: 'Web3 Enabler, Inc.',
