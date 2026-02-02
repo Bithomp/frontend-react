@@ -15,6 +15,7 @@ import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow } from '../utils
 import { dappBySourceTag } from '../utils/transaction'
 import TypeMixCell from '../components/Dapps/TypeMixCell'
 import { dappsPageClass } from '../styles/pages/dapps.module.scss'
+import { HeaderTooltip } from '../components/UI/HeaderTooltip'
 
 const calcSuccessRate = (total, success) => {
   const t = Number(total)
@@ -224,20 +225,7 @@ export default function Dapps({
         setFiltersHide={setFiltersHide}
         csvHeaders={csvHeaders}
       >
-        <>
-          Stats period:
-          <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
-          <div style={{ maxWidth: 800, padding: 20, margin: 'auto' }}>
-            <b>Interacting wallets</b> - Unique Interacted Addresses: <code>tx.Address</code>,{' '}
-            <code>tx.Destination</code>
-            , actual sender, and actual receiver (the latter two may differ from source and destination in some
-            transactions).
-            <br />
-            <br />
-            <b>Total sent</b> — This is the sum of all {nativeCurrency} and IOU tokens sent, converted to{' '}
-            {nativeCurrency} at the rate at the time of each transaction.
-          </div>
-        </>
+        <>{true == false && <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />}</>
         {loading ? (
           <table className={windowWidth && windowWidth <= 860 ? 'table-mobile' : 'table-large expand'}>
             <tbody>
@@ -254,17 +242,47 @@ export default function Dapps({
             </tbody>
           </table>
         ) : !errorMessage ? (
-          !windowWidth || windowWidth > 860 ? (
+          !windowWidth || windowWidth > 1000 ? (
             <table className="table-large expand no-hover border">
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
                   <th>Dapp</th>
-                  <th className="right">Performing</th>
-                  <th className="right">Interacting</th>
+                  <HeaderTooltip
+                    label="PA"
+                    tip={
+                      <>
+                        <b>Performing addresses</b>
+                        <br />
+                        Unique addresses that have signed transactions.
+                      </>
+                    }
+                  />
+                  <HeaderTooltip
+                    label="IA"
+                    tip={
+                      <>
+                        <b>Interacting addresses</b>
+                        <br />
+                        Unique Interacted Addresses: <code>tx.Address</code>, <code>tx.Destination</code>, actual
+                        sender, and actual receiver (the latter two may differ from source and destination in some
+                        transactions).
+                      </>
+                    }
+                  />
                   <th className="right">Activity</th>
                   <th className="right">Fees</th>
-                  <th className="right">Total sent</th>
+                  <HeaderTooltip
+                    label="Total sent"
+                    tip={
+                      <>
+                        <b>Total sent</b>
+                        <br />
+                        This is the sum of all {nativeCurrency} and IOU tokens sent, converted to {nativeCurrency} at
+                        the rate at the time of each transaction.
+                      </>
+                    }
+                  />
                 </tr>
               </thead>
               <tbody>
