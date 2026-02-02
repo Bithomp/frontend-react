@@ -111,7 +111,8 @@ export default function TypeMixCell({
 
     const total = Number(model?.total || 0)
 
-    return GROUP_ORDER.map((cfg) => {
+    // Build in stable color/label order...
+    const built = GROUP_ORDER.map((cfg) => {
       const g = map[cfg.key]
       const count = Number(g?.total || 0)
       const pctGeom = total > 0 ? (count / total) * 100 : 0
@@ -119,13 +120,14 @@ export default function TypeMixCell({
       const types = Array.isArray(g?.types) ? g.types : []
       return { ...cfg, count, pctGeom, pctAll, types }
     }).filter((x) => x.count > 0)
+
+    // ...then sort by size (largest first) for the bar (and default active)
+    built.sort((a, b) => b.count - a.count)
+
+    return built
   }, [model])
 
-  const defaultKey = useMemo(() => {
-    if (!segments.length) return null
-    const top = [...segments].sort((a, b) => b.count - a.count)[0]
-    return top?.key || null
-  }, [segments])
+  const defaultKey = useMemo(() => (segments[0]?.key ? segments[0].key : null), [segments])
 
   // Keep activeKey valid when data changes (period switch, etc.)
   useEffect(() => {
