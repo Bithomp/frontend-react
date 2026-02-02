@@ -13,6 +13,8 @@ import { setTabParams } from '../utils'
 import SEO from '../components/SEO'
 import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow } from '../utils/format'
 import { dappBySourceTag } from '../utils/transaction'
+import TypeMixCell from '../components/Dapps/TypeMixCell'
+import { dappsPageClass } from '../styles/pages/dapps.module.scss'
 
 const calcSuccessRate = (total, success) => {
   const t = Number(total)
@@ -119,6 +121,8 @@ export default function Dapps({
   const [filtersHide, setFiltersHide] = useState(false)
   const [rawData, setRawData] = useState(initialData || {})
   const [loading, setLoading] = useState(false)
+  const [expandedRowKey, setExpandedRowKey] = useState(null)
+
   const abortControllerRef = useRef()
 
   useEffect(() => {
@@ -196,7 +200,7 @@ export default function Dapps({
   }, [period, router.isReady])
 
   return (
-    <>
+    <div className={dappsPageClass}>
       <SEO title="Dapps" />
 
       <h1 className="center">{explorerName} Dapps Radar</h1>
@@ -241,16 +245,14 @@ export default function Dapps({
           </table>
         ) : !errorMessage ? (
           !windowWidth || windowWidth > 860 ? (
-            <table className="table-large expand">
+            <table className="table-large expand no-hover border">
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
                   <th>Dapp</th>
                   <th className="right">Performing</th>
                   <th className="right">Interacting</th>
-                  <th className="right">Transactions</th>
-                  <th className="right">Types</th>
-                  <th className="right">Success</th>
+                  <th className="right">Activity</th>
                   <th className="right">Fees</th>
                   <th className="right">Total sent</th>
                 </tr>
@@ -258,25 +260,22 @@ export default function Dapps({
               <tbody>
                 {data?.length ? (
                   data.map((d, idx) => {
-                    const successRate = calcSuccessRate(d?.totalTransactions, d?.successTransactions)
+                    const rowKey = d?.sourceTag ?? idx
+                    const isOpen = expandedRowKey === rowKey
                     return (
                       <tr key={d?.sourceTag ?? idx}>
                         <td className="center">{idx + 1}</td>
                         <td className="no-brake">{dappBySourceTag(d?.sourceTag) || d?.sourceTag}</td>
                         <td className="right">{shortNiceNumber(d?.uniqueSourceAddresses, 0)}</td>
                         <td className="right">{shortNiceNumber(d?.uniqueInteractedAddresses, 0)}</td>
-                        <td className="right">{shortNiceNumber(d?.totalTransactions, 0)}</td>
                         <td className="right">
-                          {d?.transactionTypes
-                            ? Object.entries(d.transactionTypes)
-                                .map(([type, count]) => `${type}: ${shortNiceNumber(count, 0)}`)
-                                .join(', ')
-                            : ''}
-                        </td>
-                        <td className="right">
-                          {shortNiceNumber(d?.successTransactions, 0)}
-                          <br />
-                          <span style={{ opacity: 0.7 }}>{successRate.toFixed(2)}%</span>
+                          <TypeMixCell
+                            transactionTypes={d?.transactionTypes}
+                            totalTransactions={d?.totalTransactions}
+                            successTransactions={d?.successTransactions}
+                            isOpen={isOpen}
+                            onToggle={() => setExpandedRowKey(isOpen ? null : rowKey)}
+                          />
                         </td>
                         <td className="right no-brake">
                           {amountFormat(d?.totalFees, { short: true })}
@@ -382,6 +381,6 @@ export default function Dapps({
         <b>Total sent</b> — This is the sum of all {nativeCurrency} and IOU tokens sent, converted to {nativeCurrency}{' '}
         at the rate at the time of each transaction.
       </div>
-    </>
+    </div>
   )
 }
