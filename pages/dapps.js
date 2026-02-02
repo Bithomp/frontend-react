@@ -247,7 +247,7 @@ export default function Dapps({
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
-                  <th>Dapp</th>
+                  <th className="left pl-2.5">Dapp</th>
                   <HeaderTooltip
                     label="PA"
                     tip={
@@ -270,8 +270,8 @@ export default function Dapps({
                       </>
                     }
                   />
-                  <th className="right">Activity</th>
-                  <th className="right">Fees</th>
+                  <th className="left pl-2.5">Activity</th>
+                  <th className="right pr-2.5">Fees</th>
                   <HeaderTooltip
                     label="Total sent"
                     tip={
