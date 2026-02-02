@@ -1,4 +1,3 @@
-// components/Dapps/TypeMixCell.js
 import { useMemo, useState, useRef, useLayoutEffect, useEffect } from 'react'
 import { shortNiceNumber } from '../../utils/format'
 import { buildTxGroupsModel } from '../../utils/txTypeBuckets'
@@ -15,15 +14,27 @@ const GROUP_ORDER = [
   { key: 'other', label: 'Other', color: '#9CA3AF' }
 ]
 
-// Observe element width to decide if label can be rendered inside a segment
+// Use layout effect only in browser (SSR-safe)
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
+
 const useWidth = () => {
   const ref = useRef(null)
   const [w, setW] = useState(0)
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!ref.current) return
-    const ro = new ResizeObserver(([e]) => setW(e.contentRect.width))
+
+    // Initial width
+    setW(ref.current.getBoundingClientRect().width || 0)
+
+    // ResizeObserver in browser only
+    if (typeof ResizeObserver === 'undefined') return
+
+    const ro = new ResizeObserver(([e]) => {
+      setW(e.contentRect.width)
+    })
     ro.observe(ref.current)
+
     return () => ro.disconnect()
   }, [])
 

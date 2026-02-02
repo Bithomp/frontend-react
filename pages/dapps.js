@@ -227,6 +227,16 @@ export default function Dapps({
         <>
           Stats period:
           <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
+          <div style={{ maxWidth: 800, padding: 20, margin: 'auto' }}>
+            <b>Interacting wallets</b> - Unique Interacted Addresses: <code>tx.Address</code>,{' '}
+            <code>tx.Destination</code>
+            , actual sender, and actual receiver (the latter two may differ from source and destination in some
+            transactions).
+            <br />
+            <br />
+            <b>Total sent</b> — This is the sum of all {nativeCurrency} and IOU tokens sent, converted to{' '}
+            {nativeCurrency} at the rate at the time of each transaction.
+          </div>
         </>
         {loading ? (
           <table className={windowWidth && windowWidth <= 860 ? 'table-mobile' : 'table-large expand'}>
@@ -369,14 +379,6 @@ export default function Dapps({
           </div>
         )}
       </FiltersFrame>
-      <div style={{ maxWidth: 800, padding: 20, margin: 'auto' }}>
-        <b>Interacting wallets</b> - Unique Interacted Addresses: <code>tx.Address</code>, <code>tx.Destination</code>,
-        actual sender, and actual receiver (the latter two may differ from source and destination in some transactions).
-        <br />
-        <br />
-        <b>Total sent</b> — This is the sum of all {nativeCurrency} and IOU tokens sent, converted to {nativeCurrency}{' '}
-        at the rate at the time of each transaction.
-      </div>
     </div>
   )
 }
