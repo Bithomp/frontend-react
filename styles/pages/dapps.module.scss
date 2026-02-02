@@ -1,214 +1,263 @@
-/* =========================================================
-   Dapps table – Activity (TypeMixCell)
-   Uses ONLY CSS variables defined on body / body.dark
-   ========================================================= */
+.dappsPageClass {:global {
+    /* Prevent row-jump */
+    .table-large.expand td,
+    .table-large.expand th {
+      vertical-align: top;
+    }
 
-/* Make expanded rows not visually "jump" */
+    /* ---------- Activity cell ---------- */
 
-.dappsPageClass :global {
-  .table-large.expand td,
-  .table-large.expand th {
-    vertical-align: top;
-  }
+    .dapps-activity {
+      min-width: 520px;
+    }
 
-  /* ---------- Activity cell ---------- */
+    .dapps-activity__bar {
+      width: 100%;
+      position: relative;
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
 
-  .dapps-activity {
-    min-width: 420px;
-  }
+    body.dark .dapps-activity__bar {
+      background: rgba(255, 255, 255, 0.12);
+    }
 
-  /* ---------- Bar ---------- */
+    .dapps-activity__seg {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: default;
+      transition: filter 120ms ease, opacity 120ms ease;
+    }
 
-  .dapps-activity__bar {
-    position: relative;
-    height: 18px;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-  }
+    .dapps-activity__seg:hover {
+      filter: brightness(0.97);
+      opacity: 0.92;
+    }
 
-  /* Dark theme bar background */
-  body.dark .dapps-activity__bar {
-    background: rgba(255, 255, 255, 0.12);
-  }
+    body.dark .dapps-activity__seg:hover {
+      filter: brightness(1.05);
+    }
 
-  /* ---------- Segments ---------- */
+    .dapps-activity__segLabel {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-contrast);
+      white-space: nowrap;
+      padding: 0 6px;
+      pointer-events: none;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+    }
 
-  .dapps-activity__seg {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    cursor: default;
-    transition: filter 120ms ease, opacity 120ms ease;
-  }
+    .dapps-activity__meta {
+      margin-top: 6px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-main);
+    }
 
-  .dapps-activity__seg:hover {
-    filter: brightness(0.97);
-    opacity: 0.92;
-  }
+    .dapps-activity__stats {
+      display: flex;
+      gap: 10px;
+      white-space: nowrap;
+    }
 
-  body.dark .dapps-activity__seg:hover {
-    filter: brightness(1.05);
-  }
+    .dapps-activity__muted {
+      margin-left: 6px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
 
-  /* Segment label (inside bar) */
-  .dapps-activity__segLabel {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-contrast);
-    white-space: nowrap;
-    padding: 0 6px;
-    pointer-events: none;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-  }
+    .dapps-activity__toggle {
+      border: none;
+      background: transparent;
+      padding: 0;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--accent-link);
+    }
 
-  /* ---------- Meta row under bar ---------- */
+    .dapps-activity__toggle:hover {
+      color: var(--accent-link-hover);
+      text-decoration: underline;
+    }
 
-  .dapps-activity__meta {
-    margin-top: 6px;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    font-size: 12px;
-    color: var(--text-main);
-  }
+    /* ---------- Details panel (dashboards style) ---------- */
 
-  .dapps-activity__stats {
-    display: flex;
-    gap: 10px;
-    white-space: nowrap;
-  }
+    .dapps-activity__details {
+      width: calc(100% - 26px);
+      overflow: hidden;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: var(--background-secondary);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 6px 18px var(--shadow);
+    }
 
-  .dapps-activity__muted {
-    margin-left: 6px;
-    color: var(--text-secondary);
-    font-weight: 500;
-  }
+    .dapps-activity__detailsGrid {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr); /* slightly smaller left */
+      gap: 12px;
+    }
 
-  /* +details / Hide details */
-  .dapps-activity__toggle {
-    border: none;
-    background: transparent;
-    padding: 0;
-    font-size: 12px;
-    cursor: pointer;
-    color: var(--accent-link);
-  }
+    .dapps-activity__catName,
+    .dapps-activity__type {
+      min-width: 0;
+    }
 
-  .dapps-activity__toggle:hover {
-    color: var(--accent-link-hover);
-    text-decoration: underline;
-  }
+    /* Left category list */
+    .dapps-activity__catList {
+      border-right: 1px solid rgba(0, 0, 0, 0.06);
+      padding-right: 10px;
+    }
+    body.dark .dapps-activity__catList {
+      border-right: 1px solid rgba(255, 255, 255, 0.10);
+    }
 
-  /* ---------- Expanded details panel ---------- */
+    .dapps-activity__catItem {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 120ms ease;
+      font-size: 12px;
+      color: var(--text-main);
+    }
 
-  .dapps-activity__details {
-    margin-top: 10px;
-    padding: 10px 12px;
-    border-radius: 14px;
-    background: var(--background-secondary);
-    border: 1px solid var(--card-border);
-    box-shadow: 0 4px 10px var(--shadow);
-  }
+    .dapps-activity__catItem:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+    body.dark .dapps-activity__catItem:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
 
-  /* ---------- Category block ---------- */
+    .dapps-activity__catItemActive {
+      background: rgba(0, 128, 142, 0.12); /* based on accent-link vibes */
+    }
+    body.dark .dapps-activity__catItemActive {
+      background: rgba(102, 208, 218, 0.12);
+    }
 
-  .dapps-activity__cat {
-    margin-bottom: 12px;
-  }
+    .dapps-activity__catName {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
 
-  .dapps-activity__cat:last-child {
-    margin-bottom: 0;
-  }
+    .dapps-activity__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
 
-  .dapps-activity__catHeader {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 6px;
-    font-size: 12px;
-    color: var(--text-main);
-  }
+    .dapps-activity__catPct {
+      color: var(--text-secondary);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
 
-  .dapps-activity__catLeft {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-  }
+    /* Right side: types for selected category */
+    .dapps-activity__typesHeader {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--text-main);
+    }
+    body.dark .dapps-activity__typesHeader {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    }
 
-  .dapps-activity__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    flex: 0 0 auto;
-  }
+    .dapps-activity__typesTotal {
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
 
-  .dapps-activity__catTotal {
-    color: var(--text-secondary);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
+    .dapps-activity__grid {
+      max-height: 220px;
+      overflow: auto;
+      padding-right: 4px;
+      display: grid;
+      gap: 2px;
+    }
 
-  /* ---------- Types list ---------- */
+    .dapps-activity__row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      font-size: 12px;
+      line-height: 1.35;
+      color: var(--text-main);
+      padding: 2px 6px;
+      border-radius: 10px;
+      opacity: 0.94;
+    }
 
-  .dapps-activity__grid {
-    display: grid;
-    gap: 2px;
-  }
+    .dapps-activity__row:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+    body.dark .dapps-activity__row:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
 
-  .dapps-activity__row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 10px;
-    font-size: 12px;
-    line-height: 1.45;
-    color: var(--text-main);
-  }
+    .dapps-activity__type {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-  .dapps-activity__type {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+    .dapps-activity__count {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
 
-  .dapps-activity__count {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
+    .dapps-activity__empty {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
 
-  .dapps-activity__empty {
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
+    /* ---------- Tooltip ---------- */
+    .dapps-activity-tooltip {
+      position: fixed;
+      z-index: 9999;
+      max-width: 50vw;
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 16px;
+      background: var(--card-bg);
+      color: var(--card-text);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 10px 30px var(--shadow);
+      pointer-events: none;
+    }
 
-  /* ---------- Tooltip ---------- */
-
-  .dapps-activity-tooltip {
-    position: fixed;
-    z-index: 9999;
-    max-width: 50vw;
-    padding: 8px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    line-height: 16px;
-    background: var(--card-bg);
-    color: var(--card-text);
-    border: 1px solid var(--card-border);
-    box-shadow: 0 10px 30px var(--shadow);
-    pointer-events: none;
-  }
-
-  .dapps-activity-tooltip__line {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    .dapps-activity-tooltip__line {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 }

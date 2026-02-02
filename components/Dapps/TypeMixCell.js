@@ -3,19 +3,6 @@ import { useMemo, useState, useRef, useLayoutEffect, useEffect } from 'react'
 import { shortNiceNumber } from '../../utils/format'
 import { buildTxGroupsModel } from '../../utils/txTypeBuckets'
 
-/**
- * This component renders:
- * - A stacked horizontal bar (category mix) with hover tooltip.
- * - A meta line: Total / Success (xx.x%)
- * - Expandable in-row details (ALL categories + tx types).
- *
- * Notes:
- * - Tooltips adapt to light/dark via prefers-color-scheme.
- * - When expanded, details are shown in an in-row "panel".
- *   To prevent other columns in the same row from jumping down,
- *   make sure table cells use vertical-align: top (see CSS below).
- */
-
 // Fixed order for summary segments (same order for every row)
 const GROUP_ORDER = [
   { key: 'payments', label: 'Payments', color: '#2D7FF9' },
@@ -24,11 +11,11 @@ const GROUP_ORDER = [
   { key: 'amm', label: 'AMM', color: '#10B981' },
   { key: 'dex', label: 'DEX', color: '#8B5CF6' },
   { key: 'account', label: 'Account', color: '#EF4444' },
-  { key: 'mptoken', label: 'MPT', color: '#06B6D4' }, // UI rename
+  { key: 'mptoken', label: 'MPT', color: '#06B6D4' },
   { key: 'other', label: 'Other', color: '#9CA3AF' }
 ]
 
-// Observe element width (to decide if we can render label inside segment)
+// Observe element width to decide if label can be rendered inside a segment
 const useWidth = () => {
   const ref = useRef(null)
   const [w, setW] = useState(0)
@@ -43,30 +30,10 @@ const useWidth = () => {
   return { ref, w }
 }
 
-// Detect light/dark based on OS preference
-const usePrefersDark = () => {
-  const [isDark, setIsDark] = useState(false)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const mql = window.matchMedia('(prefers-color-scheme: dark)')
-    const onChange = () => setIsDark(!!mql.matches)
-    onChange()
-    if (mql.addEventListener) mql.addEventListener('change', onChange)
-    else mql.addListener(onChange)
-    return () => {
-      if (mql.removeEventListener) mql.removeEventListener('change', onChange)
-      else mql.removeListener(onChange)
-    }
-  }, [])
-
-  return isDark
-}
-
 const clampPctForDisplay = (count, total) => {
   if (!total || total <= 0) return 0
   const pct = (count / total) * 100
-  // Avoid showing 100.0% when count < total but rounding would produce 100.0
+  // Avoid showing 100.0% when count < total but rounding would show 100.0
   if (count < total && pct >= 99.95) return 99.9
   // Avoid showing 0.0% when count > 0 but extremely small
   if (count > 0 && pct > 0 && pct < 0.05) return 0.1
@@ -108,38 +75,14 @@ const clampToViewport = (x, y, pad = 10) => {
   return { x: xx, y: yy }
 }
 
-const Tooltip = ({ x, y, lines, isDark }) => {
+const Tooltip = ({ x, y, lines }) => {
   if (!lines?.length) return null
   const pos = clampToViewport(x + 12, y + 12)
 
-  const bg = isDark ? 'rgba(20, 20, 22, 0.96)' : 'rgba(255, 255, 255, 0.98)'
-  const fg = isDark ? '#fff' : '#111'
-  const bd = isDark ? '1px solid rgba(255,255,255,0.10)' : '1px solid rgba(0,0,0,0.08)'
-  const sh = isDark ? '0 10px 30px rgba(0,0,0,0.55)' : '0 10px 30px rgba(0,0,0,0.18)'
-
   return (
-    <div
-      style={{
-        position: 'fixed',
-        left: pos.x,
-        top: pos.y,
-        width: 'max-content', // as wide as content
-        maxWidth: '50vw', // cap to 50% viewport width
-        background: bg,
-        color: fg,
-        border: bd,
-        padding: '8px 10px',
-        borderRadius: 12,
-        fontSize: 12,
-        lineHeight: '16px',
-        zIndex: 9999,
-        pointerEvents: 'none',
-        boxShadow: sh,
-        overflow: 'hidden'
-      }}
-    >
+    <div className="dapps-activity-tooltip" style={{ left: pos.x, top: pos.y }}>
       {lines.map((l, i) => (
-        <div key={i} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <div key={i} className="dapps-activity-tooltip__line">
           {l}
         </div>
       ))}
@@ -154,33 +97,52 @@ export default function TypeMixCell({
   isOpen = false,
   onToggle
 }) {
-  // Hooks first
+  // ✅ ALL HOOKS MUST BE CALLED UNCONDITIONALLY (BEFORE ANY RETURN)
   const { ref, w } = useWidth()
-  const prefersDark = usePrefersDark()
   const [tip, setTip] = useState(null) // { x, y, lines }
+  const [activeKey, setActiveKey] = useState(null)
 
   const model = useMemo(() => buildTxGroupsModel(transactionTypes), [transactionTypes])
 
   const segments = useMemo(() => {
+    const groups = Array.isArray(model?.groups) ? model.groups : []
     const map = {}
-    for (const g of model?.groups || []) map[g.key] = g
+    for (const g of groups) map[g.key] = g
 
     const total = Number(model?.total || 0)
 
     return GROUP_ORDER.map((cfg) => {
       const g = map[cfg.key]
       const count = Number(g?.total || 0)
-      const pctGeom = total > 0 ? (count / total) * 100 : 0 // geometry only
-      return {
-        ...cfg,
-        count,
-        pctGeom,
-        types: Array.isArray(g?.types) ? g.types : []
-      }
+      const pctGeom = total > 0 ? (count / total) * 100 : 0
+      const pctAll = clampPctForDisplay(count, total)
+      const types = Array.isArray(g?.types) ? g.types : []
+      return { ...cfg, count, pctGeom, pctAll, types }
     }).filter((x) => x.count > 0)
   }, [model])
 
-  // Safe conditional render now
+  const defaultKey = useMemo(() => {
+    if (!segments.length) return null
+    const top = [...segments].sort((a, b) => b.count - a.count)[0]
+    return top?.key || null
+  }, [segments])
+
+  // Keep activeKey valid when data changes (period switch, etc.)
+  useEffect(() => {
+    if (!segments.length) return
+    setActiveKey((prev) => {
+      const prevOk = prev && segments.some((s) => s.key === prev)
+      return prevOk ? prev : defaultKey
+    })
+  }, [segments, defaultKey])
+
+  const active = useMemo(() => {
+    if (!segments.length) return null
+    const key = activeKey || defaultKey
+    return segments.find((s) => s.key === key) || segments[0]
+  }, [segments, activeKey, defaultKey])
+
+  // ✅ NOW it's safe to have early returns
   if (!model?.total) {
     return <span style={{ opacity: 0.4 }}>—</span>
   }
@@ -188,40 +150,30 @@ export default function TypeMixCell({
   const total = Number(totalTransactions || model.total || 0)
   const success = Number(successTransactions || 0)
   const successPct = total > 0 ? (success / total) * 100 : 0
-
-  // Don't show "+details" if nothing to show (no types at all)
   const hasAnyTypes = segments.some((s) => (Array.isArray(s.types) ? s.types.length : 0) > 0)
 
   let left = 0
 
   return (
     <div className="dapps-activity">
+      {/* Stacked bar */}
       <div ref={ref} className="dapps-activity__bar" onMouseLeave={() => setTip(null)}>
         {segments.map((s) => {
           const segLeft = left
           left += s.pctGeom
 
-          // Show counts on the bar
           const labelText = `${s.label} ${shortNiceNumber(s.count, 0)}`
           const showText = canFit(w, s.pctGeom, labelText)
 
           const onMove = (e) => {
-            setTip({
-              x: e.clientX,
-              y: e.clientY,
-              lines: buildTooltipLines(s, model.total)
-            })
+            setTip({ x: e.clientX, y: e.clientY, lines: buildTooltipLines(s, model.total) })
           }
 
           return (
             <div
               key={s.key}
               className="dapps-activity__seg"
-              style={{
-                left: `${segLeft}%`,
-                width: `${s.pctGeom}%`,
-                background: s.color
-              }}
+              style={{ left: `${segLeft}%`, width: `${s.pctGeom}%`, background: s.color }}
               onMouseMove={onMove}
               onMouseEnter={onMove}
             >
@@ -231,8 +183,10 @@ export default function TypeMixCell({
         })}
       </div>
 
-      {tip ? <Tooltip x={tip.x} y={tip.y} lines={tip.lines} isDark={prefersDark} /> : null}
+      {/* Tooltip */}
+      {tip ? <Tooltip x={tip.x} y={tip.y} lines={tip.lines} /> : null}
 
+      {/* Meta */}
       <div className="dapps-activity__meta">
         <div className="dapps-activity__stats">
           <span>
@@ -253,27 +207,50 @@ export default function TypeMixCell({
         )}
       </div>
 
-      {isOpen ? (
+      {/* Details (dashboard style) */}
+      {isOpen && hasAnyTypes ? (
         <div className="dapps-activity__details">
-          {segments.map((s) => {
-            const pctAll = clampPctForDisplay(s.count, model.total)
-            const types = Array.isArray(s.types) ? [...s.types] : []
-            types.sort((a, b) => (Number(b?.count) || 0) - (Number(a?.count) || 0))
+          <div className="dapps-activity__detailsGrid">
+            {/* Left: categories */}
+            <div className="dapps-activity__catList">
+              {[...segments]
+                .sort((a, b) => b.count - a.count)
+                .map((s) => {
+                  const isActive = active?.key === s.key
+                  return (
+                    <div
+                      key={s.key}
+                      className={`dapps-activity__catItem ${isActive ? 'dapps-activity__catItemActive' : ''}`}
+                      onClick={() => setActiveKey(s.key)}
+                    >
+                      <div className="dapps-activity__catName">
+                        <span className="dapps-activity__dot" style={{ background: s.color }} />
+                        <b style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.label}</b>
+                      </div>
+                      <div className="dapps-activity__catPct">{s.pctAll.toFixed(1)}%</div>
+                    </div>
+                  )
+                })}
+            </div>
 
-            return (
-              <div key={s.key} className="dapps-activity__cat">
-                <div className="dapps-activity__catHeader">
-                  <div className="dapps-activity__catLeft">
-                    <span className="dapps-activity__dot" style={{ background: s.color }} />
-                    <b>{s.label}</b>
-                    <span className="dapps-activity__muted">({pctAll.toFixed(1)}%)</span>
-                  </div>
-                  <div className="dapps-activity__catTotal">{shortNiceNumber(s.count, 0)}</div>
+            {/* Right: types for selected category */}
+            <div>
+              <div className="dapps-activity__typesHeader">
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, minWidth: 0 }}>
+                  <span className="dapps-activity__dot" style={{ background: active?.color }} />
+                  <b style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {active?.label || ''}
+                  </b>
+                  <span className="dapps-activity__muted">({active?.pctAll?.toFixed(1)}%)</span>
                 </div>
+                <div className="dapps-activity__typesTotal">{shortNiceNumber(active?.count || 0, 0)}</div>
+              </div>
 
-                {types.length ? (
-                  <div className="dapps-activity__grid">
-                    {types.map((t) => (
+              {Array.isArray(active?.types) && active.types.length ? (
+                <div className="dapps-activity__grid">
+                  {[...active.types]
+                    .sort((a, b) => (Number(b?.count) || 0) - (Number(a?.count) || 0))
+                    .map((t) => (
                       <div key={t.type} className="dapps-activity__row">
                         <div className="dapps-activity__type" title={t.type}>
                           {t.type}
@@ -281,13 +258,12 @@ export default function TypeMixCell({
                         <div className="dapps-activity__count">{shortNiceNumber(Number(t.count) || 0, 0)}</div>
                       </div>
                     ))}
-                  </div>
-                ) : (
-                  <div className="dapps-activity__empty">No transaction types.</div>
-                )}
-              </div>
-            )
-          })}
+                </div>
+              ) : (
+                <div className="dapps-activity__empty">No transaction types.</div>
+              )}
+            </div>
+          </div>
         </div>
       ) : null}
     </div>
