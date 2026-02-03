@@ -430,6 +430,7 @@ export default function Header({
             {!(xahauNetwork && devNet) && <Link href="/nodes">{t('menu.network.nodes')}</Link>}
             {xahauNetwork && <Link href="/unl-report">{t('menu.network.unl-report')}</Link>}
             <Link href="/genesis">{t('menu.network.genesis')}</Link>
+            <Link href="/dapps">Dapps</Link>
           </MenuDropDown>
 
           <MenuDropDown

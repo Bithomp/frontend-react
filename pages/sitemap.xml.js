@@ -1,6 +1,7 @@
 import { network, server, xahauNetwork } from '../utils'
 
 const pages = [
+  { loc: 'dapps', changefreq: 'daily', priority: '1' },
   { loc: 'explorer/', changefreq: 'monthly', priority: '1' },
   { loc: '', changefreq: 'always', priority: '1' },
   { loc: 'faucet', changefreq: 'monthly', priority: '1' },
@@ -112,6 +113,7 @@ if (network === 'mainnet') {
 function generateSiteMap(posts) {
   const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr']
   const noTranslatedPages = [
+    'dapps',
     'the-chain-of-blocks-summit',
     'admin',
     'advertise',
@@ -156,8 +158,6 @@ function generateSiteMap(posts) {
     'learn/nft-explorer',
     'learn/paystrings'
   ]
-  const oldPages = ['explorer/']
-  const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
 
   return `<?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
@@ -165,15 +165,11 @@ function generateSiteMap(posts) {
        .map(({ loc, changefreq, priority }) => {
          return `
           <url>
-            ${
-              !oldPages.includes(loc)
-                ? `<loc>${`${server}/en${loc ? '/' + loc : ''}`}</loc>`
-                : `<loc>${`${server}/${loc}`}</loc>`
-            }
+            <loc>${`${server}/en${loc ? '/' + loc : ''}`}</loc>
             <changefreq>${changefreq}</changefreq>
             <priority>${priority}</priority>
             ${
-              !pagesWithoutTranslation.includes(loc)
+              !noTranslatedPages.includes(loc)
                 ? locales
                     .map((locale) => {
                       return `<xhtml:link rel="alternate" hreflang="${locale}" href="${`${server}${

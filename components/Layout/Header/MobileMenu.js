@@ -367,6 +367,9 @@ export default function MobileMenu({
           <Link href="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.network.genesis')}
           </Link>
+          <Link href="/dapps" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            Dapps
+          </Link>
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">
