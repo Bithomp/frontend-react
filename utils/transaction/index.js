@@ -366,7 +366,7 @@ export const dappBySourceTag = (sourceTag) => {
     88807279: 'XRPPhone',
     88888888: 'Mintable',
     88990334: 'VWBL',
-    89898989: 'zkLend', //Axelar Bridge
+    89898989: 'Axelar Bridge',
     99819001: 'HubSecure',
     99994200: 'Cryptum',
     99999420: 'Cryptum',
