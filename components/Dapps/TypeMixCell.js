@@ -101,6 +101,17 @@ const Tooltip = ({ x, y, lines }) => {
   )
 }
 
+const formatErrorCode = (code) => {
+  if (!code) return ''
+  return code.startsWith('tec') ? code.slice(3) : code
+}
+
+const getSuccessClass = (pct) => {
+  if (pct < 50) return 'success-low'
+  if (pct < 90) return 'success-medium'
+  return 'success-high'
+}
+
 export default function TypeMixCell({
   transactionTypes,
   totalTransactions = 0,
@@ -119,6 +130,7 @@ export default function TypeMixCell({
   const successPct = total > 0 ? (success / total) * 100 : 0
   const errorsCount = Math.max(0, total - success)
   const errorsPct = total > 0 ? (errorsCount / total) * 100 : 0
+  const successClass = getSuccessClass(successPct)
 
   const errorsSorted = useMemo(() => {
     const src = errors && typeof errors === 'object' ? errors : {}
@@ -239,7 +251,7 @@ export default function TypeMixCell({
           </span>
           <span>
             Success: <b>{shortNiceNumber(success, 0)}</b>
-            <span className="dapps-activity__muted">({successPct.toFixed(1)}%)</span>
+            <span className={`dapps-activity__muted ${successClass}`}>({successPct.toFixed(1)}%)</span>
           </span>
         </div>
 
@@ -305,7 +317,7 @@ export default function TypeMixCell({
                     <div className="dapps-activity__grid">
                       {errorsSorted.entries.map(([code, count]) => (
                         <div key={code} className="dapps-activity__row">
-                          <div className="dapps-activity__type">{code}</div>
+                          <div className="dapps-activity__type">{formatErrorCode(code)}</div>
                           <div className="dapps-activity__count">{count}</div>
                         </div>
                       ))}

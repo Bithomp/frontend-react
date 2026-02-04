@@ -266,5 +266,19 @@
       flex: 0 0 auto;
       opacity: 0.9;
     }
+
+    .success-high {
+      color: var(--text-secondary);
+    }
+
+    .success-medium {
+      color: #f59e0b; /* orange */
+      font-weight: 600;
+    }
+
+    .success-low {
+      color: #ef4444; /* red */
+      font-weight: 700;
+    }
   }
 }
