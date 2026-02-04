@@ -4,6 +4,7 @@ import { buildTxGroupsModel } from '../../utils/txTypeBuckets'
 
 // Fixed order for summary segments (same order for every row)
 const GROUP_ORDER = [
+  { key: 'swaps', label: 'Swaps', color: '#a259f7' },
   { key: 'payments', label: 'Payments', color: '#2D7FF9' },
   { key: 'trustlines', label: 'Trustlines', color: '#7A7A7A' },
   { key: 'nft', label: 'NFT', color: '#F59E0B' },

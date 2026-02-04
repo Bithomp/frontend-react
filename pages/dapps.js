@@ -301,7 +301,16 @@ export default function Dapps({
                         <td className="right">{shortNiceNumber(d?.uniqueInteractedAddresses, 0)}</td>
                         <td className="right">
                           <TypeMixCell
-                            transactionTypes={d?.transactionTypes}
+                            transactionTypes={{
+                              ...d?.transactionTypes,
+                              // swaps: d.swaps is the count of swaps, subtract from payments
+                              ...(typeof d?.swaps === 'number' && d?.transactionTypes?.Payment
+                                ? {
+                                    'Payment': d?.transactionTypes?.Payment - d.swaps,
+                                    'Payment:swap': d.swaps
+                                  }
+                                : {}),
+                            }}
                             totalTransactions={d?.totalTransactions}
                             successTransactions={d?.successTransactions}
                             errors={d?.transactionResults}

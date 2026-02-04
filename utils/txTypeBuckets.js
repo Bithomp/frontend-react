@@ -1,7 +1,9 @@
 // utils/txTypeBuckets.js
 
 // Map XRPL tx types to base buckets
+// Swaps are a subset of Payment transactions, identified by type 'Payment' and a custom marker 'swap' in the key (e.g. 'Payment:swap')
 const BUCKET_RULES = {
+  swaps: ['Payment:swap'],
   payments: ['Payment'],
   trustlines: ['TrustSet'],
   dex: ['OfferCreate', 'OfferCancel'],
@@ -23,6 +25,8 @@ const BUCKET_RULES = {
 const startsWithAny = (value, prefixes) => prefixes.some((p) => value.startsWith(p))
 
 const pickBaseBucket = (type) => {
+  // If type is Payment:swap, it's a swap
+  if (type === 'Payment:swap') return 'swaps'
   for (const [bucket, list] of Object.entries(BUCKET_RULES)) {
     if (list.includes(type)) return bucket
   }
@@ -38,8 +42,9 @@ const pickBaseBucket = (type) => {
 }
 
 // UI groups (summary categories)
-// Requirement: "Payments" includes payments + checks + escrow
+// Now: "Swaps" is a subset of Payment transactions, shown as a separate group before Payments
 export const GROUPS = [
+  { key: 'swaps', label: 'Swaps', baseBuckets: ['swaps'] },
   { key: 'payments', label: 'Payments', baseBuckets: ['payments', 'checks', 'escrow'] },
   { key: 'trustlines', label: 'Trustlines', baseBuckets: ['trustlines'] },
   { key: 'nft', label: 'NFT', baseBuckets: ['nft'] },
