@@ -259,5 +259,12 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
+    .dapps-activity__errorIcon {
+      font-size: 14px;
+      line-height: 1;
+      flex: 0 0 auto;
+      opacity: 0.9;
+    }
   }
 }

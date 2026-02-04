@@ -151,7 +151,7 @@ export default function TypeMixCell({
       built.push({
         key: 'errors',
         label: 'Errors',
-        color: '#6B7280',
+        color: '#DC2626',
         count: errorsCount,
         pctGeom: 0,
         pctAll: clampPctForDisplay(errorsCount, total),
@@ -267,7 +267,13 @@ export default function TypeMixCell({
                     onClick={() => setActiveKey(s.key)}
                   >
                     <div className="dapps-activity__catName">
-                      <span className="dapps-activity__dot" style={{ background: s.color }} />
+                      {s.key === 'errors' ? (
+                        <span className="dapps-activity__errorIcon" title="Transaction errors">
+                          ⚠️
+                        </span>
+                      ) : (
+                        <span className="dapps-activity__dot" style={{ background: s.color }} />
+                      )}
                       <b style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.label}</b>
                     </div>
                     <div className="dapps-activity__catPct">{s.pctAll.toFixed(1)}%</div>
