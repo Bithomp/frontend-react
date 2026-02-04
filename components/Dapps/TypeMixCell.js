@@ -299,15 +299,7 @@ export default function TypeMixCell({
               {activeKey === 'errors' ? (
                 <>
                   <div className="dapps-activity__typesHeader">
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                      Errors
-                      <span
-                        style={{ opacity: 0.6, fontSize: 12 }}
-                        title="Transaction result codes (excluding tesSUCCESS)"
-                      >
-                        ⓘ
-                      </span>
-                    </div>
+                    Errors
                     <div className="dapps-activity__typesTotal">
                       {errorsSorted.totalErrors ? `${errorsSorted.totalErrors} total` : '—'}
                     </div>
