@@ -100,6 +100,7 @@ export default function Dapps({
   orderQuery,
   periodQuery,
   selectedCurrency: selectedCurrencyApp,
+  setSelectedCurrency,
   fiatRate: fiatRateApp,
   selectedCurrencyServer
 }) {
@@ -224,8 +225,10 @@ export default function Dapps({
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
         csvHeaders={csvHeaders}
+        selectedCurrency={selectedCurrency}
+        setSelectedCurrency={setSelectedCurrency}
       >
-        <>{true == false && <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />}</>
+        <>{true === false && <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />}</>
         {loading ? (
           <table className={windowWidth && windowWidth <= 860 ? 'table-mobile' : 'table-large expand'}>
             <tbody>
