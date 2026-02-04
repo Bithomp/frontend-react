@@ -105,24 +105,37 @@ export default function TypeMixCell({
   transactionTypes,
   totalTransactions = 0,
   successTransactions = 0,
+  errors,
   isOpen = false,
   onToggle
 }) {
-  // ✅ ALL HOOKS MUST BE CALLED UNCONDITIONALLY (BEFORE ANY RETURN)
   const { ref, w } = useWidth()
   const [tip, setTip] = useState(null) // { x, y, lines }
   const [activeKey, setActiveKey] = useState(null)
 
   const model = useMemo(() => buildTxGroupsModel(transactionTypes), [transactionTypes])
+  const total = Number(totalTransactions || model.total || 0)
+  const success = Number(successTransactions || 0)
+  const successPct = total > 0 ? (success / total) * 100 : 0
+  const errorsCount = Math.max(0, total - success)
+  const errorsPct = total > 0 ? (errorsCount / total) * 100 : 0
+
+  const errorsSorted = useMemo(() => {
+    const src = errors && typeof errors === 'object' ? errors : {}
+    const entries = Object.entries(src)
+      .filter(([code, count]) => code && Number(count) > 0 && code !== 'tesSUCCESS')
+      .map(([code, count]) => [code, Number(count)])
+      .sort((a, b) => b[1] - a[1])
+
+    const totalErrors = entries.reduce((sum, [, c]) => sum + c, 0)
+    return { entries, totalErrors }
+  }, [errors])
 
   const segments = useMemo(() => {
     const groups = Array.isArray(model?.groups) ? model.groups : []
     const map = {}
     for (const g of groups) map[g.key] = g
 
-    const total = Number(model?.total || 0)
-
-    // Build in stable color/label order...
     const built = GROUP_ORDER.map((cfg) => {
       const g = map[cfg.key]
       const count = Number(g?.total || 0)
@@ -132,15 +145,25 @@ export default function TypeMixCell({
       return { ...cfg, count, pctGeom, pctAll, types }
     }).filter((x) => x.count > 0)
 
-    // ...then sort by size (largest first) for the bar (and default active)
     built.sort((a, b) => b.count - a.count)
 
+    if (errorsCount > 0) {
+      built.push({
+        key: 'errors',
+        label: 'Errors',
+        color: '#6B7280',
+        count: errorsCount,
+        pctGeom: 0,
+        pctAll: clampPctForDisplay(errorsCount, total),
+        types: []
+      })
+    }
+
     return built
-  }, [model])
+  }, [model, total, errorsCount])
 
   const defaultKey = useMemo(() => (segments[0]?.key ? segments[0].key : null), [segments])
 
-  // Keep activeKey valid when data changes (period switch, etc.)
   useEffect(() => {
     if (!segments.length) return
     setActiveKey((prev) => {
@@ -155,15 +178,22 @@ export default function TypeMixCell({
     return segments.find((s) => s.key === key) || segments[0]
   }, [segments, activeKey, defaultKey])
 
-  // ✅ NOW it's safe to have early returns
+  const leftList = useMemo(() => {
+    const base = [...segments]
+    base.sort((a, b) => {
+      if (a.key === 'errors') return 1
+      if (b.key === 'errors') return -1
+      return b.count - a.count
+    })
+    return base
+  }, [segments])
+
   if (!model?.total) {
     return <span style={{ opacity: 0.4 }}>—</span>
   }
 
-  const total = Number(totalTransactions || model.total || 0)
-  const success = Number(successTransactions || 0)
-  const successPct = total > 0 ? (success / total) * 100 : 0
-  const hasAnyTypes = segments.some((s) => (Array.isArray(s.types) ? s.types.length : 0) > 0)
+  const hasAnyDetails =
+    segments.some((s) => s.key !== 'errors' && (Array.isArray(s.types) ? s.types.length : 0) > 0) || errorsCount > 0
 
   let left = 0
 
@@ -171,29 +201,31 @@ export default function TypeMixCell({
     <div className="dapps-activity">
       {/* Stacked bar */}
       <div ref={ref} className="dapps-activity__bar" onMouseLeave={() => setTip(null)}>
-        {segments.map((s) => {
-          const segLeft = left
-          left += s.pctGeom
+        {segments
+          .filter((s) => s.key !== 'errors')
+          .map((s) => {
+            const segLeft = left
+            left += s.pctGeom
 
-          const labelText = `${s.label} ${shortNiceNumber(s.count, 0)}`
-          const showText = canFit(w, s.pctGeom, labelText)
+            const labelText = `${s.label} ${shortNiceNumber(s.count, 0)}`
+            const showText = canFit(w, s.pctGeom, labelText)
 
-          const onMove = (e) => {
-            setTip({ x: e.clientX, y: e.clientY, lines: buildTooltipLines(s, model.total) })
-          }
+            const onMove = (e) => {
+              setTip({ x: e.clientX, y: e.clientY, lines: buildTooltipLines(s, model.total) })
+            }
 
-          return (
-            <div
-              key={s.key}
-              className="dapps-activity__seg"
-              style={{ left: `${segLeft}%`, width: `${s.pctGeom}%`, background: s.color }}
-              onMouseMove={onMove}
-              onMouseEnter={onMove}
-            >
-              {showText ? <div className="dapps-activity__segLabel">{labelText}</div> : null}
-            </div>
-          )
-        })}
+            return (
+              <div
+                key={s.key}
+                className="dapps-activity__seg"
+                style={{ left: `${segLeft}%`, width: `${s.pctGeom}%`, background: s.color }}
+                onMouseMove={onMove}
+                onMouseEnter={onMove}
+              >
+                {showText ? <div className="dapps-activity__segLabel">{labelText}</div> : null}
+              </div>
+            )
+          })}
       </div>
 
       {/* Tooltip */}
@@ -211,7 +243,7 @@ export default function TypeMixCell({
           </span>
         </div>
 
-        {hasAnyTypes ? (
+        {hasAnyDetails ? (
           <button type="button" className="dapps-activity__toggle" onClick={() => onToggle?.()}>
             {isOpen ? 'Hide details' : '+ details'}
           </button>
@@ -221,59 +253,85 @@ export default function TypeMixCell({
       </div>
 
       {/* Details (dashboard style) */}
-      {isOpen && hasAnyTypes ? (
+      {isOpen && hasAnyDetails ? (
         <div className="dapps-activity__details">
           <div className="dapps-activity__detailsGrid">
             {/* Left: categories */}
             <div className="dapps-activity__catList">
-              {[...segments]
-                .sort((a, b) => b.count - a.count)
-                .map((s) => {
-                  const isActive = active?.key === s.key
-                  return (
-                    <div
-                      key={s.key}
-                      className={`dapps-activity__catItem ${isActive ? 'dapps-activity__catItemActive' : ''}`}
-                      onClick={() => setActiveKey(s.key)}
-                    >
-                      <div className="dapps-activity__catName">
-                        <span className="dapps-activity__dot" style={{ background: s.color }} />
-                        <b style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.label}</b>
-                      </div>
-                      <div className="dapps-activity__catPct">{s.pctAll.toFixed(1)}%</div>
+              {leftList.map((s) => {
+                const isActive = active?.key === s.key
+                return (
+                  <div
+                    key={s.key}
+                    className={`dapps-activity__catItem ${isActive ? 'dapps-activity__catItemActive' : ''}`}
+                    onClick={() => setActiveKey(s.key)}
+                  >
+                    <div className="dapps-activity__catName">
+                      <span className="dapps-activity__dot" style={{ background: s.color }} />
+                      <b style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.label}</b>
                     </div>
-                  )
-                })}
+                    <div className="dapps-activity__catPct">{s.pctAll.toFixed(1)}%</div>
+                  </div>
+                )
+              })}
             </div>
 
-            {/* Right: types for selected category */}
+            {/* Right side */}
             <div>
-              <div className="dapps-activity__typesHeader">
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, minWidth: 0 }}>
-                  <span className="dapps-activity__dot" style={{ background: active?.color }} />
-                  <b style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {active?.label || ''}
-                  </b>
-                  <span className="dapps-activity__muted">({active?.pctAll?.toFixed(1)}%)</span>
-                </div>
-                <div className="dapps-activity__typesTotal">{shortNiceNumber(active?.count || 0, 0)}</div>
-              </div>
+              {activeKey === 'errors' ? (
+                <>
+                  <div className="dapps-activity__typesHeader">
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      Errors
+                      <span
+                        style={{ opacity: 0.6, fontSize: 12 }}
+                        title="Transaction result codes (excluding tesSUCCESS)"
+                      >
+                        ⓘ
+                      </span>
+                    </div>
+                    <div className="dapps-activity__typesTotal">
+                      {errorsSorted.totalErrors ? `${errorsSorted.totalErrors} total` : '—'}
+                    </div>
+                  </div>
 
-              {Array.isArray(active?.types) && active.types.length ? (
-                <div className="dapps-activity__grid">
-                  {[...active.types]
-                    .sort((a, b) => (Number(b?.count) || 0) - (Number(a?.count) || 0))
-                    .map((t) => (
-                      <div key={t.type} className="dapps-activity__row">
-                        <div className="dapps-activity__type" title={t.type}>
-                          {t.type}
+                  {errorsSorted.entries?.length ? (
+                    <div className="dapps-activity__grid">
+                      {errorsSorted.entries.map(([code, count]) => (
+                        <div key={code} className="dapps-activity__row">
+                          <div className="dapps-activity__type">{code}</div>
+                          <div className="dapps-activity__count">{count}</div>
                         </div>
-                        <div className="dapps-activity__count">{shortNiceNumber(Number(t.count) || 0, 0)}</div>
-                      </div>
-                    ))}
-                </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="dapps-activity__empty">No errors data</div>
+                  )}
+                </>
               ) : (
-                <div className="dapps-activity__empty">No transaction types.</div>
+                <>
+                  <div className="dapps-activity__typesHeader">
+                    <div>{active?.label} types</div>
+                    <div className="dapps-activity__typesTotal">
+                      {errorsCount ? `${shortNiceNumber(errorsCount, 0)} total (${errorsPct.toFixed(1)}%)` : '—'}
+                    </div>
+                  </div>
+
+                  {active?.types?.length ? (
+                    <div className="dapps-activity__grid">
+                      {[...active.types]
+                        .sort((a, b) => (Number(b?.count) || 0) - (Number(a?.count) || 0))
+                        .map((t) => (
+                          <div key={t.type} className="dapps-activity__row">
+                            <div className="dapps-activity__type">{t.type}</div>
+                            <div className="dapps-activity__count">{shortNiceNumber(t.count, 0)}</div>
+                          </div>
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="dapps-activity__empty">No types</div>
+                  )}
+                </>
               )}
             </div>
           </div>

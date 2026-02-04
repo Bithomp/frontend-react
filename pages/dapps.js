@@ -304,6 +304,7 @@ export default function Dapps({
                             transactionTypes={d?.transactionTypes}
                             totalTransactions={d?.totalTransactions}
                             successTransactions={d?.successTransactions}
+                            errors={d?.transactionResults}
                             isOpen={isOpen}
                             onToggle={() => setExpandedRowKey(isOpen ? null : rowKey)}
                           />
