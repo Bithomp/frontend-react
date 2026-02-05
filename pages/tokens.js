@@ -160,7 +160,8 @@ export default function Tokens({
   openEmailLogin,
   currencyQuery,
   issuerQuery,
-  orderQuery
+  orderQuery,
+  signOutPro
 }) {
   const { t } = useTranslation()
   const isFirstRender = useRef(true)
