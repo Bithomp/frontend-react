@@ -15,6 +15,7 @@ import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow } from '../utils
 import { dappBySourceTag } from '../utils/transaction'
 import { DAPPS_META } from '../utils/dapps'
 import DappLogo from '../components/Dapps/DappLogo'
+import WalletsCell from '../components/Dapps/WalletsCell'
 import TypeMixCell from '../components/Dapps/TypeMixCell'
 import { dappsPageClass } from '../styles/pages/dapps.module.scss'
 import { HeaderTooltip } from '../components/UI/HeaderTooltip'
@@ -282,6 +283,7 @@ export default function Dapps({
                 <tr>
                   <th className="center">{t('table.index')}</th>
                   <th className="left pl-2.5">Dapp</th>
+                  <th className="center">Wallets</th>
                   <HeaderTooltip
                     label="PA"
                     tip={
@@ -346,11 +348,16 @@ export default function Dapps({
                         <td className="no-brake">
                           {(() => {
                             const logo = getDappLogo(d?.sourceTag)
-                            return logo ? (
-                              <DappLogo src={logo} />
-                            ) : null
+                            return logo ? <DappLogo src={logo} /> : null
                           })()}
                           {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
+                        </td>
+                        <td className="center">
+                          {(() => {
+                            const metaObj = DAPPS_META[0] || {}
+                            const entry = metaObj && metaObj[String(d?.sourceTag)]
+                            return entry && entry.wallets ? <WalletsCell wallets={entry.wallets} /> : null
+                          })()}
                         </td>
                         <td className="right">{shortNiceNumber(d?.uniqueSourceAddresses, 0)}</td>
                         <td className="right">{shortNiceNumber(d?.uniqueInteractedAddresses, 0)}</td>

@@ -18,7 +18,7 @@ export const DAPPS_META = [
     74920348: {
       name: 'First Ledger',
       url: 'firstledger.net',
-      wallets: ['firstledger', 'joey'],
+      wallets: ['joey'],
       x: 'first_ledger',
       logo: 'firstledger.png'
     },
@@ -49,7 +49,7 @@ export const DAPPS_META = [
     110100111: {
       name: 'Sologenic',
       url: 'sologenic.com',
-      wallets: ['sologenicdex', 'ledger', 'dcent', 'xaman', 'crossmark'],
+      wallets: ['ledger', 'dcent', 'xaman', 'crossmark'],
       x: 'realsologenic',
       discord: 'invite/UhUBwPKNdu',
       instagram: 'realsologenic',
@@ -59,7 +59,7 @@ export const DAPPS_META = [
     11782013: {
       name: 'Anodos',
       url: 'anodos.finance',
-      wallets: ['anodoswallet', 'xaman', 'walletconnect'],
+      wallets: ['xaman', 'walletconnect'],
       x: 'AnodosFinance',
       discord: 'invite/CVUkhxCHvZ',
       linkedin: 'company/anodosfinance',
@@ -68,7 +68,7 @@ export const DAPPS_META = [
     42697468: {
       name: 'Bithomp',
       url: 'bithomp.com',
-      wallets: ['xaman', 'ledger', 'crossmark', 'gemwallet', 'walletconnect', 'metamask', 'trezor'],
+      wallets: ['xaman', 'ledger', 'crossmark', 'gemwallet', 'walletconnect', 'metamask'],
       x: 'bithomp',
       discord: 'invite/ZahGJ29WEs',
       instagram: 'bithomp',
@@ -95,7 +95,7 @@ export const DAPPS_META = [
     13888813: {
       name: 'Zerpmon',
       url: 'zerpmon.world',
-      wallets: ['xaman', 'joel', 'walletconnect'],
+      wallets: ['xaman', 'joey', 'walletconnect'],
       x: 'zerpmon',
       linkedin: 'company/gen3labs',
       logo: 'zerpmon.png'
