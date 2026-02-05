@@ -126,7 +126,16 @@ export async function getServerSideProps(context) {
         url,
         headers: passHeaders(req)
       })
-      initialData = res?.data
+      if (res?.data) {
+        if (res.data?.error) {
+          initialErrorMessage = res.data.error
+        } else {
+          initialData = res.data
+        }
+      } else {
+        initialErrorMessage = 'Transactions not found'
+      }
+
       if (isAddressValid(id) && (!initialData?.transactions || initialData?.transactions?.length === 0)) {
         if (!initialData?.marker) {
           initialErrorMessage = 'No transactions found for the specified filters.'

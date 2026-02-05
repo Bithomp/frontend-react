@@ -70,7 +70,15 @@ export async function getServerSideProps(context) {
     }).catch((error) => {
       initialErrorMessage = error.message
     })
-    initialData = res?.data
+    if (res?.data) {
+      if (res.data?.error) {
+        initialErrorMessage = res.data.error
+      } else {
+        initialData = res.data
+      }
+    } else {
+      initialErrorMessage = 'Dapps info not found'
+    }
   } catch (error) {
     console.error(error)
   }
@@ -306,10 +314,10 @@ export default function Dapps({
                               // swaps: d.swaps is the count of swaps, subtract from payments
                               ...(typeof d?.swaps === 'number' && d?.transactionTypes?.Payment
                                 ? {
-                                    'Payment': d?.transactionTypes?.Payment - d.swaps,
+                                    Payment: d?.transactionTypes?.Payment - d.swaps,
                                     'Payment:swap': d.swaps
                                   }
-                                : {}),
+                                : {})
                             }}
                             totalTransactions={d?.totalTransactions}
                             successTransactions={d?.successTransactions}

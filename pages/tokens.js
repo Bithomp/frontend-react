@@ -107,7 +107,15 @@ export async function getServerSideProps(context) {
     }).catch((error) => {
       initialErrorMessage = error.message
     })
-    initialData = res?.data
+    if (res?.data) {
+      if (res.data?.error) {
+        initialErrorMessage = res.data.error
+      } else {
+        initialData = res.data
+      }
+    } else {
+      initialErrorMessage = 'Tokens not found'
+    }
   } catch (e) {
     console.error(e)
   }
