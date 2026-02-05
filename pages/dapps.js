@@ -102,6 +102,17 @@ const periodOptions = [
   { value: 'month', label: 'Month' }
 ]
 
+// Build success-by-type map from transactionTypesResults
+const getSuccessByType = (transactionTypesResults) => {
+  const res = {}
+  const src = transactionTypesResults && typeof transactionTypesResults === 'object' ? transactionTypesResults : {}
+  for (const [txType, codes] of Object.entries(src)) {
+    const ok = Number(codes?.tesSUCCESS || 0)
+    if (ok > 0) res[txType] = ok
+  }
+  return res
+}
+
 export default function Dapps({
   initialData,
   initialErrorMessage,
@@ -301,6 +312,22 @@ export default function Dapps({
                   data.map((d, idx) => {
                     const rowKey = d?.sourceTag ?? idx
                     const isOpen = expandedRowKey === rowKey
+
+                    const successByType = getSuccessByType(d?.transactionTypesResults)
+
+                    // Swaps are always successful and included in Payment.tesSUCCESS
+                    if (typeof d?.swaps === 'number' && d.swaps > 0) {
+                      const swaps = Number(d.swaps)
+                      const payOk = Number(successByType.Payment || 0)
+
+                      // Ensure we don't go negative if data mismatch
+                      const swapsOk = Math.min(swaps, payOk)
+                      if (swapsOk > 0) {
+                        successByType.Payment = Math.max(0, payOk - swapsOk)
+                        successByType['Payment:swap'] = swapsOk
+                      }
+                    }
+
                     return (
                       <tr key={d?.sourceTag ?? idx}>
                         <td className="center">{idx + 1}</td>
@@ -309,19 +336,12 @@ export default function Dapps({
                         <td className="right">{shortNiceNumber(d?.uniqueInteractedAddresses, 0)}</td>
                         <td className="right">
                           <TypeMixCell
-                            transactionTypes={{
-                              ...d?.transactionTypes,
-                              // swaps: d.swaps is the count of swaps, subtract from payments
-                              ...(typeof d?.swaps === 'number' && d?.transactionTypes?.Payment
-                                ? {
-                                    Payment: d?.transactionTypes?.Payment - d.swaps,
-                                    'Payment:swap': d.swaps
-                                  }
-                                : {})
-                            }}
+                            // IMPORTANT: now pass success counts, not totals
+                            successByType={successByType}
                             totalTransactions={d?.totalTransactions}
                             successTransactions={d?.successTransactions}
-                            errors={d?.transactionResults}
+                            // detailed results by tx type (for failed drilldown)
+                            transactionTypesResults={d?.transactionTypesResults}
                             isOpen={isOpen}
                             onToggle={() => setExpandedRowKey(isOpen ? null : rowKey)}
                           />
