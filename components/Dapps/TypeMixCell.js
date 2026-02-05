@@ -3,18 +3,18 @@ import { shortNiceNumber } from '../../utils/format'
 
 // Fixed order for summary segments
 const GROUP_ORDER = [
-  { key: 'swaps', label: 'Swaps', color: '#a259f7' },
-  { key: 'payments', label: 'Payments', color: '#2D7FF9' },
-  { key: 'trustlines', label: 'Trustlines', color: '#14b8a6' },
+  { key: 'swaps', label: 'Swaps', color: '#A259F7' },
+  { key: 'payments', label: 'Payments', color: '#3B82F6' },
+  { key: 'trustlines', label: 'Trustlines', color: '#60A5FA' },
   { key: 'nft', label: 'NFT', color: '#F59E0B' },
-  { key: 'amm', label: 'AMM', color: '#10B981' },
+  { key: 'amm', label: 'AMM', color: '#EF4444' },
   { key: 'dex', label: 'DEX', color: '#8B5CF6' },
-  { key: 'account', label: 'Account', color: '#EF4444' },
+  { key: 'account', label: 'Account', color: '#F43F5E' },
   { key: 'mptoken', label: 'MPT', color: '#06B6D4' },
   { key: 'other', label: 'Other', color: '#9CA3AF' }
 ]
 
-const FAILED_SEG = { key: 'failed', label: 'Failed', color: '#6B7280' }
+const FAILED_SEG = { key: 'failed', label: 'Failed', color: '#9CA3AF' }
 
 // Use layout effect only in browser (SSR-safe)
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
@@ -91,7 +91,7 @@ const getSuccessClass = (pct) => {
 const getGroupKeyForTxType = (txType) => {
   if (!txType) return 'other'
   if (txType === 'Payment:swap') return 'swaps'
-  if (txType === 'Payment') return 'payments'
+  if (txType === 'Payment' || txType.startsWith('Check') || txType.startsWith('Escrow')) return 'payments'
   if (txType === 'TrustSet') return 'trustlines'
 
   if (txType.startsWith('NFToken')) return 'nft'
@@ -187,6 +187,8 @@ export default function TypeMixCell({
         types
       }
     }).filter((x) => x.count > 0)
+
+    built.sort((a, b) => b.count - a.count)
 
     if (failed > 0) {
       built.push({
