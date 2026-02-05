@@ -13,6 +13,8 @@ import { setTabParams } from '../utils'
 import SEO from '../components/SEO'
 import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow } from '../utils/format'
 import { dappBySourceTag } from '../utils/transaction'
+import { DAPPS_META } from '../utils/dapps'
+import DappLogo from '../components/Dapps/DappLogo'
 import TypeMixCell from '../components/Dapps/TypeMixCell'
 import { dappsPageClass } from '../styles/pages/dapps.module.scss'
 import { HeaderTooltip } from '../components/UI/HeaderTooltip'
@@ -220,6 +222,16 @@ export default function Dapps({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, router.isReady])
 
+  // Helper to get dapp logo by sourceTag
+  const getDappLogo = (sourceTag) => {
+    const metaObj = DAPPS_META[0] || {}
+    const entry = metaObj && metaObj[String(sourceTag)]
+    if (entry && entry.logo) {
+      return `/images/dapps/${entry.logo}`
+    }
+    return null
+  }
+
   return (
     <div className={dappsPageClass}>
       <SEO title="Dapps" />
@@ -331,7 +343,15 @@ export default function Dapps({
                     return (
                       <tr key={d?.sourceTag ?? idx}>
                         <td className="center">{idx + 1}</td>
-                        <td className="no-brake">{dappBySourceTag(d?.sourceTag) || d?.sourceTag}</td>
+                        <td className="no-brake">
+                          {(() => {
+                            const logo = getDappLogo(d?.sourceTag)
+                            return logo ? (
+                              <DappLogo src={logo} />
+                            ) : null
+                          })()}
+                          {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
+                        </td>
                         <td className="right">{shortNiceNumber(d?.uniqueSourceAddresses, 0)}</td>
                         <td className="right">{shortNiceNumber(d?.uniqueInteractedAddresses, 0)}</td>
                         <td className="right">
