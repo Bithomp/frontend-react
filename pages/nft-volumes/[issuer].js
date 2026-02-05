@@ -47,7 +47,8 @@ export default function NftVolumes({
   currencyIssuer,
   issuer,
   selectedCurrency,
-  sortCurrency
+  sortCurrency,
+  signOutPro
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -175,11 +176,11 @@ export default function NftVolumes({
           setErrorMessage(t('general.no-data'))
         }
       } else {
-        if (newdata.error) {
-          setErrorMessage(newdata.error)
+        if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
+          // user logged out...
+          signOutPro()
         } else {
-          setErrorMessage('Error')
-          console.log(newdata)
+          setErrorMessage(t('error-api.' + newdata.error))
         }
       }
     }

@@ -104,7 +104,8 @@ export default function Amms({
   fiatRateServer,
   selectedCurrencyServer,
   setSelectedCurrency,
-  openEmailLogin
+  openEmailLogin,
+  signOutPro
 }) {
   const { t, i18n } = useTranslation()
 
@@ -217,10 +218,11 @@ export default function Amms({
           setErrorMessage(t('general.no-data'))
         }
       } else {
-        if (newdata.error) {
-          setErrorMessage(newdata.error)
+        if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
+          // user logged out...
+          signOutPro()
         } else {
-          setErrorMessage('Error')
+          setErrorMessage(t('error-api.' + newdata.error))
         }
       }
     }
