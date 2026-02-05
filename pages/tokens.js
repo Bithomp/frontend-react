@@ -293,9 +293,14 @@ export default function Tokens({
         }
       } else {
         if (newdata.error) {
-          setErrorMessage(newdata.error)
+          if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
+            // user logged out...
+            signOutPro()
+          } else {
+            setErrorMessage(t('error-api.' + newdata.error))
+          }
         } else {
-          setErrorMessage('Error')
+          setErrorMessage(t('general.no-data'))
         }
       }
     } else {
