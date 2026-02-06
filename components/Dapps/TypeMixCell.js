@@ -370,7 +370,7 @@ export default function TypeMixCell({
               {active?.key === 'failed' ? (
                 <>
                   <div className="dapps-activity__typesHeader">
-                    Failed by transaction type
+                    Failed by tx types
                     <div className="dapps-activity__typesTotal">
                       {failed ? `${shortNiceNumber(failed, 0)} total (${failedPct.toFixed(1)}%)` : '—'}
                     </div>
