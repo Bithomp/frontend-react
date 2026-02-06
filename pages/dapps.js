@@ -3,6 +3,7 @@ import { useMemo, useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import RadioOptions from '../components/UI/RadioOptions'
 import FiltersFrame from '../components/Layout/FiltersFrame'
+import CheckBox from '../components/UI/CheckBox'
 import { axiosServer, passHeaders, currencyServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { explorerName, nativeCurrency, useWidth } from '../utils'
@@ -126,6 +127,7 @@ export default function Dapps({
   fiatRate: fiatRateApp,
   selectedCurrencyServer
 }) {
+  const [excludeNoWallets, setExcludeNoWallets] = useState(true)
   const router = useRouter()
   const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
@@ -188,8 +190,15 @@ export default function Dapps({
       if (hasName) return true
       return Number(d?.uniqueSourceAddresses) > 3
     })
-    return sortDapps(filtered, order)
-  }, [rawData, order])
+    const metaObj = DAPPS_META[0] || {}
+    const filteredWallets = excludeNoWallets
+      ? filtered.filter((d) => {
+          const entry = metaObj && metaObj[String(d?.sourceTag)]
+          return entry && Array.isArray(entry.wallets) && entry.wallets.length > 0
+        })
+      : filtered
+    return sortDapps(filteredWallets, order)
+  }, [rawData, order, excludeNoWallets])
 
   const orderList = [
     { value: 'performingHigh', label: 'Performing wallets: High to Low' },
@@ -260,7 +269,12 @@ export default function Dapps({
         selectedCurrency={selectedCurrency}
         setSelectedCurrency={setSelectedCurrency}
       >
-        <>{true === false && <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />}</>
+        <>
+          {true === false && <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />}
+          <CheckBox checked={excludeNoWallets} setChecked={setExcludeNoWallets}>
+            Exclude apps without external signing
+          </CheckBox>
+        </>
         {loading ? (
           <table className={windowWidth && windowWidth <= 860 ? 'table-mobile' : 'table-large expand'}>
             <tbody>
