@@ -62,29 +62,64 @@ export default function WalletsCell({ wallets }) {
     setTip(null)
   }
 
+  // Split wallets prop into rows of max 4, using the order from DAPPS_META
+  const rows = []
+  for (let i = 0; i < wallets.length; i += 4) {
+    rows.push(wallets.slice(i, i + 4))
+  }
+
   return (
-    <span style={{ display: 'flex', gap: 4, alignItems: 'center', position: 'relative' }}>
-      {wallets.map((w) => {
-        const logo = WALLET_LOGOS[w] || `${w}.png`
-        return (
-          <span
-            key={w}
-            onMouseEnter={(e) => handleMouseEnter(e, w)}
-            onMouseMove={(e) => handleMouseMove(e, w)}
-            onMouseLeave={handleMouseLeave}
-            style={{ display: 'inline-block' }}
-          >
-            <Image
-              src={`/images/wallets/square-logos/${logo}`}
-              alt={WALLET_NAMES[w] || w}
-              width={18}
-              height={18}
-              style={{ borderRadius: 4, background: '#fff' }}
-              draggable={false}
-            />
-          </span>
-        )
-      })}
+    <span
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        flexWrap: 'nowrap',
+        gap: 2,
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        minWidth: 0,
+        maxWidth: 80,
+        padding: '4px 0',
+        position: 'relative',
+        overflow: 'visible'
+      }}
+    >
+      {rows.map((row, i) => (
+        <span
+          key={i}
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 4,
+            alignItems: 'flex-start',
+            justifyContent: 'flex-start',
+            minWidth: 0,
+            overflow: 'visible'
+          }}
+        >
+          {row.map((w) => {
+            const logo = WALLET_LOGOS[w] || `${w}.png`
+            return (
+              <span
+                key={w}
+                onMouseEnter={(e) => handleMouseEnter(e, w)}
+                onMouseMove={(e) => handleMouseMove(e, w)}
+                onMouseLeave={handleMouseLeave}
+                style={{ display: 'inline-block' }}
+              >
+                <Image
+                  src={`/images/wallets/square-logos/${logo}`}
+                  alt={WALLET_NAMES[w] || w}
+                  width={18}
+                  height={18}
+                  style={{ borderRadius: 4, background: '#fff' }}
+                  draggable={false}
+                />
+              </span>
+            )
+          })}
+        </span>
+      ))}
       {tip ? <WalletTooltip x={tip.x} y={tip.y} name={tip.name} /> : null}
     </span>
   )
