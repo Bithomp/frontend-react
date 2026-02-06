@@ -186,6 +186,19 @@ export const DAPPS_META = [
       10102021: {
         name: 'Junction'
       },
+      690321814: {
+        name: 'Gatehub bridge',
+        url: 'gatehub.net',
+        x: 'GateHub',
+        linkedin: 'company/gatehub-limited',
+        facebook: 'GateHubNet',
+        logo: 'gatehub.png'
+      },
+      589123: {
+        name: 'Katz Wallet',
+        url: 'katzwallet.com',
+        x: 'katzwallet',
+        logo: 'katzwallet.png'      },
       1741383633: {
         name: 'Trust Wallet',
         url: 'trustwallet.com',
