@@ -321,7 +321,7 @@ export default function Dapps({
                     }
                   />
                   <th className="left pl-2.5">Activity</th>
-                  <th className="right pr-2.5">Fees</th>
+                  {/* <th className="right pr-2.5">Fees</th> */}
                   <HeaderTooltip
                     label="Total sent"
                     tip={
@@ -387,13 +387,13 @@ export default function Dapps({
                             onToggle={() => setExpandedRowKey(isOpen ? null : rowKey)}
                           />
                         </td>
-                        <td className="right no-brake">
+                        {/* <td className="right no-brake">
                           {amountFormat(d?.totalFees, { short: true })}
                           <br />
                           <span style={{ opacity: 0.7 }} suppressHydrationWarning>
                             {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
                           </span>
-                        </td>
+                        </td> */}
                         <td className="right no-brake">
                           {amountFormat(d?.totalSent, { short: true })}
                           <br />
@@ -447,12 +447,12 @@ export default function Dapps({
                             <b>Success:</b> {shortNiceNumber(d?.successTransactions, 0)}
                             <span style={{ opacity: 0.7, marginLeft: 8 }}>{successRate.toFixed(2)}%</span>
                           </div>
-                          <div style={{ marginBottom: 4 }}>
+                          {/* <div style={{ marginBottom: 4 }}>
                             <b>Fees:</b> {amountFormat(d?.totalFees, { short: true })}
                             <span style={{ opacity: 0.7, marginLeft: 8 }} suppressHydrationWarning>
                               {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
                             </span>
-                          </div>
+                          </div> */}
                           <div style={{ marginBottom: 4 }}>
                             <b>Total sent:</b> {amountFormat(d?.totalSent, { short: true })}
                             <span style={{ opacity: 0.7, marginLeft: 8 }} suppressHydrationWarning>

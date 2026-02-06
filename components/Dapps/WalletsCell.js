@@ -112,7 +112,7 @@ export default function WalletsCell({ wallets }) {
                   alt={WALLET_NAMES[w] || w}
                   width={18}
                   height={18}
-                  style={{ borderRadius: 4, background: '#fff' }}
+                  style={{ borderRadius: 4 }}
                   draggable={false}
                 />
               </span>
