@@ -50,20 +50,22 @@ const canFit = (containerW, segPct, text) => {
   return segPx >= needed && segPx >= 48
 }
 
-const clampToViewport = (x, y, pad = 10) => {
-  const vw = typeof window !== 'undefined' ? window.innerWidth : 1200
-  const vh = typeof window !== 'undefined' ? window.innerHeight : 800
-  return {
-    x: Math.max(pad, Math.min(x, vw - pad)),
-    y: Math.max(pad, Math.min(y, vh - pad))
-  }
-}
-
 const Tooltip = ({ x, y, lines }) => {
   if (!lines?.length) return null
-  const pos = clampToViewport(x + 12, y + 12)
+  // Clamp tooltip to viewport, but also ensure it stays inside the table
+  const pad = 10
+  const vw = typeof window !== 'undefined' ? window.innerWidth : 1200
+  const tooltipWidth = 240 // estimate, matches max-width in CSS
+  let left = x + 12
+  if (left + tooltipWidth > vw - pad) left = vw - tooltipWidth - pad
+  if (left < pad) left = pad
+  let top = y + 12
+  const vh = typeof window !== 'undefined' ? window.innerHeight : 800
+  const tooltipHeight = 48 // estimate
+  if (top + tooltipHeight > vh - pad) top = vh - tooltipHeight - pad
+  if (top < pad) top = pad
   return (
-    <div className="dapps-activity-tooltip" style={{ left: pos.x, top: pos.y }}>
+    <div className="dapps-activity-tooltip" style={{ left, top }}>
       {lines.map((l, i) => (
         <div key={i} className="dapps-activity-tooltip__line">
           {l}
