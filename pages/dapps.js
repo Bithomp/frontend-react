@@ -358,15 +358,17 @@ export default function Dapps({
 
                     return (
                       <tr key={d?.sourceTag ?? idx}>
-                        <td className="center">{idx + 1}</td>
-                        <td className="no-brake">
-                          {(() => {
-                            const logo = getDappLogo(d?.sourceTag)
-                            return logo ? <DappLogo src={logo} /> : null
-                          })()}
-                          {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
+                        <td className="center" style={{ verticalAlign: 'middle' }}>{idx + 1}</td>
+                        <td className="no-brake" style={{ verticalAlign: 'middle' }}>
+                          <span style={{ display: 'flex', alignItems: 'center' }}>
+                            {(() => {
+                              const logo = getDappLogo(d?.sourceTag)
+                              return logo ? <DappLogo src={logo} /> : null
+                            })()}
+                            {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
+                          </span>
                         </td>
-                        <td className="center">
+                        <td className="center" style={{ verticalAlign: 'middle' }}>
                           {(() => {
                             const metaObj = DAPPS_META[0] || {}
                             const entry = metaObj && metaObj[String(d?.sourceTag)]

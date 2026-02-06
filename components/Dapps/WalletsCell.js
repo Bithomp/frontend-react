@@ -75,13 +75,14 @@ export default function WalletsCell({ wallets }) {
         flexDirection: 'column',
         flexWrap: 'nowrap',
         gap: 2,
-        alignItems: 'flex-start',
+        alignItems: 'center',
         justifyContent: 'flex-start',
         minWidth: 0,
         maxWidth: 80,
-        padding: '4px 0',
         position: 'relative',
-        overflow: 'visible'
+        overflow: 'visible',
+        alignItems: 'flex-start',
+        marginTop: -4
       }}
     >
       {rows.map((row, i) => (
@@ -91,10 +92,11 @@ export default function WalletsCell({ wallets }) {
             display: 'flex',
             flexDirection: 'row',
             gap: 4,
-            alignItems: 'flex-start',
+            alignItems: 'center',
             justifyContent: 'flex-start',
             minWidth: 0,
-            overflow: 'visible'
+            overflow: 'visible',
+            alignItems: 'flex-start'
           }}
         >
           {row.map((w) => {
