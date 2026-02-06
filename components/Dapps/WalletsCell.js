@@ -1,3 +1,4 @@
+import { useState, useRef } from 'react'
 import Image from 'next/image'
 
 const WALLET_LOGOS = {
@@ -12,24 +13,79 @@ const WALLET_LOGOS = {
   // Add more as needed
 }
 
-export default function WalletsCell({ wallets }) {
-  if (!Array.isArray(wallets) || wallets.length === 0) return null
+const WALLET_NAMES = {
+  walletconnect: 'WalletConnect',
+  xaman: 'Xaman',
+  gemwallet: 'GemWallet',
+  crossmark: 'Crossmark',
+  joey: 'Joey',
+  metamask: 'MetaMask',
+  ledger: 'Ledger',
+  dcent: 'Dcent'
+  // Add more as needed
+}
+
+function WalletTooltip({ x, y, name }) {
+  if (!name) return null
+  const style = {
+    left: x + 12,
+    top: y + 12
+  }
   return (
-    <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+    <div className="dapps-activity-tooltip" style={style}>
+      <div className="dapps-activity-tooltip__line">{name}</div>
+    </div>
+  )
+}
+
+export default function WalletsCell({ wallets }) {
+  const [tip, setTip] = useState(null)
+  const timerRef = useRef()
+
+  if (!Array.isArray(wallets) || wallets.length === 0) return null
+
+  const handleMouseEnter = (e, w) => {
+    clearTimeout(timerRef.current)
+    const name = WALLET_NAMES[w] || w
+    setTip({ x: e.clientX, y: e.clientY, name })
+  }
+
+  const handleMouseMove = (e, w) => {
+    const name = WALLET_NAMES[w] || w
+    if (tip && tip.name === name) {
+      setTip({ x: e.clientX, y: e.clientY, name })
+    }
+  }
+
+  const handleMouseLeave = () => {
+    clearTimeout(timerRef.current)
+    setTip(null)
+  }
+
+  return (
+    <span style={{ display: 'flex', gap: 4, alignItems: 'center', position: 'relative' }}>
       {wallets.map((w) => {
         const logo = WALLET_LOGOS[w] || `${w}.png`
         return (
-          <Image
+          <span
             key={w}
-            src={`/images/wallets/square-logos/${logo}`}
-            alt={w}
-            width={18}
-            height={18}
-            style={{ borderRadius: 4, background: '#fff' }}
-            title={w}
-          />
+            onMouseEnter={(e) => handleMouseEnter(e, w)}
+            onMouseMove={(e) => handleMouseMove(e, w)}
+            onMouseLeave={handleMouseLeave}
+            style={{ display: 'inline-block' }}
+          >
+            <Image
+              src={`/images/wallets/square-logos/${logo}`}
+              alt={WALLET_NAMES[w] || w}
+              width={18}
+              height={18}
+              style={{ borderRadius: 4, background: '#fff' }}
+              draggable={false}
+            />
+          </span>
         )
       })}
+      {tip ? <WalletTooltip x={tip.x} y={tip.y} name={tip.name} /> : null}
     </span>
   )
 }

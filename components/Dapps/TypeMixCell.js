@@ -65,9 +65,7 @@ const Tooltip = ({ x, y, lines }) => {
   return (
     <div className="dapps-activity-tooltip" style={{ left: pos.x, top: pos.y }}>
       {lines.map((l, i) => (
-        <div key={i} className="dapps-activity-tooltip__line">
-          {l}
-        </div>
+        <div key={i} className="dapps-activity-tooltip__line">{l}</div>
       ))}
     </div>
   )
