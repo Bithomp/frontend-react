@@ -8,9 +8,17 @@ export default function DappLogo({ src, alt = 'logo', ...props }) {
     <Image
       src={src}
       alt={alt}
-      width={22}
-      height={22}
-      style={{ borderRadius: 6, background: '#fff', marginRight: 8, verticalAlign: 'middle' }}
+      width={36}
+      height={36}
+      style={{
+        borderRadius: 8,
+        background: '#fff',
+        marginRight: 8,
+        verticalAlign: 'middle',
+        marginTop: '-7px',
+        marginBottom: '-7px',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
+      }}
       onError={() => setError(true)}
       {...props}
     />
