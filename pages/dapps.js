@@ -297,7 +297,7 @@ export default function Dapps({
                 <tr>
                   <th className="center">{t('table.index')}</th>
                   <th className="left pl-2.5">Dapp</th>
-                  <th className="center">Wallets</th>
+                  <th className="left pl-2.5">Wallets</th>
                   <HeaderTooltip
                     label="PA"
                     tip={
