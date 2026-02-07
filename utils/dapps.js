@@ -198,7 +198,8 @@ export const DAPPS_META = [
         name: 'Katz Wallet',
         url: 'katzwallet.com',
         x: 'katzwallet',
-        logo: 'katzwallet.png'      },
+        logo: 'katzwallet.png'
+      },
       1741383633: {
         name: 'Trust Wallet',
         url: 'trustwallet.com',
