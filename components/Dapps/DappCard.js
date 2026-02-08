@@ -59,17 +59,17 @@ export default function DappCard({ dapp, index, convertCurrency, dappsMeta, expa
 
       <div className={styles.grid}>
         <div className={styles.metric}>
-          <div className={styles.k}>PA</div>
+          <div className={styles.k}>Performing addresses</div>
           <div className={styles.v}>{shortNiceNumber(dapp?.uniqueSourceAddresses, 0)}</div>
         </div>
 
         <div className={styles.metric}>
-          <div className={styles.k}>IA</div>
+          <div className={styles.k}>Interacting addresses</div>
           <div className={styles.v}>{shortNiceNumber(dapp?.uniqueInteractedAddresses, 0)}</div>
         </div>
 
         <div className={styles.metric}>
-          <div className={styles.k}>TXs</div>
+          <div className={styles.k}>Transactions</div>
           <div className={styles.v}>{shortNiceNumber(dapp?.totalTransactions, 0)}</div>
         </div>
 
