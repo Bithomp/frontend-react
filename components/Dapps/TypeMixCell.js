@@ -81,10 +81,10 @@ const formatErrorCode = (code) => {
   return code.startsWith('tec') ? code.slice(3) : code
 }
 
-const getSuccessClass = (pct) => {
-  if (pct < 50) return 'success-low'
-  if (pct < 90) return 'success-medium'
-  return 'success-high'
+const getFailedClass = (pct) => {
+  if (pct > 50) return 'failed-high'
+  if (pct > 10) return 'failed-medium'
+  return 'failed-low'
 }
 
 /**
@@ -165,7 +165,7 @@ export default function TypeMixCell({
 
   const successPct = total > 0 ? (success / total) * 100 : 0
   const failedPct = total > 0 ? (failed / total) * 100 : 0
-  const successClass = getSuccessClass(successPct)
+  const failedClass = getFailedClass(failedPct)
 
   const successMap = useMemo(
     () => (successByType && typeof successByType === 'object' ? successByType : {}),
@@ -322,15 +322,13 @@ export default function TypeMixCell({
       <div className="dapps-activity__meta">
         <div className="dapps-activity__stats">
           <span>
-            Total: <b>{shortNiceNumber(total, 0)}</b>
-          </span>
-          <span>
-            Success: <b>{shortNiceNumber(success, 0)}</b>
-            <span className={`dapps-activity__muted ${successClass}`}>({successPct.toFixed(1)}%)</span>
+            Success: {shortNiceNumber(success, 0)}
+            <span className="dapps-activity__muted">({successPct.toFixed(1)}%)</span>
           </span>
           {failed > 0 ? (
-            <span className="dapps-activity__muted">
-              Failed: {shortNiceNumber(failed, 0)} ({failedPct.toFixed(1)}%)
+            <span>
+              Failed: {shortNiceNumber(failed, 0)}
+              <span className={`dapps-activity__muted ${failedClass}`}>({failedPct.toFixed(1)}%)</span>
             </span>
           ) : null}
         </div>

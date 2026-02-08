@@ -69,12 +69,12 @@
       display: flex;
       gap: 10px;
       white-space: nowrap;
+      font-weight: 500;
     }
 
     .dapps-activity__muted {
       margin-left: 6px;
       color: var(--text-secondary);
-      font-weight: 500;
     }
 
     .dapps-activity__toggle {
@@ -266,17 +266,14 @@
       flex: 0 0 auto;
       opacity: 0.9;
     }
-
-    .success-high {
+    .failed-low {
       color: var(--text-secondary);
     }
-
-    .success-medium {
+    .failed-medium {
       color: #f59e0b; /* orange */
       font-weight: 600;
     }
-
-    .success-low {
+    .failed-high {
       color: #ef4444; /* red */
       font-weight: 700;
     }

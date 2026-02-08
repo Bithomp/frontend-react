@@ -320,6 +320,16 @@ export default function Dapps({
                       </>
                     }
                   />
+                  <HeaderTooltip
+                    label="TXs"
+                    tip={
+                      <>
+                        <b>Transactions</b>
+                        <br />
+                        Total transactions count. Includes successful and failed transactions.
+                      </>
+                    }
+                  />
                   <th className="left pl-2.5">Activity</th>
                   {/* <th className="right pr-2.5">Fees</th> */}
                   <HeaderTooltip
@@ -358,7 +368,9 @@ export default function Dapps({
 
                     return (
                       <tr key={d?.sourceTag ?? idx}>
-                        <td className="center" style={{ verticalAlign: 'middle' }}>{idx + 1}</td>
+                        <td className="center" style={{ verticalAlign: 'middle' }}>
+                          {idx + 1}
+                        </td>
                         <td className="no-brake" style={{ verticalAlign: 'middle' }}>
                           <span style={{ display: 'flex', alignItems: 'center' }}>
                             {(() => {
@@ -377,6 +389,7 @@ export default function Dapps({
                         </td>
                         <td className="right">{shortNiceNumber(d?.uniqueSourceAddresses, 0)}</td>
                         <td className="right">{shortNiceNumber(d?.uniqueInteractedAddresses, 0)}</td>
+                        <td className="right">{shortNiceNumber(d?.totalTransactions, 0)}</td>
                         <td className="right">
                           <TypeMixCell
                             // IMPORTANT: now pass success counts, not totals
