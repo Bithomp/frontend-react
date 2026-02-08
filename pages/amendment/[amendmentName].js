@@ -5,7 +5,7 @@ import { axiosServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { shortHash, fullDateAndTime, timeFromNow } from '../../utils/format'
 import { avatarServer, xahauNetwork, useWidth, countriesTranslated, explorerName } from '../../utils'
-import Image from 'next/image'
+import Avatar from '../../components/UI/Avatar'
 import SEO from '../../components/SEO'
 import CopyButton from '../../components/UI/CopyButton'
 import ReactCountryFlag from 'react-country-flag'
@@ -227,13 +227,7 @@ export default function AmendmentSummary({
                 <tbody>
                   <tr className="no-border">
                     <td style={{ width: 40, height: 35, padding: 0 }}>
-                      <Image
-                        alt="avatar"
-                        src={avatarServer + v.publicKey}
-                        width="35"
-                        height="35"
-                        style={{ verticalAlign: 'middle' }}
-                      />
+                      <Avatar src={avatarServer + v.publicKey} alt="avatar" />
                     </td>
                     <td style={{ padding: 0 }}>
                       {v.principals?.map((p, i) => (

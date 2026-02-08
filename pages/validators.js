@@ -6,6 +6,7 @@ import { useTheme } from '../components/Layout/ThemeContext'
 
 import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
+import Avatar from '../components/UI/Avatar'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash, timeFromNow } from '../utils/format'
 import { devNet, useWidth, xahauNetwork, countriesTranslated, avatarServer } from '../utils'
@@ -16,7 +17,6 @@ import CopyButton from '../components/UI/CopyButton'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 
 import VerifiedIcon from '../public/images/verified.svg'
-import Image from 'next/image'
 import Link from 'next/link'
 
 export async function getServerSideProps(context) {
@@ -804,7 +804,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 validators.validators.map((v, i) => (
                   <tr key={i}>
                     <td style={{ padding: '5px' }} className="center">
-                      <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
+                      <Avatar src={avatarServer + v.publicKey} />
                       <br />
                       {i + 1}
                     </td>
@@ -948,7 +948,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 validators.validators.map((v, i) => (
                   <tr key={v.publicKey}>
                     <td className="center">
-                      <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
+                      <Avatar src={avatarServer + v.publicKey} />
                       <br />
                       {i + 1}
                     </td>
