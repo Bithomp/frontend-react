@@ -111,7 +111,7 @@ export default function AmendmentSummary({
 }) {
   const windowWidth = useWidth()
   const { t, i18n } = useTranslation()
-  const theme = useTheme()
+  const { theme } = useTheme()
   const [countries, setCountries] = useState(null)
   const [yeas, setYeas] = useState([])
   const [nays, setNays] = useState([])
