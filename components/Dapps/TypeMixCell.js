@@ -3,17 +3,18 @@ import { shortNiceNumber } from '../../utils/format'
 
 // Fixed order for summary segments
 const GROUP_ORDER = [
-  { key: 'swaps', label: 'Swaps', color: '#A259F7' },
-  { key: 'payments', label: 'Payments', color: '#3B82F6' },
-  { key: 'trustlines', label: 'Trustlines', color: '#60A5FA' },
-  { key: 'nft', label: 'NFT', color: '#F59E0B' },
-  { key: 'amm', label: 'AMM', color: '#EF4444' },
-  { key: 'dex', label: 'DEX', color: '#8B5CF6' },
-  { key: 'account', label: 'Account', color: '#F43F5E' },
-  { key: 'mptoken', label: 'MPT', color: '#06B6D4' },
-  { key: 'other', label: 'Other', color: '#9CA3AF' }
+  { key: 'swaps', label: 'Swaps', color: '#A259F7' }, // keep (violet)
+  { key: 'payments', label: 'Payments', color: '#3B82F6' }, // bright blue
+  { key: 'trustlines', label: 'Trustlines', color: '#60A5FA' }, // light blue
+  { key: 'nft', label: 'NFT', color: '#F59E0B' }, // orange
+  { key: 'amm', label: 'AMM', color: '#EF4444' }, // red (liquidity / risk)
+  { key: 'dex', label: 'DEX', color: '#8B5CF6' }, // purple
+  { key: 'account', label: 'Account', color: '#14B8A6' }, // teal (clearly different from AMM)
+  { key: 'mptoken', label: 'MPT', color: '#06B6D4' }, // cyan
+  { key: 'other', label: 'Other', color: '#64748B' } // slate
 ]
 
+// Failed must stay neutral grey
 const FAILED_SEG = { key: 'failed', label: 'Failed', color: '#9CA3AF' }
 
 // Use layout effect only in browser (SSR-safe)
@@ -93,7 +94,13 @@ const getSuccessClass = (pct) => {
 const getGroupKeyForTxType = (txType) => {
   if (!txType) return 'other'
   if (txType === 'Payment:swap') return 'swaps'
-  if (txType === 'Payment' || txType.startsWith('Check') || txType.startsWith('Escrow')) return 'payments'
+  if (
+    txType === 'Payment' ||
+    txType.startsWith('Check') ||
+    txType.startsWith('Escrow') ||
+    txType.startsWith('PaymentChannel')
+  )
+    return 'payments'
   if (txType === 'TrustSet') return 'trustlines'
 
   if (txType.startsWith('NFToken')) return 'nft'
