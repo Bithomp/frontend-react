@@ -46,11 +46,12 @@ const clampPctForDisplay = (count, total) => {
   return pct
 }
 
-const canFit = (containerW, segPct, text) => {
+const canFit = (containerW, segPct, text, isMobile) => {
   if (!containerW) return false
   const segPx = (containerW * segPct) / 100
   const needed = text.length * 6 + 16
-  return segPx >= needed && segPx >= 48
+  const minPx = isMobile ? 36 : 48
+  return segPx >= needed && segPx >= minPx
 }
 
 const clampToViewport = (x, y, pad = 10) => {
@@ -314,8 +315,11 @@ export default function TypeMixCell({
           const segLeft = left
           left += s.pctGeom
 
-          const labelText = `${s.label} ${shortNiceNumber(s.count, 0)}`
-          const showText = !isMobile && canFit(w, s.pctGeom, labelText)
+          const labelDesktop = `${s.label} ${shortNiceNumber(s.count, 0)}`
+          const labelMobile = s.label
+
+          const labelText = isMobile ? labelMobile : labelDesktop
+          const showText = canFit(w, s.pctGeom, labelText, isMobile)
 
           const onMove = (e) => {
             if (isMobile) return

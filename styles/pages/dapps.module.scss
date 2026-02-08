@@ -344,6 +344,14 @@
     .dapps-activity__catPct {
       display: none !important;
     }
+
+    .dapps-activity__grid {
+      padding-right: 0;
+    }
+
+    .dapps-activity__row {
+      padding: 2px 0;
+    }
   }
   /* Mobile fix: details panel centered and full width */
   @media (max-width: 600px) {
