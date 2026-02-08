@@ -1,20 +1,21 @@
 import { useMemo, useState, useRef, useLayoutEffect, useEffect } from 'react'
 import { shortNiceNumber } from '../../utils/format'
+import { useIsMobile } from '../../utils/mobile'
 
-// Fixed order for summary segments
+// Fixed order for summary segments (used for grouping + colors)
 const GROUP_ORDER = [
-  { key: 'swaps', label: 'Swaps', color: '#A259F7' }, // keep (violet)
-  { key: 'payments', label: 'Payments', color: '#3B82F6' }, // bright blue
-  { key: 'trustlines', label: 'Trustlines', color: '#60A5FA' }, // light blue
-  { key: 'nft', label: 'NFT', color: '#F59E0B' }, // orange
-  { key: 'amm', label: 'AMM', color: '#EF4444' }, // red (liquidity / risk)
-  { key: 'dex', label: 'DEX', color: '#8B5CF6' }, // purple
-  { key: 'account', label: 'Account', color: '#14B8A6' }, // teal (clearly different from AMM)
-  { key: 'mptoken', label: 'MPT', color: '#06B6D4' }, // cyan
-  { key: 'other', label: 'Other', color: '#64748B' } // slate
+  { key: 'swaps', label: 'Swaps', color: '#A259F7' },
+  { key: 'payments', label: 'Payments', color: '#3B82F6' },
+  { key: 'trustlines', label: 'Trustlines', color: '#60A5FA' },
+  { key: 'nft', label: 'NFT', color: '#F59E0B' },
+  { key: 'amm', label: 'AMM', color: '#EF4444' },
+  { key: 'dex', label: 'DEX', color: '#8B5CF6' },
+  { key: 'account', label: 'Account', color: '#14B8A6' },
+  { key: 'mptoken', label: 'MPT', color: '#06B6D4' },
+  { key: 'other', label: 'Other', color: '#64748B' }
 ]
 
-// Failed must stay neutral grey
+// Failed must stay neutral grey, distinct from Other
 const FAILED_SEG = { key: 'failed', label: 'Failed', color: '#9CA3AF' }
 
 // Use layout effect only in browser (SSR-safe)
@@ -27,6 +28,7 @@ const useWidth = () => {
   useIsomorphicLayoutEffect(() => {
     if (!ref.current) return
     setW(ref.current.getBoundingClientRect().width || 0)
+
     if (typeof ResizeObserver === 'undefined') return
     const ro = new ResizeObserver(([e]) => setW(e.contentRect.width))
     ro.observe(ref.current)
@@ -51,22 +53,19 @@ const canFit = (containerW, segPct, text) => {
   return segPx >= needed && segPx >= 48
 }
 
+const clampToViewport = (x, y, pad = 10) => {
+  const vw = typeof window !== 'undefined' ? window.innerWidth : 1200
+  const vh = typeof window !== 'undefined' ? window.innerHeight : 800
+  const xx = Math.max(pad, Math.min(x, vw - pad))
+  const yy = Math.max(pad, Math.min(y, vh - pad))
+  return { x: xx, y: yy }
+}
+
 const Tooltip = ({ x, y, lines }) => {
   if (!lines?.length) return null
-  // Clamp tooltip to viewport, but also ensure it stays inside the table
-  const pad = 10
-  const vw = typeof window !== 'undefined' ? window.innerWidth : 1200
-  const tooltipWidth = 240 // estimate, matches max-width in CSS
-  let left = x + 12
-  if (left + tooltipWidth > vw - pad) left = vw - tooltipWidth - pad
-  if (left < pad) left = pad
-  let top = y + 12
-  const vh = typeof window !== 'undefined' ? window.innerHeight : 800
-  const tooltipHeight = 48 // estimate
-  if (top + tooltipHeight > vh - pad) top = vh - tooltipHeight - pad
-  if (top < pad) top = pad
+  const pos = clampToViewport(x + 12, y + 12)
   return (
-    <div className="dapps-activity-tooltip" style={{ left, top }}>
+    <div className="dapps-activity-tooltip" style={{ left: pos.x, top: pos.y }}>
       {lines.map((l, i) => (
         <div key={i} className="dapps-activity-tooltip__line">
           {l}
@@ -90,10 +89,13 @@ const getFailedClass = (pct) => {
 /**
  * Map txType -> group key
  * IMPORTANT: swaps are injected as "Payment:swap"
+ * NOTE: "trustlines" group is TrustSet on XRPL
  */
 const getGroupKeyForTxType = (txType) => {
   if (!txType) return 'other'
   if (txType === 'Payment:swap') return 'swaps'
+
+  // Payments group (includes related)
   if (
     txType === 'Payment' ||
     txType.startsWith('Check') ||
@@ -101,13 +103,23 @@ const getGroupKeyForTxType = (txType) => {
     txType.startsWith('PaymentChannel')
   )
     return 'payments'
+
+  // TrustSet
   if (txType === 'TrustSet') return 'trustlines'
 
+  // NFT
   if (txType.startsWith('NFToken')) return 'nft'
+
+  // AMM
   if (txType.startsWith('AMM')) return 'amm'
+
+  // DEX
   if (txType.startsWith('Offer')) return 'dex'
+
+  // MPT
   if (txType.startsWith('MPToken')) return 'mptoken'
 
+  // Account / keys / signers
   if (txType === 'AccountSet' || txType === 'AccountDelete' || txType === 'SignerListSet' || txType === 'SetRegularKey')
     return 'account'
 
@@ -146,14 +158,17 @@ const buildFailedCodesByType = (transactionTypesResults) => {
 }
 
 export default function TypeMixCell({
-  successByType, // <-- NEW (success counts by txType, includes Payment:swap)
-  transactionTypesResults, // <-- for failed drilldown codes
+  successByType, // success counts by txType, includes Payment:swap
+  transactionTypesResults, // for failed drilldown codes
   totalTransactions = 0,
   successTransactions = 0,
   isOpen = false,
-  onToggle
+  onToggle,
+  breakpoint = 600
 }) {
+  const isMobile = useIsMobile(breakpoint)
   const { ref, w } = useWidth()
+
   const [tip, setTip] = useState(null)
   const [activeKey, setActiveKey] = useState(null)
 
@@ -162,7 +177,6 @@ export default function TypeMixCell({
   const failed = Math.max(0, total - success)
 
   const hasTotal = total > 0
-
   const successPct = total > 0 ? (success / total) * 100 : 0
   const failedPct = total > 0 ? (failed / total) * 100 : 0
   const failedClass = getFailedClass(failedPct)
@@ -171,6 +185,8 @@ export default function TypeMixCell({
     () => (successByType && typeof successByType === 'object' ? successByType : {}),
     [successByType]
   )
+
+  const failedBreakdown = useMemo(() => buildFailedBreakdown(transactionTypesResults), [transactionTypesResults])
 
   // Build segments from successByType
   const segments = useMemo(() => {
@@ -197,6 +213,7 @@ export default function TypeMixCell({
       }
     }).filter((x) => x.count > 0)
 
+    // return "largest first" (like before), keep Failed last
     built.sort((a, b) => b.count - a.count)
 
     if (failed > 0) {
@@ -227,8 +244,6 @@ export default function TypeMixCell({
     return segments.find((s) => s.key === key) || segments[0] || null
   }, [segments, activeKey, defaultKey])
 
-  const failedBreakdown = useMemo(() => buildFailedBreakdown(transactionTypesResults), [transactionTypesResults])
-
   const buildSuccessTooltipLines = (seg, globalTotal) => {
     const groupCount = Number(seg?.count || 0)
     if (!globalTotal || globalTotal <= 0 || groupCount <= 0) return []
@@ -239,25 +254,22 @@ export default function TypeMixCell({
       .filter((t) => t.type && t.count > 0)
       .sort((a, b) => b.count - a.count)
 
-    // helper: global percentage, based on TOTAL txs (success+failed)
     const pctGlobal = clampPctForDisplay(groupCount, globalTotal)
 
-    // Case A: only one type in this group => single-line tooltip
+    // One-type group => single line, global pct (not 100%)
     if (nonZero.length === 1) {
       const t = nonZero[0]
-      const pct = clampPctForDisplay(t.count, globalTotal) // global pct, not 100%
+      const pct = clampPctForDisplay(t.count, globalTotal)
       return [`${t.type}: ${shortNiceNumber(t.count, 0)} (${pct.toFixed(1)}%)`]
     }
 
-    // Case B: multiple types => header + breakdown with pct inside the group
+    // Multi-type => header + pct inside group
     const lines = [`Total ${seg.label}: ${shortNiceNumber(groupCount, 0)} (${pctGlobal.toFixed(1)}%)`]
-
     for (const t of nonZero) {
       const pctInGroup = groupCount > 0 ? (t.count / groupCount) * 100 : 0
       const pct = t.count < groupCount && pctInGroup >= 99.95 ? 99.9 : pctInGroup
       lines.push(`${t.type}: ${shortNiceNumber(t.count, 0)} (${pct.toFixed(1)}%)`)
     }
-
     return lines
   }
 
@@ -270,8 +282,10 @@ export default function TypeMixCell({
     return lines
   }
 
+  // Left list for details:
+  // - on desktop: vertical list (same as now)
+  // - on mobile: chips row (CSS handles)
   const leftList = useMemo(() => {
-    // keep Failed last
     const base = [...segments]
     base.sort((a, b) => {
       if (a.key === 'failed') return 1
@@ -285,20 +299,27 @@ export default function TypeMixCell({
 
   let left = 0
 
-  return hasTotal ? (
-    <div className="dapps-activity">
+  if (!hasTotal) return <span style={{ opacity: 0.4 }}>—</span>
+
+  return (
+    <div className={`dapps-activity ${isMobile ? 'is-mobile' : ''}`}>
       {/* Stacked bar */}
-      <div ref={ref} className="dapps-activity__bar" onMouseLeave={() => setTip(null)}>
+      <div
+        ref={ref}
+        className="dapps-activity__bar"
+        onMouseLeave={() => setTip(null)}
+        // On mobile tooltip is annoying, so disable it by avoiding move handlers below
+      >
         {segments.map((s) => {
           const segLeft = left
           left += s.pctGeom
 
           const labelText = `${s.label} ${shortNiceNumber(s.count, 0)}`
-          const showText = canFit(w, s.pctGeom, labelText)
+          const showText = !isMobile && canFit(w, s.pctGeom, labelText)
 
           const onMove = (e) => {
-            const lines = s.key === 'failed' ? buildFailedTooltipLines(total) : buildSuccessTooltipLines(s, total)
-
+            if (isMobile) return
+            const lines = s.key === 'failed' ? buildFailedTooltipLines() : buildSuccessTooltipLines(s, total)
             setTip({ x: e.clientX, y: e.clientY, lines })
           }
 
@@ -316,18 +337,19 @@ export default function TypeMixCell({
         })}
       </div>
 
-      {tip ? <Tooltip x={tip.x} y={tip.y} lines={tip.lines} /> : null}
+      {!isMobile && tip ? <Tooltip x={tip.x} y={tip.y} lines={tip.lines} /> : null}
 
       {/* Meta */}
       <div className="dapps-activity__meta">
         <div className="dapps-activity__stats">
-          <span>
-            Success: {shortNiceNumber(success, 0)}
+          <span className="dapps-activity__stat">
+            <span className="dapps-activity__statLabel">Success</span> <b>{shortNiceNumber(success, 0)}</b>
             <span className="dapps-activity__muted">({successPct.toFixed(1)}%)</span>
           </span>
+
           {failed > 0 ? (
-            <span>
-              Failed: {shortNiceNumber(failed, 0)}
+            <span className="dapps-activity__stat">
+              <span className="dapps-activity__statLabel">Failed</span> <b>{shortNiceNumber(failed, 0)}</b>
               <span className={`dapps-activity__muted ${failedClass}`}>({failedPct.toFixed(1)}%)</span>
             </span>
           ) : null}
@@ -351,12 +373,13 @@ export default function TypeMixCell({
               {leftList.map((s) => {
                 const isActive = active?.key === s.key
                 return (
-                  <div
+                  <button
                     key={s.key}
+                    type="button"
                     className={`dapps-activity__catItem ${isActive ? 'dapps-activity__catItemActive' : ''}`}
                     onClick={() => setActiveKey(s.key)}
                   >
-                    <div className="dapps-activity__catName">
+                    <span className="dapps-activity__catName">
                       {s.key === 'failed' ? (
                         <span className="dapps-activity__errorIcon" title="Failed transactions">
                           ⚠️
@@ -364,20 +387,20 @@ export default function TypeMixCell({
                       ) : (
                         <span className="dapps-activity__dot" style={{ background: s.color }} />
                       )}
-                      <b style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.label}</b>
-                    </div>
-                    <div className="dapps-activity__catPct">{s.pctAll.toFixed(1)}%</div>
-                  </div>
+                      <b className="dapps-activity__catLabel">{s.label}</b>
+                    </span>
+                    <span className="dapps-activity__catPct">{s.pctAll.toFixed(1)}%</span>
+                  </button>
                 )
               })}
             </div>
 
-            {/* Right side */}
-            <div>
+            {/* Right: content */}
+            <div className="dapps-activity__right">
               {active?.key === 'failed' ? (
                 <>
                   <div className="dapps-activity__typesHeader">
-                    Failed by tx types
+                    <div>Failed by tx types</div>
                     <div className="dapps-activity__typesTotal">
                       {failed ? `${shortNiceNumber(failed, 0)} total (${failedPct.toFixed(1)}%)` : '—'}
                     </div>
@@ -385,14 +408,19 @@ export default function TypeMixCell({
 
                   {(() => {
                     const byType = buildFailedCodesByType(transactionTypesResults)
-                    const typeNames = Object.keys(byType)
+                    const typeNames = Object.keys(byType).sort((a, b) => {
+                      const aa = failedBreakdown.entries.find((x) => x[0] === a)?.[1] || 0
+                      const bb = failedBreakdown.entries.find((x) => x[0] === b)?.[1] || 0
+                      return bb - aa
+                    })
+
                     if (!typeNames.length) return <div className="dapps-activity__empty">No failed transactions</div>
 
                     return (
-                      <div className="dapps-activity__grid">
+                      <div className="dapps-activity__grid dapps-activity__grid--blocks">
                         {typeNames.map((txType) => (
-                          <div key={txType} style={{ marginBottom: 10 }}>
-                            <div style={{ fontWeight: 700, fontSize: 12, margin: '6px 0' }}>{txType}</div>
+                          <div key={txType} className="dapps-activity__block">
+                            <div className="dapps-activity__blockTitle">{txType}</div>
                             {byType[txType].map(([code, cnt]) => (
                               <div key={txType + code} className="dapps-activity__row">
                                 <div className="dapps-activity__type">{formatErrorCode(code)}</div>
@@ -431,7 +459,5 @@ export default function TypeMixCell({
         </div>
       ) : null}
     </div>
-  ) : (
-    <span style={{ opacity: 0.4 }}>—</span>
   )
 }

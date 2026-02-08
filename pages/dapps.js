@@ -6,7 +6,7 @@ import FiltersFrame from '../components/Layout/FiltersFrame'
 import CheckBox from '../components/UI/CheckBox'
 import { axiosServer, passHeaders, currencyServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { explorerName, nativeCurrency, useWidth } from '../utils'
+import { explorerName, nativeCurrency } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { useRouter } from 'next/router'
 import { setTabParams } from '../utils'
@@ -20,6 +20,8 @@ import WalletsCell from '../components/Dapps/WalletsCell'
 import TypeMixCell from '../components/Dapps/TypeMixCell'
 import { dappsPageClass } from '../styles/pages/dapps.module.scss'
 import { HeaderTooltip } from '../components/UI/HeaderTooltip'
+import { useIsMobile } from '../utils/mobile'
+import DappCard from '../components/Dapps/DappCard'
 
 const calcSuccessRate = (total, success) => {
   const t = Number(total)
@@ -130,7 +132,7 @@ export default function Dapps({
   const [excludeNoWallets, setExcludeNoWallets] = useState(true)
   const router = useRouter()
   const { t, i18n } = useTranslation()
-  const windowWidth = useWidth()
+  const isMobile = useIsMobile(720)
 
   let selectedCurrency = selectedCurrencyServer
   if (fiatRateApp) {
@@ -232,16 +234,6 @@ export default function Dapps({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, router.isReady])
 
-  // Helper to get dapp logo by sourceTag
-  const getDappLogo = (sourceTag) => {
-    const metaObj = DAPPS_META[0] || {}
-    const entry = metaObj && metaObj[String(sourceTag)]
-    if (entry && entry.logo) {
-      return `/images/dapps/${entry.logo}`
-    }
-    return null
-  }
-
   return (
     <div className={dappsPageClass}>
       <SEO title="Dapps" />
@@ -276,7 +268,7 @@ export default function Dapps({
           </CheckBox>
         </>
         {loading ? (
-          <table className={windowWidth && windowWidth <= 860 ? 'table-mobile' : 'table-large expand'}>
+          <table className={isMobile ? 'table-mobile' : 'table-large expand'}>
             <tbody>
               <tr className="center">
                 <td colSpan="100">
@@ -291,7 +283,30 @@ export default function Dapps({
             </tbody>
           </table>
         ) : !errorMessage ? (
-          !windowWidth || windowWidth > 1000 ? (
+          isMobile ? (
+            <div style={{ width: 'calc(100% - 30px)', margin: '0 auto' }}>
+              {(() => {
+                const metaObj = DAPPS_META[0] || {}
+                return data?.length ? (
+                  data.map((d, idx) => (
+                    <DappCard
+                      key={d?.sourceTag ?? idx}
+                      dapp={d}
+                      index={idx}
+                      convertCurrency={convertCurrency}
+                      dappsMeta={metaObj}
+                      expandedRowKey={expandedRowKey}
+                      setExpandedRowKey={setExpandedRowKey}
+                    />
+                  ))
+                ) : (
+                  <div className="center orange bold" style={{ marginTop: 20 }}>
+                    {t('general.no-data')}
+                  </div>
+                )
+              })()}
+            </div>
+          ) : (
             <table className="table-large expand no-hover border">
               <thead>
                 <tr>
@@ -315,8 +330,7 @@ export default function Dapps({
                         <b>Interacting addresses</b>
                         <br />
                         Unique Interacted Addresses: <code>tx.Address</code>, <code>tx.Destination</code>, actual
-                        sender, and actual receiver (the latter two may differ from source and destination in some
-                        transactions).
+                        sender, and actual receiver.
                       </>
                     }
                   />
@@ -331,20 +345,19 @@ export default function Dapps({
                     }
                   />
                   <th className="left pl-2.5">Activity</th>
-                  {/* <th className="right pr-2.5">Fees</th> */}
                   <HeaderTooltip
                     label="Total sent"
                     tip={
                       <>
                         <b>Total sent</b>
                         <br />
-                        This is the sum of all {nativeCurrency} and IOU tokens sent, converted to {nativeCurrency} at
-                        the rate at the time of each transaction.
+                        This is the sum of all {nativeCurrency} and IOU tokens sent, converted to {nativeCurrency}.
                       </>
                     }
                   />
                 </tr>
               </thead>
+
               <tbody>
                 {data?.length ? (
                   data.map((d, idx) => {
@@ -357,8 +370,6 @@ export default function Dapps({
                     if (typeof d?.swaps === 'number' && d.swaps > 0) {
                       const swaps = Number(d.swaps)
                       const payOk = Number(successByType.Payment || 0)
-
-                      // Ensure we don't go negative if data mismatch
                       const swapsOk = Math.min(swaps, payOk)
                       if (swapsOk > 0) {
                         successByType.Payment = Math.max(0, payOk - swapsOk)
@@ -366,114 +377,49 @@ export default function Dapps({
                       }
                     }
 
+                    const metaObj = DAPPS_META[0] || {}
+                    const entry = metaObj && metaObj[String(d?.sourceTag)]
+                    const logo = entry?.logo ? `/images/dapps/${entry.logo}` : null
+
                     return (
                       <tr key={d?.sourceTag ?? idx}>
                         <td className="center" style={{ verticalAlign: 'middle' }}>
                           {idx + 1}
                         </td>
+
                         <td className="no-brake" style={{ verticalAlign: 'middle' }}>
                           <span style={{ display: 'flex', alignItems: 'center' }}>
-                            {(() => {
-                              const logo = getDappLogo(d?.sourceTag)
-                              return logo ? <DappLogo src={logo} /> : null
-                            })()}
+                            {logo ? <DappLogo src={logo} /> : null}
                             {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
                           </span>
                         </td>
-                        <td className="center" style={{ verticalAlign: 'middle' }}>
-                          {(() => {
-                            const metaObj = DAPPS_META[0] || {}
-                            const entry = metaObj && metaObj[String(d?.sourceTag)]
-                            return entry && entry.wallets ? <WalletsCell wallets={entry.wallets} /> : null
-                          })()}
+
+                        <td style={{ verticalAlign: 'middle' }}>
+                          {entry?.wallets ? <WalletsCell wallets={entry.wallets} /> : null}
                         </td>
+
                         <td className="right">{shortNiceNumber(d?.uniqueSourceAddresses, 0)}</td>
                         <td className="right">{shortNiceNumber(d?.uniqueInteractedAddresses, 0)}</td>
                         <td className="right">{shortNiceNumber(d?.totalTransactions, 0)}</td>
+
                         <td className="right">
                           <TypeMixCell
-                            // IMPORTANT: now pass success counts, not totals
                             successByType={successByType}
                             totalTransactions={d?.totalTransactions}
                             successTransactions={d?.successTransactions}
-                            // detailed results by tx type (for failed drilldown)
                             transactionTypesResults={d?.transactionTypesResults}
                             isOpen={isOpen}
                             onToggle={() => setExpandedRowKey(isOpen ? null : rowKey)}
+                            breakpoint={600}
                           />
                         </td>
-                        {/* <td className="right no-brake">
-                          {amountFormat(d?.totalFees, { short: true })}
-                          <br />
-                          <span style={{ opacity: 0.7 }} suppressHydrationWarning>
-                            {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
-                          </span>
-                        </td> */}
+
                         <td className="right no-brake">
                           {amountFormat(d?.totalSent, { short: true })}
                           <br />
                           <span style={{ opacity: 0.7 }} suppressHydrationWarning>
                             {shortNiceNumber(d?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
                           </span>
-                        </td>
-                      </tr>
-                    )
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan="100" className="center orange bold">
-                      {t('general.no-data')}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          ) : (
-            <table className="table-mobile">
-              <thead></thead>
-              <tbody>
-                {data?.length ? (
-                  data.map((d, idx) => {
-                    const successRate = calcSuccessRate(d?.totalTransactions, d?.successTransactions)
-                    return (
-                      <tr key={d?.sourceTag ?? idx}>
-                        <td style={{ padding: '10px 5px' }}>
-                          <div style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 4 }}>
-                            {idx + 1}. {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
-                          </div>
-                          <div style={{ marginBottom: 4 }}>
-                            <b>Performing wallets:</b> {shortNiceNumber(d?.uniqueSourceAddresses, 0)}
-                          </div>
-                          <div style={{ marginBottom: 4 }}>
-                            <b>Interacting wallets:</b> {shortNiceNumber(d?.uniqueInteractedAddresses, 0)}
-                          </div>
-                          <div style={{ marginBottom: 4 }}>
-                            <b>Transactions:</b> {shortNiceNumber(d?.totalTransactions, 0)}
-                          </div>
-                          <div style={{ marginBottom: 4 }}>
-                            <b>Types:</b>{' '}
-                            {d?.transactionTypes
-                              ? Object.entries(d.transactionTypes)
-                                  .map(([type, count]) => `${type}: ${shortNiceNumber(count, 0)}`)
-                                  .join(', ')
-                              : ''}
-                          </div>
-                          <div style={{ marginBottom: 4 }}>
-                            <b>Success:</b> {shortNiceNumber(d?.successTransactions, 0)}
-                            <span style={{ opacity: 0.7, marginLeft: 8 }}>{successRate.toFixed(2)}%</span>
-                          </div>
-                          {/* <div style={{ marginBottom: 4 }}>
-                            <b>Fees:</b> {amountFormat(d?.totalFees, { short: true })}
-                            <span style={{ opacity: 0.7, marginLeft: 8 }} suppressHydrationWarning>
-                              {shortNiceNumber(d?.totalFeesInFiats?.[convertCurrency], 2, 1, convertCurrency)}
-                            </span>
-                          </div> */}
-                          <div style={{ marginBottom: 4 }}>
-                            <b>Total sent:</b> {amountFormat(d?.totalSent, { short: true })}
-                            <span style={{ opacity: 0.7, marginLeft: 8 }} suppressHydrationWarning>
-                              {shortNiceNumber(d?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
-                            </span>
-                          </div>
                         </td>
                       </tr>
                     )
