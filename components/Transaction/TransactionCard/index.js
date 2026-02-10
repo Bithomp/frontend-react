@@ -167,6 +167,14 @@ export const TransactionCard = ({
                       </TData>
                     </tr>
                   )}
+                  {specification?.flags?.innerBatchTxn && (
+                    <tr>
+                      <TData>Batch</TData>
+                      <TData>
+                        <span className="bold orange">Inner transaction</span>
+                      </TData>
+                    </tr>
+                  )}
                   <tr>
                     <TData>{t('table.type')}</TData>
                     <TData>
