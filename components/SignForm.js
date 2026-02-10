@@ -30,7 +30,7 @@ import { ledgerwalletTxSend } from '../utils/ledgerwallet'
 import { trezorTxSend } from '../utils/trezor'
 import { metamaskTxSend } from '../utils/metamask'
 import { crossmarkTxSend } from '../utils/crossmark'
-import { xyraConnect, xyraPrepareTx, xyraSignAndMaybeSubmit, normalizeXyraErr } from '../utils/xyrawallet'
+import { xyraTxSend, xyraPrepareTx, xyraIsSupportedNetwork } from '../utils/xyrawallet'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -99,8 +99,7 @@ export default function SignForm({
 
   const [choosenWallet, setChoosenWallet] = useState(null)
 
-  const [xyraSession, setXyraSession] = useState(null) // { address, publicKey, xyraNetwork }
-  const [xyraPreparedTx, setXyraPreparedTx] = useState(null)
+  const [preparedXyraTx, setPreparedXyraTx] = useState(null)
 
   useEffect(() => {
     if (!signRequest) return
@@ -126,8 +125,6 @@ export default function SignForm({
     }
     setHookData({})
     setSeatData({})
-    setXyraSession(null)
-    setXyraPreparedTx(null)
     setErase(false)
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signRequest])
@@ -510,14 +507,23 @@ export default function SignForm({
     setScreen('xaman')
   }
 
-  const xyraTxSending = (tx) => {
+  const xyraTxSending = async (tx) => {
     setScreen('xyra')
-    setStatus('Opening Xyra Wallet...')
-    setAwaiting(false)
 
-    // IMPORTANT: do NOT call sdk.connect or sdk.sign automatically here
-    // They must be called from a user gesture (button click).
-    setXyraPreparedTx(tx)
+    // For login-only we can open Xyra immediately (signMessage inside xyraTxSend)
+    if (!tx || tx.TransactionType === 'SignIn' || signRequest?.data?.signOnly) {
+      setStatus('Opening Xyra Wallet...')
+      xyraTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
+      return
+    }
+
+    // IMPORTANT: prepare fee first (NO popup here)
+    const prepared = await xyraPrepareTx({ tx, setStatus, setAwaiting })
+    if (!prepared) return
+
+    setPreparedXyraTx(prepared)
+    setStatus('Ready. Click "Open Xyra" to sign.')
+    setScreen('xyra-ready')
   }
 
   const onPayloadResponse = (data) => {
@@ -1370,15 +1376,17 @@ export default function SignForm({
                         />
                       )}
 
-                      <WalletTile
-                        name="Xyra (Web wallet)"
-                        alt="Xyra"
-                        src="/images/wallets/xyra.svg"
-                        width={48}
-                        height={48}
-                        onClick={() => txSend({ wallet: 'xyra' })}
-                        disabled={false}
-                      />
+                      {xyraIsSupportedNetwork() && (
+                        <WalletTile
+                          name="Xyra (Popup wallet)"
+                          alt="Xyra"
+                          src="/images/wallets/xyra.svg" // add this asset
+                          width={48}
+                          height={48}
+                          onClick={() => txSend({ wallet: 'xyra' })}
+                          disabled={false}
+                        />
+                      )}
 
                       {!isMobile && (
                         <WalletTile
@@ -1438,101 +1446,39 @@ export default function SignForm({
                           </div>
                         )}
                       </>
-                    ) : screen === 'xyra' ? (
-                      <>
-                        <div className="orange bold center" style={{ margin: '20px 30px 10px' }}>
-                          {awaiting && (
-                            <>
-                              <span className="waiting"></span>
-                              <br />
-                              <br />
-                            </>
-                          )}
-                          {status}
-                        </div>
-
-                        <div className="center" style={{ marginTop: 10 }}>
-                          {/* Step 1: Connect */}
-                          {!xyraSession ? (
-                            <button
-                              type="button"
-                              className="button-action"
-                              onClick={async () => {
-                                setStatus('')
-                                try {
-                                  const sess = await xyraConnect({ setStatus, setAwaiting })
-                                  setXyraSession(sess)
-
-                                  // If it's login-only, we can finish after connect
-                                  const tx = xyraPreparedTx
-                                  if (!tx || tx?.TransactionType === 'SignIn') {
-                                    onSignIn({
-                                      address: sess.address,
-                                      wallet: 'xyra',
-                                      redirectName: signRequest?.redirect
-                                    })
-                                    afterSubmitExe({})
-                                    closeSignInFormAndRefresh()
-                                    return
-                                  }
-
-                                  // Prepare tx (no popup)
-                                  const prepared = { ...tx }
-                                  await xyraPrepareTx({
-                                    tx: prepared,
-                                    address: sess.address,
-                                    publicKey: sess.publicKey,
-                                    setStatus,
-                                    setAwaiting
-                                  })
-                                  setXyraPreparedTx(prepared)
-                                  setStatus('Connected. Ready to sign in Xyra.')
-                                } catch (e) {
-                                  setAwaiting(false)
-                                  setStatus(normalizeXyraErr(e))
-                                }
-                              }}
-                            >
-                              Connect Xyra
-                            </button>
-                          ) : (
-                            <>
-                              {/* Step 2: Sign (popup) */}
-                              <button
-                                type="button"
-                                className="button-action"
-                                onClick={async () => {
-                                  setStatus('')
-                                  try {
-                                    const tx = { ...xyraPreparedTx }
-                                    await xyraSignAndMaybeSubmit({
-                                      tx,
-                                      xyraNetwork: xyraSession.xyraNetwork,
-                                      signRequest,
-                                      afterSubmitExe,
-                                      afterSigning,
-                                      onSignIn,
-                                      setStatus,
-                                      setAwaiting,
-                                      t
-                                    })
-                                  } catch (e) {
-                                    setAwaiting(false)
-                                    setStatus(normalizeXyraErr(e))
-                                  }
-                                }}
-                                disabled={!xyraPreparedTx}
-                              >
-                                Sign in Xyra
-                              </button>
-
-                              <div style={{ marginTop: 10, opacity: 0.7, fontSize: 12 }}>
-                                Tip: if you get “Popup was blocked”, allow popups for this site.
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </>
+                    ) : screen === 'xyra-ready' ? (
+                      <div className="orange bold center" style={{ margin: '30px' }}>
+                        {awaiting && (
+                          <>
+                            <span className="waiting"></span>
+                            <br />
+                            <br />
+                          </>
+                        )}
+                        {status}
+                        <br />
+                        <br />
+                        <button
+                          type="button"
+                          className="button-action"
+                          onClick={() => {
+                            // MUST be a direct click => popup allowed
+                            xyraTxSend({
+                              tx: preparedXyraTx,
+                              signRequest,
+                              afterSubmitExe,
+                              afterSigning,
+                              onSignIn,
+                              setStatus,
+                              setAwaiting,
+                              t
+                            })
+                          }}
+                          disabled={!preparedXyraTx || awaiting}
+                        >
+                          Open Xyra
+                        </button>
+                      </div>
                     ) : (
                       <>
                         <div className="orange bold center" style={{ margin: '30px' }}>
