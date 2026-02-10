@@ -942,6 +942,9 @@ export const lpTokenName = (data) => {
 
 export const niceCurrency = (currency) => {
   if (!currency) return ''
+  if (currency === nativeCurrency) {
+    return nativeCurrency
+  }
   let firstTwoNumbers = currency.substr(0, 2)
   if (currency.length > 3) {
     if (firstTwoNumbers === '01') {
@@ -978,7 +981,11 @@ export const niceCurrency = (currency) => {
       currency = Buffer.from(currency, 'hex')
     }
   }
-  return currency.toString('utf8').replace(/\0/g, '') // remove padding nulls
+  currency = currency.toString('utf8').replace(/\0/g, '') // remove padding nulls
+  if (currency.toLowerCase() === nativeCurrency.toLowerCase()) {
+    return 'Fake' + nativeCurrency
+  }
+  return currency
 }
 
 export const amountParced = (amount) => {
