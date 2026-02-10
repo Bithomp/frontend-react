@@ -579,6 +579,16 @@ export default function Header({
                       height={24}
                       width={24}
                     />
+                  )}
+                  {account?.wallet === 'xyra' && (
+                    <Image
+                      src="/images/wallets/xyra.svg"
+                      className="wallet-logo"
+                      alt="Xyra Wallet"
+                      height={24}
+                      width={24}
+                      style={{ marginTop: -4, marginLeft: -2, marginRight: -2 }}
+                    />
                   )}{' '}
                   {t('signin.signout')}
                 </span>
