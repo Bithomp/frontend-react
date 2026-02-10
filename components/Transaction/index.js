@@ -19,6 +19,7 @@ export { TransactionBatch } from './TransactionBatch'
 //xrpl
 export { TransactionAMM } from './TransactionAmm'
 export { TransactionDID } from './TransactionDID'
+export { TransactionPermissionedDomain } from './TransactionPermissionedDomain'
 
 //xahau
 export { TransactionImport } from './TransactionImport'
