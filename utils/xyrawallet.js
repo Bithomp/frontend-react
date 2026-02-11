@@ -1,16 +1,14 @@
 // utils/xyrawallet.js
 import sdk from '@xyrawallet/sdk'
-import { broadcastTransaction, getNextTransactionParams } from './user'
+import { broadcastTransaction } from './user'
 import { networkId, xahauNetwork } from '.'
 
 const getXyraNetwork = () => {
-  // Supported by SDK validation: xrpl-mainnet, xrpl-testnet, xahau-mainnet, xahau-testnet  [oai_citation:1‡index.js](sediment://file_00000000c9487243885674c0684a6810)
   if (xahauNetwork) {
     if (networkId === 21337) return 'xahau-mainnet'
     if (networkId === 21338) return 'xahau-testnet'
     return null
   }
-
   if (networkId === 0) return 'xrpl-mainnet'
   if (networkId === 1) return 'xrpl-testnet'
   return null
@@ -20,21 +18,20 @@ const normalizeErr = (e) => {
   const msg = String(e?.message || e || '')
   const low = msg.toLowerCase()
 
-  if (low.includes('popup was blocked')) return 'Popup was blocked. Please allow popups and try again.'
   if (low.includes('popup')) return 'Popup was blocked. Please allow popups and try again.'
-  if (low.includes('closed the popup')) return 'Popup was closed before completing the action.'
-  if (low.includes('timeout')) return 'Request timed out. Please try again.'
   if (low.includes('reject')) return 'Request rejected in Xyra.'
+
+  // This is NOT CORS. It's postMessage origin validation.
+  if (low.includes('rejected message') || low.includes('expected from')) {
+    return msg // keep exact message for debugging
+  }
+
   return msg || 'Xyra error'
 }
 
-/**
- * IMPORTANT:
- * - This function MUST be called directly from a user gesture (button click),
- *   otherwise the popup can be blocked.  [oai_citation:2‡index.js](sediment://file_00000000c9487243885674c0684a6810)
- * - Tx MUST already contain Fee/Sequence/LastLedgerSequence when submit=true (your flow).
- */
-export const xyraTxSend = async ({
+const xyraSign = async ({
+  address,
+  publicKey,
   tx,
   signRequest,
   afterSubmitExe,
@@ -44,93 +41,60 @@ export const xyraTxSend = async ({
   setAwaiting,
   t
 }) => {
-  const xyraNetwork = getXyraNetwork()
   const wallet = 'xyra'
+  const xyraNetwork = getXyraNetwork()
   const signRequestData = signRequest?.data
 
   if (!xyraNetwork) {
+    setStatus('Xyra supports only Mainnet/Testnet for XRPL & Xahau (this network is not supported).')
     setAwaiting(false)
-    setStatus('Xyra supports only XRPL/Xahau Mainnet & Testnet (this network is not supported).')
     return
   }
 
+  // Login-only
+  if (!tx || tx?.TransactionType === 'SignIn') {
+    onSignIn({ address, wallet, redirectName: signRequest?.redirect })
+    afterSubmitExe({})
+    return
+  }
+
+  // Ensure Account + SigningPubKey
+  const txToSign = { ...tx }
+  if (!txToSign.Account) txToSign.Account = address
+  if (publicKey && !txToSign.SigningPubKey) txToSign.SigningPubKey = String(publicKey).toUpperCase()
+
+  // IMPORTANT:
+  // For non-signOnly transactions you MUST pass tx already prepared with Fee/Sequence/LastLedgerSequence
+  // BEFORE calling this function, otherwise you'll be forced to await and lose the user gesture.
+
+  if (!signRequestData?.signOnly) {
+    if (!txToSign.Fee || !txToSign.Sequence || !txToSign.LastLedgerSequence) {
+      setStatus('Transaction is not prepared (Fee/Sequence/LastLedgerSequence missing).')
+      return
+    }
+  }
+
+  setStatus('Sign the transaction in Xyra.')
   try {
-    // LOGIN-ONLY:
-    // Use signMessage (network-agnostic) to get address without doing connect() -> avoids extra popup later.
-    if (!tx || tx?.TransactionType === 'SignIn') {
-      setAwaiting(true)
-      setStatus('Open Xyra to sign a login message...')
+    const { tx_blob } = await sdk.sign({ transaction: txToSign, network: xyraNetwork })
 
-      const message =
-        `Sign in to Bithomp\n` +
-        `Origin: ${typeof window !== 'undefined' ? window.location.origin : ''}\n` +
-        `Time: ${new Date().toISOString()}`
-
-      const res = await sdk.signMessage({
-        message,
-        onProgress: () => {}
-      })
-
-      setAwaiting(false)
-
-      const address = res?.address
-      if (!address) {
-        setStatus('Xyra did not return an address.')
-        return
-      }
-
-      // treat as logged in
-      await onSignIn?.({ address, wallet, redirectName: signRequest?.redirect })
-      afterSubmitExe?.({})
-      return
-    }
-
-    // SIGN ONLY (user wants submit through your server)
     if (signRequestData?.signOnly) {
-      setAwaiting(true)
-      setStatus('Sign the transaction in Xyra...')
-
-      const { tx_blob } = await sdk.sign({
-        transaction: tx,
-        network: xyraNetwork
-      })
-
-      setAwaiting(false)
-
-      if (!tx_blob) {
-        setStatus('Xyra did not return tx_blob.')
-        return
-      }
-
-      afterSigning?.({ signRequestData, blob: tx_blob, address: tx.Account })
+      afterSigning({ signRequestData, blob: tx_blob, address })
       return
     }
 
-    // NORMAL TX: sign -> submit via our server
-    setAwaiting(true)
-    setStatus('Sign the transaction in Xyra...')
-
-    const { tx_blob } = await sdk.sign({
-      transaction: tx,
-      network: xyraNetwork
-    })
-
-    if (!tx_blob) {
-      setAwaiting(false)
-      setStatus('Xyra did not return tx_blob.')
-      return
-    }
-
+    // submit via our server
     setStatus('Submitting transaction to the network...')
+    setAwaiting(true)
     broadcastTransaction({
       blob: tx_blob,
       setStatus,
       onSignIn,
       afterSubmitExe,
-      address: tx.Account,
+      address,
       wallet,
       signRequest,
-      tx,
+      tx: txToSign,
       setAwaiting,
       t
     })
@@ -140,29 +104,73 @@ export const xyraTxSend = async ({
   }
 }
 
-/**
- * Helper: prepare Fee/Sequence/LastLedgerSequence BEFORE opening Xyra popup.
- * Call this BEFORE user clicks "Open Xyra" (so later call is popup-safe).
- */
-export const xyraPrepareTx = async ({ tx, setStatus, setAwaiting }) => {
-  setAwaiting(true)
-  setStatus('Getting transaction fee...')
+export const xyraTxSend = async ({
+  tx,
+  signRequest,
+  afterSubmitExe,
+  afterSigning,
+  onSignIn,
+  setStatus,
+  setAwaiting,
+  t,
+  account
+}) => {
+  try {
+    const xyraNetwork = getXyraNetwork()
+    if (!xyraNetwork) {
+      setStatus('Xyra supports only Mainnet/Testnet for XRPL & Xahau (this network is not supported).')
+      setAwaiting(false)
+      return
+    }
 
-  const params = await getNextTransactionParams(tx)
+    // If already logged in with Xyra, don't reconnect (avoids extra popup)
+    if (account?.address && account?.wallet === 'xyra') {
+      await xyraSign({
+        address: account.address,
+        publicKey: account.publicKey, // if you store it; ok if undefined
+        tx,
+        signRequest,
+        afterSubmitExe,
+        afterSigning,
+        onSignIn,
+        setStatus,
+        setAwaiting,
+        t
+      })
+      return
+    }
 
-  setAwaiting(false)
+    // Connect must be called from user click (popup)
+    setAwaiting(true)
+    setStatus('Please approve the connection in Xyra app, and follow instructions there.')
 
-  if (!params) {
-    setStatus('Error getting transaction fee.')
-    return null
-  }
+    const { address, network, publicKey } = await sdk.connect({
+      network: xyraNetwork,
+      onProgress: () => {}
+    })
 
-  return {
-    ...tx,
-    Sequence: params.Sequence,
-    Fee: params.Fee,
-    LastLedgerSequence: params.LastLedgerSequence
+    if (network && network !== xyraNetwork) {
+      setAwaiting(false)
+      setStatus(`Please switch Xyra network to ${xyraNetwork} (currently ${network}).`)
+      return
+    }
+
+    setAwaiting(false)
+
+    await xyraSign({
+      address,
+      publicKey,
+      tx,
+      signRequest,
+      afterSubmitExe,
+      afterSigning,
+      onSignIn,
+      setStatus,
+      setAwaiting,
+      t
+    })
+  } catch (e) {
+    setAwaiting(false)
+    setStatus(normalizeErr(e))
   }
 }
-
-export const xyraIsSupportedNetwork = () => !!getXyraNetwork()

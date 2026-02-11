@@ -23,6 +23,7 @@ import {
   nativeCurrency,
   isUrlValid
 } from '../utils'
+import { getNextTransactionParams } from '../utils/user'
 import { duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
 import { gemwalletTxSend } from '../utils/gemwallet'
@@ -30,7 +31,7 @@ import { ledgerwalletTxSend } from '../utils/ledgerwallet'
 import { trezorTxSend } from '../utils/trezor'
 import { metamaskTxSend } from '../utils/metamask'
 import { crossmarkTxSend } from '../utils/crossmark'
-import { xyraTxSend, xyraPrepareTx, xyraIsSupportedNetwork } from '../utils/xyrawallet'
+import { xyraTxSend } from '../utils/xyrawallet'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -97,17 +98,18 @@ export default function SignForm({
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
 
-  const [choosenWallet, setChoosenWallet] = useState(null)
+  const [xyraPreparedTx, setXyraPreparedTx] = useState(null)
+  const [xyraNeedsClick, setXyraNeedsClick] = useState(false)
 
-  const [preparedXyraTx, setPreparedXyraTx] = useState(null)
+  const [choosenWallet, setChoosenWallet] = useState(null)
 
   useEffect(() => {
     if (!signRequest) return
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile) {
-      // Xyra requires explicit user clicks for popups, so don't auto-run it
-      const wallet = signRequest?.wallet || account?.wallet
-      if (wallet === 'xyra') {
+      // IMPORTANT: Xyra opens popups for connect/sign; must be user-gesture driven
+      const w = signRequest?.wallet || account?.wallet || choosenWallet
+      if (w === 'xyra') {
         setScreen('choose-app')
       } else {
         txSend()
@@ -138,7 +140,7 @@ export default function SignForm({
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid])
 
-  const txSend = (options) => {
+  const txSend = async (options) => {
     //when the request is wallet specific it's a priority, logout if not matched
     //when request is not wallet specific, use the account wallet if loggedin
     let wallet = signRequest?.wallet || account?.wallet
@@ -348,7 +350,38 @@ export default function SignForm({
     } else if (wallet === 'crossmark') {
       crossmarkTxSending(tx)
     } else if (wallet === 'xyra') {
-      xyraTxSending(tx)
+      const needsParams =
+        tx.TransactionType !== 'SignIn' &&
+        !signRequest?.data?.signOnly &&
+        (!tx.Fee || !tx.Sequence || !tx.LastLedgerSequence)
+
+      if (needsParams) {
+        setScreen('xyra')
+        setAwaiting(true)
+        setStatus('Getting transaction fee...')
+
+        const params = await getNextTransactionParams(tx)
+
+        setAwaiting(false)
+
+        if (!params) {
+          setStatus('Error getting transaction fee.')
+          return
+        }
+
+        const prepared = { ...tx }
+        prepared.Sequence = params.Sequence
+        prepared.Fee = params.Fee
+        prepared.LastLedgerSequence = params.LastLedgerSequence
+
+        setXyraPreparedTx(prepared)
+        setXyraNeedsClick(true)
+        setStatus('Ready. Click “Open Xyra” to sign.')
+        return
+      }
+
+      xyraTxSending(xyraPreparedTx || tx)
+      return
     }
   }
 
@@ -507,23 +540,20 @@ export default function SignForm({
     setScreen('xaman')
   }
 
-  const xyraTxSending = async (tx) => {
+  const xyraTxSending = (tx) => {
     setScreen('xyra')
-
-    // For login-only we can open Xyra immediately (signMessage inside xyraTxSend)
-    if (!tx || tx.TransactionType === 'SignIn' || signRequest?.data?.signOnly) {
-      setStatus('Opening Xyra Wallet...')
-      xyraTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
-      return
-    }
-
-    // IMPORTANT: prepare fee first (NO popup here)
-    const prepared = await xyraPrepareTx({ tx, setStatus, setAwaiting })
-    if (!prepared) return
-
-    setPreparedXyraTx(prepared)
-    setStatus('Ready. Click "Open Xyra" to sign.')
-    setScreen('xyra-ready')
+    setStatus('Opening Xyra Wallet...')
+    xyraTxSend({
+      tx,
+      signRequest,
+      afterSubmitExe,
+      afterSigning,
+      onSignIn,
+      setStatus,
+      setAwaiting,
+      t,
+      account
+    })
   }
 
   const onPayloadResponse = (data) => {
@@ -817,6 +847,9 @@ export default function SignForm({
     if (screen === 'xaman') {
       setXamanQrSrc(qr)
       xamanCancel(xamanUuid)
+    } else if (screen === 'xyra') {
+      setXyraPreparedTx(null)
+      setXyraNeedsClick(false)
     }
     if (uuid) {
       removeQueryParams(router, ['uuid'])
@@ -1376,7 +1409,7 @@ export default function SignForm({
                         />
                       )}
 
-                      {xyraIsSupportedNetwork() && (
+                      {devNet && (
                         <WalletTile
                           name="Xyra (Popup wallet)"
                           alt="Xyra"
@@ -1446,35 +1479,15 @@ export default function SignForm({
                           </div>
                         )}
                       </>
-                    ) : screen === 'xyra-ready' ? (
-                      <div className="orange bold center" style={{ margin: '30px' }}>
-                        {awaiting && (
-                          <>
-                            <span className="waiting"></span>
-                            <br />
-                            <br />
-                          </>
-                        )}
-                        {status}
-                        <br />
-                        <br />
+                    ) : screen === 'xyra' && xyraNeedsClick ? (
+                      <div style={{ marginTop: 10 }}>
                         <button
                           type="button"
                           className="button-action"
                           onClick={() => {
-                            // MUST be a direct click => popup allowed
-                            xyraTxSend({
-                              tx: preparedXyraTx,
-                              signRequest,
-                              afterSubmitExe,
-                              afterSigning,
-                              onSignIn,
-                              setStatus,
-                              setAwaiting,
-                              t
-                            })
+                            xyraTxSending(xyraPreparedTx)
+                            setXyraNeedsClick(false)
                           }}
-                          disabled={!preparedXyraTx || awaiting}
                         >
                           Open Xyra
                         </button>
