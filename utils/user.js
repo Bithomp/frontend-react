@@ -29,8 +29,6 @@ export const broadcastTransaction = async ({
     }
   })
 
-  setAwaiting(false)
-
   const data = response?.data
 
   if (data) {
