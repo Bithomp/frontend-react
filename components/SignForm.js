@@ -139,7 +139,7 @@ export default function SignForm({
 
               if (!needsParams) {
                 setAwaiting(false)
-                setStatus('Ready. Click “Open Xyra” to sign.')
+                setStatus('Click “Open Xyra” to sign.')
                 setXyraPreparedTx(baseTx)
                 setXyraNeedsClick(true)
                 return
@@ -163,7 +163,7 @@ export default function SignForm({
               prepared.LastLedgerSequence = params.LastLedgerSequence
 
               setAwaiting(false)
-              setStatus('Ready. Click “Open Xyra” to sign.')
+              setStatus('Click “Open Xyra” to sign.')
               setXyraPreparedTx(prepared)
               setXyraNeedsClick(true)
             } catch (e) {
@@ -487,7 +487,7 @@ export default function SignForm({
 
           setXyraPreparedTx(txBase)
           setXyraNeedsClick(true)
-          setStatus('Ready. Click “Open Xyra” to sign.')
+          setStatus('Click “Open Xyra” to sign.')
           return
         } catch (e) {
           setAwaiting(false)
@@ -519,7 +519,7 @@ export default function SignForm({
 
       setXyraPreparedTx(txBase)
       setXyraNeedsClick(true)
-      setStatus('Ready. Click “Open Xyra” to sign.')
+      setStatus('Click “Open Xyra” to sign.')
       return
     }
   }
@@ -1604,7 +1604,7 @@ export default function SignForm({
                       </>
                     )}{' '}
                     {screen === 'xyra' && xyraNeedsClick && xyraPreparedTx && (
-                      <div style={{ marginTop: 10 }}>
+                      <div style={{ marginTop: 30 }}>
                         <button
                           type="button"
                           className="button-action"
