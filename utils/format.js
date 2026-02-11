@@ -1037,6 +1037,11 @@ export const amountParced = (amount) => {
   } else if (amount.mpt_issuance_id) {
     originalCurrency = amount.mpt_issuance_id
     currency = amount.currencyDetails?.currency || '[MPT: ' + shortHash(amount.mpt_issuance_id, 4) + ']'
+
+    if (currency === nativeCurrency) {
+      currency = 'Fake' + nativeCurrency
+    }
+
     value = amount.value
     const scale = amount.currencyDetails?.scale || 0
     if (scale > 0) {
