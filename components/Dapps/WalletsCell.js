@@ -10,7 +10,8 @@ const WALLET_LOGOS = {
   joey: 'joey.png',
   metamask: 'metamask.png',
   ledger: 'ledger.png',
-  dcent: 'dcent.png'
+  dcent: 'dcent.png',
+  xyra: 'xyra.svg'
 }
 
 const WALLET_NAMES = {
@@ -21,7 +22,8 @@ const WALLET_NAMES = {
   joey: 'Joey',
   metamask: 'MetaMask',
   ledger: 'Ledger',
-  dcent: 'Dcent'
+  dcent: 'Dcent',
+  xyra: 'Xyra'
 }
 
 function WalletTooltip({ x, y, name }) {

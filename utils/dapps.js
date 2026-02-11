@@ -1,6 +1,6 @@
 export const DAPPS_META = [
   (() => {
-    const order = ['xaman', 'ledger', 'dcent', 'gemwallet', 'crossmark', 'metamask', 'walletconnect', 'joey']
+    const order = ['xaman', 'ledger', 'dcent', 'xyra', 'gemwallet', 'crossmark', 'metamask', 'walletconnect', 'joey']
     const meta = {
       10011010: {
         name: 'Magnetic',
@@ -70,7 +70,7 @@ export const DAPPS_META = [
       42697468: {
         name: 'Bithomp',
         url: 'bithomp.com',
-        wallets: ['xaman', 'ledger', 'crossmark', 'gemwallet', 'walletconnect', 'metamask'],
+        wallets: ['xaman', 'ledger', 'xyra', 'crossmark', 'gemwallet', 'walletconnect', 'metamask'],
         x: 'bithomp',
         discord: 'invite/ZahGJ29WEs',
         instagram: 'bithomp',
