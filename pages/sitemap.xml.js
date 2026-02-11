@@ -106,7 +106,8 @@ if (network === 'mainnet') {
     { loc: 'learn/image-services', changefreq: 'monthly', priority: '0.6' },
     { loc: 'learn/trustlines', changefreq: 'monthly', priority: '0.6' },
     { loc: 'learn/nft-explorer', changefreq: 'monthly', priority: '0.7' },
-    { loc: 'learn/paystrings', changefreq: 'monthly', priority: '0.5' }
+    { loc: 'learn/paystrings', changefreq: 'monthly', priority: '0.5' },
+    { loc: 'learn/send-payments', changefreq: 'monthly', priority: '0.5' },
   )
 }
 
@@ -156,7 +157,8 @@ function generateSiteMap(posts) {
     'learn/create-escrow',
     'learn/trustlines',
     'learn/nft-explorer',
-    'learn/paystrings'
+    'learn/paystrings',
+    'learn/send-payments'
   ]
 
   return `<?xml version="1.0" encoding="UTF-8"?>
