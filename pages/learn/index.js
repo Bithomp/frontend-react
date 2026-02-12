@@ -48,7 +48,8 @@ const buildLearnContent = () => {
         },
         { title: 'Bithomp Image Services', slug: 'image-services' },
         { title: 'Understanding Trustlines', slug: 'trustlines' },
-        { title: 'NFT Explorer', slug: 'nft-explorer' }
+        { title: 'NFT Explorer', slug: 'nft-explorer' },
+        { title: 'Send Payments with us: Key Benefits', slug: 'send-payments' }
       ]
     }
   ]
