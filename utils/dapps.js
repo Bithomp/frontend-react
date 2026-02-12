@@ -1,6 +1,6 @@
 export const DAPPS_META = [
   (() => {
-    const order = ['xaman', 'ledger', 'dcent', 'xyra', 'gemwallet', 'crossmark', 'metamask', 'walletconnect', 'joey']
+    const order = ['xaman', 'ledger', 'dcent', 'xyra', 'metamask', 'joey', 'walletconnect', 'gemwallet', 'crossmark']
     const meta = {
       10011010: {
         name: 'Magnetic',
@@ -27,7 +27,7 @@ export const DAPPS_META = [
       20221212: {
         name: 'XPMarket',
         url: 'xpmarket.com',
-        wallets: ['walletconnect', 'xaman', 'ledger', 'metamask'],
+        wallets: ['walletconnect', 'xaman', 'ledger', 'metamask', 'joey', 'gemwallet', 'crossmark'],
         x: 'xpmarket',
         linkedin: 'company/xpmarket',
         logo: 'xpmarket.png'
