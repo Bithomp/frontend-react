@@ -1534,17 +1534,15 @@ export default function SignForm({
                         />
                       )}
 
-                      {devNet && (
-                        <WalletTile
-                          name="Xyra (Popup wallet)"
-                          alt="Xyra"
-                          src="/images/wallets/xyra.svg"
-                          width={48}
-                          height={48}
-                          onClick={() => txSend({ wallet: 'xyra' })}
-                          disabled={false}
-                        />
-                      )}
+                      <WalletTile
+                        name="Xyra (Popup wallet)"
+                        alt="Xyra"
+                        src="/images/wallets/xyra.svg"
+                        width={48}
+                        height={48}
+                        onClick={() => txSend({ wallet: 'xyra' })}
+                        disabled={false}
+                      />
 
                       {!isMobile && (
                         <WalletTile
