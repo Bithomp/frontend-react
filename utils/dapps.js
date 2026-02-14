@@ -1,18 +1,20 @@
 export const DAPPS_META = [
   (() => {
-    const order = ['xaman', 'ledger', 'dcent', 'xyra', 'metamask', 'joey', 'walletconnect', 'gemwallet', 'crossmark']
+    const order = ['xaman', 'ledger', 'dcent', 'xyra', 'metamask', 'walletconnect', 'gemwallet', 'crossmark']
     const meta = {
       10011010: {
         name: 'Magnetic',
         url: 'xmagnetic.org',
-        wallets: ['xaman', 'walletconnect', 'joey', 'metamask', 'gemwallet', 'crossmark'],
+        wallets: ['xaman', 'metamask', 'gemwallet', 'crossmark'],
+        walletconect: ['joey', 'bifrost', 'girin'],
         x: 'MagneticXRPL',
         logo: 'magnetic.png'
       },
       101102979: {
         name: 'xrp.cafe',
         url: 'xrp.cafe',
-        wallets: ['walletconnect', 'xaman', 'gemwallet', 'crossmark'],
+        wallets: ['xaman', 'gemwallet', 'crossmark'],
+        walletconect: ['joey', 'bifrost', 'girin'],
         x: 'xrpcafe',
         discord: 'invite/xrpcafe',
         logo: 'xrpcafe.png'
@@ -20,14 +22,15 @@ export const DAPPS_META = [
       74920348: {
         name: 'First Ledger',
         url: 'firstledger.net',
-        wallets: ['joey'],
+        walletconect: ['joey'],
         x: 'first_ledger',
         logo: 'firstledger.png'
       },
       20221212: {
         name: 'XPMarket',
         url: 'xpmarket.com',
-        wallets: ['walletconnect', 'xaman', 'ledger', 'metamask', 'joey', 'gemwallet', 'crossmark'],
+        wallets: ['xaman', 'ledger', 'metamask', 'gemwallet', 'crossmark'],
+        walletconect: ['joey', 'bifrost', 'girin'],
         x: 'xpmarket',
         linkedin: 'company/xpmarket',
         logo: 'xpmarket.png'
@@ -35,7 +38,8 @@ export const DAPPS_META = [
       69420589: {
         name: 'bidds',
         url: 'bidds.com',
-        wallets: ['xaman', 'gemwallet', 'walletconnect'],
+        wallets: ['xaman', 'gemwallet'],
+        walletconect: ['bifrost'],
         x: 'biddsonxrpl',
         logo: 'bidds.png'
       },
@@ -61,7 +65,8 @@ export const DAPPS_META = [
       11782013: {
         name: 'Anodos',
         url: 'anodos.finance',
-        wallets: ['xaman', 'walletconnect'],
+        wallets: ['xaman'],
+        walletconect: ['joey', 'bifrost', 'girin'],
         x: 'AnodosFinance',
         discord: 'invite/CVUkhxCHvZ',
         linkedin: 'company/anodosfinance',
@@ -70,7 +75,8 @@ export const DAPPS_META = [
       42697468: {
         name: 'Bithomp',
         url: 'bithomp.com',
-        wallets: ['xaman', 'ledger', 'xyra', 'crossmark', 'gemwallet', 'walletconnect', 'metamask'],
+        wallets: ['xaman', 'ledger', 'xyra', 'crossmark', 'gemwallet', 'metamask'],
+        walletconect: ['joey', 'bifrost', 'girin', 'uphodl'],
         x: 'bithomp',
         discord: 'invite/ZahGJ29WEs',
         instagram: 'bithomp',
@@ -89,7 +95,8 @@ export const DAPPS_META = [
       20102305: {
         name: 'OpulenceX',
         url: 'opulencex.io',
-        wallets: ['xaman', 'crossmark', 'gemwallet', 'walletconnect'],
+        wallets: ['xaman', 'crossmark', 'gemwallet'],
+        walletconect: ['bifrost'],
         x: '_OpulenceX',
         linkedin: 'company/opulencex-ltd',
         logo: 'opulencex.png'
@@ -97,7 +104,8 @@ export const DAPPS_META = [
       13888813: {
         name: 'Zerpmon',
         url: 'zerpmon.world',
-        wallets: ['xaman', 'joey', 'walletconnect'],
+        wallets: ['xaman', 'crossmark'],
+        walletconect: ['joey', 'girin'],
         x: 'zerpmon',
         linkedin: 'company/gen3labs',
         logo: 'zerpmon.png'
@@ -135,7 +143,8 @@ export const DAPPS_META = [
       60006000: {
         name: 'Moai Finance',
         url: 'moai-finance.xyz',
-        wallets: ['metamask', 'walletconnect'],
+        wallets: ['metamask'],
+        walletconect: ['joey', 'bifrost', 'girin'],
         x: 'MoaiFinance',
         discord: 'invite/PSrF5z34dV',
         logo: 'moaifinance.png'
