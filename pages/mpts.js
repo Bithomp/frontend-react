@@ -625,7 +625,7 @@ export default function Mpts({
                                   <>
                                     <br />
                                     <b>Metadata:</b>
-                                    <pre style={{ maxHeight: 300 }}>
+                                    <pre style={{ maxHeight: 300, overflow: 'auto' }}>
                                       <code>{JSON.stringify(token.metadata, null, 2)}</code>
                                     </pre>
                                   </>
