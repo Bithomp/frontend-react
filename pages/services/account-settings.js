@@ -244,7 +244,6 @@ export default function AccountSettings({
     // TF Flags
     requireDestTag: {
       name: 'Destination Tag',
-      displayName: 'Destination Tag',
       status: (value) => (value ? 'Required' : 'Not Required'),
       actionText: (value) => (value ? "Don't Require" : 'Require'),
       type: 'tf',
@@ -253,7 +252,6 @@ export default function AccountSettings({
     },
     requireAuth: {
       name: 'Authorization',
-      displayName: 'Authorization',
       status: (value) => (value ? 'Required' : 'Not Required'),
       actionText: (value) => (value ? "Don't Require" : 'Require'),
       type: 'tf',
@@ -263,7 +261,6 @@ export default function AccountSettings({
     },
     disallowXRP: {
       name: 'Incoming ' + nativeCurrency,
-      displayName: 'Incoming ' + nativeCurrency,
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'tf',
@@ -273,7 +270,6 @@ export default function AccountSettings({
     // ASF Flags - Basic
     disallowIncomingCheck: {
       name: 'Incoming Checks',
-      displayName: 'Incoming Checks',
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'asf',
@@ -282,7 +278,6 @@ export default function AccountSettings({
     },
     disallowIncomingPayChan: {
       name: 'Incoming Payment Channels',
-      displayName: 'Incoming Payment Channels',
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'asf',
@@ -291,7 +286,6 @@ export default function AccountSettings({
     },
     disallowIncomingTrustline: {
       name: 'Incoming Trustlines',
-      displayName: 'Incoming Trustlines',
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'asf',
@@ -300,7 +294,6 @@ export default function AccountSettings({
     },
     depositAuth: {
       name: 'Deposit Authorization',
-      displayName: 'Deposit Authorization',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
@@ -309,7 +302,6 @@ export default function AccountSettings({
     },
     disallowIncomingNFTokenOffer: {
       name: 'Incoming NFT Offers',
-      displayName: 'Incoming NFT Offers',
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'asf',
@@ -318,7 +310,6 @@ export default function AccountSettings({
     },
     disallowIncomingRemit: {
       name: 'Incoming Remit',
-      displayName: 'Incoming Remit',
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
       type: 'asf',
@@ -327,7 +318,6 @@ export default function AccountSettings({
     },
     tshCollect: {
       name: 'Transactional Stakeholder (TSH) Collect',
-      displayName: 'Transactional Stakeholder (TSH) Collect',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
@@ -336,23 +326,21 @@ export default function AccountSettings({
     },
     allowTrustLineClawback: {
       name: 'Trustline Clawback',
-      displayName: 'Trustline Clawback',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? '' : 'Enable'),
       type: 'asf',
       description:
-        'Allow account to claw back tokens it has issued. Can only be set if the account has an empty owner directory (no trustlines, offers, escrows, payment channels, checks, or signer lists). After you set this flag, it cannot be reverted. The account permanently gains the ability to claw back issued assets on trust lines.',
+        'Allow account to claw back tokens it has issued. Can only be set if the account has an empty owner directory (no trustlines, offers, escrows, payment channels, checks, or signer lists). After you set this flag, it cannot be reverted. The account permanently gains the ability to claw back issued assets on trustlines.',
       isDefault: (value) => !value,
       isPermanent: true
     },
     allowTrustLineLocking: {
-      name: 'Trust Line Locking',
-      displayName: 'Trust Line Locking',
+      name: 'Trustline Locking',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? '' : 'Enable'),
       type: 'asf',
       description:
-        "Allow Trust Line tokens issued by this account to be held in escrow. If not enabled, tokens issued by this account can't be escrowed. After you enable this flag, it cannot be disabled.",
+        "Allow Trustline tokens issued by this account to be held in escrow. If not enabled, tokens issued by this account can't be escrowed. After you enable this flag, it cannot be disabled.",
       isDefault: (value) => !value,
       //isAdvanced: true,
       isPermanent: true
@@ -361,7 +349,6 @@ export default function AccountSettings({
     // ASF Flags - Advanced
     defaultRipple: {
       name: 'Default rippling',
-      displayName: 'Default rippling',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
@@ -372,7 +359,6 @@ export default function AccountSettings({
     },
     disableMaster: {
       name: 'Master Key',
-      displayName: 'Master Key',
       status: (value) => (value ? 'Disabled' : 'Enabled'),
       actionText: (value) => (value ? 'Enable' : 'Disable'),
       type: 'asf',
@@ -383,7 +369,6 @@ export default function AccountSettings({
     },
     globalFreeze: {
       name: 'Global Freeze',
-      displayName: 'Global Freeze',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? 'Disable' : 'Enable'),
       type: 'asf',
@@ -394,7 +379,6 @@ export default function AccountSettings({
     },
     noFreeze: {
       name: 'No Freeze',
-      displayName: 'No Freeze',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? '' : 'Enable'),
       type: 'asf',
@@ -1037,7 +1021,7 @@ export default function AccountSettings({
       <div key={flag} className="flag-item">
         <div className="flag-header">
           <div className="flag-info">
-            <span className="flag-name">{flagData.displayName}</span>
+            <span className="flag-name">{flagData.name}</span>
             <span className={`flag-status ${isNonDefault ? 'orange' : ''}`}>{flagData.status(currentValue)}</span>
           </div>
           {showButton && (

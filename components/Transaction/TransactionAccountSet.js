@@ -120,7 +120,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
       )}
       {specification.defaultRipple !== undefined && (
         <tr>
-          <TData className="bold" tooltip="Enable rippling on this account's trust lines by default.">
+          <TData className="bold" tooltip="Enable rippling on this account's trustlines by default.">
             Default ripple
           </TData>
           <TData className="bold orange">{specification.defaultRipple ? 'enabled' : 'disabled'}</TData>
@@ -159,7 +159,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
         <tr>
           <TData
             className="bold"
-            tooltip="Permanently give up the ability to freeze individual trust lines or disable Global Freeze. This flag can never be disabled after being enabled."
+            tooltip="Permanently give up the ability to freeze individual trustlines or disable Global Freeze. This flag can never be disabled after being enabled."
           >
             No freeze
           </TData>
@@ -208,8 +208,8 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
       )}
       {specification.disallowIncomingTrustline !== undefined && (
         <tr>
-          <TData className="bold" tooltip="Block incoming trust lines.">
-            Incoming trust line
+          <TData className="bold" tooltip="Block incoming trustlines.">
+            Incoming trustline
           </TData>
           <TData className="bold">{specification.disallowIncomingTrustline ? 'disallow' : 'allow'}</TData>
         </tr>
@@ -249,7 +249,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
       {specification.allowTrustLineClawback !== undefined && (
         <tr>
           <TData className="bold" tooltip="allow account to claw back tokens it has issued.">
-            Trust line Clawback
+            Trustline Clawback
           </TData>
           <TData className="bold">{specification.allowTrustLineClawback ? 'allowed' : 'disallow'}</TData>
         </tr>

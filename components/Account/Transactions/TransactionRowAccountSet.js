@@ -92,7 +92,7 @@ export const TransactionRowAccountSet = ({ data, address, index, selectedCurrenc
 
       {specification.disallowIncomingTrustline !== undefined && (
         <div className="bold">
-          Incoming trust line:{' '}
+          Incoming trustline:{' '}
           <span className="orange">{specification.disallowIncomingTrustline ? 'disallow' : 'allow'}</span>
         </div>
       )}

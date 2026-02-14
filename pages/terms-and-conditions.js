@@ -169,7 +169,7 @@ export default function TermsAndConditions() {
             You assume all risk of: (i) guarding and storing your crypto assets, tokens and private keys, (ii) auditing
             the quality, security, value, and merit of the assets that you transact, (iii) auditing the legality and
             legal compliance of your transactions of all assets with any counterparties, (iv) auditing counterparties
-            with whom you create a trust line, and (v) using Service to perform any operation or transaction.
+            with whom you create a trustline, and (v) using Service to perform any operation or transaction.
           </li>
           <li>
             Company reserves the right to change or modify these Terms at any time and in our sole discretion. If we

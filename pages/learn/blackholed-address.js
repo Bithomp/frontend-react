@@ -108,7 +108,7 @@ export default function BlackholedAddress() {
           </p>
           <p>
             Meaning: The base58 encoding of the value 1 in the {explorerName}. Used as a placeholder for the issuer of a
-            trust line balance in RippleState entries.
+            trustline balance in RippleState entries.
           </p>
           <p>
             3. Address:{' '}
