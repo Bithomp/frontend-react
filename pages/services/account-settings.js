@@ -42,9 +42,9 @@ const ASF_FLAGS = {
   disallowIncomingRemit: 16,
   tshCollect: 11,
   allowTrustLineClawback: 16,
-  asfDefaultRipple: 8,
-  asfDepositAuth: 9,
-  asfDisableMaster: 4,
+  defaultRipple: 8,
+  depositAuth: 9,
+  disableMaster: 4,
   allowTrustLineLocking: 17
 }
 
@@ -217,10 +217,10 @@ export default function AccountSettings({
       'disallowIncomingCheck',
       'disallowIncomingPayChan',
       'disallowIncomingTrustline',
-      'asfDepositAuth'
+      'depositAuth'
     ]
 
-    const advancedFlags = ['asfDefaultRipple', 'asfDisableMaster', 'globalFreeze', 'noFreeze']
+    const advancedFlags = ['defaultRipple', 'disableMaster', 'globalFreeze', 'noFreeze']
 
     if (xahauNetwork) {
       return {
@@ -238,12 +238,6 @@ export default function AccountSettings({
   const flagGroups = getAvailableAsfFlags()
   const tfFlagKeys = Object.keys(TF_FLAGS)
   const isPro = sessionToken && !subscriptionExpired
-
-  // Map UI ASF flag keys to their corresponding keys returned by the ledger API
-  const asfLedgerFlagMapping = {
-    asfDefaultRipple: 'defaultRipple',
-    asfDepositAuth: 'depositAuth'
-  }
 
   // Flag display names and descriptions
   const flagDetails = {
@@ -304,7 +298,7 @@ export default function AccountSettings({
       description: 'If enabled, other accounts cannot create trustlines to this account.',
       isDefault: (value) => !value
     },
-    asfDepositAuth: {
+    depositAuth: {
       name: 'Deposit Authorization',
       displayName: 'Deposit Authorization',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
@@ -365,7 +359,7 @@ export default function AccountSettings({
     },
 
     // ASF Flags - Advanced
-    asfDefaultRipple: {
+    defaultRipple: {
       name: 'Default rippling',
       displayName: 'Default rippling',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
@@ -376,7 +370,7 @@ export default function AccountSettings({
       isDefault: (value) => !value, // Rippling DISABLED is the default state (orange highlight when enabled)
       isAdvanced: true
     },
-    asfDisableMaster: {
+    disableMaster: {
       name: 'Master Key',
       displayName: 'Master Key',
       status: (value) => (value ? 'Disabled' : 'Enabled'),
@@ -456,20 +450,14 @@ export default function AccountSettings({
           const newAsfFlags = {}
           const allAsfFlags = [...flagGroups.basic, ...flagGroups.advanced]
           allAsfFlags.forEach((flag) => {
-            const ledgerKey = asfLedgerFlagMapping[flag] || flag
-            newAsfFlags[flag] = !!ledgerFlags[ledgerKey]
+            newAsfFlags[flag] = !!ledgerFlags[flag]
           })
           setFlags(newAsfFlags)
 
           // Initialize TF flags with safe defaults
           const newTfFlags = {}
           tfFlagKeys.forEach((flag) => {
-            const asfMapping = {
-              requireDestTag: 'requireDestTag',
-              requireAuth: 'requireAuth',
-              disallowXRP: 'disallowXRP'
-            }
-            newTfFlags[flag] = !!ledgerFlags[asfMapping[flag]]
+            newTfFlags[flag] = !!ledgerFlags[flag]
           })
           setTfFlags(newTfFlags)
         } else {
@@ -943,7 +931,7 @@ export default function AccountSettings({
                 ...prev.ledgerInfo,
                 flags: {
                   ...prev.ledgerInfo.flags,
-                  [asfLedgerFlagMapping[flag] || flag]: newValue
+                  [flag]: newValue
                 }
               }
             }
@@ -985,18 +973,13 @@ export default function AccountSettings({
         }))
         setAccountData((prev) => {
           if (prev && prev.ledgerInfo) {
-            const asfMapping = {
-              requireDestTag: 'requireDestTag',
-              requireAuth: 'requireAuth',
-              disallowXRP: 'disallowXRP'
-            }
             return {
               ...prev,
               ledgerInfo: {
                 ...prev.ledgerInfo,
                 flags: {
                   ...prev.ledgerInfo.flags,
-                  [asfMapping[flag]]: newValue
+                  [flag]: newValue
                 }
               }
             }
