@@ -242,8 +242,7 @@ export default function AccountSettings({
   // Map UI ASF flag keys to their corresponding keys returned by the ledger API
   const asfLedgerFlagMapping = {
     asfDefaultRipple: 'defaultRipple',
-    asfDepositAuth: 'depositAuth',
-    asfAllowTrustLineLocking: 'allowTrustLineLocking'
+    asfDepositAuth: 'depositAuth'
   }
 
   // Flag display names and descriptions
