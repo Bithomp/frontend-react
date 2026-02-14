@@ -44,7 +44,8 @@ const ASF_FLAGS = {
   allowTrustLineClawback: 16,
   asfDefaultRipple: 8,
   asfDepositAuth: 9,
-  asfDisableMaster: 4
+  asfDisableMaster: 4,
+  allowTrustLineLocking: 17
 }
 
 // TF flags (can be combined in one transaction)
@@ -228,7 +229,7 @@ export default function AccountSettings({
       }
     } else {
       return {
-        basic: [...commonAsfFlags, 'disallowIncomingNFTokenOffer', 'allowTrustLineClawback'],
+        basic: [...commonAsfFlags, 'disallowIncomingNFTokenOffer', 'allowTrustLineClawback', 'allowTrustLineLocking'],
         advanced: advancedFlags
       }
     }
@@ -241,7 +242,8 @@ export default function AccountSettings({
   // Map UI ASF flag keys to their corresponding keys returned by the ledger API
   const asfLedgerFlagMapping = {
     asfDefaultRipple: 'defaultRipple',
-    asfDepositAuth: 'depositAuth'
+    asfDepositAuth: 'depositAuth',
+    asfAllowTrustLineLocking: 'allowTrustLineLocking'
   }
 
   // Flag display names and descriptions
@@ -348,6 +350,18 @@ export default function AccountSettings({
       description:
         'Allow account to claw back tokens it has issued. Can only be set if the account has an empty owner directory (no trustlines, offers, escrows, payment channels, checks, or signer lists). After you set this flag, it cannot be reverted. The account permanently gains the ability to claw back issued assets on trust lines.',
       isDefault: (value) => !value,
+      isPermanent: true
+    },
+    allowTrustLineLocking: {
+      name: 'Trust Line Locking',
+      displayName: 'Trust Line Locking',
+      status: (value) => (value ? 'Enabled' : 'Disabled'),
+      actionText: (value) => (value ? '' : 'Enable'),
+      type: 'asf',
+      description:
+        "Allow Trust Line tokens issued by this account to be held in escrow. If not enabled, tokens issued by this account can't be escrowed. After you enable this flag, it cannot be disabled.",
+      isDefault: (value) => !value,
+      //isAdvanced: true,
       isPermanent: true
     },
 
@@ -486,19 +500,6 @@ export default function AccountSettings({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])
-
-  const canEnableTrustLineClawback = () => {
-    return !accountData?.ledgerInfo?.ownerCount
-  }
-
-  const canEnableRequireAuth = () => {
-    // Can only be enabled if the account has no owner objects (trustlines, offers, escrows, etc.)
-    return !accountData?.ledgerInfo?.ownerCount
-  }
-
-  const canChangeGlobalFreeze = () => {
-    return !flags?.noFreeze
-  }
 
   const handleSetNftTokenMinter = () => {
     if (!isAddressValid(nftTokenMinter.trim())) {
@@ -1024,19 +1025,17 @@ export default function AccountSettings({
     let disabledReason = ''
 
     // Check specific conditions for disabling buttons
-    if (flag === 'allowTrustLineClawback' && !canEnableTrustLineClawback() && !currentValue) {
+    if (
+      (flag === 'allowTrustLineClawback' || flag === 'requireAuth') &&
+      accountData?.ledgerInfo?.ownerCount &&
+      !currentValue
+    ) {
       buttonDisabled = true
       disabledReason =
         'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
     }
 
-    if (flag === 'requireAuth' && !canEnableRequireAuth() && !currentValue) {
-      buttonDisabled = true
-      disabledReason =
-        'Can only be enabled if the account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
-    }
-
-    if (flag === 'globalFreeze' && !canChangeGlobalFreeze()) {
+    if (flag === 'globalFreeze' && flags?.noFreeze) {
       buttonDisabled = true
       disabledReason = 'Cannot change Global Freeze when No Freeze is enabled'
     }
@@ -1264,8 +1263,8 @@ export default function AccountSettings({
                       messageKeyInput && !messageKeyValidation.isValid
                         ? 'input-error'
                         : messageKeyInput && messageKeyValidation.isValid
-                        ? 'input-valid'
-                        : ''
+                          ? 'input-valid'
+                          : ''
                     }`}
                     placeholder="e.g., 020000000000000000000000000000000000000000000000000000000000000000"
                     value={messageKeyInput}
@@ -1359,8 +1358,8 @@ export default function AccountSettings({
                       tickSizeInput && !tickSizeValidation.isValid
                         ? 'input-error'
                         : tickSizeInput && tickSizeValidation.isValid
-                        ? 'input-valid'
-                        : ''
+                          ? 'input-valid'
+                          : ''
                     }`}
                     placeholder="0 to clear, or 3-15"
                     value={tickSizeInput}
@@ -1419,8 +1418,8 @@ export default function AccountSettings({
                       walletLocatorInput && !walletLocatorValidation.isValid
                         ? 'input-error'
                         : walletLocatorInput && walletLocatorValidation.isValid
-                        ? 'input-valid'
-                        : ''
+                          ? 'input-valid'
+                          : ''
                     }`}
                     placeholder="e.g., 0000000000000000000000000000000000000000000000000000000000000000"
                     value={walletLocatorInput}
