@@ -61,6 +61,22 @@ const askInfoScreens = [
   'nftTransfer',
   'NFTokenModify'
 ]
+const getRequiredInfoScreen = ({ signRequest, agreedToRisks }) => {
+  if (!signRequest || agreedToRisks) return null
+  const tx = signRequest.request || { TransactionType: 'SignIn' }
+  if (tx.TransactionType === 'NFTokenAcceptOffer' && signRequest.offerAmount !== '0') return 'NFTokenAcceptOffer'
+  if (signRequest.action === 'nftTransfer') return 'nftTransfer'
+  if (tx.TransactionType === 'NFTokenCreateOffer' || tx.TransactionType === 'URITokenCreateSellOffer')
+    return 'NFTokenCreateOffer'
+
+  if (tx.TransactionType === 'NFTokenBurn') return 'NFTokenBurn'
+  if (tx.TransactionType === 'NFTokenModify') return 'NFTokenModify'
+  if (signRequest.action === 'setDomain') return 'setDomain'
+  if (signRequest.action === 'setDid') return 'setDid'
+  if (signRequest.action === 'setAvatar') return 'setAvatar'
+  if (signRequest.action && voteTxs.includes(signRequest.action)) return signRequest.action
+  return null
+}
 const noCheckboxScreens = [...voteTxs, 'setDomain', 'setDid', 'setAvatar']
 
 let transactionFetchTries = 0
@@ -113,6 +129,16 @@ export default function SignForm({
     if (!isMobile) {
       const w = signRequest?.wallet || account?.wallet || choosenWallet
       if (w === 'xyra') {
+        // ✅ If this request needs additional info (Domain/DID/Avatar/NFT confirms/etc),
+        // show that screen first (same UX as other wallets)
+        const infoScreen = getRequiredInfoScreen({ signRequest, agreedToRisks })
+        if (infoScreen) {
+          setScreen(infoScreen)
+          setStatus('')
+          setAwaiting(false)
+          return
+        }
+
         // If already logged in with Xyra, go straight to Xyra screen (no choose-app)
         if (account?.wallet === 'xyra' && account?.address) {
           setScreen('xyra')
@@ -212,6 +238,11 @@ export default function SignForm({
   }, [uuid])
 
   const txSend = async (options) => {
+    const infoScreen = getRequiredInfoScreen({ signRequest, agreedToRisks })
+    if (infoScreen) {
+      setScreen(infoScreen)
+      return
+    }
     //when the request is wallet specific it's a priority, logout if not matched
     //when request is not wallet specific, use the account wallet if loggedin
     const forcedWallet = signRequest?.wallet // only if request forces a wallet
@@ -250,17 +281,9 @@ export default function SignForm({
       tx.TransactionType = 'SignIn'
     }
 
-    if (tx.TransactionType === 'NFTokenAcceptOffer' && !agreedToRisks && signRequest.offerAmount !== '0') {
-      setScreen('NFTokenAcceptOffer')
-      return
-    }
-
     if (signRequest.action === 'nftTransfer') {
       tx.Amount = '0'
-      if (!agreedToRisks) {
-        setScreen('nftTransfer')
-        return
-      } else {
+      if (agreedToRisks) {
         if (!signRequest.request?.Destination) {
           setStatus(t('form.error.address-empty'))
           setFormError(true)
@@ -270,10 +293,7 @@ export default function SignForm({
     }
 
     if (tx.TransactionType === 'NFTokenCreateOffer' || tx.TransactionType === 'URITokenCreateSellOffer') {
-      if (!agreedToRisks) {
-        setScreen('NFTokenCreateOffer')
-        return
-      } else {
+      if (agreedToRisks) {
         if (signRequest.privateOffer && !signRequest.request?.Destination) {
           setStatus(t('form.error.address-empty'))
           setFormError(true)
@@ -285,36 +305,6 @@ export default function SignForm({
           return
         }
       }
-    }
-
-    if (tx.TransactionType === 'NFTokenBurn' && !agreedToRisks) {
-      setScreen('NFTokenBurn')
-      return
-    }
-
-    if (tx.TransactionType === 'NFTokenModify' && !agreedToRisks) {
-      setScreen('NFTokenModify')
-      return
-    }
-
-    if (signRequest.action === 'setDomain' && !agreedToRisks) {
-      setScreen('setDomain')
-      return
-    }
-
-    if (signRequest.action === 'setDid' && !agreedToRisks) {
-      setScreen('setDid')
-      return
-    }
-
-    if (signRequest.action === 'setAvatar' && !agreedToRisks) {
-      setScreen('setAvatar')
-      return
-    }
-
-    if (signRequest.action && voteTxs.includes(signRequest.action) && !agreedToRisks) {
-      setScreen(signRequest.action)
-      return
     }
 
     if (signRequest.action === 'castVoteHook' && agreedToRisks && (hookData.value || erase)) {
