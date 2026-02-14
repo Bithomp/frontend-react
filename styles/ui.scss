@@ -884,6 +884,16 @@ body.dark {
   cursor: default;
 }
 
+.flag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  max-width: 280px;
+  .flag {
+    margin-right: 0;
+  }
+}
+
 //common ui
 @include meta.load-css("components/header.scss");
 @include meta.load-css("components/switch.scss");
