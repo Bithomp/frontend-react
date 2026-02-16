@@ -42,7 +42,8 @@ const domainNode = (domain) => {
 
 export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification, tx } = data
+
+  const { specification, tx, outcome } = data
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
@@ -126,7 +127,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold orange">{specification.defaultRipple ? 'enabled' : 'disabled'}</TData>
         </tr>
       )}
-      {specification.disallowXRP !== undefined && (
+      {(specification.disallowXRP !== undefined || outcome?.settingsChanges?.disallowXRP !== undefined) && (
         <tr>
           <TData
             className="bold"
@@ -136,15 +137,19 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           >
             Incoming {nativeCurrency}
           </TData>
-          <TData className="bold">{specification.disallowXRP ? 'disallow' : 'allow'}</TData>
+          <TData className="bold">
+            {specification.disallowXRP || outcome?.settingsChanges?.disallowXRP ? 'disallow' : 'allow'}
+          </TData>
         </tr>
       )}
-      {specification.requireDestTag !== undefined && (
+      {(specification.requireDestTag !== undefined || outcome?.settingsChanges?.requireDestTag !== undefined) && (
         <tr>
           <TData className="bold" tooltip="Require a destination tag to send transactions to this account.">
             Destination tag
           </TData>
-          <TData className="bold orange">{specification.requireDestTag ? 'require' : "don't require"}</TData>
+          <TData className="bold orange">
+            {specification.requireDestTag || outcome?.settingsChanges?.requireDestTag ? 'require' : "don't require"}
+          </TData>
         </tr>
       )}
       {specification.disableMaster !== undefined && (
@@ -174,12 +179,14 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold">{specification.depositAuth ? 'enabled' : 'disabled'}</TData>
         </tr>
       )}
-      {specification.requireAuth !== undefined && (
+      {(specification.requireAuth !== undefined || outcome?.settingsChanges?.requireAuth !== undefined) && (
         <tr>
           <TData className="bold" tooltip="Require authorization for users to hold balances issued by this address.">
             Require authorization
           </TData>
-          <TData className="bold">{specification.requireAuth ? 'enabled' : 'disabled'}</TData>
+          <TData className="bold">
+            {specification.requireAuth || outcome?.settingsChanges?.requireAuth ? 'enabled' : 'disabled'}
+          </TData>
         </tr>
       )}
       {specification.disallowIncomingCheck !== undefined && (
