@@ -3,7 +3,7 @@ import { nativeCurrency } from '../../../utils'
 import { CiSettings } from 'react-icons/ci'
 
 export const TransactionRowAccountSet = ({ data, address, index, selectedCurrency }) => {
-  const { specification, tx } = data
+  const { specification, tx, outcome } = data
 
   const txTypeSpecial = <span className="bold">Account settings update</span>
 
@@ -34,15 +34,21 @@ export const TransactionRowAccountSet = ({ data, address, index, selectedCurrenc
         </div>
       )}
 
-      {specification.disallowXRP !== undefined && (
+      {(specification.disallowXRP !== undefined || outcome?.settingsChanges?.disallowXRP !== undefined) && (
         <div className="bold">
-          Incoming {nativeCurrency}: <span>{specification.disallowXRP ? 'disallow' : 'allow'}</span>
+          Incoming {nativeCurrency}:{' '}
+          <span className="orange">
+            {specification.disallowXRP || outcome?.settingsChanges?.disallowXRP ? 'disallow' : 'allow'}
+          </span>
         </div>
       )}
 
-      {specification.requireDestTag !== undefined && (
+      {(specification.requireDestTag !== undefined || outcome?.settingsChanges?.requireDestTag !== undefined) && (
         <div className="bold">
-          Destination tag: <span className="orange">{specification.requireDestTag ? 'require' : "don't require"}</span>
+          Destination tag:{' '}
+          <span className="orange">
+            {specification.requireDestTag || outcome?.settingsChanges?.requireDestTag ? 'require' : "don't require"}
+          </span>
         </div>
       )}
 
@@ -64,9 +70,12 @@ export const TransactionRowAccountSet = ({ data, address, index, selectedCurrenc
         </div>
       )}
 
-      {specification.requireAuth !== undefined && (
+      {(specification.requireAuth !== undefined || outcome?.settingsChanges?.requireAuth !== undefined) && (
         <div className="bold">
-          Require authorization: <span className="orange">{specification.requireAuth ? 'enabled' : 'disabled'}</span>
+          Require authorization:{' '}
+          <span className="orange">
+            {specification.requireAuth || outcome?.settingsChanges?.requireAuth ? 'enabled' : 'disabled'}
+          </span>
         </div>
       )}
 
