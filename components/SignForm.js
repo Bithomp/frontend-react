@@ -1593,7 +1593,7 @@ export default function SignForm({
                         )}
                       </>
                     )}{' '}
-                    {screen === 'xyra' && xyraNeedsClick && xyraPreparedTx && (
+                    {screen === 'xyra' && !awaiting && xyraNeedsClick && xyraPreparedTx && (
                       <div style={{ marginTop: 30 }}>
                         <button
                           type="button"
@@ -1602,7 +1602,8 @@ export default function SignForm({
                             try {
                               const txToSign = xyraPreparedTx || signRequest?.request || { TransactionType: 'SignIn' }
 
-                              // sign popup must happen on this click
+                              setXyraNeedsClick(false)
+
                               setStatus('Opening Xyra for signing...')
                               const blob = await xyraSignOnly({ tx: txToSign, setStatus })
 
@@ -1614,6 +1615,7 @@ export default function SignForm({
 
                               setStatus('Submitting transaction to the network...')
                               setAwaiting(true)
+
                               broadcastTransaction({
                                 blob,
                                 setStatus,
@@ -1627,6 +1629,7 @@ export default function SignForm({
                                 t
                               })
                             } catch (e) {
+                              setXyraNeedsClick(true)
                               setAwaiting(false)
                               setStatus(String(e?.message || e))
                             }
