@@ -135,6 +135,7 @@ export default function DexOrdersData({ account, offerList, ledgerTimestamp, set
               onClick={() =>
                 setSignRequest({
                   request: {
+                    Account: offer.Account,
                     TransactionType: 'OfferCancel',
                     OfferSequence: offer.Sequence
                   }
