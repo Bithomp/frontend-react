@@ -365,13 +365,8 @@ const MyApp = ({ Component, pageProps }) => {
                       '994824d1e0b935f48ec3570c9d51fe5af9bbd9246b6f57210906f8b853ad2196', // Girin
                       'd9f5432e932c6fad8e19a0cea9d4a3372a84aed16e98a52e6655dd2821a63404', // Joy
                       '37a686ab6223cd42e2886ed6e5477fce100a4fb565dcd57ed4f81f7c12e93053', // Bifrost
-                      //'4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0', // Trustwallet
-                      //'1f69170bf7a9bdcf89403ec012659b7124e158f925cdd4a2be49274c24cf5e5d', // Cool wallet
-                      '380efff687c7d2222d62378c588d45d2e0ff40a0fc4d8f778c4d6fbe58cec5ed', // Atomic
-                      //'fe9127f49fd95e20e6d877d0e224da6a75062f52d8fb9784856a5cb7ef39e9d2', // Ellipal
-                      //'f2436c67184f158d1beda5df53298ee84abfc367581e4505134b5bcf5f46697d', // crypto.com onchain wallet
-                      '0e4915107da5b3408b38e248f7a710f4529d54cd30e9d12ff0eb886d45c18e92', // Arculus
-                      '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927' //Ledger Live
+                      '0e4915107da5b3408b38e248f7a710f4529d54cd30e9d12ff0eb886d45c18e92' // Arculus
+                      //'19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927' // Ledger Live
                     ]
                   }}
                 />
