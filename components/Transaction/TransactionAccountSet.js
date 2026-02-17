@@ -261,6 +261,14 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold">{specification.allowTrustLineClawback ? 'allowed' : 'disallow'}</TData>
         </tr>
       )}
+      {specification.allowTrustLineLocking !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Allow Trustline tokens issued by this account to be held in escrow.">
+            Trustline Locking
+          </TData>
+          <TData className="bold">{specification.allowTrustLineLocking ? 'allowed' : 'disallow'}</TData>
+        </tr>
+      )}
       {specification.disallowIncomingRemit !== undefined && (
         <tr>
           <TData className="bold" tooltip="Block incoming Remit.">
