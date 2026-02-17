@@ -9,7 +9,8 @@ import {
   encode,
   decode,
   addAndRemoveQueryParams,
-  explorerName
+  explorerName,
+  isNativeCurrency
 } from '../../utils'
 import { multiply } from '../../utils/calc'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -235,10 +236,27 @@ export default function CreateEscrow({
     }
 
     try {
+      let amountData = null
+
+      if (isNativeCurrency(selectedToken)) {
+        amountData = multiply(amount, 1000000) // drops
+      } else {
+        // IMPORTANT: Escrow for IOU requires a trustline at destination (no partial payment escape hatch like Payment)
+        if (!selectedToken?.issuer || !selectedToken?.currency) {
+          setError('Please select a valid token (currency + issuer).')
+          return
+        }
+        amountData = {
+          currency: selectedToken.currency,
+          issuer: selectedToken.issuer,
+          value: String(amount)
+        }
+      }
+
       let escrowCreate = {
         TransactionType: 'EscrowCreate',
         Destination: address,
-        Amount: multiply(amount, 1000000)
+        Amount: amountData
       }
 
       if (destinationTag) {
