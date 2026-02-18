@@ -1281,7 +1281,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                 {externalUrl(data.metadata) && (
                                   <tr>
                                     <td>{t('table.external-url')}</td>
-                                    <td>{externalUrl(data.metadata)}</td>
+                                    <td className="brake">{externalUrl(data.metadata)}</td>
                                   </tr>
                                 )}
                                 <tr>
