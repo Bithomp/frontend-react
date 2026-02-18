@@ -1502,7 +1502,7 @@ export default function SignForm({
                       {/* available only for mainnet and testnet */}
                       {(networkId === 0 || networkId === 1) && (
                         <WalletTile
-                          name="WalletConnect"
+                          name={isMobile ? 'WalletConnect' : 'Joey, Bifrost, Girin, UpHODL'}
                           alt="WalletConnect"
                           onClick={() => txSend({ wallet: 'walletconnect' })}
                           disabled={false}
