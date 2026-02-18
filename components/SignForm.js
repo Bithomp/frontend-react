@@ -81,6 +81,13 @@ const noCheckboxScreens = [...voteTxs, 'setDomain', 'setDid', 'setAvatar']
 
 let transactionFetchTries = 0
 
+const wcWalletIcons = [
+  { id: 'joey', name: 'Joey', src: '/images/wallets/square-logos/joey.png' },
+  { id: 'bifrost', name: 'Bifrost', src: '/images/wallets/square-logos/bifrost.png' },
+  { id: 'girin', name: 'Girin', src: '/images/wallets/square-logos/girin.png' },
+  { id: 'uphodl', name: 'Uphodl', src: '/images/wallets/square-logos/uphodl.png' }
+]
+
 export default function SignForm({
   setSignRequest,
   account,
@@ -1150,7 +1157,9 @@ export default function SignForm({
   const supportedByMetamask = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
   const supportedByTrezor = !signRequest?.request?.TransactionType || signRequest.request.TransactionType === 'Payment'
 
-  const WalletTile = ({ name, alt, src, onClick, disabled, width, height }) => {
+  const WalletTile = ({ name, alt, src, onClick, disabled, width, height, extraIcons, iconsOnly }) => {
+    const iconSize = iconsOnly ? (isMobile ? 22 : 34) : 16
+
     return (
       <div
         className={`signin-app-logo${disabled ? ' disabled' : ''}`}
@@ -1165,13 +1174,28 @@ export default function SignForm({
         title={disabled ? `${name} is not supported in this environment` : name}
       >
         <div className="signin-app-inner">
-          <Image alt={alt} src={src} width={width} height={height} />
+          {!iconsOnly && src ? <Image alt={alt} src={src} width={width} height={height} /> : null}
+
+          {Array.isArray(extraIcons) && extraIcons.length > 0 && (
+            <div className={`signin-app-wallets ${iconsOnly ? 'icons-only' : ''}`}>
+              {extraIcons.slice(0, 4).map((w) => (
+                <Image
+                  key={w.id || w}
+                  alt={w.name || String(w)}
+                  src={w.src}
+                  width={iconSize}
+                  height={iconSize}
+                  draggable={false}
+                />
+              ))}
+            </div>
+          )}
+
           <div className="signin-app-name">{name}</div>
         </div>
       </div>
     )
   }
-
   return (
     <>
       {(networkId === 0 || networkId === 1) && (
@@ -1475,6 +1499,30 @@ export default function SignForm({
                         />
                       )}
 
+                      {/* available only for mainnet and testnet */}
+                      {(networkId === 0 || networkId === 1) && (
+                        <WalletTile
+                          name="WalletConnect"
+                          alt="WalletConnect"
+                          onClick={() => txSend({ wallet: 'walletconnect' })}
+                          disabled={false}
+                          extraIcons={wcWalletIcons}
+                          iconsOnly={true}
+                        />
+                      )}
+
+                      {!isMobile && (
+                        <WalletTile
+                          name="MetaMask (Browser wallet)"
+                          alt="Metamask"
+                          src="/images/wallets/metamask.svg"
+                          width={44}
+                          height={44}
+                          onClick={() => txSend({ wallet: 'metamask' })}
+                          disabled={!supportedByMetamask}
+                        />
+                      )}
+
                       {!isMobile && (
                         <WalletTile
                           name="Crossmark (Browser wallet)"
@@ -1496,31 +1544,6 @@ export default function SignForm({
                           height={44}
                           onClick={() => txSend({ wallet: 'gemwallet' })}
                           disabled={false}
-                        />
-                      )}
-
-                      {/* available only for mainnet and testnet */}
-                      {(networkId === 0 || networkId === 1) && (
-                        <WalletTile
-                          name="Multiple wallets"
-                          alt="WalletConnect"
-                          src="/images/wallets/walletconnect-large.svg"
-                          width={110}
-                          height={48}
-                          onClick={() => txSend({ wallet: 'walletconnect' })}
-                          disabled={false}
-                        />
-                      )}
-
-                      {!isMobile && (
-                        <WalletTile
-                          name="MetaMask (Browser wallet)"
-                          alt="Metamask"
-                          src="/images/wallets/metamask.svg"
-                          width={44}
-                          height={44}
-                          onClick={() => txSend({ wallet: 'metamask' })}
-                          disabled={!supportedByMetamask}
                         />
                       )}
 

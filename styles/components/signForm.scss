@@ -108,6 +108,30 @@
           }
         }
 
+        .signin-app-wallets {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          flex-wrap: wrap;
+          margin-bottom: 6px;
+
+          // default (non iconsOnly)
+          img {
+            border-radius: 8px;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
+          }
+
+          // WalletConnect tile: desktop
+          &.icons-only {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 10px;
+            margin-bottom: 8px;
+            min-height: 38px;
+          }
+        }
+
         .signin-app-name {
           font-size: 12px;
           font-weight: 600;
@@ -128,6 +152,33 @@
           &:hover {
             background-color: var(--background-main);
             box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
+          }
+        }
+      }
+
+      // Desktop sizes (default)
+      .signin-app-wallets.icons-only img {
+        width: 28px !important;
+        height: 28px !important;
+      }
+
+      // Mobile override
+      @media only screen and (max-width: 480px) {
+        .signin-app-logo {
+          .signin-app-wallets.icons-only {
+            gap: 6px;
+            margin-bottom: 4px;
+            min-height: 42px;
+          }
+
+          .signin-app-wallets.icons-only img {
+            width: 18px !important;
+            height: 18px !important;
+            border-radius: 6px;
+          }
+
+          .signin-app-inner {
+            gap: 3px;
           }
         }
       }
