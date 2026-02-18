@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 import { setTabParams } from '../utils'
 
 import SEO from '../components/SEO'
-import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow } from '../utils/format'
+import { shortNiceNumber, amountFormat, timeOrDate, timeFromNow, niceNumber } from '../utils/format'
 import { dappBySourceTag } from '../utils/transaction'
 import { DAPPS_META } from '../utils/dapps'
 import DappLogo from '../components/Dapps/DappLogo'
@@ -157,6 +157,7 @@ export default function Dapps({
   const [expandedRowKey, setExpandedRowKey] = useState(null)
   const [excludeNoWallets, setExcludeNoWallets] = useState(!includeAppsWithoutExternalSigningQuery)
   const [walletFilter, setWalletFilter] = useState(walletQuery || '')
+  const [sentTip, setSentTip] = useState(null)
 
   const abortControllerRef = useRef()
 
@@ -486,15 +487,21 @@ export default function Dapps({
 
                         <td className="right">
                           {shortNiceNumber(d?.uniqueSourceAddresses, 0)}
-                          <Delta cur={d?.uniqueSourceAddresses} prev={prev?.uniqueSourceAddresses} />
+                          <span style={{ opacity: 0.7 }}>
+                            <Delta cur={d?.uniqueSourceAddresses} prev={prev?.uniqueSourceAddresses} />
+                          </span>
                         </td>
                         <td className="right">
                           {shortNiceNumber(d?.uniqueInteractedAddresses, 0)}
-                          <Delta cur={d?.uniqueInteractedAddresses} prev={prev?.uniqueInteractedAddresses} />
+                          <span style={{ opacity: 0.7 }}>
+                            <Delta cur={d?.uniqueInteractedAddresses} prev={prev?.uniqueInteractedAddresses} />
+                          </span>
                         </td>
                         <td className="right">
                           {shortNiceNumber(d?.totalTransactions, 0)}
-                          <Delta cur={d?.totalTransactions} prev={prev?.totalTransactions} />
+                          <span style={{ opacity: 0.7 }}>
+                            <Delta cur={d?.totalTransactions} prev={prev?.totalTransactions} />
+                          </span>
                         </td>
 
                         <td className="right">
@@ -509,11 +516,36 @@ export default function Dapps({
                           />
                         </td>
 
-                        <td className="right no-brake" suppressHydrationWarning>
-                          {shortNiceNumber(d?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
+                        <td className="right no-brake">
+                          <span
+                            onMouseEnter={(e) => {
+                              if (isMobile) return
+                              setSentTip({
+                                x: e.clientX,
+                                y: e.clientY,
+                                lines: [
+                                  amountFormat(d?.totalSent, { short: true }),
+                                  niceNumber(d?.totalSentInFiats?.[convertCurrency], 2, convertCurrency)
+                                ]
+                              })
+                            }}
+                            onMouseMove={(e) => {
+                              if (isMobile) return
+                              setSentTip((prev) => (prev ? { ...prev, x: e.clientX, y: e.clientY } : prev))
+                            }}
+                            onMouseLeave={() => {
+                              if (isMobile) return
+                              setSentTip(null)
+                            }}
+                            style={{ cursor: 'default' }}
+                            suppressHydrationWarning
+                          >
+                            {shortNiceNumber(d?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
+                          </span>
+
                           <br />
+
                           <span style={{ opacity: 0.7 }}>
-                            {amountFormat(d?.totalSent, { short: true })}
                             <Delta
                               inline
                               cur={d?.totalSentInFiats?.[convertCurrency]}
@@ -540,6 +572,36 @@ export default function Dapps({
           </div>
         )}
       </FiltersFrame>
+      {!isMobile && sentTip
+        ? (() => {
+            const pad = 10
+            const vw = typeof window !== 'undefined' ? window.innerWidth : 1200
+            const vh = typeof window !== 'undefined' ? window.innerHeight : 800
+
+            const openLeft = sentTip.x > vw * 0.7
+            const openUp = sentTip.y > vh * 0.7
+
+            const left = Math.max(pad, Math.min(sentTip.x + 12, vw - pad))
+            const top = Math.max(pad, Math.min(sentTip.y + 12, vh - pad))
+
+            return (
+              <div
+                className="dapps-activity-tooltip"
+                style={{
+                  left,
+                  top,
+                  transform: `${openLeft ? 'translateX(-100%)' : 'translateX(0)'} ${openUp ? 'translateY(-100%)' : 'translateY(0)'}`
+                }}
+              >
+                {sentTip.lines?.map((line, i) => (
+                  <div key={i} className="dapps-activity-tooltip__line">
+                    {line}
+                  </div>
+                ))}
+              </div>
+            )
+          })()
+        : null}
     </div>
   )
 }
