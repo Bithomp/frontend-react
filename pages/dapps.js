@@ -56,7 +56,7 @@ const sortDapps = (list, order) => {
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
-  const { order, period } = query
+  const { order, period, includeAppsWithoutExternalSigning, wallet } = query
 
   let initialData = null
   let initialErrorMessage = null
@@ -95,6 +95,8 @@ export async function getServerSideProps(context) {
       initialData: initialData || null,
       orderQuery: order || 'performingHigh',
       periodQuery: period || 'day',
+      includeAppsWithoutExternalSigningQuery: includeAppsWithoutExternalSigning === 'true',
+      walletQuery: typeof wallet === 'string' ? wallet.toLowerCase() : '',
       initialErrorMessage: initialErrorMessage || '',
       selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
@@ -125,12 +127,13 @@ export default function Dapps({
   initialErrorMessage,
   orderQuery,
   periodQuery,
+  includeAppsWithoutExternalSigningQuery,
+  walletQuery,
   selectedCurrency: selectedCurrencyApp,
   setSelectedCurrency,
   fiatRate: fiatRateApp,
   selectedCurrencyServer
 }) {
-  const [excludeNoWallets, setExcludeNoWallets] = useState(true)
   const router = useRouter()
   const { t, i18n } = useTranslation()
   const isMobile = useIsMobile(720)
@@ -150,7 +153,8 @@ export default function Dapps({
   const [rawData, setRawData] = useState(initialData || {})
   const [loading, setLoading] = useState(false)
   const [expandedRowKey, setExpandedRowKey] = useState(null)
-  const [walletFilter, setWalletFilter] = useState('all') // 'all' | walletId
+  const [excludeNoWallets, setExcludeNoWallets] = useState(!includeAppsWithoutExternalSigningQuery)
+  const [walletFilter, setWalletFilter] = useState(walletQuery || '')
 
   const abortControllerRef = useRef()
 
@@ -264,13 +268,40 @@ export default function Dapps({
 
   useEffect(() => {
     if (!router.isReady) return
+
+    const add = []
+    const remove = []
+
+    // period
     if (period === 'day') {
-      setTabParams(router, [], [], ['period'])
+      remove.push('period')
     } else {
-      setTabParams(router, [], [{ name: 'period', value: period }], [])
+      add.push({ name: 'period', value: period })
     }
+
+    // includeAppsWithoutExternalSigning
+    // excludeNoWallets=false => includeAppsWithoutExternalSigning=true
+    if (excludeNoWallets) {
+      remove.push('includeAppsWithoutExternalSigning')
+    } else {
+      add.push({ name: 'includeAppsWithoutExternalSigning', value: 'true' })
+    }
+
+    // wallet filter (только если excludeNoWallets=true; иначе filter скрыт/сброшен)
+    if (excludeNoWallets && walletFilter) {
+      add.push({ name: 'wallet', value: walletFilter })
+    } else {
+      remove.push('wallet')
+    }
+
+    setTabParams(router, [], add, remove)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, router.isReady])
+  }, [period, excludeNoWallets, walletFilter, router.isReady])
+
+  const onToggleExclude = (v) => {
+    setExcludeNoWallets(v)
+    if (!v) setWalletFilter('')
+  }
 
   return (
     <div className={dappsPageClass}>
@@ -302,13 +333,7 @@ export default function Dapps({
         <>
           Period
           <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
-          <CheckBox
-            checked={excludeNoWallets}
-            setChecked={(v) => {
-              setExcludeNoWallets(v)
-              if (!v) setWalletFilter('') // reset when turning off
-            }}
-          >
+          <CheckBox checked={excludeNoWallets} setChecked={onToggleExclude}>
             Exclude apps without external signing
           </CheckBox>
           {excludeNoWallets ? (
