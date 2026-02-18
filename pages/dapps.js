@@ -270,7 +270,8 @@ export default function Dapps({
         setSelectedCurrency={setSelectedCurrency}
       >
         <>
-          {true === false && <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />}
+          Period
+          <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
           <CheckBox checked={excludeNoWallets} setChecked={setExcludeNoWallets}>
             Exclude apps without external signing
           </CheckBox>
