@@ -11,13 +11,13 @@ export const LinkToken = ({ token, icon, copy, children }) => {
 
   const tokenUrl = '/token/' + issuer + '/' + currency
   const lpToken = currencyDetails?.type === 'lp_token'
-  const mptCurrency = metadata?.currency || metadata?.c || currency || 'N/A'
+  const mptCurrency = metadata?.t || metadata?.c || metadata?.currency || currency || 'N/A'
 
   const textCurrency = mptId
     ? mptCurrency
     : lpToken && currencyDetails?.currency
-    ? currencyDetails.currency
-    : niceCurrency(currency)
+      ? currencyDetails.currency
+      : niceCurrency(currency)
 
   const ammId = currencyDetails?.ammID
 

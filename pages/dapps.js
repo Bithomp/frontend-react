@@ -22,6 +22,9 @@ import { dappsPageClass } from '../styles/pages/dapps.module.scss'
 import { HeaderTooltip } from '../components/UI/HeaderTooltip'
 import { useIsMobile } from '../utils/mobile'
 import DappCard from '../components/Dapps/DappCard'
+import WalletSelect from '../components/Dapps/WalletSelect'
+import { buildPrevMapBySourceTag } from '../utils/dapps'
+import Delta from '../components/UI/Delta'
 
 const calcSuccessRate = (total, success) => {
   const t = Number(total)
@@ -55,7 +58,7 @@ const sortDapps = (list, order) => {
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
-  const { order, period } = query
+  const { order, period, includeAppsWithoutExternalSigning, wallet } = query
 
   let initialData = null
   let initialErrorMessage = null
@@ -63,7 +66,7 @@ export async function getServerSideProps(context) {
   const selectedCurrencyServer = currencyServer(req)
   const convertCurrency = (selectedCurrencyServer || 'usd').toLowerCase()
 
-  let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}`
+  let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=true`
   if (period) {
     apiUrl += `&period=${encodeURIComponent(period)}`
   }
@@ -94,6 +97,8 @@ export async function getServerSideProps(context) {
       initialData: initialData || null,
       orderQuery: order || 'performingHigh',
       periodQuery: period || 'day',
+      includeAppsWithoutExternalSigningQuery: includeAppsWithoutExternalSigning === 'true',
+      walletQuery: typeof wallet === 'string' ? wallet.toLowerCase() : '',
       initialErrorMessage: initialErrorMessage || '',
       selectedCurrencyServer,
       isSsrMobile: getIsSsrMobile(context),
@@ -124,12 +129,13 @@ export default function Dapps({
   initialErrorMessage,
   orderQuery,
   periodQuery,
+  includeAppsWithoutExternalSigningQuery,
+  walletQuery,
   selectedCurrency: selectedCurrencyApp,
   setSelectedCurrency,
   fiatRate: fiatRateApp,
   selectedCurrencyServer
 }) {
-  const [excludeNoWallets, setExcludeNoWallets] = useState(true)
   const router = useRouter()
   const { t, i18n } = useTranslation()
   const isMobile = useIsMobile(720)
@@ -140,7 +146,6 @@ export default function Dapps({
   }
 
   const convertCurrency = (selectedCurrency || 'usd').toLowerCase()
-
   const [order, setOrder] = useState(orderQuery || 'performingHigh')
   const [period, setPeriod] = useState(periodQuery)
   const [errorMessage, setErrorMessage] = useState(
@@ -150,8 +155,28 @@ export default function Dapps({
   const [rawData, setRawData] = useState(initialData || {})
   const [loading, setLoading] = useState(false)
   const [expandedRowKey, setExpandedRowKey] = useState(null)
+  const [excludeNoWallets, setExcludeNoWallets] = useState(!includeAppsWithoutExternalSigningQuery)
+  const [walletFilter, setWalletFilter] = useState(walletQuery || '')
 
   const abortControllerRef = useRef()
+
+  const walletsOptionsList = useMemo(() => {
+    const metaObj = DAPPS_META[0] || {}
+    const set = new Set()
+
+    Object.values(metaObj).forEach((entry) => {
+      ;(entry?.wallets || []).forEach((w) => set.add(String(w).toLowerCase()))
+      ;(entry?.walletconnect || []).forEach((w) => set.add(String(w).toLowerCase()))
+    })
+
+    return Array.from(set)
+  }, [])
+
+  useEffect(() => {
+    if (walletFilter && !excludeNoWallets) {
+      setExcludeNoWallets(true)
+    }
+  }, [walletFilter, excludeNoWallets])
 
   useEffect(() => {
     setLoading(true)
@@ -163,7 +188,7 @@ export default function Dapps({
     const controller = new AbortController()
     abortControllerRef.current = controller
     axios
-      .get(`/v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&period=${period}`, {
+      .get(`/v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=true&period=${period}`, {
         signal: controller.signal
       })
       .then((res) => {
@@ -182,6 +207,10 @@ export default function Dapps({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, convertCurrency])
 
+  const prevByTag = useMemo(() => {
+    return buildPrevMapBySourceTag(rawData?.previousPeriod?.dapps)
+  }, [rawData?.previousPeriod?.dapps])
+
   const data = useMemo(() => {
     const list = Array.isArray(rawData?.dapps) ? rawData.dapps : []
     // Exclude these sourceTags
@@ -193,14 +222,33 @@ export default function Dapps({
       return Number(d?.uniqueSourceAddresses) > 3
     })
     const metaObj = DAPPS_META[0] || {}
+
+    const hasAnyExternalSigning = (entry) => {
+      const hasWallets = Array.isArray(entry?.wallets) && entry.wallets.length > 0
+      const hasWC = Array.isArray(entry?.walletconnect) && entry.walletconnect.length > 0
+      return hasWallets || hasWC
+    }
+
     const filteredWallets = excludeNoWallets
       ? filtered.filter((d) => {
           const entry = metaObj && metaObj[String(d?.sourceTag)]
-          return entry && Array.isArray(entry.wallets) && entry.wallets.length > 0
+          return hasAnyExternalSigning(entry)
         })
       : filtered
-    return sortDapps(filteredWallets, order)
-  }, [rawData, order, excludeNoWallets])
+
+    const byWallet = walletFilter
+      ? filteredWallets.filter((d) => {
+          const entry = metaObj && metaObj[String(d?.sourceTag)]
+          const all = [
+            ...(Array.isArray(entry?.wallets) ? entry.wallets : []),
+            ...(Array.isArray(entry?.walletconnect) ? entry.walletconnect : [])
+          ].map((w) => String(w).toLowerCase())
+          return all.includes(String(walletFilter).toLowerCase())
+        })
+      : filteredWallets
+
+    return sortDapps(byWallet, order)
+  }, [rawData, order, excludeNoWallets, walletFilter])
 
   const orderList = [
     { value: 'performingHigh', label: 'Performing wallets: High to Low' },
@@ -226,13 +274,40 @@ export default function Dapps({
 
   useEffect(() => {
     if (!router.isReady) return
+
+    const add = []
+    const remove = []
+
+    // period
     if (period === 'day') {
-      setTabParams(router, [], [], ['period'])
+      remove.push('period')
     } else {
-      setTabParams(router, [], [{ name: 'period', value: period }], [])
+      add.push({ name: 'period', value: period })
     }
+
+    // includeAppsWithoutExternalSigning
+    // excludeNoWallets=false => includeAppsWithoutExternalSigning=true
+    if (excludeNoWallets) {
+      remove.push('includeAppsWithoutExternalSigning')
+    } else {
+      add.push({ name: 'includeAppsWithoutExternalSigning', value: 'true' })
+    }
+
+    // wallet filter (только если excludeNoWallets=true; иначе filter скрыт/сброшен)
+    if (excludeNoWallets && walletFilter) {
+      add.push({ name: 'wallet', value: walletFilter })
+    } else {
+      remove.push('wallet')
+    }
+
+    setTabParams(router, [], add, remove)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, router.isReady])
+  }, [period, excludeNoWallets, walletFilter, router.isReady])
+
+  const onToggleExclude = (v) => {
+    setExcludeNoWallets(v)
+    if (!v) setWalletFilter('')
+  }
 
   return (
     <div className={dappsPageClass}>
@@ -262,10 +337,17 @@ export default function Dapps({
         setSelectedCurrency={setSelectedCurrency}
       >
         <>
-          {true === false && <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />}
-          <CheckBox checked={excludeNoWallets} setChecked={setExcludeNoWallets}>
+          Period
+          <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
+          <CheckBox checked={excludeNoWallets} setChecked={onToggleExclude}>
             Exclude apps without external signing
           </CheckBox>
+          {excludeNoWallets ? (
+            <>
+              <div style={{ marginBottom: 10 }}>Wallet filter</div>
+              <WalletSelect value={walletFilter} setValue={setWalletFilter} walletsList={walletsOptionsList} />
+            </>
+          ) : null}
         </>
         {loading ? (
           <table className={isMobile ? 'table-mobile' : 'table-large expand'}>
@@ -292,6 +374,7 @@ export default function Dapps({
                     <DappCard
                       key={d?.sourceTag ?? idx}
                       dapp={d}
+                      prevDapp={prevByTag ? prevByTag.get(String(d?.sourceTag)) : null}
                       index={idx}
                       convertCurrency={convertCurrency}
                       dappsMeta={metaObj}
@@ -361,6 +444,7 @@ export default function Dapps({
               <tbody>
                 {data?.length ? (
                   data.map((d, idx) => {
+                    const prev = prevByTag ? prevByTag.get(String(d?.sourceTag)) : null
                     const rowKey = d?.sourceTag ?? idx
                     const isOpen = expandedRowKey === rowKey
 
@@ -395,12 +479,23 @@ export default function Dapps({
                         </td>
 
                         <td style={{ verticalAlign: 'middle' }}>
-                          {entry?.wallets ? <WalletsCell wallets={entry.wallets} /> : null}
+                          {entry?.wallets?.length || entry?.walletconnect?.length ? (
+                            <WalletsCell wallets={entry?.wallets || []} walletconnect={entry?.walletconnect || []} />
+                          ) : null}
                         </td>
 
-                        <td className="right">{shortNiceNumber(d?.uniqueSourceAddresses, 0)}</td>
-                        <td className="right">{shortNiceNumber(d?.uniqueInteractedAddresses, 0)}</td>
-                        <td className="right">{shortNiceNumber(d?.totalTransactions, 0)}</td>
+                        <td className="right">
+                          {shortNiceNumber(d?.uniqueSourceAddresses, 0)}
+                          <Delta cur={d?.uniqueSourceAddresses} prev={prev?.uniqueSourceAddresses} />
+                        </td>
+                        <td className="right">
+                          {shortNiceNumber(d?.uniqueInteractedAddresses, 0)}
+                          <Delta cur={d?.uniqueInteractedAddresses} prev={prev?.uniqueInteractedAddresses} />
+                        </td>
+                        <td className="right">
+                          {shortNiceNumber(d?.totalTransactions, 0)}
+                          <Delta cur={d?.totalTransactions} prev={prev?.totalTransactions} />
+                        </td>
 
                         <td className="right">
                           <TypeMixCell
@@ -414,11 +509,16 @@ export default function Dapps({
                           />
                         </td>
 
-                        <td className="right no-brake">
-                          {amountFormat(d?.totalSent, { short: true })}
+                        <td className="right no-brake" suppressHydrationWarning>
+                          {shortNiceNumber(d?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
                           <br />
-                          <span style={{ opacity: 0.7 }} suppressHydrationWarning>
-                            {shortNiceNumber(d?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
+                          <span style={{ opacity: 0.7 }}>
+                            {amountFormat(d?.totalSent, { short: true })}
+                            <Delta
+                              inline
+                              cur={d?.totalSentInFiats?.[convertCurrency]}
+                              prev={prev?.totalSentInFiats?.[convertCurrency]}
+                            />
                           </span>
                         </td>
                       </tr>

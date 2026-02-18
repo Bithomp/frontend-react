@@ -52,7 +52,18 @@ const ROUTE_TAB_MAP = [
 
 let timeoutIds = {}
 
-const MenuDropDown = ({ children, id, title, subtitle, setHoverStates, hoverStates, type, style, direction }) => {
+const MenuDropDown = ({
+  children,
+  id,
+  title,
+  subtitle,
+  setHoverStates,
+  hoverStates,
+  type,
+  style,
+  direction,
+  containerStyle
+}) => {
   if (!direction) direction = 'stick-left'
   const handleMouseEnter = (id) => {
     // clear timeout for all dropdowns
@@ -77,7 +88,12 @@ const MenuDropDown = ({ children, id, title, subtitle, setHoverStates, hoverStat
   }
 
   const body = (
-    <div className="menu-dropdown" onMouseEnter={() => handleMouseEnter(id)} onMouseLeave={() => handleMouseLeave(id)}>
+    <div
+      className="menu-dropdown"
+      onMouseEnter={() => handleMouseEnter(id)}
+      onMouseLeave={() => handleMouseLeave(id)}
+      style={containerStyle || {}}
+    >
       <div
         className={'menu-dropdown-button' + (type === 'top-switch' ? ' switch-container contrast' : '')}
         style={style}
@@ -325,30 +341,28 @@ export default function Header({
             </Link>
           </MenuDropDown>
 
-          <div className="menu-dropdown">
-            <MenuDropDown
-              id="dropdown2"
-              title={t('menu.tokens')}
-              setHoverStates={setHoverStates}
-              hoverStates={hoverStates}
+          <MenuDropDown
+            id="dropdown2"
+            title={t('menu.tokens')}
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+          >
+            <Link href="/tokens">{t('menu.tokens')}</Link>
+            {!xahauNetwork && <Link href="/mpts">Multi-Purpose {t('menu.tokens')}</Link>}
+            <Link
+              href={
+                '/distribution' +
+                (xahauNetwork
+                  ? '?currencyIssuer=rEvernodee8dJLaFsujS6q1EiXvZYmHXr8&currency=EVR'
+                  : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
+              }
             >
-              <Link href="/tokens">{t('menu.tokens')}</Link>
-              {!xahauNetwork && <Link href="/mpts">Multi-Purpose {t('menu.tokens')}</Link>}
-              <Link
-                href={
-                  '/distribution' +
-                  (xahauNetwork
-                    ? '?currencyIssuer=rEvernodee8dJLaFsujS6q1EiXvZYmHXr8&currency=EVR'
-                    : '?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De')
-                }
-              >
-                TOP Holders
-              </Link>
-              <Link href="/services/trustline">Set Trust (Trustline)</Link>
-              <Link href="/learn/issue-a-token">How to Issue a Token</Link>
-              <Link href="/learn/guide-for-token-issuers">Guide for Token Issuers</Link>
-            </MenuDropDown>
-          </div>
+              TOP Holders
+            </Link>
+            <Link href="/services/trustline">Set Trust (Trustline)</Link>
+            <Link href="/learn/issue-a-token">How to Issue a Token</Link>
+            <Link href="/learn/guide-for-token-issuers">Guide for Token Issuers</Link>
+          </MenuDropDown>
 
           {/* Hide AMM for XAHAU */}
           {!xahauNetwork && (
@@ -496,6 +510,9 @@ export default function Header({
             }
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
+            direction="stick-right"
+            style={{ width: '100%', justifyContent: 'flex-end' }}
+            containerStyle={{ minWidth: 215, textAlign: 'right' }}
           >
             {(displayName || proLoggedIn) && <div style={{ minWidth: '250px' }}></div>}
             {!displayName && (
@@ -578,6 +595,16 @@ export default function Header({
                       alt="Crossmark Wallet"
                       height={24}
                       width={24}
+                    />
+                  )}
+                  {account?.wallet === 'xyra' && (
+                    <Image
+                      src="/images/wallets/xyra.svg"
+                      className="wallet-logo"
+                      alt="Xyra Wallet"
+                      height={24}
+                      width={24}
+                      style={{ marginTop: -4, marginLeft: -2, marginRight: -2 }}
                     />
                   )}{' '}
                   {t('signin.signout')}

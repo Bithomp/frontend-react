@@ -276,7 +276,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
         changes.push(`Incoming NFT offer ${specification.disallowIncomingNFTokenOffer ? 'disallowed' : 'allowed'}`)
       }
       if (specification?.disallowIncomingTrustline !== undefined) {
-        changes.push(`Incoming trust line ${specification.disallowIncomingTrustline ? 'disallowed' : 'allowed'}`)
+        changes.push(`Incoming trustline ${specification.disallowIncomingTrustline ? 'disallowed' : 'allowed'}`)
       }
       if (specification?.enableTransactionIDTracking !== undefined) {
         changes.push(`Transaction ID tracking ${specification.enableTransactionIDTracking ? 'enabled' : 'disabled'}`)
@@ -304,7 +304,7 @@ export default function RecentTransactions({ userData, ledgerTimestamp }) {
         }
       }
       if (specification?.allowTrustLineClawback !== undefined) {
-        changes.push(`Trust line clawback ${specification.allowTrustLineClawback ? 'allowed' : 'disallowed'}`)
+        changes.push(`Trustline clawback ${specification.allowTrustLineClawback ? 'allowed' : 'disallowed'}`)
       }
       if (specification?.disallowIncomingRemit !== undefined) {
         changes.push(`Incoming remit ${specification.disallowIncomingRemit ? 'disallowed' : 'allowed'}`)

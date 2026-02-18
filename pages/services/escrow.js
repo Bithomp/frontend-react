@@ -9,7 +9,8 @@ import {
   encode,
   decode,
   addAndRemoveQueryParams,
-  explorerName
+  explorerName,
+  isNativeCurrency
 } from '../../utils'
 import { multiply } from '../../utils/calc'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -20,7 +21,15 @@ import FormInput from '../../components/UI/FormInput'
 import CheckBox from '../../components/UI/CheckBox'
 import NetworkTabs from '../../components/Tabs/NetworkTabs'
 import CopyButton from '../../components/UI/CopyButton'
-import { amountFormat, fullDateAndTime, timeFromNow, shortHash } from '../../utils/format'
+import TokenSelector from '../../components/UI/TokenSelector'
+import {
+  amountFormat,
+  fullDateAndTime,
+  timeFromNow,
+  shortHash,
+  formatXDigits,
+  transferRateToPercent
+} from '../../utils/format'
 import { LinkTx, LinkAccount } from '../../utils/links'
 import { errorCodeDescription } from '../../utils/transaction'
 import Link from 'next/link'
@@ -31,6 +40,7 @@ import axios from 'axios'
 const RIPPLE_EPOCH_OFFSET = 946684800 // Seconds between 1970-01-01 and 2000-01-01
 
 export default function CreateEscrow({
+  account,
   setSignRequest,
   sessionToken,
   subscriptionExpired,
@@ -44,7 +54,9 @@ export default function CreateEscrow({
   fulfillmentQuery,
   memoQuery,
   feeQuery,
-  sourceTagQuery
+  sourceTagQuery,
+  currencyQuery,
+  currencyIssuerQuery
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -65,6 +77,12 @@ export default function CreateEscrow({
   const [memo, setMemo] = useState(memoQuery || null)
   const [fee, setFee] = useState(Number(feeQuery) > 0 && Number(feeQuery) <= 1 ? feeQuery : null)
   const [feeError, setFeeError] = useState(null)
+  const [selectedToken, setSelectedToken] = useState({ currency: currencyQuery, issuer: currencyIssuerQuery })
+
+  const onTokenChange = (token) => {
+    setSelectedToken(token)
+  }
+
   // Reflect filled parameters in URL similar to /send
   useEffect(() => {
     let queryAddList = []
@@ -218,10 +236,27 @@ export default function CreateEscrow({
     }
 
     try {
+      let amountData = null
+
+      if (isNativeCurrency(selectedToken)) {
+        amountData = multiply(amount, 1000000) // drops
+      } else {
+        // IMPORTANT: Escrow for IOU requires a trustline at destination (no partial payment escape hatch like Payment)
+        if (!selectedToken?.issuer || !selectedToken?.currency) {
+          setError('Please select a valid token (currency + issuer).')
+          return
+        }
+        amountData = {
+          currency: selectedToken.currency,
+          issuer: selectedToken.issuer,
+          value: String(amount)
+        }
+      }
+
       let escrowCreate = {
         TransactionType: 'EscrowCreate',
         Destination: address,
-        Amount: multiply(amount, 1000000)
+        Amount: amountData
       }
 
       if (destinationTag) {
@@ -316,6 +351,10 @@ export default function CreateEscrow({
             placeholder="Destination address"
             name="destination"
             hideButton={true}
+            setValue={(value) => {
+              setAddress(value)
+              setSelectedToken({ currency: nativeCurrency })
+            }}
             setInnerValue={setAddress}
             rawData={isAddressValid(address) ? { address } : {}}
             type="address"
@@ -330,19 +369,44 @@ export default function CreateEscrow({
             defaultValue={destinationTag}
           />
           <div className="form-spacing" />
-          <FormInput
-            title={t('table.amount')}
-            placeholder={'Enter amount in ' + nativeCurrency}
-            setInnerValue={setAmount}
-            hideButton={true}
-            onKeyPress={typeNumberOnly}
-            defaultValue={amount}
-            maxLength={35}
-            min={0}
-            inputMode="decimal"
-            type="text"
-          />
-          <div className="form-spacing" />
+          <div className="flex flex-col gap-x-4 sm:flex-row">
+            <div className="flex-1">
+              <FormInput
+                title={t('table.amount')}
+                placeholder="Enter amount"
+                setInnerValue={setAmount}
+                hideButton={true}
+                onKeyPress={typeNumberOnly}
+                defaultValue={amount}
+                maxLength={35}
+                min={0}
+                inputMode="decimal"
+                type="text"
+                textUnder={
+                  selectedToken?.transferFee && amount && !isNaN(parseFloat(amount)) && parseFloat(amount) > 0 ? (
+                    <span className="grey">
+                      To receive ≈ {formatXDigits(parseFloat(amount) / selectedToken.transferFee, 11)}
+                    </span>
+                  ) : null
+                }
+              />
+            </div>
+            <div className="flex-1" style={{ marginBottom: 20 }}>
+              <span className="input-title">Currency</span>
+              <TokenSelector
+                value={selectedToken}
+                onChange={onTokenChange}
+                destinationAddress={address}
+                currencyQueryName="currency"
+                senderAddress={account?.address || null}
+              />
+              {selectedToken.transferFee ? (
+                <div style={{ marginTop: 8 }}>
+                  <span className="orange">Issuer fee: {transferRateToPercent(selectedToken.transferFee)}</span>
+                </div>
+              ) : null}
+            </div>
+          </div>
           <FormInput
             title={
               <>
@@ -594,8 +658,20 @@ export default function CreateEscrow({
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
-  const { address, amount, destinationTag, finishAfter, cancelAfter, condition, fulfillment, memo, fee, sourceTag } =
-    query || {}
+  const {
+    address,
+    amount,
+    destinationTag,
+    finishAfter,
+    cancelAfter,
+    condition,
+    fulfillment,
+    memo,
+    fee,
+    sourceTag,
+    currency,
+    currencyIssuer
+  } = query || {}
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -609,7 +685,9 @@ export const getServerSideProps = async (context) => {
       fulfillmentQuery: fulfillment || '',
       memoQuery: memo || '',
       feeQuery: fee || '',
-      sourceTagQuery: sourceTag || ''
+      sourceTagQuery: sourceTag || '',
+      currencyQuery: currency || nativeCurrency,
+      currencyIssuerQuery: currencyIssuer || ''
     }
   }
 }

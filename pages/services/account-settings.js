@@ -30,8 +30,10 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-// ASF flags (require individual transactions)
 const ASF_FLAGS = {
+  requireDestTag: 1,
+  requireAuth: 2,
+  disallowXRP: 3,
   disallowIncomingCheck: 13,
   disallowIncomingPayChan: 14,
   disallowIncomingTrustline: 15,
@@ -42,16 +44,10 @@ const ASF_FLAGS = {
   disallowIncomingRemit: 16,
   tshCollect: 11,
   allowTrustLineClawback: 16,
-  asfDefaultRipple: 8,
-  asfDepositAuth: 9,
-  asfDisableMaster: 4
-}
-
-// TF flags (can be combined in one transaction)
-const TF_FLAGS = {
-  requireDestTag: { set: 0x00010000, clear: 0x00020000 }, // tfRequireDestTag / tfOptionalDestTag
-  requireAuth: { set: 0x00040000, clear: 0x00080000 }, // tfRequireAuth / tfOptionalAuth
-  disallowXRP: { set: 0x00100000, clear: 0x00200000 } // tfDisallowXRP / tfAllowXRP
+  defaultRipple: 8,
+  depositAuth: 9,
+  disableMaster: 4,
+  allowTrustLineLocking: 17
 }
 
 export default function AccountSettings({
@@ -204,171 +200,148 @@ export default function AccountSettings({
     return { isValid: true, message: 'Valid tick size' }
   }
 
-  // TF flags state
-  const [tfFlags, setTfFlags] = useState(null)
-
   // Track which flag descriptions are expanded (for Read more functionality)
   const [expandedFlags, setExpandedFlags] = useState({})
 
   // Determine which ASF flags to use based on network
   const getAvailableAsfFlags = () => {
-    const commonAsfFlags = [
+    const commonFlags = [
+      'requireDestTag',
+      'requireAuth',
+      'disallowXRP',
       'disallowIncomingCheck',
       'disallowIncomingPayChan',
       'disallowIncomingTrustline',
-      'asfDepositAuth'
+      'depositAuth'
     ]
 
-    const advancedFlags = ['asfDefaultRipple', 'asfDisableMaster', 'globalFreeze', 'noFreeze']
+    const advancedFlags = ['defaultRipple', 'disableMaster', 'globalFreeze', 'noFreeze']
 
     if (xahauNetwork) {
       return {
-        basic: [...commonAsfFlags, 'disallowIncomingRemit', 'tshCollect'],
+        basic: [...commonFlags, 'disallowIncomingRemit', 'tshCollect'],
         advanced: advancedFlags
       }
     } else {
       return {
-        basic: [...commonAsfFlags, 'disallowIncomingNFTokenOffer', 'allowTrustLineClawback'],
+        basic: [...commonFlags, 'disallowIncomingNFTokenOffer', 'allowTrustLineClawback', 'allowTrustLineLocking'],
         advanced: advancedFlags
       }
     }
   }
 
   const flagGroups = getAvailableAsfFlags()
-  const tfFlagKeys = Object.keys(TF_FLAGS)
   const isPro = sessionToken && !subscriptionExpired
-
-  // Map UI ASF flag keys to their corresponding keys returned by the ledger API
-  const asfLedgerFlagMapping = {
-    asfDefaultRipple: 'defaultRipple',
-    asfDepositAuth: 'depositAuth'
-  }
 
   // Flag display names and descriptions
   const flagDetails = {
     // TF Flags
     requireDestTag: {
       name: 'Destination Tag',
-      displayName: 'Destination Tag',
       status: (value) => (value ? 'Required' : 'Not Required'),
       actionText: (value) => (value ? "Don't Require" : 'Require'),
-      type: 'tf',
       description: 'If enabled, incoming transactions must include a Destination Tag.',
       isDefault: (value) => !value
     },
     requireAuth: {
       name: 'Authorization',
-      displayName: 'Authorization',
       status: (value) => (value ? 'Required' : 'Not Required'),
       actionText: (value) => (value ? "Don't Require" : 'Require'),
-      type: 'tf',
       description:
         'If enabled, trustlines to this account require authorization before they can hold tokens. Can only be enabled if the account has no trustlines, offers, escrows, payment channels, checks, or signer lists.',
       isDefault: (value) => !value
     },
     disallowXRP: {
       name: 'Incoming ' + nativeCurrency,
-      displayName: 'Incoming ' + nativeCurrency,
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      type: 'tf',
       description: `If enabled, this means the account does not accept ${nativeCurrency} payments. \nNote: This setting is not enforced by the protocol, so ${nativeCurrency} can still be sent to the account.`,
       isDefault: (value) => !value
     },
     // ASF Flags - Basic
     disallowIncomingCheck: {
       name: 'Incoming Checks',
-      displayName: 'Incoming Checks',
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      type: 'asf',
       description: 'If enabled, other accounts cannot create Checks with this account as the destination.',
       isDefault: (value) => !value
     },
     disallowIncomingPayChan: {
       name: 'Incoming Payment Channels',
-      displayName: 'Incoming Payment Channels',
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      type: 'asf',
       description: 'If enabled, other accounts cannot create Payment Channels with this account as the destination.',
       isDefault: (value) => !value
     },
     disallowIncomingTrustline: {
       name: 'Incoming Trustlines',
-      displayName: 'Incoming Trustlines',
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      type: 'asf',
       description: 'If enabled, other accounts cannot create trustlines to this account.',
       isDefault: (value) => !value
     },
-    asfDepositAuth: {
+    depositAuth: {
       name: 'Deposit Authorization',
-      displayName: 'Deposit Authorization',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? 'Disable' : 'Enable'),
-      type: 'asf',
       description: 'If enabled, this account can only receive funds from accounts it has pre-authorized.',
       isDefault: (value) => !value
     },
     disallowIncomingNFTokenOffer: {
       name: 'Incoming NFT Offers',
-      displayName: 'Incoming NFT Offers',
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      type: 'asf',
       description: 'If enabled, other accounts cannot create NFT offers with this account as the destination.',
       isDefault: (value) => !value
     },
     disallowIncomingRemit: {
       name: 'Incoming Remit',
-      displayName: 'Incoming Remit',
       status: (value) => (value ? 'Disallowed' : 'Allowed'),
       actionText: (value) => (value ? 'Allow' : 'Disallow'),
-      type: 'asf',
       description: 'If enabled, other accounts cannot send Remit transactions to this account.',
       isDefault: (value) => !value
     },
     tshCollect: {
       name: 'Transactional Stakeholder (TSH) Collect',
-      displayName: 'Transactional Stakeholder (TSH) Collect',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? 'Disable' : 'Enable'),
-      type: 'asf',
       description: 'If enabled, this account can collect TSH rewards from transactions.',
       isDefault: (value) => !value
     },
     allowTrustLineClawback: {
       name: 'Trustline Clawback',
-      displayName: 'Trustline Clawback',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? '' : 'Enable'),
-      type: 'asf',
       description:
-        'Allow account to claw back tokens it has issued. Can only be set if the account has an empty owner directory (no trustlines, offers, escrows, payment channels, checks, or signer lists). After you set this flag, it cannot be reverted. The account permanently gains the ability to claw back issued assets on trust lines.',
+        'Allow account to claw back tokens it has issued. Can only be set if the account has an empty owner directory (no trustlines, offers, escrows, payment channels, checks, or signer lists). After you set this flag, it cannot be reverted. The account permanently gains the ability to claw back issued assets on trustlines.',
       isDefault: (value) => !value,
       isPermanent: true
     },
+    allowTrustLineLocking: {
+      name: 'Trustline Locking',
+      status: (value) => (value ? 'Enabled' : 'Disabled'),
+      actionText: (value) => (value ? '' : 'Enable'),
+      description:
+        "Allow Trustline tokens issued by this account to be held in escrow. If not enabled, tokens issued by this account can't be escrowed. After you enable this flag, it cannot be disabled.",
+      isDefault: (value) => !value,
+      //isAdvanced: true,
+      isPermanent: true
+    },
 
-    // ASF Flags - Advanced
-    asfDefaultRipple: {
+    //Advanced
+    defaultRipple: {
       name: 'Default rippling',
-      displayName: 'Default rippling',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? 'Disable' : 'Enable'),
-      type: 'asf',
       description:
         'This a setting that Token issuers need to enable. If enabled, allows rippling on all trustlines by default. This affect how payments flow through your account.',
       isDefault: (value) => !value, // Rippling DISABLED is the default state (orange highlight when enabled)
       isAdvanced: true
     },
-    asfDisableMaster: {
+    disableMaster: {
       name: 'Master Key',
-      displayName: 'Master Key',
       status: (value) => (value ? 'Disabled' : 'Enabled'),
       actionText: (value) => (value ? 'Enable' : 'Disable'),
-      type: 'asf',
       description: `Disabling the master key pair removes one method of authorizing transactions. You should be sure you can use one of the other ways of authorizing transactions, such as with a regular key or by multi-signing, before you disable the master key pair. (For example, if you assigned a regular key pair, make sure that you can successfully submit transactions with that regular key.) Due to the decentralized nature of the ${explorerName}, no one can restore access to your account if you cannot use the remaining ways of authorizing transactions.\nYou should do this if your account\'s master key pair may have been compromised, or if you want to make multi-signing the only way to submit transactions from your account.\nTo disable the master key pair, you must use the master key pair. However, you can re-enable the master key pair using any other method of authorizing transactions.`,
       isDefault: (value) => !value,
       isAdvanced: true,
@@ -376,10 +349,8 @@ export default function AccountSettings({
     },
     globalFreeze: {
       name: 'Global Freeze',
-      displayName: 'Global Freeze',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? 'Disable' : 'Enable'),
-      type: 'asf',
       description:
         'If enabled, freezes all tokens issued by this account, preventing them from being transferred. This affects all trustlines for tokens you have issued. Cannot be enabled if No Freeze is active. Use with caution as it impacts all token holders.',
       isDefault: (value) => !value,
@@ -387,10 +358,8 @@ export default function AccountSettings({
     },
     noFreeze: {
       name: 'No Freeze',
-      displayName: 'No Freeze',
       status: (value) => (value ? 'Enabled' : 'Disabled'),
       actionText: (value) => (value ? '' : 'Enable'),
-      type: 'asf',
       description:
         'If enabled, permanently gives up the ability to freeze tokens issued by this account. This setting cannot be reversed.',
       isDefault: (value) => !value,
@@ -436,44 +405,14 @@ export default function AccountSettings({
         setCurrentWalletLocator(response.data?.ledgerInfo?.walletLocator || '')
         setWalletLocatorInput(response.data?.ledgerInfo?.walletLocator || '')
 
-        if (response.data?.ledgerInfo?.flags) {
-          const ledgerFlags = response.data.ledgerInfo.flags || {}
+        const allFlags = [...flagGroups.basic, ...flagGroups.advanced]
+        const ledgerFlags = response.data?.ledgerInfo?.flags || {}
 
-          // Initialize ASF flags with safe defaults
-          const newAsfFlags = {}
-          const allAsfFlags = [...flagGroups.basic, ...flagGroups.advanced]
-          allAsfFlags.forEach((flag) => {
-            const ledgerKey = asfLedgerFlagMapping[flag] || flag
-            newAsfFlags[flag] = !!ledgerFlags[ledgerKey]
-          })
-          setFlags(newAsfFlags)
-
-          // Initialize TF flags with safe defaults
-          const newTfFlags = {}
-          tfFlagKeys.forEach((flag) => {
-            const asfMapping = {
-              requireDestTag: 'requireDestTag',
-              requireAuth: 'requireAuth',
-              disallowXRP: 'disallowXRP'
-            }
-            newTfFlags[flag] = !!ledgerFlags[asfMapping[flag]]
-          })
-          setTfFlags(newTfFlags)
-        } else {
-          // Initialize with default false values if no flags data
-          const defaultAsfFlags = {}
-          const allAsfFlags = [...flagGroups.basic, ...flagGroups.advanced]
-          allAsfFlags.forEach((flag) => {
-            defaultAsfFlags[flag] = false
-          })
-          setFlags(defaultAsfFlags)
-
-          const defaultTfFlags = {}
-          tfFlagKeys.forEach((flag) => {
-            defaultTfFlags[flag] = false
-          })
-          setTfFlags(defaultTfFlags)
-        }
+        const newFlags = {}
+        allFlags.forEach((k) => {
+          newFlags[k] = !!ledgerFlags[k]
+        })
+        setFlags(newFlags)
         setLoading(false)
       } catch (error) {
         setErrorMessage('Error fetching account data')
@@ -486,19 +425,6 @@ export default function AccountSettings({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])
-
-  const canEnableTrustLineClawback = () => {
-    return !accountData?.ledgerInfo?.ownerCount
-  }
-
-  const canEnableRequireAuth = () => {
-    // Can only be enabled if the account has no owner objects (trustlines, offers, escrows, etc.)
-    return !accountData?.ledgerInfo?.ownerCount
-  }
-
-  const canChangeGlobalFreeze = () => {
-    return !flags?.noFreeze
-  }
 
   const handleSetNftTokenMinter = () => {
     if (!isAddressValid(nftTokenMinter.trim())) {
@@ -893,7 +819,7 @@ export default function AccountSettings({
     })
   }
 
-  const handleAsfFlagToggle = (flag) => {
+  const handleFlagToggle = (flag) => {
     if (!account?.address) {
       setErrorMessage('Please sign in to your account.')
       return
@@ -904,25 +830,41 @@ export default function AccountSettings({
       return
     }
 
-    // Gate advanced flags behind Pro subscription
     if (flagDetails?.[flag]?.isAdvanced && !isPro) {
       setErrorMessage('Advanced options are available only to logged-in Bithomp Pro subscribers.')
       return
     }
 
-    const currentValue = flags[flag]
+    const currentValue = !!flags?.[flag]
     const newValue = !currentValue
+
+    const flagNum = ASF_FLAGS[flag]
+    if (typeof flagNum !== 'number') {
+      setErrorMessage(`Unknown flag: ${flag}`)
+      return
+    }
+
+    // Guardrails (keep your existing rules)
+    if (
+      (flag === 'allowTrustLineClawback' || flag === 'requireAuth') &&
+      accountData?.ledgerInfo?.ownerCount &&
+      !currentValue
+    ) {
+      setErrorMessage(
+        'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
+      )
+      return
+    }
+
+    if (flag === 'globalFreeze' && flags?.noFreeze) {
+      setErrorMessage('Cannot change Global Freeze when No Freeze is enabled')
+      return
+    }
 
     const tx = {
       TransactionType: 'AccountSet',
-      Account: account.address
-    }
-
-    // Regular flag handling
-    if (newValue) {
-      tx.SetFlag = ASF_FLAGS[flag]
-    } else {
-      tx.ClearFlag = ASF_FLAGS[flag]
+      Account: account.address,
+      ...(newValue ? { SetFlag: flagNum } : { ClearFlag: flagNum })
     }
 
     setSignRequest({
@@ -930,148 +872,85 @@ export default function AccountSettings({
       callback: () => {
         setSuccessMessage('Settings updated successfully.')
         setErrorMessage('')
-        setFlags((prev) => ({
-          ...prev,
-          [flag]: newValue
-        }))
+
+        setFlags((prev) => ({ ...(prev || {}), [flag]: newValue }))
 
         setAccountData((prev) => {
-          if (prev && prev.ledgerInfo) {
-            return {
-              ...prev,
-              ledgerInfo: {
-                ...prev.ledgerInfo,
-                flags: {
-                  ...prev.ledgerInfo.flags,
-                  [asfLedgerFlagMapping[flag] || flag]: newValue
-                }
+          if (!prev?.ledgerInfo) return prev
+          return {
+            ...prev,
+            ledgerInfo: {
+              ...prev.ledgerInfo,
+              flags: {
+                ...(prev.ledgerInfo.flags || {}),
+                [flag]: newValue
               }
             }
           }
-          return prev
         })
       }
     })
   }
 
-  const handleTfFlagToggle = (flag) => {
-    if (!account?.address) {
-      setErrorMessage('Please sign in to your account.')
-      return
-    }
-
-    const currentValue = tfFlags[flag]
-    const newValue = !currentValue
-
-    const tx = {
-      TransactionType: 'AccountSet',
-      Account: account.address,
-      Flags: 0
-    }
-
-    if (newValue) {
-      tx.Flags = TF_FLAGS[flag].set
-    } else {
-      tx.Flags = TF_FLAGS[flag].clear
-    }
-
-    setSignRequest({
-      request: tx,
-      callback: () => {
-        setSuccessMessage('Settings updated successfully.')
-        setTfFlags((prev) => ({
-          ...prev,
-          [flag]: newValue
-        }))
-        setAccountData((prev) => {
-          if (prev && prev.ledgerInfo) {
-            const asfMapping = {
-              requireDestTag: 'requireDestTag',
-              requireAuth: 'requireAuth',
-              disallowXRP: 'disallowXRP'
-            }
-            return {
-              ...prev,
-              ledgerInfo: {
-                ...prev.ledgerInfo,
-                flags: {
-                  ...prev.ledgerInfo.flags,
-                  [asfMapping[flag]]: newValue
-                }
-              }
-            }
-          }
-          return prev
-        })
-      }
-    })
-  }
-
-  const renderFlagItem = (flag, flagType) => {
+  const renderFlagItem = (flag) => {
     const flagData = flagDetails[flag]
-    // Add null checks and safe access
-    const currentValue = flagType === 'tf' ? tfFlags?.[flag] || false : flags?.[flag] || false
+    const currentValue = !!flags?.[flag]
     const isNonDefault = flagData && !flagData.isDefault(currentValue)
-    const isHighRisk = flagData?.isHighRisk || false
+    const isHighRisk = !!flagData?.isHighRisk
 
-    // Read more handling
     const isExpanded = expandedFlags[flag] || false
-    const descriptionText = flagData.description
-    const shouldTruncate = descriptionText.length > 200 // arbitrary threshold
+    const descriptionText = flagData?.description || ''
+    const shouldTruncate = descriptionText.length > 200
     const displayedDescription = isExpanded || !shouldTruncate ? descriptionText : `${descriptionText.slice(0, 200)}...`
 
     let buttonDisabled = false
     let disabledReason = ''
 
-    // Check specific conditions for disabling buttons
-    if (flag === 'allowTrustLineClawback' && !canEnableTrustLineClawback() && !currentValue) {
+    if (
+      (flag === 'allowTrustLineClawback' || flag === 'requireAuth') &&
+      accountData?.ledgerInfo?.ownerCount &&
+      !currentValue
+    ) {
       buttonDisabled = true
       disabledReason =
         'Can only be enabled if account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
     }
 
-    if (flag === 'requireAuth' && !canEnableRequireAuth() && !currentValue) {
-      buttonDisabled = true
-      disabledReason =
-        'Can only be enabled if the account has no trustlines, offers, escrows, payment channels, checks, or signer lists'
-    }
-
-    if (flag === 'globalFreeze' && !canChangeGlobalFreeze()) {
+    if (flag === 'globalFreeze' && flags?.noFreeze) {
       buttonDisabled = true
       disabledReason = 'Cannot change Global Freeze when No Freeze is enabled'
     }
 
-    // Disable advanced flags for non-Pro users
     if (flagData?.isAdvanced && !isPro) {
       buttonDisabled = true
-      if (!disabledReason) {
-        disabledReason = 'Advanced options are available only to logged-in Bithomp Pro subscribers.'
-      }
+      if (!disabledReason) disabledReason = 'Advanced options are available only to logged-in Bithomp Pro subscribers.'
     }
 
-    // For permanent flags that are already enabled, don't show button
-    const showButton = !(flagData.isPermanent && currentValue)
+    const showButton = !(flagData?.isPermanent && currentValue)
 
     return (
       <div key={flag} className="flag-item">
         <div className="flag-header">
           <div className="flag-info">
-            <span className="flag-name">{flagData.displayName}</span>
+            <span className="flag-name">{flagData.name}</span>
             <span className={`flag-status ${isNonDefault ? 'orange' : ''}`}>{flagData.status(currentValue)}</span>
           </div>
+
           {showButton && (
             <button
               className="button-action thin"
-              onClick={() => (flagType === 'tf' ? handleTfFlagToggle(flag) : handleAsfFlagToggle(flag))}
+              onClick={() => handleFlagToggle(flag)}
               disabled={buttonDisabled || !account?.address}
               style={{ minWidth: '120px' }}
             >
               {flagData.actionText(currentValue)}
             </button>
           )}
-          {flagData.isPermanent && currentValue && <span className="permanent-flag">Permanent</span>}
+
+          {flagData?.isPermanent && currentValue && <span className="permanent-flag">Permanent</span>}
         </div>
-        <div className={`flag-description ${isHighRisk ? 'warning' : flagData.isPermanent ? 'warning' : ''}`}>
+
+        <div className={`flag-description ${isHighRisk || flagData?.isPermanent ? 'warning' : ''}`}>
           {displayedDescription}
           {shouldTruncate && (
             <span
@@ -1093,6 +972,7 @@ export default function AccountSettings({
             </span>
           )}
         </div>
+
         {buttonDisabled && disabledReason && <div className="disabled-reason warning">{disabledReason}</div>}
       </div>
     )
@@ -1112,19 +992,6 @@ export default function AccountSettings({
         </div>
       </>
     )
-  }
-
-  if (!account?.address) {
-    // Initialize default states for display when not logged in
-    const defaultFlags = {}
-    const defaultTfFlags = {}
-    const allAsfFlags = [...flagGroups.basic, ...flagGroups.advanced]
-    allAsfFlags.forEach((flag) => {
-      defaultFlags[flag] = false
-    })
-    tfFlagKeys.forEach((flag) => {
-      defaultTfFlags[flag] = false
-    })
   }
 
   return (
@@ -1155,11 +1022,7 @@ export default function AccountSettings({
           <div>
             <h4>Account Flags</h4>
 
-            {/* TF Flags */}
-            {tfFlagKeys.map((flag) => renderFlagItem(flag, 'tf'))}
-
-            {/* Basic ASF Flags */}
-            {flagGroups.basic.map((flag) => renderFlagItem(flag, 'asf'))}
+            {flagGroups.basic.map((flag) => renderFlagItem(flag))}
 
             {/* Account Fields */}
             <br />
@@ -1264,8 +1127,8 @@ export default function AccountSettings({
                       messageKeyInput && !messageKeyValidation.isValid
                         ? 'input-error'
                         : messageKeyInput && messageKeyValidation.isValid
-                        ? 'input-valid'
-                        : ''
+                          ? 'input-valid'
+                          : ''
                     }`}
                     placeholder="e.g., 020000000000000000000000000000000000000000000000000000000000000000"
                     value={messageKeyInput}
@@ -1359,8 +1222,8 @@ export default function AccountSettings({
                       tickSizeInput && !tickSizeValidation.isValid
                         ? 'input-error'
                         : tickSizeInput && tickSizeValidation.isValid
-                        ? 'input-valid'
-                        : ''
+                          ? 'input-valid'
+                          : ''
                     }`}
                     placeholder="0 to clear, or 3-15"
                     value={tickSizeInput}
@@ -1419,8 +1282,8 @@ export default function AccountSettings({
                       walletLocatorInput && !walletLocatorValidation.isValid
                         ? 'input-error'
                         : walletLocatorInput && walletLocatorValidation.isValid
-                        ? 'input-valid'
-                        : ''
+                          ? 'input-valid'
+                          : ''
                     }`}
                     placeholder="e.g., 0000000000000000000000000000000000000000000000000000000000000000"
                     value={walletLocatorInput}
@@ -1522,7 +1385,7 @@ export default function AccountSettings({
               </CheckBox>
 
               {showAdvanced && (
-                <div className="advanced-flags">{flagGroups.advanced.map((flag) => renderFlagItem(flag, 'asf'))}</div>
+                <div className="advanced-flags">{flagGroups.advanced.map((flag) => renderFlagItem(flag))}</div>
               )}
             </div>
           </div>

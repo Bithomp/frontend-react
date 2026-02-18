@@ -1,27 +1,34 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useMemo } from 'react'
 import Image from 'next/image'
-import { useIsMobile } from '../../utils/mobile' // adjust path if needed
+import { useIsMobile } from '../../utils/mobile'
+import { WALLET_POPULARITY } from '../../utils/dapps'
 
 const WALLET_LOGOS = {
-  walletconnect: 'walletconnect.png',
   xaman: 'xaman.png',
   gemwallet: 'gemwallet.png',
   crossmark: 'crossmark.png',
   joey: 'joey.png',
+  bifrost: 'bifrost.png',
+  girin: 'girin.png',
+  uphodl: 'uphodl.png',
   metamask: 'metamask.png',
   ledger: 'ledger.png',
-  dcent: 'dcent.png'
+  dcent: 'dcent.png',
+  xyra: 'xyra.svg'
 }
 
 const WALLET_NAMES = {
-  walletconnect: 'WalletConnect',
   xaman: 'Xaman',
   gemwallet: 'GemWallet',
   crossmark: 'Crossmark',
   joey: 'Joey',
+  bifrost: 'Bifrost',
+  girin: 'Girin',
+  uphodl: 'Uphodl',
   metamask: 'MetaMask',
   ledger: 'Ledger',
-  dcent: 'Dcent'
+  dcent: 'Dcent',
+  xyra: 'Xyra'
 }
 
 function WalletTooltip({ x, y, name }) {
@@ -33,9 +40,10 @@ function WalletTooltip({ x, y, name }) {
   )
 }
 
-export default function WalletsCell({ wallets }) {
-  const isMobile = useIsMobile(600)
+const POPULARITY_INDEX = new Map(WALLET_POPULARITY.map((id, idx) => [id, idx]))
 
+export default function WalletsCell({ wallets = [], walletconnect = [] }) {
+  const isMobile = useIsMobile(600)
   const [tip, setTip] = useState(null) // { x, y, name }
   const hideTimerRef = useRef(null)
 
@@ -45,7 +53,25 @@ export default function WalletsCell({ wallets }) {
     }
   }, [])
 
-  if (!Array.isArray(wallets) || wallets.length === 0) return null
+  const allWallets = useMemo(() => {
+    const a = Array.isArray(wallets) ? wallets : []
+    const wc = Array.isArray(walletconnect) ? walletconnect : []
+
+    const merged = [...a, ...wc].map((w) => (typeof w === 'string' ? w.trim().toLowerCase() : '')).filter(Boolean)
+
+    const uniq = Array.from(new Set(merged))
+
+    uniq.sort((a, b) => {
+      const ia = POPULARITY_INDEX.has(a) ? POPULARITY_INDEX.get(a) : Number.POSITIVE_INFINITY
+      const ib = POPULARITY_INDEX.has(b) ? POPULARITY_INDEX.get(b) : Number.POSITIVE_INFINITY
+      if (ia === ib) return a.localeCompare(b)
+      return ia - ib
+    })
+
+    return uniq
+  }, [wallets, walletconnect])
+
+  if (!allWallets.length) return null
 
   const showTip = (x, y, w) => {
     const name = WALLET_NAMES[w] || w
@@ -84,10 +110,9 @@ export default function WalletsCell({ wallets }) {
   // Desktop: split into rows of max 4
   const rows = []
   if (!isMobile) {
-    for (let i = 0; i < wallets.length; i += 4) rows.push(wallets.slice(i, i + 4))
+    for (let i = 0; i < allWallets.length; i += 4) rows.push(allWallets.slice(i, i + 4))
   }
 
-  // Shared renderer for an icon
   const renderIcon = (w) => {
     const logo = WALLET_LOGOS[w] || `${w}.png`
     return (
@@ -118,34 +143,31 @@ export default function WalletsCell({ wallets }) {
   return (
     <span style={{ position: 'relative', display: 'inline-block', minWidth: 0 }}>
       {isMobile ? (
-        // Mobile: single line, no breaks, horizontal scroll
         <span
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: 6,
-            flexWrap: 'nowrap',
-            whiteSpace: 'nowrap',
-            overflowX: 'auto',
+            flexWrap: 'wrap',
+            whiteSpace: 'normal',
+            overflowX: 'visible',
             overflowY: 'hidden',
             WebkitOverflowScrolling: 'touch',
-            maxWidth: 120, // tune to your column width; keeps the row compact
+            maxWidth: '100%',
             paddingBottom: 2,
             marginTop: -2,
-            scrollbarWidth: 'none' // Firefox
+            scrollbarWidth: 'none'
           }}
         >
-          {/* Hide scrollbar on WebKit */}
           <style jsx>{`
             span::-webkit-scrollbar {
               display: none;
             }
           `}</style>
 
-          {wallets.map(renderIcon)}
+          {allWallets.map(renderIcon)}
         </span>
       ) : (
-        // Desktop: keep your current "rows of 4"
         <span
           style={{
             display: 'flex',
@@ -157,14 +179,7 @@ export default function WalletsCell({ wallets }) {
           }}
         >
           {rows.map((row, i) => (
-            <span
-              key={i}
-              style={{
-                display: 'flex',
-                gap: 4,
-                flexWrap: 'nowrap'
-              }}
-            >
+            <span key={i} style={{ display: 'flex', gap: 4, flexWrap: 'nowrap' }}>
               {row.map(renderIcon)}
             </span>
           ))}

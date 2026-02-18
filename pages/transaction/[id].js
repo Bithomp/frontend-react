@@ -28,7 +28,8 @@ import {
   TransactionDelegateSet,
   TransactionBatch,
   TransactionSignerListSet,
-  TransactionCron
+  TransactionCron,
+  TransactionPermissionedDomain
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
@@ -148,6 +149,8 @@ export default function Transaction({ data, selectedCurrency, initialErrorMessag
     TransactionComponent = TransactionSignerListSet
   } else if (txType?.includes('Cron')) {
     TransactionComponent = TransactionCron
+  } else if (txType?.includes('PermissionedDomain')) {
+    TransactionComponent = TransactionPermissionedDomain
   } else {
     TransactionComponent = TransactionDetails
   }

@@ -87,6 +87,12 @@ header {
         border: 0;
         border-top: 1px solid var(--background-menu);
       }
+
+      &.stick-right {
+        right: 0;
+        left: auto !important;
+        text-align: left;
+      }
     }
 
     &:hover {
@@ -375,6 +381,21 @@ header {
       &:after {
         top: 17px;
       }
+    }
+  }
+
+  .menu-dropdown.account-dropdown {
+    min-width: 215px;
+
+    .menu-dropdown-button {
+      justify-content: flex-end;
+      text-align: right;
+    }
+
+    .menu-dropdown-content {
+      min-width: 215px;
+      right: 0;
+      left: auto !important;
     }
   }
 

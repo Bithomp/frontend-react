@@ -1,0 +1,27 @@
+.delta {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.deltaInline {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.up {
+  color: var(--color-positive, #14804a);
+}
+
+.down {
+  color: var(--color-negative, #b42318);
+}
+
+.flat {
+  color: #999;
+}

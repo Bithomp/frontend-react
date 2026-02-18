@@ -226,6 +226,7 @@ export default function AccountDex({ id, initialData, initialAccountData, accoun
               onClick={() =>
                 setSignRequest({
                   request: {
+                    Account: offer.Account,
                     TransactionType: 'OfferCancel',
                     OfferSequence: offer.Sequence
                   }

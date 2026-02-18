@@ -142,14 +142,14 @@ export default function LedgerData({
   const statusNode = data?.ledgerInfo?.blackholed
     ? blackholedNode
     : data?.ledgerInfo?.activated
-    ? data.ledgerInfo.lastSubmittedAt
-      ? activeNode
-      : activatedNode
-    : data?.ledgerInfo?.deleted
-    ? deletedNode
-    : data?.ledgerInfo?.activated === false
-    ? notActivatedNode
-    : networkErrorNode
+      ? data.ledgerInfo.lastSubmittedAt
+        ? activeNode
+        : activatedNode
+      : data?.ledgerInfo?.deleted
+        ? deletedNode
+        : data?.ledgerInfo?.activated === false
+          ? notActivatedNode
+          : networkErrorNode
 
   const reservedBalanceNode = (
     <>
@@ -608,7 +608,6 @@ export default function LedgerData({
               )}
             </>
           )}
-
           {data.ledgerInfo?.flags?.disallowXRP && (
             <tr>
               <td>Receiving {nativeCurrency}</td>
@@ -697,6 +696,12 @@ export default function LedgerData({
           {data.ledgerInfo?.flags?.allowTrustLineClawback && (
             <tr>
               <td>Trustline clawback</td>
+              <td className="bold">enabled</td>
+            </tr>
+          )}
+          {data.ledgerInfo?.flags?.allowTrustLineLocking && (
+            <tr>
+              <td>Trustline locking</td>
               <td className="bold">enabled</td>
             </tr>
           )}

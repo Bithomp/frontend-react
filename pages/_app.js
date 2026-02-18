@@ -354,7 +354,22 @@ const MyApp = ({ Component, pageProps }) => {
               <ScrollToTop />
               {/* available only on the mainnet and testnet, only on the client side, only when online */}
               {(networkId === 0 || networkId === 1) && isClient && isOnline && !isBot && (
-                <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
+                <WalletConnectModalSign
+                  projectId={process.env.NEXT_PUBLIC_WALLETCONNECT}
+                  metadata={getAppMetadata()}
+                  modalOptions={{
+                    // Explorer must be enabled for explorer* filters to apply
+                    enableExplorer: true,
+                    explorerExcludedWalletIds: 'ALL',
+                    explorerRecommendedWalletIds: [
+                      '994824d1e0b935f48ec3570c9d51fe5af9bbd9246b6f57210906f8b853ad2196', // Girin
+                      'd9f5432e932c6fad8e19a0cea9d4a3372a84aed16e98a52e6655dd2821a63404', // Joy
+                      '37a686ab6223cd42e2886ed6e5477fce100a4fb565dcd57ed4f81f7c12e93053', // Bifrost
+                      '0e4915107da5b3408b38e248f7a710f4529d54cd30e9d12ff0eb886d45c18e92' // Arculus
+                      //'19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927' // Ledger Live
+                    ]
+                  }}
+                />
               )}
               {(signRequest || isValidUUID(uuid)) && (
                 <SignForm

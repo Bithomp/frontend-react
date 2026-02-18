@@ -942,6 +942,9 @@ export const lpTokenName = (data) => {
 
 export const niceCurrency = (currency) => {
   if (!currency) return ''
+  if (currency === nativeCurrency) {
+    return nativeCurrency
+  }
   let firstTwoNumbers = currency.substr(0, 2)
   if (currency.length > 3) {
     if (firstTwoNumbers === '01') {
@@ -978,7 +981,11 @@ export const niceCurrency = (currency) => {
       currency = Buffer.from(currency, 'hex')
     }
   }
-  return currency.toString('utf8').replace(/\0/g, '') // remove padding nulls
+  currency = currency.toString('utf8').replace(/\0/g, '') // remove padding nulls
+  if (currency.toLowerCase() === nativeCurrency.toLowerCase()) {
+    return 'Fake' + nativeCurrency
+  }
+  return currency
 }
 
 export const amountParced = (amount) => {
@@ -1030,6 +1037,11 @@ export const amountParced = (amount) => {
   } else if (amount.mpt_issuance_id) {
     originalCurrency = amount.mpt_issuance_id
     currency = amount.currencyDetails?.currency || '[MPT: ' + shortHash(amount.mpt_issuance_id, 4) + ']'
+
+    if (currency === nativeCurrency) {
+      currency = 'Fake' + nativeCurrency
+    }
+
     value = amount.value
     const scale = amount.currencyDetails?.scale || 0
     if (scale > 0) {
@@ -1270,6 +1282,20 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
   return beforeNumber + output
 }
 
+// percent delta formatted like +49K% / -3.2%
+// uses existing shortNiceNumber()
+export const shortNicePercent = (p, smallDigits = 1, largeDigits = 1) => {
+  if (p === null || p === undefined) return ''
+  const n = Number(p)
+  if (!Number.isFinite(n)) return ''
+
+  const sign = n > 0 ? '+' : n < 0 ? '-' : ''
+  const abs = Math.abs(n)
+
+  // shortNiceNumber returns string without sign for positive numbers, so we add sign ourselves
+  return `${sign}${shortNiceNumber(abs, smallDigits, largeDigits) ?? '0'}%`
+}
+
 const syntaxHighlight = (json) => {
   if (!json) return ''
   json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -1335,12 +1361,12 @@ export const showFlags = (flags) => {
   const trueFlags = Object.entries(flags).filter(([, flagValue]) => flagValue === true)
   if (!trueFlags?.length) return null
   return (
-    <>
+    <div className="flag-list">
       {trueFlags.map(([flag]) => (
         <span key={flag} className="flag">
           {flag}
         </span>
       ))}
-    </>
+    </div>
   )
 }
