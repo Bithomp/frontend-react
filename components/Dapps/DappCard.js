@@ -5,6 +5,7 @@ import DappLogo from './DappLogo'
 import WalletsCell from './WalletsCell'
 import TypeMixCell from './TypeMixCell'
 import styles from '../../styles/components/dappCard.module.scss'
+import Delta from '../UI/Delta'
 
 // Build success-by-type map from transactionTypesResults
 const getSuccessByType = (transactionTypesResults) => {
@@ -17,7 +18,15 @@ const getSuccessByType = (transactionTypesResults) => {
   return res
 }
 
-export default function DappCard({ dapp, index, convertCurrency, dappsMeta, expandedRowKey, setExpandedRowKey }) {
+export default function DappCard({
+  dapp,
+  prevDapp,
+  index,
+  convertCurrency,
+  dappsMeta,
+  expandedRowKey,
+  setExpandedRowKey
+}) {
   const sourceTag = dapp?.sourceTag
   const rowKey = sourceTag ?? index
   const isOpen = expandedRowKey === rowKey
@@ -68,25 +77,39 @@ export default function DappCard({ dapp, index, convertCurrency, dappsMeta, expa
       <div className={styles.grid}>
         <div className={styles.metric}>
           <div className={styles.k}>Performing addresses</div>
-          <div className={styles.v}>{shortNiceNumber(dapp?.uniqueSourceAddresses, 0)}</div>
+          <div className={styles.v}>
+            {shortNiceNumber(dapp?.uniqueSourceAddresses, 0)}
+            <Delta cur={dapp?.uniqueSourceAddresses} prev={prevDapp?.uniqueSourceAddresses} />
+          </div>
         </div>
 
         <div className={styles.metric}>
           <div className={styles.k}>Interacting addresses</div>
-          <div className={styles.v}>{shortNiceNumber(dapp?.uniqueInteractedAddresses, 0)}</div>
+          <div className={styles.v}>
+            {shortNiceNumber(dapp?.uniqueInteractedAddresses, 0)}
+            <Delta cur={dapp?.uniqueInteractedAddresses} prev={prevDapp?.uniqueInteractedAddresses} />
+          </div>
         </div>
 
         <div className={styles.metric}>
           <div className={styles.k}>Transactions</div>
-          <div className={styles.v}>{shortNiceNumber(dapp?.totalTransactions, 0)}</div>
+          <div className={styles.v}>
+            {shortNiceNumber(dapp?.totalTransactions, 0)}
+            <Delta cur={dapp?.totalTransactions} prev={prevDapp?.totalTransactions} />
+          </div>
         </div>
 
         <div className={styles.metric}>
           <div className={styles.k}>Total sent</div>
-          <div className={styles.v}>
-            {amountFormat(dapp?.totalSent, { short: true })}
-            <div className={styles.sub} suppressHydrationWarning>
-              {shortNiceNumber(dapp?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
+          <div className={styles.v} suppressHydrationWarning>
+            {shortNiceNumber(dapp?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
+            <div className={styles.sub}>
+              {amountFormat(dapp?.totalSent, { short: true })}
+              <Delta
+                inline
+                cur={dapp?.totalSentInFiats?.[convertCurrency]}
+                prev={prevDapp?.totalSentInFiats?.[convertCurrency]}
+              />
             </div>
           </div>
         </div>

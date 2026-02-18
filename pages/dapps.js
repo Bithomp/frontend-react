@@ -23,6 +23,8 @@ import { HeaderTooltip } from '../components/UI/HeaderTooltip'
 import { useIsMobile } from '../utils/mobile'
 import DappCard from '../components/Dapps/DappCard'
 import WalletSelect from '../components/Dapps/WalletSelect'
+import { buildPrevMapBySourceTag } from '../utils/dapps'
+import Delta from '../components/UI/Delta'
 
 const calcSuccessRate = (total, success) => {
   const t = Number(total)
@@ -205,6 +207,10 @@ export default function Dapps({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, convertCurrency])
 
+  const prevByTag = useMemo(() => {
+    return buildPrevMapBySourceTag(rawData?.previousPeriod?.dapps)
+  }, [rawData?.previousPeriod?.dapps])
+
   const data = useMemo(() => {
     const list = Array.isArray(rawData?.dapps) ? rawData.dapps : []
     // Exclude these sourceTags
@@ -368,6 +374,7 @@ export default function Dapps({
                     <DappCard
                       key={d?.sourceTag ?? idx}
                       dapp={d}
+                      prevDapp={prevByTag ? prevByTag.get(String(d?.sourceTag)) : null}
                       index={idx}
                       convertCurrency={convertCurrency}
                       dappsMeta={metaObj}
@@ -437,6 +444,7 @@ export default function Dapps({
               <tbody>
                 {data?.length ? (
                   data.map((d, idx) => {
+                    const prev = prevByTag ? prevByTag.get(String(d?.sourceTag)) : null
                     const rowKey = d?.sourceTag ?? idx
                     const isOpen = expandedRowKey === rowKey
 
@@ -476,9 +484,18 @@ export default function Dapps({
                           ) : null}
                         </td>
 
-                        <td className="right">{shortNiceNumber(d?.uniqueSourceAddresses, 0)}</td>
-                        <td className="right">{shortNiceNumber(d?.uniqueInteractedAddresses, 0)}</td>
-                        <td className="right">{shortNiceNumber(d?.totalTransactions, 0)}</td>
+                        <td className="right">
+                          {shortNiceNumber(d?.uniqueSourceAddresses, 0)}
+                          <Delta cur={d?.uniqueSourceAddresses} prev={prev?.uniqueSourceAddresses} />
+                        </td>
+                        <td className="right">
+                          {shortNiceNumber(d?.uniqueInteractedAddresses, 0)}
+                          <Delta cur={d?.uniqueInteractedAddresses} prev={prev?.uniqueInteractedAddresses} />
+                        </td>
+                        <td className="right">
+                          {shortNiceNumber(d?.totalTransactions, 0)}
+                          <Delta cur={d?.totalTransactions} prev={prev?.totalTransactions} />
+                        </td>
 
                         <td className="right">
                           <TypeMixCell
@@ -492,11 +509,16 @@ export default function Dapps({
                           />
                         </td>
 
-                        <td className="right no-brake">
-                          {amountFormat(d?.totalSent, { short: true })}
+                        <td className="right no-brake" suppressHydrationWarning>
+                          {shortNiceNumber(d?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
                           <br />
-                          <span style={{ opacity: 0.7 }} suppressHydrationWarning>
-                            {shortNiceNumber(d?.totalSentInFiats?.[convertCurrency], 2, 1, convertCurrency)}
+                          <span style={{ opacity: 0.7 }}>
+                            {amountFormat(d?.totalSent, { short: true })}
+                            <Delta
+                              inline
+                              cur={d?.totalSentInFiats?.[convertCurrency]}
+                              prev={prev?.totalSentInFiats?.[convertCurrency]}
+                            />
                           </span>
                         </td>
                       </tr>

@@ -1282,6 +1282,20 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
   return beforeNumber + output
 }
 
+// percent delta formatted like +49K% / -3.2%
+// uses existing shortNiceNumber()
+export const shortNicePercent = (p, smallDigits = 1, largeDigits = 1) => {
+  if (p === null || p === undefined) return ''
+  const n = Number(p)
+  if (!Number.isFinite(n)) return ''
+
+  const sign = n > 0 ? '+' : n < 0 ? '-' : ''
+  const abs = Math.abs(n)
+
+  // shortNiceNumber returns string without sign for positive numbers, so we add sign ourselves
+  return `${sign}${shortNiceNumber(abs, smallDigits, largeDigits) ?? '0'}%`
+}
+
 const syntaxHighlight = (json) => {
   if (!json) return ''
   json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')

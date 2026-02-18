@@ -261,3 +261,13 @@ export const WALLET_POPULARITY = (() => {
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
     .map(([id]) => id)
 })()
+
+export const buildPrevMapBySourceTag = (prevList) => {
+  if (!Array.isArray(prevList) || prevList.length === 0) return null
+  const m = new Map()
+  for (const d of prevList) {
+    if (d?.sourceTag == null) continue
+    m.set(String(d.sourceTag), d)
+  }
+  return m
+}
