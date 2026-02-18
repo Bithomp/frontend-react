@@ -338,7 +338,7 @@ export default function Dapps({
           </CheckBox>
           {excludeNoWallets ? (
             <>
-              Wallet filter
+              <div style={{ marginBottom: 10 }}>Wallet filter</div>
               <WalletSelect value={walletFilter} setValue={setWalletFilter} walletsList={walletsOptionsList} />
             </>
           ) : null}
