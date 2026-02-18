@@ -64,7 +64,7 @@ export async function getServerSideProps(context) {
   const selectedCurrencyServer = currencyServer(req)
   const convertCurrency = (selectedCurrencyServer || 'usd').toLowerCase()
 
-  let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}`
+  let apiUrl = `v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=true`
   if (period) {
     apiUrl += `&period=${encodeURIComponent(period)}`
   }
@@ -186,7 +186,7 @@ export default function Dapps({
     const controller = new AbortController()
     abortControllerRef.current = controller
     axios
-      .get(`/v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&period=${period}`, {
+      .get(`/v2/dapps?convertCurrencies=${encodeURIComponent(convertCurrency)}&previousPeriod=true&period=${period}`, {
         signal: controller.signal
       })
       .then((res) => {
