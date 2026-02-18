@@ -22,6 +22,7 @@ import { dappsPageClass } from '../styles/pages/dapps.module.scss'
 import { HeaderTooltip } from '../components/UI/HeaderTooltip'
 import { useIsMobile } from '../utils/mobile'
 import DappCard from '../components/Dapps/DappCard'
+import WalletSelect from '../components/Dapps/WalletSelect'
 
 const calcSuccessRate = (total, success) => {
   const t = Number(total)
@@ -140,7 +141,6 @@ export default function Dapps({
   }
 
   const convertCurrency = (selectedCurrency || 'usd').toLowerCase()
-
   const [order, setOrder] = useState(orderQuery || 'performingHigh')
   const [period, setPeriod] = useState(periodQuery)
   const [errorMessage, setErrorMessage] = useState(
@@ -150,8 +150,27 @@ export default function Dapps({
   const [rawData, setRawData] = useState(initialData || {})
   const [loading, setLoading] = useState(false)
   const [expandedRowKey, setExpandedRowKey] = useState(null)
+  const [walletFilter, setWalletFilter] = useState('all') // 'all' | walletId
 
   const abortControllerRef = useRef()
+
+  const walletsOptionsList = useMemo(() => {
+    const metaObj = DAPPS_META[0] || {}
+    const set = new Set()
+
+    Object.values(metaObj).forEach((entry) => {
+      ;(entry?.wallets || []).forEach((w) => set.add(String(w).toLowerCase()))
+      ;(entry?.walletconnect || []).forEach((w) => set.add(String(w).toLowerCase()))
+    })
+
+    return Array.from(set)
+  }, [])
+
+  useEffect(() => {
+    if (walletFilter && !excludeNoWallets) {
+      setExcludeNoWallets(true)
+    }
+  }, [walletFilter, excludeNoWallets])
 
   useEffect(() => {
     setLoading(true)
@@ -207,8 +226,19 @@ export default function Dapps({
         })
       : filtered
 
-    return sortDapps(filteredWallets, order)
-  }, [rawData, order, excludeNoWallets])
+    const byWallet = walletFilter
+      ? filteredWallets.filter((d) => {
+          const entry = metaObj && metaObj[String(d?.sourceTag)]
+          const all = [
+            ...(Array.isArray(entry?.wallets) ? entry.wallets : []),
+            ...(Array.isArray(entry?.walletconnect) ? entry.walletconnect : [])
+          ].map((w) => String(w).toLowerCase())
+          return all.includes(String(walletFilter).toLowerCase())
+        })
+      : filteredWallets
+
+    return sortDapps(byWallet, order)
+  }, [rawData, order, excludeNoWallets, walletFilter])
 
   const orderList = [
     { value: 'performingHigh', label: 'Performing wallets: High to Low' },
@@ -272,9 +302,21 @@ export default function Dapps({
         <>
           Period
           <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
-          <CheckBox checked={excludeNoWallets} setChecked={setExcludeNoWallets}>
+          <CheckBox
+            checked={excludeNoWallets}
+            setChecked={(v) => {
+              setExcludeNoWallets(v)
+              if (!v) setWalletFilter('') // reset when turning off
+            }}
+          >
             Exclude apps without external signing
           </CheckBox>
+          {excludeNoWallets ? (
+            <>
+              Wallet filter
+              <WalletSelect value={walletFilter} setValue={setWalletFilter} walletsList={walletsOptionsList} />
+            </>
+          ) : null}
         </>
         {loading ? (
           <table className={isMobile ? 'table-mobile' : 'table-large expand'}>
