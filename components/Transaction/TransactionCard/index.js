@@ -178,9 +178,20 @@ export const TransactionCard = ({
                   <tr>
                     <TData>{t('table.type')}</TData>
                     <TData>
-                      <span className="bold">{txTypeSpecial || tx?.TransactionType}</span>
+                      <span className="bold">
+                        {specification?.domainID && <span className="orange bold">Permissioned </span>}{' '}
+                        {txTypeSpecial || tx?.TransactionType}
+                      </span>
                     </TData>
                   </tr>
+                  {specification?.domainID && (
+                    <tr>
+                      <TData>Domain ID</TData>
+                      <TData>
+                        {shortHash(specification.domainID)} <CopyButton text={specification.domainID} />
+                      </TData>
+                    </tr>
+                  )}
                   {outcome?.hooksExecutions?.map((hr, i) => (
                     <tr key={i}>
                       <TData>Hook return{outcome?.hooksExecutions.length > 1 ? ' ' + (i + 1) : ''}</TData>

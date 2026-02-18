@@ -14,6 +14,7 @@ import { i18n } from 'next-i18next'
 
 export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
+
   const { tx, specification, outcome } = data
 
   const sourceOrderbookChange = outcome?.orderbookChanges
