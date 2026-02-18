@@ -44,6 +44,11 @@ export default function DappCard({ dapp, index, convertCurrency, dappsMeta, expa
 
   const name = dappBySourceTag(sourceTag) || sourceTag
 
+  const wallets = entry?.wallets || []
+  const walletconnect = entry?.walletconnect || []
+  const hasExternalSigning =
+    (Array.isArray(wallets) && wallets.length > 0) || (Array.isArray(walletconnect) && walletconnect.length > 0)
+
   return (
     <div className={styles.card}>
       <div className={styles.head}>
@@ -52,7 +57,10 @@ export default function DappCard({ dapp, index, convertCurrency, dappsMeta, expa
           {logo ? <DappLogo src={logo} /> : null}
           <div className={styles.titleWrap}>
             <div className={styles.title}>{name}</div>
-            <div className={styles.wallets}>{entry?.wallets ? <WalletsCell wallets={entry.wallets} /> : null}</div>
+
+            <div className={styles.wallets}>
+              {hasExternalSigning ? <WalletsCell wallets={wallets} walletconnect={walletconnect} /> : null}
+            </div>
           </div>
         </div>
       </div>

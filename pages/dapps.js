@@ -193,12 +193,20 @@ export default function Dapps({
       return Number(d?.uniqueSourceAddresses) > 3
     })
     const metaObj = DAPPS_META[0] || {}
+
+    const hasAnyExternalSigning = (entry) => {
+      const hasWallets = Array.isArray(entry?.wallets) && entry.wallets.length > 0
+      const hasWC = Array.isArray(entry?.walletconnect) && entry.walletconnect.length > 0
+      return hasWallets || hasWC
+    }
+
     const filteredWallets = excludeNoWallets
       ? filtered.filter((d) => {
           const entry = metaObj && metaObj[String(d?.sourceTag)]
-          return entry && Array.isArray(entry.wallets) && entry.wallets.length > 0
+          return hasAnyExternalSigning(entry)
         })
       : filtered
+
     return sortDapps(filteredWallets, order)
   }, [rawData, order, excludeNoWallets])
 
@@ -395,7 +403,9 @@ export default function Dapps({
                         </td>
 
                         <td style={{ verticalAlign: 'middle' }}>
-                          {entry?.wallets ? <WalletsCell wallets={entry.wallets} /> : null}
+                          {entry?.wallets?.length || entry?.walletconnect?.length ? (
+                            <WalletsCell wallets={entry?.wallets || []} walletconnect={entry?.walletconnect || []} />
+                          ) : null}
                         </td>
 
                         <td className="right">{shortNiceNumber(d?.uniqueSourceAddresses, 0)}</td>
