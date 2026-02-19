@@ -75,7 +75,7 @@ export default function WalletSelect({
       value={selectedOption}
       onChange={(opt) => setValue(opt?.value || '')}
       isSearchable={true}
-      className={className || ''}
+      className={`dropdown ${className || ''}`}
       classNamePrefix="react-select"
       menuPortalTarget={typeof window !== 'undefined' ? document.body : null}
       menuPosition="fixed"
@@ -88,7 +88,23 @@ export default function WalletSelect({
       )}
       styles={{
         menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-        menuList: (provided) => ({ ...provided, maxHeight: 260, overflowY: 'auto' })
+        menu: (base) => ({
+          ...base,
+          backgroundColor: 'var(--background-secondary)',
+          borderRadius: 0,
+          marginTop: 0,
+          border: '1px solid var(--accent-icon)'
+        }),
+        menuList: (provided) => ({ ...provided, maxHeight: 260, overflowY: 'auto' }),
+        option: (base, state) => ({
+          ...base,
+          backgroundColor: state.isSelected
+            ? 'var(--accent-icon)'
+            : state.isFocused
+              ? 'var(--unaccent-icon)'
+              : 'var(--background-secondary)',
+          color: state.isSelected ? 'var(--background-main)' : 'var(--text-main)'
+        })
       }}
     />
   )
