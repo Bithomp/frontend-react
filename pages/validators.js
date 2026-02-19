@@ -1,5 +1,5 @@
 import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect, memo } from 'react'
+import { useState, useEffect, memo, useRef, useMemo } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import ReactCountryFlag from 'react-country-flag'
 import { useTheme } from '../components/Layout/ThemeContext'
@@ -93,6 +93,23 @@ export default function Validators({ amendment, initialData, initialErrorMessage
   const { theme } = useTheme()
   const [countries, setCountries] = useState(null)
 
+  const frozenLangRef = useRef(i18n?.language)
+
+  const timeAgoMap = useMemo(() => {
+    const map = new Map()
+    const list = validators?.validators || []
+    const nowSec = Math.floor(Date.now() / 1000)
+    list.forEach((v) => {
+      if (!v?.lastSeenTime || !v?.publicKey) return
+      const isLate = nowSec - (devNet ? 40 : 10) > v.lastSeenTime
+      map.set(v.publicKey, {
+        text: timeFromNow(v.lastSeenTime - 1, { language: frozenLangRef.current }),
+        isLate
+      })
+    })
+    return map
+  }, [validators])
+
   useEffect(() => {
     const loadCountries = async () => {
       const data = await countriesTranslated(i18n.language)
@@ -101,11 +118,12 @@ export default function Validators({ amendment, initialData, initialErrorMessage
     loadCountries()
   }, [i18n.language])
 
-  const showTime = ({ time }) => {
+  const showTime = ({ time, id }) => {
     if (!time) return 'N/A'
+    const frozen = id ? timeAgoMap.get(id) : null
     return (
-      <span className={Math.floor(Date.now() / 1000) - (devNet ? 40 : 10) > time ? 'red bold' : ''}>
-        {timeFromNow(time - 1, i18n)}
+      <span className={frozen?.isLate ? 'red bold' : ''}>
+        {frozen?.text || timeFromNow(time - 1, i18n)}
       </span>
     )
   }
@@ -904,7 +922,8 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                             {t('table.version')}: {v.serverVersion ? v.serverVersion : 'N/A'}
                           </p>
                           <p>
-                            {t('table.last-seen', { ns: 'validators' })}: <ShowTimeMemo time={v.lastSeenTime} />
+                            {t('table.last-seen', { ns: 'validators' })}:{' '}
+                            <ShowTimeMemo time={v.lastSeenTime} id={v.publicKey} />
                           </p>
                         </>
                       )}
@@ -1050,7 +1069,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                     </td>
                     <td className="right">
                       {v.lastSeenTime ? (
-                        <ShowTimeMemo time={v.lastSeenTime} />
+                        <ShowTimeMemo time={v.lastSeenTime} id={v.publicKey} />
                       ) : (
                         <span className="red bold">Long time ago</span>
                       )}
