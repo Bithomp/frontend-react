@@ -159,6 +159,8 @@ export default function Dapps({
   const [walletFilter, setWalletFilter] = useState(walletQuery || '')
   const [sentTip, setSentTip] = useState(null)
 
+  const initialFetchSkippedRef = useRef(false)
+
   const abortControllerRef = useRef()
 
   const walletsOptionsList = useMemo(() => {
@@ -180,6 +182,10 @@ export default function Dapps({
   }, [walletFilter, excludeNoWallets])
 
   useEffect(() => {
+    if (!initialFetchSkippedRef.current) {
+      initialFetchSkippedRef.current = true
+      if (initialData) return
+    }
     setLoading(true)
     setErrorMessage('')
     setRawData({})
