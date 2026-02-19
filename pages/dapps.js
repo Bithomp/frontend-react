@@ -468,18 +468,16 @@ export default function Dapps({
 
                     return (
                       <tr key={d?.sourceTag ?? idx}>
-                        <td className="center" style={{ verticalAlign: 'middle' }}>
-                          {idx + 1}
-                        </td>
+                        <td className="center">{idx + 1}</td>
 
-                        <td className="no-brake" style={{ verticalAlign: 'middle' }}>
+                        <td className="no-brake">
                           <span style={{ display: 'flex', alignItems: 'center' }}>
                             {logo ? <DappLogo src={logo} /> : null}
                             {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
                           </span>
                         </td>
 
-                        <td style={{ verticalAlign: 'middle' }}>
+                        <td>
                           {entry?.wallets?.length || entry?.walletconnect?.length ? (
                             <WalletsCell wallets={entry?.wallets || []} walletconnect={entry?.walletconnect || []} />
                           ) : null}
