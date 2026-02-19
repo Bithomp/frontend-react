@@ -121,11 +121,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
   const showTime = ({ time, id }) => {
     if (!time) return 'N/A'
     const frozen = id ? timeAgoMap.get(id) : null
-    return (
-      <span className={frozen?.isLate ? 'red bold' : ''}>
-        {frozen?.text || timeFromNow(time - 1, i18n)}
-      </span>
-    )
+    return <span className={frozen?.isLate ? 'red bold' : ''}>{frozen?.text || timeFromNow(time - 1, i18n)}</span>
   }
 
   const ShowTimeMemo = memo(showTime)
