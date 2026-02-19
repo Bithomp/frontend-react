@@ -1,11 +1,12 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { fullDateAndTime, shortHash, timeOrDate } from '../utils/format'
 import { shortName, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
+import { axiosServer, passHeaders } from '../utils/axios'
 
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
@@ -14,10 +15,45 @@ import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 import { LinkTx } from '../utils/links'
 
 export const getServerSideProps = async (context) => {
-  const { locale } = context
+  const { locale, req } = context
+
+  let initialData = null
+  let initialErrorMessage = null
+
+  try {
+    const response = await axiosServer({
+      method: 'get',
+      url: 'v2/amendment',
+      headers: passHeaders(req)
+    }).catch((error) => {
+      initialErrorMessage = error.message
+    })
+
+    const response2 = await axiosServer({
+      method: 'get',
+      url: 'v2/features',
+      headers: passHeaders(req)
+    }).catch((error) => {
+      initialErrorMessage = initialErrorMessage || error.message
+    })
+
+    if (response?.data) {
+      initialData = {
+        amendments: response.data,
+        features: response2?.data || null
+      }
+    } else {
+      initialErrorMessage = initialErrorMessage || 'Amendments not found'
+    }
+  } catch (error) {
+    console.error(error)
+  }
+
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
+      initialData: initialData || null,
+      initialErrorMessage: initialErrorMessage || '',
       ...(await serverSideTranslations(locale, ['common', 'amendments']))
     }
   }
@@ -28,7 +64,7 @@ const amendmentLink = (a, options) => {
   return <Link href={'amendment/' + (name || a.amendment)}>{name || shortHash(a.amendment)}</Link>
 }
 
-export default function Amendment() {
+export default function Amendment({ initialData, initialErrorMessage, isSsrMobile }) {
   const windowWidth = useWidth()
   const { t } = useTranslation()
   const [majorityAmendments, setMajorityAmendments] = useState(null)
@@ -40,11 +76,13 @@ export default function Amendment() {
   const [loadedFeatures, setLoadedFeatures] = useState(false)
   const [validations, setValidations] = useState(null)
   const [threshold, setThreshold] = useState(null)
+  const [errorMessage] = useState(
+    t(`error.${initialErrorMessage}`, { defaultValue: initialErrorMessage }) || ''
+  )
 
-  const checkApi = async () => {
-    const response = await axios('v2/amendment')
-    const data = response.data //.sort(a => (!a.introduced) ? -1 : 1) // empty versions on top
+  const initialProcessedRef = useRef(false)
 
+  const applyData = (data, featuresData) => {
     let disabled = [] //withoutMajourity
     let enabled = []
     let majority = []
@@ -70,11 +108,8 @@ export default function Amendment() {
       setEnabledAmendments(enabled)
     }
 
-    const response2 = await axios('v2/features')
-    //here 1) we can get names for sure
-    //split disabled to new (withMajority and Without Majourity) and obsolete
-    let newdata = response2.data
-    if (newdata.result?.features) {
+    const newdata = featuresData
+    if (newdata?.result?.features) {
       setLoadedFeatures(true)
       const features = newdata.result.features
 
@@ -138,6 +173,17 @@ export default function Amendment() {
     }
   }
 
+  const checkApi = async () => {
+    if (initialData) return
+    const response = await axios('v2/amendment')
+    const data = response.data
+
+    const response2 = await axios('v2/features')
+    const newdata = response2.data
+
+    applyData(data, newdata)
+  }
+
   /*
   [
     {
@@ -153,12 +199,18 @@ export default function Amendment() {
   */
 
   useEffect(() => {
+    if (!initialProcessedRef.current && initialData) {
+      applyData(initialData.amendments, initialData.features)
+      initialProcessedRef.current = true
+      return
+    }
     checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const showHash = (hash) => {
-    return windowWidth > 1140 ? <>{hash} </> : windowWidth > 800 ? <>{shortHash(hash)} </> : ''
+    const width = windowWidth || (isSsrMobile ? 600 : 1200)
+    return width > 1140 ? <>{hash} </> : width > 800 ? <>{shortHash(hash)} </> : ''
   }
 
   const activationDays = xahauNetwork ? 5 : 14
@@ -177,6 +229,11 @@ export default function Amendment() {
       <div className="content-text">
         <h1 className="center">{t('menu.network.amendments')}</h1>
         <NetworkPagesTab tab="amendments" />
+        {errorMessage ? (
+          <div className="center orange bold" style={{ marginTop: 20 }}>
+            {errorMessage}
+          </div>
+        ) : null}
         {majorityAmendments?.length > 0 && (
           <>
             <h2 className="center">{t('soon', { ns: 'amendments' })}</h2>
