@@ -1,6 +1,8 @@
 import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect, memo, useRef, useMemo } from 'react'
+import { useState, useEffect, memo, useRef } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import dayjs from 'dayjs'
+import * as relativeTimePlugin from 'dayjs/plugin/relativeTime'
 import ReactCountryFlag from 'react-country-flag'
 import { useTheme } from '../components/Layout/ThemeContext'
 
@@ -8,7 +10,7 @@ import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
 import Avatar from '../components/UI/Avatar'
 
-import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash, timeFromNow } from '../utils/format'
+import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
 import { devNet, useWidth, xahauNetwork, countriesTranslated, avatarServer } from '../utils'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -19,11 +21,14 @@ import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 import VerifiedIcon from '../public/images/verified.svg'
 import Link from 'next/link'
 
+dayjs.extend(relativeTimePlugin)
+
 export async function getServerSideProps(context) {
   const { query, locale, req } = context
   const { amendment } = query
   let initialData = {}
   let initialErrorMessage = null
+  let initialProcessed = null
   try {
     const res = await axiosServer({
       method: 'get',
@@ -46,10 +51,15 @@ export async function getServerSideProps(context) {
     console.error(error)
   }
 
+  if (initialData) {
+    initialProcessed = buildValidatorsState(initialData, amendment, locale)
+  }
+
   return {
     props: {
       amendment: amendment || null,
       initialData: initialData || null,
+      initialProcessed: initialProcessed || null,
       initialErrorMessage: initialErrorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'validators', 'last-ledger-information']))
@@ -76,39 +86,319 @@ const compareReserves = (a, b) => {
   return 0
 }
 
-export default function Validators({ amendment, initialData, initialErrorMessage }) {
-  const [validators, setValidators] = useState(null)
-  const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
-  const [developerMode, setDeveloperMode] = useState(false)
-  const [serverVersions, setServerVersions] = useState({ validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
-  const [baseFees, setBaseFees] = useState({ validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
-  const [baseReserves, setBaseReserves] = useState({ validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
-  const [reserveIncrements, setReserveIncrements] = useState({
-    validators: {},
-    unl: {},
-    count: { validators: 0, unl: 0 }
+const compareValidators = (a, b, amendment) => {
+  if (!amendment) {
+    //in the negative UNL
+    if (a.nUnl && !b.nUnl) return -1
+    if (!a.nUnl && b.nUnl) return 1
+
+    //without baseFee - offline
+    if (!a.baseFee && b.baseFee) return -1
+    if (a.baseFee && !b.baseFee) return 1
+  }
+
+  //in the UNL
+  if (a.unl && !b.unl) return -1
+  if (!a.unl && b.unl) return 1
+
+  //alive
+  if (a.lastSeenTime && !b.lastSeenTime) return -1
+  if (!a.lastSeenTime && b.lastSeenTime) return 1
+
+  if (amendment) {
+    if (a.amendments?.includes(amendment) && !b.amendments?.includes(amendment)) return -1
+    if (!a.amendments?.includes(amendment) && b.amendments?.includes(amendment)) return 1
+  }
+
+  //with verified Domains
+  if (a.domainVerified && !b.domainVerified) return -1
+  if (!a.domainVerified && b.domainVerified) return 1
+
+  //with Domains
+  if (a.domain && !b.domain) return -1
+  if (!a.domain && b.domain) return 1
+
+  if (!a.domainVerified && !b.domainVerified) {
+    //with verified Legacy domains when there is no verfiied domain
+    if (a.domainLegacyVerified && !b.domainLegacyVerified) return -1
+    if (!a.domainLegacyVerified && b.domainLegacyVerified) return 1
+  }
+
+  if (!a.domain && !b.domain) {
+    //with Legacy domains when there is no domain
+    if (a.domainLegacy && !b.domainLegacy) return -1
+    if (!a.domainLegacy && b.domainLegacy) return 1
+  }
+
+  //with principals
+  if (a.principals && !b.principals) return -1
+  if (!a.principals && b.principals) return 1
+
+  //with principal names
+  if (a.principals?.[0].name && !b.principals?.[0].name) return -1
+  if (!a.principals?.[0].name && b.principals?.[0].name) return 1
+
+  //by principal name
+  if (a.principals?.[0]?.name && b.principals?.[0]?.name) {
+    return a.principals[0].name.toLowerCase() > b.principals[0].name.toLowerCase() ? 1 : -1
+  }
+
+  //with both countries
+  if (a.ownerCountry && a.serverCountry && (!b.ownerCountry || !b.serverCountry)) return -1
+  if ((!a.ownerCountry || !a.serverCountry) && b.ownerCountry && b.serverCountry) return 1
+
+  //with owner country
+  if (a.ownerCountry && !b.ownerCountry) return -1
+  if (!a.ownerCountry && b.ownerCountry) return 1
+
+  //with server country
+  if (a.serverCountry && !b.serverCountry) return -1
+  if (!a.serverCountry && b.serverCountry) return 1
+
+  //by votes
+  if (a.amendments && !b.amendments) return -1
+  if (!a.amendments && b.amendments) return 1
+
+  //by domain
+  if (a.domain && b.domain) {
+    return a.domain.toLowerCase() > b.domain.toLowerCase() ? 1 : -1
+  }
+
+  if (!a.domain && !b.domain) {
+    //by legacy domain if no domain
+    if (a.domainLegacy && b.domainLegacy) {
+      return a.domainLegacy.toLowerCase() > b.domainLegacy.toLowerCase() ? 1 : -1
+    }
+  }
+
+  //by lastSeenTime
+  if (a.lastSeenTime > b.lastSeenTime + 10) return -1
+  if (a.lastSeenTime + 10 < b.lastSeenTime) return 1
+
+  //by serverVersion
+  if (a.serverVersion > b.serverVersion) return -1
+  if (a.serverVersion < b.serverVersion) return 1
+
+  //by lasSeenTime, serverVersion, publicKey
+  return a.publicKey > b.publicKey ? 1 : -1
+}
+
+const buildValidatorsState = (initialData, amendment, locale) => {
+  if (!initialData) return null
+  let dataU = initialData.unl
+  if (!dataU?.validators) return null
+
+  const lang = locale || 'en'
+
+  const compare = (a, b) => compareValidators(a, b, amendment)
+
+  let validatorsList = (dataU.validators || []).map((v) => ({ ...v, unl: true }))
+  validatorsList.sort(compare)
+  const unlValidatorsCount = validatorsList.length
+
+  let countServerVersions = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+  let countBaseFees = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+  let countBaseReserves = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+  let countReserveIncrements = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+  const timeAgoMap = {}
+  const nowSec = Math.floor(Date.now() / 1000)
+
+  const dataV = initialData.validators
+  if (dataV) {
+    for (let i = 0; i < dataV.length; i++) {
+      const v = dataV[i]
+      if (v?.publicKey && v?.lastSeenTime) {
+        const text = dayjs((v.lastSeenTime - 1) * 1000)
+          .locale(lang)
+          .from(dayjs(nowSec * 1000))
+        timeAgoMap[v.publicKey] = {
+          text,
+          isLate: nowSec - (devNet ? 40 : 10) > v.lastSeenTime,
+          at: nowSec,
+          lastSeenTime: v.lastSeenTime
+        }
+      }
+      if (v.serverVersion) {
+        if (countServerVersions.validators[v.serverVersion]) {
+          countServerVersions.validators[v.serverVersion]++
+        } else {
+          countServerVersions.validators[v.serverVersion] = 1
+        }
+        countServerVersions.count.validators++
+      }
+      if (v.baseFee) {
+        if (countBaseFees.validators[v.baseFee]) {
+          countBaseFees.validators[v.baseFee]++
+        } else {
+          countBaseFees.validators[v.baseFee] = 1
+        }
+        countBaseFees.count.validators++
+      }
+      if (v.reserveBase) {
+        if (countBaseReserves.validators[v.reserveBase]) {
+          countBaseReserves.validators[v.reserveBase]++
+        } else {
+          countBaseReserves.validators[v.reserveBase] = 1
+        }
+        countBaseReserves.count.validators++
+      }
+      if (v.reserveIncrement) {
+        if (countReserveIncrements.validators[v.reserveIncrement]) {
+          countReserveIncrements.validators[v.reserveIncrement]++
+        } else {
+          countReserveIncrements.validators[v.reserveIncrement] = 1
+        }
+        countReserveIncrements.count.validators++
+      }
+
+      const index = validatorsList.findIndex((x) => x.publicKey === v.publicKey)
+      if (index === -1) {
+        validatorsList.push(v)
+      } else {
+        const merged = {
+          ...v,
+          unl: true,
+          domainLegacy: validatorsList[index].domainLegacy,
+          sequence: validatorsList[index].sequence
+        }
+        validatorsList[index] = merged
+        if (merged.serverVersion) {
+          if (countServerVersions.unl[merged.serverVersion]) {
+            countServerVersions.unl[merged.serverVersion]++
+          } else {
+            countServerVersions.unl[merged.serverVersion] = 1
+          }
+          countServerVersions.count.unl++
+        }
+        if (merged.baseFee) {
+          if (countBaseFees.unl[merged.baseFee]) {
+            countBaseFees.unl[merged.baseFee]++
+          } else {
+            countBaseFees.unl[merged.baseFee] = 1
+          }
+          countBaseFees.count.unl++
+        }
+        if (merged.reserveBase) {
+          if (countBaseReserves.unl[merged.reserveBase]) {
+            countBaseReserves.unl[merged.reserveBase]++
+          } else {
+            countBaseReserves.unl[merged.reserveBase] = 1
+          }
+          countBaseReserves.count.unl++
+        }
+        if (merged.reserveIncrement) {
+          if (countReserveIncrements.unl[merged.reserveIncrement]) {
+            countReserveIncrements.unl[merged.reserveIncrement]++
+          } else {
+            countReserveIncrements.unl[merged.reserveIncrement] = 1
+          }
+          countReserveIncrements.count.unl++
+        }
+      }
+    }
+  }
+
+  validatorsList.sort(compare)
+  const validators = { ...dataU, validators: validatorsList }
+
+  let countServerVersionsArray = []
+  for (let v in countServerVersions.validators) {
+    countServerVersionsArray.push({ version: v, count: countServerVersions.validators[v] })
+  }
+  countServerVersions.validators = countServerVersionsArray.sort(compareVersions)
+  countServerVersionsArray = []
+  for (let v in countServerVersions.unl) {
+    countServerVersionsArray.push({ version: v, count: countServerVersions.unl[v] })
+  }
+  countServerVersions.unl = countServerVersionsArray.sort(compareVersions)
+
+  let countBaseFeesArray = []
+  for (let v in countBaseFees.validators) {
+    countBaseFeesArray.push({ fee: v, count: countBaseFees.validators[v] })
+  }
+  countBaseFees.validators = countBaseFeesArray.sort(compareReserves)
+  countBaseFeesArray = []
+  for (let v in countBaseFees.unl) {
+    countBaseFeesArray.push({ fee: v, count: countBaseFees.unl[v] })
+  }
+  countBaseFees.unl = countBaseFeesArray.sort(compareReserves)
+
+  let countBaseReservesArray = []
+  for (let v in countBaseReserves.validators) {
+    countBaseReservesArray.push({ reserve: v, count: countBaseReserves.validators[v] })
+  }
+  countBaseReserves.validators = countBaseReservesArray.sort(compareReserves)
+  countBaseReservesArray = []
+  for (let v in countBaseReserves.unl) {
+    countBaseReservesArray.push({ reserve: v, count: countBaseReserves.unl[v] })
+  }
+  countBaseReserves.unl = countBaseReservesArray.sort(compareReserves)
+
+  let countReserveIncrementsArray = []
+  for (let v in countReserveIncrements.validators) {
+    countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.validators[v] })
+  }
+  countReserveIncrements.validators = countReserveIncrementsArray.sort(compareReserves)
+  countReserveIncrementsArray = []
+  for (let v in countReserveIncrements.unl) {
+    countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.unl[v] })
+  }
+  countReserveIncrements.unl = countReserveIncrementsArray.sort(compareReserves)
+
+  const result = {
+    validators,
+    unlValidatorsCount,
+    serverVersions: countServerVersions,
+    baseFees: countBaseFees,
+    baseReserves: countBaseReserves,
+    reserveIncrements: countReserveIncrements,
+    timeAgoMap
+  }
+
+  return JSON.parse(JSON.stringify(result))
+}
+
+const buildTimeAgoMap = (list, lang) => {
+  const map = {}
+  const nowSec = Math.floor(Date.now() / 1000)
+  ;(list || []).forEach((v) => {
+    if (!v?.publicKey || !v?.lastSeenTime) return
+    const text = dayjs((v.lastSeenTime - 1) * 1000)
+      .locale(lang || 'en')
+      .from(dayjs(nowSec * 1000))
+    map[v.publicKey] = {
+      text,
+      isLate: nowSec - (devNet ? 40 : 10) > v.lastSeenTime,
+      at: nowSec,
+      lastSeenTime: v.lastSeenTime
+    }
   })
+  return map
+}
+
+export default function Validators({ amendment, initialData, initialProcessed, initialErrorMessage, isSsrMobile }) {
+  const [validators, setValidators] = useState(initialProcessed?.validators || null)
+  const [unlValidatorsCount, setUnlValidatorsCount] = useState(initialProcessed?.unlValidatorsCount || 0)
+  const [developerMode, setDeveloperMode] = useState(false)
+  const [serverVersions, setServerVersions] = useState(
+    initialProcessed?.serverVersions || { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+  )
+  const [baseFees, setBaseFees] = useState(
+    initialProcessed?.baseFees || { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+  )
+  const [baseReserves, setBaseReserves] = useState(
+    initialProcessed?.baseReserves || { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+  )
+  const [reserveIncrements, setReserveIncrements] = useState(
+    initialProcessed?.reserveIncrements || { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+  )
+  const [timeAgoMap, setTimeAgoMap] = useState(initialProcessed?.timeAgoMap || {})
   const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
   const { theme } = useTheme()
   const [countries, setCountries] = useState(null)
-
-  const frozenLangRef = useRef(i18n?.language)
-
-  const timeAgoMap = useMemo(() => {
-    const map = new Map()
-    const list = validators?.validators || []
-    const nowSec = Math.floor(Date.now() / 1000)
-    list.forEach((v) => {
-      if (!v?.lastSeenTime || !v?.publicKey) return
-      const isLate = nowSec - (devNet ? 40 : 10) > v.lastSeenTime
-      map.set(v.publicKey, {
-        text: timeFromNow(v.lastSeenTime - 1, { language: frozenLangRef.current }),
-        isLate
-      })
-    })
-    return map
-  }, [validators])
+  const timeAgoInitializedRef = useRef(Object.keys(initialProcessed?.timeAgoMap || {}).length > 0)
+  const isMobileView = windowWidth ? windowWidth < 960 : isSsrMobile
 
   useEffect(() => {
     const loadCountries = async () => {
@@ -118,110 +408,36 @@ export default function Validators({ amendment, initialData, initialErrorMessage
     loadCountries()
   }, [i18n.language])
 
+  useEffect(() => {
+    if (!validators?.validators) return
+    if (timeAgoInitializedRef.current) return
+    setTimeAgoMap(buildTimeAgoMap(validators.validators, i18n.language))
+    timeAgoInitializedRef.current = true
+  }, [validators, i18n.language])
+
+  useEffect(() => {
+    if (!timeAgoInitializedRef.current) return
+    if (!timeAgoMap || Object.keys(timeAgoMap).length === 0) return
+    setTimeAgoMap((prev) => {
+      const next = {}
+      Object.entries(prev).forEach(([key, value]) => {
+        if (!value?.lastSeenTime || !value?.at) return
+        const text = dayjs((value.lastSeenTime - 1) * 1000)
+          .locale(i18n.language || 'en')
+          .from(dayjs(value.at * 1000))
+        next[key] = { ...value, text }
+      })
+      return next
+    })
+  }, [i18n.language])
+
   const showTime = ({ time, id }) => {
     if (!time) return 'N/A'
-    const frozen = id ? timeAgoMap.get(id) : null
-    return <span className={frozen?.isLate ? 'red bold' : ''}>{frozen?.text || timeFromNow(time - 1, i18n)}</span>
+    const frozen = id ? timeAgoMap[id] : null
+    return <span className={frozen?.isLate ? 'red bold' : ''}>{frozen?.text || ''}</span>
   }
 
   const ShowTimeMemo = memo(showTime)
-
-  const compare = (a, b) => {
-    if (!amendment) {
-      //in the negative UNL
-      if (a.nUnl && !b.nUnl) return -1
-      if (!a.nUnl && b.nUnl) return 1
-
-      //without baseFee - offline
-      if (!a.baseFee && b.baseFee) return -1
-      if (a.baseFee && !b.baseFee) return 1
-    }
-
-    //in the UNL
-    if (a.unl && !b.unl) return -1
-    if (!a.unl && b.unl) return 1
-
-    //alive
-    if (a.lastSeenTime && !b.lastSeenTime) return -1
-    if (!a.lastSeenTime && b.lastSeenTime) return 1
-
-    if (amendment) {
-      if (a.amendments?.includes(amendment) && !b.amendments?.includes(amendment)) return -1
-      if (!a.amendments?.includes(amendment) && b.amendments?.includes(amendment)) return 1
-    }
-
-    //with verified Domains
-    if (a.domainVerified && !b.domainVerified) return -1
-    if (!a.domainVerified && b.domainVerified) return 1
-
-    //with Domains
-    if (a.domain && !b.domain) return -1
-    if (!a.domain && b.domain) return 1
-
-    if (!a.domainVerified && !b.domainVerified) {
-      //with verified Legacy domains when there is no verfiied domain
-      if (a.domainLegacyVerified && !b.domainLegacyVerified) return -1
-      if (!a.domainLegacyVerified && b.domainLegacyVerified) return 1
-    }
-
-    if (!a.domain && !b.domain) {
-      //with Legacy domains when there is no domain
-      if (a.domainLegacy && !b.domainLegacy) return -1
-      if (!a.domainLegacy && b.domainLegacy) return 1
-    }
-
-    //with principals
-    if (a.principals && !b.principals) return -1
-    if (!a.principals && b.principals) return 1
-
-    //with principal names
-    if (a.principals?.[0].name && !b.principals?.[0].name) return -1
-    if (!a.principals?.[0].name && b.principals?.[0].name) return 1
-
-    //by principal name
-    if (a.principals?.[0]?.name && b.principals?.[0]?.name) {
-      return a.principals[0].name.toLowerCase() > b.principals[0].name.toLowerCase() ? 1 : -1
-    }
-
-    //with both countries
-    if (a.ownerCountry && a.serverCountry && (!b.ownerCountry || !b.serverCountry)) return -1
-    if ((!a.ownerCountry || !a.serverCountry) && b.ownerCountry && b.serverCountry) return 1
-
-    //with owner country
-    if (a.ownerCountry && !b.ownerCountry) return -1
-    if (!a.ownerCountry && b.ownerCountry) return 1
-
-    //with server country
-    if (a.serverCountry && !b.serverCountry) return -1
-    if (!a.serverCountry && b.serverCountry) return 1
-
-    //by votes
-    if (a.amendments && !b.amendments) return -1
-    if (!a.amendments && b.amendments) return 1
-
-    //by domain
-    if (a.domain && b.domain) {
-      return a.domain.toLowerCase() > b.domain.toLowerCase() ? 1 : -1
-    }
-
-    if (!a.domain && !b.domain) {
-      //by legacy domain if no domain
-      if (a.domainLegacy && b.domainLegacy) {
-        return a.domainLegacy.toLowerCase() > b.domainLegacy.toLowerCase() ? 1 : -1
-      }
-    }
-
-    //by lastSeenTime
-    if (a.lastSeenTime > b.lastSeenTime + 10) return -1
-    if (a.lastSeenTime + 10 < b.lastSeenTime) return 1
-
-    //by serverVersion
-    if (a.serverVersion > b.serverVersion) return -1
-    if (a.serverVersion < b.serverVersion) return 1
-
-    //by lasSeenTime, serverVersion, publicKey
-    return a.publicKey > b.publicKey ? 1 : -1
-  }
 
   const twitterLink = (twitter) => {
     if (!twitter) return ''
@@ -268,156 +484,16 @@ export default function Validators({ amendment, initialData, initialErrorMessage
   }
 
   const checkApi = async () => {
-    if (!initialData) return
-    let dataU = initialData.unl
-    if (dataU?.validators) {
-      dataU.validators?.sort(compare)
-      setUnlValidatorsCount(dataU.validators?.length)
-
-      let countServerVersions = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
-      let countBaseFees = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
-      let countBaseReserves = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
-      let countReserveIncrements = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
-
-      //in case some of the validators down...
-      for (let i = 0; i < dataU.validators.length; i++) {
-        dataU.validators[i].unl = true
-      }
-
-      const dataV = initialData.validators
-      if (dataV) {
-        for (let i = 0; i < dataV.length; i++) {
-          const v = dataV[i]
-          if (v.serverVersion) {
-            if (countServerVersions.validators[v.serverVersion]) {
-              countServerVersions.validators[v.serverVersion]++
-            } else {
-              countServerVersions.validators[v.serverVersion] = 1
-            }
-            countServerVersions.count.validators++
-          }
-          if (v.baseFee) {
-            if (countBaseFees.validators[v.baseFee]) {
-              countBaseFees.validators[v.baseFee]++
-            } else {
-              countBaseFees.validators[v.baseFee] = 1
-            }
-            countBaseFees.count.validators++
-          }
-          if (v.reserveBase) {
-            if (countBaseReserves.validators[v.reserveBase]) {
-              countBaseReserves.validators[v.reserveBase]++
-            } else {
-              countBaseReserves.validators[v.reserveBase] = 1
-            }
-            countBaseReserves.count.validators++
-          }
-          if (v.reserveIncrement) {
-            if (countReserveIncrements.validators[v.reserveIncrement]) {
-              countReserveIncrements.validators[v.reserveIncrement]++
-            } else {
-              countReserveIncrements.validators[v.reserveIncrement] = 1
-            }
-            countReserveIncrements.count.validators++
-          }
-          const index = dataU.validators.findIndex((x) => x.publicKey === v.publicKey)
-          if (index === -1) {
-            dataU.validators.push(v)
-          } else {
-            v.unl = true
-            v.domainLegacy = dataU.validators[index].domainLegacy
-            v.sequence = dataU.validators[index].sequence
-            dataU.validators[index] = v
-            if (v.serverVersion) {
-              if (countServerVersions.unl[v.serverVersion]) {
-                countServerVersions.unl[v.serverVersion]++
-              } else {
-                countServerVersions.unl[v.serverVersion] = 1
-              }
-              countServerVersions.count.unl++
-            }
-            if (v.baseFee) {
-              if (countBaseFees.unl[v.baseFee]) {
-                countBaseFees.unl[v.baseFee]++
-              } else {
-                countBaseFees.unl[v.baseFee] = 1
-              }
-              countBaseFees.count.unl++
-            }
-            if (v.reserveBase) {
-              if (countBaseReserves.unl[v.reserveBase]) {
-                countBaseReserves.unl[v.reserveBase]++
-              } else {
-                countBaseReserves.unl[v.reserveBase] = 1
-              }
-              countBaseReserves.count.unl++
-            }
-            if (v.reserveIncrement) {
-              if (countReserveIncrements.unl[v.reserveIncrement]) {
-                countReserveIncrements.unl[v.reserveIncrement]++
-              } else {
-                countReserveIncrements.unl[v.reserveIncrement] = 1
-              }
-              countReserveIncrements.count.unl++
-            }
-          }
-        }
-        dataU.validators.sort(compare)
-        setValidators(dataU)
-      }
-
-      //Server Versions
-      let countServerVersionsArray = []
-      for (let v in countServerVersions.validators) {
-        countServerVersionsArray.push({ version: v, count: countServerVersions.validators[v] })
-      }
-      countServerVersions.validators = countServerVersionsArray.sort(compareVersions)
-      countServerVersionsArray = []
-      for (let v in countServerVersions.unl) {
-        countServerVersionsArray.push({ version: v, count: countServerVersions.unl[v] })
-      }
-      countServerVersions.unl = countServerVersionsArray.sort(compareVersions)
-      setServerVersions(countServerVersions)
-
-      //Base fees
-      let countBaseFeesArray = []
-      for (let v in countBaseFees.validators) {
-        countBaseFeesArray.push({ fee: v, count: countBaseFees.validators[v] })
-      }
-      countBaseFees.validators = countBaseFeesArray.sort(compareReserves)
-      countBaseFeesArray = []
-      for (let v in countBaseFees.unl) {
-        countBaseFeesArray.push({ fee: v, count: countBaseFees.unl[v] })
-      }
-      countBaseFees.unl = countBaseFeesArray.sort(compareReserves)
-      setBaseFees(countBaseFees)
-
-      //Account Reserves
-      let countBaseReservesArray = []
-      for (let v in countBaseReserves.validators) {
-        countBaseReservesArray.push({ reserve: v, count: countBaseReserves.validators[v] })
-      }
-      countBaseReserves.validators = countBaseReservesArray.sort(compareReserves)
-      countBaseReservesArray = []
-      for (let v in countBaseReserves.unl) {
-        countBaseReservesArray.push({ reserve: v, count: countBaseReserves.unl[v] })
-      }
-      countBaseReserves.unl = countBaseReservesArray.sort(compareReserves)
-      setBaseReserves(countBaseReserves)
-
-      //Object Reserve
-      let countReserveIncrementsArray = []
-      for (let v in countReserveIncrements.validators) {
-        countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.validators[v] })
-      }
-      countReserveIncrements.validators = countReserveIncrementsArray.sort(compareReserves)
-      countReserveIncrementsArray = []
-      for (let v in countReserveIncrements.unl) {
-        countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.unl[v] })
-      }
-      countReserveIncrements.unl = countReserveIncrementsArray.sort(compareReserves)
-      setReserveIncrements(countReserveIncrements)
-    }
+    if (initialProcessed) return
+    const processed = buildValidatorsState(initialData, amendment, i18n?.language)
+    if (!processed) return
+    setUnlValidatorsCount(processed.unlValidatorsCount)
+    setValidators(processed.validators)
+    setServerVersions(processed.serverVersions)
+    setBaseFees(processed.baseFees)
+    setBaseReserves(processed.baseReserves)
+    setReserveIncrements(processed.reserveIncrements)
+    setTimeAgoMap(processed.timeAgoMap || {})
   }
 
   /*
@@ -535,12 +611,14 @@ export default function Validators({ amendment, initialData, initialErrorMessage
         <div className="flex-container center">
           <div className="grey-box">
             {validators && (
-              <Trans i18nKey="text0" ns="validators">
-                The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and
-                expiration on {{ expiration: fullDateAndTime(validators.expiration, null, { asText: true }) }}.
-                <br />
-                It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
-              </Trans>
+              <span suppressHydrationWarning>
+                <Trans i18nKey="text0" ns="validators">
+                  The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }}
+                  and expiration on {{ expiration: fullDateAndTime(validators.expiration, null, { asText: true }) }}.
+                  <br />
+                  It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
+                </Trans>
+              </span>
             )}
             <br />
             {validators?.error && (
@@ -798,7 +876,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
           </div>
         </div>
         <br />
-        {windowWidth >= 960 ? (
+        {!isMobileView ? (
           <center>
             <div style={{ display: 'inline-block' }}>
               <CheckBox checked={developerMode} setChecked={setDeveloperMode} style={checkBoxStyles}>
@@ -810,7 +888,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
           <br />
         )}
 
-        {windowWidth < 960 ? (
+        {isMobileView ? (
           <table className="table-mobile">
             <thead></thead>
             <tbody>
