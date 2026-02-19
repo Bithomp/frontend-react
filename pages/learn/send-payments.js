@@ -143,7 +143,7 @@ export default function SendPayments() {
                 that don’t exist yet—effectively issuing them in two steps.
               </p>
               <ol>
-                <li>The Currency Distribution Account automatically creates a trustline to the Issuer Account.</li>
+                <li>The Currency Distribution Account creates a trustline to the Issuer Account.</li>
                 <li>The Issuer Account then sends (issues) the tokens to the Distribution Account.</li>
               </ol>
               <div className="p-4 my-4 border-l-4 rounded bg-white dark:bg-gray-900 border-[#4BA8B6] shadow-sm">
