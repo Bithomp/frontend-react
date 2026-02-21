@@ -429,7 +429,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
       })
       return next
     })
-  }, [i18n.language])
+  }, [i18n.language, timeAgoMap])
 
   const showTime = ({ time, id }) => {
     if (!time) return 'N/A'
