@@ -1,5 +1,6 @@
 import { TData } from '../Table'
 import { AddressWithIconFilled, amountFormat, fullDateAndTime, nativeCurrencyToFiat } from '../../utils/format'
+import { addressBalanceChanges } from '../../utils/transaction'
 
 import { TransactionCard } from './TransactionCard'
 
@@ -14,6 +15,28 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
 
   const sourceData = outcome?.escrowChanges?.source || (specification?.owner ? specification : specification.source)
   const sourceName = outcome?.escrowChanges?.source ? 'address' : specification?.owner ? 'owner' : 'address'
+
+  const destinationAddress =
+    outcome?.escrowChanges?.destination?.address || specification?.destination?.address || specification?.destination
+  const destinationBalanceChangesList = destinationAddress ? addressBalanceChanges(data, destinationAddress) : null
+
+  const optionalAbsAmount = (change) => {
+    return (change?.value ? change.value.toString()[0] === '-' : change?.toString()[0] === '-')
+      ? {
+          ...change,
+          value: change?.value ? change?.value.toString().slice(1) : change?.toString().slice(1)
+        }
+      : change
+  }
+
+  const escrowAmount = outcome?.escrowChanges?.amount
+  const receivedAmount =
+    destinationBalanceChangesList?.length === 1 ? optionalAbsAmount(destinationBalanceChangesList[0]) : null
+
+  const isSameAsReceived =
+    escrowAmount && receivedAmount && JSON.stringify(escrowAmount) === JSON.stringify(receivedAmount)
+
+  const shouldShowReceived = isEscrowFinish && destinationBalanceChangesList?.length > 0 && !isSameAsReceived
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
@@ -58,7 +81,9 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData>Escrow amount</TData>
           <TData className="bold">
-            <span className={isEscrowFinish ? 'green' : ''}>{amountFormat(outcome?.escrowChanges?.amount)}</span>
+            <span className={shouldShowReceived ? 'orange' : isEscrowFinish ? 'green' : ''}>
+              {amountFormat(outcome?.escrowChanges?.amount)}
+            </span>
 
             {isEscrowFinish &&
               nativeCurrencyToFiat({
@@ -66,6 +91,29 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
                 selectedCurrency,
                 fiatRate: pageFiatRate
               })}
+          </TData>
+        </tr>
+      )}
+
+      {shouldShowReceived && (
+        <tr>
+          <TData>
+            Received
+            {destinationBalanceChangesList.map((change, index) => (
+              <br key={index} />
+            ))}
+          </TData>
+          <TData>
+            {destinationBalanceChangesList.map((change, index) => (
+              <div key={index}>
+                {amountFormat(optionalAbsAmount(change), { withIssuer: true, bold: true, color: 'direction' })}
+                {nativeCurrencyToFiat({
+                  amount: optionalAbsAmount(change),
+                  selectedCurrency,
+                  fiatRate: pageFiatRate
+                })}
+              </div>
+            ))}
           </TData>
         </tr>
       )}
