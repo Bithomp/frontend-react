@@ -550,6 +550,22 @@ export default function Validators({ amendment, initialData, initialProcessed, i
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (!initialProcessed) return
+
+    setValidators(initialProcessed.validators || null)
+    setUnlValidatorsCount(initialProcessed.unlValidatorsCount || 0)
+    setServerVersions(initialProcessed.serverVersions || { validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
+    setBaseFees(initialProcessed.baseFees || { validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
+    setBaseReserves(initialProcessed.baseReserves || { validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
+    setReserveIncrements(
+      initialProcessed.reserveIncrements || { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+    )
+    setTimeAgoMap(initialProcessed.timeAgoMap || {})
+
+    timeAgoInitializedRef.current = Object.keys(initialProcessed.timeAgoMap || {}).length > 0
+  }, [initialProcessed, amendment])
+
   const listAmendments = (amendments) => {
     if (!amendments?.length) return <span className="grey">{t('table.text.no-votes')}</span>
     return amendments.map((a, i) => (
@@ -557,7 +573,7 @@ export default function Validators({ amendment, initialData, initialProcessed, i
         {a === amendment ? (
           <span className="purple bold">{a.length === 64 ? shortHash(a) : a}</span>
         ) : (
-          <Link href={'/amendment/' + a} className="orange">
+          <Link href={`/amendment/${encodeURIComponent(a)}`} className="orange">
             {a.length === 64 ? shortHash(a) : a}
           </Link>
         )}
