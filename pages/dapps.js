@@ -259,7 +259,7 @@ export default function Dapps({
 
   const orderList = [
     { value: 'performingHigh', label: 'Performing wallets: High to Low' },
-    { value: 'totalSentHigh', label: 'Total Sent: High to Low' },
+    { value: 'totalSentHigh', label: 'Volume: High to Low' },
     { value: 'interactingHigh', label: 'Interacting wallets: High to Low' },
     { value: 'txHigh', label: 'Transactions: High to Low' },
     { value: 'successRateHigh', label: 'Success rate: High to Low' }
@@ -276,7 +276,7 @@ export default function Dapps({
     { label: 'Success %', key: 'successRate' },
     { label: 'Fees', key: 'totalFees' },
     { label: `Fees (${convertCurrency.toUpperCase()})`, key: `totalFeesInFiats.${convertCurrency}` },
-    { label: `Total sent (${convertCurrency.toUpperCase()})`, key: `totalSentInFiats.${convertCurrency}` }
+    { label: `Volume (${convertCurrency.toUpperCase()})`, key: `totalSentInFiats.${convertCurrency}` }
   ]
 
   useEffect(() => {
@@ -436,12 +436,14 @@ export default function Dapps({
                   />
                   <th className="left pl-2.5">Activity</th>
                   <HeaderTooltip
-                    label="Total sent"
+                    label="Volume"
                     tip={
                       <>
-                        <b>Total sent</b>
+                        <b>Volume</b>
                         <br />
-                        This is the sum of all {nativeCurrency} and IOU tokens sent, converted to {nativeCurrency}.
+                        Payments, Swaps, Payment channels, Checks, NFT sales, Escrows
+                        <br />
+                        This is the sum of all {nativeCurrency} and issued tokens.
                       </>
                     }
                   />
