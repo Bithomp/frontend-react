@@ -188,7 +188,7 @@ export default function DateAndTimeRange({
         className="dateAndTimeRange"
         showMonthDropdown
         showYearDropdown
-        name="StartDate"
+        name={'StartDate' + periodQueryName}
       />
       <DatePicker
         selected={endDate}
@@ -204,7 +204,7 @@ export default function DateAndTimeRange({
         className="dateAndTimeRange"
         showMonthDropdown
         showYearDropdown
-        name="EndDate"
+        name={'EndDate' + periodQueryName}
       />
     </span>
   )

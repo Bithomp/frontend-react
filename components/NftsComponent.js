@@ -892,7 +892,6 @@ export default function NftsComponent({
                     defaultPeriod={burnedPeriodQuery}
                     minDate="nft"
                     radio={true}
-                    name="burnedPeriod"
                   />
                 </div>
               )}
