@@ -98,8 +98,11 @@ const MyApp = ({ Component, pageProps }) => {
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
   const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
   const [liveFiatRate, setLiveFiatRate] = useState(0)
+  const [statistics, setStatistics] = useState(null)
+  const [whaleTransactions, setWhaleTransactions] = useState(null)
   const wsRef = useRef(null)
   const selectedCurrencyRef = useRef(selectedCurrency)
+  const previousCurrencyRef = useRef(selectedCurrency)
   const [proExpire, setProExpire] = useCookie('pro-expire')
   const [subscriptionExpired, setSubscriptionExpired] = useState(
     proExpire ? Number(proExpire) < new Date().getTime() : true
@@ -169,16 +172,17 @@ const MyApp = ({ Component, pageProps }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency, router.pathname])
 
-  // WebSocket for liveFiatRate
+  // WebSocket for liveFiatRate, statistics, and whale transactions
   useEffect(() => {
     function sendData(currency) {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.send(
           JSON.stringify({
             command: 'subscribe',
-            streams: ['rates'],
+            streams: ['statistics', 'whale_transactions', 'rates'],
             currency,
-            id: 1
+            id: 1,
+            limit: 3
           })
         )
       } else {
@@ -193,9 +197,13 @@ const MyApp = ({ Component, pageProps }) => {
         }
         wsRef.current.onmessage = (evt) => {
           const message = JSON.parse(evt.data)
-          if (message.type === 'rates') {
+          if (message.type === 'statistics') {
+            setStatistics(message)
+          } else if (message.type === 'rates') {
             const currentCurrency = selectedCurrencyRef.current
             if (message[currentCurrency]) setLiveFiatRate(message[currentCurrency])
+          } else if (message.type === 'whale_transactions') {
+            setWhaleTransactions(message.transactions)
           }
         }
         wsRef.current.onclose = () => {
@@ -209,37 +217,45 @@ const MyApp = ({ Component, pageProps }) => {
       }
     }
     selectedCurrencyRef.current = selectedCurrency
+    previousCurrencyRef.current = selectedCurrency
     if (typeof window !== 'undefined' && navigator.onLine) {
       connect()
     }
     return () => {
+      setWhaleTransactions(null)
+      setStatistics(null)
       if (wsRef.current) wsRef.current.close()
     }
-  }, [selectedCurrency])
+  }, [])
 
   useEffect(() => {
     // Unsubscribe from previous currency if it exists
-    if (selectedCurrencyRef.current && selectedCurrencyRef.current !== selectedCurrency) {
+    if (previousCurrencyRef.current && previousCurrencyRef.current !== selectedCurrency) {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.send(
           JSON.stringify({
             command: 'unsubscribe',
-            streams: ['rates'],
-            currency: selectedCurrencyRef.current,
+            streams: ['statistics', 'whale_transactions', 'rates'],
+            currency: previousCurrencyRef.current,
             id: 2
           })
         )
       }
     }
+
+    // Update refs
     selectedCurrencyRef.current = selectedCurrency
+    previousCurrencyRef.current = selectedCurrency
+
     // Subscribe to new currency
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(
         JSON.stringify({
           command: 'subscribe',
-          streams: ['rates'],
+          streams: ['statistics', 'whale_transactions', 'rates'],
           currency: selectedCurrency,
-          id: 1
+          id: 1,
+          limit: 3
         })
       )
     }
@@ -416,6 +432,10 @@ const MyApp = ({ Component, pageProps }) => {
                   fiatRate={liveFiatRate}
                   openEmailLogin={openEmailLogin}
                   countryCode={countryCode}
+                  statistics={statistics}
+                  whaleTransactions={whaleTransactions}
+                  setStatistics={setStatistics}
+                  setWhaleTransactions={setWhaleTransactions}
                 />
               </div>
               <Footer countryCode={countryCode} />

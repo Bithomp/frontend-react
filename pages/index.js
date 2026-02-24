@@ -38,7 +38,11 @@ export default function Home({
   fiatRate,
   isSsrMobile,
   selectedCurrencyServer,
-  countryCode
+  countryCode,
+  statistics,
+  whaleTransactions,
+  setStatistics,
+  setWhaleTransactions
 }) {
   const { t } = useTranslation()
 
@@ -48,8 +52,6 @@ export default function Home({
   }
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
-  const [whaleTransactions, setWhaleTransactions] = useState(null)
-  const [statistics, setStatistics] = useState(null)
 
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
 
