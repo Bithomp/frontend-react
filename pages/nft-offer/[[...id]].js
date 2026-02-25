@@ -235,7 +235,7 @@ export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
                                 {cancelNftOfferButton(
                                   t,
                                   setSignRequest,
-                                  data.owner,
+                                  account?.address,
                                   data,
                                   data.flags?.sellToken === true ? 'sell' : 'buy',
                                   data.type,
