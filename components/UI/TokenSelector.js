@@ -13,10 +13,18 @@ import { useRouter } from 'next/router'
 const limit = 20
 
 // Helper function to fetch and process trustlines for a destination address
-const fetchTrustlinesForDestination = async (destinationAddress, searchQuery = '', senderAddress = null) => {
+const fetchTrustlinesForDestination = async (
+  destinationAddress,
+  searchQuery = '',
+  senderAddress = null,
+  canLock = false
+) => {
   let url = `v2/address/${destinationAddress}/acceptedTokens?limit=${limit}`
   if (senderAddress) {
     url += `&sender=${senderAddress}`
+  }
+  if (canLock) {
+    url += `&canLock=true`
   }
   const response = await axios(url)
   const tokens = response.data?.tokens || []
@@ -68,7 +76,8 @@ export default function TokenSelector({
   senderAddress = null,
   allOrOne,
   currencyQueryName,
-  excludeLPtokens = false
+  excludeLPtokens = false,
+  canLock = false
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -130,7 +139,11 @@ export default function TokenSelector({
     }
 
     const timeout = setTimeout(async () => {
-      const urlLPpart = excludeLPtokens ? '&lptoken=false' : '&currencyDetails=true'
+      let urlPart = excludeLPtokens ? '&lptoken=false' : '&currencyDetails=true'
+      if (canLock) {
+        urlPart += '&canLock=true'
+      }
+
       if (!searchQuery.trim()) {
         // Check if we have cached results for empty search query
         if (lastSearchQuery === '' && cachedSearchResults.length > 0) {
@@ -144,11 +157,11 @@ export default function TokenSelector({
 
           if (destinationAddress) {
             // Fetch tokens that destination can hold based on trustlines
-            tokens = await fetchTrustlinesForDestination(destinationAddress, '', senderAddress)
+            tokens = await fetchTrustlinesForDestination(destinationAddress, '', senderAddress, canLock)
           } else {
             // Fallback to original behavior if no destination address
             // &statistics=true - shall we get USD prices and show them?
-            const response = await axios('v2/trustlines/tokens?limit=' + limit + urlLPpart)
+            const response = await axios('v2/trustlines/tokens?limit=' + limit + urlPart)
             tokens = response.data?.tokens || []
             if (!excludeNative) {
               const defaultTokens = [{ currency: nativeCurrency }, ...tokens]
@@ -197,7 +210,7 @@ export default function TokenSelector({
       try {
         if (destinationAddress) {
           // For destination-specific search, filter the existing trustlines
-          const tokens = await fetchTrustlinesForDestination(destinationAddress, searchQuery, senderAddress)
+          const tokens = await fetchTrustlinesForDestination(destinationAddress, searchQuery, senderAddress, canLock)
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)
           // Cache the results
@@ -206,7 +219,7 @@ export default function TokenSelector({
         } else {
           // Fallback to original search behavior
           // &statistics=true - shall we get USD prices and show them?
-          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}` + urlLPpart)
+          const response = await axios(`v2/trustlines/tokens/search/${searchQuery}?limit=${limit}` + urlPart)
           const tokens = response.data?.tokens || []
           const tokensWithNative = addNativeCurrencyIfNeeded(tokens, excludeNative, searchQuery)
           setSearchResults(tokensWithNative)

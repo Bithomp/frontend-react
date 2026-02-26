@@ -399,6 +399,7 @@ export default function CreateEscrow({
                 destinationAddress={address}
                 currencyQueryName="currency"
                 senderAddress={account?.address || null}
+                canLock={true}
               />
               {selectedToken.transferFee ? (
                 <div style={{ marginTop: 8 }}>
