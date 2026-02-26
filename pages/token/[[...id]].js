@@ -225,6 +225,27 @@ export default function TokenPage({
     )
   }
 
+  const renderPercentCell = ({ currentPrice, pastPrice }) => {
+    const current = Number(currentPrice || 0)
+    const past = Number(pastPrice || 0)
+    if (!current || !past) return <span className="grey">--%</span>
+    const change = current / past - 1
+    const colorClass = change >= 0 ? 'green' : 'red'
+    const percentText = niceNumber(Math.abs(change * 100), 2) + '%'
+
+    return (
+      <span className={`tooltip ${colorClass}`} suppressHydrationWarning>
+        {change >= 0 ? '+' : '-'}
+        {percentText}
+        <span className="tooltiptext right no-brake" suppressHydrationWarning>
+          Now: {fullNiceNumber(currentPrice, selectedCurrency)}
+          <br />
+          Before: {fullNiceNumber(pastPrice, selectedCurrency)}
+        </span>
+      </span>
+    )
+  }
+
   if (errorMessage) {
     return (
       <>
@@ -254,6 +275,40 @@ export default function TokenPage({
   }
 
   const { statistics } = token
+  const escrowStatus =
+    token?.canLock === true ? (
+      <span className="bold">Can be escrowed</span>
+    ) : token?.canLock === false ? (
+      'Can not be escrowed'
+    ) : (
+      'Unknown'
+    )
+  const changeItems = [
+    {
+      key: '5m',
+      label: '5m',
+      pastPrice: statistics?.priceFiats5m?.[selectedCurrency],
+      hasData: Boolean(statistics?.priceNativeCurrency5m)
+    },
+    {
+      key: '1h',
+      label: '1h',
+      pastPrice: statistics?.priceFiats1h?.[selectedCurrency],
+      hasData: Boolean(statistics?.priceNativeCurrency1h)
+    },
+    {
+      key: '24h',
+      label: '24h',
+      pastPrice: statistics?.priceFiats24h?.[selectedCurrency],
+      hasData: Boolean(statistics?.priceNativeCurrency24h)
+    },
+    {
+      key: '7d',
+      label: '7d',
+      pastPrice: statistics?.priceFiats7d?.[selectedCurrency],
+      hasData: Boolean(statistics?.priceNativeCurrency7d)
+    }
+  ].filter((item) => item.hasData)
 
   // Helper function to format supply for trustline
   const formatSupply = (supply) => {
@@ -395,6 +450,10 @@ export default function TokenPage({
                   <td>Trustlines</td>
                   <td>{fullNiceNumber(token.trustlines)}</td>
                 </tr>
+                <tr>
+                  <td>Escrow</td>
+                  <td>{escrowStatus}</td>
+                </tr>
                 {/*
                 <tr>
                   <td>KYC Status</td>
@@ -464,47 +523,20 @@ export default function TokenPage({
                       <td>Market cap</td>
                       <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
                     </tr>
-                    {statistics?.priceNativeCurrency5m && (
+                    {changeItems.length > 0 && (
                       <tr>
-                        <td>5 minutes ago</td>
+                        <td>Change</td>
                         <td>
-                          {priceLine({
-                            priceNative: statistics?.priceNativeCurrency5m,
-                            priceFiat: statistics?.priceFiats5m[selectedCurrency]
-                          })}
-                        </td>
-                      </tr>
-                    )}
-                    {statistics?.priceNativeCurrency1h && (
-                      <tr>
-                        <td>1 hour ago</td>
-                        <td>
-                          {priceLine({
-                            priceNative: statistics?.priceNativeCurrency1h,
-                            priceFiat: statistics?.priceFiats1h[selectedCurrency]
-                          })}
-                        </td>
-                      </tr>
-                    )}
-                    {statistics?.priceNativeCurrency24h && (
-                      <tr>
-                        <td>24 hours ago</td>
-                        <td>
-                          {priceLine({
-                            priceNative: statistics?.priceNativeCurrency24h,
-                            priceFiat: statistics?.priceFiats24h[selectedCurrency]
-                          })}
-                        </td>
-                      </tr>
-                    )}
-                    {statistics?.priceNativeCurrency7d && (
-                      <tr>
-                        <td>7 days ago</td>
-                        <td>
-                          {priceLine({
-                            priceNative: statistics?.priceNativeCurrency7d,
-                            priceFiat: statistics?.priceFiats7d[selectedCurrency]
-                          })}
+                          {changeItems.map((item, index) => (
+                            <span key={item.key} className="no-brake">
+                              {index > 0 && <span className="grey"> | </span>}
+                              {item.label}:{' '}
+                              {renderPercentCell({
+                                currentPrice: statistics?.priceFiats[selectedCurrency],
+                                pastPrice: item.pastPrice
+                              })}
+                            </span>
+                          ))}
                         </td>
                       </tr>
                     )}
