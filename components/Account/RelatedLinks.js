@@ -71,18 +71,6 @@ export default function RelatedLinks({ data }) {
           |{' '}
           <a href={'https://explorer.xrplf.org/' + data?.address} rel="nofollow">
             XRPLF
-          </a>{' '}
-          |{' '}
-          <a href={'https://xrpscan.com/account/' + data?.address} rel="nofollow">
-            XRPScan
-          </a>{' '}
-          |{' '}
-          <a href={'https://xrplwin.com/account/' + data?.address} rel="nofollow">
-            XRPLWin
-          </a>{' '}
-          |{' '}
-          <a href={'https://blockchair.com/xrp-ledger/account/' + data?.address} rel="nofollow">
-            Blockchair
           </a>
         </>
       )}
