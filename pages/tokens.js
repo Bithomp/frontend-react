@@ -607,9 +607,11 @@ export default function Tokens({
             <div className="flex flex-col sm:gap-4 md:h-[400px]">
               <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
               <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
-              <CheckBox checked={canEscrow} setChecked={setCanEscrow} name="can-escrow">
-                Can Escrow
-              </CheckBox>
+              {!xahauNetwork && (
+                <CheckBox checked={canEscrow} setChecked={setCanEscrow} name="can-escrow">
+                  Can Escrow
+                </CheckBox>
+              )}
             </div>
           )}
         </>
