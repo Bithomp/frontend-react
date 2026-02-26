@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
       <SEO title={t('menu.terms-and-conditions')} noindex={true} />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: December 16, 2025</p>
+        <p>Last updated: February 19, 2026</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h2>Interpretation and Definitions</h2>
         <h2>Interpretation</h2>
@@ -763,6 +763,42 @@ export default function TermsAndConditions() {
         <p>
           You can contact us with queries, comments, and feedback via email at{' '}
           <Mailto email="support@bithomp.com" headers={{ subject: 'Feedback' }} />
+        </p>
+        <h2>Bithomp Usernames</h2>
+        <p>
+          A Bithomp username is a public identifier linked to a specific XRPL address. Usernames are registered on the
+          XRPL mainnet and are used across all Bithomp explorers.
+        </p>
+        <p>
+          Upon successful registration, your username will be publicly visible on the Bithomp explorer and may appear in
+          third-party services that integrate with the Bithomp API. Your account will be accessible via a public URL
+          such as:
+        </p>
+        <ul>
+          <li>https://bithomp.com/account/username/</li>
+          <li>https://xahauexplorer.com/account/username/</li>
+        </ul>
+        <p>
+          Only <strong>one username</strong> may be registered per XRPL address. You may only register an address that
+          you fully control — meaning you have access to its private key or recovery phrase. Usernames cannot be
+          registered for custodial, hosted, or third-party-controlled accounts, including exchange accounts requiring a
+          destination tag.
+        </p>
+        <p>
+          To verify control over an XRPL address, the registration fee must be paid{' '}
+          <strong>directly from that address</strong>. Payments from any other address will be treated as voluntary
+          donations and are <strong>non-refundable</strong>.
+        </p>
+        <p>
+          Bithomp reserves the right to refuse, suspend, revoke, or disable any username at any time for reasons
+          including fraud, impersonation, unlawful activity, abuse, trademark infringement, misleading conduct, or any
+          activity that may pose legal, regulatory, or reputational risk.
+        </p>
+        <h3>Dormant Usernames</h3>
+        <p>
+          Usernames inactive for <strong>more than five (5) years</strong> may be considered dormant at Bithomp’s
+          discretion. Dormant usernames may become eligible for re-registration after review and an additional fee.
+          Bithomp does <strong>not guarantee</strong> that any dormant username will become available again.
         </p>
         <h2>Bithomp Pro Subscription Terms of Use</h2>
         <p>
