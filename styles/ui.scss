@@ -45,7 +45,7 @@ body.dark {
   border-top: 55px solid var(--background-header);
   flex: 1;
 
-  @media only screen and (max-width: 1670px) and (min-width: 1290px) {
+  @media only screen and (max-width: 1670px) and (min-width: 1370px) {
     border-top: 103px solid var(--background-header);
   }
 
@@ -135,7 +135,7 @@ body.dark {
 }
 
 /* On routes where the second line should be hidden, reduce content offset to single-line header height */
-@media only screen and (max-width: 1670px) and (min-width: 1290px) {
+@media only screen and (max-width: 1670px) and (min-width: 1370px) {
   .hide-secondline ~ .content {
     border-top: 56px solid var(--background-header);
   }
