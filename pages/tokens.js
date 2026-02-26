@@ -10,6 +10,7 @@ import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 import IssuerSearchSelect from '../components/UI/IssuerSearchSelect'
 import CurrencySearchSelect from '../components/UI/CurrencySearchSelect'
 import SortingArrow from '../components/Tables/SortingArrow'
+import CheckBox from '../components/UI/CheckBox'
 import { fullNiceNumber, niceCurrency, niceNumber, shortNiceNumber, CurrencyWithIcon } from '../utils/format'
 import { axiosServer, getFiatRateServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -60,7 +61,7 @@ import Link from 'next/link'
 // Server side initial data fetch
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
-  const { currency, issuer, order } = query
+  const { currency, issuer, order, canEscrow } = query
 
   let initialData = null
   let initialErrorMessage = null
@@ -98,6 +99,9 @@ export async function getServerSideProps(context) {
       initialErrorMessage = 'Invalid issuer address or issuer username'
     }
   }
+  if (canEscrow === 'true') {
+    url += '&canLock=true'
+  }
 
   try {
     const res = await axiosServer({
@@ -130,6 +134,7 @@ export async function getServerSideProps(context) {
       currencyQuery: currency || initialData?.currency || null,
       issuerQuery: issuer || initialData?.issuer || null,
       orderQuery: supportedOrders.includes(order) ? order : null,
+      canEscrowQuery: canEscrow === 'true',
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -169,6 +174,7 @@ export default function Tokens({
   currencyQuery,
   issuerQuery,
   orderQuery,
+  canEscrowQuery,
   signOutPro
 }) {
   const { t } = useTranslation()
@@ -195,6 +201,7 @@ export default function Tokens({
   const [filtersHide, setFiltersHide] = useState(false)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [currency, setCurrency] = useState(currencyQuery)
+  const [canEscrow, setCanEscrow] = useState(canEscrowQuery || false)
   const [rendered, setRendered] = useState(false)
   const [sortConfig, setSortConfig] = useState(getInitialSortConfig(orderQuery))
 
@@ -237,10 +244,12 @@ export default function Tokens({
     const oldSelectedCurrency = rawData?.convertCurrencies?.[0]
     if (!oldOrder || !order) return
 
+    const oldCanEscrow = rawData?.canLock
     let loadMoreRequest =
       (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
       (currency ? oldCurrency === currency : !oldCurrency) &&
       (issuer ? oldIssuer === issuer : !oldIssuer) &&
+      canEscrow === oldCanEscrow &&
       (selectedCurrency ? oldSelectedCurrency.toLowerCase() === selectedCurrency.toLowerCase() : !oldSelectedCurrency)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
@@ -270,6 +279,9 @@ export default function Tokens({
     }
     if (currency) {
       apiUrl += `&currency=${encodeURIComponent(currency)}`
+    }
+    if (canEscrow) {
+      apiUrl += '&canLock=true'
     }
 
     const response = await axios
@@ -325,7 +337,7 @@ export default function Tokens({
     }
     checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, order, issuer, currency, subscriptionExpired])
+  }, [selectedCurrency, order, issuer, currency, canEscrow, subscriptionExpired])
 
   // Effect: update sortConfig when order changes (e.g., from dropdown)
   useEffect(() => {
@@ -350,6 +362,12 @@ export default function Tokens({
       queryRemoveList.push('currency')
     }
 
+    if (canEscrow) {
+      queryAddList.push({ name: 'canEscrow', value: 'true' })
+    } else {
+      queryRemoveList.push('canEscrow')
+    }
+
     setTabParams(
       router,
       [
@@ -365,7 +383,7 @@ export default function Tokens({
       queryRemoveList
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [issuer, currency, order])
+  }, [issuer, currency, canEscrow, order])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -589,6 +607,9 @@ export default function Tokens({
             <div className="flex flex-col sm:gap-4 md:h-[400px]">
               <CurrencySearchSelect setCurrency={setCurrency} defaultValue={currency} />
               <IssuerSearchSelect setIssuer={setIssuer} defaultValue={issuer} />
+              <CheckBox checked={canEscrow} setChecked={setCanEscrow} name="can-escrow">
+                Can Escrow
+              </CheckBox>
             </div>
           )}
         </>
