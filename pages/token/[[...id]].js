@@ -508,21 +508,6 @@ export default function TokenPage({
                         </td>
                       </tr>
                     )}
-                    {statistics?.priceNativeCurrencySpot && (
-                      <tr>
-                        <td>Spot price</td>
-                        <td>
-                          {priceLine({
-                            priceNative: statistics?.priceNativeCurrencySpot,
-                            priceFiat: statistics?.priceFiatsSpot[selectedCurrency]
-                          })}
-                        </td>
-                      </tr>
-                    )}
-                    <tr>
-                      <td>Market cap</td>
-                      <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
-                    </tr>
                     {changeItems.length > 0 && (
                       <tr>
                         <td>Change</td>
@@ -540,6 +525,21 @@ export default function TokenPage({
                         </td>
                       </tr>
                     )}
+                    {statistics?.priceNativeCurrencySpot && (
+                      <tr>
+                        <td>Spot price</td>
+                        <td>
+                          {priceLine({
+                            priceNative: statistics?.priceNativeCurrencySpot,
+                            priceFiat: statistics?.priceFiatsSpot[selectedCurrency]
+                          })}
+                        </td>
+                      </tr>
+                    )}
+                    <tr>
+                      <td>Market cap</td>
+                      <td>{marketcapLine({ marketcap: statistics?.marketcap })}</td>
+                    </tr>
                   </>
                 )}
               </tbody>
