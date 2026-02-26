@@ -344,11 +344,15 @@ export default function Dapps({
         setSelectedCurrency={setSelectedCurrency}
       >
         <>
-          Period
-          <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
-          <CheckBox checked={excludeNoWallets} setChecked={onToggleExclude}>
-            Exclude apps without external signing
-          </CheckBox>
+          <div>
+            Period
+            <RadioOptions tabList={periodOptions} tab={period} setTab={setPeriod} name="period" />
+          </div>
+          <div>
+            <CheckBox checked={excludeNoWallets} setChecked={onToggleExclude}>
+              Exclude apps without external signing
+            </CheckBox>
+          </div>
           {excludeNoWallets ? (
             <>
               <div style={{ marginBottom: 10 }}>Wallet filter</div>

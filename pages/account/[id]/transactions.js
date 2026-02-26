@@ -471,7 +471,7 @@ export default function AccountTransactions({
         setFiltersHide={setFiltersHide}
       >
         <>
-          <div className="filters-body-inner">
+          <div>
             <SimpleSelect value={type} setValue={setType} optionsList={typeOptions} />
             <br />
             <SimpleSelect value={initiated} setValue={setInitiated} optionsList={initiatedOptions} />
