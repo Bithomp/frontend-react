@@ -162,6 +162,15 @@ const MyApp = ({ Component, pageProps }) => {
   }, [])
 
   useEffect(() => {
+    // Always refresh when currency changes to avoid stale rates.
+    setLiveFiatRate(0)
+    fetchCurrentFiatRate(selectedCurrency, (rate) => {
+      setLiveFiatRate(rate)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency])
+
+  useEffect(() => {
     // If WebSocket is not working or there is no actual value, update via API
     const shouldUpdateViaApi = !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN || !liveFiatRate
     if (shouldUpdateViaApi) {
@@ -170,9 +179,10 @@ const MyApp = ({ Component, pageProps }) => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, router.pathname])
+  }, [router.pathname])
 
   // WebSocket for liveFiatRate, statistics, and whale transactions
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     function sendData(currency) {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
@@ -193,7 +203,7 @@ const MyApp = ({ Component, pageProps }) => {
       try {
         wsRef.current = new window.WebSocket(wssServer)
         wsRef.current.onopen = () => {
-          sendData(selectedCurrency)
+          sendData(selectedCurrencyRef.current)
         }
         wsRef.current.onmessage = (evt) => {
           const message = JSON.parse(evt.data)
@@ -216,8 +226,6 @@ const MyApp = ({ Component, pageProps }) => {
         setTimeout(connect, 3000)
       }
     }
-    selectedCurrencyRef.current = selectedCurrency
-    previousCurrencyRef.current = selectedCurrency
     if (typeof window !== 'undefined' && navigator.onLine) {
       connect()
     }
