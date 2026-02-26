@@ -553,8 +553,8 @@ export const networks = {
     server: 'https://bithomp.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/go/buy-first-xrp',
-    explorerName: 'XRPL',
-    ledgerName: 'XRPL',
+    explorerName: 'XRP Ledger',
+    ledgerName: 'XRP Ledger',
     siteName: 'Bithomp',
     minLedger: 32570,
     subname: ''
@@ -565,7 +565,7 @@ export const networks = {
     nativeCurrency: 'XRP',
     getCoinsUrl: '/faucet',
     explorerName: 'XRPL Staging',
-    ledgerName: 'XRPL',
+    ledgerName: 'XRP Ledger',
     siteName: 'Bithomp',
     minLedger: 32570,
     subname: ''
@@ -576,7 +576,7 @@ export const networks = {
     nativeCurrency: 'XRP',
     getCoinsUrl: '/faucet',
     explorerName: 'XRPL Testnet',
-    ledgerName: 'XRPL',
+    ledgerName: 'XRP Ledger',
     siteName: 'Bithomp',
     minLedger: 1,
     subname: 'Testnet'
@@ -587,7 +587,7 @@ export const networks = {
     nativeCurrency: 'XRP',
     getCoinsUrl: '/faucet',
     explorerName: 'XRPL Devnet',
-    ledgerName: 'XRPL',
+    ledgerName: 'XRP Ledger',
     siteName: 'Bithomp',
     minLedger: 1,
     subname: 'Devnet'
@@ -598,7 +598,7 @@ export const networks = {
     nativeCurrency: 'XRP',
     getCoinsUrl: '/faucet',
     explorerName: 'XRPL AlphaNet',
-    ledgerName: 'XRPL',
+    ledgerName: 'XRP Ledger',
     siteName: 'Bithomp',
     minLedger: 1,
     subname: 'AlphaNet'
