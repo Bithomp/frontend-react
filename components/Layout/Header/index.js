@@ -151,7 +151,7 @@ export default function Header({
     // Collapse only when header likely has a 2nd line (your breakpoints)
     const shouldUseCollapsingHeader = () => {
       const w = window.innerWidth
-      return w <= 1050 || (w >= 1370 && w <= 1670)
+      return w <= 1050 || (w >= 1290 && w <= 1670)
     }
 
     let lastY = window.scrollY
