@@ -167,6 +167,7 @@ import {
   timeFromNow
 } from '../../utils/format'
 import { subtract } from '../../utils/calc'
+import { addressBalanceChanges } from '../../utils/transaction'
 import {
   FaFacebook,
   FaInstagram,
@@ -203,6 +204,11 @@ export default function Account2({
   const [showBalanceDetails, setShowBalanceDetails] = useState(false)
   const [tokens, setTokens] = useState([])
   const [expandedToken, setExpandedToken] = useState(null)
+  const [recentTransactions, setRecentTransactions] = useState([])
+  const [transactionsLoading, setTransactionsLoading] = useState(false)
+  const [transactionsLoadingMore, setTransactionsLoadingMore] = useState(false)
+  const [transactionsError, setTransactionsError] = useState(null)
+  const [transactionsMarker, setTransactionsMarker] = useState(null)
   const data = initialData
   const balanceList = balanceListServer
   const isLoggedIn = !!account?.address
@@ -311,6 +317,67 @@ export default function Account2({
     fetchTokens()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.address, data?.ledgerInfo?.activated, fiatRateApp, selectedCurrencyApp])
+
+  useEffect(() => {
+    if (!data?.address || !data?.ledgerInfo?.activated) return
+
+    let isCancelled = false
+
+    const fetchRecentTransactions = async () => {
+      setTransactionsLoading(true)
+      setTransactionsError(null)
+      try {
+        const convertCurrencyParam = selectedCurrency ? `&convertCurrencies=${selectedCurrency}` : ''
+        const response = await axios.get(
+          `v3/transactions/${data.address}?limit=5&relevantOnly=true&filterSpam=true${convertCurrencyParam}`
+        )
+        if (!isCancelled) {
+          setRecentTransactions(response?.data?.transactions || [])
+          setTransactionsMarker(response?.data?.marker || null)
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          setTransactionsError(error?.message || 'Failed to load transactions')
+          setRecentTransactions([])
+          setTransactionsMarker(null)
+        }
+      } finally {
+        if (!isCancelled) {
+          setTransactionsLoading(false)
+        }
+      }
+    }
+
+    fetchRecentTransactions()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [data?.address, data?.ledgerInfo?.activated, selectedCurrency])
+
+  const loadMoreTransactions = async () => {
+    if (!data?.address || !transactionsMarker || transactionsLoadingMore || transactionsLoading) return
+
+    setTransactionsLoadingMore(true)
+    setTransactionsError(null)
+
+    try {
+      const markerString =
+        typeof transactionsMarker === 'object' ? JSON.stringify(transactionsMarker) : transactionsMarker
+      const markerParam = markerString ? `&marker=${encodeURIComponent(markerString)}` : ''
+      const convertCurrencyParam = selectedCurrency ? `&convertCurrencies=${selectedCurrency}` : ''
+      const response = await axios.get(
+        `v3/transactions/${data.address}?limit=5&relevantOnly=true&filterSpam=true${markerParam}${convertCurrencyParam}`
+      )
+
+      setRecentTransactions((prev) => [...prev, ...(response?.data?.transactions || [])])
+      setTransactionsMarker(response?.data?.marker || null)
+    } catch (error) {
+      setTransactionsError(error?.message || 'Failed to load more transactions')
+    } finally {
+      setTransactionsLoadingMore(false)
+    }
+  }
 
   const showPaystring =
     isValidPayString(data?.payString) &&
@@ -1097,7 +1164,103 @@ export default function Account2({
           {/* Column 3: Transactions */}
           <CollapsibleColumn>
             <div className="transactions-section">
-              <p className="grey">Recent transactions will be displayed here.</p>
+              <div className="section-header-row">
+                <span className="section-title">Recent transactions</span>
+                {data?.address && (
+                  <Link className="section-link" href={`/account/${data.address}/transactions`}>
+                    View all
+                  </Link>
+                )}
+              </div>
+
+              {transactionsLoading && <p className="grey">Loading recent transactions...</p>}
+              {!transactionsLoading && transactionsError && <p className="red">{transactionsError}</p>}
+
+              {!transactionsLoading && !transactionsError && recentTransactions.length === 0 && (
+                <p className="grey">No recent transactions found.</p>
+              )}
+
+              {!transactionsLoading &&
+                !transactionsError &&
+                recentTransactions.map((txdata, index) => {
+                  const tx = txdata?.tx
+                  const outcome = txdata?.outcome
+                  const isSuccessful = outcome?.result === 'tesSUCCESS'
+                  const txHash = tx?.hash
+                  const shortHash = txHash ? `${txHash.slice(0, 6)}...${txHash.slice(-6)}` : '-'
+
+                  const changes = addressBalanceChanges(txdata, data?.address) || []
+                  const firstChange = changes?.[0]
+                  const remainingChangesCount = changes.length > 1 ? changes.length - 1 : 0
+
+                  const sourceAddress = txdata?.specification?.source?.address
+                  const destinationAddress = txdata?.specification?.destination?.address
+                  const counterparty = sourceAddress === data?.address ? destinationAddress : sourceAddress
+
+                  return (
+                    <div className="tx-card" key={txHash || `${tx?.TransactionType || 'tx'}-${index}`}>
+                      <div className="tx-card-top">
+                        <span className={`tx-status ${isSuccessful ? 'green' : 'red'}`}>
+                          {isSuccessful ? 'Success' : outcome?.result || 'Failed'}
+                        </span>
+                        <span className="tx-type">{tx?.TransactionType || '-'}</span>
+                      </div>
+
+                      <div className="tx-card-meta">
+                        <span className="tx-time">{tx?.date ? timeFromNow(tx.date, i18n, 'ripple') : '-'}</span>
+                        {tx?.date && <span className="grey">{fullDateAndTime(tx.date, 'ripple')}</span>}
+                      </div>
+
+                      {counterparty && (
+                        <div className="tx-line">
+                          <span className="tx-label">Counterparty</span>
+                          <Link href={`/account/${counterparty}`} className="tx-value tx-link">
+                            {counterparty}
+                          </Link>
+                        </div>
+                      )}
+
+                      <div className="tx-line">
+                        <span className="tx-label">Change</span>
+                        <span className="tx-value">
+                          {firstChange ? (
+                            <>
+                              <span
+                                className={
+                                  Number(firstChange.value) > 0 ? 'green' : Number(firstChange.value) < 0 ? 'red' : ''
+                                }
+                              >
+                                {amountFormat(firstChange, {
+                                  short: true,
+                                  maxFractionDigits: 2,
+                                  showPlus: true
+                                })}
+                              </span>
+                              {remainingChangesCount > 0 && (
+                                <span className="grey"> +{remainingChangesCount} more</span>
+                              )}
+                            </>
+                          ) : (
+                            '-'
+                          )}
+                        </span>
+                      </div>
+
+                      <div className="tx-line">
+                        <span className="tx-label">Hash</span>
+                        <Link href={`/transaction/${txHash}`} className="tx-value tx-link">
+                          {shortHash}
+                        </Link>
+                      </div>
+                    </div>
+                  )
+                })}
+
+              {!transactionsLoading && !transactionsError && transactionsMarker && (
+                <button className="tx-load-more" onClick={loadMoreTransactions} disabled={transactionsLoadingMore}>
+                  {transactionsLoadingMore ? 'Loading...' : 'Load more'}
+                </button>
+              )}
             </div>
           </CollapsibleColumn>
 
@@ -1207,10 +1370,125 @@ export default function Account2({
 
         .info-section,
         .assets-section,
+        .transactions-section,
         .orders-section {
           display: flex;
           flex-direction: column;
           gap: 12px;
+        }
+
+        .section-header-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+        }
+
+        .section-title {
+          font-size: 15px;
+          font-weight: 600;
+          color: var(--text);
+        }
+
+        .section-link {
+          font-size: 13px;
+          color: var(--accent-link);
+          text-decoration: none;
+          white-space: nowrap;
+        }
+
+        .section-link:hover {
+          text-decoration: underline;
+        }
+
+        .tx-card {
+          background: var(--background-input);
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          padding: 10px 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .tx-card-top {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .tx-status {
+          font-size: 12px;
+          font-weight: 600;
+        }
+
+        .tx-type {
+          font-size: 12px;
+          color: var(--text-secondary);
+          font-weight: 600;
+        }
+
+        .tx-card-meta {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          font-size: 12px;
+        }
+
+        .tx-time {
+          color: var(--text);
+          font-weight: 500;
+        }
+
+        .tx-line {
+          display: flex;
+          justify-content: space-between;
+          gap: 10px;
+          align-items: flex-start;
+          font-size: 13px;
+        }
+
+        .tx-label {
+          color: var(--text-secondary);
+          white-space: nowrap;
+        }
+
+        .tx-value {
+          color: var(--text);
+          text-align: right;
+          word-break: break-all;
+        }
+
+        .tx-link {
+          color: var(--accent-link);
+          text-decoration: none;
+        }
+
+        .tx-link:hover {
+          text-decoration: underline;
+        }
+
+        .tx-load-more {
+          margin-top: 4px;
+          padding: 8px 12px;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          background: var(--background-input);
+          color: var(--text);
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: opacity 0.2s ease;
+        }
+
+        .tx-load-more:hover:not(:disabled) {
+          opacity: 0.85;
+        }
+
+        .tx-load-more:disabled {
+          opacity: 0.6;
+          cursor: default;
         }
 
         .avatar-container {
