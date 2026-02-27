@@ -153,6 +153,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import { CurrencyWithIcon } from '../../utils/format'
 import {
   amountFormat,
+  addressUsernameOrServiceLink,
   fullDateAndTime,
   fullNiceNumber,
   nativeCurrencyToFiat,
@@ -714,11 +715,7 @@ export default function Account2({
                       <div className="asset-value">
                         <div className="asset-amount">{shortNiceNumber(balanceList.available.native / 1000000)}</div>
                         <div className="asset-fiat">
-                          {nativeCurrencyToFiat({
-                            amount: balanceList.available.native,
-                            selectedCurrency,
-                            fiatRate
-                          })}
+                          {shortNiceNumber((balanceList.available.native / 1000000) * fiatRate, 2, 1, selectedCurrency)}
                         </div>
                       </div>
                     </div>
@@ -731,11 +728,7 @@ export default function Account2({
                         <div className="asset-value">
                           <div className="asset-amount">{shortNiceNumber(balanceList.available.native / 1000000)}</div>
                           <div className="asset-fiat">
-                            {nativeCurrencyToFiat({
-                              amount: balanceList.available.native,
-                              selectedCurrency,
-                              fiatRate
-                            })}
+                            {shortNiceNumber((balanceList.available.native / 1000000) * fiatRate, 2, 1, selectedCurrency)}
                           </div>
                         </div>
                       </div>
@@ -818,22 +811,72 @@ export default function Account2({
                         </div>
                         {isLpToken ? (
                           <>
+                            {(() => {
+                              const asset1 = token.Balance?.currencyDetails?.asset
+                              const asset2 = token.Balance?.currencyDetails?.asset2
+
+                              return (
+                                <>
                             <div className="detail-row">
                               <span>LP Token:</span>
-                              <span>{niceCurrency(token.Balance?.currency)}</span>
+                              <span className="copy-inline">
+                                <span>{token.Balance?.currency}</span>
+                                <span onClick={(event) => event.stopPropagation()}>
+                                  <CopyButton text={token.Balance?.currency} />
+                                </span>
+                              </span>
                             </div>
-                            {token.Balance?.currencyDetails?.asset && (
+                            {asset1 && (
                               <>
                                 <div className="detail-row">
                                   <span>Asset 1:</span>
-                                  <span>{niceCurrency(token.Balance.currencyDetails.asset.currency)}</span>
+                                  <span className="copy-inline">
+                                    <span>{niceCurrency(asset1.currency)}</span>
+                                    {asset1?.issuer && (
+                                      <>
+                                        {' '}
+                                        <span>
+                                          ({addressUsernameOrServiceLink(asset1, 'issuer', { short: 8 })})
+                                        </span>
+                                        <Link
+                                          href={`/token/${asset1.issuer}/${asset1.currency}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Token page</span>
+                                        </Link>
+                                      </>
+                                    )}
+                                  </span>
                                 </div>
                                 <div className="detail-row">
                                   <span>Asset 2:</span>
-                                  <span>{niceCurrency(token.Balance.currencyDetails.asset2?.currency)}</span>
+                                  <span className="copy-inline">
+                                    <span>{niceCurrency(asset2?.currency)}</span>
+                                    {asset2?.issuer && (
+                                      <>
+                                        {' '}
+                                        <span>
+                                          ({addressUsernameOrServiceLink(asset2, 'issuer', { short: 8 })})
+                                        </span>
+                                        <Link
+                                          href={`/token/${asset2.issuer}/${asset2.currency}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Token page</span>
+                                        </Link>
+                                      </>
+                                    )}
+                                  </span>
                                 </div>
                               </>
                             )}
+                                </>
+                              )
+                            })()}
                           </>
                         ) : (
                           <>
