@@ -201,6 +201,37 @@ export default function Account2({
   const balanceList = balanceListServer
   const isLoggedIn = !!account?.address
 
+  const achievements = []
+
+  const inceptionTimestamp = Number(data?.inception)
+  if (Number.isFinite(inceptionTimestamp) && inceptionTimestamp > 0) {
+    const accountAgeYears = (Date.now() / 1000 - inceptionTimestamp) / (60 * 60 * 24 * 365.25)
+    const ageAchievementList = [
+      { years: 10, image: '10years.png', tooltip: 'Account active for 10+ years' },
+      { years: 5, image: '5years.png', tooltip: 'Account active for 5+ years' },
+      { years: 3, image: '3years.png', tooltip: 'Account active for 3+ years' },
+      { years: 2, image: '2year.png', tooltip: 'Account active for 2+ years' },
+      { years: 1, image: '1year.png', tooltip: 'Account active for 1+ year' }
+    ]
+
+    const ageAchievement = ageAchievementList.find((item) => accountAgeYears >= item.years)
+    if (ageAchievement) {
+      achievements.push({
+        key: `age-${ageAchievement.years}`,
+        image: ageAchievement.image,
+        tooltip: ageAchievement.tooltip
+      })
+    }
+  }
+
+  if (data?.bithomp?.bithompPro) {
+    achievements.push({
+      key: 'bithomp-pro',
+      image: 'bithomppro.png',
+      tooltip: 'Bithomp Pro activated'
+    })
+  }
+
   let fiatRate = fiatRateServer
   let selectedCurrency = selectedCurrencyServer
   if (fiatRateApp) {
@@ -367,10 +398,6 @@ export default function Account2({
 
   if (data?.nickname) {
     pushPublicRow('Nickname', <span className="orange bold">{data.nickname}</span>)
-  }
-
-  if (data?.bithomp?.bithompPro) {
-    pushPublicRow('Bithomp Pro', <span className="bold">Activated</span>)
   }
 
   if (showPaystring) {
@@ -542,7 +569,26 @@ export default function Account2({
             <div className="info-section">
               {/* Avatar */}
               <div className="avatar-container">
-                <img src={avatarSrc(data.address)} alt="Avatar" className="account-avatar" />
+                <div className="avatar-wrapper">
+                  <img src={avatarSrc(data.address)} alt="Avatar" className="account-avatar" />
+                  {achievements.length > 0 && (
+                    <div className={`achievements-orbit achievements-count-${Math.min(achievements.length, 6)}`}>
+                      {achievements.slice(0, 6).map((achievement, index) => (
+                        <span
+                          className={`tooltip achievement-badge achievement-badge-${index + 1}`}
+                          key={achievement.key}
+                        >
+                          <img
+                            src={`/images/account/achivments/${achievement.image}`}
+                            alt={achievement.tooltip}
+                            className="achievement-image"
+                          />
+                          <span className="tooltiptext right no-brake">{achievement.tooltip}</span>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Basic Info */}
@@ -1016,14 +1062,103 @@ export default function Account2({
         .avatar-container {
           display: flex;
           justify-content: center;
+          padding-top: 24px;
           margin-bottom: 8px;
         }
 
+        .avatar-wrapper {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+
         .account-avatar {
-          width: 120px;
-          height: 120px;
+          width: 150px;
+          height: 150px;
           border-radius: 50%;
           border: 3px solid var(--accent-link);
+        }
+
+        .achievements-orbit {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+        }
+
+        .achievements-orbit .achievement-badge {
+          pointer-events: auto;
+        }
+
+        .achievement-badge {
+          position: absolute;
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          background: transparent;
+          border: 0;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 2;
+        }
+
+        .achievement-badge:hover {
+          z-index: 20;
+        }
+
+        .achievement-badge :global(.tooltiptext) {
+          z-index: 30;
+        }
+
+        .achievement-badge :global(.tooltiptext.right) {
+          right: unset !important;
+          left: 90% !important;
+          top: 50% !important;
+          transform: translateY(-50%);
+        }
+
+        .achievement-image {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+
+        .achievement-badge-1 {
+          top: 0;
+          left: 0;
+          transform: translate(-50%, -36%);
+        }
+
+        .achievement-badge-2 {
+          top: 0;
+          right: 0;
+          transform: translate(50%, -36%);
+        }
+
+        .achievement-badge-3 {
+          top: 50%;
+          right: 0;
+          transform: translate(58%, -50%);
+        }
+
+        .achievement-badge-4 {
+          bottom: 0;
+          right: 0;
+          transform: translate(46%, 40%);
+        }
+
+        .achievement-badge-5 {
+          bottom: 0;
+          left: 0;
+          transform: translate(-46%, 40%);
+        }
+
+        .achievement-badge-6 {
+          top: 50%;
+          left: 0;
+          transform: translate(-58%, -50%);
         }
 
         .account-info {
