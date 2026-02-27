@@ -164,7 +164,8 @@ import {
   niceCurrency,
   shortNiceNumber,
   serviceUsernameOrAddressText,
-  timeFromNow
+  timeFromNow,
+  userOrServiceName
 } from '../../utils/format'
 import { subtract } from '../../utils/calc'
 import { addressBalanceChanges } from '../../utils/transaction'
@@ -561,33 +562,20 @@ export default function Account2({
     publicDataRows.push({ label, value, key: `${label}-${publicDataRows.length}` })
   }
 
-  let thirdPartyService = null
   const xamanThirdPartyProfile = data?.xamanMeta?.thirdPartyProfiles?.[0]
   const isXamanProfile = xamanThirdPartyProfile?.source === 'xumm.app'
   const xamanOwnerAlias = data?.xamanMeta?.xummProfile?.ownerAlias
   const xamanAccountAlias =
     data?.xamanMeta?.xummProfile?.accountAlias || (isXamanProfile ? xamanThirdPartyProfile?.accountAlias : null)
 
-  if (data?.xamanMeta?.thirdPartyProfiles?.length) {
-    for (let i = 0; i < data.xamanMeta.thirdPartyProfiles.length; i++) {
-      const excludeList = ['xumm.app', 'xaman.app', 'xrpl', 'xrplexplorer.com', 'bithomp.com']
-      if (!excludeList.includes(data.xamanMeta.thirdPartyProfiles[i].source)) {
-        thirdPartyService = data.xamanMeta.thirdPartyProfiles[i].accountAlias
-        break
-      }
-    }
-  }
-
   // Social accounts will be rendered separately without a label
 
-  if (data?.service?.name) {
-    pushPublicRow('Service name', <span className="green bold">{data.service.name}</span>)
-  } else if (thirdPartyService) {
+  if (data?.service?.name && data?.username) {
     pushPublicRow(
-      'Service name',
-      <>
-        <span className="bold">{thirdPartyService}</span> (unverified)
-      </>
+      'Username',
+      <span className="blue bold">
+        {data.username} <CopyButton text={data.username} />
+      </span>
     )
   }
 
@@ -843,16 +831,7 @@ export default function Account2({
               {/* Basic Info */}
               <div className="account-info">
                 <h2 className="account-name">
-                  {data.username ? (
-                    <span className="account-username">
-                      <span className="blue">{data.username}</span>
-                      <CopyButton text={data.username} />
-                    </span>
-                  ) : data.service?.name ? (
-                    <span className="green">{data.service.name}</span>
-                  ) : (
-                    'Account'
-                  )}
+                  {userOrServiceName({ service: data?.service?.name, username: data?.username }) || 'Account'}
                 </h2>
                 <div className="account-address">
                   <span className="account-address-text">{data.address}</span>
