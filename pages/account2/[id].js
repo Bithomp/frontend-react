@@ -382,6 +382,12 @@ export default function Account2({
   }
 
   let thirdPartyService = null
+  const xamanThirdPartyProfile = data?.xamanMeta?.thirdPartyProfiles?.[0]
+  const isXamanProfile = xamanThirdPartyProfile?.source === 'xumm.app'
+  const xamanOwnerAlias = data?.xamanMeta?.xummProfile?.ownerAlias
+  const xamanAccountAlias =
+    data?.xamanMeta?.xummProfile?.accountAlias || (isXamanProfile ? xamanThirdPartyProfile?.accountAlias : null)
+
   if (data?.xamanMeta?.thirdPartyProfiles?.length) {
     for (let i = 0; i < data.xamanMeta.thirdPartyProfiles.length; i++) {
       const excludeList = ['xumm.app', 'xaman.app', 'xrpl', 'xrplexplorer.com', 'bithomp.com']
@@ -406,6 +412,31 @@ export default function Account2({
 
   if (data?.nickname) {
     pushPublicRow('Nickname', <span className="orange bold">{data.nickname}</span>)
+  }
+
+  const hasXamanCardData = !!(data?.xamanMeta?.xummPro || xamanOwnerAlias || xamanAccountAlias)
+  const xamanRows = []
+
+  if (data?.xamanMeta?.xummPro) {
+    xamanRows.push({
+      key: 'pro',
+      label: 'Pro:',
+      value: data?.xamanMeta?.xummProfile?.slug ? (
+        <a href={data.xamanMeta.xummProfile.profileUrl} className="green" target="_blank" rel="noopener nofollow">
+          {data.xamanMeta.xummProfile.slug}
+        </a>
+      ) : (
+        <span className="bold">activated</span>
+      )
+    })
+  }
+
+  if (xamanOwnerAlias) {
+    xamanRows.push({ key: 'owner-alias', label: 'Owner alias:', value: xamanOwnerAlias })
+  }
+
+  if (xamanAccountAlias) {
+    xamanRows.push({ key: 'account-alias', label: 'Account alias:', value: xamanAccountAlias })
   }
 
   if (showPaystring) {
@@ -520,6 +551,23 @@ export default function Account2({
       <a href={`${devNet ? networks.testnet.server : networks.mainnet.server}/account/${data.address}`}>
         {data.address}
       </a>
+    )
+  }
+
+  if (hasXamanCardData) {
+    pushPublicRow(
+      'Xaman',
+      <span className="xaman-card-data">
+        {xamanRows.map((row, index) => (
+          <span key={row.key}>
+            <span className="xaman-data-line">
+              <span className="xaman-data-label grey">{row.label}</span>{' '}
+              <span className="xaman-data-value">{row.value}</span>
+            </span>
+            {index < xamanRows.length - 1 && <br />}
+          </span>
+        ))}
+      </span>
     )
   }
 
@@ -1228,6 +1276,26 @@ export default function Account2({
 
         .activated-amount {
           font-weight: 600;
+        }
+
+        .xaman-card-data {
+          display: block;
+          width: 100%;
+          line-height: 1.45;
+        }
+
+        .xaman-data-line {
+          display: inline;
+        }
+
+        .xaman-data-label {
+          white-space: nowrap;
+          margin-right: 4px;
+        }
+
+        .xaman-data-value {
+          min-width: 0;
+          word-break: break-word;
         }
 
         :global(.tooltiptext.right) {
