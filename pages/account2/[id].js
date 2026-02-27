@@ -232,6 +232,14 @@ export default function Account2({
     })
   }
 
+  if (data?.xamanMeta?.kycApproved) {
+    achievements.push({
+      key: 'xaman-kyc',
+      image: 'xamankyc.png',
+      tooltip: 'Xaman KYC verified'
+    })
+  }
+
   let fiatRate = fiatRateServer
   let selectedCurrency = selectedCurrencyServer
   if (fiatRateApp) {
