@@ -345,16 +345,13 @@ export default function Account2({
 
   // Social accounts will be rendered separately without a label
 
-  if (data?.service?.name || thirdPartyService) {
+  // Only show service name in info section if not already shown under avatar
+  if (!data?.service?.name && thirdPartyService) {
     pushPublicRow(
       'Service name',
-      data?.service?.name ? (
-        <span className="green bold">{data.service.name}</span>
-      ) : (
-        <>
-          <span className="bold">{thirdPartyService}</span> (unverified)
-        </>
-      )
+      <>
+        <span className="bold">{thirdPartyService}</span> (unverified)
+      </>
     )
   }
 
