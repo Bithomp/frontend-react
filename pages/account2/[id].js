@@ -49,7 +49,8 @@ export async function getServerSideProps(context) {
   let initialData = null
   let networkInfo = {}
   let initialErrorMessage = null
-  const { id } = query
+  const { id, ledgerIndex } = query
+  const isHistoricalLedger = !!ledgerIndex
   let account = id ? (Array.isArray(id) ? id[0] : id) : ''
   let accountWithTag = null
 
@@ -123,6 +124,7 @@ export async function getServerSideProps(context) {
     return {
       props: {
         id: account || null,
+        isHistoricalLedger,
         fiatRateServer,
         selectedCurrencyServer,
         networkInfo,
@@ -137,6 +139,7 @@ export async function getServerSideProps(context) {
     return {
       props: {
         id: account || null,
+        isHistoricalLedger,
         accountWithTag: accountWithTag || null,
         isSsrMobile: getIsSsrMobile(context),
         initialErrorMessage: initialErrorMessage || null,
@@ -192,6 +195,7 @@ export default function Account2({
   fiatRate: fiatRateApp,
   fiatRateServer,
   balanceListServer,
+  isHistoricalLedger,
   accountWithTag,
   account
 }) {
@@ -714,7 +718,7 @@ export default function Account2({
                       </div>
                       <div className="asset-value">
                         <div className="asset-amount">{shortNiceNumber(balanceList.available.native / 1000000)}</div>
-                        <div className="asset-fiat">
+                        <div className="asset-fiat" suppressHydrationWarning>
                           {shortNiceNumber((balanceList.available.native / 1000000) * fiatRate, 2, 1, selectedCurrency)}
                         </div>
                       </div>
@@ -727,8 +731,13 @@ export default function Account2({
                         </div>
                         <div className="asset-value">
                           <div className="asset-amount">{shortNiceNumber(balanceList.available.native / 1000000)}</div>
-                          <div className="asset-fiat">
-                            {shortNiceNumber((balanceList.available.native / 1000000) * fiatRate, 2, 1, selectedCurrency)}
+                          <div className="asset-fiat" suppressHydrationWarning>
+                            {shortNiceNumber(
+                              (balanceList.available.native / 1000000) * fiatRate,
+                              2,
+                              1,
+                              selectedCurrency
+                            )}
                           </div>
                         </div>
                       </div>
@@ -749,7 +758,8 @@ export default function Account2({
                             {nativeCurrencyToFiat({
                               amount: balanceList.total.native,
                               selectedCurrency,
-                              fiatRate
+                              fiatRate,
+                              asText: true
                             })}
                           </span>
                         </div>
@@ -760,10 +770,19 @@ export default function Account2({
                             {nativeCurrencyToFiat({
                               amount: balanceList.reserved.native,
                               selectedCurrency,
-                              fiatRate
+                              fiatRate,
+                              asText: true
                             })}
                           </span>
                         </div>
+                        {isHistoricalLedger && selectedCurrency && fiatRate ? (
+                          <div className="detail-row">
+                            <span>Rate:</span>
+                            <span>
+                              1 {nativeCurrency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
+                            </span>
+                          </div>
+                        ) : null}
                       </div>
                     </>
                   )}
@@ -800,6 +819,26 @@ export default function Account2({
                     </div>
                     {isExpanded && (
                       <div className="asset-details">
+                        {token.priceNativeCurrencySpot ? (
+                          <>
+                            <div className="detail-row">
+                              <span>Rate ({nativeCurrency}):</span>
+                              <span>
+                                1 {token.Balance?.currency} = {shortNiceNumber(token.priceNativeCurrencySpot, 6, 6)}{' '}
+                                {nativeCurrency}
+                              </span>
+                            </div>
+                            {fiatRate && selectedCurrency ? (
+                              <div className="detail-row">
+                                <span>Rate ({selectedCurrency?.toUpperCase()}):</span>
+                                <span>
+                                  1 {token.Balance?.currency} ={' '}
+                                  {niceNumber(token.priceNativeCurrencySpot * fiatRate, null, selectedCurrency, 8)}
+                                </span>
+                              </div>
+                            ) : null}
+                          </>
+                        ) : null}
                         <div className="detail-row">
                           <span>Balance:</span>
                           <span className="copy-inline">
@@ -817,63 +856,63 @@ export default function Account2({
 
                               return (
                                 <>
-                            <div className="detail-row">
-                              <span>LP Token:</span>
-                              <span className="copy-inline">
-                                <span>{token.Balance?.currency}</span>
-                                <span onClick={(event) => event.stopPropagation()}>
-                                  <CopyButton text={token.Balance?.currency} />
-                                </span>
-                              </span>
-                            </div>
-                            {asset1 && (
-                              <>
-                                <div className="detail-row">
-                                  <span>Asset 1:</span>
-                                  <span className="copy-inline">
-                                    <span>{niceCurrency(asset1.currency)}</span>
-                                    {asset1?.issuer && (
-                                      <>
-                                        {' '}
-                                        <span>
-                                          ({addressUsernameOrServiceLink(asset1, 'issuer', { short: 8 })})
+                                  <div className="detail-row">
+                                    <span>LP Token:</span>
+                                    <span className="copy-inline">
+                                      <span>{token.Balance?.currency}</span>
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={token.Balance?.currency} />
+                                      </span>
+                                    </span>
+                                  </div>
+                                  {asset1 && (
+                                    <>
+                                      <div className="detail-row">
+                                        <span>Asset 1:</span>
+                                        <span className="copy-inline">
+                                          <span>{niceCurrency(asset1.currency)}</span>
+                                          {asset1?.issuer && (
+                                            <>
+                                              {' '}
+                                              <span>
+                                                ({addressUsernameOrServiceLink(asset1, 'issuer', { short: 6 })})
+                                              </span>
+                                              <Link
+                                                href={`/token/${asset1.issuer}/${asset1.currency}`}
+                                                className="inline-link-icon tooltip"
+                                                onClick={(event) => event.stopPropagation()}
+                                              >
+                                                <LinkIcon />
+                                                <span className="tooltiptext no-brake">Token page</span>
+                                              </Link>
+                                            </>
+                                          )}
                                         </span>
-                                        <Link
-                                          href={`/token/${asset1.issuer}/${asset1.currency}`}
-                                          className="inline-link-icon tooltip"
-                                          onClick={(event) => event.stopPropagation()}
-                                        >
-                                          <LinkIcon />
-                                          <span className="tooltiptext no-brake">Token page</span>
-                                        </Link>
-                                      </>
-                                    )}
-                                  </span>
-                                </div>
-                                <div className="detail-row">
-                                  <span>Asset 2:</span>
-                                  <span className="copy-inline">
-                                    <span>{niceCurrency(asset2?.currency)}</span>
-                                    {asset2?.issuer && (
-                                      <>
-                                        {' '}
-                                        <span>
-                                          ({addressUsernameOrServiceLink(asset2, 'issuer', { short: 8 })})
+                                      </div>
+                                      <div className="detail-row">
+                                        <span>Asset 2:</span>
+                                        <span className="copy-inline">
+                                          <span>{niceCurrency(asset2?.currency)}</span>
+                                          {asset2?.issuer && (
+                                            <>
+                                              {' '}
+                                              <span>
+                                                ({addressUsernameOrServiceLink(asset2, 'issuer', { short: 6 })})
+                                              </span>
+                                              <Link
+                                                href={`/token/${asset2.issuer}/${asset2.currency}`}
+                                                className="inline-link-icon tooltip"
+                                                onClick={(event) => event.stopPropagation()}
+                                              >
+                                                <LinkIcon />
+                                                <span className="tooltiptext no-brake">Token page</span>
+                                              </Link>
+                                            </>
+                                          )}
                                         </span>
-                                        <Link
-                                          href={`/token/${asset2.issuer}/${asset2.currency}`}
-                                          className="inline-link-icon tooltip"
-                                          onClick={(event) => event.stopPropagation()}
-                                        >
-                                          <LinkIcon />
-                                          <span className="tooltiptext no-brake">Token page</span>
-                                        </Link>
-                                      </>
-                                    )}
-                                  </span>
-                                </div>
-                              </>
-                            )}
+                                      </div>
+                                    </>
+                                  )}
                                 </>
                               )
                             })()}
