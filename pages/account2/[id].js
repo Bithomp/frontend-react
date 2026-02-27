@@ -372,7 +372,7 @@ export default function Account2({
     )
   }
 
-  if (data?.service?.domain) {
+  if (data?.service?.domain && data?.ledgerInfo?.domain !== data.service.domain) {
     pushPublicRow(
       'Web address',
       <a href={`https://${data.service.domain}`} className="bold" target="_blank" rel="noopener nofollow">
