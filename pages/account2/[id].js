@@ -771,6 +771,8 @@ export default function Account2({
           <Link href="/" className="button-action">
             Go Home
           </Link>
+          <br />
+          <br />
         </div>
       </>
     )
@@ -894,7 +896,7 @@ export default function Account2({
                     <span className="asset-summary-title">Total worth</span>
                   </div>
                   <div className="asset-value">
-                    <div className="asset-fiat">
+                    <div className="asset-fiat" suppressHydrationWarning>
                       {shortNiceNumber(totalWorthFiatValue, 2, 1, selectedCurrency) ||
                         shortNiceNumber(0, 2, 1, selectedCurrency)}
                     </div>
@@ -905,7 +907,7 @@ export default function Account2({
                     {totalWorthBreakdown.map((item) => (
                       <div className="detail-row" key={`worth-${item.label}`}>
                         <span>{item.label}:</span>
-                        <span>{shortNiceNumber(item.value, 2, 1, selectedCurrency)}</span>
+                        <span suppressHydrationWarning>{shortNiceNumber(item.value, 2, 1, selectedCurrency)}</span>
                       </div>
                     ))}
                   </div>
