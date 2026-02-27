@@ -580,8 +580,9 @@ export default function Account2({
 
   // Social accounts will be rendered separately without a label
 
-  // Only show service name in info section if not already shown under avatar
-  if (!data?.service?.name && thirdPartyService) {
+  if (data?.service?.name) {
+    pushPublicRow('Service name', <span className="green bold">{data.service.name}</span>)
+  } else if (thirdPartyService) {
     pushPublicRow(
       'Service name',
       <>
@@ -595,8 +596,12 @@ export default function Account2({
   }
 
   const normalizedUsername = (data?.username || '').trim().toLowerCase()
+  const normalizedServiceName = (data?.service?.name || '').trim().toLowerCase()
   const normalizedXamanAccountAlias = (xamanAccountAlias || '').trim().toLowerCase()
-  const showXamanAccountAlias = !!xamanAccountAlias && normalizedXamanAccountAlias !== normalizedUsername
+  const showXamanAccountAlias =
+    !!xamanAccountAlias &&
+    normalizedXamanAccountAlias !== normalizedUsername &&
+    normalizedXamanAccountAlias !== normalizedServiceName
 
   const hasXamanCardData = !!(data?.xamanMeta?.xummPro || xamanOwnerAlias || showXamanAccountAlias)
   const xamanRows = []
