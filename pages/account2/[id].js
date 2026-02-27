@@ -170,6 +170,7 @@ import { subtract } from '../../utils/calc'
 import { addressBalanceChanges } from '../../utils/transaction'
 import {
   FaFacebook,
+  FaGear,
   FaInstagram,
   FaLinkedin,
   FaMedium,
@@ -209,6 +210,15 @@ export default function Account2({
   const [transactionsLoadingMore, setTransactionsLoadingMore] = useState(false)
   const [transactionsError, setTransactionsError] = useState(null)
   const [transactionsMarker, setTransactionsMarker] = useState(null)
+  const [showTxFilters, setShowTxFilters] = useState(false)
+  const [txOrder, setTxOrder] = useState('newest')
+  const [txType, setTxType] = useState('all')
+  const [txInitiated, setTxInitiated] = useState('all')
+  const [txExcludeFailures, setTxExcludeFailures] = useState('all')
+  const [txCounterparty, setTxCounterparty] = useState('')
+  const [txFromDate, setTxFromDate] = useState('')
+  const [txToDate, setTxToDate] = useState('')
+  const [txFilterSpam, setTxFilterSpam] = useState(true)
   const data = initialData
   const balanceList = balanceListServer
   const isLoggedIn = !!account?.address
@@ -318,65 +328,134 @@ export default function Account2({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.address, data?.ledgerInfo?.activated, fiatRateApp, selectedCurrencyApp])
 
-  useEffect(() => {
-    if (!data?.address || !data?.ledgerInfo?.activated) return
+  const buildTransactionsUrl = ({ markerValue, filtersOverride } = {}) => {
+    if (!data?.address) return ''
 
-    let isCancelled = false
+    const filterState = {
+      txOrder,
+      txType,
+      txInitiated,
+      txExcludeFailures,
+      txCounterparty,
+      txFromDate,
+      txToDate,
+      txFilterSpam,
+      ...(filtersOverride || {})
+    }
 
-    const fetchRecentTransactions = async () => {
+    const params = new URLSearchParams()
+    params.set('limit', '5')
+    params.set('relevantOnly', 'true')
+    params.set('filterSpam', filterState.txFilterSpam ? 'true' : 'false')
+
+    if (selectedCurrency) {
+      params.set('convertCurrencies', selectedCurrency)
+    }
+    if (filterState.txOrder === 'oldest') {
+      params.set('forward', 'true')
+    }
+    if (filterState.txType && filterState.txType !== 'all') {
+      params.set('type', filterState.txType)
+    }
+    if (filterState.txInitiated === 'true' || filterState.txInitiated === 'false') {
+      params.set('initiated', filterState.txInitiated)
+    }
+    if (filterState.txExcludeFailures === 'true') {
+      params.set('excludeFailures', 'true')
+    }
+    if (filterState.txCounterparty?.trim()) {
+      params.set('counterparty', filterState.txCounterparty.trim())
+    }
+    if (filterState.txFromDate) {
+      params.set('fromDate', new Date(filterState.txFromDate).toISOString())
+    }
+    if (filterState.txToDate) {
+      params.set('toDate', new Date(filterState.txToDate).toISOString())
+    }
+    if (markerValue) {
+      const markerString = typeof markerValue === 'object' ? JSON.stringify(markerValue) : markerValue
+      params.set('marker', markerString)
+    }
+
+    return `v3/transactions/${data.address}?${params.toString()}`
+  }
+
+  const fetchRecentTransactions = async ({ markerValue = null, append = false, filtersOverride } = {}) => {
+    if (!data?.address) return
+
+    if (append) {
+      setTransactionsLoadingMore(true)
+    } else {
       setTransactionsLoading(true)
-      setTransactionsError(null)
-      try {
-        const convertCurrencyParam = selectedCurrency ? `&convertCurrencies=${selectedCurrency}` : ''
-        const response = await axios.get(
-          `v3/transactions/${data.address}?limit=5&relevantOnly=true&filterSpam=true${convertCurrencyParam}`
-        )
-        if (!isCancelled) {
-          setRecentTransactions(response?.data?.transactions || [])
-          setTransactionsMarker(response?.data?.marker || null)
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          setTransactionsError(error?.message || 'Failed to load transactions')
-          setRecentTransactions([])
-          setTransactionsMarker(null)
-        }
-      } finally {
-        if (!isCancelled) {
-          setTransactionsLoading(false)
-        }
+    }
+
+    setTransactionsError(null)
+
+    try {
+      const response = await axios.get(buildTransactionsUrl({ markerValue, filtersOverride }))
+      const newTransactions = response?.data?.transactions || []
+
+      if (append) {
+        setRecentTransactions((prev) => [...prev, ...newTransactions])
+      } else {
+        setRecentTransactions(newTransactions)
+      }
+
+      setTransactionsMarker(response?.data?.marker || null)
+    } catch (error) {
+      setTransactionsError(error?.message || 'Failed to load transactions')
+      if (!append) {
+        setRecentTransactions([])
+        setTransactionsMarker(null)
+      }
+    } finally {
+      if (append) {
+        setTransactionsLoadingMore(false)
+      } else {
+        setTransactionsLoading(false)
       }
     }
+  }
 
+  useEffect(() => {
+    if (!data?.address || !data?.ledgerInfo?.activated) return
     fetchRecentTransactions()
-
-    return () => {
-      isCancelled = true
-    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.address, data?.ledgerInfo?.activated, selectedCurrency])
 
   const loadMoreTransactions = async () => {
     if (!data?.address || !transactionsMarker || transactionsLoadingMore || transactionsLoading) return
+    fetchRecentTransactions({ markerValue: transactionsMarker, append: true })
+  }
 
-    setTransactionsLoadingMore(true)
-    setTransactionsError(null)
+  const applyTransactionFilters = () => {
+    setTransactionsMarker(null)
+    fetchRecentTransactions()
+  }
 
-    try {
-      const markerString =
-        typeof transactionsMarker === 'object' ? JSON.stringify(transactionsMarker) : transactionsMarker
-      const markerParam = markerString ? `&marker=${encodeURIComponent(markerString)}` : ''
-      const convertCurrencyParam = selectedCurrency ? `&convertCurrencies=${selectedCurrency}` : ''
-      const response = await axios.get(
-        `v3/transactions/${data.address}?limit=5&relevantOnly=true&filterSpam=true${markerParam}${convertCurrencyParam}`
-      )
-
-      setRecentTransactions((prev) => [...prev, ...(response?.data?.transactions || [])])
-      setTransactionsMarker(response?.data?.marker || null)
-    } catch (error) {
-      setTransactionsError(error?.message || 'Failed to load more transactions')
-    } finally {
-      setTransactionsLoadingMore(false)
+  const resetTransactionFilters = () => {
+    const defaultFilters = {
+      txOrder: 'newest',
+      txType: 'all',
+      txInitiated: 'all',
+      txExcludeFailures: 'all',
+      txCounterparty: '',
+      txFromDate: '',
+      txToDate: '',
+      txFilterSpam: true
     }
+
+    setTxOrder(defaultFilters.txOrder)
+    setTxType(defaultFilters.txType)
+    setTxInitiated(defaultFilters.txInitiated)
+    setTxExcludeFailures(defaultFilters.txExcludeFailures)
+    setTxCounterparty(defaultFilters.txCounterparty)
+    setTxFromDate(defaultFilters.txFromDate)
+    setTxToDate(defaultFilters.txToDate)
+    setTxFilterSpam(defaultFilters.txFilterSpam)
+
+    setTransactionsMarker(null)
+    fetchRecentTransactions({ filtersOverride: defaultFilters })
   }
 
   const showPaystring =
@@ -891,15 +970,15 @@ export default function Account2({
                             <div className="detail-row">
                               <span>Rate ({nativeCurrency}):</span>
                               <span>
-                                1 {token.Balance?.currency} = {shortNiceNumber(token.priceNativeCurrencySpot, 6, 6)}{' '}
-                                {nativeCurrency}
+                                1 {niceCurrency(token.Balance?.currency)} ={' '}
+                                {shortNiceNumber(token.priceNativeCurrencySpot, 6, 6)} {nativeCurrency}
                               </span>
                             </div>
                             {fiatRate && selectedCurrency ? (
                               <div className="detail-row">
                                 <span>Rate ({selectedCurrency?.toUpperCase()}):</span>
                                 <span>
-                                  1 {token.Balance?.currency} ={' '}
+                                  1 {niceCurrency(token.Balance?.currency)} ={' '}
                                   {niceNumber(token.priceNativeCurrencySpot * fiatRate, null, selectedCurrency, 8)}
                                 </span>
                               </div>
@@ -1166,12 +1245,116 @@ export default function Account2({
             <div className="transactions-section">
               <div className="section-header-row">
                 <span className="section-title">Recent transactions</span>
-                {data?.address && (
-                  <Link className="section-link" href={`/account/${data.address}/transactions`}>
-                    View all
-                  </Link>
-                )}
+                <div className="tx-header-actions">
+                  <button
+                    className={`tx-filter-toggle ${showTxFilters ? 'active' : ''}`}
+                    onClick={() => setShowTxFilters((prev) => !prev)}
+                    aria-label="Toggle transaction filters"
+                    type="button"
+                  >
+                    <FaGear />
+                  </button>
+                  {data?.address && (
+                    <Link className="section-link" href={`/account/${data.address}/transactions`}>
+                      View all
+                    </Link>
+                  )}
+                </div>
               </div>
+
+              {showTxFilters && (
+                <div className="tx-filters-panel">
+                  <div className="tx-filter-grid">
+                    <label className="tx-filter-field">
+                      <span>Order</span>
+                      <select value={txOrder} onChange={(event) => setTxOrder(event.target.value)}>
+                        <option value="newest">Newest first</option>
+                        <option value="oldest">Oldest first</option>
+                      </select>
+                    </label>
+
+                    <label className="tx-filter-field">
+                      <span>Type</span>
+                      <select value={txType} onChange={(event) => setTxType(event.target.value)}>
+                        <option value="all">All types</option>
+                        <option value="payment">Payment</option>
+                        <option value="nft">NFT</option>
+                        <option value="amm">AMM</option>
+                        <option value="order">DEX</option>
+                        <option value="escrow">Escrow</option>
+                        <option value="channel">Channel</option>
+                        <option value="check">Check</option>
+                        <option value="trustline">Trustline</option>
+                        <option value="settings">Settings</option>
+                        <option value="accountDelete">Account delete</option>
+                      </select>
+                    </label>
+
+                    <label className="tx-filter-field">
+                      <span>Direction</span>
+                      <select value={txInitiated} onChange={(event) => setTxInitiated(event.target.value)}>
+                        <option value="all">Incoming & outgoing</option>
+                        <option value="true">Outgoing only</option>
+                        <option value="false">Incoming only</option>
+                      </select>
+                    </label>
+
+                    <label className="tx-filter-field">
+                      <span>Failures</span>
+                      <select value={txExcludeFailures} onChange={(event) => setTxExcludeFailures(event.target.value)}>
+                        <option value="all">Include failed</option>
+                        <option value="true">Exclude failed</option>
+                      </select>
+                    </label>
+
+                    <label className="tx-filter-field tx-filter-field-wide">
+                      <span>Counterparty</span>
+                      <input
+                        type="text"
+                        value={txCounterparty}
+                        onChange={(event) => setTxCounterparty(event.target.value)}
+                        placeholder="Address or username"
+                      />
+                    </label>
+
+                    <label className="tx-filter-field">
+                      <span>From</span>
+                      <input
+                        type="datetime-local"
+                        value={txFromDate}
+                        onChange={(event) => setTxFromDate(event.target.value)}
+                      />
+                    </label>
+
+                    <label className="tx-filter-field">
+                      <span>To</span>
+                      <input
+                        type="datetime-local"
+                        value={txToDate}
+                        onChange={(event) => setTxToDate(event.target.value)}
+                      />
+                    </label>
+                  </div>
+
+                  <label className="tx-filter-check">
+                    <input
+                      type="checkbox"
+                      checked={txFilterSpam}
+                      onChange={(event) => setTxFilterSpam(event.target.checked)}
+                    />
+                    <span>Exclude spam transactions</span>
+                  </label>
+
+                  <div className="tx-filter-actions">
+                    <button className="tx-filter-btn" type="button" onClick={resetTransactionFilters}>
+                      Reset
+                    </button>
+                    <button className="tx-filter-btn primary" type="button" onClick={applyTransactionFilters}>
+                      Search
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {transactionsLoading && <p className="grey">Loading recent transactions...</p>}
               {!transactionsLoading && transactionsError && <p className="red">{transactionsError}</p>}
@@ -1195,7 +1378,15 @@ export default function Account2({
 
                   const sourceAddress = txdata?.specification?.source?.address
                   const destinationAddress = txdata?.specification?.destination?.address
-                  const counterparty = sourceAddress === data?.address ? destinationAddress : sourceAddress
+                  const isSource = sourceAddress === data?.address
+                  const counterparty = isSource ? destinationAddress : sourceAddress
+                  const counterpartyDetails = isSource
+                    ? txdata?.specification?.destinationDetails || txdata?.specification?.destination?.addressDetails
+                    : txdata?.specification?.sourceDetails || txdata?.specification?.source?.addressDetails
+                  const counterpartyLabel = serviceUsernameOrAddressText({
+                    address: counterparty,
+                    addressDetails: counterpartyDetails
+                  })
 
                   return (
                     <div className="tx-card" key={txHash || `${tx?.TransactionType || 'tx'}-${index}`}>
@@ -1215,7 +1406,7 @@ export default function Account2({
                         <div className="tx-line">
                           <span className="tx-label">Counterparty</span>
                           <Link href={`/account/${counterparty}`} className="tx-value tx-link">
-                            {counterparty}
+                            {counterpartyLabel}
                           </Link>
                         </div>
                       )}
@@ -1388,6 +1579,115 @@ export default function Account2({
           font-size: 15px;
           font-weight: 600;
           color: var(--text);
+        }
+
+        .tx-header-actions {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .tx-filter-toggle {
+          width: 30px;
+          height: 30px;
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          background: var(--background-input);
+          color: var(--text-secondary);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+
+        .tx-filter-toggle:hover,
+        .tx-filter-toggle.active {
+          color: var(--accent-link);
+          border-color: var(--accent-link);
+        }
+
+        .tx-filters-panel {
+          background: var(--background-input);
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .tx-filter-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .tx-filter-field {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .tx-filter-field > span {
+          font-size: 12px;
+          color: var(--text-secondary);
+        }
+
+        .tx-filter-field select,
+        .tx-filter-field input {
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          background: var(--background-table);
+          color: var(--text);
+          font-size: 13px;
+          padding: 7px 8px;
+        }
+
+        .tx-filter-field-wide {
+          grid-column: 1 / -1;
+        }
+
+        .tx-filter-check {
+          display: inline-flex;
+          gap: 6px;
+          align-items: center;
+          font-size: 13px;
+          color: var(--text-secondary);
+          cursor: pointer;
+        }
+
+        .tx-filter-check input[type='checkbox'] {
+          appearance: auto;
+          -webkit-appearance: checkbox;
+          width: 16px;
+          height: 16px;
+          margin: 0;
+          accent-color: var(--accent-link);
+          border: 1px solid var(--border-color);
+          border-radius: 3px;
+          background: var(--background-table);
+          flex: 0 0 auto;
+        }
+
+        .tx-filter-actions {
+          display: flex;
+          gap: 8px;
+          justify-content: flex-end;
+        }
+
+        .tx-filter-btn {
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          background: var(--background-table);
+          color: var(--text);
+          font-size: 13px;
+          padding: 7px 10px;
+          cursor: pointer;
+        }
+
+        .tx-filter-btn.primary {
+          border-color: var(--accent-link);
+          color: var(--accent-link);
         }
 
         .section-link {
