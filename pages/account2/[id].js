@@ -819,7 +819,7 @@ export default function Account2({
                     </div>
                     {isExpanded && (
                       <div className="asset-details">
-                        {token.priceNativeCurrencySpot ? (
+                        {!isLpToken && token.priceNativeCurrencySpot ? (
                           <>
                             <div className="detail-row">
                               <span>Rate ({nativeCurrency}):</span>
