@@ -186,7 +186,6 @@ export default function Account2({
   const { i18n } = useTranslation()
   const [showBalanceDetails, setShowBalanceDetails] = useState(false)
   const [tokens, setTokens] = useState([])
-  const [lpTokens, setLpTokens] = useState([])
   const [expandedToken, setExpandedToken] = useState(null)
   const data = initialData
   const balanceList = balanceListServer
@@ -206,17 +205,17 @@ export default function Account2({
     const fetchTokens = async () => {
       try {
         const response = await axios.get(
-          `/v2/objects/${data.address}?limit=1000&priceNativeCurrencySpot=true&currencyDetails=true`
+          `v2/objects/${data.address}?limit=1000&priceNativeCurrencySpot=true&currencyDetails=true`
         )
         const accountObjects = response?.data?.objects || []
-        
+
         // Filter RippleState objects (tokens)
         const rippleStateList = accountObjects.filter((node) => {
           if (node.LedgerEntryType !== 'RippleState') return false
-          
+
           const isPositiveBalance = (balance) => balance !== '0' && balance[0] !== '-'
           const isNegativeBalance = (balance) => balance !== '0' && balance[0] === '-'
-          
+
           if (node.HighLimit.issuer === data.address) {
             if (node.Flags & 131072) {
               if (isPositiveBalance(node.Balance.value)) return false
@@ -237,29 +236,18 @@ export default function Account2({
         const sortedTokens = rippleStateList.sort((a, b) => {
           const balanceA = Math.abs(subtract(a.Balance?.value, a.LockedBalance?.value || 0))
           const balanceB = Math.abs(subtract(b.Balance?.value, b.LockedBalance?.value || 0))
-          
+
           if (balanceA === 0 && balanceB === 0) return 0
           if (balanceA === 0) return 1
           if (balanceB === 0) return -1
-          
+
           const fiatValueA = (a.priceNativeCurrencySpot * balanceA || 0) * fiatRate
           const fiatValueB = (b.priceNativeCurrencySpot * balanceB || 0) * fiatRate
-          
+
           return fiatValueB - fiatValueA
         })
 
-        // Split LP tokens and normal tokens
-        const lp = []
-        const regular = []
-        
-        for (const token of sortedTokens) {
-          const prefix = token.Balance?.currency?.substring(0, 2)
-          if (prefix === '03') lp.push(token)
-          else regular.push(token)
-        }
-        
-        setTokens(regular)
-        setLpTokens(lp)
+        setTokens(sortedTokens)
       } catch (error) {
         console.error('Failed to fetch tokens:', error)
       }
@@ -421,7 +409,7 @@ export default function Account2({
       'Activated',
       <span className="activated-line">
         <span className="tooltip activated-time no-brake">
-          Activated <span className="bold">{timeFromNow(data.inception, i18n)}</span>
+          <span className="bold">{timeFromNow(data.inception, i18n)}</span>
           <span className="tooltiptext right no-brake activation-tooltip" suppressHydrationWarning>
             {activationTimeText}
           </span>
@@ -505,7 +493,11 @@ export default function Account2({
     <>
       <SEO
         title={
-          data.username ? `${data.username} (${data.address})` : data.service ? `${data.service} (${data.address})` : data.address
+          data.username
+            ? `${data.username} (${data.address})`
+            : data.service
+              ? `${data.service} (${data.address})`
+              : data.address
         }
       />
 
@@ -575,10 +567,7 @@ export default function Account2({
             <div className="assets-section">
               {/* Native Currency Balance */}
               {balanceList && (
-                <div
-                  className="asset-item"
-                  onClick={() => setShowBalanceDetails(!showBalanceDetails)}
-                >
+                <div className="asset-item" onClick={() => setShowBalanceDetails(!showBalanceDetails)}>
                   {!showBalanceDetails ? (
                     <div className="asset-main">
                       <div className="asset-logo">
@@ -660,6 +649,7 @@ export default function Account2({
                 const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
                 const fiatValue = (token.priceNativeCurrencySpot * balance || 0) * fiatRate
                 const isExpanded = expandedToken === `token-${index}`
+                const isLpToken = token.Balance?.currency?.substring(0, 2) === '03'
 
                 return (
                   <div
@@ -673,7 +663,7 @@ export default function Account2({
                       </div>
                       <div className="asset-value">
                         <div className="asset-amount">
-                          {shortNiceNumber(balance)} {niceCurrency(token.Balance?.currency)}
+                          {shortNiceNumber(balance)} {isLpToken ? 'LP' : niceCurrency(token.Balance?.currency)}
                         </div>
                         {fiatValue > 0 && (
                           <div className="asset-fiat">{shortNiceNumber(fiatValue, 2, 1, selectedCurrency)}</div>
@@ -682,29 +672,54 @@ export default function Account2({
                     </div>
                     {isExpanded && (
                       <div className="asset-details">
-                        <div className="detail-row">
-                          <span>Currency:</span>
-                          <span className="copy-inline">
-                            <span>{token.Balance?.currency}</span>
-                            <span onClick={(event) => event.stopPropagation()}>
-                              <CopyButton text={token.Balance?.currency} />
-                            </span>
-                          </span>
-                        </div>
-                        <div className="detail-row">
-                          <span>Issuer:</span>
-                          <span className="copy-inline">
-                            <span className="address-text">{issuer?.issuer}</span>
-                            <span onClick={(event) => event.stopPropagation()}>
-                              <CopyButton text={issuer?.issuer} />
-                            </span>
-                          </span>
-                        </div>
-                        {token.Balance?.issuerDetails?.username && (
+                        {isLpToken ? (
+                          <>
+                            <div className="detail-row">
+                              <span>LP Token:</span>
+                              <span>{niceCurrency(token.Balance?.currency)}</span>
+                            </div>
+                            {token.Balance?.currencyDetails?.asset && (
+                              <>
+                                <div className="detail-row">
+                                  <span>Asset 1:</span>
+                                  <span>{niceCurrency(token.Balance.currencyDetails.asset.currency)}</span>
+                                </div>
+                                <div className="detail-row">
+                                  <span>Asset 2:</span>
+                                  <span>{niceCurrency(token.Balance.currencyDetails.asset2?.currency)}</span>
+                                </div>
+                              </>
+                            )}
+                          </>
+                        ) : (
                           <div className="detail-row">
-                            <span>Service:</span>
-                            <span>{token.Balance?.issuerDetails?.username}</span>
+                            <span>Currency:</span>
+                            <span className="copy-inline">
+                              <span>{token.Balance?.currency}</span>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={token.Balance?.currency} />
+                              </span>
+                            </span>
                           </div>
+                        )}
+                        {!isLpToken && (
+                          <>
+                            <div className="detail-row">
+                              <span>Issuer:</span>
+                              <span className="copy-inline">
+                                <span className="address-text">{issuer?.issuer}</span>
+                                <span onClick={(event) => event.stopPropagation()}>
+                                  <CopyButton text={issuer?.issuer} />
+                                </span>
+                              </span>
+                            </div>
+                            {token.Balance?.issuerDetails?.username && (
+                              <div className="detail-row">
+                                <span>Service:</span>
+                                <span>{token.Balance?.issuerDetails?.username}</span>
+                              </div>
+                            )}
+                          </>
                         )}
                         <div className="detail-row">
                           <span>Balance:</span>
@@ -721,7 +736,7 @@ export default function Account2({
                             <span>{fullNiceNumber(token.LockedBalance.value)}</span>
                           </div>
                         )}
-                        {token.HighLimit?.issuer === data?.address ? (
+                        {!isLpToken && token.HighLimit?.issuer === data?.address ? (
                           <>
                             <div className="detail-row">
                               <span>{isLoggedIn ? 'Your limit' : 'Limit'}:</span>
@@ -731,7 +746,7 @@ export default function Account2({
                                   <>
                                     {' '}
                                     <Link
-                                      href={`/services/trustline?currency=${token.Balance?.currency}&currencyIssuer=${issuer?.issuer}&mode=advanced&issuer=${issuer?.issuer}&limit=${token.HighLimit?.value}`}
+                                      href={`/services/trustline?currency=${token.Balance?.currency}&currencyIssuer=${issuer?.issuer}&mode=advanced&limit=${token.HighLimit?.value}`}
                                       onClick={(event) => event.stopPropagation()}
                                       className="change-limit-link"
                                     >
@@ -748,7 +763,7 @@ export default function Account2({
                               </div>
                             )}
                           </>
-                        ) : (
+                        ) : !isLpToken ? (
                           <>
                             <div className="detail-row">
                               <span>{isLoggedIn ? 'Your limit' : 'Limit'}:</span>
@@ -775,7 +790,7 @@ export default function Account2({
                               </div>
                             )}
                           </>
-                        )}
+                        ) : null}
                         {token.flags && (
                           <>
                             {(token.flags.lowFreeze || token.flags.highFreeze) && (
@@ -804,129 +819,38 @@ export default function Account2({
                             )}
                           </>
                         )}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-
-              {/* LP Tokens */}
-              {lpTokens.map((token, index) => {
-                const issuer = token.HighLimit?.issuer === data?.address ? token.LowLimit : token.HighLimit
-                const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
-                const fiatValue = (token.priceNativeCurrencySpot * balance || 0) * fiatRate
-                const isExpanded = expandedToken === `lp-${index}`
-
-                return (
-                  <div
-                    key={index}
-                    className="asset-item"
-                    onClick={() => setExpandedToken(isExpanded ? null : `lp-${index}`)}
-                  >
-                    <div className="asset-main">
-                      <div className="asset-logo">
-                        <CurrencyWithIcon token={{ ...token.Balance, ...issuer }} />
-                      </div>
-                      <div className="asset-value">
-                        <div className="asset-amount">
-                          {shortNiceNumber(balance)} LP
-                        </div>
-                        {fiatValue > 0 && (
-                          <div className="asset-fiat">{shortNiceNumber(fiatValue, 2, 1, selectedCurrency)}</div>
-                        )}
-                      </div>
-                    </div>
-                    {isExpanded && (
-                      <div className="asset-details">
-                        <div className="detail-row">
-                          <span>LP Token:</span>
-                          <span>{niceCurrency(token.Balance?.currency)}</span>
-                        </div>
-                        {token.Balance?.currencyDetails?.asset && (
-                          <>
-                            <div className="detail-row">
-                              <span>Asset 1:</span>
-                              <span>{niceCurrency(token.Balance.currencyDetails.asset.currency)}</span>
-                            </div>
-                            <div className="detail-row">
-                              <span>Asset 2:</span>
-                              <span>{niceCurrency(token.Balance.currencyDetails.asset2?.currency)}</span>
-                            </div>
-                          </>
-                        )}
-                        <div className="detail-row">
-                          <span>Balance:</span>
-                          <span className="copy-inline">
-                            <span>{fullNiceNumber(balance)}</span>
-                            <span onClick={(event) => event.stopPropagation()}>
-                              <CopyButton text={balance} />
-                            </span>
-                          </span>
-                        </div>
-                        {token.LockedBalance?.value && parseFloat(token.LockedBalance.value) > 0 && (
-                          <div className="detail-row">
-                            <span>Locked:</span>
-                            <span>{fullNiceNumber(token.LockedBalance.value)}</span>
+                        {isLpToken && token.Balance?.currencyDetails?.asset && (
+                          <div className="lp-actions">
+                            <Link
+                              href={`/services/amm/deposit?currency=${token.Balance?.currencyDetails?.asset?.currency}${
+                                token.Balance?.currencyDetails?.asset?.issuer
+                                  ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
+                                  : ''
+                              }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
+                                token.Balance?.currencyDetails?.asset2?.issuer
+                                  ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
+                                  : ''
+                              }`}
+                              className="lp-action-btn"
+                            >
+                              Deposit
+                            </Link>
+                            <Link
+                              href={`/services/amm/withdraw?currency=${token.Balance?.currencyDetails?.asset?.currency}${
+                                token.Balance?.currencyDetails?.asset?.issuer
+                                  ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
+                                  : ''
+                              }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
+                                token.Balance?.currencyDetails?.asset2?.issuer
+                                  ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
+                                  : ''
+                              }`}
+                              className="lp-action-btn"
+                            >
+                              Withdraw
+                            </Link>
                           </div>
                         )}
-                        {token.flags && (
-                          <>
-                            {(token.flags.lowFreeze || token.flags.highFreeze) && (
-                              <div className="detail-row">
-                                <span>Freeze:</span>
-                                <span className="red">Yes</span>
-                              </div>
-                            )}
-                            {(token.flags.lowNoRipple || token.flags.highNoRipple) && (
-                              <div className="detail-row">
-                                <span>No Rippling:</span>
-                                <span className="green">Enabled</span>
-                              </div>
-                            )}
-                            {(token.flags.lowAuth || token.flags.highAuth) && (
-                              <div className="detail-row">
-                                <span>Authorized:</span>
-                                <span className="green">Yes</span>
-                              </div>
-                            )}
-                            {(token.flags.lowDeepFreeze || token.flags.highDeepFreeze) && (
-                              <div className="detail-row">
-                                <span>Deep Freeze:</span>
-                                <span className="red">Yes</span>
-                              </div>
-                            )}
-                          </>
-                        )}
-                        <div className="lp-actions">
-                          <Link
-                            href={`/services/amm/deposit?currency=${token.Balance?.currencyDetails?.asset?.currency}${
-                              token.Balance?.currencyDetails?.asset?.issuer
-                                ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
-                                : ''
-                            }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
-                              token.Balance?.currencyDetails?.asset2?.issuer
-                                ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
-                                : ''
-                            }`}
-                            className="lp-action-btn"
-                          >
-                            Deposit
-                          </Link>
-                          <Link
-                            href={`/services/amm/withdraw?currency=${token.Balance?.currencyDetails?.asset?.currency}${
-                              token.Balance?.currencyDetails?.asset?.issuer
-                                ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
-                                : ''
-                            }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
-                              token.Balance?.currencyDetails?.asset2?.issuer
-                                ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
-                                : ''
-                            }`}
-                            className="lp-action-btn"
-                          >
-                            Withdraw
-                          </Link>
-                        </div>
                       </div>
                     )}
                   </div>
