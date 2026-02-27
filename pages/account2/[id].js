@@ -343,9 +343,7 @@ export default function Account2({
     }
   }
 
-  if (socialAccountsNode) {
-    pushPublicRow('Social accounts', socialAccountsNode)
-  }
+  // Social accounts will be rendered separately without a label
 
   if (data?.service?.name || thirdPartyService) {
     pushPublicRow(
@@ -539,6 +537,9 @@ export default function Account2({
                   </div>
                 )}
               </div>
+
+              {/* Social icons */}
+              {socialAccountsNode && <div className="social-icons-wrapper">{socialAccountsNode}</div>}
 
               {data?.inception && publicDataRows.length > 0 && (
                 <div className="public-data">
@@ -773,7 +774,7 @@ export default function Account2({
                                   <>
                                     {' '}
                                     <Link
-                                      href={`/services/trustline?currency=${token.Balance?.currency}&currencyIssuer=${issuer?.issuer}&mode=advanced&issuer=${issuer?.issuer}&limit=${token.LowLimit?.value}`}
+                                      href={`/services/trustline?currency=${token.Balance?.currency}&currencyIssuer=${issuer?.issuer}&mode=advanced&limit=${token.LowLimit?.value}`}
                                       onClick={(event) => event.stopPropagation()}
                                       className="change-limit-link"
                                     >
@@ -889,9 +890,7 @@ export default function Account2({
         }
 
         .public-data {
-          margin-top: 10px;
-          padding-top: 10px;
-          border-top: 1px solid var(--border-color);
+          margin-top: 15px;
         }
 
         .info-rows {
@@ -1060,6 +1059,36 @@ export default function Account2({
 
         .did-section {
           margin-top: 15px;
+        }
+
+        .social-icons-wrapper {
+          margin: 10px 0 5px 0;
+          display: flex;
+          justify-content: center;
+        }
+
+        .social-icons-wrapper :global(.social-icons) {
+          display: flex;
+          gap: 15px;
+          align-items: center;
+          background: none;
+          padding: 0;
+        }
+
+        .social-icons-wrapper :global(.social-icons a) {
+          color: var(--text-secondary);
+          font-size: 22px;
+          transition: all 0.2s ease;
+          background: none;
+          display: flex;
+          align-items: center;
+          padding: 0;
+          cursor: pointer;
+        }
+
+        .social-icons-wrapper :global(.social-icons a:hover) {
+          color: var(--accent-link);
+          transform: scale(1.15);
         }
 
         .asset-item {
