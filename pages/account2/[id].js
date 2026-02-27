@@ -566,7 +566,11 @@ export default function Account2({
     pushPublicRow('Nickname', <span className="orange bold">{data.nickname}</span>)
   }
 
-  const hasXamanCardData = !!(data?.xamanMeta?.xummPro || xamanOwnerAlias || xamanAccountAlias)
+  const normalizedUsername = (data?.username || '').trim().toLowerCase()
+  const normalizedXamanAccountAlias = (xamanAccountAlias || '').trim().toLowerCase()
+  const showXamanAccountAlias = !!xamanAccountAlias && normalizedXamanAccountAlias !== normalizedUsername
+
+  const hasXamanCardData = !!(data?.xamanMeta?.xummPro || xamanOwnerAlias || showXamanAccountAlias)
   const xamanRows = []
 
   if (data?.xamanMeta?.xummPro) {
@@ -587,7 +591,7 @@ export default function Account2({
     xamanRows.push({ key: 'owner-alias', label: 'Owner alias:', value: xamanOwnerAlias })
   }
 
-  if (xamanAccountAlias) {
+  if (showXamanAccountAlias) {
     xamanRows.push({ key: 'account-alias', label: 'Account alias:', value: xamanAccountAlias })
   }
 
