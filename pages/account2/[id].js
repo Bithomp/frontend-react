@@ -644,7 +644,7 @@ export default function Account2({
                         <div className="detail-row">
                           <span>Available:</span>
                           <span className="copy-inline">
-                            <span>{amountFormat(balanceList.available.native, { precise: 'nice' })}</span>
+                            <span>{balanceList.available.native / 1000000}</span>
                             <span onClick={(event) => event.stopPropagation()}>
                               <CopyButton text={balanceList.available.native / 1000000} />
                             </span>
