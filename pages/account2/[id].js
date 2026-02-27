@@ -782,7 +782,9 @@ export default function Account2({
               {/* Avatar */}
               <div className="avatar-container">
                 <div className="avatar-wrapper">
-                  <img src={avatarSrc(data.address)} alt="Avatar" className="account-avatar" />
+                  <div className="avatar-image-mask">
+                    <img src={avatarSrc(data.address)} alt="Avatar" className="account-avatar" />
+                  </div>
                   {achievements.length > 0 && (
                     <div className={`achievements-orbit achievements-count-${Math.min(achievements.length, 6)}`}>
                       {achievements.slice(0, 6).map((achievement, index) => (
@@ -1807,13 +1809,26 @@ export default function Account2({
           display: inline-flex;
           align-items: center;
           justify-content: center;
+          width: 150px;
+          height: 150px;
+          overflow: visible;
         }
 
-        .account-avatar {
+        .avatar-image-mask {
           width: 150px;
           height: 150px;
           border-radius: 50%;
+          overflow: hidden;
           border: 3px solid var(--accent-link);
+        }
+
+        .account-avatar {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+          transform: scale(1.12);
+          transform-origin: center;
         }
 
         .achievements-orbit {
