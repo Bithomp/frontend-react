@@ -4,7 +4,17 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import axios from 'axios'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
-import { avatarSrc, devNet, nativeCurrency, networks, isValidPayString, isValidXAddress, isTagValid } from '../../utils'
+import {
+  avatarSrc,
+  devNet,
+  nativeCurrency,
+  networks,
+  isValidPayString,
+  isValidXAddress,
+  isTagValid,
+  isDomainValid,
+  stripDomain
+} from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { xAddressToClassicAddress } from 'ripple-address-codec'
 
@@ -372,13 +382,38 @@ export default function Account2({
     )
   }
 
-  if (data?.service?.domain && data?.ledgerInfo?.domain !== data.service.domain) {
-    pushPublicRow(
-      'Web address',
-      <a href={`https://${data.service.domain}`} className="bold" target="_blank" rel="noopener nofollow">
-        {data.service.domain}
-      </a>
-    )
+  if (data?.ledgerInfo?.domain) {
+    const domainText = stripDomain(data.ledgerInfo.domain)
+    const serviceDomainText = stripDomain(data.service?.domain || '')
+    const isValidDomain = isDomainValid(domainText)
+    const isDifferentFromService = domainText.toLowerCase() !== serviceDomainText.toLowerCase()
+
+    // Only show if different from service domain
+    if (isDifferentFromService) {
+      const showUnverified =
+        isValidDomain &&
+        !data.verifiedDomain &&
+        (!data.service?.domain || !data.ledgerInfo.domain.toLowerCase().includes(data.service.domain.toLowerCase()))
+
+      pushPublicRow(
+        'Domain',
+        isValidDomain ? (
+          <>
+            <a
+              href={`https://${domainText}`}
+              className={data.verifiedDomain ? 'green bold' : ''}
+              target="_blank"
+              rel="noopener nofollow"
+            >
+              {domainText}
+            </a>{' '}
+            {showUnverified && <span className="orange">(unverified)</span>}
+          </>
+        ) : (
+          <code className="code-highlight">{data.ledgerInfo.domain}</code>
+        )
+      )
+    }
   }
 
   if (data?.inception) {
@@ -413,14 +448,16 @@ export default function Account2({
           <>
             {' '}
             by{' '}
-            <span
-              className={`activated-by ${activatedByIsService ? 'green' : ''} ${activatedByIsUsername ? 'blue' : ''}`}
-            >
-              <span className="tooltip no-brake">
-                {activatedByName}
-                <span className="tooltiptext right no-brake activation-tooltip">{activatedByAddress}</span>
+            <Link href={`/account2/${activatedByAddress}`} onClick={(event) => event.stopPropagation()}>
+              <span
+                className={`activated-by ${activatedByIsService ? 'green' : ''} ${activatedByIsUsername ? 'blue' : ''}`}
+              >
+                <span className="tooltip no-brake">
+                  {activatedByName}
+                  <span className="tooltiptext right no-brake activation-tooltip">{activatedByAddress}</span>
+                </span>
               </span>
-            </span>
+            </Link>
           </>
         )}
         {activatedWithAmount && (
@@ -1009,6 +1046,7 @@ export default function Account2({
 
         .account-address-text {
           color: var(--text);
+          font-size: 14px;
         }
 
         .account-address a {
