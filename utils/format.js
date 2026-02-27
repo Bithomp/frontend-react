@@ -122,6 +122,7 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
   }
 
   const { currencyDetails, issuer, mptId, currency } = token
+  const disableTokenLink = options?.disableTokenLink
 
   let imageUrl = avatarServer + issuer
 
@@ -144,6 +145,13 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
     assetImageUrl = tokenImageSrc(currencyDetails.asset)
     asset2ImageUrl = tokenImageSrc(currencyDetails.asset2)
   }
+
+  const tokenText =
+    mptId && token.metadata
+      ? token.metadata?.t || token.metadata?.c || token.metadata?.currency || currency || 'N/A'
+      : currencyDetails?.type === 'lp_token' && currencyDetails?.currency
+        ? currencyDetails.currency
+        : niceCurrency(currency)
 
   return (
     <>
@@ -192,7 +200,7 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
               )}
             </td>
             <td className="left" style={{ padding: '0 0 0 5px' }}>
-              <LinkToken token={token} />
+              {disableTokenLink ? <span className="bold">{tokenText}</span> : <LinkToken token={token} />}
               {copy && (
                 <>
                   {' '}

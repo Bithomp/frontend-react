@@ -2,6 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
+import LinkIcon from '../../public/images/link.svg'
 import axios from 'axios'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import {
@@ -708,12 +709,10 @@ export default function Account2({
                   {!showBalanceDetails ? (
                     <div className="asset-main">
                       <div className="asset-logo">
-                        <CurrencyWithIcon token={{ currency: nativeCurrency }} />
+                        <CurrencyWithIcon token={{ currency: nativeCurrency }} options={{ disableTokenLink: true }} />
                       </div>
                       <div className="asset-value">
-                        <div className="asset-amount">
-                          {amountFormat(balanceList.available.native, { precise: 'nice' })}
-                        </div>
+                        <div className="asset-amount">{shortNiceNumber(balanceList.available.native / 1000000)}</div>
                         <div className="asset-fiat">
                           {nativeCurrencyToFiat({
                             amount: balanceList.available.native,
@@ -727,12 +726,10 @@ export default function Account2({
                     <>
                       <div className="asset-main">
                         <div className="asset-logo">
-                          <CurrencyWithIcon token={{ currency: nativeCurrency }} />
+                          <CurrencyWithIcon token={{ currency: nativeCurrency }} options={{ disableTokenLink: true }} />
                         </div>
                         <div className="asset-value">
-                          <div className="asset-amount">
-                            {amountFormat(balanceList.available.native, { precise: 'nice' })}
-                          </div>
+                          <div className="asset-amount">{shortNiceNumber(balanceList.available.native / 1000000)}</div>
                           <div className="asset-fiat">
                             {nativeCurrencyToFiat({
                               amount: balanceList.available.native,
@@ -796,12 +793,13 @@ export default function Account2({
                   >
                     <div className="asset-main">
                       <div className="asset-logo">
-                        <CurrencyWithIcon token={{ ...token.Balance, ...issuer }} />
+                        <CurrencyWithIcon
+                          token={{ ...token.Balance, ...issuer }}
+                          options={{ disableTokenLink: true }}
+                        />
                       </div>
                       <div className="asset-value">
-                        <div className="asset-amount">
-                          {shortNiceNumber(balance)} {isLpToken ? 'LP' : niceCurrency(token.Balance?.currency)}
-                        </div>
+                        <div className="asset-amount">{shortNiceNumber(balance)}</div>
                         {fiatValue > 0 && (
                           <div className="asset-fiat">{shortNiceNumber(fiatValue, 2, 1, selectedCurrency)}</div>
                         )}
@@ -809,6 +807,15 @@ export default function Account2({
                     </div>
                     {isExpanded && (
                       <div className="asset-details">
+                        <div className="detail-row">
+                          <span>Balance:</span>
+                          <span className="copy-inline">
+                            <span>{fullNiceNumber(balance)}</span>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={balance} />
+                            </span>
+                          </span>
+                        </div>
                         {isLpToken ? (
                           <>
                             <div className="detail-row">
@@ -829,15 +836,25 @@ export default function Account2({
                             )}
                           </>
                         ) : (
-                          <div className="detail-row">
-                            <span>Currency:</span>
-                            <span className="copy-inline">
-                              <span>{token.Balance?.currency}</span>
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={token.Balance?.currency} />
+                          <>
+                            <div className="detail-row">
+                              <span>Currency:</span>
+                              <span className="copy-inline">
+                                <span>{token.Balance?.currency}</span>
+                                <Link
+                                  href={`/token/${issuer?.issuer}/${token.Balance?.currency}`}
+                                  className="inline-link-icon tooltip"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  <LinkIcon />
+                                  <span className="tooltiptext no-brake">Token page</span>
+                                </Link>
+                                <span onClick={(event) => event.stopPropagation()}>
+                                  <CopyButton text={token.Balance?.currency} />
+                                </span>
                               </span>
-                            </span>
-                          </div>
+                            </div>
+                          </>
                         )}
                         {!isLpToken && (
                           <>
@@ -845,6 +862,14 @@ export default function Account2({
                               <span>Issuer:</span>
                               <span className="copy-inline">
                                 <span className="address-text">{issuer?.issuer}</span>
+                                <Link
+                                  href={`/account/${issuer?.issuer}`}
+                                  className="inline-link-icon tooltip"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  <LinkIcon />
+                                  <span className="tooltiptext no-brake">Issuer account page</span>
+                                </Link>
                                 <span onClick={(event) => event.stopPropagation()}>
                                   <CopyButton text={issuer?.issuer} />
                                 </span>
@@ -858,15 +883,6 @@ export default function Account2({
                             )}
                           </>
                         )}
-                        <div className="detail-row">
-                          <span>Balance:</span>
-                          <span className="copy-inline">
-                            <span>{fullNiceNumber(balance)}</span>
-                            <span onClick={(event) => event.stopPropagation()}>
-                              <CopyButton text={balance} />
-                            </span>
-                          </span>
-                        </div>
                         {token.LockedBalance?.value && parseFloat(token.LockedBalance.value) > 0 && (
                           <div className="detail-row">
                             <span>Locked:</span>
@@ -1354,6 +1370,8 @@ export default function Account2({
           display: flex;
           justify-content: space-between;
           align-items: center;
+          -webkit-user-select: none;
+          user-select: none;
         }
 
         .asset-logo {
@@ -1394,11 +1412,11 @@ export default function Account2({
           font-size: 14px;
         }
 
-        .detail-row span:first-child {
+        .detail-row > span:first-child {
           color: var(--text-secondary);
         }
 
-        .detail-row span:last-child {
+        .detail-row > span:last-child {
           color: var(--text-secondary);
           word-break: break-all;
           max-width: 60%;
@@ -1426,6 +1444,12 @@ export default function Account2({
 
         .change-limit-link:hover {
           text-decoration: underline;
+        }
+
+        .inline-link-icon {
+          display: inline-flex;
+          align-items: center;
+          line-height: 1;
         }
 
         .lp-actions {
