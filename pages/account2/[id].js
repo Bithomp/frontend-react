@@ -203,6 +203,7 @@ export default function Account2({
 }) {
   const { i18n } = useTranslation()
   const [showBalanceDetails, setShowBalanceDetails] = useState(false)
+  const [showTotalWorthDetails, setShowTotalWorthDetails] = useState(false)
   const [tokens, setTokens] = useState([])
   const [expandedToken, setExpandedToken] = useState(null)
   const [recentTransactions, setRecentTransactions] = useState([])
@@ -269,6 +270,26 @@ export default function Account2({
     fiatRate = fiatRateApp
     selectedCurrency = selectedCurrencyApp
   }
+
+  const nativeAvailableFiatValue = ((balanceList?.available?.native || 0) / 1000000) * (fiatRate || 0)
+  const lpTokensFiatValue = tokens.reduce((sum, token) => {
+    const isLpToken = token.Balance?.currency?.substring(0, 2) === '03'
+    if (!isLpToken) return sum
+    const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
+    return sum + (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
+  }, 0)
+  const issuedTokensFiatValue = tokens.reduce((sum, token) => {
+    const isLpToken = token.Balance?.currency?.substring(0, 2) === '03'
+    if (isLpToken) return sum
+    const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
+    return sum + (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
+  }, 0)
+  const totalWorthFiatValue = nativeAvailableFiatValue + lpTokensFiatValue + issuedTokensFiatValue
+  const totalWorthBreakdown = [
+    { label: nativeCurrency, value: nativeAvailableFiatValue },
+    { label: 'LP tokens', value: lpTokensFiatValue },
+    { label: 'Issued tokens', value: issuedTokensFiatValue }
+  ].sort((a, b) => b.value - a.value)
 
   useEffect(() => {
     setTokenFiatRate(fiatRate)
@@ -867,6 +888,30 @@ export default function Account2({
           {/* Column 2: Assets */}
           <CollapsibleColumn>
             <div className="assets-section">
+              <div className="asset-item" onClick={() => setShowTotalWorthDetails(!showTotalWorthDetails)}>
+                <div className="asset-main">
+                  <div className="asset-logo">
+                    <span className="asset-summary-title">Total worth</span>
+                  </div>
+                  <div className="asset-value">
+                    <div className="asset-fiat">
+                      {shortNiceNumber(totalWorthFiatValue, 2, 1, selectedCurrency) ||
+                        shortNiceNumber(0, 2, 1, selectedCurrency)}
+                    </div>
+                  </div>
+                </div>
+                {showTotalWorthDetails && (
+                  <div className="asset-details">
+                    {totalWorthBreakdown.map((item) => (
+                      <div className="detail-row" key={`worth-${item.label}`}>
+                        <span>{item.label}:</span>
+                        <span>{shortNiceNumber(item.value, 2, 1, selectedCurrency)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               {/* Native Currency Balance */}
               {balanceList && (
                 <div className="asset-item" onClick={() => setShowBalanceDetails(!showBalanceDetails)}>
@@ -2071,6 +2116,12 @@ export default function Account2({
 
         .asset-value {
           text-align: right;
+        }
+
+        .asset-summary-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--text);
         }
 
         .asset-amount {
