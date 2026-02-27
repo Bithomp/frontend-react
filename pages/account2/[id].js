@@ -219,6 +219,7 @@ export default function Account2({
   const [txFromDate, setTxFromDate] = useState('')
   const [txToDate, setTxToDate] = useState('')
   const [txFilterSpam, setTxFilterSpam] = useState(true)
+  const [tokenFiatRate, setTokenFiatRate] = useState(fiatRateServer || fiatRateApp || null)
   const data = initialData
   const balanceList = balanceListServer
   const isLoggedIn = !!account?.address
@@ -269,6 +270,12 @@ export default function Account2({
     selectedCurrency = selectedCurrencyApp
   }
 
+  useEffect(() => {
+    setTokenFiatRate(fiatRate)
+    // update token fiat rate only when selected currency changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency])
+
   // Fetch tokens
   useEffect(() => {
     if (!data?.address || !data?.ledgerInfo?.activated) return
@@ -303,7 +310,7 @@ export default function Account2({
           return false
         })
 
-        // Sort by fiat value
+        // Sort by token value in native currency (independent from websocket fiat updates)
         const sortedTokens = rippleStateList.sort((a, b) => {
           const balanceA = Math.abs(subtract(a.Balance?.value, a.LockedBalance?.value || 0))
           const balanceB = Math.abs(subtract(b.Balance?.value, b.LockedBalance?.value || 0))
@@ -312,10 +319,10 @@ export default function Account2({
           if (balanceA === 0) return 1
           if (balanceB === 0) return -1
 
-          const fiatValueA = (a.priceNativeCurrencySpot * balanceA || 0) * fiatRate
-          const fiatValueB = (b.priceNativeCurrencySpot * balanceB || 0) * fiatRate
+          const valueA = a.priceNativeCurrencySpot * balanceA || 0
+          const valueB = b.priceNativeCurrencySpot * balanceB || 0
 
-          return fiatValueB - fiatValueA
+          return valueB - valueA
         })
 
         setTokens(sortedTokens)
@@ -326,7 +333,7 @@ export default function Account2({
 
     fetchTokens()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, data?.ledgerInfo?.activated, fiatRateApp, selectedCurrencyApp])
+  }, [data?.address, data?.ledgerInfo?.activated])
 
   const buildTransactionsUrl = ({ markerValue, filtersOverride } = {}) => {
     if (!data?.address) return ''
@@ -945,7 +952,7 @@ export default function Account2({
               {tokens.map((token, index) => {
                 const issuer = token.HighLimit?.issuer === data?.address ? token.LowLimit : token.HighLimit
                 const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
-                const fiatValue = (token.priceNativeCurrencySpot * balance || 0) * fiatRate
+                const fiatValue = (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
                 const isExpanded = expandedToken === `token-${index}`
                 const isLpToken = token.Balance?.currency?.substring(0, 2) === '03'
 
@@ -980,12 +987,12 @@ export default function Account2({
                                 {shortNiceNumber(token.priceNativeCurrencySpot, 6, 6)} {nativeCurrency}
                               </span>
                             </div>
-                            {fiatRate && selectedCurrency ? (
+                            {tokenFiatRate && selectedCurrency ? (
                               <div className="detail-row">
                                 <span>Rate ({selectedCurrency?.toUpperCase()}):</span>
                                 <span>
                                   1 {niceCurrency(token.Balance?.currency)} ={' '}
-                                  {niceNumber(token.priceNativeCurrencySpot * fiatRate, null, selectedCurrency, 8)}
+                                  {niceNumber(token.priceNativeCurrencySpot * tokenFiatRate, null, selectedCurrency, 8)}
                                 </span>
                               </div>
                             ) : null}
@@ -1319,7 +1326,7 @@ export default function Account2({
                         type="text"
                         value={txCounterparty}
                         onChange={(event) => setTxCounterparty(event.target.value)}
-                        placeholder="Address or username"
+                        placeholder="Address"
                       />
                     </label>
 
