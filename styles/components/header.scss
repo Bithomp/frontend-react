@@ -10,11 +10,10 @@ header {
   flex-wrap: wrap;
   align-items: flex-start;
   box-sizing: border-box;
-  padding: 0 20px;
+  padding: 0 15px;
   gap: 0 20px;
 
   .header-logo {
-    margin-left: 0;
     margin-top: 12px;
     flex-shrink: 0;
     svg {

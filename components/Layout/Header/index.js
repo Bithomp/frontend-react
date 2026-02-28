@@ -269,6 +269,8 @@ export default function Header({
     (HIDE_SEARCH_WHEN_NO_ID.some((route) => router?.pathname === route || router?.pathname?.startsWith(route + '/')) &&
       !router?.query?.id)
 
+  const showLargeLogo = (width < 1050 && width > 370) || width >= 1440 || !width
+
   return (
     <div
       className={
@@ -280,7 +282,7 @@ export default function Header({
       <header>
         <div className="header-logo" style={{ display: 'flex', alignItems: 'center' }}>
           <Link href="/" aria-label="Main page" style={{ display: 'inline-block', width: 'auto', height: 'auto' }}>
-            {(width < 1050 && width > 370) || width > 1444 || !width ? (
+            {showLargeLogo ? (
               xahauNetwork ? (
                 <div style={{ height: 46, width: 220, marginTop: -2.5 }}>
                   <XahauExplorer />
@@ -293,7 +295,7 @@ export default function Header({
                 <XrplExplorer height="46" width="227" />
               )
             ) : (
-              <div style={{ height: 46, width: 46, marginTop: -2.5 }}>
+              <div style={{ height: 46, width: 36, marginTop: -2.5 }}>
                 <LogoSmall />
               </div>
             )}
@@ -303,7 +305,7 @@ export default function Header({
             <span
               className="header-fiat-rate"
               style={{
-                marginTop: -9,
+                marginTop: showLargeLogo ? -9 : -13,
                 marginLeft: 12,
                 color: 'var(--accent-link)',
                 whiteSpace: 'nowrap',
