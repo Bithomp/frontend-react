@@ -2,8 +2,11 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import LinkIcon from '../../public/images/link.svg'
 import axios from 'axios'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import {
   avatarSrc,
@@ -49,8 +52,9 @@ export async function getServerSideProps(context) {
   let initialData = null
   let networkInfo = {}
   let initialErrorMessage = null
-  const { id, ledgerIndex } = query
-  const isHistoricalLedger = !!ledgerIndex
+  const { id, ledgerIndex, ledgerTimestamp } = query
+  const ledgerTimestampValue = Array.isArray(ledgerTimestamp) ? ledgerTimestamp[0] : ledgerTimestamp
+  const isHistoricalLedger = !!ledgerIndex || !!ledgerTimestamp
   let account = id ? (Array.isArray(id) ? id[0] : id) : ''
   let accountWithTag = null
 
@@ -98,7 +102,8 @@ export async function getServerSideProps(context) {
         url:
           'v2/address/' +
           account +
-          '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true&obligations=true',
+          '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true&obligations=true' +
+          (ledgerTimestampValue ? '&ledgerTimestamp=' + new Date(ledgerTimestampValue).toISOString() : ''),
         headers: passHeaders(req)
       })
       initialData = res?.data
@@ -125,6 +130,7 @@ export async function getServerSideProps(context) {
       props: {
         id: account || null,
         isHistoricalLedger,
+        ledgerTimestampQuery: ledgerTimestampValue || '',
         fiatRateServer,
         selectedCurrencyServer,
         networkInfo,
@@ -152,6 +158,7 @@ export async function getServerSideProps(context) {
 import SEO from '../../components/SEO'
 import Did from '../../components/Account/Did'
 import AccountWithTag from '../../components/Account/AccountWithTag'
+import { fetchHistoricalRate } from '../../utils/common'
 import CopyButton from '../../components/UI/CopyButton'
 import { CurrencyWithIcon } from '../../utils/format'
 import {
@@ -201,14 +208,20 @@ export default function Account2({
   fiatRateServer,
   balanceListServer,
   isHistoricalLedger,
+  ledgerTimestampQuery,
   accountWithTag,
   account
 }) {
   const { i18n } = useTranslation()
+  const router = useRouter()
   const { Canvas } = useQRCode()
   const [showBalanceDetails, setShowBalanceDetails] = useState(false)
   const [showTotalWorthDetails, setShowTotalWorthDetails] = useState(false)
   const [showAddressQr, setShowAddressQr] = useState(false)
+  const [showTimeMachine, setShowTimeMachine] = useState(false)
+  const [ledgerTimestampInput, setLedgerTimestampInput] = useState(
+    ledgerTimestampQuery ? new Date(ledgerTimestampQuery) : new Date()
+  )
   const [tokens, setTokens] = useState([])
   const [expandedToken, setExpandedToken] = useState(null)
   const [recentTransactions, setRecentTransactions] = useState([])
@@ -225,8 +238,52 @@ export default function Account2({
   const [txFromDate, setTxFromDate] = useState('')
   const [txToDate, setTxToDate] = useState('')
   const [txFilterSpam, setTxFilterSpam] = useState(true)
-  const [tokenFiatRate, setTokenFiatRate] = useState(fiatRateServer || fiatRateApp || null)
+  const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
+  const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const data = initialData
+  const effectiveLedgerTimestamp = ledgerTimestampQuery || null
+  const historicalTimestampForBanner = effectiveLedgerTimestamp || data?.ledgerInfo?.ledgerTimestamp || null
+  const localDateTimeText = (value) => {
+    if (!value) return ''
+    const date = value instanceof Date ? value : new Date(value)
+    if (Number.isNaN(date.getTime())) return ''
+    return date.toLocaleString()
+  }
+
+  const timestampToMs = (value) => {
+    if (!value) return null
+    if (typeof value === 'string') {
+      const parsed = Date.parse(value)
+      return Number.isNaN(parsed) ? null : parsed
+    }
+    const numberValue = Number(value)
+    if (!Number.isFinite(numberValue)) return null
+    return numberValue < 1000000000000 ? numberValue * 1000 : numberValue
+  }
+
+  const formatRelativeBeforeReference = (sourceTimestampSeconds, referenceTimestampValue) => {
+    if (!sourceTimestampSeconds || !referenceTimestampValue) return null
+    const referenceMs = timestampToMs(referenceTimestampValue)
+    if (!referenceMs) return null
+
+    const diffSeconds = Math.floor(referenceMs / 1000 - Number(sourceTimestampSeconds))
+    if (!Number.isFinite(diffSeconds)) return null
+    if (diffSeconds <= 0) return 'at selected time'
+
+    const units = [
+      { key: 'year', seconds: 60 * 60 * 24 * 365 },
+      { key: 'month', seconds: 60 * 60 * 24 * 30 },
+      { key: 'day', seconds: 60 * 60 * 24 },
+      { key: 'hour', seconds: 60 * 60 },
+      { key: 'minute', seconds: 60 },
+      { key: 'second', seconds: 1 }
+    ]
+
+    const unit = units.find((item) => diffSeconds >= item.seconds) || units[units.length - 1]
+    const value = Math.floor(diffSeconds / unit.seconds)
+    return `${value} ${unit.key}${value === 1 ? '' : 's'} before selected time`
+  }
+
   const balanceList = balanceListServer
   const isLoggedIn = !!account?.address
 
@@ -276,7 +333,7 @@ export default function Account2({
     selectedCurrency = selectedCurrencyApp
   }
 
-  const nativeAvailableFiatValue = ((balanceList?.available?.native || 0) / 1000000) * (fiatRate || 0)
+  const nativeAvailableFiatValue = ((balanceList?.available?.native || 0) / 1000000) * (pageFiatRate || 0)
   const lpTokensFiatValue = tokens.reduce((sum, token) => {
     const isLpToken = token.Balance?.currency?.substring(0, 2) === '03'
     if (!isLpToken) return sum
@@ -297,10 +354,30 @@ export default function Account2({
   ].sort((a, b) => b.value - a.value)
 
   useEffect(() => {
-    setTokenFiatRate(fiatRate)
-    // update token fiat rate only when selected currency changes
+    if (!selectedCurrency) return
+    if (!effectiveLedgerTimestamp) {
+      setPageFiatRate(fiatRate)
+    } else {
+      fetchHistoricalRate({
+        timestamp: effectiveLedgerTimestamp,
+        selectedCurrency,
+        setPageFiatRate
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency])
+  }, [fiatRate, effectiveLedgerTimestamp, selectedCurrency])
+
+  useEffect(() => {
+    setTokenFiatRate(pageFiatRate)
+  }, [pageFiatRate])
+
+  useEffect(() => {
+    if (effectiveLedgerTimestamp) {
+      setLedgerTimestampInput(new Date(effectiveLedgerTimestamp))
+    } else {
+      setLedgerTimestampInput(new Date())
+    }
+  }, [effectiveLedgerTimestamp])
 
   // Fetch tokens
   useEffect(() => {
@@ -308,9 +385,13 @@ export default function Account2({
 
     const fetchTokens = async () => {
       try {
-        const response = await axios.get(
-          `v2/objects/${data.address}?limit=1000&priceNativeCurrencySpot=true&currencyDetails=true`
-        )
+        const objectsUrl =
+          `v2/objects/${data.address}?limit=1000&priceNativeCurrencySpot=true&currencyDetails=true` +
+          (effectiveLedgerTimestamp
+            ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
+            : '')
+
+        const response = await axios.get(objectsUrl)
         const accountObjects = response?.data?.objects || []
 
         // Filter RippleState objects (tokens)
@@ -359,7 +440,7 @@ export default function Account2({
 
     fetchTokens()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, data?.ledgerInfo?.activated])
+  }, [data?.address, data?.ledgerInfo?.activated, effectiveLedgerTimestamp])
 
   const buildTransactionsUrl = ({ markerValue, filtersOverride } = {}) => {
     if (!data?.address) return ''
@@ -404,6 +485,8 @@ export default function Account2({
     }
     if (filterState.txToDate) {
       params.set('toDate', new Date(filterState.txToDate).toISOString())
+    } else if (effectiveLedgerTimestamp) {
+      params.set('toDate', new Date(effectiveLedgerTimestamp).toISOString())
     }
     if (markerValue) {
       const markerString = typeof markerValue === 'object' ? JSON.stringify(markerValue) : markerValue
@@ -411,6 +494,24 @@ export default function Account2({
     }
 
     return `v3/transactions/${data.address}?${params.toString()}`
+  }
+
+  const applyTimeMachine = () => {
+    if (!data?.address || !ledgerTimestampInput) return
+    router.push({
+      pathname: `/account2/${data.address}`,
+      query: {
+        ledgerTimestamp: new Date(ledgerTimestampInput).toISOString()
+      }
+    })
+  }
+
+  const resetTimeMachine = () => {
+    if (!data?.address) return
+    setLedgerTimestampInput(new Date())
+    router.push({
+      pathname: `/account2/${data.address}`
+    })
   }
 
   const fetchRecentTransactions = async ({ markerValue = null, append = false, filtersOverride } = {}) => {
@@ -454,7 +555,7 @@ export default function Account2({
     if (!data?.address || !data?.ledgerInfo?.activated) return
     fetchRecentTransactions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, data?.ledgerInfo?.activated, selectedCurrency])
+  }, [data?.address, data?.ledgerInfo?.activated, selectedCurrency, effectiveLedgerTimestamp])
 
   const loadMoreTransactions = async () => {
     if (!data?.address || !transactionsMarker || transactionsLoadingMore || transactionsLoading) return
@@ -595,7 +696,7 @@ export default function Account2({
     normalizedXamanAccountAlias !== normalizedUsername &&
     normalizedXamanAccountAlias !== normalizedServiceName
 
-  const hasXamanCardData = !!(data?.xamanMeta?.xummPro || xamanOwnerAlias || showXamanAccountAlias)
+  const hasXamanCardData = !isHistoricalLedger && !!(data?.xamanMeta?.xummPro || xamanOwnerAlias || showXamanAccountAlias)
   const xamanRows = []
 
   if (data?.xamanMeta?.xummPro) {
@@ -676,6 +777,9 @@ export default function Account2({
     const activatedByIsService = !!activatedByDetails.addressDetails.service
     const activatedByIsUsername = !activatedByIsService && !!activatedByDetails.addressDetails.username
     const activationTimeText = fullDateAndTime(data.inception, null, { asText: true })
+    const activatedRelativeToSelectedTime = isHistoricalLedger
+      ? formatRelativeBeforeReference(data.inception, historicalTimestampForBanner)
+      : null
     const activatedWithAmount = data?.initialBalance ? (
       <>
         {fullNiceNumber(data.initialBalance)} {nativeCurrency}
@@ -686,7 +790,7 @@ export default function Account2({
       'Activated',
       <span className="activated-line">
         <span className="tooltip activated-time no-brake">
-          <span className="bold">{timeFromNow(data.inception, i18n)}</span>
+          <span className="bold">{activatedRelativeToSelectedTime || timeFromNow(data.inception, i18n)}</span>
           <span className="tooltiptext right no-brake activation-tooltip" suppressHydrationWarning>
             {activationTimeText}
           </span>
@@ -800,6 +904,16 @@ export default function Account2({
       />
 
       <div className="account2-container">
+        {isHistoricalLedger && (
+          <div className="historical-banner">
+            <span className="historical-badge">Historical mode</span>
+            {historicalTimestampForBanner ? (
+              <span className="historical-date no-brake" suppressHydrationWarning>
+                {fullDateAndTime(historicalTimestampForBanner)}
+              </span>
+            ) : null}
+          </div>
+        )}
         {/* Header with switch to old view */}
         {/* Grid Layout */}
         <div className="account2-grid">
@@ -901,6 +1015,57 @@ export default function Account2({
                   <Did data={data} />
                 </div>
               )}
+
+              <div className="time-machine-card">
+                <button
+                  type="button"
+                  className={`time-machine-toggle ${showTimeMachine ? 'active' : ''}`}
+                  onClick={() => setShowTimeMachine((prev) => !prev)}
+                >
+                  Historical data
+                </button>
+
+                {showTimeMachine && (
+                  <div className="time-machine-panel">
+                    <div className="time-machine-head">
+                      <div className="time-machine-title">Select date and time</div>
+                    </div>
+                    <div className="time-machine-picker-wrap">
+                      <DatePicker
+                        selected={ledgerTimestampInput || new Date()}
+                        onChange={setLedgerTimestampInput}
+                        value={localDateTimeText(ledgerTimestampInput || new Date())}
+                        selectsStart
+                        showTimeInput
+                        timeInputLabel="Time"
+                        minDate={data?.inception ? new Date(data.inception * 1000) : undefined}
+                        maxDate={new Date()}
+                        dateFormat="Pp"
+                        className="dateAndTimeRange time-machine-input"
+                        calendarClassName="time-machine-calendar"
+                        showMonthDropdown
+                        showYearDropdown
+                      />
+                    </div>
+                    <div className="time-machine-actions">
+                      <button
+                        type="button"
+                        onClick={applyTimeMachine}
+                        className="time-machine-btn time-machine-btn-update"
+                      >
+                        Update
+                      </button>
+                      <button
+                        type="button"
+                        onClick={resetTimeMachine}
+                        className="time-machine-btn time-machine-btn-reset"
+                      >
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </CollapsibleColumn>
 
@@ -942,7 +1107,12 @@ export default function Account2({
                       <div className="asset-value">
                         <div className="asset-amount">{shortNiceNumber(balanceList.available.native / 1000000)}</div>
                         <div className="asset-fiat" suppressHydrationWarning>
-                          {shortNiceNumber((balanceList.available.native / 1000000) * fiatRate, 2, 1, selectedCurrency)}
+                          {shortNiceNumber(
+                            (balanceList.available.native / 1000000) * (pageFiatRate || 0),
+                            2,
+                            1,
+                            selectedCurrency
+                          )}
                         </div>
                       </div>
                     </div>
@@ -956,7 +1126,7 @@ export default function Account2({
                           <div className="asset-amount">{shortNiceNumber(balanceList.available.native / 1000000)}</div>
                           <div className="asset-fiat" suppressHydrationWarning>
                             {shortNiceNumber(
-                              (balanceList.available.native / 1000000) * fiatRate,
+                              (balanceList.available.native / 1000000) * (pageFiatRate || 0),
                               2,
                               1,
                               selectedCurrency
@@ -976,33 +1146,37 @@ export default function Account2({
                         </div>
                         <div className="detail-row">
                           <span>Total:</span>
-                          <span>
-                            {amountFormat(balanceList.total.native, { precise: 'nice' })}
-                            {nativeCurrencyToFiat({
-                              amount: balanceList.total.native,
-                              selectedCurrency,
-                              fiatRate,
-                              asText: true
-                            })}
+                          <span className="amount-with-fiat">
+                            <span>{amountFormat(balanceList.total.native, { precise: 'nice' })}</span>
+                            <span className="fiat-line" suppressHydrationWarning>
+                              {nativeCurrencyToFiat({
+                                amount: balanceList.total.native,
+                                selectedCurrency,
+                                fiatRate: pageFiatRate,
+                                asText: true
+                              })}
+                            </span>
                           </span>
                         </div>
                         <div className="detail-row">
                           <span>Reserved:</span>
-                          <span className="grey">
-                            {amountFormat(balanceList.reserved.native, { precise: 'nice' })}
-                            {nativeCurrencyToFiat({
-                              amount: balanceList.reserved.native,
-                              selectedCurrency,
-                              fiatRate,
-                              asText: true
-                            })}
+                          <span className="grey amount-with-fiat">
+                            <span>{amountFormat(balanceList.reserved.native, { precise: 'nice' })}</span>
+                            <span className="fiat-line" suppressHydrationWarning>
+                              {nativeCurrencyToFiat({
+                                amount: balanceList.reserved.native,
+                                selectedCurrency,
+                                fiatRate: pageFiatRate,
+                                asText: true
+                              })}
+                            </span>
                           </span>
                         </div>
-                        {isHistoricalLedger && selectedCurrency && fiatRate ? (
+                        {isHistoricalLedger && selectedCurrency && pageFiatRate ? (
                           <div className="detail-row">
                             <span>Rate:</span>
                             <span>
-                              1 {nativeCurrency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
+                              1 {nativeCurrency} = {shortNiceNumber(pageFiatRate, 2, 1, selectedCurrency)}
                             </span>
                           </div>
                         ) : null}
@@ -1056,7 +1230,17 @@ export default function Account2({
                                 <span>Rate ({selectedCurrency?.toUpperCase()}):</span>
                                 <span>
                                   1 {niceCurrency(token.Balance?.currency)} ={' '}
-                                  {niceNumber(token.priceNativeCurrencySpot * tokenFiatRate, null, selectedCurrency, 8)}
+                                  <span className="tooltip no-brake" suppressHydrationWarning>
+                                    {shortNiceNumber(
+                                      token.priceNativeCurrencySpot * tokenFiatRate,
+                                      2,
+                                      1,
+                                      selectedCurrency
+                                    )}
+                                    <span className="tooltiptext no-brake" suppressHydrationWarning>
+                                      {niceNumber(token.priceNativeCurrencySpot * tokenFiatRate, null, selectedCurrency, 8)}
+                                    </span>
+                                  </span>
                                 </span>
                               </div>
                             ) : null}
@@ -1546,6 +1730,31 @@ export default function Account2({
           max-width: 1600px;
           margin: 0 auto;
           padding: 20px;
+        }
+
+        .historical-banner {
+          margin-bottom: 14px;
+          padding: 10px 12px;
+          border: 1px solid color-mix(in srgb, var(--red) 50%, var(--border-color));
+          background: color-mix(in srgb, var(--red) 10%, var(--background-input));
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+
+        .historical-badge {
+          font-size: 12px;
+          font-weight: 700;
+          color: var(--red);
+          text-transform: uppercase;
+          letter-spacing: 0.4px;
+        }
+
+        .historical-date {
+          font-size: 13px;
+          color: var(--text);
         }
 
         .account2-grid {
@@ -2104,7 +2313,136 @@ export default function Account2({
         }
 
         .did-section {
-          margin-top: 15px;
+          margin-top: 8px;
+        }
+
+        .time-machine-card {
+          margin-top: 2px;
+          background: var(--background-input);
+          border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
+          border-radius: 8px;
+          padding: 6px;
+        }
+
+        .time-machine-toggle {
+          width: 100%;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          background: var(--background-table);
+          color: var(--text);
+          font-size: 13px;
+          font-weight: 600;
+          padding: 9px 12px;
+          cursor: pointer;
+          text-align: center;
+          transition: all 0.16s ease;
+        }
+
+        .time-machine-toggle.active,
+        .time-machine-toggle:hover {
+          border-color: var(--accent-link);
+          color: var(--accent-link);
+        }
+
+        .time-machine-panel {
+          margin-top: 8px;
+          background: var(--background-input);
+          border: 1px solid var(--border-color);
+          border-radius: 10px;
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .time-machine-head {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+
+        .time-machine-title {
+          color: var(--text);
+          font-size: 12px;
+          font-weight: 600;
+        }
+
+        .time-machine-picker-wrap {
+          display: flex;
+          width: 100%;
+        }
+
+        .time-machine-picker-wrap :global(.react-datepicker-wrapper),
+        .time-machine-picker-wrap :global(.react-datepicker__input-container) {
+          width: 100%;
+        }
+
+        .time-machine-picker-wrap :global(.dateAndTimeRange),
+        .time-machine-picker-wrap :global(.time-machine-input) {
+          width: 100%;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          background: var(--background-table);
+          color: var(--text);
+          font-size: 13px;
+          padding: 8px 10px;
+          outline: none;
+          box-sizing: border-box;
+        }
+
+        .time-machine-picker-wrap :global(.time-machine-input:focus) {
+          border-color: var(--accent-link);
+          box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-link) 22%, transparent);
+        }
+
+        .time-machine-picker-wrap :global(.time-machine-calendar) {
+          border-color: var(--border-color);
+          border-radius: 10px;
+          overflow: hidden;
+        }
+
+        .time-machine-actions {
+          display: flex;
+          gap: 6px;
+          justify-content: stretch;
+          margin-top: 0;
+        }
+
+        .time-machine-btn {
+          flex: 1;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          background: var(--background-table);
+          color: var(--text);
+          font-size: 13px;
+          font-weight: 600;
+          padding: 8px 10px;
+          cursor: pointer;
+          transition: all 0.16s ease;
+        }
+
+        .time-machine-btn:hover {
+          border-color: var(--accent-link);
+        }
+
+        .time-machine-btn-update {
+          background: var(--accent-link);
+          color: #fff;
+          border-color: var(--accent-link);
+        }
+
+        .time-machine-btn-update:hover {
+          opacity: 0.9;
+        }
+
+        .time-machine-btn-reset {
+          color: var(--text-secondary);
+        }
+
+        @media (max-width: 560px) {
+          .time-machine-actions {
+            flex-direction: column;
+          }
         }
 
         .social-icons-wrapper {
@@ -2211,6 +2549,19 @@ export default function Account2({
           word-break: break-all;
           max-width: 60%;
           text-align: right;
+        }
+
+        .amount-with-fiat {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 2px;
+          word-break: normal !important;
+        }
+
+        .amount-with-fiat .fiat-line {
+          white-space: nowrap;
+          word-break: normal;
         }
 
         .copy-inline {
