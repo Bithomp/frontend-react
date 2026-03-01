@@ -232,6 +232,7 @@ export default function Account2({
   const [issuedTokensError, setIssuedTokensError] = useState(null)
   const [ownedNfts, setOwnedNfts] = useState([])
   const [ownedNftIds, setOwnedNftIds] = useState([])
+  const [showNftDataDetails, setShowNftDataDetails] = useState(false)
   const [expandedToken, setExpandedToken] = useState(null)
   const [expandedIssuedToken, setExpandedIssuedToken] = useState(null)
   const [showIssuerSettingsDetails, setShowIssuerSettingsDetails] = useState(false)
@@ -312,6 +313,13 @@ export default function Account2({
     !!data?.ledgerInfo?.signerList ||
     !!data?.ledgerInfo?.flags?.passwordSpent ||
     !!data?.ledgerInfo?.flags?.disableMaster
+  const hasNftDataDetails =
+    !!data?.ledgerInfo?.mintedNFTokens ||
+    !!data?.ledgerInfo?.burnedNFTokens ||
+    !!data?.ledgerInfo?.firstNFTokenSequence ||
+    !!data?.ledgerInfo?.nftokenMinter ||
+    !!data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer ||
+    !!data?.ledgerInfo?.flags?.uriTokenIssuer
 
   const achievements = []
 
@@ -430,6 +438,7 @@ export default function Account2({
   useEffect(() => {
     setShowAllTokens(false)
     setExpandedToken(null)
+    setShowNftDataDetails(false)
   }, [data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
@@ -1816,6 +1825,83 @@ export default function Account2({
                     <div className="asset-fiat">No owned NFTs found.</div>
                   )}
                 </div>
+              </div>
+
+              <div className="asset-item" onClick={() => setShowNftDataDetails((prev) => !prev)}>
+                <div className="asset-main">
+                  <div className="asset-logo">
+                    <span className="asset-summary-title">NFT data</span>
+                  </div>
+                  <div className="asset-value">
+                    <div className="asset-fiat">
+                      {hasNftDataDetails
+                        ? `Minted ${data?.ledgerInfo?.mintedNFTokens || 0} · Burned ${data?.ledgerInfo?.burnedNFTokens || 0}`
+                        : 'No NFT data'}
+                    </div>
+                  </div>
+                </div>
+
+                {showNftDataDetails && (
+                  <div className="asset-details nft-data-details">
+                    <div className="detail-row">
+                      <span>Minted NFTs:</span>
+                      <span>
+                        {effectiveLedgerTimestamp ? (
+                          data?.ledgerInfo?.mintedNFTokens || 0
+                        ) : (
+                          <Link
+                            href={`/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true`}
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            View minted NFTs ({data?.ledgerInfo?.mintedNFTokens || 0})
+                          </Link>
+                        )}
+                      </span>
+                    </div>
+
+                    <div className="detail-row">
+                      <span>Burned NFTs:</span>
+                      <span>
+                        {effectiveLedgerTimestamp ? (
+                          data?.ledgerInfo?.burnedNFTokens || 0
+                        ) : (
+                          <Link
+                            href={`/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true&burnedPeriod=all`}
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            View burned NFTs ({data?.ledgerInfo?.burnedNFTokens || 0})
+                          </Link>
+                        )}
+                      </span>
+                    </div>
+
+                    {data?.ledgerInfo?.firstNFTokenSequence && (
+                      <div className="detail-row">
+                        <span>First NFT sequence:</span>
+                        <span>{data.ledgerInfo.firstNFTokenSequence}</span>
+                      </div>
+                    )}
+
+                    {data?.ledgerInfo?.nftokenMinter && (
+                      <div className="detail-row">
+                        <span>NFT minter:</span>
+                        <span className="copy-inline">
+                          <AddressWithIconInline data={data.ledgerInfo} name="nftokenMinter" options={{ short: 6 }} />
+                          <span onClick={(event) => event.stopPropagation()}>
+                            <CopyButton text={data.ledgerInfo.nftokenMinter} />
+                          </span>
+                        </span>
+                      </div>
+                    )}
+
+                    {data?.ledgerInfo?.flags?.uriTokenIssuer && (
+                      <div className="detail-row">
+                        <span>URI token issuer:</span>
+                        <span className="green">true</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </CollapsibleColumn>
