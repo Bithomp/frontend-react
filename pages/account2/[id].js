@@ -368,8 +368,21 @@ export default function Account2({
   }, [fiatRate, effectiveLedgerTimestamp, selectedCurrency])
 
   useEffect(() => {
+    if (!selectedCurrency) return
+
+    if (!effectiveLedgerTimestamp) {
+      setTokenFiatRate(fiatRate)
+      return
+    }
+
     setTokenFiatRate(pageFiatRate)
-  }, [pageFiatRate])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency, effectiveLedgerTimestamp])
+
+  useEffect(() => {
+    if (!effectiveLedgerTimestamp) return
+    setTokenFiatRate(pageFiatRate)
+  }, [pageFiatRate, effectiveLedgerTimestamp])
 
   useEffect(() => {
     if (effectiveLedgerTimestamp) {
