@@ -696,7 +696,8 @@ export default function Account2({
     normalizedXamanAccountAlias !== normalizedUsername &&
     normalizedXamanAccountAlias !== normalizedServiceName
 
-  const hasXamanCardData = !isHistoricalLedger && !!(data?.xamanMeta?.xummPro || xamanOwnerAlias || showXamanAccountAlias)
+  const hasXamanCardData =
+    !isHistoricalLedger && !!(data?.xamanMeta?.xummPro || xamanOwnerAlias || showXamanAccountAlias)
   const xamanRows = []
 
   if (data?.xamanMeta?.xummPro) {
@@ -755,7 +756,7 @@ export default function Account2({
             >
               {domainText}
             </a>{' '}
-            {showUnverified && <span className="orange">(unverified)</span>}
+            {showUnverified && <span className="grey">(unverified)</span>}
           </>
         ) : (
           <code className="code-highlight">{data.ledgerInfo.domain}</code>
@@ -1238,7 +1239,12 @@ export default function Account2({
                                       selectedCurrency
                                     )}
                                     <span className="tooltiptext no-brake" suppressHydrationWarning>
-                                      {niceNumber(token.priceNativeCurrencySpot * tokenFiatRate, null, selectedCurrency, 8)}
+                                      {niceNumber(
+                                        token.priceNativeCurrencySpot * tokenFiatRate,
+                                        null,
+                                        selectedCurrency,
+                                        8
+                                      )}
                                     </span>
                                   </span>
                                 </span>
