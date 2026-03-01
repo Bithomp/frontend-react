@@ -2448,10 +2448,10 @@ export default function Account2({
 
         .time-machine-card {
           margin-top: 2px;
-          background: var(--background-input);
-          border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
-          border-radius: 8px;
-          padding: 6px;
+          background: transparent;
+          border: 0;
+          border-radius: 0;
+          padding: 0;
         }
 
         .time-machine-toggle {
