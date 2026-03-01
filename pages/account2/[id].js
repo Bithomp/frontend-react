@@ -2943,7 +2943,7 @@ export default function Account2({
                                     <AddressWithIconInline
                                       data={counterpartData}
                                       name={counterpartName}
-                                      options={{ short: 6 }}
+                                      options={{ short: false }}
                                     />
                                   ) : (
                                     '-'
@@ -2954,21 +2954,17 @@ export default function Account2({
                               <div className="paychannel-values">
                                 <div className="paychannel-value-row">
                                   <span className="paychannel-value-label">Amount</span>
-                                  <span className="paychannel-value-value">
-                                    {amountText}
-                                    {amountFiatNode ? (
-                                      <span className="paychannel-value-fiat"> {amountFiatNode}</span>
-                                    ) : null}
+                                  <span className="paychannel-value-grid">
+                                    <span className="paychannel-native-value">{amountText}</span>
+                                    <span className="paychannel-fiat-value">{amountFiatNode || '—'}</span>
                                   </span>
                                 </div>
 
                                 <div className="paychannel-value-row">
                                   <span className="paychannel-value-label">Balance</span>
-                                  <span className="paychannel-value-value">
-                                    {balanceText}
-                                    {balanceFiatNode ? (
-                                      <span className="paychannel-value-fiat"> {balanceFiatNode}</span>
-                                    ) : null}
+                                  <span className="paychannel-value-grid">
+                                    <span className="paychannel-native-value">{balanceText}</span>
+                                    <span className="paychannel-fiat-value">{balanceFiatNode || '—'}</span>
                                   </span>
                                 </div>
                               </div>
@@ -4198,10 +4194,10 @@ export default function Account2({
         }
 
         .paychannel-value-row {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          gap: 8px;
+          display: grid;
+          grid-template-columns: auto 1fr;
+          align-items: center;
+          gap: 10px;
         }
 
         .paychannel-value-label {
@@ -4210,7 +4206,17 @@ export default function Account2({
           white-space: nowrap;
         }
 
-        .paychannel-value-value {
+        .paychannel-value-grid {
+          display: grid;
+          grid-template-columns: minmax(9ch, auto) minmax(13ch, auto);
+          justify-content: end;
+          align-items: center;
+          column-gap: 12px;
+          min-width: 0;
+          font-variant-numeric: tabular-nums;
+        }
+
+        .paychannel-native-value {
           color: var(--text);
           font-size: 12px;
           font-weight: 600;
@@ -4219,9 +4225,12 @@ export default function Account2({
           word-break: break-word;
         }
 
-        .paychannel-value-fiat {
+        .paychannel-fiat-value {
           color: var(--text-secondary);
           font-weight: 500;
+          font-size: 12px;
+          text-align: right;
+          white-space: nowrap;
         }
 
         .check-collapsed-main {
