@@ -2043,63 +2043,52 @@ export default function Account2({
                 </button>
               )}
 
-              <div className="asset-item nft-summary-item">
-                <div className="nft-header-block">
-                  <div className="nft-header-row">
-                    <div className="nft-title-wrap">
-                      <span className="asset-summary-title">NFTs</span>
-                      <span className="nft-title-count">{activeNftCount}</span>
-                    </div>
-                    {activeNftCount > 0 && data?.address && (
-                      <Link
-                        className="section-link"
-                        href={activeNftViewAllHref}
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        View all
-                      </Link>
-                    )}
-                  </div>
-
-                  <div className="nft-tab-row">
-                    <div className="nft-tab-switch" onClick={(event) => event.stopPropagation()}>
-                      <button
-                        type="button"
-                        className={`nft-tab-btn ${nftTab === 'owned' ? 'active' : ''}`}
-                        onClick={() => setNftTab('owned')}
-                      >
-                        Owned
-                      </button>
-                      <button
-                        type="button"
-                        className={`nft-tab-btn ${nftTab === 'sold' ? 'active' : ''}`}
-                        onClick={() => setNftTab('sold')}
-                      >
-                        Sold
-                      </button>
-                      {mintedNftsCount > 0 && (
-                        <button
-                          type="button"
-                          className={`nft-tab-btn ${nftTab === 'minted' ? 'active' : ''}`}
-                          onClick={() => setNftTab('minted')}
-                        >
-                          Minted
-                        </button>
-                      )}
-                      {burnedNftsCount > 0 && (
-                        <button
-                          type="button"
-                          className={`nft-tab-btn ${nftTab === 'burned' ? 'active' : ''}`}
-                          onClick={() => setNftTab('burned')}
-                        >
-                          Burned
-                        </button>
-                      )}
-                    </div>
-                  </div>
+              <div className="section-header-row nft-section-header-row">
+                <div className="section-title nft-section-title">
+                  NFTs <span className="nft-title-count">{activeNftCount}</span>
                 </div>
+                {activeNftCount > 0 && data?.address && <Link className="section-link" href={activeNftViewAllHref}>View all</Link>}
+              </div>
 
-                <div className="asset-details nft-details">
+              <div className="nft-tab-row nft-tab-row-outside">
+                <div className="nft-tab-switch">
+                  <button
+                    type="button"
+                    className={`nft-tab-btn ${nftTab === 'owned' ? 'active' : ''}`}
+                    onClick={() => setNftTab('owned')}
+                  >
+                    Owned
+                  </button>
+                  <button
+                    type="button"
+                    className={`nft-tab-btn ${nftTab === 'sold' ? 'active' : ''}`}
+                    onClick={() => setNftTab('sold')}
+                  >
+                    Sold
+                  </button>
+                  {mintedNftsCount > 0 && (
+                    <button
+                      type="button"
+                      className={`nft-tab-btn ${nftTab === 'minted' ? 'active' : ''}`}
+                      onClick={() => setNftTab('minted')}
+                    >
+                      Minted
+                    </button>
+                  )}
+                  {burnedNftsCount > 0 && (
+                    <button
+                      type="button"
+                      className={`nft-tab-btn ${nftTab === 'burned' ? 'active' : ''}`}
+                      onClick={() => setNftTab('burned')}
+                    >
+                      Burned
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="asset-item nft-summary-item">
+                <div className="asset-details nft-details nft-details-flat-top">
                   {activeNftLoading ? (
                     <div className="asset-fiat">Loading {nftTab} NFTs...</div>
                   ) : activeNftCount > 0 ? (
@@ -2535,49 +2524,41 @@ export default function Account2({
                 )}
               </div>
 
-              <div className="asset-item nft-offers-item">
-                <div className="nft-header-block">
-                  <div className="nft-header-row">
-                    <div className="nft-title-wrap">
-                      <span className="asset-summary-title">NFT offers</span>
-                      <span className="nft-title-count">{activeNftOffersCount}</span>
-                    </div>
-
-                    {data?.address && activeNftOffersCount > 0 && (
-                      <Link className="section-link" href={activeNftOffersViewAllHref}>
-                        View all
-                      </Link>
-                    )}
-                  </div>
-
-                  <div className="nft-tab-row">
-                    <div className="nft-tab-switch nft-offers-tab-switch">
-                      <button
-                        type="button"
-                        className={`nft-tab-btn ${nftOffersTab === 'received' ? 'active' : ''}`}
-                        onClick={() => setNftOffersTab('received')}
-                      >
-                        Private
-                      </button>
-                      <button
-                        type="button"
-                        className={`nft-tab-btn ${nftOffersTab === 'created' ? 'active' : ''}`}
-                        onClick={() => setNftOffersTab('created')}
-                      >
-                        Created
-                      </button>
-                      <button
-                        type="button"
-                        className={`nft-tab-btn ${nftOffersTab === 'owned' ? 'active' : ''}`}
-                        onClick={() => setNftOffersTab('owned')}
-                      >
-                        For owned
-                      </button>
-                    </div>
-                  </div>
+              <div className="section-header-row nft-section-header-row">
+                <div className="section-title nft-section-title">
+                  NFT offers <span className="nft-title-count">{activeNftOffersCount}</span>
                 </div>
+                {data?.address && activeNftOffersCount > 0 && <Link className="section-link" href={activeNftOffersViewAllHref}>View all</Link>}
+              </div>
 
-                <div className="asset-details nft-offers-details">
+              <div className="nft-tab-row nft-tab-row-outside">
+                <div className="nft-tab-switch nft-offers-tab-switch">
+                  <button
+                    type="button"
+                    className={`nft-tab-btn ${nftOffersTab === 'received' ? 'active' : ''}`}
+                    onClick={() => setNftOffersTab('received')}
+                  >
+                    Private
+                  </button>
+                  <button
+                    type="button"
+                    className={`nft-tab-btn ${nftOffersTab === 'created' ? 'active' : ''}`}
+                    onClick={() => setNftOffersTab('created')}
+                  >
+                    Created
+                  </button>
+                  <button
+                    type="button"
+                    className={`nft-tab-btn ${nftOffersTab === 'owned' ? 'active' : ''}`}
+                    onClick={() => setNftOffersTab('owned')}
+                  >
+                    For owned
+                  </button>
+                </div>
+              </div>
+
+              <div className="asset-item nft-offers-item">
+                <div className="asset-details nft-offers-details nft-details-flat-top">
                   {activeNftOffersLoading ? (
                     <div className="asset-fiat">Loading NFT offers...</div>
                   ) : activeNftOffersError ? (
@@ -3523,10 +3504,12 @@ export default function Account2({
 
         .nft-summary-item {
           cursor: default;
+          padding-top: 10px;
         }
 
         .nft-offers-item {
           cursor: default;
+          padding-top: 10px;
         }
 
         .nft-offers-item:hover {
@@ -3542,11 +3525,28 @@ export default function Account2({
           padding-top: 10px;
         }
 
+        .nft-details-flat-top {
+          margin-top: 0;
+          padding-top: 0;
+          border-top: 0;
+        }
+
         .nft-header-row {
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 10px;
+        }
+
+        .nft-section-header-row {
+          margin-top: 4px;
+        }
+
+        .nft-section-title {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          min-width: 0;
         }
 
         .nft-header-block {
@@ -3568,6 +3568,11 @@ export default function Account2({
           align-items: center;
           justify-content: flex-start;
           min-height: 24px;
+        }
+
+        .nft-tab-row-outside {
+          margin-top: -2px;
+          margin-bottom: -4px;
         }
 
         .nft-header-meta {
