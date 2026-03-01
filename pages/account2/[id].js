@@ -225,6 +225,7 @@ export default function Account2({
   const [showTotalWorthDetails, setShowTotalWorthDetails] = useState(false)
   const [showAddressQr, setShowAddressQr] = useState(false)
   const [showTimeMachine, setShowTimeMachine] = useState(false)
+  const [showAirdropsDetails, setShowAirdropsDetails] = useState(false)
   const [showAllTokens, setShowAllTokens] = useState(false)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(
     ledgerTimestampQuery ? new Date(ledgerTimestampQuery) : new Date()
@@ -349,6 +350,9 @@ export default function Account2({
     !!data?.ledgerInfo?.nftokenMinter ||
     !!data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer ||
     !!data?.ledgerInfo?.flags?.uriTokenIssuer
+  const hasAirdropsData = !!data?.flare?.spark
+  const flareClaimNode = data?.flare?.spark ? <>{fullNiceNumber(data.flare.spark * 0.15)} FLR</> : '-'
+  const songbirdClaimNode = data?.flare?.songbird ? <>{fullNiceNumber(data.flare.songbird)} SGB</> : '-'
 
   const achievements = []
 
@@ -1606,6 +1610,74 @@ export default function Account2({
                           </span>
                         </div>
                       )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {hasAirdropsData && (
+                <div className="time-machine-card tx-settings-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showAirdropsDetails ? 'active' : ''}`}
+                    onClick={() => setShowAirdropsDetails((prev) => !prev)}
+                  >
+                    Airdrops
+                  </button>
+
+                  {showAirdropsDetails && (
+                    <div className="time-machine-panel tx-settings-panel">
+                      <div className="detail-row issuer-detail-row">
+                        <span>Address:</span>
+                        <span className="copy-inline airdrop-address-wrap">
+                          <span className="address-text">{data?.flare?.address || '-'}</span>
+                          {!!data?.flare?.address && (
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.flare.address} />
+                            </span>
+                          )}
+                        </span>
+                      </div>
+
+                      <div className="detail-row issuer-detail-row">
+                        <span>Flare claim:</span>
+                        <span className="copy-inline airdrop-claim-wrap">
+                          <span>{flareClaimNode}</span>
+                          {!!data?.flare?.address && (
+                            <a
+                              href={`https://flarescan.com/address/${data.flare.address}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="airdrop-link-btn"
+                              onClick={(event) => event.stopPropagation()}
+                              aria-label="Open Flare address"
+                              title="Open Flare address"
+                            >
+                              <LinkIcon />
+                            </a>
+                          )}
+                        </span>
+                      </div>
+
+                      <div className="detail-row issuer-detail-row">
+                        <span>Songbird claim:</span>
+                        <span className="copy-inline airdrop-claim-wrap">
+                          <span>{songbirdClaimNode}</span>
+                          {!!data?.flare?.address && (
+                            <a
+                              href={`https://songbird.flarescan.com/address/${data.flare.address}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="airdrop-link-btn"
+                              onClick={(event) => event.stopPropagation()}
+                              aria-label="Open Songbird address"
+                              title="Open Songbird address"
+                            >
+                              <LinkIcon />
+                            </a>
+                          )}
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -3809,6 +3881,27 @@ export default function Account2({
 
         .tx-settings-panel {
           gap: 2px;
+        }
+
+        .airdrop-address-wrap,
+        .airdrop-claim-wrap {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          min-width: 0;
+        }
+
+        .airdrop-link-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--accent-link);
+          text-decoration: none;
+          line-height: 1;
+        }
+
+        .airdrop-link-btn:hover {
+          text-decoration: underline;
         }
 
         .account-control-card {
