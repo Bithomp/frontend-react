@@ -334,6 +334,8 @@ export default function Account2({
   }
 
   const nativeAvailableFiatValue = ((balanceList?.available?.native || 0) / 1000000) * (pageFiatRate || 0)
+  const lpTokensCount = tokens.filter((token) => token.Balance?.currency?.substring(0, 2) === '03').length
+  const issuedTokensCount = tokens.filter((token) => token.Balance?.currency?.substring(0, 2) !== '03').length
   const lpTokensFiatValue = tokens.reduce((sum, token) => {
     const isLpToken = token.Balance?.currency?.substring(0, 2) === '03'
     if (!isLpToken) return sum
@@ -349,8 +351,8 @@ export default function Account2({
   const totalWorthFiatValue = nativeAvailableFiatValue + lpTokensFiatValue + issuedTokensFiatValue
   const totalWorthBreakdown = [
     { label: nativeCurrency, value: nativeAvailableFiatValue },
-    { label: 'LP tokens', value: lpTokensFiatValue },
-    { label: 'Issued tokens', value: issuedTokensFiatValue }
+    ...(lpTokensCount > 0 ? [{ label: `LP tokens (${lpTokensCount})`, value: lpTokensFiatValue }] : []),
+    ...(issuedTokensCount > 0 ? [{ label: `Issued tokens (${issuedTokensCount})`, value: issuedTokensFiatValue }] : [])
   ].sort((a, b) => b.value - a.value)
 
   useEffect(() => {
