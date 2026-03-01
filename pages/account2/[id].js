@@ -161,6 +161,7 @@ import AccountWithTag from '../../components/Account/AccountWithTag'
 import { fetchHistoricalRate } from '../../utils/common'
 import CopyButton from '../../components/UI/CopyButton'
 import { CurrencyWithIcon } from '../../utils/format'
+import { NftImage, nftName } from '../../utils/nft'
 import {
   amountFormat,
   addressUsernameOrServiceLink,
@@ -219,10 +220,13 @@ export default function Account2({
   const [showTotalWorthDetails, setShowTotalWorthDetails] = useState(false)
   const [showAddressQr, setShowAddressQr] = useState(false)
   const [showTimeMachine, setShowTimeMachine] = useState(false)
+  const [showAllTokens, setShowAllTokens] = useState(false)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(
     ledgerTimestampQuery ? new Date(ledgerTimestampQuery) : new Date()
   )
   const [tokens, setTokens] = useState([])
+  const [ownedNfts, setOwnedNfts] = useState([])
+  const [ownedNftIds, setOwnedNftIds] = useState([])
   const [expandedToken, setExpandedToken] = useState(null)
   const [recentTransactions, setRecentTransactions] = useState([])
   const [transactionsLoading, setTransactionsLoading] = useState(false)
@@ -286,6 +290,8 @@ export default function Account2({
 
   const balanceList = balanceListServer
   const isLoggedIn = !!account?.address
+  const TOKEN_PREVIEW_LIMIT = 5
+  const NFT_PREVIEW_LIMIT = 8
 
   const achievements = []
 
@@ -354,6 +360,13 @@ export default function Account2({
     ...(lpTokensCount > 0 ? [{ label: `LP tokens (${lpTokensCount})`, value: lpTokensFiatValue }] : []),
     ...(issuedTokensCount > 0 ? [{ label: `Issued tokens (${issuedTokensCount})`, value: issuedTokensFiatValue }] : [])
   ].sort((a, b) => b.value - a.value)
+  const visibleTokens = showAllTokens ? tokens : tokens.slice(0, TOKEN_PREVIEW_LIMIT)
+  const hiddenTokensCount = Math.max(tokens.length - TOKEN_PREVIEW_LIMIT, 0)
+  const ownedNftCount = Math.max(ownedNftIds.length, ownedNfts.length)
+  const ownedNftPreview =
+    ownedNfts.length > 0
+      ? ownedNfts.slice(0, NFT_PREVIEW_LIMIT)
+      : ownedNftIds.slice(0, NFT_PREVIEW_LIMIT).map((nftokenID) => ({ nftokenID }))
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -394,6 +407,11 @@ export default function Account2({
     }
   }, [effectiveLedgerTimestamp])
 
+  useEffect(() => {
+    setShowAllTokens(false)
+    setExpandedToken(null)
+  }, [data?.address, effectiveLedgerTimestamp])
+
   // Fetch tokens
   useEffect(() => {
     if (!data?.address || !data?.ledgerInfo?.activated) return
@@ -408,6 +426,31 @@ export default function Account2({
 
         const response = await axios.get(objectsUrl)
         const accountObjects = response?.data?.objects || []
+
+        const nftIds = accountObjects
+          .filter((node) => node.LedgerEntryType === 'NFTokenPage' && Array.isArray(node.NFTokens))
+          .flatMap((page) =>
+            page.NFTokens.map((nftNode) => nftNode?.NFToken?.NFTokenID || nftNode?.NFTokenID).filter(Boolean)
+          )
+
+        setOwnedNftIds(nftIds)
+
+        if (nftIds.length > 0) {
+          try {
+            const nftPreviewUrl =
+              `v2/nfts?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_PREVIEW_LIMIT}` +
+              (effectiveLedgerTimestamp
+                ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
+                : '')
+
+            const nftResponse = await axios.get(nftPreviewUrl)
+            setOwnedNfts(Array.isArray(nftResponse?.data?.nfts) ? nftResponse.data.nfts.slice(0, NFT_PREVIEW_LIMIT) : [])
+          } catch {
+            setOwnedNfts([])
+          }
+        } else {
+          setOwnedNfts([])
+        }
 
         // Filter RippleState objects (tokens)
         const rippleStateList = accountObjects.filter((node) => {
@@ -450,6 +493,8 @@ export default function Account2({
         setTokens(sortedTokens)
       } catch (error) {
         console.error('Failed to fetch tokens:', error)
+        setOwnedNfts([])
+        setOwnedNftIds([])
       }
     }
 
@@ -1203,18 +1248,19 @@ export default function Account2({
               )}
 
               {/* Tokens */}
-              {tokens.map((token, index) => {
+              {visibleTokens.map((token, index) => {
                 const issuer = token.HighLimit?.issuer === data?.address ? token.LowLimit : token.HighLimit
                 const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
                 const fiatValue = (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
-                const isExpanded = expandedToken === `token-${index}`
+                const tokenUniqueKey = `${token.Balance?.currency || 'token'}-${issuer?.issuer || 'issuer'}-${index}`
+                const isExpanded = expandedToken === tokenUniqueKey
                 const isLpToken = token.Balance?.currency?.substring(0, 2) === '03'
 
                 return (
                   <div
-                    key={index}
-                    className="asset-item"
-                    onClick={() => setExpandedToken(isExpanded ? null : `token-${index}`)}
+                    key={tokenUniqueKey}
+                    className="asset-item token-asset-item"
+                    onClick={() => setExpandedToken(isExpanded ? null : tokenUniqueKey)}
                   >
                     <div className="asset-main">
                       <div className="asset-logo">
@@ -1519,6 +1565,69 @@ export default function Account2({
                   </div>
                 )
               })}
+
+              {tokens.length > TOKEN_PREVIEW_LIMIT && (
+                <button
+                  type="button"
+                  className="asset-compact-toggle"
+                  onClick={() => {
+                    setShowAllTokens((prev) => {
+                      if (prev) {
+                        setExpandedToken(null)
+                      }
+                      return !prev
+                    })
+                  }}
+                >
+                  {showAllTokens ? 'Show fewer tokens' : `Show all tokens (${hiddenTokensCount} more)`}
+                </button>
+              )}
+
+              <div className="asset-item nft-summary-item">
+                <div className="nft-header-row">
+                  <div className="nft-title-wrap">
+                    <span className="asset-summary-title">Owned NFTs</span>
+                    <span className="nft-title-count">{ownedNftCount}</span>
+                  </div>
+                  {ownedNftCount > 0 && data?.address && (
+                    <Link
+                      className="section-link"
+                      href={`/nfts/${data.address}?includeWithoutMediaData=true`}
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      View all
+                    </Link>
+                  )}
+                </div>
+
+                <div className="asset-details nft-details">
+                  {ownedNftCount > 0 ? (
+                    <div className="owned-nft-grid">
+                      {ownedNftPreview.map((nft, nftIndex) => {
+                        const nftId = nft?.nftokenID || nft?.NFTokenID
+                        if (!nftId) return null
+
+                        const fallbackTitle = `${nftId.slice(0, 6)}...${nftId.slice(-4)}`
+                        const nftTitle = nftName(nft, { maxLength: 26 }) || fallbackTitle
+
+                        return (
+                          <Link
+                            key={`${nftId}-${nftIndex}`}
+                            href={`/nft/${nftId}`}
+                            className="owned-nft-card"
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            <NftImage nft={nft} style={{ width: 44, height: 44, borderRadius: '6px', margin: '0 auto 6px' }} />
+                            <span className="owned-nft-name">{nftTitle}</span>
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  ) : (
+                    <div className="asset-fiat">No owned NFTs found.</div>
+                  )}
+                </div>
+              </div>
             </div>
           </CollapsibleColumn>
 
@@ -2348,12 +2457,12 @@ export default function Account2({
         .time-machine-toggle {
           width: 100%;
           border: 1px solid var(--border-color);
-          border-radius: 8px;
-          background: var(--background-table);
-          color: var(--text);
+          border-radius: 6px;
+          background: var(--background-input);
+          color: var(--text-secondary);
           font-size: 13px;
           font-weight: 600;
-          padding: 9px 12px;
+          padding: 8px 10px;
           cursor: pointer;
           text-align: center;
           transition: all 0.16s ease;
@@ -2504,6 +2613,18 @@ export default function Account2({
           transition: all 0.2s ease;
         }
 
+        .token-asset-item {
+          padding: 8px 12px;
+        }
+
+        .token-asset-item .asset-amount {
+          font-size: 14px;
+        }
+
+        .token-asset-item .asset-fiat {
+          font-size: 12px;
+        }
+
         .asset-item:hover {
           transform: translateY(-1px);
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -2552,6 +2673,92 @@ export default function Account2({
           margin-top: 12px;
           padding-top: 12px;
           border-top: 1px solid var(--border-color);
+        }
+
+        .asset-compact-toggle {
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          background: var(--background-input);
+          color: var(--text-secondary);
+          font-size: 13px;
+          font-weight: 600;
+          padding: 8px 10px;
+          cursor: pointer;
+          text-align: center;
+        }
+
+        .asset-compact-toggle:hover {
+          color: var(--accent-link);
+          border-color: var(--accent-link);
+        }
+
+        .nft-summary-item {
+          cursor: default;
+        }
+
+        .nft-summary-item:hover {
+          transform: none;
+        }
+
+        .nft-details {
+          margin-top: 10px;
+          padding-top: 10px;
+        }
+
+        .nft-header-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+        }
+
+        .nft-title-wrap {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          min-width: 0;
+        }
+
+        .nft-title-count {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--text-secondary);
+        }
+
+        .owned-nft-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+        }
+
+        .owned-nft-card {
+          background: var(--background-table);
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          padding: 8px 6px;
+          text-decoration: none;
+          color: var(--text);
+          text-align: center;
+          min-width: 0;
+        }
+
+        .owned-nft-card:hover {
+          border-color: var(--accent-link);
+        }
+
+        .owned-nft-name {
+          display: block;
+          font-size: 11px;
+          color: var(--text-secondary);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        @media (max-width: 560px) {
+          .owned-nft-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
         }
 
         .detail-row {
