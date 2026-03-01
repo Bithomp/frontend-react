@@ -17,7 +17,8 @@ import {
   isValidXAddress,
   isTagValid,
   isDomainValid,
-  stripDomain
+  stripDomain,
+  timestampExpired
 } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { xAddressToClassicAddress } from 'ripple-address-codec'
@@ -190,7 +191,8 @@ import {
   FaYoutube,
   FaXTwitter
 } from 'react-icons/fa6'
-import { MdQrCode2 } from 'react-icons/md'
+import { MdMoneyOff, MdQrCode2 } from 'react-icons/md'
+import { TbPigMoney } from 'react-icons/tb'
 import { useQRCode } from 'next-qrcode'
 
 // Column Wrapper
@@ -210,6 +212,7 @@ export default function Account2({
   fiatRate: fiatRateApp,
   fiatRateServer,
   balanceListServer,
+  setSignRequest,
   isHistoricalLedger,
   ledgerTimestampQuery,
   accountWithTag,
@@ -257,6 +260,13 @@ export default function Account2({
   const [expandedToken, setExpandedToken] = useState(null)
   const [expandedIssuedToken, setExpandedIssuedToken] = useState(null)
   const [showIssuerSettingsDetails, setShowIssuerSettingsDetails] = useState(false)
+  const [receivedChecks, setReceivedChecks] = useState([])
+  const [sentChecks, setSentChecks] = useState([])
+  const [incomingPaychannels, setIncomingPaychannels] = useState([])
+  const [outgoingPaychannels, setOutgoingPaychannels] = useState([])
+  const [checksTab, setChecksTab] = useState('received')
+  const [paychannelsTab, setPaychannelsTab] = useState('incoming')
+  const [expandedCheckKey, setExpandedCheckKey] = useState(null)
   const [showTxSettingsDetails, setShowTxSettingsDetails] = useState(false)
   const [showAccountControlDetails, setShowAccountControlDetails] = useState(false)
   const [recentTransactions, setRecentTransactions] = useState([])
@@ -475,6 +485,23 @@ export default function Account2({
     nftOffersTab === 'received'
       ? `/nft-offers/${data?.address}?offerList=privately-offered-to-address`
       : `/nft-offers/${data?.address}`
+  const hasReceivedChecks = receivedChecks.length > 0
+  const hasSentChecks = sentChecks.length > 0
+  const showChecksTabs = hasReceivedChecks && hasSentChecks
+  const activeChecksTab = showChecksTabs ? checksTab : hasSentChecks ? 'sent' : 'received'
+  const activeChecksList = activeChecksTab === 'sent' ? sentChecks : receivedChecks
+  const checksSectionTitle = showChecksTabs ? 'Checks' : activeChecksTab === 'sent' ? 'Sent checks' : 'Received checks'
+
+  const hasIncomingPaychannels = incomingPaychannels.length > 0
+  const hasOutgoingPaychannels = outgoingPaychannels.length > 0
+  const showPaychannelsTabs = hasIncomingPaychannels && hasOutgoingPaychannels
+  const activePaychannelsTab = showPaychannelsTabs ? paychannelsTab : hasOutgoingPaychannels ? 'outgoing' : 'incoming'
+  const activePaychannelsList = activePaychannelsTab === 'outgoing' ? outgoingPaychannels : incomingPaychannels
+  const paychannelsSectionTitle = showPaychannelsTabs
+    ? 'Paychannels'
+    : activePaychannelsTab === 'outgoing'
+      ? 'Outgoing paychannels'
+      : 'Incoming paychannels'
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -539,10 +566,31 @@ export default function Account2({
 
   useEffect(() => {
     setExpandedIssuedToken(null)
+    setExpandedCheckKey(null)
     setShowIssuerSettingsDetails(false)
+    setChecksTab('received')
+    setPaychannelsTab('incoming')
     setShowTxSettingsDetails(false)
     setShowAccountControlDetails(false)
   }, [data?.address, effectiveLedgerTimestamp])
+
+  useEffect(() => {
+    if (!showChecksTabs && checksTab === 'sent' && !hasSentChecks) {
+      setChecksTab('received')
+    }
+    if (!showChecksTabs && checksTab === 'received' && !hasReceivedChecks && hasSentChecks) {
+      setChecksTab('sent')
+    }
+  }, [showChecksTabs, checksTab, hasSentChecks, hasReceivedChecks])
+
+  useEffect(() => {
+    if (!showPaychannelsTabs && paychannelsTab === 'outgoing' && !hasOutgoingPaychannels) {
+      setPaychannelsTab('incoming')
+    }
+    if (!showPaychannelsTabs && paychannelsTab === 'incoming' && !hasIncomingPaychannels && hasOutgoingPaychannels) {
+      setPaychannelsTab('outgoing')
+    }
+  }, [showPaychannelsTabs, paychannelsTab, hasOutgoingPaychannels, hasIncomingPaychannels])
 
   // Fetch tokens
   useEffect(() => {
@@ -558,6 +606,28 @@ export default function Account2({
 
         const response = await axios.get(objectsUrl)
         const accountObjects = response?.data?.objects || []
+
+        let accountObjectWithChecks = accountObjects.filter((node) => node.LedgerEntryType === 'Check') || []
+        accountObjectWithChecks = accountObjectWithChecks.sort((a, b) => {
+          const issuerCompare = (a.SendMax?.issuer || '') === (b.SendMax?.issuer || '') ? 0 : a.SendMax?.issuer ? 1 : -1
+          if (issuerCompare !== 0) return issuerCompare
+
+          const destinationCompare = (a.Destination || '').localeCompare(b.Destination || '')
+          if (destinationCompare !== 0) return destinationCompare
+
+          const valueA = Number(a.SendMax?.value || a.SendMax) || 0
+          const valueB = Number(b.SendMax?.value || b.SendMax) || 0
+
+          return valueB - valueA
+        })
+
+        setReceivedChecks(accountObjectWithChecks.filter((node) => node.Destination === data.address))
+        setSentChecks(accountObjectWithChecks.filter((node) => node.Account === data.address))
+
+        const accountObjectWithPaychannels =
+          accountObjects.filter((node) => node.LedgerEntryType === 'PayChannel') || []
+        setOutgoingPaychannels(accountObjectWithPaychannels.filter((node) => node.Account === data.address))
+        setIncomingPaychannels(accountObjectWithPaychannels.filter((node) => node.Destination === data.address))
 
         const nftIds = accountObjects
           .filter((node) => node.LedgerEntryType === 'NFTokenPage' && Array.isArray(node.NFTokens))
@@ -690,6 +760,10 @@ export default function Account2({
         setMintedNftsLoading(false)
         setBurnedNfts([])
         setBurnedNftsLoading(false)
+        setReceivedChecks([])
+        setSentChecks([])
+        setIncomingPaychannels([])
+        setOutgoingPaychannels([])
       }
     }
 
@@ -2047,7 +2121,11 @@ export default function Account2({
                 <div className="section-title nft-section-title">
                   NFTs <span className="nft-title-count">{activeNftCount}</span>
                 </div>
-                {activeNftCount > 0 && data?.address && <Link className="section-link" href={activeNftViewAllHref}>View all</Link>}
+                {activeNftCount > 0 && data?.address && (
+                  <Link className="section-link" href={activeNftViewAllHref}>
+                    View all
+                  </Link>
+                )}
               </div>
 
               <div className="nft-tab-row nft-tab-row-outside">
@@ -2524,11 +2602,190 @@ export default function Account2({
                 )}
               </div>
 
+              {(hasReceivedChecks || hasSentChecks) && (
+                <>
+                  <div className="section-header-row nft-section-header-row">
+                    <div className="section-title nft-section-title">
+                      {checksSectionTitle} <span className="nft-title-count">{activeChecksList.length}</span>
+                    </div>
+                  </div>
+
+                  {showChecksTabs && (
+                    <div className="nft-tab-row nft-tab-row-outside">
+                      <div className="nft-tab-switch nft-offers-tab-switch">
+                        <button
+                          type="button"
+                          className={`nft-tab-btn ${checksTab === 'received' ? 'active' : ''}`}
+                          onClick={() => setChecksTab('received')}
+                        >
+                          Received
+                        </button>
+                        <button
+                          type="button"
+                          className={`nft-tab-btn ${checksTab === 'sent' ? 'active' : ''}`}
+                          onClick={() => setChecksTab('sent')}
+                        >
+                          Sent
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="checks-wrapper">
+                    <div className="checks-details">
+                      <div className="checks-list">
+                        {activeChecksList.map((check, index) => {
+                          const checkKey = `${check?.index || 'check'}-${activeChecksTab}-${index}`
+                          const isExpanded = expandedCheckKey === checkKey
+                          const counterpartAddress = activeChecksTab === 'sent' ? check?.Destination : check?.Account
+                          const sendMaxToken =
+                            typeof check?.SendMax === 'object' && check?.SendMax !== null
+                              ? check.SendMax
+                              : { currency: nativeCurrency }
+                          const sendMaxRawValue =
+                            typeof check?.SendMax === 'object' && check?.SendMax !== null
+                              ? check?.SendMax?.value
+                              : check?.SendMax
+                          const sendMaxAmountOnly =
+                            typeof check?.SendMax === 'object' && check?.SendMax !== null
+                              ? fullNiceNumber(sendMaxRawValue)
+                              : fullNiceNumber((Number(sendMaxRawValue) || 0) / 1000000)
+                          const sentAtValue = check?.previousTxAt || check?.createdAt
+                          const sentAtText = sentAtValue ? timeFromNow(sentAtValue, i18n) : '-'
+                          const expirationValue = check?.expiration || check?.Expiration
+                          const expirationText = expirationValue
+                            ? timeFromNow(expirationValue, i18n, 'ripple')
+                            : 'does not expire'
+                          const isExpired = expirationValue ? timestampExpired(expirationValue, 'ripple') : false
+                          const canRedeem =
+                            !!setSignRequest &&
+                            !effectiveLedgerTimestamp &&
+                            check?.Destination === account?.address &&
+                            !isExpired
+                          const canCancel =
+                            !!setSignRequest &&
+                            !effectiveLedgerTimestamp &&
+                            (check?.Destination === account?.address ||
+                              check?.Account === account?.address ||
+                              isExpired)
+
+                          return (
+                            <div
+                              className={`asset-item token-asset-item check-row-card ${isExpanded ? 'expanded' : ''}`}
+                              key={checkKey}
+                              onClick={() => setExpandedCheckKey(isExpanded ? null : checkKey)}
+                            >
+                              <div className="asset-main check-collapsed-main">
+                                <div className="asset-logo">
+                                  <CurrencyWithIcon token={sendMaxToken} options={{ disableTokenLink: true }} />
+                                </div>
+                                <div className="asset-value">
+                                  <div className="asset-amount">{sendMaxAmountOnly}</div>
+                                </div>
+                              </div>
+
+                              {isExpanded && (
+                                <div className="asset-details">
+                                  <div className="detail-row">
+                                    <span>Sent:</span>
+                                    <span>{sentAtText}</span>
+                                  </div>
+                                  <div className="detail-row">
+                                    <span>{activeChecksTab === 'sent' ? 'To' : 'From'}:</span>
+                                    <span>
+                                      {counterpartAddress ? (
+                                        <AddressWithIconInline
+                                          data={{ address: counterpartAddress }}
+                                          name="address"
+                                          options={{ short: 6 }}
+                                        />
+                                      ) : (
+                                        '-'
+                                      )}
+                                    </span>
+                                  </div>
+                                  {typeof check?.DestinationTag !== 'undefined' && (
+                                    <div className="detail-row">
+                                      <span>Destination tag:</span>
+                                      <span>{check.DestinationTag}</span>
+                                    </div>
+                                  )}
+                                  <div className="detail-row">
+                                    <span>Expiration:</span>
+                                    <span className={isExpired ? 'red' : ''}>{expirationText}</span>
+                                  </div>
+                                  <div className="detail-row">
+                                    <span>Check ID:</span>
+                                    <span className="copy-inline">
+                                      <span>{check?.index || '-'}</span>
+                                      {!!check?.index && (
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={check.index} />
+                                        </span>
+                                      )}
+                                    </span>
+                                  </div>
+
+                                  {!effectiveLedgerTimestamp && (
+                                    <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                                      <button
+                                        type="button"
+                                        className={`check-action-btn ${canRedeem ? 'redeem' : 'disabled'}`}
+                                        disabled={!canRedeem}
+                                        onClick={() => {
+                                          if (!canRedeem) return
+                                          setSignRequest({
+                                            request: {
+                                              TransactionType: 'CheckCash',
+                                              Account: check.Destination,
+                                              Amount: check.SendMax,
+                                              CheckID: check.index
+                                            }
+                                          })
+                                        }}
+                                        title="Redeem"
+                                      >
+                                        <TbPigMoney /> Redeem
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className={`check-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
+                                        disabled={!canCancel}
+                                        onClick={() => {
+                                          if (!canCancel) return
+                                          setSignRequest({
+                                            request: {
+                                              TransactionType: 'CheckCancel',
+                                              CheckID: check.index
+                                            }
+                                          })
+                                        }}
+                                        title="Cancel"
+                                      >
+                                        <MdMoneyOff /> Cancel
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
               <div className="section-header-row nft-section-header-row">
                 <div className="section-title nft-section-title">
                   NFT offers <span className="nft-title-count">{activeNftOffersCount}</span>
                 </div>
-                {data?.address && activeNftOffersCount > 0 && <Link className="section-link" href={activeNftOffersViewAllHref}>View all</Link>}
+                {data?.address && activeNftOffersCount > 0 && (
+                  <Link className="section-link" href={activeNftOffersViewAllHref}>
+                    View all
+                  </Link>
+                )}
               </div>
 
               <div className="nft-tab-row nft-tab-row-outside">
@@ -2615,6 +2872,73 @@ export default function Account2({
                   )}
                 </div>
               </div>
+
+              {(hasIncomingPaychannels || hasOutgoingPaychannels) && (
+                <>
+                  <div className="section-header-row nft-section-header-row">
+                    <div className="section-title nft-section-title">
+                      {paychannelsSectionTitle} <span className="nft-title-count">{activePaychannelsList.length}</span>
+                    </div>
+                  </div>
+
+                  {showPaychannelsTabs && (
+                    <div className="nft-tab-row nft-tab-row-outside">
+                      <div className="nft-tab-switch nft-offers-tab-switch">
+                        <button
+                          type="button"
+                          className={`nft-tab-btn ${paychannelsTab === 'incoming' ? 'active' : ''}`}
+                          onClick={() => setPaychannelsTab('incoming')}
+                        >
+                          Incoming
+                        </button>
+                        <button
+                          type="button"
+                          className={`nft-tab-btn ${paychannelsTab === 'outgoing' ? 'active' : ''}`}
+                          onClick={() => setPaychannelsTab('outgoing')}
+                        >
+                          Outgoing
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="asset-item nft-offers-item">
+                    <div className="asset-details nft-offers-details nft-details-flat-top">
+                      <div className="nft-offers-list">
+                        {activePaychannelsList.map((channel, index) => {
+                          const counterpartAddress =
+                            activePaychannelsTab === 'outgoing' ? channel?.Destination : channel?.Account
+                          const amountText = `${shortNiceNumber((Number(channel?.Amount || 0) || 0) / 1000000)} ${nativeCurrency}`
+                          const balanceText = `${shortNiceNumber((Number(channel?.Balance || 0) || 0) / 1000000)} ${nativeCurrency}`
+
+                          return (
+                            <div
+                              className="nft-offer-card object-row-card"
+                              key={`${channel?.index || 'paychannel'}-${index}`}
+                            >
+                              <div className="nft-offer-main">
+                                <span className="nft-offer-name object-row-title">
+                                  {activePaychannelsTab === 'outgoing' ? 'To' : 'From'}{' '}
+                                  <AddressWithIconInline
+                                    data={{ address: counterpartAddress }}
+                                    name="address"
+                                    options={{ short: 6 }}
+                                  />
+                                </span>
+                                <span className="nft-offer-meta">Amount {amountText}</span>
+                              </div>
+
+                              <div className="nft-offer-side">
+                                <span className="nft-offer-time">Balance {balanceText}</span>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </CollapsibleColumn>
         </div>
@@ -3727,6 +4051,22 @@ export default function Account2({
           padding-top: 10px;
         }
 
+        .checks-wrapper {
+          background: var(--background-input);
+          border-radius: 6px;
+        }
+
+        .checks-details {
+          margin-top: 0;
+          padding-top: 0;
+        }
+
+        .checks-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
         .nft-offers-list {
           display: flex;
           flex-direction: column;
@@ -3742,6 +4082,60 @@ export default function Account2({
           border: 1px solid var(--border-color);
           border-radius: 8px;
           background: var(--background-table);
+        }
+
+        .object-row-card {
+          cursor: pointer;
+          grid-template-columns: minmax(0, 1fr) auto;
+        }
+
+        .check-row-card {
+          padding: 8px 12px;
+        }
+
+        .check-row-card.expanded {
+          border-color: var(--accent-link);
+        }
+
+        .object-row-card.expanded {
+          border-color: var(--accent-link);
+        }
+
+        .object-row-card .nft-offer-name,
+        .object-row-card .nft-offer-meta {
+          white-space: normal;
+          overflow: visible;
+          text-overflow: clip;
+          line-height: 1.25;
+        }
+
+        .object-row-card .nft-offer-meta {
+          color: var(--text);
+          font-weight: 600;
+        }
+
+        .object-row-card .nft-offer-side {
+          min-width: max-content;
+        }
+
+        .check-collapsed-main {
+          align-items: center;
+          min-height: 0;
+        }
+
+        .check-row-card .asset-logo {
+          min-width: 0;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        .check-row-card .asset-amount {
+          font-size: 14px;
+          line-height: 1.15;
+        }
+
+        .check-row-card .asset-value {
+          text-align: right;
         }
 
         .nft-offer-thumb {
@@ -3800,6 +4194,45 @@ export default function Account2({
           min-width: 72px;
         }
 
+        .check-actions {
+          margin-top: 4px;
+          display: flex;
+          gap: 8px;
+          justify-content: flex-end;
+          flex-wrap: wrap;
+        }
+
+        .check-action-btn {
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          background: var(--background-input);
+          color: var(--text);
+          font-size: 12px;
+          padding: 5px 8px;
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          cursor: pointer;
+        }
+
+        .check-action-btn.redeem {
+          color: var(--green);
+          border-color: color-mix(in srgb, var(--green) 40%, var(--border-color));
+        }
+
+        .check-action-btn.cancel {
+          color: var(--red);
+          border-color: color-mix(in srgb, var(--red) 40%, var(--border-color));
+        }
+
+        .check-action-btn.disabled,
+        .check-action-btn:disabled {
+          color: var(--text-secondary);
+          border-color: var(--border-color);
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
         .nft-offer-time {
           font-size: 11px;
           color: var(--text-secondary);
@@ -3847,6 +4280,10 @@ export default function Account2({
             justify-content: space-between;
             align-items: center;
             min-width: 0;
+          }
+
+          .object-row-card {
+            grid-template-columns: minmax(0, 1fr);
           }
         }
 
