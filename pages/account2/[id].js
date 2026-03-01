@@ -173,6 +173,7 @@ import {
   shortNiceNumber,
   serviceUsernameOrAddressText,
   timeFromNow,
+  transferRateToPercent,
   userOrServiceName
 } from '../../utils/format'
 import { subtract } from '../../utils/calc'
@@ -225,9 +226,14 @@ export default function Account2({
     ledgerTimestampQuery ? new Date(ledgerTimestampQuery) : new Date()
   )
   const [tokens, setTokens] = useState([])
+  const [issuedTokens, setIssuedTokens] = useState([])
+  const [issuedTokensLoading, setIssuedTokensLoading] = useState(false)
+  const [issuedTokensError, setIssuedTokensError] = useState(null)
   const [ownedNfts, setOwnedNfts] = useState([])
   const [ownedNftIds, setOwnedNftIds] = useState([])
   const [expandedToken, setExpandedToken] = useState(null)
+  const [expandedIssuedToken, setExpandedIssuedToken] = useState(null)
+  const [showIssuerSettingsDetails, setShowIssuerSettingsDetails] = useState(false)
   const [recentTransactions, setRecentTransactions] = useState([])
   const [transactionsLoading, setTransactionsLoading] = useState(false)
   const [transactionsLoadingMore, setTransactionsLoadingMore] = useState(false)
@@ -292,6 +298,11 @@ export default function Account2({
   const isLoggedIn = !!account?.address
   const TOKEN_PREVIEW_LIMIT = 5
   const NFT_PREVIEW_LIMIT = 8
+  const issuerTransferFeeText = data?.ledgerInfo?.transferRate
+    ? transferRateToPercent(data.ledgerInfo.transferRate)
+    : '0%'
+  const isRipplingEnabled = !!data?.ledgerInfo?.flags?.defaultRipple
+  const isCanEscrowEnabled = !!data?.ledgerInfo?.flags?.allowTrustLineLocking
 
   const achievements = []
 
@@ -412,6 +423,11 @@ export default function Account2({
     setExpandedToken(null)
   }, [data?.address, effectiveLedgerTimestamp])
 
+  useEffect(() => {
+    setExpandedIssuedToken(null)
+    setShowIssuerSettingsDetails(false)
+  }, [data?.address, effectiveLedgerTimestamp])
+
   // Fetch tokens
   useEffect(() => {
     if (!data?.address || !data?.ledgerInfo?.activated) return
@@ -444,7 +460,9 @@ export default function Account2({
                 : '')
 
             const nftResponse = await axios.get(nftPreviewUrl)
-            setOwnedNfts(Array.isArray(nftResponse?.data?.nfts) ? nftResponse.data.nfts.slice(0, NFT_PREVIEW_LIMIT) : [])
+            setOwnedNfts(
+              Array.isArray(nftResponse?.data?.nfts) ? nftResponse.data.nfts.slice(0, NFT_PREVIEW_LIMIT) : []
+            )
           } catch {
             setOwnedNfts([])
           }
@@ -501,6 +519,39 @@ export default function Account2({
     fetchTokens()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.address, data?.ledgerInfo?.activated, effectiveLedgerTimestamp])
+
+  useEffect(() => {
+    if (!data?.address) return
+
+    const fetchIssuedTokens = async () => {
+      setIssuedTokensLoading(true)
+      setIssuedTokensError(null)
+
+      try {
+        const issuedTokensUrl =
+          `v2/trustlines/tokens?issuer=${data.address}&limit=100&currencyDetails=true&statistics=true&order=holdersHigh` +
+          (effectiveLedgerTimestamp
+            ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
+            : '')
+
+        const response = await axios.get(issuedTokensUrl)
+        const fetchedIssuedTokens = Array.isArray(response?.data?.tokens) ? response.data.tokens : []
+
+        const sortedIssuedTokens = fetchedIssuedTokens.sort(
+          (a, b) => Number(b?.statistics?.marketcap || 0) - Number(a?.statistics?.marketcap || 0)
+        )
+
+        setIssuedTokens(sortedIssuedTokens)
+      } catch (error) {
+        setIssuedTokens([])
+        setIssuedTokensError(error?.message || 'Failed to load issued tokens')
+      } finally {
+        setIssuedTokensLoading(false)
+      }
+    }
+
+    fetchIssuedTokens()
+  }, [data?.address, effectiveLedgerTimestamp])
 
   const buildTransactionsUrl = ({ markerValue, filtersOverride } = {}) => {
     if (!data?.address) return ''
@@ -1617,7 +1668,10 @@ export default function Account2({
                             className="owned-nft-card"
                             onClick={(event) => event.stopPropagation()}
                           >
-                            <NftImage nft={nft} style={{ width: 44, height: 44, borderRadius: '6px', margin: '0 auto 6px' }} />
+                            <NftImage
+                              nft={nft}
+                              style={{ width: 44, height: 44, borderRadius: '6px', margin: '0 auto 6px' }}
+                            />
                             <span className="owned-nft-name">{nftTitle}</span>
                           </Link>
                         )
@@ -1846,10 +1900,175 @@ export default function Account2({
             </div>
           </CollapsibleColumn>
 
-          {/* Column 4: Orders & Incoming */}
+          {/* Column 4: Issued Tokens */}
           <CollapsibleColumn>
             <div className="orders-section">
-              <p className="grey">DEX orders and pending items will be displayed here.</p>
+              <div className="section-header-row">
+                <span className="section-title">Issued tokens</span>
+                {data?.address && (
+                  <Link className="section-link" href={`/tokens?issuer=${data.address}`}>
+                    View all
+                  </Link>
+                )}
+              </div>
+
+              {issuedTokensLoading && <p className="grey">Loading issued tokens...</p>}
+              {!issuedTokensLoading && issuedTokensError && <p className="red">{issuedTokensError}</p>}
+              {!issuedTokensLoading && !issuedTokensError && issuedTokens.length === 0 && (
+                <p className="grey">No issued tokens found.</p>
+              )}
+
+              {!issuedTokensLoading &&
+                !issuedTokensError &&
+                issuedTokens.map((token, index) => {
+                  const tokenStats = token.statistics || {}
+                  const tokenSupply = Number(token.supply || 0)
+                  const tokenPriceNative = Number(tokenStats.priceNativeCurrency || 0)
+                  const tokenPriceFiat = tokenPriceNative * (pageFiatRate || 0)
+                  const tokenMarketcap = Number(tokenStats.marketcap || 0)
+                  const tokenMarketcapFiat = tokenMarketcap * (pageFiatRate || 0)
+                  const tokenVolume24h = Number(tokenStats.buyVolume || 0) + Number(tokenStats.sellVolume || 0)
+                  const tokenVolume24hFiat = tokenVolume24h * tokenPriceNative * (pageFiatRate || 0)
+                  const tokenKey = `${token.currency || 'token'}-${index}`
+                  const isExpanded = expandedIssuedToken === tokenKey
+
+                  return (
+                    <div
+                      key={tokenKey}
+                      className="asset-item token-asset-item"
+                      onClick={() => setExpandedIssuedToken(isExpanded ? null : tokenKey)}
+                    >
+                      <div className="asset-main">
+                        <div className="asset-logo">
+                          <CurrencyWithIcon token={token} options={{ disableTokenLink: true }} />
+                        </div>
+                        <div className="asset-value">
+                          <div className="asset-amount" suppressHydrationWarning>
+                            {tokenMarketcapFiat > 0
+                              ? shortNiceNumber(tokenMarketcapFiat, 2, 1, selectedCurrency)
+                              : shortNiceNumber(tokenMarketcap, 2, 1)}
+                          </div>
+                          <div className="asset-fiat">Supply: {shortNiceNumber(tokenSupply)}</div>
+                        </div>
+                      </div>
+
+                      {isExpanded && (
+                        <div className="asset-details">
+                          <div className="detail-row">
+                            <span>Currency:</span>
+                            <span className="copy-inline">
+                              <span>{token.currency}</span>
+                              <Link
+                                href={`/token/${data.address}/${token.currency}`}
+                                className="inline-link-icon tooltip"
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                <LinkIcon />
+                                <span className="tooltiptext no-brake">Token page</span>
+                              </Link>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={token.currency} />
+                              </span>
+                            </span>
+                          </div>
+
+                          <div className="detail-row">
+                            <span>Price ({nativeCurrency}):</span>
+                            <span>
+                              {shortNiceNumber(tokenPriceNative, 2, 1)} {nativeCurrency}
+                            </span>
+                          </div>
+
+                          <div className="detail-row">
+                            <span>Price ({selectedCurrency?.toUpperCase()}):</span>
+                            <span suppressHydrationWarning>
+                              {tokenPriceFiat > 0
+                                ? shortNiceNumber(tokenPriceFiat, 2, 1, selectedCurrency)
+                                : shortNiceNumber(0, 2, 1, selectedCurrency)}
+                            </span>
+                          </div>
+
+                          <div className="detail-row">
+                            <span>Marketcap:</span>
+                            <span suppressHydrationWarning>
+                              {tokenMarketcapFiat > 0
+                                ? shortNiceNumber(tokenMarketcapFiat, 2, 1, selectedCurrency)
+                                : shortNiceNumber(tokenMarketcap, 2, 1)}
+                            </span>
+                          </div>
+
+                          <div className="detail-row">
+                            <span>Supply:</span>
+                            <span>{fullNiceNumber(tokenSupply)}</span>
+                          </div>
+
+                          <div className="detail-row">
+                            <span>Holders:</span>
+                            <span>{fullNiceNumber(token.holders || 0)}</span>
+                          </div>
+
+                          <div className="detail-row">
+                            <span>Trustlines:</span>
+                            <span>{fullNiceNumber(token.trustlines || 0)}</span>
+                          </div>
+
+                          <div className="detail-row">
+                            <span>Volume (24h):</span>
+                            <span suppressHydrationWarning>
+                              {tokenVolume24hFiat > 0
+                                ? shortNiceNumber(tokenVolume24hFiat, 2, 1, selectedCurrency)
+                                : shortNiceNumber(tokenVolume24h, 2, 1)}
+                            </span>
+                          </div>
+
+                          <div className="detail-row">
+                            <span>Volume (24h) token:</span>
+                            <span>
+                              {shortNiceNumber(tokenVolume24h, 2, 1)} {niceCurrency(token.currency)}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+
+              <div className="time-machine-card issuer-settings-card">
+                <button
+                  type="button"
+                  className={`time-machine-toggle ${showIssuerSettingsDetails ? 'active' : ''}`}
+                  onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
+                >
+                  Issuer settings
+                </button>
+
+                {showIssuerSettingsDetails && (
+                  <div className="time-machine-panel issuer-settings-panel">
+                    <div className="detail-row issuer-detail-row">
+                      <span>Rippling:</span>
+                      <span className={isRipplingEnabled ? 'green' : 'grey'}>
+                        {isRipplingEnabled ? 'enabled' : 'disabled'}
+                      </span>
+                    </div>
+                    <div className="detail-row issuer-detail-row">
+                      <span>Transfer fee:</span>
+                      <span>{issuerTransferFeeText}</span>
+                    </div>
+                    <div className="detail-row issuer-detail-row">
+                      <span>Escrow:</span>
+                      <span className={isCanEscrowEnabled ? 'green' : 'grey'}>
+                        {isCanEscrowEnabled ? 'enabled' : 'disabled'}
+                      </span>
+                    </div>
+
+                    <div className="lp-actions issuer-settings-actions">
+                      <Link href="/services/account-settings" className="lp-action-btn">
+                        Change settings
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </CollapsibleColumn>
         </div>
@@ -2667,6 +2886,29 @@ export default function Account2({
           font-size: 13px;
           color: var(--text-secondary);
           margin-top: 2px;
+        }
+
+        .issuer-settings-card {
+          margin-top: 0;
+        }
+
+        .issuer-settings-panel {
+          gap: 2px;
+        }
+
+        .issuer-settings-actions {
+          margin-top: 8px;
+        }
+
+        .issuer-detail-row {
+          justify-content: flex-start;
+          gap: 8px;
+        }
+
+        .issuer-detail-row > span:last-child {
+          max-width: none;
+          text-align: left;
+          word-break: normal;
         }
 
         .asset-details {
