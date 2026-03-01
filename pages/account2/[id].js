@@ -2906,30 +2906,71 @@ export default function Account2({
                     <div className="asset-details nft-offers-details nft-details-flat-top">
                       <div className="nft-offers-list">
                         {activePaychannelsList.map((channel, index) => {
+                          const counterpartName = activePaychannelsTab === 'outgoing' ? 'Destination' : 'Account'
+                          const counterpartData = {
+                            ...channel,
+                            destinationDetails: channel?.destinationDetails || channel?.DestinationDetails,
+                            accountDetails: channel?.accountDetails || channel?.AccountDetails
+                          }
                           const counterpartAddress =
                             activePaychannelsTab === 'outgoing' ? channel?.Destination : channel?.Account
-                          const amountText = `${shortNiceNumber((Number(channel?.Amount || 0) || 0) / 1000000)} ${nativeCurrency}`
-                          const balanceText = `${shortNiceNumber((Number(channel?.Balance || 0) || 0) / 1000000)} ${nativeCurrency}`
+                          const amountText = amountFormat(channel?.Amount, { short: true, maxFractionDigits: 2 })
+                          const balanceText = amountFormat(channel?.Balance, { short: true, maxFractionDigits: 2 })
+                          const amountFiatNode = nativeCurrencyToFiat({
+                            amount: channel?.Amount,
+                            selectedCurrency,
+                            fiatRate: pageFiatRate,
+                            asText: true
+                          })
+                          const balanceFiatNode = nativeCurrencyToFiat({
+                            amount: channel?.Balance,
+                            selectedCurrency,
+                            fiatRate: pageFiatRate,
+                            asText: true
+                          })
 
                           return (
                             <div
-                              className="nft-offer-card object-row-card"
+                              className="nft-offer-card object-row-card paychannel-row-card"
                               key={`${channel?.index || 'paychannel'}-${index}`}
                             >
-                              <div className="nft-offer-main">
-                                <span className="nft-offer-name object-row-title">
-                                  {activePaychannelsTab === 'outgoing' ? 'To' : 'From'}{' '}
-                                  <AddressWithIconInline
-                                    data={{ address: counterpartAddress }}
-                                    name="address"
-                                    options={{ short: 6 }}
-                                  />
+                              <div className="paychannel-head">
+                                <span className="paychannel-head-label">
+                                  {activePaychannelsTab === 'outgoing' ? 'To' : 'From'}:
                                 </span>
-                                <span className="nft-offer-meta">Amount {amountText}</span>
+                                <span className="paychannel-head-value">
+                                  {counterpartAddress ? (
+                                    <AddressWithIconInline
+                                      data={counterpartData}
+                                      name={counterpartName}
+                                      options={{ short: 6 }}
+                                    />
+                                  ) : (
+                                    '-'
+                                  )}
+                                </span>
                               </div>
 
-                              <div className="nft-offer-side">
-                                <span className="nft-offer-time">Balance {balanceText}</span>
+                              <div className="paychannel-values">
+                                <div className="paychannel-value-row">
+                                  <span className="paychannel-value-label">Amount</span>
+                                  <span className="paychannel-value-value">
+                                    {amountText}
+                                    {amountFiatNode ? (
+                                      <span className="paychannel-value-fiat"> {amountFiatNode}</span>
+                                    ) : null}
+                                  </span>
+                                </div>
+
+                                <div className="paychannel-value-row">
+                                  <span className="paychannel-value-label">Balance</span>
+                                  <span className="paychannel-value-value">
+                                    {balanceText}
+                                    {balanceFiatNode ? (
+                                      <span className="paychannel-value-fiat"> {balanceFiatNode}</span>
+                                    ) : null}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           )
@@ -3833,7 +3874,7 @@ export default function Account2({
 
         .nft-offers-item {
           cursor: default;
-          padding-top: 10px;
+          padding: 0;
         }
 
         .nft-offers-item:hover {
@@ -4047,8 +4088,11 @@ export default function Account2({
         }
 
         .nft-offers-details {
-          margin-top: 10px;
-          padding-top: 10px;
+          margin-top: 0;
+          padding-top: 0;
+          padding-left: 0;
+          padding-right: 0;
+          border-top: 0;
         }
 
         .checks-wrapper {
@@ -4116,6 +4160,68 @@ export default function Account2({
 
         .object-row-card .nft-offer-side {
           min-width: max-content;
+        }
+
+        .paychannel-row-card {
+          cursor: default;
+          grid-template-columns: minmax(0, 1fr);
+          gap: 8px;
+          padding: 10px 12px;
+        }
+
+        .paychannel-head {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          min-width: 0;
+          flex-wrap: wrap;
+        }
+
+        .paychannel-head-label {
+          color: var(--text-secondary);
+          font-size: 12px;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+
+        .paychannel-head-value {
+          min-width: 0;
+          color: var(--text);
+          font-size: 13px;
+          line-height: 1.25;
+        }
+
+        .paychannel-values {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .paychannel-value-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 8px;
+        }
+
+        .paychannel-value-label {
+          color: var(--text-secondary);
+          font-size: 12px;
+          white-space: nowrap;
+        }
+
+        .paychannel-value-value {
+          color: var(--text);
+          font-size: 12px;
+          font-weight: 600;
+          text-align: right;
+          line-height: 1.25;
+          word-break: break-word;
+        }
+
+        .paychannel-value-fiat {
+          color: var(--text-secondary);
+          font-weight: 500;
         }
 
         .check-collapsed-main {
