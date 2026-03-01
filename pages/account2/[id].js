@@ -163,6 +163,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import { CurrencyWithIcon } from '../../utils/format'
 import { NftImage, nftName } from '../../utils/nft'
 import {
+  AddressWithIconInline,
   amountFormat,
   addressUsernameOrServiceLink,
   fullDateAndTime,
@@ -234,6 +235,8 @@ export default function Account2({
   const [expandedToken, setExpandedToken] = useState(null)
   const [expandedIssuedToken, setExpandedIssuedToken] = useState(null)
   const [showIssuerSettingsDetails, setShowIssuerSettingsDetails] = useState(false)
+  const [showTxSettingsDetails, setShowTxSettingsDetails] = useState(false)
+  const [showAccountControlDetails, setShowAccountControlDetails] = useState(false)
   const [recentTransactions, setRecentTransactions] = useState([])
   const [transactionsLoading, setTransactionsLoading] = useState(false)
   const [transactionsLoadingMore, setTransactionsLoadingMore] = useState(false)
@@ -303,6 +306,12 @@ export default function Account2({
     : '0%'
   const isRipplingEnabled = !!data?.ledgerInfo?.flags?.defaultRipple
   const isCanEscrowEnabled = !!data?.ledgerInfo?.flags?.allowTrustLineLocking
+  const isMessageKeyUsedForFlare = data?.ledgerInfo?.messageKey?.substring(0, 26) === '02000000000000000000000000'
+  const hasAccountControlData =
+    !!data?.ledgerInfo?.regularKey ||
+    !!data?.ledgerInfo?.signerList ||
+    !!data?.ledgerInfo?.flags?.passwordSpent ||
+    !!data?.ledgerInfo?.flags?.disableMaster
 
   const achievements = []
 
@@ -426,6 +435,8 @@ export default function Account2({
   useEffect(() => {
     setExpandedIssuedToken(null)
     setShowIssuerSettingsDetails(false)
+    setShowTxSettingsDetails(false)
+    setShowAccountControlDetails(false)
   }, [data?.address, effectiveLedgerTimestamp])
 
   // Fetch tokens
@@ -1125,6 +1136,130 @@ export default function Account2({
               {data.did && (
                 <div className="did-section">
                   <Did data={data} />
+                </div>
+              )}
+
+              {hasAccountControlData && (
+                <div className="time-machine-card account-control-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showAccountControlDetails ? 'active' : ''}`}
+                    onClick={() => setShowAccountControlDetails((prev) => !prev)}
+                  >
+                    Account control
+                  </button>
+
+                  {showAccountControlDetails && (
+                    <div className="time-machine-panel account-control-panel">
+                      {data?.ledgerInfo?.regularKey && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Regular key:</span>
+                          <span className="control-address-wrap">
+                            <span className="copy-inline">
+                              <AddressWithIconInline data={data.ledgerInfo} name="regularKey" options={{ short: 6 }} />
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={data.ledgerInfo.regularKey} />
+                              </span>
+                            </span>
+                          </span>
+                        </div>
+                      )}
+
+                      {data?.ledgerInfo?.flags?.passwordSpent && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Free re-key:</span>
+                          <span>spent</span>
+                        </div>
+                      )}
+
+                      {data?.ledgerInfo?.signerList && (
+                        <>
+                          <div className="detail-row issuer-detail-row">
+                            <span>Multi-sign:</span>
+                            <span className="green">enabled</span>
+                          </div>
+
+                          {data?.ledgerInfo?.signerList?.signerQuorum && (
+                            <div className="detail-row issuer-detail-row">
+                              <span>Multi-sign threshold:</span>
+                              <span>{data.ledgerInfo.signerList.signerQuorum}</span>
+                            </div>
+                          )}
+
+                          {Array.isArray(data?.ledgerInfo?.signerList?.signerEntries) &&
+                            data.ledgerInfo.signerList.signerEntries.map((signer, signerIndex) => (
+                              <div key={`signer-group-${signerIndex}`}>
+                                <div className="detail-row issuer-detail-row">
+                                  <span>
+                                    Signer #{signerIndex + 1} (weight {signer?.signerWeight || 0}):
+                                  </span>
+                                  <span className="control-address-wrap">
+                                    <span className="copy-inline">
+                                      <AddressWithIconInline data={signer} name="account" options={{ short: 6 }} />
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={signer?.account} />
+                                      </span>
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                        </>
+                      )}
+
+                      {data?.ledgerInfo?.flags?.disableMaster && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Master key:</span>
+                          <span className="red">disabled</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {data?.ledgerInfo?.sequence && (
+                <div className="time-machine-card tx-settings-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showTxSettingsDetails ? 'active' : ''}`}
+                    onClick={() => setShowTxSettingsDetails((prev) => !prev)}
+                  >
+                    Account settings
+                  </button>
+
+                  {showTxSettingsDetails && (
+                    <div className="time-machine-panel tx-settings-panel">
+                      <div className="detail-row issuer-detail-row">
+                        <span>Next sequence:</span>
+                        <span className="copy-inline">
+                          <span>{data.ledgerInfo.sequence}</span>
+                          <span onClick={(event) => event.stopPropagation()}>
+                            <CopyButton text={data.ledgerInfo.sequence} />
+                          </span>
+                        </span>
+                      </div>
+                      {data?.ledgerInfo?.messageKey && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>
+                            Message key:
+                            {isMessageKeyUsedForFlare && (
+                              <>
+                                <br />
+                                <b>used for Flare</b>
+                              </>
+                            )}
+                          </span>
+                          <span className="copy-inline">
+                            <span className="address-text">{data.ledgerInfo.messageKey}</span>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.messageKey} />
+                            </span>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -2892,8 +3027,30 @@ export default function Account2({
           margin-top: 0;
         }
 
+        .tx-settings-card {
+          margin-top: 4px;
+        }
+
         .issuer-settings-panel {
           gap: 2px;
+        }
+
+        .tx-settings-panel {
+          gap: 2px;
+        }
+
+        .account-control-card {
+          margin-top: 0;
+        }
+
+        .account-control-panel {
+          gap: 2px;
+        }
+
+        .control-address-wrap {
+          display: inline-flex;
+          align-items: center;
+          max-width: none;
         }
 
         .issuer-settings-actions {
