@@ -180,6 +180,8 @@ import {
   FaYoutube,
   FaXTwitter
 } from 'react-icons/fa6'
+import { MdQrCode2 } from 'react-icons/md'
+import { useQRCode } from 'next-qrcode'
 
 // Column Wrapper
 const CollapsibleColumn = ({ children }) => {
@@ -203,8 +205,10 @@ export default function Account2({
   account
 }) {
   const { i18n } = useTranslation()
+  const { Canvas } = useQRCode()
   const [showBalanceDetails, setShowBalanceDetails] = useState(false)
   const [showTotalWorthDetails, setShowTotalWorthDetails] = useState(false)
+  const [showAddressQr, setShowAddressQr] = useState(false)
   const [tokens, setTokens] = useState([])
   const [expandedToken, setExpandedToken] = useState(null)
   const [recentTransactions, setRecentTransactions] = useState([])
@@ -836,7 +840,36 @@ export default function Account2({
                 <div className="account-address">
                   <span className="account-address-text">{data.address}</span>
                   <CopyButton text={data.address} />
+                  <button
+                    type="button"
+                    className={`account-qr-toggle ${showAddressQr ? 'active' : ''}`}
+                    onClick={() => setShowAddressQr((prev) => !prev)}
+                    aria-label="Toggle address QR code"
+                    title="Show QR code"
+                  >
+                    <span className="tooltip">
+                      <MdQrCode2 />
+                      <span className="tooltiptext no-brake">QR code</span>
+                    </span>
+                  </button>
                 </div>
+                {showAddressQr && (
+                  <div className="account-qr-panel">
+                    <Canvas
+                      text={data.address}
+                      options={{
+                        errorCorrectionLevel: 'M',
+                        margin: 2,
+                        scale: 4,
+                        width: 170,
+                        color: {
+                          dark: '#333333ff',
+                          light: '#ffffffff'
+                        }
+                      }}
+                    />
+                  </div>
+                )}
                 {data.service?.domain && (
                   <div className="account-domain grey">
                     <a href={`https://${data.service.domain}`} target="_blank" rel="noreferrer">
@@ -1966,6 +1999,40 @@ export default function Account2({
           display: inline-flex;
           align-items: center;
           gap: 8px;
+        }
+
+        .account-qr-toggle {
+          margin-bottom: -3px;
+          border: 0;
+          background: none;
+          color: #00b1c1;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          flex: 0 0 auto;
+          padding: 0;
+          outline: none;
+        }
+
+        .account-qr-toggle:hover,
+        .account-qr-toggle.active {
+          color: #00b1c1;
+          opacity: 0.85;
+        }
+
+        .account-qr-toggle :global(svg) {
+          width: 20px;
+          height: 20px;
+        }
+
+        .account-qr-panel {
+          margin: 6px auto 0;
+          width: fit-content;
+          padding: 10px;
+          border-radius: 8px;
+          background: var(--background-input);
+          border: 1px solid var(--border-color);
         }
 
         .account-address-text {
