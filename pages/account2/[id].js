@@ -477,6 +477,7 @@ export default function Account2({
         ? createdNftOffers
         : ownedNftOffers
   const activeNftOffersCount = activeNftOffers.length
+  const activeNftOffersCountLabel = activeNftOffersCount === 5 ? '5+' : activeNftOffersCount
   const activeNftOffersLoading = nftOffersLoading[nftOffersTab]
   const activeNftOffersError = nftOffersError[nftOffersTab]
   const activeNftOffersTitle =
@@ -2851,7 +2852,7 @@ export default function Account2({
 
               <div className="section-header-row nft-section-header-row">
                 <div className="section-title nft-section-title">
-                  NFT offers <span className="nft-title-count">{activeNftOffersCount}</span>
+                  NFT offers <span className="nft-title-count">{activeNftOffersCountLabel}</span>
                 </div>
                 {data?.address && activeNftOffersCount > 0 && (
                   <Link className="section-link" href={activeNftOffersViewAllHref}>
