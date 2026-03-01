@@ -233,8 +233,26 @@ export default function Account2({
   const [ownedNfts, setOwnedNfts] = useState([])
   const [soldNfts, setSoldNfts] = useState([])
   const [soldNftsLoading, setSoldNftsLoading] = useState(false)
+  const [mintedNfts, setMintedNfts] = useState([])
+  const [burnedNfts, setBurnedNfts] = useState([])
+  const [mintedNftsLoading, setMintedNftsLoading] = useState(false)
+  const [burnedNftsLoading, setBurnedNftsLoading] = useState(false)
   const [ownedNftIds, setOwnedNftIds] = useState([])
   const [nftTab, setNftTab] = useState('owned')
+  const [nftOffersTab, setNftOffersTab] = useState('received')
+  const [createdNftOffers, setCreatedNftOffers] = useState([])
+  const [receivedPrivateNftOffers, setReceivedPrivateNftOffers] = useState([])
+  const [ownedNftOffers, setOwnedNftOffers] = useState([])
+  const [nftOffersLoading, setNftOffersLoading] = useState({
+    received: false,
+    created: false,
+    owned: false
+  })
+  const [nftOffersError, setNftOffersError] = useState({
+    received: null,
+    created: null,
+    owned: null
+  })
   const [showNftDataDetails, setShowNftDataDetails] = useState(false)
   const [expandedToken, setExpandedToken] = useState(null)
   const [expandedIssuedToken, setExpandedIssuedToken] = useState(null)
@@ -317,8 +335,6 @@ export default function Account2({
     !!data?.ledgerInfo?.flags?.passwordSpent ||
     !!data?.ledgerInfo?.flags?.disableMaster
   const hasNftDataDetails =
-    !!data?.ledgerInfo?.mintedNFTokens ||
-    !!data?.ledgerInfo?.burnedNFTokens ||
     !!data?.ledgerInfo?.firstNFTokenSequence ||
     !!data?.ledgerInfo?.nftokenMinter ||
     !!data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer ||
@@ -400,9 +416,65 @@ export default function Account2({
       : ownedNftIds.slice(0, NFT_PREVIEW_LIMIT).map((nftokenID) => ({ nftokenID }))
   const soldNftCount = soldNfts.length
   const soldNftPreview = soldNfts.slice(0, NFT_PREVIEW_LIMIT)
-  const isOwnedTab = nftTab === 'owned'
-  const activeNftCount = isOwnedTab ? ownedNftCount : soldNftCount
-  const activeNftPreview = isOwnedTab ? ownedNftPreview : soldNftPreview
+  const mintedNftsCount = Number(data?.ledgerInfo?.mintedNFTokens || 0)
+  const burnedNftsCount = Number(data?.ledgerInfo?.burnedNFTokens || 0)
+  const activeNftCountByTab = {
+    owned: ownedNftCount,
+    sold: soldNftCount,
+    ...(mintedNftsCount > 0 ? { minted: mintedNftsCount } : {}),
+    ...(burnedNftsCount > 0 ? { burned: burnedNftsCount } : {})
+  }
+  const activeNftPreviewByTab = {
+    owned: ownedNftPreview,
+    sold: soldNftPreview,
+    ...(mintedNftsCount > 0 ? { minted: mintedNfts.slice(0, NFT_PREVIEW_LIMIT) } : {}),
+    ...(burnedNftsCount > 0 ? { burned: burnedNfts.slice(0, NFT_PREVIEW_LIMIT) } : {})
+  }
+  const activeNftCount = activeNftCountByTab[nftTab] ?? 0
+  const activeNftPreview = activeNftPreviewByTab[nftTab] || []
+  const activeNftLoading =
+    nftTab === 'sold'
+      ? soldNftsLoading
+      : nftTab === 'minted'
+        ? mintedNftsLoading
+        : nftTab === 'burned'
+          ? burnedNftsLoading
+          : false
+  const activeNftViewAllHref =
+    nftTab === 'owned'
+      ? `/nfts/${data?.address}?includeWithoutMediaData=true`
+      : nftTab === 'sold'
+        ? `/nft-sales?seller=${data?.address}&period=all`
+        : nftTab === 'minted'
+          ? `/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true`
+          : `/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true&burnedPeriod=all`
+  const activeNftEmptyLabel =
+    nftTab === 'owned'
+      ? 'No owned NFTs found.'
+      : nftTab === 'sold'
+        ? 'No sold NFTs found.'
+        : nftTab === 'minted'
+          ? 'No minted NFTs found.'
+          : 'No burned NFTs found.'
+  const activeNftOffers =
+    nftOffersTab === 'received'
+      ? receivedPrivateNftOffers
+      : nftOffersTab === 'created'
+        ? createdNftOffers
+        : ownedNftOffers
+  const activeNftOffersCount = activeNftOffers.length
+  const activeNftOffersLoading = nftOffersLoading[nftOffersTab]
+  const activeNftOffersError = nftOffersError[nftOffersTab]
+  const activeNftOffersTitle =
+    nftOffersTab === 'received'
+      ? 'No private NFT offers found.'
+      : nftOffersTab === 'created'
+        ? 'No created NFT offers found.'
+        : 'No offers for owned NFTs found.'
+  const activeNftOffersViewAllHref =
+    nftOffersTab === 'received'
+      ? `/nft-offers/${data?.address}?offerList=privately-offered-to-address`
+      : `/nft-offers/${data?.address}`
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -448,7 +520,22 @@ export default function Account2({
     setExpandedToken(null)
     setShowNftDataDetails(false)
     setNftTab('owned')
+    setNftOffersTab('received')
   }, [data?.address, effectiveLedgerTimestamp])
+
+  useEffect(() => {
+    const availableTabs = ['owned', 'sold']
+    if (mintedNftsCount > 0) {
+      availableTabs.push('minted')
+    }
+    if (burnedNftsCount > 0) {
+      availableTabs.push('burned')
+    }
+
+    if (!availableTabs.includes(nftTab)) {
+      setNftTab('owned')
+    }
+  }, [nftTab, mintedNftsCount, burnedNftsCount])
 
   useEffect(() => {
     setExpandedIssuedToken(null)
@@ -510,6 +597,50 @@ export default function Account2({
           setSoldNftsLoading(false)
         }
 
+        if (Number(data?.ledgerInfo?.mintedNFTokens || 0) > 0) {
+          try {
+            setMintedNftsLoading(true)
+            const mintedNftsUrl =
+              `v2/nfts?list=nfts&issuer=${data.address}&order=mintedNew&includeDeleted=true&includeWithoutMediaData=true&limit=${NFT_PREVIEW_LIMIT}` +
+              (effectiveLedgerTimestamp
+                ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
+                : '')
+            const mintedResponse = await axios.get(mintedNftsUrl)
+            setMintedNfts(
+              Array.isArray(mintedResponse?.data?.nfts) ? mintedResponse.data.nfts.slice(0, NFT_PREVIEW_LIMIT) : []
+            )
+          } catch {
+            setMintedNfts([])
+          } finally {
+            setMintedNftsLoading(false)
+          }
+        } else {
+          setMintedNfts([])
+          setMintedNftsLoading(false)
+        }
+
+        if (Number(data?.ledgerInfo?.burnedNFTokens || 0) > 0) {
+          try {
+            setBurnedNftsLoading(true)
+            const burnedNftsUrl =
+              `v2/nfts?list=nfts&issuer=${data.address}&order=mintedNew&includeDeleted=true&deletedAt=all&includeWithoutMediaData=true&limit=${NFT_PREVIEW_LIMIT}` +
+              (effectiveLedgerTimestamp
+                ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
+                : '')
+            const burnedResponse = await axios.get(burnedNftsUrl)
+            setBurnedNfts(
+              Array.isArray(burnedResponse?.data?.nfts) ? burnedResponse.data.nfts.slice(0, NFT_PREVIEW_LIMIT) : []
+            )
+          } catch {
+            setBurnedNfts([])
+          } finally {
+            setBurnedNftsLoading(false)
+          }
+        } else {
+          setBurnedNfts([])
+          setBurnedNftsLoading(false)
+        }
+
         // Filter RippleState objects (tokens)
         const rippleStateList = accountObjects.filter((node) => {
           if (node.LedgerEntryType !== 'RippleState') return false
@@ -555,6 +686,10 @@ export default function Account2({
         setOwnedNftIds([])
         setSoldNfts([])
         setSoldNftsLoading(false)
+        setMintedNfts([])
+        setMintedNftsLoading(false)
+        setBurnedNfts([])
+        setBurnedNftsLoading(false)
       }
     }
 
@@ -594,6 +729,65 @@ export default function Account2({
 
     fetchIssuedTokens()
   }, [data?.address, effectiveLedgerTimestamp])
+
+  useEffect(() => {
+    if (!data?.address || !data?.ledgerInfo?.activated) return
+
+    let cancelled = false
+
+    const fetchOfferList = async ({ tabKey, list }) => {
+      setNftOffersLoading((prev) => ({ ...prev, [tabKey]: true }))
+      setNftOffersError((prev) => ({ ...prev, [tabKey]: null }))
+
+      try {
+        const listParam = list ? `&list=${list}` : ''
+        const response = await axios.get(
+          `v2/nft-offers/${data.address}?nftoken=true&offersValidate=true&limit=5${listParam}`
+        )
+
+        const offers = Array.isArray(response?.data?.nftOffers)
+          ? response.data.nftOffers
+              .filter((offer) => offer?.valid !== false)
+              .sort((a, b) => Number(b?.createdAt || 0) - Number(a?.createdAt || 0))
+              .slice(0, 5)
+          : []
+
+        if (cancelled) return
+
+        if (tabKey === 'received') {
+          setReceivedPrivateNftOffers(offers)
+        } else if (tabKey === 'created') {
+          setCreatedNftOffers(offers)
+        } else {
+          setOwnedNftOffers(offers)
+        }
+      } catch (error) {
+        if (cancelled) return
+
+        if (tabKey === 'received') {
+          setReceivedPrivateNftOffers([])
+        } else if (tabKey === 'created') {
+          setCreatedNftOffers([])
+        } else {
+          setOwnedNftOffers([])
+        }
+
+        setNftOffersError((prev) => ({ ...prev, [tabKey]: error?.message || 'Failed to load NFT offers' }))
+      } finally {
+        if (!cancelled) {
+          setNftOffersLoading((prev) => ({ ...prev, [tabKey]: false }))
+        }
+      }
+    }
+
+    fetchOfferList({ tabKey: 'received', list: 'privatelyOfferedToAddress' })
+    fetchOfferList({ tabKey: 'created' })
+    fetchOfferList({ tabKey: 'owned', list: 'counterOffers' })
+
+    return () => {
+      cancelled = true
+    }
+  }, [data?.address, data?.ledgerInfo?.activated])
 
   const buildTransactionsUrl = ({ markerValue, filtersOverride } = {}) => {
     if (!data?.address) return ''
@@ -1249,6 +1443,55 @@ export default function Account2({
                 </div>
               )}
 
+              {hasNftDataDetails && (
+                <div className="time-machine-card tx-settings-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showNftDataDetails ? 'active' : ''}`}
+                    onClick={() => setShowNftDataDetails((prev) => !prev)}
+                  >
+                    NFT data
+                  </button>
+
+                  {showNftDataDetails && (
+                    <div className="time-machine-panel tx-settings-panel">
+                      {data?.ledgerInfo?.firstNFTokenSequence && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>First NFT sequence:</span>
+                          <span>{data.ledgerInfo.firstNFTokenSequence}</span>
+                        </div>
+                      )}
+
+                      {data?.ledgerInfo?.nftokenMinter && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>NFT minter:</span>
+                          <span className="copy-inline">
+                            <AddressWithIconInline data={data.ledgerInfo} name="nftokenMinter" options={{ short: 6 }} />
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.nftokenMinter} />
+                            </span>
+                          </span>
+                        </div>
+                      )}
+
+                      {data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Incoming NFT offers:</span>
+                          <span className="red">disallowed</span>
+                        </div>
+                      )}
+
+                      {data?.ledgerInfo?.flags?.uriTokenIssuer && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>URI token issuer:</span>
+                          <span className="green">enabled</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {data?.ledgerInfo?.sequence && (
                 <div className="time-machine-card tx-settings-card">
                   <button
@@ -1801,45 +2044,64 @@ export default function Account2({
               )}
 
               <div className="asset-item nft-summary-item">
-                <div className="nft-header-row">
-                  <div className="nft-title-wrap">
-                    <span className="asset-summary-title">NFTs</span>
-                    <span className="nft-title-count">{activeNftCount}</span>
+                <div className="nft-header-block">
+                  <div className="nft-header-row">
+                    <div className="nft-title-wrap">
+                      <span className="asset-summary-title">NFTs</span>
+                      <span className="nft-title-count">{activeNftCount}</span>
+                    </div>
+                    {activeNftCount > 0 && data?.address && (
+                      <Link
+                        className="section-link"
+                        href={activeNftViewAllHref}
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        View all
+                      </Link>
+                    )}
+                  </div>
+
+                  <div className="nft-tab-row">
                     <div className="nft-tab-switch" onClick={(event) => event.stopPropagation()}>
                       <button
                         type="button"
-                        className={`nft-tab-btn ${isOwnedTab ? 'active' : ''}`}
+                        className={`nft-tab-btn ${nftTab === 'owned' ? 'active' : ''}`}
                         onClick={() => setNftTab('owned')}
                       >
                         Owned
                       </button>
                       <button
                         type="button"
-                        className={`nft-tab-btn ${!isOwnedTab ? 'active' : ''}`}
+                        className={`nft-tab-btn ${nftTab === 'sold' ? 'active' : ''}`}
                         onClick={() => setNftTab('sold')}
                       >
                         Sold
                       </button>
+                      {mintedNftsCount > 0 && (
+                        <button
+                          type="button"
+                          className={`nft-tab-btn ${nftTab === 'minted' ? 'active' : ''}`}
+                          onClick={() => setNftTab('minted')}
+                        >
+                          Minted
+                        </button>
+                      )}
+                      {burnedNftsCount > 0 && (
+                        <button
+                          type="button"
+                          className={`nft-tab-btn ${nftTab === 'burned' ? 'active' : ''}`}
+                          onClick={() => setNftTab('burned')}
+                        >
+                          Burned
+                        </button>
+                      )}
                     </div>
                   </div>
-                  {activeNftCount > 0 && data?.address && (
-                    <Link
-                      className="section-link"
-                      href={
-                        isOwnedTab
-                          ? `/nfts/${data.address}?includeWithoutMediaData=true`
-                          : `/nft-sales?seller=${data.address}&period=all`
-                      }
-                      onClick={(event) => event.stopPropagation()}
-                    >
-                      View all
-                    </Link>
-                  )}
                 </div>
 
                 <div className="asset-details nft-details">
-                  {soldNftsLoading && !isOwnedTab ? (
-                    <div className="asset-fiat">Loading sold NFTs...</div>
+                  {activeNftLoading ? (
+                    <div className="asset-fiat">Loading {nftTab} NFTs...</div>
                   ) : activeNftCount > 0 ? (
                     <div className="owned-nft-grid">
                       {activeNftPreview.map((nft, nftIndex) => {
@@ -1850,9 +2112,9 @@ export default function Account2({
                         const fallbackTitle = nftId
                         const nftTitle = nftName(nft, { maxLength: 26 }) || fallbackTitle
                         const soldAt = nft?.acceptedAt || nft?.soldAt || nft?.createdAt || nft?.updatedAt
-                        const soldTimeAgo = !isOwnedTab && soldAt ? timeFromNow(soldAt, i18n) : null
+                        const soldTimeAgo = nftTab === 'sold' && soldAt ? timeFromNow(soldAt, i18n) : null
                         const soldPrice =
-                          !isOwnedTab && nft?.amount
+                          nftTab === 'sold' && nft?.amount
                             ? amountFormat(nft.amount, { short: true, maxFractionDigits: 2 })
                             : null
 
@@ -1870,97 +2132,20 @@ export default function Account2({
                             </Link>
                             <div className="nft-caption">
                               <span
-                                className={`owned-nft-name ${isOwnedTab ? 'owned-nft-name-two-lines' : 'owned-nft-name-one-line'}`}
+                                className={`owned-nft-name ${nftTab === 'sold' ? 'owned-nft-name-one-line' : 'owned-nft-name-two-lines'}`}
                               >
-                                {isOwnedTab ? nftTitle : soldTimeAgo || nftTitle}
+                                {nftTab === 'sold' ? soldTimeAgo || nftTitle : nftTitle}
                               </span>
-                              {!isOwnedTab && <span className="sold-nft-price">{soldPrice}</span>}
+                              {nftTab === 'sold' && <span className="sold-nft-price">{soldPrice}</span>}
                             </div>
                           </div>
                         )
                       })}
                     </div>
                   ) : (
-                    <div className="asset-fiat">{isOwnedTab ? 'No owned NFTs found.' : 'No sold NFTs found.'}</div>
+                    <div className="asset-fiat">{activeNftEmptyLabel}</div>
                   )}
                 </div>
-              </div>
-
-              <div className="asset-item" onClick={() => setShowNftDataDetails((prev) => !prev)}>
-                <div className="asset-main">
-                  <div className="asset-logo">
-                    <span className="asset-summary-title">NFT data</span>
-                  </div>
-                  <div className="asset-value">
-                    <div className="asset-fiat">
-                      {hasNftDataDetails
-                        ? `Minted ${data?.ledgerInfo?.mintedNFTokens || 0} · Burned ${data?.ledgerInfo?.burnedNFTokens || 0}`
-                        : 'No NFT data'}
-                    </div>
-                  </div>
-                </div>
-
-                {showNftDataDetails && (
-                  <div className="asset-details nft-data-details">
-                    <div className="detail-row">
-                      <span>Minted NFTs:</span>
-                      <span>
-                        {effectiveLedgerTimestamp ? (
-                          data?.ledgerInfo?.mintedNFTokens || 0
-                        ) : (
-                          <Link
-                            href={`/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true`}
-                            onClick={(event) => event.stopPropagation()}
-                          >
-                            View minted NFTs ({data?.ledgerInfo?.mintedNFTokens || 0})
-                          </Link>
-                        )}
-                      </span>
-                    </div>
-
-                    <div className="detail-row">
-                      <span>Burned NFTs:</span>
-                      <span>
-                        {effectiveLedgerTimestamp ? (
-                          data?.ledgerInfo?.burnedNFTokens || 0
-                        ) : (
-                          <Link
-                            href={`/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true&burnedPeriod=all`}
-                            onClick={(event) => event.stopPropagation()}
-                          >
-                            View burned NFTs ({data?.ledgerInfo?.burnedNFTokens || 0})
-                          </Link>
-                        )}
-                      </span>
-                    </div>
-
-                    {data?.ledgerInfo?.firstNFTokenSequence && (
-                      <div className="detail-row">
-                        <span>First NFT sequence:</span>
-                        <span>{data.ledgerInfo.firstNFTokenSequence}</span>
-                      </div>
-                    )}
-
-                    {data?.ledgerInfo?.nftokenMinter && (
-                      <div className="detail-row">
-                        <span>NFT minter:</span>
-                        <span className="copy-inline">
-                          <AddressWithIconInline data={data.ledgerInfo} name="nftokenMinter" options={{ short: 6 }} />
-                          <span onClick={(event) => event.stopPropagation()}>
-                            <CopyButton text={data.ledgerInfo.nftokenMinter} />
-                          </span>
-                        </span>
-                      </div>
-                    )}
-
-                    {data?.ledgerInfo?.flags?.uriTokenIssuer && (
-                      <div className="detail-row">
-                        <span>URI token issuer:</span>
-                        <span className="green">true</span>
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
           </CollapsibleColumn>
@@ -2348,6 +2533,106 @@ export default function Account2({
                     </div>
                   </div>
                 )}
+              </div>
+
+              <div className="asset-item nft-offers-item">
+                <div className="nft-header-block">
+                  <div className="nft-header-row">
+                    <div className="nft-title-wrap">
+                      <span className="asset-summary-title">NFT offers</span>
+                      <span className="nft-title-count">{activeNftOffersCount}</span>
+                    </div>
+
+                    {data?.address && activeNftOffersCount > 0 && (
+                      <Link className="section-link" href={activeNftOffersViewAllHref}>
+                        View all
+                      </Link>
+                    )}
+                  </div>
+
+                  <div className="nft-tab-row">
+                    <div className="nft-tab-switch nft-offers-tab-switch">
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftOffersTab === 'received' ? 'active' : ''}`}
+                        onClick={() => setNftOffersTab('received')}
+                      >
+                        Private
+                      </button>
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftOffersTab === 'created' ? 'active' : ''}`}
+                        onClick={() => setNftOffersTab('created')}
+                      >
+                        Created
+                      </button>
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftOffersTab === 'owned' ? 'active' : ''}`}
+                        onClick={() => setNftOffersTab('owned')}
+                      >
+                        For owned
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="asset-details nft-offers-details">
+                  {activeNftOffersLoading ? (
+                    <div className="asset-fiat">Loading NFT offers...</div>
+                  ) : activeNftOffersError ? (
+                    <div className="asset-fiat red">{activeNftOffersError}</div>
+                  ) : activeNftOffersCount > 0 ? (
+                    <div className="nft-offers-list">
+                      {activeNftOffers.map((offer, index) => {
+                        const nftId =
+                          offer?.nftoken?.nftokenID || offer?.nftoken?.NFTokenID || offer?.nftokenID || offer?.NFTokenID
+                        const offerType = offer?.flags?.sellToken ? 'Sell' : 'Buy'
+                        const offerAmount = offer?.amount
+                          ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
+                          : '-'
+                        const offerPlaced = offer?.createdAt ? timeFromNow(offer.createdAt, i18n) : '-'
+                        const offerNftName =
+                          nftName(offer?.nftoken || offer, { maxLength: 24 }) || (nftId ? nftId : 'NFT')
+
+                        return (
+                          <div className="nft-offer-card" key={`${offer?.offerIndex || 'offer'}-${index}`}>
+                            <div className="nft-offer-thumb">
+                              {nftId ? (
+                                <Link href={`/nft/${nftId}`} className="nft-offer-nft-link">
+                                  <NftImage
+                                    nft={offer?.nftoken || offer}
+                                    style={{ width: 36, height: 36, borderRadius: '6px', margin: 0 }}
+                                  />
+                                </Link>
+                              ) : (
+                                <div className="nft-offer-thumb-fallback">NFT</div>
+                              )}
+                            </div>
+
+                            <div className="nft-offer-main">
+                              <span className="nft-offer-name">{offerNftName}</span>
+                              <span className="nft-offer-meta">
+                                {offerType} · {offerAmount}
+                              </span>
+                            </div>
+
+                            <div className="nft-offer-side">
+                              <span className="nft-offer-time">{offerPlaced}</span>
+                              {offer?.offerIndex && (
+                                <Link href={`/nft-offer/${offer.offerIndex}`} className="nft-offer-link">
+                                  Offer
+                                </Link>
+                              )}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ) : (
+                    <div className="asset-fiat">{activeNftOffersTitle}</div>
+                  )}
+                </div>
               </div>
             </div>
           </CollapsibleColumn>
@@ -3240,6 +3525,14 @@ export default function Account2({
           cursor: default;
         }
 
+        .nft-offers-item {
+          cursor: default;
+        }
+
+        .nft-offers-item:hover {
+          transform: none;
+        }
+
         .nft-summary-item:hover {
           transform: none;
         }
@@ -3256,17 +3549,52 @@ export default function Account2({
           gap: 10px;
         }
 
+        .nft-header-block {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
         .nft-title-wrap {
           display: inline-flex;
           align-items: center;
           gap: 8px;
           min-width: 0;
+          flex-wrap: nowrap;
+        }
+
+        .nft-tab-row {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          min-height: 24px;
+        }
+
+        .nft-header-meta {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          min-width: 0;
+          font-size: 12px;
+          color: var(--text-secondary);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .nft-header-meta-link {
+          color: var(--accent-link);
+          text-decoration: none;
+        }
+
+        .nft-header-meta-link:hover {
+          text-decoration: underline;
         }
 
         .nft-tab-switch {
           display: inline-flex;
           gap: 10px;
-          margin-left: 6px;
+          margin-left: 0;
           padding: 0;
           border: 0;
           border-radius: 0;
@@ -3299,6 +3627,12 @@ export default function Account2({
         .nft-tab-btn:hover:not(.active) {
           color: var(--text);
           border-bottom-color: color-mix(in srgb, var(--text) 35%, transparent);
+        }
+
+        .nft-offers-tab-switch {
+          margin-left: 0;
+          gap: 8px;
+          flex-wrap: wrap;
         }
 
         .nft-title-count {
@@ -3383,9 +3717,131 @@ export default function Account2({
           min-height: 40px;
         }
 
+        .nft-offers-details {
+          margin-top: 10px;
+          padding-top: 10px;
+        }
+
+        .nft-offers-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .nft-offer-card {
+          display: grid;
+          grid-template-columns: 36px minmax(0, 1fr) auto;
+          gap: 10px;
+          align-items: center;
+          padding: 8px;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          background: var(--background-table);
+        }
+
+        .nft-offer-thumb {
+          width: 36px;
+          height: 36px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          border-radius: 6px;
+        }
+
+        .nft-offer-thumb-fallback {
+          width: 36px;
+          height: 36px;
+          border-radius: 6px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--background-input);
+          border: 1px solid var(--border-color);
+          color: var(--text-secondary);
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: 0.4px;
+        }
+
+        .nft-offer-main {
+          min-width: 0;
+          display: inline-flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .nft-offer-name {
+          font-size: 12px;
+          color: var(--text);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .nft-offer-meta {
+          font-size: 11px;
+          color: var(--text-secondary);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .nft-offer-side {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 3px;
+          min-width: 72px;
+        }
+
+        .nft-offer-time {
+          font-size: 11px;
+          color: var(--text-secondary);
+          white-space: nowrap;
+        }
+
+        .nft-offer-link {
+          font-size: 12px;
+          color: var(--accent-link);
+          text-decoration: none;
+          line-height: 1.1;
+        }
+
+        .nft-offer-link:hover {
+          text-decoration: underline;
+        }
+
+        .nft-offer-nft-link {
+          display: inline-flex;
+          line-height: 0;
+        }
+
+        .nft-offer-nft-link :global(img) {
+          display: block;
+        }
+
         @media (max-width: 560px) {
           .owned-nft-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+
+          .nft-offer-card {
+            grid-template-columns: 32px minmax(0, 1fr);
+          }
+
+          .nft-offer-thumb,
+          .nft-offer-thumb-fallback {
+            width: 32px;
+            height: 32px;
+          }
+
+          .nft-offer-side {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            min-width: 0;
           }
         }
 
