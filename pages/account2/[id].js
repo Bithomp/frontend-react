@@ -4096,9 +4096,10 @@ export default function Account2({
         }
 
         .nft-title-count {
-          display: inline-block;
-          width: 4ch;
-          text-align: right;
+          display: inline-flex;
+          align-items: center;
+          width: auto;
+          text-align: left;
           font-variant-numeric: tabular-nums;
           font-size: 14px;
           font-weight: 600;
