@@ -179,7 +179,7 @@ import {
   userOrServiceName
 } from '../../utils/format'
 import { subtract } from '../../utils/calc'
-import { addressBalanceChanges } from '../../utils/transaction'
+import { addressBalanceChanges, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import {
   FaFacebook,
   FaGear,
@@ -2465,6 +2465,13 @@ export default function Account2({
                     tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue > 0
 
                   const failedStatusText = !isSuccessful ? outcome?.result || 'Failed' : null
+                  const failedStatusShort = failedStatusText
+                    ? failedStatusText.startsWith('te')
+                      ? shortErrorCode(failedStatusText)
+                      : failedStatusText.length > 3
+                        ? failedStatusText.slice(3)
+                        : failedStatusText
+                    : null
                   const directionLabel = counterparty ? (isSource ? 'To' : 'From') : null
                   const txTypeCollapsedLabel = counterparty
                     ? `${tx?.TransactionType || '-'} ${isSource ? 'to' : 'from'}`
@@ -2472,7 +2479,7 @@ export default function Account2({
 
                   return (
                     <div
-                      className={`asset-item token-asset-item tx-asset-item ${isExpanded ? 'expanded' : ''}`}
+                      className={`asset-item token-asset-item tx-asset-item ${isExpanded ? 'expanded' : ''} ${!isSuccessful ? 'tx-failed' : ''}`}
                       key={txKey}
                       onClick={() => setExpandedTransactionKey(isExpanded ? null : txKey)}
                     >
@@ -2488,7 +2495,6 @@ export default function Account2({
                               </span>
                             )}
                             <span className="tx-type-main">{txTypeCollapsedLabel}</span>
-                            {failedStatusText && <span className="tx-fail-badge">{failedStatusText}</span>}
                             <span className="tx-time tx-time-top">
                               {tx?.date ? timeFromNow(tx.date, i18n, 'ripple') : '-'}
                             </span>
@@ -2513,7 +2519,9 @@ export default function Account2({
                         </div>
 
                         <div className="asset-value tx-collapsed-change">
-                          {tx?.TransactionType === 'TrustSet' ? (
+                          {failedStatusShort ? (
+                            <span className="tx-inline-status orange">{failedStatusShort}</span>
+                          ) : tx?.TransactionType === 'TrustSet' ? (
                             <>
                               {isTrustSetDeleted && <span className="tx-inline-status orange">deleted</span>}
                               {hasTrustSetLimit && (
@@ -2556,10 +2564,18 @@ export default function Account2({
                           </div>
 
                           {failedStatusText && (
-                            <div className="detail-row">
-                              <span>Status:</span>
-                              <span className="red">{failedStatusText}</span>
-                            </div>
+                            <>
+                              <div className="detail-row">
+                                <span>Error code:</span>
+                                <span className="orange">{failedStatusText}</span>
+                              </div>
+                              <div className="detail-row tx-fail-description-row">
+                                <span>Error:</span>
+                                <span className="orange tx-fail-description-text">
+                                  {errorCodeDescription(failedStatusText) || failedStatusText}
+                                </span>
+                              </div>
+                            </>
                           )}
 
                           {counterparty && (
@@ -3545,6 +3561,16 @@ export default function Account2({
           padding: 8px 12px;
         }
 
+        .tx-asset-item.tx-failed {
+          background: repeating-linear-gradient(
+            45deg,
+            rgba(255, 150, 0, 0.15),
+            rgba(255, 180, 80, 0.15) 10px,
+            transparent 10px,
+            transparent 20px
+          );
+        }
+
         .tx-asset-item.expanded {
           border-color: var(--accent-link);
         }
@@ -3685,6 +3711,18 @@ export default function Account2({
 
         .tx-detail-change-row {
           align-items: flex-start;
+        }
+
+        .tx-fail-description-row {
+          align-items: flex-start;
+        }
+
+        .tx-fail-description-text {
+          max-width: 72% !important;
+          white-space: normal !important;
+          word-break: normal !important;
+          overflow-wrap: break-word !important;
+          text-align: right;
         }
 
         .tx-detail-change-list {
