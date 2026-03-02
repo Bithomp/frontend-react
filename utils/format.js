@@ -1270,6 +1270,46 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
       smallNumberFractionDigits = 3
     }
   }
+
+  const toSubscript = (value) => {
+    const subscriptDigits = {
+      0: '₀',
+      1: '₁',
+      2: '₂',
+      3: '₃',
+      4: '₄',
+      5: '₅',
+      6: '₆',
+      7: '₇',
+      8: '₈',
+      9: '₉'
+    }
+
+    return String(value)
+      .split('')
+      .map((digit) => subscriptDigits[digit] || digit)
+      .join('')
+  }
+
+  const formatTinyNumber = (value, significantDigits = 2) => {
+    if (!Number.isFinite(value) || value <= 0) return null
+
+    const exponentMatch = value.toExponential().match(/e-(\d+)$/)
+    const leadingZeroes = exponentMatch ? Math.max(Number(exponentMatch[1]) - 1, 0) : 0
+    if (leadingZeroes <= 0) return null
+
+    const fixedPrecision = Math.min(Math.max(leadingZeroes + significantDigits + 2, 12), 20)
+    const decimalPart = value.toFixed(fixedPrecision).split('.')[1] || ''
+    let significant = decimalPart.slice(leadingZeroes, leadingZeroes + significantDigits)
+
+    significant = significant.replace(/^0+/, '').replace(/0+$/, '')
+    if (!significant) {
+      significant = '1'
+    }
+
+    return `0.0${toSubscript(leadingZeroes)}${significant}`
+  }
+
   let output = ''
   if (n > 999999999999) {
     output = niceNumber(n / 1000000000000, largeNumberFractionDigits, currency) + 'T'
@@ -1285,7 +1325,14 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     output = niceNumber(0, 0, currency)
   } else {
     const pow = Math.pow(10, smallNumberFractionDigits)
-    output = niceNumber(Math.floor(n * pow) / pow, smallNumberFractionDigits, currency)
+    const roundedDownValue = Math.floor(n * pow) / pow
+    const shouldUseTinyFormat = !currency && n < 1 && roundedDownValue === 0
+
+    if (shouldUseTinyFormat) {
+      output = formatTinyNumber(n, Math.max(smallNumberFractionDigits, 2))
+    } else {
+      output = niceNumber(roundedDownValue, smallNumberFractionDigits, currency)
+    }
   }
   return beforeNumber + output
 }
