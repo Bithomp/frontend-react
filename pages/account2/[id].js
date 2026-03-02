@@ -2684,11 +2684,8 @@ export default function Account2({
                                   const changeClass = changeValue > 0 ? 'green' : changeValue < 0 ? 'red' : ''
                                   return (
                                     <span className={changeClass} key={`${txKey}-change-${changeIndex}`}>
-                                      {amountFormat(change, {
-                                        short: true,
-                                        maxFractionDigits: 2,
-                                        showPlus: true
-                                      })}
+                                      {changeValue > 0 ? '+' : ''}
+                                      {fullNiceNumber(change?.value || 0)} {niceCurrency(change?.currency)}
                                     </span>
                                   )
                                 })}
