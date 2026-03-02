@@ -405,6 +405,7 @@ export default function Account2({
   const nativeAvailableFiatValue = ((balanceList?.available?.native || 0) / 1000000) * (pageFiatRate || 0)
   const lpTokensCount = tokens.filter((token) => token.Balance?.currency?.substring(0, 2) === '03').length
   const issuedTokensCount = tokens.filter((token) => token.Balance?.currency?.substring(0, 2) !== '03').length
+  const hasNonNativeTokenAssets = lpTokensCount > 0 || issuedTokensCount > 0
   const lpTokensFiatValue = tokens.reduce((sum, token) => {
     const isLpToken = token.Balance?.currency?.substring(0, 2) === '03'
     if (!isLpToken) return sum
@@ -434,6 +435,11 @@ export default function Account2({
   const soldNftPreview = soldNfts.slice(0, NFT_PREVIEW_LIMIT)
   const mintedNftsCount = Number(data?.ledgerInfo?.mintedNFTokens || 0)
   const burnedNftsCount = Number(data?.ledgerInfo?.burnedNFTokens || 0)
+  const hasOwnedNfts = ownedNftCount > 0
+  const hasSoldNfts = soldNftCount > 0
+  const hasMintedNfts = mintedNftsCount > 0
+  const hasBurnedNfts = burnedNftsCount > 0
+  const hasAnyNftSectionData = hasOwnedNfts || hasSoldNfts || hasMintedNfts || hasBurnedNfts
   const activeNftCountByTab = {
     owned: ownedNftCount,
     sold: soldNftCount,
@@ -559,18 +565,24 @@ export default function Account2({
   }, [data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
-    const availableTabs = ['owned', 'sold']
-    if (mintedNftsCount > 0) {
+    const availableTabs = []
+    if (hasOwnedNfts) {
+      availableTabs.push('owned')
+    }
+    if (hasSoldNfts) {
+      availableTabs.push('sold')
+    }
+    if (hasMintedNfts) {
       availableTabs.push('minted')
     }
-    if (burnedNftsCount > 0) {
+    if (hasBurnedNfts) {
       availableTabs.push('burned')
     }
 
-    if (!availableTabs.includes(nftTab)) {
-      setNftTab('owned')
+    if (availableTabs.length > 0 && !availableTabs.includes(nftTab)) {
+      setNftTab(availableTabs[0])
     }
-  }, [nftTab, mintedNftsCount, burnedNftsCount])
+  }, [nftTab, hasOwnedNfts, hasSoldNfts, hasMintedNfts, hasBurnedNfts])
 
   useEffect(() => {
     setExpandedIssuedToken(null)
@@ -1743,29 +1755,31 @@ export default function Account2({
           {/* Column 2: Assets */}
           <CollapsibleColumn>
             <div className="assets-section">
-              <div className="asset-item" onClick={() => setShowTotalWorthDetails(!showTotalWorthDetails)}>
-                <div className="asset-main">
-                  <div className="asset-logo">
-                    <span className="asset-summary-title">Total worth</span>
-                  </div>
-                  <div className="asset-value">
-                    <div className="asset-fiat" suppressHydrationWarning>
-                      {shortNiceNumber(totalWorthFiatValue, 2, 1, selectedCurrency) ||
-                        shortNiceNumber(0, 2, 1, selectedCurrency)}
+              {hasNonNativeTokenAssets && (
+                <div className="asset-item" onClick={() => setShowTotalWorthDetails(!showTotalWorthDetails)}>
+                  <div className="asset-main">
+                    <div className="asset-logo">
+                      <span className="asset-summary-title">Total worth</span>
+                    </div>
+                    <div className="asset-value">
+                      <div className="asset-fiat" suppressHydrationWarning>
+                        {shortNiceNumber(totalWorthFiatValue, 2, 1, selectedCurrency) ||
+                          shortNiceNumber(0, 2, 1, selectedCurrency)}
+                      </div>
                     </div>
                   </div>
+                  {showTotalWorthDetails && (
+                    <div className="asset-details">
+                      {totalWorthBreakdown.map((item) => (
+                        <div className="detail-row" key={`worth-${item.label}`}>
+                          <span>{item.label}:</span>
+                          <span suppressHydrationWarning>{shortNiceNumber(item.value, 2, 1, selectedCurrency)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                {showTotalWorthDetails && (
-                  <div className="asset-details">
-                    {totalWorthBreakdown.map((item) => (
-                      <div className="detail-row" key={`worth-${item.label}`}>
-                        <span>{item.label}:</span>
-                        <span suppressHydrationWarning>{shortNiceNumber(item.value, 2, 1, selectedCurrency)}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              )}
 
               {/* Native Currency Balance */}
               {balanceList && (
@@ -2193,103 +2207,111 @@ export default function Account2({
                 </button>
               )}
 
-              <div className="section-header-row nft-section-header-row">
-                <div className="section-title nft-section-title">
-                  NFTs <span className="nft-title-count">{activeNftCount}</span>
-                </div>
-                {activeNftCount > 0 && data?.address && (
-                  <Link className="section-link" href={activeNftViewAllHref}>
-                    View all
-                  </Link>
-                )}
-              </div>
-
-              <div className="nft-tab-row nft-tab-row-outside">
-                <div className="nft-tab-switch">
-                  <button
-                    type="button"
-                    className={`nft-tab-btn ${nftTab === 'owned' ? 'active' : ''}`}
-                    onClick={() => setNftTab('owned')}
-                  >
-                    Owned
-                  </button>
-                  <button
-                    type="button"
-                    className={`nft-tab-btn ${nftTab === 'sold' ? 'active' : ''}`}
-                    onClick={() => setNftTab('sold')}
-                  >
-                    Sold
-                  </button>
-                  {mintedNftsCount > 0 && (
-                    <button
-                      type="button"
-                      className={`nft-tab-btn ${nftTab === 'minted' ? 'active' : ''}`}
-                      onClick={() => setNftTab('minted')}
-                    >
-                      Minted
-                    </button>
-                  )}
-                  {burnedNftsCount > 0 && (
-                    <button
-                      type="button"
-                      className={`nft-tab-btn ${nftTab === 'burned' ? 'active' : ''}`}
-                      onClick={() => setNftTab('burned')}
-                    >
-                      Burned
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div className="asset-item nft-summary-item">
-                <div className="asset-details nft-details nft-details-flat-top">
-                  {activeNftLoading ? (
-                    <div className="asset-fiat">Loading {nftTab} NFTs...</div>
-                  ) : activeNftCount > 0 ? (
-                    <div className="owned-nft-grid">
-                      {activeNftPreview.map((nft, nftIndex) => {
-                        const nftId =
-                          nft?.nftokenID || nft?.NFTokenID || nft?.nftoken?.nftokenID || nft?.nftoken?.NFTokenID
-                        if (!nftId) return null
-
-                        const fallbackTitle = nftId
-                        const nftTitle = nftName(nft, { maxLength: 26 }) || fallbackTitle
-                        const soldAt = nft?.acceptedAt || nft?.soldAt || nft?.createdAt || nft?.updatedAt
-                        const soldTimeAgo = nftTab === 'sold' && soldAt ? timeFromNow(soldAt, i18n) : null
-                        const soldPrice =
-                          nftTab === 'sold' && nft?.amount
-                            ? amountFormat(nft.amount, { short: true, maxFractionDigits: 2 })
-                            : null
-
-                        return (
-                          <div key={`${nftId}-${nftIndex}`} className="owned-nft-card">
-                            <Link
-                              href={`/nft/${nftId}`}
-                              className="owned-nft-image-link"
-                              onClick={(event) => event.stopPropagation()}
-                            >
-                              <NftImage
-                                nft={nft}
-                                style={{ width: 44, height: 44, borderRadius: '6px', margin: '0 auto 6px' }}
-                              />
-                            </Link>
-                            <div className="nft-caption">
-                              <span
-                                className={`owned-nft-name ${nftTab === 'sold' ? 'owned-nft-name-one-line' : 'owned-nft-name-two-lines'}`}
-                              >
-                                {nftTab === 'sold' ? soldTimeAgo || nftTitle : nftTitle}
-                              </span>
-                              {nftTab === 'sold' && <span className="sold-nft-price">{soldPrice}</span>}
-                            </div>
-                          </div>
-                        )
-                      })}
+              {hasAnyNftSectionData && (
+                <>
+                  <div className="section-header-row nft-section-header-row">
+                    <div className="section-title nft-section-title">
+                      NFTs <span className="nft-title-count">{activeNftCount}</span>
                     </div>
-                  ) : (
-                    <div className="asset-fiat">{activeNftEmptyLabel}</div>
-                  )}
-                </div>
-              </div>
+                    {activeNftCount > 0 && data?.address && (
+                      <Link className="section-link" href={activeNftViewAllHref}>
+                        View all
+                      </Link>
+                    )}
+                  </div>
+
+                  <div className="nft-tab-row nft-tab-row-outside">
+                    <div className="nft-tab-switch">
+                      {hasOwnedNfts && (
+                        <button
+                          type="button"
+                          className={`nft-tab-btn ${nftTab === 'owned' ? 'active' : ''}`}
+                          onClick={() => setNftTab('owned')}
+                        >
+                          Owned
+                        </button>
+                      )}
+                      {hasSoldNfts && (
+                        <button
+                          type="button"
+                          className={`nft-tab-btn ${nftTab === 'sold' ? 'active' : ''}`}
+                          onClick={() => setNftTab('sold')}
+                        >
+                          Sold
+                        </button>
+                      )}
+                      {hasMintedNfts && (
+                        <button
+                          type="button"
+                          className={`nft-tab-btn ${nftTab === 'minted' ? 'active' : ''}`}
+                          onClick={() => setNftTab('minted')}
+                        >
+                          Minted
+                        </button>
+                      )}
+                      {hasBurnedNfts && (
+                        <button
+                          type="button"
+                          className={`nft-tab-btn ${nftTab === 'burned' ? 'active' : ''}`}
+                          onClick={() => setNftTab('burned')}
+                        >
+                          Burned
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="asset-item nft-summary-item">
+                    <div className="asset-details nft-details nft-details-flat-top">
+                      {activeNftLoading ? (
+                        <div className="asset-fiat">Loading {nftTab} NFTs...</div>
+                      ) : activeNftCount > 0 ? (
+                        <div className="owned-nft-grid">
+                          {activeNftPreview.map((nft, nftIndex) => {
+                            const nftId =
+                              nft?.nftokenID || nft?.NFTokenID || nft?.nftoken?.nftokenID || nft?.nftoken?.NFTokenID
+                            if (!nftId) return null
+
+                            const fallbackTitle = nftId
+                            const nftTitle = nftName(nft, { maxLength: 26 }) || fallbackTitle
+                            const soldAt = nft?.acceptedAt || nft?.soldAt || nft?.createdAt || nft?.updatedAt
+                            const soldTimeAgo = nftTab === 'sold' && soldAt ? timeFromNow(soldAt, i18n) : null
+                            const soldPrice =
+                              nftTab === 'sold' && nft?.amount
+                                ? amountFormat(nft.amount, { short: true, maxFractionDigits: 2 })
+                                : null
+
+                            return (
+                              <div key={`${nftId}-${nftIndex}`} className="owned-nft-card">
+                                <Link
+                                  href={`/nft/${nftId}`}
+                                  className="owned-nft-image-link"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  <NftImage
+                                    nft={nft}
+                                    style={{ width: 44, height: 44, borderRadius: '6px', margin: '0 auto 6px' }}
+                                  />
+                                </Link>
+                                <div className="nft-caption">
+                                  <span
+                                    className={`owned-nft-name ${nftTab === 'sold' ? 'owned-nft-name-one-line' : 'owned-nft-name-two-lines'}`}
+                                  >
+                                    {nftTab === 'sold' ? soldTimeAgo || nftTitle : nftTitle}
+                                  </span>
+                                  {nftTab === 'sold' && <span className="sold-nft-price">{soldPrice}</span>}
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      ) : (
+                        <div className="asset-fiat">{activeNftEmptyLabel}</div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </CollapsibleColumn>
 
