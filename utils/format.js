@@ -1211,7 +1211,94 @@ export const niceNumber = (n, fractionDigits = null, currency = null, maxFractio
       n = Number(n)
     }
   }
+
+  const toSubscript = (value) => {
+    const subscriptDigits = {
+      0: '₀',
+      1: '₁',
+      2: '₂',
+      3: '₃',
+      4: '₄',
+      5: '₅',
+      6: '₆',
+      7: '₇',
+      8: '₈',
+      9: '₉'
+    }
+
+    return String(value)
+      .split('')
+      .map((digit) => subscriptDigits[digit] || digit)
+      .join('')
+  }
+
+  const formatTinyBase = (value, significantDigits = 2) => {
+    if (!Number.isFinite(value) || value === 0) return '0'
+
+    const abs = Math.abs(value)
+    const exponentMatch = abs.toExponential().match(/e-(\d+)$/)
+    const leadingZeroes = exponentMatch ? Math.max(Number(exponentMatch[1]) - 1, 0) : 0
+    if (leadingZeroes <= 0) return null
+
+    const fixedPrecision = Math.min(Math.max(leadingZeroes + significantDigits + 2, 12), 20)
+    const decimalPart = abs.toFixed(fixedPrecision).split('.')[1] || ''
+    let significant = decimalPart.slice(leadingZeroes, leadingZeroes + significantDigits)
+    significant = significant.replace(/^0+/, '').replace(/0+$/, '')
+    if (!significant) significant = '1'
+
+    return `0.0${toSubscript(leadingZeroes)}${significant}`
+  }
+
+  const formatTinyCurrency = (value, currencyCode, tinyBase, digits = 2) => {
+    try {
+      const formatter = new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: currencyCode.toUpperCase(),
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      })
+
+      const parts = formatter.formatToParts(value)
+      let inserted = false
+      const out = parts
+        .map((part) => {
+          if (part.type === 'integer') {
+            if (!inserted) {
+              inserted = true
+              return tinyBase
+            }
+            return ''
+          }
+          if (part.type === 'fraction' || part.type === 'decimal' || part.type === 'group') {
+            return ''
+          }
+          return part.value
+        })
+        .join('')
+
+      return out || `${currencyCode.toUpperCase()} ${tinyBase}`
+    } catch {
+      return `${currencyCode.toUpperCase()} ${tinyBase}`
+    }
+  }
+
   if (n || n === 0 || n === '0') {
+    const num = Number(n)
+    const digits = maxFractionDigits || fractionDigits || 0
+    if (Number.isFinite(num) && num !== 0 && digits > 0) {
+      const factor = Math.pow(10, digits)
+      const roundedDown = Math.floor(Math.abs(num) * factor) / factor
+      if (Math.abs(num) < 1 && roundedDown === 0) {
+        const tinyBase = formatTinyBase(num, Math.max(digits, 2))
+        if (tinyBase) {
+          if (currency) {
+            return formatTinyCurrency(num, currency, tinyBase, digits)
+          }
+          return num < 0 ? `-${tinyBase}` : tinyBase
+        }
+      }
+    }
+
     let options = {
       maximumFractionDigits: maxFractionDigits || fractionDigits || 0,
       minimumFractionDigits: fractionDigits || 0
@@ -1310,6 +1397,49 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     return `0.0${toSubscript(leadingZeroes)}${significant}`
   }
 
+  const formatTinyCurrency = (value, currencyCode, significantDigits = 2) => {
+    const tinyNumber = formatTinyNumber(value, significantDigits)
+    if (!tinyNumber || !currencyCode) return tinyNumber
+
+    try {
+      const formatter = new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: currencyCode.toUpperCase(),
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })
+
+      const parts = formatter.formatToParts(0)
+      const hasIntegerPart = parts.some((part) => part.type === 'integer')
+      if (!hasIntegerPart) {
+        return `${currencyCode.toUpperCase()} ${tinyNumber}`
+      }
+
+      let numberInserted = false
+      const formatted = parts
+        .map((part) => {
+          if (part.type === 'integer') {
+            if (!numberInserted) {
+              numberInserted = true
+              return tinyNumber
+            }
+            return ''
+          }
+
+          if (part.type === 'fraction' || part.type === 'decimal' || part.type === 'group') {
+            return ''
+          }
+
+          return part.value
+        })
+        .join('')
+
+      return formatted || `${currencyCode.toUpperCase()} ${tinyNumber}`
+    } catch {
+      return `${currencyCode.toUpperCase()} ${tinyNumber}`
+    }
+  }
+
   let output = ''
   if (n > 999999999999) {
     output = niceNumber(n / 1000000000000, largeNumberFractionDigits, currency) + 'T'
@@ -1326,10 +1456,12 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
   } else {
     const pow = Math.pow(10, smallNumberFractionDigits)
     const roundedDownValue = Math.floor(n * pow) / pow
-    const shouldUseTinyFormat = !currency && n < 1 && roundedDownValue === 0
+    const shouldUseTinyFormat = n < 1 && roundedDownValue === 0
 
     if (shouldUseTinyFormat) {
-      output = formatTinyNumber(n, Math.max(smallNumberFractionDigits, 2))
+      output = currency
+        ? formatTinyCurrency(n, currency, Math.max(smallNumberFractionDigits, 2))
+        : formatTinyNumber(n, Math.max(smallNumberFractionDigits, 2))
     } else {
       output = niceNumber(roundedDownValue, smallNumberFractionDigits, currency)
     }
