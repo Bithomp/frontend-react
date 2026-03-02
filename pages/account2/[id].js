@@ -2638,6 +2638,13 @@ export default function Account2({
                             <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
                           </div>
 
+                          {isSource && (tx?.Sequence || tx?.TicketSequence) && (
+                            <div className="detail-row">
+                              <span>{tx?.TicketSequence ? 'Ticket sequence:' : 'Sequence:'}</span>
+                              <span>{tx?.Sequence || tx?.TicketSequence}</span>
+                            </div>
+                          )}
+
                           {isSource && tx?.Fee && (
                             <div className="detail-row">
                               <span>Fee:</span>
