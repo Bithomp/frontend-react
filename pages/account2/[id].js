@@ -270,6 +270,7 @@ export default function Account2({
   const [expandedCheckKey, setExpandedCheckKey] = useState(null)
   const [showTxSettingsDetails, setShowTxSettingsDetails] = useState(false)
   const [showAccountControlDetails, setShowAccountControlDetails] = useState(false)
+  const [expandedTransactionKey, setExpandedTransactionKey] = useState(null)
   const [recentTransactions, setRecentTransactions] = useState([])
   const [transactionsLoading, setTransactionsLoading] = useState(false)
   const [transactionsLoadingMore, setTransactionsLoadingMore] = useState(false)
@@ -333,6 +334,7 @@ export default function Account2({
   const balanceList = balanceListServer
   const isLoggedIn = !!account?.address
   const TOKEN_PREVIEW_LIMIT = 5
+  const TRANSACTIONS_PREVIEW_LIMIT = 10
   const NFT_PREVIEW_LIMIT = 8
   const issuerTransferFeeText = data?.ledgerInfo?.transferRate
     ? transferRateToPercent(data.ledgerInfo.transferRate)
@@ -550,6 +552,7 @@ export default function Account2({
   useEffect(() => {
     setShowAllTokens(false)
     setExpandedToken(null)
+    setExpandedTransactionKey(null)
     setShowNftDataDetails(false)
     setNftTab('owned')
     setNftOffersTab('received')
@@ -884,7 +887,7 @@ export default function Account2({
     }
 
     const params = new URLSearchParams()
-    params.set('limit', '5')
+    params.set('limit', String(TRANSACTIONS_PREVIEW_LIMIT))
     params.set('relevantOnly', 'true')
     params.set('filterSpam', filterState.txFilterSpam ? 'true' : 'false')
 
@@ -2420,11 +2423,21 @@ export default function Account2({
                   const outcome = txdata?.outcome
                   const isSuccessful = outcome?.result === 'tesSUCCESS'
                   const txHash = tx?.hash
+                  const txKey = txHash || `${tx?.TransactionType || 'tx'}-${index}`
+                  const isExpanded = expandedTransactionKey === txKey
                   const shortHash = txHash ? `${txHash.slice(0, 6)}...${txHash.slice(-6)}` : '-'
 
                   const changes = addressBalanceChanges(txdata, data?.address) || []
                   const firstChange = changes?.[0]
-                  const remainingChangesCount = changes.length > 1 ? changes.length - 1 : 0
+                  const positiveChange = changes.find((change) => Number(change?.value || 0) > 0)
+                  const collapsedPrimaryChange = changes.length > 2 ? positiveChange || firstChange : firstChange
+                  const collapsedSecondaryChange = changes.length === 2 ? changes[1] : null
+                  const collapsedMoreCount = changes.length > 2 ? changes.length - 1 : 0
+                  const primaryChangeValue = Number(collapsedPrimaryChange?.value || 0)
+                  const primaryChangeClass = primaryChangeValue > 0 ? 'green' : primaryChangeValue < 0 ? 'red' : ''
+                  const secondaryChangeValue = Number(collapsedSecondaryChange?.value || 0)
+                  const secondaryChangeClass =
+                    secondaryChangeValue > 0 ? 'green' : secondaryChangeValue < 0 ? 'red' : ''
 
                   const sourceAddress = txdata?.specification?.source?.address
                   const destinationAddress = txdata?.specification?.destination?.address
@@ -2433,66 +2446,271 @@ export default function Account2({
                   const counterpartyDetails = isSource
                     ? txdata?.specification?.destinationDetails || txdata?.specification?.destination?.addressDetails
                     : txdata?.specification?.sourceDetails || txdata?.specification?.source?.addressDetails
-                  const counterpartyLabel = serviceUsernameOrAddressText({
-                    address: counterparty,
-                    addressDetails: counterpartyDetails
-                  })
+
+                  const nftChanges = (outcome?.nftokenChanges || []).flatMap((entry) => entry?.nftokenChanges || [])
+                  const nftTokenId =
+                    tx?.NFTokenID ||
+                    txdata?.meta?.nftoken_id ||
+                    txdata?.meta?.nftokenID ||
+                    txdata?.specification?.nftokenID ||
+                    txdata?.specification?.nftokenId ||
+                    txdata?.specification?.nftokenOffer?.nftokenID ||
+                    nftChanges.find((entry) => entry?.nftokenID)?.nftokenID
+                  const isNftTx = (tx?.TransactionType || '').includes('NFToken') || !!nftTokenId
+                  const trustSetToken = tx?.TransactionType === 'TrustSet' && tx?.LimitAmount ? tx.LimitAmount : null
+                  const trustSetLimitValue = Number(trustSetToken?.value || 0)
+                  const isTrustSetDeleted =
+                    tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue === 0
+                  const hasTrustSetLimit =
+                    tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue > 0
+
+                  const failedStatusText = !isSuccessful ? outcome?.result || 'Failed' : null
+                  const directionLabel = counterparty ? (isSource ? 'To' : 'From') : null
+                  const txTypeCollapsedLabel = counterparty
+                    ? `${tx?.TransactionType || '-'} ${isSource ? 'to' : 'from'}`
+                    : tx?.TransactionType || '-'
 
                   return (
-                    <div className="tx-card" key={txHash || `${tx?.TransactionType || 'tx'}-${index}`}>
-                      <div className="tx-card-top">
-                        <span className={`tx-status ${isSuccessful ? 'green' : 'red'}`}>
-                          {isSuccessful ? 'Success' : outcome?.result || 'Failed'}
-                        </span>
-                        <span className="tx-type">{tx?.TransactionType || '-'}</span>
-                      </div>
-
-                      <div className="tx-card-meta">
-                        <span className="tx-time">{tx?.date ? timeFromNow(tx.date, i18n, 'ripple') : '-'}</span>
-                        {tx?.date && <span className="grey">{fullDateAndTime(tx.date, 'ripple')}</span>}
-                      </div>
-
-                      {counterparty && (
-                        <div className="tx-line">
-                          <span className="tx-label">Counterparty</span>
-                          <Link href={`/account/${counterparty}`} className="tx-value tx-link">
-                            {counterpartyLabel}
-                          </Link>
-                        </div>
-                      )}
-
-                      <div className="tx-line">
-                        <span className="tx-label">Change</span>
-                        <span className="tx-value">
-                          {firstChange ? (
-                            <>
-                              <span
-                                className={
-                                  Number(firstChange.value) > 0 ? 'green' : Number(firstChange.value) < 0 ? 'red' : ''
-                                }
-                              >
-                                {amountFormat(firstChange, {
-                                  short: true,
-                                  maxFractionDigits: 2,
-                                  showPlus: true
-                                })}
+                    <div
+                      className={`asset-item token-asset-item tx-asset-item ${isExpanded ? 'expanded' : ''}`}
+                      key={txKey}
+                      onClick={() => setExpandedTransactionKey(isExpanded ? null : txKey)}
+                    >
+                      <div className="asset-main tx-asset-main">
+                        <div className="asset-logo tx-asset-logo">
+                          <div className="tx-collapsed-top">
+                            {isNftTx && (
+                              <span className="tx-nft-thumb">
+                                <NftImage
+                                  nft={nftTokenId ? { nftokenID: nftTokenId } : {}}
+                                  style={{ width: 28, height: 28, borderRadius: '6px', margin: 0 }}
+                                />
                               </span>
-                              {remainingChangesCount > 0 && (
-                                <span className="grey"> +{remainingChangesCount} more</span>
+                            )}
+                            <span className="tx-type-main">{txTypeCollapsedLabel}</span>
+                            {failedStatusText && <span className="tx-fail-badge">{failedStatusText}</span>}
+                            <span className="tx-time tx-time-top">
+                              {tx?.date ? timeFromNow(tx.date, i18n, 'ripple') : '-'}
+                            </span>
+                          </div>
+
+                          <div className="tx-collapsed-meta">
+                            {tx?.TransactionType === 'TrustSet' && trustSetToken && (
+                              <span className="tx-trustset-inline">
+                                <CurrencyWithIcon token={{ ...trustSetToken }} options={{ disableTokenLink: true }} />
+                              </span>
+                            )}
+                            {tx?.TransactionType !== 'TrustSet' && counterparty && (
+                              <span className="tx-counterparty-inline">
+                                <AddressWithIconInline
+                                  data={{ address: counterparty, addressDetails: counterpartyDetails || {} }}
+                                  name="address"
+                                  options={{ short: 6 }}
+                                />
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="asset-value tx-collapsed-change">
+                          {tx?.TransactionType === 'TrustSet' ? (
+                            <>
+                              {isTrustSetDeleted && <span className="tx-inline-status orange">deleted</span>}
+                              {hasTrustSetLimit && (
+                                <span className="tx-inline-limit orange">{shortNiceNumber(trustSetLimitValue)}</span>
                               )}
                             </>
                           ) : (
-                            '-'
+                            <>
+                              {collapsedPrimaryChange && (
+                                <span className={`tx-inline-change ${primaryChangeClass}`}>
+                                  {amountFormat(collapsedPrimaryChange, {
+                                    short: true,
+                                    maxFractionDigits: 2,
+                                    showPlus: true
+                                  })}
+                                </span>
+                              )}
+                              {collapsedSecondaryChange && (
+                                <span className={`tx-inline-change ${secondaryChangeClass}`}>
+                                  {amountFormat(collapsedSecondaryChange, {
+                                    short: true,
+                                    maxFractionDigits: 2,
+                                    showPlus: true
+                                  })}
+                                </span>
+                              )}
+                              {collapsedMoreCount > 0 && (
+                                <span className="tx-inline-more">+{collapsedMoreCount} more</span>
+                              )}
+                            </>
                           )}
-                        </span>
+                        </div>
                       </div>
 
-                      <div className="tx-line">
-                        <span className="tx-label">Hash</span>
-                        <Link href={`/transaction/${txHash}`} className="tx-value tx-link">
-                          {shortHash}
-                        </Link>
-                      </div>
+                      {isExpanded && (
+                        <div className="asset-details">
+                          <div className="detail-row">
+                            <span>Type:</span>
+                            <span>{tx?.TransactionType || '-'}</span>
+                          </div>
+
+                          {failedStatusText && (
+                            <div className="detail-row">
+                              <span>Status:</span>
+                              <span className="red">{failedStatusText}</span>
+                            </div>
+                          )}
+
+                          {counterparty && (
+                            <div className="detail-row">
+                              <span>{directionLabel}:</span>
+                              <span className="copy-inline">
+                                <span className="address-text">{counterparty}</span>
+                                <Link
+                                  href={`/account/${counterparty}`}
+                                  className="inline-link-icon tooltip"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  <LinkIcon />
+                                  <span className="tooltiptext no-brake">Account page</span>
+                                </Link>
+                                <span onClick={(event) => event.stopPropagation()}>
+                                  <CopyButton text={counterparty} />
+                                </span>
+                              </span>
+                            </div>
+                          )}
+
+                          {tx?.TransactionType === 'TrustSet' && trustSetToken && (
+                            <>
+                              <div className="detail-row">
+                                <span>Currency:</span>
+                                <span className="copy-inline">
+                                  <span>{trustSetToken?.currency || '-'}</span>
+                                  {!!trustSetToken?.issuer && !!trustSetToken?.currency && (
+                                    <Link
+                                      href={`/token/${trustSetToken.issuer}/${trustSetToken.currency}`}
+                                      className="inline-link-icon tooltip"
+                                      onClick={(event) => event.stopPropagation()}
+                                    >
+                                      <LinkIcon />
+                                      <span className="tooltiptext no-brake">Token page</span>
+                                    </Link>
+                                  )}
+                                  {!!trustSetToken?.currency && (
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={trustSetToken.currency} />
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+
+                              {!!trustSetToken?.issuer && (
+                                <div className="detail-row">
+                                  <span>Issuer:</span>
+                                  <span className="copy-inline">
+                                    <span className="address-text">{trustSetToken.issuer}</span>
+                                    <Link
+                                      href={`/account/${trustSetToken.issuer}`}
+                                      className="inline-link-icon tooltip"
+                                      onClick={(event) => event.stopPropagation()}
+                                    >
+                                      <LinkIcon />
+                                      <span className="tooltiptext no-brake">Issuer account page</span>
+                                    </Link>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={trustSetToken.issuer} />
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+
+                              <div className="detail-row">
+                                <span>Limit:</span>
+                                <span>{fullNiceNumber(trustSetToken?.value || 0)}</span>
+                              </div>
+                            </>
+                          )}
+
+                          <div className="detail-row">
+                            <span>Timestamp:</span>
+                            <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
+                          </div>
+
+                          {isSource && tx?.Fee && (
+                            <div className="detail-row">
+                              <span>Fee:</span>
+                              <span>
+                                {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
+                                {nativeCurrencyToFiat({
+                                  amount: tx.Fee,
+                                  selectedCurrency,
+                                  fiatRate: pageFiatRate
+                                })}
+                              </span>
+                            </div>
+                          )}
+
+                          {changes.length > 0 && (
+                            <div className="detail-row tx-detail-change-row">
+                              <span>Balance changes:</span>
+                              <span className="tx-detail-change-list">
+                                {changes.map((change, changeIndex) => {
+                                  const changeValue = Number(change?.value || 0)
+                                  const changeClass = changeValue > 0 ? 'green' : changeValue < 0 ? 'red' : ''
+                                  return (
+                                    <span className={changeClass} key={`${txKey}-change-${changeIndex}`}>
+                                      {amountFormat(change, {
+                                        short: true,
+                                        maxFractionDigits: 2,
+                                        showPlus: true
+                                      })}
+                                    </span>
+                                  )
+                                })}
+                              </span>
+                            </div>
+                          )}
+
+                          {nftTokenId && (
+                            <div className="detail-row">
+                              <span>NFT:</span>
+                              <span className="copy-inline">
+                                <Link
+                                  href={`/nft/${nftTokenId}`}
+                                  className="tx-link"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  {nftTokenId}
+                                </Link>
+                              </span>
+                            </div>
+                          )}
+
+                          <div className="detail-row">
+                            <span>Hash:</span>
+                            <span className="copy-inline">
+                              {txHash ? (
+                                <Link
+                                  href={`/transaction/${txHash}`}
+                                  className="tx-link"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  {shortHash}
+                                </Link>
+                              ) : (
+                                '-'
+                              )}
+                              {!!txHash && (
+                                <span onClick={(event) => event.stopPropagation()}>
+                                  <CopyButton text={txHash} />
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )
                 })}
@@ -3316,63 +3534,159 @@ export default function Account2({
           text-decoration: underline;
         }
 
-        .tx-card {
-          background: var(--background-input);
-          border: 1px solid var(--border-color);
-          border-radius: 8px;
-          padding: 10px 12px;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
+        .tx-asset-item {
+          padding: 8px 12px;
         }
 
-        .tx-card-top {
+        .tx-asset-item.expanded {
+          border-color: var(--accent-link);
+        }
+
+        .tx-asset-main {
+          align-items: flex-start;
+          gap: 10px;
+          position: relative;
+        }
+
+        .tx-asset-logo {
+          min-width: 0;
           display: flex;
-          justify-content: space-between;
+          flex-direction: column;
+          gap: 3px;
+        }
+
+        .tx-collapsed-top {
+          display: flex;
           align-items: center;
           gap: 8px;
+          min-width: 0;
         }
 
-        .tx-status {
-          font-size: 12px;
+        .tx-nft-thumb {
+          display: inline-flex;
+          align-items: center;
+          flex: 0 0 auto;
+        }
+
+        .tx-type-main {
+          font-size: 13px;
           font-weight: 600;
+          color: var(--text);
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
-        .tx-type {
-          font-size: 12px;
-          color: var(--text-secondary);
+        .tx-fail-badge {
+          font-size: 11px;
           font-weight: 600;
+          color: var(--red);
+          border: 1px solid color-mix(in srgb, var(--red) 35%, var(--border-color));
+          border-radius: 999px;
+          padding: 1px 7px;
+          white-space: nowrap;
         }
 
-        .tx-card-meta {
+        .tx-collapsed-meta {
           display: flex;
-          flex-direction: column;
-          gap: 2px;
+          align-items: center;
+          gap: 8px;
           font-size: 12px;
+          min-width: 0;
+          flex-wrap: wrap;
         }
 
         .tx-time {
           color: var(--text);
-          font-weight: 500;
+          font-weight: 400;
         }
 
-        .tx-line {
-          display: flex;
-          justify-content: space-between;
-          gap: 10px;
-          align-items: flex-start;
-          font-size: 13px;
-        }
-
-        .tx-label {
+        .tx-time-top {
+          position: absolute;
+          right: 0;
+          top: 0;
+          margin-left: 0;
           color: var(--text-secondary);
+          font-size: 11px;
+          line-height: 1;
           white-space: nowrap;
         }
 
-        .tx-value {
-          color: var(--text);
+        .tx-counterparty-inline {
+          min-width: 0;
+          color: var(--text-secondary);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .tx-trustset-inline {
+          min-width: 0;
+          display: inline-flex;
+          align-items: center;
+        }
+
+        .tx-trustset-inline :global(table) {
+          min-width: 0 !important;
+        }
+
+        .tx-collapsed-change {
+          min-width: 96px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 8px;
+          flex-wrap: wrap;
           text-align: right;
-          word-break: break-all;
+          padding-top: 14px;
+        }
+
+        .tx-inline-change {
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 1.15;
+          white-space: nowrap;
+        }
+
+        .tx-inline-limit {
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 1.15;
+          white-space: nowrap;
+        }
+
+        .tx-inline-status {
+          font-size: 14px;
+          font-weight: 700;
+          text-transform: lowercase;
+          white-space: nowrap;
+        }
+
+        .tx-inline-more {
+          color: var(--text-secondary);
+          font-size: 12px;
+          font-weight: 500;
+          white-space: nowrap;
+        }
+
+        .tx-detail-address {
+          max-width: none !important;
+          text-align: left !important;
+          word-break: normal !important;
+        }
+
+        .tx-detail-change-row {
+          align-items: flex-start;
+        }
+
+        .tx-detail-change-list {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 2px;
+          max-width: 70% !important;
+          text-align: right;
         }
 
         .tx-link {
