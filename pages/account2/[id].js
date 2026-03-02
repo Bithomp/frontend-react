@@ -342,11 +342,24 @@ export default function Account2({
   const isRipplingEnabled = !!data?.ledgerInfo?.flags?.defaultRipple
   const isCanEscrowEnabled = !!data?.ledgerInfo?.flags?.allowTrustLineLocking
   const isMessageKeyUsedForFlare = data?.ledgerInfo?.messageKey?.substring(0, 26) === '02000000000000000000000000'
+  const hasRegularKey = !!data?.ledgerInfo?.regularKey
+  const hasMultisig = !!data?.ledgerInfo?.signerList
+  const isBlackholed = !!data?.ledgerInfo?.blackholed
   const hasAccountControlData =
-    !!data?.ledgerInfo?.regularKey ||
-    !!data?.ledgerInfo?.signerList ||
+    hasRegularKey ||
+    hasMultisig ||
+    isBlackholed ||
     !!data?.ledgerInfo?.flags?.passwordSpent ||
     !!data?.ledgerInfo?.flags?.disableMaster
+  const accountControlCollapsedLabel = isBlackholed
+    ? 'Blackholed'
+    : hasRegularKey && hasMultisig
+      ? 'regKey + multisig'
+      : hasRegularKey
+        ? 'regKey'
+        : hasMultisig
+          ? 'multisig'
+          : null
   const hasNftDataDetails =
     !!data?.ledgerInfo?.firstNFTokenSequence ||
     !!data?.ledgerInfo?.nftokenMinter ||
@@ -1466,6 +1479,12 @@ export default function Account2({
                     onClick={() => setShowAccountControlDetails((prev) => !prev)}
                   >
                     Account control
+                    {accountControlCollapsedLabel && (
+                      <span className={`account-control-collapsed ${isBlackholed ? 'orange bold' : ''}`}>
+                        {' '}
+                        · {accountControlCollapsedLabel}
+                      </span>
+                    )}
                   </button>
 
                   {showAccountControlDetails && (
@@ -4049,6 +4068,12 @@ export default function Account2({
         .time-machine-toggle:hover {
           border-color: var(--accent-link);
           color: var(--accent-link);
+        }
+
+        .account-control-collapsed {
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--text-secondary);
         }
 
         .time-machine-panel {
