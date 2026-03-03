@@ -167,6 +167,7 @@ import {
   AddressWithIconInline,
   amountFormat,
   addressUsernameOrServiceLink,
+  convertedAmount,
   fullDateAndTime,
   fullNiceNumber,
   nativeCurrencyToFiat,
@@ -756,7 +757,11 @@ export default function Account2({
 
         try {
           setSoldNftsLoading(true)
-          const soldNftsUrl = `v2/nft-sales?seller=${data.address}&list=lastSold&limit=40`
+          const soldNftsUrl =
+            `v2/nft-sales?seller=${data.address}&list=lastSold&limit=${NFT_PREVIEW_LIMIT}` +
+            (selectedCurrency
+              ? `&convertCurrencies=${selectedCurrency.toLowerCase()}&sortCurrency=${selectedCurrency.toLowerCase()}`
+              : '')
           const soldResponse = await axios.get(soldNftsUrl)
           setSoldNfts(Array.isArray(soldResponse?.data?.sales) ? soldResponse.data.sales : [])
         } catch {
@@ -867,7 +872,7 @@ export default function Account2({
 
     fetchTokens()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, data?.ledgerInfo?.activated, effectiveLedgerTimestamp])
+  }, [data?.address, data?.ledgerInfo?.activated, effectiveLedgerTimestamp, selectedCurrency])
 
   useEffect(() => {
     if (!data?.address) return
@@ -2378,6 +2383,10 @@ export default function Account2({
                               nftTab === 'sold' && nft?.amount
                                 ? amountFormat(nft.amount, { short: true, maxFractionDigits: 2 })
                                 : null
+                            const soldPriceFiat =
+                              nftTab === 'sold' && selectedCurrency
+                                ? convertedAmount(nft, selectedCurrency.toLowerCase(), { short: true })
+                                : null
 
                             return (
                               <div key={`${nftId}-${nftIndex}`} className="owned-nft-card">
@@ -2388,7 +2397,7 @@ export default function Account2({
                                 >
                                   <NftImage
                                     nft={nft}
-                                    style={{ width: 44, height: 44, borderRadius: '6px', margin: '0 auto 6px' }}
+                                    style={{ width: 64, height: 64, borderRadius: '6px', margin: '0 auto 3px' }}
                                   />
                                 </Link>
                                 <div className="nft-caption">
@@ -2398,6 +2407,11 @@ export default function Account2({
                                     {nftTab === 'sold' ? soldTimeAgo || nftTitle : nftTitle}
                                   </span>
                                   {nftTab === 'sold' && <span className="sold-nft-price">{soldPrice}</span>}
+                                  {nftTab === 'sold' && !!soldPriceFiat && (
+                                    <span className="sold-nft-fiat" suppressHydrationWarning>
+                                      ≈{soldPriceFiat}
+                                    </span>
+                                  )}
                                 </div>
                               </div>
                             )
@@ -4787,7 +4801,7 @@ export default function Account2({
 
         .nft-summary-item {
           cursor: default;
-          padding-top: 10px;
+          padding: 10px 8px 12px;
         }
 
         .nft-summary-item:hover {
@@ -4797,6 +4811,9 @@ export default function Account2({
         .nft-details {
           margin-top: 10px;
           padding-top: 10px;
+          padding-left: 0;
+          padding-right: 0;
+          min-height: 248px;
         }
 
         .nft-details-flat-top,
@@ -4944,7 +4961,7 @@ export default function Account2({
         .owned-nft-grid {
           display: grid;
           grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 8px;
+          gap: 0;
         }
 
         .owned-nft-card {
@@ -4952,6 +4969,10 @@ export default function Account2({
           border: 1px solid var(--border-color);
           border-radius: 8px;
           padding: 8px 6px;
+          height: 120px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
           color: var(--text);
           text-align: center;
           min-width: 0;
@@ -4978,7 +4999,7 @@ export default function Account2({
           color: var(--text-secondary);
           overflow: hidden;
           text-overflow: ellipsis;
-          text-align: left;
+          text-align: center;
         }
 
         .owned-nft-name-two-lines {
@@ -5006,11 +5027,25 @@ export default function Account2({
           overflow: hidden;
           text-overflow: ellipsis;
           text-decoration: none;
-          text-align: left;
+          text-align: center;
+        }
+
+        .sold-nft-fiat {
+          display: block;
+          margin-top: 1px;
+          font-size: 10px;
+          color: var(--text-secondary);
+          font-weight: 500;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          text-align: center;
         }
 
         .nft-caption {
-          min-height: 40px;
+          height: 54px;
+          min-height: 54px;
+          overflow: hidden;
         }
 
         .nft-offers-details,
@@ -5370,8 +5405,18 @@ export default function Account2({
         }
 
         @media (max-width: 560px) {
+          .nft-details {
+            min-height: 376px;
+          }
+
+          .nft-summary-item {
+            padding-left: 6px;
+            padding-right: 6px;
+          }
+
           .owned-nft-grid {
             grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0;
           }
 
           .nft-offer-card {
