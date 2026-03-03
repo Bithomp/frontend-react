@@ -4557,19 +4557,13 @@ export default function Account2({
           margin-top: 2px;
         }
 
-        .issuer-settings-card {
-          margin-top: 0;
-        }
-
         .tx-settings-card {
           margin-top: 4px;
         }
 
-        .issuer-settings-panel {
-          gap: 2px;
-        }
-
-        .tx-settings-panel {
+        .issuer-settings-panel,
+        .tx-settings-panel,
+        .account-control-panel {
           gap: 2px;
         }
 
@@ -4592,14 +4586,6 @@ export default function Account2({
 
         .airdrop-link-btn:hover {
           text-decoration: underline;
-        }
-
-        .account-control-card {
-          margin-top: 0;
-        }
-
-        .account-control-panel {
-          gap: 2px;
         }
 
         .control-address-wrap {
@@ -4651,15 +4637,6 @@ export default function Account2({
           padding-top: 10px;
         }
 
-        .nft-offers-item {
-          cursor: default;
-          padding: 0;
-        }
-
-        .nft-offers-item:hover {
-          transform: none;
-        }
-
         .nft-summary-item:hover {
           transform: none;
         }
@@ -4669,7 +4646,8 @@ export default function Account2({
           padding-top: 10px;
         }
 
-        .nft-details-flat-top {
+        .nft-details-flat-top,
+        .object-details-flat-top {
           margin-top: 0;
           padding-top: 0;
           border-top: 0;
@@ -4891,17 +4869,13 @@ export default function Account2({
           border-top: 0;
         }
 
-        .object-details-flat-top {
-          margin-top: 0;
-          padding-top: 0;
-          border-top: 0;
-        }
-
+        .nft-offers-item,
         .object-list-item {
           cursor: default;
           padding: 0;
         }
 
+        .nft-offers-item:hover,
         .object-list-item:hover {
           transform: none;
         }
@@ -4911,12 +4885,16 @@ export default function Account2({
           border-radius: 6px;
         }
 
-        .checks-details {
+        .checks-details,
+        .escrow-details {
           margin-top: 0;
           padding-top: 0;
         }
 
-        .checks-list {
+        .checks-list,
+        .escrow-list,
+        .nft-offers-list,
+        .object-list {
           display: flex;
           flex-direction: column;
         }
@@ -4925,22 +4903,6 @@ export default function Account2({
           background: transparent;
           border-radius: 0;
           margin-top: 6px;
-        }
-
-        .escrow-details {
-          margin-top: 0;
-          padding-top: 0;
-        }
-
-        .escrow-list {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .nft-offers-list,
-        .object-list {
-          display: flex;
-          flex-direction: column;
         }
 
         .nft-offer-card {
@@ -5074,7 +5036,8 @@ export default function Account2({
           overflow: hidden;
         }
 
-        .check-row-card .asset-amount {
+        .check-row-card .asset-amount,
+        .escrow-collapsed-amount .asset-amount {
           font-size: 14px;
           line-height: 1.15;
         }
@@ -5130,11 +5093,6 @@ export default function Account2({
 
         .escrow-collapsed-amount {
           text-align: right;
-        }
-
-        .escrow-collapsed-amount .asset-amount {
-          font-size: 14px;
-          line-height: 1.15;
         }
 
         .nft-offer-thumb {
