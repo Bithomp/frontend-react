@@ -3322,6 +3322,20 @@ export default function Account2({
                           const isUnlockable = escrow?.FinishAfter
                             ? timestampExpired(escrow.FinishAfter, 'ripple')
                             : false
+                          const escrowSequence = escrow?.escrowSequence
+                          const canExecute =
+                            !!setSignRequest &&
+                            !effectiveLedgerTimestamp &&
+                            !!escrowSequence &&
+                            !!escrow?.FinishAfter &&
+                            timestampExpired(escrow.FinishAfter, 'ripple') &&
+                            !timestampExpired(escrow.CancelAfter, 'ripple')
+                          const canCancel =
+                            !!setSignRequest &&
+                            !effectiveLedgerTimestamp &&
+                            !!escrowSequence &&
+                            !!escrow?.CancelAfter &&
+                            timestampExpired(escrow.CancelAfter, 'ripple')
                           const collapsedTimeText = isCanceled
                             ? cancelAfterText
                             : escrow?.FinishAfter
@@ -3451,6 +3465,47 @@ export default function Account2({
                                       )}
                                     </span>
                                   </div>
+
+                                  {!effectiveLedgerTimestamp && (
+                                    <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                                      <button
+                                        type="button"
+                                        className={`check-action-btn ${canExecute ? 'redeem' : 'disabled'}`}
+                                        disabled={!canExecute}
+                                        onClick={() => {
+                                          if (!canExecute) return
+                                          setSignRequest({
+                                            request: {
+                                              TransactionType: 'EscrowFinish',
+                                              Owner: escrow?.Account,
+                                              OfferSequence: escrowSequence
+                                            }
+                                          })
+                                        }}
+                                        title="Execute"
+                                      >
+                                        <TbPigMoney /> Execute
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className={`check-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
+                                        disabled={!canCancel}
+                                        onClick={() => {
+                                          if (!canCancel) return
+                                          setSignRequest({
+                                            request: {
+                                              TransactionType: 'EscrowCancel',
+                                              Owner: escrow?.Account,
+                                              OfferSequence: escrowSequence
+                                            }
+                                          })
+                                        }}
+                                        title="Cancel"
+                                      >
+                                        <MdMoneyOff /> Cancel
+                                      </button>
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </div>
