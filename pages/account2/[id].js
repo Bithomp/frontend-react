@@ -421,6 +421,11 @@ export default function Account2({
     selectedCurrency = selectedCurrencyApp
   }
 
+  const accountDisplayService = data?.service?.name
+  const accountDisplayUsername = !accountDisplayService ? data?.username : null
+  const accountDisplayName =
+    userOrServiceName({ service: accountDisplayService, username: accountDisplayUsername }) || 'Account'
+
   const nativeAvailableFiatValue = ((balanceList?.available?.native || 0) / 1000000) * (pageFiatRate || 0)
   const lpTokensCount = tokens.filter((token) => token.Balance?.currency?.substring(0, 2) === '03').length
   const issuedTokensCount = tokens.filter((token) => token.Balance?.currency?.substring(0, 2) !== '03').length
@@ -1461,7 +1466,10 @@ export default function Account2({
               {/* Basic Info */}
               <div className="account-info">
                 <h2 className="account-name">
-                  {userOrServiceName({ service: data?.service?.name, username: data?.username }) || 'Account'}
+                  <span className="account-username">
+                    {accountDisplayName}
+                    {!!accountDisplayUsername && <CopyButton text={accountDisplayUsername} />}
+                  </span>
                 </h2>
                 <div className="account-address">
                   <span className="account-address-text">{data.address}</span>
@@ -2691,7 +2699,9 @@ export default function Account2({
                                         showPlus: true
                                       })}
                                     </span>
-                                    {!!secondaryChangeFiat && <span className="tx-change-fiat">{secondaryChangeFiat}</span>}
+                                    {!!secondaryChangeFiat && (
+                                      <span className="tx-change-fiat">{secondaryChangeFiat}</span>
+                                    )}
                                   </span>
                                 )}
                                 {collapsedMoreCount > 0 && (
@@ -2846,7 +2856,10 @@ export default function Account2({
                                       asText: true
                                     })
                                     return (
-                                      <span className={`tx-change-row ${changeClass}`} key={`${txKey}-change-${changeIndex}`}>
+                                      <span
+                                        className={`tx-change-row ${changeClass}`}
+                                        key={`${txKey}-change-${changeIndex}`}
+                                      >
                                         <span>
                                           {changeValue > 0 ? '+' : ''}
                                           {fullNiceNumber(change?.value || 0)} {niceCurrency(change?.currency)}
