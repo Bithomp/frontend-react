@@ -2581,9 +2581,14 @@ export default function Account2({
                           : failedStatusText
                       : null
                     const directionLabel = counterparty ? (isSource ? 'To' : 'From') : null
-                    const txTypeCollapsedLabel = counterparty
-                      ? `${tx?.TransactionType || '-'} ${isSource ? 'to' : 'from'}`
-                      : tx?.TransactionType || '-'
+                    const txTypeCollapsedLabel =
+                      tx?.TransactionType === 'TrustSet' && isTrustSetDeleted
+                        ? counterparty
+                          ? `${isSource ? 'to' : 'from'}`
+                          : ''
+                        : counterparty
+                          ? `${tx?.TransactionType || '-'} ${isSource ? 'to' : 'from'}`
+                          : tx?.TransactionType || '-'
 
                     return (
                       <div
