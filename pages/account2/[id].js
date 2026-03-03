@@ -618,7 +618,10 @@ export default function Account2({
       availableTabs.push('burned')
     }
 
-    if (availableTabs.length > 0 && !availableTabs.includes(nftTab)) {
+    if (availableTabs.length === 0) return
+    if (nftTab === 'owned') return
+
+    if (!availableTabs.includes(nftTab)) {
       setNftTab(availableTabs[0])
     }
   }, [nftTab, hasOwnedNfts, hasSoldNfts, hasMintedNfts, hasBurnedNfts])
@@ -1732,6 +1735,7 @@ export default function Account2({
                       onClick={() => setShowAirdropsDetails((prev) => !prev)}
                     >
                       Airdrops
+                      <span className="account-control-collapsed"> · Flare + Songbird</span>
                     </button>
 
                     {showAirdropsDetails && (
