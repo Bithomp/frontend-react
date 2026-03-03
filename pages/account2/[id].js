@@ -2618,12 +2618,26 @@ export default function Account2({
                       txdata?.specification?.nftokenId ||
                       txdata?.specification?.nftokenOffer?.nftokenID ||
                       nftChanges.find((entry) => entry?.nftokenID)?.nftokenID
+                    const nftSellerAddress = nftSource?.address || null
+                    const nftSellerDetails = nftSource?.addressDetails || null
+                    const nftBuyerAddress = nftDestination?.address || null
+                    const nftBuyerDetails = nftDestination?.addressDetails || null
+                    const nftViewerRole =
+                      nftSellerAddress === data?.address ? 'seller' : nftBuyerAddress === data?.address ? 'buyer' : null
                     const txType = tx?.TransactionType || ''
-                    const isNftTx = txType.includes('NFToken') || !!nftTokenId
-                    const isNftOfferTx =
+                    const txTypeLower = txType.toLowerCase()
+                    const isCreateNftOfferTx =
                       txType === 'NFTokenCreateOffer' ||
+                      txTypeLower === 'createnftselloffer' ||
+                      txTypeLower === 'createnftbuyoffer'
+                    const isAcceptNftOfferTx =
                       txType === 'NFTokenAcceptOffer' ||
-                      txType === 'NFTokenCancelOffer'
+                      txTypeLower === 'acceptnftselloffer' ||
+                      txTypeLower === 'acceptnftbuyoffer' ||
+                      txTypeLower === 'acceptnftoffer'
+                    const isCancelNftOfferTx = txType === 'NFTokenCancelOffer' || txTypeLower === 'cancelnftoffer'
+                    const isNftTx = txType.includes('NFToken') || !!nftTokenId
+                    const isNftOfferTx = isCreateNftOfferTx || isAcceptNftOfferTx || isCancelNftOfferTx
                     const outcomeOfferIds = (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
                       (entry?.nftokenOfferChanges || []).map((offerChange) => offerChange?.index)
                     )
@@ -2647,63 +2661,14 @@ export default function Account2({
                       txdata?.specification?.source?.amount ??
                       null
                     const hasNftOfferAmount = nftOfferAmountRaw !== null && typeof nftOfferAmountRaw !== 'undefined'
-                    const createOfferDirection =
-                      txType === 'NFTokenCreateOffer'
-                        ? txdata?.specification?.flags?.sellToken
+                    const createOfferDirection = isCreateNftOfferTx
+                      ? txdata?.specification?.flags?.sellToken
+                        ? 'sell'
+                        : txTypeLower.includes('sell')
                           ? 'sell'
-                          : 'buy'
-                        : null
-                    const nftOfferSignedAmount = (() => {
-                      if (!hasNftOfferAmount) return null
-
-                      const hasPrimaryChangeValue =
-                        collapsedPrimaryChange && Number.isFinite(Number(collapsedPrimaryChange?.value))
-
-                      if (hasPrimaryChangeValue) {
-                        return collapsedPrimaryChange
-                      }
-
-                      let sign = 0
-                      if (txType === 'NFTokenCreateOffer') {
-                        sign = isSource
-                          ? createOfferDirection === 'buy'
-                            ? -1
-                            : 1
-                          : createOfferDirection === 'buy'
-                            ? 1
-                            : -1
-                      } else if (txType === 'NFTokenAcceptOffer') {
-                        sign = isSource ? -1 : 1
-                      }
-
-                      if (!sign) return nftOfferAmountRaw
-
-                      if (typeof nftOfferAmountRaw === 'object' && nftOfferAmountRaw !== null) {
-                        const numericValue = Math.abs(Number(nftOfferAmountRaw?.value || 0))
-                        if (!Number.isFinite(numericValue)) return nftOfferAmountRaw
-                        return {
-                          ...nftOfferAmountRaw,
-                          value: String(sign < 0 ? -numericValue : numericValue)
-                        }
-                      }
-
-                      const numericValue = Math.abs(Number(nftOfferAmountRaw))
-                      if (!Number.isFinite(numericValue)) return nftOfferAmountRaw
-                      return sign < 0 ? -numericValue : numericValue
-                    })()
-                    const nftOfferSignedValue =
-                      typeof nftOfferSignedAmount === 'object' && nftOfferSignedAmount !== null
-                        ? Number(nftOfferSignedAmount?.value || 0)
-                        : Number(nftOfferSignedAmount || 0)
-                    const nftOfferSign = nftOfferSignedValue > 0 ? 1 : nftOfferSignedValue < 0 ? -1 : 0
-                    const nftOfferSignPrefix = nftOfferSign > 0 ? '+' : nftOfferSign < 0 ? '-' : ''
-                    const nftOfferAmountClass = nftOfferSign > 0 ? 'green' : nftOfferSign < 0 ? 'red' : ''
-                    const nftOfferAmountCollapsedText = hasNftOfferAmount
-                      ? amountFormat(nftOfferSignedAmount, {
-                          short: true,
-                          maxFractionDigits: 2,
-                          showPlus: true
-                        })
+                          : txTypeLower.includes('buy')
+                            ? 'buy'
+                            : 'buy'
                       : null
                     const nftOfferAmountExpandedText = hasNftOfferAmount
                       ? amountFormat(nftOfferAmountRaw, {
@@ -2711,29 +2676,29 @@ export default function Account2({
                           precise: 'nice'
                         })
                       : null
-                    const nftOfferAmountFiatRaw = hasNftOfferAmount
-                      ? nativeCurrencyToFiat({
-                          amount: nftOfferSignedAmount,
-                          selectedCurrency,
-                          fiatRate: txHistoricalRate,
-                          asText: true
-                        })
-                      : ''
-                    const nftOfferAmountFiatText = nftOfferAmountFiatRaw
-                      ? `${nftOfferSignPrefix}${String(nftOfferAmountFiatRaw).replace(/^[-+]/, '')}`
-                      : ''
                     const nftOfferAmountFiatExpandedText = hasNftOfferAmount
                       ? nativeCurrencyToFiat({
                           amount: nftOfferAmountRaw,
                           selectedCurrency,
                           fiatRate: txHistoricalRate,
-                          asText: true
+                          asText: true,
+                          absolute: true
                         })
                       : ''
-                    const isBrokeredNftAccept =
-                      txType === 'NFTokenAcceptOffer' && !!tx?.NFTokenSellOffer && !!tx?.NFTokenBuyOffer
-                    const showNftOfferAmountCollapsed =
-                      isNftOfferTx && hasNftOfferAmount && !collapsedPrimaryChange && !collapsedSecondaryChange
+                    const isBrokeredNftAccept = isAcceptNftOfferTx && !!tx?.NFTokenSellOffer && !!tx?.NFTokenBuyOffer
+                    const brokerAddress = isBrokeredNftAccept ? sourceAddress || tx?.Account || null : null
+                    const resolvedCounterpartyAddress =
+                      isAcceptNftOfferTx && nftViewerRole === 'seller'
+                        ? nftBuyerAddress
+                        : isAcceptNftOfferTx && nftViewerRole === 'buyer'
+                          ? nftSellerAddress
+                          : counterparty
+                    const resolvedCounterpartyDetails =
+                      isAcceptNftOfferTx && nftViewerRole === 'seller'
+                        ? nftBuyerDetails
+                        : isAcceptNftOfferTx && nftViewerRole === 'buyer'
+                          ? nftSellerDetails
+                          : counterpartyDetails
                     const trustSetSpecification = txdata?.specification
                     const trustSetToken =
                       tx?.TransactionType === 'TrustSet' && tx?.LimitAmount
@@ -2760,12 +2725,18 @@ export default function Account2({
                           ? failedStatusText.slice(3)
                           : failedStatusText
                       : null
-                    const directionLabel = counterparty
-                      ? isBrokeredNftAccept
-                        ? 'By broker'
-                        : isSource
-                          ? 'To'
-                          : 'From'
+                    const directionLabel = resolvedCounterpartyAddress
+                      ? isAcceptNftOfferTx && nftViewerRole === 'seller'
+                        ? 'To'
+                        : isAcceptNftOfferTx && nftViewerRole === 'buyer'
+                          ? 'From'
+                          : isCreateNftOfferTx && createOfferDirection === 'sell' && isSource
+                            ? 'For'
+                            : isBrokeredNftAccept
+                              ? 'By broker'
+                              : isSource
+                                ? 'To'
+                                : 'From'
                       : null
                     const accountSetSpec = txdata?.specification || {}
                     const accountSetSettings = outcome?.settingsChanges || {}
@@ -2864,32 +2835,48 @@ export default function Account2({
                       return changes[0] || null
                     })()
                     const nftOfferLegacyLabel = (() => {
-                      if (txType === 'NFTokenAcceptOffer') {
+                      const nonBrokerDirectionSuffix = counterparty ? (isSource ? 'to' : 'from') : 'by'
+
+                      if (isAcceptNftOfferTx) {
+                        if (nftViewerRole === 'seller') return 'Sold NFT to'
+                        if (nftViewerRole === 'buyer') return 'Bought NFT from'
+
+                        const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
+                        if (amountChangeValue > 0)
+                          return isBrokeredNftAccept ? 'Sold NFT by' : `Sold NFT ${nonBrokerDirectionSuffix}`
+                        if (amountChangeValue < 0)
+                          return isBrokeredNftAccept ? 'Bought NFT by' : `Bought NFT ${nonBrokerDirectionSuffix}`
+
                         if (!collapsedPrimaryChange && !collapsedSecondaryChange) {
                           if (nftDestination?.address === data?.address) return 'NFT transfer from'
                           if (nftSource?.address === data?.address) return 'NFT transfer to'
                           return 'NFT transfer by'
                         }
 
-                        const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
-                        if (amountChangeValue < 0) return 'NFT purchase'
                         if (isBrokeredNftAccept) return 'NFT offer accept by'
                         return 'NFT offer accept'
                       }
 
-                      if (txType === 'NFTokenCreateOffer') {
+                      if (isCreateNftOfferTx) {
+                        const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
+                        if (amountChangeValue > 0) return `Sold NFT ${nonBrokerDirectionSuffix}`
+                        if (amountChangeValue < 0) return `Bought NFT ${nonBrokerDirectionSuffix}`
+
                         const direction = txdata?.specification?.flags?.sellToken ? 'Sell' : 'Buy'
                         if (direction === 'Sell' && tx?.Account !== data?.address) {
                           const amountAsNumber = Number(tx?.Amount || 0)
                           if (Number.isFinite(amountAsNumber) && amountAsNumber === 0) {
                             return 'NFT transfer from'
                           }
-                          return 'NFT Sell offer from'
+                          return 'Received NFT Sell offer from'
+                        }
+                        if (direction === 'Sell' && tx?.Account === data?.address && counterparty) {
+                          return 'Create NFT Sell offer for'
                         }
                         return `Create NFT ${direction} offer`
                       }
 
-                      if (txType === 'NFTokenCancelOffer') {
+                      if (isCancelNftOfferTx) {
                         return 'Cancel NFT offer'
                       }
 
@@ -2897,10 +2884,7 @@ export default function Account2({
                     })()
                     const isNftTransferLabel =
                       typeof nftOfferLegacyLabel === 'string' && nftOfferLegacyLabel.startsWith('NFT transfer')
-                    const isFreeNftTransfer =
-                      isNftTransferLabel && hasNftOfferAmount && Number.isFinite(nftOfferSignedValue)
-                        ? Math.abs(nftOfferSignedValue) === 0
-                        : false
+                    const isFreeNftTransfer = isNftTransferLabel && nftOfferAmountRaw === '0'
                     const txTypeShortLabel =
                       nftOfferLegacyLabel ||
                       (txType === 'AccountSet'
@@ -2922,6 +2906,12 @@ export default function Account2({
                           : counterparty
                             ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
                             : txTypeShortLabel
+                    const showBrokerInCollapsedTitle =
+                      isBrokeredNftAccept &&
+                      !!brokerAddress &&
+                      (nftViewerRole === 'seller' || nftViewerRole === 'buyer')
+                    const brokerCollapsedAction =
+                      nftViewerRole === 'seller' ? 'sold NFT to' : nftViewerRole === 'buyer' ? 'bought NFT from' : ''
 
                     return (
                       <div
@@ -2944,7 +2934,27 @@ export default function Account2({
                                   )}
                                 </>
                               )}
-                              <span className="tx-type-main">{txTypeCollapsedLabel}</span>
+                              <span className="tx-type-main">
+                                {showBrokerInCollapsedTitle ? (
+                                  <>
+                                    <span>Broker </span>
+                                    <AddressWithIconInline
+                                      data={{
+                                        address: brokerAddress,
+                                        addressDetails:
+                                          txdata?.specification?.sourceDetails ||
+                                          txdata?.specification?.source?.addressDetails ||
+                                          {}
+                                      }}
+                                      name="address"
+                                      options={{ short: 6 }}
+                                    />
+                                    <span> {brokerCollapsedAction}</span>
+                                  </>
+                                ) : (
+                                  txTypeCollapsedLabel
+                                )}
+                              </span>
                               <span className="tx-time tx-time-top">
                                 {tx?.date ? timeFromNow(tx.date, i18n, 'ripple') : '-'}
                               </span>
@@ -2959,10 +2969,13 @@ export default function Account2({
                                   <CurrencyWithIcon token={{ ...trustSetToken }} options={{ disableTokenLink: true }} />
                                 </span>
                               )}
-                              {tx?.TransactionType !== 'TrustSet' && counterparty && (
+                              {tx?.TransactionType !== 'TrustSet' && resolvedCounterpartyAddress && (
                                 <span className="tx-counterparty-inline">
                                   <AddressWithIconInline
-                                    data={{ address: counterparty, addressDetails: counterpartyDetails || {} }}
+                                    data={{
+                                      address: resolvedCounterpartyAddress,
+                                      addressDetails: resolvedCounterpartyDetails || {}
+                                    }}
                                     name="address"
                                     options={{ short: 6 }}
                                   />
@@ -2978,21 +2991,8 @@ export default function Account2({
                               trustSetStatus ? (
                                 <span className="tx-inline-status orange">{trustSetStatus}</span>
                               ) : null
-                            ) : showNftOfferAmountCollapsed ? (
-                              <span className="tx-inline-change-item">
-                                {isFreeNftTransfer ? (
-                                  <span className="tx-offer-free orange">Free</span>
-                                ) : (
-                                  <>
-                                    <span className={`tx-inline-change ${nftOfferAmountClass}`}>
-                                      {nftOfferAmountCollapsedText}
-                                    </span>
-                                    {!!nftOfferAmountFiatText && (
-                                      <span className="tx-change-fiat">{nftOfferAmountFiatText}</span>
-                                    )}
-                                  </>
-                                )}
-                              </span>
+                            ) : isFreeNftTransfer ? (
+                              <span className="tx-offer-free orange">Free</span>
                             ) : (
                               <>
                                 {collapsedPrimaryChange && (
@@ -3051,13 +3051,13 @@ export default function Account2({
                               </>
                             )}
 
-                            {counterparty && (
+                            {resolvedCounterpartyAddress && (
                               <div className="detail-row">
                                 <span>{directionLabel}:</span>
                                 <span className="copy-inline">
-                                  <span className="address-text">{counterparty}</span>
+                                  <span className="address-text">{resolvedCounterpartyAddress}</span>
                                   <Link
-                                    href={`/account/${counterparty}`}
+                                    href={`/account/${resolvedCounterpartyAddress}`}
                                     className="inline-link-icon tooltip"
                                     onClick={(event) => event.stopPropagation()}
                                   >
@@ -3065,7 +3065,27 @@ export default function Account2({
                                     <span className="tooltiptext no-brake">Account page</span>
                                   </Link>
                                   <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={counterparty} />
+                                    <CopyButton text={resolvedCounterpartyAddress} />
+                                  </span>
+                                </span>
+                              </div>
+                            )}
+
+                            {brokerAddress && (
+                              <div className="detail-row">
+                                <span>By broker:</span>
+                                <span className="copy-inline">
+                                  <span className="address-text">{brokerAddress}</span>
+                                  <Link
+                                    href={`/account/${brokerAddress}`}
+                                    className="inline-link-icon tooltip"
+                                    onClick={(event) => event.stopPropagation()}
+                                  >
+                                    <LinkIcon />
+                                    <span className="tooltiptext no-brake">Account page</span>
+                                  </Link>
+                                  <span onClick={(event) => event.stopPropagation()}>
+                                    <CopyButton text={brokerAddress} />
                                   </span>
                                 </span>
                               </div>
@@ -3417,9 +3437,7 @@ export default function Account2({
                               <div className="detail-row">
                                 <span>Offer amount:</span>
                                 <span className="tx-detail-offer-amount">
-                                  <span className={`tx-inline-change ${nftOfferAmountClass}`}>
-                                    {nftOfferAmountExpandedText}
-                                  </span>
+                                  <span className="tx-inline-change">{nftOfferAmountExpandedText}</span>
                                   {!!nftOfferAmountFiatExpandedText && (
                                     <span className="tx-change-fiat">{nftOfferAmountFiatExpandedText}</span>
                                   )}
