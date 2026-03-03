@@ -2730,6 +2730,8 @@ export default function Account2({
                           asText: true
                         })
                       : ''
+                    const isBrokeredNftAccept =
+                      txType === 'NFTokenAcceptOffer' && !!tx?.NFTokenSellOffer && !!tx?.NFTokenBuyOffer
                     const showNftOfferAmountCollapsed =
                       isNftOfferTx && hasNftOfferAmount && !collapsedPrimaryChange && !collapsedSecondaryChange
                     const trustSetSpecification = txdata?.specification
@@ -2758,7 +2760,109 @@ export default function Account2({
                           ? failedStatusText.slice(3)
                           : failedStatusText
                       : null
-                    const directionLabel = counterparty ? (isSource ? 'To' : 'From') : null
+                    const directionLabel = counterparty
+                      ? isBrokeredNftAccept
+                        ? 'By broker'
+                        : isSource
+                          ? 'To'
+                          : 'From'
+                      : null
+                    const accountSetSpec = txdata?.specification || {}
+                    const accountSetSettings = outcome?.settingsChanges || {}
+                    const accountSetCollapsedChange = (() => {
+                      if (txType !== 'AccountSet') return null
+
+                      const changes = []
+
+                      if (tx?.MessageKey !== undefined) {
+                        changes.push(`Message key: ${accountSetSpec?.messageKey || 'removed'}`)
+                      }
+                      if (tx?.Domain !== undefined) {
+                        changes.push(`Domain: ${accountSetSpec?.domain || 'removed'}`)
+                      }
+                      if (accountSetSpec?.defaultRipple !== undefined) {
+                        changes.push(`Default ripple: ${accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}`)
+                      }
+                      if (accountSetSpec?.disallowXRP !== undefined || accountSetSettings?.disallowXRP !== undefined) {
+                        changes.push(
+                          `Incoming ${nativeCurrency}: ${
+                            accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP ? 'disallow' : 'allow'
+                          }`
+                        )
+                      }
+                      if (
+                        accountSetSpec?.requireDestTag !== undefined ||
+                        accountSetSettings?.requireDestTag !== undefined
+                      ) {
+                        changes.push(
+                          `Destination tag: ${
+                            accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
+                              ? 'require'
+                              : "don't require"
+                          }`
+                        )
+                      }
+                      if (accountSetSpec?.depositAuth !== undefined) {
+                        changes.push(`Deposit authorization: ${accountSetSpec.depositAuth ? 'enabled' : 'disabled'}`)
+                      }
+                      if (accountSetSpec?.disableMaster !== undefined) {
+                        changes.push(`Master key: ${accountSetSpec.disableMaster ? 'disabled' : 'enabled'}`)
+                      }
+                      if (accountSetSpec?.noFreeze) {
+                        changes.push('No freeze: enabled')
+                      }
+                      if (accountSetSpec?.requireAuth !== undefined || accountSetSettings?.requireAuth !== undefined) {
+                        changes.push(
+                          `Require authorization: ${
+                            accountSetSpec?.requireAuth || accountSetSettings?.requireAuth ? 'enabled' : 'disabled'
+                          }`
+                        )
+                      }
+                      if (accountSetSpec?.disallowIncomingCheck !== undefined) {
+                        changes.push(`Incoming check: ${accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}`)
+                      }
+                      if (accountSetSpec?.disallowIncomingPayChan !== undefined) {
+                        changes.push(
+                          `Incoming payment channel: ${accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}`
+                        )
+                      }
+                      if (accountSetSpec?.disallowIncomingNFTokenOffer !== undefined) {
+                        changes.push(
+                          `Incoming NFT offer: ${accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}`
+                        )
+                      }
+                      if (accountSetSpec?.disallowIncomingTrustline !== undefined) {
+                        changes.push(
+                          `Incoming trustline: ${accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}`
+                        )
+                      }
+                      if (accountSetSpec?.enableTransactionIDTracking !== undefined) {
+                        changes.push(
+                          `Transaction ID tracking: ${
+                            accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'
+                          }`
+                        )
+                      }
+                      if (accountSetSpec?.globalFreeze !== undefined) {
+                        changes.push(`Global freeze: ${accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}`)
+                      }
+                      if (accountSetSpec?.authorizedMinter !== undefined) {
+                        changes.push(`Authorized minter: ${accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}`)
+                      }
+                      if (accountSetSpec?.nftokenMinter !== undefined) {
+                        changes.push(`NFT minter: ${accountSetSpec.nftokenMinter || 'removed'}`)
+                      }
+                      if (accountSetSpec?.allowTrustLineClawback !== undefined) {
+                        changes.push(
+                          `Trustline clawback: ${accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}`
+                        )
+                      }
+                      if (accountSetSpec?.disallowIncomingRemit !== undefined) {
+                        changes.push(`Incoming remit: ${accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}`)
+                      }
+
+                      return changes[0] || null
+                    })()
                     const nftOfferLegacyLabel = (() => {
                       if (txType === 'NFTokenAcceptOffer') {
                         if (!collapsedPrimaryChange && !collapsedSecondaryChange) {
@@ -2769,6 +2873,7 @@ export default function Account2({
 
                         const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
                         if (amountChangeValue < 0) return 'NFT purchase'
+                        if (isBrokeredNftAccept) return 'NFT offer accept by'
                         return 'NFT offer accept'
                       }
 
@@ -2798,13 +2903,15 @@ export default function Account2({
                         : false
                     const txTypeShortLabel =
                       nftOfferLegacyLabel ||
-                      (txType === 'NFTokenCreateOffer'
-                        ? 'NFT offer'
-                        : txType === 'NFTokenAcceptOffer'
-                          ? 'NFT offer accept'
-                          : txType === 'NFTokenCancelOffer'
-                            ? 'NFT offer cancel'
-                            : txType || '-')
+                      (txType === 'AccountSet'
+                        ? 'Account settings update'
+                        : txType === 'NFTokenCreateOffer'
+                          ? 'NFT offer'
+                          : txType === 'NFTokenAcceptOffer'
+                            ? 'NFT offer accept'
+                            : txType === 'NFTokenCancelOffer'
+                              ? 'NFT offer cancel'
+                              : txType || '-')
                     const txTypeCollapsedLabel =
                       tx?.TransactionType === 'TrustSet'
                         ? counterparty
@@ -2844,6 +2951,9 @@ export default function Account2({
                             </div>
 
                             <div className="tx-collapsed-meta">
+                              {txType === 'AccountSet' && accountSetCollapsedChange && (
+                                <span className="tx-accountset-inline">{accountSetCollapsedChange}</span>
+                              )}
                               {tx?.TransactionType === 'TrustSet' && trustSetToken && (
                                 <span className="tx-trustset-inline">
                                   <CurrencyWithIcon token={{ ...trustSetToken }} options={{ disableTokenLink: true }} />
@@ -3009,6 +3119,182 @@ export default function Account2({
                                   <span>Limit:</span>
                                   <span>{fullNiceNumber(trustSetToken?.value || 0)}</span>
                                 </div>
+                              </>
+                            )}
+
+                            {txType === 'AccountSet' && (
+                              <>
+                                {tx?.MessageKey !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Message key:</span>
+                                    <span className={accountSetSpec?.messageKey ? '' : 'orange'}>
+                                      {accountSetSpec?.messageKey || 'removed'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {tx?.Domain !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Domain:</span>
+                                    <span className="orange">{accountSetSpec?.domain || 'removed'}</span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.defaultRipple !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Default ripple:</span>
+                                    <span className="orange">
+                                      {accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {(accountSetSpec?.disallowXRP !== undefined ||
+                                  accountSetSettings?.disallowXRP !== undefined) && (
+                                  <div className="detail-row">
+                                    <span>Incoming {nativeCurrency}:</span>
+                                    <span className="orange">
+                                      {accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP
+                                        ? 'disallow'
+                                        : 'allow'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {(accountSetSpec?.requireDestTag !== undefined ||
+                                  accountSetSettings?.requireDestTag !== undefined) && (
+                                  <div className="detail-row">
+                                    <span>Destination tag:</span>
+                                    <span className="orange">
+                                      {accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
+                                        ? 'require'
+                                        : "don't require"}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.depositAuth !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Deposit authorization:</span>
+                                    <span className="orange">
+                                      {accountSetSpec.depositAuth ? 'enabled' : 'disabled'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.disableMaster !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Master key:</span>
+                                    <span className="red">{accountSetSpec.disableMaster ? 'disabled' : 'enabled'}</span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.noFreeze && (
+                                  <div className="detail-row">
+                                    <span>No freeze:</span>
+                                    <span className="orange">enabled</span>
+                                  </div>
+                                )}
+
+                                {(accountSetSpec?.requireAuth !== undefined ||
+                                  accountSetSettings?.requireAuth !== undefined) && (
+                                  <div className="detail-row">
+                                    <span>Require authorization:</span>
+                                    <span className="orange">
+                                      {accountSetSpec?.requireAuth || accountSetSettings?.requireAuth
+                                        ? 'enabled'
+                                        : 'disabled'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.disallowIncomingCheck !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Incoming check:</span>
+                                    <span className="orange">
+                                      {accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.disallowIncomingPayChan !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Incoming payment channel:</span>
+                                    <span className="orange">
+                                      {accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.disallowIncomingNFTokenOffer !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Incoming NFT offer:</span>
+                                    <span className="orange">
+                                      {accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.disallowIncomingTrustline !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Incoming trustline:</span>
+                                    <span className="orange">
+                                      {accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.enableTransactionIDTracking !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Transaction ID tracking:</span>
+                                    <span className="orange">
+                                      {accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.globalFreeze !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Global freeze:</span>
+                                    <span className="orange">
+                                      {accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.authorizedMinter !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Authorized minter:</span>
+                                    <span className="orange">
+                                      {accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.nftokenMinter !== undefined && (
+                                  <div className="detail-row">
+                                    <span>NFT minter:</span>
+                                    <span className="orange">{accountSetSpec.nftokenMinter || 'removed'}</span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.allowTrustLineClawback !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Trustline clawback:</span>
+                                    <span className="orange">
+                                      {accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {accountSetSpec?.disallowIncomingRemit !== undefined && (
+                                  <div className="detail-row">
+                                    <span>Incoming remit:</span>
+                                    <span className="orange">
+                                      {accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}
+                                    </span>
+                                  </div>
+                                )}
                               </>
                             )}
 
@@ -4352,6 +4638,14 @@ export default function Account2({
           min-width: 0;
           display: inline-flex;
           align-items: center;
+        }
+
+        .tx-accountset-inline {
+          min-width: 0;
+          color: var(--text-secondary);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .tx-trustset-inline :global(table) {
