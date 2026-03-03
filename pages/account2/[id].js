@@ -2596,6 +2596,11 @@ export default function Account2({
                     const destinationAddress = txdata?.specification?.destination?.address
                     const isSource = sourceAddress === data?.address
                     const counterparty = isSource ? destinationAddress : sourceAddress
+                    const isSelfPayment =
+                      tx?.TransactionType === 'Payment' &&
+                      !!sourceAddress &&
+                      !!destinationAddress &&
+                      sourceAddress === destinationAddress
                     const counterpartyDetails = isSource
                       ? txdata?.specification?.destinationDetails || txdata?.specification?.destination?.addressDetails
                       : txdata?.specification?.sourceDetails || txdata?.specification?.source?.addressDetails
@@ -2882,6 +2887,7 @@ export default function Account2({
                       typeof nftOfferLegacyLabel === 'string' && nftOfferLegacyLabel.startsWith('NFT transfer')
                     const isFreeNftTransfer = isNftTransferLabel && nftOfferAmountRaw === '0'
                     const txTypeShortLabel =
+                      (isSelfPayment ? 'Swap' : null) ||
                       nftOfferLegacyLabel ||
                       (txType === 'AccountSet'
                         ? 'Account settings update'
@@ -2892,8 +2898,9 @@ export default function Account2({
                             : txType === 'NFTokenCancelOffer'
                               ? 'NFT offer cancel'
                               : txType || '-')
-                    const txTypeCollapsedLabel =
-                      tx?.TransactionType === 'TrustSet'
+                    const txTypeCollapsedLabel = isSelfPayment
+                      ? txTypeShortLabel
+                      : tx?.TransactionType === 'TrustSet'
                         ? counterparty
                           ? `${isSource ? 'to' : 'from'}`
                           : ''
@@ -2965,7 +2972,7 @@ export default function Account2({
                                   <CurrencyWithIcon token={{ ...trustSetToken }} options={{ disableTokenLink: true }} />
                                 </span>
                               )}
-                              {tx?.TransactionType !== 'TrustSet' && resolvedCounterpartyAddress && (
+                              {tx?.TransactionType !== 'TrustSet' && !isSelfPayment && resolvedCounterpartyAddress && (
                                 <span className="tx-counterparty-inline">
                                   <AddressWithIconInline
                                     data={{
@@ -3049,7 +3056,7 @@ export default function Account2({
                               </>
                             )}
 
-                            {resolvedCounterpartyAddress && (
+                            {!isSelfPayment && resolvedCounterpartyAddress && (
                               <div className="detail-row">
                                 <span>{directionLabel}:</span>
                                 <span className="copy-inline">
