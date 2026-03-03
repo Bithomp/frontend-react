@@ -263,11 +263,15 @@ export default function Account2({
   const [showIssuerSettingsDetails, setShowIssuerSettingsDetails] = useState(false)
   const [receivedChecks, setReceivedChecks] = useState([])
   const [sentChecks, setSentChecks] = useState([])
+  const [receivedEscrows, setReceivedEscrows] = useState([])
+  const [sentEscrows, setSentEscrows] = useState([])
   const [incomingPaychannels, setIncomingPaychannels] = useState([])
   const [outgoingPaychannels, setOutgoingPaychannels] = useState([])
   const [checksTab, setChecksTab] = useState('received')
+  const [escrowsTab, setEscrowsTab] = useState('received')
   const [paychannelsTab, setPaychannelsTab] = useState('incoming')
   const [expandedCheckKey, setExpandedCheckKey] = useState(null)
+  const [expandedEscrowKey, setExpandedEscrowKey] = useState(null)
   const [showTxSettingsDetails, setShowTxSettingsDetails] = useState(false)
   const [showAccountControlDetails, setShowAccountControlDetails] = useState(false)
   const [expandedTransactionKey, setExpandedTransactionKey] = useState(null)
@@ -524,6 +528,13 @@ export default function Account2({
   const activeChecksList = activeChecksTab === 'sent' ? sentChecks : receivedChecks
   const checksSectionTitle = showChecksTabs ? 'Checks' : activeChecksTab === 'sent' ? 'Sent checks' : 'Received checks'
 
+  const hasReceivedEscrows = receivedEscrows.length > 0
+  const hasSentEscrows = sentEscrows.length > 0
+  const showEscrowsTabs = hasReceivedEscrows && hasSentEscrows
+  const activeEscrowsTab = showEscrowsTabs ? escrowsTab : hasSentEscrows ? 'sent' : 'received'
+  const activeEscrowsList = activeEscrowsTab === 'sent' ? sentEscrows : receivedEscrows
+  const escrowsSectionTitle = showEscrowsTabs ? 'Escrows' : activeEscrowsTab === 'sent' ? 'Sent escrows' : 'Received escrows'
+
   const hasIncomingPaychannels = incomingPaychannels.length > 0
   const hasOutgoingPaychannels = outgoingPaychannels.length > 0
   const showPaychannelsTabs = hasIncomingPaychannels && hasOutgoingPaychannels
@@ -623,8 +634,10 @@ export default function Account2({
   useEffect(() => {
     setExpandedIssuedToken(null)
     setExpandedCheckKey(null)
+    setExpandedEscrowKey(null)
     setShowIssuerSettingsDetails(false)
     setChecksTab('received')
+    setEscrowsTab('received')
     setPaychannelsTab('incoming')
     setShowTxSettingsDetails(false)
     setShowAccountControlDetails(false)
@@ -638,6 +651,15 @@ export default function Account2({
       setChecksTab('sent')
     }
   }, [showChecksTabs, checksTab, hasSentChecks, hasReceivedChecks])
+
+  useEffect(() => {
+    if (!showEscrowsTabs && escrowsTab === 'sent' && !hasSentEscrows) {
+      setEscrowsTab('received')
+    }
+    if (!showEscrowsTabs && escrowsTab === 'received' && !hasReceivedEscrows && hasSentEscrows) {
+      setEscrowsTab('sent')
+    }
+  }, [showEscrowsTabs, escrowsTab, hasSentEscrows, hasReceivedEscrows])
 
   useEffect(() => {
     if (!showPaychannelsTabs && paychannelsTab === 'outgoing' && !hasOutgoingPaychannels) {
@@ -684,6 +706,14 @@ export default function Account2({
           accountObjects.filter((node) => node.LedgerEntryType === 'PayChannel') || []
         setOutgoingPaychannels(accountObjectWithPaychannels.filter((node) => node.Account === data.address))
         setIncomingPaychannels(accountObjectWithPaychannels.filter((node) => node.Destination === data.address))
+
+        const accountObjectWithEscrows = accountObjects.filter((node) => node.LedgerEntryType === 'Escrow') || []
+        setReceivedEscrows(
+          accountObjectWithEscrows.filter((node) => node.Destination === data.address && node.Account !== data.address)
+        )
+        setSentEscrows(
+          accountObjectWithEscrows.filter((node) => node.Account === data.address && node.Destination !== data.address)
+        )
 
         const nftIds = accountObjects
           .filter((node) => node.LedgerEntryType === 'NFTokenPage' && Array.isArray(node.NFTokens))
@@ -1494,8 +1524,9 @@ export default function Account2({
                 </div>
               )}
 
-              {hasAccountControlData && (
-                <div className="time-machine-card account-control-card">
+              <div className="cards-list info-cards-list">
+                {hasAccountControlData && (
+                  <div className="time-machine-card account-control-card">
                   <button
                     type="button"
                     className={`time-machine-toggle ${showAccountControlDetails ? 'active' : ''}`}
@@ -1576,11 +1607,11 @@ export default function Account2({
                       )}
                     </div>
                   )}
-                </div>
-              )}
+                  </div>
+                )}
 
-              {hasNftDataDetails && (
-                <div className="time-machine-card tx-settings-card">
+                {hasNftDataDetails && (
+                  <div className="time-machine-card tx-settings-card">
                   <button
                     type="button"
                     className={`time-machine-toggle ${showNftDataDetails ? 'active' : ''}`}
@@ -1625,11 +1656,11 @@ export default function Account2({
                       )}
                     </div>
                   )}
-                </div>
-              )}
+                  </div>
+                )}
 
-              {data?.ledgerInfo?.sequence && (
-                <div className="time-machine-card tx-settings-card">
+                {data?.ledgerInfo?.sequence && (
+                  <div className="time-machine-card tx-settings-card">
                   <button
                     type="button"
                     className={`time-machine-toggle ${showTxSettingsDetails ? 'active' : ''}`}
@@ -1670,11 +1701,11 @@ export default function Account2({
                       )}
                     </div>
                   )}
-                </div>
-              )}
+                  </div>
+                )}
 
-              {hasAirdropsData && (
-                <div className="time-machine-card tx-settings-card">
+                {hasAirdropsData && (
+                  <div className="time-machine-card tx-settings-card">
                   <button
                     type="button"
                     className={`time-machine-toggle ${showAirdropsDetails ? 'active' : ''}`}
@@ -1738,58 +1769,59 @@ export default function Account2({
                       </div>
                     </div>
                   )}
-                </div>
-              )}
-
-              <div className="time-machine-card">
-                <button
-                  type="button"
-                  className={`time-machine-toggle ${showTimeMachine ? 'active' : ''}`}
-                  onClick={() => setShowTimeMachine((prev) => !prev)}
-                >
-                  Historical data
-                </button>
-
-                {showTimeMachine && (
-                  <div className="time-machine-panel">
-                    <div className="time-machine-head">
-                      <div className="time-machine-title">Select date and time</div>
-                    </div>
-                    <div className="time-machine-picker-wrap">
-                      <DatePicker
-                        selected={ledgerTimestampInput || new Date()}
-                        onChange={setLedgerTimestampInput}
-                        value={localDateTimeText(ledgerTimestampInput || new Date())}
-                        selectsStart
-                        showTimeInput
-                        timeInputLabel="Time"
-                        minDate={data?.inception ? new Date(data.inception * 1000) : undefined}
-                        maxDate={new Date()}
-                        dateFormat="Pp"
-                        className="dateAndTimeRange time-machine-input"
-                        calendarClassName="time-machine-calendar"
-                        showMonthDropdown
-                        showYearDropdown
-                      />
-                    </div>
-                    <div className="time-machine-actions">
-                      <button
-                        type="button"
-                        onClick={applyTimeMachine}
-                        className="time-machine-btn time-machine-btn-update"
-                      >
-                        Update
-                      </button>
-                      <button
-                        type="button"
-                        onClick={resetTimeMachine}
-                        className="time-machine-btn time-machine-btn-reset"
-                      >
-                        Reset
-                      </button>
-                    </div>
                   </div>
                 )}
+
+                <div className="time-machine-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showTimeMachine ? 'active' : ''}`}
+                    onClick={() => setShowTimeMachine((prev) => !prev)}
+                  >
+                    Historical data
+                  </button>
+
+                  {showTimeMachine && (
+                    <div className="time-machine-panel">
+                      <div className="time-machine-head">
+                        <div className="time-machine-title">Select date and time</div>
+                      </div>
+                      <div className="time-machine-picker-wrap">
+                        <DatePicker
+                          selected={ledgerTimestampInput || new Date()}
+                          onChange={setLedgerTimestampInput}
+                          value={localDateTimeText(ledgerTimestampInput || new Date())}
+                          selectsStart
+                          showTimeInput
+                          timeInputLabel="Time"
+                          minDate={data?.inception ? new Date(data.inception * 1000) : undefined}
+                          maxDate={new Date()}
+                          dateFormat="Pp"
+                          className="dateAndTimeRange time-machine-input"
+                          calendarClassName="time-machine-calendar"
+                          showMonthDropdown
+                          showYearDropdown
+                        />
+                      </div>
+                      <div className="time-machine-actions">
+                        <button
+                          type="button"
+                          onClick={applyTimeMachine}
+                          className="time-machine-btn time-machine-btn-update"
+                        >
+                          Update
+                        </button>
+                        <button
+                          type="button"
+                          onClick={resetTimeMachine}
+                          className="time-machine-btn time-machine-btn-reset"
+                        >
+                          Reset
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </CollapsibleColumn>
@@ -2480,9 +2512,9 @@ export default function Account2({
                 <p className="grey">No recent transactions found.</p>
               )}
 
-              {!transactionsLoading &&
-                !transactionsError &&
-                recentTransactions.map((txdata, index) => {
+              {!transactionsLoading && !transactionsError && (
+                <div className="cards-list">
+                  {recentTransactions.map((txdata, index) => {
                   const tx = txdata?.tx
                   const outcome = txdata?.outcome
                   const isSuccessful = outcome?.result === 'tesSUCCESS'
@@ -2541,12 +2573,12 @@ export default function Account2({
                     ? `${tx?.TransactionType || '-'} ${isSource ? 'to' : 'from'}`
                     : tx?.TransactionType || '-'
 
-                  return (
-                    <div
-                      className={`asset-item token-asset-item tx-asset-item ${isExpanded ? 'expanded' : ''} ${!isSuccessful ? 'tx-failed' : ''}`}
-                      key={txKey}
-                      onClick={() => setExpandedTransactionKey(isExpanded ? null : txKey)}
-                    >
+                    return (
+                      <div
+                        className={`asset-item token-asset-item tx-asset-item ${isExpanded ? 'expanded' : ''} ${!isSuccessful ? 'tx-failed' : ''}`}
+                        key={txKey}
+                        onClick={() => setExpandedTransactionKey(isExpanded ? null : txKey)}
+                      >
                       <div className="asset-main tx-asset-main">
                         <div className="asset-logo tx-asset-logo">
                           <div className="tx-collapsed-top">
@@ -2795,9 +2827,11 @@ export default function Account2({
                           </div>
                         </div>
                       )}
-                    </div>
-                  )
-                })}
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
 
               {!transactionsLoading && !transactionsError && transactionsMarker && (
                 <button className="tx-load-more" onClick={loadMoreTransactions} disabled={transactionsLoadingMore}>
@@ -2982,25 +3016,25 @@ export default function Account2({
 
               {(hasReceivedChecks || hasSentChecks) && (
                 <>
-                  <div className="section-header-row nft-section-header-row">
-                    <div className="section-title nft-section-title">
-                      {checksSectionTitle} <span className="nft-title-count">{activeChecksList.length}</span>
+                  <div className="section-header-row object-section-header-row">
+                    <div className="section-title object-section-title">
+                      {checksSectionTitle} <span className="object-title-count">{activeChecksList.length}</span>
                     </div>
                   </div>
 
                   {showChecksTabs && (
-                    <div className="nft-tab-row nft-tab-row-outside">
-                      <div className="nft-tab-switch nft-offers-tab-switch">
+                    <div className="object-tab-row object-tab-row-outside">
+                      <div className="object-tab-switch">
                         <button
                           type="button"
-                          className={`nft-tab-btn ${checksTab === 'received' ? 'active' : ''}`}
+                          className={`object-tab-btn ${checksTab === 'received' ? 'active' : ''}`}
                           onClick={() => setChecksTab('received')}
                         >
                           Received
                         </button>
                         <button
                           type="button"
-                          className={`nft-tab-btn ${checksTab === 'sent' ? 'active' : ''}`}
+                          className={`object-tab-btn ${checksTab === 'sent' ? 'active' : ''}`}
                           onClick={() => setChecksTab('sent')}
                         >
                           Sent
@@ -3011,7 +3045,7 @@ export default function Account2({
 
                   <div className="checks-wrapper">
                     <div className="checks-details">
-                      <div className="checks-list">
+                      <div className="checks-list cards-list">
                         {activeChecksList.map((check, index) => {
                           const checkKey = `${check?.index || 'check'}-${activeChecksTab}-${index}`
                           const isExpanded = expandedCheckKey === checkKey
@@ -3155,6 +3189,169 @@ export default function Account2({
                 </>
               )}
 
+              {(hasReceivedEscrows || hasSentEscrows) && (
+                <>
+                  <div className="section-header-row object-section-header-row">
+                    <div className="section-title object-section-title">
+                      {escrowsSectionTitle} <span className="object-title-count">{activeEscrowsList.length}</span>
+                    </div>
+                  </div>
+
+                  {showEscrowsTabs && (
+                    <div className="object-tab-row escrow-tab-row">
+                      <div className="object-tab-switch">
+                        <button
+                          type="button"
+                          className={`object-tab-btn ${escrowsTab === 'received' ? 'active' : ''}`}
+                          onClick={() => setEscrowsTab('received')}
+                        >
+                          Received
+                        </button>
+                        <button
+                          type="button"
+                          className={`object-tab-btn ${escrowsTab === 'sent' ? 'active' : ''}`}
+                          onClick={() => setEscrowsTab('sent')}
+                        >
+                          Sent
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="escrow-wrapper">
+                    <div className="escrow-details">
+                      <div className="escrow-list cards-list">
+                        {activeEscrowsList.map((escrow, index) => {
+                          const escrowKey = `${escrow?.index || 'escrow'}-${activeEscrowsTab}-${index}`
+                          const isExpanded = expandedEscrowKey === escrowKey
+                          const counterpartName = activeEscrowsTab === 'sent' ? 'Destination' : 'Account'
+                          const counterpartAddress =
+                            activeEscrowsTab === 'sent' ? escrow?.Destination : escrow?.Account
+                          const amountCollapsed = amountFormat(escrow?.Amount, { short: true, maxFractionDigits: 2 })
+                          const cancelAfterText =
+                            escrow?.CancelAfter ? timeFromNow(escrow.CancelAfter, i18n, 'ripple') : 'not set'
+                          const finishAfterText =
+                            escrow?.FinishAfter ? timeFromNow(escrow.FinishAfter, i18n, 'ripple') : 'not set'
+                          const isCanceled = escrow?.CancelAfter ? timestampExpired(escrow.CancelAfter, 'ripple') : false
+                          const isUnlockable = escrow?.FinishAfter ? timestampExpired(escrow.FinishAfter, 'ripple') : false
+                          const collapsedTimeText = isCanceled
+                            ? cancelAfterText
+                            : escrow?.FinishAfter
+                              ? finishAfterText
+                              : escrow?.CancelAfter
+                                ? cancelAfterText
+                                : '-'
+                          const collapsedDirectionLabel = activeEscrowsTab === 'sent' ? 'to' : 'from'
+
+                          return (
+                            <div
+                              className={`asset-item token-asset-item check-row-card escrow-card ${isExpanded ? 'expanded' : ''}`}
+                              key={escrowKey}
+                              onClick={() => setExpandedEscrowKey(isExpanded ? null : escrowKey)}
+                            >
+                              <div className="asset-main check-collapsed-main escrow-collapsed-main">
+                                <div className="asset-logo escrow-collapsed-logo">
+                                  <div className="escrow-collapsed-top">
+                                    <span className="escrow-type-main">Escrow {collapsedDirectionLabel}</span>
+                                    <span className={`escrow-time-top ${isCanceled ? 'red' : isUnlockable ? 'green' : ''}`}>
+                                      {collapsedTimeText}
+                                    </span>
+                                  </div>
+
+                                  <div className="tx-collapsed-meta">
+                                    {counterpartAddress ? (
+                                      <span className="tx-counterparty-inline">
+                                        <AddressWithIconInline data={escrow} name={counterpartName} options={{ short: 6 }} />
+                                      </span>
+                                    ) : (
+                                      <span className="tx-counterparty-inline">-</span>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="asset-value escrow-collapsed-amount">
+                                  <div className="asset-amount">
+                                    {amountCollapsed}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {isExpanded && (
+                                <div className="asset-details">
+                                  <div className="detail-row">
+                                    <span>{activeEscrowsTab === 'sent' ? 'To' : 'From'}:</span>
+                                    <span className="copy-inline">
+                                      {counterpartAddress ? (
+                                        <>
+                                          <span className="address-text">{counterpartAddress}</span>
+                                          <Link
+                                            href={`/account/${counterpartAddress}`}
+                                            className="inline-link-icon tooltip"
+                                            onClick={(event) => event.stopPropagation()}
+                                          >
+                                            <LinkIcon />
+                                            <span className="tooltiptext no-brake">Account page</span>
+                                          </Link>
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <CopyButton text={counterpartAddress} />
+                                          </span>
+                                        </>
+                                      ) : (
+                                        '-'
+                                      )}
+                                    </span>
+                                  </div>
+
+                                  <div className="detail-row">
+                                    <span>Expire:</span>
+                                    <span className={escrow?.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''}>
+                                      {cancelAfterText}
+                                    </span>
+                                  </div>
+
+                                  <div className="detail-row">
+                                    <span>Unlock:</span>
+                                    <span className={escrow?.FinishAfter && timestampExpired(escrow.FinishAfter, 'ripple') ? 'green' : ''}>
+                                      {finishAfterText}
+                                    </span>
+                                  </div>
+
+                                  <div className="detail-row">
+                                    <span>Amount:</span>
+                                    <span>{amountFormat(escrow?.Amount, { precise: 'nice' })}</span>
+                                  </div>
+
+                                  <div className="detail-row">
+                                    <span>Escrow ID:</span>
+                                    <span className="copy-inline">
+                                      <span>{escrow?.index || '-'}</span>
+                                      {!!escrow?.index && (
+                                        <>
+                                          <Link
+                                            href={`/object/${escrow.index}`}
+                                            className="inline-link-icon tooltip"
+                                            onClick={(event) => event.stopPropagation()}
+                                          >
+                                            <LinkIcon />
+                                            <span className="tooltiptext no-brake">Object page</span>
+                                          </Link>
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <CopyButton text={escrow.index} />
+                                          </span>
+                                        </>
+                                      )}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
               {hasAnyNftOffersData && (
                 <>
                   <div className="section-header-row nft-section-header-row">
@@ -3266,25 +3463,25 @@ export default function Account2({
 
               {(hasIncomingPaychannels || hasOutgoingPaychannels) && (
                 <>
-                  <div className="section-header-row nft-section-header-row">
-                    <div className="section-title nft-section-title">
-                      {paychannelsSectionTitle} <span className="nft-title-count">{activePaychannelsList.length}</span>
+                  <div className="section-header-row object-section-header-row">
+                    <div className="section-title object-section-title">
+                      {paychannelsSectionTitle} <span className="object-title-count">{activePaychannelsList.length}</span>
                     </div>
                   </div>
 
                   {showPaychannelsTabs && (
-                    <div className="nft-tab-row nft-tab-row-outside">
-                      <div className="nft-tab-switch nft-offers-tab-switch">
+                    <div className="object-tab-row object-tab-row-outside">
+                      <div className="object-tab-switch">
                         <button
                           type="button"
-                          className={`nft-tab-btn ${paychannelsTab === 'incoming' ? 'active' : ''}`}
+                          className={`object-tab-btn ${paychannelsTab === 'incoming' ? 'active' : ''}`}
                           onClick={() => setPaychannelsTab('incoming')}
                         >
                           Incoming
                         </button>
                         <button
                           type="button"
-                          className={`nft-tab-btn ${paychannelsTab === 'outgoing' ? 'active' : ''}`}
+                          className={`object-tab-btn ${paychannelsTab === 'outgoing' ? 'active' : ''}`}
                           onClick={() => setPaychannelsTab('outgoing')}
                         >
                           Outgoing
@@ -3293,9 +3490,9 @@ export default function Account2({
                     </div>
                   )}
 
-                  <div className="asset-item nft-offers-item">
-                    <div className="asset-details nft-offers-details nft-details-flat-top">
-                      <div className="nft-offers-list">
+                  <div className="asset-item object-list-item">
+                    <div className="asset-details object-list-details object-details-flat-top">
+                      <div className="object-list cards-list">
                         {activePaychannelsList.map((channel, index) => {
                           const counterpartName = activePaychannelsTab === 'outgoing' ? 'Destination' : 'Account'
                           const counterpartData = {
@@ -3417,7 +3614,7 @@ export default function Account2({
         .info-rows {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: 12px;
+          gap: 8px;
         }
 
         .info-row {
@@ -4082,11 +4279,15 @@ export default function Account2({
         }
 
         .time-machine-card {
-          margin-top: 2px;
+          margin-top: 0;
           background: transparent;
           border: 0;
           border-radius: 0;
           padding: 0;
+        }
+
+        .info-cards-list {
+          margin-top: 0;
         }
 
         .time-machine-toggle {
@@ -4271,6 +4472,12 @@ export default function Account2({
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
+        .cards-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
         .asset-main {
           display: flex;
           justify-content: space-between;
@@ -4435,11 +4642,13 @@ export default function Account2({
           gap: 10px;
         }
 
-        .nft-section-header-row {
+        .nft-section-header-row,
+        .object-section-header-row {
           margin-top: 4px;
         }
 
-        .nft-section-title {
+        .nft-section-title,
+        .object-section-title {
           display: inline-flex;
           align-items: center;
           gap: 6px;
@@ -4460,16 +4669,23 @@ export default function Account2({
           flex-wrap: nowrap;
         }
 
-        .nft-tab-row {
+        .nft-tab-row,
+        .object-tab-row {
           display: flex;
           align-items: center;
           justify-content: flex-start;
           min-height: 24px;
         }
 
-        .nft-tab-row-outside {
+        .nft-tab-row-outside,
+        .object-tab-row-outside {
           margin-top: -2px;
           margin-bottom: -4px;
+        }
+
+        .escrow-tab-row {
+          margin-top: 8px;
+          margin-bottom: 10px;
         }
 
         .nft-header-meta {
@@ -4493,18 +4709,21 @@ export default function Account2({
           text-decoration: underline;
         }
 
-        .nft-tab-switch {
+        .nft-tab-switch,
+        .object-tab-switch {
           display: inline-flex;
-          gap: 10px;
+          gap: 8px;
           margin-left: 0;
           padding: 0;
           border: 0;
           border-radius: 0;
           background: transparent;
           align-items: center;
+          flex-wrap: wrap;
         }
 
-        .nft-tab-btn {
+        .nft-tab-btn,
+        .object-tab-btn {
           border: 0;
           border-bottom: 2px solid transparent;
           border-radius: 0;
@@ -4520,13 +4739,15 @@ export default function Account2({
           -webkit-appearance: none;
         }
 
-        .nft-tab-btn.active {
+        .nft-tab-btn.active,
+        .object-tab-btn.active {
           color: var(--accent-link);
           border-bottom-color: var(--accent-link);
           box-shadow: none;
         }
 
-        .nft-tab-btn:hover:not(.active) {
+        .nft-tab-btn:hover:not(.active),
+        .object-tab-btn:hover:not(.active) {
           color: var(--text);
           border-bottom-color: color-mix(in srgb, var(--text) 35%, transparent);
         }
@@ -4537,7 +4758,8 @@ export default function Account2({
           flex-wrap: wrap;
         }
 
-        .nft-title-count {
+        .nft-title-count,
+        .object-title-count {
           display: inline-flex;
           align-items: center;
           width: auto;
@@ -4620,12 +4842,28 @@ export default function Account2({
           min-height: 40px;
         }
 
-        .nft-offers-details {
+        .nft-offers-details,
+        .object-list-details {
           margin-top: 0;
           padding-top: 0;
           padding-left: 0;
           padding-right: 0;
           border-top: 0;
+        }
+
+        .object-details-flat-top {
+          margin-top: 0;
+          padding-top: 0;
+          border-top: 0;
+        }
+
+        .object-list-item {
+          cursor: default;
+          padding: 0;
+        }
+
+        .object-list-item:hover {
+          transform: none;
         }
 
         .checks-wrapper {
@@ -4641,13 +4879,28 @@ export default function Account2({
         .checks-list {
           display: flex;
           flex-direction: column;
-          gap: 8px;
         }
 
-        .nft-offers-list {
+        .escrow-wrapper {
+          background: transparent;
+          border-radius: 0;
+          margin-top: 6px;
+        }
+
+        .escrow-details {
+          margin-top: 0;
+          padding-top: 0;
+        }
+
+        .escrow-list {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+        }
+
+        .nft-offers-list,
+        .object-list {
+          display: flex;
+          flex-direction: column;
         }
 
         .nft-offer-card {
@@ -4788,6 +5041,62 @@ export default function Account2({
 
         .check-row-card .asset-value {
           text-align: right;
+        }
+
+        .escrow-card .asset-main {
+          align-items: flex-start;
+        }
+
+        .escrow-collapsed-main {
+          align-items: flex-start;
+          position: relative;
+        }
+
+        .escrow-collapsed-logo {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+          padding-right: 118px;
+        }
+
+        .escrow-collapsed-top {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          min-width: 0;
+          padding-right: 0;
+        }
+
+        .escrow-type-main {
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text);
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .escrow-time-top {
+          position: absolute;
+          right: 0;
+          top: 0;
+          color: var(--text-secondary);
+          font-size: 11px;
+          line-height: 1;
+          white-space: nowrap;
+        }
+
+        .escrow-collapsed-amount {
+          min-width: 96px;
+          text-align: right;
+          padding-top: 14px;
+        }
+
+        .escrow-collapsed-amount .asset-amount {
+          font-size: 14px;
+          line-height: 1.15;
         }
 
         .nft-offer-thumb {
