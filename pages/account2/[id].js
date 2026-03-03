@@ -2601,6 +2601,15 @@ export default function Account2({
                       : txdata?.specification?.sourceDetails || txdata?.specification?.source?.addressDetails
 
                     const nftChanges = (outcome?.nftokenChanges || []).flatMap((entry) => entry?.nftokenChanges || [])
+                    const nftAddressChanges = outcome?.nftokenChanges || []
+                    const nftSource =
+                      nftAddressChanges.length === 2
+                        ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'removed')
+                        : null
+                    const nftDestination =
+                      nftAddressChanges.length === 2
+                        ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'added')
+                        : null
                     const nftTokenId =
                       tx?.NFTokenID ||
                       txdata?.meta?.nftoken_id ||
@@ -2609,7 +2618,120 @@ export default function Account2({
                       txdata?.specification?.nftokenId ||
                       txdata?.specification?.nftokenOffer?.nftokenID ||
                       nftChanges.find((entry) => entry?.nftokenID)?.nftokenID
-                    const isNftTx = (tx?.TransactionType || '').includes('NFToken') || !!nftTokenId
+                    const txType = tx?.TransactionType || ''
+                    const isNftTx = txType.includes('NFToken') || !!nftTokenId
+                    const isNftOfferTx =
+                      txType === 'NFTokenCreateOffer' ||
+                      txType === 'NFTokenAcceptOffer' ||
+                      txType === 'NFTokenCancelOffer'
+                    const outcomeOfferIds = (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
+                      (entry?.nftokenOfferChanges || []).map((offerChange) => offerChange?.index)
+                    )
+                    const nftOfferIds = Array.from(
+                      new Set(
+                        [
+                          ...outcomeOfferIds,
+                          ...(Array.isArray(tx?.NFTokenOffers) ? tx.NFTokenOffers : []),
+                          tx?.NFTokenSellOffer,
+                          tx?.NFTokenBuyOffer,
+                          tx?.OfferID,
+                          txdata?.specification?.nftokenOffer?.offerIndex,
+                          txdata?.specification?.nftokenOffer?.offerID
+                        ].filter(Boolean)
+                      )
+                    )
+                    const nftOfferAmountRaw =
+                      tx?.Amount ??
+                      txdata?.specification?.nftokenOffer?.amount ??
+                      txdata?.specification?.destination?.amount ??
+                      txdata?.specification?.source?.amount ??
+                      null
+                    const hasNftOfferAmount = nftOfferAmountRaw !== null && typeof nftOfferAmountRaw !== 'undefined'
+                    const createOfferDirection =
+                      txType === 'NFTokenCreateOffer'
+                        ? txdata?.specification?.flags?.sellToken
+                          ? 'sell'
+                          : 'buy'
+                        : null
+                    const nftOfferSignedAmount = (() => {
+                      if (!hasNftOfferAmount) return null
+
+                      const hasPrimaryChangeValue =
+                        collapsedPrimaryChange && Number.isFinite(Number(collapsedPrimaryChange?.value))
+
+                      if (hasPrimaryChangeValue) {
+                        return collapsedPrimaryChange
+                      }
+
+                      let sign = 0
+                      if (txType === 'NFTokenCreateOffer') {
+                        sign = isSource
+                          ? createOfferDirection === 'buy'
+                            ? -1
+                            : 1
+                          : createOfferDirection === 'buy'
+                            ? 1
+                            : -1
+                      } else if (txType === 'NFTokenAcceptOffer') {
+                        sign = isSource ? -1 : 1
+                      }
+
+                      if (!sign) return nftOfferAmountRaw
+
+                      if (typeof nftOfferAmountRaw === 'object' && nftOfferAmountRaw !== null) {
+                        const numericValue = Math.abs(Number(nftOfferAmountRaw?.value || 0))
+                        if (!Number.isFinite(numericValue)) return nftOfferAmountRaw
+                        return {
+                          ...nftOfferAmountRaw,
+                          value: String(sign < 0 ? -numericValue : numericValue)
+                        }
+                      }
+
+                      const numericValue = Math.abs(Number(nftOfferAmountRaw))
+                      if (!Number.isFinite(numericValue)) return nftOfferAmountRaw
+                      return sign < 0 ? -numericValue : numericValue
+                    })()
+                    const nftOfferSignedValue =
+                      typeof nftOfferSignedAmount === 'object' && nftOfferSignedAmount !== null
+                        ? Number(nftOfferSignedAmount?.value || 0)
+                        : Number(nftOfferSignedAmount || 0)
+                    const nftOfferSign = nftOfferSignedValue > 0 ? 1 : nftOfferSignedValue < 0 ? -1 : 0
+                    const nftOfferSignPrefix = nftOfferSign > 0 ? '+' : nftOfferSign < 0 ? '-' : ''
+                    const nftOfferAmountClass = nftOfferSign > 0 ? 'green' : nftOfferSign < 0 ? 'red' : ''
+                    const nftOfferAmountCollapsedText = hasNftOfferAmount
+                      ? amountFormat(nftOfferSignedAmount, {
+                          short: true,
+                          maxFractionDigits: 2,
+                          showPlus: true
+                        })
+                      : null
+                    const nftOfferAmountExpandedText = hasNftOfferAmount
+                      ? amountFormat(nftOfferAmountRaw, {
+                          icon: true,
+                          precise: 'nice'
+                        })
+                      : null
+                    const nftOfferAmountFiatRaw = hasNftOfferAmount
+                      ? nativeCurrencyToFiat({
+                          amount: nftOfferSignedAmount,
+                          selectedCurrency,
+                          fiatRate: txHistoricalRate,
+                          asText: true
+                        })
+                      : ''
+                    const nftOfferAmountFiatText = nftOfferAmountFiatRaw
+                      ? `${nftOfferSignPrefix}${String(nftOfferAmountFiatRaw).replace(/^[-+]/, '')}`
+                      : ''
+                    const nftOfferAmountFiatExpandedText = hasNftOfferAmount
+                      ? nativeCurrencyToFiat({
+                          amount: nftOfferAmountRaw,
+                          selectedCurrency,
+                          fiatRate: txHistoricalRate,
+                          asText: true
+                        })
+                      : ''
+                    const showNftOfferAmountCollapsed =
+                      isNftOfferTx && hasNftOfferAmount && !collapsedPrimaryChange && !collapsedSecondaryChange
                     const trustSetSpecification = txdata?.specification
                     const trustSetToken =
                       tx?.TransactionType === 'TrustSet' && tx?.LimitAmount
@@ -2637,14 +2759,62 @@ export default function Account2({
                           : failedStatusText
                       : null
                     const directionLabel = counterparty ? (isSource ? 'To' : 'From') : null
+                    const nftOfferLegacyLabel = (() => {
+                      if (txType === 'NFTokenAcceptOffer') {
+                        if (!collapsedPrimaryChange && !collapsedSecondaryChange) {
+                          if (nftDestination?.address === data?.address) return 'NFT transfer from'
+                          if (nftSource?.address === data?.address) return 'NFT transfer to'
+                          return 'NFT transfer by'
+                        }
+
+                        const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
+                        if (amountChangeValue < 0) return 'NFT purchase'
+                        return 'NFT offer accept'
+                      }
+
+                      if (txType === 'NFTokenCreateOffer') {
+                        const direction = txdata?.specification?.flags?.sellToken ? 'Sell' : 'Buy'
+                        if (direction === 'Sell' && tx?.Account !== data?.address) {
+                          const amountAsNumber = Number(tx?.Amount || 0)
+                          if (Number.isFinite(amountAsNumber) && amountAsNumber === 0) {
+                            return 'NFT transfer from'
+                          }
+                          return 'NFT Sell offer from'
+                        }
+                        return `Create NFT ${direction} offer`
+                      }
+
+                      if (txType === 'NFTokenCancelOffer') {
+                        return 'Cancel NFT offer'
+                      }
+
+                      return null
+                    })()
+                    const isNftTransferLabel =
+                      typeof nftOfferLegacyLabel === 'string' && nftOfferLegacyLabel.startsWith('NFT transfer')
+                    const isFreeNftTransfer =
+                      isNftTransferLabel && hasNftOfferAmount && Number.isFinite(nftOfferSignedValue)
+                        ? Math.abs(nftOfferSignedValue) === 0
+                        : false
+                    const txTypeShortLabel =
+                      nftOfferLegacyLabel ||
+                      (txType === 'NFTokenCreateOffer'
+                        ? 'NFT offer'
+                        : txType === 'NFTokenAcceptOffer'
+                          ? 'NFT offer accept'
+                          : txType === 'NFTokenCancelOffer'
+                            ? 'NFT offer cancel'
+                            : txType || '-')
                     const txTypeCollapsedLabel =
                       tx?.TransactionType === 'TrustSet'
                         ? counterparty
                           ? `${isSource ? 'to' : 'from'}`
                           : ''
-                        : counterparty
-                          ? `${tx?.TransactionType || '-'} ${isSource ? 'to' : 'from'}`
-                          : tx?.TransactionType || '-'
+                        : isNftOfferTx
+                          ? txTypeShortLabel
+                          : counterparty
+                            ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
+                            : txTypeShortLabel
 
                     return (
                       <div
@@ -2656,12 +2826,16 @@ export default function Account2({
                           <div className="asset-logo tx-asset-logo">
                             <div className="tx-collapsed-top">
                               {isNftTx && (
-                                <span className="tx-nft-thumb">
-                                  <NftImage
-                                    nft={nftTokenId ? { nftokenID: nftTokenId } : {}}
-                                    style={{ width: 28, height: 28, borderRadius: '6px', margin: 0 }}
-                                  />
-                                </span>
+                                <>
+                                  {!isNftOfferTx && (
+                                    <span className="tx-nft-thumb">
+                                      <NftImage
+                                        nft={nftTokenId ? { nftokenID: nftTokenId } : {}}
+                                        style={{ width: 28, height: 28, borderRadius: '6px', margin: 0 }}
+                                      />
+                                    </span>
+                                  )}
+                                </>
                               )}
                               <span className="tx-type-main">{txTypeCollapsedLabel}</span>
                               <span className="tx-time tx-time-top">
@@ -2694,6 +2868,21 @@ export default function Account2({
                               trustSetStatus ? (
                                 <span className="tx-inline-status orange">{trustSetStatus}</span>
                               ) : null
+                            ) : showNftOfferAmountCollapsed ? (
+                              <span className="tx-inline-change-item">
+                                {isFreeNftTransfer ? (
+                                  <span className="tx-offer-free orange">Free</span>
+                                ) : (
+                                  <>
+                                    <span className={`tx-inline-change ${nftOfferAmountClass}`}>
+                                      {nftOfferAmountCollapsedText}
+                                    </span>
+                                    {!!nftOfferAmountFiatText && (
+                                      <span className="tx-change-fiat">{nftOfferAmountFiatText}</span>
+                                    )}
+                                  </>
+                                )}
+                              </span>
                             ) : (
                               <>
                                 {collapsedPrimaryChange && (
@@ -2893,14 +3082,61 @@ export default function Account2({
                             {nftTokenId && (
                               <div className="detail-row">
                                 <span>NFT:</span>
-                                <span className="copy-inline">
+                                <span className="copy-inline id-inline">
+                                  <span className="address-text ellipsis-text" title={nftTokenId}>
+                                    {nftTokenId}
+                                  </span>
                                   <Link
                                     href={`/nft/${nftTokenId}`}
-                                    className="tx-link"
+                                    className="inline-link-icon tooltip"
                                     onClick={(event) => event.stopPropagation()}
                                   >
-                                    {nftTokenId}
+                                    <LinkIcon />
+                                    <span className="tooltiptext no-brake">NFT page</span>
                                   </Link>
+                                  <span onClick={(event) => event.stopPropagation()}>
+                                    <CopyButton text={nftTokenId} />
+                                  </span>
+                                </span>
+                              </div>
+                            )}
+
+                            {nftOfferIds.length > 0 && (
+                              <div className="detail-row">
+                                <span>{nftOfferIds.length > 1 ? 'Offer IDs:' : 'Offer ID:'}</span>
+                                <span className="tx-offer-id-list">
+                                  {nftOfferIds.map((offerId, offerIndex) => (
+                                    <span className="copy-inline id-inline" key={`${txKey}-offer-${offerIndex}`}>
+                                      <span className="address-text ellipsis-text" title={offerId}>
+                                        {offerId}
+                                      </span>
+                                      <Link
+                                        href={`/nft-offer/${offerId}`}
+                                        className="inline-link-icon tooltip"
+                                        onClick={(event) => event.stopPropagation()}
+                                      >
+                                        <LinkIcon />
+                                        <span className="tooltiptext no-brake">Offer page</span>
+                                      </Link>
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={offerId} />
+                                      </span>
+                                    </span>
+                                  ))}
+                                </span>
+                              </div>
+                            )}
+
+                            {isNftOfferTx && hasNftOfferAmount && (
+                              <div className="detail-row">
+                                <span>Offer amount:</span>
+                                <span className="tx-detail-offer-amount">
+                                  <span className={`tx-inline-change ${nftOfferAmountClass}`}>
+                                    {nftOfferAmountExpandedText}
+                                  </span>
+                                  {!!nftOfferAmountFiatExpandedText && (
+                                    <span className="tx-change-fiat">{nftOfferAmountFiatExpandedText}</span>
+                                  )}
                                 </span>
                               </div>
                             )}
@@ -4162,6 +4398,12 @@ export default function Account2({
           white-space: nowrap;
         }
 
+        .tx-offer-free {
+          font-size: 14px;
+          font-weight: 700;
+          white-space: nowrap;
+        }
+
         .tx-inline-more {
           color: var(--text-secondary);
           font-size: 12px;
@@ -4197,6 +4439,14 @@ export default function Account2({
           align-items: flex-end;
           gap: 2px;
           max-width: 70% !important;
+          text-align: right;
+        }
+
+        .tx-detail-offer-amount {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 2px;
           text-align: right;
         }
 
@@ -5475,14 +5725,43 @@ export default function Account2({
 
         .copy-inline {
           display: inline-flex;
-          align-items: center;
+          align-items: flex-start;
           gap: 6px;
           justify-content: flex-end;
+        }
+
+        .id-inline {
+          display: inline-grid;
+          grid-template-columns: minmax(0, 1fr) auto auto;
+          align-items: start;
+          column-gap: 6px;
+          width: 100%;
+        }
+
+        .tx-offer-id-list {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 4px;
+          max-width: 60% !important;
+          text-align: right;
         }
 
         .address-text {
           font-family: monospace;
           font-size: 12px;
+          min-width: 0;
+          overflow-wrap: anywhere;
+          word-break: break-all;
+          text-align: right;
+        }
+
+        .ellipsis-text {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          overflow-wrap: normal;
+          word-break: normal;
         }
 
         .change-limit-link {
