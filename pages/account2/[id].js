@@ -2647,6 +2647,26 @@ export default function Account2({
                     const txType = tx?.TransactionType || ''
                     const txTypeLower = txType.toLowerCase()
                     const isAmmTx = txType.startsWith('AMM')
+                    const isDexOfferTx = txType === 'OfferCreate' || txType === 'OfferCancel'
+                    const myOrderbookChange = outcome?.orderbookChanges
+                      ?.filter((entry) => entry?.address === data?.address)?.[0]
+                      ?.orderbookChanges?.filter((entry) => entry?.sequence === txdata?.specification?.orderSequence)?.[0]
+                    const dexOfferDirection =
+                      (txdata?.specification?.flags
+                        ? txdata?.specification?.flags?.sell
+                        : myOrderbookChange?.direction)
+                        ? 'Sell'
+                        : 'Buy'
+                    const isMyDexOrder = tx?.Account === data?.address
+                    const dexOrderStatus = (() => {
+                      if (!isDexOfferTx) return null
+                      if (txType === 'OfferCancel') return 'canceled'
+                      if (changes?.length === 0 && isMyDexOrder) return 'placed'
+                      if (!isMyDexOrder) return 'fullfilled'
+                      return 'placed and fullfilled'
+                    })()
+                    const dexOfferShortLabel =
+                      isDexOfferTx && dexOrderStatus ? `${dexOfferDirection} order ${dexOrderStatus}` : null
                     const hasAmmVoteTradingFee = txType === 'AMMVote' && (tx?.TradingFee || tx?.TradingFee === 0)
                     const ammVoteTradingFeeText = hasAmmVoteTradingFee ? `${tx.TradingFee / 100000}%` : null
                     const isCreateNftOfferTx =
@@ -2946,6 +2966,7 @@ export default function Account2({
                     const txTypeShortLabel =
                       (isSelfPayment ? 'Swap' : null) ||
                       (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
+                      dexOfferShortLabel ||
                       nftOfferLegacyLabel ||
                       (txType === 'AccountSet'
                         ? 'Account settings update'
@@ -2979,6 +3000,8 @@ export default function Account2({
                                 : ''
                               : isNftOfferTx
                                 ? txTypeShortLabel
+                                : isDexOfferTx
+                                  ? txTypeShortLabel
                                 : counterparty
                                   ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
                                   : txTypeShortLabel
