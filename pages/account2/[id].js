@@ -2648,11 +2648,16 @@ export default function Account2({
                     const txTypeLower = txType.toLowerCase()
                     const isAmmTx = txType.startsWith('AMM')
                     const isDexOfferTx = txType === 'OfferCreate' || txType === 'OfferCancel'
-                    const myOrderbookChange = outcome?.orderbookChanges
-                      ?.filter((entry) => entry?.address === data?.address)?.[0]
-                      ?.orderbookChanges?.filter(
-                        (entry) => entry?.sequence === txdata?.specification?.orderSequence
-                      )?.[0]
+                    const myAddressOrderbookChanges =
+                      outcome?.orderbookChanges?.find((entry) => entry?.address === data?.address)?.orderbookChanges ||
+                      []
+                    const myOrderbookSequences = Array.from(
+                      new Set(myAddressOrderbookChanges.map((entry) => entry?.sequence).filter(Boolean))
+                    )
+                    const myOrderbookChange =
+                      myAddressOrderbookChanges.find(
+                        (entry) => entry?.sequence === (tx?.offerSequence || txdata?.specification?.orderSequence)
+                      ) || myAddressOrderbookChanges[0]
                     const dexOfferDirection = (
                       txdata?.specification?.flags ? txdata?.specification?.flags?.sell : myOrderbookChange?.direction
                     )
@@ -2668,13 +2673,43 @@ export default function Account2({
                     })()
                     const dexOfferShortLabel =
                       isDexOfferTx && dexOrderStatus ? `${dexOfferDirection} order ${dexOrderStatus}` : null
+                    const dexCollapsedSequences =
+                      txType === 'OfferCancel'
+                        ? myOrderbookSequences.length > 0
+                          ? myOrderbookSequences
+                          : [tx?.offerSequence].filter(Boolean)
+                        : isMyDexOrder
+                          ? [tx?.Sequence || tx?.TicketSequence].filter(Boolean)
+                          : myOrderbookSequences
+                    const showDexCollapsedSequence = isDexOfferTx && dexCollapsedSequences.length > 0
                     const dexTakerGets = txdata?.specification?.takerGets || myOrderbookChange?.takerGets || null
                     const dexTakerPays = txdata?.specification?.takerPays || myOrderbookChange?.takerPays || null
-                    const showDexPlacedOrderSpecification =
+                    const isDexNotFullfilled =
+                      isDexOfferTx && typeof dexOrderStatus === 'string' && !dexOrderStatus.includes('fullfilled')
+                    const toSignedDexAmount = (amount, sign) => {
+                      if (!amount) return null
+
+                      if (typeof amount === 'object') {
+                        const numericValue = Math.abs(Number(amount?.value || 0))
+                        if (!Number.isFinite(numericValue)) return null
+                        return {
+                          ...amount,
+                          value: String(sign < 0 ? -numericValue : numericValue)
+                        }
+                      }
+
+                      const numericValue = Math.abs(Number(amount))
+                      if (!Number.isFinite(numericValue)) return null
+                      return sign < 0 ? -numericValue : numericValue
+                    }
+                    const dexSpecifiedChanges = isDexNotFullfilled
+                      ? [toSignedDexAmount(dexTakerGets, -1), toSignedDexAmount(dexTakerPays, 1)].filter(Boolean)
+                      : []
+                    const showDexSpecifiedOrderDetails =
                       isDexOfferTx &&
                       isMyDexOrder &&
                       typeof dexOrderStatus === 'string' &&
-                      dexOrderStatus.includes('placed') &&
+                      (dexOrderStatus.includes('placed') || dexOrderStatus === 'canceled') &&
                       (!!dexTakerGets || !!dexTakerPays)
                     const hasAmmVoteTradingFee = txType === 'AMMVote' && (tx?.TradingFee || tx?.TradingFee === 0)
                     const ammVoteTradingFeeText = hasAmmVoteTradingFee ? `${tx.TradingFee / 100000}%` : null
@@ -3078,6 +3113,12 @@ export default function Account2({
                               {txType === 'AccountSet' && accountSetCollapsedChange && (
                                 <span className="tx-accountset-inline">{accountSetCollapsedChange}</span>
                               )}
+                              {showDexCollapsedSequence && (
+                                <span className="tx-accountset-inline">
+                                  {dexCollapsedSequences.length > 1 ? 'Offer sequences: ' : 'Offer sequence: '}
+                                  {dexCollapsedSequences.join(', ')}
+                                </span>
+                              )}
                               {ammPairToken && (
                                 <span className="tx-amm-token-meta">
                                   <CurrencyWithIcon
@@ -3117,6 +3158,21 @@ export default function Account2({
                               trustSetStatus ? (
                                 <span className="tx-inline-status orange">{trustSetStatus}</span>
                               ) : null
+                            ) : isDexNotFullfilled && dexSpecifiedChanges.length > 0 ? (
+                              <>
+                                {dexSpecifiedChanges.map((change, changeIndex) => (
+                                  <span className="tx-inline-change-item" key={`${txKey}-dex-spec-${changeIndex}`}>
+                                    <span className="tx-inline-change grey">
+                                      {amountFormat(change, {
+                                        icon: true,
+                                        short: true,
+                                        maxFractionDigits: 2,
+                                        showPlus: true
+                                      })}
+                                    </span>
+                                  </span>
+                                ))}
+                              </>
                             ) : hasAmmVoteTradingFee ? (
                               <span className="tx-inline-status grey">Trading fee: {ammVoteTradingFeeText}</span>
                             ) : showFreeNftBadge ? (
@@ -3166,7 +3222,7 @@ export default function Account2({
                               <span>{tx?.TransactionType || '-'}</span>
                             </div>
 
-                            {showDexPlacedOrderSpecification && !!dexTakerGets && (
+                            {showDexSpecifiedOrderDetails && !!dexTakerGets && (
                               <div className="detail-row">
                                 <span>
                                   {dexOfferDirection === 'Sell' ? 'Specified sell exactly:' : 'Specified pay up to:'}
@@ -3180,7 +3236,7 @@ export default function Account2({
                               </div>
                             )}
 
-                            {showDexPlacedOrderSpecification && !!dexTakerPays && (
+                            {showDexSpecifiedOrderDetails && !!dexTakerPays && (
                               <div className="detail-row">
                                 <span>
                                   {dexOfferDirection === 'Sell'
@@ -3490,7 +3546,7 @@ export default function Account2({
                               <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
                             </div>
 
-                            {!!selectedCurrency && shouldShowExpandedRate && !hasDexOfferRates && (
+                            {!!selectedCurrency && (shouldShowExpandedRate || isDexOfferTx) && !hasDexOfferRates && (
                               <div className="detail-row">
                                 <span>Rate:</span>
                                 <span suppressHydrationWarning>
@@ -3561,7 +3617,7 @@ export default function Account2({
                               <div className="detail-row tx-detail-change-row">
                                 <span>Rates:</span>
                                 <span className="tx-detail-change-list">
-                                  {!!selectedCurrency && shouldShowExpandedRate && (
+                                  {!!selectedCurrency && (
                                     <span className="tx-change-row">
                                       <span suppressHydrationWarning>
                                         {txHistoricalRate
@@ -4948,7 +5004,7 @@ export default function Account2({
 
         .tx-offer-free {
           font-size: 14px;
-          font-weight: 700;
+          font-weight: 600;
           white-space: nowrap;
         }
 
