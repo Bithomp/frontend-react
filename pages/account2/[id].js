@@ -2995,6 +2995,7 @@ export default function Account2({
                                   <span className="tx-inline-change-item">
                                     <span className={`tx-inline-change ${primaryChangeClass}`}>
                                       {amountFormat(collapsedPrimaryChange, {
+                                        icon: true,
                                         short: true,
                                         maxFractionDigits: 2,
                                         showPlus: true
@@ -3007,6 +3008,7 @@ export default function Account2({
                                   <span className="tx-inline-change-item">
                                     <span className={`tx-inline-change ${secondaryChangeClass}`}>
                                       {amountFormat(collapsedSecondaryChange, {
+                                        icon: true,
                                         short: true,
                                         maxFractionDigits: 2,
                                         showPlus: true
@@ -3370,8 +3372,11 @@ export default function Account2({
                                         key={`${txKey}-change-${changeIndex}`}
                                       >
                                         <span>
-                                          {changeValue > 0 ? '+' : ''}
-                                          {fullNiceNumber(change?.value || 0)} {niceCurrency(change?.currency)}
+                                          {amountFormat(change, {
+                                            icon: true,
+                                            precise: 'nice',
+                                            showPlus: true
+                                          })}
                                         </span>
                                         {!!changeFiat && <span className="tx-change-fiat">{changeFiat}</span>}
                                       </span>
