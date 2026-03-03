@@ -2595,6 +2595,12 @@ export default function Account2({
                     const hasObjectTxAmount = typeof txAmountRaw === 'object' && txAmountRaw !== null
                     const isMissingOrZeroTxAmount = typeof txAmountRaw === 'undefined' || txAmountRaw === '0'
                     const shouldShowExpandedRate = changes.length > 0 || hasObjectTxAmount || !isMissingOrZeroTxAmount
+                    const isLpAmount = (amount) => {
+                      if (!amount || typeof amount !== 'object') return false
+                      if (amount?.currencyDetails?.type === 'lp_token') return true
+                      const amountCurrency = amount?.currency
+                      return typeof amountCurrency === 'string' && amountCurrency.substring(0, 2) === '03'
+                    }
 
                     const sourceAddress = txdata?.specification?.source?.address
                     const destinationAddress = txdata?.specification?.destination?.address
@@ -2640,6 +2646,9 @@ export default function Account2({
                       nftSellerAddress === data?.address ? 'seller' : nftBuyerAddress === data?.address ? 'buyer' : null
                     const txType = tx?.TransactionType || ''
                     const txTypeLower = txType.toLowerCase()
+                    const isAmmTx = txType.startsWith('AMM')
+                    const hasAmmVoteTradingFee = txType === 'AMMVote' && (tx?.TradingFee || tx?.TradingFee === 0)
+                    const ammVoteTradingFeeText = hasAmmVoteTradingFee ? `${tx.TradingFee / 100000}%` : null
                     const isCreateNftOfferTx =
                       txType === 'NFTokenCreateOffer' ||
                       txTypeLower === 'createnftselloffer' ||
@@ -2697,6 +2706,32 @@ export default function Account2({
                       : ''
                     const isBrokeredNftAccept = isAcceptNftOfferTx && !!tx?.NFTokenSellOffer && !!tx?.NFTokenBuyOffer
                     const brokerAddress = isBrokeredNftAccept ? sourceAddress || tx?.Account || null : null
+                    const ammLpChange = changes.find(
+                      (change) =>
+                        change?.currencyDetails?.type === 'lp_token' &&
+                        change?.currencyDetails?.asset &&
+                        change?.currencyDetails?.asset2
+                    )
+                    const ammAsset = tx?.Asset || txdata?.specification?.asset || ammLpChange?.currencyDetails?.asset
+                    const ammAsset2 =
+                      tx?.Asset2 || txdata?.specification?.asset2 || ammLpChange?.currencyDetails?.asset2
+                    const ammAssetCurrency =
+                      typeof ammAsset === 'string' ? ammAsset : ammAsset?.currency || nativeCurrency
+                    const ammAsset2Currency =
+                      typeof ammAsset2 === 'string' ? ammAsset2 : ammAsset2?.currency || nativeCurrency
+                    const ammPairLabel = `${niceCurrency(ammAssetCurrency)}/${niceCurrency(ammAsset2Currency)}`
+                    const ammPairToken =
+                      isAmmTx && ammAsset && ammAsset2
+                        ? {
+                            currency: 'LP',
+                            currencyDetails: {
+                              type: 'lp_token',
+                              currency: ammPairLabel,
+                              asset: ammAsset,
+                              asset2: ammAsset2
+                            }
+                          }
+                        : null
                     const resolvedCounterpartyAddress = isAccountDeleteTx
                       ? removedAccountAddress
                       : isAcceptNftOfferTx && nftViewerRole === 'seller'
@@ -2914,17 +2949,23 @@ export default function Account2({
                       nftOfferLegacyLabel ||
                       (txType === 'AccountSet'
                         ? 'Account settings update'
-                        : txType === 'NFTokenMint'
-                          ? 'NFT Mint'
-                          : txType === 'NFTokenBurn'
-                            ? 'NFT Burn'
-                            : txType === 'NFTokenCreateOffer'
-                              ? 'NFT offer'
-                              : txType === 'NFTokenAcceptOffer'
-                                ? 'NFT offer accept'
-                                : txType === 'NFTokenCancelOffer'
-                                  ? 'NFT offer cancel'
-                                  : txType || '-')
+                        : txType === 'AMMDeposit'
+                          ? 'AMM Deposit'
+                          : txType === 'AMMVote'
+                            ? 'AMM Vote'
+                            : txType === 'AMMWithdraw'
+                              ? 'AMM Withdraw'
+                              : txType === 'NFTokenMint'
+                                ? 'NFT Mint'
+                                : txType === 'NFTokenBurn'
+                                  ? 'NFT Burn'
+                                  : txType === 'NFTokenCreateOffer'
+                                    ? 'NFT offer'
+                                    : txType === 'NFTokenAcceptOffer'
+                                      ? 'NFT offer accept'
+                                      : txType === 'NFTokenCancelOffer'
+                                        ? 'NFT offer cancel'
+                                        : txType || '-')
                     const txTypeCollapsedLabel =
                       isSelfPayment || isAccountDeleteTx
                         ? txTypeShortLabel
@@ -2992,6 +3033,15 @@ export default function Account2({
                               {txType === 'AccountSet' && accountSetCollapsedChange && (
                                 <span className="tx-accountset-inline">{accountSetCollapsedChange}</span>
                               )}
+                              {ammPairToken && (
+                                <span className="tx-amm-token-meta">
+                                  <CurrencyWithIcon
+                                    token={ammPairToken}
+                                    hideIssuer
+                                    options={{ disableTokenLink: true }}
+                                  />
+                                </span>
+                              )}
                               {tx?.TransactionType === 'TrustSet' && trustSetToken && (
                                 <span className="tx-trustset-inline">
                                   <CurrencyWithIcon token={{ ...trustSetToken }} options={{ disableTokenLink: true }} />
@@ -3019,6 +3069,8 @@ export default function Account2({
                               trustSetStatus ? (
                                 <span className="tx-inline-status orange">{trustSetStatus}</span>
                               ) : null
+                            ) : hasAmmVoteTradingFee ? (
+                              <span className="tx-inline-status grey">Trading fee: {ammVoteTradingFeeText}</span>
                             ) : showFreeNftBadge ? (
                               <span className="tx-offer-free orange">Free</span>
                             ) : (
@@ -3027,7 +3079,7 @@ export default function Account2({
                                   <span className="tx-inline-change-item">
                                     <span className={`tx-inline-change ${primaryChangeClass}`}>
                                       {amountFormat(collapsedPrimaryChange, {
-                                        icon: true,
+                                        icon: !isLpAmount(collapsedPrimaryChange),
                                         short: true,
                                         maxFractionDigits: 2,
                                         showPlus: true
@@ -3040,7 +3092,7 @@ export default function Account2({
                                   <span className="tx-inline-change-item">
                                     <span className={`tx-inline-change ${secondaryChangeClass}`}>
                                       {amountFormat(collapsedSecondaryChange, {
-                                        icon: true,
+                                        icon: !isLpAmount(collapsedSecondaryChange),
                                         short: true,
                                         maxFractionDigits: 2,
                                         showPlus: true
@@ -3065,6 +3117,13 @@ export default function Account2({
                               <span>Type:</span>
                               <span>{tx?.TransactionType || '-'}</span>
                             </div>
+
+                            {hasAmmVoteTradingFee && (
+                              <div className="detail-row">
+                                <span>Trading fee:</span>
+                                <span>{ammVoteTradingFeeText}</span>
+                              </div>
+                            )}
 
                             {failedStatusText && (
                               <>
@@ -3405,7 +3464,7 @@ export default function Account2({
                                       >
                                         <span>
                                           {amountFormat(change, {
-                                            icon: true,
+                                            icon: !isLpAmount(change),
                                             precise: 'nice',
                                             showPlus: true
                                           })}
@@ -4634,6 +4693,19 @@ export default function Account2({
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+        }
+
+        .tx-amm-token-meta {
+          display: inline-flex;
+          align-items: center;
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .tx-amm-token-meta :global(table) {
+          min-width: auto !important;
         }
 
         .tx-fail-badge {
