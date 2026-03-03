@@ -2534,6 +2534,9 @@ export default function Account2({
                     const txKey = txHash || `${tx?.TransactionType || 'tx'}-${index}`
                     const isExpanded = expandedTransactionKey === txKey
                     const shortHash = txHash ? `${txHash.slice(0, 6)}...${txHash.slice(-6)}` : '-'
+                    const txHistoricalRate = Number.isFinite(Number(txdata?.fiatRates?.[selectedCurrency]))
+                      ? Number(txdata.fiatRates[selectedCurrency])
+                      : null
 
                     const changes = addressBalanceChanges(txdata, data?.address) || []
                     const firstChange = changes?.[0]
@@ -2543,9 +2546,25 @@ export default function Account2({
                     const collapsedMoreCount = changes.length > 2 ? changes.length - 1 : 0
                     const primaryChangeValue = Number(collapsedPrimaryChange?.value || 0)
                     const primaryChangeClass = primaryChangeValue > 0 ? 'green' : primaryChangeValue < 0 ? 'red' : ''
+                    const primaryChangeFiat = collapsedPrimaryChange
+                      ? nativeCurrencyToFiat({
+                          amount: collapsedPrimaryChange,
+                          selectedCurrency,
+                          fiatRate: txHistoricalRate,
+                          asText: true
+                        })
+                      : ''
                     const secondaryChangeValue = Number(collapsedSecondaryChange?.value || 0)
                     const secondaryChangeClass =
                       secondaryChangeValue > 0 ? 'green' : secondaryChangeValue < 0 ? 'red' : ''
+                    const secondaryChangeFiat = collapsedSecondaryChange
+                      ? nativeCurrencyToFiat({
+                          amount: collapsedSecondaryChange,
+                          selectedCurrency,
+                          fiatRate: txHistoricalRate,
+                          asText: true
+                        })
+                      : ''
 
                     const sourceAddress = txdata?.specification?.source?.address
                     const destinationAddress = txdata?.specification?.destination?.address
@@ -2652,21 +2671,27 @@ export default function Account2({
                             ) : (
                               <>
                                 {collapsedPrimaryChange && (
-                                  <span className={`tx-inline-change ${primaryChangeClass}`}>
-                                    {amountFormat(collapsedPrimaryChange, {
-                                      short: true,
-                                      maxFractionDigits: 2,
-                                      showPlus: true
-                                    })}
+                                  <span className="tx-inline-change-item">
+                                    <span className={`tx-inline-change ${primaryChangeClass}`}>
+                                      {amountFormat(collapsedPrimaryChange, {
+                                        short: true,
+                                        maxFractionDigits: 2,
+                                        showPlus: true
+                                      })}
+                                    </span>
+                                    {!!primaryChangeFiat && <span className="tx-change-fiat">{primaryChangeFiat}</span>}
                                   </span>
                                 )}
                                 {collapsedSecondaryChange && (
-                                  <span className={`tx-inline-change ${secondaryChangeClass}`}>
-                                    {amountFormat(collapsedSecondaryChange, {
-                                      short: true,
-                                      maxFractionDigits: 2,
-                                      showPlus: true
-                                    })}
+                                  <span className="tx-inline-change-item">
+                                    <span className={`tx-inline-change ${secondaryChangeClass}`}>
+                                      {amountFormat(collapsedSecondaryChange, {
+                                        short: true,
+                                        maxFractionDigits: 2,
+                                        showPlus: true
+                                      })}
+                                    </span>
+                                    {!!secondaryChangeFiat && <span className="tx-change-fiat">{secondaryChangeFiat}</span>}
                                   </span>
                                 )}
                                 {collapsedMoreCount > 0 && (
@@ -2775,6 +2800,17 @@ export default function Account2({
                               <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
                             </div>
 
+                            {!!selectedCurrency && (
+                              <div className="detail-row">
+                                <span>Rate:</span>
+                                <span suppressHydrationWarning>
+                                  {txHistoricalRate
+                                    ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
+                                    : '-'}
+                                </span>
+                              </div>
+                            )}
+
                             {isSource && (tx?.Sequence || tx?.TicketSequence) && (
                               <div className="detail-row">
                                 <span>{tx?.TicketSequence ? 'Ticket sequence:' : 'Sequence:'}</span>
@@ -2790,7 +2826,7 @@ export default function Account2({
                                   {nativeCurrencyToFiat({
                                     amount: tx.Fee,
                                     selectedCurrency,
-                                    fiatRate: pageFiatRate
+                                    fiatRate: txHistoricalRate
                                   })}
                                 </span>
                               </div>
@@ -2803,10 +2839,19 @@ export default function Account2({
                                   {changes.map((change, changeIndex) => {
                                     const changeValue = Number(change?.value || 0)
                                     const changeClass = changeValue > 0 ? 'green' : changeValue < 0 ? 'red' : ''
+                                    const changeFiat = nativeCurrencyToFiat({
+                                      amount: change,
+                                      selectedCurrency,
+                                      fiatRate: txHistoricalRate,
+                                      asText: true
+                                    })
                                     return (
-                                      <span className={changeClass} key={`${txKey}-change-${changeIndex}`}>
-                                        {changeValue > 0 ? '+' : ''}
-                                        {fullNiceNumber(change?.value || 0)} {niceCurrency(change?.currency)}
+                                      <span className={`tx-change-row ${changeClass}`} key={`${txKey}-change-${changeIndex}`}>
+                                        <span>
+                                          {changeValue > 0 ? '+' : ''}
+                                          {fullNiceNumber(change?.value || 0)} {niceCurrency(change?.currency)}
+                                        </span>
+                                        {!!changeFiat && <span className="tx-change-fiat">{changeFiat}</span>}
                                       </span>
                                     )
                                   })}
@@ -3994,12 +4039,13 @@ export default function Account2({
         .tx-collapsed-change {
           min-width: 96px;
           display: inline-flex;
-          align-items: center;
+          flex-direction: column;
+          align-items: flex-end;
           justify-content: flex-end;
-          gap: 8px;
-          flex-wrap: wrap;
+          gap: 4px;
+          flex-wrap: nowrap;
           text-align: right;
-          padding-top: 14px;
+          padding-top: 20px;
         }
 
         .tx-inline-change {
@@ -4007,6 +4053,13 @@ export default function Account2({
           font-weight: 600;
           line-height: 1.15;
           white-space: nowrap;
+        }
+
+        .tx-inline-change-item {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 2px;
         }
 
         .tx-inline-limit {
@@ -4059,6 +4112,21 @@ export default function Account2({
           gap: 2px;
           max-width: 70% !important;
           text-align: right;
+        }
+
+        .tx-change-row {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 1px;
+        }
+
+        .tx-change-fiat {
+          color: var(--text-secondary);
+          font-size: 11px;
+          font-weight: 500;
+          line-height: 1.2;
+          white-space: nowrap;
         }
 
         .tx-link {
