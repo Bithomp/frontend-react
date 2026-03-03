@@ -2661,15 +2661,6 @@ export default function Account2({
                       txdata?.specification?.source?.amount ??
                       null
                     const hasNftOfferAmount = nftOfferAmountRaw !== null && typeof nftOfferAmountRaw !== 'undefined'
-                    const createOfferDirection = isCreateNftOfferTx
-                      ? txdata?.specification?.flags?.sellToken
-                        ? 'sell'
-                        : txTypeLower.includes('sell')
-                          ? 'sell'
-                          : txTypeLower.includes('buy')
-                            ? 'buy'
-                            : 'buy'
-                      : null
                     const nftOfferAmountExpandedText = hasNftOfferAmount
                       ? amountFormat(nftOfferAmountRaw, {
                           icon: true,
@@ -2730,7 +2721,7 @@ export default function Account2({
                         ? 'To'
                         : isAcceptNftOfferTx && nftViewerRole === 'buyer'
                           ? 'From'
-                          : isCreateNftOfferTx && createOfferDirection === 'sell' && isSource
+                          : isCreateNftOfferTx && isSource && !!counterparty
                             ? 'For'
                             : isBrokeredNftAccept
                               ? 'By broker'
@@ -2838,6 +2829,7 @@ export default function Account2({
                       const nonBrokerDirectionSuffix = counterparty ? (isSource ? 'to' : 'from') : 'by'
 
                       if (isAcceptNftOfferTx) {
+                        if (!isSuccessful) return 'NFT offer accept'
                         if (nftViewerRole === 'seller') return 'Sold NFT to'
                         if (nftViewerRole === 'buyer') return 'Bought NFT from'
 
@@ -2863,16 +2855,20 @@ export default function Account2({
                         if (amountChangeValue < 0) return `Bought NFT ${nonBrokerDirectionSuffix}`
 
                         const direction = txdata?.specification?.flags?.sellToken ? 'Sell' : 'Buy'
-                        if (direction === 'Sell' && tx?.Account !== data?.address) {
+                        const isIncomingOffer = tx?.Account !== data?.address
+
+                        if (isIncomingOffer) {
                           const amountAsNumber = Number(tx?.Amount || 0)
-                          if (Number.isFinite(amountAsNumber) && amountAsNumber === 0) {
+                          if (direction === 'Sell' && Number.isFinite(amountAsNumber) && amountAsNumber === 0) {
                             return 'NFT transfer from'
                           }
-                          return 'Received NFT Sell offer from'
+                          return `Received NFT ${direction} offer from`
                         }
-                        if (direction === 'Sell' && tx?.Account === data?.address && counterparty) {
-                          return 'Create NFT Sell offer for'
+
+                        if (counterparty) {
+                          return `Create NFT ${direction} offer for`
                         }
+
                         return `Create NFT ${direction} offer`
                       }
 
