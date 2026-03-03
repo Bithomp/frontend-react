@@ -2565,12 +2565,23 @@ export default function Account2({
                       txdata?.specification?.nftokenOffer?.nftokenID ||
                       nftChanges.find((entry) => entry?.nftokenID)?.nftokenID
                     const isNftTx = (tx?.TransactionType || '').includes('NFToken') || !!nftTokenId
-                    const trustSetToken = tx?.TransactionType === 'TrustSet' && tx?.LimitAmount ? tx.LimitAmount : null
+                    const trustSetSpecification = txdata?.specification
+                    const trustSetToken =
+                      tx?.TransactionType === 'TrustSet' && tx?.LimitAmount
+                        ? {
+                            ...tx.LimitAmount,
+                            issuerDetails:
+                              trustSetSpecification?.counterparty === tx?.LimitAmount?.issuer
+                                ? trustSetSpecification?.counterpartyDetails || tx?.LimitAmount?.issuerDetails
+                                : tx?.LimitAmount?.issuerDetails
+                          }
+                        : null
                     const trustSetLimitValue = Number(trustSetToken?.value || 0)
                     const isTrustSetDeleted =
                       tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue === 0
                     const hasTrustSetLimit =
                       tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue > 0
+                    const trustSetStatus = isTrustSetDeleted ? 'deleted' : hasTrustSetLimit ? 'added' : null
 
                     const failedStatusText = !isSuccessful ? outcome?.result || 'Failed' : null
                     const failedStatusShort = failedStatusText
@@ -2582,7 +2593,7 @@ export default function Account2({
                       : null
                     const directionLabel = counterparty ? (isSource ? 'To' : 'From') : null
                     const txTypeCollapsedLabel =
-                      tx?.TransactionType === 'TrustSet' && isTrustSetDeleted
+                      tx?.TransactionType === 'TrustSet'
                         ? counterparty
                           ? `${isSource ? 'to' : 'from'}`
                           : ''
@@ -2635,12 +2646,9 @@ export default function Account2({
                             {failedStatusShort ? (
                               <span className="tx-inline-status orange">{failedStatusShort}</span>
                             ) : tx?.TransactionType === 'TrustSet' ? (
-                              <>
-                                {isTrustSetDeleted && <span className="tx-inline-status orange">deleted</span>}
-                                {hasTrustSetLimit && (
-                                  <span className="tx-inline-limit orange">{shortNiceNumber(trustSetLimitValue)}</span>
-                                )}
-                              </>
+                              trustSetStatus ? (
+                                <span className="tx-inline-status orange">{trustSetStatus}</span>
+                              ) : null
                             ) : (
                               <>
                                 {collapsedPrimaryChange && (
