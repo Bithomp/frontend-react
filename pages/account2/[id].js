@@ -2650,13 +2650,14 @@ export default function Account2({
                     const isDexOfferTx = txType === 'OfferCreate' || txType === 'OfferCancel'
                     const myOrderbookChange = outcome?.orderbookChanges
                       ?.filter((entry) => entry?.address === data?.address)?.[0]
-                      ?.orderbookChanges?.filter((entry) => entry?.sequence === txdata?.specification?.orderSequence)?.[0]
-                    const dexOfferDirection =
-                      (txdata?.specification?.flags
-                        ? txdata?.specification?.flags?.sell
-                        : myOrderbookChange?.direction)
-                        ? 'Sell'
-                        : 'Buy'
+                      ?.orderbookChanges?.filter(
+                        (entry) => entry?.sequence === txdata?.specification?.orderSequence
+                      )?.[0]
+                    const dexOfferDirection = (
+                      txdata?.specification?.flags ? txdata?.specification?.flags?.sell : myOrderbookChange?.direction
+                    )
+                      ? 'Sell'
+                      : 'Buy'
                     const isMyDexOrder = tx?.Account === data?.address
                     const dexOrderStatus = (() => {
                       if (!isDexOfferTx) return null
@@ -2667,6 +2668,14 @@ export default function Account2({
                     })()
                     const dexOfferShortLabel =
                       isDexOfferTx && dexOrderStatus ? `${dexOfferDirection} order ${dexOrderStatus}` : null
+                    const dexTakerGets = txdata?.specification?.takerGets || myOrderbookChange?.takerGets || null
+                    const dexTakerPays = txdata?.specification?.takerPays || myOrderbookChange?.takerPays || null
+                    const showDexPlacedOrderSpecification =
+                      isDexOfferTx &&
+                      isMyDexOrder &&
+                      typeof dexOrderStatus === 'string' &&
+                      dexOrderStatus.includes('placed') &&
+                      (!!dexTakerGets || !!dexTakerPays)
                     const hasAmmVoteTradingFee = txType === 'AMMVote' && (tx?.TradingFee || tx?.TradingFee === 0)
                     const ammVoteTradingFeeText = hasAmmVoteTradingFee ? `${tx.TradingFee / 100000}%` : null
                     const isCreateNftOfferTx =
@@ -2791,6 +2800,19 @@ export default function Account2({
                         : failedStatusText.length > 3
                           ? failedStatusText.slice(3)
                           : failedStatusText
+                      : null
+                    const hasDexOfferRates =
+                      isDexOfferTx &&
+                      changes.length === 2 &&
+                      Number.isFinite(Number(changes?.[0]?.value)) &&
+                      Number.isFinite(Number(changes?.[1]?.value)) &&
+                      Number(changes?.[0]?.value) !== 0 &&
+                      Number(changes?.[1]?.value) !== 0
+                    const dexOfferRateAtoB = hasDexOfferRates
+                      ? Math.abs(Number(changes[1].value) / Number(changes[0].value))
+                      : null
+                    const dexOfferRateBtoA = hasDexOfferRates
+                      ? Math.abs(Number(changes[0].value) / Number(changes[1].value))
                       : null
                     const isFreeNftAccept =
                       isAcceptNftOfferTx &&
@@ -3002,9 +3024,9 @@ export default function Account2({
                                 ? txTypeShortLabel
                                 : isDexOfferTx
                                   ? txTypeShortLabel
-                                : counterparty
-                                  ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
-                                  : txTypeShortLabel
+                                  : counterparty
+                                    ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
+                                    : txTypeShortLabel
                     const showBrokerInCollapsedTitle =
                       isBrokeredNftAccept &&
                       !!brokerAddress &&
@@ -3070,18 +3092,21 @@ export default function Account2({
                                   <CurrencyWithIcon token={{ ...trustSetToken }} options={{ disableTokenLink: true }} />
                                 </span>
                               )}
-                              {tx?.TransactionType !== 'TrustSet' && !isSelfPayment && resolvedCounterpartyAddress && (
-                                <span className="tx-counterparty-inline">
-                                  <AddressWithIconInline
-                                    data={{
-                                      address: resolvedCounterpartyAddress,
-                                      addressDetails: resolvedCounterpartyDetails || {}
-                                    }}
-                                    name="address"
-                                    options={{ short: 6 }}
-                                  />
-                                </span>
-                              )}
+                              {tx?.TransactionType !== 'TrustSet' &&
+                                !isSelfPayment &&
+                                !isDexOfferTx &&
+                                resolvedCounterpartyAddress && (
+                                  <span className="tx-counterparty-inline">
+                                    <AddressWithIconInline
+                                      data={{
+                                        address: resolvedCounterpartyAddress,
+                                        addressDetails: resolvedCounterpartyDetails || {}
+                                      }}
+                                      name="address"
+                                      options={{ short: 6 }}
+                                    />
+                                  </span>
+                                )}
                             </div>
                           </div>
 
@@ -3141,6 +3166,36 @@ export default function Account2({
                               <span>{tx?.TransactionType || '-'}</span>
                             </div>
 
+                            {showDexPlacedOrderSpecification && !!dexTakerGets && (
+                              <div className="detail-row">
+                                <span>
+                                  {dexOfferDirection === 'Sell' ? 'Specified sell exactly:' : 'Specified pay up to:'}
+                                </span>
+                                <span>
+                                  {amountFormat(dexTakerGets, {
+                                    icon: true,
+                                    withIssuer: true
+                                  })}
+                                </span>
+                              </div>
+                            )}
+
+                            {showDexPlacedOrderSpecification && !!dexTakerPays && (
+                              <div className="detail-row">
+                                <span>
+                                  {dexOfferDirection === 'Sell'
+                                    ? 'Specified receive at least:'
+                                    : 'Specified receive exactly:'}
+                                </span>
+                                <span>
+                                  {amountFormat(dexTakerPays, {
+                                    icon: true,
+                                    withIssuer: true
+                                  })}
+                                </span>
+                              </div>
+                            )}
+
                             {hasAmmVoteTradingFee && (
                               <div className="detail-row">
                                 <span>Trading fee:</span>
@@ -3163,7 +3218,7 @@ export default function Account2({
                               </>
                             )}
 
-                            {!isSelfPayment && resolvedCounterpartyAddress && (
+                            {!isSelfPayment && !isDexOfferTx && resolvedCounterpartyAddress && (
                               <div className="detail-row">
                                 <span>{directionLabel}:</span>
                                 <span className="copy-inline">
@@ -3435,7 +3490,7 @@ export default function Account2({
                               <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
                             </div>
 
-                            {!!selectedCurrency && shouldShowExpandedRate && (
+                            {!!selectedCurrency && shouldShowExpandedRate && !hasDexOfferRates && (
                               <div className="detail-row">
                                 <span>Rate:</span>
                                 <span suppressHydrationWarning>
@@ -3488,6 +3543,8 @@ export default function Account2({
                                         <span>
                                           {amountFormat(change, {
                                             icon: !isLpAmount(change),
+                                            withIssuer: true,
+                                            bold: true,
                                             precise: 'nice',
                                             showPlus: true
                                           })}
@@ -3496,6 +3553,63 @@ export default function Account2({
                                       </span>
                                     )
                                   })}
+                                </span>
+                              </div>
+                            )}
+
+                            {hasDexOfferRates && (
+                              <div className="detail-row tx-detail-change-row">
+                                <span>Rates:</span>
+                                <span className="tx-detail-change-list">
+                                  {!!selectedCurrency && shouldShowExpandedRate && (
+                                    <span className="tx-change-row">
+                                      <span suppressHydrationWarning>
+                                        {txHistoricalRate
+                                          ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
+                                          : '-'}
+                                      </span>
+                                    </span>
+                                  )}
+                                  <span className="tx-change-row">
+                                    <span>
+                                      {amountFormat(
+                                        {
+                                          currency: changes[0].currency,
+                                          issuer: changes[0].issuer,
+                                          value: 1
+                                        },
+                                        { icon: true }
+                                      )}{' '}
+                                      ={' '}
+                                      {amountFormat(
+                                        {
+                                          ...changes[1],
+                                          value: dexOfferRateAtoB
+                                        },
+                                        { icon: true, precise: 'nice' }
+                                      )}
+                                    </span>
+                                  </span>
+                                  <span className="tx-change-row">
+                                    <span>
+                                      {amountFormat(
+                                        {
+                                          currency: changes[1].currency,
+                                          issuer: changes[1].issuer,
+                                          value: 1
+                                        },
+                                        { icon: true }
+                                      )}{' '}
+                                      ={' '}
+                                      {amountFormat(
+                                        {
+                                          ...changes[0],
+                                          value: dexOfferRateBtoA
+                                        },
+                                        { icon: true, precise: 'nice' }
+                                      )}
+                                    </span>
+                                  </span>
                                 </span>
                               </div>
                             )}
@@ -4874,6 +4988,14 @@ export default function Account2({
           gap: 2px;
           max-width: 70% !important;
           text-align: right;
+        }
+
+        .tx-detail-change-list :global(.no-inherit) {
+          white-space: nowrap;
+        }
+
+        .tx-detail-change-list :global(.no-inherit a) {
+          white-space: nowrap;
         }
 
         .tx-detail-offer-amount {
