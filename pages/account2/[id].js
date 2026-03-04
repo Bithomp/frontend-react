@@ -3060,27 +3060,27 @@ export default function Account2({
                             }
 
                             return changes[0] || null
-                            })()
+                          })()
                           const accountSetCollapsedChangeNode = (() => {
-                      if (!accountSetCollapsedChange) return null
-                      if (typeof accountSetCollapsedChange === 'string') return accountSetCollapsedChange
-                      if (accountSetCollapsedChange?.type === 'nftMinter') {
-                        return (
-                          <>
-                            NFT minter:{' '}
-                            <AddressWithIconInline
-                              data={{
-                                address: accountSetCollapsedChange.address,
-                                addressDetails: {}
-                              }}
-                              name="address"
-                              options={{ short: 6 }}
-                            />
-                          </>
-                        )
-                      }
-                      return null
-                    })()
+                            if (!accountSetCollapsedChange) return null
+                            if (typeof accountSetCollapsedChange === 'string') return accountSetCollapsedChange
+                            if (accountSetCollapsedChange?.type === 'nftMinter') {
+                              return (
+                                <>
+                                  NFT minter:{' '}
+                                  <AddressWithIconInline
+                                    data={{
+                                      address: accountSetCollapsedChange.address,
+                                      addressDetails: {}
+                                    }}
+                                    name="address"
+                                    options={{ short: 6 }}
+                                  />
+                                </>
+                              )
+                            }
+                            return null
+                          })()
                           const nftOfferLegacyLabel = (() => {
                             const nonBrokerDirectionSuffix = counterparty ? (isSource ? 'to' : 'from') : 'by'
 
