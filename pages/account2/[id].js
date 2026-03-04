@@ -159,6 +159,7 @@ export async function getServerSideProps(context) {
 import SEO from '../../components/SEO'
 import Did from '../../components/Account/Did'
 import AccountWithTag from '../../components/Account/AccountWithTag'
+import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 import { fetchHistoricalRate } from '../../utils/common'
 import CopyButton from '../../components/UI/CopyButton'
 import { CurrencyWithIcon } from '../../utils/format'
@@ -281,6 +282,7 @@ export default function Account2({
   const [transactionsLoadingMore, setTransactionsLoadingMore] = useState(false)
   const [transactionsError, setTransactionsError] = useState(null)
   const [transactionsMarker, setTransactionsMarker] = useState(null)
+  const [transactionsSearchPaused, setTransactionsSearchPaused] = useState(false)
   const [showTxFilters, setShowTxFilters] = useState(false)
   const [txOrder, setTxOrder] = useState('newest')
   const [txType, setTxType] = useState('all')
@@ -340,6 +342,7 @@ export default function Account2({
   const isLoggedIn = !!account?.address
   const TOKEN_PREVIEW_LIMIT = 5
   const TRANSACTIONS_PREVIEW_LIMIT = 20
+  const TRANSACTIONS_LOAD_MORE_LIMIT = 10
   const NFT_PREVIEW_LIMIT = 8
   const issuerTransferFeeText = data?.ledgerInfo?.transferRate
     ? transferRateToPercent(data.ledgerInfo.transferRate)
@@ -966,7 +969,7 @@ export default function Account2({
     }
   }, [data?.address, data?.ledgerInfo?.activated])
 
-  const buildTransactionsUrl = ({ markerValue, filtersOverride } = {}) => {
+  const buildTransactionsUrl = ({ markerValue, filtersOverride, limit } = {}) => {
     if (!data?.address) return ''
 
     const filterState = {
@@ -982,7 +985,7 @@ export default function Account2({
     }
 
     const params = new URLSearchParams()
-    params.set('limit', String(TRANSACTIONS_PREVIEW_LIMIT))
+    params.set('limit', String(limit || TRANSACTIONS_PREVIEW_LIMIT))
     params.set('relevantOnly', 'true')
     params.set('filterSpam', filterState.txFilterSpam ? 'true' : 'false')
 
@@ -1048,24 +1051,34 @@ export default function Account2({
     }
 
     setTransactionsError(null)
+    setTransactionsSearchPaused(false)
 
     try {
-      const response = await axios.get(buildTransactionsUrl({ markerValue, filtersOverride }))
+      const limit = append ? TRANSACTIONS_LOAD_MORE_LIMIT : TRANSACTIONS_PREVIEW_LIMIT
+      const response = await axios.get(buildTransactionsUrl({ markerValue, filtersOverride, limit }))
       const newTransactions = response?.data?.transactions || []
+      const nextMarker = response?.data?.marker || null
+      const reachedSearchLimit = newTransactions.length === 0 && !!nextMarker
 
-      if (append) {
-        setRecentTransactions((prev) => [...prev, ...newTransactions])
-      } else {
-        setRecentTransactions(newTransactions)
+      if (newTransactions.length > 0) {
+        if (append) {
+          setRecentTransactions((prev) => [...prev, ...newTransactions])
+        } else {
+          setRecentTransactions(newTransactions)
+        }
+      } else if (!append) {
+        setRecentTransactions([])
       }
 
-      setTransactionsMarker(response?.data?.marker || null)
+      setTransactionsMarker(nextMarker)
+      setTransactionsSearchPaused(reachedSearchLimit)
     } catch (error) {
       setTransactionsError(error?.message || 'Failed to load transactions')
       if (!append) {
         setRecentTransactions([])
         setTransactionsMarker(null)
       }
+      setTransactionsSearchPaused(false)
     } finally {
       if (append) {
         setTransactionsLoadingMore(false)
@@ -1082,6 +1095,18 @@ export default function Account2({
   }, [data?.address, data?.ledgerInfo?.activated, selectedCurrency, effectiveLedgerTimestamp])
 
   const loadMoreTransactions = async () => {
+    if (
+      !data?.address ||
+      !transactionsMarker ||
+      transactionsLoadingMore ||
+      transactionsLoading ||
+      transactionsSearchPaused
+    )
+      return
+    fetchRecentTransactions({ markerValue: transactionsMarker, append: true })
+  }
+
+  const continueTransactionsSearch = () => {
     if (!data?.address || !transactionsMarker || transactionsLoadingMore || transactionsLoading) return
     fetchRecentTransactions({ markerValue: transactionsMarker, append: true })
   }
@@ -2546,1224 +2571,1347 @@ export default function Account2({
               {transactionsLoading && <p className="grey">Loading recent transactions...</p>}
               {!transactionsLoading && transactionsError && <p className="red">{transactionsError}</p>}
 
-              {!transactionsLoading && !transactionsError && recentTransactions.length === 0 && (
-                <p className="grey">No recent transactions found.</p>
-              )}
+              {!transactionsLoading &&
+                !transactionsError &&
+                recentTransactions.length === 0 &&
+                !transactionsSearchPaused && <p className="grey">No recent transactions found.</p>}
 
-              {!transactionsLoading && !transactionsError && (
-                <div className="cards-list">
-                  {recentTransactions.map((txdata, index) => {
-                    const tx = txdata?.tx
-                    const outcome = txdata?.outcome
-                    const isSuccessful = outcome?.result === 'tesSUCCESS'
-                    const txHash = tx?.hash
-                    const txKey = txHash || `${tx?.TransactionType || 'tx'}-${index}`
-                    const isExpanded = expandedTransactionKey === txKey
-                    const shortHash = txHash ? `${txHash.slice(0, 6)}...${txHash.slice(-6)}` : '-'
-                    const txHistoricalRate = Number.isFinite(Number(txdata?.fiatRates?.[selectedCurrency]))
-                      ? Number(txdata.fiatRates[selectedCurrency])
-                      : null
-
-                    const changes = addressBalanceChanges(txdata, data?.address) || []
-                    const firstChange = changes?.[0]
-                    const positiveChange = changes.find((change) => Number(change?.value || 0) > 0)
-                    const collapsedPrimaryChange = changes.length > 2 ? positiveChange || firstChange : firstChange
-                    const collapsedSecondaryChange = changes.length === 2 ? changes[1] : null
-                    const collapsedMoreCount = changes.length > 2 ? changes.length - 1 : 0
-                    const primaryChangeValue = Number(collapsedPrimaryChange?.value || 0)
-                    const primaryChangeClass = primaryChangeValue > 0 ? 'green' : primaryChangeValue < 0 ? 'red' : ''
-                    const primaryChangeFiat = collapsedPrimaryChange
-                      ? nativeCurrencyToFiat({
-                          amount: collapsedPrimaryChange,
-                          selectedCurrency,
-                          fiatRate: txHistoricalRate,
-                          asText: true
-                        })
-                      : ''
-                    const secondaryChangeValue = Number(collapsedSecondaryChange?.value || 0)
-                    const secondaryChangeClass =
-                      secondaryChangeValue > 0 ? 'green' : secondaryChangeValue < 0 ? 'red' : ''
-                    const secondaryChangeFiat = collapsedSecondaryChange
-                      ? nativeCurrencyToFiat({
-                          amount: collapsedSecondaryChange,
-                          selectedCurrency,
-                          fiatRate: txHistoricalRate,
-                          asText: true
-                        })
-                      : ''
-                    const txAmountRaw = tx?.Amount
-                    const hasObjectTxAmount = typeof txAmountRaw === 'object' && txAmountRaw !== null
-                    const isMissingOrZeroTxAmount = typeof txAmountRaw === 'undefined' || txAmountRaw === '0'
-                    const shouldShowExpandedRate = changes.length > 0 || hasObjectTxAmount || !isMissingOrZeroTxAmount
-                    const isLpAmount = (amount) => {
-                      if (!amount || typeof amount !== 'object') return false
-                      if (amount?.currencyDetails?.type === 'lp_token') return true
-                      const amountCurrency = amount?.currency
-                      return typeof amountCurrency === 'string' && amountCurrency.substring(0, 2) === '03'
-                    }
-
-                    const sourceAddress = txdata?.specification?.source?.address
-                    const destinationAddress = txdata?.specification?.destination?.address
-                    const isSource = sourceAddress === data?.address
-                    const counterparty = isSource ? destinationAddress : sourceAddress
-                    const isAccountDeleteTx = tx?.TransactionType === 'AccountDelete'
-                    const removedAccountAddress = isAccountDeleteTx ? sourceAddress || tx?.Account || null : null
-                    const removedAccountDetails = isAccountDeleteTx
-                      ? txdata?.specification?.source?.addressDetails
-                      : null
-                    const isSelfPayment =
-                      tx?.TransactionType === 'Payment' &&
-                      !!sourceAddress &&
-                      !!destinationAddress &&
-                      sourceAddress === destinationAddress
-                    const counterpartyDetails = isSource
-                      ? txdata?.specification?.destination?.addressDetails
-                      : txdata?.specification?.source?.addressDetails
-
-                    const nftChanges = (outcome?.nftokenChanges || []).flatMap((entry) => entry?.nftokenChanges || [])
-                    const nftAddressChanges = outcome?.nftokenChanges || []
-                    const nftSource =
-                      nftAddressChanges.length === 2
-                        ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'removed')
-                        : null
-                    const nftDestination =
-                      nftAddressChanges.length === 2
-                        ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'added')
-                        : null
-                    const nftTokenId =
-                      tx?.NFTokenID ||
-                      txdata?.meta?.nftoken_id ||
-                      txdata?.meta?.nftokenID ||
-                      txdata?.specification?.nftokenID ||
-                      txdata?.specification?.nftokenId ||
-                      txdata?.specification?.nftokenOffer?.nftokenID ||
-                      nftChanges.find((entry) => entry?.nftokenID)?.nftokenID
-                    const nftSellerAddress = nftSource?.address || null
-                    const nftSellerDetails = nftSource?.addressDetails || null
-                    const nftBuyerAddress = nftDestination?.address || null
-                    const nftBuyerDetails = nftDestination?.addressDetails || null
-                    const nftViewerRole =
-                      nftSellerAddress === data?.address ? 'seller' : nftBuyerAddress === data?.address ? 'buyer' : null
-                    const txType = tx?.TransactionType || ''
-                    const txTypeLower = txType.toLowerCase()
-                    const isAmmTx = txType.startsWith('AMM')
-                    const isDexOfferTx = txType === 'OfferCreate' || txType === 'OfferCancel'
-                    const myAddressOrderbookChanges =
-                      outcome?.orderbookChanges?.find((entry) => entry?.address === data?.address)?.orderbookChanges ||
-                      []
-                    const myOrderbookSequences = Array.from(
-                      new Set(myAddressOrderbookChanges.map((entry) => entry?.sequence).filter(Boolean))
-                    )
-                    const myOrderbookChange =
-                      myAddressOrderbookChanges.find(
-                        (entry) => entry?.sequence === (tx?.offerSequence || txdata?.specification?.orderSequence)
-                      ) || myAddressOrderbookChanges[0]
-                    const dexOfferDirection = (
-                      txdata?.specification?.flags ? txdata?.specification?.flags?.sell : myOrderbookChange?.direction
-                    )
-                      ? 'Sell'
-                      : 'Buy'
-                    const isMyDexOrder = tx?.Account === data?.address
-                    const dexOrderStatus = (() => {
-                      if (!isDexOfferTx) return null
-                      if (txType === 'OfferCancel') return 'canceled'
-                      if (changes?.length === 0 && isMyDexOrder) return 'placed'
-                      if (!isMyDexOrder) return 'fullfilled'
-                      return 'placed and fullfilled'
-                    })()
-                    const dexOfferShortLabel =
-                      isDexOfferTx && dexOrderStatus ? `${dexOfferDirection} order ${dexOrderStatus}` : null
-                    const dexCollapsedSequences =
-                      txType === 'OfferCancel'
-                        ? myOrderbookSequences.length > 0
-                          ? myOrderbookSequences
-                          : [tx?.offerSequence].filter(Boolean)
-                        : isMyDexOrder
-                          ? [tx?.Sequence || tx?.TicketSequence].filter(Boolean)
-                          : myOrderbookSequences
-                    const showDexCollapsedSequence = isDexOfferTx && dexCollapsedSequences.length > 0
-                    const dexTakerGets = txdata?.specification?.takerGets || myOrderbookChange?.takerGets || null
-                    const dexTakerPays = txdata?.specification?.takerPays || myOrderbookChange?.takerPays || null
-                    const isDexNotFullfilled =
-                      isDexOfferTx && typeof dexOrderStatus === 'string' && !dexOrderStatus.includes('fullfilled')
-                    const toSignedDexAmount = (amount, sign) => {
-                      if (!amount) return null
-
-                      if (typeof amount === 'object') {
-                        const numericValue = Math.abs(Number(amount?.value || 0))
-                        if (!Number.isFinite(numericValue)) return null
-                        return {
-                          ...amount,
-                          value: String(sign < 0 ? -numericValue : numericValue)
-                        }
+              {!transactionsLoading &&
+                !transactionsError &&
+                (recentTransactions.length > 0 || transactionsSearchPaused) && (
+                  <>
+                    <InfiniteScrolling
+                      dataLength={recentTransactions.length}
+                      loadMore={loadMoreTransactions}
+                      hasMore={transactionsMarker && !transactionsSearchPaused}
+                      errorMessage={
+                        transactionsSearchPaused && transactionsMarker ? (
+                          <>
+                            It takes too long to find relevant transactions. Searched up to ledger{' '}
+                            <span className="bold">{transactionsMarker?.ledger || 'unknown'}</span>.
+                            <br />
+                            <br />
+                            <button
+                              type="button"
+                              className="button-action"
+                              onClick={continueTransactionsSearch}
+                              disabled={transactionsLoadingMore || transactionsLoading}
+                            >
+                              Continue searching
+                            </button>
+                            {transactionsLoadingMore && (
+                              <>
+                                <br />
+                                <br />
+                                <span className="waiting"></span>
+                              </>
+                            )}
+                          </>
+                        ) : (
+                          transactionsError
+                        )
                       }
+                      loadMoreMessage={transactionsLoadingMore ? 'Loading...' : 'Scroll down to load more transactions'}
+                      subscriptionExpired={false}
+                      sessionToken={true}
+                    >
+                      <div className="cards-list">
+                        {recentTransactions.map((txdata, index) => {
+                          const tx = txdata?.tx
+                          const outcome = txdata?.outcome
+                          const isSuccessful = outcome?.result === 'tesSUCCESS'
+                          const txHash = tx?.hash
+                          const txKey = txHash || `${tx?.TransactionType || 'tx'}-${index}`
+                          const isExpanded = expandedTransactionKey === txKey
+                          const shortHash = txHash ? `${txHash.slice(0, 6)}...${txHash.slice(-6)}` : '-'
+                          const txHistoricalRate = Number.isFinite(Number(txdata?.fiatRates?.[selectedCurrency]))
+                            ? Number(txdata.fiatRates[selectedCurrency])
+                            : null
 
-                      const numericValue = Math.abs(Number(amount))
-                      if (!Number.isFinite(numericValue)) return null
-                      return sign < 0 ? -numericValue : numericValue
-                    }
-                    const dexSpecifiedChanges = isDexNotFullfilled
-                      ? [toSignedDexAmount(dexTakerGets, -1), toSignedDexAmount(dexTakerPays, 1)].filter(Boolean)
-                      : []
-                    const showDexSpecifiedOrderDetails =
-                      isDexOfferTx &&
-                      isMyDexOrder &&
-                      typeof dexOrderStatus === 'string' &&
-                      (dexOrderStatus.includes('placed') || dexOrderStatus === 'canceled') &&
-                      (!!dexTakerGets || !!dexTakerPays)
-                    const hasAmmVoteTradingFee = txType === 'AMMVote' && (tx?.TradingFee || tx?.TradingFee === 0)
-                    const ammVoteTradingFeeText = hasAmmVoteTradingFee ? `${tx.TradingFee / 100000}%` : null
-                    const isCreateNftOfferTx =
-                      txType === 'NFTokenCreateOffer' ||
-                      txTypeLower === 'createnftselloffer' ||
-                      txTypeLower === 'createnftbuyoffer'
-                    const isAcceptNftOfferTx =
-                      txType === 'NFTokenAcceptOffer' ||
-                      txTypeLower === 'acceptnftselloffer' ||
-                      txTypeLower === 'acceptnftbuyoffer' ||
-                      txTypeLower === 'acceptnftoffer'
-                    const isCancelNftOfferTx = txType === 'NFTokenCancelOffer' || txTypeLower === 'cancelnftoffer'
-                    const isNftOfferTx = isCreateNftOfferTx || isAcceptNftOfferTx || isCancelNftOfferTx
-                    const outcomeOfferIds = (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
-                      (entry?.nftokenOfferChanges || []).map((offerChange) => offerChange?.index)
-                    )
-                    const nftOfferIds = Array.from(
-                      new Set(
-                        [
-                          ...outcomeOfferIds,
-                          ...(Array.isArray(tx?.NFTokenOffers) ? tx.NFTokenOffers : []),
-                          tx?.NFTokenSellOffer,
-                          tx?.NFTokenBuyOffer,
-                          tx?.OfferID,
-                          txdata?.specification?.nftokenOffer?.offerIndex,
-                          txdata?.specification?.nftokenOffer?.offerID
-                        ].filter(Boolean)
-                      )
-                    )
-                    const nftOfferAmountRaw =
-                      tx?.Amount ??
-                      txdata?.specification?.nftokenOffer?.amount ??
-                      txdata?.specification?.destination?.amount ??
-                      txdata?.specification?.source?.amount ??
-                      null
-                    const hasNftOfferAmount = nftOfferAmountRaw !== null && typeof nftOfferAmountRaw !== 'undefined'
-                    const nftOfferAmountNumeric =
-                      typeof nftOfferAmountRaw === 'object' && nftOfferAmountRaw !== null
-                        ? Number(nftOfferAmountRaw?.value)
-                        : Number(nftOfferAmountRaw)
-                    const isZeroNftOfferAmount =
-                      hasNftOfferAmount && Number.isFinite(nftOfferAmountNumeric) && nftOfferAmountNumeric === 0
-                    const nftOfferAmountExpandedText = hasNftOfferAmount
-                      ? amountFormat(nftOfferAmountRaw, {
-                          icon: true,
-                          precise: 'nice'
-                        })
-                      : null
-                    const nftOfferAmountFiatExpandedText = hasNftOfferAmount
-                      ? nativeCurrencyToFiat({
-                          amount: nftOfferAmountRaw,
-                          selectedCurrency,
-                          fiatRate: txHistoricalRate,
-                          asText: true,
-                          absolute: true
-                        })
-                      : ''
-                    const isBrokeredNftAccept = isAcceptNftOfferTx && !!tx?.NFTokenSellOffer && !!tx?.NFTokenBuyOffer
-                    const brokerAddress = isBrokeredNftAccept ? sourceAddress || tx?.Account || null : null
-                    const ammLpChange = changes.find(
-                      (change) =>
-                        change?.currencyDetails?.type === 'lp_token' &&
-                        change?.currencyDetails?.asset &&
-                        change?.currencyDetails?.asset2
-                    )
-                    const ammAsset = tx?.Asset || txdata?.specification?.asset || ammLpChange?.currencyDetails?.asset
-                    const ammAsset2 =
-                      tx?.Asset2 || txdata?.specification?.asset2 || ammLpChange?.currencyDetails?.asset2
-                    const ammAssetCurrency =
-                      typeof ammAsset === 'string' ? ammAsset : ammAsset?.currency || nativeCurrency
-                    const ammAsset2Currency =
-                      typeof ammAsset2 === 'string' ? ammAsset2 : ammAsset2?.currency || nativeCurrency
-                    const ammPairLabel = `${niceCurrency(ammAssetCurrency)}/${niceCurrency(ammAsset2Currency)}`
-                    const ammPairToken =
-                      isAmmTx && ammAsset && ammAsset2
-                        ? {
-                            currency: 'LP',
-                            currencyDetails: {
-                              type: 'lp_token',
-                              currency: ammPairLabel,
-                              asset: ammAsset,
-                              asset2: ammAsset2
+                          const changes = addressBalanceChanges(txdata, data?.address) || []
+                          const firstChange = changes?.[0]
+                          const positiveChange = changes.find((change) => Number(change?.value || 0) > 0)
+                          const collapsedPrimaryChange =
+                            changes.length > 2 ? positiveChange || firstChange : firstChange
+                          const collapsedSecondaryChange = changes.length === 2 ? changes[1] : null
+                          const collapsedMoreCount = changes.length > 2 ? changes.length - 1 : 0
+                          const primaryChangeValue = Number(collapsedPrimaryChange?.value || 0)
+                          const primaryChangeClass =
+                            primaryChangeValue > 0 ? 'green' : primaryChangeValue < 0 ? 'red' : ''
+                          const primaryChangeFiat = collapsedPrimaryChange
+                            ? nativeCurrencyToFiat({
+                                amount: collapsedPrimaryChange,
+                                selectedCurrency,
+                                fiatRate: txHistoricalRate,
+                                asText: true
+                              })
+                            : ''
+                          const secondaryChangeValue = Number(collapsedSecondaryChange?.value || 0)
+                          const secondaryChangeClass =
+                            secondaryChangeValue > 0 ? 'green' : secondaryChangeValue < 0 ? 'red' : ''
+                          const secondaryChangeFiat = collapsedSecondaryChange
+                            ? nativeCurrencyToFiat({
+                                amount: collapsedSecondaryChange,
+                                selectedCurrency,
+                                fiatRate: txHistoricalRate,
+                                asText: true
+                              })
+                            : ''
+                          const txAmountRaw = tx?.Amount
+                          const hasObjectTxAmount = typeof txAmountRaw === 'object' && txAmountRaw !== null
+                          const isMissingOrZeroTxAmount = typeof txAmountRaw === 'undefined' || txAmountRaw === '0'
+                          const shouldShowExpandedRate =
+                            changes.length > 0 || hasObjectTxAmount || !isMissingOrZeroTxAmount
+                          const isLpAmount = (amount) => {
+                            if (!amount || typeof amount !== 'object') return false
+                            if (amount?.currencyDetails?.type === 'lp_token') return true
+                            const amountCurrency = amount?.currency
+                            return typeof amountCurrency === 'string' && amountCurrency.substring(0, 2) === '03'
+                          }
+
+                          const sourceAddress = txdata?.specification?.source?.address
+                          const destinationAddress = txdata?.specification?.destination?.address
+                          const isSource = sourceAddress === data?.address
+                          const counterparty = isSource ? destinationAddress : sourceAddress
+                          const isAccountDeleteTx = tx?.TransactionType === 'AccountDelete'
+                          const removedAccountAddress = isAccountDeleteTx ? sourceAddress || tx?.Account || null : null
+                          const removedAccountDetails = isAccountDeleteTx
+                            ? txdata?.specification?.source?.addressDetails
+                            : null
+                          const isSelfPayment =
+                            tx?.TransactionType === 'Payment' &&
+                            !!sourceAddress &&
+                            !!destinationAddress &&
+                            sourceAddress === destinationAddress
+                          const counterpartyDetails = isSource
+                            ? txdata?.specification?.destination?.addressDetails
+                            : txdata?.specification?.source?.addressDetails
+
+                          const nftChanges = (outcome?.nftokenChanges || []).flatMap(
+                            (entry) => entry?.nftokenChanges || []
+                          )
+                          const nftAddressChanges = outcome?.nftokenChanges || []
+                          const nftSource =
+                            nftAddressChanges.length === 2
+                              ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'removed')
+                              : null
+                          const nftDestination =
+                            nftAddressChanges.length === 2
+                              ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'added')
+                              : null
+                          const nftTokenId =
+                            tx?.NFTokenID ||
+                            txdata?.meta?.nftoken_id ||
+                            txdata?.meta?.nftokenID ||
+                            txdata?.specification?.nftokenID ||
+                            txdata?.specification?.nftokenId ||
+                            txdata?.specification?.nftokenOffer?.nftokenID ||
+                            nftChanges.find((entry) => entry?.nftokenID)?.nftokenID
+                          const nftSellerAddress = nftSource?.address || null
+                          const nftSellerDetails = nftSource?.addressDetails || null
+                          const nftBuyerAddress = nftDestination?.address || null
+                          const nftBuyerDetails = nftDestination?.addressDetails || null
+                          const nftViewerRole =
+                            nftSellerAddress === data?.address
+                              ? 'seller'
+                              : nftBuyerAddress === data?.address
+                                ? 'buyer'
+                                : null
+                          const txType = tx?.TransactionType || ''
+                          const txTypeLower = txType.toLowerCase()
+                          const isAmmTx = txType.startsWith('AMM')
+                          const isDexOfferTx = txType === 'OfferCreate' || txType === 'OfferCancel'
+                          const myAddressOrderbookChanges =
+                            outcome?.orderbookChanges?.find((entry) => entry?.address === data?.address)
+                              ?.orderbookChanges || []
+                          const myOrderbookSequences = Array.from(
+                            new Set(myAddressOrderbookChanges.map((entry) => entry?.sequence).filter(Boolean))
+                          )
+                          const myOrderbookChange =
+                            myAddressOrderbookChanges.find(
+                              (entry) => entry?.sequence === (tx?.offerSequence || txdata?.specification?.orderSequence)
+                            ) || myAddressOrderbookChanges[0]
+                          const dexOfferDirection = (
+                            txdata?.specification?.flags
+                              ? txdata?.specification?.flags?.sell
+                              : myOrderbookChange?.direction
+                          )
+                            ? 'Sell'
+                            : 'Buy'
+                          const isMyDexOrder = tx?.Account === data?.address
+                          const dexOrderStatus = (() => {
+                            if (!isDexOfferTx) return null
+                            if (txType === 'OfferCancel') return 'canceled'
+                            if (changes?.length === 0 && isMyDexOrder) return 'placed'
+                            if (!isMyDexOrder) return 'fullfilled'
+                            return 'placed and fullfilled'
+                          })()
+                          const dexOfferShortLabel =
+                            isDexOfferTx && dexOrderStatus ? `${dexOfferDirection} order ${dexOrderStatus}` : null
+                          const dexCollapsedSequences =
+                            txType === 'OfferCancel'
+                              ? myOrderbookSequences.length > 0
+                                ? myOrderbookSequences
+                                : [tx?.offerSequence].filter(Boolean)
+                              : isMyDexOrder
+                                ? [tx?.Sequence || tx?.TicketSequence].filter(Boolean)
+                                : myOrderbookSequences
+                          const showDexCollapsedSequence = isDexOfferTx && dexCollapsedSequences.length > 0
+                          const dexTakerGets = txdata?.specification?.takerGets || myOrderbookChange?.takerGets || null
+                          const dexTakerPays = txdata?.specification?.takerPays || myOrderbookChange?.takerPays || null
+                          const isDexNotFullfilled =
+                            isDexOfferTx && typeof dexOrderStatus === 'string' && !dexOrderStatus.includes('fullfilled')
+                          const toSignedDexAmount = (amount, sign) => {
+                            if (!amount) return null
+
+                            if (typeof amount === 'object') {
+                              const numericValue = Math.abs(Number(amount?.value || 0))
+                              if (!Number.isFinite(numericValue)) return null
+                              return {
+                                ...amount,
+                                value: String(sign < 0 ? -numericValue : numericValue)
+                              }
                             }
+
+                            const numericValue = Math.abs(Number(amount))
+                            if (!Number.isFinite(numericValue)) return null
+                            return sign < 0 ? -numericValue : numericValue
                           }
-                        : null
-                    const resolvedCounterpartyAddress = isAccountDeleteTx
-                      ? removedAccountAddress
-                      : isAcceptNftOfferTx && nftViewerRole === 'seller'
-                        ? nftBuyerAddress
-                        : isAcceptNftOfferTx && nftViewerRole === 'buyer'
-                          ? nftSellerAddress
-                          : counterparty
-                    const resolvedCounterpartyDetails = isAccountDeleteTx
-                      ? removedAccountDetails
-                      : isAcceptNftOfferTx && nftViewerRole === 'seller'
-                        ? nftBuyerDetails
-                        : isAcceptNftOfferTx && nftViewerRole === 'buyer'
-                          ? nftSellerDetails
-                          : counterpartyDetails
-                    const trustSetSpecification = txdata?.specification
-                    const trustSetToken =
-                      tx?.TransactionType === 'TrustSet' && tx?.LimitAmount
-                        ? {
-                            ...tx.LimitAmount,
-                            issuerDetails:
-                              trustSetSpecification?.counterparty === tx?.LimitAmount?.issuer
-                                ? trustSetSpecification?.counterpartyDetails || tx?.LimitAmount?.issuerDetails
-                                : tx?.LimitAmount?.issuerDetails
-                          }
-                        : null
-                    const trustSetLimitValue = Number(trustSetToken?.value || 0)
-                    const isTrustSetDeleted =
-                      tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue === 0
-                    const hasTrustSetLimit =
-                      tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue > 0
-                    const trustSetStatus = isTrustSetDeleted ? 'deleted' : hasTrustSetLimit ? 'added' : null
+                          const dexSpecifiedChanges = isDexNotFullfilled
+                            ? [toSignedDexAmount(dexTakerGets, -1), toSignedDexAmount(dexTakerPays, 1)].filter(Boolean)
+                            : []
+                          const showDexSpecifiedOrderDetails =
+                            isDexOfferTx &&
+                            isMyDexOrder &&
+                            typeof dexOrderStatus === 'string' &&
+                            (dexOrderStatus.includes('placed') || dexOrderStatus === 'canceled') &&
+                            (!!dexTakerGets || !!dexTakerPays)
+                          const hasAmmVoteTradingFee = txType === 'AMMVote' && (tx?.TradingFee || tx?.TradingFee === 0)
+                          const ammVoteTradingFeeText = hasAmmVoteTradingFee ? `${tx.TradingFee / 100000}%` : null
+                          const isCreateNftOfferTx =
+                            txType === 'NFTokenCreateOffer' ||
+                            txTypeLower === 'createnftselloffer' ||
+                            txTypeLower === 'createnftbuyoffer'
+                          const isAcceptNftOfferTx =
+                            txType === 'NFTokenAcceptOffer' ||
+                            txTypeLower === 'acceptnftselloffer' ||
+                            txTypeLower === 'acceptnftbuyoffer' ||
+                            txTypeLower === 'acceptnftoffer'
+                          const isCancelNftOfferTx = txType === 'NFTokenCancelOffer' || txTypeLower === 'cancelnftoffer'
+                          const isNftOfferTx = isCreateNftOfferTx || isAcceptNftOfferTx || isCancelNftOfferTx
+                          const outcomeOfferIds = (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
+                            (entry?.nftokenOfferChanges || []).map((offerChange) => offerChange?.index)
+                          )
+                          const nftOfferIds = Array.from(
+                            new Set(
+                              [
+                                ...outcomeOfferIds,
+                                ...(Array.isArray(tx?.NFTokenOffers) ? tx.NFTokenOffers : []),
+                                tx?.NFTokenSellOffer,
+                                tx?.NFTokenBuyOffer,
+                                tx?.OfferID,
+                                txdata?.specification?.nftokenOffer?.offerIndex,
+                                txdata?.specification?.nftokenOffer?.offerID
+                              ].filter(Boolean)
+                            )
+                          )
+                          const nftOfferAmountRaw =
+                            tx?.Amount ??
+                            txdata?.specification?.nftokenOffer?.amount ??
+                            txdata?.specification?.destination?.amount ??
+                            txdata?.specification?.source?.amount ??
+                            null
+                          const hasNftOfferAmount =
+                            nftOfferAmountRaw !== null && typeof nftOfferAmountRaw !== 'undefined'
+                          const nftOfferAmountNumeric =
+                            typeof nftOfferAmountRaw === 'object' && nftOfferAmountRaw !== null
+                              ? Number(nftOfferAmountRaw?.value)
+                              : Number(nftOfferAmountRaw)
+                          const isZeroNftOfferAmount =
+                            hasNftOfferAmount && Number.isFinite(nftOfferAmountNumeric) && nftOfferAmountNumeric === 0
+                          const nftOfferAmountExpandedText = hasNftOfferAmount
+                            ? amountFormat(nftOfferAmountRaw, {
+                                icon: true,
+                                precise: 'nice'
+                              })
+                            : null
+                          const nftOfferAmountFiatExpandedText = hasNftOfferAmount
+                            ? nativeCurrencyToFiat({
+                                amount: nftOfferAmountRaw,
+                                selectedCurrency,
+                                fiatRate: txHistoricalRate,
+                                asText: true,
+                                absolute: true
+                              })
+                            : ''
+                          const isBrokeredNftAccept =
+                            isAcceptNftOfferTx && !!tx?.NFTokenSellOffer && !!tx?.NFTokenBuyOffer
+                          const brokerAddress = isBrokeredNftAccept ? sourceAddress || tx?.Account || null : null
+                          const ammLpChange = changes.find(
+                            (change) =>
+                              change?.currencyDetails?.type === 'lp_token' &&
+                              change?.currencyDetails?.asset &&
+                              change?.currencyDetails?.asset2
+                          )
+                          const ammAsset =
+                            tx?.Asset || txdata?.specification?.asset || ammLpChange?.currencyDetails?.asset
+                          const ammAsset2 =
+                            tx?.Asset2 || txdata?.specification?.asset2 || ammLpChange?.currencyDetails?.asset2
+                          const ammAssetCurrency =
+                            typeof ammAsset === 'string' ? ammAsset : ammAsset?.currency || nativeCurrency
+                          const ammAsset2Currency =
+                            typeof ammAsset2 === 'string' ? ammAsset2 : ammAsset2?.currency || nativeCurrency
+                          const ammPairLabel = `${niceCurrency(ammAssetCurrency)}/${niceCurrency(ammAsset2Currency)}`
+                          const ammPairToken =
+                            isAmmTx && ammAsset && ammAsset2
+                              ? {
+                                  currency: 'LP',
+                                  currencyDetails: {
+                                    type: 'lp_token',
+                                    currency: ammPairLabel,
+                                    asset: ammAsset,
+                                    asset2: ammAsset2
+                                  }
+                                }
+                              : null
+                          const resolvedCounterpartyAddress = isAccountDeleteTx
+                            ? removedAccountAddress
+                            : isAcceptNftOfferTx && nftViewerRole === 'seller'
+                              ? nftBuyerAddress
+                              : isAcceptNftOfferTx && nftViewerRole === 'buyer'
+                                ? nftSellerAddress
+                                : counterparty
+                          const resolvedCounterpartyDetails = isAccountDeleteTx
+                            ? removedAccountDetails
+                            : isAcceptNftOfferTx && nftViewerRole === 'seller'
+                              ? nftBuyerDetails
+                              : isAcceptNftOfferTx && nftViewerRole === 'buyer'
+                                ? nftSellerDetails
+                                : counterpartyDetails
+                          const trustSetSpecification = txdata?.specification
+                          const trustSetToken =
+                            tx?.TransactionType === 'TrustSet' && tx?.LimitAmount
+                              ? {
+                                  ...tx.LimitAmount,
+                                  issuerDetails:
+                                    trustSetSpecification?.counterparty === tx?.LimitAmount?.issuer
+                                      ? trustSetSpecification?.counterpartyDetails || tx?.LimitAmount?.issuerDetails
+                                      : tx?.LimitAmount?.issuerDetails
+                                }
+                              : null
+                          const trustSetLimitValue = Number(trustSetToken?.value || 0)
+                          const isTrustSetDeleted =
+                            tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue === 0
+                          const hasTrustSetLimit =
+                            tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue > 0
+                          const trustSetStatus = isTrustSetDeleted ? 'deleted' : hasTrustSetLimit ? 'added' : null
 
-                    const failedStatusText = !isSuccessful ? outcome?.result || 'Failed' : null
-                    const failedStatusShort = failedStatusText
-                      ? failedStatusText.startsWith('te')
-                        ? shortErrorCode(failedStatusText)
-                        : failedStatusText.length > 3
-                          ? failedStatusText.slice(3)
-                          : failedStatusText
-                      : null
-                    const hasDexOfferRates =
-                      isDexOfferTx &&
-                      changes.length === 2 &&
-                      Number.isFinite(Number(changes?.[0]?.value)) &&
-                      Number.isFinite(Number(changes?.[1]?.value)) &&
-                      Number(changes?.[0]?.value) !== 0 &&
-                      Number(changes?.[1]?.value) !== 0
-                    const dexOfferRateAtoB = hasDexOfferRates
-                      ? Math.abs(Number(changes[1].value) / Number(changes[0].value))
-                      : null
-                    const dexOfferRateBtoA = hasDexOfferRates
-                      ? Math.abs(Number(changes[0].value) / Number(changes[1].value))
-                      : null
-                    const isFreeNftAccept =
-                      isAcceptNftOfferTx &&
-                      (isZeroNftOfferAmount || (!collapsedPrimaryChange && !collapsedSecondaryChange))
-                    const directionLabel = resolvedCounterpartyAddress
-                      ? isAccountDeleteTx
-                        ? 'From removed account'
-                        : isAcceptNftOfferTx && nftViewerRole === 'seller'
-                          ? 'To'
-                          : isAcceptNftOfferTx && nftViewerRole === 'buyer'
-                            ? 'From'
-                            : isCreateNftOfferTx && isSource && !!counterparty
-                              ? 'For'
-                              : isBrokeredNftAccept
-                                ? 'By broker'
-                                : isSource
-                                  ? 'To'
-                                  : 'From'
-                      : null
-                    const accountSetSpec = txdata?.specification || {}
-                    const accountSetSettings = outcome?.settingsChanges || {}
-                    const accountSetCollapsedChange = (() => {
-                      if (txType !== 'AccountSet') return null
+                          const failedStatusText = !isSuccessful ? outcome?.result || 'Failed' : null
+                          const failedStatusShort = failedStatusText
+                            ? failedStatusText.startsWith('te')
+                              ? shortErrorCode(failedStatusText)
+                              : failedStatusText.length > 3
+                                ? failedStatusText.slice(3)
+                                : failedStatusText
+                            : null
+                          const hasDexOfferRates =
+                            isDexOfferTx &&
+                            changes.length === 2 &&
+                            Number.isFinite(Number(changes?.[0]?.value)) &&
+                            Number.isFinite(Number(changes?.[1]?.value)) &&
+                            Number(changes?.[0]?.value) !== 0 &&
+                            Number(changes?.[1]?.value) !== 0
+                          const dexOfferRateAtoB = hasDexOfferRates
+                            ? Math.abs(Number(changes[1].value) / Number(changes[0].value))
+                            : null
+                          const dexOfferRateBtoA = hasDexOfferRates
+                            ? Math.abs(Number(changes[0].value) / Number(changes[1].value))
+                            : null
+                          const isFreeNftAccept =
+                            isAcceptNftOfferTx &&
+                            (isZeroNftOfferAmount || (!collapsedPrimaryChange && !collapsedSecondaryChange))
+                          const directionLabel = resolvedCounterpartyAddress
+                            ? isAccountDeleteTx
+                              ? 'From removed account'
+                              : isAcceptNftOfferTx && nftViewerRole === 'seller'
+                                ? 'To'
+                                : isAcceptNftOfferTx && nftViewerRole === 'buyer'
+                                  ? 'From'
+                                  : isCreateNftOfferTx && isSource && !!counterparty
+                                    ? 'For'
+                                    : isBrokeredNftAccept
+                                      ? 'By broker'
+                                      : isSource
+                                        ? 'To'
+                                        : 'From'
+                            : null
+                          const accountSetSpec = txdata?.specification || {}
+                          const accountSetSettings = outcome?.settingsChanges || {}
+                          const accountSetCollapsedChange = (() => {
+                            if (txType !== 'AccountSet') return null
 
-                      const changes = []
+                            const changes = []
 
-                      if (tx?.MessageKey !== undefined) {
-                        changes.push(`Message key: ${accountSetSpec?.messageKey || 'removed'}`)
-                      }
-                      if (tx?.Domain !== undefined) {
-                        changes.push(`Domain: ${accountSetSpec?.domain || 'removed'}`)
-                      }
-                      if (accountSetSpec?.defaultRipple !== undefined) {
-                        changes.push(`Default ripple: ${accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}`)
-                      }
-                      if (accountSetSpec?.disallowXRP !== undefined || accountSetSettings?.disallowXRP !== undefined) {
-                        changes.push(
-                          `Incoming ${nativeCurrency}: ${
-                            accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP ? 'disallow' : 'allow'
-                          }`
+                            if (tx?.MessageKey !== undefined) {
+                              changes.push(`Message key: ${accountSetSpec?.messageKey || 'removed'}`)
+                            }
+                            if (tx?.Domain !== undefined) {
+                              changes.push(`Domain: ${accountSetSpec?.domain || 'removed'}`)
+                            }
+                            if (accountSetSpec?.defaultRipple !== undefined) {
+                              changes.push(`Default ripple: ${accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}`)
+                            }
+                            if (
+                              accountSetSpec?.disallowXRP !== undefined ||
+                              accountSetSettings?.disallowXRP !== undefined
+                            ) {
+                              changes.push(
+                                `Incoming ${nativeCurrency}: ${
+                                  accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP ? 'disallow' : 'allow'
+                                }`
+                              )
+                            }
+                            if (
+                              accountSetSpec?.requireDestTag !== undefined ||
+                              accountSetSettings?.requireDestTag !== undefined
+                            ) {
+                              changes.push(
+                                `Destination tag: ${
+                                  accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
+                                    ? 'require'
+                                    : "don't require"
+                                }`
+                              )
+                            }
+                            if (accountSetSpec?.depositAuth !== undefined) {
+                              changes.push(
+                                `Deposit authorization: ${accountSetSpec.depositAuth ? 'enabled' : 'disabled'}`
+                              )
+                            }
+                            if (accountSetSpec?.disableMaster !== undefined) {
+                              changes.push(`Master key: ${accountSetSpec.disableMaster ? 'disabled' : 'enabled'}`)
+                            }
+                            if (accountSetSpec?.noFreeze) {
+                              changes.push('No freeze: enabled')
+                            }
+                            if (
+                              accountSetSpec?.requireAuth !== undefined ||
+                              accountSetSettings?.requireAuth !== undefined
+                            ) {
+                              changes.push(
+                                `Require authorization: ${
+                                  accountSetSpec?.requireAuth || accountSetSettings?.requireAuth
+                                    ? 'enabled'
+                                    : 'disabled'
+                                }`
+                              )
+                            }
+                            if (accountSetSpec?.disallowIncomingCheck !== undefined) {
+                              changes.push(
+                                `Incoming check: ${accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}`
+                              )
+                            }
+                            if (accountSetSpec?.disallowIncomingPayChan !== undefined) {
+                              changes.push(
+                                `Incoming payment channel: ${accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}`
+                              )
+                            }
+                            if (accountSetSpec?.disallowIncomingNFTokenOffer !== undefined) {
+                              changes.push(
+                                `Incoming NFT offer: ${accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}`
+                              )
+                            }
+                            if (accountSetSpec?.disallowIncomingTrustline !== undefined) {
+                              changes.push(
+                                `Incoming trustline: ${accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}`
+                              )
+                            }
+                            if (accountSetSpec?.enableTransactionIDTracking !== undefined) {
+                              changes.push(
+                                `Transaction ID tracking: ${
+                                  accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'
+                                }`
+                              )
+                            }
+                            if (accountSetSpec?.globalFreeze !== undefined) {
+                              changes.push(`Global freeze: ${accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}`)
+                            }
+                            if (accountSetSpec?.authorizedMinter !== undefined) {
+                              changes.push(
+                                `Authorized minter: ${accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}`
+                              )
+                            }
+                            if (accountSetSpec?.nftokenMinter !== undefined) {
+                              if (accountSetSpec.nftokenMinter) {
+                                changes.push({ type: 'nftMinter', address: accountSetSpec.nftokenMinter })
+                              } else {
+                                changes.push('NFT minter: removed')
+                              }
+                            }
+                            if (accountSetSpec?.allowTrustLineClawback !== undefined) {
+                              changes.push(
+                                `Trustline clawback: ${accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}`
+                              )
+                            }
+                            if (accountSetSpec?.disallowIncomingRemit !== undefined) {
+                              changes.push(
+                                `Incoming remit: ${accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}`
+                              )
+                            }
+
+                            return changes[0] || null
+                            })()
+                          const accountSetCollapsedChangeNode = (() => {
+                      if (!accountSetCollapsedChange) return null
+                      if (typeof accountSetCollapsedChange === 'string') return accountSetCollapsedChange
+                      if (accountSetCollapsedChange?.type === 'nftMinter') {
+                        return (
+                          <>
+                            NFT minter:{' '}
+                            <AddressWithIconInline
+                              data={{
+                                address: accountSetCollapsedChange.address,
+                                addressDetails: {}
+                              }}
+                              name="address"
+                              options={{ short: 6 }}
+                            />
+                          </>
                         )
                       }
-                      if (
-                        accountSetSpec?.requireDestTag !== undefined ||
-                        accountSetSettings?.requireDestTag !== undefined
-                      ) {
-                        changes.push(
-                          `Destination tag: ${
-                            accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
-                              ? 'require'
-                              : "don't require"
-                          }`
-                        )
-                      }
-                      if (accountSetSpec?.depositAuth !== undefined) {
-                        changes.push(`Deposit authorization: ${accountSetSpec.depositAuth ? 'enabled' : 'disabled'}`)
-                      }
-                      if (accountSetSpec?.disableMaster !== undefined) {
-                        changes.push(`Master key: ${accountSetSpec.disableMaster ? 'disabled' : 'enabled'}`)
-                      }
-                      if (accountSetSpec?.noFreeze) {
-                        changes.push('No freeze: enabled')
-                      }
-                      if (accountSetSpec?.requireAuth !== undefined || accountSetSettings?.requireAuth !== undefined) {
-                        changes.push(
-                          `Require authorization: ${
-                            accountSetSpec?.requireAuth || accountSetSettings?.requireAuth ? 'enabled' : 'disabled'
-                          }`
-                        )
-                      }
-                      if (accountSetSpec?.disallowIncomingCheck !== undefined) {
-                        changes.push(`Incoming check: ${accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}`)
-                      }
-                      if (accountSetSpec?.disallowIncomingPayChan !== undefined) {
-                        changes.push(
-                          `Incoming payment channel: ${accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}`
-                        )
-                      }
-                      if (accountSetSpec?.disallowIncomingNFTokenOffer !== undefined) {
-                        changes.push(
-                          `Incoming NFT offer: ${accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}`
-                        )
-                      }
-                      if (accountSetSpec?.disallowIncomingTrustline !== undefined) {
-                        changes.push(
-                          `Incoming trustline: ${accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}`
-                        )
-                      }
-                      if (accountSetSpec?.enableTransactionIDTracking !== undefined) {
-                        changes.push(
-                          `Transaction ID tracking: ${
-                            accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'
-                          }`
-                        )
-                      }
-                      if (accountSetSpec?.globalFreeze !== undefined) {
-                        changes.push(`Global freeze: ${accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}`)
-                      }
-                      if (accountSetSpec?.authorizedMinter !== undefined) {
-                        changes.push(`Authorized minter: ${accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}`)
-                      }
-                      if (accountSetSpec?.nftokenMinter !== undefined) {
-                        changes.push(`NFT minter: ${accountSetSpec.nftokenMinter || 'removed'}`)
-                      }
-                      if (accountSetSpec?.allowTrustLineClawback !== undefined) {
-                        changes.push(
-                          `Trustline clawback: ${accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}`
-                        )
-                      }
-                      if (accountSetSpec?.disallowIncomingRemit !== undefined) {
-                        changes.push(`Incoming remit: ${accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}`)
-                      }
-
-                      return changes[0] || null
-                    })()
-                    const nftOfferLegacyLabel = (() => {
-                      const nonBrokerDirectionSuffix = counterparty ? (isSource ? 'to' : 'from') : 'by'
-
-                      if (isAcceptNftOfferTx) {
-                        if (!isSuccessful) return 'NFT offer accept'
-                        if (nftViewerRole === 'seller') return isFreeNftAccept ? 'Transferred NFT to' : 'Sold NFT to'
-                        if (nftViewerRole === 'buyer') return isFreeNftAccept ? 'Received NFT from' : 'Bought NFT from'
-
-                        const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
-                        if (amountChangeValue > 0)
-                          return isBrokeredNftAccept ? 'Sold NFT by' : `Sold NFT ${nonBrokerDirectionSuffix}`
-                        if (amountChangeValue < 0)
-                          return isBrokeredNftAccept ? 'Bought NFT by' : `Bought NFT ${nonBrokerDirectionSuffix}`
-
-                        if (!collapsedPrimaryChange && !collapsedSecondaryChange) {
-                          if (nftDestination?.address === data?.address) return 'NFT transfer from'
-                          if (nftSource?.address === data?.address) return 'NFT transfer to'
-                          return 'NFT transfer by'
-                        }
-
-                        if (isBrokeredNftAccept) return 'NFT offer accept by'
-                        return 'NFT offer accept'
-                      }
-
-                      if (isCreateNftOfferTx) {
-                        const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
-                        if (amountChangeValue > 0) return `Sold NFT ${nonBrokerDirectionSuffix}`
-                        if (amountChangeValue < 0) return `Bought NFT ${nonBrokerDirectionSuffix}`
-
-                        const direction = txdata?.specification?.flags?.sellToken ? 'Sell' : 'Buy'
-                        const isIncomingOffer = tx?.Account !== data?.address
-
-                        if (isIncomingOffer) {
-                          const amountAsNumber = Number(tx?.Amount || 0)
-                          if (direction === 'Sell' && Number.isFinite(amountAsNumber) && amountAsNumber === 0) {
-                            return 'NFT transfer from'
-                          }
-                          return `Received NFT ${direction} offer from`
-                        }
-
-                        if (counterparty) {
-                          return `Create NFT ${direction} offer for`
-                        }
-
-                        return `Create NFT ${direction} offer`
-                      }
-
-                      if (isCancelNftOfferTx) {
-                        return 'Cancel NFT offer'
-                      }
-
                       return null
                     })()
-                    const isNftTransferLabel =
-                      typeof nftOfferLegacyLabel === 'string' && nftOfferLegacyLabel.startsWith('NFT transfer')
-                    const isFreeNftTransfer = isNftTransferLabel && (isZeroNftOfferAmount || nftOfferAmountRaw === '0')
-                    const showFreeNftBadge = isFreeNftTransfer || isFreeNftAccept
-                    const txTypeShortLabel =
-                      (isSelfPayment ? 'Swap' : null) ||
-                      (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
-                      dexOfferShortLabel ||
-                      nftOfferLegacyLabel ||
-                      (txType === 'AccountSet'
-                        ? 'Account settings update'
-                        : txType === 'AMMDeposit'
-                          ? 'AMM Deposit'
-                          : txType === 'AMMVote'
-                            ? 'AMM Vote'
-                            : txType === 'AMMWithdraw'
-                              ? 'AMM Withdraw'
+                          const nftOfferLegacyLabel = (() => {
+                            const nonBrokerDirectionSuffix = counterparty ? (isSource ? 'to' : 'from') : 'by'
+
+                            if (isAcceptNftOfferTx) {
+                              if (!isSuccessful) return 'NFT offer accept'
+                              if (nftViewerRole === 'seller')
+                                return isFreeNftAccept ? 'Transferred NFT to' : 'Sold NFT to'
+                              if (nftViewerRole === 'buyer')
+                                return isFreeNftAccept ? 'Received NFT from' : 'Bought NFT from'
+
+                              const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
+                              if (amountChangeValue > 0)
+                                return isBrokeredNftAccept ? 'Sold NFT by' : `Sold NFT ${nonBrokerDirectionSuffix}`
+                              if (amountChangeValue < 0)
+                                return isBrokeredNftAccept ? 'Bought NFT by' : `Bought NFT ${nonBrokerDirectionSuffix}`
+
+                              if (!collapsedPrimaryChange && !collapsedSecondaryChange) {
+                                if (nftDestination?.address === data?.address) return 'NFT transfer from'
+                                if (nftSource?.address === data?.address) return 'NFT transfer to'
+                                return 'NFT transfer by'
+                              }
+
+                              if (isBrokeredNftAccept) return 'NFT offer accept by'
+                              return 'NFT offer accept'
+                            }
+
+                            if (isCreateNftOfferTx) {
+                              const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
+                              if (amountChangeValue > 0) return `Sold NFT ${nonBrokerDirectionSuffix}`
+                              if (amountChangeValue < 0) return `Bought NFT ${nonBrokerDirectionSuffix}`
+
+                              const direction = txdata?.specification?.flags?.sellToken ? 'Sell' : 'Buy'
+                              const isIncomingOffer = tx?.Account !== data?.address
+
+                              if (isIncomingOffer) {
+                                const amountAsNumber = Number(tx?.Amount || 0)
+                                if (direction === 'Sell' && Number.isFinite(amountAsNumber) && amountAsNumber === 0) {
+                                  return 'NFT transfer from'
+                                }
+                                return `Received NFT ${direction} offer from`
+                              }
+
+                              if (counterparty) {
+                                return `Create NFT ${direction} offer for`
+                              }
+
+                              return `Create NFT ${direction} offer`
+                            }
+
+                            if (isCancelNftOfferTx) {
+                              return 'Cancel NFT offer'
+                            }
+
+                            return null
+                          })()
+                          const isNftTransferLabel =
+                            typeof nftOfferLegacyLabel === 'string' && nftOfferLegacyLabel.startsWith('NFT transfer')
+                          const isFreeNftTransfer =
+                            isNftTransferLabel && (isZeroNftOfferAmount || nftOfferAmountRaw === '0')
+                          const showFreeNftBadge = isFreeNftTransfer || isFreeNftAccept
+                          const txTypeShortLabel =
+                            (isSelfPayment ? 'Swap' : null) ||
+                            (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
+                            dexOfferShortLabel ||
+                            nftOfferLegacyLabel ||
+                            (txType === 'AccountSet'
+                              ? 'Account settings update'
+                              : txType === 'AMMDeposit'
+                                ? 'AMM Deposit'
+                                : txType === 'AMMVote'
+                                  ? 'AMM Vote'
+                                  : txType === 'AMMWithdraw'
+                                    ? 'AMM Withdraw'
+                                    : txType === 'NFTokenMint'
+                                      ? 'NFT Mint'
+                                      : txType === 'NFTokenBurn'
+                                        ? 'NFT Burn'
+                                        : txType === 'NFTokenCreateOffer'
+                                          ? 'NFT offer'
+                                          : txType === 'NFTokenAcceptOffer'
+                                            ? 'NFT offer accept'
+                                            : txType === 'NFTokenCancelOffer'
+                                              ? 'NFT offer cancel'
+                                              : txType || '-')
+                          const txTypeCollapsedLabel =
+                            isSelfPayment || isAccountDeleteTx
+                              ? txTypeShortLabel
                               : txType === 'NFTokenMint'
-                                ? 'NFT Mint'
-                                : txType === 'NFTokenBurn'
-                                  ? 'NFT Burn'
-                                  : txType === 'NFTokenCreateOffer'
-                                    ? 'NFT offer'
-                                    : txType === 'NFTokenAcceptOffer'
-                                      ? 'NFT offer accept'
-                                      : txType === 'NFTokenCancelOffer'
-                                        ? 'NFT offer cancel'
-                                        : txType || '-')
-                    const txTypeCollapsedLabel =
-                      isSelfPayment || isAccountDeleteTx
-                        ? txTypeShortLabel
-                        : txType === 'NFTokenMint'
-                          ? txTypeShortLabel
-                          : txType === 'NFTokenBurn'
-                            ? txTypeShortLabel
-                            : tx?.TransactionType === 'TrustSet'
-                              ? counterparty
-                                ? `${isSource ? 'to' : 'from'}`
-                                : ''
-                              : isNftOfferTx
                                 ? txTypeShortLabel
-                                : isDexOfferTx
+                                : txType === 'NFTokenBurn'
                                   ? txTypeShortLabel
-                                  : counterparty
-                                    ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
-                                    : txTypeShortLabel
-                    const showBrokerInCollapsedTitle =
-                      isBrokeredNftAccept &&
-                      !!brokerAddress &&
-                      (nftViewerRole === 'seller' || nftViewerRole === 'buyer')
-                    const brokerCollapsedAction =
-                      nftViewerRole === 'seller'
-                        ? isFreeNftAccept
-                          ? 'transferred NFT to'
-                          : 'sold NFT to'
-                        : nftViewerRole === 'buyer'
-                          ? isFreeNftAccept
-                            ? 'received NFT from'
-                            : 'bought NFT from'
-                          : ''
+                                  : tx?.TransactionType === 'TrustSet'
+                                    ? counterparty
+                                      ? `${isSource ? 'to' : 'from'}`
+                                      : ''
+                                    : isNftOfferTx
+                                      ? txTypeShortLabel
+                                      : isDexOfferTx
+                                        ? txTypeShortLabel
+                                        : counterparty
+                                          ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
+                                          : txTypeShortLabel
+                          const showBrokerInCollapsedTitle =
+                            isBrokeredNftAccept &&
+                            !!brokerAddress &&
+                            (nftViewerRole === 'seller' || nftViewerRole === 'buyer')
+                          const brokerCollapsedAction =
+                            nftViewerRole === 'seller'
+                              ? isFreeNftAccept
+                                ? 'transferred NFT to'
+                                : 'sold NFT to'
+                              : nftViewerRole === 'buyer'
+                                ? isFreeNftAccept
+                                  ? 'received NFT from'
+                                  : 'bought NFT from'
+                                : ''
 
-                    return (
-                      <div
-                        className={`asset-item token-asset-item tx-asset-item ${isExpanded ? 'expanded' : ''} ${!isSuccessful ? 'tx-failed' : ''}`}
-                        key={txKey}
-                        onClick={() => setExpandedTransactionKey(isExpanded ? null : txKey)}
-                      >
-                        <div className="asset-main tx-asset-main">
-                          <div className="asset-logo tx-asset-logo">
-                            <div className="tx-collapsed-top">
-                              <span className="tx-type-main">
-                                {showBrokerInCollapsedTitle ? (
-                                  <>
-                                    <span>Broker </span>
-                                    <AddressWithIconInline
-                                      data={{
-                                        address: brokerAddress,
-                                        addressDetails: txdata?.specification?.source?.addressDetails || {}
-                                      }}
-                                      name="address"
-                                      options={{ short: 6 }}
-                                    />
-                                    <span> {brokerCollapsedAction}</span>
-                                  </>
-                                ) : (
-                                  txTypeCollapsedLabel
-                                )}
-                              </span>
-                              <span className="tx-time tx-time-top">
-                                {tx?.date ? timeFromNow(tx.date, i18n, 'ripple') : '-'}
-                              </span>
-                            </div>
+                          return (
+                            <div
+                              className={`asset-item token-asset-item tx-asset-item ${isExpanded ? 'expanded' : ''} ${!isSuccessful ? 'tx-failed' : ''}`}
+                              key={txKey}
+                              onClick={() => setExpandedTransactionKey(isExpanded ? null : txKey)}
+                            >
+                              <div className="asset-main tx-asset-main">
+                                <div className="asset-logo tx-asset-logo">
+                                  <div className="tx-collapsed-top">
+                                    <span className="tx-type-main">
+                                      {showBrokerInCollapsedTitle ? (
+                                        <>
+                                          <span>Broker </span>
+                                          <AddressWithIconInline
+                                            data={{
+                                              address: brokerAddress,
+                                              addressDetails: txdata?.specification?.source?.addressDetails || {}
+                                            }}
+                                            name="address"
+                                            options={{ short: 6 }}
+                                          />
+                                          <span> {brokerCollapsedAction}</span>
+                                        </>
+                                      ) : (
+                                        txTypeCollapsedLabel
+                                      )}
+                                    </span>
+                                    <span className="tx-time tx-time-top">
+                                      {tx?.date ? timeFromNow(tx.date, i18n, 'ripple') : '-'}
+                                    </span>
+                                  </div>
 
-                            <div className="tx-collapsed-meta">
-                              {txType === 'AccountSet' && accountSetCollapsedChange && (
-                                <span className="tx-accountset-inline">{accountSetCollapsedChange}</span>
-                              )}
-                              {showDexCollapsedSequence && (
-                                <span className="tx-accountset-inline">
-                                  {dexCollapsedSequences.length > 1 ? 'Offer sequences: ' : 'Offer sequence: '}
-                                  {dexCollapsedSequences.join(', ')}
-                                </span>
-                              )}
-                              {ammPairToken && (
-                                <span className="tx-amm-token-meta">
-                                  <CurrencyWithIcon
-                                    token={ammPairToken}
-                                    hideIssuer
-                                    options={{ disableTokenLink: true }}
-                                  />
-                                </span>
-                              )}
-                              {tx?.TransactionType === 'TrustSet' && trustSetToken && (
-                                <span className="tx-trustset-inline">
-                                  <CurrencyWithIcon token={{ ...trustSetToken }} options={{ disableTokenLink: true }} />
-                                </span>
-                              )}
-                              {tx?.TransactionType !== 'TrustSet' &&
-                                !isSelfPayment &&
-                                !isDexOfferTx &&
-                                resolvedCounterpartyAddress && (
-                                  <span className="tx-counterparty-inline">
-                                    <AddressWithIconInline
-                                      data={{
-                                        address: resolvedCounterpartyAddress,
-                                        addressDetails: resolvedCounterpartyDetails || {}
-                                      }}
-                                      name="address"
-                                      options={{ short: 6 }}
-                                    />
-                                  </span>
-                                )}
-                            </div>
-                          </div>
-
-                          <div className="asset-value tx-collapsed-change">
-                            {failedStatusShort ? (
-                              <span className="tx-inline-status orange">{failedStatusShort}</span>
-                            ) : tx?.TransactionType === 'TrustSet' ? (
-                              trustSetStatus ? (
-                                <span className="tx-inline-status orange">{trustSetStatus}</span>
-                              ) : null
-                            ) : isDexNotFullfilled && dexSpecifiedChanges.length > 0 ? (
-                              <>
-                                {dexSpecifiedChanges.map((change, changeIndex) => (
-                                  <span className="tx-inline-change-item" key={`${txKey}-dex-spec-${changeIndex}`}>
-                                    <span className="tx-inline-change grey">
-                                      {amountFormat(change, {
-                                        icon: true,
-                                        short: true,
-                                        maxFractionDigits: 2,
-                                        showPlus: true
-                                      })}
-                                    </span>
-                                  </span>
-                                ))}
-                              </>
-                            ) : hasAmmVoteTradingFee ? (
-                              <span className="tx-inline-status grey">Trading fee: {ammVoteTradingFeeText}</span>
-                            ) : showFreeNftBadge ? (
-                              <span className="tx-offer-free orange">Free</span>
-                            ) : (
-                              <>
-                                {collapsedPrimaryChange && (
-                                  <span className="tx-inline-change-item">
-                                    <span className={`tx-inline-change ${primaryChangeClass}`}>
-                                      {amountFormat(collapsedPrimaryChange, {
-                                        icon: !isLpAmount(collapsedPrimaryChange),
-                                        short: true,
-                                        maxFractionDigits: 2,
-                                        showPlus: true
-                                      })}
-                                    </span>
-                                    {!!primaryChangeFiat && <span className="tx-change-fiat">{primaryChangeFiat}</span>}
-                                  </span>
-                                )}
-                                {collapsedSecondaryChange && (
-                                  <span className="tx-inline-change-item">
-                                    <span className={`tx-inline-change ${secondaryChangeClass}`}>
-                                      {amountFormat(collapsedSecondaryChange, {
-                                        icon: !isLpAmount(collapsedSecondaryChange),
-                                        short: true,
-                                        maxFractionDigits: 2,
-                                        showPlus: true
-                                      })}
-                                    </span>
-                                    {!!secondaryChangeFiat && (
-                                      <span className="tx-change-fiat">{secondaryChangeFiat}</span>
+                                  <div className="tx-collapsed-meta">
+                                    {txType === 'AccountSet' && accountSetCollapsedChangeNode && (
+                                      <span className="tx-accountset-inline">{accountSetCollapsedChangeNode}</span>
                                     )}
-                                  </span>
-                                )}
-                                {collapsedMoreCount > 0 && (
-                                  <span className="tx-inline-more">+{collapsedMoreCount} more</span>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        </div>
-
-                        {isExpanded && (
-                          <div className="asset-details">
-                            <div className="detail-row">
-                              <span>Type:</span>
-                              <span>{tx?.TransactionType || '-'}</span>
-                            </div>
-
-                            {showDexSpecifiedOrderDetails && !!dexTakerGets && (
-                              <div className="detail-row">
-                                <span>
-                                  {dexOfferDirection === 'Sell' ? 'Specified sell exactly:' : 'Specified pay up to:'}
-                                </span>
-                                <span>
-                                  {amountFormat(dexTakerGets, {
-                                    icon: true,
-                                    withIssuer: true
-                                  })}
-                                </span>
-                              </div>
-                            )}
-
-                            {showDexSpecifiedOrderDetails && !!dexTakerPays && (
-                              <div className="detail-row">
-                                <span>
-                                  {dexOfferDirection === 'Sell'
-                                    ? 'Specified receive at least:'
-                                    : 'Specified receive exactly:'}
-                                </span>
-                                <span>
-                                  {amountFormat(dexTakerPays, {
-                                    icon: true,
-                                    withIssuer: true
-                                  })}
-                                </span>
-                              </div>
-                            )}
-
-                            {hasAmmVoteTradingFee && (
-                              <div className="detail-row">
-                                <span>Trading fee:</span>
-                                <span>{ammVoteTradingFeeText}</span>
-                              </div>
-                            )}
-
-                            {failedStatusText && (
-                              <>
-                                <div className="detail-row">
-                                  <span>Error code:</span>
-                                  <span className="orange">{failedStatusText}</span>
-                                </div>
-                                <div className="detail-row tx-fail-description-row">
-                                  <span>Error:</span>
-                                  <span className="orange tx-fail-description-text">
-                                    {errorCodeDescription(failedStatusText) || failedStatusText}
-                                  </span>
-                                </div>
-                              </>
-                            )}
-
-                            {!isSelfPayment && !isDexOfferTx && resolvedCounterpartyAddress && (
-                              <div className="detail-row">
-                                <span>{directionLabel}:</span>
-                                <span className="copy-inline">
-                                  <span className="address-text">{resolvedCounterpartyAddress}</span>
-                                  <Link
-                                    href={`/account/${resolvedCounterpartyAddress}`}
-                                    className="inline-link-icon tooltip"
-                                    onClick={(event) => event.stopPropagation()}
-                                  >
-                                    <LinkIcon />
-                                    <span className="tooltiptext no-brake">Account page</span>
-                                  </Link>
-                                  <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={resolvedCounterpartyAddress} />
-                                  </span>
-                                </span>
-                              </div>
-                            )}
-
-                            {brokerAddress && (
-                              <div className="detail-row">
-                                <span>By broker:</span>
-                                <span className="copy-inline">
-                                  <span className="address-text">{brokerAddress}</span>
-                                  <Link
-                                    href={`/account/${brokerAddress}`}
-                                    className="inline-link-icon tooltip"
-                                    onClick={(event) => event.stopPropagation()}
-                                  >
-                                    <LinkIcon />
-                                    <span className="tooltiptext no-brake">Account page</span>
-                                  </Link>
-                                  <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={brokerAddress} />
-                                  </span>
-                                </span>
-                              </div>
-                            )}
-
-                            {tx?.TransactionType === 'TrustSet' && trustSetToken && (
-                              <>
-                                <div className="detail-row">
-                                  <span>Currency:</span>
-                                  <span className="copy-inline">
-                                    <span>{trustSetToken?.currency || '-'}</span>
-                                    {!!trustSetToken?.issuer && !!trustSetToken?.currency && (
-                                      <Link
-                                        href={`/token/${trustSetToken.issuer}/${trustSetToken.currency}`}
-                                        className="inline-link-icon tooltip"
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
-                                        <LinkIcon />
-                                        <span className="tooltiptext no-brake">Token page</span>
-                                      </Link>
-                                    )}
-                                    {!!trustSetToken?.currency && (
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CopyButton text={trustSetToken.currency} />
+                                    {showDexCollapsedSequence && (
+                                      <span className="tx-accountset-inline">
+                                        {dexCollapsedSequences.length > 1 ? 'Offer sequences: ' : 'Offer sequence: '}
+                                        {dexCollapsedSequences.join(', ')}
                                       </span>
                                     )}
-                                  </span>
-                                </div>
-
-                                {!!trustSetToken?.issuer && (
-                                  <div className="detail-row">
-                                    <span>Issuer:</span>
-                                    <span className="copy-inline">
-                                      <span className="address-text">{trustSetToken.issuer}</span>
-                                      <Link
-                                        href={`/account/${trustSetToken.issuer}`}
-                                        className="inline-link-icon tooltip"
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
-                                        <LinkIcon />
-                                        <span className="tooltiptext no-brake">Issuer account page</span>
-                                      </Link>
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CopyButton text={trustSetToken.issuer} />
+                                    {ammPairToken && (
+                                      <span className="tx-amm-token-meta">
+                                        <CurrencyWithIcon
+                                          token={ammPairToken}
+                                          hideIssuer
+                                          options={{ disableTokenLink: true }}
+                                        />
                                       </span>
-                                    </span>
-                                  </div>
-                                )}
-
-                                <div className="detail-row">
-                                  <span>Limit:</span>
-                                  <span>{fullNiceNumber(trustSetToken?.value || 0)}</span>
-                                </div>
-                              </>
-                            )}
-
-                            {txType === 'AccountSet' && (
-                              <>
-                                {tx?.MessageKey !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Message key:</span>
-                                    <span className={accountSetSpec?.messageKey ? '' : 'orange'}>
-                                      {accountSetSpec?.messageKey || 'removed'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {tx?.Domain !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Domain:</span>
-                                    <span className="orange">{accountSetSpec?.domain || 'removed'}</span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.defaultRipple !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Default ripple:</span>
-                                    <span className="orange">
-                                      {accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {(accountSetSpec?.disallowXRP !== undefined ||
-                                  accountSetSettings?.disallowXRP !== undefined) && (
-                                  <div className="detail-row">
-                                    <span>Incoming {nativeCurrency}:</span>
-                                    <span className="orange">
-                                      {accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP
-                                        ? 'disallow'
-                                        : 'allow'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {(accountSetSpec?.requireDestTag !== undefined ||
-                                  accountSetSettings?.requireDestTag !== undefined) && (
-                                  <div className="detail-row">
-                                    <span>Destination tag:</span>
-                                    <span className="orange">
-                                      {accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
-                                        ? 'require'
-                                        : "don't require"}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.depositAuth !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Deposit authorization:</span>
-                                    <span className="orange">
-                                      {accountSetSpec.depositAuth ? 'enabled' : 'disabled'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.disableMaster !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Master key:</span>
-                                    <span className="red">{accountSetSpec.disableMaster ? 'disabled' : 'enabled'}</span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.noFreeze && (
-                                  <div className="detail-row">
-                                    <span>No freeze:</span>
-                                    <span className="orange">enabled</span>
-                                  </div>
-                                )}
-
-                                {(accountSetSpec?.requireAuth !== undefined ||
-                                  accountSetSettings?.requireAuth !== undefined) && (
-                                  <div className="detail-row">
-                                    <span>Require authorization:</span>
-                                    <span className="orange">
-                                      {accountSetSpec?.requireAuth || accountSetSettings?.requireAuth
-                                        ? 'enabled'
-                                        : 'disabled'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.disallowIncomingCheck !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Incoming check:</span>
-                                    <span className="orange">
-                                      {accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.disallowIncomingPayChan !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Incoming payment channel:</span>
-                                    <span className="orange">
-                                      {accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.disallowIncomingNFTokenOffer !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Incoming NFT offer:</span>
-                                    <span className="orange">
-                                      {accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.disallowIncomingTrustline !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Incoming trustline:</span>
-                                    <span className="orange">
-                                      {accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.enableTransactionIDTracking !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Transaction ID tracking:</span>
-                                    <span className="orange">
-                                      {accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.globalFreeze !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Global freeze:</span>
-                                    <span className="orange">
-                                      {accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.authorizedMinter !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Authorized minter:</span>
-                                    <span className="orange">
-                                      {accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.nftokenMinter !== undefined && (
-                                  <div className="detail-row">
-                                    <span>NFT minter:</span>
-                                    <span className="orange">{accountSetSpec.nftokenMinter || 'removed'}</span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.allowTrustLineClawback !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Trustline clawback:</span>
-                                    <span className="orange">
-                                      {accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {accountSetSpec?.disallowIncomingRemit !== undefined && (
-                                  <div className="detail-row">
-                                    <span>Incoming remit:</span>
-                                    <span className="orange">
-                                      {accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}
-                                    </span>
-                                  </div>
-                                )}
-                              </>
-                            )}
-
-                            <div className="detail-row">
-                              <span>Timestamp:</span>
-                              <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
-                            </div>
-
-                            {!!selectedCurrency && (shouldShowExpandedRate || isDexOfferTx) && !hasDexOfferRates && (
-                              <div className="detail-row">
-                                <span>Rate:</span>
-                                <span suppressHydrationWarning>
-                                  {txHistoricalRate
-                                    ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
-                                    : '-'}
-                                </span>
-                              </div>
-                            )}
-
-                            {isSource && (tx?.Sequence || tx?.TicketSequence) && (
-                              <div className="detail-row">
-                                <span>{tx?.TicketSequence ? 'Ticket sequence:' : 'Sequence:'}</span>
-                                <span>{tx?.Sequence || tx?.TicketSequence}</span>
-                              </div>
-                            )}
-
-                            {isSource && tx?.Fee && (
-                              <div className="detail-row">
-                                <span>Fee:</span>
-                                <span>
-                                  {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
-                                  {nativeCurrencyToFiat({
-                                    amount: tx.Fee,
-                                    selectedCurrency,
-                                    fiatRate: txHistoricalRate
-                                  })}
-                                </span>
-                              </div>
-                            )}
-
-                            {changes.length > 0 && (
-                              <div className="detail-row tx-detail-change-row">
-                                <span>Balance changes:</span>
-                                <span className="tx-detail-change-list">
-                                  {changes.map((change, changeIndex) => {
-                                    const changeValue = Number(change?.value || 0)
-                                    const changeClass = changeValue > 0 ? 'green' : changeValue < 0 ? 'red' : ''
-                                    const changeFiat = nativeCurrencyToFiat({
-                                      amount: change,
-                                      selectedCurrency,
-                                      fiatRate: txHistoricalRate,
-                                      asText: true
-                                    })
-                                    return (
-                                      <span
-                                        className={`tx-change-row ${changeClass}`}
-                                        key={`${txKey}-change-${changeIndex}`}
-                                      >
-                                        <span>
-                                          {amountFormat(change, {
-                                            icon: !isLpAmount(change),
-                                            withIssuer: true,
-                                            bold: true,
-                                            precise: 'nice',
-                                            showPlus: true
-                                          })}
+                                    )}
+                                    {tx?.TransactionType === 'TrustSet' && trustSetToken && (
+                                      <span className="tx-trustset-inline">
+                                        <CurrencyWithIcon
+                                          token={{ ...trustSetToken }}
+                                          options={{ disableTokenLink: true }}
+                                        />
+                                      </span>
+                                    )}
+                                    {tx?.TransactionType !== 'TrustSet' &&
+                                      !isSelfPayment &&
+                                      !isDexOfferTx &&
+                                      resolvedCounterpartyAddress && (
+                                        <span className="tx-counterparty-inline">
+                                          <AddressWithIconInline
+                                            data={{
+                                              address: resolvedCounterpartyAddress,
+                                              addressDetails: resolvedCounterpartyDetails || {}
+                                            }}
+                                            name="address"
+                                            options={{ short: 6 }}
+                                          />
                                         </span>
-                                        {!!changeFiat && <span className="tx-change-fiat">{changeFiat}</span>}
-                                      </span>
-                                    )
-                                  })}
-                                </span>
-                              </div>
-                            )}
+                                      )}
+                                  </div>
+                                </div>
 
-                            {hasDexOfferRates && (
-                              <div className="detail-row tx-detail-change-row">
-                                <span>Rates:</span>
-                                <span className="tx-detail-change-list">
-                                  {!!selectedCurrency && (
-                                    <span className="tx-change-row">
-                                      <span suppressHydrationWarning>
-                                        {txHistoricalRate
-                                          ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
-                                          : '-'}
-                                      </span>
-                                    </span>
+                                <div className="asset-value tx-collapsed-change">
+                                  {failedStatusShort ? (
+                                    <span className="tx-inline-status orange">{failedStatusShort}</span>
+                                  ) : tx?.TransactionType === 'TrustSet' ? (
+                                    trustSetStatus ? (
+                                      <span className="tx-inline-status orange">{trustSetStatus}</span>
+                                    ) : null
+                                  ) : isDexNotFullfilled && dexSpecifiedChanges.length > 0 ? (
+                                    <>
+                                      {dexSpecifiedChanges.map((change, changeIndex) => (
+                                        <span
+                                          className="tx-inline-change-item"
+                                          key={`${txKey}-dex-spec-${changeIndex}`}
+                                        >
+                                          <span className="tx-inline-change grey">
+                                            {amountFormat(change, {
+                                              icon: true,
+                                              short: true,
+                                              maxFractionDigits: 2,
+                                              showPlus: true
+                                            })}
+                                          </span>
+                                        </span>
+                                      ))}
+                                    </>
+                                  ) : hasAmmVoteTradingFee ? (
+                                    <span className="tx-inline-status grey">Trading fee: {ammVoteTradingFeeText}</span>
+                                  ) : showFreeNftBadge ? (
+                                    <span className="tx-offer-free orange">Free</span>
+                                  ) : (
+                                    <>
+                                      {collapsedPrimaryChange && (
+                                        <span className="tx-inline-change-item">
+                                          <span className={`tx-inline-change ${primaryChangeClass}`}>
+                                            {amountFormat(collapsedPrimaryChange, {
+                                              icon: !isLpAmount(collapsedPrimaryChange),
+                                              short: true,
+                                              maxFractionDigits: 2,
+                                              showPlus: true
+                                            })}
+                                          </span>
+                                          {!!primaryChangeFiat && (
+                                            <span className="tx-change-fiat">{primaryChangeFiat}</span>
+                                          )}
+                                        </span>
+                                      )}
+                                      {collapsedSecondaryChange && (
+                                        <span className="tx-inline-change-item">
+                                          <span className={`tx-inline-change ${secondaryChangeClass}`}>
+                                            {amountFormat(collapsedSecondaryChange, {
+                                              icon: !isLpAmount(collapsedSecondaryChange),
+                                              short: true,
+                                              maxFractionDigits: 2,
+                                              showPlus: true
+                                            })}
+                                          </span>
+                                          {!!secondaryChangeFiat && (
+                                            <span className="tx-change-fiat">{secondaryChangeFiat}</span>
+                                          )}
+                                        </span>
+                                      )}
+                                      {collapsedMoreCount > 0 && (
+                                        <span className="tx-inline-more">+{collapsedMoreCount} more</span>
+                                      )}
+                                    </>
                                   )}
-                                  <span className="tx-change-row">
-                                    <span>
-                                      {amountFormat(
-                                        {
-                                          currency: changes[0].currency,
-                                          issuer: changes[0].issuer,
-                                          value: 1
-                                        },
-                                        { icon: true }
-                                      )}{' '}
-                                      ={' '}
-                                      {amountFormat(
-                                        {
-                                          ...changes[1],
-                                          value: dexOfferRateAtoB
-                                        },
-                                        { icon: true, precise: 'nice' }
+                                </div>
+                              </div>
+
+                              {isExpanded && (
+                                <div className="asset-details">
+                                  <div className="detail-row">
+                                    <span>Type:</span>
+                                    <span>{tx?.TransactionType || '-'}</span>
+                                  </div>
+
+                                  {showDexSpecifiedOrderDetails && !!dexTakerGets && (
+                                    <div className="detail-row">
+                                      <span>
+                                        {dexOfferDirection === 'Sell'
+                                          ? 'Specified sell exactly:'
+                                          : 'Specified pay up to:'}
+                                      </span>
+                                      <span>
+                                        {amountFormat(dexTakerGets, {
+                                          icon: true,
+                                          withIssuer: true
+                                        })}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {showDexSpecifiedOrderDetails && !!dexTakerPays && (
+                                    <div className="detail-row">
+                                      <span>
+                                        {dexOfferDirection === 'Sell'
+                                          ? 'Specified receive at least:'
+                                          : 'Specified receive exactly:'}
+                                      </span>
+                                      <span>
+                                        {amountFormat(dexTakerPays, {
+                                          icon: true,
+                                          withIssuer: true
+                                        })}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {hasAmmVoteTradingFee && (
+                                    <div className="detail-row">
+                                      <span>Trading fee:</span>
+                                      <span>{ammVoteTradingFeeText}</span>
+                                    </div>
+                                  )}
+
+                                  {failedStatusText && (
+                                    <>
+                                      <div className="detail-row">
+                                        <span>Error code:</span>
+                                        <span className="orange">{failedStatusText}</span>
+                                      </div>
+                                      <div className="detail-row tx-fail-description-row">
+                                        <span>Error:</span>
+                                        <span className="orange tx-fail-description-text">
+                                          {errorCodeDescription(failedStatusText) || failedStatusText}
+                                        </span>
+                                      </div>
+                                    </>
+                                  )}
+
+                                  {!isSelfPayment && !isDexOfferTx && resolvedCounterpartyAddress && (
+                                    <div className="detail-row">
+                                      <span>{directionLabel}:</span>
+                                      <span className="copy-inline">
+                                        <span className="address-text">{resolvedCounterpartyAddress}</span>
+                                        <Link
+                                          href={`/account/${resolvedCounterpartyAddress}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Account page</span>
+                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={resolvedCounterpartyAddress} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {brokerAddress && (
+                                    <div className="detail-row">
+                                      <span>By broker:</span>
+                                      <span className="copy-inline">
+                                        <span className="address-text">{brokerAddress}</span>
+                                        <Link
+                                          href={`/account/${brokerAddress}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Account page</span>
+                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={brokerAddress} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {tx?.TransactionType === 'TrustSet' && trustSetToken && (
+                                    <>
+                                      <div className="detail-row">
+                                        <span>Currency:</span>
+                                        <span className="copy-inline">
+                                          <span>{trustSetToken?.currency || '-'}</span>
+                                          {!!trustSetToken?.issuer && !!trustSetToken?.currency && (
+                                            <Link
+                                              href={`/token/${trustSetToken.issuer}/${trustSetToken.currency}`}
+                                              className="inline-link-icon tooltip"
+                                              onClick={(event) => event.stopPropagation()}
+                                            >
+                                              <LinkIcon />
+                                              <span className="tooltiptext no-brake">Token page</span>
+                                            </Link>
+                                          )}
+                                          {!!trustSetToken?.currency && (
+                                            <span onClick={(event) => event.stopPropagation()}>
+                                              <CopyButton text={trustSetToken.currency} />
+                                            </span>
+                                          )}
+                                        </span>
+                                      </div>
+
+                                      {!!trustSetToken?.issuer && (
+                                        <div className="detail-row">
+                                          <span>Issuer:</span>
+                                          <span className="copy-inline">
+                                            <span className="address-text">{trustSetToken.issuer}</span>
+                                            <Link
+                                              href={`/account/${trustSetToken.issuer}`}
+                                              className="inline-link-icon tooltip"
+                                              onClick={(event) => event.stopPropagation()}
+                                            >
+                                              <LinkIcon />
+                                              <span className="tooltiptext no-brake">Issuer account page</span>
+                                            </Link>
+                                            <span onClick={(event) => event.stopPropagation()}>
+                                              <CopyButton text={trustSetToken.issuer} />
+                                            </span>
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      <div className="detail-row">
+                                        <span>Limit:</span>
+                                        <span>{fullNiceNumber(trustSetToken?.value || 0)}</span>
+                                      </div>
+                                    </>
+                                  )}
+
+                                  {txType === 'AccountSet' && (
+                                    <>
+                                      {tx?.MessageKey !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Message key:</span>
+                                          <span className={accountSetSpec?.messageKey ? '' : 'orange'}>
+                                            {accountSetSpec?.messageKey || 'removed'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {tx?.Domain !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Domain:</span>
+                                          <span className="orange">{accountSetSpec?.domain || 'removed'}</span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.defaultRipple !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Default ripple:</span>
+                                          <span className="orange">
+                                            {accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {(accountSetSpec?.disallowXRP !== undefined ||
+                                        accountSetSettings?.disallowXRP !== undefined) && (
+                                        <div className="detail-row">
+                                          <span>Incoming {nativeCurrency}:</span>
+                                          <span className="orange">
+                                            {accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP
+                                              ? 'disallow'
+                                              : 'allow'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {(accountSetSpec?.requireDestTag !== undefined ||
+                                        accountSetSettings?.requireDestTag !== undefined) && (
+                                        <div className="detail-row">
+                                          <span>Destination tag:</span>
+                                          <span className="orange">
+                                            {accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
+                                              ? 'require'
+                                              : "don't require"}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.depositAuth !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Deposit authorization:</span>
+                                          <span className="orange">
+                                            {accountSetSpec.depositAuth ? 'enabled' : 'disabled'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.disableMaster !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Master key:</span>
+                                          <span className="red">
+                                            {accountSetSpec.disableMaster ? 'disabled' : 'enabled'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.noFreeze && (
+                                        <div className="detail-row">
+                                          <span>No freeze:</span>
+                                          <span className="orange">enabled</span>
+                                        </div>
+                                      )}
+
+                                      {(accountSetSpec?.requireAuth !== undefined ||
+                                        accountSetSettings?.requireAuth !== undefined) && (
+                                        <div className="detail-row">
+                                          <span>Require authorization:</span>
+                                          <span className="orange">
+                                            {accountSetSpec?.requireAuth || accountSetSettings?.requireAuth
+                                              ? 'enabled'
+                                              : 'disabled'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.disallowIncomingCheck !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Incoming check:</span>
+                                          <span className="orange">
+                                            {accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.disallowIncomingPayChan !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Incoming payment channel:</span>
+                                          <span className="orange">
+                                            {accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.disallowIncomingNFTokenOffer !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Incoming NFT offer:</span>
+                                          <span className="orange">
+                                            {accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.disallowIncomingTrustline !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Incoming trustline:</span>
+                                          <span className="orange">
+                                            {accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.enableTransactionIDTracking !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Transaction ID tracking:</span>
+                                          <span className="orange">
+                                            {accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.globalFreeze !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Global freeze:</span>
+                                          <span className="orange">
+                                            {accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.authorizedMinter !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Authorized minter:</span>
+                                          <span className="orange">
+                                            {accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.nftokenMinter !== undefined && (
+                                        <div className="detail-row">
+                                          <span>NFT minter:</span>
+                                          {accountSetSpec?.nftokenMinter ? (
+                                            <span className="copy-inline">
+                                              <span className="address-text">{accountSetSpec.nftokenMinter}</span>
+                                              <Link
+                                                href={`/account/${accountSetSpec.nftokenMinter}`}
+                                                className="inline-link-icon tooltip"
+                                                onClick={(event) => event.stopPropagation()}
+                                              >
+                                                <LinkIcon />
+                                                <span className="tooltiptext no-brake">Account page</span>
+                                              </Link>
+                                              <span onClick={(event) => event.stopPropagation()}>
+                                                <CopyButton text={accountSetSpec.nftokenMinter} />
+                                              </span>
+                                            </span>
+                                          ) : (
+                                            <span className="orange">removed</span>
+                                          )}
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.allowTrustLineClawback !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Trustline clawback:</span>
+                                          <span className="orange">
+                                            {accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}
+                                          </span>
+                                        </div>
+                                      )}
+
+                                      {accountSetSpec?.disallowIncomingRemit !== undefined && (
+                                        <div className="detail-row">
+                                          <span>Incoming remit:</span>
+                                          <span className="orange">
+                                            {accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}
+                                          </span>
+                                        </div>
+                                      )}
+                                    </>
+                                  )}
+
+                                  <div className="detail-row">
+                                    <span>Timestamp:</span>
+                                    <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
+                                  </div>
+
+                                  {!!selectedCurrency &&
+                                    (shouldShowExpandedRate || isDexOfferTx) &&
+                                    !hasDexOfferRates && (
+                                      <div className="detail-row">
+                                        <span>Rate:</span>
+                                        <span suppressHydrationWarning>
+                                          {txHistoricalRate
+                                            ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
+                                            : '-'}
+                                        </span>
+                                      </div>
+                                    )}
+
+                                  {isSource && (tx?.Sequence || tx?.TicketSequence) && (
+                                    <div className="detail-row">
+                                      <span>{tx?.TicketSequence ? 'Ticket sequence:' : 'Sequence:'}</span>
+                                      <span>{tx?.Sequence || tx?.TicketSequence}</span>
+                                    </div>
+                                  )}
+
+                                  {isSource && tx?.Fee && (
+                                    <div className="detail-row">
+                                      <span>Fee:</span>
+                                      <span>
+                                        {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
+                                        {nativeCurrencyToFiat({
+                                          amount: tx.Fee,
+                                          selectedCurrency,
+                                          fiatRate: txHistoricalRate
+                                        })}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {changes.length > 0 && (
+                                    <div className="detail-row tx-detail-change-row">
+                                      <span>Balance changes:</span>
+                                      <span className="tx-detail-change-list">
+                                        {changes.map((change, changeIndex) => {
+                                          const changeValue = Number(change?.value || 0)
+                                          const changeClass = changeValue > 0 ? 'green' : changeValue < 0 ? 'red' : ''
+                                          const changeFiat = nativeCurrencyToFiat({
+                                            amount: change,
+                                            selectedCurrency,
+                                            fiatRate: txHistoricalRate,
+                                            asText: true
+                                          })
+                                          return (
+                                            <span
+                                              className={`tx-change-row ${changeClass}`}
+                                              key={`${txKey}-change-${changeIndex}`}
+                                            >
+                                              <span>
+                                                {amountFormat(change, {
+                                                  icon: !isLpAmount(change),
+                                                  withIssuer: true,
+                                                  bold: true,
+                                                  precise: 'nice',
+                                                  showPlus: true
+                                                })}
+                                              </span>
+                                              {!!changeFiat && <span className="tx-change-fiat">{changeFiat}</span>}
+                                            </span>
+                                          )
+                                        })}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {hasDexOfferRates && (
+                                    <div className="detail-row tx-detail-change-row">
+                                      <span>Rates:</span>
+                                      <span className="tx-detail-change-list">
+                                        {!!selectedCurrency && (
+                                          <span className="tx-change-row">
+                                            <span suppressHydrationWarning>
+                                              {txHistoricalRate
+                                                ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
+                                                : '-'}
+                                            </span>
+                                          </span>
+                                        )}
+                                        <span className="tx-change-row">
+                                          <span>
+                                            {amountFormat(
+                                              {
+                                                currency: changes[0].currency,
+                                                issuer: changes[0].issuer,
+                                                value: 1
+                                              },
+                                              { icon: true }
+                                            )}{' '}
+                                            ={' '}
+                                            {amountFormat(
+                                              {
+                                                ...changes[1],
+                                                value: dexOfferRateAtoB
+                                              },
+                                              { icon: true, precise: 'nice' }
+                                            )}
+                                          </span>
+                                        </span>
+                                        <span className="tx-change-row">
+                                          <span>
+                                            {amountFormat(
+                                              {
+                                                currency: changes[1].currency,
+                                                issuer: changes[1].issuer,
+                                                value: 1
+                                              },
+                                              { icon: true }
+                                            )}{' '}
+                                            ={' '}
+                                            {amountFormat(
+                                              {
+                                                ...changes[0],
+                                                value: dexOfferRateBtoA
+                                              },
+                                              { icon: true, precise: 'nice' }
+                                            )}
+                                          </span>
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {nftTokenId && (
+                                    <div className="detail-row">
+                                      <span>NFT:</span>
+                                      <span className="copy-inline id-inline">
+                                        <span className="address-text ellipsis-text" title={nftTokenId}>
+                                          {nftTokenId}
+                                        </span>
+                                        <Link
+                                          href={`/nft/${nftTokenId}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">NFT page</span>
+                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={nftTokenId} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {nftOfferIds.length > 0 && (
+                                    <div className="detail-row">
+                                      <span>{nftOfferIds.length > 1 ? 'Offer IDs:' : 'Offer ID:'}</span>
+                                      <span className="tx-offer-id-list">
+                                        {nftOfferIds.map((offerId, offerIndex) => (
+                                          <span className="copy-inline id-inline" key={`${txKey}-offer-${offerIndex}`}>
+                                            <span className="address-text ellipsis-text" title={offerId}>
+                                              {offerId}
+                                            </span>
+                                            <Link
+                                              href={`/nft-offer/${offerId}`}
+                                              className="inline-link-icon tooltip"
+                                              onClick={(event) => event.stopPropagation()}
+                                            >
+                                              <LinkIcon />
+                                              <span className="tooltiptext no-brake">Offer page</span>
+                                            </Link>
+                                            <span onClick={(event) => event.stopPropagation()}>
+                                              <CopyButton text={offerId} />
+                                            </span>
+                                          </span>
+                                        ))}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {isNftOfferTx && hasNftOfferAmount && (
+                                    <div className="detail-row">
+                                      <span>Offer amount:</span>
+                                      <span className="tx-detail-offer-amount">
+                                        <span className="tx-inline-change">{nftOfferAmountExpandedText}</span>
+                                        {!!nftOfferAmountFiatExpandedText && (
+                                          <span className="tx-change-fiat">{nftOfferAmountFiatExpandedText}</span>
+                                        )}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  <div className="detail-row">
+                                    <span>Hash:</span>
+                                    <span className="copy-inline">
+                                      {txHash ? (
+                                        <Link
+                                          href={`/transaction/${txHash}`}
+                                          className="tx-link"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          {shortHash}
+                                        </Link>
+                                      ) : (
+                                        '-'
+                                      )}
+                                      {!!txHash && (
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={txHash} />
+                                        </span>
                                       )}
                                     </span>
-                                  </span>
-                                  <span className="tx-change-row">
-                                    <span>
-                                      {amountFormat(
-                                        {
-                                          currency: changes[1].currency,
-                                          issuer: changes[1].issuer,
-                                          value: 1
-                                        },
-                                        { icon: true }
-                                      )}{' '}
-                                      ={' '}
-                                      {amountFormat(
-                                        {
-                                          ...changes[0],
-                                          value: dexOfferRateBtoA
-                                        },
-                                        { icon: true, precise: 'nice' }
-                                      )}
-                                    </span>
-                                  </span>
-                                </span>
-                              </div>
-                            )}
-
-                            {nftTokenId && (
-                              <div className="detail-row">
-                                <span>NFT:</span>
-                                <span className="copy-inline id-inline">
-                                  <span className="address-text ellipsis-text" title={nftTokenId}>
-                                    {nftTokenId}
-                                  </span>
-                                  <Link
-                                    href={`/nft/${nftTokenId}`}
-                                    className="inline-link-icon tooltip"
-                                    onClick={(event) => event.stopPropagation()}
-                                  >
-                                    <LinkIcon />
-                                    <span className="tooltiptext no-brake">NFT page</span>
-                                  </Link>
-                                  <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={nftTokenId} />
-                                  </span>
-                                </span>
-                              </div>
-                            )}
-
-                            {nftOfferIds.length > 0 && (
-                              <div className="detail-row">
-                                <span>{nftOfferIds.length > 1 ? 'Offer IDs:' : 'Offer ID:'}</span>
-                                <span className="tx-offer-id-list">
-                                  {nftOfferIds.map((offerId, offerIndex) => (
-                                    <span className="copy-inline id-inline" key={`${txKey}-offer-${offerIndex}`}>
-                                      <span className="address-text ellipsis-text" title={offerId}>
-                                        {offerId}
-                                      </span>
-                                      <Link
-                                        href={`/nft-offer/${offerId}`}
-                                        className="inline-link-icon tooltip"
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
-                                        <LinkIcon />
-                                        <span className="tooltiptext no-brake">Offer page</span>
-                                      </Link>
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CopyButton text={offerId} />
-                                      </span>
-                                    </span>
-                                  ))}
-                                </span>
-                              </div>
-                            )}
-
-                            {isNftOfferTx && hasNftOfferAmount && (
-                              <div className="detail-row">
-                                <span>Offer amount:</span>
-                                <span className="tx-detail-offer-amount">
-                                  <span className="tx-inline-change">{nftOfferAmountExpandedText}</span>
-                                  {!!nftOfferAmountFiatExpandedText && (
-                                    <span className="tx-change-fiat">{nftOfferAmountFiatExpandedText}</span>
-                                  )}
-                                </span>
-                              </div>
-                            )}
-
-                            <div className="detail-row">
-                              <span>Hash:</span>
-                              <span className="copy-inline">
-                                {txHash ? (
-                                  <Link
-                                    href={`/transaction/${txHash}`}
-                                    className="tx-link"
-                                    onClick={(event) => event.stopPropagation()}
-                                  >
-                                    {shortHash}
-                                  </Link>
-                                ) : (
-                                  '-'
-                                )}
-                                {!!txHash && (
-                                  <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={txHash} />
-                                  </span>
-                                )}
-                              </span>
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          </div>
-                        )}
+                          )
+                        })}
                       </div>
-                    )
-                  })}
-                </div>
-              )}
-
-              {!transactionsLoading && !transactionsError && transactionsMarker && (
-                <button className="tx-load-more" onClick={loadMoreTransactions} disabled={transactionsLoadingMore}>
-                  {transactionsLoadingMore ? 'Loading...' : 'Load more'}
-                </button>
-              )}
+                    </InfiniteScrolling>
+                  </>
+                )}
             </div>
           </CollapsibleColumn>
 
