@@ -4928,7 +4928,9 @@ export default function Account2({
           color: var(--text);
           font-size: 13px;
           padding: 7px 8px;
-          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+          transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
           box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-link) 25%, transparent);
         }
 
