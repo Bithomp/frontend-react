@@ -4922,12 +4922,23 @@ export default function Account2({
 
         .tx-filter-field select,
         .tx-filter-field input {
-          border: 1px solid var(--border-color);
+          border: 1px solid color-mix(in srgb, var(--accent-link) 60%, var(--border-color) 40%);
           border-radius: 6px;
           background: var(--background-table);
           color: var(--text);
           font-size: 13px;
           padding: 7px 8px;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-link) 25%, transparent);
+        }
+
+        .tx-filter-field select:focus,
+        .tx-filter-field select:focus-visible,
+        .tx-filter-field input:focus,
+        .tx-filter-field input:focus-visible {
+          border-color: var(--accent-link);
+          box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-link) 40%, transparent);
+          outline: none;
         }
 
         .tx-filter-field-wide {
