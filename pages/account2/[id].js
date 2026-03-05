@@ -2719,13 +2719,28 @@ export default function Account2({
                         const txHistoricalRate = Number.isFinite(Number(txdata?.fiatRates?.[selectedCurrency]))
                           ? Number(txdata.fiatRates[selectedCurrency])
                           : null
+                        const txType = tx?.TransactionType || ''
+                        const isAmmDepositOrWithdraw = txType === 'AMMDeposit' || txType === 'AMMWithdraw'
+                        const isLpAmount = (amount) => {
+                          if (!amount || typeof amount !== 'object') return false
+                          if (amount?.currencyDetails?.type === 'lp_token') return true
+                          const amountCurrency = amount?.currency
+                          return typeof amountCurrency === 'string' && amountCurrency.substring(0, 2) === '03'
+                        }
 
                         const changes = addressBalanceChanges(txdata, data?.address) || []
                         const firstChange = changes?.[0]
                         const positiveChange = changes.find((change) => Number(change?.value || 0) > 0)
-                        const collapsedPrimaryChange = changes.length > 2 ? positiveChange || firstChange : firstChange
-                        const collapsedSecondaryChange = changes.length === 2 ? changes[1] : null
-                        const collapsedMoreCount = changes.length > 2 ? changes.length - 1 : 0
+                        let collapsedPrimaryChange =
+                          changes.length > 2 ? positiveChange || firstChange : firstChange
+                        let collapsedSecondaryChange = changes.length === 2 ? changes[1] : null
+                        let collapsedMoreCount = changes.length > 2 ? changes.length - 1 : 0
+                        if (isAmmDepositOrWithdraw) {
+                          const ammTokenChanges = changes.filter((change) => !isLpAmount(change))
+                          collapsedPrimaryChange = ammTokenChanges[0] || null
+                          collapsedSecondaryChange = ammTokenChanges[1] || null
+                          collapsedMoreCount = 0
+                        }
                         const primaryChangeValue = Number(collapsedPrimaryChange?.value || 0)
                         const primaryChangeClass =
                           primaryChangeValue > 0 ? 'green' : primaryChangeValue < 0 ? 'red' : ''
@@ -2753,12 +2768,6 @@ export default function Account2({
                         const isMissingOrZeroTxAmount = typeof txAmountRaw === 'undefined' || txAmountRaw === '0'
                         const shouldShowExpandedRate =
                           changes.length > 0 || hasObjectTxAmount || !isMissingOrZeroTxAmount
-                        const isLpAmount = (amount) => {
-                          if (!amount || typeof amount !== 'object') return false
-                          if (amount?.currencyDetails?.type === 'lp_token') return true
-                          const amountCurrency = amount?.currency
-                          return typeof amountCurrency === 'string' && amountCurrency.substring(0, 2) === '03'
-                        }
 
                         const sourceAddress = txdata?.specification?.source?.address
                         const destinationAddress = txdata?.specification?.destination?.address
@@ -2808,7 +2817,6 @@ export default function Account2({
                             : nftBuyerAddress === data?.address
                               ? 'buyer'
                               : null
-                        const txType = tx?.TransactionType || ''
                         const txTypeLower = txType.toLowerCase()
                         const isAmmTx = txType.startsWith('AMM')
                         const isDexOfferTx = txType === 'OfferCreate' || txType === 'OfferCancel'
@@ -3959,7 +3967,7 @@ export default function Account2({
                                             <span>
                                               {amountFormat(change, {
                                                 icon: !isLpAmount(change),
-                                                withIssuer: true,
+                                                withIssuer: !(isAmmDepositOrWithdraw && isLpAmount(change)),
                                                 bold: true,
                                                 precise: 'nice',
                                                 showPlus: true
