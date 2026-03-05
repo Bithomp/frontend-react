@@ -230,6 +230,7 @@ export default function Account2({
   const [showAirdropsDetails, setShowAirdropsDetails] = useState(false)
   const [showAllTokens, setShowAllTokens] = useState(false)
   const [tokenTab, setTokenTab] = useState('all')
+  const [tokenDisplayLimit, setTokenDisplayLimit] = useState(TOKEN_PREVIEW_LIMIT)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(
     ledgerTimestampQuery ? new Date(ledgerTimestampQuery) : new Date()
   )
@@ -466,8 +467,10 @@ export default function Account2({
   ].sort((a, b) => b.value - a.value)
   const shouldShowTokenTabs = lpTokensCount > 0 && issuedTokensCount > 0
   const activeTokenList = tokenTab === 'lp' ? lpTokenList : tokenTab === 'tokens' ? standardTokenList : tokens
-  const visibleTokens = showAllTokens ? activeTokenList : activeTokenList.slice(0, TOKEN_PREVIEW_LIMIT)
-  const hiddenTokensCount = Math.max(activeTokenList.length - TOKEN_PREVIEW_LIMIT, 0)
+  const visibleTokens = showAllTokens
+    ? activeTokenList
+    : activeTokenList.slice(0, Math.max(tokenDisplayLimit, TOKEN_PREVIEW_LIMIT))
+  const hiddenTokensCount = Math.max(activeTokenList.length - visibleTokens.length, 0)
   const tokenTabDisplayNameMap = {
     all: 'tokens',
     tokens: 'tokens',
@@ -602,6 +605,7 @@ export default function Account2({
 
   useEffect(() => {
     setShowAllTokens(false)
+    setTokenDisplayLimit(TOKEN_PREVIEW_LIMIT)
     setExpandedToken(null)
     setExpandedTransactionKey(null)
     setShowNftDataDetails(false)
@@ -612,6 +616,7 @@ export default function Account2({
 
   useEffect(() => {
     setShowAllTokens(false)
+    setTokenDisplayLimit(TOKEN_PREVIEW_LIMIT)
     setExpandedToken(null)
   }, [tokenTab])
 
@@ -2396,23 +2401,39 @@ export default function Account2({
                 )
               })}
 
-              {activeTokenList.length > TOKEN_PREVIEW_LIMIT && (
-                <button
-                  type="button"
-                  className="asset-compact-toggle"
-                  onClick={() => {
-                    setShowAllTokens((prev) => {
-                      if (prev) {
-                        setExpandedToken(null)
-                      }
-                      return !prev
-                    })
-                  }}
+              {(hiddenTokensCount > 0 || visibleTokens.length > TOKEN_PREVIEW_LIMIT) && (
+                <div
+                  className={`asset-compact-actions ${hiddenTokensCount > 0 && visibleTokens.length > TOKEN_PREVIEW_LIMIT ? 'dual' : 'single'}`}
                 >
-                  {showAllTokens
-                    ? `Show fewer ${activeTokenTabLabel}`
-                    : `Show all ${activeTokenTabLabel} (${hiddenTokensCount} more)`}
-                </button>
+                  {hiddenTokensCount > 0 && (
+                    <button
+                      type="button"
+                      className="asset-compact-toggle"
+                      onClick={() => {
+                        const nextLimit = Math.min(activeTokenList.length, visibleTokens.length + 10)
+                        if (nextLimit >= activeTokenList.length) {
+                          setShowAllTokens(true)
+                        }
+                        setTokenDisplayLimit(nextLimit)
+                      }}
+                    >
+                      Show {Math.min(10, hiddenTokensCount)} more {activeTokenTabLabel}
+                    </button>
+                  )}
+                  {visibleTokens.length > TOKEN_PREVIEW_LIMIT && (
+                    <button
+                      type="button"
+                      className="asset-compact-toggle"
+                      onClick={() => {
+                        setShowAllTokens(false)
+                        setTokenDisplayLimit(TOKEN_PREVIEW_LIMIT)
+                        setExpandedToken(null)
+                      }}
+                    >
+                      Show fewer {activeTokenTabLabel}
+                    </button>
+                  )}
+                </div>
               )}
 
               {hasAnyNftSectionData && (
@@ -6090,6 +6111,22 @@ export default function Account2({
           margin-top: 12px;
           padding-top: 12px;
           border-top: 1px solid var(--border-color);
+        }
+
+        .asset-compact-actions {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+          margin-top: 0;
+          width: 100%;
+        }
+
+        .asset-compact-actions.single .asset-compact-toggle {
+          flex: 1 1 100%;
+        }
+
+        .asset-compact-actions.dual .asset-compact-toggle {
+          flex: 1 1 calc(50% - 4px);
         }
 
         .token-tab-row {
