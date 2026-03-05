@@ -2434,7 +2434,7 @@ export default function Account2({
                           setTokenDisplayLimit(activeTokenList.length)
                         }}
                       >
-                        Show all {activeTokenTabLabel} ({activeTokenList.length})
+                        Show all {activeTokenTabLabel} (+{hiddenTokensCount} more)
                       </button>
                     )}
                     {showFewerButton && (
@@ -2695,9 +2695,7 @@ export default function Account2({
                   </span>
                 </p>
               )}
-              {!transactionsLoading && transactionsError && (
-                <p className="red tx-status-text">{transactionsError}</p>
-              )}
+              {!transactionsLoading && transactionsError && <p className="red tx-status-text">{transactionsError}</p>}
 
               {!transactionsLoading &&
                 !transactionsError &&
