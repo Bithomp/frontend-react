@@ -179,6 +179,7 @@ import {
   nativeCurrencyToFiat,
   niceNumber,
   niceCurrency,
+  shortHash,
   shortNiceNumber,
   serviceUsernameOrAddressText,
   timeFromNow,
@@ -2575,6 +2576,7 @@ export default function Account2({
                               typeof nftId === 'string' && nftId.length > 12
                                 ? `${nftId.slice(0, 6)}...${nftId.slice(-6)}`
                                 : nftId
+                            const shortTokenId = shortHash(nftId)
                             const nftDisplayData = nft?.nftoken || nft
                             const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortNftId
                             const soldAt = nft?.acceptedAt || nft?.soldAt
@@ -2663,7 +2665,15 @@ export default function Account2({
                                     <div className="detail-row">
                                       <span>Token ID:</span>
                                       <span className="copy-inline">
-                                        <span>{nftId}</span>
+                                        <span>{shortTokenId}</span>
+                                        <Link
+                                          href={`/nft/${nftId}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">NFT page</span>
+                                        </Link>
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <CopyButton text={nftId} />
                                         </span>
@@ -2689,15 +2699,6 @@ export default function Account2({
                                         <span>{updatedExact}</span>
                                       </div>
                                     )}
-                                    <div className="issuer-settings-actions">
-                                      <Link
-                                        href={`/nft/${nftId}`}
-                                        className="section-link"
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
-                                        View NFT
-                                      </Link>
-                                    </div>
                                   </div>
                                 )}
                               </div>
