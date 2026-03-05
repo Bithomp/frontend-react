@@ -2688,19 +2688,21 @@ export default function Account2({
               )}
 
               {transactionsLoading && (
-                <p className="grey">
+                <p className="grey tx-status-text">
                   <span className="tx-inline-load">
                     <span>Loading transactions</span>
                     <span className="waiting inline" aria-hidden="true"></span>
                   </span>
                 </p>
               )}
-              {!transactionsLoading && transactionsError && <p className="red">{transactionsError}</p>}
+              {!transactionsLoading && transactionsError && (
+                <p className="red tx-status-text">{transactionsError}</p>
+              )}
 
               {!transactionsLoading &&
                 !transactionsError &&
                 recentTransactions.length === 0 &&
-                !transactionsSearchPaused && <p className="grey">No transactions found.</p>}
+                !transactionsSearchPaused && <p className="grey tx-status-text">No transactions found.</p>}
 
               {!transactionsLoading &&
                 !transactionsError &&
@@ -2731,8 +2733,7 @@ export default function Account2({
                         const changes = addressBalanceChanges(txdata, data?.address) || []
                         const firstChange = changes?.[0]
                         const positiveChange = changes.find((change) => Number(change?.value || 0) > 0)
-                        let collapsedPrimaryChange =
-                          changes.length > 2 ? positiveChange || firstChange : firstChange
+                        let collapsedPrimaryChange = changes.length > 2 ? positiveChange || firstChange : firstChange
                         let collapsedSecondaryChange = changes.length === 2 ? changes[1] : null
                         let collapsedMoreCount = changes.length > 2 ? changes.length - 1 : 0
                         if (isAmmDepositOrWithdraw) {
@@ -3051,7 +3052,8 @@ export default function Account2({
                           const changes = []
 
                           if (tx?.MessageKey !== undefined) {
-                            changes.push(`Message key: ${accountSetSpec?.messageKey || 'removed'}`)
+                            const messageKeyStatus = accountSetSpec?.messageKey ? 'set' : 'removed'
+                            changes.push(`Message key: ${messageKeyStatus}`)
                           }
                           if (tx?.Domain !== undefined) {
                             changes.push(`Domain: ${accountSetSpec?.domain || 'removed'}`)
@@ -3717,9 +3719,16 @@ export default function Account2({
                                     {tx?.MessageKey !== undefined && (
                                       <div className="detail-row">
                                         <span>Message key:</span>
-                                        <span className={accountSetSpec?.messageKey ? '' : 'orange'}>
-                                          {accountSetSpec?.messageKey || 'removed'}
-                                        </span>
+                                        {accountSetSpec?.messageKey ? (
+                                          <span className="copy-inline">
+                                            <span className="address-text">{accountSetSpec.messageKey}</span>
+                                            <span onClick={(event) => event.stopPropagation()}>
+                                              <CopyButton text={accountSetSpec.messageKey} />
+                                            </span>
+                                          </span>
+                                        ) : (
+                                          <span className="orange">removed</span>
+                                        )}
                                       </div>
                                     )}
 
@@ -5287,6 +5296,11 @@ export default function Account2({
           margin-left: 6px;
         }
 
+        .tx-status-text {
+          text-align: center;
+          margin: 16px 0;
+        }
+
         .tx-mobile-actions {
           display: flex;
           flex-direction: column;
@@ -5375,9 +5389,10 @@ export default function Account2({
 
         .tx-collapsed-top {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           gap: 8px;
           min-width: 0;
+          flex-wrap: wrap;
         }
 
         .tx-type-main {
@@ -5385,9 +5400,8 @@ export default function Account2({
           font-weight: 600;
           color: var(--text);
           min-width: 0;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+          white-space: normal;
+          word-break: break-word;
         }
 
         .tx-amm-token-meta {
@@ -5457,7 +5471,8 @@ export default function Account2({
           color: var(--text-secondary);
           overflow: hidden;
           text-overflow: ellipsis;
-          white-space: nowrap;
+          white-space: normal;
+          word-break: break-word;
         }
 
         .tx-trustset-inline :global(table) {
