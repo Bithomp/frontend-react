@@ -229,6 +229,7 @@ export default function Account2({
   const [showTimeMachine, setShowTimeMachine] = useState(false)
   const [showAirdropsDetails, setShowAirdropsDetails] = useState(false)
   const [showAllTokens, setShowAllTokens] = useState(false)
+  const [tokenTab, setTokenTab] = useState('all')
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(
     ledgerTimestampQuery ? new Date(ledgerTimestampQuery) : new Date()
   )
@@ -443,18 +444,17 @@ export default function Account2({
     userOrServiceName({ service: accountDisplayService, username: accountDisplayUsername }) || 'Account'
 
   const nativeAvailableFiatValue = ((balanceList?.available?.native || 0) / 1000000) * (pageFiatRate || 0)
-  const lpTokensCount = tokens.filter((token) => token.Balance?.currency?.substring(0, 2) === '03').length
-  const issuedTokensCount = tokens.filter((token) => token.Balance?.currency?.substring(0, 2) !== '03').length
+  const isLpTrustlineToken = (token) => token?.Balance?.currency?.substring(0, 2) === '03'
+  const lpTokenList = tokens.filter((token) => isLpTrustlineToken(token))
+  const standardTokenList = tokens.filter((token) => !isLpTrustlineToken(token))
+  const lpTokensCount = lpTokenList.length
+  const issuedTokensCount = standardTokenList.length
   const hasNonNativeTokenAssets = lpTokensCount > 0 || issuedTokensCount > 0
-  const lpTokensFiatValue = tokens.reduce((sum, token) => {
-    const isLpToken = token.Balance?.currency?.substring(0, 2) === '03'
-    if (!isLpToken) return sum
+  const lpTokensFiatValue = lpTokenList.reduce((sum, token) => {
     const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
     return sum + (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
   }, 0)
-  const issuedTokensFiatValue = tokens.reduce((sum, token) => {
-    const isLpToken = token.Balance?.currency?.substring(0, 2) === '03'
-    if (isLpToken) return sum
+  const issuedTokensFiatValue = standardTokenList.reduce((sum, token) => {
     const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
     return sum + (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
   }, 0)
@@ -464,8 +464,16 @@ export default function Account2({
     ...(lpTokensCount > 0 ? [{ label: `LP tokens (${lpTokensCount})`, value: lpTokensFiatValue }] : []),
     ...(issuedTokensCount > 0 ? [{ label: `Issued tokens (${issuedTokensCount})`, value: issuedTokensFiatValue }] : [])
   ].sort((a, b) => b.value - a.value)
-  const visibleTokens = showAllTokens ? tokens : tokens.slice(0, TOKEN_PREVIEW_LIMIT)
-  const hiddenTokensCount = Math.max(tokens.length - TOKEN_PREVIEW_LIMIT, 0)
+  const shouldShowTokenTabs = lpTokensCount > 0 && issuedTokensCount > 0
+  const activeTokenList = tokenTab === 'lp' ? lpTokenList : tokenTab === 'tokens' ? standardTokenList : tokens
+  const visibleTokens = showAllTokens ? activeTokenList : activeTokenList.slice(0, TOKEN_PREVIEW_LIMIT)
+  const hiddenTokensCount = Math.max(activeTokenList.length - TOKEN_PREVIEW_LIMIT, 0)
+  const tokenTabDisplayNameMap = {
+    all: 'tokens',
+    tokens: 'tokens',
+    lp: 'LP tokens'
+  }
+  const activeTokenTabLabel = tokenTabDisplayNameMap[tokenTab] || 'tokens'
   const ownedNftCount = Math.max(ownedNftIds.length, ownedNfts.length)
   const hasOwnedNfts = ownedNftCount > 0
   const hasSoldNfts = soldNfts.length > 0
@@ -599,7 +607,21 @@ export default function Account2({
     setShowNftDataDetails(false)
     setNftTab('owned')
     setNftOffersTab('received')
+    setTokenTab('all')
   }, [data?.address, effectiveLedgerTimestamp])
+
+  useEffect(() => {
+    setShowAllTokens(false)
+    setExpandedToken(null)
+  }, [tokenTab])
+
+  useEffect(() => {
+    if (tokenTab === 'lp' && lpTokensCount === 0) {
+      setTokenTab('all')
+    } else if (tokenTab === 'tokens' && issuedTokensCount === 0) {
+      setTokenTab('all')
+    }
+  }, [tokenTab, lpTokensCount, issuedTokensCount])
 
   useEffect(() => {
     const availableTabs = []
@@ -2023,6 +2045,38 @@ export default function Account2({
                 </div>
               )}
 
+              {hasNonNativeTokenAssets && shouldShowTokenTabs && (
+                <div className="token-tab-row">
+                  <div className="token-tab-switch">
+                    <button
+                      type="button"
+                      className={`token-tab-btn ${tokenTab === 'all' ? 'active' : ''}`}
+                      onClick={() => setTokenTab('all')}
+                    >
+                      All
+                    </button>
+                    {issuedTokensCount > 0 && (
+                      <button
+                        type="button"
+                        className={`token-tab-btn ${tokenTab === 'tokens' ? 'active' : ''}`}
+                        onClick={() => setTokenTab('tokens')}
+                      >
+                        Tokens
+                      </button>
+                    )}
+                    {lpTokensCount > 0 && (
+                      <button
+                        type="button"
+                        className={`token-tab-btn ${tokenTab === 'lp' ? 'active' : ''}`}
+                        onClick={() => setTokenTab('lp')}
+                      >
+                        LP Tokens
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Tokens */}
               {visibleTokens.map((token, index) => {
                 const issuer = token.HighLimit?.issuer === data?.address ? token.LowLimit : token.HighLimit
@@ -2030,7 +2084,7 @@ export default function Account2({
                 const fiatValue = (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
                 const tokenUniqueKey = `${token.Balance?.currency || 'token'}-${issuer?.issuer || 'issuer'}-${index}`
                 const isExpanded = expandedToken === tokenUniqueKey
-                const isLpToken = token.Balance?.currency?.substring(0, 2) === '03'
+                const isLpToken = isLpTrustlineToken(token)
 
                 return (
                   <div
@@ -2342,7 +2396,7 @@ export default function Account2({
                 )
               })}
 
-              {tokens.length > TOKEN_PREVIEW_LIMIT && (
+              {activeTokenList.length > TOKEN_PREVIEW_LIMIT && (
                 <button
                   type="button"
                   className="asset-compact-toggle"
@@ -2355,7 +2409,9 @@ export default function Account2({
                     })
                   }}
                 >
-                  {showAllTokens ? 'Show fewer tokens' : `Show all tokens (${hiddenTokensCount} more)`}
+                  {showAllTokens
+                    ? `Show fewer ${activeTokenTabLabel}`
+                    : `Show all ${activeTokenTabLabel} (${hiddenTokensCount} more)`}
                 </button>
               )}
 
@@ -6034,6 +6090,47 @@ export default function Account2({
           margin-top: 12px;
           padding-top: 12px;
           border-top: 1px solid var(--border-color);
+        }
+
+        .token-tab-row {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          margin: 6px 0 4px;
+          min-height: 24px;
+        }
+
+        .token-tab-switch {
+          display: inline-flex;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+
+        .token-tab-btn {
+          border: 0;
+          border-bottom: 2px solid transparent;
+          border-radius: 0;
+          background: transparent;
+          color: var(--text-secondary);
+          font-size: 13px;
+          font-weight: 600;
+          padding: 2px 0;
+          line-height: 1.2;
+          cursor: pointer;
+          min-width: 0;
+          appearance: none;
+          -webkit-appearance: none;
+        }
+
+        .token-tab-btn.active {
+          color: var(--accent-link);
+          border-bottom-color: var(--accent-link);
+          box-shadow: none;
+        }
+
+        .token-tab-btn:hover:not(.active) {
+          color: var(--text);
+          border-bottom-color: color-mix(in srgb, var(--text) 35%, transparent);
         }
 
         .asset-compact-toggle {
