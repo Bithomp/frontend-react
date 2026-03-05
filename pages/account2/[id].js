@@ -27,6 +27,7 @@ const TOKEN_PREVIEW_LIMIT = 5
 const NFT_INITIAL_LIMIT = 5
 const NFT_LOAD_MORE_STEP = 10
 const NFT_FETCH_LIMIT = 50
+const NFT_OFFERS_PREVIEW_LIMIT = 5
 
 const setBalancesFunction = (networkInfo, data) => {
   if (!data?.ledgerInfo || !networkInfo || data.ledgerInfo.balance === undefined) return null
@@ -254,6 +255,7 @@ export default function Account2({
   const [ownedNftIds, setOwnedNftIds] = useState([])
   const [nftDisplayLimit, setNftDisplayLimit] = useState(NFT_INITIAL_LIMIT)
   const [expandedNftCardKey, setExpandedNftCardKey] = useState(null)
+  const [expandedNftOfferKey, setExpandedNftOfferKey] = useState(null)
   const [nftTab, setNftTab] = useState('owned')
   const [nftOffersTab, setNftOffersTab] = useState('received')
   const [createdNftOffers, setCreatedNftOffers] = useState([])
@@ -559,12 +561,32 @@ export default function Account2({
       : nftOffersTab === 'created'
         ? createdNftOffers
         : ownedNftOffers
+  const nftOffersTabCountMap = {
+    received: receivedPrivateNftOffers.length,
+    created: createdNftOffers.length,
+    owned: ownedNftOffers.length
+  }
+  const nftOffersTabExactCountMap = {
+    received: receivedPrivateNftOffers.length < NFT_OFFERS_PREVIEW_LIMIT,
+    created: createdNftOffers.length < NFT_OFFERS_PREVIEW_LIMIT,
+    owned: ownedNftOffers.length < NFT_OFFERS_PREVIEW_LIMIT
+  }
+  const getNftOffersTabCountLabel = (tab) => {
+    const count = nftOffersTabCountMap[tab]
+    if (typeof count !== 'number') return null
+    if (count === 0) return '0'
+    return nftOffersTabExactCountMap[tab] ? `${count}` : `${count}+`
+  }
+  const nftOffersTabCountLabels = {
+    received: getNftOffersTabCountLabel('received'),
+    created: getNftOffersTabCountLabel('created'),
+    owned: getNftOffersTabCountLabel('owned')
+  }
   const hasReceivedPrivateNftOffers = receivedPrivateNftOffers.length > 0
   const hasCreatedNftOffers = createdNftOffers.length > 0
   const hasOwnedNftOffers = ownedNftOffers.length > 0
   const hasAnyNftOffersData = hasReceivedPrivateNftOffers || hasCreatedNftOffers || hasOwnedNftOffers
   const activeNftOffersCount = activeNftOffers.length
-  const activeNftOffersCountLabel = activeNftOffersCount === 5 ? '5+' : activeNftOffersCount
   const activeNftOffersLoading = nftOffersLoading[nftOffersTab]
   const activeNftOffersError = nftOffersError[nftOffersTab]
   const activeNftOffersTitle =
@@ -656,6 +678,7 @@ export default function Account2({
     setTokenTab('all')
     setNftDisplayLimit(NFT_INITIAL_LIMIT)
     setExpandedNftCardKey(null)
+    setExpandedNftOfferKey(null)
   }, [data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
@@ -698,6 +721,10 @@ export default function Account2({
   useEffect(() => {
     setExpandedNftCardKey(null)
   }, [nftTab])
+
+  useEffect(() => {
+    setExpandedNftOfferKey(null)
+  }, [nftOffersTab])
 
   useEffect(() => {
     const availableOfferTabs = []
@@ -989,7 +1016,7 @@ export default function Account2({
       try {
         const listParam = list ? `&list=${list}` : ''
         const response = await axios.get(
-          `v2/nft-offers/${data.address}?nftoken=true&offersValidate=true&limit=5${listParam}`
+          `v2/nft-offers/${data.address}?nftoken=true&offersValidate=true&limit=${NFT_OFFERS_PREVIEW_LIMIT}${listParam}`
         )
 
         const offers = Array.isArray(response?.data?.nftOffers)
@@ -4969,9 +4996,7 @@ export default function Account2({
               {hasAnyNftOffersData && (
                 <>
                   <div className="section-header-row nft-section-header-row">
-                    <div className="section-title nft-section-title">
-                      NFT offers <span className="nft-title-count">{activeNftOffersCountLabel}</span>
-                    </div>
+                    <div className="section-title nft-section-title">NFT offers</div>
                     {data?.address && activeNftOffersCount > 0 && (
                       <Link className="section-link" href={activeNftOffersViewAllHref}>
                         View all
@@ -4987,7 +5012,7 @@ export default function Account2({
                           className={`nft-tab-btn ${nftOffersTab === 'received' ? 'active' : ''}`}
                           onClick={() => setNftOffersTab('received')}
                         >
-                          Private
+                          Private{nftOffersTabCountLabels.received ? ` (${nftOffersTabCountLabels.received})` : ''}
                         </button>
                       )}
                       {hasCreatedNftOffers && (
@@ -4996,7 +5021,7 @@ export default function Account2({
                           className={`nft-tab-btn ${nftOffersTab === 'created' ? 'active' : ''}`}
                           onClick={() => setNftOffersTab('created')}
                         >
-                          Created
+                          Created{nftOffersTabCountLabels.created ? ` (${nftOffersTabCountLabels.created})` : ''}
                         </button>
                       )}
                       {hasOwnedNftOffers && (
@@ -5005,72 +5030,222 @@ export default function Account2({
                           className={`nft-tab-btn ${nftOffersTab === 'owned' ? 'active' : ''}`}
                           onClick={() => setNftOffersTab('owned')}
                         >
-                          For owned
+                          For owned{nftOffersTabCountLabels.owned ? ` (${nftOffersTabCountLabels.owned})` : ''}
                         </button>
                       )}
                     </div>
                   </div>
 
-                  <div className="asset-item nft-offers-item">
-                    <div className="asset-details nft-offers-details nft-details-flat-top">
-                      {activeNftOffersLoading ? (
-                        <div className="asset-fiat">Loading NFT offers...</div>
-                      ) : activeNftOffersError ? (
-                        <div className="asset-fiat red">{activeNftOffersError}</div>
-                      ) : activeNftOffersCount > 0 ? (
-                        <div className="nft-offers-list">
-                          {activeNftOffers.map((offer, index) => {
-                            const nftId =
-                              offer?.nftoken?.nftokenID ||
-                              offer?.nftoken?.NFTokenID ||
-                              offer?.nftokenID ||
-                              offer?.NFTokenID
-                            const offerType = offer?.flags?.sellToken ? 'Sell' : 'Buy'
-                            const offerAmount = offer?.amount
-                              ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
-                              : '-'
-                            const offerPlaced = offer?.createdAt ? timeFromNow(offer.createdAt, i18n) : '-'
-                            const offerNftName =
-                              nftName(offer?.nftoken || offer, { maxLength: 24 }) || (nftId ? nftId : 'NFT')
+                  <div className="nft-section-content nft-offers-content">
+                    {activeNftOffersLoading ? (
+                      <div className="asset-fiat">Loading NFT offers...</div>
+                    ) : activeNftOffersError ? (
+                      <div className="asset-fiat red">{activeNftOffersError}</div>
+                    ) : activeNftOffersCount > 0 ? (
+                      <div className="cards-list">
+                        {activeNftOffers.map((offer, index) => {
+                          const nftId =
+                            offer?.nftoken?.nftokenID ||
+                            offer?.nftoken?.NFTokenID ||
+                            offer?.nftokenID ||
+                            offer?.NFTokenID
+                          if (!nftId) return null
 
-                            return (
-                              <div className="nft-offer-card" key={`${offer?.offerIndex || 'offer'}-${index}`}>
-                                <div className="nft-offer-thumb">
-                                  {nftId ? (
-                                    <Link href={`/nft/${nftId}`} className="nft-offer-nft-link">
+                          const cardKey = `${nftOffersTab}-${offer?.offerIndex || nftId}-${index}`
+                          const isExpanded = expandedNftOfferKey === cardKey
+                          const toggleCard = () => setExpandedNftOfferKey(isExpanded ? null : cardKey)
+                          const handleKeyToggle = (event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault()
+                              toggleCard()
+                            }
+                          }
+                          const nftDisplayData = offer?.nftoken || offer
+                          const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortHash(nftId)
+                          const shortTokenId = shortHash(nftId)
+                          const offerType = offer?.flags?.sellToken ? 'Sell' : 'Buy'
+                          const offerAmountText = offer?.amount
+                            ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
+                            : null
+                          const offerAmountFiat =
+                            offer?.amount && selectedCurrency
+                              ? convertedAmount(offer, selectedCurrency.toLowerCase(), { short: true })
+                              : null
+                          const offerPlacedRelative = offer?.createdAt ? timeFromNow(offer.createdAt, i18n) : null
+                          const offerPlacedExact = offer?.createdAt ? fullDateAndTime(offer.createdAt) : null
+                          const offerIndex = offer?.offerIndex
+                          const shortOfferId = offerIndex ? shortHash(offerIndex) : null
+                          const ownerAddress = offer?.owner || offer?.account
+                          const destinationAddress = offer?.destination
+                          const ownerInlineData = ownerAddress
+                            ? { owner: ownerAddress, ownerDetails: offer?.ownerDetails || offer?.accountDetails }
+                            : null
+                          const destinationInlineData = destinationAddress
+                            ? { destination: destinationAddress, destinationDetails: offer?.destinationDetails }
+                            : null
+                          const expirationRelative = offer?.expiration
+                            ? timeFromNow(offer.expiration, i18n, 'ripple')
+                            : null
+                          const expirationExact = offer?.expiration
+                            ? fullDateAndTime(offer.expiration, 'expiration')
+                            : null
+                          const secondaryLine = offerAmountText ? (
+                            <>
+                              {offerType} · {offerAmountText}
+                            </>
+                          ) : (
+                            offerType
+                          )
+
+                          return (
+                            <div
+                              key={cardKey}
+                              className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
+                              role="button"
+                              tabIndex={0}
+                              aria-expanded={isExpanded}
+                              onClick={toggleCard}
+                              onKeyDown={handleKeyToggle}
+                            >
+                              <div className="asset-main">
+                                <div className="asset-logo">
+                                  <div className="nft-asset-info">
+                                    <Link
+                                      href={`/nft/${nftId}`}
+                                      className="nft-asset-thumb"
+                                      onClick={(event) => event.stopPropagation()}
+                                    >
                                       <NftImage
-                                        nft={offer?.nftoken || offer}
-                                        style={{ width: 36, height: 36, borderRadius: '6px', margin: 0 }}
+                                        nft={nftDisplayData}
+                                        style={{ width: 40, height: 40, borderRadius: '6px', verticalAlign: 'middle' }}
                                       />
                                     </Link>
-                                  ) : (
-                                    <div className="nft-offer-thumb-fallback">NFT</div>
-                                  )}
+                                    <div className="nft-asset-text">
+                                      <div className="asset-summary-title" title={nftTitle}>
+                                        {nftTitle}
+                                      </div>
+                                      <div className="asset-fiat">{secondaryLine}</div>
+                                    </div>
+                                  </div>
                                 </div>
-
-                                <div className="nft-offer-main">
-                                  <span className="nft-offer-name">{offerNftName}</span>
-                                  <span className="nft-offer-meta">
-                                    {offerType} · {offerAmount}
-                                  </span>
-                                </div>
-
-                                <div className="nft-offer-side">
-                                  <span className="nft-offer-time">{offerPlaced}</span>
-                                  {offer?.offerIndex && (
-                                    <Link href={`/nft-offer/${offer.offerIndex}`} className="nft-offer-link">
-                                      Offer
-                                    </Link>
-                                  )}
+                                <div className="asset-value">
+                                  {offerPlacedRelative && <div className="asset-fiat">{offerPlacedRelative}</div>}
                                 </div>
                               </div>
-                            )
-                          })}
-                        </div>
-                      ) : (
-                        <div className="asset-fiat">{activeNftOffersTitle}</div>
-                      )}
-                    </div>
+                              {isExpanded && (
+                                <div className="asset-details">
+                                  <div className="detail-row">
+                                    <span>Token ID:</span>
+                                    <span className="copy-inline">
+                                      <span>{shortTokenId}</span>
+                                      <Link
+                                        href={`/nft/${nftId}`}
+                                        className="inline-link-icon tooltip"
+                                        onClick={(event) => event.stopPropagation()}
+                                      >
+                                        <LinkIcon />
+                                        <span className="tooltiptext no-brake">NFT page</span>
+                                      </Link>
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={nftId} />
+                                      </span>
+                                    </span>
+                                  </div>
+                                  {offerIndex && (
+                                    <div className="detail-row">
+                                      <span>Offer ID:</span>
+                                      <span className="copy-inline">
+                                        <span>{shortOfferId}</span>
+                                        <Link
+                                          href={`/nft-offer/${offerIndex}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Offer page</span>
+                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={offerIndex} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+                                  <div className="detail-row">
+                                    <span>Offer type:</span>
+                                    <span>{offerType}</span>
+                                  </div>
+                                  {offerAmountText && (
+                                    <div className="detail-row">
+                                      <span>Amount:</span>
+                                      <span>
+                                        {offerAmountText}
+                                        {offerAmountFiat && (
+                                          <span className="fiat-line" suppressHydrationWarning>
+                                            {' '}
+                                            ≈{offerAmountFiat}
+                                          </span>
+                                        )}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {offerPlacedExact && (
+                                    <div className="detail-row">
+                                      <span>Placed:</span>
+                                      <span>{offerPlacedExact}</span>
+                                    </div>
+                                  )}
+                                  {expirationRelative && (
+                                    <div className="detail-row">
+                                      <span>Expires:</span>
+                                      <span>
+                                        {expirationRelative}
+                                        {expirationExact && <span className="fiat-line"> ({expirationExact})</span>}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {ownerAddress && (
+                                    <div className="detail-row">
+                                      <span>From:</span>
+                                      <span className="copy-inline">
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <AddressWithIconInline
+                                            data={ownerInlineData}
+                                            name="owner"
+                                            options={{ short: 6 }}
+                                          />
+                                        </span>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={ownerAddress} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+                                  {destinationAddress && (
+                                    <div className="detail-row">
+                                      <span>To:</span>
+                                      <span className="copy-inline">
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <AddressWithIconInline
+                                            data={destinationInlineData}
+                                            name="destination"
+                                            options={{ short: 6 }}
+                                          />
+                                        </span>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={destinationAddress} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    ) : (
+                      <div className="asset-fiat">{activeNftOffersTitle}</div>
+                    )}
                   </div>
                 </>
               )}
@@ -5134,7 +5309,7 @@ export default function Account2({
 
                           return (
                             <div
-                              className="nft-offer-card object-row-card paychannel-row-card"
+                              className="object-row-card paychannel-row-card"
                               key={`${channel?.index || 'paychannel'}-${index}`}
                             >
                               <div className="paychannel-head">
@@ -6406,6 +6581,10 @@ export default function Account2({
           background: transparent;
         }
 
+        .nft-offers-content {
+          margin-top: 6px;
+        }
+
         .nft-asset-info {
           display: flex;
           align-items: center;
@@ -6606,7 +6785,6 @@ export default function Account2({
           color: var(--text-secondary);
         }
 
-        .nft-offers-details,
         .object-list-details {
           margin-top: 0;
           padding-top: 0;
@@ -6615,13 +6793,11 @@ export default function Account2({
           border-top: 0;
         }
 
-        .nft-offers-item,
         .object-list-item {
           cursor: default;
           padding: 0;
         }
 
-        .nft-offers-item:hover,
         .object-list-item:hover {
           transform: none;
         }
@@ -6639,7 +6815,6 @@ export default function Account2({
 
         .checks-list,
         .escrow-list,
-        .nft-offers-list,
         .object-list {
           display: flex;
           flex-direction: column;
@@ -6649,17 +6824,6 @@ export default function Account2({
           background: transparent;
           border-radius: 0;
           margin-top: 6px;
-        }
-
-        .nft-offer-card {
-          display: grid;
-          grid-template-columns: 36px minmax(0, 1fr) auto;
-          gap: 10px;
-          align-items: center;
-          padding: 8px;
-          border: 1px solid var(--border-color);
-          border-radius: 8px;
-          background: var(--background-table);
         }
 
         .object-row-card {
@@ -6673,23 +6837,6 @@ export default function Account2({
 
         .object-row-card.expanded {
           border-color: var(--accent-link);
-        }
-
-        .object-row-card .nft-offer-name,
-        .object-row-card .nft-offer-meta {
-          white-space: normal;
-          overflow: visible;
-          text-overflow: clip;
-          line-height: 1.25;
-        }
-
-        .object-row-card .nft-offer-meta {
-          color: var(--text);
-          font-weight: 600;
-        }
-
-        .object-row-card .nft-offer-side {
-          min-width: max-content;
         }
 
         .paychannel-row-card {
@@ -6778,123 +6925,6 @@ export default function Account2({
           overflow: hidden;
         }
 
-        .check-row-card .asset-amount,
-        .escrow-collapsed-amount .asset-amount {
-          font-size: 14px;
-          line-height: 1.15;
-        }
-
-        .check-row-card .asset-value {
-          text-align: right;
-        }
-
-        .escrow-card .asset-main {
-          align-items: flex-start;
-        }
-
-        .escrow-collapsed-main {
-          align-items: flex-start;
-          position: relative;
-          min-height: var(--asset-card-body-min-height);
-        }
-
-        .escrow-collapsed-logo {
-          min-width: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 3px;
-          padding-right: 118px;
-        }
-
-        .escrow-collapsed-top {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          min-width: 0;
-          padding-right: 0;
-        }
-
-        .escrow-type-main {
-          font-size: 14px;
-          font-weight: 600;
-          color: var(--text);
-          line-height: 1.2;
-          min-width: 0;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        .escrow-time-top {
-          position: absolute;
-          right: 0;
-          top: 0;
-          color: var(--text-secondary);
-          font-size: 11px;
-          line-height: 1;
-          white-space: nowrap;
-        }
-
-        .escrow-collapsed-amount {
-          text-align: right;
-        }
-
-        .nft-offer-thumb {
-          width: 36px;
-          height: 36px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-          border-radius: 6px;
-        }
-
-        .nft-offer-thumb-fallback {
-          width: 36px;
-          height: 36px;
-          border-radius: 6px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          background: var(--background-input);
-          border: 1px solid var(--border-color);
-          color: var(--text-secondary);
-          font-size: 10px;
-          font-weight: 600;
-          letter-spacing: 0.4px;
-        }
-
-        .nft-offer-main {
-          min-width: 0;
-          display: inline-flex;
-          flex-direction: column;
-          gap: 2px;
-        }
-
-        .nft-offer-name {
-          font-size: 12px;
-          color: var(--text);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .nft-offer-meta {
-          font-size: 11px;
-          color: var(--text-secondary);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .nft-offer-side {
-          display: inline-flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 3px;
-          min-width: 72px;
-        }
-
         .check-actions {
           margin-top: 4px;
           display: flex;
@@ -6934,53 +6964,9 @@ export default function Account2({
           cursor: not-allowed;
         }
 
-        .nft-offer-time {
-          font-size: 11px;
-          color: var(--text-secondary);
-          white-space: nowrap;
-        }
-
-        .nft-offer-link {
-          font-size: 12px;
-          color: var(--accent-link);
-          text-decoration: none;
-          line-height: 1.1;
-        }
-
-        .nft-offer-link:hover {
-          text-decoration: underline;
-        }
-
-        .nft-offer-nft-link {
-          display: inline-flex;
-          line-height: 0;
-        }
-
-        .nft-offer-nft-link :global(img) {
-          display: block;
-        }
-
         @media (max-width: 560px) {
           .nft-details {
             min-height: 376px;
-          }
-
-          .nft-offer-card {
-            grid-template-columns: 32px minmax(0, 1fr);
-          }
-
-          .nft-offer-thumb,
-          .nft-offer-thumb-fallback {
-            width: 32px;
-            height: 32px;
-          }
-
-          .nft-offer-side {
-            grid-column: 1 / -1;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            min-width: 0;
           }
 
           .object-row-card {
