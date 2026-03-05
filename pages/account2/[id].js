@@ -378,9 +378,18 @@ export default function Account2({
     !!data?.ledgerInfo?.nftokenMinter ||
     !!data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer ||
     !!data?.ledgerInfo?.flags?.uriTokenIssuer
-  const hasAirdropsData = !!data?.flare?.spark
-  const flareClaimNode = data?.flare?.spark ? <>{fullNiceNumber(data.flare.spark * 0.15)} FLR</> : '-'
-  const songbirdClaimNode = data?.flare?.songbird ? <>{fullNiceNumber(data.flare.songbird)} SGB</> : '-'
+  const hasFlareAddress = !!data?.flare?.address
+  const hasAirdropsData = hasFlareAddress
+  const flareClaimNode = hasFlareAddress ? (
+    <>
+      {fullNiceNumber(data.flare.spark * 0.15)} <span className="no-brake">FLR</span>
+    </>
+  ) : null
+  const songbirdClaimNode = hasFlareAddress ? (
+    <>
+      {fullNiceNumber(data.flare.songbird)} <span className="no-brake">SGB</span>
+    </>
+  ) : null
 
   const achievements = []
 
@@ -464,13 +473,7 @@ export default function Account2({
   const hasBurnedNfts = burnedNfts.length > 0
   const hasAnyNftSectionData = hasOwnedNfts || hasSoldNfts || hasMintedNfts || hasBurnedNfts
   const activeNftList =
-    nftTab === 'owned'
-      ? ownedNfts
-      : nftTab === 'sold'
-        ? soldNfts
-        : nftTab === 'minted'
-          ? mintedNfts
-          : burnedNfts
+    nftTab === 'owned' ? ownedNfts : nftTab === 'sold' ? soldNfts : nftTab === 'minted' ? mintedNfts : burnedNfts
   const activeNftCount = activeNftList.length
   const activeNftPreview = activeNftList.slice(0, NFT_PREVIEW_LIMIT)
   const activeNftLoading =
@@ -1800,12 +1803,10 @@ export default function Account2({
                         <div className="detail-row issuer-detail-row">
                           <span>Address:</span>
                           <span className="copy-inline airdrop-address-wrap">
-                            <span className="address-text">{data?.flare?.address || '-'}</span>
-                            {!!data?.flare?.address && (
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={data.flare.address} />
-                              </span>
-                            )}
+                            <span className="address-text">{data.flare.address}</span>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.flare.address} />
+                            </span>
                           </span>
                         </div>
 
@@ -1813,19 +1814,17 @@ export default function Account2({
                           <span>Flare claim:</span>
                           <span className="copy-inline airdrop-claim-wrap">
                             <span>{flareClaimNode}</span>
-                            {!!data?.flare?.address && (
-                              <a
-                                href={`https://flarescan.com/address/${data.flare.address}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="airdrop-link-btn"
-                                onClick={(event) => event.stopPropagation()}
-                                aria-label="Open Flare address"
-                                title="Open Flare address"
-                              >
-                                <LinkIcon />
-                              </a>
-                            )}
+                            <a
+                              href={`https://flarescan.com/address/${data.flare.address}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="airdrop-link-btn"
+                              onClick={(event) => event.stopPropagation()}
+                              aria-label="Open Flare address"
+                              title="Open Flare address"
+                            >
+                              <LinkIcon />
+                            </a>
                           </span>
                         </div>
 
@@ -1833,19 +1832,17 @@ export default function Account2({
                           <span>Songbird claim:</span>
                           <span className="copy-inline airdrop-claim-wrap">
                             <span>{songbirdClaimNode}</span>
-                            {!!data?.flare?.address && (
-                              <a
-                                href={`https://songbird.flarescan.com/address/${data.flare.address}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="airdrop-link-btn"
-                                onClick={(event) => event.stopPropagation()}
-                                aria-label="Open Songbird address"
-                                title="Open Songbird address"
-                              >
-                                <LinkIcon />
-                              </a>
-                            )}
+                            <a
+                              href={`https://songbird.flarescan.com/address/${data.flare.address}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="airdrop-link-btn"
+                              onClick={(event) => event.stopPropagation()}
+                              aria-label="Open Songbird address"
+                              title="Open Songbird address"
+                            >
+                              <LinkIcon />
+                            </a>
                           </span>
                         </div>
                       </div>
