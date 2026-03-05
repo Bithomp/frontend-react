@@ -1162,7 +1162,7 @@ export default function Account2({
 
   const transactionsLoadMoreMessage = transactionsLoadingMore ? (
     <span className="tx-inline-load">
-      <span>Loading more transactions...</span>
+      <span>Loading more transactions</span>
       <span className="waiting inline" aria-hidden="true"></span>
     </span>
   ) : (
@@ -2575,7 +2575,7 @@ export default function Account2({
           <CollapsibleColumn>
             <div className="transactions-section">
               <div className="section-header-row">
-                <span className="section-title">Recent transactions</span>
+                <span className="section-title">Transactions</span>
                 <div className="tx-header-actions">
                   <button
                     className={`tx-filter-toggle ${showTxFilters ? 'active' : ''}`}
@@ -2687,13 +2687,20 @@ export default function Account2({
                 </div>
               )}
 
-              {transactionsLoading && <p className="grey">Loading recent transactions...</p>}
+              {transactionsLoading && (
+                <p className="grey">
+                  <span className="tx-inline-load">
+                    <span>Loading transactions</span>
+                    <span className="waiting inline" aria-hidden="true"></span>
+                  </span>
+                </p>
+              )}
               {!transactionsLoading && transactionsError && <p className="red">{transactionsError}</p>}
 
               {!transactionsLoading &&
                 !transactionsError &&
                 recentTransactions.length === 0 &&
-                !transactionsSearchPaused && <p className="grey">No recent transactions found.</p>}
+                !transactionsSearchPaused && <p className="grey">No transactions found.</p>}
 
               {!transactionsLoading &&
                 !transactionsError &&
@@ -4144,7 +4151,7 @@ export default function Account2({
                               >
                                 {transactionsLoadingMore ? (
                                   <>
-                                    Loading...
+                                    Loading
                                     <span className="waiting inline" aria-hidden="true"></span>
                                   </>
                                 ) : (
