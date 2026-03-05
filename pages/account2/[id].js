@@ -458,33 +458,21 @@ export default function Account2({
   const visibleTokens = showAllTokens ? tokens : tokens.slice(0, TOKEN_PREVIEW_LIMIT)
   const hiddenTokensCount = Math.max(tokens.length - TOKEN_PREVIEW_LIMIT, 0)
   const ownedNftCount = Math.max(ownedNftIds.length, ownedNfts.length)
-  const ownedNftPreview =
-    ownedNfts.length > 0
-      ? ownedNfts.slice(0, NFT_PREVIEW_LIMIT)
-      : ownedNftIds.slice(0, NFT_PREVIEW_LIMIT).map((nftokenID) => ({ nftokenID }))
-  const soldNftCount = soldNfts.length
-  const soldNftPreview = soldNfts.slice(0, NFT_PREVIEW_LIMIT)
-  const mintedNftsCount = Number(data?.ledgerInfo?.mintedNFTokens || 0)
-  const burnedNftsCount = Number(data?.ledgerInfo?.burnedNFTokens || 0)
   const hasOwnedNfts = ownedNftCount > 0
-  const hasSoldNfts = soldNftCount > 0
-  const hasMintedNfts = mintedNftsCount > 0
-  const hasBurnedNfts = burnedNftsCount > 0
+  const hasSoldNfts = soldNfts.length > 0
+  const hasMintedNfts = mintedNfts.length > 0
+  const hasBurnedNfts = burnedNfts.length > 0
   const hasAnyNftSectionData = hasOwnedNfts || hasSoldNfts || hasMintedNfts || hasBurnedNfts
-  const activeNftCountByTab = {
-    owned: ownedNftCount,
-    sold: soldNftCount,
-    ...(mintedNftsCount > 0 ? { minted: mintedNftsCount } : {}),
-    ...(burnedNftsCount > 0 ? { burned: burnedNftsCount } : {})
-  }
-  const activeNftPreviewByTab = {
-    owned: ownedNftPreview,
-    sold: soldNftPreview,
-    ...(mintedNftsCount > 0 ? { minted: mintedNfts.slice(0, NFT_PREVIEW_LIMIT) } : {}),
-    ...(burnedNftsCount > 0 ? { burned: burnedNfts.slice(0, NFT_PREVIEW_LIMIT) } : {})
-  }
-  const activeNftCount = activeNftCountByTab[nftTab] ?? 0
-  const activeNftPreview = activeNftPreviewByTab[nftTab] || []
+  const activeNftList =
+    nftTab === 'owned'
+      ? ownedNfts
+      : nftTab === 'sold'
+        ? soldNfts
+        : nftTab === 'minted'
+          ? mintedNfts
+          : burnedNfts
+  const activeNftCount = activeNftList.length
+  const activeNftPreview = activeNftList.slice(0, NFT_PREVIEW_LIMIT)
   const activeNftLoading =
     nftTab === 'sold'
       ? soldNftsLoading
@@ -612,16 +600,16 @@ export default function Account2({
 
   useEffect(() => {
     const availableTabs = []
-    if (hasOwnedNfts) {
+    if (ownedNfts.length > 0) {
       availableTabs.push('owned')
     }
-    if (hasSoldNfts) {
+    if (soldNfts.length > 0) {
       availableTabs.push('sold')
     }
-    if (hasMintedNfts) {
+    if (mintedNfts.length > 0) {
       availableTabs.push('minted')
     }
-    if (hasBurnedNfts) {
+    if (burnedNfts.length > 0) {
       availableTabs.push('burned')
     }
 
@@ -631,7 +619,7 @@ export default function Account2({
     if (!availableTabs.includes(nftTab)) {
       setNftTab(availableTabs[0])
     }
-  }, [nftTab, hasOwnedNfts, hasSoldNfts, hasMintedNfts, hasBurnedNfts])
+  }, [nftTab, ownedNfts.length, soldNfts.length, mintedNfts.length, burnedNfts.length])
 
   useEffect(() => {
     const availableOfferTabs = []
@@ -1140,6 +1128,15 @@ export default function Account2({
     ) : (
       transactionsError
     )
+
+  const transactionsLoadMoreMessage = transactionsLoadingMore ? (
+    <span className="tx-inline-load">
+      <span>Loading more transactions...</span>
+      <span className="waiting inline" aria-hidden="true"></span>
+    </span>
+  ) : (
+    'Scroll down to load more transactions'
+  )
 
   const applyTransactionFilters = () => {
     setTransactionsMarker(null)
@@ -3090,7 +3087,7 @@ export default function Account2({
                               return isBrokeredNftAccept ? 'Bought NFT by' : `Bought NFT ${nonBrokerDirectionSuffix}`
 
                             if (!collapsedPrimaryChange && !collapsedSecondaryChange) {
-                              if (nftDestination?.address === data?.address) return 'NFT transfer from'
+                              if (nftDestination?.address === data?.address) return 'Received NFT offer from'
                               if (nftSource?.address === data?.address) return 'NFT transfer to'
                               return 'NFT transfer by'
                             }
@@ -3109,8 +3106,11 @@ export default function Account2({
 
                             if (isIncomingOffer) {
                               const amountAsNumber = Number(tx?.Amount || 0)
-                              if (direction === 'Sell' && Number.isFinite(amountAsNumber) && amountAsNumber === 0) {
-                                return 'NFT transfer from'
+                              if (direction === 'Sell') {
+                                if (Number.isFinite(amountAsNumber) && amountAsNumber === 0) {
+                                  return 'Received NFT offer from'
+                                }
+                                return 'Received offer to buy NFT from'
                               }
                               return `Received NFT ${direction} offer from`
                             }
@@ -3129,15 +3129,129 @@ export default function Account2({
                           return null
                         })()
                         const isNftTransferLabel =
-                          typeof nftOfferLegacyLabel === 'string' && nftOfferLegacyLabel.startsWith('NFT transfer')
+                          typeof nftOfferLegacyLabel === 'string' &&
+                          (nftOfferLegacyLabel.startsWith('NFT transfer') ||
+                            nftOfferLegacyLabel.startsWith('Received NFT offer'))
                         const isFreeNftTransfer =
                           isNftTransferLabel && (isZeroNftOfferAmount || nftOfferAmountRaw === '0')
                         const showFreeNftBadge = isFreeNftTransfer || isFreeNftAccept
+                        const showFreeNftBadgeGreen =
+                          showFreeNftBadge &&
+                          typeof nftOfferLegacyLabel === 'string' &&
+                          nftOfferLegacyLabel.startsWith('Received NFT from')
+                        const isIncomingSellOffer =
+                          isCreateNftOfferTx && tx?.Account !== data?.address && txdata?.specification?.flags?.sellToken
+                        const incomingSellOfferAmount =
+                          isIncomingSellOffer && hasNftOfferAmount ? toSignedDexAmount(nftOfferAmountRaw, -1) : null
+                        const incomingSellOfferFiat = incomingSellOfferAmount
+                          ? nativeCurrencyToFiat({
+                              amount: incomingSellOfferAmount,
+                              selectedCurrency,
+                              fiatRate: txHistoricalRate,
+                              asText: true
+                            })
+                          : ''
+                        const isOutgoingSellOffer =
+                          isCreateNftOfferTx && tx?.Account === data?.address && txdata?.specification?.flags?.sellToken
+                        const outgoingSellOfferAmount =
+                          isOutgoingSellOffer && hasNftOfferAmount ? toSignedDexAmount(nftOfferAmountRaw, 1) : null
+                        const outgoingSellOfferFiat = outgoingSellOfferAmount
+                          ? nativeCurrencyToFiat({
+                              amount: outgoingSellOfferAmount,
+                              selectedCurrency,
+                              fiatRate: txHistoricalRate,
+                              asText: true
+                            })
+                          : ''
+                        const isNftMintTx = tx?.TransactionType === 'NFTokenMint'
+                        const nftMintDestinationAddress = tx?.Destination || destinationAddress
+                        const nftMintAmountRaw =
+                          tx?.Amount ??
+                          txdata?.specification?.amount ??
+                          txdata?.specification?.destination?.amount ??
+                          null
+                        const nftMintAmountNumeric = (() => {
+                          if (nftMintAmountRaw === null || typeof nftMintAmountRaw === 'undefined') return null
+                          if (typeof nftMintAmountRaw === 'object') {
+                            const value = Number(
+                              nftMintAmountRaw?.value ?? nftMintAmountRaw?.amount ?? nftMintAmountRaw?.drops
+                            )
+                            return Number.isFinite(value) ? value : null
+                          }
+                          const value = Number(nftMintAmountRaw)
+                          return Number.isFinite(value) ? value : null
+                        })()
+                        const nftMintSpecialLabel =
+                          isNftMintTx && nftMintDestinationAddress
+                            ? nftMintAmountNumeric === 0
+                              ? 'NFT Mint with Free offer to'
+                              : 'NFT Mint with Sell Offer for'
+                            : null
+                        const showNftMintSellOfferAmount =
+                          nftMintSpecialLabel === 'NFT Mint with Sell Offer for' &&
+                          nftMintAmountRaw !== null &&
+                          typeof nftMintAmountRaw !== 'undefined'
+                        const nftMintSellOfferAmount = showNftMintSellOfferAmount
+                          ? toSignedDexAmount(nftMintAmountRaw, 1)
+                          : null
+                        const nftMintSellOfferFiat = nftMintSellOfferAmount
+                          ? nativeCurrencyToFiat({
+                              amount: nftMintSellOfferAmount,
+                              selectedCurrency,
+                              fiatRate: txHistoricalRate,
+                              asText: true
+                            })
+                          : ''
+                        const createNftAmountDisplay = (amount, fiatText) => {
+                          if (amount === null || typeof amount === 'undefined') return null
+                          return {
+                            collapsedNode: (
+                              <span className="tx-inline-change-item">
+                                <span className="tx-inline-change orange">
+                                  {amountFormat(amount, {
+                                    icon: true,
+                                    short: true,
+                                    maxFractionDigits: 2,
+                                    showPlus: true
+                                  })}
+                                </span>
+                                {!!fiatText && <span className="tx-change-fiat">{fiatText}</span>}
+                              </span>
+                            ),
+                            expandedText: amountFormat(amount, {
+                              icon: true,
+                              withIssuer: true,
+                              precise: 'nice',
+                              showPlus: true
+                            }),
+                            expandedFiat: fiatText
+                          }
+                        }
+                        const incomingSellOfferDisplay =
+                          !showFreeNftBadge && incomingSellOfferAmount
+                            ? createNftAmountDisplay(incomingSellOfferAmount, incomingSellOfferFiat)
+                            : null
+                        const outgoingSellOfferDisplay =
+                          !showFreeNftBadge && outgoingSellOfferAmount
+                            ? createNftAmountDisplay(outgoingSellOfferAmount, outgoingSellOfferFiat)
+                            : null
+                        const nftMintSellOfferDisplay =
+                          showNftMintSellOfferAmount && nftMintSellOfferAmount
+                            ? createNftAmountDisplay(nftMintSellOfferAmount, nftMintSellOfferFiat)
+                            : null
+                        const nftOfferAmountDetailDisplay = incomingSellOfferDisplay || outgoingSellOfferDisplay
+                        const offerAmountExpandedText =
+                          nftOfferAmountDetailDisplay?.expandedText || nftOfferAmountExpandedText
+                        const offerAmountFiatDetailText =
+                          nftOfferAmountDetailDisplay?.expandedFiat || nftOfferAmountFiatExpandedText
+                        const nftCollapsedSpecialDisplay =
+                          incomingSellOfferDisplay || outgoingSellOfferDisplay || nftMintSellOfferDisplay
                         const txTypeShortLabel =
                           (isSelfPayment ? 'Swap' : null) ||
                           (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
                           dexOfferShortLabel ||
                           nftOfferLegacyLabel ||
+                          nftMintSpecialLabel ||
                           (txType === 'AccountSet'
                             ? 'Account settings update'
                             : txType === 'AMMDeposit'
@@ -3202,16 +3316,18 @@ export default function Account2({
                                   <span className="tx-type-main">
                                     {showBrokerInCollapsedTitle ? (
                                       <>
-                                        <span>Broker </span>
-                                        <AddressWithIconInline
-                                          data={{
-                                            address: brokerAddress,
-                                            addressDetails: txdata?.specification?.source?.addressDetails || {}
-                                          }}
-                                          name="address"
-                                          options={{ short: 6 }}
-                                        />
-                                        <span> {brokerCollapsedAction}</span>
+                                        <span className="tx-broker-inline">
+                                          <span>Broker </span>
+                                          <AddressWithIconInline
+                                            data={{
+                                              address: brokerAddress,
+                                              addressDetails: txdata?.specification?.source?.addressDetails || {}
+                                            }}
+                                            name="address"
+                                            options={{ short: 6 }}
+                                          />
+                                        </span>
+                                        <span className="tx-broker-action">{brokerCollapsedAction}</span>
                                       </>
                                     ) : (
                                       txTypeCollapsedLabel
@@ -3291,8 +3407,12 @@ export default function Account2({
                                   </>
                                 ) : hasAmmVoteTradingFee ? (
                                   <span className="tx-inline-status grey">Trading fee: {ammVoteTradingFeeText}</span>
+                                ) : nftCollapsedSpecialDisplay ? (
+                                  nftCollapsedSpecialDisplay.collapsedNode
                                 ) : showFreeNftBadge ? (
-                                  <span className="tx-offer-free orange">Free</span>
+                                  <span className={`tx-offer-free ${showFreeNftBadgeGreen ? 'green' : 'orange'}`}>
+                                    Free
+                                  </span>
                                 ) : (
                                   <>
                                     {collapsedPrimaryChange && (
@@ -3863,9 +3983,21 @@ export default function Account2({
                                   <div className="detail-row">
                                     <span>Offer amount:</span>
                                     <span className="tx-detail-offer-amount">
-                                      <span className="tx-inline-change">{nftOfferAmountExpandedText}</span>
-                                      {!!nftOfferAmountFiatExpandedText && (
-                                        <span className="tx-change-fiat">{nftOfferAmountFiatExpandedText}</span>
+                                      <span className="tx-inline-change">{offerAmountExpandedText}</span>
+                                      {!!offerAmountFiatDetailText && (
+                                        <span className="tx-change-fiat">{offerAmountFiatDetailText}</span>
+                                      )}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {!isNftOfferTx && nftMintSellOfferDisplay && (
+                                  <div className="detail-row">
+                                    <span>Offer amount:</span>
+                                    <span className="tx-detail-offer-amount">
+                                      <span className="tx-inline-change">{nftMintSellOfferDisplay.expandedText}</span>
+                                      {!!nftMintSellOfferDisplay.expandedFiat && (
+                                        <span className="tx-change-fiat">{nftMintSellOfferDisplay.expandedFiat}</span>
                                       )}
                                     </span>
                                   </div>
@@ -3918,12 +4050,18 @@ export default function Account2({
                                 onClick={loadMoreTransactions}
                                 disabled={transactionsLoadingMore || transactionsLoading}
                               >
-                                {transactionsLoadingMore ? 'Loading...' : 'Load more transactions'}
+                                {transactionsLoadingMore ? (
+                                  <>
+                                    Loading...
+                                    <span className="waiting inline" aria-hidden="true"></span>
+                                  </>
+                                ) : (
+                                  'Load more transactions'
+                                )}
                               </button>
                             ) : (
                               <span className="tx-mobile-end-label">End of list.</span>
                             )}
-                            {transactionsLoadingMore && <span className="waiting" aria-label="Loading"></span>}
                           </div>
                         )}
                       </>
@@ -3936,7 +4074,7 @@ export default function Account2({
                       loadMore={loadMoreTransactions}
                       hasMore={!!transactionsMarker && !transactionsSearchPaused}
                       errorMessage={transactionsEndMessage}
-                      loadMoreMessage={transactionsLoadingMore ? 'Loading...' : 'Scroll down to load more transactions'}
+                      loadMoreMessage={transactionsLoadMoreMessage}
                       subscriptionExpired={false}
                       sessionToken={true}
                     >
@@ -5022,6 +5160,26 @@ export default function Account2({
           color: var(--accent-link);
         }
 
+        .tx-broker-inline {
+          display: block;
+          line-height: 1.2;
+          margin-bottom: 2px;
+        }
+
+        .tx-broker-action {
+          display: block;
+        }
+
+        .tx-inline-load {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .tx-inline-load :global(.waiting.inline) {
+          margin-left: 6px;
+        }
+
         .tx-mobile-actions {
           display: flex;
           flex-direction: column;
@@ -5039,6 +5197,10 @@ export default function Account2({
           font-weight: 600;
           padding: 8px 16px;
           cursor: pointer;
+        }
+
+        .tx-mobile-load-btn :global(.waiting.inline) {
+          margin-left: 8px;
         }
 
         .tx-mobile-load-btn:disabled {
