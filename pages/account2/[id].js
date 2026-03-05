@@ -448,6 +448,7 @@ export default function Account2({
   const isLpTrustlineToken = (token) => token?.Balance?.currency?.substring(0, 2) === '03'
   const lpTokenList = tokens.filter((token) => isLpTrustlineToken(token))
   const standardTokenList = tokens.filter((token) => !isLpTrustlineToken(token))
+  const totalTokenCount = tokens.length
   const lpTokensCount = lpTokenList.length
   const issuedTokensCount = standardTokenList.length
   const hasNonNativeTokenAssets = lpTokensCount > 0 || issuedTokensCount > 0
@@ -2058,7 +2059,7 @@ export default function Account2({
                       className={`token-tab-btn ${tokenTab === 'all' ? 'active' : ''}`}
                       onClick={() => setTokenTab('all')}
                     >
-                      All
+                      All ({totalTokenCount})
                     </button>
                     {issuedTokensCount > 0 && (
                       <button
@@ -2066,7 +2067,7 @@ export default function Account2({
                         className={`token-tab-btn ${tokenTab === 'tokens' ? 'active' : ''}`}
                         onClick={() => setTokenTab('tokens')}
                       >
-                        Tokens
+                        Tokens ({issuedTokensCount})
                       </button>
                     )}
                     {lpTokensCount > 0 && (
@@ -2075,7 +2076,7 @@ export default function Account2({
                         className={`token-tab-btn ${tokenTab === 'lp' ? 'active' : ''}`}
                         onClick={() => setTokenTab('lp')}
                       >
-                        LP Tokens
+                        LP Tokens ({lpTokensCount})
                       </button>
                     )}
                   </div>
@@ -2401,40 +2402,57 @@ export default function Account2({
                 )
               })}
 
-              {(hiddenTokensCount > 0 || visibleTokens.length > TOKEN_PREVIEW_LIMIT) && (
-                <div
-                  className={`asset-compact-actions ${hiddenTokensCount > 0 && visibleTokens.length > TOKEN_PREVIEW_LIMIT ? 'dual' : 'single'}`}
-                >
-                  {hiddenTokensCount > 0 && (
-                    <button
-                      type="button"
-                      className="asset-compact-toggle"
-                      onClick={() => {
-                        const nextLimit = Math.min(activeTokenList.length, visibleTokens.length + 10)
-                        if (nextLimit >= activeTokenList.length) {
+              {(() => {
+                const showMoreStepButton = hiddenTokensCount > 0
+                const showAllButtonVisible = hiddenTokensCount > 10
+                const showFewerButton = visibleTokens.length > TOKEN_PREVIEW_LIMIT
+                if (!showMoreStepButton && !showAllButtonVisible && !showFewerButton) return null
+
+                return (
+                  <div className="asset-compact-actions">
+                    {showMoreStepButton && (
+                      <button
+                        type="button"
+                        className="asset-compact-toggle"
+                        onClick={() => {
+                          const nextLimit = Math.min(activeTokenList.length, visibleTokens.length + 10)
+                          if (nextLimit >= activeTokenList.length) {
+                            setShowAllTokens(true)
+                          }
+                          setTokenDisplayLimit(nextLimit)
+                        }}
+                      >
+                        Show {Math.min(10, hiddenTokensCount)} more {activeTokenTabLabel}
+                      </button>
+                    )}
+                    {showAllButtonVisible && (
+                      <button
+                        type="button"
+                        className="asset-compact-toggle"
+                        onClick={() => {
                           setShowAllTokens(true)
-                        }
-                        setTokenDisplayLimit(nextLimit)
-                      }}
-                    >
-                      Show {Math.min(10, hiddenTokensCount)} more {activeTokenTabLabel}
-                    </button>
-                  )}
-                  {visibleTokens.length > TOKEN_PREVIEW_LIMIT && (
-                    <button
-                      type="button"
-                      className="asset-compact-toggle"
-                      onClick={() => {
-                        setShowAllTokens(false)
-                        setTokenDisplayLimit(TOKEN_PREVIEW_LIMIT)
-                        setExpandedToken(null)
-                      }}
-                    >
-                      Show fewer {activeTokenTabLabel}
-                    </button>
-                  )}
-                </div>
-              )}
+                          setTokenDisplayLimit(activeTokenList.length)
+                        }}
+                      >
+                        Show all {activeTokenTabLabel} ({activeTokenList.length})
+                      </button>
+                    )}
+                    {showFewerButton && (
+                      <button
+                        type="button"
+                        className="asset-compact-toggle"
+                        onClick={() => {
+                          setShowAllTokens(false)
+                          setTokenDisplayLimit(TOKEN_PREVIEW_LIMIT)
+                          setExpandedToken(null)
+                        }}
+                      >
+                        Show fewer {activeTokenTabLabel}
+                      </button>
+                    )}
+                  </div>
+                )
+              })()}
 
               {hasAnyNftSectionData && (
                 <>
@@ -6115,18 +6133,14 @@ export default function Account2({
 
         .asset-compact-actions {
           display: flex;
+          flex-direction: column;
           gap: 8px;
-          flex-wrap: wrap;
           margin-top: 0;
           width: 100%;
         }
 
-        .asset-compact-actions.single .asset-compact-toggle {
-          flex: 1 1 100%;
-        }
-
-        .asset-compact-actions.dual .asset-compact-toggle {
-          flex: 1 1 calc(50% - 4px);
+        .asset-compact-actions .asset-compact-toggle {
+          width: 100%;
         }
 
         .token-tab-row {
