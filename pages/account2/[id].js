@@ -1557,31 +1557,26 @@ export default function Account2({
 
   const accountStatusNode = isBlackholed ? (
     <>
-      <div className="account-status orange bold">Blackholed</div>
-      {!!data?.ledgerInfo?.lastSubmittedAt && (
-        <div className="account-status-time">{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</div>
-      )}
+      <span className="orange bold">Blackholed</span>{' '}
+      {!!data?.ledgerInfo?.lastSubmittedAt && <span>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</span>}
     </>
   ) : data?.ledgerInfo?.activated ? (
     data?.ledgerInfo?.lastSubmittedAt ? (
       <>
-        <div className="account-status green">Active</div>
-        <div className="account-status-time">{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</div>
+        <span className="green">Active</span> <span>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</span>
       </>
     ) : (
       <>
-        <div className="account-status">Activated</div>
-        <div className="account-status-time">{data?.inception ? timeFromNow(data.inception, i18n) : ''}</div>
+        <span>Activated</span> <span>{data?.inception ? timeFromNow(data.inception, i18n) : ''}</span>
       </>
     )
   ) : isDeletedAccount ? (
-    <div className="account-status red bold">This account was deleted</div>
+    <span className="red bold">This account was deleted</span>
   ) : isNotActivatedAccount ? (
-    <div className="account-status orange">Not activated</div>
+    <span className="orange">Not activated</span>
   ) : (
     <>
-      <div className="account-status orange">Network error</div>
-      <div className="account-status-time">Please try again later.</div>
+      <span className="orange">Network error</span> <span>Please try again later.</span>
     </>
   )
 
@@ -1968,7 +1963,7 @@ export default function Account2({
                   </a>
                 </div>
               )}
-              {accountStatusNode}
+              <span style={{ fontSize: '13px' }}>{accountStatusNode}</span>
             </div>
 
             {/* Social icons */}
@@ -7537,7 +7532,7 @@ export default function Account2({
 
         .account-address-text {
           color: var(--text);
-          font-size: 14px;
+          font-size: 13px;
         }
 
         .account-address a {
