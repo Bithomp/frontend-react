@@ -2738,8 +2738,8 @@ export default function Account2({
                     <div className="asset-logo">
                       <span className="asset-summary-title">Total worth</span>
                     </div>
-                    <div className="asset-value">
-                      <div className="asset-fiat" suppressHydrationWarning>
+                    <div className="asset-value total-worth-value">
+                      <div className="asset-fiat total-worth-fiat" suppressHydrationWarning>
                         {shortNiceNumber(totalWorthFiatValue, 2, 1, selectedCurrency) ||
                           shortNiceNumber(0, 2, 1, selectedCurrency)}
                       </div>
@@ -7756,6 +7756,16 @@ export default function Account2({
           color: var(--text-secondary);
           line-height: 1.2;
           margin-top: 0;
+        }
+
+        .total-worth-fiat {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--text);
+        }
+
+        .total-worth-value {
+          align-self: center;
         }
 
         .tx-settings-card {
