@@ -8054,6 +8054,7 @@ export default function Account2({
           align-items: center;
           gap: 6px;
           min-width: 0;
+          max-width: 100%;
         }
 
         .nft-asset-thumb {
@@ -8080,6 +8081,7 @@ export default function Account2({
           gap: 0;
           min-width: 0;
           flex: 1;
+          overflow: hidden;
         }
 
         .nft-asset-text .asset-summary-title {
@@ -8091,6 +8093,8 @@ export default function Account2({
           overflow: hidden;
           text-overflow: ellipsis;
           word-break: break-word;
+          overflow-wrap: anywhere;
+          max-width: 100%;
         }
 
         .nft-asset-text .asset-fiat {
@@ -8500,6 +8504,11 @@ export default function Account2({
         }
 
         @media (max-width: 560px) {
+          .nft-asset-text .asset-summary-title {
+            -webkit-line-clamp: 1;
+            word-break: break-all;
+          }
+
           .nft-details {
             min-height: 376px;
           }
