@@ -232,12 +232,6 @@ import { MdMoneyOff, MdQrCode2 } from 'react-icons/md'
 import { TbPigMoney } from 'react-icons/tb'
 import { useQRCode } from 'next-qrcode'
 
-const CollapsibleColumn = ({ children }) => (
-  <div className="collapsible-column">
-    <div className="column-content">{children}</div>
-  </div>
-)
-
 const hookNames = {
   '805351CE26FB79DA00647CEFED502F7E15C2ACCCE254F11DEFEDDCE241F8E9CA': 'Claim Rewards'
 }
@@ -1899,911 +1893,376 @@ export default function Account2({
         {/* Grid Layout */}
         <div className="account2-grid">
           {/* Column 1: Information */}
-          <CollapsibleColumn>
-            <div className="info-section">
-              {/* Avatar */}
-              <div className="avatar-container">
-                <div className="avatar-wrapper">
-                  <div className="avatar-image-mask">
-                    <img src={avatarSrc(data.address)} alt="Avatar" className="account-avatar" />
-                  </div>
-                  {achievements.length > 0 && (
-                    <div className={`achievements-orbit achievements-count-${Math.min(achievements.length, 6)}`}>
-                      {achievements.slice(0, 6).map((achievement, index) => (
-                        <span
-                          className={`tooltip achievement-badge achievement-badge-${index + 1}`}
-                          key={achievement.key}
-                        >
-                          <img
-                            src={`/images/account/achivments/${achievement.image}`}
-                            alt={achievement.tooltip}
-                            className="achievement-image"
-                          />
-                          <span className="tooltiptext right no-brake">{achievement.tooltip}</span>
-                        </span>
-                      ))}
-                    </div>
-                  )}
+          <div className="info-section">
+            {/* Avatar */}
+            <div className="avatar-container">
+              <div className="avatar-wrapper">
+                <div className="avatar-image-mask">
+                  <img src={avatarSrc(data.address)} alt="Avatar" className="account-avatar" />
                 </div>
-              </div>
-
-              {/* Basic Info */}
-              <div className="account-info">
-                <h2 className="account-name">
-                  <span className="account-username">
-                    {accountDisplayName}
-                    {!!accountDisplayUsername && <CopyButton text={accountDisplayUsername} />}
-                  </span>
-                </h2>
-                <div className="account-address">
-                  <span className="account-address-text">{data.address}</span>
-                  <CopyButton text={data.address} />
-                  <button
-                    type="button"
-                    className={`account-qr-toggle ${showAddressQr ? 'active' : ''}`}
-                    onClick={() => setShowAddressQr((prev) => !prev)}
-                    aria-label="Toggle address QR code"
-                    title="Show QR code"
-                  >
-                    <span className="tooltip">
-                      <MdQrCode2 />
-                      <span className="tooltiptext no-brake">QR code</span>
-                    </span>
-                  </button>
-                </div>
-                {showAddressQr && (
-                  <div className="account-qr-panel">
-                    <Canvas
-                      text={data.address}
-                      options={{
-                        errorCorrectionLevel: 'M',
-                        margin: 2,
-                        scale: 4,
-                        width: 170,
-                        color: {
-                          dark: '#333333ff',
-                          light: '#ffffffff'
-                        }
-                      }}
-                    />
-                  </div>
-                )}
-                {data.service?.domain && (
-                  <div className="account-domain grey">
-                    <a href={`https://${data.service.domain}`} target="_blank" rel="noreferrer">
-                      {data.service.domain}
-                    </a>
-                  </div>
-                )}
-                {accountStatusNode}
-              </div>
-
-              {/* Social icons */}
-              {socialAccountsNode && <div className="social-icons-wrapper">{socialAccountsNode}</div>}
-
-              {didData && (
-                <div className="cards-list info-cards-list">
-                  <div
-                    className={`asset-item token-asset-item ${expandedDidCard ? 'expanded' : ''}`}
-                    onClick={() => setExpandedDidCard((prev) => !prev)}
-                  >
-                    <div className="asset-main">
-                      <div className="asset-logo">
-                        <div className="nft-asset-info">
-                          <div className="nft-asset-text">
-                            <div className="asset-summary-title">DID</div>
-                            <div className="asset-fiat">{didUrl || shortHash(didData?.didID || '')}</div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="asset-value">
-                        {didCollapsedAgo && (
-                          <div className="asset-fiat">
-                            {didCollapsedAgoLabel} {didCollapsedAgo}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {expandedDidCard && (
-                      <div className="asset-details">
-                        <div className="detail-row">
-                          <span>DID ID:</span>
-                          <span className="copy-inline">
-                            <span>{didData?.didID ? shortHash(didData.didID) : '-'}</span>
-                            {!!didData?.didID && (
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={didData.didID} />
-                              </span>
-                            )}
-                          </span>
-                        </div>
-
-                        {!!didCreatedFull && (
-                          <div className="detail-row">
-                            <span>Created:</span>
-                            <span>
-                              {didCreatedFull}
-                              {didData?.createdTxHash && (
-                                <>
-                                  {' '}
-                                  <Link
-                                    href={`/transaction/${didData.createdTxHash}`}
-                                    className="inline-link-icon tooltip"
-                                    onClick={(event) => event.stopPropagation()}
-                                  >
-                                    <LinkIcon />
-                                    <span className="tooltiptext no-brake">Created transaction</span>
-                                  </Link>
-                                </>
-                              )}
-                            </span>
-                          </div>
-                        )}
-
-                        {!!didUpdatedFull && didData?.updatedAt !== didData?.createdAt && (
-                          <div className="detail-row">
-                            <span>Updated:</span>
-                            <span>
-                              {didUpdatedFull}
-                              {didData?.updatedTxHash && (
-                                <>
-                                  {' '}
-                                  <Link
-                                    href={`/transaction/${didData.updatedTxHash}`}
-                                    className="inline-link-icon tooltip"
-                                    onClick={(event) => event.stopPropagation()}
-                                  >
-                                    <LinkIcon />
-                                    <span className="tooltiptext no-brake">Updated transaction</span>
-                                  </Link>
-                                </>
-                              )}
-                            </span>
-                          </div>
-                        )}
-
-                        {!!didUrl && (
-                          <div className="detail-row">
-                            <span>URL:</span>
-                            <span>
-                              {isUrlValid(didUrl) ? (
-                                <a
-                                  href={didUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(event) => event.stopPropagation()}
-                                >
-                                  {didUrl}
-                                </a>
-                              ) : (
-                                <span className="address-text">{didUrl}</span>
-                              )}
-                            </span>
-                          </div>
-                        )}
-
-                        {!!didDecodedData && (
-                          <div className="detail-row">
-                            <span>Data:</span>
-                            <span className="address-text">{didDecodedData}</span>
-                          </div>
-                        )}
-
-                        {!!didDecodedDocument && (
-                          <div className="detail-row">
-                            <span>DID Document:</span>
-                            <span className="address-text">{didDecodedDocument}</span>
-                          </div>
-                        )}
-
-                        {!!didMetadataText && (
-                          <div className="detail-row tx-fail-description-row">
-                            <span>Metadata:</span>
-                            <pre className="tx-fail-description-text">{didMetadataText}</pre>
-                          </div>
-                        )}
-
-                        {canManageDid && (
-                          <div className="check-actions" onClick={(event) => event.stopPropagation()}>
-                            <button
-                              type="button"
-                              className="check-action-btn redeem"
-                              onClick={() =>
-                                setSignRequest({
-                                  action: 'setDid',
-                                  request: {
-                                    TransactionType: 'DIDSet',
-                                    Account: data?.address
-                                  }
-                                })
-                              }
-                            >
-                              Update DID
-                            </button>
-                            <button
-                              type="button"
-                              className="check-action-btn cancel"
-                              onClick={() =>
-                                setSignRequest({
-                                  request: {
-                                    TransactionType: 'DIDDelete',
-                                    Account: data?.address
-                                  }
-                                })
-                              }
-                            >
-                              Delete DID
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {data?.inception && publicDataRows.length > 0 && (
-                <div className="public-data">
-                  <div className="info-rows">
-                    {publicDataRows.map((row) => (
-                      <div className="info-row" key={row.key}>
-                        <span className="label">{row.label}</span>
-                        <span className="value">{row.value}</span>
-                      </div>
+                {achievements.length > 0 && (
+                  <div className={`achievements-orbit achievements-count-${Math.min(achievements.length, 6)}`}>
+                    {achievements.slice(0, 6).map((achievement, index) => (
+                      <span
+                        className={`tooltip achievement-badge achievement-badge-${index + 1}`}
+                        key={achievement.key}
+                      >
+                        <img
+                          src={`/images/account/achivments/${achievement.image}`}
+                          alt={achievement.tooltip}
+                          className="achievement-image"
+                        />
+                        <span className="tooltiptext right no-brake">{achievement.tooltip}</span>
+                      </span>
                     ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="cards-list info-cards-list">
-                {hasAccountControlData && (
-                  <div className="time-machine-card account-control-card">
-                    <button
-                      type="button"
-                      className={`time-machine-toggle ${showAccountControlDetails ? 'active' : ''}`}
-                      onClick={() => setShowAccountControlDetails((prev) => !prev)}
-                    >
-                      Account control
-                      {accountControlCollapsedLabel && (
-                        <span className={`account-control-collapsed ${isBlackholed ? 'orange bold' : ''}`}>
-                          {' '}
-                          · {accountControlCollapsedLabel}
-                        </span>
-                      )}
-                    </button>
-
-                    {showAccountControlDetails && (
-                      <div className="time-machine-panel account-control-panel">
-                        {data?.ledgerInfo?.regularKey && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Regular key:</span>
-                            <span className="control-address-wrap">
-                              <span className="copy-inline">
-                                <AddressWithIconInline
-                                  data={data.ledgerInfo}
-                                  name="regularKey"
-                                  options={{ short: 6 }}
-                                />
-                                <span onClick={(event) => event.stopPropagation()}>
-                                  <CopyButton text={data.ledgerInfo.regularKey} />
-                                </span>
-                              </span>
-                            </span>
-                          </div>
-                        )}
-
-                        {data?.ledgerInfo?.flags?.passwordSpent && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Free re-key:</span>
-                            <span>spent</span>
-                          </div>
-                        )}
-
-                        {data?.ledgerInfo?.signerList && (
-                          <>
-                            <div className="detail-row issuer-detail-row">
-                              <span>Multi-sign:</span>
-                              <span className="green">enabled</span>
-                            </div>
-
-                            {data?.ledgerInfo?.signerList?.signerQuorum && (
-                              <div className="detail-row issuer-detail-row">
-                                <span>Multi-sign threshold:</span>
-                                <span>{data.ledgerInfo.signerList.signerQuorum}</span>
-                              </div>
-                            )}
-
-                            {Array.isArray(data?.ledgerInfo?.signerList?.signerEntries) &&
-                              data.ledgerInfo.signerList.signerEntries.map((signer, signerIndex) => (
-                                <div key={`signer-group-${signerIndex}`}>
-                                  <div className="detail-row issuer-detail-row">
-                                    <span>
-                                      Signer #{signerIndex + 1} (weight {signer?.signerWeight || 0}):
-                                    </span>
-                                    <span className="control-address-wrap">
-                                      <span className="copy-inline">
-                                        <AddressWithIconInline data={signer} name="account" options={{ short: 6 }} />
-                                        <span onClick={(event) => event.stopPropagation()}>
-                                          <CopyButton text={signer?.account} />
-                                        </span>
-                                      </span>
-                                    </span>
-                                  </div>
-                                </div>
-                              ))}
-                          </>
-                        )}
-
-                        {data?.ledgerInfo?.flags?.disableMaster && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Master key:</span>
-                            <span className="red">disabled</span>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {hasDepositPreauthAccounts && (
-                  <div className="time-machine-card tx-settings-card">
-                    <button
-                      type="button"
-                      className={`time-machine-toggle ${showDepositPreauthDetails ? 'active' : ''}`}
-                      onClick={() => setShowDepositPreauthDetails((prev) => !prev)}
-                    >
-                      Deposit preauthorized accounts
-                      <span className="account-control-collapsed"> · {depositPreauthAccounts.length}</span>
-                    </button>
-
-                    {showDepositPreauthDetails && (
-                      <div className="time-machine-panel tx-settings-panel">
-                        {depositPreauthAccounts.map((node, index) => (
-                          <div className="detail-row issuer-detail-row" key={`${node?.index || 'preauth'}-${index}`}>
-                            <span>#{index + 1}:</span>
-                            <span className="copy-inline">
-                              <AddressWithIconInline
-                                data={{ address: node?.Authorize, addressDetails: node?.authorizeDetails || {} }}
-                                name="address"
-                                options={{ short: 6 }}
-                              />
-                              {node?.Authorize && (
-                                <span onClick={(event) => event.stopPropagation()}>
-                                  <CopyButton text={node.Authorize} />
-                                </span>
-                              )}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {hasHooks && (
-                  <div className="time-machine-card tx-settings-card">
-                    <button
-                      type="button"
-                      className={`time-machine-toggle ${showHooksDetails ? 'active' : ''}`}
-                      onClick={() => setShowHooksDetails((prev) => !prev)}
-                    >
-                      Hooks
-                      <span className="account-control-collapsed"> · {hookList.length}</span>
-                    </button>
-
-                    {showHooksDetails && (
-                      <div className="time-machine-panel tx-settings-panel">
-                        {!!data?.ledgerInfo?.hookNamespaces?.length && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Hook namespaces:</span>
-                            <span>{data.ledgerInfo.hookNamespaces.length}</span>
-                          </div>
-                        )}
-                        {(data?.ledgerInfo?.hookStateCount || data?.ledgerInfo?.hookStateCount === 0) && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Hook state count:</span>
-                            <span>{data.ledgerInfo.hookStateCount}</span>
-                          </div>
-                        )}
-                        {hookList.map((hookHash, index) => (
-                          <div className="detail-row issuer-detail-row" key={`${hookHash}-${index}`}>
-                            <span>Hook #{index + 1}:</span>
-                            <span className="copy-inline">
-                              <span>{hookNameText(hookHash)}</span>
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={hookHash} />
-                              </span>
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {hasCronData && (
-                  <div className="time-machine-card tx-settings-card">
-                    <button
-                      type="button"
-                      className={`time-machine-toggle ${showCronDetails ? 'active' : ''}`}
-                      onClick={() => setShowCronDetails((prev) => !prev)}
-                    >
-                      Cron
-                    </button>
-
-                    {showCronDetails && (
-                      <div className="time-machine-panel tx-settings-panel">
-                        {data?.ledgerInfo?.cron && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Cron object:</span>
-                            <span className="copy-inline">
-                              <span>{shortHash(data.ledgerInfo.cron)}</span>
-                              <Link
-                                href={`/object/${data.ledgerInfo.cron}`}
-                                className="inline-link-icon tooltip"
-                                onClick={(event) => event.stopPropagation()}
-                              >
-                                <LinkIcon />
-                                <span className="tooltiptext no-brake">Object page</span>
-                              </Link>
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={data.ledgerInfo.cron} />
-                              </span>
-                            </span>
-                          </div>
-                        )}
-                        {cronObjects.map((cron, index) => (
-                          <div className="detail-row issuer-detail-row" key={`${cron?.index || 'cron'}-${index}`}>
-                            <span>Entry #{index + 1}:</span>
-                            <span className="copy-inline">
-                              <span>{cron?.index ? shortHash(cron.index) : '-'}</span>
-                              {!!cron?.index && (
-                                <>
-                                  <Link
-                                    href={`/object/${cron.index}`}
-                                    className="inline-link-icon tooltip"
-                                    onClick={(event) => event.stopPropagation()}
-                                  >
-                                    <LinkIcon />
-                                    <span className="tooltiptext no-brake">Object page</span>
-                                  </Link>
-                                  <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={cron.index} />
-                                  </span>
-                                </>
-                              )}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {hasNftDataDetails && (
-                  <div className="time-machine-card tx-settings-card">
-                    <button
-                      type="button"
-                      className={`time-machine-toggle ${showNftDataDetails ? 'active' : ''}`}
-                      onClick={() => setShowNftDataDetails((prev) => !prev)}
-                    >
-                      NFT data
-                    </button>
-
-                    {showNftDataDetails && (
-                      <div className="time-machine-panel tx-settings-panel">
-                        {data?.ledgerInfo?.firstNFTokenSequence && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>First NFT sequence:</span>
-                            <span>{data.ledgerInfo.firstNFTokenSequence}</span>
-                          </div>
-                        )}
-
-                        {data?.ledgerInfo?.nftokenMinter && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>NFT minter:</span>
-                            <span className="copy-inline">
-                              <AddressWithIconInline
-                                data={data.ledgerInfo}
-                                name="nftokenMinter"
-                                options={{ short: 6 }}
-                              />
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={data.ledgerInfo.nftokenMinter} />
-                              </span>
-                            </span>
-                          </div>
-                        )}
-
-                        {data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Incoming NFT offers:</span>
-                            <span className="red">disallowed</span>
-                          </div>
-                        )}
-
-                        {data?.ledgerInfo?.flags?.uriTokenIssuer && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>URI token issuer:</span>
-                            <span className="green">enabled</span>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {hasAccountSettingsData && (
-                  <div className="time-machine-card tx-settings-card">
-                    <button
-                      type="button"
-                      className={`time-machine-toggle ${showTxSettingsDetails ? 'active' : ''}`}
-                      onClick={() => setShowTxSettingsDetails((prev) => !prev)}
-                    >
-                      Account settings
-                    </button>
-
-                    {showTxSettingsDetails && (
-                      <div className="time-machine-panel tx-settings-panel">
-                        {!!data?.ledgerInfo?.accountIndex && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Account index:</span>
-                            <span className="copy-inline">
-                              <span className="address-text">{data.ledgerInfo.accountIndex}</span>
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={data.ledgerInfo.accountIndex} />
-                              </span>
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="detail-row issuer-detail-row">
-                          <span>Next sequence:</span>
-                          <span className="copy-inline">
-                            <span>{data.ledgerInfo.sequence}</span>
-                            <span onClick={(event) => event.stopPropagation()}>
-                              <CopyButton text={data.ledgerInfo.sequence} />
-                            </span>
-                          </span>
-                        </div>
-                        {data?.ledgerInfo?.messageKey && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>
-                              Message key:
-                              {isMessageKeyUsedForFlare && (
-                                <>
-                                  <br />
-                                  <b>used for Flare</b>
-                                </>
-                              )}
-                            </span>
-                            <span className="copy-inline">
-                              <span className="address-text">{data.ledgerInfo.messageKey}</span>
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={data.ledgerInfo.messageKey} />
-                              </span>
-                            </span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.previousTxnID && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Last affecting tx:</span>
-                            <span className="copy-inline">
-                              <Link
-                                href={`/transaction/${data.ledgerInfo.previousTxnID}`}
-                                onClick={(event) => event.stopPropagation()}
-                              >
-                                {shortHash(data.ledgerInfo.previousTxnID)}
-                              </Link>
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={data.ledgerInfo.previousTxnID} />
-                              </span>
-                            </span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.accountTxnID && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Last initiated tx:</span>
-                            <span className="copy-inline">
-                              <Link
-                                href={`/transaction/${data.ledgerInfo.accountTxnID}`}
-                                onClick={(event) => event.stopPropagation()}
-                              >
-                                {shortHash(data.ledgerInfo.accountTxnID)}
-                              </Link>
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={data.ledgerInfo.accountTxnID} />
-                              </span>
-                            </span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.walletLocator && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Wallet locator:</span>
-                            <span className="copy-inline">
-                              <span className="address-text">{data.ledgerInfo.walletLocator}</span>
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={data.ledgerInfo.walletLocator} />
-                              </span>
-                            </span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.ammID && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>AMM ID:</span>
-                            <span className="copy-inline">
-                              <span>{shortHash(data.ledgerInfo.ammID)}</span>
-                              <Link
-                                href={`/amm/${data.ledgerInfo.ammID}`}
-                                className="inline-link-icon tooltip"
-                                onClick={(event) => event.stopPropagation()}
-                              >
-                                <LinkIcon />
-                                <span className="tooltiptext no-brake">AMM page</span>
-                              </Link>
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={data.ledgerInfo.ammID} />
-                              </span>
-                            </span>
-                          </div>
-                        )}
-
-                        {(data?.ledgerInfo?.ticketCount || data?.ledgerInfo?.ticketCount === 0) && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Ticket count:</span>
-                            <span>{data.ledgerInfo.ticketCount}</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.importSequence && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Import sequence:</span>
-                            <span>{data.ledgerInfo.importSequence}</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.tickSize && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Tick size:</span>
-                            <span>{data.ledgerInfo.tickSize}</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.requireDestTag && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Destination tag:</span>
-                            <span>required</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.depositAuth && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Deposit authorization:</span>
-                            <span>required</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.requireAuth && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Token authorization:</span>
-                            <span>required</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.disallowIncomingCheck && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Incoming checks:</span>
-                            <span className="red">disallowed</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.disallowIncomingPayChan && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Incoming payment channels:</span>
-                            <span className="red">disallowed</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.disallowIncomingTrustline && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Incoming trustlines:</span>
-                            <span className="red">disallowed</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Incoming NFT offers:</span>
-                            <span className="red">disallowed</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.disallowIncomingRemit && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Incoming remit:</span>
-                            <span className="red">disallowed</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.tshCollect && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>TshCollect:</span>
-                            <span>enabled</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.disallowXRP && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Receiving {nativeCurrency}:</span>
-                            <span>disabled</span>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {hasAirdropsData && (
-                  <div className="time-machine-card tx-settings-card">
-                    <button
-                      type="button"
-                      className={`time-machine-toggle ${showAirdropsDetails ? 'active' : ''}`}
-                      onClick={() => setShowAirdropsDetails((prev) => !prev)}
-                    >
-                      Airdrops
-                      <span className="account-control-collapsed"> · Flare</span>
-                    </button>
-
-                    {showAirdropsDetails && (
-                      <div className="time-machine-panel tx-settings-panel">
-                        <div className="detail-row issuer-detail-row">
-                          <span>Address:</span>
-                          <span className="copy-inline airdrop-address-wrap">
-                            <span className="address-text">{data.flare.address}</span>
-                            <span onClick={(event) => event.stopPropagation()}>
-                              <CopyButton text={data.flare.address} />
-                            </span>
-                          </span>
-                        </div>
-
-                        <div className="detail-row issuer-detail-row">
-                          <span>Flare claim:</span>
-                          <span className="copy-inline airdrop-claim-wrap">
-                            <span>{flareClaimNode}</span>
-                            <a
-                              href={`https://flarescan.com/address/${data.flare.address}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="airdrop-link-btn"
-                              onClick={(event) => event.stopPropagation()}
-                              aria-label="Open Flare address"
-                              title="Open Flare address"
-                            >
-                              <LinkIcon />
-                            </a>
-                          </span>
-                        </div>
-
-                        <div className="detail-row issuer-detail-row">
-                          <span>Songbird claim:</span>
-                          <span className="copy-inline airdrop-claim-wrap">
-                            <span>{songbirdClaimNode}</span>
-                            <a
-                              href={`https://songbird.flarescan.com/address/${data.flare.address}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="airdrop-link-btn"
-                              onClick={(event) => event.stopPropagation()}
-                              aria-label="Open Songbird address"
-                              title="Open Songbird address"
-                            >
-                              <LinkIcon />
-                            </a>
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {showHistoricalDataCard && (
-                  <div className="time-machine-card">
-                    <button
-                      type="button"
-                      className={`time-machine-toggle ${showTimeMachine ? 'active' : ''}`}
-                      onClick={() => setShowTimeMachine((prev) => !prev)}
-                    >
-                      Historical data
-                    </button>
-
-                    {showTimeMachine && (
-                      <div className="time-machine-panel">
-                        <div className="time-machine-head">
-                          <div className="time-machine-title">Select date and time</div>
-                        </div>
-                        <div className="time-machine-picker-wrap">
-                          <DatePicker
-                            selected={ledgerTimestampInput || new Date()}
-                            onChange={setLedgerTimestampInput}
-                            value={localDateTimeText(ledgerTimestampInput || new Date())}
-                            selectsStart
-                            showTimeInput
-                            timeInputLabel="Time"
-                            minDate={data?.inception ? new Date(data.inception * 1000) : undefined}
-                            maxDate={new Date()}
-                            dateFormat="Pp"
-                            className="dateAndTimeRange time-machine-input"
-                            calendarClassName="time-machine-calendar"
-                            showMonthDropdown
-                            showYearDropdown
-                          />
-                        </div>
-                        <div className="time-machine-actions">
-                          <button
-                            type="button"
-                            onClick={applyTimeMachine}
-                            className="time-machine-btn time-machine-btn-update"
-                          >
-                            Update
-                          </button>
-                          <button
-                            type="button"
-                            onClick={resetTimeMachine}
-                            className="time-machine-btn time-machine-btn-reset"
-                          >
-                            Reset
-                          </button>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
             </div>
-          </CollapsibleColumn>
 
-          {/* Column 2: Assets */}
-          <CollapsibleColumn>
-            <div className="assets-section">
-              {showObjectsLoadStatus && (
-                <div className={`asset-item object-load-status ${objectsError ? 'error' : ''}`}>
-                  {objectsLoading ? (
-                    <span className="tx-inline-load object-load-status-text">
-                      <span>Loading account objects and assets</span>
-                      <span className="waiting inline" aria-hidden="true"></span>
-                    </span>
-                  ) : (
-                    <span className="object-load-status-text">
-                      Failed to load account objects. Some assets may be missing.
-                    </span>
+            {/* Basic Info */}
+            <div className="account-info">
+              <h2 className="account-name">
+                <span className="account-username">
+                  {accountDisplayName}
+                  {!!accountDisplayUsername && <CopyButton text={accountDisplayUsername} />}
+                </span>
+              </h2>
+              <div className="account-address">
+                <span className="account-address-text">{data.address}</span>
+                <CopyButton text={data.address} />
+                <button
+                  type="button"
+                  className={`account-qr-toggle ${showAddressQr ? 'active' : ''}`}
+                  onClick={() => setShowAddressQr((prev) => !prev)}
+                  aria-label="Toggle address QR code"
+                  title="Show QR code"
+                >
+                  <span className="tooltip">
+                    <MdQrCode2 />
+                    <span className="tooltiptext no-brake">QR code</span>
+                  </span>
+                </button>
+              </div>
+              {showAddressQr && (
+                <div className="account-qr-panel">
+                  <Canvas
+                    text={data.address}
+                    options={{
+                      errorCorrectionLevel: 'M',
+                      margin: 2,
+                      scale: 4,
+                      width: 170,
+                      color: {
+                        dark: '#333333ff',
+                        light: '#ffffffff'
+                      }
+                    }}
+                  />
+                </div>
+              )}
+              {data.service?.domain && (
+                <div className="account-domain grey">
+                  <a href={`https://${data.service.domain}`} target="_blank" rel="noreferrer">
+                    {data.service.domain}
+                  </a>
+                </div>
+              )}
+              {accountStatusNode}
+            </div>
+
+            {/* Social icons */}
+            {socialAccountsNode && <div className="social-icons-wrapper">{socialAccountsNode}</div>}
+
+            {didData && (
+              <div className="cards-list info-cards-list">
+                <div
+                  className={`asset-item token-asset-item ${expandedDidCard ? 'expanded' : ''}`}
+                  onClick={() => setExpandedDidCard((prev) => !prev)}
+                >
+                  <div className="asset-main">
+                    <div className="asset-logo">
+                      <div className="nft-asset-info">
+                        <div className="nft-asset-text">
+                          <div className="asset-summary-title">DID</div>
+                          <div className="asset-fiat">{didUrl || shortHash(didData?.didID || '')}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="asset-value">
+                      {didCollapsedAgo && (
+                        <div className="asset-fiat">
+                          {didCollapsedAgoLabel} {didCollapsedAgo}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {expandedDidCard && (
+                    <div className="asset-details">
+                      <div className="detail-row">
+                        <span>DID ID:</span>
+                        <span className="copy-inline">
+                          <span>{didData?.didID ? shortHash(didData.didID) : '-'}</span>
+                          {!!didData?.didID && (
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={didData.didID} />
+                            </span>
+                          )}
+                        </span>
+                      </div>
+
+                      {!!didCreatedFull && (
+                        <div className="detail-row">
+                          <span>Created:</span>
+                          <span>
+                            {didCreatedFull}
+                            {didData?.createdTxHash && (
+                              <>
+                                {' '}
+                                <Link
+                                  href={`/transaction/${didData.createdTxHash}`}
+                                  className="inline-link-icon tooltip"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  <LinkIcon />
+                                  <span className="tooltiptext no-brake">Created transaction</span>
+                                </Link>
+                              </>
+                            )}
+                          </span>
+                        </div>
+                      )}
+
+                      {!!didUpdatedFull && didData?.updatedAt !== didData?.createdAt && (
+                        <div className="detail-row">
+                          <span>Updated:</span>
+                          <span>
+                            {didUpdatedFull}
+                            {didData?.updatedTxHash && (
+                              <>
+                                {' '}
+                                <Link
+                                  href={`/transaction/${didData.updatedTxHash}`}
+                                  className="inline-link-icon tooltip"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  <LinkIcon />
+                                  <span className="tooltiptext no-brake">Updated transaction</span>
+                                </Link>
+                              </>
+                            )}
+                          </span>
+                        </div>
+                      )}
+
+                      {!!didUrl && (
+                        <div className="detail-row">
+                          <span>URL:</span>
+                          <span>
+                            {isUrlValid(didUrl) ? (
+                              <a
+                                href={didUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                {didUrl}
+                              </a>
+                            ) : (
+                              <span className="address-text">{didUrl}</span>
+                            )}
+                          </span>
+                        </div>
+                      )}
+
+                      {!!didDecodedData && (
+                        <div className="detail-row">
+                          <span>Data:</span>
+                          <span className="address-text">{didDecodedData}</span>
+                        </div>
+                      )}
+
+                      {!!didDecodedDocument && (
+                        <div className="detail-row">
+                          <span>DID Document:</span>
+                          <span className="address-text">{didDecodedDocument}</span>
+                        </div>
+                      )}
+
+                      {!!didMetadataText && (
+                        <div className="detail-row tx-fail-description-row">
+                          <span>Metadata:</span>
+                          <pre className="tx-fail-description-text">{didMetadataText}</pre>
+                        </div>
+                      )}
+
+                      {canManageDid && (
+                        <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                          <button
+                            type="button"
+                            className="check-action-btn redeem"
+                            onClick={() =>
+                              setSignRequest({
+                                action: 'setDid',
+                                request: {
+                                  TransactionType: 'DIDSet',
+                                  Account: data?.address
+                                }
+                              })
+                            }
+                          >
+                            Update DID
+                          </button>
+                          <button
+                            type="button"
+                            className="check-action-btn cancel"
+                            onClick={() =>
+                              setSignRequest({
+                                request: {
+                                  TransactionType: 'DIDDelete',
+                                  Account: data?.address
+                                }
+                              })
+                            }
+                          >
+                            Delete DID
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {data?.inception && publicDataRows.length > 0 && (
+              <div className="public-data">
+                <div className="info-rows">
+                  {publicDataRows.map((row) => (
+                    <div className="info-row" key={row.key}>
+                      <span className="label">{row.label}</span>
+                      <span className="value">{row.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="cards-list info-cards-list">
+              {hasAccountControlData && (
+                <div className="time-machine-card account-control-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showAccountControlDetails ? 'active' : ''}`}
+                    onClick={() => setShowAccountControlDetails((prev) => !prev)}
+                  >
+                    Account control
+                    {accountControlCollapsedLabel && (
+                      <span className={`account-control-collapsed ${isBlackholed ? 'orange bold' : ''}`}>
+                        {' '}
+                        · {accountControlCollapsedLabel}
+                      </span>
+                    )}
+                  </button>
+
+                  {showAccountControlDetails && (
+                    <div className="time-machine-panel account-control-panel">
+                      {data?.ledgerInfo?.regularKey && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Regular key:</span>
+                          <span className="control-address-wrap">
+                            <span className="copy-inline">
+                              <AddressWithIconInline data={data.ledgerInfo} name="regularKey" options={{ short: 6 }} />
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={data.ledgerInfo.regularKey} />
+                              </span>
+                            </span>
+                          </span>
+                        </div>
+                      )}
+
+                      {data?.ledgerInfo?.flags?.passwordSpent && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Free re-key:</span>
+                          <span>spent</span>
+                        </div>
+                      )}
+
+                      {data?.ledgerInfo?.signerList && (
+                        <>
+                          <div className="detail-row issuer-detail-row">
+                            <span>Multi-sign:</span>
+                            <span className="green">enabled</span>
+                          </div>
+
+                          {data?.ledgerInfo?.signerList?.signerQuorum && (
+                            <div className="detail-row issuer-detail-row">
+                              <span>Multi-sign threshold:</span>
+                              <span>{data.ledgerInfo.signerList.signerQuorum}</span>
+                            </div>
+                          )}
+
+                          {Array.isArray(data?.ledgerInfo?.signerList?.signerEntries) &&
+                            data.ledgerInfo.signerList.signerEntries.map((signer, signerIndex) => (
+                              <div key={`signer-group-${signerIndex}`}>
+                                <div className="detail-row issuer-detail-row">
+                                  <span>
+                                    Signer #{signerIndex + 1} (weight {signer?.signerWeight || 0}):
+                                  </span>
+                                  <span className="control-address-wrap">
+                                    <span className="copy-inline">
+                                      <AddressWithIconInline data={signer} name="account" options={{ short: 6 }} />
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={signer?.account} />
+                                      </span>
+                                    </span>
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                        </>
+                      )}
+
+                      {data?.ledgerInfo?.flags?.disableMaster && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Master key:</span>
+                          <span className="red">disabled</span>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
               )}
 
-              {hasNonNativeTokenAssets && (
-                <div className="asset-item" onClick={() => setShowTotalWorthDetails(!showTotalWorthDetails)}>
-                  <div className="asset-main">
-                    <div className="asset-logo">
-                      <span className="asset-summary-title">Total worth</span>
-                    </div>
-                    <div className="asset-value total-worth-value">
-                      <div className="asset-fiat total-worth-fiat" suppressHydrationWarning>
-                        {shortNiceNumber(totalWorthFiatValue, 2, 1, selectedCurrency) ||
-                          shortNiceNumber(0, 2, 1, selectedCurrency)}
-                      </div>
-                    </div>
-                  </div>
-                  {showTotalWorthDetails && (
-                    <div className="asset-details">
-                      {totalWorthBreakdown.map((item) => (
-                        <div className="detail-row" key={`worth-${item.label}`}>
-                          <span>{item.label}:</span>
-                          <span suppressHydrationWarning>{shortNiceNumber(item.value, 2, 1, selectedCurrency)}</span>
+              {hasDepositPreauthAccounts && (
+                <div className="time-machine-card tx-settings-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showDepositPreauthDetails ? 'active' : ''}`}
+                    onClick={() => setShowDepositPreauthDetails((prev) => !prev)}
+                  >
+                    Deposit preauthorized accounts
+                    <span className="account-control-collapsed"> · {depositPreauthAccounts.length}</span>
+                  </button>
+
+                  {showDepositPreauthDetails && (
+                    <div className="time-machine-panel tx-settings-panel">
+                      {depositPreauthAccounts.map((node, index) => (
+                        <div className="detail-row issuer-detail-row" key={`${node?.index || 'preauth'}-${index}`}>
+                          <span>#{index + 1}:</span>
+                          <span className="copy-inline">
+                            <AddressWithIconInline
+                              data={{ address: node?.Authorize, addressDetails: node?.authorizeDetails || {} }}
+                              name="address"
+                              options={{ short: 6 }}
+                            />
+                            {node?.Authorize && (
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={node.Authorize} />
+                              </span>
+                            )}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -2811,10 +2270,547 @@ export default function Account2({
                 </div>
               )}
 
-              {/* Native Currency Balance */}
-              {balanceList && (
-                <div className="asset-item" onClick={() => setShowBalanceDetails(!showBalanceDetails)}>
-                  {!showBalanceDetails ? (
+              {hasHooks && (
+                <div className="time-machine-card tx-settings-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showHooksDetails ? 'active' : ''}`}
+                    onClick={() => setShowHooksDetails((prev) => !prev)}
+                  >
+                    Hooks
+                    <span className="account-control-collapsed"> · {hookList.length}</span>
+                  </button>
+
+                  {showHooksDetails && (
+                    <div className="time-machine-panel tx-settings-panel">
+                      {!!data?.ledgerInfo?.hookNamespaces?.length && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Hook namespaces:</span>
+                          <span>{data.ledgerInfo.hookNamespaces.length}</span>
+                        </div>
+                      )}
+                      {(data?.ledgerInfo?.hookStateCount || data?.ledgerInfo?.hookStateCount === 0) && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Hook state count:</span>
+                          <span>{data.ledgerInfo.hookStateCount}</span>
+                        </div>
+                      )}
+                      {hookList.map((hookHash, index) => (
+                        <div className="detail-row issuer-detail-row" key={`${hookHash}-${index}`}>
+                          <span>Hook #{index + 1}:</span>
+                          <span className="copy-inline">
+                            <span>{hookNameText(hookHash)}</span>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={hookHash} />
+                            </span>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {hasCronData && (
+                <div className="time-machine-card tx-settings-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showCronDetails ? 'active' : ''}`}
+                    onClick={() => setShowCronDetails((prev) => !prev)}
+                  >
+                    Cron
+                  </button>
+
+                  {showCronDetails && (
+                    <div className="time-machine-panel tx-settings-panel">
+                      {data?.ledgerInfo?.cron && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Cron object:</span>
+                          <span className="copy-inline">
+                            <span>{shortHash(data.ledgerInfo.cron)}</span>
+                            <Link
+                              href={`/object/${data.ledgerInfo.cron}`}
+                              className="inline-link-icon tooltip"
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              <LinkIcon />
+                              <span className="tooltiptext no-brake">Object page</span>
+                            </Link>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.cron} />
+                            </span>
+                          </span>
+                        </div>
+                      )}
+                      {cronObjects.map((cron, index) => (
+                        <div className="detail-row issuer-detail-row" key={`${cron?.index || 'cron'}-${index}`}>
+                          <span>Entry #{index + 1}:</span>
+                          <span className="copy-inline">
+                            <span>{cron?.index ? shortHash(cron.index) : '-'}</span>
+                            {!!cron?.index && (
+                              <>
+                                <Link
+                                  href={`/object/${cron.index}`}
+                                  className="inline-link-icon tooltip"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  <LinkIcon />
+                                  <span className="tooltiptext no-brake">Object page</span>
+                                </Link>
+                                <span onClick={(event) => event.stopPropagation()}>
+                                  <CopyButton text={cron.index} />
+                                </span>
+                              </>
+                            )}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {hasNftDataDetails && (
+                <div className="time-machine-card tx-settings-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showNftDataDetails ? 'active' : ''}`}
+                    onClick={() => setShowNftDataDetails((prev) => !prev)}
+                  >
+                    NFT data
+                  </button>
+
+                  {showNftDataDetails && (
+                    <div className="time-machine-panel tx-settings-panel">
+                      {data?.ledgerInfo?.firstNFTokenSequence && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>First NFT sequence:</span>
+                          <span>{data.ledgerInfo.firstNFTokenSequence}</span>
+                        </div>
+                      )}
+
+                      {data?.ledgerInfo?.nftokenMinter && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>NFT minter:</span>
+                          <span className="copy-inline">
+                            <AddressWithIconInline data={data.ledgerInfo} name="nftokenMinter" options={{ short: 6 }} />
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.nftokenMinter} />
+                            </span>
+                          </span>
+                        </div>
+                      )}
+
+                      {data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Incoming NFT offers:</span>
+                          <span className="red">disallowed</span>
+                        </div>
+                      )}
+
+                      {data?.ledgerInfo?.flags?.uriTokenIssuer && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>URI token issuer:</span>
+                          <span className="green">enabled</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {hasAccountSettingsData && (
+                <div className="time-machine-card tx-settings-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showTxSettingsDetails ? 'active' : ''}`}
+                    onClick={() => setShowTxSettingsDetails((prev) => !prev)}
+                  >
+                    Account settings
+                  </button>
+
+                  {showTxSettingsDetails && (
+                    <div className="time-machine-panel tx-settings-panel">
+                      {!!data?.ledgerInfo?.accountIndex && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Account index:</span>
+                          <span className="copy-inline">
+                            <span className="address-text">{data.ledgerInfo.accountIndex}</span>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.accountIndex} />
+                            </span>
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="detail-row issuer-detail-row">
+                        <span>Next sequence:</span>
+                        <span className="copy-inline">
+                          <span>{data.ledgerInfo.sequence}</span>
+                          <span onClick={(event) => event.stopPropagation()}>
+                            <CopyButton text={data.ledgerInfo.sequence} />
+                          </span>
+                        </span>
+                      </div>
+                      {data?.ledgerInfo?.messageKey && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>
+                            Message key:
+                            {isMessageKeyUsedForFlare && (
+                              <>
+                                <br />
+                                <b>used for Flare</b>
+                              </>
+                            )}
+                          </span>
+                          <span className="copy-inline">
+                            <span className="address-text">{data.ledgerInfo.messageKey}</span>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.messageKey} />
+                            </span>
+                          </span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.previousTxnID && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Last affecting tx:</span>
+                          <span className="copy-inline">
+                            <Link
+                              href={`/transaction/${data.ledgerInfo.previousTxnID}`}
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              {shortHash(data.ledgerInfo.previousTxnID)}
+                            </Link>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.previousTxnID} />
+                            </span>
+                          </span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.accountTxnID && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Last initiated tx:</span>
+                          <span className="copy-inline">
+                            <Link
+                              href={`/transaction/${data.ledgerInfo.accountTxnID}`}
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              {shortHash(data.ledgerInfo.accountTxnID)}
+                            </Link>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.accountTxnID} />
+                            </span>
+                          </span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.walletLocator && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Wallet locator:</span>
+                          <span className="copy-inline">
+                            <span className="address-text">{data.ledgerInfo.walletLocator}</span>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.walletLocator} />
+                            </span>
+                          </span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.ammID && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>AMM ID:</span>
+                          <span className="copy-inline">
+                            <span>{shortHash(data.ledgerInfo.ammID)}</span>
+                            <Link
+                              href={`/amm/${data.ledgerInfo.ammID}`}
+                              className="inline-link-icon tooltip"
+                              onClick={(event) => event.stopPropagation()}
+                            >
+                              <LinkIcon />
+                              <span className="tooltiptext no-brake">AMM page</span>
+                            </Link>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.ammID} />
+                            </span>
+                          </span>
+                        </div>
+                      )}
+
+                      {(data?.ledgerInfo?.ticketCount || data?.ledgerInfo?.ticketCount === 0) && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Ticket count:</span>
+                          <span>{data.ledgerInfo.ticketCount}</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.importSequence && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Import sequence:</span>
+                          <span>{data.ledgerInfo.importSequence}</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.tickSize && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Tick size:</span>
+                          <span>{data.ledgerInfo.tickSize}</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.flags?.requireDestTag && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Destination tag:</span>
+                          <span>required</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.flags?.depositAuth && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Deposit authorization:</span>
+                          <span>required</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.flags?.requireAuth && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Token authorization:</span>
+                          <span>required</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.flags?.disallowIncomingCheck && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Incoming checks:</span>
+                          <span className="red">disallowed</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.flags?.disallowIncomingPayChan && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Incoming payment channels:</span>
+                          <span className="red">disallowed</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.flags?.disallowIncomingTrustline && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Incoming trustlines:</span>
+                          <span className="red">disallowed</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Incoming NFT offers:</span>
+                          <span className="red">disallowed</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.flags?.disallowIncomingRemit && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Incoming remit:</span>
+                          <span className="red">disallowed</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.flags?.tshCollect && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>TshCollect:</span>
+                          <span>enabled</span>
+                        </div>
+                      )}
+
+                      {!!data?.ledgerInfo?.flags?.disallowXRP && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Receiving {nativeCurrency}:</span>
+                          <span>disabled</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {hasAirdropsData && (
+                <div className="time-machine-card tx-settings-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showAirdropsDetails ? 'active' : ''}`}
+                    onClick={() => setShowAirdropsDetails((prev) => !prev)}
+                  >
+                    Airdrops
+                    <span className="account-control-collapsed"> · Flare</span>
+                  </button>
+
+                  {showAirdropsDetails && (
+                    <div className="time-machine-panel tx-settings-panel">
+                      <div className="detail-row issuer-detail-row">
+                        <span>Address:</span>
+                        <span className="copy-inline airdrop-address-wrap">
+                          <span className="address-text">{data.flare.address}</span>
+                          <span onClick={(event) => event.stopPropagation()}>
+                            <CopyButton text={data.flare.address} />
+                          </span>
+                        </span>
+                      </div>
+
+                      <div className="detail-row issuer-detail-row">
+                        <span>Flare claim:</span>
+                        <span className="copy-inline airdrop-claim-wrap">
+                          <span>{flareClaimNode}</span>
+                          <a
+                            href={`https://flarescan.com/address/${data.flare.address}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="airdrop-link-btn"
+                            onClick={(event) => event.stopPropagation()}
+                            aria-label="Open Flare address"
+                            title="Open Flare address"
+                          >
+                            <LinkIcon />
+                          </a>
+                        </span>
+                      </div>
+
+                      <div className="detail-row issuer-detail-row">
+                        <span>Songbird claim:</span>
+                        <span className="copy-inline airdrop-claim-wrap">
+                          <span>{songbirdClaimNode}</span>
+                          <a
+                            href={`https://songbird.flarescan.com/address/${data.flare.address}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="airdrop-link-btn"
+                            onClick={(event) => event.stopPropagation()}
+                            aria-label="Open Songbird address"
+                            title="Open Songbird address"
+                          >
+                            <LinkIcon />
+                          </a>
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {showHistoricalDataCard && (
+                <div className="time-machine-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showTimeMachine ? 'active' : ''}`}
+                    onClick={() => setShowTimeMachine((prev) => !prev)}
+                  >
+                    Historical data
+                  </button>
+
+                  {showTimeMachine && (
+                    <div className="time-machine-panel">
+                      <div className="time-machine-head">
+                        <div className="time-machine-title">Select date and time</div>
+                      </div>
+                      <div className="time-machine-picker-wrap">
+                        <DatePicker
+                          selected={ledgerTimestampInput || new Date()}
+                          onChange={setLedgerTimestampInput}
+                          value={localDateTimeText(ledgerTimestampInput || new Date())}
+                          selectsStart
+                          showTimeInput
+                          timeInputLabel="Time"
+                          minDate={data?.inception ? new Date(data.inception * 1000) : undefined}
+                          maxDate={new Date()}
+                          dateFormat="Pp"
+                          className="dateAndTimeRange time-machine-input"
+                          calendarClassName="time-machine-calendar"
+                          showMonthDropdown
+                          showYearDropdown
+                        />
+                      </div>
+                      <div className="time-machine-actions">
+                        <button
+                          type="button"
+                          onClick={applyTimeMachine}
+                          className="time-machine-btn time-machine-btn-update"
+                        >
+                          Update
+                        </button>
+                        <button
+                          type="button"
+                          onClick={resetTimeMachine}
+                          className="time-machine-btn time-machine-btn-reset"
+                        >
+                          Reset
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Column 2: Assets */}
+          <div className="assets-section">
+            {showObjectsLoadStatus && (
+              <div className={`asset-item object-load-status ${objectsError ? 'error' : ''}`}>
+                {objectsLoading ? (
+                  <span className="tx-inline-load object-load-status-text">
+                    <span>Loading account objects and assets</span>
+                    <span className="waiting inline" aria-hidden="true"></span>
+                  </span>
+                ) : (
+                  <span className="object-load-status-text">
+                    Failed to load account objects. Some assets may be missing.
+                  </span>
+                )}
+              </div>
+            )}
+
+            {hasNonNativeTokenAssets && (
+              <div className="asset-item" onClick={() => setShowTotalWorthDetails(!showTotalWorthDetails)}>
+                <div className="asset-main">
+                  <div className="asset-logo">
+                    <span className="asset-summary-title">Total worth</span>
+                  </div>
+                  <div className="asset-value total-worth-value">
+                    <div className="asset-fiat total-worth-fiat" suppressHydrationWarning>
+                      {shortNiceNumber(totalWorthFiatValue, 2, 1, selectedCurrency) ||
+                        shortNiceNumber(0, 2, 1, selectedCurrency)}
+                    </div>
+                  </div>
+                </div>
+                {showTotalWorthDetails && (
+                  <div className="asset-details">
+                    {totalWorthBreakdown.map((item) => (
+                      <div className="detail-row" key={`worth-${item.label}`}>
+                        <span>{item.label}:</span>
+                        <span suppressHydrationWarning>{shortNiceNumber(item.value, 2, 1, selectedCurrency)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Native Currency Balance */}
+            {balanceList && (
+              <div className="asset-item" onClick={() => setShowBalanceDetails(!showBalanceDetails)}>
+                {!showBalanceDetails ? (
+                  <div className="asset-main">
+                    <div className="asset-logo">
+                      <CurrencyWithIcon token={{ currency: nativeCurrency }} options={{ disableTokenLink: true }} />
+                    </div>
+                    <div className="asset-value">
+                      <div className="asset-amount">{shortNiceNumber(nativeAvailable)}</div>
+                      <div className="asset-fiat" suppressHydrationWarning>
+                        {shortNiceNumber(nativeAvailable * (pageFiatRate || 0), 2, 1, selectedCurrency)}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <>
                     <div className="asset-main">
                       <div className="asset-logo">
                         <CurrencyWithIcon token={{ currency: nativeCurrency }} options={{ disableTokenLink: true }} />
@@ -2826,2423 +2822,844 @@ export default function Account2({
                         </div>
                       </div>
                     </div>
-                  ) : (
-                    <>
-                      <div className="asset-main">
-                        <div className="asset-logo">
-                          <CurrencyWithIcon token={{ currency: nativeCurrency }} options={{ disableTokenLink: true }} />
-                        </div>
-                        <div className="asset-value">
-                          <div className="asset-amount">{shortNiceNumber(nativeAvailable)}</div>
-                          <div className="asset-fiat" suppressHydrationWarning>
-                            {shortNiceNumber(nativeAvailable * (pageFiatRate || 0), 2, 1, selectedCurrency)}
-                          </div>
-                        </div>
+                    <div className="asset-details">
+                      <div className="detail-row">
+                        <span>Available:</span>
+                        <span className="copy-inline">
+                          <span>{nativeAvailable}</span>
+                          <span onClick={(event) => event.stopPropagation()}>
+                            <CopyButton text={nativeAvailable} />
+                          </span>
+                        </span>
                       </div>
-                      <div className="asset-details">
-                        <div className="detail-row">
-                          <span>Available:</span>
-                          <span className="copy-inline">
-                            <span>{nativeAvailable}</span>
-                            <span onClick={(event) => event.stopPropagation()}>
-                              <CopyButton text={nativeAvailable} />
-                            </span>
+                      <div className="detail-row">
+                        <span>Total:</span>
+                        <span className="amount-with-fiat">
+                          <span>{amountFormat(nativeTotalDrops, { precise: 'nice' })}</span>
+                          <span className="fiat-line" suppressHydrationWarning>
+                            {nativeCurrencyToFiat({
+                              amount: nativeTotalDrops,
+                              selectedCurrency,
+                              fiatRate: pageFiatRate,
+                              asText: true
+                            })}
                           </span>
-                        </div>
-                        <div className="detail-row">
-                          <span>Total:</span>
-                          <span className="amount-with-fiat">
-                            <span>{amountFormat(nativeTotalDrops, { precise: 'nice' })}</span>
-                            <span className="fiat-line" suppressHydrationWarning>
-                              {nativeCurrencyToFiat({
-                                amount: nativeTotalDrops,
-                                selectedCurrency,
-                                fiatRate: pageFiatRate,
-                                asText: true
-                              })}
-                            </span>
-                          </span>
-                        </div>
-                        <div className="detail-row">
-                          <span>Reserved:</span>
-                          <span className="grey amount-with-fiat">
-                            <span>{amountFormat(nativeReservedDrops, { precise: 'nice' })}</span>
-                            <span className="fiat-line" suppressHydrationWarning>
-                              {nativeCurrencyToFiat({
-                                amount: nativeReservedDrops,
-                                selectedCurrency,
-                                fiatRate: pageFiatRate,
-                                asText: true
-                              })}
-                            </span>
-                          </span>
-                        </div>
-                        {isHistoricalLedger && selectedCurrency && pageFiatRate ? (
-                          <div className="detail-row">
-                            <span>Rate:</span>
-                            <span>
-                              1 {nativeCurrency} = {shortNiceNumber(pageFiatRate, 2, 1, selectedCurrency)}
-                            </span>
-                          </div>
-                        ) : null}
+                        </span>
                       </div>
-                    </>
-                  )}
-                </div>
-              )}
+                      <div className="detail-row">
+                        <span>Reserved:</span>
+                        <span className="grey amount-with-fiat">
+                          <span>{amountFormat(nativeReservedDrops, { precise: 'nice' })}</span>
+                          <span className="fiat-line" suppressHydrationWarning>
+                            {nativeCurrencyToFiat({
+                              amount: nativeReservedDrops,
+                              selectedCurrency,
+                              fiatRate: pageFiatRate,
+                              asText: true
+                            })}
+                          </span>
+                        </span>
+                      </div>
+                      {isHistoricalLedger && selectedCurrency && pageFiatRate ? (
+                        <div className="detail-row">
+                          <span>Rate:</span>
+                          <span>
+                            1 {nativeCurrency} = {shortNiceNumber(pageFiatRate, 2, 1, selectedCurrency)}
+                          </span>
+                        </div>
+                      ) : null}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
 
-              {shouldShowGetFirstNativeButton && (
-                <div className="get-first-native-wrap">
-                  <a href={getFirstNativeUrl} target="_blank" rel="noreferrer" className="get-first-native-btn">
-                    🚀 Get your first {nativeCurrency}
-                  </a>
-                </div>
-              )}
+            {shouldShowGetFirstNativeButton && (
+              <div className="get-first-native-wrap">
+                <a href={getFirstNativeUrl} target="_blank" rel="noreferrer" className="get-first-native-btn">
+                  🚀 Get your first {nativeCurrency}
+                </a>
+              </div>
+            )}
 
-              {hasNonNativeTokenAssets && shouldShowTokenTabs && (
-                <div className="token-tab-row">
-                  <div className="token-tab-switch">
+            {hasNonNativeTokenAssets && shouldShowTokenTabs && (
+              <div className="token-tab-row">
+                <div className="token-tab-switch">
+                  <button
+                    type="button"
+                    className={`token-tab-btn ${tokenTab === 'all' ? 'active' : ''}`}
+                    onClick={() => setTokenTab('all')}
+                  >
+                    All ({totalTokenCount})
+                  </button>
+                  {issuedTokensCount > 0 && (
                     <button
                       type="button"
-                      className={`token-tab-btn ${tokenTab === 'all' ? 'active' : ''}`}
-                      onClick={() => setTokenTab('all')}
+                      className={`token-tab-btn ${tokenTab === 'tokens' ? 'active' : ''}`}
+                      onClick={() => setTokenTab('tokens')}
                     >
-                      All ({totalTokenCount})
+                      Tokens ({issuedTokensCount})
                     </button>
-                    {issuedTokensCount > 0 && (
-                      <button
-                        type="button"
-                        className={`token-tab-btn ${tokenTab === 'tokens' ? 'active' : ''}`}
-                        onClick={() => setTokenTab('tokens')}
-                      >
-                        Tokens ({issuedTokensCount})
-                      </button>
-                    )}
-                    {lpTokensCount > 0 && (
-                      <button
-                        type="button"
-                        className={`token-tab-btn ${tokenTab === 'lp' ? 'active' : ''}`}
-                        onClick={() => setTokenTab('lp')}
-                      >
-                        LP Tokens ({lpTokensCount})
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Tokens */}
-              {visibleTokens.map((token, index) => {
-                const issuer = token.HighLimit?.issuer === data?.address ? token.LowLimit : token.HighLimit
-                const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
-                const fiatValue = (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
-                const tokenUniqueKey = `${token.Balance?.currency || 'token'}-${issuer?.issuer || 'issuer'}-${index}`
-                const isExpanded = expandedToken === tokenUniqueKey
-                const isLpToken = isLpTrustlineToken(token)
-
-                return (
-                  <div
-                    key={tokenUniqueKey}
-                    className="asset-item token-asset-item"
-                    onClick={() => setExpandedToken(isExpanded ? null : tokenUniqueKey)}
-                  >
-                    <div className="asset-main">
-                      <div className="asset-logo">
-                        <CurrencyWithIcon
-                          token={{ ...token.Balance, ...issuer }}
-                          options={{ disableTokenLink: true }}
-                        />
-                      </div>
-                      <div className="asset-value">
-                        <div className="asset-amount">{shortNiceNumber(balance)}</div>
-                        {fiatValue > 0 && (
-                          <div className="asset-fiat">{shortNiceNumber(fiatValue, 2, 1, selectedCurrency)}</div>
-                        )}
-                      </div>
-                    </div>
-                    {isExpanded && (
-                      <div className="asset-details">
-                        {!isLpToken && token.priceNativeCurrencySpot ? (
-                          <>
-                            <div className="detail-row">
-                              <span>Rate ({nativeCurrency}):</span>
-                              <span>
-                                1 {niceCurrency(token.Balance?.currency)} ={' '}
-                                {shortNiceNumber(token.priceNativeCurrencySpot, 6, 6)} {nativeCurrency}
-                              </span>
-                            </div>
-                            {tokenFiatRate && selectedCurrency ? (
-                              <div className="detail-row">
-                                <span>Rate ({selectedCurrency?.toUpperCase()}):</span>
-                                <span>
-                                  1 {niceCurrency(token.Balance?.currency)} ={' '}
-                                  <span className="tooltip no-brake" suppressHydrationWarning>
-                                    {shortNiceNumber(
-                                      token.priceNativeCurrencySpot * tokenFiatRate,
-                                      2,
-                                      1,
-                                      selectedCurrency
-                                    )}
-                                    <span className="tooltiptext no-brake" suppressHydrationWarning>
-                                      {niceNumber(
-                                        token.priceNativeCurrencySpot * tokenFiatRate,
-                                        null,
-                                        selectedCurrency,
-                                        8
-                                      )}
-                                    </span>
-                                  </span>
-                                </span>
-                              </div>
-                            ) : null}
-                          </>
-                        ) : null}
-                        <div className="detail-row">
-                          <span>Balance:</span>
-                          <span className="copy-inline">
-                            <span>{fullNiceNumber(balance)}</span>
-                            <span onClick={(event) => event.stopPropagation()}>
-                              <CopyButton text={balance} />
-                            </span>
-                          </span>
-                        </div>
-                        {isLpToken ? (
-                          <>
-                            {(() => {
-                              const asset1 = token.Balance?.currencyDetails?.asset
-                              const asset2 = token.Balance?.currencyDetails?.asset2
-
-                              return (
-                                <>
-                                  <div className="detail-row">
-                                    <span>LP Token:</span>
-                                    <span className="copy-inline">
-                                      <span>{token.Balance?.currency}</span>
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CopyButton text={token.Balance?.currency} />
-                                      </span>
-                                    </span>
-                                  </div>
-                                  {asset1 && (
-                                    <>
-                                      <div className="detail-row">
-                                        <span>Asset 1:</span>
-                                        <span className="copy-inline">
-                                          <span>{niceCurrency(asset1.currency)}</span>
-                                          {asset1?.issuer && (
-                                            <>
-                                              {' '}
-                                              <span>
-                                                ({addressUsernameOrServiceLink(asset1, 'issuer', { short: 6 })})
-                                              </span>
-                                              <Link
-                                                href={`/token/${asset1.issuer}/${asset1.currency}`}
-                                                className="inline-link-icon tooltip"
-                                                onClick={(event) => event.stopPropagation()}
-                                              >
-                                                <LinkIcon />
-                                                <span className="tooltiptext no-brake">Token page</span>
-                                              </Link>
-                                            </>
-                                          )}
-                                        </span>
-                                      </div>
-                                      <div className="detail-row">
-                                        <span>Asset 2:</span>
-                                        <span className="copy-inline">
-                                          <span>{niceCurrency(asset2?.currency)}</span>
-                                          {asset2?.issuer && (
-                                            <>
-                                              {' '}
-                                              <span>
-                                                ({addressUsernameOrServiceLink(asset2, 'issuer', { short: 6 })})
-                                              </span>
-                                              <Link
-                                                href={`/token/${asset2.issuer}/${asset2.currency}`}
-                                                className="inline-link-icon tooltip"
-                                                onClick={(event) => event.stopPropagation()}
-                                              >
-                                                <LinkIcon />
-                                                <span className="tooltiptext no-brake">Token page</span>
-                                              </Link>
-                                            </>
-                                          )}
-                                        </span>
-                                      </div>
-                                    </>
-                                  )}
-                                </>
-                              )
-                            })()}
-                          </>
-                        ) : (
-                          <>
-                            <div className="detail-row">
-                              <span>Currency:</span>
-                              <span className="copy-inline">
-                                <span>{token.Balance?.currency}</span>
-                                <Link
-                                  href={`/token/${issuer?.issuer}/${token.Balance?.currency}`}
-                                  className="inline-link-icon tooltip"
-                                  onClick={(event) => event.stopPropagation()}
-                                >
-                                  <LinkIcon />
-                                  <span className="tooltiptext no-brake">Token page</span>
-                                </Link>
-                                <span onClick={(event) => event.stopPropagation()}>
-                                  <CopyButton text={token.Balance?.currency} />
-                                </span>
-                              </span>
-                            </div>
-                          </>
-                        )}
-                        {!isLpToken && (
-                          <>
-                            <div className="detail-row">
-                              <span>Issuer:</span>
-                              <span className="copy-inline">
-                                <span className="address-text">{issuer?.issuer}</span>
-                                <Link
-                                  href={`/account/${issuer?.issuer}`}
-                                  className="inline-link-icon tooltip"
-                                  onClick={(event) => event.stopPropagation()}
-                                >
-                                  <LinkIcon />
-                                  <span className="tooltiptext no-brake">Issuer account page</span>
-                                </Link>
-                                <span onClick={(event) => event.stopPropagation()}>
-                                  <CopyButton text={issuer?.issuer} />
-                                </span>
-                              </span>
-                            </div>
-                            {token.Balance?.issuerDetails?.username && (
-                              <div className="detail-row">
-                                <span>Service:</span>
-                                <span>{token.Balance?.issuerDetails?.username}</span>
-                              </div>
-                            )}
-                          </>
-                        )}
-                        {token.LockedBalance?.value && parseFloat(token.LockedBalance.value) > 0 && (
-                          <div className="detail-row">
-                            <span>Locked:</span>
-                            <span>{fullNiceNumber(token.LockedBalance.value)}</span>
-                          </div>
-                        )}
-                        {!isLpToken && token.HighLimit?.issuer === data?.address ? (
-                          <>
-                            <div className="detail-row">
-                              <span>{isLoggedIn ? 'Your limit' : 'Limit'}:</span>
-                              <span>
-                                {fullNiceNumber(token.HighLimit?.value)}
-                                {isLoggedIn && (
-                                  <>
-                                    {' '}
-                                    <Link
-                                      href={`/services/trustline?currency=${token.Balance?.currency}&currencyIssuer=${issuer?.issuer}&mode=advanced&limit=${token.HighLimit?.value}`}
-                                      onClick={(event) => event.stopPropagation()}
-                                      className="change-limit-link"
-                                    >
-                                      [change]
-                                    </Link>
-                                  </>
-                                )}
-                              </span>
-                            </div>
-                            {parseFloat(token.LowLimit?.value) !== 0 && (
-                              <div className="detail-row">
-                                <span>Counterparty limit:</span>
-                                <span>{fullNiceNumber(token.LowLimit?.value)}</span>
-                              </div>
-                            )}
-                          </>
-                        ) : !isLpToken ? (
-                          <>
-                            <div className="detail-row">
-                              <span>{isLoggedIn ? 'Your limit' : 'Limit'}:</span>
-                              <span>
-                                {fullNiceNumber(token.LowLimit?.value)}
-                                {isLoggedIn && (
-                                  <>
-                                    {' '}
-                                    <Link
-                                      href={`/services/trustline?currency=${token.Balance?.currency}&currencyIssuer=${issuer?.issuer}&mode=advanced&limit=${token.LowLimit?.value}`}
-                                      onClick={(event) => event.stopPropagation()}
-                                      className="change-limit-link"
-                                    >
-                                      [change]
-                                    </Link>
-                                  </>
-                                )}
-                              </span>
-                            </div>
-                            {parseFloat(token.HighLimit?.value) !== 0 && (
-                              <div className="detail-row">
-                                <span>Counterparty limit:</span>
-                                <span>{fullNiceNumber(token.HighLimit?.value)}</span>
-                              </div>
-                            )}
-                          </>
-                        ) : null}
-                        {token.flags && (
-                          <>
-                            {(token.flags.lowFreeze || token.flags.highFreeze) && (
-                              <div className="detail-row">
-                                <span>Freeze:</span>
-                                <span className="red">Yes</span>
-                              </div>
-                            )}
-                            {(token.flags.lowNoRipple || token.flags.highNoRipple) && (
-                              <div className="detail-row">
-                                <span>No Rippling:</span>
-                                <span className="green">Enabled</span>
-                              </div>
-                            )}
-                            {(token.flags.lowAuth || token.flags.highAuth) && (
-                              <div className="detail-row">
-                                <span>Authorized:</span>
-                                <span className="green">Yes</span>
-                              </div>
-                            )}
-                            {(token.flags.lowDeepFreeze || token.flags.highDeepFreeze) && (
-                              <div className="detail-row">
-                                <span>Deep Freeze:</span>
-                                <span className="red">Yes</span>
-                              </div>
-                            )}
-                          </>
-                        )}
-                        {isLpToken && token.Balance?.currencyDetails?.asset && (
-                          <div className="lp-actions">
-                            <Link
-                              href={`/services/amm/deposit?currency=${token.Balance?.currencyDetails?.asset?.currency}${
-                                token.Balance?.currencyDetails?.asset?.issuer
-                                  ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
-                                  : ''
-                              }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
-                                token.Balance?.currencyDetails?.asset2?.issuer
-                                  ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
-                                  : ''
-                              }`}
-                              className="lp-action-btn"
-                            >
-                              Deposit
-                            </Link>
-                            <Link
-                              href={`/services/amm/withdraw?currency=${token.Balance?.currencyDetails?.asset?.currency}${
-                                token.Balance?.currencyDetails?.asset?.issuer
-                                  ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
-                                  : ''
-                              }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
-                                token.Balance?.currencyDetails?.asset2?.issuer
-                                  ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
-                                  : ''
-                              }`}
-                              className="lp-action-btn"
-                            >
-                              Withdraw
-                            </Link>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-
-              {(() => {
-                const showMoreStepButton = hiddenTokensCount > 0
-                const showAllButtonVisible = hiddenTokensCount > 10
-                const showFewerButton = visibleTokens.length > TOKEN_PREVIEW_LIMIT
-                if (!showMoreStepButton && !showAllButtonVisible && !showFewerButton) return null
-
-                return (
-                  <div className="asset-compact-actions">
-                    {showMoreStepButton && (
-                      <button
-                        type="button"
-                        className="asset-compact-toggle"
-                        onClick={() => {
-                          const nextLimit = Math.min(activeTokenList.length, visibleTokens.length + 10)
-                          if (nextLimit >= activeTokenList.length) {
-                            setShowAllTokens(true)
-                          }
-                          setTokenDisplayLimit(nextLimit)
-                        }}
-                      >
-                        Show {Math.min(10, hiddenTokensCount)} more {activeTokenTabLabel}
-                      </button>
-                    )}
-                    {showAllButtonVisible && (
-                      <button
-                        type="button"
-                        className="asset-compact-toggle"
-                        onClick={() => {
-                          setShowAllTokens(true)
-                          setTokenDisplayLimit(activeTokenList.length)
-                        }}
-                      >
-                        Show all {activeTokenTabLabel} (+{hiddenTokensCount} more)
-                      </button>
-                    )}
-                    {showFewerButton && (
-                      <button
-                        type="button"
-                        className="asset-compact-toggle"
-                        onClick={() => {
-                          setShowAllTokens(false)
-                          setTokenDisplayLimit(TOKEN_PREVIEW_LIMIT)
-                          setExpandedToken(null)
-                        }}
-                      >
-                        Show fewer {activeTokenTabLabel}
-                      </button>
-                    )}
-                  </div>
-                )
-              })()}
-
-              {hasHeldMpts && (
-                <>
-                  <div className="section-header-row object-section-header-row">
-                    <div className="section-title object-section-title">
-                      MPTs <span className="object-title-count">{heldMpts.length}</span>
-                    </div>
-                  </div>
-
-                  <div className="cards-list dex-orders-list">
-                    {heldMpts.map((mptNode, index) => {
-                      const rowKey = `${mptNode?.index || mptId(mptNode) || 'mpt'}-${index}`
-                      const isExpanded = expandedHeldMptKey === rowKey
-                      const balanceValue = scaleAmount(
-                        mptNode?.MPTAmount || 0,
-                        mptNode?.mptokenCurrencyDetails?.scale || null
-                      )
-
-                      return (
-                        <div
-                          key={rowKey}
-                          className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
-                          onClick={() => setExpandedHeldMptKey(isExpanded ? null : rowKey)}
-                        >
-                          <div className="asset-main">
-                            <div className="asset-logo">
-                              <CurrencyWithIcon token={mptNode} options={{ disableTokenLink: true }} hideIssuer />
-                            </div>
-                            <div className="asset-value">
-                              <div className="asset-amount">{shortNiceNumber(balanceValue)}</div>
-                            </div>
-                          </div>
-
-                          {isExpanded && (
-                            <div className="asset-details">
-                              <div className="detail-row">
-                                <span>MPT ID:</span>
-                                <span className="copy-inline">
-                                  <span>{shortHash(mptId(mptNode) || '-')}</span>
-                                  {!!mptId(mptNode) && (
-                                    <span onClick={(event) => event.stopPropagation()}>
-                                      <CopyButton text={mptId(mptNode)} />
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-                              <div className="detail-row">
-                                <span>Balance:</span>
-                                <span>{fullNiceNumber(balanceValue)}</span>
-                              </div>
-                              {mptNode?.mptokenCurrencyDetails?.account && (
-                                <div className="detail-row">
-                                  <span>Issuer:</span>
-                                  <span className="copy-inline">
-                                    <AddressWithIconInline
-                                      data={{
-                                        address: mptNode.mptokenCurrencyDetails.account,
-                                        addressDetails: mptNode?.mptokenCurrencyDetails?.accountDetails || {}
-                                      }}
-                                      name="address"
-                                      options={{ short: 6 }}
-                                    />
-                                    <span onClick={(event) => event.stopPropagation()}>
-                                      <CopyButton text={mptNode.mptokenCurrencyDetails.account} />
-                                    </span>
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </>
-              )}
-
-              {hasUriTokens && (
-                <>
-                  <div className="section-header-row nft-section-header-row">
-                    <div className="section-title nft-section-title">NFTs</div>
-                  </div>
-
-                  <div className="nft-tab-row nft-tab-row-outside">
-                    <div className="nft-tab-switch">
-                      <button
-                        type="button"
-                        className={`nft-tab-btn ${uriTab === 'owned' ? 'active' : ''}`}
-                        onClick={() => setUriTab('owned')}
-                      >
-                        Owned URI ({uriTokens.length})
-                      </button>
-                      {hasMintedUriTokens && (
-                        <button
-                          type="button"
-                          className={`nft-tab-btn ${uriTab === 'minted' ? 'active' : ''}`}
-                          onClick={() => setUriTab('minted')}
-                        >
-                          Minted URI ({uriTokens.filter((token) => token?.Issuer === data?.address).length})
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="cards-list">
-                    {activeUriTokens.map((uriToken, index) => {
-                      const tokenKey = `${uriToken?.index || 'uri-token'}-${uriTab}-${index}`
-                      const isExpanded = expandedUriTokenKey === tokenKey
-                      const uriTokenId = uriToken?.index
-                      const isOnSale = !!(uriToken?.Amount || uriToken?.Destination)
-
-                      return (
-                        <div
-                          key={tokenKey}
-                          className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
-                          onClick={() => setExpandedUriTokenKey(isExpanded ? null : tokenKey)}
-                        >
-                          <div className="asset-main">
-                            <div className="asset-logo">
-                              <div className="nft-asset-info">
-                                <div className="nft-asset-text">
-                                  <div className="asset-summary-title">URI token {index + 1}</div>
-                                  <div className="asset-fiat">{uriTokenId ? shortHash(uriTokenId) : '-'}</div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="asset-value">
-                              <div className="asset-fiat">{isOnSale ? 'On offer' : 'Owned'}</div>
-                            </div>
-                          </div>
-
-                          {isExpanded && (
-                            <div className="asset-details">
-                              <div className="detail-row">
-                                <span>Token ID:</span>
-                                <span className="copy-inline">
-                                  <span>{uriTokenId ? shortHash(uriTokenId) : '-'}</span>
-                                  {!!uriTokenId && (
-                                    <span onClick={(event) => event.stopPropagation()}>
-                                      <CopyButton text={uriTokenId} />
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-
-                              {!!uriToken?.Issuer && (
-                                <div className="detail-row">
-                                  <span>Issuer:</span>
-                                  <span className="copy-inline">
-                                    <AddressWithIconInline
-                                      data={{
-                                        address: uriToken.Issuer,
-                                        addressDetails: uriToken?.issuerDetails || {}
-                                      }}
-                                      name="address"
-                                      options={{ short: 6 }}
-                                    />
-                                    <span onClick={(event) => event.stopPropagation()}>
-                                      <CopyButton text={uriToken.Issuer} />
-                                    </span>
-                                  </span>
-                                </div>
-                              )}
-
-                              {!!uriToken?.Destination && (
-                                <div className="detail-row">
-                                  <span>Destination:</span>
-                                  <span className="copy-inline">
-                                    <AddressWithIconInline
-                                      data={{
-                                        address: uriToken.Destination,
-                                        addressDetails: uriToken?.destinationDetails || {}
-                                      }}
-                                      name="address"
-                                      options={{ short: 6 }}
-                                    />
-                                    <span onClick={(event) => event.stopPropagation()}>
-                                      <CopyButton text={uriToken.Destination} />
-                                    </span>
-                                  </span>
-                                </div>
-                              )}
-
-                              {!!uriToken?.Amount && (
-                                <div className="detail-row">
-                                  <span>Amount:</span>
-                                  <span>{amountFormat(uriToken.Amount, { icon: true, precise: 'nice' })}</span>
-                                </div>
-                              )}
-
-                              {!!uriToken?.URI && (
-                                <div className="detail-row">
-                                  <span>URI:</span>
-                                  <span className="copy-inline">
-                                    <span className="address-text">{String(uriToken.URI)}</span>
-                                    <span onClick={(event) => event.stopPropagation()}>
-                                      <CopyButton text={String(uriToken.URI)} />
-                                    </span>
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </>
-              )}
-
-              {hasAnyNftSectionData && (
-                <>
-                  <div className="section-header-row nft-section-header-row">
-                    <div className="section-title nft-section-title">NFTs</div>
-                    {activeNftCount > 0 && data?.address && (
-                      <Link className="section-link" href={activeNftViewAllHref}>
-                        View all
-                      </Link>
-                    )}
-                  </div>
-
-                  <div className="nft-tab-row nft-tab-row-outside">
-                    <div className="nft-tab-switch">
-                      {hasOwnedNfts && (
-                        <button
-                          type="button"
-                          className={`nft-tab-btn ${nftTab === 'owned' ? 'active' : ''}`}
-                          onClick={() => setNftTab('owned')}
-                        >
-                          Owned{nftTabCountLabels.owned ? ` (${nftTabCountLabels.owned})` : ''}
-                        </button>
-                      )}
-                      {hasSoldNfts && (
-                        <button
-                          type="button"
-                          className={`nft-tab-btn ${nftTab === 'sold' ? 'active' : ''}`}
-                          onClick={() => setNftTab('sold')}
-                        >
-                          Sold{nftTabCountLabels.sold ? ` (${nftTabCountLabels.sold})` : ''}
-                        </button>
-                      )}
-                      {hasMintedNfts && (
-                        <button
-                          type="button"
-                          className={`nft-tab-btn ${nftTab === 'minted' ? 'active' : ''}`}
-                          onClick={() => setNftTab('minted')}
-                        >
-                          Minted{nftTabCountLabels.minted ? ` (${nftTabCountLabels.minted})` : ''}
-                        </button>
-                      )}
-                      {hasBurnedNfts && (
-                        <button
-                          type="button"
-                          className={`nft-tab-btn ${nftTab === 'burned' ? 'active' : ''}`}
-                          onClick={() => setNftTab('burned')}
-                        >
-                          Burned{nftTabCountLabels.burned ? ` (${nftTabCountLabels.burned})` : ''}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="nft-section-content">
-                    {activeNftLoading ? (
-                      <div className="asset-fiat">Loading {nftTab} NFTs...</div>
-                    ) : activeNftCount > 0 ? (
-                      <>
-                        <div className="cards-list">
-                          {activeNftPreview.map((nft, nftIndex) => {
-                            const nftId =
-                              nft?.nftokenID || nft?.NFTokenID || nft?.nftoken?.nftokenID || nft?.nftoken?.NFTokenID
-                            if (!nftId) return null
-
-                            const cardKey = `${nftTab}-${nftId}-${nftIndex}`
-                            const isExpanded = expandedNftCardKey === cardKey
-                            const toggleCard = () => setExpandedNftCardKey(isExpanded ? null : cardKey)
-                            const handleKeyToggle = (event) => {
-                              if (event.key === 'Enter' || event.key === ' ') {
-                                event.preventDefault()
-                                toggleCard()
-                              }
-                            }
-
-                            const shortNftId =
-                              typeof nftId === 'string' && nftId.length > 12
-                                ? `${nftId.slice(0, 6)}...${nftId.slice(-6)}`
-                                : nftId
-                            const shortTokenId = shortHash(nftId)
-                            const nftDisplayData = nft?.nftoken || nft
-                            const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortNftId
-                            const soldAt = nft?.acceptedAt || nft?.soldAt
-                            const updatedAt = soldAt || nft?.updatedAt || nft?.createdAt
-                            const soldPrice =
-                              nftTab === 'sold' && nft?.amount
-                                ? amountFormat(nft.amount, { short: true, maxFractionDigits: 2 })
-                                : null
-                            const soldPriceFiat =
-                              nftTab === 'sold' && selectedCurrency
-                                ? convertedAmount(nft, selectedCurrency.toLowerCase(), { short: true })
-                                : null
-                            const updatedTimeAgo = updatedAt ? timeFromNow(updatedAt, i18n) : null
-                            const updatedExact = updatedAt ? fullDateAndTime(updatedAt) : null
-                            const actionVerb =
-                              nftTab === 'sold'
-                                ? 'Sold'
-                                : nftTab === 'minted'
-                                  ? 'Minted'
-                                  : nftTab === 'burned'
-                                    ? 'Burned'
-                                    : 'Updated'
-                            const fallbackSecondaryLine =
-                              nftTab === 'owned' && shortNftId ? `Token ID ${shortNftId}` : actionVerb
-                            const secondaryLine = updatedTimeAgo ? (
-                              <>
-                                {actionVerb} {updatedTimeAgo}
-                              </>
-                            ) : (
-                              fallbackSecondaryLine
-                            )
-
-                            return (
-                              <div
-                                key={`${nftId}-${nftIndex}`}
-                                className="asset-item token-asset-item"
-                                role="button"
-                                tabIndex={0}
-                                aria-expanded={isExpanded}
-                                onClick={toggleCard}
-                                onKeyDown={handleKeyToggle}
-                              >
-                                <div className="asset-main">
-                                  <div className="asset-logo">
-                                    <div className="nft-asset-info">
-                                      <Link
-                                        href={`/nft/${nftId}`}
-                                        onClick={(event) => event.stopPropagation()}
-                                        className="nft-asset-thumb"
-                                      >
-                                        <NftImage
-                                          nft={nftDisplayData}
-                                          style={{
-                                            width: 40,
-                                            height: 40,
-                                            borderRadius: '6px',
-                                            verticalAlign: 'middle'
-                                          }}
-                                        />
-                                      </Link>
-                                      <div className="nft-asset-text">
-                                        <div className="asset-summary-title" title={nftTitle}>
-                                          {nftTitle}
-                                        </div>
-                                        <div className="asset-fiat">{secondaryLine}</div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="asset-value">
-                                    {soldPrice ? (
-                                      <>
-                                        <div className="asset-amount">{soldPrice}</div>
-                                        {soldPriceFiat && (
-                                          <div className="asset-fiat" suppressHydrationWarning>
-                                            ≈{soldPriceFiat}
-                                          </div>
-                                        )}
-                                      </>
-                                    ) : updatedTimeAgo ? (
-                                      <div className="asset-fiat">{updatedTimeAgo}</div>
-                                    ) : null}
-                                  </div>
-                                </div>
-                                {isExpanded && (
-                                  <div className="asset-details">
-                                    <div className="detail-row">
-                                      <span>Token ID:</span>
-                                      <span className="copy-inline">
-                                        <span>{shortTokenId}</span>
-                                        <Link
-                                          href={`/nft/${nftId}`}
-                                          className="inline-link-icon tooltip"
-                                          onClick={(event) => event.stopPropagation()}
-                                        >
-                                          <LinkIcon />
-                                          <span className="tooltiptext no-brake">NFT page</span>
-                                        </Link>
-                                        <span onClick={(event) => event.stopPropagation()}>
-                                          <CopyButton text={nftId} />
-                                        </span>
-                                      </span>
-                                    </div>
-                                    {soldPrice && (
-                                      <div className="detail-row">
-                                        <span>Sale price:</span>
-                                        <span>
-                                          {soldPrice}
-                                          {soldPriceFiat && (
-                                            <span className="fiat-line" suppressHydrationWarning>
-                                              {' '}
-                                              ≈{soldPriceFiat}
-                                            </span>
-                                          )}
-                                        </span>
-                                      </div>
-                                    )}
-                                    {updatedExact && (
-                                      <div className="detail-row">
-                                        <span>Last activity:</span>
-                                        <span>{updatedExact}</span>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            )
-                          })}
-                        </div>
-                        {showNftControlsVisible && (
-                          <div className="asset-compact-actions">
-                            {activeNftShowMoreAvailable && (
-                              <button
-                                type="button"
-                                className="asset-compact-toggle"
-                                onClick={() =>
-                                  setNftDisplayLimit((currentLimit) =>
-                                    Math.min(activeNftList.length, currentLimit + NFT_LOAD_MORE_STEP)
-                                  )
-                                }
-                              >
-                                Show {Math.min(NFT_LOAD_MORE_STEP, activeNftRemainingCount)} more {activeNftTabLabel}{' '}
-                                NFTs
-                              </button>
-                            )}
-                            {showNftFewerButton && (
-                              <button
-                                type="button"
-                                className="asset-compact-toggle"
-                                onClick={() => {
-                                  setNftDisplayLimit(NFT_INITIAL_LIMIT)
-                                  setExpandedNftCardKey(null)
-                                }}
-                              >
-                                Show fewer {activeNftTabLabel} NFTs
-                              </button>
-                            )}
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="asset-fiat">{activeNftEmptyLabel}</div>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          </CollapsibleColumn>
-
-          {/* Column 3: Transactions */}
-          <CollapsibleColumn>
-            <div className="transactions-section">
-              <div className="section-header-row">
-                <span className="section-title">Transactions</span>
-                <div className="tx-header-actions">
-                  <button
-                    className={`tx-filter-toggle ${showTxFilters ? 'active' : ''}`}
-                    onClick={() => setShowTxFilters((prev) => !prev)}
-                    aria-label="Toggle transaction filters"
-                    type="button"
-                  >
-                    <FaGear />
-                  </button>
-                  {data?.address && (
-                    <Link className="section-link" href={`/account/${data.address}/transactions`}>
-                      View all
-                    </Link>
+                  )}
+                  {lpTokensCount > 0 && (
+                    <button
+                      type="button"
+                      className={`token-tab-btn ${tokenTab === 'lp' ? 'active' : ''}`}
+                      onClick={() => setTokenTab('lp')}
+                    >
+                      LP Tokens ({lpTokensCount})
+                    </button>
                   )}
                 </div>
               </div>
+            )}
 
-              {showTxFilters && (
-                <div className="tx-filters-panel">
-                  <div className="tx-filter-grid">
-                    <label className="tx-filter-field">
-                      <span>Order</span>
-                      <select value={txOrder} onChange={(event) => setTxOrder(event.target.value)}>
-                        <option value="newest">Newest first</option>
-                        <option value="oldest">Oldest first</option>
-                      </select>
-                    </label>
+            {/* Tokens */}
+            {visibleTokens.map((token, index) => {
+              const issuer = token.HighLimit?.issuer === data?.address ? token.LowLimit : token.HighLimit
+              const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
+              const fiatValue = (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
+              const tokenUniqueKey = `${token.Balance?.currency || 'token'}-${issuer?.issuer || 'issuer'}-${index}`
+              const isExpanded = expandedToken === tokenUniqueKey
+              const isLpToken = isLpTrustlineToken(token)
 
-                    <label className="tx-filter-field">
-                      <span>Type</span>
-                      <select value={txType} onChange={(event) => setTxType(event.target.value)}>
-                        <option value="all">All types</option>
-                        <option value="payment">Payment</option>
-                        <option value="nft">NFT</option>
-                        <option value="amm">AMM</option>
-                        <option value="order">DEX</option>
-                        <option value="escrow">Escrow</option>
-                        <option value="channel">Channel</option>
-                        <option value="check">Check</option>
-                        <option value="trustline">Trustline</option>
-                        <option value="settings">Settings</option>
-                        <option value="accountDelete">Account delete</option>
-                      </select>
-                    </label>
-
-                    <label className="tx-filter-field">
-                      <span>Direction</span>
-                      <select value={txInitiated} onChange={(event) => setTxInitiated(event.target.value)}>
-                        <option value="all">Incoming & outgoing</option>
-                        <option value="true">Outgoing only</option>
-                        <option value="false">Incoming only</option>
-                      </select>
-                    </label>
-
-                    <label className="tx-filter-field">
-                      <span>Failures</span>
-                      <select value={txExcludeFailures} onChange={(event) => setTxExcludeFailures(event.target.value)}>
-                        <option value="all">Include failed</option>
-                        <option value="true">Exclude failed</option>
-                      </select>
-                    </label>
-
-                    <label className="tx-filter-field tx-filter-field-wide">
-                      <span>Counterparty</span>
-                      <input
-                        type="text"
-                        value={txCounterparty}
-                        onChange={(event) => setTxCounterparty(event.target.value)}
-                        placeholder="Address"
-                      />
-                    </label>
-
-                    <label className="tx-filter-field">
-                      <span>From</span>
-                      <input
-                        type="datetime-local"
-                        value={txFromDate}
-                        onChange={(event) => setTxFromDate(event.target.value)}
-                      />
-                    </label>
-
-                    <label className="tx-filter-field">
-                      <span>To</span>
-                      <input
-                        type="datetime-local"
-                        value={txToDate}
-                        onChange={(event) => setTxToDate(event.target.value)}
-                      />
-                    </label>
+              return (
+                <div
+                  key={tokenUniqueKey}
+                  className="asset-item token-asset-item"
+                  onClick={() => setExpandedToken(isExpanded ? null : tokenUniqueKey)}
+                >
+                  <div className="asset-main">
+                    <div className="asset-logo">
+                      <CurrencyWithIcon token={{ ...token.Balance, ...issuer }} options={{ disableTokenLink: true }} />
+                    </div>
+                    <div className="asset-value">
+                      <div className="asset-amount">{shortNiceNumber(balance)}</div>
+                      {fiatValue > 0 && (
+                        <div className="asset-fiat">{shortNiceNumber(fiatValue, 2, 1, selectedCurrency)}</div>
+                      )}
+                    </div>
                   </div>
+                  {isExpanded && (
+                    <div className="asset-details">
+                      {!isLpToken && token.priceNativeCurrencySpot ? (
+                        <>
+                          <div className="detail-row">
+                            <span>Rate ({nativeCurrency}):</span>
+                            <span>
+                              1 {niceCurrency(token.Balance?.currency)} ={' '}
+                              {shortNiceNumber(token.priceNativeCurrencySpot, 6, 6)} {nativeCurrency}
+                            </span>
+                          </div>
+                          {tokenFiatRate && selectedCurrency ? (
+                            <div className="detail-row">
+                              <span>Rate ({selectedCurrency?.toUpperCase()}):</span>
+                              <span>
+                                1 {niceCurrency(token.Balance?.currency)} ={' '}
+                                <span className="tooltip no-brake" suppressHydrationWarning>
+                                  {shortNiceNumber(
+                                    token.priceNativeCurrencySpot * tokenFiatRate,
+                                    2,
+                                    1,
+                                    selectedCurrency
+                                  )}
+                                  <span className="tooltiptext no-brake" suppressHydrationWarning>
+                                    {niceNumber(
+                                      token.priceNativeCurrencySpot * tokenFiatRate,
+                                      null,
+                                      selectedCurrency,
+                                      8
+                                    )}
+                                  </span>
+                                </span>
+                              </span>
+                            </div>
+                          ) : null}
+                        </>
+                      ) : null}
+                      <div className="detail-row">
+                        <span>Balance:</span>
+                        <span className="copy-inline">
+                          <span>{fullNiceNumber(balance)}</span>
+                          <span onClick={(event) => event.stopPropagation()}>
+                            <CopyButton text={balance} />
+                          </span>
+                        </span>
+                      </div>
+                      {isLpToken ? (
+                        <>
+                          {(() => {
+                            const asset1 = token.Balance?.currencyDetails?.asset
+                            const asset2 = token.Balance?.currencyDetails?.asset2
 
-                  <label className="tx-filter-check">
-                    <input
-                      type="checkbox"
-                      checked={txFilterSpam}
-                      onChange={(event) => setTxFilterSpam(event.target.checked)}
-                    />
-                    <span>Exclude spam transactions</span>
-                  </label>
-
-                  <div className="tx-filter-actions">
-                    <button className="tx-filter-btn" type="button" onClick={resetTransactionFilters}>
-                      Reset
-                    </button>
-                    <button className="tx-filter-btn primary" type="button" onClick={applyTransactionFilters}>
-                      Search
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {transactionsLoading && (
-                <p className="grey tx-status-text">
-                  <span className="tx-inline-load">
-                    <span>Loading transactions</span>
-                    <span className="waiting inline" aria-hidden="true"></span>
-                  </span>
-                </p>
-              )}
-              {!transactionsLoading && transactionsError && <p className="red tx-status-text">{transactionsError}</p>}
-
-              {!transactionsLoading &&
-                !transactionsError &&
-                recentTransactions.length === 0 &&
-                !transactionsSearchPaused && <p className="grey tx-status-text">No transactions found.</p>}
-
-              {!transactionsLoading &&
-                !transactionsError &&
-                (recentTransactions.length > 0 || transactionsSearchPaused) &&
-                (() => {
-                  const renderTransactionsList = () => (
-                    <div className="cards-list">
-                      {recentTransactions.map((txdata, index) => {
-                        const tx = txdata?.tx
-                        const outcome = txdata?.outcome
-                        const isSuccessful = outcome?.result === 'tesSUCCESS'
-                        const txHash = tx?.hash
-                        const txKey = txHash || `${tx?.TransactionType || 'tx'}-${index}`
-                        const isExpanded = expandedTransactionKey === txKey
-                        const shortHash = txHash ? `${txHash.slice(0, 6)}...${txHash.slice(-6)}` : '-'
-                        const txHistoricalRate = Number.isFinite(Number(txdata?.fiatRates?.[selectedCurrency]))
-                          ? Number(txdata.fiatRates[selectedCurrency])
-                          : null
-                        const txType = tx?.TransactionType || ''
-                        const isAmmDepositOrWithdraw = txType === 'AMMDeposit' || txType === 'AMMWithdraw'
-                        const isLpAmount = (amount) => {
-                          if (!amount || typeof amount !== 'object') return false
-                          if (amount?.currencyDetails?.type === 'lp_token') return true
-                          const amountCurrency = amount?.currency
-                          return typeof amountCurrency === 'string' && amountCurrency.substring(0, 2) === '03'
-                        }
-
-                        const changes = addressBalanceChanges(txdata, data?.address) || []
-                        const firstChange = changes?.[0]
-                        const positiveChange = changes.find((change) => Number(change?.value || 0) > 0)
-                        let collapsedPrimaryChange = changes.length > 2 ? positiveChange || firstChange : firstChange
-                        let collapsedSecondaryChange = changes.length === 2 ? changes[1] : null
-                        let collapsedMoreCount = changes.length > 2 ? changes.length - 1 : 0
-                        if (isAmmDepositOrWithdraw) {
-                          const ammTokenChanges = changes.filter((change) => !isLpAmount(change))
-                          collapsedPrimaryChange = ammTokenChanges[0] || null
-                          collapsedSecondaryChange = ammTokenChanges[1] || null
-                          collapsedMoreCount = 0
-                        }
-                        const primaryChangeValue = Number(collapsedPrimaryChange?.value || 0)
-                        const primaryChangeClass =
-                          primaryChangeValue > 0 ? 'green' : primaryChangeValue < 0 ? 'red' : ''
-                        const primaryChangeFiat = collapsedPrimaryChange
-                          ? nativeCurrencyToFiat({
-                              amount: collapsedPrimaryChange,
-                              selectedCurrency,
-                              fiatRate: txHistoricalRate,
-                              asText: true
-                            })
-                          : ''
-                        const secondaryChangeValue = Number(collapsedSecondaryChange?.value || 0)
-                        const secondaryChangeClass =
-                          secondaryChangeValue > 0 ? 'green' : secondaryChangeValue < 0 ? 'red' : ''
-                        const secondaryChangeFiat = collapsedSecondaryChange
-                          ? nativeCurrencyToFiat({
-                              amount: collapsedSecondaryChange,
-                              selectedCurrency,
-                              fiatRate: txHistoricalRate,
-                              asText: true
-                            })
-                          : ''
-                        const txAmountRaw = tx?.Amount
-                        const hasObjectTxAmount = typeof txAmountRaw === 'object' && txAmountRaw !== null
-                        const isMissingOrZeroTxAmount = typeof txAmountRaw === 'undefined' || txAmountRaw === '0'
-                        const shouldShowExpandedRate =
-                          changes.length > 0 || hasObjectTxAmount || !isMissingOrZeroTxAmount
-
-                        const sourceAddress = txdata?.specification?.source?.address
-                        const destinationAddress = txdata?.specification?.destination?.address
-                        const isSource = sourceAddress === data?.address
-                        const counterparty = isSource ? destinationAddress : sourceAddress
-                        const isAccountDeleteTx = tx?.TransactionType === 'AccountDelete'
-                        const removedAccountAddress = isAccountDeleteTx ? sourceAddress || tx?.Account || null : null
-                        const removedAccountDetails = isAccountDeleteTx
-                          ? txdata?.specification?.source?.addressDetails
-                          : null
-                        const isSelfPayment =
-                          tx?.TransactionType === 'Payment' &&
-                          !!sourceAddress &&
-                          !!destinationAddress &&
-                          sourceAddress === destinationAddress
-                        const isRipplingPayment =
-                          tx?.TransactionType === 'Payment' && isRipplingOnIssuer(changes, data?.address)
-                        const counterpartyDetails = isSource
-                          ? txdata?.specification?.destination?.addressDetails
-                          : txdata?.specification?.source?.addressDetails
-
-                        const nftChanges = (outcome?.nftokenChanges || []).flatMap(
-                          (entry) => entry?.nftokenChanges || []
-                        )
-                        const nftAddressChanges = outcome?.nftokenChanges || []
-                        const nftSource =
-                          nftAddressChanges.length === 2
-                            ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'removed')
-                            : null
-                        const nftDestination =
-                          nftAddressChanges.length === 2
-                            ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'added')
-                            : null
-                        const nftTokenId =
-                          tx?.NFTokenID ||
-                          txdata?.meta?.nftoken_id ||
-                          txdata?.meta?.nftokenID ||
-                          txdata?.specification?.nftokenID ||
-                          txdata?.specification?.nftokenId ||
-                          txdata?.specification?.nftokenOffer?.nftokenID ||
-                          nftChanges.find((entry) => entry?.nftokenID)?.nftokenID
-                        const nftSellerAddress = nftSource?.address || null
-                        const nftSellerDetails = nftSource?.addressDetails || null
-                        const nftBuyerAddress = nftDestination?.address || null
-                        const nftBuyerDetails = nftDestination?.addressDetails || null
-                        const nftViewerRole =
-                          nftSellerAddress === data?.address
-                            ? 'seller'
-                            : nftBuyerAddress === data?.address
-                              ? 'buyer'
-                              : null
-                        const txTypeLower = txType.toLowerCase()
-                        const isAmmTx = txType.startsWith('AMM')
-                        const isDexOfferTx = txType === 'OfferCreate' || txType === 'OfferCancel'
-                        const myAddressOrderbookChanges =
-                          outcome?.orderbookChanges?.find((entry) => entry?.address === data?.address)
-                            ?.orderbookChanges || []
-                        const myOrderbookSequences = Array.from(
-                          new Set(myAddressOrderbookChanges.map((entry) => entry?.sequence).filter(Boolean))
-                        )
-                        const myOrderbookChange =
-                          myAddressOrderbookChanges.find(
-                            (entry) => entry?.sequence === (tx?.offerSequence || txdata?.specification?.orderSequence)
-                          ) || myAddressOrderbookChanges[0]
-                        const dexOfferDirection = (
-                          txdata?.specification?.flags
-                            ? txdata?.specification?.flags?.sell
-                            : myOrderbookChange?.direction
-                        )
-                          ? 'Sell'
-                          : 'Buy'
-                        const isMyDexOrder = tx?.Account === data?.address
-                        const dexOrderStatus = (() => {
-                          if (!isDexOfferTx) return null
-                          if (txType === 'OfferCancel') return 'canceled'
-                          if (changes?.length === 0 && isMyDexOrder) return 'placed'
-                          if (!isMyDexOrder) return 'fullfilled'
-                          return 'placed and fullfilled'
-                        })()
-                        const dexOfferShortLabel =
-                          isDexOfferTx && dexOrderStatus ? `${dexOfferDirection} order ${dexOrderStatus}` : null
-                        const dexCollapsedSequences =
-                          txType === 'OfferCancel'
-                            ? myOrderbookSequences.length > 0
-                              ? myOrderbookSequences
-                              : [tx?.offerSequence].filter(Boolean)
-                            : isMyDexOrder
-                              ? [tx?.Sequence || tx?.TicketSequence].filter(Boolean)
-                              : myOrderbookSequences
-                        const showDexCollapsedSequence = isDexOfferTx && dexCollapsedSequences.length > 0
-                        const dexTakerGets = txdata?.specification?.takerGets || myOrderbookChange?.takerGets || null
-                        const dexTakerPays = txdata?.specification?.takerPays || myOrderbookChange?.takerPays || null
-                        const isDexNotFullfilled =
-                          isDexOfferTx && typeof dexOrderStatus === 'string' && !dexOrderStatus.includes('fullfilled')
-                        const toSignedDexAmount = (amount, sign) => {
-                          if (!amount) return null
-
-                          if (typeof amount === 'object') {
-                            const numericValue = Math.abs(Number(amount?.value || 0))
-                            if (!Number.isFinite(numericValue)) return null
-                            return {
-                              ...amount,
-                              value: String(sign < 0 ? -numericValue : numericValue)
-                            }
-                          }
-
-                          const numericValue = Math.abs(Number(amount))
-                          if (!Number.isFinite(numericValue)) return null
-                          return sign < 0 ? -numericValue : numericValue
-                        }
-                        const dexSpecifiedChanges = isDexNotFullfilled
-                          ? [toSignedDexAmount(dexTakerGets, -1), toSignedDexAmount(dexTakerPays, 1)].filter(Boolean)
-                          : []
-                        const showDexSpecifiedOrderDetails =
-                          isDexOfferTx &&
-                          isMyDexOrder &&
-                          typeof dexOrderStatus === 'string' &&
-                          (dexOrderStatus.includes('placed') || dexOrderStatus === 'canceled') &&
-                          (!!dexTakerGets || !!dexTakerPays)
-                        const hasAmmVoteTradingFee = txType === 'AMMVote' && (tx?.TradingFee || tx?.TradingFee === 0)
-                        const ammVoteTradingFeeText = hasAmmVoteTradingFee ? `${tx.TradingFee / 100000}%` : null
-                        const isCreateNftOfferTx =
-                          txType === 'NFTokenCreateOffer' ||
-                          txTypeLower === 'createnftselloffer' ||
-                          txTypeLower === 'createnftbuyoffer'
-                        const isAcceptNftOfferTx =
-                          txType === 'NFTokenAcceptOffer' ||
-                          txTypeLower === 'acceptnftselloffer' ||
-                          txTypeLower === 'acceptnftbuyoffer' ||
-                          txTypeLower === 'acceptnftoffer'
-                        const isCancelNftOfferTx = txType === 'NFTokenCancelOffer' || txTypeLower === 'cancelnftoffer'
-                        const isNftOfferTx = isCreateNftOfferTx || isAcceptNftOfferTx || isCancelNftOfferTx
-                        const outcomeOfferIds = (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
-                          (entry?.nftokenOfferChanges || []).map((offerChange) => offerChange?.index)
-                        )
-                        const nftOfferIds = Array.from(
-                          new Set(
-                            [
-                              ...outcomeOfferIds,
-                              ...(Array.isArray(tx?.NFTokenOffers) ? tx.NFTokenOffers : []),
-                              tx?.NFTokenSellOffer,
-                              tx?.NFTokenBuyOffer,
-                              tx?.OfferID,
-                              txdata?.specification?.nftokenOffer?.offerIndex,
-                              txdata?.specification?.nftokenOffer?.offerID
-                            ].filter(Boolean)
-                          )
-                        )
-                        const nftOfferAmountRaw =
-                          tx?.Amount ??
-                          txdata?.specification?.nftokenOffer?.amount ??
-                          txdata?.specification?.destination?.amount ??
-                          txdata?.specification?.source?.amount ??
-                          null
-                        const hasNftOfferAmount = nftOfferAmountRaw !== null && typeof nftOfferAmountRaw !== 'undefined'
-                        const nftOfferAmountNumeric =
-                          typeof nftOfferAmountRaw === 'object' && nftOfferAmountRaw !== null
-                            ? Number(nftOfferAmountRaw?.value)
-                            : Number(nftOfferAmountRaw)
-                        const isZeroNftOfferAmount =
-                          hasNftOfferAmount && Number.isFinite(nftOfferAmountNumeric) && nftOfferAmountNumeric === 0
-                        const nftOfferAmountExpandedText = hasNftOfferAmount
-                          ? amountFormat(nftOfferAmountRaw, {
-                              icon: true,
-                              precise: 'nice'
-                            })
-                          : null
-                        const nftOfferAmountFiatExpandedText = hasNftOfferAmount
-                          ? nativeCurrencyToFiat({
-                              amount: nftOfferAmountRaw,
-                              selectedCurrency,
-                              fiatRate: txHistoricalRate,
-                              asText: true,
-                              absolute: true
-                            })
-                          : ''
-                        const isBrokeredNftAccept =
-                          isAcceptNftOfferTx && !!tx?.NFTokenSellOffer && !!tx?.NFTokenBuyOffer
-                        const brokerAddress = isBrokeredNftAccept ? sourceAddress || tx?.Account || null : null
-                        const ammLpChange = changes.find(
-                          (change) =>
-                            change?.currencyDetails?.type === 'lp_token' &&
-                            change?.currencyDetails?.asset &&
-                            change?.currencyDetails?.asset2
-                        )
-                        const ammAsset =
-                          tx?.Asset || txdata?.specification?.asset || ammLpChange?.currencyDetails?.asset
-                        const ammAsset2 =
-                          tx?.Asset2 || txdata?.specification?.asset2 || ammLpChange?.currencyDetails?.asset2
-                        const ammAssetCurrency =
-                          typeof ammAsset === 'string' ? ammAsset : ammAsset?.currency || nativeCurrency
-                        const ammAsset2Currency =
-                          typeof ammAsset2 === 'string' ? ammAsset2 : ammAsset2?.currency || nativeCurrency
-                        const ammPairLabel = `${niceCurrency(ammAssetCurrency)}/${niceCurrency(ammAsset2Currency)}`
-                        const ammPairToken =
-                          isAmmTx && ammAsset && ammAsset2
-                            ? {
-                                currency: 'LP',
-                                currencyDetails: {
-                                  type: 'lp_token',
-                                  currency: ammPairLabel,
-                                  asset: ammAsset,
-                                  asset2: ammAsset2
-                                }
-                              }
-                            : null
-                        const resolvedCounterpartyAddress = isAccountDeleteTx
-                          ? removedAccountAddress
-                          : isAcceptNftOfferTx && nftViewerRole === 'seller'
-                            ? nftBuyerAddress
-                            : isAcceptNftOfferTx && nftViewerRole === 'buyer'
-                              ? nftSellerAddress
-                              : counterparty
-                        const resolvedCounterpartyDetails = isAccountDeleteTx
-                          ? removedAccountDetails
-                          : isAcceptNftOfferTx && nftViewerRole === 'seller'
-                            ? nftBuyerDetails
-                            : isAcceptNftOfferTx && nftViewerRole === 'buyer'
-                              ? nftSellerDetails
-                              : counterpartyDetails
-                        const trustSetSpecification = txdata?.specification
-                        const trustSetToken =
-                          tx?.TransactionType === 'TrustSet' && tx?.LimitAmount
-                            ? {
-                                ...tx.LimitAmount,
-                                issuerDetails:
-                                  trustSetSpecification?.counterparty === tx?.LimitAmount?.issuer
-                                    ? trustSetSpecification?.counterpartyDetails || tx?.LimitAmount?.issuerDetails
-                                    : tx?.LimitAmount?.issuerDetails
-                              }
-                            : null
-                        const trustSetLimitValue = Number(trustSetToken?.value || 0)
-                        const isTrustSetDeleted =
-                          tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue === 0
-                        const hasTrustSetLimit =
-                          tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue > 0
-                        const trustSetStatus = isTrustSetDeleted ? 'deleted' : hasTrustSetLimit ? 'added' : null
-
-                        const failedStatusText = !isSuccessful ? outcome?.result || 'Failed' : null
-                        const failedStatusShort = failedStatusText
-                          ? failedStatusText.startsWith('te')
-                            ? shortErrorCode(failedStatusText)
-                            : failedStatusText.length > 3
-                              ? failedStatusText.slice(3)
-                              : failedStatusText
-                          : null
-                        const hasDexOfferRates =
-                          isDexOfferTx &&
-                          changes.length === 2 &&
-                          Number.isFinite(Number(changes?.[0]?.value)) &&
-                          Number.isFinite(Number(changes?.[1]?.value)) &&
-                          Number(changes?.[0]?.value) !== 0 &&
-                          Number(changes?.[1]?.value) !== 0
-                        const dexOfferRateAtoB = hasDexOfferRates
-                          ? Math.abs(Number(changes[1].value) / Number(changes[0].value))
-                          : null
-                        const dexOfferRateBtoA = hasDexOfferRates
-                          ? Math.abs(Number(changes[0].value) / Number(changes[1].value))
-                          : null
-                        const isFreeNftAccept =
-                          isAcceptNftOfferTx &&
-                          (isZeroNftOfferAmount || (!collapsedPrimaryChange && !collapsedSecondaryChange))
-                        const directionLabel = resolvedCounterpartyAddress
-                          ? isAccountDeleteTx
-                            ? 'From removed account'
-                            : isAcceptNftOfferTx && nftViewerRole === 'seller'
-                              ? 'To'
-                              : isAcceptNftOfferTx && nftViewerRole === 'buyer'
-                                ? 'From'
-                                : isCreateNftOfferTx && isSource && !!counterparty
-                                  ? 'For'
-                                  : isBrokeredNftAccept
-                                    ? 'By broker'
-                                    : isSource
-                                      ? 'To'
-                                      : 'From'
-                          : null
-                        const accountSetSpec = txdata?.specification || {}
-                        const accountSetSettings = outcome?.settingsChanges || {}
-                        const accountSetCollapsedChange = (() => {
-                          if (txType !== 'AccountSet') return null
-
-                          const changes = []
-
-                          if (tx?.MessageKey !== undefined) {
-                            const messageKeyStatus = accountSetSpec?.messageKey ? 'set' : 'removed'
-                            changes.push(`Message key: ${messageKeyStatus}`)
-                          }
-                          if (tx?.Domain !== undefined) {
-                            changes.push(`Domain: ${accountSetSpec?.domain || 'removed'}`)
-                          }
-                          if (accountSetSpec?.defaultRipple !== undefined) {
-                            changes.push(`Default ripple: ${accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}`)
-                          }
-                          if (
-                            accountSetSpec?.disallowXRP !== undefined ||
-                            accountSetSettings?.disallowXRP !== undefined
-                          ) {
-                            changes.push(
-                              `Incoming ${nativeCurrency}: ${
-                                accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP ? 'disallow' : 'allow'
-                              }`
-                            )
-                          }
-                          if (
-                            accountSetSpec?.requireDestTag !== undefined ||
-                            accountSetSettings?.requireDestTag !== undefined
-                          ) {
-                            changes.push(
-                              `Destination tag: ${
-                                accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
-                                  ? 'require'
-                                  : "don't require"
-                              }`
-                            )
-                          }
-                          if (accountSetSpec?.depositAuth !== undefined) {
-                            changes.push(
-                              `Deposit authorization: ${accountSetSpec.depositAuth ? 'enabled' : 'disabled'}`
-                            )
-                          }
-                          if (accountSetSpec?.disableMaster !== undefined) {
-                            changes.push(`Master key: ${accountSetSpec.disableMaster ? 'disabled' : 'enabled'}`)
-                          }
-                          if (accountSetSpec?.noFreeze) {
-                            changes.push('No freeze: enabled')
-                          }
-                          if (
-                            accountSetSpec?.requireAuth !== undefined ||
-                            accountSetSettings?.requireAuth !== undefined
-                          ) {
-                            changes.push(
-                              `Require authorization: ${
-                                accountSetSpec?.requireAuth || accountSetSettings?.requireAuth ? 'enabled' : 'disabled'
-                              }`
-                            )
-                          }
-                          if (accountSetSpec?.disallowIncomingCheck !== undefined) {
-                            changes.push(
-                              `Incoming check: ${accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}`
-                            )
-                          }
-                          if (accountSetSpec?.disallowIncomingPayChan !== undefined) {
-                            changes.push(
-                              `Incoming payment channel: ${accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}`
-                            )
-                          }
-                          if (accountSetSpec?.disallowIncomingNFTokenOffer !== undefined) {
-                            changes.push(
-                              `Incoming NFT offer: ${accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}`
-                            )
-                          }
-                          if (accountSetSpec?.disallowIncomingTrustline !== undefined) {
-                            changes.push(
-                              `Incoming trustline: ${accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}`
-                            )
-                          }
-                          if (accountSetSpec?.enableTransactionIDTracking !== undefined) {
-                            changes.push(
-                              `Transaction ID tracking: ${
-                                accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'
-                              }`
-                            )
-                          }
-                          if (accountSetSpec?.globalFreeze !== undefined) {
-                            changes.push(`Global freeze: ${accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}`)
-                          }
-                          if (accountSetSpec?.authorizedMinter !== undefined) {
-                            changes.push(
-                              `Authorized minter: ${accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}`
-                            )
-                          }
-                          if (accountSetSpec?.nftokenMinter !== undefined) {
-                            if (accountSetSpec.nftokenMinter) {
-                              changes.push({ type: 'nftMinter', address: accountSetSpec.nftokenMinter })
-                            } else {
-                              changes.push('NFT minter: removed')
-                            }
-                          }
-                          if (accountSetSpec?.allowTrustLineClawback !== undefined) {
-                            changes.push(
-                              `Trustline clawback: ${accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}`
-                            )
-                          }
-                          if (accountSetSpec?.disallowIncomingRemit !== undefined) {
-                            changes.push(
-                              `Incoming remit: ${accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}`
-                            )
-                          }
-
-                          return changes[0] || null
-                        })()
-                        const accountSetCollapsedChangeNode = (() => {
-                          if (!accountSetCollapsedChange) return null
-                          if (typeof accountSetCollapsedChange === 'string') return accountSetCollapsedChange
-                          if (accountSetCollapsedChange?.type === 'nftMinter') {
                             return (
                               <>
-                                NFT minter:{' '}
-                                <AddressWithIconInline
-                                  data={{
-                                    address: accountSetCollapsedChange.address,
-                                    addressDetails: {}
-                                  }}
-                                  name="address"
-                                  options={{ short: 6 }}
-                                />
-                              </>
-                            )
-                          }
-                          return null
-                        })()
-                        const nftOfferLegacyLabel = (() => {
-                          const nonBrokerDirectionSuffix = counterparty ? (isSource ? 'to' : 'from') : 'by'
-
-                          if (isAcceptNftOfferTx) {
-                            if (!isSuccessful) return 'NFT offer accept'
-                            if (nftViewerRole === 'seller')
-                              return isFreeNftAccept ? 'Transferred NFT to' : 'Sold NFT to'
-                            if (nftViewerRole === 'buyer')
-                              return isFreeNftAccept ? 'Received NFT from' : 'Bought NFT from'
-
-                            const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
-                            if (amountChangeValue > 0)
-                              return isBrokeredNftAccept ? 'Sold NFT by' : `Sold NFT ${nonBrokerDirectionSuffix}`
-                            if (amountChangeValue < 0)
-                              return isBrokeredNftAccept ? 'Bought NFT by' : `Bought NFT ${nonBrokerDirectionSuffix}`
-
-                            if (!collapsedPrimaryChange && !collapsedSecondaryChange) {
-                              if (nftDestination?.address === data?.address) return 'Received NFT offer from'
-                              if (nftSource?.address === data?.address) return 'NFT transfer to'
-                              return 'NFT transfer by'
-                            }
-
-                            if (isBrokeredNftAccept) return 'NFT offer accept by'
-                            return 'NFT offer accept'
-                          }
-
-                          if (isCreateNftOfferTx) {
-                            const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
-                            if (amountChangeValue > 0) return `Sold NFT ${nonBrokerDirectionSuffix}`
-                            if (amountChangeValue < 0) return `Bought NFT ${nonBrokerDirectionSuffix}`
-
-                            const direction = txdata?.specification?.flags?.sellToken ? 'Sell' : 'Buy'
-                            const isIncomingOffer = tx?.Account !== data?.address
-
-                            if (isIncomingOffer) {
-                              const amountAsNumber = Number(tx?.Amount || 0)
-                              if (direction === 'Sell') {
-                                if (Number.isFinite(amountAsNumber) && amountAsNumber === 0) {
-                                  return 'Received NFT offer from'
-                                }
-                                return 'Received offer to buy NFT from'
-                              }
-                              return `Received NFT ${direction} offer from`
-                            }
-
-                            if (counterparty) {
-                              return `Create NFT ${direction} offer for`
-                            }
-
-                            return `Create NFT ${direction} offer`
-                          }
-
-                          if (isCancelNftOfferTx) {
-                            return 'Cancel NFT offer'
-                          }
-
-                          return null
-                        })()
-                        const isNftTransferLabel =
-                          typeof nftOfferLegacyLabel === 'string' &&
-                          (nftOfferLegacyLabel.startsWith('NFT transfer') ||
-                            nftOfferLegacyLabel.startsWith('Received NFT offer'))
-                        const isFreeNftTransfer =
-                          isNftTransferLabel && (isZeroNftOfferAmount || nftOfferAmountRaw === '0')
-                        const showFreeNftBadge = isFreeNftTransfer || isFreeNftAccept
-                        const showFreeNftBadgeGreen =
-                          showFreeNftBadge &&
-                          typeof nftOfferLegacyLabel === 'string' &&
-                          nftOfferLegacyLabel.startsWith('Received NFT from')
-                        const isIncomingSellOffer =
-                          isCreateNftOfferTx && tx?.Account !== data?.address && txdata?.specification?.flags?.sellToken
-                        const incomingSellOfferAmount =
-                          isIncomingSellOffer && hasNftOfferAmount ? toSignedDexAmount(nftOfferAmountRaw, -1) : null
-                        const incomingSellOfferFiat = incomingSellOfferAmount
-                          ? nativeCurrencyToFiat({
-                              amount: incomingSellOfferAmount,
-                              selectedCurrency,
-                              fiatRate: txHistoricalRate,
-                              asText: true
-                            })
-                          : ''
-                        const isOutgoingSellOffer =
-                          isCreateNftOfferTx && tx?.Account === data?.address && txdata?.specification?.flags?.sellToken
-                        const outgoingSellOfferAmount =
-                          isOutgoingSellOffer && hasNftOfferAmount ? toSignedDexAmount(nftOfferAmountRaw, 1) : null
-                        const outgoingSellOfferFiat = outgoingSellOfferAmount
-                          ? nativeCurrencyToFiat({
-                              amount: outgoingSellOfferAmount,
-                              selectedCurrency,
-                              fiatRate: txHistoricalRate,
-                              asText: true
-                            })
-                          : ''
-                        const isNftMintTx = tx?.TransactionType === 'NFTokenMint'
-                        const nftMintDestinationAddress = tx?.Destination || destinationAddress
-                        const nftMintAmountRaw =
-                          tx?.Amount ??
-                          txdata?.specification?.amount ??
-                          txdata?.specification?.destination?.amount ??
-                          null
-                        const nftMintAmountNumeric = (() => {
-                          if (nftMintAmountRaw === null || typeof nftMintAmountRaw === 'undefined') return null
-                          if (typeof nftMintAmountRaw === 'object') {
-                            const value = Number(
-                              nftMintAmountRaw?.value ?? nftMintAmountRaw?.amount ?? nftMintAmountRaw?.drops
-                            )
-                            return Number.isFinite(value) ? value : null
-                          }
-                          const value = Number(nftMintAmountRaw)
-                          return Number.isFinite(value) ? value : null
-                        })()
-                        const nftMintSpecialLabel =
-                          isNftMintTx && nftMintDestinationAddress
-                            ? nftMintAmountNumeric === 0
-                              ? 'NFT Mint with Free offer to'
-                              : 'NFT Mint with Sell Offer for'
-                            : null
-                        const showNftMintSellOfferAmount =
-                          nftMintSpecialLabel === 'NFT Mint with Sell Offer for' &&
-                          nftMintAmountRaw !== null &&
-                          typeof nftMintAmountRaw !== 'undefined'
-                        const nftMintSellOfferAmount = showNftMintSellOfferAmount
-                          ? toSignedDexAmount(nftMintAmountRaw, 1)
-                          : null
-                        const nftMintSellOfferFiat = nftMintSellOfferAmount
-                          ? nativeCurrencyToFiat({
-                              amount: nftMintSellOfferAmount,
-                              selectedCurrency,
-                              fiatRate: txHistoricalRate,
-                              asText: true
-                            })
-                          : ''
-                        const createNftAmountDisplay = (amount, fiatText) => {
-                          if (amount === null || typeof amount === 'undefined') return null
-                          return {
-                            collapsedNode: (
-                              <span className="tx-inline-change-item">
-                                <span className="tx-inline-change orange">
-                                  {amountFormat(amount, {
-                                    icon: true,
-                                    short: true,
-                                    maxFractionDigits: 2,
-                                    showPlus: true
-                                  })}
-                                </span>
-                                {!!fiatText && <span className="tx-change-fiat">{fiatText}</span>}
-                              </span>
-                            ),
-                            expandedText: amountFormat(amount, {
-                              icon: true,
-                              withIssuer: true,
-                              precise: 'nice',
-                              showPlus: true
-                            }),
-                            expandedFiat: fiatText
-                          }
-                        }
-                        const incomingSellOfferDisplay =
-                          !showFreeNftBadge && incomingSellOfferAmount
-                            ? createNftAmountDisplay(incomingSellOfferAmount, incomingSellOfferFiat)
-                            : null
-                        const outgoingSellOfferDisplay =
-                          !showFreeNftBadge && outgoingSellOfferAmount
-                            ? createNftAmountDisplay(outgoingSellOfferAmount, outgoingSellOfferFiat)
-                            : null
-                        const nftMintSellOfferDisplay =
-                          showNftMintSellOfferAmount && nftMintSellOfferAmount
-                            ? createNftAmountDisplay(nftMintSellOfferAmount, nftMintSellOfferFiat)
-                            : null
-                        const nftOfferAmountDetailDisplay = incomingSellOfferDisplay || outgoingSellOfferDisplay
-                        const offerAmountExpandedText =
-                          nftOfferAmountDetailDisplay?.expandedText || nftOfferAmountExpandedText
-                        const offerAmountFiatDetailText =
-                          nftOfferAmountDetailDisplay?.expandedFiat || nftOfferAmountFiatExpandedText
-                        const nftCollapsedSpecialDisplay =
-                          incomingSellOfferDisplay || outgoingSellOfferDisplay || nftMintSellOfferDisplay
-                        const txTypeShortLabel =
-                          (isRipplingPayment ? 'Rippling' : null) ||
-                          (isSelfPayment ? 'Swap' : null) ||
-                          (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
-                          dexOfferShortLabel ||
-                          nftOfferLegacyLabel ||
-                          nftMintSpecialLabel ||
-                          (txType === 'AccountSet'
-                            ? 'Account settings update'
-                            : txType === 'AMMDeposit'
-                              ? 'AMM Deposit'
-                              : txType === 'AMMVote'
-                                ? 'AMM Vote'
-                                : txType === 'AMMWithdraw'
-                                  ? 'AMM Withdraw'
-                                  : txType === 'NFTokenMint'
-                                    ? 'NFT Mint'
-                                    : txType === 'NFTokenBurn'
-                                      ? 'NFT Burn'
-                                      : txType === 'NFTokenCreateOffer'
-                                        ? 'NFT offer'
-                                        : txType === 'NFTokenAcceptOffer'
-                                          ? 'NFT offer accept'
-                                          : txType === 'NFTokenCancelOffer'
-                                            ? 'NFT offer cancel'
-                                            : txType || '-')
-                        const txTypeCollapsedLabel =
-                          isSelfPayment || isAccountDeleteTx || isRipplingPayment
-                            ? txTypeShortLabel
-                            : txType === 'NFTokenMint'
-                              ? txTypeShortLabel
-                              : txType === 'NFTokenBurn'
-                                ? txTypeShortLabel
-                                : tx?.TransactionType === 'TrustSet'
-                                  ? counterparty
-                                    ? `${isSource ? 'to' : 'from'}`
-                                    : ''
-                                  : isNftOfferTx
-                                    ? txTypeShortLabel
-                                    : isDexOfferTx
-                                      ? txTypeShortLabel
-                                      : counterparty
-                                        ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
-                                        : txTypeShortLabel
-                        const showBrokerInCollapsedTitle =
-                          isBrokeredNftAccept &&
-                          !!brokerAddress &&
-                          (nftViewerRole === 'seller' || nftViewerRole === 'buyer')
-                        const brokerCollapsedAction =
-                          nftViewerRole === 'seller'
-                            ? isFreeNftAccept
-                              ? 'transferred NFT to'
-                              : 'sold NFT to'
-                            : nftViewerRole === 'buyer'
-                              ? isFreeNftAccept
-                                ? 'received NFT from'
-                                : 'bought NFT from'
-                              : ''
-
-                        return (
-                          <div
-                            className={`asset-item token-asset-item tx-asset-item ${isExpanded ? 'expanded' : ''} ${!isSuccessful ? 'tx-failed' : ''}`}
-                            key={txKey}
-                            onClick={() => setExpandedTransactionKey(isExpanded ? null : txKey)}
-                          >
-                            <div className="asset-main tx-asset-main">
-                              <div className="asset-logo tx-asset-logo">
-                                <div className="tx-collapsed-top">
-                                  <span className="tx-type-main">
-                                    {showBrokerInCollapsedTitle ? (
-                                      <>
-                                        <span className="tx-broker-inline">
-                                          <span>Broker </span>
-                                          <AddressWithIconInline
-                                            data={{
-                                              address: brokerAddress,
-                                              addressDetails: txdata?.specification?.source?.addressDetails || {}
-                                            }}
-                                            name="address"
-                                            options={{ short: 6 }}
-                                          />
-                                        </span>
-                                        <span className="tx-broker-action">{brokerCollapsedAction}</span>
-                                      </>
-                                    ) : (
-                                      txTypeCollapsedLabel
-                                    )}
-                                  </span>
-                                  <span className="tx-time tx-time-top">
-                                    {tx?.date ? timeFromNow(tx.date, i18n, 'ripple') : '-'}
-                                  </span>
-                                </div>
-
-                                <div className="tx-collapsed-meta">
-                                  {txType === 'AccountSet' && accountSetCollapsedChangeNode && (
-                                    <span className="tx-accountset-inline">{accountSetCollapsedChangeNode}</span>
-                                  )}
-                                  {showDexCollapsedSequence && (
-                                    <span className="tx-accountset-inline">
-                                      {dexCollapsedSequences.length > 1 ? 'Offer sequences: ' : 'Offer sequence: '}
-                                      {dexCollapsedSequences.join(', ')}
-                                    </span>
-                                  )}
-                                  {ammPairToken && (
-                                    <span className="tx-amm-token-meta">
-                                      <CurrencyWithIcon
-                                        token={ammPairToken}
-                                        hideIssuer
-                                        options={{ disableTokenLink: true }}
-                                      />
-                                    </span>
-                                  )}
-                                  {tx?.TransactionType === 'TrustSet' && trustSetToken && (
-                                    <span className="tx-trustset-inline">
-                                      <CurrencyWithIcon
-                                        token={{ ...trustSetToken }}
-                                        options={{ disableTokenLink: true }}
-                                      />
-                                    </span>
-                                  )}
-                                  {tx?.TransactionType !== 'TrustSet' &&
-                                    !isSelfPayment &&
-                                    !isDexOfferTx &&
-                                    resolvedCounterpartyAddress && (
-                                      <span className="tx-counterparty-inline">
-                                        <AddressWithIconInline
-                                          data={{
-                                            address: resolvedCounterpartyAddress,
-                                            addressDetails: resolvedCounterpartyDetails || {}
-                                          }}
-                                          name="address"
-                                          options={{ short: 6 }}
-                                        />
-                                      </span>
-                                    )}
-                                </div>
-                              </div>
-
-                              <div className="asset-value tx-collapsed-change">
-                                {failedStatusShort ? (
-                                  <span className="tx-inline-status orange">{failedStatusShort}</span>
-                                ) : tx?.TransactionType === 'TrustSet' ? (
-                                  trustSetStatus ? (
-                                    <span className="tx-inline-status orange">{trustSetStatus}</span>
-                                  ) : null
-                                ) : isDexNotFullfilled && dexSpecifiedChanges.length > 0 ? (
-                                  <>
-                                    {dexSpecifiedChanges.map((change, changeIndex) => (
-                                      <span className="tx-inline-change-item" key={`${txKey}-dex-spec-${changeIndex}`}>
-                                        <span className="tx-inline-change grey">
-                                          {amountFormat(change, {
-                                            icon: true,
-                                            short: true,
-                                            maxFractionDigits: 2,
-                                            showPlus: true
-                                          })}
-                                        </span>
-                                      </span>
-                                    ))}
-                                  </>
-                                ) : hasAmmVoteTradingFee ? (
-                                  <span className="tx-inline-status grey">Trading fee: {ammVoteTradingFeeText}</span>
-                                ) : nftCollapsedSpecialDisplay ? (
-                                  nftCollapsedSpecialDisplay.collapsedNode
-                                ) : showFreeNftBadge ? (
-                                  <span className={`tx-offer-free ${showFreeNftBadgeGreen ? 'green' : 'orange'}`}>
-                                    Free
-                                  </span>
-                                ) : (
-                                  <>
-                                    {collapsedPrimaryChange && (
-                                      <span className="tx-inline-change-item">
-                                        <span className={`tx-inline-change ${primaryChangeClass}`}>
-                                          {amountFormat(collapsedPrimaryChange, {
-                                            icon: !isLpAmount(collapsedPrimaryChange),
-                                            short: true,
-                                            maxFractionDigits: 2,
-                                            showPlus: true
-                                          })}
-                                        </span>
-                                        {!!primaryChangeFiat && (
-                                          <span className="tx-change-fiat">{primaryChangeFiat}</span>
-                                        )}
-                                      </span>
-                                    )}
-                                    {collapsedSecondaryChange && (
-                                      <span className="tx-inline-change-item">
-                                        <span className={`tx-inline-change ${secondaryChangeClass}`}>
-                                          {amountFormat(collapsedSecondaryChange, {
-                                            icon: !isLpAmount(collapsedSecondaryChange),
-                                            short: true,
-                                            maxFractionDigits: 2,
-                                            showPlus: true
-                                          })}
-                                        </span>
-                                        {!!secondaryChangeFiat && (
-                                          <span className="tx-change-fiat">{secondaryChangeFiat}</span>
-                                        )}
-                                      </span>
-                                    )}
-                                    {collapsedMoreCount > 0 && (
-                                      <span className="tx-inline-more">+{collapsedMoreCount} more</span>
-                                    )}
-                                  </>
-                                )}
-                              </div>
-                            </div>
-
-                            {isExpanded && (
-                              <div className="asset-details">
                                 <div className="detail-row">
-                                  <span>Type:</span>
-                                  <span>{tx?.TransactionType || '-'}</span>
+                                  <span>LP Token:</span>
+                                  <span className="copy-inline">
+                                    <span>{token.Balance?.currency}</span>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={token.Balance?.currency} />
+                                    </span>
+                                  </span>
                                 </div>
-
-                                {showDexSpecifiedOrderDetails && !!dexTakerGets && (
-                                  <div className="detail-row">
-                                    <span>
-                                      {dexOfferDirection === 'Sell'
-                                        ? 'Specified sell exactly:'
-                                        : 'Specified pay up to:'}
-                                    </span>
-                                    <span>
-                                      {amountFormat(dexTakerGets, {
-                                        icon: true,
-                                        withIssuer: true
-                                      })}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {showDexSpecifiedOrderDetails && !!dexTakerPays && (
-                                  <div className="detail-row">
-                                    <span>
-                                      {dexOfferDirection === 'Sell'
-                                        ? 'Specified receive at least:'
-                                        : 'Specified receive exactly:'}
-                                    </span>
-                                    <span>
-                                      {amountFormat(dexTakerPays, {
-                                        icon: true,
-                                        withIssuer: true
-                                      })}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {hasAmmVoteTradingFee && (
-                                  <div className="detail-row">
-                                    <span>Trading fee:</span>
-                                    <span>{ammVoteTradingFeeText}</span>
-                                  </div>
-                                )}
-
-                                {failedStatusText && (
+                                {asset1 && (
                                   <>
                                     <div className="detail-row">
-                                      <span>Error code:</span>
-                                      <span className="orange">{failedStatusText}</span>
-                                    </div>
-                                    <div className="detail-row tx-fail-description-row">
-                                      <span>Error:</span>
-                                      <span className="orange tx-fail-description-text">
-                                        {errorCodeDescription(failedStatusText) || failedStatusText}
-                                      </span>
-                                    </div>
-                                  </>
-                                )}
-
-                                {!isSelfPayment && !isDexOfferTx && resolvedCounterpartyAddress && (
-                                  <div className="detail-row">
-                                    <span>{directionLabel}:</span>
-                                    <span className="copy-inline">
-                                      <span className="address-text">{resolvedCounterpartyAddress}</span>
-                                      <Link
-                                        href={`/account/${resolvedCounterpartyAddress}`}
-                                        className="inline-link-icon tooltip"
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
-                                        <LinkIcon />
-                                        <span className="tooltiptext no-brake">Account page</span>
-                                      </Link>
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CopyButton text={resolvedCounterpartyAddress} />
-                                      </span>
-                                    </span>
-                                  </div>
-                                )}
-
-                                {brokerAddress && (
-                                  <div className="detail-row">
-                                    <span>By broker:</span>
-                                    <span className="copy-inline">
-                                      <span className="address-text">{brokerAddress}</span>
-                                      <Link
-                                        href={`/account/${brokerAddress}`}
-                                        className="inline-link-icon tooltip"
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
-                                        <LinkIcon />
-                                        <span className="tooltiptext no-brake">Account page</span>
-                                      </Link>
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CopyButton text={brokerAddress} />
-                                      </span>
-                                    </span>
-                                  </div>
-                                )}
-
-                                {tx?.TransactionType === 'TrustSet' && trustSetToken && (
-                                  <>
-                                    <div className="detail-row">
-                                      <span>Currency:</span>
+                                      <span>Asset 1:</span>
                                       <span className="copy-inline">
-                                        <span>{trustSetToken?.currency || '-'}</span>
-                                        {!!trustSetToken?.issuer && !!trustSetToken?.currency && (
-                                          <Link
-                                            href={`/token/${trustSetToken.issuer}/${trustSetToken.currency}`}
-                                            className="inline-link-icon tooltip"
-                                            onClick={(event) => event.stopPropagation()}
-                                          >
-                                            <LinkIcon />
-                                            <span className="tooltiptext no-brake">Token page</span>
-                                          </Link>
-                                        )}
-                                        {!!trustSetToken?.currency && (
-                                          <span onClick={(event) => event.stopPropagation()}>
-                                            <CopyButton text={trustSetToken.currency} />
-                                          </span>
-                                        )}
-                                      </span>
-                                    </div>
-
-                                    {!!trustSetToken?.issuer && (
-                                      <div className="detail-row">
-                                        <span>Issuer:</span>
-                                        <span className="copy-inline">
-                                          <span className="address-text">{trustSetToken.issuer}</span>
-                                          <Link
-                                            href={`/account/${trustSetToken.issuer}`}
-                                            className="inline-link-icon tooltip"
-                                            onClick={(event) => event.stopPropagation()}
-                                          >
-                                            <LinkIcon />
-                                            <span className="tooltiptext no-brake">Issuer account page</span>
-                                          </Link>
-                                          <span onClick={(event) => event.stopPropagation()}>
-                                            <CopyButton text={trustSetToken.issuer} />
-                                          </span>
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    <div className="detail-row">
-                                      <span>Limit:</span>
-                                      <span>{fullNiceNumber(trustSetToken?.value || 0)}</span>
-                                    </div>
-                                  </>
-                                )}
-
-                                {txType === 'AccountSet' && (
-                                  <>
-                                    {tx?.MessageKey !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Message key:</span>
-                                        {accountSetSpec?.messageKey ? (
-                                          <span className="copy-inline">
-                                            <span className="address-text">{accountSetSpec.messageKey}</span>
-                                            <span onClick={(event) => event.stopPropagation()}>
-                                              <CopyButton text={accountSetSpec.messageKey} />
+                                        <span>{niceCurrency(asset1.currency)}</span>
+                                        {asset1?.issuer && (
+                                          <>
+                                            {' '}
+                                            <span>
+                                              ({addressUsernameOrServiceLink(asset1, 'issuer', { short: 6 })})
                                             </span>
-                                          </span>
-                                        ) : (
-                                          <span className="orange">removed</span>
-                                        )}
-                                      </div>
-                                    )}
-
-                                    {tx?.Domain !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Domain:</span>
-                                        <span className="orange">{accountSetSpec?.domain || 'removed'}</span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.defaultRipple !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Default ripple:</span>
-                                        <span className="orange">
-                                          {accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {(accountSetSpec?.disallowXRP !== undefined ||
-                                      accountSetSettings?.disallowXRP !== undefined) && (
-                                      <div className="detail-row">
-                                        <span>Incoming {nativeCurrency}:</span>
-                                        <span className="orange">
-                                          {accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP
-                                            ? 'disallow'
-                                            : 'allow'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {(accountSetSpec?.requireDestTag !== undefined ||
-                                      accountSetSettings?.requireDestTag !== undefined) && (
-                                      <div className="detail-row">
-                                        <span>Destination tag:</span>
-                                        <span className="orange">
-                                          {accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
-                                            ? 'require'
-                                            : "don't require"}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.depositAuth !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Deposit authorization:</span>
-                                        <span className="orange">
-                                          {accountSetSpec.depositAuth ? 'enabled' : 'disabled'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.disableMaster !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Master key:</span>
-                                        <span className="red">
-                                          {accountSetSpec.disableMaster ? 'disabled' : 'enabled'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.noFreeze && (
-                                      <div className="detail-row">
-                                        <span>No freeze:</span>
-                                        <span className="orange">enabled</span>
-                                      </div>
-                                    )}
-
-                                    {(accountSetSpec?.requireAuth !== undefined ||
-                                      accountSetSettings?.requireAuth !== undefined) && (
-                                      <div className="detail-row">
-                                        <span>Require authorization:</span>
-                                        <span className="orange">
-                                          {accountSetSpec?.requireAuth || accountSetSettings?.requireAuth
-                                            ? 'enabled'
-                                            : 'disabled'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.disallowIncomingCheck !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Incoming check:</span>
-                                        <span className="orange">
-                                          {accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.disallowIncomingPayChan !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Incoming payment channel:</span>
-                                        <span className="orange">
-                                          {accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.disallowIncomingNFTokenOffer !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Incoming NFT offer:</span>
-                                        <span className="orange">
-                                          {accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.disallowIncomingTrustline !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Incoming trustline:</span>
-                                        <span className="orange">
-                                          {accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.enableTransactionIDTracking !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Transaction ID tracking:</span>
-                                        <span className="orange">
-                                          {accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.globalFreeze !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Global freeze:</span>
-                                        <span className="orange">
-                                          {accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.authorizedMinter !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Authorized minter:</span>
-                                        <span className="orange">
-                                          {accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.nftokenMinter !== undefined && (
-                                      <div className="detail-row">
-                                        <span>NFT minter:</span>
-                                        {accountSetSpec?.nftokenMinter ? (
-                                          <span className="copy-inline">
-                                            <span className="address-text">{accountSetSpec.nftokenMinter}</span>
                                             <Link
-                                              href={`/account/${accountSetSpec.nftokenMinter}`}
+                                              href={`/token/${asset1.issuer}/${asset1.currency}`}
                                               className="inline-link-icon tooltip"
                                               onClick={(event) => event.stopPropagation()}
                                             >
                                               <LinkIcon />
-                                              <span className="tooltiptext no-brake">Account page</span>
+                                              <span className="tooltiptext no-brake">Token page</span>
                                             </Link>
-                                            <span onClick={(event) => event.stopPropagation()}>
-                                              <CopyButton text={accountSetSpec.nftokenMinter} />
-                                            </span>
-                                          </span>
-                                        ) : (
-                                          <span className="orange">removed</span>
+                                          </>
                                         )}
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.allowTrustLineClawback !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Trustline clawback:</span>
-                                        <span className="orange">
-                                          {accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {accountSetSpec?.disallowIncomingRemit !== undefined && (
-                                      <div className="detail-row">
-                                        <span>Incoming remit:</span>
-                                        <span className="orange">
-                                          {accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}
-                                        </span>
-                                      </div>
-                                    )}
-                                  </>
-                                )}
-
-                                <div className="detail-row">
-                                  <span>Timestamp:</span>
-                                  <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
-                                </div>
-
-                                {!!selectedCurrency &&
-                                  (shouldShowExpandedRate || isDexOfferTx) &&
-                                  !hasDexOfferRates && (
-                                    <div className="detail-row">
-                                      <span>Rate:</span>
-                                      <span suppressHydrationWarning>
-                                        {txHistoricalRate
-                                          ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
-                                          : '-'}
                                       </span>
                                     </div>
-                                  )}
-
-                                {isSource && (tx?.Sequence || tx?.TicketSequence) && (
-                                  <div className="detail-row">
-                                    <span>{tx?.TicketSequence ? 'Ticket sequence:' : 'Sequence:'}</span>
-                                    <span>{tx?.Sequence || tx?.TicketSequence}</span>
-                                  </div>
-                                )}
-
-                                {isSource && tx?.Fee && (
-                                  <div className="detail-row">
-                                    <span>Fee:</span>
-                                    <span>
-                                      {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
-                                      {nativeCurrencyToFiat({
-                                        amount: tx.Fee,
-                                        selectedCurrency,
-                                        fiatRate: txHistoricalRate
-                                      })}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {changes.length > 0 && (
-                                  <div className="detail-row tx-detail-change-row">
-                                    <span>Balance changes:</span>
-                                    <span className="tx-detail-change-list">
-                                      {changes.map((change, changeIndex) => {
-                                        const changeValue = Number(change?.value || 0)
-                                        const changeClass = changeValue > 0 ? 'green' : changeValue < 0 ? 'red' : ''
-                                        const changeFiat = nativeCurrencyToFiat({
-                                          amount: change,
-                                          selectedCurrency,
-                                          fiatRate: txHistoricalRate,
-                                          asText: true
-                                        })
-                                        return (
-                                          <span
-                                            className={`tx-change-row ${changeClass}`}
-                                            key={`${txKey}-change-${changeIndex}`}
-                                          >
+                                    <div className="detail-row">
+                                      <span>Asset 2:</span>
+                                      <span className="copy-inline">
+                                        <span>{niceCurrency(asset2?.currency)}</span>
+                                        {asset2?.issuer && (
+                                          <>
+                                            {' '}
                                             <span>
-                                              {amountFormat(change, {
-                                                icon: !isLpAmount(change),
-                                                withIssuer: !(isAmmDepositOrWithdraw && isLpAmount(change)),
-                                                bold: true,
-                                                precise: 'nice',
-                                                showPlus: true
-                                              })}
+                                              ({addressUsernameOrServiceLink(asset2, 'issuer', { short: 6 })})
                                             </span>
-                                            {!!changeFiat && <span className="tx-change-fiat">{changeFiat}</span>}
-                                          </span>
-                                        )
-                                      })}
-                                    </span>
-                                  </div>
+                                            <Link
+                                              href={`/token/${asset2.issuer}/${asset2.currency}`}
+                                              className="inline-link-icon tooltip"
+                                              onClick={(event) => event.stopPropagation()}
+                                            >
+                                              <LinkIcon />
+                                              <span className="tooltiptext no-brake">Token page</span>
+                                            </Link>
+                                          </>
+                                        )}
+                                      </span>
+                                    </div>
+                                  </>
                                 )}
+                              </>
+                            )
+                          })()}
+                        </>
+                      ) : (
+                        <>
+                          <div className="detail-row">
+                            <span>Currency:</span>
+                            <span className="copy-inline">
+                              <span>{token.Balance?.currency}</span>
+                              <Link
+                                href={`/token/${issuer?.issuer}/${token.Balance?.currency}`}
+                                className="inline-link-icon tooltip"
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                <LinkIcon />
+                                <span className="tooltiptext no-brake">Token page</span>
+                              </Link>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={token.Balance?.currency} />
+                              </span>
+                            </span>
+                          </div>
+                        </>
+                      )}
+                      {!isLpToken && (
+                        <>
+                          <div className="detail-row">
+                            <span>Issuer:</span>
+                            <span className="copy-inline">
+                              <span className="address-text">{issuer?.issuer}</span>
+                              <Link
+                                href={`/account/${issuer?.issuer}`}
+                                className="inline-link-icon tooltip"
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                <LinkIcon />
+                                <span className="tooltiptext no-brake">Issuer account page</span>
+                              </Link>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={issuer?.issuer} />
+                              </span>
+                            </span>
+                          </div>
+                          {token.Balance?.issuerDetails?.username && (
+                            <div className="detail-row">
+                              <span>Service:</span>
+                              <span>{token.Balance?.issuerDetails?.username}</span>
+                            </div>
+                          )}
+                        </>
+                      )}
+                      {token.LockedBalance?.value && parseFloat(token.LockedBalance.value) > 0 && (
+                        <div className="detail-row">
+                          <span>Locked:</span>
+                          <span>{fullNiceNumber(token.LockedBalance.value)}</span>
+                        </div>
+                      )}
+                      {!isLpToken && token.HighLimit?.issuer === data?.address ? (
+                        <>
+                          <div className="detail-row">
+                            <span>{isLoggedIn ? 'Your limit' : 'Limit'}:</span>
+                            <span>
+                              {fullNiceNumber(token.HighLimit?.value)}
+                              {isLoggedIn && (
+                                <>
+                                  {' '}
+                                  <Link
+                                    href={`/services/trustline?currency=${token.Balance?.currency}&currencyIssuer=${issuer?.issuer}&mode=advanced&limit=${token.HighLimit?.value}`}
+                                    onClick={(event) => event.stopPropagation()}
+                                    className="change-limit-link"
+                                  >
+                                    [change]
+                                  </Link>
+                                </>
+                              )}
+                            </span>
+                          </div>
+                          {parseFloat(token.LowLimit?.value) !== 0 && (
+                            <div className="detail-row">
+                              <span>Counterparty limit:</span>
+                              <span>{fullNiceNumber(token.LowLimit?.value)}</span>
+                            </div>
+                          )}
+                        </>
+                      ) : !isLpToken ? (
+                        <>
+                          <div className="detail-row">
+                            <span>{isLoggedIn ? 'Your limit' : 'Limit'}:</span>
+                            <span>
+                              {fullNiceNumber(token.LowLimit?.value)}
+                              {isLoggedIn && (
+                                <>
+                                  {' '}
+                                  <Link
+                                    href={`/services/trustline?currency=${token.Balance?.currency}&currencyIssuer=${issuer?.issuer}&mode=advanced&limit=${token.LowLimit?.value}`}
+                                    onClick={(event) => event.stopPropagation()}
+                                    className="change-limit-link"
+                                  >
+                                    [change]
+                                  </Link>
+                                </>
+                              )}
+                            </span>
+                          </div>
+                          {parseFloat(token.HighLimit?.value) !== 0 && (
+                            <div className="detail-row">
+                              <span>Counterparty limit:</span>
+                              <span>{fullNiceNumber(token.HighLimit?.value)}</span>
+                            </div>
+                          )}
+                        </>
+                      ) : null}
+                      {token.flags && (
+                        <>
+                          {(token.flags.lowFreeze || token.flags.highFreeze) && (
+                            <div className="detail-row">
+                              <span>Freeze:</span>
+                              <span className="red">Yes</span>
+                            </div>
+                          )}
+                          {(token.flags.lowNoRipple || token.flags.highNoRipple) && (
+                            <div className="detail-row">
+                              <span>No Rippling:</span>
+                              <span className="green">Enabled</span>
+                            </div>
+                          )}
+                          {(token.flags.lowAuth || token.flags.highAuth) && (
+                            <div className="detail-row">
+                              <span>Authorized:</span>
+                              <span className="green">Yes</span>
+                            </div>
+                          )}
+                          {(token.flags.lowDeepFreeze || token.flags.highDeepFreeze) && (
+                            <div className="detail-row">
+                              <span>Deep Freeze:</span>
+                              <span className="red">Yes</span>
+                            </div>
+                          )}
+                        </>
+                      )}
+                      {isLpToken && token.Balance?.currencyDetails?.asset && (
+                        <div className="lp-actions">
+                          <Link
+                            href={`/services/amm/deposit?currency=${token.Balance?.currencyDetails?.asset?.currency}${
+                              token.Balance?.currencyDetails?.asset?.issuer
+                                ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
+                                : ''
+                            }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
+                              token.Balance?.currencyDetails?.asset2?.issuer
+                                ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
+                                : ''
+                            }`}
+                            className="lp-action-btn"
+                          >
+                            Deposit
+                          </Link>
+                          <Link
+                            href={`/services/amm/withdraw?currency=${token.Balance?.currencyDetails?.asset?.currency}${
+                              token.Balance?.currencyDetails?.asset?.issuer
+                                ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
+                                : ''
+                            }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
+                              token.Balance?.currencyDetails?.asset2?.issuer
+                                ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
+                                : ''
+                            }`}
+                            className="lp-action-btn"
+                          >
+                            Withdraw
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
 
-                                {hasDexOfferRates && (
-                                  <div className="detail-row tx-detail-change-row">
-                                    <span>Rates:</span>
-                                    <span className="tx-detail-change-list">
-                                      {!!selectedCurrency && (
-                                        <span className="tx-change-row">
-                                          <span suppressHydrationWarning>
-                                            {txHistoricalRate
-                                              ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
-                                              : '-'}
-                                          </span>
-                                        </span>
+            {(() => {
+              const showMoreStepButton = hiddenTokensCount > 0
+              const showAllButtonVisible = hiddenTokensCount > 10
+              const showFewerButton = visibleTokens.length > TOKEN_PREVIEW_LIMIT
+              if (!showMoreStepButton && !showAllButtonVisible && !showFewerButton) return null
+
+              return (
+                <div className="asset-compact-actions">
+                  {showMoreStepButton && (
+                    <button
+                      type="button"
+                      className="asset-compact-toggle"
+                      onClick={() => {
+                        const nextLimit = Math.min(activeTokenList.length, visibleTokens.length + 10)
+                        if (nextLimit >= activeTokenList.length) {
+                          setShowAllTokens(true)
+                        }
+                        setTokenDisplayLimit(nextLimit)
+                      }}
+                    >
+                      Show {Math.min(10, hiddenTokensCount)} more {activeTokenTabLabel}
+                    </button>
+                  )}
+                  {showAllButtonVisible && (
+                    <button
+                      type="button"
+                      className="asset-compact-toggle"
+                      onClick={() => {
+                        setShowAllTokens(true)
+                        setTokenDisplayLimit(activeTokenList.length)
+                      }}
+                    >
+                      Show all {activeTokenTabLabel} (+{hiddenTokensCount} more)
+                    </button>
+                  )}
+                  {showFewerButton && (
+                    <button
+                      type="button"
+                      className="asset-compact-toggle"
+                      onClick={() => {
+                        setShowAllTokens(false)
+                        setTokenDisplayLimit(TOKEN_PREVIEW_LIMIT)
+                        setExpandedToken(null)
+                      }}
+                    >
+                      Show fewer {activeTokenTabLabel}
+                    </button>
+                  )}
+                </div>
+              )
+            })()}
+
+            {hasHeldMpts && (
+              <>
+                <div className="section-header-row object-section-header-row">
+                  <div className="section-title object-section-title">
+                    MPTs <span className="object-title-count">{heldMpts.length}</span>
+                  </div>
+                </div>
+
+                <div className="cards-list dex-orders-list">
+                  {heldMpts.map((mptNode, index) => {
+                    const rowKey = `${mptNode?.index || mptId(mptNode) || 'mpt'}-${index}`
+                    const isExpanded = expandedHeldMptKey === rowKey
+                    const balanceValue = scaleAmount(
+                      mptNode?.MPTAmount || 0,
+                      mptNode?.mptokenCurrencyDetails?.scale || null
+                    )
+
+                    return (
+                      <div
+                        key={rowKey}
+                        className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
+                        onClick={() => setExpandedHeldMptKey(isExpanded ? null : rowKey)}
+                      >
+                        <div className="asset-main">
+                          <div className="asset-logo">
+                            <CurrencyWithIcon token={mptNode} options={{ disableTokenLink: true }} hideIssuer />
+                          </div>
+                          <div className="asset-value">
+                            <div className="asset-amount">{shortNiceNumber(balanceValue)}</div>
+                          </div>
+                        </div>
+
+                        {isExpanded && (
+                          <div className="asset-details">
+                            <div className="detail-row">
+                              <span>MPT ID:</span>
+                              <span className="copy-inline">
+                                <span>{shortHash(mptId(mptNode) || '-')}</span>
+                                {!!mptId(mptNode) && (
+                                  <span onClick={(event) => event.stopPropagation()}>
+                                    <CopyButton text={mptId(mptNode)} />
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                            <div className="detail-row">
+                              <span>Balance:</span>
+                              <span>{fullNiceNumber(balanceValue)}</span>
+                            </div>
+                            {mptNode?.mptokenCurrencyDetails?.account && (
+                              <div className="detail-row">
+                                <span>Issuer:</span>
+                                <span className="copy-inline">
+                                  <AddressWithIconInline
+                                    data={{
+                                      address: mptNode.mptokenCurrencyDetails.account,
+                                      addressDetails: mptNode?.mptokenCurrencyDetails?.accountDetails || {}
+                                    }}
+                                    name="address"
+                                    options={{ short: 6 }}
+                                  />
+                                  <span onClick={(event) => event.stopPropagation()}>
+                                    <CopyButton text={mptNode.mptokenCurrencyDetails.account} />
+                                  </span>
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
+
+            {hasUriTokens && (
+              <>
+                <div className="section-header-row nft-section-header-row">
+                  <div className="section-title nft-section-title">NFTs</div>
+                </div>
+
+                <div className="nft-tab-row nft-tab-row-outside">
+                  <div className="nft-tab-switch">
+                    <button
+                      type="button"
+                      className={`nft-tab-btn ${uriTab === 'owned' ? 'active' : ''}`}
+                      onClick={() => setUriTab('owned')}
+                    >
+                      Owned URI ({uriTokens.length})
+                    </button>
+                    {hasMintedUriTokens && (
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${uriTab === 'minted' ? 'active' : ''}`}
+                        onClick={() => setUriTab('minted')}
+                      >
+                        Minted URI ({uriTokens.filter((token) => token?.Issuer === data?.address).length})
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="cards-list">
+                  {activeUriTokens.map((uriToken, index) => {
+                    const tokenKey = `${uriToken?.index || 'uri-token'}-${uriTab}-${index}`
+                    const isExpanded = expandedUriTokenKey === tokenKey
+                    const uriTokenId = uriToken?.index
+                    const isOnSale = !!(uriToken?.Amount || uriToken?.Destination)
+
+                    return (
+                      <div
+                        key={tokenKey}
+                        className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
+                        onClick={() => setExpandedUriTokenKey(isExpanded ? null : tokenKey)}
+                      >
+                        <div className="asset-main">
+                          <div className="asset-logo">
+                            <div className="nft-asset-info">
+                              <div className="nft-asset-text">
+                                <div className="asset-summary-title">URI token {index + 1}</div>
+                                <div className="asset-fiat">{uriTokenId ? shortHash(uriTokenId) : '-'}</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="asset-value">
+                            <div className="asset-fiat">{isOnSale ? 'On offer' : 'Owned'}</div>
+                          </div>
+                        </div>
+
+                        {isExpanded && (
+                          <div className="asset-details">
+                            <div className="detail-row">
+                              <span>Token ID:</span>
+                              <span className="copy-inline">
+                                <span>{uriTokenId ? shortHash(uriTokenId) : '-'}</span>
+                                {!!uriTokenId && (
+                                  <span onClick={(event) => event.stopPropagation()}>
+                                    <CopyButton text={uriTokenId} />
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+
+                            {!!uriToken?.Issuer && (
+                              <div className="detail-row">
+                                <span>Issuer:</span>
+                                <span className="copy-inline">
+                                  <AddressWithIconInline
+                                    data={{
+                                      address: uriToken.Issuer,
+                                      addressDetails: uriToken?.issuerDetails || {}
+                                    }}
+                                    name="address"
+                                    options={{ short: 6 }}
+                                  />
+                                  <span onClick={(event) => event.stopPropagation()}>
+                                    <CopyButton text={uriToken.Issuer} />
+                                  </span>
+                                </span>
+                              </div>
+                            )}
+
+                            {!!uriToken?.Destination && (
+                              <div className="detail-row">
+                                <span>Destination:</span>
+                                <span className="copy-inline">
+                                  <AddressWithIconInline
+                                    data={{
+                                      address: uriToken.Destination,
+                                      addressDetails: uriToken?.destinationDetails || {}
+                                    }}
+                                    name="address"
+                                    options={{ short: 6 }}
+                                  />
+                                  <span onClick={(event) => event.stopPropagation()}>
+                                    <CopyButton text={uriToken.Destination} />
+                                  </span>
+                                </span>
+                              </div>
+                            )}
+
+                            {!!uriToken?.Amount && (
+                              <div className="detail-row">
+                                <span>Amount:</span>
+                                <span>{amountFormat(uriToken.Amount, { icon: true, precise: 'nice' })}</span>
+                              </div>
+                            )}
+
+                            {!!uriToken?.URI && (
+                              <div className="detail-row">
+                                <span>URI:</span>
+                                <span className="copy-inline">
+                                  <span className="address-text">{String(uriToken.URI)}</span>
+                                  <span onClick={(event) => event.stopPropagation()}>
+                                    <CopyButton text={String(uriToken.URI)} />
+                                  </span>
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
+
+            {hasAnyNftSectionData && (
+              <>
+                <div className="section-header-row nft-section-header-row">
+                  <div className="section-title nft-section-title">NFTs</div>
+                  {activeNftCount > 0 && data?.address && (
+                    <Link className="section-link" href={activeNftViewAllHref}>
+                      View all
+                    </Link>
+                  )}
+                </div>
+
+                <div className="nft-tab-row nft-tab-row-outside">
+                  <div className="nft-tab-switch">
+                    {hasOwnedNfts && (
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftTab === 'owned' ? 'active' : ''}`}
+                        onClick={() => setNftTab('owned')}
+                      >
+                        Owned{nftTabCountLabels.owned ? ` (${nftTabCountLabels.owned})` : ''}
+                      </button>
+                    )}
+                    {hasSoldNfts && (
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftTab === 'sold' ? 'active' : ''}`}
+                        onClick={() => setNftTab('sold')}
+                      >
+                        Sold{nftTabCountLabels.sold ? ` (${nftTabCountLabels.sold})` : ''}
+                      </button>
+                    )}
+                    {hasMintedNfts && (
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftTab === 'minted' ? 'active' : ''}`}
+                        onClick={() => setNftTab('minted')}
+                      >
+                        Minted{nftTabCountLabels.minted ? ` (${nftTabCountLabels.minted})` : ''}
+                      </button>
+                    )}
+                    {hasBurnedNfts && (
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftTab === 'burned' ? 'active' : ''}`}
+                        onClick={() => setNftTab('burned')}
+                      >
+                        Burned{nftTabCountLabels.burned ? ` (${nftTabCountLabels.burned})` : ''}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="nft-section-content">
+                  {activeNftLoading ? (
+                    <div className="asset-fiat">Loading {nftTab} NFTs...</div>
+                  ) : activeNftCount > 0 ? (
+                    <>
+                      <div className="cards-list">
+                        {activeNftPreview.map((nft, nftIndex) => {
+                          const nftId =
+                            nft?.nftokenID || nft?.NFTokenID || nft?.nftoken?.nftokenID || nft?.nftoken?.NFTokenID
+                          if (!nftId) return null
+
+                          const cardKey = `${nftTab}-${nftId}-${nftIndex}`
+                          const isExpanded = expandedNftCardKey === cardKey
+                          const toggleCard = () => setExpandedNftCardKey(isExpanded ? null : cardKey)
+                          const handleKeyToggle = (event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault()
+                              toggleCard()
+                            }
+                          }
+
+                          const shortNftId =
+                            typeof nftId === 'string' && nftId.length > 12
+                              ? `${nftId.slice(0, 6)}...${nftId.slice(-6)}`
+                              : nftId
+                          const shortTokenId = shortHash(nftId)
+                          const nftDisplayData = nft?.nftoken || nft
+                          const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortNftId
+                          const soldAt = nft?.acceptedAt || nft?.soldAt
+                          const updatedAt = soldAt || nft?.updatedAt || nft?.createdAt
+                          const soldPrice =
+                            nftTab === 'sold' && nft?.amount
+                              ? amountFormat(nft.amount, { short: true, maxFractionDigits: 2 })
+                              : null
+                          const soldPriceFiat =
+                            nftTab === 'sold' && selectedCurrency
+                              ? convertedAmount(nft, selectedCurrency.toLowerCase(), { short: true })
+                              : null
+                          const updatedTimeAgo = updatedAt ? timeFromNow(updatedAt, i18n) : null
+                          const updatedExact = updatedAt ? fullDateAndTime(updatedAt) : null
+                          const actionVerb =
+                            nftTab === 'sold'
+                              ? 'Sold'
+                              : nftTab === 'minted'
+                                ? 'Minted'
+                                : nftTab === 'burned'
+                                  ? 'Burned'
+                                  : 'Updated'
+                          const fallbackSecondaryLine =
+                            nftTab === 'owned' && shortNftId ? `Token ID ${shortNftId}` : actionVerb
+                          const secondaryLine = updatedTimeAgo ? (
+                            <>
+                              {actionVerb} {updatedTimeAgo}
+                            </>
+                          ) : (
+                            fallbackSecondaryLine
+                          )
+
+                          return (
+                            <div
+                              key={`${nftId}-${nftIndex}`}
+                              className="asset-item token-asset-item"
+                              role="button"
+                              tabIndex={0}
+                              aria-expanded={isExpanded}
+                              onClick={toggleCard}
+                              onKeyDown={handleKeyToggle}
+                            >
+                              <div className="asset-main">
+                                <div className="asset-logo">
+                                  <div className="nft-asset-info">
+                                    <Link
+                                      href={`/nft/${nftId}`}
+                                      onClick={(event) => event.stopPropagation()}
+                                      className="nft-asset-thumb"
+                                    >
+                                      <NftImage
+                                        nft={nftDisplayData}
+                                        style={{
+                                          width: 40,
+                                          height: 40,
+                                          borderRadius: '6px',
+                                          verticalAlign: 'middle'
+                                        }}
+                                      />
+                                    </Link>
+                                    <div className="nft-asset-text">
+                                      <div className="asset-summary-title" title={nftTitle}>
+                                        {nftTitle}
+                                      </div>
+                                      <div className="asset-fiat">{secondaryLine}</div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="asset-value">
+                                  {soldPrice ? (
+                                    <>
+                                      <div className="asset-amount">{soldPrice}</div>
+                                      {soldPriceFiat && (
+                                        <div className="asset-fiat" suppressHydrationWarning>
+                                          ≈{soldPriceFiat}
+                                        </div>
                                       )}
-                                      <span className="tx-change-row">
-                                        <span>
-                                          {amountFormat(
-                                            {
-                                              currency: changes[0].currency,
-                                              issuer: changes[0].issuer,
-                                              value: 1
-                                            },
-                                            { icon: true }
-                                          )}{' '}
-                                          ={' '}
-                                          {amountFormat(
-                                            {
-                                              ...changes[1],
-                                              value: dexOfferRateAtoB
-                                            },
-                                            { icon: true, precise: 'nice' }
-                                          )}
-                                        </span>
-                                      </span>
-                                      <span className="tx-change-row">
-                                        <span>
-                                          {amountFormat(
-                                            {
-                                              currency: changes[1].currency,
-                                              issuer: changes[1].issuer,
-                                              value: 1
-                                            },
-                                            { icon: true }
-                                          )}{' '}
-                                          ={' '}
-                                          {amountFormat(
-                                            {
-                                              ...changes[0],
-                                              value: dexOfferRateBtoA
-                                            },
-                                            { icon: true, precise: 'nice' }
-                                          )}
-                                        </span>
-                                      </span>
-                                    </span>
-                                  </div>
-                                )}
-
-                                {nftTokenId && (
+                                    </>
+                                  ) : updatedTimeAgo ? (
+                                    <div className="asset-fiat">{updatedTimeAgo}</div>
+                                  ) : null}
+                                </div>
+                              </div>
+                              {isExpanded && (
+                                <div className="asset-details">
                                   <div className="detail-row">
-                                    <span>NFT:</span>
-                                    <span className="copy-inline id-inline">
-                                      <span className="address-text ellipsis-text" title={nftTokenId}>
-                                        {nftTokenId}
-                                      </span>
+                                    <span>Token ID:</span>
+                                    <span className="copy-inline">
+                                      <span>{shortTokenId}</span>
                                       <Link
-                                        href={`/nft/${nftTokenId}`}
+                                        href={`/nft/${nftId}`}
                                         className="inline-link-icon tooltip"
                                         onClick={(event) => event.stopPropagation()}
                                       >
@@ -5250,790 +3667,28 @@ export default function Account2({
                                         <span className="tooltiptext no-brake">NFT page</span>
                                       </Link>
                                       <span onClick={(event) => event.stopPropagation()}>
-                                        <CopyButton text={nftTokenId} />
+                                        <CopyButton text={nftId} />
                                       </span>
                                     </span>
                                   </div>
-                                )}
-
-                                {nftOfferIds.length > 0 && (
-                                  <div className="detail-row">
-                                    <span>{nftOfferIds.length > 1 ? 'Offer IDs:' : 'Offer ID:'}</span>
-                                    <span className="tx-offer-id-list">
-                                      {nftOfferIds.map((offerId, offerIndex) => (
-                                        <span className="copy-inline id-inline" key={`${txKey}-offer-${offerIndex}`}>
-                                          <span className="address-text ellipsis-text" title={offerId}>
-                                            {offerId}
-                                          </span>
-                                          <Link
-                                            href={`/nft-offer/${offerId}`}
-                                            className="inline-link-icon tooltip"
-                                            onClick={(event) => event.stopPropagation()}
-                                          >
-                                            <LinkIcon />
-                                            <span className="tooltiptext no-brake">Offer page</span>
-                                          </Link>
-                                          <span onClick={(event) => event.stopPropagation()}>
-                                            <CopyButton text={offerId} />
-                                          </span>
-                                        </span>
-                                      ))}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {isNftOfferTx && hasNftOfferAmount && (
-                                  <div className="detail-row">
-                                    <span>Offer amount:</span>
-                                    <span className="tx-detail-offer-amount">
-                                      <span className="tx-inline-change">{offerAmountExpandedText}</span>
-                                      {!!offerAmountFiatDetailText && (
-                                        <span className="tx-change-fiat">{offerAmountFiatDetailText}</span>
-                                      )}
-                                    </span>
-                                  </div>
-                                )}
-
-                                {!isNftOfferTx && nftMintSellOfferDisplay && (
-                                  <div className="detail-row">
-                                    <span>Offer amount:</span>
-                                    <span className="tx-detail-offer-amount">
-                                      <span className="tx-inline-change">{nftMintSellOfferDisplay.expandedText}</span>
-                                      {!!nftMintSellOfferDisplay.expandedFiat && (
-                                        <span className="tx-change-fiat">{nftMintSellOfferDisplay.expandedFiat}</span>
-                                      )}
-                                    </span>
-                                  </div>
-                                )}
-
-                                <div className="detail-row">
-                                  <span>Hash:</span>
-                                  <span className="copy-inline">
-                                    {txHash ? (
-                                      <Link
-                                        href={`/transaction/${txHash}`}
-                                        className="tx-link"
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
-                                        {shortHash}
-                                      </Link>
-                                    ) : (
-                                      '-'
-                                    )}
-                                    {!!txHash && (
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CopyButton text={txHash} />
-                                      </span>
-                                    )}
-                                  </span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )
-
-                  if (isMobile) {
-                    const canLoadMoreTransactions = !!transactionsMarker && !transactionsSearchPaused
-                    return (
-                      <>
-                        {renderTransactionsList()}
-                        {transactionsEndMessage ? (
-                          <div className="tx-mobile-end-message">
-                            <p className="center">{transactionsEndMessage}</p>
-                          </div>
-                        ) : (
-                          <div className="tx-mobile-actions">
-                            {canLoadMoreTransactions ? (
-                              <button
-                                type="button"
-                                className="tx-mobile-load-btn"
-                                onClick={loadMoreTransactions}
-                                disabled={transactionsLoadingMore || transactionsLoading}
-                              >
-                                {transactionsLoadingMore ? (
-                                  <>
-                                    Loading
-                                    <span className="waiting inline" aria-hidden="true"></span>
-                                  </>
-                                ) : (
-                                  'Load more transactions'
-                                )}
-                              </button>
-                            ) : (
-                              <span className="tx-mobile-end-label">End of list.</span>
-                            )}
-                          </div>
-                        )}
-                      </>
-                    )
-                  }
-
-                  return (
-                    <InfiniteScrolling
-                      dataLength={recentTransactions.length}
-                      loadMore={loadMoreTransactions}
-                      hasMore={!!transactionsMarker && !transactionsSearchPaused}
-                      errorMessage={transactionsEndMessage}
-                      loadMoreMessage={transactionsLoadMoreMessage}
-                      subscriptionExpired={false}
-                      sessionToken={true}
-                    >
-                      {renderTransactionsList()}
-                    </InfiniteScrolling>
-                  )
-                })()}
-            </div>
-          </CollapsibleColumn>
-
-          {/* Column 4: Issued Tokens */}
-          <CollapsibleColumn>
-            <div className="orders-section">
-              {showObjectsLoadStatus && (
-                <div className={`asset-item object-load-status ${objectsError ? 'error' : ''}`}>
-                  {objectsLoading ? (
-                    <span className="tx-inline-load object-load-status-text">
-                      <span>Loading account objects</span>
-                      <span className="waiting inline" aria-hidden="true"></span>
-                    </span>
-                  ) : (
-                    <span className="object-load-status-text">
-                      Failed to load account objects. Object sections may be missing.
-                    </span>
-                  )}
-                </div>
-              )}
-
-              {(issuedTokensLoading || issuedTokensError || issuedTokens.length > 0) && (
-                <>
-                  <div className="section-header-row">
-                    <span className="section-title">Issued tokens</span>
-                    {data?.address && (
-                      <Link className="section-link" href={`/tokens?issuer=${data.address}`}>
-                        View all
-                      </Link>
-                    )}
-                  </div>
-
-                  {hasIssuerSettingsData && (
-                    <div className="time-machine-card issuer-settings-card">
-                      <button
-                        type="button"
-                        className={`time-machine-toggle ${showIssuerSettingsDetails ? 'active' : ''}`}
-                        onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
-                      >
-                        Issuer settings
-                        {hasCustomTransferFee && (
-                          <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
-                        )}
-                      </button>
-
-                      {showIssuerSettingsDetails && (
-                        <div className="time-machine-panel issuer-settings-panel">
-                          <div className="detail-row issuer-detail-row">
-                            <span>Rippling:</span>
-                            <span className={isRipplingEnabled ? 'green' : 'grey'}>
-                              {isRipplingEnabled ? 'enabled' : 'disabled'}
-                            </span>
-                          </div>
-                          <div className="detail-row issuer-detail-row">
-                            <span>Transfer fee:</span>
-                            <span>{issuerTransferFeeText}</span>
-                          </div>
-                          <div className="detail-row issuer-detail-row">
-                            <span>Escrow:</span>
-                            <span className={isCanEscrowEnabled ? 'green' : 'grey'}>
-                              {isCanEscrowEnabled ? 'enabled' : 'disabled'}
-                            </span>
-                          </div>
-
-                          <div className="lp-actions issuer-settings-actions">
-                            <Link href="/services/account-settings" className="lp-action-btn">
-                              Change settings
-                            </Link>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {issuedTokensLoading && <p className="grey">Loading issued tokens...</p>}
-                  {!issuedTokensLoading && issuedTokensError && <p className="red">{issuedTokensError}</p>}
-
-                  {!issuedTokensLoading &&
-                    !issuedTokensError &&
-                    issuedTokens.map((token, index) => {
-                      const tokenStats = token.statistics || {}
-                      const tokenSupply = Number(token.supply || 0)
-                      const tokenPriceNative = Number(tokenStats.priceNativeCurrency || 0)
-                      const tokenPriceFiat = tokenPriceNative * (pageFiatRate || 0)
-                      const tokenMarketcap = Number(tokenStats.marketcap || 0)
-                      const tokenMarketcapFiat = tokenMarketcap * (pageFiatRate || 0)
-                      const tokenVolume24h = Number(tokenStats.buyVolume || 0) + Number(tokenStats.sellVolume || 0)
-                      const tokenVolume24hFiat = tokenVolume24h * tokenPriceNative * (pageFiatRate || 0)
-                      const tokenKey = `${token.currency || 'token'}-${index}`
-                      const isExpanded = expandedIssuedToken === tokenKey
-
-                      return (
-                        <div
-                          key={tokenKey}
-                          className="asset-item token-asset-item"
-                          onClick={() => setExpandedIssuedToken(isExpanded ? null : tokenKey)}
-                        >
-                          <div className="asset-main">
-                            <div className="asset-logo">
-                              <CurrencyWithIcon token={token} options={{ disableTokenLink: true }} />
-                            </div>
-                            <div className="asset-value">
-                              <div className="asset-amount" suppressHydrationWarning>
-                                {tokenMarketcapFiat > 0
-                                  ? shortNiceNumber(tokenMarketcapFiat, 2, 1, selectedCurrency)
-                                  : shortNiceNumber(tokenMarketcap, 2, 1)}
-                              </div>
-                              <div className="asset-fiat">Supply: {shortNiceNumber(tokenSupply)}</div>
-                            </div>
-                          </div>
-
-                          {isExpanded && (
-                            <div className="asset-details">
-                              <div className="detail-row">
-                                <span>Currency:</span>
-                                <span className="copy-inline">
-                                  <span>{token.currency}</span>
-                                  <Link
-                                    href={`/token/${data.address}/${token.currency}`}
-                                    className="inline-link-icon tooltip"
-                                    onClick={(event) => event.stopPropagation()}
-                                  >
-                                    <LinkIcon />
-                                    <span className="tooltiptext no-brake">Token page</span>
-                                  </Link>
-                                  <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={token.currency} />
-                                  </span>
-                                </span>
-                              </div>
-
-                              <div className="detail-row">
-                                <span>Price ({nativeCurrency}):</span>
-                                <span>
-                                  {shortNiceNumber(tokenPriceNative, 2, 1)} {nativeCurrency}
-                                </span>
-                              </div>
-
-                              <div className="detail-row">
-                                <span>Price ({selectedCurrency?.toUpperCase()}):</span>
-                                <span suppressHydrationWarning>
-                                  {tokenPriceFiat > 0
-                                    ? shortNiceNumber(tokenPriceFiat, 2, 1, selectedCurrency)
-                                    : shortNiceNumber(0, 2, 1, selectedCurrency)}
-                                </span>
-                              </div>
-
-                              <div className="detail-row">
-                                <span>Marketcap:</span>
-                                <span suppressHydrationWarning>
-                                  {tokenMarketcapFiat > 0
-                                    ? shortNiceNumber(tokenMarketcapFiat, 2, 1, selectedCurrency)
-                                    : shortNiceNumber(tokenMarketcap, 2, 1)}
-                                </span>
-                              </div>
-
-                              <div className="detail-row">
-                                <span>Supply:</span>
-                                <span>{fullNiceNumber(tokenSupply)}</span>
-                              </div>
-
-                              <div className="detail-row">
-                                <span>Holders:</span>
-                                <span>{fullNiceNumber(token.holders || 0)}</span>
-                              </div>
-
-                              <div className="detail-row">
-                                <span>Trustlines:</span>
-                                <span>{fullNiceNumber(token.trustlines || 0)}</span>
-                              </div>
-
-                              <div className="detail-row">
-                                <span>Volume (24h):</span>
-                                <span suppressHydrationWarning>
-                                  {tokenVolume24hFiat > 0
-                                    ? shortNiceNumber(tokenVolume24hFiat, 2, 1, selectedCurrency)
-                                    : shortNiceNumber(tokenVolume24h, 2, 1)}
-                                </span>
-                              </div>
-
-                              <div className="detail-row">
-                                <span>Volume (24h) token:</span>
-                                <span>
-                                  {shortNiceNumber(tokenVolume24h, 2, 1)} {niceCurrency(token.currency)}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                </>
-              )}
-
-              {hasIssuedMpts && (
-                <>
-                  <div className="section-header-row object-section-header-row">
-                    <div className="section-title object-section-title">
-                      Issued MPTs <span className="object-title-count">{issuedMpts.length}</span>
-                    </div>
-                  </div>
-
-                  <div className="cards-list">
-                    {issuedMpts.map((mptNode, index) => {
-                      const rowKey = `${mptNode?.index || mptId(mptNode) || 'issued-mpt'}-${index}`
-                      const isExpanded = expandedIssuedMptKey === rowKey
-                      const outstanding = scaleAmount(mptNode?.OutstandingAmount || 0, mptNode?.AssetScale || null)
-                      const maxSupply = mptNode?.MaximumAmount
-                        ? scaleAmount(mptNode.MaximumAmount, mptNode?.AssetScale || null)
-                        : null
-
-                      return (
-                        <div
-                          key={rowKey}
-                          className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
-                          onClick={() => setExpandedIssuedMptKey(isExpanded ? null : rowKey)}
-                        >
-                          <div className="asset-main">
-                            <div className="asset-logo">
-                              <CurrencyWithIcon token={mptNode} options={{ disableTokenLink: true }} hideIssuer />
-                            </div>
-                            <div className="asset-value">
-                              <div className="asset-amount">{shortNiceNumber(outstanding)}</div>
-                              <div className="asset-fiat">Outstanding</div>
-                            </div>
-                          </div>
-
-                          {isExpanded && (
-                            <div className="asset-details">
-                              <div className="detail-row">
-                                <span>MPT ID:</span>
-                                <span className="copy-inline">
-                                  <span>{shortHash(mptId(mptNode) || '-')}</span>
-                                  {!!mptId(mptNode) && (
-                                    <span onClick={(event) => event.stopPropagation()}>
-                                      <CopyButton text={mptId(mptNode)} />
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-                              <div className="detail-row">
-                                <span>Outstanding:</span>
-                                <span>{fullNiceNumber(outstanding)}</span>
-                              </div>
-                              <div className="detail-row">
-                                <span>Max supply:</span>
-                                <span>{maxSupply === null ? 'not set' : fullNiceNumber(maxSupply)}</span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </>
-              )}
-
-              {hasIssuerSettingsData && !(issuedTokensLoading || issuedTokensError || issuedTokens.length > 0) && (
-                <div className="time-machine-card issuer-settings-card">
-                  <button
-                    type="button"
-                    className={`time-machine-toggle ${showIssuerSettingsDetails ? 'active' : ''}`}
-                    onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
-                  >
-                    Issuer settings
-                    {hasCustomTransferFee && (
-                      <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
-                    )}
-                  </button>
-
-                  {showIssuerSettingsDetails && (
-                    <div className="time-machine-panel issuer-settings-panel">
-                      <div className="detail-row issuer-detail-row">
-                        <span>Rippling:</span>
-                        <span className={isRipplingEnabled ? 'green' : 'grey'}>
-                          {isRipplingEnabled ? 'enabled' : 'disabled'}
-                        </span>
-                      </div>
-                      <div className="detail-row issuer-detail-row">
-                        <span>Transfer fee:</span>
-                        <span>{issuerTransferFeeText}</span>
-                      </div>
-                      <div className="detail-row issuer-detail-row">
-                        <span>Escrow:</span>
-                        <span className={isCanEscrowEnabled ? 'green' : 'grey'}>
-                          {isCanEscrowEnabled ? 'enabled' : 'disabled'}
-                        </span>
-                      </div>
-                      {isTrustlineClawbackEnabled && (
-                        <div className="detail-row issuer-detail-row">
-                          <span>Trustline clawback:</span>
-                          <span>enabled</span>
-                        </div>
-                      )}
-                      {isCanEscrowEnabled && (
-                        <div className="detail-row issuer-detail-row">
-                          <span>Trustline locking:</span>
-                          <span>enabled</span>
-                        </div>
-                      )}
-                      {isGlobalFreezeEnabled && (
-                        <div className="detail-row issuer-detail-row">
-                          <span>Global freeze:</span>
-                          <span>true</span>
-                        </div>
-                      )}
-                      {isNoFreezeEnabled && (
-                        <div className="detail-row issuer-detail-row">
-                          <span>No freeze:</span>
-                          <span>enabled</span>
-                        </div>
-                      )}
-
-                      <div className="lp-actions issuer-settings-actions">
-                        <Link href="/services/account-settings" className="lp-action-btn">
-                          Change settings
-                        </Link>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {hasDexOrders && (
-                <>
-                  <div className="section-header-row object-section-header-row">
-                    <div className="section-title object-section-title">
-                      DEX orders <span className="object-title-count">{dexOrders.length}</span>
-                    </div>
-                    {data?.address && (
-                      <Link className="section-link" href={`/account/${data.address}/dex`}>
-                        View all
-                      </Link>
-                    )}
-                  </div>
-
-                  <div className="cards-list">
-                    {dexOrders.map((offer, index) => {
-                      const orderKey = `${offer?.index || 'offer'}-${index}`
-                      const isExpanded = expandedDexOrderKey === orderKey
-                      const isSell = !!offer?.flags?.sell
-                      const baseAmount = isSell ? offer?.TakerGets : offer?.TakerPays
-                      const quoteAmount = isSell ? offer?.TakerPays : offer?.TakerGets
-                      const collapsedMainLabel = isSell ? 'Selling' : 'Buying'
-                      const collapsedPrimary = amountFormat(baseAmount, {
-                        short: true,
-                        maxFractionDigits: 2,
-                        icon: true
-                      })
-                      const collapsedSecondary = amountFormat(quoteAmount, {
-                        short: true,
-                        maxFractionDigits: 2,
-                        icon: true
-                      })
-                      const rateText = (() => {
-                        const quality = Number(offer?.quality)
-                        if (!Number.isFinite(quality) || quality <= 0) return '-'
-
-                        const takerGetsIsNative = typeof offer?.TakerGets === 'string'
-                        const takerPaysIsNative = typeof offer?.TakerPays === 'string'
-                        const getsCurrency =
-                          typeof offer?.TakerGets === 'object'
-                            ? niceCurrency(offer?.TakerGets?.currency)
-                            : nativeCurrency
-                        const paysCurrency =
-                          typeof offer?.TakerPays === 'object'
-                            ? niceCurrency(offer?.TakerPays?.currency)
-                            : nativeCurrency
-
-                        if (takerGetsIsNative) {
-                          return `1 ${nativeCurrency} = ${niceNumber(quality * 1000000, 0, null, 5)} ${paysCurrency}`
-                        }
-                        if (takerPaysIsNative) {
-                          return `1 ${getsCurrency} = ${niceNumber(quality / 1000000, 0, null, 5)} ${nativeCurrency}`
-                        }
-                        return `1 ${getsCurrency} = ${niceNumber(quality, 0, null, 5)} ${paysCurrency}`
-                      })()
-                      const offerDateText = offer?.previousTxAt
-                        ? timeFromNow(offer.previousTxAt, i18n)
-                        : offer?.PreviousTxnLgrSeq
-                          ? `Lgr ${offer.PreviousTxnLgrSeq}`
-                          : '-'
-
-                      return (
-                        <div
-                          className={`asset-item token-asset-item check-row-card dex-order-card ${isExpanded ? 'expanded' : ''}`}
-                          key={orderKey}
-                          onClick={() => setExpandedDexOrderKey(isExpanded ? null : orderKey)}
-                        >
-                          <div className="asset-main check-collapsed-main escrow-collapsed-main dex-collapsed-main">
-                            <div className="asset-logo escrow-collapsed-logo">
-                              <div className="escrow-collapsed-top">
-                                <span className="escrow-type-main">
-                                  {collapsedMainLabel} {collapsedPrimary}
-                                </span>
-                                <span className="escrow-time-top">{offerDateText}</span>
-                              </div>
-                              <div className="tx-collapsed-meta">
-                                <span className="tx-accountset-inline">for {collapsedSecondary}</span>
-                              </div>
-                            </div>
-                            <div className="asset-value tx-collapsed-change escrow-collapsed-amount">
-                              <span className="tx-inline-change grey">#{offer?.Sequence || '-'}</span>
-                            </div>
-                          </div>
-
-                          {isExpanded && (
-                            <div className="asset-details">
-                              <div className="detail-row">
-                                <span>{isSell ? 'Selling:' : 'Wants to buy:'}</span>
-                                <span>
-                                  {amountFormat(isSell ? offer?.TakerGets : offer?.TakerPays, {
-                                    icon: true,
-                                    withIssuer: true,
-                                    precise: 'nice'
-                                  })}
-                                </span>
-                              </div>
-                              <div className="detail-row">
-                                <span>{isSell ? 'Wants at least:' : 'Can pay maximum:'}</span>
-                                <span>
-                                  {amountFormat(isSell ? offer?.TakerPays : offer?.TakerGets, {
-                                    icon: true,
-                                    withIssuer: true,
-                                    precise: 'nice'
-                                  })}
-                                </span>
-                              </div>
-                              <div className="detail-row">
-                                <span>Rate:</span>
-                                <span>{rateText}</span>
-                              </div>
-                              <div className="detail-row">
-                                <span>Sequence:</span>
-                                <span>{offer?.Sequence || '-'}</span>
-                              </div>
-                              <div className="detail-row">
-                                <span>Offer ID:</span>
-                                <span className="copy-inline">
-                                  <span>{offer?.index ? shortHash(offer.index) : '-'}</span>
-                                  {!!offer?.index && (
-                                    <>
-                                      <Link
-                                        href={`/object/${offer.index}`}
-                                        className="inline-link-icon tooltip"
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
-                                        <LinkIcon />
-                                        <span className="tooltiptext no-brake">Object page</span>
-                                      </Link>
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CopyButton text={offer.index} />
-                                      </span>
-                                    </>
-                                  )}
-                                </span>
-                              </div>
-
-                              {!effectiveLedgerTimestamp && !!setSignRequest && offer?.Sequence && (
-                                <div className="check-actions" onClick={(event) => event.stopPropagation()}>
-                                  <button
-                                    type="button"
-                                    className="check-action-btn cancel"
-                                    onClick={() => {
-                                      setSignRequest({
-                                        request: {
-                                          Account: offer.Account,
-                                          TransactionType: 'OfferCancel',
-                                          OfferSequence: offer.Sequence
-                                        }
-                                      })
-                                    }}
-                                    title="Cancel"
-                                  >
-                                    <MdMoneyOff /> Cancel
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </>
-              )}
-
-              {(hasReceivedChecks || hasSentChecks) && (
-                <>
-                  <div className="section-header-row object-section-header-row">
-                    <div className="section-title object-section-title">
-                      {checksSectionTitle} <span className="object-title-count">{activeChecksList.length}</span>
-                    </div>
-                  </div>
-
-                  {showChecksTabs && (
-                    <div className="object-tab-row object-tab-row-outside">
-                      <div className="object-tab-switch">
-                        <button
-                          type="button"
-                          className={`object-tab-btn ${checksTab === 'received' ? 'active' : ''}`}
-                          onClick={() => setChecksTab('received')}
-                        >
-                          Received
-                        </button>
-                        <button
-                          type="button"
-                          className={`object-tab-btn ${checksTab === 'sent' ? 'active' : ''}`}
-                          onClick={() => setChecksTab('sent')}
-                        >
-                          Sent
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="checks-wrapper">
-                    <div className="checks-details">
-                      <div className="checks-list cards-list">
-                        {activeChecksList.map((check, index) => {
-                          const checkKey = `${check?.index || 'check'}-${activeChecksTab}-${index}`
-                          const isExpanded = expandedCheckKey === checkKey
-                          const counterpartAddress = activeChecksTab === 'sent' ? check?.Destination : check?.Account
-                          const sendMaxToken =
-                            typeof check?.SendMax === 'object' && check?.SendMax !== null
-                              ? check.SendMax
-                              : { currency: nativeCurrency }
-                          const sendMaxRawValue =
-                            typeof check?.SendMax === 'object' && check?.SendMax !== null
-                              ? check?.SendMax?.value
-                              : check?.SendMax
-                          const sendMaxAmountOnly =
-                            typeof check?.SendMax === 'object' && check?.SendMax !== null
-                              ? fullNiceNumber(sendMaxRawValue)
-                              : fullNiceNumber((Number(sendMaxRawValue) || 0) / 1000000)
-                          const sentAtValue = check?.previousTxAt || check?.createdAt
-                          const sentAtText = sentAtValue ? timeFromNow(sentAtValue, i18n) : '-'
-                          const expirationValue = check?.expiration || check?.Expiration
-                          const expirationText = expirationValue
-                            ? timeFromNow(expirationValue, i18n, 'ripple')
-                            : 'does not expire'
-                          const isExpired = expirationValue ? timestampExpired(expirationValue, 'ripple') : false
-                          const canRedeem =
-                            !!setSignRequest &&
-                            !effectiveLedgerTimestamp &&
-                            check?.Destination === account?.address &&
-                            !isExpired
-                          const canCancel =
-                            !!setSignRequest &&
-                            !effectiveLedgerTimestamp &&
-                            (check?.Destination === account?.address ||
-                              check?.Account === account?.address ||
-                              isExpired)
-
-                          return (
-                            <div
-                              className={`asset-item token-asset-item check-row-card ${isExpanded ? 'expanded' : ''}`}
-                              key={checkKey}
-                              onClick={() => setExpandedCheckKey(isExpanded ? null : checkKey)}
-                            >
-                              <div className="asset-main check-collapsed-main">
-                                <div className="asset-logo">
-                                  <CurrencyWithIcon token={sendMaxToken} options={{ disableTokenLink: true }} />
-                                </div>
-                                <div className="asset-value">
-                                  <div className="asset-amount">{sendMaxAmountOnly}</div>
-                                </div>
-                              </div>
-
-                              {isExpanded && (
-                                <div className="asset-details">
-                                  <div className="detail-row">
-                                    <span>Sent:</span>
-                                    <span>{sentAtText}</span>
-                                  </div>
-                                  <div className="detail-row">
-                                    <span>{activeChecksTab === 'sent' ? 'To' : 'From'}:</span>
-                                    <span>
-                                      {counterpartAddress ? (
-                                        <AddressWithIconInline
-                                          data={{ address: counterpartAddress }}
-                                          name="address"
-                                          options={{ short: 6 }}
-                                        />
-                                      ) : (
-                                        '-'
-                                      )}
-                                    </span>
-                                  </div>
-                                  {typeof check?.DestinationTag !== 'undefined' && (
+                                  {soldPrice && (
                                     <div className="detail-row">
-                                      <span>Destination tag:</span>
-                                      <span>{check.DestinationTag}</span>
+                                      <span>Sale price:</span>
+                                      <span>
+                                        {soldPrice}
+                                        {soldPriceFiat && (
+                                          <span className="fiat-line" suppressHydrationWarning>
+                                            {' '}
+                                            ≈{soldPriceFiat}
+                                          </span>
+                                        )}
+                                      </span>
                                     </div>
                                   )}
-                                  <div className="detail-row">
-                                    <span>Expiration:</span>
-                                    <span className={isExpired ? 'red' : ''}>{expirationText}</span>
-                                  </div>
-                                  <div className="detail-row">
-                                    <span>Check ID:</span>
-                                    <span className="copy-inline">
-                                      <span>{check?.index || '-'}</span>
-                                      {!!check?.index && (
-                                        <span onClick={(event) => event.stopPropagation()}>
-                                          <CopyButton text={check.index} />
-                                        </span>
-                                      )}
-                                    </span>
-                                  </div>
-
-                                  {!effectiveLedgerTimestamp && (
-                                    <div className="check-actions" onClick={(event) => event.stopPropagation()}>
-                                      <button
-                                        type="button"
-                                        className={`check-action-btn ${canRedeem ? 'redeem' : 'disabled'}`}
-                                        disabled={!canRedeem}
-                                        onClick={() => {
-                                          if (!canRedeem) return
-                                          setSignRequest({
-                                            request: {
-                                              TransactionType: 'CheckCash',
-                                              Account: check.Destination,
-                                              Amount: check.SendMax,
-                                              CheckID: check.index
-                                            }
-                                          })
-                                        }}
-                                        title="Redeem"
-                                      >
-                                        <TbPigMoney /> Redeem
-                                      </button>
-                                      <button
-                                        type="button"
-                                        className={`check-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
-                                        disabled={!canCancel}
-                                        onClick={() => {
-                                          if (!canCancel) return
-                                          setSignRequest({
-                                            request: {
-                                              TransactionType: 'CheckCancel',
-                                              CheckID: check.index
-                                            }
-                                          })
-                                        }}
-                                        title="Cancel"
-                                      >
-                                        <MdMoneyOff /> Cancel
-                                      </button>
+                                  {updatedExact && (
+                                    <div className="detail-row">
+                                      <span>Last activity:</span>
+                                      <span>{updatedExact}</span>
                                     </div>
                                   )}
                                 </div>
@@ -6042,163 +3697,1334 @@ export default function Account2({
                           )
                         })}
                       </div>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {(hasReceivedEscrows || hasSentEscrows) && (
-                <>
-                  <div className="section-header-row object-section-header-row">
-                    <div className="section-title object-section-title">
-                      {escrowsSectionTitle} <span className="object-title-count">{activeEscrowsList.length}</span>
-                    </div>
-                  </div>
-
-                  {showEscrowsTabs && (
-                    <div className="object-tab-row escrow-tab-row">
-                      <div className="object-tab-switch">
-                        {hasSelfEscrows && (
-                          <button
-                            type="button"
-                            className={`object-tab-btn ${escrowsTab === 'self' ? 'active' : ''}`}
-                            onClick={() => setEscrowsTab('self')}
-                          >
-                            Self
-                          </button>
-                        )}
-                        {hasReceivedEscrows && (
-                          <button
-                            type="button"
-                            className={`object-tab-btn ${escrowsTab === 'received' ? 'active' : ''}`}
-                            onClick={() => setEscrowsTab('received')}
-                          >
-                            Incoming
-                          </button>
-                        )}
-                        {hasSentEscrows && (
-                          <button
-                            type="button"
-                            className={`object-tab-btn ${escrowsTab === 'sent' ? 'active' : ''}`}
-                            onClick={() => setEscrowsTab('sent')}
-                          >
-                            Outgoing
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="escrow-wrapper">
-                    <div className="escrow-details">
-                      <div className="escrow-list cards-list">
-                        {activeEscrowsList.map((escrow, index) => {
-                          const escrowKey = `${escrow?.index || 'escrow'}-${activeEscrowsTab}-${index}`
-                          const isExpanded = expandedEscrowKey === escrowKey
-                          const counterpartName = activeEscrowsTab === 'sent' ? 'Destination' : 'Account'
-                          const counterpartAddress = activeEscrowsTab === 'sent' ? escrow?.Destination : escrow?.Account
-                          const amountCollapsed = amountFormat(escrow?.Amount, { short: true, maxFractionDigits: 2 })
-                          const cancelAfterText = escrow?.CancelAfter
-                            ? timeFromNow(escrow.CancelAfter, i18n, 'ripple')
-                            : 'not set'
-                          const cancelAfterFullText = escrow?.CancelAfter
-                            ? fullDateAndTime(escrow.CancelAfter, 'ripple')
-                            : 'not set'
-                          const finishAfterText = escrow?.FinishAfter
-                            ? timeFromNow(escrow.FinishAfter, i18n, 'ripple')
-                            : 'not set'
-                          const finishAfterFullText = escrow?.FinishAfter
-                            ? fullDateAndTime(escrow.FinishAfter, 'ripple')
-                            : 'not set'
-                          const isCanceled = escrow?.CancelAfter
-                            ? timestampExpired(escrow.CancelAfter, 'ripple')
-                            : false
-                          const isUnlockable = escrow?.FinishAfter
-                            ? timestampExpired(escrow.FinishAfter, 'ripple')
-                            : false
-                          const escrowSequence = escrow?.escrowSequence
-                          const canExecute =
-                            !!setSignRequest &&
-                            !effectiveLedgerTimestamp &&
-                            !!escrowSequence &&
-                            !!escrow?.FinishAfter &&
-                            timestampExpired(escrow.FinishAfter, 'ripple') &&
-                            !timestampExpired(escrow.CancelAfter, 'ripple')
-                          const canCancel =
-                            !!setSignRequest &&
-                            !effectiveLedgerTimestamp &&
-                            !!escrowSequence &&
-                            !!escrow?.CancelAfter &&
-                            timestampExpired(escrow.CancelAfter, 'ripple')
-                          const collapsedTimeText = isCanceled
-                            ? cancelAfterText
-                            : escrow?.FinishAfter
-                              ? finishAfterText
-                              : escrow?.CancelAfter
-                                ? cancelAfterText
-                                : '-'
-                          const isOutgoingEscrow = activeEscrowsTab === 'sent'
-                          const isSelfEscrow = activeEscrowsTab === 'self'
-                          const collapsedDirectionLabel = isSelfEscrow ? 'self' : isOutgoingEscrow ? 'to' : 'from'
-                          const collapsedAmountClass = isSelfEscrow ? 'grey' : isOutgoingEscrow ? 'red' : 'green'
-                          const collapsedAmountSign = isSelfEscrow ? '' : isOutgoingEscrow ? '-' : '+'
-
-                          return (
-                            <div
-                              className={`asset-item token-asset-item check-row-card escrow-card ${isExpanded ? 'expanded' : ''}`}
-                              key={escrowKey}
-                              onClick={() => setExpandedEscrowKey(isExpanded ? null : escrowKey)}
+                      {showNftControlsVisible && (
+                        <div className="asset-compact-actions">
+                          {activeNftShowMoreAvailable && (
+                            <button
+                              type="button"
+                              className="asset-compact-toggle"
+                              onClick={() =>
+                                setNftDisplayLimit((currentLimit) =>
+                                  Math.min(activeNftList.length, currentLimit + NFT_LOAD_MORE_STEP)
+                                )
+                              }
                             >
-                              <div className="asset-main check-collapsed-main escrow-collapsed-main">
-                                <div className="asset-logo escrow-collapsed-logo">
-                                  <div className="escrow-collapsed-top">
-                                    <span className="escrow-type-main">Escrow {collapsedDirectionLabel}</span>
-                                    <span
-                                      className={`escrow-time-top ${isCanceled ? 'red' : isUnlockable ? 'green' : ''}`}
-                                    >
-                                      {collapsedTimeText}
-                                    </span>
-                                  </div>
+                              Show {Math.min(NFT_LOAD_MORE_STEP, activeNftRemainingCount)} more {activeNftTabLabel} NFTs
+                            </button>
+                          )}
+                          {showNftFewerButton && (
+                            <button
+                              type="button"
+                              className="asset-compact-toggle"
+                              onClick={() => {
+                                setNftDisplayLimit(NFT_INITIAL_LIMIT)
+                                setExpandedNftCardKey(null)
+                              }}
+                            >
+                              Show fewer {activeNftTabLabel} NFTs
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="asset-fiat">{activeNftEmptyLabel}</div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
 
-                                  <div className="tx-collapsed-meta">
-                                    {counterpartAddress ? (
-                                      <span className="tx-counterparty-inline">
+          {/* Column 3: Transactions */}
+          <div className="transactions-section">
+            <div className="section-header-row">
+              <span className="section-title">Transactions</span>
+              <div className="tx-header-actions">
+                <button
+                  className={`tx-filter-toggle ${showTxFilters ? 'active' : ''}`}
+                  onClick={() => setShowTxFilters((prev) => !prev)}
+                  aria-label="Toggle transaction filters"
+                  type="button"
+                >
+                  <FaGear />
+                </button>
+                {data?.address && (
+                  <Link className="section-link" href={`/account/${data.address}/transactions`}>
+                    View all
+                  </Link>
+                )}
+              </div>
+            </div>
+
+            {showTxFilters && (
+              <div className="tx-filters-panel">
+                <div className="tx-filter-grid">
+                  <label className="tx-filter-field">
+                    <span>Order</span>
+                    <select value={txOrder} onChange={(event) => setTxOrder(event.target.value)}>
+                      <option value="newest">Newest first</option>
+                      <option value="oldest">Oldest first</option>
+                    </select>
+                  </label>
+
+                  <label className="tx-filter-field">
+                    <span>Type</span>
+                    <select value={txType} onChange={(event) => setTxType(event.target.value)}>
+                      <option value="all">All types</option>
+                      <option value="payment">Payment</option>
+                      <option value="nft">NFT</option>
+                      <option value="amm">AMM</option>
+                      <option value="order">DEX</option>
+                      <option value="escrow">Escrow</option>
+                      <option value="channel">Channel</option>
+                      <option value="check">Check</option>
+                      <option value="trustline">Trustline</option>
+                      <option value="settings">Settings</option>
+                      <option value="accountDelete">Account delete</option>
+                    </select>
+                  </label>
+
+                  <label className="tx-filter-field">
+                    <span>Direction</span>
+                    <select value={txInitiated} onChange={(event) => setTxInitiated(event.target.value)}>
+                      <option value="all">Incoming & outgoing</option>
+                      <option value="true">Outgoing only</option>
+                      <option value="false">Incoming only</option>
+                    </select>
+                  </label>
+
+                  <label className="tx-filter-field">
+                    <span>Failures</span>
+                    <select value={txExcludeFailures} onChange={(event) => setTxExcludeFailures(event.target.value)}>
+                      <option value="all">Include failed</option>
+                      <option value="true">Exclude failed</option>
+                    </select>
+                  </label>
+
+                  <label className="tx-filter-field tx-filter-field-wide">
+                    <span>Counterparty</span>
+                    <input
+                      type="text"
+                      value={txCounterparty}
+                      onChange={(event) => setTxCounterparty(event.target.value)}
+                      placeholder="Address"
+                    />
+                  </label>
+
+                  <label className="tx-filter-field">
+                    <span>From</span>
+                    <input
+                      type="datetime-local"
+                      value={txFromDate}
+                      onChange={(event) => setTxFromDate(event.target.value)}
+                    />
+                  </label>
+
+                  <label className="tx-filter-field">
+                    <span>To</span>
+                    <input
+                      type="datetime-local"
+                      value={txToDate}
+                      onChange={(event) => setTxToDate(event.target.value)}
+                    />
+                  </label>
+                </div>
+
+                <label className="tx-filter-check">
+                  <input
+                    type="checkbox"
+                    checked={txFilterSpam}
+                    onChange={(event) => setTxFilterSpam(event.target.checked)}
+                  />
+                  <span>Exclude spam transactions</span>
+                </label>
+
+                <div className="tx-filter-actions">
+                  <button className="tx-filter-btn" type="button" onClick={resetTransactionFilters}>
+                    Reset
+                  </button>
+                  <button className="tx-filter-btn primary" type="button" onClick={applyTransactionFilters}>
+                    Search
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {transactionsLoading && (
+              <p className="grey tx-status-text">
+                <span className="tx-inline-load">
+                  <span>Loading transactions</span>
+                  <span className="waiting inline" aria-hidden="true"></span>
+                </span>
+              </p>
+            )}
+            {!transactionsLoading && transactionsError && <p className="red tx-status-text">{transactionsError}</p>}
+
+            {!transactionsLoading &&
+              !transactionsError &&
+              recentTransactions.length === 0 &&
+              !transactionsSearchPaused && <p className="grey tx-status-text">No transactions found.</p>}
+
+            {!transactionsLoading &&
+              !transactionsError &&
+              (recentTransactions.length > 0 || transactionsSearchPaused) &&
+              (() => {
+                const renderTransactionsList = () => (
+                  <div className="cards-list">
+                    {recentTransactions.map((txdata, index) => {
+                      const tx = txdata?.tx
+                      const outcome = txdata?.outcome
+                      const isSuccessful = outcome?.result === 'tesSUCCESS'
+                      const txHash = tx?.hash
+                      const txKey = txHash || `${tx?.TransactionType || 'tx'}-${index}`
+                      const isExpanded = expandedTransactionKey === txKey
+                      const shortHash = txHash ? `${txHash.slice(0, 6)}...${txHash.slice(-6)}` : '-'
+                      const txHistoricalRate = Number.isFinite(Number(txdata?.fiatRates?.[selectedCurrency]))
+                        ? Number(txdata.fiatRates[selectedCurrency])
+                        : null
+                      const txType = tx?.TransactionType || ''
+                      const isAmmDepositOrWithdraw = txType === 'AMMDeposit' || txType === 'AMMWithdraw'
+                      const isLpAmount = (amount) => {
+                        if (!amount || typeof amount !== 'object') return false
+                        if (amount?.currencyDetails?.type === 'lp_token') return true
+                        const amountCurrency = amount?.currency
+                        return typeof amountCurrency === 'string' && amountCurrency.substring(0, 2) === '03'
+                      }
+
+                      const changes = addressBalanceChanges(txdata, data?.address) || []
+                      const firstChange = changes?.[0]
+                      const positiveChange = changes.find((change) => Number(change?.value || 0) > 0)
+                      let collapsedPrimaryChange = changes.length > 2 ? positiveChange || firstChange : firstChange
+                      let collapsedSecondaryChange = changes.length === 2 ? changes[1] : null
+                      let collapsedMoreCount = changes.length > 2 ? changes.length - 1 : 0
+                      if (isAmmDepositOrWithdraw) {
+                        const ammTokenChanges = changes.filter((change) => !isLpAmount(change))
+                        collapsedPrimaryChange = ammTokenChanges[0] || null
+                        collapsedSecondaryChange = ammTokenChanges[1] || null
+                        collapsedMoreCount = 0
+                      }
+                      const primaryChangeValue = Number(collapsedPrimaryChange?.value || 0)
+                      const primaryChangeClass = primaryChangeValue > 0 ? 'green' : primaryChangeValue < 0 ? 'red' : ''
+                      const primaryChangeFiat = collapsedPrimaryChange
+                        ? nativeCurrencyToFiat({
+                            amount: collapsedPrimaryChange,
+                            selectedCurrency,
+                            fiatRate: txHistoricalRate,
+                            asText: true
+                          })
+                        : ''
+                      const secondaryChangeValue = Number(collapsedSecondaryChange?.value || 0)
+                      const secondaryChangeClass =
+                        secondaryChangeValue > 0 ? 'green' : secondaryChangeValue < 0 ? 'red' : ''
+                      const secondaryChangeFiat = collapsedSecondaryChange
+                        ? nativeCurrencyToFiat({
+                            amount: collapsedSecondaryChange,
+                            selectedCurrency,
+                            fiatRate: txHistoricalRate,
+                            asText: true
+                          })
+                        : ''
+                      const txAmountRaw = tx?.Amount
+                      const hasObjectTxAmount = typeof txAmountRaw === 'object' && txAmountRaw !== null
+                      const isMissingOrZeroTxAmount = typeof txAmountRaw === 'undefined' || txAmountRaw === '0'
+                      const shouldShowExpandedRate = changes.length > 0 || hasObjectTxAmount || !isMissingOrZeroTxAmount
+
+                      const sourceAddress = txdata?.specification?.source?.address
+                      const destinationAddress = txdata?.specification?.destination?.address
+                      const isSource = sourceAddress === data?.address
+                      const counterparty = isSource ? destinationAddress : sourceAddress
+                      const isAccountDeleteTx = tx?.TransactionType === 'AccountDelete'
+                      const removedAccountAddress = isAccountDeleteTx ? sourceAddress || tx?.Account || null : null
+                      const removedAccountDetails = isAccountDeleteTx
+                        ? txdata?.specification?.source?.addressDetails
+                        : null
+                      const isSelfPayment =
+                        tx?.TransactionType === 'Payment' &&
+                        !!sourceAddress &&
+                        !!destinationAddress &&
+                        sourceAddress === destinationAddress
+                      const isRipplingPayment =
+                        tx?.TransactionType === 'Payment' && isRipplingOnIssuer(changes, data?.address)
+                      const counterpartyDetails = isSource
+                        ? txdata?.specification?.destination?.addressDetails
+                        : txdata?.specification?.source?.addressDetails
+
+                      const nftChanges = (outcome?.nftokenChanges || []).flatMap((entry) => entry?.nftokenChanges || [])
+                      const nftAddressChanges = outcome?.nftokenChanges || []
+                      const nftSource =
+                        nftAddressChanges.length === 2
+                          ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'removed')
+                          : null
+                      const nftDestination =
+                        nftAddressChanges.length === 2
+                          ? nftAddressChanges.find((change) => change?.nftokenChanges?.[0]?.status === 'added')
+                          : null
+                      const nftTokenId =
+                        tx?.NFTokenID ||
+                        txdata?.meta?.nftoken_id ||
+                        txdata?.meta?.nftokenID ||
+                        txdata?.specification?.nftokenID ||
+                        txdata?.specification?.nftokenId ||
+                        txdata?.specification?.nftokenOffer?.nftokenID ||
+                        nftChanges.find((entry) => entry?.nftokenID)?.nftokenID
+                      const nftSellerAddress = nftSource?.address || null
+                      const nftSellerDetails = nftSource?.addressDetails || null
+                      const nftBuyerAddress = nftDestination?.address || null
+                      const nftBuyerDetails = nftDestination?.addressDetails || null
+                      const nftViewerRole =
+                        nftSellerAddress === data?.address
+                          ? 'seller'
+                          : nftBuyerAddress === data?.address
+                            ? 'buyer'
+                            : null
+                      const txTypeLower = txType.toLowerCase()
+                      const isAmmTx = txType.startsWith('AMM')
+                      const isDexOfferTx = txType === 'OfferCreate' || txType === 'OfferCancel'
+                      const myAddressOrderbookChanges =
+                        outcome?.orderbookChanges?.find((entry) => entry?.address === data?.address)
+                          ?.orderbookChanges || []
+                      const myOrderbookSequences = Array.from(
+                        new Set(myAddressOrderbookChanges.map((entry) => entry?.sequence).filter(Boolean))
+                      )
+                      const myOrderbookChange =
+                        myAddressOrderbookChanges.find(
+                          (entry) => entry?.sequence === (tx?.offerSequence || txdata?.specification?.orderSequence)
+                        ) || myAddressOrderbookChanges[0]
+                      const dexOfferDirection = (
+                        txdata?.specification?.flags ? txdata?.specification?.flags?.sell : myOrderbookChange?.direction
+                      )
+                        ? 'Sell'
+                        : 'Buy'
+                      const isMyDexOrder = tx?.Account === data?.address
+                      const dexOrderStatus = (() => {
+                        if (!isDexOfferTx) return null
+                        if (txType === 'OfferCancel') return 'canceled'
+                        if (changes?.length === 0 && isMyDexOrder) return 'placed'
+                        if (!isMyDexOrder) return 'fullfilled'
+                        return 'placed and fullfilled'
+                      })()
+                      const dexOfferShortLabel =
+                        isDexOfferTx && dexOrderStatus ? `${dexOfferDirection} order ${dexOrderStatus}` : null
+                      const dexCollapsedSequences =
+                        txType === 'OfferCancel'
+                          ? myOrderbookSequences.length > 0
+                            ? myOrderbookSequences
+                            : [tx?.offerSequence].filter(Boolean)
+                          : isMyDexOrder
+                            ? [tx?.Sequence || tx?.TicketSequence].filter(Boolean)
+                            : myOrderbookSequences
+                      const showDexCollapsedSequence = isDexOfferTx && dexCollapsedSequences.length > 0
+                      const dexTakerGets = txdata?.specification?.takerGets || myOrderbookChange?.takerGets || null
+                      const dexTakerPays = txdata?.specification?.takerPays || myOrderbookChange?.takerPays || null
+                      const isDexNotFullfilled =
+                        isDexOfferTx && typeof dexOrderStatus === 'string' && !dexOrderStatus.includes('fullfilled')
+                      const toSignedDexAmount = (amount, sign) => {
+                        if (!amount) return null
+
+                        if (typeof amount === 'object') {
+                          const numericValue = Math.abs(Number(amount?.value || 0))
+                          if (!Number.isFinite(numericValue)) return null
+                          return {
+                            ...amount,
+                            value: String(sign < 0 ? -numericValue : numericValue)
+                          }
+                        }
+
+                        const numericValue = Math.abs(Number(amount))
+                        if (!Number.isFinite(numericValue)) return null
+                        return sign < 0 ? -numericValue : numericValue
+                      }
+                      const dexSpecifiedChanges = isDexNotFullfilled
+                        ? [toSignedDexAmount(dexTakerGets, -1), toSignedDexAmount(dexTakerPays, 1)].filter(Boolean)
+                        : []
+                      const showDexSpecifiedOrderDetails =
+                        isDexOfferTx &&
+                        isMyDexOrder &&
+                        typeof dexOrderStatus === 'string' &&
+                        (dexOrderStatus.includes('placed') || dexOrderStatus === 'canceled') &&
+                        (!!dexTakerGets || !!dexTakerPays)
+                      const hasAmmVoteTradingFee = txType === 'AMMVote' && (tx?.TradingFee || tx?.TradingFee === 0)
+                      const ammVoteTradingFeeText = hasAmmVoteTradingFee ? `${tx.TradingFee / 100000}%` : null
+                      const isCreateNftOfferTx =
+                        txType === 'NFTokenCreateOffer' ||
+                        txTypeLower === 'createnftselloffer' ||
+                        txTypeLower === 'createnftbuyoffer'
+                      const isAcceptNftOfferTx =
+                        txType === 'NFTokenAcceptOffer' ||
+                        txTypeLower === 'acceptnftselloffer' ||
+                        txTypeLower === 'acceptnftbuyoffer' ||
+                        txTypeLower === 'acceptnftoffer'
+                      const isCancelNftOfferTx = txType === 'NFTokenCancelOffer' || txTypeLower === 'cancelnftoffer'
+                      const isNftOfferTx = isCreateNftOfferTx || isAcceptNftOfferTx || isCancelNftOfferTx
+                      const outcomeOfferIds = (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
+                        (entry?.nftokenOfferChanges || []).map((offerChange) => offerChange?.index)
+                      )
+                      const nftOfferIds = Array.from(
+                        new Set(
+                          [
+                            ...outcomeOfferIds,
+                            ...(Array.isArray(tx?.NFTokenOffers) ? tx.NFTokenOffers : []),
+                            tx?.NFTokenSellOffer,
+                            tx?.NFTokenBuyOffer,
+                            tx?.OfferID,
+                            txdata?.specification?.nftokenOffer?.offerIndex,
+                            txdata?.specification?.nftokenOffer?.offerID
+                          ].filter(Boolean)
+                        )
+                      )
+                      const nftOfferAmountRaw =
+                        tx?.Amount ??
+                        txdata?.specification?.nftokenOffer?.amount ??
+                        txdata?.specification?.destination?.amount ??
+                        txdata?.specification?.source?.amount ??
+                        null
+                      const hasNftOfferAmount = nftOfferAmountRaw !== null && typeof nftOfferAmountRaw !== 'undefined'
+                      const nftOfferAmountNumeric =
+                        typeof nftOfferAmountRaw === 'object' && nftOfferAmountRaw !== null
+                          ? Number(nftOfferAmountRaw?.value)
+                          : Number(nftOfferAmountRaw)
+                      const isZeroNftOfferAmount =
+                        hasNftOfferAmount && Number.isFinite(nftOfferAmountNumeric) && nftOfferAmountNumeric === 0
+                      const nftOfferAmountExpandedText = hasNftOfferAmount
+                        ? amountFormat(nftOfferAmountRaw, {
+                            icon: true,
+                            precise: 'nice'
+                          })
+                        : null
+                      const nftOfferAmountFiatExpandedText = hasNftOfferAmount
+                        ? nativeCurrencyToFiat({
+                            amount: nftOfferAmountRaw,
+                            selectedCurrency,
+                            fiatRate: txHistoricalRate,
+                            asText: true,
+                            absolute: true
+                          })
+                        : ''
+                      const isBrokeredNftAccept = isAcceptNftOfferTx && !!tx?.NFTokenSellOffer && !!tx?.NFTokenBuyOffer
+                      const brokerAddress = isBrokeredNftAccept ? sourceAddress || tx?.Account || null : null
+                      const ammLpChange = changes.find(
+                        (change) =>
+                          change?.currencyDetails?.type === 'lp_token' &&
+                          change?.currencyDetails?.asset &&
+                          change?.currencyDetails?.asset2
+                      )
+                      const ammAsset = tx?.Asset || txdata?.specification?.asset || ammLpChange?.currencyDetails?.asset
+                      const ammAsset2 =
+                        tx?.Asset2 || txdata?.specification?.asset2 || ammLpChange?.currencyDetails?.asset2
+                      const ammAssetCurrency =
+                        typeof ammAsset === 'string' ? ammAsset : ammAsset?.currency || nativeCurrency
+                      const ammAsset2Currency =
+                        typeof ammAsset2 === 'string' ? ammAsset2 : ammAsset2?.currency || nativeCurrency
+                      const ammPairLabel = `${niceCurrency(ammAssetCurrency)}/${niceCurrency(ammAsset2Currency)}`
+                      const ammPairToken =
+                        isAmmTx && ammAsset && ammAsset2
+                          ? {
+                              currency: 'LP',
+                              currencyDetails: {
+                                type: 'lp_token',
+                                currency: ammPairLabel,
+                                asset: ammAsset,
+                                asset2: ammAsset2
+                              }
+                            }
+                          : null
+                      const resolvedCounterpartyAddress = isAccountDeleteTx
+                        ? removedAccountAddress
+                        : isAcceptNftOfferTx && nftViewerRole === 'seller'
+                          ? nftBuyerAddress
+                          : isAcceptNftOfferTx && nftViewerRole === 'buyer'
+                            ? nftSellerAddress
+                            : counterparty
+                      const resolvedCounterpartyDetails = isAccountDeleteTx
+                        ? removedAccountDetails
+                        : isAcceptNftOfferTx && nftViewerRole === 'seller'
+                          ? nftBuyerDetails
+                          : isAcceptNftOfferTx && nftViewerRole === 'buyer'
+                            ? nftSellerDetails
+                            : counterpartyDetails
+                      const trustSetSpecification = txdata?.specification
+                      const trustSetToken =
+                        tx?.TransactionType === 'TrustSet' && tx?.LimitAmount
+                          ? {
+                              ...tx.LimitAmount,
+                              issuerDetails:
+                                trustSetSpecification?.counterparty === tx?.LimitAmount?.issuer
+                                  ? trustSetSpecification?.counterpartyDetails || tx?.LimitAmount?.issuerDetails
+                                  : tx?.LimitAmount?.issuerDetails
+                            }
+                          : null
+                      const trustSetLimitValue = Number(trustSetToken?.value || 0)
+                      const isTrustSetDeleted =
+                        tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue === 0
+                      const hasTrustSetLimit =
+                        tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue > 0
+                      const trustSetStatus = isTrustSetDeleted ? 'deleted' : hasTrustSetLimit ? 'added' : null
+
+                      const failedStatusText = !isSuccessful ? outcome?.result || 'Failed' : null
+                      const failedStatusShort = failedStatusText
+                        ? failedStatusText.startsWith('te')
+                          ? shortErrorCode(failedStatusText)
+                          : failedStatusText.length > 3
+                            ? failedStatusText.slice(3)
+                            : failedStatusText
+                        : null
+                      const hasDexOfferRates =
+                        isDexOfferTx &&
+                        changes.length === 2 &&
+                        Number.isFinite(Number(changes?.[0]?.value)) &&
+                        Number.isFinite(Number(changes?.[1]?.value)) &&
+                        Number(changes?.[0]?.value) !== 0 &&
+                        Number(changes?.[1]?.value) !== 0
+                      const dexOfferRateAtoB = hasDexOfferRates
+                        ? Math.abs(Number(changes[1].value) / Number(changes[0].value))
+                        : null
+                      const dexOfferRateBtoA = hasDexOfferRates
+                        ? Math.abs(Number(changes[0].value) / Number(changes[1].value))
+                        : null
+                      const isFreeNftAccept =
+                        isAcceptNftOfferTx &&
+                        (isZeroNftOfferAmount || (!collapsedPrimaryChange && !collapsedSecondaryChange))
+                      const directionLabel = resolvedCounterpartyAddress
+                        ? isAccountDeleteTx
+                          ? 'From removed account'
+                          : isAcceptNftOfferTx && nftViewerRole === 'seller'
+                            ? 'To'
+                            : isAcceptNftOfferTx && nftViewerRole === 'buyer'
+                              ? 'From'
+                              : isCreateNftOfferTx && isSource && !!counterparty
+                                ? 'For'
+                                : isBrokeredNftAccept
+                                  ? 'By broker'
+                                  : isSource
+                                    ? 'To'
+                                    : 'From'
+                        : null
+                      const accountSetSpec = txdata?.specification || {}
+                      const accountSetSettings = outcome?.settingsChanges || {}
+                      const accountSetCollapsedChange = (() => {
+                        if (txType !== 'AccountSet') return null
+
+                        const changes = []
+
+                        if (tx?.MessageKey !== undefined) {
+                          const messageKeyStatus = accountSetSpec?.messageKey ? 'set' : 'removed'
+                          changes.push(`Message key: ${messageKeyStatus}`)
+                        }
+                        if (tx?.Domain !== undefined) {
+                          changes.push(`Domain: ${accountSetSpec?.domain || 'removed'}`)
+                        }
+                        if (accountSetSpec?.defaultRipple !== undefined) {
+                          changes.push(`Default ripple: ${accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}`)
+                        }
+                        if (
+                          accountSetSpec?.disallowXRP !== undefined ||
+                          accountSetSettings?.disallowXRP !== undefined
+                        ) {
+                          changes.push(
+                            `Incoming ${nativeCurrency}: ${
+                              accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP ? 'disallow' : 'allow'
+                            }`
+                          )
+                        }
+                        if (
+                          accountSetSpec?.requireDestTag !== undefined ||
+                          accountSetSettings?.requireDestTag !== undefined
+                        ) {
+                          changes.push(
+                            `Destination tag: ${
+                              accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
+                                ? 'require'
+                                : "don't require"
+                            }`
+                          )
+                        }
+                        if (accountSetSpec?.depositAuth !== undefined) {
+                          changes.push(`Deposit authorization: ${accountSetSpec.depositAuth ? 'enabled' : 'disabled'}`)
+                        }
+                        if (accountSetSpec?.disableMaster !== undefined) {
+                          changes.push(`Master key: ${accountSetSpec.disableMaster ? 'disabled' : 'enabled'}`)
+                        }
+                        if (accountSetSpec?.noFreeze) {
+                          changes.push('No freeze: enabled')
+                        }
+                        if (
+                          accountSetSpec?.requireAuth !== undefined ||
+                          accountSetSettings?.requireAuth !== undefined
+                        ) {
+                          changes.push(
+                            `Require authorization: ${
+                              accountSetSpec?.requireAuth || accountSetSettings?.requireAuth ? 'enabled' : 'disabled'
+                            }`
+                          )
+                        }
+                        if (accountSetSpec?.disallowIncomingCheck !== undefined) {
+                          changes.push(`Incoming check: ${accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}`)
+                        }
+                        if (accountSetSpec?.disallowIncomingPayChan !== undefined) {
+                          changes.push(
+                            `Incoming payment channel: ${accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}`
+                          )
+                        }
+                        if (accountSetSpec?.disallowIncomingNFTokenOffer !== undefined) {
+                          changes.push(
+                            `Incoming NFT offer: ${accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}`
+                          )
+                        }
+                        if (accountSetSpec?.disallowIncomingTrustline !== undefined) {
+                          changes.push(
+                            `Incoming trustline: ${accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}`
+                          )
+                        }
+                        if (accountSetSpec?.enableTransactionIDTracking !== undefined) {
+                          changes.push(
+                            `Transaction ID tracking: ${
+                              accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'
+                            }`
+                          )
+                        }
+                        if (accountSetSpec?.globalFreeze !== undefined) {
+                          changes.push(`Global freeze: ${accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}`)
+                        }
+                        if (accountSetSpec?.authorizedMinter !== undefined) {
+                          changes.push(`Authorized minter: ${accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}`)
+                        }
+                        if (accountSetSpec?.nftokenMinter !== undefined) {
+                          if (accountSetSpec.nftokenMinter) {
+                            changes.push({ type: 'nftMinter', address: accountSetSpec.nftokenMinter })
+                          } else {
+                            changes.push('NFT minter: removed')
+                          }
+                        }
+                        if (accountSetSpec?.allowTrustLineClawback !== undefined) {
+                          changes.push(
+                            `Trustline clawback: ${accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}`
+                          )
+                        }
+                        if (accountSetSpec?.disallowIncomingRemit !== undefined) {
+                          changes.push(`Incoming remit: ${accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}`)
+                        }
+
+                        return changes[0] || null
+                      })()
+                      const accountSetCollapsedChangeNode = (() => {
+                        if (!accountSetCollapsedChange) return null
+                        if (typeof accountSetCollapsedChange === 'string') return accountSetCollapsedChange
+                        if (accountSetCollapsedChange?.type === 'nftMinter') {
+                          return (
+                            <>
+                              NFT minter:{' '}
+                              <AddressWithIconInline
+                                data={{
+                                  address: accountSetCollapsedChange.address,
+                                  addressDetails: {}
+                                }}
+                                name="address"
+                                options={{ short: 6 }}
+                              />
+                            </>
+                          )
+                        }
+                        return null
+                      })()
+                      const nftOfferLegacyLabel = (() => {
+                        const nonBrokerDirectionSuffix = counterparty ? (isSource ? 'to' : 'from') : 'by'
+
+                        if (isAcceptNftOfferTx) {
+                          if (!isSuccessful) return 'NFT offer accept'
+                          if (nftViewerRole === 'seller') return isFreeNftAccept ? 'Transferred NFT to' : 'Sold NFT to'
+                          if (nftViewerRole === 'buyer')
+                            return isFreeNftAccept ? 'Received NFT from' : 'Bought NFT from'
+
+                          const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
+                          if (amountChangeValue > 0)
+                            return isBrokeredNftAccept ? 'Sold NFT by' : `Sold NFT ${nonBrokerDirectionSuffix}`
+                          if (amountChangeValue < 0)
+                            return isBrokeredNftAccept ? 'Bought NFT by' : `Bought NFT ${nonBrokerDirectionSuffix}`
+
+                          if (!collapsedPrimaryChange && !collapsedSecondaryChange) {
+                            if (nftDestination?.address === data?.address) return 'Received NFT offer from'
+                            if (nftSource?.address === data?.address) return 'NFT transfer to'
+                            return 'NFT transfer by'
+                          }
+
+                          if (isBrokeredNftAccept) return 'NFT offer accept by'
+                          return 'NFT offer accept'
+                        }
+
+                        if (isCreateNftOfferTx) {
+                          const amountChangeValue = Number(collapsedPrimaryChange?.value || 0)
+                          if (amountChangeValue > 0) return `Sold NFT ${nonBrokerDirectionSuffix}`
+                          if (amountChangeValue < 0) return `Bought NFT ${nonBrokerDirectionSuffix}`
+
+                          const direction = txdata?.specification?.flags?.sellToken ? 'Sell' : 'Buy'
+                          const isIncomingOffer = tx?.Account !== data?.address
+
+                          if (isIncomingOffer) {
+                            const amountAsNumber = Number(tx?.Amount || 0)
+                            if (direction === 'Sell') {
+                              if (Number.isFinite(amountAsNumber) && amountAsNumber === 0) {
+                                return 'Received NFT offer from'
+                              }
+                              return 'Received offer to buy NFT from'
+                            }
+                            return `Received NFT ${direction} offer from`
+                          }
+
+                          if (counterparty) {
+                            return `Create NFT ${direction} offer for`
+                          }
+
+                          return `Create NFT ${direction} offer`
+                        }
+
+                        if (isCancelNftOfferTx) {
+                          return 'Cancel NFT offer'
+                        }
+
+                        return null
+                      })()
+                      const isNftTransferLabel =
+                        typeof nftOfferLegacyLabel === 'string' &&
+                        (nftOfferLegacyLabel.startsWith('NFT transfer') ||
+                          nftOfferLegacyLabel.startsWith('Received NFT offer'))
+                      const isFreeNftTransfer =
+                        isNftTransferLabel && (isZeroNftOfferAmount || nftOfferAmountRaw === '0')
+                      const showFreeNftBadge = isFreeNftTransfer || isFreeNftAccept
+                      const showFreeNftBadgeGreen =
+                        showFreeNftBadge &&
+                        typeof nftOfferLegacyLabel === 'string' &&
+                        nftOfferLegacyLabel.startsWith('Received NFT from')
+                      const isIncomingSellOffer =
+                        isCreateNftOfferTx && tx?.Account !== data?.address && txdata?.specification?.flags?.sellToken
+                      const incomingSellOfferAmount =
+                        isIncomingSellOffer && hasNftOfferAmount ? toSignedDexAmount(nftOfferAmountRaw, -1) : null
+                      const incomingSellOfferFiat = incomingSellOfferAmount
+                        ? nativeCurrencyToFiat({
+                            amount: incomingSellOfferAmount,
+                            selectedCurrency,
+                            fiatRate: txHistoricalRate,
+                            asText: true
+                          })
+                        : ''
+                      const isOutgoingSellOffer =
+                        isCreateNftOfferTx && tx?.Account === data?.address && txdata?.specification?.flags?.sellToken
+                      const outgoingSellOfferAmount =
+                        isOutgoingSellOffer && hasNftOfferAmount ? toSignedDexAmount(nftOfferAmountRaw, 1) : null
+                      const outgoingSellOfferFiat = outgoingSellOfferAmount
+                        ? nativeCurrencyToFiat({
+                            amount: outgoingSellOfferAmount,
+                            selectedCurrency,
+                            fiatRate: txHistoricalRate,
+                            asText: true
+                          })
+                        : ''
+                      const isNftMintTx = tx?.TransactionType === 'NFTokenMint'
+                      const nftMintDestinationAddress = tx?.Destination || destinationAddress
+                      const nftMintAmountRaw =
+                        tx?.Amount ??
+                        txdata?.specification?.amount ??
+                        txdata?.specification?.destination?.amount ??
+                        null
+                      const nftMintAmountNumeric = (() => {
+                        if (nftMintAmountRaw === null || typeof nftMintAmountRaw === 'undefined') return null
+                        if (typeof nftMintAmountRaw === 'object') {
+                          const value = Number(
+                            nftMintAmountRaw?.value ?? nftMintAmountRaw?.amount ?? nftMintAmountRaw?.drops
+                          )
+                          return Number.isFinite(value) ? value : null
+                        }
+                        const value = Number(nftMintAmountRaw)
+                        return Number.isFinite(value) ? value : null
+                      })()
+                      const nftMintSpecialLabel =
+                        isNftMintTx && nftMintDestinationAddress
+                          ? nftMintAmountNumeric === 0
+                            ? 'NFT Mint with Free offer to'
+                            : 'NFT Mint with Sell Offer for'
+                          : null
+                      const showNftMintSellOfferAmount =
+                        nftMintSpecialLabel === 'NFT Mint with Sell Offer for' &&
+                        nftMintAmountRaw !== null &&
+                        typeof nftMintAmountRaw !== 'undefined'
+                      const nftMintSellOfferAmount = showNftMintSellOfferAmount
+                        ? toSignedDexAmount(nftMintAmountRaw, 1)
+                        : null
+                      const nftMintSellOfferFiat = nftMintSellOfferAmount
+                        ? nativeCurrencyToFiat({
+                            amount: nftMintSellOfferAmount,
+                            selectedCurrency,
+                            fiatRate: txHistoricalRate,
+                            asText: true
+                          })
+                        : ''
+                      const createNftAmountDisplay = (amount, fiatText) => {
+                        if (amount === null || typeof amount === 'undefined') return null
+                        return {
+                          collapsedNode: (
+                            <span className="tx-inline-change-item">
+                              <span className="tx-inline-change orange">
+                                {amountFormat(amount, {
+                                  icon: true,
+                                  short: true,
+                                  maxFractionDigits: 2,
+                                  showPlus: true
+                                })}
+                              </span>
+                              {!!fiatText && <span className="tx-change-fiat">{fiatText}</span>}
+                            </span>
+                          ),
+                          expandedText: amountFormat(amount, {
+                            icon: true,
+                            withIssuer: true,
+                            precise: 'nice',
+                            showPlus: true
+                          }),
+                          expandedFiat: fiatText
+                        }
+                      }
+                      const incomingSellOfferDisplay =
+                        !showFreeNftBadge && incomingSellOfferAmount
+                          ? createNftAmountDisplay(incomingSellOfferAmount, incomingSellOfferFiat)
+                          : null
+                      const outgoingSellOfferDisplay =
+                        !showFreeNftBadge && outgoingSellOfferAmount
+                          ? createNftAmountDisplay(outgoingSellOfferAmount, outgoingSellOfferFiat)
+                          : null
+                      const nftMintSellOfferDisplay =
+                        showNftMintSellOfferAmount && nftMintSellOfferAmount
+                          ? createNftAmountDisplay(nftMintSellOfferAmount, nftMintSellOfferFiat)
+                          : null
+                      const nftOfferAmountDetailDisplay = incomingSellOfferDisplay || outgoingSellOfferDisplay
+                      const offerAmountExpandedText =
+                        nftOfferAmountDetailDisplay?.expandedText || nftOfferAmountExpandedText
+                      const offerAmountFiatDetailText =
+                        nftOfferAmountDetailDisplay?.expandedFiat || nftOfferAmountFiatExpandedText
+                      const nftCollapsedSpecialDisplay =
+                        incomingSellOfferDisplay || outgoingSellOfferDisplay || nftMintSellOfferDisplay
+                      const txTypeShortLabel =
+                        (isRipplingPayment ? 'Rippling' : null) ||
+                        (isSelfPayment ? 'Swap' : null) ||
+                        (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
+                        dexOfferShortLabel ||
+                        nftOfferLegacyLabel ||
+                        nftMintSpecialLabel ||
+                        (txType === 'AccountSet'
+                          ? 'Account settings update'
+                          : txType === 'AMMDeposit'
+                            ? 'AMM Deposit'
+                            : txType === 'AMMVote'
+                              ? 'AMM Vote'
+                              : txType === 'AMMWithdraw'
+                                ? 'AMM Withdraw'
+                                : txType === 'NFTokenMint'
+                                  ? 'NFT Mint'
+                                  : txType === 'NFTokenBurn'
+                                    ? 'NFT Burn'
+                                    : txType === 'NFTokenCreateOffer'
+                                      ? 'NFT offer'
+                                      : txType === 'NFTokenAcceptOffer'
+                                        ? 'NFT offer accept'
+                                        : txType === 'NFTokenCancelOffer'
+                                          ? 'NFT offer cancel'
+                                          : txType || '-')
+                      const txTypeCollapsedLabel =
+                        isSelfPayment || isAccountDeleteTx || isRipplingPayment
+                          ? txTypeShortLabel
+                          : txType === 'NFTokenMint'
+                            ? txTypeShortLabel
+                            : txType === 'NFTokenBurn'
+                              ? txTypeShortLabel
+                              : tx?.TransactionType === 'TrustSet'
+                                ? counterparty
+                                  ? `${isSource ? 'to' : 'from'}`
+                                  : ''
+                                : isNftOfferTx
+                                  ? txTypeShortLabel
+                                  : isDexOfferTx
+                                    ? txTypeShortLabel
+                                    : counterparty
+                                      ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
+                                      : txTypeShortLabel
+                      const showBrokerInCollapsedTitle =
+                        isBrokeredNftAccept &&
+                        !!brokerAddress &&
+                        (nftViewerRole === 'seller' || nftViewerRole === 'buyer')
+                      const brokerCollapsedAction =
+                        nftViewerRole === 'seller'
+                          ? isFreeNftAccept
+                            ? 'transferred NFT to'
+                            : 'sold NFT to'
+                          : nftViewerRole === 'buyer'
+                            ? isFreeNftAccept
+                              ? 'received NFT from'
+                              : 'bought NFT from'
+                            : ''
+
+                      return (
+                        <div
+                          className={`asset-item token-asset-item tx-asset-item ${isExpanded ? 'expanded' : ''} ${!isSuccessful ? 'tx-failed' : ''}`}
+                          key={txKey}
+                          onClick={() => setExpandedTransactionKey(isExpanded ? null : txKey)}
+                        >
+                          <div className="asset-main tx-asset-main">
+                            <div className="asset-logo tx-asset-logo">
+                              <div className="tx-collapsed-top">
+                                <span className="tx-type-main">
+                                  {showBrokerInCollapsedTitle ? (
+                                    <>
+                                      <span className="tx-broker-inline">
+                                        <span>Broker </span>
                                         <AddressWithIconInline
-                                          data={escrow}
-                                          name={counterpartName}
+                                          data={{
+                                            address: brokerAddress,
+                                            addressDetails: txdata?.specification?.source?.addressDetails || {}
+                                          }}
+                                          name="address"
                                           options={{ short: 6 }}
                                         />
                                       </span>
-                                    ) : (
-                                      <span className="tx-counterparty-inline">-</span>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="asset-value tx-collapsed-change escrow-collapsed-amount">
-                                  <span className={`tx-inline-change ${collapsedAmountClass}`}>
-                                    {collapsedAmountSign}
-                                    {amountCollapsed}
-                                  </span>
-                                </div>
+                                      <span className="tx-broker-action">{brokerCollapsedAction}</span>
+                                    </>
+                                  ) : (
+                                    txTypeCollapsedLabel
+                                  )}
+                                </span>
+                                <span className="tx-time tx-time-top">
+                                  {tx?.date ? timeFromNow(tx.date, i18n, 'ripple') : '-'}
+                                </span>
                               </div>
 
-                              {isExpanded && (
-                                <div className="asset-details">
-                                  <div className="detail-row">
-                                    <span>
-                                      {activeEscrowsTab === 'self'
-                                        ? 'Account'
-                                        : activeEscrowsTab === 'sent'
-                                          ? 'To'
-                                          : 'From'}
-                                      :
+                              <div className="tx-collapsed-meta">
+                                {txType === 'AccountSet' && accountSetCollapsedChangeNode && (
+                                  <span className="tx-accountset-inline">{accountSetCollapsedChangeNode}</span>
+                                )}
+                                {showDexCollapsedSequence && (
+                                  <span className="tx-accountset-inline">
+                                    {dexCollapsedSequences.length > 1 ? 'Offer sequences: ' : 'Offer sequence: '}
+                                    {dexCollapsedSequences.join(', ')}
+                                  </span>
+                                )}
+                                {ammPairToken && (
+                                  <span className="tx-amm-token-meta">
+                                    <CurrencyWithIcon
+                                      token={ammPairToken}
+                                      hideIssuer
+                                      options={{ disableTokenLink: true }}
+                                    />
+                                  </span>
+                                )}
+                                {tx?.TransactionType === 'TrustSet' && trustSetToken && (
+                                  <span className="tx-trustset-inline">
+                                    <CurrencyWithIcon
+                                      token={{ ...trustSetToken }}
+                                      options={{ disableTokenLink: true }}
+                                    />
+                                  </span>
+                                )}
+                                {tx?.TransactionType !== 'TrustSet' &&
+                                  !isSelfPayment &&
+                                  !isDexOfferTx &&
+                                  resolvedCounterpartyAddress && (
+                                    <span className="tx-counterparty-inline">
+                                      <AddressWithIconInline
+                                        data={{
+                                          address: resolvedCounterpartyAddress,
+                                          addressDetails: resolvedCounterpartyDetails || {}
+                                        }}
+                                        name="address"
+                                        options={{ short: 6 }}
+                                      />
                                     </span>
+                                  )}
+                              </div>
+                            </div>
+
+                            <div className="asset-value tx-collapsed-change">
+                              {failedStatusShort ? (
+                                <span className="tx-inline-status orange">{failedStatusShort}</span>
+                              ) : tx?.TransactionType === 'TrustSet' ? (
+                                trustSetStatus ? (
+                                  <span className="tx-inline-status orange">{trustSetStatus}</span>
+                                ) : null
+                              ) : isDexNotFullfilled && dexSpecifiedChanges.length > 0 ? (
+                                <>
+                                  {dexSpecifiedChanges.map((change, changeIndex) => (
+                                    <span className="tx-inline-change-item" key={`${txKey}-dex-spec-${changeIndex}`}>
+                                      <span className="tx-inline-change grey">
+                                        {amountFormat(change, {
+                                          icon: true,
+                                          short: true,
+                                          maxFractionDigits: 2,
+                                          showPlus: true
+                                        })}
+                                      </span>
+                                    </span>
+                                  ))}
+                                </>
+                              ) : hasAmmVoteTradingFee ? (
+                                <span className="tx-inline-status grey">Trading fee: {ammVoteTradingFeeText}</span>
+                              ) : nftCollapsedSpecialDisplay ? (
+                                nftCollapsedSpecialDisplay.collapsedNode
+                              ) : showFreeNftBadge ? (
+                                <span className={`tx-offer-free ${showFreeNftBadgeGreen ? 'green' : 'orange'}`}>
+                                  Free
+                                </span>
+                              ) : (
+                                <>
+                                  {collapsedPrimaryChange && (
+                                    <span className="tx-inline-change-item">
+                                      <span className={`tx-inline-change ${primaryChangeClass}`}>
+                                        {amountFormat(collapsedPrimaryChange, {
+                                          icon: !isLpAmount(collapsedPrimaryChange),
+                                          short: true,
+                                          maxFractionDigits: 2,
+                                          showPlus: true
+                                        })}
+                                      </span>
+                                      {!!primaryChangeFiat && (
+                                        <span className="tx-change-fiat">{primaryChangeFiat}</span>
+                                      )}
+                                    </span>
+                                  )}
+                                  {collapsedSecondaryChange && (
+                                    <span className="tx-inline-change-item">
+                                      <span className={`tx-inline-change ${secondaryChangeClass}`}>
+                                        {amountFormat(collapsedSecondaryChange, {
+                                          icon: !isLpAmount(collapsedSecondaryChange),
+                                          short: true,
+                                          maxFractionDigits: 2,
+                                          showPlus: true
+                                        })}
+                                      </span>
+                                      {!!secondaryChangeFiat && (
+                                        <span className="tx-change-fiat">{secondaryChangeFiat}</span>
+                                      )}
+                                    </span>
+                                  )}
+                                  {collapsedMoreCount > 0 && (
+                                    <span className="tx-inline-more">+{collapsedMoreCount} more</span>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          </div>
+
+                          {isExpanded && (
+                            <div className="asset-details">
+                              <div className="detail-row">
+                                <span>Type:</span>
+                                <span>{tx?.TransactionType || '-'}</span>
+                              </div>
+
+                              {showDexSpecifiedOrderDetails && !!dexTakerGets && (
+                                <div className="detail-row">
+                                  <span>
+                                    {dexOfferDirection === 'Sell' ? 'Specified sell exactly:' : 'Specified pay up to:'}
+                                  </span>
+                                  <span>
+                                    {amountFormat(dexTakerGets, {
+                                      icon: true,
+                                      withIssuer: true
+                                    })}
+                                  </span>
+                                </div>
+                              )}
+
+                              {showDexSpecifiedOrderDetails && !!dexTakerPays && (
+                                <div className="detail-row">
+                                  <span>
+                                    {dexOfferDirection === 'Sell'
+                                      ? 'Specified receive at least:'
+                                      : 'Specified receive exactly:'}
+                                  </span>
+                                  <span>
+                                    {amountFormat(dexTakerPays, {
+                                      icon: true,
+                                      withIssuer: true
+                                    })}
+                                  </span>
+                                </div>
+                              )}
+
+                              {hasAmmVoteTradingFee && (
+                                <div className="detail-row">
+                                  <span>Trading fee:</span>
+                                  <span>{ammVoteTradingFeeText}</span>
+                                </div>
+                              )}
+
+                              {failedStatusText && (
+                                <>
+                                  <div className="detail-row">
+                                    <span>Error code:</span>
+                                    <span className="orange">{failedStatusText}</span>
+                                  </div>
+                                  <div className="detail-row tx-fail-description-row">
+                                    <span>Error:</span>
+                                    <span className="orange tx-fail-description-text">
+                                      {errorCodeDescription(failedStatusText) || failedStatusText}
+                                    </span>
+                                  </div>
+                                </>
+                              )}
+
+                              {!isSelfPayment && !isDexOfferTx && resolvedCounterpartyAddress && (
+                                <div className="detail-row">
+                                  <span>{directionLabel}:</span>
+                                  <span className="copy-inline">
+                                    <span className="address-text">{resolvedCounterpartyAddress}</span>
+                                    <Link
+                                      href={`/account/${resolvedCounterpartyAddress}`}
+                                      className="inline-link-icon tooltip"
+                                      onClick={(event) => event.stopPropagation()}
+                                    >
+                                      <LinkIcon />
+                                      <span className="tooltiptext no-brake">Account page</span>
+                                    </Link>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={resolvedCounterpartyAddress} />
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+
+                              {brokerAddress && (
+                                <div className="detail-row">
+                                  <span>By broker:</span>
+                                  <span className="copy-inline">
+                                    <span className="address-text">{brokerAddress}</span>
+                                    <Link
+                                      href={`/account/${brokerAddress}`}
+                                      className="inline-link-icon tooltip"
+                                      onClick={(event) => event.stopPropagation()}
+                                    >
+                                      <LinkIcon />
+                                      <span className="tooltiptext no-brake">Account page</span>
+                                    </Link>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={brokerAddress} />
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+
+                              {tx?.TransactionType === 'TrustSet' && trustSetToken && (
+                                <>
+                                  <div className="detail-row">
+                                    <span>Currency:</span>
                                     <span className="copy-inline">
-                                      {counterpartAddress ? (
-                                        <>
-                                          <span className="address-text">{counterpartAddress}</span>
+                                      <span>{trustSetToken?.currency || '-'}</span>
+                                      {!!trustSetToken?.issuer && !!trustSetToken?.currency && (
+                                        <Link
+                                          href={`/token/${trustSetToken.issuer}/${trustSetToken.currency}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Token page</span>
+                                        </Link>
+                                      )}
+                                      {!!trustSetToken?.currency && (
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={trustSetToken.currency} />
+                                        </span>
+                                      )}
+                                    </span>
+                                  </div>
+
+                                  {!!trustSetToken?.issuer && (
+                                    <div className="detail-row">
+                                      <span>Issuer:</span>
+                                      <span className="copy-inline">
+                                        <span className="address-text">{trustSetToken.issuer}</span>
+                                        <Link
+                                          href={`/account/${trustSetToken.issuer}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Issuer account page</span>
+                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={trustSetToken.issuer} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  <div className="detail-row">
+                                    <span>Limit:</span>
+                                    <span>{fullNiceNumber(trustSetToken?.value || 0)}</span>
+                                  </div>
+                                </>
+                              )}
+
+                              {txType === 'AccountSet' && (
+                                <>
+                                  {tx?.MessageKey !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Message key:</span>
+                                      {accountSetSpec?.messageKey ? (
+                                        <span className="copy-inline">
+                                          <span className="address-text">{accountSetSpec.messageKey}</span>
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <CopyButton text={accountSetSpec.messageKey} />
+                                          </span>
+                                        </span>
+                                      ) : (
+                                        <span className="orange">removed</span>
+                                      )}
+                                    </div>
+                                  )}
+
+                                  {tx?.Domain !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Domain:</span>
+                                      <span className="orange">{accountSetSpec?.domain || 'removed'}</span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.defaultRipple !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Default ripple:</span>
+                                      <span className="orange">
+                                        {accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {(accountSetSpec?.disallowXRP !== undefined ||
+                                    accountSetSettings?.disallowXRP !== undefined) && (
+                                    <div className="detail-row">
+                                      <span>Incoming {nativeCurrency}:</span>
+                                      <span className="orange">
+                                        {accountSetSpec?.disallowXRP || accountSetSettings?.disallowXRP
+                                          ? 'disallow'
+                                          : 'allow'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {(accountSetSpec?.requireDestTag !== undefined ||
+                                    accountSetSettings?.requireDestTag !== undefined) && (
+                                    <div className="detail-row">
+                                      <span>Destination tag:</span>
+                                      <span className="orange">
+                                        {accountSetSpec?.requireDestTag || accountSetSettings?.requireDestTag
+                                          ? 'require'
+                                          : "don't require"}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.depositAuth !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Deposit authorization:</span>
+                                      <span className="orange">
+                                        {accountSetSpec.depositAuth ? 'enabled' : 'disabled'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.disableMaster !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Master key:</span>
+                                      <span className="red">
+                                        {accountSetSpec.disableMaster ? 'disabled' : 'enabled'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.noFreeze && (
+                                    <div className="detail-row">
+                                      <span>No freeze:</span>
+                                      <span className="orange">enabled</span>
+                                    </div>
+                                  )}
+
+                                  {(accountSetSpec?.requireAuth !== undefined ||
+                                    accountSetSettings?.requireAuth !== undefined) && (
+                                    <div className="detail-row">
+                                      <span>Require authorization:</span>
+                                      <span className="orange">
+                                        {accountSetSpec?.requireAuth || accountSetSettings?.requireAuth
+                                          ? 'enabled'
+                                          : 'disabled'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.disallowIncomingCheck !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Incoming check:</span>
+                                      <span className="orange">
+                                        {accountSetSpec.disallowIncomingCheck ? 'disallow' : 'allow'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.disallowIncomingPayChan !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Incoming payment channel:</span>
+                                      <span className="orange">
+                                        {accountSetSpec.disallowIncomingPayChan ? 'disallow' : 'allow'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.disallowIncomingNFTokenOffer !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Incoming NFT offer:</span>
+                                      <span className="orange">
+                                        {accountSetSpec.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.disallowIncomingTrustline !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Incoming trustline:</span>
+                                      <span className="orange">
+                                        {accountSetSpec.disallowIncomingTrustline ? 'disallow' : 'allow'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.enableTransactionIDTracking !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Transaction ID tracking:</span>
+                                      <span className="orange">
+                                        {accountSetSpec.enableTransactionIDTracking ? 'enabled' : 'disabled'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.globalFreeze !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Global freeze:</span>
+                                      <span className="orange">
+                                        {accountSetSpec.globalFreeze ? 'enabled' : 'disabled'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.authorizedMinter !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Authorized minter:</span>
+                                      <span className="orange">
+                                        {accountSetSpec.authorizedMinter ? 'enabled' : 'disabled'}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {accountSetSpec?.nftokenMinter !== undefined && (
+                                    <div className="detail-row">
+                                      <span>NFT minter:</span>
+                                      {accountSetSpec?.nftokenMinter ? (
+                                        <span className="copy-inline">
+                                          <span className="address-text">{accountSetSpec.nftokenMinter}</span>
                                           <Link
-                                            href={`/account/${counterpartAddress}`}
+                                            href={`/account/${accountSetSpec.nftokenMinter}`}
                                             className="inline-link-icon tooltip"
                                             onClick={(event) => event.stopPropagation()}
                                           >
@@ -6206,99 +5032,1503 @@ export default function Account2({
                                             <span className="tooltiptext no-brake">Account page</span>
                                           </Link>
                                           <span onClick={(event) => event.stopPropagation()}>
-                                            <CopyButton text={counterpartAddress} />
+                                            <CopyButton text={accountSetSpec.nftokenMinter} />
                                           </span>
-                                        </>
+                                        </span>
                                       ) : (
-                                        '-'
+                                        <span className="orange">removed</span>
                                       )}
-                                    </span>
-                                  </div>
+                                    </div>
+                                  )}
 
-                                  <div className="detail-row">
-                                    <span>Expire:</span>
-                                    <span
-                                      className={
-                                        escrow?.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple')
-                                          ? 'red'
-                                          : ''
-                                      }
-                                    >
-                                      {cancelAfterFullText}
-                                    </span>
-                                  </div>
+                                  {accountSetSpec?.allowTrustLineClawback !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Trustline clawback:</span>
+                                      <span className="orange">
+                                        {accountSetSpec.allowTrustLineClawback ? 'allowed' : 'disallow'}
+                                      </span>
+                                    </div>
+                                  )}
 
-                                  <div className="detail-row">
-                                    <span>Unlock:</span>
-                                    <span
-                                      className={
-                                        escrow?.FinishAfter && timestampExpired(escrow.FinishAfter, 'ripple')
-                                          ? 'green'
-                                          : ''
-                                      }
-                                    >
-                                      {finishAfterFullText}
-                                    </span>
-                                  </div>
+                                  {accountSetSpec?.disallowIncomingRemit !== undefined && (
+                                    <div className="detail-row">
+                                      <span>Incoming remit:</span>
+                                      <span className="orange">
+                                        {accountSetSpec.disallowIncomingRemit ? 'disallow' : 'allow'}
+                                      </span>
+                                    </div>
+                                  )}
+                                </>
+                              )}
 
-                                  <div className="detail-row">
-                                    <span>Amount:</span>
-                                    <span>{amountFormat(escrow?.Amount, { precise: 'nice' })}</span>
-                                  </div>
+                              <div className="detail-row">
+                                <span>Timestamp:</span>
+                                <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
+                              </div>
 
-                                  <div className="detail-row">
-                                    <span>Escrow ID:</span>
-                                    <span className="copy-inline">
-                                      <span>{escrow?.index ? shortHash(escrow.index) : '-'}</span>
-                                      {!!escrow?.index && (
-                                        <>
-                                          <Link
-                                            href={`/object/${escrow.index}`}
-                                            className="inline-link-icon tooltip"
-                                            onClick={(event) => event.stopPropagation()}
-                                          >
-                                            <LinkIcon />
-                                            <span className="tooltiptext no-brake">Object page</span>
-                                          </Link>
-                                          <span onClick={(event) => event.stopPropagation()}>
-                                            <CopyButton text={escrow.index} />
+                              {!!selectedCurrency && (shouldShowExpandedRate || isDexOfferTx) && !hasDexOfferRates && (
+                                <div className="detail-row">
+                                  <span>Rate:</span>
+                                  <span suppressHydrationWarning>
+                                    {txHistoricalRate
+                                      ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
+                                      : '-'}
+                                  </span>
+                                </div>
+                              )}
+
+                              {isSource && (tx?.Sequence || tx?.TicketSequence) && (
+                                <div className="detail-row">
+                                  <span>{tx?.TicketSequence ? 'Ticket sequence:' : 'Sequence:'}</span>
+                                  <span>{tx?.Sequence || tx?.TicketSequence}</span>
+                                </div>
+                              )}
+
+                              {isSource && tx?.Fee && (
+                                <div className="detail-row">
+                                  <span>Fee:</span>
+                                  <span>
+                                    {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
+                                    {nativeCurrencyToFiat({
+                                      amount: tx.Fee,
+                                      selectedCurrency,
+                                      fiatRate: txHistoricalRate
+                                    })}
+                                  </span>
+                                </div>
+                              )}
+
+                              {changes.length > 0 && (
+                                <div className="detail-row tx-detail-change-row">
+                                  <span>Balance changes:</span>
+                                  <span className="tx-detail-change-list">
+                                    {changes.map((change, changeIndex) => {
+                                      const changeValue = Number(change?.value || 0)
+                                      const changeClass = changeValue > 0 ? 'green' : changeValue < 0 ? 'red' : ''
+                                      const changeFiat = nativeCurrencyToFiat({
+                                        amount: change,
+                                        selectedCurrency,
+                                        fiatRate: txHistoricalRate,
+                                        asText: true
+                                      })
+                                      return (
+                                        <span
+                                          className={`tx-change-row ${changeClass}`}
+                                          key={`${txKey}-change-${changeIndex}`}
+                                        >
+                                          <span>
+                                            {amountFormat(change, {
+                                              icon: !isLpAmount(change),
+                                              withIssuer: !(isAmmDepositOrWithdraw && isLpAmount(change)),
+                                              bold: true,
+                                              precise: 'nice',
+                                              showPlus: true
+                                            })}
                                           </span>
-                                        </>
-                                      )}
+                                          {!!changeFiat && <span className="tx-change-fiat">{changeFiat}</span>}
+                                        </span>
+                                      )
+                                    })}
+                                  </span>
+                                </div>
+                              )}
+
+                              {hasDexOfferRates && (
+                                <div className="detail-row tx-detail-change-row">
+                                  <span>Rates:</span>
+                                  <span className="tx-detail-change-list">
+                                    {!!selectedCurrency && (
+                                      <span className="tx-change-row">
+                                        <span suppressHydrationWarning>
+                                          {txHistoricalRate
+                                            ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
+                                            : '-'}
+                                        </span>
+                                      </span>
+                                    )}
+                                    <span className="tx-change-row">
+                                      <span>
+                                        {amountFormat(
+                                          {
+                                            currency: changes[0].currency,
+                                            issuer: changes[0].issuer,
+                                            value: 1
+                                          },
+                                          { icon: true }
+                                        )}{' '}
+                                        ={' '}
+                                        {amountFormat(
+                                          {
+                                            ...changes[1],
+                                            value: dexOfferRateAtoB
+                                          },
+                                          { icon: true, precise: 'nice' }
+                                        )}
+                                      </span>
+                                    </span>
+                                    <span className="tx-change-row">
+                                      <span>
+                                        {amountFormat(
+                                          {
+                                            currency: changes[1].currency,
+                                            issuer: changes[1].issuer,
+                                            value: 1
+                                          },
+                                          { icon: true }
+                                        )}{' '}
+                                        ={' '}
+                                        {amountFormat(
+                                          {
+                                            ...changes[0],
+                                            value: dexOfferRateBtoA
+                                          },
+                                          { icon: true, precise: 'nice' }
+                                        )}
+                                      </span>
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+
+                              {nftTokenId && (
+                                <div className="detail-row">
+                                  <span>NFT:</span>
+                                  <span className="copy-inline id-inline">
+                                    <span className="address-text ellipsis-text" title={nftTokenId}>
+                                      {nftTokenId}
+                                    </span>
+                                    <Link
+                                      href={`/nft/${nftTokenId}`}
+                                      className="inline-link-icon tooltip"
+                                      onClick={(event) => event.stopPropagation()}
+                                    >
+                                      <LinkIcon />
+                                      <span className="tooltiptext no-brake">NFT page</span>
+                                    </Link>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={nftTokenId} />
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+
+                              {nftOfferIds.length > 0 && (
+                                <div className="detail-row">
+                                  <span>{nftOfferIds.length > 1 ? 'Offer IDs:' : 'Offer ID:'}</span>
+                                  <span className="tx-offer-id-list">
+                                    {nftOfferIds.map((offerId, offerIndex) => (
+                                      <span className="copy-inline id-inline" key={`${txKey}-offer-${offerIndex}`}>
+                                        <span className="address-text ellipsis-text" title={offerId}>
+                                          {offerId}
+                                        </span>
+                                        <Link
+                                          href={`/nft-offer/${offerId}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Offer page</span>
+                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={offerId} />
+                                        </span>
+                                      </span>
+                                    ))}
+                                  </span>
+                                </div>
+                              )}
+
+                              {isNftOfferTx && hasNftOfferAmount && (
+                                <div className="detail-row">
+                                  <span>Offer amount:</span>
+                                  <span className="tx-detail-offer-amount">
+                                    <span className="tx-inline-change">{offerAmountExpandedText}</span>
+                                    {!!offerAmountFiatDetailText && (
+                                      <span className="tx-change-fiat">{offerAmountFiatDetailText}</span>
+                                    )}
+                                  </span>
+                                </div>
+                              )}
+
+                              {!isNftOfferTx && nftMintSellOfferDisplay && (
+                                <div className="detail-row">
+                                  <span>Offer amount:</span>
+                                  <span className="tx-detail-offer-amount">
+                                    <span className="tx-inline-change">{nftMintSellOfferDisplay.expandedText}</span>
+                                    {!!nftMintSellOfferDisplay.expandedFiat && (
+                                      <span className="tx-change-fiat">{nftMintSellOfferDisplay.expandedFiat}</span>
+                                    )}
+                                  </span>
+                                </div>
+                              )}
+
+                              <div className="detail-row">
+                                <span>Hash:</span>
+                                <span className="copy-inline">
+                                  {txHash ? (
+                                    <Link
+                                      href={`/transaction/${txHash}`}
+                                      className="tx-link"
+                                      onClick={(event) => event.stopPropagation()}
+                                    >
+                                      {shortHash}
+                                    </Link>
+                                  ) : (
+                                    '-'
+                                  )}
+                                  {!!txHash && (
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={txHash} />
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )
+
+                if (isMobile) {
+                  const canLoadMoreTransactions = !!transactionsMarker && !transactionsSearchPaused
+                  return (
+                    <>
+                      {renderTransactionsList()}
+                      {transactionsEndMessage ? (
+                        <div className="tx-mobile-end-message">
+                          <p className="center">{transactionsEndMessage}</p>
+                        </div>
+                      ) : (
+                        <div className="tx-mobile-actions">
+                          {canLoadMoreTransactions ? (
+                            <button
+                              type="button"
+                              className="tx-mobile-load-btn"
+                              onClick={loadMoreTransactions}
+                              disabled={transactionsLoadingMore || transactionsLoading}
+                            >
+                              {transactionsLoadingMore ? (
+                                <>
+                                  Loading
+                                  <span className="waiting inline" aria-hidden="true"></span>
+                                </>
+                              ) : (
+                                'Load more transactions'
+                              )}
+                            </button>
+                          ) : (
+                            <span className="tx-mobile-end-label">End of list.</span>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  )
+                }
+
+                return (
+                  <InfiniteScrolling
+                    dataLength={recentTransactions.length}
+                    loadMore={loadMoreTransactions}
+                    hasMore={!!transactionsMarker && !transactionsSearchPaused}
+                    errorMessage={transactionsEndMessage}
+                    loadMoreMessage={transactionsLoadMoreMessage}
+                    subscriptionExpired={false}
+                    sessionToken={true}
+                  >
+                    {renderTransactionsList()}
+                  </InfiniteScrolling>
+                )
+              })()}
+          </div>
+
+          {/* Column 4: Issued Tokens */}
+          <div className="orders-section">
+            {showObjectsLoadStatus && (
+              <div className={`asset-item object-load-status ${objectsError ? 'error' : ''}`}>
+                {objectsLoading ? (
+                  <span className="tx-inline-load object-load-status-text">
+                    <span>Loading account objects</span>
+                    <span className="waiting inline" aria-hidden="true"></span>
+                  </span>
+                ) : (
+                  <span className="object-load-status-text">
+                    Failed to load account objects. Object sections may be missing.
+                  </span>
+                )}
+              </div>
+            )}
+
+            {(issuedTokensLoading || issuedTokensError || issuedTokens.length > 0) && (
+              <>
+                <div className="section-header-row">
+                  <span className="section-title">Issued tokens</span>
+                  {data?.address && (
+                    <Link className="section-link" href={`/tokens?issuer=${data.address}`}>
+                      View all
+                    </Link>
+                  )}
+                </div>
+
+                {hasIssuerSettingsData && (
+                  <div className="time-machine-card issuer-settings-card">
+                    <button
+                      type="button"
+                      className={`time-machine-toggle ${showIssuerSettingsDetails ? 'active' : ''}`}
+                      onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
+                    >
+                      Issuer settings
+                      {hasCustomTransferFee && (
+                        <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
+                      )}
+                    </button>
+
+                    {showIssuerSettingsDetails && (
+                      <div className="time-machine-panel issuer-settings-panel">
+                        <div className="detail-row issuer-detail-row">
+                          <span>Rippling:</span>
+                          <span className={isRipplingEnabled ? 'green' : 'grey'}>
+                            {isRipplingEnabled ? 'enabled' : 'disabled'}
+                          </span>
+                        </div>
+                        <div className="detail-row issuer-detail-row">
+                          <span>Transfer fee:</span>
+                          <span>{issuerTransferFeeText}</span>
+                        </div>
+                        <div className="detail-row issuer-detail-row">
+                          <span>Escrow:</span>
+                          <span className={isCanEscrowEnabled ? 'green' : 'grey'}>
+                            {isCanEscrowEnabled ? 'enabled' : 'disabled'}
+                          </span>
+                        </div>
+
+                        <div className="lp-actions issuer-settings-actions">
+                          <Link href="/services/account-settings" className="lp-action-btn">
+                            Change settings
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {issuedTokensLoading && <p className="grey">Loading issued tokens...</p>}
+                {!issuedTokensLoading && issuedTokensError && <p className="red">{issuedTokensError}</p>}
+
+                {!issuedTokensLoading &&
+                  !issuedTokensError &&
+                  issuedTokens.map((token, index) => {
+                    const tokenStats = token.statistics || {}
+                    const tokenSupply = Number(token.supply || 0)
+                    const tokenPriceNative = Number(tokenStats.priceNativeCurrency || 0)
+                    const tokenPriceFiat = tokenPriceNative * (pageFiatRate || 0)
+                    const tokenMarketcap = Number(tokenStats.marketcap || 0)
+                    const tokenMarketcapFiat = tokenMarketcap * (pageFiatRate || 0)
+                    const tokenVolume24h = Number(tokenStats.buyVolume || 0) + Number(tokenStats.sellVolume || 0)
+                    const tokenVolume24hFiat = tokenVolume24h * tokenPriceNative * (pageFiatRate || 0)
+                    const tokenKey = `${token.currency || 'token'}-${index}`
+                    const isExpanded = expandedIssuedToken === tokenKey
+
+                    return (
+                      <div
+                        key={tokenKey}
+                        className="asset-item token-asset-item"
+                        onClick={() => setExpandedIssuedToken(isExpanded ? null : tokenKey)}
+                      >
+                        <div className="asset-main">
+                          <div className="asset-logo">
+                            <CurrencyWithIcon token={token} options={{ disableTokenLink: true }} />
+                          </div>
+                          <div className="asset-value">
+                            <div className="asset-amount" suppressHydrationWarning>
+                              {tokenMarketcapFiat > 0
+                                ? shortNiceNumber(tokenMarketcapFiat, 2, 1, selectedCurrency)
+                                : shortNiceNumber(tokenMarketcap, 2, 1)}
+                            </div>
+                            <div className="asset-fiat">Supply: {shortNiceNumber(tokenSupply)}</div>
+                          </div>
+                        </div>
+
+                        {isExpanded && (
+                          <div className="asset-details">
+                            <div className="detail-row">
+                              <span>Currency:</span>
+                              <span className="copy-inline">
+                                <span>{token.currency}</span>
+                                <Link
+                                  href={`/token/${data.address}/${token.currency}`}
+                                  className="inline-link-icon tooltip"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  <LinkIcon />
+                                  <span className="tooltiptext no-brake">Token page</span>
+                                </Link>
+                                <span onClick={(event) => event.stopPropagation()}>
+                                  <CopyButton text={token.currency} />
+                                </span>
+                              </span>
+                            </div>
+
+                            <div className="detail-row">
+                              <span>Price ({nativeCurrency}):</span>
+                              <span>
+                                {shortNiceNumber(tokenPriceNative, 2, 1)} {nativeCurrency}
+                              </span>
+                            </div>
+
+                            <div className="detail-row">
+                              <span>Price ({selectedCurrency?.toUpperCase()}):</span>
+                              <span suppressHydrationWarning>
+                                {tokenPriceFiat > 0
+                                  ? shortNiceNumber(tokenPriceFiat, 2, 1, selectedCurrency)
+                                  : shortNiceNumber(0, 2, 1, selectedCurrency)}
+                              </span>
+                            </div>
+
+                            <div className="detail-row">
+                              <span>Marketcap:</span>
+                              <span suppressHydrationWarning>
+                                {tokenMarketcapFiat > 0
+                                  ? shortNiceNumber(tokenMarketcapFiat, 2, 1, selectedCurrency)
+                                  : shortNiceNumber(tokenMarketcap, 2, 1)}
+                              </span>
+                            </div>
+
+                            <div className="detail-row">
+                              <span>Supply:</span>
+                              <span>{fullNiceNumber(tokenSupply)}</span>
+                            </div>
+
+                            <div className="detail-row">
+                              <span>Holders:</span>
+                              <span>{fullNiceNumber(token.holders || 0)}</span>
+                            </div>
+
+                            <div className="detail-row">
+                              <span>Trustlines:</span>
+                              <span>{fullNiceNumber(token.trustlines || 0)}</span>
+                            </div>
+
+                            <div className="detail-row">
+                              <span>Volume (24h):</span>
+                              <span suppressHydrationWarning>
+                                {tokenVolume24hFiat > 0
+                                  ? shortNiceNumber(tokenVolume24hFiat, 2, 1, selectedCurrency)
+                                  : shortNiceNumber(tokenVolume24h, 2, 1)}
+                              </span>
+                            </div>
+
+                            <div className="detail-row">
+                              <span>Volume (24h) token:</span>
+                              <span>
+                                {shortNiceNumber(tokenVolume24h, 2, 1)} {niceCurrency(token.currency)}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+              </>
+            )}
+
+            {hasIssuedMpts && (
+              <>
+                <div className="section-header-row object-section-header-row">
+                  <div className="section-title object-section-title">
+                    Issued MPTs <span className="object-title-count">{issuedMpts.length}</span>
+                  </div>
+                </div>
+
+                <div className="cards-list">
+                  {issuedMpts.map((mptNode, index) => {
+                    const rowKey = `${mptNode?.index || mptId(mptNode) || 'issued-mpt'}-${index}`
+                    const isExpanded = expandedIssuedMptKey === rowKey
+                    const outstanding = scaleAmount(mptNode?.OutstandingAmount || 0, mptNode?.AssetScale || null)
+                    const maxSupply = mptNode?.MaximumAmount
+                      ? scaleAmount(mptNode.MaximumAmount, mptNode?.AssetScale || null)
+                      : null
+
+                    return (
+                      <div
+                        key={rowKey}
+                        className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
+                        onClick={() => setExpandedIssuedMptKey(isExpanded ? null : rowKey)}
+                      >
+                        <div className="asset-main">
+                          <div className="asset-logo">
+                            <CurrencyWithIcon token={mptNode} options={{ disableTokenLink: true }} hideIssuer />
+                          </div>
+                          <div className="asset-value">
+                            <div className="asset-amount">{shortNiceNumber(outstanding)}</div>
+                            <div className="asset-fiat">Outstanding</div>
+                          </div>
+                        </div>
+
+                        {isExpanded && (
+                          <div className="asset-details">
+                            <div className="detail-row">
+                              <span>MPT ID:</span>
+                              <span className="copy-inline">
+                                <span>{shortHash(mptId(mptNode) || '-')}</span>
+                                {!!mptId(mptNode) && (
+                                  <span onClick={(event) => event.stopPropagation()}>
+                                    <CopyButton text={mptId(mptNode)} />
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                            <div className="detail-row">
+                              <span>Outstanding:</span>
+                              <span>{fullNiceNumber(outstanding)}</span>
+                            </div>
+                            <div className="detail-row">
+                              <span>Max supply:</span>
+                              <span>{maxSupply === null ? 'not set' : fullNiceNumber(maxSupply)}</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
+
+            {hasIssuerSettingsData && !(issuedTokensLoading || issuedTokensError || issuedTokens.length > 0) && (
+              <div className="time-machine-card issuer-settings-card">
+                <button
+                  type="button"
+                  className={`time-machine-toggle ${showIssuerSettingsDetails ? 'active' : ''}`}
+                  onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
+                >
+                  Issuer settings
+                  {hasCustomTransferFee && (
+                    <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
+                  )}
+                </button>
+
+                {showIssuerSettingsDetails && (
+                  <div className="time-machine-panel issuer-settings-panel">
+                    <div className="detail-row issuer-detail-row">
+                      <span>Rippling:</span>
+                      <span className={isRipplingEnabled ? 'green' : 'grey'}>
+                        {isRipplingEnabled ? 'enabled' : 'disabled'}
+                      </span>
+                    </div>
+                    <div className="detail-row issuer-detail-row">
+                      <span>Transfer fee:</span>
+                      <span>{issuerTransferFeeText}</span>
+                    </div>
+                    <div className="detail-row issuer-detail-row">
+                      <span>Escrow:</span>
+                      <span className={isCanEscrowEnabled ? 'green' : 'grey'}>
+                        {isCanEscrowEnabled ? 'enabled' : 'disabled'}
+                      </span>
+                    </div>
+                    {isTrustlineClawbackEnabled && (
+                      <div className="detail-row issuer-detail-row">
+                        <span>Trustline clawback:</span>
+                        <span>enabled</span>
+                      </div>
+                    )}
+                    {isCanEscrowEnabled && (
+                      <div className="detail-row issuer-detail-row">
+                        <span>Trustline locking:</span>
+                        <span>enabled</span>
+                      </div>
+                    )}
+                    {isGlobalFreezeEnabled && (
+                      <div className="detail-row issuer-detail-row">
+                        <span>Global freeze:</span>
+                        <span>true</span>
+                      </div>
+                    )}
+                    {isNoFreezeEnabled && (
+                      <div className="detail-row issuer-detail-row">
+                        <span>No freeze:</span>
+                        <span>enabled</span>
+                      </div>
+                    )}
+
+                    <div className="lp-actions issuer-settings-actions">
+                      <Link href="/services/account-settings" className="lp-action-btn">
+                        Change settings
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {hasDexOrders && (
+              <>
+                <div className="section-header-row object-section-header-row">
+                  <div className="section-title object-section-title">
+                    DEX orders <span className="object-title-count">{dexOrders.length}</span>
+                  </div>
+                  {data?.address && (
+                    <Link className="section-link" href={`/account/${data.address}/dex`}>
+                      View all
+                    </Link>
+                  )}
+                </div>
+
+                <div className="cards-list">
+                  {dexOrders.map((offer, index) => {
+                    const orderKey = `${offer?.index || 'offer'}-${index}`
+                    const isExpanded = expandedDexOrderKey === orderKey
+                    const isSell = !!offer?.flags?.sell
+                    const baseAmount = isSell ? offer?.TakerGets : offer?.TakerPays
+                    const quoteAmount = isSell ? offer?.TakerPays : offer?.TakerGets
+                    const collapsedMainLabel = isSell ? 'Selling' : 'Buying'
+                    const collapsedPrimary = amountFormat(baseAmount, {
+                      short: true,
+                      maxFractionDigits: 2,
+                      icon: true
+                    })
+                    const collapsedSecondary = amountFormat(quoteAmount, {
+                      short: true,
+                      maxFractionDigits: 2,
+                      icon: true
+                    })
+                    const rateText = (() => {
+                      const quality = Number(offer?.quality)
+                      if (!Number.isFinite(quality) || quality <= 0) return '-'
+
+                      const takerGetsIsNative = typeof offer?.TakerGets === 'string'
+                      const takerPaysIsNative = typeof offer?.TakerPays === 'string'
+                      const getsCurrency =
+                        typeof offer?.TakerGets === 'object' ? niceCurrency(offer?.TakerGets?.currency) : nativeCurrency
+                      const paysCurrency =
+                        typeof offer?.TakerPays === 'object' ? niceCurrency(offer?.TakerPays?.currency) : nativeCurrency
+
+                      if (takerGetsIsNative) {
+                        return `1 ${nativeCurrency} = ${niceNumber(quality * 1000000, 0, null, 5)} ${paysCurrency}`
+                      }
+                      if (takerPaysIsNative) {
+                        return `1 ${getsCurrency} = ${niceNumber(quality / 1000000, 0, null, 5)} ${nativeCurrency}`
+                      }
+                      return `1 ${getsCurrency} = ${niceNumber(quality, 0, null, 5)} ${paysCurrency}`
+                    })()
+                    const offerDateText = offer?.previousTxAt
+                      ? timeFromNow(offer.previousTxAt, i18n)
+                      : offer?.PreviousTxnLgrSeq
+                        ? `Lgr ${offer.PreviousTxnLgrSeq}`
+                        : '-'
+
+                    return (
+                      <div
+                        className={`asset-item token-asset-item check-row-card dex-order-card ${isExpanded ? 'expanded' : ''}`}
+                        key={orderKey}
+                        onClick={() => setExpandedDexOrderKey(isExpanded ? null : orderKey)}
+                      >
+                        <div className="asset-main check-collapsed-main escrow-collapsed-main dex-collapsed-main">
+                          <div className="asset-logo escrow-collapsed-logo">
+                            <div className="escrow-collapsed-top">
+                              <span className="escrow-type-main">
+                                {collapsedMainLabel} {collapsedPrimary}
+                              </span>
+                              <span className="escrow-time-top">{offerDateText}</span>
+                            </div>
+                            <div className="tx-collapsed-meta">
+                              <span className="tx-accountset-inline">for {collapsedSecondary}</span>
+                            </div>
+                          </div>
+                          <div className="asset-value tx-collapsed-change escrow-collapsed-amount">
+                            <span className="tx-inline-change grey">#{offer?.Sequence || '-'}</span>
+                          </div>
+                        </div>
+
+                        {isExpanded && (
+                          <div className="asset-details">
+                            <div className="detail-row">
+                              <span>{isSell ? 'Selling:' : 'Wants to buy:'}</span>
+                              <span>
+                                {amountFormat(isSell ? offer?.TakerGets : offer?.TakerPays, {
+                                  icon: true,
+                                  withIssuer: true,
+                                  precise: 'nice'
+                                })}
+                              </span>
+                            </div>
+                            <div className="detail-row">
+                              <span>{isSell ? 'Wants at least:' : 'Can pay maximum:'}</span>
+                              <span>
+                                {amountFormat(isSell ? offer?.TakerPays : offer?.TakerGets, {
+                                  icon: true,
+                                  withIssuer: true,
+                                  precise: 'nice'
+                                })}
+                              </span>
+                            </div>
+                            <div className="detail-row">
+                              <span>Rate:</span>
+                              <span>{rateText}</span>
+                            </div>
+                            <div className="detail-row">
+                              <span>Sequence:</span>
+                              <span>{offer?.Sequence || '-'}</span>
+                            </div>
+                            <div className="detail-row">
+                              <span>Offer ID:</span>
+                              <span className="copy-inline">
+                                <span>{offer?.index ? shortHash(offer.index) : '-'}</span>
+                                {!!offer?.index && (
+                                  <>
+                                    <Link
+                                      href={`/object/${offer.index}`}
+                                      className="inline-link-icon tooltip"
+                                      onClick={(event) => event.stopPropagation()}
+                                    >
+                                      <LinkIcon />
+                                      <span className="tooltiptext no-brake">Object page</span>
+                                    </Link>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={offer.index} />
+                                    </span>
+                                  </>
+                                )}
+                              </span>
+                            </div>
+
+                            {!effectiveLedgerTimestamp && !!setSignRequest && offer?.Sequence && (
+                              <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                                <button
+                                  type="button"
+                                  className="check-action-btn cancel"
+                                  onClick={() => {
+                                    setSignRequest({
+                                      request: {
+                                        Account: offer.Account,
+                                        TransactionType: 'OfferCancel',
+                                        OfferSequence: offer.Sequence
+                                      }
+                                    })
+                                  }}
+                                  title="Cancel"
+                                >
+                                  <MdMoneyOff /> Cancel
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
+
+            {(hasReceivedChecks || hasSentChecks) && (
+              <>
+                <div className="section-header-row object-section-header-row">
+                  <div className="section-title object-section-title">
+                    {checksSectionTitle} <span className="object-title-count">{activeChecksList.length}</span>
+                  </div>
+                </div>
+
+                {showChecksTabs && (
+                  <div className="object-tab-row object-tab-row-outside">
+                    <div className="object-tab-switch">
+                      <button
+                        type="button"
+                        className={`object-tab-btn ${checksTab === 'received' ? 'active' : ''}`}
+                        onClick={() => setChecksTab('received')}
+                      >
+                        Received
+                      </button>
+                      <button
+                        type="button"
+                        className={`object-tab-btn ${checksTab === 'sent' ? 'active' : ''}`}
+                        onClick={() => setChecksTab('sent')}
+                      >
+                        Sent
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="checks-wrapper">
+                  <div className="checks-details">
+                    <div className="checks-list cards-list">
+                      {activeChecksList.map((check, index) => {
+                        const checkKey = `${check?.index || 'check'}-${activeChecksTab}-${index}`
+                        const isExpanded = expandedCheckKey === checkKey
+                        const counterpartAddress = activeChecksTab === 'sent' ? check?.Destination : check?.Account
+                        const sendMaxToken =
+                          typeof check?.SendMax === 'object' && check?.SendMax !== null
+                            ? check.SendMax
+                            : { currency: nativeCurrency }
+                        const sendMaxRawValue =
+                          typeof check?.SendMax === 'object' && check?.SendMax !== null
+                            ? check?.SendMax?.value
+                            : check?.SendMax
+                        const sendMaxAmountOnly =
+                          typeof check?.SendMax === 'object' && check?.SendMax !== null
+                            ? fullNiceNumber(sendMaxRawValue)
+                            : fullNiceNumber((Number(sendMaxRawValue) || 0) / 1000000)
+                        const sentAtValue = check?.previousTxAt || check?.createdAt
+                        const sentAtText = sentAtValue ? timeFromNow(sentAtValue, i18n) : '-'
+                        const expirationValue = check?.expiration || check?.Expiration
+                        const expirationText = expirationValue
+                          ? timeFromNow(expirationValue, i18n, 'ripple')
+                          : 'does not expire'
+                        const isExpired = expirationValue ? timestampExpired(expirationValue, 'ripple') : false
+                        const canRedeem =
+                          !!setSignRequest &&
+                          !effectiveLedgerTimestamp &&
+                          check?.Destination === account?.address &&
+                          !isExpired
+                        const canCancel =
+                          !!setSignRequest &&
+                          !effectiveLedgerTimestamp &&
+                          (check?.Destination === account?.address || check?.Account === account?.address || isExpired)
+
+                        return (
+                          <div
+                            className={`asset-item token-asset-item check-row-card ${isExpanded ? 'expanded' : ''}`}
+                            key={checkKey}
+                            onClick={() => setExpandedCheckKey(isExpanded ? null : checkKey)}
+                          >
+                            <div className="asset-main check-collapsed-main">
+                              <div className="asset-logo">
+                                <CurrencyWithIcon token={sendMaxToken} options={{ disableTokenLink: true }} />
+                              </div>
+                              <div className="asset-value">
+                                <div className="asset-amount">{sendMaxAmountOnly}</div>
+                              </div>
+                            </div>
+
+                            {isExpanded && (
+                              <div className="asset-details">
+                                <div className="detail-row">
+                                  <span>Sent:</span>
+                                  <span>{sentAtText}</span>
+                                </div>
+                                <div className="detail-row">
+                                  <span>{activeChecksTab === 'sent' ? 'To' : 'From'}:</span>
+                                  <span>
+                                    {counterpartAddress ? (
+                                      <AddressWithIconInline
+                                        data={{ address: counterpartAddress }}
+                                        name="address"
+                                        options={{ short: 6 }}
+                                      />
+                                    ) : (
+                                      '-'
+                                    )}
+                                  </span>
+                                </div>
+                                {typeof check?.DestinationTag !== 'undefined' && (
+                                  <div className="detail-row">
+                                    <span>Destination tag:</span>
+                                    <span>{check.DestinationTag}</span>
+                                  </div>
+                                )}
+                                <div className="detail-row">
+                                  <span>Expiration:</span>
+                                  <span className={isExpired ? 'red' : ''}>{expirationText}</span>
+                                </div>
+                                <div className="detail-row">
+                                  <span>Check ID:</span>
+                                  <span className="copy-inline">
+                                    <span>{check?.index || '-'}</span>
+                                    {!!check?.index && (
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={check.index} />
+                                      </span>
+                                    )}
+                                  </span>
+                                </div>
+
+                                {!effectiveLedgerTimestamp && (
+                                  <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                                    <button
+                                      type="button"
+                                      className={`check-action-btn ${canRedeem ? 'redeem' : 'disabled'}`}
+                                      disabled={!canRedeem}
+                                      onClick={() => {
+                                        if (!canRedeem) return
+                                        setSignRequest({
+                                          request: {
+                                            TransactionType: 'CheckCash',
+                                            Account: check.Destination,
+                                            Amount: check.SendMax,
+                                            CheckID: check.index
+                                          }
+                                        })
+                                      }}
+                                      title="Redeem"
+                                    >
+                                      <TbPigMoney /> Redeem
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className={`check-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
+                                      disabled={!canCancel}
+                                      onClick={() => {
+                                        if (!canCancel) return
+                                        setSignRequest({
+                                          request: {
+                                            TransactionType: 'CheckCancel',
+                                            CheckID: check.index
+                                          }
+                                        })
+                                      }}
+                                      title="Cancel"
+                                    >
+                                      <MdMoneyOff /> Cancel
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {(hasReceivedEscrows || hasSentEscrows) && (
+              <>
+                <div className="section-header-row object-section-header-row">
+                  <div className="section-title object-section-title">
+                    {escrowsSectionTitle} <span className="object-title-count">{activeEscrowsList.length}</span>
+                  </div>
+                </div>
+
+                {showEscrowsTabs && (
+                  <div className="object-tab-row escrow-tab-row">
+                    <div className="object-tab-switch">
+                      {hasSelfEscrows && (
+                        <button
+                          type="button"
+                          className={`object-tab-btn ${escrowsTab === 'self' ? 'active' : ''}`}
+                          onClick={() => setEscrowsTab('self')}
+                        >
+                          Self
+                        </button>
+                      )}
+                      {hasReceivedEscrows && (
+                        <button
+                          type="button"
+                          className={`object-tab-btn ${escrowsTab === 'received' ? 'active' : ''}`}
+                          onClick={() => setEscrowsTab('received')}
+                        >
+                          Incoming
+                        </button>
+                      )}
+                      {hasSentEscrows && (
+                        <button
+                          type="button"
+                          className={`object-tab-btn ${escrowsTab === 'sent' ? 'active' : ''}`}
+                          onClick={() => setEscrowsTab('sent')}
+                        >
+                          Outgoing
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <div className="escrow-wrapper">
+                  <div className="escrow-details">
+                    <div className="escrow-list cards-list">
+                      {activeEscrowsList.map((escrow, index) => {
+                        const escrowKey = `${escrow?.index || 'escrow'}-${activeEscrowsTab}-${index}`
+                        const isExpanded = expandedEscrowKey === escrowKey
+                        const counterpartName = activeEscrowsTab === 'sent' ? 'Destination' : 'Account'
+                        const counterpartAddress = activeEscrowsTab === 'sent' ? escrow?.Destination : escrow?.Account
+                        const amountCollapsed = amountFormat(escrow?.Amount, { short: true, maxFractionDigits: 2 })
+                        const cancelAfterText = escrow?.CancelAfter
+                          ? timeFromNow(escrow.CancelAfter, i18n, 'ripple')
+                          : 'not set'
+                        const cancelAfterFullText = escrow?.CancelAfter
+                          ? fullDateAndTime(escrow.CancelAfter, 'ripple')
+                          : 'not set'
+                        const finishAfterText = escrow?.FinishAfter
+                          ? timeFromNow(escrow.FinishAfter, i18n, 'ripple')
+                          : 'not set'
+                        const finishAfterFullText = escrow?.FinishAfter
+                          ? fullDateAndTime(escrow.FinishAfter, 'ripple')
+                          : 'not set'
+                        const isCanceled = escrow?.CancelAfter ? timestampExpired(escrow.CancelAfter, 'ripple') : false
+                        const isUnlockable = escrow?.FinishAfter
+                          ? timestampExpired(escrow.FinishAfter, 'ripple')
+                          : false
+                        const escrowSequence = escrow?.escrowSequence
+                        const canExecute =
+                          !!setSignRequest &&
+                          !effectiveLedgerTimestamp &&
+                          !!escrowSequence &&
+                          !!escrow?.FinishAfter &&
+                          timestampExpired(escrow.FinishAfter, 'ripple') &&
+                          !timestampExpired(escrow.CancelAfter, 'ripple')
+                        const canCancel =
+                          !!setSignRequest &&
+                          !effectiveLedgerTimestamp &&
+                          !!escrowSequence &&
+                          !!escrow?.CancelAfter &&
+                          timestampExpired(escrow.CancelAfter, 'ripple')
+                        const collapsedTimeText = isCanceled
+                          ? cancelAfterText
+                          : escrow?.FinishAfter
+                            ? finishAfterText
+                            : escrow?.CancelAfter
+                              ? cancelAfterText
+                              : '-'
+                        const isOutgoingEscrow = activeEscrowsTab === 'sent'
+                        const isSelfEscrow = activeEscrowsTab === 'self'
+                        const collapsedDirectionLabel = isSelfEscrow ? 'self' : isOutgoingEscrow ? 'to' : 'from'
+                        const collapsedAmountClass = isSelfEscrow ? 'grey' : isOutgoingEscrow ? 'red' : 'green'
+                        const collapsedAmountSign = isSelfEscrow ? '' : isOutgoingEscrow ? '-' : '+'
+
+                        return (
+                          <div
+                            className={`asset-item token-asset-item check-row-card escrow-card ${isExpanded ? 'expanded' : ''}`}
+                            key={escrowKey}
+                            onClick={() => setExpandedEscrowKey(isExpanded ? null : escrowKey)}
+                          >
+                            <div className="asset-main check-collapsed-main escrow-collapsed-main">
+                              <div className="asset-logo escrow-collapsed-logo">
+                                <div className="escrow-collapsed-top">
+                                  <span className="escrow-type-main">Escrow {collapsedDirectionLabel}</span>
+                                  <span
+                                    className={`escrow-time-top ${isCanceled ? 'red' : isUnlockable ? 'green' : ''}`}
+                                  >
+                                    {collapsedTimeText}
+                                  </span>
+                                </div>
+
+                                <div className="tx-collapsed-meta">
+                                  {counterpartAddress ? (
+                                    <span className="tx-counterparty-inline">
+                                      <AddressWithIconInline
+                                        data={escrow}
+                                        name={counterpartName}
+                                        options={{ short: 6 }}
+                                      />
+                                    </span>
+                                  ) : (
+                                    <span className="tx-counterparty-inline">-</span>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="asset-value tx-collapsed-change escrow-collapsed-amount">
+                                <span className={`tx-inline-change ${collapsedAmountClass}`}>
+                                  {collapsedAmountSign}
+                                  {amountCollapsed}
+                                </span>
+                              </div>
+                            </div>
+
+                            {isExpanded && (
+                              <div className="asset-details">
+                                <div className="detail-row">
+                                  <span>
+                                    {activeEscrowsTab === 'self'
+                                      ? 'Account'
+                                      : activeEscrowsTab === 'sent'
+                                        ? 'To'
+                                        : 'From'}
+                                    :
+                                  </span>
+                                  <span className="copy-inline">
+                                    {counterpartAddress ? (
+                                      <>
+                                        <span className="address-text">{counterpartAddress}</span>
+                                        <Link
+                                          href={`/account/${counterpartAddress}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Account page</span>
+                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={counterpartAddress} />
+                                        </span>
+                                      </>
+                                    ) : (
+                                      '-'
+                                    )}
+                                  </span>
+                                </div>
+
+                                <div className="detail-row">
+                                  <span>Expire:</span>
+                                  <span
+                                    className={
+                                      escrow?.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple') ? 'red' : ''
+                                    }
+                                  >
+                                    {cancelAfterFullText}
+                                  </span>
+                                </div>
+
+                                <div className="detail-row">
+                                  <span>Unlock:</span>
+                                  <span
+                                    className={
+                                      escrow?.FinishAfter && timestampExpired(escrow.FinishAfter, 'ripple')
+                                        ? 'green'
+                                        : ''
+                                    }
+                                  >
+                                    {finishAfterFullText}
+                                  </span>
+                                </div>
+
+                                <div className="detail-row">
+                                  <span>Amount:</span>
+                                  <span>{amountFormat(escrow?.Amount, { precise: 'nice' })}</span>
+                                </div>
+
+                                <div className="detail-row">
+                                  <span>Escrow ID:</span>
+                                  <span className="copy-inline">
+                                    <span>{escrow?.index ? shortHash(escrow.index) : '-'}</span>
+                                    {!!escrow?.index && (
+                                      <>
+                                        <Link
+                                          href={`/object/${escrow.index}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Object page</span>
+                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={escrow.index} />
+                                        </span>
+                                      </>
+                                    )}
+                                  </span>
+                                </div>
+
+                                {!effectiveLedgerTimestamp && (
+                                  <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                                    <button
+                                      type="button"
+                                      className={`check-action-btn ${canExecute ? 'redeem' : 'disabled'}`}
+                                      disabled={!canExecute}
+                                      onClick={() => {
+                                        if (!canExecute) return
+                                        setSignRequest({
+                                          request: {
+                                            TransactionType: 'EscrowFinish',
+                                            Owner: escrow?.Account,
+                                            OfferSequence: escrowSequence
+                                          }
+                                        })
+                                      }}
+                                      title="Execute"
+                                    >
+                                      <TbPigMoney /> Execute
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className={`check-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
+                                      disabled={!canCancel}
+                                      onClick={() => {
+                                        if (!canCancel) return
+                                        setSignRequest({
+                                          request: {
+                                            TransactionType: 'EscrowCancel',
+                                            Owner: escrow?.Account,
+                                            OfferSequence: escrowSequence
+                                          }
+                                        })
+                                      }}
+                                      title="Cancel"
+                                    >
+                                      <MdMoneyOff /> Cancel
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {hasAnyNftOffersData && (
+              <>
+                <div className="section-header-row nft-section-header-row">
+                  <div className="section-title nft-section-title">NFT offers</div>
+                  {data?.address && activeNftOffersCount > 0 && (
+                    <Link className="section-link" href={activeNftOffersViewAllHref}>
+                      View all
+                    </Link>
+                  )}
+                </div>
+
+                <div className="nft-tab-row nft-tab-row-outside">
+                  <div className="nft-tab-switch nft-offers-tab-switch">
+                    {hasReceivedPrivateNftOffers && (
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftOffersTab === 'received' ? 'active' : ''}`}
+                        onClick={() => setNftOffersTab('received')}
+                      >
+                        Private{nftOffersTabCountLabels.received ? ` (${nftOffersTabCountLabels.received})` : ''}
+                      </button>
+                    )}
+                    {hasCreatedNftOffers && (
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftOffersTab === 'created' ? 'active' : ''}`}
+                        onClick={() => setNftOffersTab('created')}
+                      >
+                        Created{nftOffersTabCountLabels.created ? ` (${nftOffersTabCountLabels.created})` : ''}
+                      </button>
+                    )}
+                    {hasOwnedNftOffers && (
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${nftOffersTab === 'owned' ? 'active' : ''}`}
+                        onClick={() => setNftOffersTab('owned')}
+                      >
+                        For owned{nftOffersTabCountLabels.owned ? ` (${nftOffersTabCountLabels.owned})` : ''}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="nft-section-content nft-offers-content">
+                  {activeNftOffersLoading ? (
+                    <div className="asset-fiat">Loading NFT offers...</div>
+                  ) : activeNftOffersError ? (
+                    <div className="asset-fiat red">{activeNftOffersError}</div>
+                  ) : activeNftOffersCount > 0 ? (
+                    <>
+                      <div className="cards-list">
+                        {activeNftOffersPreview.map((offer, index) => {
+                          const nftId =
+                            offer?.nftoken?.nftokenID ||
+                            offer?.nftoken?.NFTokenID ||
+                            offer?.nftokenID ||
+                            offer?.NFTokenID
+                          if (!nftId) return null
+
+                          const cardKey = `${nftOffersTab}-${offer?.offerIndex || nftId}-${index}`
+                          const isExpanded = expandedNftOfferKey === cardKey
+                          const toggleCard = () => setExpandedNftOfferKey(isExpanded ? null : cardKey)
+                          const handleKeyToggle = (event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault()
+                              toggleCard()
+                            }
+                          }
+                          const nftDisplayData = offer?.nftoken || offer
+                          const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortHash(nftId)
+                          const shortTokenId = shortHash(nftId)
+                          const offerType = offer?.flags?.sellToken ? 'Sell' : 'Buy'
+                          const offerAmountText = offer?.amount
+                            ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
+                            : null
+                          const offerAmountFiat =
+                            offer?.amount && selectedCurrency
+                              ? convertedAmount(offer, selectedCurrency.toLowerCase(), { short: true })
+                              : null
+                          const offerPlacedRelative = offer?.createdAt ? timeFromNow(offer.createdAt, i18n) : null
+                          const offerPlacedExact = offer?.createdAt ? fullDateAndTime(offer.createdAt) : null
+                          const offerIndex = offer?.offerIndex
+                          const shortOfferId = offerIndex ? shortHash(offerIndex) : null
+                          const ownerAddress = offer?.owner || offer?.account
+                          const destinationAddress = offer?.destination
+                          const ownerInlineData = ownerAddress
+                            ? { owner: ownerAddress, ownerDetails: offer?.ownerDetails || offer?.accountDetails }
+                            : null
+                          const destinationInlineData = destinationAddress
+                            ? { destination: destinationAddress, destinationDetails: offer?.destinationDetails }
+                            : null
+                          const expirationRelative = offer?.expiration
+                            ? timeFromNow(offer.expiration, i18n, 'ripple')
+                            : null
+                          const expirationExact = offer?.expiration
+                            ? fullDateAndTime(offer.expiration, 'expiration')
+                            : null
+                          const canCancelNftOffer =
+                            !!setSignRequest && !effectiveLedgerTimestamp && !!offerIndex && !!account?.address
+                          const secondaryLine = offerAmountText ? (
+                            <>
+                              {offerType} · {offerAmountText}
+                            </>
+                          ) : (
+                            offerType
+                          )
+
+                          return (
+                            <div
+                              key={cardKey}
+                              className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
+                              role="button"
+                              tabIndex={0}
+                              aria-expanded={isExpanded}
+                              onClick={toggleCard}
+                              onKeyDown={handleKeyToggle}
+                            >
+                              <div className="asset-main">
+                                <div className="asset-logo">
+                                  <div className="nft-asset-info">
+                                    <Link
+                                      href={`/nft/${nftId}`}
+                                      className="nft-asset-thumb"
+                                      onClick={(event) => event.stopPropagation()}
+                                    >
+                                      <NftImage
+                                        nft={nftDisplayData}
+                                        style={{
+                                          width: 40,
+                                          height: 40,
+                                          borderRadius: '6px',
+                                          verticalAlign: 'middle'
+                                        }}
+                                      />
+                                    </Link>
+                                    <div className="nft-asset-text">
+                                      <div className="asset-summary-title" title={nftTitle}>
+                                        {nftTitle}
+                                      </div>
+                                      <div className="asset-fiat">{secondaryLine}</div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="asset-value">
+                                  {offerPlacedRelative && <div className="asset-fiat">{offerPlacedRelative}</div>}
+                                </div>
+                              </div>
+                              {isExpanded && (
+                                <div className="asset-details">
+                                  <div className="detail-row">
+                                    <span>Token ID:</span>
+                                    <span className="copy-inline">
+                                      <span>{shortTokenId}</span>
+                                      <Link
+                                        href={`/nft/${nftId}`}
+                                        className="inline-link-icon tooltip"
+                                        onClick={(event) => event.stopPropagation()}
+                                      >
+                                        <LinkIcon />
+                                        <span className="tooltiptext no-brake">NFT page</span>
+                                      </Link>
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={nftId} />
+                                      </span>
                                     </span>
                                   </div>
+                                  {offerIndex && (
+                                    <div className="detail-row">
+                                      <span>Offer ID:</span>
+                                      <span className="copy-inline">
+                                        <span>{shortOfferId}</span>
+                                        <Link
+                                          href={`/nft-offer/${offerIndex}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Offer page</span>
+                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={offerIndex} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+                                  <div className="detail-row">
+                                    <span>Offer type:</span>
+                                    <span>{offerType}</span>
+                                  </div>
+                                  {offerAmountText && (
+                                    <div className="detail-row">
+                                      <span>Amount:</span>
+                                      <span>
+                                        {offerAmountText}
+                                        {offerAmountFiat && (
+                                          <span className="fiat-line" suppressHydrationWarning>
+                                            {' '}
+                                            ≈{offerAmountFiat}
+                                          </span>
+                                        )}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {offerPlacedExact && (
+                                    <div className="detail-row">
+                                      <span>Placed:</span>
+                                      <span>{offerPlacedExact}</span>
+                                    </div>
+                                  )}
+                                  {expirationRelative && (
+                                    <div className="detail-row">
+                                      <span>Expires:</span>
+                                      <span>
+                                        {expirationRelative}
+                                        {expirationExact && <span className="fiat-line"> ({expirationExact})</span>}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {ownerAddress && nftOffersTab !== 'created' && (
+                                    <div className="detail-row">
+                                      <span>From:</span>
+                                      <span className="copy-inline">
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <AddressWithIconInline
+                                            data={ownerInlineData}
+                                            name="owner"
+                                            options={{ short: 6 }}
+                                          />
+                                        </span>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={ownerAddress} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+                                  {destinationAddress && nftOffersTab !== 'received' && (
+                                    <div className="detail-row">
+                                      <span>To:</span>
+                                      <span className="copy-inline">
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <AddressWithIconInline
+                                            data={destinationInlineData}
+                                            name="destination"
+                                            options={{ short: 6 }}
+                                          />
+                                        </span>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={destinationAddress} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
 
                                   {!effectiveLedgerTimestamp && (
                                     <div className="check-actions" onClick={(event) => event.stopPropagation()}>
                                       <button
                                         type="button"
-                                        className={`check-action-btn ${canExecute ? 'redeem' : 'disabled'}`}
-                                        disabled={!canExecute}
+                                        className={`check-action-btn ${canCancelNftOffer ? 'cancel' : 'disabled'}`}
+                                        disabled={!canCancelNftOffer}
                                         onClick={() => {
-                                          if (!canExecute) return
+                                          if (!canCancelNftOffer) return
                                           setSignRequest({
                                             request: {
-                                              TransactionType: 'EscrowFinish',
-                                              Owner: escrow?.Account,
-                                              OfferSequence: escrowSequence
-                                            }
-                                          })
-                                        }}
-                                        title="Execute"
-                                      >
-                                        <TbPigMoney /> Execute
-                                      </button>
-                                      <button
-                                        type="button"
-                                        className={`check-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
-                                        disabled={!canCancel}
-                                        onClick={() => {
-                                          if (!canCancel) return
-                                          setSignRequest({
-                                            request: {
-                                              TransactionType: 'EscrowCancel',
-                                              Owner: escrow?.Account,
-                                              OfferSequence: escrowSequence
+                                              TransactionType: 'NFTokenCancelOffer',
+                                              Account: account?.address,
+                                              NFTokenOffers: [offerIndex]
                                             }
                                           })
                                         }}
@@ -6314,514 +6544,226 @@ export default function Account2({
                           )
                         })}
                       </div>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {hasAnyNftOffersData && (
-                <>
-                  <div className="section-header-row nft-section-header-row">
-                    <div className="section-title nft-section-title">NFT offers</div>
-                    {data?.address && activeNftOffersCount > 0 && (
-                      <Link className="section-link" href={activeNftOffersViewAllHref}>
-                        View all
-                      </Link>
-                    )}
-                  </div>
-
-                  <div className="nft-tab-row nft-tab-row-outside">
-                    <div className="nft-tab-switch nft-offers-tab-switch">
-                      {hasReceivedPrivateNftOffers && (
-                        <button
-                          type="button"
-                          className={`nft-tab-btn ${nftOffersTab === 'received' ? 'active' : ''}`}
-                          onClick={() => setNftOffersTab('received')}
-                        >
-                          Private{nftOffersTabCountLabels.received ? ` (${nftOffersTabCountLabels.received})` : ''}
-                        </button>
-                      )}
-                      {hasCreatedNftOffers && (
-                        <button
-                          type="button"
-                          className={`nft-tab-btn ${nftOffersTab === 'created' ? 'active' : ''}`}
-                          onClick={() => setNftOffersTab('created')}
-                        >
-                          Created{nftOffersTabCountLabels.created ? ` (${nftOffersTabCountLabels.created})` : ''}
-                        </button>
-                      )}
-                      {hasOwnedNftOffers && (
-                        <button
-                          type="button"
-                          className={`nft-tab-btn ${nftOffersTab === 'owned' ? 'active' : ''}`}
-                          onClick={() => setNftOffersTab('owned')}
-                        >
-                          For owned{nftOffersTabCountLabels.owned ? ` (${nftOffersTabCountLabels.owned})` : ''}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="nft-section-content nft-offers-content">
-                    {activeNftOffersLoading ? (
-                      <div className="asset-fiat">Loading NFT offers...</div>
-                    ) : activeNftOffersError ? (
-                      <div className="asset-fiat red">{activeNftOffersError}</div>
-                    ) : activeNftOffersCount > 0 ? (
-                      <>
-                        <div className="cards-list">
-                          {activeNftOffersPreview.map((offer, index) => {
-                            const nftId =
-                              offer?.nftoken?.nftokenID ||
-                              offer?.nftoken?.NFTokenID ||
-                              offer?.nftokenID ||
-                              offer?.NFTokenID
-                            if (!nftId) return null
-
-                            const cardKey = `${nftOffersTab}-${offer?.offerIndex || nftId}-${index}`
-                            const isExpanded = expandedNftOfferKey === cardKey
-                            const toggleCard = () => setExpandedNftOfferKey(isExpanded ? null : cardKey)
-                            const handleKeyToggle = (event) => {
-                              if (event.key === 'Enter' || event.key === ' ') {
-                                event.preventDefault()
-                                toggleCard()
+                      {showNftOffersControlsVisible && (
+                        <div className="asset-compact-actions">
+                          {activeNftOffersShowMoreAvailable && (
+                            <button
+                              type="button"
+                              className="asset-compact-toggle"
+                              onClick={() =>
+                                setNftOffersDisplayLimit((currentLimit) =>
+                                  Math.min(activeNftOffers.length, currentLimit + NFT_LOAD_MORE_STEP)
+                                )
                               }
-                            }
-                            const nftDisplayData = offer?.nftoken || offer
-                            const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortHash(nftId)
-                            const shortTokenId = shortHash(nftId)
-                            const offerType = offer?.flags?.sellToken ? 'Sell' : 'Buy'
-                            const offerAmountText = offer?.amount
-                              ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
-                              : null
-                            const offerAmountFiat =
-                              offer?.amount && selectedCurrency
-                                ? convertedAmount(offer, selectedCurrency.toLowerCase(), { short: true })
-                                : null
-                            const offerPlacedRelative = offer?.createdAt ? timeFromNow(offer.createdAt, i18n) : null
-                            const offerPlacedExact = offer?.createdAt ? fullDateAndTime(offer.createdAt) : null
-                            const offerIndex = offer?.offerIndex
-                            const shortOfferId = offerIndex ? shortHash(offerIndex) : null
-                            const ownerAddress = offer?.owner || offer?.account
-                            const destinationAddress = offer?.destination
-                            const ownerInlineData = ownerAddress
-                              ? { owner: ownerAddress, ownerDetails: offer?.ownerDetails || offer?.accountDetails }
-                              : null
-                            const destinationInlineData = destinationAddress
-                              ? { destination: destinationAddress, destinationDetails: offer?.destinationDetails }
-                              : null
-                            const expirationRelative = offer?.expiration
-                              ? timeFromNow(offer.expiration, i18n, 'ripple')
-                              : null
-                            const expirationExact = offer?.expiration
-                              ? fullDateAndTime(offer.expiration, 'expiration')
-                              : null
-                            const canCancelNftOffer =
-                              !!setSignRequest && !effectiveLedgerTimestamp && !!offerIndex && !!account?.address
-                            const secondaryLine = offerAmountText ? (
-                              <>
-                                {offerType} · {offerAmountText}
-                              </>
-                            ) : (
-                              offerType
-                            )
-
-                            return (
-                              <div
-                                key={cardKey}
-                                className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
-                                role="button"
-                                tabIndex={0}
-                                aria-expanded={isExpanded}
-                                onClick={toggleCard}
-                                onKeyDown={handleKeyToggle}
-                              >
-                                <div className="asset-main">
-                                  <div className="asset-logo">
-                                    <div className="nft-asset-info">
-                                      <Link
-                                        href={`/nft/${nftId}`}
-                                        className="nft-asset-thumb"
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
-                                        <NftImage
-                                          nft={nftDisplayData}
-                                          style={{
-                                            width: 40,
-                                            height: 40,
-                                            borderRadius: '6px',
-                                            verticalAlign: 'middle'
-                                          }}
-                                        />
-                                      </Link>
-                                      <div className="nft-asset-text">
-                                        <div className="asset-summary-title" title={nftTitle}>
-                                          {nftTitle}
-                                        </div>
-                                        <div className="asset-fiat">{secondaryLine}</div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="asset-value">
-                                    {offerPlacedRelative && <div className="asset-fiat">{offerPlacedRelative}</div>}
-                                  </div>
-                                </div>
-                                {isExpanded && (
-                                  <div className="asset-details">
-                                    <div className="detail-row">
-                                      <span>Token ID:</span>
-                                      <span className="copy-inline">
-                                        <span>{shortTokenId}</span>
-                                        <Link
-                                          href={`/nft/${nftId}`}
-                                          className="inline-link-icon tooltip"
-                                          onClick={(event) => event.stopPropagation()}
-                                        >
-                                          <LinkIcon />
-                                          <span className="tooltiptext no-brake">NFT page</span>
-                                        </Link>
-                                        <span onClick={(event) => event.stopPropagation()}>
-                                          <CopyButton text={nftId} />
-                                        </span>
-                                      </span>
-                                    </div>
-                                    {offerIndex && (
-                                      <div className="detail-row">
-                                        <span>Offer ID:</span>
-                                        <span className="copy-inline">
-                                          <span>{shortOfferId}</span>
-                                          <Link
-                                            href={`/nft-offer/${offerIndex}`}
-                                            className="inline-link-icon tooltip"
-                                            onClick={(event) => event.stopPropagation()}
-                                          >
-                                            <LinkIcon />
-                                            <span className="tooltiptext no-brake">Offer page</span>
-                                          </Link>
-                                          <span onClick={(event) => event.stopPropagation()}>
-                                            <CopyButton text={offerIndex} />
-                                          </span>
-                                        </span>
-                                      </div>
-                                    )}
-                                    <div className="detail-row">
-                                      <span>Offer type:</span>
-                                      <span>{offerType}</span>
-                                    </div>
-                                    {offerAmountText && (
-                                      <div className="detail-row">
-                                        <span>Amount:</span>
-                                        <span>
-                                          {offerAmountText}
-                                          {offerAmountFiat && (
-                                            <span className="fiat-line" suppressHydrationWarning>
-                                              {' '}
-                                              ≈{offerAmountFiat}
-                                            </span>
-                                          )}
-                                        </span>
-                                      </div>
-                                    )}
-                                    {offerPlacedExact && (
-                                      <div className="detail-row">
-                                        <span>Placed:</span>
-                                        <span>{offerPlacedExact}</span>
-                                      </div>
-                                    )}
-                                    {expirationRelative && (
-                                      <div className="detail-row">
-                                        <span>Expires:</span>
-                                        <span>
-                                          {expirationRelative}
-                                          {expirationExact && <span className="fiat-line"> ({expirationExact})</span>}
-                                        </span>
-                                      </div>
-                                    )}
-                                    {ownerAddress && nftOffersTab !== 'created' && (
-                                      <div className="detail-row">
-                                        <span>From:</span>
-                                        <span className="copy-inline">
-                                          <span onClick={(event) => event.stopPropagation()}>
-                                            <AddressWithIconInline
-                                              data={ownerInlineData}
-                                              name="owner"
-                                              options={{ short: 6 }}
-                                            />
-                                          </span>
-                                          <span onClick={(event) => event.stopPropagation()}>
-                                            <CopyButton text={ownerAddress} />
-                                          </span>
-                                        </span>
-                                      </div>
-                                    )}
-                                    {destinationAddress && nftOffersTab !== 'received' && (
-                                      <div className="detail-row">
-                                        <span>To:</span>
-                                        <span className="copy-inline">
-                                          <span onClick={(event) => event.stopPropagation()}>
-                                            <AddressWithIconInline
-                                              data={destinationInlineData}
-                                              name="destination"
-                                              options={{ short: 6 }}
-                                            />
-                                          </span>
-                                          <span onClick={(event) => event.stopPropagation()}>
-                                            <CopyButton text={destinationAddress} />
-                                          </span>
-                                        </span>
-                                      </div>
-                                    )}
-
-                                    {!effectiveLedgerTimestamp && (
-                                      <div className="check-actions" onClick={(event) => event.stopPropagation()}>
-                                        <button
-                                          type="button"
-                                          className={`check-action-btn ${canCancelNftOffer ? 'cancel' : 'disabled'}`}
-                                          disabled={!canCancelNftOffer}
-                                          onClick={() => {
-                                            if (!canCancelNftOffer) return
-                                            setSignRequest({
-                                              request: {
-                                                TransactionType: 'NFTokenCancelOffer',
-                                                Account: account?.address,
-                                                NFTokenOffers: [offerIndex]
-                                              }
-                                            })
-                                          }}
-                                          title="Cancel"
-                                        >
-                                          <MdMoneyOff /> Cancel
-                                        </button>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            )
-                          })}
+                            >
+                              Show {Math.min(NFT_LOAD_MORE_STEP, activeNftOffersRemainingCount)} more{' '}
+                              {activeNftOffersTabLabel} NFT offers
+                            </button>
+                          )}
+                          {showNftOffersFewerButton && (
+                            <button
+                              type="button"
+                              className="asset-compact-toggle"
+                              onClick={() => {
+                                setNftOffersDisplayLimit(NFT_OFFERS_PREVIEW_LIMIT)
+                                setExpandedNftOfferKey(null)
+                              }}
+                            >
+                              Show fewer {activeNftOffersTabLabel} NFT offers
+                            </button>
+                          )}
                         </div>
-                        {showNftOffersControlsVisible && (
-                          <div className="asset-compact-actions">
-                            {activeNftOffersShowMoreAvailable && (
-                              <button
-                                type="button"
-                                className="asset-compact-toggle"
-                                onClick={() =>
-                                  setNftOffersDisplayLimit((currentLimit) =>
-                                    Math.min(activeNftOffers.length, currentLimit + NFT_LOAD_MORE_STEP)
-                                  )
-                                }
-                              >
-                                Show {Math.min(NFT_LOAD_MORE_STEP, activeNftOffersRemainingCount)} more{' '}
-                                {activeNftOffersTabLabel} NFT offers
-                              </button>
-                            )}
-                            {showNftOffersFewerButton && (
-                              <button
-                                type="button"
-                                className="asset-compact-toggle"
-                                onClick={() => {
-                                  setNftOffersDisplayLimit(NFT_OFFERS_PREVIEW_LIMIT)
-                                  setExpandedNftOfferKey(null)
-                                }}
-                              >
-                                Show fewer {activeNftOffersTabLabel} NFT offers
-                              </button>
-                            )}
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="asset-fiat">{activeNftOffersTitle}</div>
-                    )}
-                  </div>
-                </>
-              )}
-
-              {(hasIncomingPaychannels || hasOutgoingPaychannels) && (
-                <>
-                  <div className="section-header-row object-section-header-row">
-                    <div className="section-title object-section-title">
-                      {paychannelsSectionTitle}{' '}
-                      <span className="object-title-count">{activePaychannelsList.length}</span>
-                    </div>
-                  </div>
-
-                  {showPaychannelsTabs && (
-                    <div className="object-tab-row object-tab-row-outside">
-                      <div className="object-tab-switch">
-                        <button
-                          type="button"
-                          className={`object-tab-btn ${paychannelsTab === 'incoming' ? 'active' : ''}`}
-                          onClick={() => setPaychannelsTab('incoming')}
-                        >
-                          Incoming
-                        </button>
-                        <button
-                          type="button"
-                          className={`object-tab-btn ${paychannelsTab === 'outgoing' ? 'active' : ''}`}
-                          onClick={() => setPaychannelsTab('outgoing')}
-                        >
-                          Outgoing
-                        </button>
-                      </div>
-                    </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="asset-fiat">{activeNftOffersTitle}</div>
                   )}
+                </div>
+              </>
+            )}
 
-                  <div className="object-list cards-list">
-                    {activePaychannelsList.map((channel, index) => {
-                      const channelObjectId = channel?.index || channel?.Index
-                      const channelKey = `${channelObjectId || 'paychannel'}-${activePaychannelsTab}-${index}`
-                      const isExpanded = expandedPaychannelKey === channelKey
-                      const isOutgoingPaychannel = activePaychannelsTab === 'outgoing'
-                      const counterpartName = activePaychannelsTab === 'outgoing' ? 'Destination' : 'Account'
-                      const counterpartData = {
-                        ...channel,
-                        destinationDetails: channel?.destinationDetails || channel?.DestinationDetails,
-                        accountDetails: channel?.accountDetails || channel?.AccountDetails
-                      }
-                      const counterpartAddress =
-                        activePaychannelsTab === 'outgoing' ? channel?.Destination : channel?.Account
-                      const amountText = amountFormat(channel?.Amount, { short: true, maxFractionDigits: 2 })
-                      const balanceText = amountFormat(channel?.Balance, { short: true, maxFractionDigits: 2 })
-                      const balanceFiatNode = nativeCurrencyToFiat({
-                        amount: channel?.Balance,
-                        selectedCurrency,
-                        fiatRate: pageFiatRate,
-                        asText: true
-                      })
-                      const counterpartLabel = activePaychannelsTab === 'outgoing' ? 'To' : 'From'
-                      const amountDisplay = amountText || '-'
-                      const balanceDisplay = balanceText || '-'
-                      const balanceFiatText = balanceFiatNode || '—'
+            {(hasIncomingPaychannels || hasOutgoingPaychannels) && (
+              <>
+                <div className="section-header-row object-section-header-row">
+                  <div className="section-title object-section-title">
+                    {paychannelsSectionTitle} <span className="object-title-count">{activePaychannelsList.length}</span>
+                  </div>
+                </div>
 
-                      return (
-                        <div
-                          className={`asset-item token-asset-item paychannel-asset-item ${isExpanded ? 'expanded' : ''}`}
-                          key={channelKey}
-                          onClick={() => setExpandedPaychannelKey(isExpanded ? null : channelKey)}
-                        >
-                          <div className="asset-main paychannel-card-main">
-                            <div className="asset-logo">
-                              <div className="paychannel-counterparty">
-                                <span className="paychannel-counterparty-label">{counterpartLabel}:</span>
-                                <span className="paychannel-counterparty-value">
-                                  {counterpartAddress ? (
-                                    <AddressWithIconInline
-                                      data={counterpartData}
-                                      name={counterpartName}
-                                      options={{ short: 6 }}
-                                    />
-                                  ) : (
-                                    '-'
-                                  )}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="asset-value paychannel-metrics">
-                              <span className="paychannel-metric-caption">Amount / Balance</span>
-                              <div className="paychannel-metric-main">
-                                <span className="paychannel-metric-balance">{balanceDisplay}</span>
-                                <span className="paychannel-metric-separator">/</span>
-                                <span className="paychannel-metric-amount">{amountDisplay}</span>
-                              </div>
-                              {balanceFiatText !== '—' && (
-                                <span className="paychannel-metric-fiat" suppressHydrationWarning>
-                                  {balanceFiatText}
-                                </span>
-                              )}
+                {showPaychannelsTabs && (
+                  <div className="object-tab-row object-tab-row-outside">
+                    <div className="object-tab-switch">
+                      <button
+                        type="button"
+                        className={`object-tab-btn ${paychannelsTab === 'incoming' ? 'active' : ''}`}
+                        onClick={() => setPaychannelsTab('incoming')}
+                      >
+                        Incoming
+                      </button>
+                      <button
+                        type="button"
+                        className={`object-tab-btn ${paychannelsTab === 'outgoing' ? 'active' : ''}`}
+                        onClick={() => setPaychannelsTab('outgoing')}
+                      >
+                        Outgoing
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="object-list cards-list">
+                  {activePaychannelsList.map((channel, index) => {
+                    const channelObjectId = channel?.index || channel?.Index
+                    const channelKey = `${channelObjectId || 'paychannel'}-${activePaychannelsTab}-${index}`
+                    const isExpanded = expandedPaychannelKey === channelKey
+                    const isOutgoingPaychannel = activePaychannelsTab === 'outgoing'
+                    const counterpartName = activePaychannelsTab === 'outgoing' ? 'Destination' : 'Account'
+                    const counterpartData = {
+                      ...channel,
+                      destinationDetails: channel?.destinationDetails || channel?.DestinationDetails,
+                      accountDetails: channel?.accountDetails || channel?.AccountDetails
+                    }
+                    const counterpartAddress =
+                      activePaychannelsTab === 'outgoing' ? channel?.Destination : channel?.Account
+                    const amountText = amountFormat(channel?.Amount, { short: true, maxFractionDigits: 2 })
+                    const balanceText = amountFormat(channel?.Balance, { short: true, maxFractionDigits: 2 })
+                    const balanceFiatNode = nativeCurrencyToFiat({
+                      amount: channel?.Balance,
+                      selectedCurrency,
+                      fiatRate: pageFiatRate,
+                      asText: true
+                    })
+                    const counterpartLabel = activePaychannelsTab === 'outgoing' ? 'To' : 'From'
+                    const amountDisplay = amountText || '-'
+                    const balanceDisplay = balanceText || '-'
+                    const balanceFiatText = balanceFiatNode || '—'
+
+                    return (
+                      <div
+                        className={`asset-item token-asset-item paychannel-asset-item ${isExpanded ? 'expanded' : ''}`}
+                        key={channelKey}
+                        onClick={() => setExpandedPaychannelKey(isExpanded ? null : channelKey)}
+                      >
+                        <div className="asset-main paychannel-card-main">
+                          <div className="asset-logo">
+                            <div className="paychannel-counterparty">
+                              <span className="paychannel-counterparty-label">{counterpartLabel}:</span>
+                              <span className="paychannel-counterparty-value">
+                                {counterpartAddress ? (
+                                  <AddressWithIconInline
+                                    data={counterpartData}
+                                    name={counterpartName}
+                                    options={{ short: 6 }}
+                                  />
+                                ) : (
+                                  '-'
+                                )}
+                              </span>
                             </div>
                           </div>
+                          <div className="asset-value paychannel-metrics">
+                            <span className="paychannel-metric-caption">Amount / Balance</span>
+                            <div className="paychannel-metric-main">
+                              <span className="paychannel-metric-balance">{balanceDisplay}</span>
+                              <span className="paychannel-metric-separator">/</span>
+                              <span className="paychannel-metric-amount">{amountDisplay}</span>
+                            </div>
+                            {balanceFiatText !== '—' && (
+                              <span className="paychannel-metric-fiat" suppressHydrationWarning>
+                                {balanceFiatText}
+                              </span>
+                            )}
+                          </div>
+                        </div>
 
-                          {isExpanded && (
-                            <div className="asset-details">
-                              <div className="detail-row">
-                                <span>{counterpartLabel}:</span>
-                                <span>
-                                  {isOutgoingPaychannel && counterpartAddress ? (
-                                    <span className="copy-inline">
-                                      <span className="address-text">{counterpartAddress}</span>
-                                      <Link
-                                        href={`/account/${counterpartAddress}`}
-                                        className="inline-link-icon tooltip"
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
-                                        <LinkIcon />
-                                        <span className="tooltiptext no-brake">Account page</span>
-                                      </Link>
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CopyButton text={counterpartAddress} />
-                                      </span>
-                                    </span>
-                                  ) : counterpartAddress ? (
-                                    <AddressWithIconInline
-                                      data={counterpartData}
-                                      name={counterpartName}
-                                      options={{ short: 6 }}
-                                    />
-                                  ) : (
-                                    '-'
-                                  )}
-                                </span>
-                              </div>
-                              <div className="detail-row">
-                                <span>Amount:</span>
-                                <span>{amountDisplay}</span>
-                              </div>
-                              <div className="detail-row">
-                                <span>Balance:</span>
-                                <span>
-                                  {balanceDisplay}
-                                  {balanceFiatText !== '—' && (
-                                    <span className="fiat-line" suppressHydrationWarning>
-                                      {' '}
-                                      {balanceFiatText}
-                                    </span>
-                                  )}
-                                </span>
-                              </div>
-                              {channelObjectId && (
-                                <div className="detail-row">
-                                  <span>Object:</span>
+                        {isExpanded && (
+                          <div className="asset-details">
+                            <div className="detail-row">
+                              <span>{counterpartLabel}:</span>
+                              <span>
+                                {isOutgoingPaychannel && counterpartAddress ? (
                                   <span className="copy-inline">
-                                    <span>{shortHash(channelObjectId)}</span>
+                                    <span className="address-text">{counterpartAddress}</span>
                                     <Link
-                                      href={`/object/${channelObjectId}`}
+                                      href={`/account/${counterpartAddress}`}
                                       className="inline-link-icon tooltip"
                                       onClick={(event) => event.stopPropagation()}
                                     >
                                       <LinkIcon />
-                                      <span className="tooltiptext no-brake">Object page</span>
+                                      <span className="tooltiptext no-brake">Account page</span>
                                     </Link>
                                     <span onClick={(event) => event.stopPropagation()}>
-                                      <CopyButton text={channelObjectId} />
+                                      <CopyButton text={counterpartAddress} />
                                     </span>
                                   </span>
-                                </div>
-                              )}
+                                ) : counterpartAddress ? (
+                                  <AddressWithIconInline
+                                    data={counterpartData}
+                                    name={counterpartName}
+                                    options={{ short: 6 }}
+                                  />
+                                ) : (
+                                  '-'
+                                )}
+                              </span>
                             </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </>
-              )}
+                            <div className="detail-row">
+                              <span>Amount:</span>
+                              <span>{amountDisplay}</span>
+                            </div>
+                            <div className="detail-row">
+                              <span>Balance:</span>
+                              <span>
+                                {balanceDisplay}
+                                {balanceFiatText !== '—' && (
+                                  <span className="fiat-line" suppressHydrationWarning>
+                                    {' '}
+                                    {balanceFiatText}
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                            {channelObjectId && (
+                              <div className="detail-row">
+                                <span>Object:</span>
+                                <span className="copy-inline">
+                                  <span>{shortHash(channelObjectId)}</span>
+                                  <Link
+                                    href={`/object/${channelObjectId}`}
+                                    className="inline-link-icon tooltip"
+                                    onClick={(event) => event.stopPropagation()}
+                                  >
+                                    <LinkIcon />
+                                    <span className="tooltiptext no-brake">Object page</span>
+                                  </Link>
+                                  <span onClick={(event) => event.stopPropagation()}>
+                                    <CopyButton text={channelObjectId} />
+                                  </span>
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
 
-              {!showObjectsLoadStatus && !hasColumn4ObjectSections && (
-                <>
-                  <div className="section-header-row object-section-header-row">
-                    <div className="section-title object-section-title">Objects</div>
-                  </div>
-                  <div className="asset-item object-load-status">
-                    <span className="object-load-status-text">
-                      No DEX orders, checks, escrows, NFT offers, paychannels, issued tokens, or issued MPTs.
-                    </span>
-                  </div>
-                </>
-              )}
-            </div>
-          </CollapsibleColumn>
+            {!showObjectsLoadStatus && !hasColumn4ObjectSections && (
+              <>
+                <div className="section-header-row object-section-header-row">
+                  <div className="section-title object-section-title">Objects</div>
+                </div>
+                <div className="asset-item object-load-status">
+                  <span className="object-load-status-text">
+                    No DEX orders, checks, escrows, NFT offers, paychannels, issued tokens, or issued MPTs.
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
@@ -6927,22 +6869,6 @@ export default function Account2({
           .account2-grid {
             grid-template-columns: 1fr;
           }
-        }
-
-        .collapsible-column {
-          background: var(--background-table);
-          border: 1px solid var(--border-color);
-          border-radius: 12px;
-          overflow: visible;
-          transition: box-shadow 0.2s ease-out;
-        }
-
-        .collapsible-column:hover {
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .column-content {
-          padding: 20px;
         }
 
         .info-section,
