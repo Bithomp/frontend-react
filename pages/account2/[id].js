@@ -28,6 +28,7 @@ const NFT_INITIAL_LIMIT = 5
 const NFT_LOAD_MORE_STEP = 10
 const NFT_FETCH_LIMIT = 50
 const NFT_OFFERS_PREVIEW_LIMIT = 5
+const NFT_OFFERS_FETCH_LIMIT = 50
 
 const setBalancesFunction = (networkInfo, data) => {
   if (!data?.ledgerInfo || !networkInfo || data.ledgerInfo.balance === undefined) return null
@@ -254,6 +255,7 @@ export default function Account2({
   const [burnedNftsLoading, setBurnedNftsLoading] = useState(false)
   const [ownedNftIds, setOwnedNftIds] = useState([])
   const [nftDisplayLimit, setNftDisplayLimit] = useState(NFT_INITIAL_LIMIT)
+  const [nftOffersDisplayLimit, setNftOffersDisplayLimit] = useState(NFT_OFFERS_PREVIEW_LIMIT)
   const [expandedNftCardKey, setExpandedNftCardKey] = useState(null)
   const [expandedNftOfferKey, setExpandedNftOfferKey] = useState(null)
   const [nftTab, setNftTab] = useState('owned')
@@ -562,15 +564,23 @@ export default function Account2({
       : nftOffersTab === 'created'
         ? createdNftOffers
         : ownedNftOffers
+  const activeNftOffersLimit = nftOffersDisplayLimit
+  const activeNftOffersPreview = activeNftOffers.slice(0, activeNftOffersLimit)
+  const activeNftOffersShowMoreAvailable = activeNftOffers.length > activeNftOffersPreview.length
+  const activeNftOffersRemainingCount = Math.max(activeNftOffers.length - activeNftOffersPreview.length, 0)
+  const showNftOffersFewerButton = nftOffersDisplayLimit > NFT_OFFERS_PREVIEW_LIMIT
+  const showNftOffersControlsVisible = activeNftOffersShowMoreAvailable || showNftOffersFewerButton
+  const activeNftOffersTabLabel =
+    nftOffersTab === 'received' ? 'private' : nftOffersTab === 'created' ? 'created' : 'owned'
   const nftOffersTabCountMap = {
     received: receivedPrivateNftOffers.length,
     created: createdNftOffers.length,
     owned: ownedNftOffers.length
   }
   const nftOffersTabExactCountMap = {
-    received: receivedPrivateNftOffers.length < NFT_OFFERS_PREVIEW_LIMIT,
-    created: createdNftOffers.length < NFT_OFFERS_PREVIEW_LIMIT,
-    owned: ownedNftOffers.length < NFT_OFFERS_PREVIEW_LIMIT
+    received: receivedPrivateNftOffers.length < NFT_OFFERS_FETCH_LIMIT,
+    created: createdNftOffers.length < NFT_OFFERS_FETCH_LIMIT,
+    owned: ownedNftOffers.length < NFT_OFFERS_FETCH_LIMIT
   }
   const getNftOffersTabCountLabel = (tab) => {
     const count = nftOffersTabCountMap[tab]
@@ -678,6 +688,7 @@ export default function Account2({
     setNftOffersTab('received')
     setTokenTab('all')
     setNftDisplayLimit(NFT_INITIAL_LIMIT)
+    setNftOffersDisplayLimit(NFT_OFFERS_PREVIEW_LIMIT)
     setExpandedNftCardKey(null)
     setExpandedNftOfferKey(null)
   }, [data?.address, effectiveLedgerTimestamp])
@@ -725,6 +736,7 @@ export default function Account2({
 
   useEffect(() => {
     setExpandedNftOfferKey(null)
+    setNftOffersDisplayLimit(NFT_OFFERS_PREVIEW_LIMIT)
   }, [nftOffersTab])
 
   useEffect(() => {
@@ -1018,14 +1030,14 @@ export default function Account2({
       try {
         const listParam = list ? `&list=${list}` : ''
         const response = await axios.get(
-          `v2/nft-offers/${data.address}?nftoken=true&offersValidate=true&limit=${NFT_OFFERS_PREVIEW_LIMIT}${listParam}`
+          `v2/nft-offers/${data.address}?nftoken=true&offersValidate=true&limit=${NFT_OFFERS_FETCH_LIMIT}${listParam}`
         )
 
         const offers = Array.isArray(response?.data?.nftOffers)
           ? response.data.nftOffers
               .filter((offer) => offer?.valid !== false)
               .sort((a, b) => Number(b?.createdAt || 0) - Number(a?.createdAt || 0))
-              .slice(0, 5)
+              .slice(0, NFT_OFFERS_FETCH_LIMIT)
           : []
 
         if (cancelled) return
@@ -5050,8 +5062,9 @@ export default function Account2({
                     ) : activeNftOffersError ? (
                       <div className="asset-fiat red">{activeNftOffersError}</div>
                     ) : activeNftOffersCount > 0 ? (
-                      <div className="cards-list">
-                        {activeNftOffers.map((offer, index) => {
+                      <>
+                        <div className="cards-list">
+                          {activeNftOffersPreview.map((offer, index) => {
                           const nftId =
                             offer?.nftoken?.nftokenID ||
                             offer?.nftoken?.NFTokenID ||
@@ -5249,8 +5262,39 @@ export default function Account2({
                               )}
                             </div>
                           )
-                        })}
-                      </div>
+                          })}
+                        </div>
+                        {showNftOffersControlsVisible && (
+                          <div className="asset-compact-actions">
+                            {activeNftOffersShowMoreAvailable && (
+                              <button
+                                type="button"
+                                className="asset-compact-toggle"
+                                onClick={() =>
+                                  setNftOffersDisplayLimit((currentLimit) =>
+                                    Math.min(activeNftOffers.length, currentLimit + NFT_LOAD_MORE_STEP)
+                                  )
+                                }
+                              >
+                                Show {Math.min(NFT_LOAD_MORE_STEP, activeNftOffersRemainingCount)} more{' '}
+                                {activeNftOffersTabLabel} NFT offers
+                              </button>
+                            )}
+                            {showNftOffersFewerButton && (
+                              <button
+                                type="button"
+                                className="asset-compact-toggle"
+                                onClick={() => {
+                                  setNftOffersDisplayLimit(NFT_OFFERS_PREVIEW_LIMIT)
+                                  setExpandedNftOfferKey(null)
+                                }}
+                              >
+                                Show fewer {activeNftOffersTabLabel} NFT offers
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </>
                     ) : (
                       <div className="asset-fiat">{activeNftOffersTitle}</div>
                     )}
