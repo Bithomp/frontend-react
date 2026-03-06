@@ -232,14 +232,11 @@ import { MdMoneyOff, MdQrCode2 } from 'react-icons/md'
 import { TbPigMoney } from 'react-icons/tb'
 import { useQRCode } from 'next-qrcode'
 
-// Column Wrapper
-const CollapsibleColumn = ({ children }) => {
-  return (
-    <div className="collapsible-column">
-      <div className="column-content">{children}</div>
-    </div>
-  )
-}
+const CollapsibleColumn = ({ children }) => (
+  <div className="collapsible-column">
+    <div className="column-content">{children}</div>
+  </div>
+)
 
 const hookNames = {
   '805351CE26FB79DA00647CEFED502F7E15C2ACCCE254F11DEFEDDCE241F8E9CA': 'Claim Rewards'
@@ -3313,7 +3310,7 @@ export default function Account2({
                     </div>
                   </div>
 
-                  <div className="cards-list">
+                  <div className="cards-list dex-orders-list">
                     {heldMpts.map((mptNode, index) => {
                       const rowKey = `${mptNode?.index || mptId(mptNode) || 'mpt'}-${index}`
                       const isExpanded = expandedHeldMptKey === rowKey
@@ -3454,7 +3451,10 @@ export default function Account2({
                                   <span>Issuer:</span>
                                   <span className="copy-inline">
                                     <AddressWithIconInline
-                                      data={{ address: uriToken.Issuer, addressDetails: uriToken?.issuerDetails || {} }}
+                                      data={{
+                                        address: uriToken.Issuer,
+                                        addressDetails: uriToken?.issuerDetails || {}
+                                      }}
                                       name="address"
                                       options={{ short: 6 }}
                                     />
@@ -5774,7 +5774,7 @@ export default function Account2({
                           key={orderKey}
                           onClick={() => setExpandedDexOrderKey(isExpanded ? null : orderKey)}
                         >
-                          <div className="asset-main check-collapsed-main escrow-collapsed-main">
+                          <div className="asset-main check-collapsed-main escrow-collapsed-main dex-collapsed-main">
                             <div className="asset-logo escrow-collapsed-logo">
                               <div className="escrow-collapsed-top">
                                 <span className="escrow-type-main">
@@ -8372,6 +8372,62 @@ export default function Account2({
           border-color: var(--accent-link);
         }
 
+        .dex-order-card {
+          overflow: hidden;
+        }
+
+        .dex-order-card .asset-main {
+          min-width: 0;
+          position: relative;
+        }
+
+        .dex-order-card .asset-logo {
+          min-width: 0;
+          white-space: normal;
+          overflow: hidden;
+        }
+
+        .dex-order-card .escrow-collapsed-logo {
+          width: 100%;
+          padding-right: 90px;
+        }
+
+        .dex-order-card .escrow-collapsed-top {
+          display: block;
+        }
+
+        .dex-order-card .escrow-time-top {
+          position: absolute;
+          right: 0;
+          top: 0;
+          text-align: right;
+          white-space: nowrap;
+        }
+
+        .dex-order-card .escrow-type-main {
+          display: block;
+          white-space: normal;
+          word-break: break-word;
+          overflow-wrap: anywhere;
+        }
+
+        .dex-order-card .tx-collapsed-meta {
+          display: block;
+          padding-top: 0;
+          margin-top: 2px;
+        }
+
+        .dex-order-card .tx-accountset-inline {
+          display: block;
+          max-width: 100%;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+        }
+
+        .dex-order-card .asset-value {
+          min-width: 0;
+        }
+
         .object-row-card.expanded {
           border-color: var(--accent-link);
         }
@@ -8573,6 +8629,10 @@ export default function Account2({
         }
 
         @media (max-width: 560px) {
+          .dex-order-card .escrow-collapsed-logo {
+            padding-right: 82px;
+          }
+
           .nft-asset-text .asset-summary-title {
             -webkit-line-clamp: 1;
             word-break: break-all;
