@@ -4791,8 +4791,14 @@ export default function Account2({
                           const cancelAfterText = escrow?.CancelAfter
                             ? timeFromNow(escrow.CancelAfter, i18n, 'ripple')
                             : 'not set'
+                          const cancelAfterFullText = escrow?.CancelAfter
+                            ? fullDateAndTime(escrow.CancelAfter, 'ripple')
+                            : 'not set'
                           const finishAfterText = escrow?.FinishAfter
                             ? timeFromNow(escrow.FinishAfter, i18n, 'ripple')
+                            : 'not set'
+                          const finishAfterFullText = escrow?.FinishAfter
+                            ? fullDateAndTime(escrow.FinishAfter, 'ripple')
                             : 'not set'
                           const isCanceled = escrow?.CancelAfter
                             ? timestampExpired(escrow.CancelAfter, 'ripple')
@@ -4900,7 +4906,7 @@ export default function Account2({
                                           : ''
                                       }
                                     >
-                                      {cancelAfterText}
+                                      {cancelAfterFullText}
                                     </span>
                                   </div>
 
@@ -4913,7 +4919,7 @@ export default function Account2({
                                           : ''
                                       }
                                     >
-                                      {finishAfterText}
+                                      {finishAfterFullText}
                                     </span>
                                   </div>
 
@@ -4925,7 +4931,7 @@ export default function Account2({
                                   <div className="detail-row">
                                     <span>Escrow ID:</span>
                                     <span className="copy-inline">
-                                      <span>{escrow?.index || '-'}</span>
+                                      <span>{escrow?.index ? shortHash(escrow.index) : '-'}</span>
                                       {!!escrow?.index && (
                                         <>
                                           <Link
@@ -6904,6 +6910,54 @@ export default function Account2({
 
         .object-row-card.expanded {
           border-color: var(--accent-link);
+        }
+
+        .escrow-card .asset-main {
+          align-items: flex-start;
+        }
+
+        .escrow-collapsed-main {
+          align-items: flex-start;
+          position: relative;
+        }
+
+        .escrow-collapsed-logo {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+          padding-right: 104px;
+        }
+
+        .escrow-collapsed-top {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          min-width: 0;
+        }
+
+        .escrow-type-main {
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--text);
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .escrow-time-top {
+          position: absolute;
+          right: 0;
+          top: 0;
+          color: var(--text-secondary);
+          font-size: 12px;
+          line-height: 1.2;
+          white-space: nowrap;
+        }
+
+        .escrow-collapsed-amount {
+          text-align: right;
         }
 
         .paychannel-asset-item {
