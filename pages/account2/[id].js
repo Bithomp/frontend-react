@@ -32,6 +32,30 @@ const NFT_FETCH_LIMIT = 50
 const NFT_OFFERS_PREVIEW_LIMIT = 5
 const NFT_OFFERS_FETCH_LIMIT = 50
 
+const isPositiveBalance = (balance) => balance !== '0' && balance?.[0] !== '-'
+
+const isNegativeBalance = (balance) => balance !== '0' && balance?.[0] === '-'
+
+const isRelevantRippleStateForAddress = (node, address) => {
+  if (node?.LedgerEntryType !== 'RippleState') return false
+
+  if (node?.HighLimit?.issuer === address) {
+    if (node.Flags & 131072) {
+      if (isPositiveBalance(node?.Balance?.value)) return false
+      return true
+    }
+    if (isNegativeBalance(node?.Balance?.value)) return true
+  } else {
+    if (node.Flags & 65536) {
+      if (isNegativeBalance(node?.Balance?.value)) return false
+      return true
+    }
+    if (isPositiveBalance(node?.Balance?.value)) return true
+  }
+
+  return false
+}
+
 const setBalancesFunction = (networkInfo, data) => {
   if (!data?.ledgerInfo || !networkInfo || data.ledgerInfo.balance === undefined) return null
   let balanceList = {
@@ -191,6 +215,7 @@ import {
 } from '../../utils/format'
 import { scaleAmount, subtract } from '../../utils/calc'
 import { addressBalanceChanges, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
+import { isRipplingOnIssuer } from '../../utils/transaction/payment'
 import {
   FaFacebook,
   FaGear,
@@ -538,6 +563,7 @@ export default function Account2({
   const lpTokensCount = lpTokenList.length
   const issuedTokensCount = standardTokenList.length
   const hasNonNativeTokenAssets = lpTokensCount > 0 || issuedTokensCount > 0
+  const isGateway = Number(data?.obligations?.trustlines || 0) > 200
   const lpTokensFiatValue = lpTokenList.reduce((sum, token) => {
     const balance = Math.abs(subtract(token.Balance?.value, token.LockedBalance?.value || 0))
     return sum + (token.priceNativeCurrencySpot * balance || 0) * (tokenFiatRate || 0)
@@ -1085,28 +1111,10 @@ export default function Account2({
           setBurnedNftsLoading(false)
         }
 
-        // Filter RippleState objects (tokens)
-        const rippleStateList = accountObjects.filter((node) => {
-          if (node.LedgerEntryType !== 'RippleState') return false
-
-          const isPositiveBalance = (balance) => balance !== '0' && balance[0] !== '-'
-          const isNegativeBalance = (balance) => balance !== '0' && balance[0] === '-'
-
-          if (node.HighLimit.issuer === data.address) {
-            if (node.Flags & 131072) {
-              if (isPositiveBalance(node.Balance.value)) return false
-              return true
-            }
-            if (isNegativeBalance(node.Balance.value)) return true
-          } else {
-            if (node.Flags & 65536) {
-              if (isNegativeBalance(node.Balance.value)) return false
-              return true
-            }
-            if (isPositiveBalance(node.Balance.value)) return true
-          }
-          return false
-        })
+        // Filter RippleState objects (tokens) using the same legacy predicate as /account ObjectsData.
+        const rippleStateList = isGateway
+          ? []
+          : accountObjects.filter((node) => isRelevantRippleStateForAddress(node, data.address))
 
         // Sort by token value in native currency (independent from websocket fiat updates)
         const sortedTokens = rippleStateList.sort((a, b) => {
@@ -3943,6 +3951,8 @@ export default function Account2({
                           !!sourceAddress &&
                           !!destinationAddress &&
                           sourceAddress === destinationAddress
+                        const isRipplingPayment =
+                          tx?.TransactionType === 'Payment' && isRipplingOnIssuer(changes, data?.address)
                         const counterpartyDetails = isSource
                           ? txdata?.specification?.destination?.addressDetails
                           : txdata?.specification?.source?.addressDetails
@@ -4515,6 +4525,7 @@ export default function Account2({
                         const nftCollapsedSpecialDisplay =
                           incomingSellOfferDisplay || outgoingSellOfferDisplay || nftMintSellOfferDisplay
                         const txTypeShortLabel =
+                          (isRipplingPayment ? 'Rippling' : null) ||
                           (isSelfPayment ? 'Swap' : null) ||
                           (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
                           dexOfferShortLabel ||
@@ -4540,7 +4551,7 @@ export default function Account2({
                                             ? 'NFT offer cancel'
                                             : txType || '-')
                         const txTypeCollapsedLabel =
-                          isSelfPayment || isAccountDeleteTx
+                          isSelfPayment || isAccountDeleteTx || isRipplingPayment
                             ? txTypeShortLabel
                             : txType === 'NFTokenMint'
                               ? txTypeShortLabel
@@ -5389,6 +5400,46 @@ export default function Account2({
                     )}
                   </div>
 
+                  {hasIssuerSettingsData && (
+                    <div className="time-machine-card issuer-settings-card">
+                      <button
+                        type="button"
+                        className={`time-machine-toggle ${showIssuerSettingsDetails ? 'active' : ''}`}
+                        onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
+                      >
+                        Issuer settings
+                        <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
+                      </button>
+
+                      {showIssuerSettingsDetails && (
+                        <div className="time-machine-panel issuer-settings-panel">
+                          <div className="detail-row issuer-detail-row">
+                            <span>Rippling:</span>
+                            <span className={isRipplingEnabled ? 'green' : 'grey'}>
+                              {isRipplingEnabled ? 'enabled' : 'disabled'}
+                            </span>
+                          </div>
+                          <div className="detail-row issuer-detail-row">
+                            <span>Transfer fee:</span>
+                            <span>{issuerTransferFeeText}</span>
+                          </div>
+                          <div className="detail-row issuer-detail-row">
+                            <span>Escrow:</span>
+                            <span className={isCanEscrowEnabled ? 'green' : 'grey'}>
+                              {isCanEscrowEnabled ? 'enabled' : 'disabled'}
+                            </span>
+                          </div>
+
+                          <div className="lp-actions issuer-settings-actions">
+                            <Link href="/services/account-settings" className="lp-action-btn">
+                              Change settings
+                            </Link>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {issuedTokensLoading && <p className="grey">Loading issued tokens...</p>}
                   {!issuedTokensLoading && issuedTokensError && <p className="red">{issuedTokensError}</p>}
 
@@ -5572,7 +5623,7 @@ export default function Account2({
                 </>
               )}
 
-              {hasIssuerSettingsData && (
+              {hasIssuerSettingsData && !(issuedTokensLoading || issuedTokensError || issuedTokens.length > 0) && (
                 <div className="time-machine-card issuer-settings-card">
                   <button
                     type="button"
@@ -5580,6 +5631,7 @@ export default function Account2({
                     onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
                   >
                     Issuer settings
+                    <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
                   </button>
 
                   {showIssuerSettingsDetails && (
