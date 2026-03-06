@@ -12,6 +12,7 @@ import {
   avatarSrc,
   decode,
   devNet,
+  getCoinsUrl,
   isUrlValid,
   nativeCurrency,
   networks,
@@ -410,6 +411,10 @@ export default function Account2({
   }
 
   const balanceList = balanceListServer
+  const nativeAvailableDrops = Number(balanceList?.available?.native || 0)
+  const nativeTotalDrops = Number(balanceList?.total?.native || 0)
+  const nativeReservedDrops = Number(balanceList?.reserved?.native || 0)
+  const nativeAvailable = nativeAvailableDrops / 1000000
   const isLoggedIn = !!account?.address
   const isMobile = useIsMobile(768)
   const DESKTOP_TRANSACTIONS_PREVIEW_LIMIT = 20
@@ -436,6 +441,12 @@ export default function Account2({
   const hasRegularKey = !!data?.ledgerInfo?.regularKey
   const hasMultisig = !!data?.ledgerInfo?.signerList
   const isBlackholed = !!data?.ledgerInfo?.blackholed
+  const isDeletedAccount = !!data?.ledgerInfo?.deleted
+  const showHistoricalDataCard = data?.ledgerInfo?.activated !== false || isDeletedAccount
+  const isNotActivatedAccount = data?.ledgerInfo?.activated === false
+  const shouldShowGetFirstNativeButton =
+    !!getCoinsUrl && nativeAvailableDrops === 0 && (isNotActivatedAccount || isDeletedAccount)
+  const getFirstNativeUrl = getCoinsUrl ? getCoinsUrl + (devNet ? '?address=' + data?.address : '') : ''
   const hasAccountControlData =
     hasRegularKey ||
     hasMultisig ||
@@ -1553,6 +1564,36 @@ export default function Account2({
     </div>
   ) : null
 
+  const accountStatusNode = isBlackholed ? (
+    <>
+      <div className="account-status orange bold">Blackholed</div>
+      {!!data?.ledgerInfo?.lastSubmittedAt && (
+        <div className="account-status-time">{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</div>
+      )}
+    </>
+  ) : data?.ledgerInfo?.activated ? (
+    data?.ledgerInfo?.lastSubmittedAt ? (
+      <>
+        <div className="account-status green">Active</div>
+        <div className="account-status-time">{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</div>
+      </>
+    ) : (
+      <>
+        <div className="account-status">Activated</div>
+        <div className="account-status-time">{data?.inception ? timeFromNow(data.inception, i18n) : ''}</div>
+      </>
+    )
+  ) : isDeletedAccount ? (
+    <div className="account-status red bold">This account was deleted</div>
+  ) : isNotActivatedAccount ? (
+    <div className="account-status orange">Not activated</div>
+  ) : (
+    <>
+      <div className="account-status orange">Network error</div>
+      <div className="account-status-time">Please try again later.</div>
+    </>
+  )
+
   const publicDataRows = []
   const pushPublicRow = (label, value) => {
     if (!value) return
@@ -1937,6 +1978,7 @@ export default function Account2({
                     </a>
                   </div>
                 )}
+                {accountStatusNode}
               </div>
 
               {/* Social icons */}
@@ -2672,56 +2714,58 @@ export default function Account2({
                   </div>
                 )}
 
-                <div className="time-machine-card">
-                  <button
-                    type="button"
-                    className={`time-machine-toggle ${showTimeMachine ? 'active' : ''}`}
-                    onClick={() => setShowTimeMachine((prev) => !prev)}
-                  >
-                    Historical data
-                  </button>
+                {showHistoricalDataCard && (
+                  <div className="time-machine-card">
+                    <button
+                      type="button"
+                      className={`time-machine-toggle ${showTimeMachine ? 'active' : ''}`}
+                      onClick={() => setShowTimeMachine((prev) => !prev)}
+                    >
+                      Historical data
+                    </button>
 
-                  {showTimeMachine && (
-                    <div className="time-machine-panel">
-                      <div className="time-machine-head">
-                        <div className="time-machine-title">Select date and time</div>
+                    {showTimeMachine && (
+                      <div className="time-machine-panel">
+                        <div className="time-machine-head">
+                          <div className="time-machine-title">Select date and time</div>
+                        </div>
+                        <div className="time-machine-picker-wrap">
+                          <DatePicker
+                            selected={ledgerTimestampInput || new Date()}
+                            onChange={setLedgerTimestampInput}
+                            value={localDateTimeText(ledgerTimestampInput || new Date())}
+                            selectsStart
+                            showTimeInput
+                            timeInputLabel="Time"
+                            minDate={data?.inception ? new Date(data.inception * 1000) : undefined}
+                            maxDate={new Date()}
+                            dateFormat="Pp"
+                            className="dateAndTimeRange time-machine-input"
+                            calendarClassName="time-machine-calendar"
+                            showMonthDropdown
+                            showYearDropdown
+                          />
+                        </div>
+                        <div className="time-machine-actions">
+                          <button
+                            type="button"
+                            onClick={applyTimeMachine}
+                            className="time-machine-btn time-machine-btn-update"
+                          >
+                            Update
+                          </button>
+                          <button
+                            type="button"
+                            onClick={resetTimeMachine}
+                            className="time-machine-btn time-machine-btn-reset"
+                          >
+                            Reset
+                          </button>
+                        </div>
                       </div>
-                      <div className="time-machine-picker-wrap">
-                        <DatePicker
-                          selected={ledgerTimestampInput || new Date()}
-                          onChange={setLedgerTimestampInput}
-                          value={localDateTimeText(ledgerTimestampInput || new Date())}
-                          selectsStart
-                          showTimeInput
-                          timeInputLabel="Time"
-                          minDate={data?.inception ? new Date(data.inception * 1000) : undefined}
-                          maxDate={new Date()}
-                          dateFormat="Pp"
-                          className="dateAndTimeRange time-machine-input"
-                          calendarClassName="time-machine-calendar"
-                          showMonthDropdown
-                          showYearDropdown
-                        />
-                      </div>
-                      <div className="time-machine-actions">
-                        <button
-                          type="button"
-                          onClick={applyTimeMachine}
-                          className="time-machine-btn time-machine-btn-update"
-                        >
-                          Update
-                        </button>
-                        <button
-                          type="button"
-                          onClick={resetTimeMachine}
-                          className="time-machine-btn time-machine-btn-reset"
-                        >
-                          Reset
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </CollapsibleColumn>
@@ -2779,14 +2823,9 @@ export default function Account2({
                         <CurrencyWithIcon token={{ currency: nativeCurrency }} options={{ disableTokenLink: true }} />
                       </div>
                       <div className="asset-value">
-                        <div className="asset-amount">{shortNiceNumber(balanceList.available.native / 1000000)}</div>
+                        <div className="asset-amount">{shortNiceNumber(nativeAvailable)}</div>
                         <div className="asset-fiat" suppressHydrationWarning>
-                          {shortNiceNumber(
-                            (balanceList.available.native / 1000000) * (pageFiatRate || 0),
-                            2,
-                            1,
-                            selectedCurrency
-                          )}
+                          {shortNiceNumber(nativeAvailable * (pageFiatRate || 0), 2, 1, selectedCurrency)}
                         </div>
                       </div>
                     </div>
@@ -2797,14 +2836,9 @@ export default function Account2({
                           <CurrencyWithIcon token={{ currency: nativeCurrency }} options={{ disableTokenLink: true }} />
                         </div>
                         <div className="asset-value">
-                          <div className="asset-amount">{shortNiceNumber(balanceList.available.native / 1000000)}</div>
+                          <div className="asset-amount">{shortNiceNumber(nativeAvailable)}</div>
                           <div className="asset-fiat" suppressHydrationWarning>
-                            {shortNiceNumber(
-                              (balanceList.available.native / 1000000) * (pageFiatRate || 0),
-                              2,
-                              1,
-                              selectedCurrency
-                            )}
+                            {shortNiceNumber(nativeAvailable * (pageFiatRate || 0), 2, 1, selectedCurrency)}
                           </div>
                         </div>
                       </div>
@@ -2812,19 +2846,19 @@ export default function Account2({
                         <div className="detail-row">
                           <span>Available:</span>
                           <span className="copy-inline">
-                            <span>{balanceList.available.native / 1000000}</span>
+                            <span>{nativeAvailable}</span>
                             <span onClick={(event) => event.stopPropagation()}>
-                              <CopyButton text={balanceList.available.native / 1000000} />
+                              <CopyButton text={nativeAvailable} />
                             </span>
                           </span>
                         </div>
                         <div className="detail-row">
                           <span>Total:</span>
                           <span className="amount-with-fiat">
-                            <span>{amountFormat(balanceList.total.native, { precise: 'nice' })}</span>
+                            <span>{amountFormat(nativeTotalDrops, { precise: 'nice' })}</span>
                             <span className="fiat-line" suppressHydrationWarning>
                               {nativeCurrencyToFiat({
-                                amount: balanceList.total.native,
+                                amount: nativeTotalDrops,
                                 selectedCurrency,
                                 fiatRate: pageFiatRate,
                                 asText: true
@@ -2835,10 +2869,10 @@ export default function Account2({
                         <div className="detail-row">
                           <span>Reserved:</span>
                           <span className="grey amount-with-fiat">
-                            <span>{amountFormat(balanceList.reserved.native, { precise: 'nice' })}</span>
+                            <span>{amountFormat(nativeReservedDrops, { precise: 'nice' })}</span>
                             <span className="fiat-line" suppressHydrationWarning>
                               {nativeCurrencyToFiat({
-                                amount: balanceList.reserved.native,
+                                amount: nativeReservedDrops,
                                 selectedCurrency,
                                 fiatRate: pageFiatRate,
                                 asText: true
@@ -2857,6 +2891,14 @@ export default function Account2({
                       </div>
                     </>
                   )}
+                </div>
+              )}
+
+              {shouldShowGetFirstNativeButton && (
+                <div className="get-first-native-wrap">
+                  <a href={getFirstNativeUrl} target="_blank" rel="noreferrer" className="get-first-native-btn">
+                    🚀 Get your first {nativeCurrency}
+                  </a>
                 </div>
               )}
 
@@ -7822,6 +7864,33 @@ export default function Account2({
         .asset-item:hover {
           transform: translateY(-1px);
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .get-first-native-wrap {
+          display: flex;
+          margin-top: 2px;
+        }
+
+        .get-first-native-btn {
+          width: 100%;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid var(--accent-link);
+          border-radius: 8px;
+          background: var(--accent-link);
+          color: #fff;
+          font-size: 13px;
+          font-weight: 700;
+          line-height: 1.2;
+          padding: 9px 12px;
+          text-decoration: none;
+          transition: all 0.16s ease;
+        }
+
+        .get-first-native-btn:hover {
+          opacity: 0.92;
+          transform: translateY(-1px);
         }
 
         .object-load-status {
