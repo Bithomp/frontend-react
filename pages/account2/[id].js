@@ -286,6 +286,7 @@ export default function Account2({
   const [paychannelsTab, setPaychannelsTab] = useState('incoming')
   const [expandedCheckKey, setExpandedCheckKey] = useState(null)
   const [expandedEscrowKey, setExpandedEscrowKey] = useState(null)
+  const [expandedPaychannelKey, setExpandedPaychannelKey] = useState(null)
   const [showTxSettingsDetails, setShowTxSettingsDetails] = useState(false)
   const [showAccountControlDetails, setShowAccountControlDetails] = useState(false)
   const [expandedTransactionKey, setExpandedTransactionKey] = useState(null)
@@ -747,6 +748,7 @@ export default function Account2({
     setExpandedIssuedToken(null)
     setExpandedCheckKey(null)
     setExpandedEscrowKey(null)
+    setExpandedPaychannelKey(null)
     setShowIssuerSettingsDetails(false)
     setChecksTab('received')
     setEscrowsTab('received')
@@ -5280,77 +5282,142 @@ export default function Account2({
                     </div>
                   )}
 
-                  <div className="asset-item object-list-item">
-                    <div className="asset-details object-list-details object-details-flat-top">
-                      <div className="object-list cards-list">
-                        {activePaychannelsList.map((channel, index) => {
-                          const counterpartName = activePaychannelsTab === 'outgoing' ? 'Destination' : 'Account'
-                          const counterpartData = {
-                            ...channel,
-                            destinationDetails: channel?.destinationDetails || channel?.DestinationDetails,
-                            accountDetails: channel?.accountDetails || channel?.AccountDetails
-                          }
-                          const counterpartAddress =
-                            activePaychannelsTab === 'outgoing' ? channel?.Destination : channel?.Account
-                          const amountText = amountFormat(channel?.Amount, { short: true, maxFractionDigits: 2 })
-                          const balanceText = amountFormat(channel?.Balance, { short: true, maxFractionDigits: 2 })
-                          const amountFiatNode = nativeCurrencyToFiat({
-                            amount: channel?.Amount,
-                            selectedCurrency,
-                            fiatRate: pageFiatRate,
-                            asText: true
-                          })
-                          const balanceFiatNode = nativeCurrencyToFiat({
-                            amount: channel?.Balance,
-                            selectedCurrency,
-                            fiatRate: pageFiatRate,
-                            asText: true
-                          })
+                  <div className="object-list cards-list">
+                    {activePaychannelsList.map((channel, index) => {
+                      const channelObjectId = channel?.index || channel?.Index
+                      const channelKey = `${channelObjectId || 'paychannel'}-${activePaychannelsTab}-${index}`
+                      const isExpanded = expandedPaychannelKey === channelKey
+                      const isOutgoingPaychannel = activePaychannelsTab === 'outgoing'
+                      const counterpartName = activePaychannelsTab === 'outgoing' ? 'Destination' : 'Account'
+                      const counterpartData = {
+                        ...channel,
+                        destinationDetails: channel?.destinationDetails || channel?.DestinationDetails,
+                        accountDetails: channel?.accountDetails || channel?.AccountDetails
+                      }
+                      const counterpartAddress =
+                        activePaychannelsTab === 'outgoing' ? channel?.Destination : channel?.Account
+                      const amountText = amountFormat(channel?.Amount, { short: true, maxFractionDigits: 2 })
+                      const balanceText = amountFormat(channel?.Balance, { short: true, maxFractionDigits: 2 })
+                      const balanceFiatNode = nativeCurrencyToFiat({
+                        amount: channel?.Balance,
+                        selectedCurrency,
+                        fiatRate: pageFiatRate,
+                        asText: true
+                      })
+                      const counterpartLabel = activePaychannelsTab === 'outgoing' ? 'To' : 'From'
+                      const amountDisplay = amountText || '-'
+                      const balanceDisplay = balanceText || '-'
+                      const balanceFiatText = balanceFiatNode || '—'
 
-                          return (
-                            <div
-                              className="object-row-card paychannel-row-card"
-                              key={`${channel?.index || 'paychannel'}-${index}`}
-                            >
-                              <div className="paychannel-head">
-                                <span className="paychannel-head-label">
-                                  {activePaychannelsTab === 'outgoing' ? 'To' : 'From'}:
-                                </span>
-                                <span className="paychannel-head-value">
+                      return (
+                        <div
+                          className={`asset-item token-asset-item paychannel-asset-item ${isExpanded ? 'expanded' : ''}`}
+                          key={channelKey}
+                          onClick={() => setExpandedPaychannelKey(isExpanded ? null : channelKey)}
+                        >
+                          <div className="asset-main paychannel-card-main">
+                            <div className="asset-logo">
+                              <div className="paychannel-counterparty">
+                                <span className="paychannel-counterparty-label">{counterpartLabel}:</span>
+                                <span className="paychannel-counterparty-value">
                                   {counterpartAddress ? (
                                     <AddressWithIconInline
                                       data={counterpartData}
                                       name={counterpartName}
-                                      options={{ short: false }}
+                                      options={{ short: 6 }}
                                     />
                                   ) : (
                                     '-'
                                   )}
                                 </span>
                               </div>
-
-                              <div className="paychannel-values">
-                                <div className="paychannel-value-row">
-                                  <span className="paychannel-value-label">Amount</span>
-                                  <span className="paychannel-value-grid">
-                                    <span className="paychannel-native-value">{amountText}</span>
-                                    <span className="paychannel-fiat-value">{amountFiatNode || '—'}</span>
-                                  </span>
-                                </div>
-
-                                <div className="paychannel-value-row">
-                                  <span className="paychannel-value-label">Balance</span>
-                                  <span className="paychannel-value-grid">
-                                    <span className="paychannel-native-value">{balanceText}</span>
-                                    <span className="paychannel-fiat-value">{balanceFiatNode || '—'}</span>
-                                  </span>
-                                </div>
-                              </div>
                             </div>
-                          )
-                        })}
-                      </div>
-                    </div>
+                            <div className="asset-value paychannel-metrics">
+                              <span className="paychannel-metric-caption">Amount / Balance</span>
+                              <div className="paychannel-metric-main">
+                                <span className="paychannel-metric-balance">{balanceDisplay}</span>
+                                <span className="paychannel-metric-separator">/</span>
+                                <span className="paychannel-metric-amount">{amountDisplay}</span>
+                              </div>
+                              {balanceFiatText !== '—' && (
+                                <span className="paychannel-metric-fiat" suppressHydrationWarning>
+                                  {balanceFiatText}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {isExpanded && (
+                            <div className="asset-details">
+                              <div className="detail-row">
+                                <span>{counterpartLabel}:</span>
+                                <span>
+                                  {isOutgoingPaychannel && counterpartAddress ? (
+                                    <span className="copy-inline">
+                                      <span className="address-text">{counterpartAddress}</span>
+                                      <Link
+                                        href={`/account/${counterpartAddress}`}
+                                        className="inline-link-icon tooltip"
+                                        onClick={(event) => event.stopPropagation()}
+                                      >
+                                        <LinkIcon />
+                                        <span className="tooltiptext no-brake">Account page</span>
+                                      </Link>
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={counterpartAddress} />
+                                      </span>
+                                    </span>
+                                  ) : counterpartAddress ? (
+                                    <AddressWithIconInline
+                                      data={counterpartData}
+                                      name={counterpartName}
+                                      options={{ short: 6 }}
+                                    />
+                                  ) : (
+                                    '-'
+                                  )}
+                                </span>
+                              </div>
+                              <div className="detail-row">
+                                <span>Amount:</span>
+                                <span>{amountDisplay}</span>
+                              </div>
+                              <div className="detail-row">
+                                <span>Balance:</span>
+                                <span>
+                                  {balanceDisplay}
+                                  {balanceFiatText !== '—' && (
+                                    <span className="fiat-line" suppressHydrationWarning>
+                                      {' '}
+                                      {balanceFiatText}
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+                              {channelObjectId && (
+                                <div className="detail-row">
+                                  <span>Object:</span>
+                                  <span className="copy-inline">
+                                    <span>{shortHash(channelObjectId)}</span>
+                                    <Link
+                                      href={`/object/${channelObjectId}`}
+                                      className="inline-link-icon tooltip"
+                                      onClick={(event) => event.stopPropagation()}
+                                    >
+                                      <LinkIcon />
+                                      <span className="tooltiptext no-brake">Object page</span>
+                                    </Link>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={channelObjectId} />
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
                 </>
               )}
@@ -6839,79 +6906,102 @@ export default function Account2({
           border-color: var(--accent-link);
         }
 
-        .paychannel-row-card {
-          cursor: default;
-          grid-template-columns: minmax(0, 1fr);
-          gap: 8px;
-          padding: 10px 12px;
+        .paychannel-asset-item {
+          --asset-card-body-min-height: 58px;
+          cursor: pointer;
         }
 
-        .paychannel-head {
-          display: flex;
+        .paychannel-asset-item.expanded {
+          border-color: var(--accent-link);
+        }
+
+        .paychannel-card-main {
           align-items: center;
-          gap: 6px;
-          min-width: 0;
-          flex-wrap: wrap;
+          gap: 24px;
         }
 
-        .paychannel-head-label {
+        .paychannel-counterparty {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          align-items: center;
+          font-size: 13px;
+        }
+
+        .paychannel-counterparty-label {
           color: var(--text-secondary);
           font-size: 12px;
           font-weight: 600;
-          white-space: nowrap;
         }
 
-        .paychannel-head-value {
+        .paychannel-counterparty-value {
           min-width: 0;
-          color: var(--text);
-          font-size: 13px;
-          line-height: 1.25;
         }
 
-        .paychannel-values {
+        .paychannel-metrics {
           display: flex;
           flex-direction: column;
-          gap: 4px;
-        }
-
-        .paychannel-value-row {
-          display: grid;
-          grid-template-columns: auto 1fr;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .paychannel-value-label {
-          color: var(--text-secondary);
-          font-size: 12px;
-          white-space: nowrap;
-        }
-
-        .paychannel-value-grid {
-          display: grid;
-          grid-template-columns: minmax(9ch, auto) minmax(13ch, auto);
-          justify-content: end;
-          align-items: center;
-          column-gap: 12px;
+          gap: 1px;
+          align-items: flex-end;
+          justify-content: center;
+          flex-wrap: nowrap;
           min-width: 0;
-          font-variant-numeric: tabular-nums;
+          align-self: center;
+          text-align: right;
+          padding-top: 0;
         }
 
-        .paychannel-native-value {
-          color: var(--text);
-          font-size: 12px;
+        .paychannel-metric-caption {
+          font-size: 10px;
           font-weight: 600;
-          text-align: right;
-          line-height: 1.25;
-          word-break: break-word;
+          letter-spacing: 0.03em;
+          text-transform: uppercase;
+          color: var(--text-secondary);
+          line-height: 1.1;
         }
 
-        .paychannel-fiat-value {
-          color: var(--text-secondary);
-          font-weight: 500;
-          font-size: 12px;
-          text-align: right;
+        .paychannel-metric-main {
+          display: inline-flex;
+          align-items: baseline;
+          gap: 4px;
+          font-variant-numeric: tabular-nums;
           white-space: nowrap;
+        }
+
+        .paychannel-metric-balance,
+        .paychannel-metric-amount {
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text);
+          line-height: 1.2;
+        }
+
+        .paychannel-metric-separator {
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--text-secondary);
+        }
+
+        .paychannel-metric-fiat {
+          font-size: 11px;
+          color: var(--text-secondary);
+          white-space: nowrap;
+          text-align: right;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        @media (max-width: 768px) {
+          .paychannel-card-main {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+          }
+
+          .paychannel-metrics {
+            width: 100%;
+            align-items: flex-start;
+          }
         }
 
         .check-collapsed-main {
