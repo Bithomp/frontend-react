@@ -5065,203 +5065,208 @@ export default function Account2({
                       <>
                         <div className="cards-list">
                           {activeNftOffersPreview.map((offer, index) => {
-                          const nftId =
-                            offer?.nftoken?.nftokenID ||
-                            offer?.nftoken?.NFTokenID ||
-                            offer?.nftokenID ||
-                            offer?.NFTokenID
-                          if (!nftId) return null
+                            const nftId =
+                              offer?.nftoken?.nftokenID ||
+                              offer?.nftoken?.NFTokenID ||
+                              offer?.nftokenID ||
+                              offer?.NFTokenID
+                            if (!nftId) return null
 
-                          const cardKey = `${nftOffersTab}-${offer?.offerIndex || nftId}-${index}`
-                          const isExpanded = expandedNftOfferKey === cardKey
-                          const toggleCard = () => setExpandedNftOfferKey(isExpanded ? null : cardKey)
-                          const handleKeyToggle = (event) => {
-                            if (event.key === 'Enter' || event.key === ' ') {
-                              event.preventDefault()
-                              toggleCard()
+                            const cardKey = `${nftOffersTab}-${offer?.offerIndex || nftId}-${index}`
+                            const isExpanded = expandedNftOfferKey === cardKey
+                            const toggleCard = () => setExpandedNftOfferKey(isExpanded ? null : cardKey)
+                            const handleKeyToggle = (event) => {
+                              if (event.key === 'Enter' || event.key === ' ') {
+                                event.preventDefault()
+                                toggleCard()
+                              }
                             }
-                          }
-                          const nftDisplayData = offer?.nftoken || offer
-                          const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortHash(nftId)
-                          const shortTokenId = shortHash(nftId)
-                          const offerType = offer?.flags?.sellToken ? 'Sell' : 'Buy'
-                          const offerAmountText = offer?.amount
-                            ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
-                            : null
-                          const offerAmountFiat =
-                            offer?.amount && selectedCurrency
-                              ? convertedAmount(offer, selectedCurrency.toLowerCase(), { short: true })
+                            const nftDisplayData = offer?.nftoken || offer
+                            const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortHash(nftId)
+                            const shortTokenId = shortHash(nftId)
+                            const offerType = offer?.flags?.sellToken ? 'Sell' : 'Buy'
+                            const offerAmountText = offer?.amount
+                              ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
                               : null
-                          const offerPlacedRelative = offer?.createdAt ? timeFromNow(offer.createdAt, i18n) : null
-                          const offerPlacedExact = offer?.createdAt ? fullDateAndTime(offer.createdAt) : null
-                          const offerIndex = offer?.offerIndex
-                          const shortOfferId = offerIndex ? shortHash(offerIndex) : null
-                          const ownerAddress = offer?.owner || offer?.account
-                          const destinationAddress = offer?.destination
-                          const ownerInlineData = ownerAddress
-                            ? { owner: ownerAddress, ownerDetails: offer?.ownerDetails || offer?.accountDetails }
-                            : null
-                          const destinationInlineData = destinationAddress
-                            ? { destination: destinationAddress, destinationDetails: offer?.destinationDetails }
-                            : null
-                          const expirationRelative = offer?.expiration
-                            ? timeFromNow(offer.expiration, i18n, 'ripple')
-                            : null
-                          const expirationExact = offer?.expiration
-                            ? fullDateAndTime(offer.expiration, 'expiration')
-                            : null
-                          const secondaryLine = offerAmountText ? (
-                            <>
-                              {offerType} · {offerAmountText}
-                            </>
-                          ) : (
-                            offerType
-                          )
+                            const offerAmountFiat =
+                              offer?.amount && selectedCurrency
+                                ? convertedAmount(offer, selectedCurrency.toLowerCase(), { short: true })
+                                : null
+                            const offerPlacedRelative = offer?.createdAt ? timeFromNow(offer.createdAt, i18n) : null
+                            const offerPlacedExact = offer?.createdAt ? fullDateAndTime(offer.createdAt) : null
+                            const offerIndex = offer?.offerIndex
+                            const shortOfferId = offerIndex ? shortHash(offerIndex) : null
+                            const ownerAddress = offer?.owner || offer?.account
+                            const destinationAddress = offer?.destination
+                            const ownerInlineData = ownerAddress
+                              ? { owner: ownerAddress, ownerDetails: offer?.ownerDetails || offer?.accountDetails }
+                              : null
+                            const destinationInlineData = destinationAddress
+                              ? { destination: destinationAddress, destinationDetails: offer?.destinationDetails }
+                              : null
+                            const expirationRelative = offer?.expiration
+                              ? timeFromNow(offer.expiration, i18n, 'ripple')
+                              : null
+                            const expirationExact = offer?.expiration
+                              ? fullDateAndTime(offer.expiration, 'expiration')
+                              : null
+                            const secondaryLine = offerAmountText ? (
+                              <>
+                                {offerType} · {offerAmountText}
+                              </>
+                            ) : (
+                              offerType
+                            )
 
-                          return (
-                            <div
-                              key={cardKey}
-                              className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
-                              role="button"
-                              tabIndex={0}
-                              aria-expanded={isExpanded}
-                              onClick={toggleCard}
-                              onKeyDown={handleKeyToggle}
-                            >
-                              <div className="asset-main">
-                                <div className="asset-logo">
-                                  <div className="nft-asset-info">
-                                    <Link
-                                      href={`/nft/${nftId}`}
-                                      className="nft-asset-thumb"
-                                      onClick={(event) => event.stopPropagation()}
-                                    >
-                                      <NftImage
-                                        nft={nftDisplayData}
-                                        style={{ width: 40, height: 40, borderRadius: '6px', verticalAlign: 'middle' }}
-                                      />
-                                    </Link>
-                                    <div className="nft-asset-text">
-                                      <div className="asset-summary-title" title={nftTitle}>
-                                        {nftTitle}
-                                      </div>
-                                      <div className="asset-fiat">{secondaryLine}</div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="asset-value">
-                                  {offerPlacedRelative && <div className="asset-fiat">{offerPlacedRelative}</div>}
-                                </div>
-                              </div>
-                              {isExpanded && (
-                                <div className="asset-details">
-                                  <div className="detail-row">
-                                    <span>Token ID:</span>
-                                    <span className="copy-inline">
-                                      <span>{shortTokenId}</span>
+                            return (
+                              <div
+                                key={cardKey}
+                                className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
+                                role="button"
+                                tabIndex={0}
+                                aria-expanded={isExpanded}
+                                onClick={toggleCard}
+                                onKeyDown={handleKeyToggle}
+                              >
+                                <div className="asset-main">
+                                  <div className="asset-logo">
+                                    <div className="nft-asset-info">
                                       <Link
                                         href={`/nft/${nftId}`}
-                                        className="inline-link-icon tooltip"
+                                        className="nft-asset-thumb"
                                         onClick={(event) => event.stopPropagation()}
                                       >
-                                        <LinkIcon />
-                                        <span className="tooltiptext no-brake">NFT page</span>
+                                        <NftImage
+                                          nft={nftDisplayData}
+                                          style={{
+                                            width: 40,
+                                            height: 40,
+                                            borderRadius: '6px',
+                                            verticalAlign: 'middle'
+                                          }}
+                                        />
                                       </Link>
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CopyButton text={nftId} />
-                                      </span>
-                                    </span>
+                                      <div className="nft-asset-text">
+                                        <div className="asset-summary-title" title={nftTitle}>
+                                          {nftTitle}
+                                        </div>
+                                        <div className="asset-fiat">{secondaryLine}</div>
+                                      </div>
+                                    </div>
                                   </div>
-                                  {offerIndex && (
+                                  <div className="asset-value">
+                                    {offerPlacedRelative && <div className="asset-fiat">{offerPlacedRelative}</div>}
+                                  </div>
+                                </div>
+                                {isExpanded && (
+                                  <div className="asset-details">
                                     <div className="detail-row">
-                                      <span>Offer ID:</span>
+                                      <span>Token ID:</span>
                                       <span className="copy-inline">
-                                        <span>{shortOfferId}</span>
+                                        <span>{shortTokenId}</span>
                                         <Link
-                                          href={`/nft-offer/${offerIndex}`}
+                                          href={`/nft/${nftId}`}
                                           className="inline-link-icon tooltip"
                                           onClick={(event) => event.stopPropagation()}
                                         >
                                           <LinkIcon />
-                                          <span className="tooltiptext no-brake">Offer page</span>
+                                          <span className="tooltiptext no-brake">NFT page</span>
                                         </Link>
                                         <span onClick={(event) => event.stopPropagation()}>
-                                          <CopyButton text={offerIndex} />
+                                          <CopyButton text={nftId} />
                                         </span>
                                       </span>
                                     </div>
-                                  )}
-                                  <div className="detail-row">
-                                    <span>Offer type:</span>
-                                    <span>{offerType}</span>
-                                  </div>
-                                  {offerAmountText && (
-                                    <div className="detail-row">
-                                      <span>Amount:</span>
-                                      <span>
-                                        {offerAmountText}
-                                        {offerAmountFiat && (
-                                          <span className="fiat-line" suppressHydrationWarning>
-                                            {' '}
-                                            ≈{offerAmountFiat}
+                                    {offerIndex && (
+                                      <div className="detail-row">
+                                        <span>Offer ID:</span>
+                                        <span className="copy-inline">
+                                          <span>{shortOfferId}</span>
+                                          <Link
+                                            href={`/nft-offer/${offerIndex}`}
+                                            className="inline-link-icon tooltip"
+                                            onClick={(event) => event.stopPropagation()}
+                                          >
+                                            <LinkIcon />
+                                            <span className="tooltiptext no-brake">Offer page</span>
+                                          </Link>
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <CopyButton text={offerIndex} />
                                           </span>
-                                        )}
-                                      </span>
-                                    </div>
-                                  )}
-                                  {offerPlacedExact && (
-                                    <div className="detail-row">
-                                      <span>Placed:</span>
-                                      <span>{offerPlacedExact}</span>
-                                    </div>
-                                  )}
-                                  {expirationRelative && (
-                                    <div className="detail-row">
-                                      <span>Expires:</span>
-                                      <span>
-                                        {expirationRelative}
-                                        {expirationExact && <span className="fiat-line"> ({expirationExact})</span>}
-                                      </span>
-                                    </div>
-                                  )}
-                                  {ownerAddress && nftOffersTab !== 'created' && (
-                                    <div className="detail-row">
-                                      <span>From:</span>
-                                      <span className="copy-inline">
-                                        <span onClick={(event) => event.stopPropagation()}>
-                                          <AddressWithIconInline
-                                            data={ownerInlineData}
-                                            name="owner"
-                                            options={{ short: 6 }}
-                                          />
                                         </span>
-                                        <span onClick={(event) => event.stopPropagation()}>
-                                          <CopyButton text={ownerAddress} />
-                                        </span>
-                                      </span>
-                                    </div>
-                                  )}
-                                  {destinationAddress && nftOffersTab !== 'received' && (
+                                      </div>
+                                    )}
                                     <div className="detail-row">
-                                      <span>To:</span>
-                                      <span className="copy-inline">
-                                        <span onClick={(event) => event.stopPropagation()}>
-                                          <AddressWithIconInline
-                                            data={destinationInlineData}
-                                            name="destination"
-                                            options={{ short: 6 }}
-                                          />
-                                        </span>
-                                        <span onClick={(event) => event.stopPropagation()}>
-                                          <CopyButton text={destinationAddress} />
-                                        </span>
-                                      </span>
+                                      <span>Offer type:</span>
+                                      <span>{offerType}</span>
                                     </div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          )
+                                    {offerAmountText && (
+                                      <div className="detail-row">
+                                        <span>Amount:</span>
+                                        <span>
+                                          {offerAmountText}
+                                          {offerAmountFiat && (
+                                            <span className="fiat-line" suppressHydrationWarning>
+                                              {' '}
+                                              ≈{offerAmountFiat}
+                                            </span>
+                                          )}
+                                        </span>
+                                      </div>
+                                    )}
+                                    {offerPlacedExact && (
+                                      <div className="detail-row">
+                                        <span>Placed:</span>
+                                        <span>{offerPlacedExact}</span>
+                                      </div>
+                                    )}
+                                    {expirationRelative && (
+                                      <div className="detail-row">
+                                        <span>Expires:</span>
+                                        <span>
+                                          {expirationRelative}
+                                          {expirationExact && <span className="fiat-line"> ({expirationExact})</span>}
+                                        </span>
+                                      </div>
+                                    )}
+                                    {ownerAddress && nftOffersTab !== 'created' && (
+                                      <div className="detail-row">
+                                        <span>From:</span>
+                                        <span className="copy-inline">
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <AddressWithIconInline
+                                              data={ownerInlineData}
+                                              name="owner"
+                                              options={{ short: 6 }}
+                                            />
+                                          </span>
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <CopyButton text={ownerAddress} />
+                                          </span>
+                                        </span>
+                                      </div>
+                                    )}
+                                    {destinationAddress && nftOffersTab !== 'received' && (
+                                      <div className="detail-row">
+                                        <span>To:</span>
+                                        <span className="copy-inline">
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <AddressWithIconInline
+                                              data={destinationInlineData}
+                                              name="destination"
+                                              options={{ short: 6 }}
+                                            />
+                                          </span>
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <CopyButton text={destinationAddress} />
+                                          </span>
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            )
                           })}
                         </div>
                         {showNftOffersControlsVisible && (
