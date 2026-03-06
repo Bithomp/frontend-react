@@ -5205,7 +5205,7 @@ export default function Account2({
                                       </span>
                                     </div>
                                   )}
-                                  {ownerAddress && (
+                                  {ownerAddress && nftOffersTab !== 'created' && (
                                     <div className="detail-row">
                                       <span>From:</span>
                                       <span className="copy-inline">
@@ -5222,7 +5222,7 @@ export default function Account2({
                                       </span>
                                     </div>
                                   )}
-                                  {destinationAddress && (
+                                  {destinationAddress && nftOffersTab !== 'received' && (
                                     <div className="detail-row">
                                       <span>To:</span>
                                       <span className="copy-inline">
