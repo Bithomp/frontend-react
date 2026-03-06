@@ -10,7 +10,9 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { axiosServer, getFiatRateServer, passHeaders } from '../../utils/axios'
 import {
   avatarSrc,
+  decode,
   devNet,
+  isUrlValid,
   nativeCurrency,
   networks,
   isValidPayString,
@@ -164,7 +166,6 @@ export async function getServerSideProps(context) {
 }
 
 import SEO from '../../components/SEO'
-import Did from '../../components/Account/Did'
 import AccountWithTag from '../../components/Account/AccountWithTag'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 import { fetchHistoricalRate } from '../../utils/common'
@@ -314,6 +315,7 @@ export default function Account2({
   const [showDepositPreauthDetails, setShowDepositPreauthDetails] = useState(false)
   const [showHooksDetails, setShowHooksDetails] = useState(false)
   const [showCronDetails, setShowCronDetails] = useState(false)
+  const [expandedDidCard, setExpandedDidCard] = useState(false)
   const [uriTab, setUriTab] = useState('owned')
   const [expandedHeldMptKey, setExpandedHeldMptKey] = useState(null)
   const [expandedIssuedMptKey, setExpandedIssuedMptKey] = useState(null)
@@ -449,6 +451,21 @@ export default function Account2({
     !!data?.ledgerInfo?.flags?.uriTokenIssuer
   const hasFlareAddress = !!data?.flare?.address
   const hasAirdropsData = hasFlareAddress
+  const didData = data?.ledgerInfo?.did || data?.did || null
+  const didUrl = didData?.uri ? decode(didData.uri) : ''
+  const didDecodedData = didData?.data ? decode(didData.data) : ''
+  const didDecodedDocument = didData?.didDocument ? decode(didData.didDocument) : ''
+  const didMetadataText = didData?.metadata
+    ? typeof didData.metadata === 'string'
+      ? didData.metadata
+      : JSON.stringify(didData.metadata, null, 2)
+    : ''
+  const didCreatedAgo = didData?.createdAt ? timeFromNow(didData.createdAt, i18n) : null
+  const didCollapsedAgo = didData?.updatedAt ? timeFromNow(didData.updatedAt, i18n) : didCreatedAgo
+  const didCollapsedAgoLabel = didData?.updatedAt ? 'Updated' : 'Created'
+  const didCreatedFull = didData?.createdAt ? fullDateAndTime(didData.createdAt) : null
+  const didUpdatedFull = didData?.updatedAt ? fullDateAndTime(didData.updatedAt) : null
+  const canManageDid = data?.address === account?.address && !effectiveLedgerTimestamp && !!setSignRequest
   const flareClaimNode = hasFlareAddress ? (
     <>
       {fullNiceNumber(data.flare.spark * 0.15)} <span className="no-brake">FLR</span>
@@ -769,6 +786,7 @@ export default function Account2({
     setExpandedNftCardKey(null)
     setExpandedNftOfferKey(null)
     setExpandedDexOrderKey(null)
+    setExpandedDidCard(false)
     setExpandedHeldMptKey(null)
     setExpandedIssuedMptKey(null)
     setExpandedUriTokenKey(null)
@@ -1885,6 +1903,168 @@ export default function Account2({
               {/* Social icons */}
               {socialAccountsNode && <div className="social-icons-wrapper">{socialAccountsNode}</div>}
 
+              {didData && (
+                <div className="cards-list info-cards-list">
+                  <div
+                    className={`asset-item token-asset-item ${expandedDidCard ? 'expanded' : ''}`}
+                    onClick={() => setExpandedDidCard((prev) => !prev)}
+                  >
+                    <div className="asset-main">
+                      <div className="asset-logo">
+                        <div className="nft-asset-info">
+                          <div className="nft-asset-text">
+                            <div className="asset-summary-title">DID</div>
+                            <div className="asset-fiat">{didUrl || shortHash(didData?.didID || '')}</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="asset-value">
+                        {didCollapsedAgo && (
+                          <div className="asset-fiat">
+                            {didCollapsedAgoLabel} {didCollapsedAgo}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {expandedDidCard && (
+                      <div className="asset-details">
+                        <div className="detail-row">
+                          <span>DID ID:</span>
+                          <span className="copy-inline">
+                            <span>{didData?.didID ? shortHash(didData.didID) : '-'}</span>
+                            {!!didData?.didID && (
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={didData.didID} />
+                              </span>
+                            )}
+                          </span>
+                        </div>
+
+                        {!!didCreatedFull && (
+                          <div className="detail-row">
+                            <span>Created:</span>
+                            <span>
+                              {didCreatedFull}
+                              {didData?.createdTxHash && (
+                                <>
+                                  {' '}
+                                  <Link
+                                    href={`/transaction/${didData.createdTxHash}`}
+                                    className="inline-link-icon tooltip"
+                                    onClick={(event) => event.stopPropagation()}
+                                  >
+                                    <LinkIcon />
+                                    <span className="tooltiptext no-brake">Created transaction</span>
+                                  </Link>
+                                </>
+                              )}
+                            </span>
+                          </div>
+                        )}
+
+                        {!!didUpdatedFull && didData?.updatedAt !== didData?.createdAt && (
+                          <div className="detail-row">
+                            <span>Updated:</span>
+                            <span>
+                              {didUpdatedFull}
+                              {didData?.updatedTxHash && (
+                                <>
+                                  {' '}
+                                  <Link
+                                    href={`/transaction/${didData.updatedTxHash}`}
+                                    className="inline-link-icon tooltip"
+                                    onClick={(event) => event.stopPropagation()}
+                                  >
+                                    <LinkIcon />
+                                    <span className="tooltiptext no-brake">Updated transaction</span>
+                                  </Link>
+                                </>
+                              )}
+                            </span>
+                          </div>
+                        )}
+
+                        {!!didUrl && (
+                          <div className="detail-row">
+                            <span>URL:</span>
+                            <span>
+                              {isUrlValid(didUrl) ? (
+                                <a
+                                  href={didUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(event) => event.stopPropagation()}
+                                >
+                                  {didUrl}
+                                </a>
+                              ) : (
+                                <span className="address-text">{didUrl}</span>
+                              )}
+                            </span>
+                          </div>
+                        )}
+
+                        {!!didDecodedData && (
+                          <div className="detail-row">
+                            <span>Data:</span>
+                            <span className="address-text">{didDecodedData}</span>
+                          </div>
+                        )}
+
+                        {!!didDecodedDocument && (
+                          <div className="detail-row">
+                            <span>DID Document:</span>
+                            <span className="address-text">{didDecodedDocument}</span>
+                          </div>
+                        )}
+
+                        {!!didMetadataText && (
+                          <div className="detail-row tx-fail-description-row">
+                            <span>Metadata:</span>
+                            <pre className="tx-fail-description-text">{didMetadataText}</pre>
+                          </div>
+                        )}
+
+                        {canManageDid && (
+                          <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                            <button
+                              type="button"
+                              className="check-action-btn redeem"
+                              onClick={() =>
+                                setSignRequest({
+                                  action: 'setDid',
+                                  request: {
+                                    TransactionType: 'DIDSet',
+                                    Account: data?.address
+                                  }
+                                })
+                              }
+                            >
+                              Update DID
+                            </button>
+                            <button
+                              type="button"
+                              className="check-action-btn cancel"
+                              onClick={() =>
+                                setSignRequest({
+                                  request: {
+                                    TransactionType: 'DIDDelete',
+                                    Account: data?.address
+                                  }
+                                })
+                              }
+                            >
+                              Delete DID
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {data?.inception && publicDataRows.length > 0 && (
                 <div className="public-data">
                   <div className="info-rows">
@@ -1895,13 +2075,6 @@ export default function Account2({
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
-
-              {/* DID */}
-              {data.did && (
-                <div className="did-section">
-                  <Did data={data} />
                 </div>
               )}
 
@@ -6537,13 +6710,13 @@ export default function Account2({
         }
 
         .public-data {
-          margin-top: 15px;
+          margin-top: 0;
         }
 
         .info-rows {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: 8px;
+          gap: 12px;
         }
 
         .info-row {
@@ -7494,7 +7667,7 @@ export default function Account2({
         }
 
         .social-icons-wrapper {
-          margin: 10px 0 5px 0;
+          margin: 0;
           display: flex;
           justify-content: center;
         }
@@ -7545,6 +7718,10 @@ export default function Account2({
           gap: 8px;
         }
 
+        .info-section .cards-list {
+          gap: 12px;
+        }
+
         .asset-main {
           display: flex;
           justify-content: space-between;
@@ -7582,7 +7759,7 @@ export default function Account2({
         }
 
         .tx-settings-card {
-          margin-top: 4px;
+          margin-top: 0;
         }
 
         .issuer-settings-panel,
