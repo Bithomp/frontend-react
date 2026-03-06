@@ -421,8 +421,17 @@ export default function Account2({
     : '0%'
   const isRipplingEnabled = !!data?.ledgerInfo?.flags?.defaultRipple
   const isCanEscrowEnabled = !!data?.ledgerInfo?.flags?.allowTrustLineLocking
+  const isTrustlineClawbackEnabled = !!data?.ledgerInfo?.flags?.allowTrustLineClawback
+  const isGlobalFreezeEnabled = !!data?.ledgerInfo?.flags?.globalFreeze
+  const isNoFreezeEnabled = !!data?.ledgerInfo?.flags?.noFreeze
   const hasCustomTransferFee = Number(data?.ledgerInfo?.transferRate || 0) > 1000000000
-  const hasIssuerSettingsData = isRipplingEnabled || hasCustomTransferFee || isCanEscrowEnabled
+  const hasIssuerSettingsData =
+    isRipplingEnabled ||
+    hasCustomTransferFee ||
+    isCanEscrowEnabled ||
+    isTrustlineClawbackEnabled ||
+    isGlobalFreezeEnabled ||
+    isNoFreezeEnabled
   const isMessageKeyUsedForFlare = data?.ledgerInfo?.messageKey?.substring(0, 26) === '02000000000000000000000000'
   const hasRegularKey = !!data?.ledgerInfo?.regularKey
   const hasMultisig = !!data?.ledgerInfo?.signerList
@@ -442,7 +451,6 @@ export default function Account2({
     !!data?.ledgerInfo?.previousTxnID ||
     !!data?.ledgerInfo?.accountTxnID ||
     !!data?.ledgerInfo?.tickSize ||
-    !!data?.ledgerInfo?.transferRate ||
     !!data?.ledgerInfo?.importSequence ||
     data?.ledgerInfo?.ticketCount === 0 ||
     !!data?.ledgerInfo?.ticketCount ||
@@ -455,11 +463,6 @@ export default function Account2({
     !!data?.ledgerInfo?.flags?.disallowIncomingTrustline ||
     !!data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer ||
     !!data?.ledgerInfo?.flags?.disallowIncomingRemit ||
-    !!data?.ledgerInfo?.flags?.allowTrustLineClawback ||
-    !!data?.ledgerInfo?.flags?.allowTrustLineLocking ||
-    !!data?.ledgerInfo?.flags?.defaultRipple ||
-    !!data?.ledgerInfo?.flags?.globalFreeze ||
-    !!data?.ledgerInfo?.flags?.noFreeze ||
     !!data?.ledgerInfo?.flags?.tshCollect ||
     !!data?.ledgerInfo?.flags?.disallowXRP
   const accountControlCollapsedLabel = isBlackholed
@@ -760,6 +763,20 @@ export default function Account2({
   const hasUriTokens = uriTokens.length > 0
   const hasMintedUriTokens = uriTokens.some((token) => token?.Issuer === data?.address)
   const activeUriTokens = uriTab === 'minted' ? uriTokens.filter((token) => token?.Issuer === data?.address) : uriTokens
+  const hasIssuedTokensSection = issuedTokensLoading || !!issuedTokensError || issuedTokens.length > 0
+  const hasColumn4ObjectSections =
+    hasIssuedTokensSection ||
+    hasIssuerSettingsData ||
+    hasIssuedMpts ||
+    hasDexOrders ||
+    hasReceivedChecks ||
+    hasSentChecks ||
+    hasSelfEscrows ||
+    hasReceivedEscrows ||
+    hasSentEscrows ||
+    hasAnyNftOffersData ||
+    hasIncomingPaychannels ||
+    hasOutgoingPaychannels
   const showObjectsLoadStatus = !!data?.ledgerInfo?.activated && (objectsLoading || !!objectsError)
 
   useEffect(() => {
@@ -2518,13 +2535,6 @@ export default function Account2({
                           </div>
                         )}
 
-                        {!!data?.ledgerInfo?.transferRate && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Issuer fee:</span>
-                            <span>{transferRateToPercent(data.ledgerInfo.transferRate)}</span>
-                          </div>
-                        )}
-
                         {!!data?.ledgerInfo?.flags?.requireDestTag && (
                           <div className="detail-row issuer-detail-row">
                             <span>Destination tag:</span>
@@ -2581,41 +2591,6 @@ export default function Account2({
                           </div>
                         )}
 
-                        {!!data?.ledgerInfo?.flags?.allowTrustLineClawback && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Trustline clawback:</span>
-                            <span>enabled</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.allowTrustLineLocking && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Trustline locking:</span>
-                            <span>enabled</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.defaultRipple && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Rippling:</span>
-                            <span>enabled</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.globalFreeze && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Global freeze:</span>
-                            <span>true</span>
-                          </div>
-                        )}
-
-                        {!!data?.ledgerInfo?.flags?.noFreeze && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>No freeze:</span>
-                            <span>enabled</span>
-                          </div>
-                        )}
-
                         {!!data?.ledgerInfo?.flags?.tshCollect && (
                           <div className="detail-row issuer-detail-row">
                             <span>TshCollect:</span>
@@ -2642,7 +2617,7 @@ export default function Account2({
                       onClick={() => setShowAirdropsDetails((prev) => !prev)}
                     >
                       Airdrops
-                      <span className="account-control-collapsed"> · Flare + Songbird</span>
+                      <span className="account-control-collapsed"> · Flare</span>
                     </button>
 
                     {showAirdropsDetails && (
@@ -5408,7 +5383,9 @@ export default function Account2({
                         onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
                       >
                         Issuer settings
-                        <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
+                        {hasCustomTransferFee && (
+                          <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
+                        )}
                       </button>
 
                       {showIssuerSettingsDetails && (
@@ -5631,7 +5608,9 @@ export default function Account2({
                     onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
                   >
                     Issuer settings
-                    <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
+                    {hasCustomTransferFee && (
+                      <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
+                    )}
                   </button>
 
                   {showIssuerSettingsDetails && (
@@ -5652,6 +5631,30 @@ export default function Account2({
                           {isCanEscrowEnabled ? 'enabled' : 'disabled'}
                         </span>
                       </div>
+                      {isTrustlineClawbackEnabled && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Trustline clawback:</span>
+                          <span>enabled</span>
+                        </div>
+                      )}
+                      {isCanEscrowEnabled && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Trustline locking:</span>
+                          <span>enabled</span>
+                        </div>
+                      )}
+                      {isGlobalFreezeEnabled && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Global freeze:</span>
+                          <span>true</span>
+                        </div>
+                      )}
+                      {isNoFreezeEnabled && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>No freeze:</span>
+                          <span>enabled</span>
+                        </div>
+                      )}
 
                       <div className="lp-actions issuer-settings-actions">
                         <Link href="/services/account-settings" className="lp-action-btn">
@@ -6759,6 +6762,19 @@ export default function Account2({
                         </div>
                       )
                     })}
+                  </div>
+                </>
+              )}
+
+              {!showObjectsLoadStatus && !hasColumn4ObjectSections && (
+                <>
+                  <div className="section-header-row object-section-header-row">
+                    <div className="section-title object-section-title">Objects</div>
+                  </div>
+                  <div className="asset-item object-load-status">
+                    <span className="object-load-status-text">
+                      No DEX orders, checks, escrows, NFT offers, paychannels, issued tokens, or issued MPTs.
+                    </span>
                   </div>
                 </>
               )}
