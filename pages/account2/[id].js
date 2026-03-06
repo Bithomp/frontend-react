@@ -283,12 +283,14 @@ export default function Account2({
   const [sentEscrows, setSentEscrows] = useState([])
   const [incomingPaychannels, setIncomingPaychannels] = useState([])
   const [outgoingPaychannels, setOutgoingPaychannels] = useState([])
+  const [dexOrders, setDexOrders] = useState([])
   const [checksTab, setChecksTab] = useState('received')
   const [escrowsTab, setEscrowsTab] = useState('received')
   const [paychannelsTab, setPaychannelsTab] = useState('incoming')
   const [expandedCheckKey, setExpandedCheckKey] = useState(null)
   const [expandedEscrowKey, setExpandedEscrowKey] = useState(null)
   const [expandedPaychannelKey, setExpandedPaychannelKey] = useState(null)
+  const [expandedDexOrderKey, setExpandedDexOrderKey] = useState(null)
   const [showTxSettingsDetails, setShowTxSettingsDetails] = useState(false)
   const [showAccountControlDetails, setShowAccountControlDetails] = useState(false)
   const [expandedTransactionKey, setExpandedTransactionKey] = useState(null)
@@ -638,6 +640,7 @@ export default function Account2({
     : activePaychannelsTab === 'outgoing'
       ? 'Outgoing paychannels'
       : 'Incoming paychannels'
+  const hasDexOrders = dexOrders.length > 0
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -691,6 +694,7 @@ export default function Account2({
     setNftOffersDisplayLimit(NFT_OFFERS_PREVIEW_LIMIT)
     setExpandedNftCardKey(null)
     setExpandedNftOfferKey(null)
+    setExpandedDexOrderKey(null)
   }, [data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
@@ -841,6 +845,12 @@ export default function Account2({
           accountObjectWithEscrows.filter((node) => node.Account === data.address && node.Destination !== data.address)
         )
 
+        const accountObjectWithDexOrders =
+          accountObjects
+            .filter((node) => node.LedgerEntryType === 'Offer' && node.Account === data.address)
+            .sort((a, b) => Number(b.Sequence || 0) - Number(a.Sequence || 0)) || []
+        setDexOrders(accountObjectWithDexOrders)
+
         const nftIds = accountObjects
           .filter((node) => node.LedgerEntryType === 'NFTokenPage' && Array.isArray(node.NFTokens))
           .flatMap((page) =>
@@ -978,6 +988,7 @@ export default function Account2({
         setSentChecks([])
         setIncomingPaychannels([])
         setOutgoingPaychannels([])
+        setDexOrders([])
       }
     }
 
@@ -4585,6 +4596,168 @@ export default function Account2({
                     </div>
                   )}
                 </div>
+              )}
+
+              {hasDexOrders && (
+                <>
+                  <div className="section-header-row object-section-header-row">
+                    <div className="section-title object-section-title">
+                      DEX orders <span className="object-title-count">{dexOrders.length}</span>
+                    </div>
+                    {data?.address && (
+                      <Link className="section-link" href={`/account/${data.address}/dex`}>
+                        View all
+                      </Link>
+                    )}
+                  </div>
+
+                  <div className="cards-list">
+                    {dexOrders.map((offer, index) => {
+                      const orderKey = `${offer?.index || 'offer'}-${index}`
+                      const isExpanded = expandedDexOrderKey === orderKey
+                      const isSell = !!offer?.flags?.sell
+                      const baseAmount = isSell ? offer?.TakerGets : offer?.TakerPays
+                      const quoteAmount = isSell ? offer?.TakerPays : offer?.TakerGets
+                      const collapsedMainLabel = isSell ? 'Selling' : 'Buying'
+                      const collapsedPrimary = amountFormat(baseAmount, {
+                        short: true,
+                        maxFractionDigits: 2,
+                        icon: true
+                      })
+                      const collapsedSecondary = amountFormat(quoteAmount, {
+                        short: true,
+                        maxFractionDigits: 2,
+                        icon: true
+                      })
+                      const rateText = (() => {
+                        const quality = Number(offer?.quality)
+                        if (!Number.isFinite(quality) || quality <= 0) return '-'
+
+                        const takerGetsIsNative = typeof offer?.TakerGets === 'string'
+                        const takerPaysIsNative = typeof offer?.TakerPays === 'string'
+                        const getsCurrency =
+                          typeof offer?.TakerGets === 'object'
+                            ? niceCurrency(offer?.TakerGets?.currency)
+                            : nativeCurrency
+                        const paysCurrency =
+                          typeof offer?.TakerPays === 'object'
+                            ? niceCurrency(offer?.TakerPays?.currency)
+                            : nativeCurrency
+
+                        if (takerGetsIsNative) {
+                          return `1 ${nativeCurrency} = ${niceNumber(quality * 1000000, 0, null, 5)} ${paysCurrency}`
+                        }
+                        if (takerPaysIsNative) {
+                          return `1 ${getsCurrency} = ${niceNumber(quality / 1000000, 0, null, 5)} ${nativeCurrency}`
+                        }
+                        return `1 ${getsCurrency} = ${niceNumber(quality, 0, null, 5)} ${paysCurrency}`
+                      })()
+                      const offerDateText = offer?.previousTxAt
+                        ? timeFromNow(offer.previousTxAt, i18n)
+                        : offer?.PreviousTxnLgrSeq
+                          ? `Lgr ${offer.PreviousTxnLgrSeq}`
+                          : '-'
+
+                      return (
+                        <div
+                          className={`asset-item token-asset-item check-row-card dex-order-card ${isExpanded ? 'expanded' : ''}`}
+                          key={orderKey}
+                          onClick={() => setExpandedDexOrderKey(isExpanded ? null : orderKey)}
+                        >
+                          <div className="asset-main check-collapsed-main escrow-collapsed-main">
+                            <div className="asset-logo escrow-collapsed-logo">
+                              <div className="escrow-collapsed-top">
+                                <span className="escrow-type-main">
+                                  {collapsedMainLabel} {collapsedPrimary}
+                                </span>
+                                <span className="escrow-time-top">{offerDateText}</span>
+                              </div>
+                              <div className="tx-collapsed-meta">
+                                <span className="tx-accountset-inline">for {collapsedSecondary}</span>
+                              </div>
+                            </div>
+                            <div className="asset-value tx-collapsed-change escrow-collapsed-amount">
+                              <span className="tx-inline-change grey">#{offer?.Sequence || '-'}</span>
+                            </div>
+                          </div>
+
+                          {isExpanded && (
+                            <div className="asset-details">
+                              <div className="detail-row">
+                                <span>{isSell ? 'Selling:' : 'Wants to buy:'}</span>
+                                <span>
+                                  {amountFormat(
+                                    isSell ? offer?.TakerGets : offer?.TakerPays,
+                                    { icon: true, withIssuer: true, precise: 'nice' }
+                                  )}
+                                </span>
+                              </div>
+                              <div className="detail-row">
+                                <span>{isSell ? 'Wants at least:' : 'Can pay maximum:'}</span>
+                                <span>
+                                  {amountFormat(
+                                    isSell ? offer?.TakerPays : offer?.TakerGets,
+                                    { icon: true, withIssuer: true, precise: 'nice' }
+                                  )}
+                                </span>
+                              </div>
+                              <div className="detail-row">
+                                <span>Rate:</span>
+                                <span>{rateText}</span>
+                              </div>
+                              <div className="detail-row">
+                                <span>Sequence:</span>
+                                <span>{offer?.Sequence || '-'}</span>
+                              </div>
+                              <div className="detail-row">
+                                <span>Offer ID:</span>
+                                <span className="copy-inline">
+                                  <span>{offer?.index ? shortHash(offer.index) : '-'}</span>
+                                  {!!offer?.index && (
+                                    <>
+                                      <Link
+                                        href={`/object/${offer.index}`}
+                                        className="inline-link-icon tooltip"
+                                        onClick={(event) => event.stopPropagation()}
+                                      >
+                                        <LinkIcon />
+                                        <span className="tooltiptext no-brake">Object page</span>
+                                      </Link>
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={offer.index} />
+                                      </span>
+                                    </>
+                                  )}
+                                </span>
+                              </div>
+
+                              {!effectiveLedgerTimestamp && !!setSignRequest && offer?.Sequence && (
+                                <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                                  <button
+                                    type="button"
+                                    className="check-action-btn cancel"
+                                    onClick={() => {
+                                      setSignRequest({
+                                        request: {
+                                          Account: offer.Account,
+                                          TransactionType: 'OfferCancel',
+                                          OfferSequence: offer.Sequence
+                                        }
+                                      })
+                                    }}
+                                    title="Cancel"
+                                  >
+                                    <MdMoneyOff /> Cancel
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </>
               )}
 
               {(hasReceivedChecks || hasSentChecks) && (
