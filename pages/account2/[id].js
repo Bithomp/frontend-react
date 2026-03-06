@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -188,7 +188,7 @@ import {
   transferRateToPercent,
   userOrServiceName
 } from '../../utils/format'
-import { subtract } from '../../utils/calc'
+import { scaleAmount, subtract } from '../../utils/calc'
 import { addressBalanceChanges, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import {
   FaFacebook,
@@ -213,6 +213,17 @@ const CollapsibleColumn = ({ children }) => {
     </div>
   )
 }
+
+const hookNames = {
+  '805351CE26FB79DA00647CEFED502F7E15C2ACCCE254F11DEFEDDCE241F8E9CA': 'Claim Rewards'
+}
+
+const hookNameText = (hookHash) => {
+  if (!hookHash) return '-'
+  return hookNames[hookHash] || shortHash(hookHash, 16)
+}
+
+const mptId = (node) => node?.MPTokenIssuanceID || node?.mpt_issuance_id || null
 
 export default function Account2({
   initialData,
@@ -281,9 +292,16 @@ export default function Account2({
   const [sentChecks, setSentChecks] = useState([])
   const [receivedEscrows, setReceivedEscrows] = useState([])
   const [sentEscrows, setSentEscrows] = useState([])
+  const [selfEscrows, setSelfEscrows] = useState([])
   const [incomingPaychannels, setIncomingPaychannels] = useState([])
   const [outgoingPaychannels, setOutgoingPaychannels] = useState([])
   const [dexOrders, setDexOrders] = useState([])
+  const [depositPreauthAccounts, setDepositPreauthAccounts] = useState([])
+  const [hookList, setHookList] = useState([])
+  const [cronObjects, setCronObjects] = useState([])
+  const [heldMpts, setHeldMpts] = useState([])
+  const [issuedMpts, setIssuedMpts] = useState([])
+  const [uriTokens, setUriTokens] = useState([])
   const [checksTab, setChecksTab] = useState('received')
   const [escrowsTab, setEscrowsTab] = useState('received')
   const [paychannelsTab, setPaychannelsTab] = useState('incoming')
@@ -293,6 +311,13 @@ export default function Account2({
   const [expandedDexOrderKey, setExpandedDexOrderKey] = useState(null)
   const [showTxSettingsDetails, setShowTxSettingsDetails] = useState(false)
   const [showAccountControlDetails, setShowAccountControlDetails] = useState(false)
+  const [showDepositPreauthDetails, setShowDepositPreauthDetails] = useState(false)
+  const [showHooksDetails, setShowHooksDetails] = useState(false)
+  const [showCronDetails, setShowCronDetails] = useState(false)
+  const [uriTab, setUriTab] = useState('owned')
+  const [expandedHeldMptKey, setExpandedHeldMptKey] = useState(null)
+  const [expandedIssuedMptKey, setExpandedIssuedMptKey] = useState(null)
+  const [expandedUriTokenKey, setExpandedUriTokenKey] = useState(null)
   const [expandedTransactionKey, setExpandedTransactionKey] = useState(null)
   const [recentTransactions, setRecentTransactions] = useState([])
   const [transactionsLoading, setTransactionsLoading] = useState(false)
@@ -379,6 +404,35 @@ export default function Account2({
     isBlackholed ||
     !!data?.ledgerInfo?.flags?.passwordSpent ||
     !!data?.ledgerInfo?.flags?.disableMaster
+  const hasAccountSettingsData =
+    !!data?.ledgerInfo?.accountIndex ||
+    !!data?.ledgerInfo?.sequence ||
+    !!data?.ledgerInfo?.messageKey ||
+    !!data?.ledgerInfo?.walletLocator ||
+    !!data?.ledgerInfo?.ammID ||
+    !!data?.ledgerInfo?.previousTxnID ||
+    !!data?.ledgerInfo?.accountTxnID ||
+    !!data?.ledgerInfo?.tickSize ||
+    !!data?.ledgerInfo?.transferRate ||
+    !!data?.ledgerInfo?.importSequence ||
+    data?.ledgerInfo?.ticketCount === 0 ||
+    !!data?.ledgerInfo?.ticketCount ||
+    !!data?.inceptionTxHash ||
+    !!data?.ledgerInfo?.flags?.requireDestTag ||
+    !!data?.ledgerInfo?.flags?.depositAuth ||
+    !!data?.ledgerInfo?.flags?.requireAuth ||
+    !!data?.ledgerInfo?.flags?.disallowIncomingCheck ||
+    !!data?.ledgerInfo?.flags?.disallowIncomingPayChan ||
+    !!data?.ledgerInfo?.flags?.disallowIncomingTrustline ||
+    !!data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer ||
+    !!data?.ledgerInfo?.flags?.disallowIncomingRemit ||
+    !!data?.ledgerInfo?.flags?.allowTrustLineClawback ||
+    !!data?.ledgerInfo?.flags?.allowTrustLineLocking ||
+    !!data?.ledgerInfo?.flags?.defaultRipple ||
+    !!data?.ledgerInfo?.flags?.globalFreeze ||
+    !!data?.ledgerInfo?.flags?.noFreeze ||
+    !!data?.ledgerInfo?.flags?.tshCollect ||
+    !!data?.ledgerInfo?.flags?.disallowXRP
   const accountControlCollapsedLabel = isBlackholed
     ? 'Blackholed'
     : hasRegularKey && hasMultisig
@@ -621,14 +675,26 @@ export default function Account2({
 
   const hasReceivedEscrows = receivedEscrows.length > 0
   const hasSentEscrows = sentEscrows.length > 0
-  const showEscrowsTabs = hasReceivedEscrows && hasSentEscrows
-  const activeEscrowsTab = showEscrowsTabs ? escrowsTab : hasSentEscrows ? 'sent' : 'received'
-  const activeEscrowsList = activeEscrowsTab === 'sent' ? sentEscrows : receivedEscrows
+  const hasSelfEscrows = selfEscrows.length > 0
+  const availableEscrowsTabs = useMemo(
+    () => [
+      ...(hasSelfEscrows ? ['self'] : []),
+      ...(hasReceivedEscrows ? ['received'] : []),
+      ...(hasSentEscrows ? ['sent'] : [])
+    ],
+    [hasSelfEscrows, hasReceivedEscrows, hasSentEscrows]
+  )
+  const showEscrowsTabs = availableEscrowsTabs.length > 1
+  const activeEscrowsTab = showEscrowsTabs ? escrowsTab : availableEscrowsTabs[0] || 'received'
+  const activeEscrowsList =
+    activeEscrowsTab === 'sent' ? sentEscrows : activeEscrowsTab === 'self' ? selfEscrows : receivedEscrows
   const escrowsSectionTitle = showEscrowsTabs
     ? 'Escrows'
     : activeEscrowsTab === 'sent'
-      ? 'Sent escrows'
-      : 'Received escrows'
+      ? 'Outgoing escrows'
+      : activeEscrowsTab === 'self'
+        ? 'Self escrows'
+        : 'Incoming escrows'
 
   const hasIncomingPaychannels = incomingPaychannels.length > 0
   const hasOutgoingPaychannels = outgoingPaychannels.length > 0
@@ -641,6 +707,14 @@ export default function Account2({
       ? 'Outgoing paychannels'
       : 'Incoming paychannels'
   const hasDexOrders = dexOrders.length > 0
+  const hasDepositPreauthAccounts = depositPreauthAccounts.length > 0
+  const hasHooks = hookList.length > 0
+  const hasCronData = !!data?.ledgerInfo?.cron || cronObjects.length > 0
+  const hasHeldMpts = heldMpts.length > 0
+  const hasIssuedMpts = issuedMpts.length > 0
+  const hasUriTokens = uriTokens.length > 0
+  const hasMintedUriTokens = uriTokens.some((token) => token?.Issuer === data?.address)
+  const activeUriTokens = uriTab === 'minted' ? uriTokens.filter((token) => token?.Issuer === data?.address) : uriTokens
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -695,6 +769,10 @@ export default function Account2({
     setExpandedNftCardKey(null)
     setExpandedNftOfferKey(null)
     setExpandedDexOrderKey(null)
+    setExpandedHeldMptKey(null)
+    setExpandedIssuedMptKey(null)
+    setExpandedUriTokenKey(null)
+    setUriTab('owned')
   }, [data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
@@ -783,13 +861,11 @@ export default function Account2({
   }, [showChecksTabs, checksTab, hasSentChecks, hasReceivedChecks])
 
   useEffect(() => {
-    if (!showEscrowsTabs && escrowsTab === 'sent' && !hasSentEscrows) {
-      setEscrowsTab('received')
+    if (availableEscrowsTabs.length === 0) return
+    if (!availableEscrowsTabs.includes(escrowsTab)) {
+      setEscrowsTab(availableEscrowsTabs[0])
     }
-    if (!showEscrowsTabs && escrowsTab === 'received' && !hasReceivedEscrows && hasSentEscrows) {
-      setEscrowsTab('sent')
-    }
-  }, [showEscrowsTabs, escrowsTab, hasSentEscrows, hasReceivedEscrows])
+  }, [availableEscrowsTabs, escrowsTab])
 
   useEffect(() => {
     if (!showPaychannelsTabs && paychannelsTab === 'outgoing' && !hasOutgoingPaychannels) {
@@ -802,7 +878,29 @@ export default function Account2({
 
   // Fetch tokens
   useEffect(() => {
-    if (!data?.address || !data?.ledgerInfo?.activated) return
+    if (!data?.address || !data?.ledgerInfo?.activated) {
+      setTokens([])
+      setOwnedNfts([])
+      setSoldNfts([])
+      setMintedNfts([])
+      setBurnedNfts([])
+      setOwnedNftIds([])
+      setReceivedChecks([])
+      setSentChecks([])
+      setSelfEscrows([])
+      setReceivedEscrows([])
+      setSentEscrows([])
+      setIncomingPaychannels([])
+      setOutgoingPaychannels([])
+      setDexOrders([])
+      setDepositPreauthAccounts([])
+      setHookList([])
+      setCronObjects([])
+      setHeldMpts([])
+      setIssuedMpts([])
+      setUriTokens([])
+      return
+    }
 
     const fetchTokens = async () => {
       try {
@@ -844,6 +942,32 @@ export default function Account2({
         setSentEscrows(
           accountObjectWithEscrows.filter((node) => node.Account === data.address && node.Destination !== data.address)
         )
+        setSelfEscrows(
+          accountObjectWithEscrows.filter((node) => node.Account === data.address && node.Destination === data.address)
+        )
+
+        const accountObjectWithDepositPreauth =
+          accountObjects.filter((node) => node.LedgerEntryType === 'DepositPreauth' && node.Authorize) || []
+        setDepositPreauthAccounts(accountObjectWithDepositPreauth)
+
+        const accountObjectWithHooks = accountObjects.find((node) => node.LedgerEntryType === 'Hook')
+        if (accountObjectWithHooks?.Hooks?.length > 0) {
+          const hooks = accountObjectWithHooks.Hooks.map((hookNode) => hookNode?.Hook?.HookHash).filter(Boolean)
+          setHookList(hooks)
+        } else {
+          setHookList([])
+        }
+
+        const accountCronObjects = accountObjects.filter((node) => node.LedgerEntryType === 'Cron') || []
+        setCronObjects(accountCronObjects)
+
+        const accountHeldMpts = accountObjects.filter((node) => node.LedgerEntryType === 'MPToken') || []
+        const accountIssuedMpts = accountObjects.filter((node) => node.LedgerEntryType === 'MPTokenIssuance') || []
+        setHeldMpts(accountHeldMpts)
+        setIssuedMpts(accountIssuedMpts)
+
+        const accountUriTokens = accountObjects.filter((node) => node.LedgerEntryType === 'URIToken') || []
+        setUriTokens(accountUriTokens)
 
         const accountObjectWithDexOrders =
           accountObjects
@@ -986,9 +1110,16 @@ export default function Account2({
         setBurnedNftsLoading(false)
         setReceivedChecks([])
         setSentChecks([])
+        setSelfEscrows([])
         setIncomingPaychannels([])
         setOutgoingPaychannels([])
         setDexOrders([])
+        setDepositPreauthAccounts([])
+        setHookList([])
+        setCronObjects([])
+        setHeldMpts([])
+        setIssuedMpts([])
+        setUriTokens([])
       }
     }
 
@@ -1400,8 +1531,16 @@ export default function Account2({
     normalizedXamanAccountAlias !== normalizedUsername &&
     normalizedXamanAccountAlias !== normalizedServiceName
 
+  const xamanMonetisationStatus = data?.xamanMeta?.monetisation?.status
   const hasXamanCardData =
-    !isHistoricalLedger && !!(data?.xamanMeta?.xummPro || xamanOwnerAlias || showXamanAccountAlias)
+    !isHistoricalLedger &&
+    !!(
+      data?.xamanMeta?.xummPro ||
+      data?.xamanMeta?.kycApproved ||
+      xamanOwnerAlias ||
+      showXamanAccountAlias ||
+      xamanMonetisationStatus
+    )
   const xamanRows = []
 
   if (data?.xamanMeta?.xummPro) {
@@ -1424,6 +1563,40 @@ export default function Account2({
 
   if (showXamanAccountAlias) {
     xamanRows.push({ key: 'account-alias', label: 'Account alias:', value: xamanAccountAlias })
+  }
+
+  if (data?.xamanMeta?.kycApproved) {
+    xamanRows.push({ key: 'kyc', label: 'KYC:', value: <span className="green">verified</span> })
+  }
+
+  if (xamanMonetisationStatus === 'PAYMENT_REQUIRED') {
+    xamanRows.push({ key: 'pro-limit', label: 'Pro status:', value: <span className="orange">Limited 😔</span> })
+    xamanRows.push({
+      key: 'pro-purchase',
+      label: 'Action:',
+      value: (
+        <a href="https://xrpl-labs.com/pro/get?v=BITHOMP" target="_blank" rel="noopener nofollow">
+          Purchase Xaman Pro
+        </a>
+      )
+    })
+  }
+
+  if (xamanMonetisationStatus === 'COMING_UP') {
+    xamanRows.push({
+      key: 'pro-upcoming',
+      label: 'Pro status:',
+      value: <span className="orange">Soon limited 😔</span>
+    })
+    xamanRows.push({
+      key: 'pro-purchase',
+      label: 'Action:',
+      value: (
+        <a href="https://xrpl-labs.com/pro/get?v=BITHOMP" target="_blank" rel="noopener nofollow">
+          Purchase Xaman Pro
+        </a>
+      )
+    })
   }
 
   if (showPaystring) {
@@ -1814,6 +1987,141 @@ export default function Account2({
                   </div>
                 )}
 
+                {hasDepositPreauthAccounts && (
+                  <div className="time-machine-card tx-settings-card">
+                    <button
+                      type="button"
+                      className={`time-machine-toggle ${showDepositPreauthDetails ? 'active' : ''}`}
+                      onClick={() => setShowDepositPreauthDetails((prev) => !prev)}
+                    >
+                      Deposit preauthorized accounts
+                      <span className="account-control-collapsed"> · {depositPreauthAccounts.length}</span>
+                    </button>
+
+                    {showDepositPreauthDetails && (
+                      <div className="time-machine-panel tx-settings-panel">
+                        {depositPreauthAccounts.map((node, index) => (
+                          <div className="detail-row issuer-detail-row" key={`${node?.index || 'preauth'}-${index}`}>
+                            <span>#{index + 1}:</span>
+                            <span className="copy-inline">
+                              <AddressWithIconInline
+                                data={{ address: node?.Authorize, addressDetails: node?.authorizeDetails || {} }}
+                                name="address"
+                                options={{ short: 6 }}
+                              />
+                              {node?.Authorize && (
+                                <span onClick={(event) => event.stopPropagation()}>
+                                  <CopyButton text={node.Authorize} />
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {hasHooks && (
+                  <div className="time-machine-card tx-settings-card">
+                    <button
+                      type="button"
+                      className={`time-machine-toggle ${showHooksDetails ? 'active' : ''}`}
+                      onClick={() => setShowHooksDetails((prev) => !prev)}
+                    >
+                      Hooks
+                      <span className="account-control-collapsed"> · {hookList.length}</span>
+                    </button>
+
+                    {showHooksDetails && (
+                      <div className="time-machine-panel tx-settings-panel">
+                        {!!data?.ledgerInfo?.hookNamespaces?.length && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Hook namespaces:</span>
+                            <span>{data.ledgerInfo.hookNamespaces.length}</span>
+                          </div>
+                        )}
+                        {(data?.ledgerInfo?.hookStateCount || data?.ledgerInfo?.hookStateCount === 0) && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Hook state count:</span>
+                            <span>{data.ledgerInfo.hookStateCount}</span>
+                          </div>
+                        )}
+                        {hookList.map((hookHash, index) => (
+                          <div className="detail-row issuer-detail-row" key={`${hookHash}-${index}`}>
+                            <span>Hook #{index + 1}:</span>
+                            <span className="copy-inline">
+                              <span>{hookNameText(hookHash)}</span>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={hookHash} />
+                              </span>
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {hasCronData && (
+                  <div className="time-machine-card tx-settings-card">
+                    <button
+                      type="button"
+                      className={`time-machine-toggle ${showCronDetails ? 'active' : ''}`}
+                      onClick={() => setShowCronDetails((prev) => !prev)}
+                    >
+                      Cron
+                    </button>
+
+                    {showCronDetails && (
+                      <div className="time-machine-panel tx-settings-panel">
+                        {data?.ledgerInfo?.cron && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Cron object:</span>
+                            <span className="copy-inline">
+                              <span>{shortHash(data.ledgerInfo.cron)}</span>
+                              <Link
+                                href={`/object/${data.ledgerInfo.cron}`}
+                                className="inline-link-icon tooltip"
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                <LinkIcon />
+                                <span className="tooltiptext no-brake">Object page</span>
+                              </Link>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={data.ledgerInfo.cron} />
+                              </span>
+                            </span>
+                          </div>
+                        )}
+                        {cronObjects.map((cron, index) => (
+                          <div className="detail-row issuer-detail-row" key={`${cron?.index || 'cron'}-${index}`}>
+                            <span>Entry #{index + 1}:</span>
+                            <span className="copy-inline">
+                              <span>{cron?.index ? shortHash(cron.index) : '-'}</span>
+                              {!!cron?.index && (
+                                <>
+                                  <Link
+                                    href={`/object/${cron.index}`}
+                                    className="inline-link-icon tooltip"
+                                    onClick={(event) => event.stopPropagation()}
+                                  >
+                                    <LinkIcon />
+                                    <span className="tooltiptext no-brake">Object page</span>
+                                  </Link>
+                                  <span onClick={(event) => event.stopPropagation()}>
+                                    <CopyButton text={cron.index} />
+                                  </span>
+                                </>
+                              )}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {hasNftDataDetails && (
                   <div className="time-machine-card tx-settings-card">
                     <button
@@ -1867,7 +2175,7 @@ export default function Account2({
                   </div>
                 )}
 
-                {data?.ledgerInfo?.sequence && (
+                {hasAccountSettingsData && (
                   <div className="time-machine-card tx-settings-card">
                     <button
                       type="button"
@@ -1879,6 +2187,18 @@ export default function Account2({
 
                     {showTxSettingsDetails && (
                       <div className="time-machine-panel tx-settings-panel">
+                        {!!data?.ledgerInfo?.accountIndex && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Account index:</span>
+                            <span className="copy-inline">
+                              <span className="address-text">{data.ledgerInfo.accountIndex}</span>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={data.ledgerInfo.accountIndex} />
+                              </span>
+                            </span>
+                          </div>
+                        )}
+
                         <div className="detail-row issuer-detail-row">
                           <span>Next sequence:</span>
                           <span className="copy-inline">
@@ -1905,6 +2225,213 @@ export default function Account2({
                                 <CopyButton text={data.ledgerInfo.messageKey} />
                               </span>
                             </span>
+                          </div>
+                        )}
+
+                        {!!data?.inceptionTxHash && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Inception tx:</span>
+                            <span className="copy-inline">
+                              <Link href={`/transaction/${data.inceptionTxHash}`} onClick={(event) => event.stopPropagation()}>
+                                {shortHash(data.inceptionTxHash)}
+                              </Link>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={data.inceptionTxHash} />
+                              </span>
+                            </span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.previousTxnID && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Last affecting tx:</span>
+                            <span className="copy-inline">
+                              <Link href={`/transaction/${data.ledgerInfo.previousTxnID}`} onClick={(event) => event.stopPropagation()}>
+                                {shortHash(data.ledgerInfo.previousTxnID)}
+                              </Link>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={data.ledgerInfo.previousTxnID} />
+                              </span>
+                            </span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.accountTxnID && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Last initiated tx:</span>
+                            <span className="copy-inline">
+                              <Link href={`/transaction/${data.ledgerInfo.accountTxnID}`} onClick={(event) => event.stopPropagation()}>
+                                {shortHash(data.ledgerInfo.accountTxnID)}
+                              </Link>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={data.ledgerInfo.accountTxnID} />
+                              </span>
+                            </span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.walletLocator && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Wallet locator:</span>
+                            <span className="copy-inline">
+                              <span className="address-text">{data.ledgerInfo.walletLocator}</span>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={data.ledgerInfo.walletLocator} />
+                              </span>
+                            </span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.ammID && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>AMM ID:</span>
+                            <span className="copy-inline">
+                              <span>{shortHash(data.ledgerInfo.ammID)}</span>
+                              <Link
+                                href={`/amm/${data.ledgerInfo.ammID}`}
+                                className="inline-link-icon tooltip"
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                <LinkIcon />
+                                <span className="tooltiptext no-brake">AMM page</span>
+                              </Link>
+                              <span onClick={(event) => event.stopPropagation()}>
+                                <CopyButton text={data.ledgerInfo.ammID} />
+                              </span>
+                            </span>
+                          </div>
+                        )}
+
+                        {(data?.ledgerInfo?.ticketCount || data?.ledgerInfo?.ticketCount === 0) && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Ticket count:</span>
+                            <span>{data.ledgerInfo.ticketCount}</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.importSequence && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Import sequence:</span>
+                            <span>{data.ledgerInfo.importSequence}</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.tickSize && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Tick size:</span>
+                            <span>{data.ledgerInfo.tickSize}</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.transferRate && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Issuer fee:</span>
+                            <span>{transferRateToPercent(data.ledgerInfo.transferRate)}</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.requireDestTag && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Destination tag:</span>
+                            <span>required</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.depositAuth && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Deposit authorization:</span>
+                            <span>required</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.requireAuth && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Token authorization:</span>
+                            <span>required</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.disallowIncomingCheck && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Incoming checks:</span>
+                            <span className="red">disallowed</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.disallowIncomingPayChan && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Incoming payment channels:</span>
+                            <span className="red">disallowed</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.disallowIncomingTrustline && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Incoming trustlines:</span>
+                            <span className="red">disallowed</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Incoming NFT offers:</span>
+                            <span className="red">disallowed</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.disallowIncomingRemit && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Incoming remit:</span>
+                            <span className="red">disallowed</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.allowTrustLineClawback && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Trustline clawback:</span>
+                            <span>enabled</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.allowTrustLineLocking && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Trustline locking:</span>
+                            <span>enabled</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.defaultRipple && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Rippling:</span>
+                            <span>enabled</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.globalFreeze && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Global freeze:</span>
+                            <span>true</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.noFreeze && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>No freeze:</span>
+                            <span>enabled</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.tshCollect && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>TshCollect:</span>
+                            <span>enabled</span>
+                          </div>
+                        )}
+
+                        {!!data?.ledgerInfo?.flags?.disallowXRP && (
+                          <div className="detail-row issuer-detail-row">
+                            <span>Receiving {nativeCurrency}:</span>
+                            <span>disabled</span>
                           </div>
                         )}
                       </div>
@@ -2550,6 +3077,212 @@ export default function Account2({
                   </div>
                 )
               })()}
+
+              {hasHeldMpts && (
+                <>
+                  <div className="section-header-row object-section-header-row">
+                    <div className="section-title object-section-title">
+                      MPTs <span className="object-title-count">{heldMpts.length}</span>
+                    </div>
+                  </div>
+
+                  <div className="cards-list">
+                    {heldMpts.map((mptNode, index) => {
+                      const rowKey = `${mptNode?.index || mptId(mptNode) || 'mpt'}-${index}`
+                      const isExpanded = expandedHeldMptKey === rowKey
+                      const balanceValue = scaleAmount(
+                        mptNode?.MPTAmount || 0,
+                        mptNode?.mptokenCurrencyDetails?.scale || null
+                      )
+
+                      return (
+                        <div
+                          key={rowKey}
+                          className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
+                          onClick={() => setExpandedHeldMptKey(isExpanded ? null : rowKey)}
+                        >
+                          <div className="asset-main">
+                            <div className="asset-logo">
+                              <CurrencyWithIcon token={mptNode} options={{ disableTokenLink: true }} hideIssuer />
+                            </div>
+                            <div className="asset-value">
+                              <div className="asset-amount">{shortNiceNumber(balanceValue)}</div>
+                            </div>
+                          </div>
+
+                          {isExpanded && (
+                            <div className="asset-details">
+                              <div className="detail-row">
+                                <span>MPT ID:</span>
+                                <span className="copy-inline">
+                                  <span>{shortHash(mptId(mptNode) || '-')}</span>
+                                  {!!mptId(mptNode) && (
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={mptId(mptNode)} />
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+                              <div className="detail-row">
+                                <span>Balance:</span>
+                                <span>{fullNiceNumber(balanceValue)}</span>
+                              </div>
+                              {mptNode?.mptokenCurrencyDetails?.account && (
+                                <div className="detail-row">
+                                  <span>Issuer:</span>
+                                  <span className="copy-inline">
+                                    <AddressWithIconInline
+                                      data={{
+                                        address: mptNode.mptokenCurrencyDetails.account,
+                                        addressDetails: mptNode?.mptokenCurrencyDetails?.accountDetails || {}
+                                      }}
+                                      name="address"
+                                      options={{ short: 6 }}
+                                    />
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={mptNode.mptokenCurrencyDetails.account} />
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </>
+              )}
+
+              {hasUriTokens && (
+                <>
+                  <div className="section-header-row nft-section-header-row">
+                    <div className="section-title nft-section-title">NFTs</div>
+                  </div>
+
+                  <div className="nft-tab-row nft-tab-row-outside">
+                    <div className="nft-tab-switch">
+                      <button
+                        type="button"
+                        className={`nft-tab-btn ${uriTab === 'owned' ? 'active' : ''}`}
+                        onClick={() => setUriTab('owned')}
+                      >
+                        Owned URI ({uriTokens.length})
+                      </button>
+                      {hasMintedUriTokens && (
+                        <button
+                          type="button"
+                          className={`nft-tab-btn ${uriTab === 'minted' ? 'active' : ''}`}
+                          onClick={() => setUriTab('minted')}
+                        >
+                          Minted URI ({uriTokens.filter((token) => token?.Issuer === data?.address).length})
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="cards-list">
+                    {activeUriTokens.map((uriToken, index) => {
+                      const tokenKey = `${uriToken?.index || 'uri-token'}-${uriTab}-${index}`
+                      const isExpanded = expandedUriTokenKey === tokenKey
+                      const uriTokenId = uriToken?.index
+                      const isOnSale = !!(uriToken?.Amount || uriToken?.Destination)
+
+                      return (
+                        <div
+                          key={tokenKey}
+                          className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
+                          onClick={() => setExpandedUriTokenKey(isExpanded ? null : tokenKey)}
+                        >
+                          <div className="asset-main">
+                            <div className="asset-logo">
+                              <div className="nft-asset-info">
+                                <div className="nft-asset-text">
+                                  <div className="asset-summary-title">URI token {index + 1}</div>
+                                  <div className="asset-fiat">{uriTokenId ? shortHash(uriTokenId) : '-'}</div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="asset-value">
+                              <div className="asset-fiat">{isOnSale ? 'On offer' : 'Owned'}</div>
+                            </div>
+                          </div>
+
+                          {isExpanded && (
+                            <div className="asset-details">
+                              <div className="detail-row">
+                                <span>Token ID:</span>
+                                <span className="copy-inline">
+                                  <span>{uriTokenId ? shortHash(uriTokenId) : '-'}</span>
+                                  {!!uriTokenId && (
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={uriTokenId} />
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+
+                              {!!uriToken?.Issuer && (
+                                <div className="detail-row">
+                                  <span>Issuer:</span>
+                                  <span className="copy-inline">
+                                    <AddressWithIconInline
+                                      data={{ address: uriToken.Issuer, addressDetails: uriToken?.issuerDetails || {} }}
+                                      name="address"
+                                      options={{ short: 6 }}
+                                    />
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={uriToken.Issuer} />
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+
+                              {!!uriToken?.Destination && (
+                                <div className="detail-row">
+                                  <span>Destination:</span>
+                                  <span className="copy-inline">
+                                    <AddressWithIconInline
+                                      data={{
+                                        address: uriToken.Destination,
+                                        addressDetails: uriToken?.destinationDetails || {}
+                                      }}
+                                      name="address"
+                                      options={{ short: 6 }}
+                                    />
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={uriToken.Destination} />
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+
+                              {!!uriToken?.Amount && (
+                                <div className="detail-row">
+                                  <span>Amount:</span>
+                                  <span>{amountFormat(uriToken.Amount, { icon: true, precise: 'nice' })}</span>
+                                </div>
+                              )}
+
+                              {!!uriToken?.URI && (
+                                <div className="detail-row">
+                                  <span>URI:</span>
+                                  <span className="copy-inline">
+                                    <span className="address-text">{String(uriToken.URI)}</span>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={String(uriToken.URI)} />
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </>
+              )}
 
               {hasAnyNftSectionData && (
                 <>
@@ -4559,6 +5292,69 @@ export default function Account2({
                 </>
               )}
 
+              {hasIssuedMpts && (
+                <>
+                  <div className="section-header-row object-section-header-row">
+                    <div className="section-title object-section-title">
+                      Issued MPTs <span className="object-title-count">{issuedMpts.length}</span>
+                    </div>
+                  </div>
+
+                  <div className="cards-list">
+                    {issuedMpts.map((mptNode, index) => {
+                      const rowKey = `${mptNode?.index || mptId(mptNode) || 'issued-mpt'}-${index}`
+                      const isExpanded = expandedIssuedMptKey === rowKey
+                      const outstanding = scaleAmount(mptNode?.OutstandingAmount || 0, mptNode?.AssetScale || null)
+                      const maxSupply = mptNode?.MaximumAmount
+                        ? scaleAmount(mptNode.MaximumAmount, mptNode?.AssetScale || null)
+                        : null
+
+                      return (
+                        <div
+                          key={rowKey}
+                          className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
+                          onClick={() => setExpandedIssuedMptKey(isExpanded ? null : rowKey)}
+                        >
+                          <div className="asset-main">
+                            <div className="asset-logo">
+                              <CurrencyWithIcon token={mptNode} options={{ disableTokenLink: true }} hideIssuer />
+                            </div>
+                            <div className="asset-value">
+                              <div className="asset-amount">{shortNiceNumber(outstanding)}</div>
+                              <div className="asset-fiat">Outstanding</div>
+                            </div>
+                          </div>
+
+                          {isExpanded && (
+                            <div className="asset-details">
+                              <div className="detail-row">
+                                <span>MPT ID:</span>
+                                <span className="copy-inline">
+                                  <span>{shortHash(mptId(mptNode) || '-')}</span>
+                                  {!!mptId(mptNode) && (
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <CopyButton text={mptId(mptNode)} />
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+                              <div className="detail-row">
+                                <span>Outstanding:</span>
+                                <span>{fullNiceNumber(outstanding)}</span>
+                              </div>
+                              <div className="detail-row">
+                                <span>Max supply:</span>
+                                <span>{maxSupply === null ? 'not set' : fullNiceNumber(maxSupply)}</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </>
+              )}
+
               {hasIssuerSettingsData && (
                 <div className="time-machine-card issuer-settings-card">
                   <button
@@ -4686,19 +5482,21 @@ export default function Account2({
                               <div className="detail-row">
                                 <span>{isSell ? 'Selling:' : 'Wants to buy:'}</span>
                                 <span>
-                                  {amountFormat(
-                                    isSell ? offer?.TakerGets : offer?.TakerPays,
-                                    { icon: true, withIssuer: true, precise: 'nice' }
-                                  )}
+                                  {amountFormat(isSell ? offer?.TakerGets : offer?.TakerPays, {
+                                    icon: true,
+                                    withIssuer: true,
+                                    precise: 'nice'
+                                  })}
                                 </span>
                               </div>
                               <div className="detail-row">
                                 <span>{isSell ? 'Wants at least:' : 'Can pay maximum:'}</span>
                                 <span>
-                                  {amountFormat(
-                                    isSell ? offer?.TakerPays : offer?.TakerGets,
-                                    { icon: true, withIssuer: true, precise: 'nice' }
-                                  )}
+                                  {amountFormat(isSell ? offer?.TakerPays : offer?.TakerGets, {
+                                    icon: true,
+                                    withIssuer: true,
+                                    precise: 'nice'
+                                  })}
                                 </span>
                               </div>
                               <div className="detail-row">
@@ -4946,20 +5744,33 @@ export default function Account2({
                   {showEscrowsTabs && (
                     <div className="object-tab-row escrow-tab-row">
                       <div className="object-tab-switch">
-                        <button
-                          type="button"
-                          className={`object-tab-btn ${escrowsTab === 'received' ? 'active' : ''}`}
-                          onClick={() => setEscrowsTab('received')}
-                        >
-                          Received
-                        </button>
-                        <button
-                          type="button"
-                          className={`object-tab-btn ${escrowsTab === 'sent' ? 'active' : ''}`}
-                          onClick={() => setEscrowsTab('sent')}
-                        >
-                          Sent
-                        </button>
+                        {hasSelfEscrows && (
+                          <button
+                            type="button"
+                            className={`object-tab-btn ${escrowsTab === 'self' ? 'active' : ''}`}
+                            onClick={() => setEscrowsTab('self')}
+                          >
+                            Self
+                          </button>
+                        )}
+                        {hasReceivedEscrows && (
+                          <button
+                            type="button"
+                            className={`object-tab-btn ${escrowsTab === 'received' ? 'active' : ''}`}
+                            onClick={() => setEscrowsTab('received')}
+                          >
+                            Incoming
+                          </button>
+                        )}
+                        {hasSentEscrows && (
+                          <button
+                            type="button"
+                            className={`object-tab-btn ${escrowsTab === 'sent' ? 'active' : ''}`}
+                            onClick={() => setEscrowsTab('sent')}
+                          >
+                            Outgoing
+                          </button>
+                        )}
                       </div>
                     </div>
                   )}
@@ -5013,9 +5824,10 @@ export default function Account2({
                                 ? cancelAfterText
                                 : '-'
                           const isOutgoingEscrow = activeEscrowsTab === 'sent'
-                          const collapsedDirectionLabel = isOutgoingEscrow ? 'to' : 'from'
-                          const collapsedAmountClass = isOutgoingEscrow ? 'red' : 'green'
-                          const collapsedAmountSign = isOutgoingEscrow ? '-' : '+'
+                          const isSelfEscrow = activeEscrowsTab === 'self'
+                          const collapsedDirectionLabel = isSelfEscrow ? 'self' : isOutgoingEscrow ? 'to' : 'from'
+                          const collapsedAmountClass = isSelfEscrow ? 'grey' : isOutgoingEscrow ? 'red' : 'green'
+                          const collapsedAmountSign = isSelfEscrow ? '' : isOutgoingEscrow ? '-' : '+'
 
                           return (
                             <div
@@ -5059,7 +5871,7 @@ export default function Account2({
                               {isExpanded && (
                                 <div className="asset-details">
                                   <div className="detail-row">
-                                    <span>{activeEscrowsTab === 'sent' ? 'To' : 'From'}:</span>
+                                    <span>{activeEscrowsTab === 'self' ? 'Account' : activeEscrowsTab === 'sent' ? 'To' : 'From'}:</span>
                                     <span className="copy-inline">
                                       {counterpartAddress ? (
                                         <>
@@ -5283,6 +6095,8 @@ export default function Account2({
                             const expirationExact = offer?.expiration
                               ? fullDateAndTime(offer.expiration, 'expiration')
                               : null
+                            const canCancelNftOffer =
+                              !!setSignRequest && !effectiveLedgerTimestamp && !!offerIndex && !!account?.address
                             const secondaryLine = offerAmountText ? (
                               <>
                                 {offerType} · {offerAmountText}
@@ -5434,6 +6248,29 @@ export default function Account2({
                                             <CopyButton text={destinationAddress} />
                                           </span>
                                         </span>
+                                      </div>
+                                    )}
+
+                                    {!effectiveLedgerTimestamp && (
+                                      <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                                        <button
+                                          type="button"
+                                          className={`check-action-btn ${canCancelNftOffer ? 'cancel' : 'disabled'}`}
+                                          disabled={!canCancelNftOffer}
+                                          onClick={() => {
+                                            if (!canCancelNftOffer) return
+                                            setSignRequest({
+                                              request: {
+                                                TransactionType: 'NFTokenCancelOffer',
+                                                Account: account?.address,
+                                                NFTokenOffers: [offerIndex]
+                                              }
+                                            })
+                                          }}
+                                          title="Cancel"
+                                        >
+                                          <MdMoneyOff /> Cancel
+                                        </button>
                                       </div>
                                     )}
                                   </div>
