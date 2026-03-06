@@ -1532,6 +1532,8 @@ export default function Account2({
     normalizedXamanAccountAlias !== normalizedServiceName
 
   const xamanMonetisationStatus = data?.xamanMeta?.monetisation?.status
+  const hasXamanMonetisationNotice =
+    xamanMonetisationStatus === 'PAYMENT_REQUIRED' || xamanMonetisationStatus === 'COMING_UP'
   const hasXamanCardData =
     !isHistoricalLedger &&
     !!(
@@ -1539,7 +1541,7 @@ export default function Account2({
       data?.xamanMeta?.kycApproved ||
       xamanOwnerAlias ||
       showXamanAccountAlias ||
-      xamanMonetisationStatus
+      hasXamanMonetisationNotice
     )
   const xamanRows = []
 
@@ -1668,7 +1670,13 @@ export default function Account2({
       'Activated',
       <span className="activated-line">
         <span className="tooltip activated-time no-brake">
-          <span className="bold">{activatedRelativeToSelectedTime || timeFromNow(data.inception, i18n)}</span>
+          {data?.inceptionTxHash ? (
+            <Link href={`/transaction/${data.inceptionTxHash}`} onClick={(event) => event.stopPropagation()}>
+              <span className="bold">{activatedRelativeToSelectedTime || timeFromNow(data.inception, i18n)}</span>
+            </Link>
+          ) : (
+            <span className="bold">{activatedRelativeToSelectedTime || timeFromNow(data.inception, i18n)}</span>
+          )}
           <span className="tooltiptext right no-brake activation-tooltip" suppressHydrationWarning>
             {activationTimeText}
           </span>
@@ -2228,25 +2236,14 @@ export default function Account2({
                           </div>
                         )}
 
-                        {!!data?.inceptionTxHash && (
-                          <div className="detail-row issuer-detail-row">
-                            <span>Inception tx:</span>
-                            <span className="copy-inline">
-                              <Link href={`/transaction/${data.inceptionTxHash}`} onClick={(event) => event.stopPropagation()}>
-                                {shortHash(data.inceptionTxHash)}
-                              </Link>
-                              <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={data.inceptionTxHash} />
-                              </span>
-                            </span>
-                          </div>
-                        )}
-
                         {!!data?.ledgerInfo?.previousTxnID && (
                           <div className="detail-row issuer-detail-row">
                             <span>Last affecting tx:</span>
                             <span className="copy-inline">
-                              <Link href={`/transaction/${data.ledgerInfo.previousTxnID}`} onClick={(event) => event.stopPropagation()}>
+                              <Link
+                                href={`/transaction/${data.ledgerInfo.previousTxnID}`}
+                                onClick={(event) => event.stopPropagation()}
+                              >
                                 {shortHash(data.ledgerInfo.previousTxnID)}
                               </Link>
                               <span onClick={(event) => event.stopPropagation()}>
@@ -2260,7 +2257,10 @@ export default function Account2({
                           <div className="detail-row issuer-detail-row">
                             <span>Last initiated tx:</span>
                             <span className="copy-inline">
-                              <Link href={`/transaction/${data.ledgerInfo.accountTxnID}`} onClick={(event) => event.stopPropagation()}>
+                              <Link
+                                href={`/transaction/${data.ledgerInfo.accountTxnID}`}
+                                onClick={(event) => event.stopPropagation()}
+                              >
                                 {shortHash(data.ledgerInfo.accountTxnID)}
                               </Link>
                               <span onClick={(event) => event.stopPropagation()}>
@@ -5871,7 +5871,14 @@ export default function Account2({
                               {isExpanded && (
                                 <div className="asset-details">
                                   <div className="detail-row">
-                                    <span>{activeEscrowsTab === 'self' ? 'Account' : activeEscrowsTab === 'sent' ? 'To' : 'From'}:</span>
+                                    <span>
+                                      {activeEscrowsTab === 'self'
+                                        ? 'Account'
+                                        : activeEscrowsTab === 'sent'
+                                          ? 'To'
+                                          : 'From'}
+                                      :
+                                    </span>
                                     <span className="copy-inline">
                                       {counterpartAddress ? (
                                         <>
@@ -7259,7 +7266,6 @@ export default function Account2({
         .account-qr-toggle:hover,
         .account-qr-toggle.active {
           color: #00b1c1;
-          opacity: 0.85;
         }
 
         .account-qr-toggle :global(svg) {
