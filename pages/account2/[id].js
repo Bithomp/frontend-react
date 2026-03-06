@@ -258,6 +258,8 @@ export default function Account2({
   const [issuedTokens, setIssuedTokens] = useState([])
   const [issuedTokensLoading, setIssuedTokensLoading] = useState(false)
   const [issuedTokensError, setIssuedTokensError] = useState(null)
+  const [objectsLoading, setObjectsLoading] = useState(false)
+  const [objectsError, setObjectsError] = useState(null)
   const [ownedNfts, setOwnedNfts] = useState([])
   const [soldNfts, setSoldNfts] = useState([])
   const [soldNftsLoading, setSoldNftsLoading] = useState(false)
@@ -732,6 +734,7 @@ export default function Account2({
   const hasUriTokens = uriTokens.length > 0
   const hasMintedUriTokens = uriTokens.some((token) => token?.Issuer === data?.address)
   const activeUriTokens = uriTab === 'minted' ? uriTokens.filter((token) => token?.Issuer === data?.address) : uriTokens
+  const showObjectsLoadStatus = !!data?.ledgerInfo?.activated && (objectsLoading || !!objectsError)
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -897,6 +900,8 @@ export default function Account2({
   // Fetch tokens
   useEffect(() => {
     if (!data?.address || !data?.ledgerInfo?.activated) {
+      setObjectsLoading(false)
+      setObjectsError(null)
       setTokens([])
       setOwnedNfts([])
       setSoldNfts([])
@@ -921,6 +926,9 @@ export default function Account2({
     }
 
     const fetchTokens = async () => {
+      setObjectsLoading(true)
+      setObjectsError(null)
+
       try {
         const objectsUrl =
           `v2/objects/${data.address}?limit=1000&priceNativeCurrencySpot=true&currencyDetails=true` +
@@ -1118,6 +1126,8 @@ export default function Account2({
         setTokens(sortedTokens)
       } catch (error) {
         console.error('Failed to fetch tokens:', error)
+        setObjectsError(error?.message || 'Failed to load account objects')
+        setTokens([])
         setOwnedNfts([])
         setOwnedNftIds([])
         setSoldNfts([])
@@ -1128,6 +1138,8 @@ export default function Account2({
         setBurnedNftsLoading(false)
         setReceivedChecks([])
         setSentChecks([])
+        setReceivedEscrows([])
+        setSentEscrows([])
         setSelfEscrows([])
         setIncomingPaychannels([])
         setOutgoingPaychannels([])
@@ -1138,6 +1150,8 @@ export default function Account2({
         setHeldMpts([])
         setIssuedMpts([])
         setUriTokens([])
+      } finally {
+        setObjectsLoading(false)
       }
     }
 
@@ -2732,6 +2746,21 @@ export default function Account2({
           {/* Column 2: Assets */}
           <CollapsibleColumn>
             <div className="assets-section">
+              {showObjectsLoadStatus && (
+                <div className={`asset-item object-load-status ${objectsError ? 'error' : ''}`}>
+                  {objectsLoading ? (
+                    <span className="tx-inline-load object-load-status-text">
+                      <span>Loading account objects and assets</span>
+                      <span className="waiting inline" aria-hidden="true"></span>
+                    </span>
+                  ) : (
+                    <span className="object-load-status-text">
+                      Failed to load account objects. Some assets may be missing.
+                    </span>
+                  )}
+                </div>
+              )}
+
               {hasNonNativeTokenAssets && (
                 <div className="asset-item" onClick={() => setShowTotalWorthDetails(!showTotalWorthDetails)}>
                   <div className="asset-main">
@@ -5334,6 +5363,21 @@ export default function Account2({
           {/* Column 4: Issued Tokens */}
           <CollapsibleColumn>
             <div className="orders-section">
+              {showObjectsLoadStatus && (
+                <div className={`asset-item object-load-status ${objectsError ? 'error' : ''}`}>
+                  {objectsLoading ? (
+                    <span className="tx-inline-load object-load-status-text">
+                      <span>Loading account objects</span>
+                      <span className="waiting inline" aria-hidden="true"></span>
+                    </span>
+                  ) : (
+                    <span className="object-load-status-text">
+                      Failed to load account objects. Object sections may be missing.
+                    </span>
+                  )}
+                </div>
+              )}
+
               {(issuedTokensLoading || issuedTokensError || issuedTokens.length > 0) && (
                 <>
                   <div className="section-header-row">
@@ -7710,6 +7754,33 @@ export default function Account2({
         .asset-item:hover {
           transform: translateY(-1px);
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .object-load-status {
+          cursor: default;
+          border: 1px dashed var(--border-color);
+          display: flex;
+          align-items: center;
+          min-height: 46px;
+        }
+
+        .object-load-status:hover {
+          transform: none;
+          box-shadow: none;
+        }
+
+        .object-load-status.error {
+          border-color: color-mix(in srgb, var(--red) 50%, var(--border-color));
+          background: color-mix(in srgb, var(--red) 8%, var(--background-input));
+        }
+
+        .object-load-status-text {
+          font-size: 12px;
+          color: var(--text-secondary);
+        }
+
+        .object-load-status.error .object-load-status-text {
+          color: var(--red);
         }
 
         .cards-list {
