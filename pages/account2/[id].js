@@ -228,7 +228,7 @@ import {
   FaYoutube,
   FaXTwitter
 } from 'react-icons/fa6'
-import { MdMoneyOff, MdQrCode2 } from 'react-icons/md'
+import { MdMoneyOff, MdQrCode2, MdVerified } from 'react-icons/md'
 import { TbPigMoney } from 'react-icons/tb'
 import { useQRCode } from 'next-qrcode'
 
@@ -545,6 +545,14 @@ export default function Account2({
       key: 'xaman-kyc',
       image: 'xamankyc.png',
       tooltip: 'Xaman KYC verified'
+    })
+  }
+
+  if (data?.verifiedDomain) {
+    achievements.push({
+      key: 'domain-verified',
+      image: 'domainverified.png',
+      tooltip: 'TOML verified domain'
     })
   }
 
@@ -1680,6 +1688,20 @@ export default function Account2({
             >
               {domainText}
             </a>{' '}
+            {data.verifiedDomain && (
+              <span
+                className="blue tooltip"
+                style={{
+                  display: 'inline-block',
+                  verticalAlign: 'bottom',
+                  marginBottom: -6,
+                  marginLeft: -4
+                }}
+              >
+                <MdVerified />
+                <span className="tooltiptext small no-brake">TOML Verified Domain</span>
+              </span>
+            )}{' '}
             {showUnverified && <span className="grey">(unverified)</span>}
           </>
         ) : (
@@ -3327,7 +3349,7 @@ export default function Account2({
                       className={`nft-tab-btn ${uriTab === 'owned' ? 'active' : ''}`}
                       onClick={() => setUriTab('owned')}
                     >
-                      Owned URI ({uriTokens.length})
+                      Owned ({uriTokens.length})
                     </button>
                     {hasMintedUriTokens && (
                       <button
@@ -3335,7 +3357,7 @@ export default function Account2({
                         className={`nft-tab-btn ${uriTab === 'minted' ? 'active' : ''}`}
                         onClick={() => setUriTab('minted')}
                       >
-                        Minted URI ({uriTokens.filter((token) => token?.Issuer === data?.address).length})
+                        Minted ({uriTokens.filter((token) => token?.Issuer === data?.address).length})
                       </button>
                     )}
                   </div>
