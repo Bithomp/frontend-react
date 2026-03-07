@@ -1615,24 +1615,15 @@ export default function Account2({
     normalizedXamanAccountAlias !== normalizedUsername &&
     normalizedXamanAccountAlias !== normalizedServiceName
 
-  const xamanMonetisationStatus = data?.xamanMeta?.monetisation?.status
-  const hasXamanMonetisationNotice =
-    xamanMonetisationStatus === 'PAYMENT_REQUIRED' || xamanMonetisationStatus === 'COMING_UP'
   const hasXamanCardData =
     !isHistoricalLedger &&
-    !!(
-      data?.xamanMeta?.xummPro ||
-      data?.xamanMeta?.kycApproved ||
-      xamanOwnerAlias ||
-      showXamanAccountAlias ||
-      hasXamanMonetisationNotice
-    )
+    !!(data?.xamanMeta?.xummPro || data?.xamanMeta?.kycApproved || xamanOwnerAlias || showXamanAccountAlias)
   const xamanRows = []
 
   if (data?.xamanMeta?.xummPro) {
     xamanRows.push({
       key: 'pro',
-      label: 'Pro:',
+      label: 'Alias:',
       value: data?.xamanMeta?.xummProfile?.slug ? (
         <a href={data.xamanMeta.xummProfile.profileUrl} className="green" target="_blank" rel="noopener nofollow">
           {data.xamanMeta.xummProfile.slug}
@@ -1644,45 +1635,15 @@ export default function Account2({
   }
 
   if (xamanOwnerAlias) {
-    xamanRows.push({ key: 'owner-alias', label: 'Owner alias:', value: xamanOwnerAlias })
+    xamanRows.push({ key: 'owner-alias', label: 'Owner:', value: xamanOwnerAlias })
   }
 
   if (showXamanAccountAlias) {
-    xamanRows.push({ key: 'account-alias', label: 'Account alias:', value: xamanAccountAlias })
+    xamanRows.push({ key: 'account-alias', label: 'Account:', value: xamanAccountAlias })
   }
 
   if (data?.xamanMeta?.kycApproved) {
     xamanRows.push({ key: 'kyc', label: 'KYC:', value: <span className="green">verified</span> })
-  }
-
-  if (xamanMonetisationStatus === 'PAYMENT_REQUIRED') {
-    xamanRows.push({ key: 'pro-limit', label: 'Pro status:', value: <span className="orange">Limited 😔</span> })
-    xamanRows.push({
-      key: 'pro-purchase',
-      label: 'Action:',
-      value: (
-        <a href="https://xrpl-labs.com/pro/get?v=BITHOMP" target="_blank" rel="noopener nofollow">
-          Purchase Xaman Pro
-        </a>
-      )
-    })
-  }
-
-  if (xamanMonetisationStatus === 'COMING_UP') {
-    xamanRows.push({
-      key: 'pro-upcoming',
-      label: 'Pro status:',
-      value: <span className="orange">Soon limited 😔</span>
-    })
-    xamanRows.push({
-      key: 'pro-purchase',
-      label: 'Action:',
-      value: (
-        <a href="https://xrpl-labs.com/pro/get?v=BITHOMP" target="_blank" rel="noopener nofollow">
-          Purchase Xaman Pro
-        </a>
-      )
-    })
   }
 
   if (showPaystring) {
@@ -6806,8 +6767,18 @@ export default function Account2({
 
         .info-rows {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          grid-template-columns: 1fr;
           gap: 12px;
+        }
+
+        @media (min-width: 560px) {
+          .info-rows {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .info-rows > .info-row:last-child:nth-child(odd) {
+            grid-column: 1 / -1;
+          }
         }
 
         .info-row {
