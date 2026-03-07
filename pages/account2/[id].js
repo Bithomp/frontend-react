@@ -7647,19 +7647,26 @@ export default function Account2({
         .time-machine-picker-wrap :global(.dateAndTimeRange),
         .time-machine-picker-wrap :global(.time-machine-input) {
           width: 100%;
-          border: 1px solid var(--border-color);
+          border: 1px solid color-mix(in srgb, var(--accent-link) 60%, var(--border-color) 40%);
           border-radius: 8px;
           background: var(--background-table);
           color: var(--text);
           font-size: 13px;
           padding: 8px 10px;
+          transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+          box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-link) 25%, transparent);
           outline: none;
           box-sizing: border-box;
         }
 
-        .time-machine-picker-wrap :global(.time-machine-input:focus) {
+        .time-machine-picker-wrap :global(.dateAndTimeRange:focus),
+        .time-machine-picker-wrap :global(.dateAndTimeRange:focus-visible),
+        .time-machine-picker-wrap :global(.time-machine-input:focus),
+        .time-machine-picker-wrap :global(.time-machine-input:focus-visible) {
           border-color: var(--accent-link);
-          box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-link) 22%, transparent);
+          box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-link) 40%, transparent);
         }
 
         .time-machine-picker-wrap :global(.time-machine-calendar) {
