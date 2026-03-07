@@ -1963,7 +1963,7 @@ export default function Account2({
                   </a>
                 </div>
               )}
-              <span style={{ fontSize: '13px' }}>{accountStatusNode}</span>
+              <div style={{ fontSize: '13px' }}>{accountStatusNode}</div>
             </div>
 
             {/* Social icons */}
