@@ -569,6 +569,18 @@ export default function Account2({
     })
   }
 
+  const hasApex23Nft = ownedNfts.some((nft) => {
+    return nft?.issuer === 'rfzBM6mvDKNUgZ8yvKN29Qn4fo9Skh9MeL' && nft?.nftokenTaxon === 2
+  })
+
+  if (hasApex23Nft) {
+    achievements.push({
+      key: 'apex23',
+      image: 'apex23.png',
+      tooltip: 'Apex 2023 NFT holder'
+    })
+  }
+
   let fiatRate = fiatRateServer
   let selectedCurrency = selectedCurrencyServer
   if (fiatRateApp) {
