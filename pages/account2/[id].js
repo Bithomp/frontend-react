@@ -1563,15 +1563,23 @@ export default function Account2({
     </div>
   ) : null
 
+  const lastSubmittedTxHash = data?.ledgerInfo?.lastSubmittedTxHash
+  const statusTimeAgoNode = data?.ledgerInfo?.lastSubmittedAt ? (
+    lastSubmittedTxHash ? (
+      <Link href={`/transaction/${lastSubmittedTxHash}`}>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</Link>
+    ) : (
+      <span>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</span>
+    )
+  ) : null
+
   const accountStatusNode = isBlackholed ? (
     <>
-      <span className="orange bold">Blackholed</span>{' '}
-      {!!data?.ledgerInfo?.lastSubmittedAt && <span>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</span>}
+      <span className="orange bold">Blackholed</span> {statusTimeAgoNode}
     </>
   ) : data?.ledgerInfo?.activated ? (
     data?.ledgerInfo?.lastSubmittedAt ? (
       <>
-        <span className="green">Active</span> <span>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</span>
+        <span className="green">Active</span> {statusTimeAgoNode}
       </>
     ) : (
       <>
