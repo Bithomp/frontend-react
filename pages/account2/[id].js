@@ -557,6 +557,18 @@ export default function Account2({
     })
   }
 
+  const hasXaoDaoNft = ownedNfts.some((nft) => {
+    return nft?.issuer === 'rMFNnkPvDmsBVriFh3QRMMRKaVHsSuChdg' && nft?.nftokenTaxon === 1
+  })
+
+  if (hasXaoDaoNft) {
+    achievements.push({
+      key: 'xaodao',
+      image: 'xaodao.png',
+      tooltip: 'XAO DAO NFT holder'
+    })
+  }
+
   let fiatRate = fiatRateServer
   let selectedCurrency = selectedCurrencyServer
   if (fiatRateApp) {
