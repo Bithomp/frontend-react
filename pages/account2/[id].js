@@ -421,7 +421,7 @@ export default function Account2({
   const isTrustlineClawbackEnabled = !!data?.ledgerInfo?.flags?.allowTrustLineClawback
   const isGlobalFreezeEnabled = !!data?.ledgerInfo?.flags?.globalFreeze
   const isNoFreezeEnabled = !!data?.ledgerInfo?.flags?.noFreeze
-  const hasCustomTransferFee = Number(data?.ledgerInfo?.transferRate || 0) > 1000000000
+  const hasCustomTransferFee = data?.ledgerInfo?.transferRate
   const hasIssuerSettingsData =
     isRipplingEnabled ||
     hasCustomTransferFee ||
@@ -5384,6 +5384,63 @@ export default function Account2({
               </div>
             )}
 
+            {hasIssuerSettingsData && (
+              <div className="time-machine-card issuer-settings-card">
+                <button
+                  type="button"
+                  className={`time-machine-toggle ${showIssuerSettingsDetails ? 'active' : ''}`}
+                  onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
+                >
+                  Issuer settings
+                  {hasCustomTransferFee && (
+                    <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
+                  )}
+                </button>
+
+                {showIssuerSettingsDetails && (
+                  <div className="time-machine-panel issuer-settings-panel">
+                    <div className="detail-row issuer-detail-row">
+                      <span>Rippling:</span>
+                      <span className={isRipplingEnabled ? 'green' : 'grey'}>
+                        {isRipplingEnabled ? 'enabled' : 'disabled'}
+                      </span>
+                    </div>
+                    <div className="detail-row issuer-detail-row">
+                      <span>Transfer fee:</span>
+                      <span>{issuerTransferFeeText}</span>
+                    </div>
+                    <div className="detail-row issuer-detail-row">
+                      <span>Escrow:</span>
+                      <span className={isCanEscrowEnabled ? 'green' : 'grey'}>
+                        {isCanEscrowEnabled ? 'enabled' : 'disabled'}
+                      </span>
+                    </div>
+                    <div className="detail-row issuer-detail-row">
+                      <span>Clawback:</span>
+                      <span className={isTrustlineClawbackEnabled && 'bold'}>
+                        {isTrustlineClawbackEnabled ? 'enabled' : 'disabled'}
+                      </span>
+                    </div>
+                    <div className="detail-row issuer-detail-row">
+                      <span>Global freeze:</span>
+                      <span className={isGlobalFreezeEnabled && 'bold'}>
+                        {isGlobalFreezeEnabled ? 'true' : 'false'}
+                      </span>
+                    </div>
+                    <div className="detail-row issuer-detail-row">
+                      <span>No freeze:</span>
+                      <span className={isNoFreezeEnabled && 'bold'}>{isNoFreezeEnabled ? 'enabled' : 'not set'}</span>
+                    </div>
+                    <div className="lp-actions issuer-settings-actions">
+                      <Link href="/services/account-settings" className="lp-action-btn">
+                        Change settings
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {(issuedTokensLoading || issuedTokensError || issuedTokens.length > 0) && (
               <>
                 <div className="section-header-row">
@@ -5394,48 +5451,6 @@ export default function Account2({
                     </Link>
                   )}
                 </div>
-
-                {hasIssuerSettingsData && (
-                  <div className="time-machine-card issuer-settings-card">
-                    <button
-                      type="button"
-                      className={`time-machine-toggle ${showIssuerSettingsDetails ? 'active' : ''}`}
-                      onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
-                    >
-                      Issuer settings
-                      {hasCustomTransferFee && (
-                        <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
-                      )}
-                    </button>
-
-                    {showIssuerSettingsDetails && (
-                      <div className="time-machine-panel issuer-settings-panel">
-                        <div className="detail-row issuer-detail-row">
-                          <span>Rippling:</span>
-                          <span className={isRipplingEnabled ? 'green' : 'grey'}>
-                            {isRipplingEnabled ? 'enabled' : 'disabled'}
-                          </span>
-                        </div>
-                        <div className="detail-row issuer-detail-row">
-                          <span>Transfer fee:</span>
-                          <span>{issuerTransferFeeText}</span>
-                        </div>
-                        <div className="detail-row issuer-detail-row">
-                          <span>Escrow:</span>
-                          <span className={isCanEscrowEnabled ? 'green' : 'grey'}>
-                            {isCanEscrowEnabled ? 'enabled' : 'disabled'}
-                          </span>
-                        </div>
-
-                        <div className="lp-actions issuer-settings-actions">
-                          <Link href="/services/account-settings" className="lp-action-btn">
-                            Change settings
-                          </Link>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
 
                 {issuedTokensLoading && <p className="grey">Loading issued tokens...</p>}
                 {!issuedTokensLoading && issuedTokensError && <p className="red">{issuedTokensError}</p>}
@@ -5618,72 +5633,6 @@ export default function Account2({
                   })}
                 </div>
               </>
-            )}
-
-            {hasIssuerSettingsData && !(issuedTokensLoading || issuedTokensError || issuedTokens.length > 0) && (
-              <div className="time-machine-card issuer-settings-card">
-                <button
-                  type="button"
-                  className={`time-machine-toggle ${showIssuerSettingsDetails ? 'active' : ''}`}
-                  onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
-                >
-                  Issuer settings
-                  {hasCustomTransferFee && (
-                    <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
-                  )}
-                </button>
-
-                {showIssuerSettingsDetails && (
-                  <div className="time-machine-panel issuer-settings-panel">
-                    <div className="detail-row issuer-detail-row">
-                      <span>Rippling:</span>
-                      <span className={isRipplingEnabled ? 'green' : 'grey'}>
-                        {isRipplingEnabled ? 'enabled' : 'disabled'}
-                      </span>
-                    </div>
-                    <div className="detail-row issuer-detail-row">
-                      <span>Transfer fee:</span>
-                      <span>{issuerTransferFeeText}</span>
-                    </div>
-                    <div className="detail-row issuer-detail-row">
-                      <span>Escrow:</span>
-                      <span className={isCanEscrowEnabled ? 'green' : 'grey'}>
-                        {isCanEscrowEnabled ? 'enabled' : 'disabled'}
-                      </span>
-                    </div>
-                    {isTrustlineClawbackEnabled && (
-                      <div className="detail-row issuer-detail-row">
-                        <span>Trustline clawback:</span>
-                        <span>enabled</span>
-                      </div>
-                    )}
-                    {isCanEscrowEnabled && (
-                      <div className="detail-row issuer-detail-row">
-                        <span>Trustline locking:</span>
-                        <span>enabled</span>
-                      </div>
-                    )}
-                    {isGlobalFreezeEnabled && (
-                      <div className="detail-row issuer-detail-row">
-                        <span>Global freeze:</span>
-                        <span>true</span>
-                      </div>
-                    )}
-                    {isNoFreezeEnabled && (
-                      <div className="detail-row issuer-detail-row">
-                        <span>No freeze:</span>
-                        <span>enabled</span>
-                      </div>
-                    )}
-
-                    <div className="lp-actions issuer-settings-actions">
-                      <Link href="/services/account-settings" className="lp-action-btn">
-                        Change settings
-                      </Link>
-                    </div>
-                  </div>
-                )}
-              </div>
             )}
 
             {hasDexOrders && (
