@@ -57,52 +57,8 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
   const testPayment = type === 'testPayment'
 
   const FAUCET_DENIED_COUNTRIES = [
-    'BJ', // Benin
-    'CM', // Cameroon
     'ID', // Indonesia
-    'IN', // India
-    'PH', // Philippines
-    'TG', // Togo
-    'VN', // Vietnam
-
-    'AF', // Afghanistan
-    'BF', // Burkina Faso
-    'BI', // Burundi
-    'CD', // Democratic Republic of the Congo
-    'CF', // Central African Republic
-    'CG', // Republic of the Congo
-    'CI', // Côte d’Ivoire
-    'ET', // Ethiopia
-    'GH', // Ghana
-    'GM', // Gambia
-    'GN', // Guinea
-    'GW', // Guinea-Bissau
-    'HT', // Haiti
-    'KH', // Cambodia
-    'LA', // Laos
-    'LK', // Sri Lanka
-    'LR', // Liberia
-    'MG', // Madagascar
-    'ML', // Mali
-    'MM', // Myanmar
-    'MZ', // Mozambique
-    'NE', // Niger
-    'NG', // Nigeria
-    'NP', // Nepal
-    'PK', // Pakistan
-    'RW', // Rwanda
-    'SD', // Sudan
-    'SL', // Sierra Leone
-    'SN', // Senegal
-    'SO', // Somalia
-    'SS', // South Sudan
-    'SY', // Syria
-    'TD', // Chad
-    'TZ', // Tanzania
-    'UG', // Uganda
-    'YE', // Yemen
-    'ZM', // Zambia
-    'ZW' // Zimbabwe
+    'IN' // India
   ]
 
   const isCountryKnown = Boolean(countryCode)
@@ -340,8 +296,8 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
                           addressDetails: { username: account?.username, service: account?.service }
                         }
                       : address === queryAddress && isAddressValid(queryAddress)
-                      ? { address }
-                      : {}
+                        ? { address }
+                        : {}
                   }
                   type="address"
                   hideButton={true}
