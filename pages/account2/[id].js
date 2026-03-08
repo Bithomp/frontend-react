@@ -218,6 +218,7 @@ import { scaleAmount, subtract } from '../../utils/calc'
 import { addressBalanceChanges, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import { isRipplingOnIssuer } from '../../utils/transaction/payment'
 import {
+  FaArrowsRotate,
   FaFacebook,
   FaGear,
   FaInstagram,
@@ -3727,12 +3728,25 @@ export default function Account2({
               <span className="section-title">Transactions</span>
               <div className="tx-header-actions">
                 <button
-                  className={`tx-filter-toggle ${showTxFilters ? 'active' : ''}`}
+                  className="tx-filter-toggle tooltip"
+                  onClick={() => fetchRecentTransactions()}
+                  aria-label="Reload transactions"
+                  type="button"
+                  disabled={!data?.address || transactionsLoading || transactionsLoadingMore}
+                >
+                  <FaArrowsRotate
+                    className={`tx-refresh-icon ${transactionsLoading || transactionsLoadingMore ? 'spinning' : ''}`}
+                  />
+                  <span className="tooltiptext">Update</span>
+                </button>
+                <button
+                  className={`tx-filter-toggle tooltip ${showTxFilters ? 'active' : ''}`}
                   onClick={() => setShowTxFilters((prev) => !prev)}
                   aria-label="Toggle transaction filters"
                   type="button"
                 >
                   <FaGear />
+                  <span className="tooltiptext">Settings</span>
                 </button>
                 {data?.address && (
                   <Link className="section-link" href={`/account/${data.address}/transactions`}>
@@ -6912,6 +6926,29 @@ export default function Account2({
         .tx-filter-toggle.active {
           color: var(--accent-link);
           border-color: var(--accent-link);
+        }
+
+        .tx-filter-toggle:disabled {
+          opacity: 0.6;
+          cursor: default;
+        }
+
+        :global(.tx-refresh-icon) {
+          display: block;
+          transform-origin: center;
+        }
+
+        :global(.tx-refresh-icon.spinning) {
+          animation: tx-spin 0.8s linear infinite;
+        }
+
+        @keyframes tx-spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
         }
 
         .tx-filters-panel {
