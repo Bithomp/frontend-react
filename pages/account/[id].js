@@ -4765,7 +4765,7 @@ export default function Account2({
                             <div className="asset-details">
                               <div className="detail-row">
                                 <span>Type:</span>
-                                <span>{getTransactionTypeLabel(tx?.TransactionType)}</span>
+                                <span>{tx?.TransactionType}</span>
                               </div>
 
                               {showDexSpecifiedOrderDetails && !!dexTakerGets && (
