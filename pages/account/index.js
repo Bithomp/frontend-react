@@ -20,19 +20,12 @@ export default function Account2Index() {
 
   return (
     <>
-      <SEO
-        page="Account (New Layout)"
-        title="Account - New Column Layout"
-        description="Account details with collapsible column layout - Ledger accounts"
-      />
+      <SEO page="Account" title="Account Information" description="Account details" />
       <div className="content-profile account">
         <h1 className="center">{t('explorer.header.account')}</h1>
-        <p className="center">
-          Experience the new collapsible column layout for account information. View your assets, transactions, and
-          orders in an organized, customizable interface.
-        </p>
+        <p className="center">View assets, transactions, and orders in an organized interface.</p>
         <br />
-        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account2" type="explorer" />
+        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" type="explorer" />
       </div>
     </>
   )
