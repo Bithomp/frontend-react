@@ -1906,13 +1906,20 @@ export default function Account2({
   return (
     <>
       <SEO
+        page="Account"
         title={
-          data.username
-            ? `${data.username} (${data.address})`
-            : data.service
-              ? `${data.service} (${data.address})`
-              : data.address
+          (data.service?.name || data.username || data.address) +
+          (data?.ledgerInfo?.balance > 1000000
+            ? ' - ' + shortNiceNumber(data.ledgerInfo.balance / 1000000, 2, 0) + ' ' + nativeCurrency
+            : '')
         }
+        description={
+          'Account details, transactions, NFTs, Tokens for ' +
+          (data.service?.name || data.username || '') +
+          ' ' +
+          data.address
+        }
+        image={{ file: avatarSrc(data.address) }}
       />
 
       <div className="account2-container">
