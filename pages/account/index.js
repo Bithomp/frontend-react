@@ -15,24 +15,24 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function AccountIndex() {
+export default function Account2Index() {
   const { t } = useTranslation()
 
   return (
     <>
       <SEO
-        page="Account"
-        title={t('explorer.header.account')}
-        description="Account details, transactions, NFTs, Tokens for XRP Ledger accounts"
+        page="Account (New Layout)"
+        title="Account - New Column Layout"
+        description="Account details with collapsible column layout - Ledger accounts"
       />
       <div className="content-profile account">
         <h1 className="center">{t('explorer.header.account')}</h1>
         <p className="center">
-          Here you will be able to see all the information about the account, including the transactions, tokens, NFTs,
-          and more.
+          Experience the new collapsible column layout for account information. View your assets, transactions, and
+          orders in an organized, customizable interface.
         </p>
         <br />
-        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" type="explorer" />
+        <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account2" type="explorer" />
       </div>
     </>
   )
