@@ -3999,7 +3999,6 @@ export default function Account2({
                           : nftBuyerAddress === data?.address
                             ? 'buyer'
                             : null
-                      const txTypeLower = txType.toLowerCase()
                       const isAmmTx = txType.startsWith('AMM')
                       const isDexOfferTx = txType === 'OfferCreate' || txType === 'OfferCancel'
                       const myAddressOrderbookChanges =
@@ -4103,16 +4102,9 @@ export default function Account2({
                         (!!dexTakerGets || !!dexTakerPays)
                       const hasAmmVoteTradingFee = txType === 'AMMVote' && (tx?.TradingFee || tx?.TradingFee === 0)
                       const ammVoteTradingFeeText = hasAmmVoteTradingFee ? `${tx.TradingFee / 100000}%` : null
-                      const isCreateNftOfferTx =
-                        txType === 'NFTokenCreateOffer' ||
-                        txTypeLower === 'createnftselloffer' ||
-                        txTypeLower === 'createnftbuyoffer'
-                      const isAcceptNftOfferTx =
-                        txType === 'NFTokenAcceptOffer' ||
-                        txTypeLower === 'acceptnftselloffer' ||
-                        txTypeLower === 'acceptnftbuyoffer' ||
-                        txTypeLower === 'acceptnftoffer'
-                      const isCancelNftOfferTx = txType === 'NFTokenCancelOffer' || txTypeLower === 'cancelnftoffer'
+                      const isCreateNftOfferTx = txType === 'NFTokenCreateOffer'
+                      const isAcceptNftOfferTx = txType === 'NFTokenAcceptOffer'
+                      const isCancelNftOfferTx = txType === 'NFTokenCancelOffer'
                       const isNftOfferTx = isCreateNftOfferTx || isAcceptNftOfferTx || isCancelNftOfferTx
                       const outcomeOfferIds = (outcome?.nftokenOfferChanges || []).flatMap((entry) =>
                         (entry?.nftokenOfferChanges || []).map((offerChange) => offerChange?.index)
