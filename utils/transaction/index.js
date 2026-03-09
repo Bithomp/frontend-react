@@ -416,12 +416,14 @@ export const dappBySourceTag = (sourceTag) => {
 
 export const memoNode = (memos, type = 'tr') => {
   let output = []
+  const showOnlyHiddenMemos = type === 'additional'
   if (memos && Array.isArray(memos)) {
     for (let j = 0; j < memos.length; j++) {
       const memo = memos[j]
       let memotype = memo?.type
       let memopiece = memo?.data
       let memoformat = memo?.format
+      let hiddenMemoPiece = null
 
       const redFlags = ['airdrop', 'claim', 'reward', 'giveaway']
 
@@ -447,18 +449,21 @@ export const memoNode = (memos, type = 'tr') => {
       if (memopiece) {
         if (memopiece.includes('xrplexplorer.com') || memopiece.includes('bithomp.com')) {
           // keep it for testnetworks
+          hiddenMemoPiece = memopiece
           clientname = memopiece.replace(/xrplexplorer\.com/g, 'bithomp.com')
           if (memopiece.includes(' faucet')) {
             clientname = memopiece.replace(' faucet', '/faucet')
           }
           memopiece = ''
         } else if (memopiece.includes('xahauexplorer.com')) {
+          hiddenMemoPiece = memopiece
           clientname = memopiece
           if (memopiece.includes(' faucet')) {
             clientname = memopiece.replace(' faucet', '/faucet')
           }
           memopiece = ''
         } else if (memopiece.includes('initiated via xmagnetic.org')) {
+          hiddenMemoPiece = memopiece
           clientname = 'xmagnetic.org'
           memopiece = ''
         }
@@ -475,7 +480,24 @@ export const memoNode = (memos, type = 'tr') => {
           }
         }
 
-        if (decodeJsonMemo(memopiece)) {
+        if (showOnlyHiddenMemos) {
+          if (hiddenMemoPiece) {
+            output.push(
+              <tr key={'ah' + j}>
+                <TData>Memo{memos.length > 1 ? ' ' + (j + 1) : ''}</TData>
+                <TData>
+                  {memotype && memotype.toLowerCase() !== 'memo' && (
+                    <span className="bold">
+                      {memotype}
+                      <br />
+                    </span>
+                  )}
+                  {hiddenMemoPiece}
+                </TData>
+              </tr>
+            )
+          }
+        } else if (decodeJsonMemo(memopiece)) {
           if (type === 'tr') {
             output.push(
               <tr key={'a2' + j}>
@@ -580,7 +602,7 @@ export const memoNode = (memos, type = 'tr') => {
           }
         }
 
-        if (clientname) {
+        if (clientname && !showOnlyHiddenMemos) {
           if (type === 'tr') {
             output.push(
               <tr key="a3">

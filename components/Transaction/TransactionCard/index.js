@@ -438,6 +438,7 @@ export const TransactionCard = ({
                   </tr>
                   {showAdditionalData && (
                     <>
+                      {specification?.memos && memoNode(specification.memos, 'additional')}
                       {tx.SetFlag !== undefined && (
                         <tr>
                           <TData>Set flag</TData>
