@@ -4056,6 +4056,42 @@ export default function Account2({
                         if (!Number.isFinite(numericValue)) return null
                         return sign < 0 ? -numericValue : numericValue
                       }
+                      const isEscrowCreateTx = txType === 'EscrowCreate'
+                      const escrowCreateSignedAmount =
+                        isEscrowCreateTx && tx?.Amount ? toSignedDexAmount(tx.Amount, isSource ? -1 : 1) : null
+                      const escrowCreateAmountFiat = escrowCreateSignedAmount
+                        ? nativeCurrencyToFiat({
+                            amount: escrowCreateSignedAmount,
+                            selectedCurrency,
+                            fiatRate: txHistoricalRate,
+                            asText: true
+                          })
+                        : ''
+                      const escrowCreateAmountDisplay = escrowCreateSignedAmount
+                        ? {
+                            collapsedNode: (
+                              <span className="tx-inline-change-item">
+                                <span className="tx-inline-change grey">
+                                  {amountFormat(escrowCreateSignedAmount, {
+                                    icon: true,
+                                    short: true,
+                                    maxFractionDigits: 2,
+                                    showPlus: true
+                                  })}
+                                </span>
+                                {!!escrowCreateAmountFiat && (
+                                  <span className="tx-change-fiat">{escrowCreateAmountFiat}</span>
+                                )}
+                              </span>
+                            ),
+                            expandedText: amountFormat(escrowCreateSignedAmount, {
+                              icon: true,
+                              precise: 'nice',
+                              showPlus: true
+                            }),
+                            expandedFiat: escrowCreateAmountFiat
+                          }
+                        : null
                       const dexSpecifiedChanges = isDexNotFullfilled
                         ? [toSignedDexAmount(dexTakerGets, -1), toSignedDexAmount(dexTakerPays, 1)].filter(Boolean)
                         : []
@@ -4685,6 +4721,8 @@ export default function Account2({
                                 </>
                               ) : hasAmmVoteTradingFee ? (
                                 <span className="tx-inline-status grey">Trading fee: {ammVoteTradingFeeText}</span>
+                              ) : escrowCreateAmountDisplay ? (
+                                escrowCreateAmountDisplay.collapsedNode
                               ) : nftCollapsedSpecialDisplay ? (
                                 nftCollapsedSpecialDisplay.collapsedNode
                               ) : showFreeNftBadge ? (
@@ -5116,6 +5154,18 @@ export default function Account2({
                                       selectedCurrency,
                                       fiatRate: txHistoricalRate
                                     })}
+                                  </span>
+                                </div>
+                              )}
+
+                              {escrowCreateAmountDisplay && (
+                                <div className="detail-row">
+                                  <span>Amount:</span>
+                                  <span className="tx-detail-offer-amount">
+                                    <span className="grey">{escrowCreateAmountDisplay.expandedText}</span>
+                                    {!!escrowCreateAmountDisplay.expandedFiat && (
+                                      <span className="tx-change-fiat">{escrowCreateAmountDisplay.expandedFiat}</span>
+                                    )}
                                   </span>
                                 </div>
                               )}
