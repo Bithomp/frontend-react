@@ -4060,79 +4060,49 @@ export default function Account2({
                         if (!Number.isFinite(numericValue)) return null
                         return sign < 0 ? -numericValue : numericValue
                       }
-                      const isEscrowCreateTx = txType === 'EscrowCreate'
-                      const escrowCreateSignedAmount =
-                        isEscrowCreateTx && tx?.Amount ? toSignedDexAmount(tx.Amount, isSource ? -1 : 1) : null
-                      const escrowCreateAmountFiat = escrowCreateSignedAmount
-                        ? nativeCurrencyToFiat({
-                            amount: escrowCreateSignedAmount,
-                            selectedCurrency,
-                            fiatRate: txHistoricalRate,
-                            asText: true
-                          })
-                        : ''
-                      const escrowCreateAmountDisplay = escrowCreateSignedAmount
-                        ? {
-                            collapsedNode: (
-                              <span className="tx-inline-change-item">
-                                <span className="tx-inline-change grey">
-                                  {amountFormat(escrowCreateSignedAmount, {
-                                    icon: true,
-                                    short: true,
-                                    maxFractionDigits: 2,
-                                    showPlus: true
-                                  })}
-                                </span>
-                                {!!escrowCreateAmountFiat && (
-                                  <span className="tx-change-fiat">{escrowCreateAmountFiat}</span>
-                                )}
+                      const buildTxAmountDisplay = ({ amount, sign, tone = 'grey', withIssuer = false }) => {
+                        if (amount === null || typeof amount === 'undefined') return null
+
+                        const displayAmount = typeof sign === 'number' ? toSignedDexAmount(amount, sign) : amount
+                        if (!displayAmount) return null
+
+                        const displayAmountFiat = nativeCurrencyToFiat({
+                          amount: displayAmount,
+                          selectedCurrency,
+                          fiatRate: txHistoricalRate,
+                          asText: true
+                        })
+
+                        return {
+                          collapsedNode: (
+                            <span className="tx-inline-change-item">
+                              <span className={`tx-inline-change ${tone}`}>
+                                {amountFormat(displayAmount, {
+                                  icon: true,
+                                  short: true,
+                                  maxFractionDigits: 2,
+                                  showPlus: true
+                                })}
                               </span>
-                            ),
-                            expandedText: amountFormat(escrowCreateSignedAmount, {
-                              icon: true,
-                              precise: 'nice',
-                              showPlus: true
-                            }),
-                            expandedFiat: escrowCreateAmountFiat
-                          }
-                        : null
-                      const isCheckCreateTx = txType === 'CheckCreate'
-                      const checkCreateSignedAmount =
-                        isCheckCreateTx && tx?.SendMax ? toSignedDexAmount(tx.SendMax, isSource ? -1 : 1) : null
-                      const checkCreateAmountFiat = checkCreateSignedAmount
-                        ? nativeCurrencyToFiat({
-                            amount: checkCreateSignedAmount,
-                            selectedCurrency,
-                            fiatRate: txHistoricalRate,
-                            asText: true
-                          })
-                        : ''
-                      const checkCreateAmountDisplay = checkCreateSignedAmount
-                        ? {
-                            collapsedNode: (
-                              <span className="tx-inline-change-item">
-                                <span className="tx-inline-change grey">
-                                  {amountFormat(checkCreateSignedAmount, {
-                                    icon: true,
-                                    short: true,
-                                    maxFractionDigits: 2,
-                                    showPlus: true
-                                  })}
-                                </span>
-                                {!!checkCreateAmountFiat && (
-                                  <span className="tx-change-fiat">{checkCreateAmountFiat}</span>
-                                )}
-                              </span>
-                            ),
-                            expandedText: amountFormat(checkCreateSignedAmount, {
-                              icon: true,
-                              precise: 'nice',
-                              showPlus: true
-                            }),
-                            expandedFiat: checkCreateAmountFiat
-                          }
-                        : null
-                      const txSpecialAmountDisplay = escrowCreateAmountDisplay || checkCreateAmountDisplay
+                              {!!displayAmountFiat && <span className="tx-change-fiat">{displayAmountFiat}</span>}
+                            </span>
+                          ),
+                          expandedText: amountFormat(displayAmount, {
+                            icon: true,
+                            withIssuer,
+                            precise: 'nice',
+                            showPlus: true
+                          }),
+                          expandedFiat: displayAmountFiat
+                        }
+                      }
+                      const specialAmountRaw =
+                        txType === 'EscrowCreate' ? tx?.Amount : txType === 'CheckCreate' ? tx?.SendMax : null
+                      const txSpecialAmountDisplay = buildTxAmountDisplay({
+                        amount: specialAmountRaw,
+                        sign: isSource ? -1 : 1,
+                        tone: 'grey'
+                      })
                       const dexSpecifiedChanges = isDexNotFullfilled
                         ? [toSignedDexAmount(dexTakerGets, -1), toSignedDexAmount(dexTakerPays, 1)].filter(Boolean)
                         : []
@@ -4486,30 +4456,11 @@ export default function Account2({
                         showFreeNftBadge &&
                         typeof nftOfferLegacyLabel === 'string' &&
                         nftOfferLegacyLabel.startsWith('Received NFT from')
-                      const isIncomingSellOffer =
-                        isCreateNftOfferTx && tx?.Account !== data?.address && txdata?.specification?.flags?.sellToken
-                      const incomingSellOfferAmount =
-                        isIncomingSellOffer && hasNftOfferAmount ? toSignedDexAmount(nftOfferAmountRaw, -1) : null
-                      const incomingSellOfferFiat = incomingSellOfferAmount
-                        ? nativeCurrencyToFiat({
-                            amount: incomingSellOfferAmount,
-                            selectedCurrency,
-                            fiatRate: txHistoricalRate,
-                            asText: true
-                          })
-                        : ''
-                      const isOutgoingSellOffer =
-                        isCreateNftOfferTx && tx?.Account === data?.address && txdata?.specification?.flags?.sellToken
-                      const outgoingSellOfferAmount =
-                        isOutgoingSellOffer && hasNftOfferAmount ? toSignedDexAmount(nftOfferAmountRaw, 1) : null
-                      const outgoingSellOfferFiat = outgoingSellOfferAmount
-                        ? nativeCurrencyToFiat({
-                            amount: outgoingSellOfferAmount,
-                            selectedCurrency,
-                            fiatRate: txHistoricalRate,
-                            asText: true
-                          })
-                        : ''
+                      const isNftSellOffer = !!txdata?.specification?.flags?.sellToken
+                      const isNftBuyOffer = !isNftSellOffer
+                      const isIncomingSellOffer = isCreateNftOfferTx && tx?.Account !== data?.address && isNftSellOffer
+                      const isOutgoingSellOffer = isCreateNftOfferTx && tx?.Account === data?.address && isNftSellOffer
+                      const isCreateNftBuyOfferTx = isCreateNftOfferTx && isNftBuyOffer
                       const isNftMintTx = tx?.TransactionType === 'NFTokenMint'
                       const nftMintDestinationAddress = tx?.Destination || destinationAddress
                       const nftMintAmountRaw =
@@ -4538,61 +4489,52 @@ export default function Account2({
                         nftMintSpecialLabel === 'NFT Mint with Sell Offer for' &&
                         nftMintAmountRaw !== null &&
                         typeof nftMintAmountRaw !== 'undefined'
-                      const nftMintSellOfferAmount = showNftMintSellOfferAmount
-                        ? toSignedDexAmount(nftMintAmountRaw, 1)
-                        : null
-                      const nftMintSellOfferFiat = nftMintSellOfferAmount
-                        ? nativeCurrencyToFiat({
-                            amount: nftMintSellOfferAmount,
-                            selectedCurrency,
-                            fiatRate: txHistoricalRate,
-                            asText: true
-                          })
-                        : ''
-                      const createNftAmountDisplay = (amount, fiatText) => {
-                        if (amount === null || typeof amount === 'undefined') return null
-                        return {
-                          collapsedNode: (
-                            <span className="tx-inline-change-item">
-                              <span className="tx-inline-change orange">
-                                {amountFormat(amount, {
-                                  icon: true,
-                                  short: true,
-                                  maxFractionDigits: 2,
-                                  showPlus: true
-                                })}
-                              </span>
-                              {!!fiatText && <span className="tx-change-fiat">{fiatText}</span>}
-                            </span>
-                          ),
-                          expandedText: amountFormat(amount, {
-                            icon: true,
-                            withIssuer: true,
-                            precise: 'nice',
-                            showPlus: true
-                          }),
-                          expandedFiat: fiatText
-                        }
-                      }
                       const incomingSellOfferDisplay =
-                        !showFreeNftBadge && incomingSellOfferAmount
-                          ? createNftAmountDisplay(incomingSellOfferAmount, incomingSellOfferFiat)
+                        !showFreeNftBadge && isIncomingSellOffer && hasNftOfferAmount
+                          ? buildTxAmountDisplay({
+                              amount: nftOfferAmountRaw,
+                              sign: -1,
+                              tone: 'orange',
+                              withIssuer: true
+                            })
                           : null
                       const outgoingSellOfferDisplay =
-                        !showFreeNftBadge && outgoingSellOfferAmount
-                          ? createNftAmountDisplay(outgoingSellOfferAmount, outgoingSellOfferFiat)
+                        !showFreeNftBadge && isOutgoingSellOffer && hasNftOfferAmount
+                          ? buildTxAmountDisplay({
+                              amount: nftOfferAmountRaw,
+                              sign: 1,
+                              tone: 'orange',
+                              withIssuer: true
+                            })
                           : null
-                      const nftMintSellOfferDisplay =
-                        showNftMintSellOfferAmount && nftMintSellOfferAmount
-                          ? createNftAmountDisplay(nftMintSellOfferAmount, nftMintSellOfferFiat)
+                      const createNftBuyOfferDisplay =
+                        !showFreeNftBadge && isCreateNftBuyOfferTx && hasNftOfferAmount
+                          ? buildTxAmountDisplay({
+                              amount: nftOfferAmountRaw,
+                              sign: isSource ? -1 : 1,
+                              tone: 'orange',
+                              withIssuer: true
+                            })
                           : null
-                      const nftOfferAmountDetailDisplay = incomingSellOfferDisplay || outgoingSellOfferDisplay
+                      const nftMintSellOfferDisplay = showNftMintSellOfferAmount
+                        ? buildTxAmountDisplay({
+                            amount: nftMintAmountRaw,
+                            sign: 1,
+                            tone: 'orange',
+                            withIssuer: true
+                          })
+                        : null
+                      const nftOfferAmountDetailDisplay =
+                        incomingSellOfferDisplay || outgoingSellOfferDisplay || createNftBuyOfferDisplay
                       const offerAmountExpandedText =
                         nftOfferAmountDetailDisplay?.expandedText || nftOfferAmountExpandedText
                       const offerAmountFiatDetailText =
                         nftOfferAmountDetailDisplay?.expandedFiat || nftOfferAmountFiatExpandedText
                       const nftCollapsedSpecialDisplay =
-                        incomingSellOfferDisplay || outgoingSellOfferDisplay || nftMintSellOfferDisplay
+                        incomingSellOfferDisplay ||
+                        outgoingSellOfferDisplay ||
+                        createNftBuyOfferDisplay ||
+                        nftMintSellOfferDisplay
                       const fallbackTxTypeLabel = getTransactionTypeLabel(txType)
                       const escrowCreateCollapsedLabel =
                         txType === 'EscrowCreate' ? (isSource ? 'Escrow sent to' : 'Escrow received from') : null
