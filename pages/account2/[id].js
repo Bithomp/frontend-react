@@ -4096,6 +4096,43 @@ export default function Account2({
                             expandedFiat: escrowCreateAmountFiat
                           }
                         : null
+                      const isCheckCreateTx = txType === 'CheckCreate'
+                      const checkCreateSignedAmount =
+                        isCheckCreateTx && tx?.SendMax ? toSignedDexAmount(tx.SendMax, isSource ? -1 : 1) : null
+                      const checkCreateAmountFiat = checkCreateSignedAmount
+                        ? nativeCurrencyToFiat({
+                            amount: checkCreateSignedAmount,
+                            selectedCurrency,
+                            fiatRate: txHistoricalRate,
+                            asText: true
+                          })
+                        : ''
+                      const checkCreateAmountDisplay = checkCreateSignedAmount
+                        ? {
+                            collapsedNode: (
+                              <span className="tx-inline-change-item">
+                                <span className="tx-inline-change grey">
+                                  {amountFormat(checkCreateSignedAmount, {
+                                    icon: true,
+                                    short: true,
+                                    maxFractionDigits: 2,
+                                    showPlus: true
+                                  })}
+                                </span>
+                                {!!checkCreateAmountFiat && (
+                                  <span className="tx-change-fiat">{checkCreateAmountFiat}</span>
+                                )}
+                              </span>
+                            ),
+                            expandedText: amountFormat(checkCreateSignedAmount, {
+                              icon: true,
+                              precise: 'nice',
+                              showPlus: true
+                            }),
+                            expandedFiat: checkCreateAmountFiat
+                          }
+                        : null
+                      const txSpecialAmountDisplay = escrowCreateAmountDisplay || checkCreateAmountDisplay
                       const dexSpecifiedChanges = isDexNotFullfilled
                         ? [toSignedDexAmount(dexTakerGets, -1), toSignedDexAmount(dexTakerPays, 1)].filter(Boolean)
                         : []
@@ -4559,11 +4596,14 @@ export default function Account2({
                       const fallbackTxTypeLabel = getTransactionTypeLabel(txType)
                       const escrowCreateCollapsedLabel =
                         txType === 'EscrowCreate' ? (isSource ? 'Escrow sent to' : 'Escrow received from') : null
+                      const checkCreateCollapsedLabel =
+                        txType === 'CheckCreate' ? (isSource ? 'Check sent to' : 'Check received from') : null
                       const txTypeShortLabel =
                         (isRipplingPayment ? 'Rippling' : null) ||
                         (isSelfPayment ? 'Swap' : null) ||
                         (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
                         escrowCreateCollapsedLabel ||
+                        checkCreateCollapsedLabel ||
                         dexOfferShortLabel ||
                         nftOfferLegacyLabel ||
                         nftMintSpecialLabel ||
@@ -4585,9 +4625,11 @@ export default function Account2({
                                     ? txTypeShortLabel
                                     : txType === 'EscrowCreate'
                                       ? txTypeShortLabel
-                                      : counterparty
-                                        ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
-                                        : txTypeShortLabel
+                                      : txType === 'CheckCreate'
+                                        ? txTypeShortLabel
+                                        : counterparty
+                                          ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
+                                          : txTypeShortLabel
                       const showBrokerInCollapsedTitle =
                         isBrokeredNftAccept &&
                         !!brokerAddress &&
@@ -4706,8 +4748,8 @@ export default function Account2({
                                 </>
                               ) : hasAmmVoteTradingFee ? (
                                 <span className="tx-inline-status grey">Trading fee: {ammVoteTradingFeeText}</span>
-                              ) : escrowCreateAmountDisplay ? (
-                                escrowCreateAmountDisplay.collapsedNode
+                              ) : txSpecialAmountDisplay ? (
+                                txSpecialAmountDisplay.collapsedNode
                               ) : nftCollapsedSpecialDisplay ? (
                                 nftCollapsedSpecialDisplay.collapsedNode
                               ) : showFreeNftBadge ? (
@@ -5143,13 +5185,13 @@ export default function Account2({
                                 </div>
                               )}
 
-                              {escrowCreateAmountDisplay && (
+                              {txSpecialAmountDisplay && (
                                 <div className="detail-row">
                                   <span>Amount:</span>
                                   <span className="tx-detail-offer-amount">
-                                    <span className="grey">{escrowCreateAmountDisplay.expandedText}</span>
-                                    {!!escrowCreateAmountDisplay.expandedFiat && (
-                                      <span className="tx-change-fiat">{escrowCreateAmountDisplay.expandedFiat}</span>
+                                    <span className="grey">{txSpecialAmountDisplay.expandedText}</span>
+                                    {!!txSpecialAmountDisplay.expandedFiat && (
+                                      <span className="tx-change-fiat">{txSpecialAmountDisplay.expandedFiat}</span>
                                     )}
                                   </span>
                                 </div>
