@@ -1658,19 +1658,17 @@ export default function Account2({
 
   const hasXamanCardData =
     !isHistoricalLedger &&
-    !!(data?.xamanMeta?.xummPro || data?.xamanMeta?.kycApproved || xamanOwnerAlias || showXamanAccountAlias)
+    !!(data?.xamanMeta?.xummProfile?.slug || data?.xamanMeta?.kycApproved || xamanOwnerAlias || showXamanAccountAlias)
   const xamanRows = []
 
-  if (data?.xamanMeta?.xummPro) {
+  if (data?.xamanMeta?.xummProfile?.slug) {
     xamanRows.push({
       key: 'pro',
       label: 'Alias:',
-      value: data?.xamanMeta?.xummProfile?.slug ? (
+      value: (
         <a href={data.xamanMeta.xummProfile.profileUrl} className="green" target="_blank" rel="noopener nofollow">
           {data.xamanMeta.xummProfile.slug}
         </a>
-      ) : (
-        <span className="bold">activated</span>
       )
     })
   }
