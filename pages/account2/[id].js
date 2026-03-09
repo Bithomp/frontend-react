@@ -215,7 +215,12 @@ import {
   userOrServiceName
 } from '../../utils/format'
 import { scaleAmount, subtract } from '../../utils/calc'
-import { addressBalanceChanges, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
+import {
+  addressBalanceChanges,
+  errorCodeDescription,
+  getTransactionTypeLabel,
+  shortErrorCode
+} from '../../utils/transaction'
 import { isRipplingOnIssuer } from '../../utils/transaction/payment'
 import {
   FaArrowsRotate,
@@ -4551,32 +4556,18 @@ export default function Account2({
                         nftOfferAmountDetailDisplay?.expandedFiat || nftOfferAmountFiatExpandedText
                       const nftCollapsedSpecialDisplay =
                         incomingSellOfferDisplay || outgoingSellOfferDisplay || nftMintSellOfferDisplay
+                      const fallbackTxTypeLabel = getTransactionTypeLabel(txType)
+                      const escrowCreateCollapsedLabel =
+                        txType === 'EscrowCreate' ? (isSource ? 'Escrow sent to' : 'Escrow received from') : null
                       const txTypeShortLabel =
                         (isRipplingPayment ? 'Rippling' : null) ||
                         (isSelfPayment ? 'Swap' : null) ||
                         (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
+                        escrowCreateCollapsedLabel ||
                         dexOfferShortLabel ||
                         nftOfferLegacyLabel ||
                         nftMintSpecialLabel ||
-                        (txType === 'AccountSet'
-                          ? 'Account settings update'
-                          : txType === 'AMMDeposit'
-                            ? 'AMM Deposit'
-                            : txType === 'AMMVote'
-                              ? 'AMM Vote'
-                              : txType === 'AMMWithdraw'
-                                ? 'AMM Withdraw'
-                                : txType === 'NFTokenMint'
-                                  ? 'NFT Mint'
-                                  : txType === 'NFTokenBurn'
-                                    ? 'NFT Burn'
-                                    : txType === 'NFTokenCreateOffer'
-                                      ? 'NFT offer'
-                                      : txType === 'NFTokenAcceptOffer'
-                                        ? 'NFT offer accept'
-                                        : txType === 'NFTokenCancelOffer'
-                                          ? 'NFT offer cancel'
-                                          : txType || '-')
+                        fallbackTxTypeLabel
                       const txTypeCollapsedLabel =
                         isSelfPayment || isAccountDeleteTx || isRipplingPayment
                           ? txTypeShortLabel
@@ -4592,9 +4583,11 @@ export default function Account2({
                                   ? txTypeShortLabel
                                   : isDexOfferTx
                                     ? txTypeShortLabel
-                                    : counterparty
-                                      ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
-                                      : txTypeShortLabel
+                                    : txType === 'EscrowCreate'
+                                      ? txTypeShortLabel
+                                      : counterparty
+                                        ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
+                                        : txTypeShortLabel
                       const showBrokerInCollapsedTitle =
                         isBrokeredNftAccept &&
                         !!brokerAddress &&
@@ -4765,7 +4758,7 @@ export default function Account2({
                             <div className="asset-details">
                               <div className="detail-row">
                                 <span>Type:</span>
-                                <span>{tx?.TransactionType || '-'}</span>
+                                <span>{getTransactionTypeLabel(tx?.TransactionType)}</span>
                               </div>
 
                               {showDexSpecifiedOrderDetails && !!dexTakerGets && (

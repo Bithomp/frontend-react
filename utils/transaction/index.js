@@ -60,6 +60,64 @@ export const shortErrorCode = (code) => {
   return code.charAt(0).toUpperCase() + code.slice(1)
 }
 
+const TRANSACTION_TYPE_LABELS = {
+  Payment: 'Payment',
+  AccountSet: 'Account settings update',
+  AccountDelete: 'Account deletion',
+  SetRegularKey: 'Set regular key',
+  SignerListSet: 'Signer list set',
+  TrustSet: 'Trust line set',
+  OfferCreate: 'Offer creation',
+  OfferCancel: 'Offer cancellation',
+  TicketCreate: 'Ticket creation',
+  DepositPreauth: 'Deposit preauthorization',
+
+  EscrowCreate: 'Escrow creation',
+  EscrowFinish: 'Escrow finish',
+  EscrowCancel: 'Escrow cancellation',
+
+  CheckCreate: 'Check creation',
+  CheckCash: 'Check cashing',
+  CheckCancel: 'Check cancellation',
+
+  PaymentChannelCreate: 'Payment channel creation',
+  PaymentChannelFund: 'Payment channel funding',
+  PaymentChannelClaim: 'Payment channel claim',
+
+  NFTokenMint: 'NFT mint',
+  NFTokenBurn: 'NFT burn',
+  NFTokenCreateOffer: 'NFT offer creation',
+  NFTokenCancelOffer: 'NFT offer cancellation',
+  NFTokenAcceptOffer: 'NFT offer acceptance',
+  NFTokenModify: 'NFT modification',
+
+  AMMCreate: 'AMM creation',
+  AMMDeposit: 'AMM deposit',
+  AMMWithdraw: 'AMM withdrawal',
+  AMMVote: 'AMM vote',
+  AMMBid: 'AMM bid',
+  AMMDelete: 'AMM deletion',
+  AMMClawback: 'AMM clawback',
+
+  EnableAmendment: 'Enable amendment',
+  SetFee: 'Set fee',
+  UNLModify: 'UNL modification',
+  Clawback: 'Clawback',
+
+  XChainCreateBridge: 'Cross-chain bridge creation',
+  XChainModifyBridge: 'Cross-chain bridge modification',
+  XChainClaim: 'Cross-chain claim',
+  XChainCommit: 'Cross-chain commit',
+  XChainAddAccountCreateAttestation: 'Cross-chain account-create attestation',
+  XChainAddClaimAttestation: 'Cross-chain claim attestation',
+  XChainAccountCreateCommit: 'Cross-chain account-create commit'
+}
+
+export const getTransactionTypeLabel = (type) => {
+  if (!type) return '-'
+  return TRANSACTION_TYPE_LABELS[type] || type
+}
+
 export const errorCodeDescription = (code) => {
   const codes = {
     tecAMM_DIRECT_PAYMENT:
