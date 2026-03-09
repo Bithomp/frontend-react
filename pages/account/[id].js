@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -361,6 +361,8 @@ export default function Account2({
   const [txFromDate, setTxFromDate] = useState('')
   const [txToDate, setTxToDate] = useState('')
   const [txFilterSpam, setTxFilterSpam] = useState(true)
+  const nftOffersRequestTokenRef = useRef(0)
+  const transactionsRequestTokenRef = useRef(0)
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const data = initialData
@@ -1258,9 +1260,26 @@ export default function Account2({
   }, [data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
+    nftOffersRequestTokenRef.current += 1
+    transactionsRequestTokenRef.current += 1
+
+    setReceivedPrivateNftOffers([])
+    setCreatedNftOffers([])
+    setOwnedNftOffers([])
+    setNftOffersError({ received: null, created: null, owned: null })
+    setNftOffersLoading({ received: false, created: false, owned: false })
+
+    setRecentTransactions([])
+    setTransactionsMarker(null)
+    setTransactionsSearchPaused(false)
+    setTransactionsError(null)
+  }, [data?.address])
+
+  useEffect(() => {
     if (!data?.address || !data?.ledgerInfo?.activated) return
 
     let cancelled = false
+    const requestToken = nftOffersRequestTokenRef.current
 
     const fetchOfferList = async ({ tabKey, list }) => {
       setNftOffersLoading((prev) => ({ ...prev, [tabKey]: true }))
@@ -1279,7 +1298,7 @@ export default function Account2({
               .slice(0, NFT_OFFERS_FETCH_LIMIT)
           : []
 
-        if (cancelled) return
+        if (cancelled || nftOffersRequestTokenRef.current !== requestToken) return
 
         if (tabKey === 'received') {
           setReceivedPrivateNftOffers(offers)
@@ -1289,7 +1308,7 @@ export default function Account2({
           setOwnedNftOffers(offers)
         }
       } catch (error) {
-        if (cancelled) return
+        if (cancelled || nftOffersRequestTokenRef.current !== requestToken) return
 
         if (tabKey === 'received') {
           setReceivedPrivateNftOffers([])
@@ -1301,7 +1320,7 @@ export default function Account2({
 
         setNftOffersError((prev) => ({ ...prev, [tabKey]: error?.message || 'Failed to load NFT offers' }))
       } finally {
-        if (!cancelled) {
+        if (!cancelled && nftOffersRequestTokenRef.current === requestToken) {
           setNftOffersLoading((prev) => ({ ...prev, [tabKey]: false }))
         }
       }
@@ -1390,6 +1409,7 @@ export default function Account2({
 
   const fetchRecentTransactions = async ({ markerValue = null, append = false, filtersOverride } = {}) => {
     if (!data?.address) return
+    const requestToken = transactionsRequestTokenRef.current
 
     if (append) {
       setTransactionsLoadingMore(true)
@@ -1403,6 +1423,7 @@ export default function Account2({
     try {
       const limit = append ? TRANSACTIONS_LOAD_MORE_LIMIT : TRANSACTIONS_PREVIEW_LIMIT
       const response = await axios.get(buildTransactionsUrl({ markerValue, filtersOverride, limit }))
+      if (transactionsRequestTokenRef.current !== requestToken) return
       const newTransactions = response?.data?.transactions || []
       const nextMarker = response?.data?.marker || null
       const reachedSearchLimit = newTransactions.length === 0 && !!nextMarker
@@ -1420,6 +1441,7 @@ export default function Account2({
       setTransactionsMarker(nextMarker)
       setTransactionsSearchPaused(reachedSearchLimit)
     } catch (error) {
+      if (transactionsRequestTokenRef.current !== requestToken) return
       setTransactionsError(error?.message || 'Failed to load transactions')
       if (!append) {
         setRecentTransactions([])
@@ -1427,6 +1449,7 @@ export default function Account2({
       }
       setTransactionsSearchPaused(false)
     } finally {
+      if (transactionsRequestTokenRef.current !== requestToken) return
       if (append) {
         setTransactionsLoadingMore(false)
       } else {
