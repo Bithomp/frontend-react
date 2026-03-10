@@ -742,7 +742,8 @@ export default function Account2({
   const hasReceivedPrivateNftOffers = receivedPrivateNftOffers.length > 0
   const hasCreatedNftOffers = createdNftOffers.length > 0
   const hasOwnedNftOffers = ownedNftOffers.length > 0
-  const hasAnyNftOffersData = hasReceivedPrivateNftOffers || hasCreatedNftOffers || hasOwnedNftOffers
+  const hasAnyNftOffersData =
+    !effectiveLedgerTimestamp && (hasReceivedPrivateNftOffers || hasCreatedNftOffers || hasOwnedNftOffers)
   const activeNftOffersCount = activeNftOffers.length
   const activeNftOffersLoading = nftOffersLoading[nftOffersTab]
   const activeNftOffersError = nftOffersError[nftOffersTab]
@@ -1283,10 +1284,10 @@ export default function Account2({
     setTransactionsMarker(null)
     setTransactionsSearchPaused(false)
     setTransactionsError(null)
-  }, [data?.address])
+  }, [data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
-    if (!data?.address || !data?.ledgerInfo?.activated) return
+    if (!data?.address || !data?.ledgerInfo?.activated || effectiveLedgerTimestamp) return
 
     let cancelled = false
     const requestToken = nftOffersRequestTokenRef.current
@@ -1343,7 +1344,7 @@ export default function Account2({
     return () => {
       cancelled = true
     }
-  }, [data?.address, data?.ledgerInfo?.activated])
+  }, [data?.address, data?.ledgerInfo?.activated, effectiveLedgerTimestamp])
 
   const buildTransactionsUrl = ({ markerValue, filtersOverride, limit } = {}) => {
     if (!data?.address) return ''
