@@ -641,7 +641,7 @@ export default function Account2({
   const burnedNftsLedgerCount = Number(data?.ledgerInfo?.burnedNFTokens || 0)
   const mintedNftsCount = Math.max(mintedNfts.length, mintedNftsLedgerCount)
   const burnedNftsCount = Math.max(burnedNfts.length, burnedNftsLedgerCount)
-  const hasOwnedNfts = ownedNftCount > 0
+  const hasOwnedNfts = !effectiveLedgerTimestamp && ownedNftCount > 0
   const hasSoldNfts = soldNftsCount > 0
   const hasMintedNfts = mintedNfts.length > 0
   const hasBurnedNfts = burnedNfts.length > 0
@@ -692,10 +692,10 @@ export default function Account2({
     nftTab === 'owned'
       ? `/nfts/${data?.address}?includeWithoutMediaData=true`
       : nftTab === 'sold'
-        ? `/nft-sales?seller=${data?.address}&period=all`
+        ? `/nft-sales?seller=${data?.address}&period=${effectiveLedgerTimestamp && data?.inception ? `${new Date(data.inception * 1000).toISOString()}..${new Date(effectiveLedgerTimestamp).toISOString()}` : 'all'}`
         : nftTab === 'minted'
-          ? `/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true`
-          : `/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true&burnedPeriod=all`
+          ? `/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true${effectiveLedgerTimestamp && data?.inception ? `&mintedPeriod=${new Date(data.inception * 1000).toISOString()}..${new Date(effectiveLedgerTimestamp).toISOString()}` : ''}`
+          : `/nft-explorer?includeWithoutMediaData=true&issuer=${data?.address}&includeBurned=true&burnedPeriod=${effectiveLedgerTimestamp && data?.inception ? `${new Date(data.inception * 1000).toISOString()}..${new Date(effectiveLedgerTimestamp).toISOString()}` : 'all'}`
   const activeNftEmptyLabel =
     nftTab === 'owned'
       ? 'No owned NFTs found.'
@@ -855,10 +855,21 @@ export default function Account2({
   useEffect(() => {
     if (effectiveLedgerTimestamp) {
       setLedgerTimestampInput(new Date(effectiveLedgerTimestamp))
+      // Switch away from "owned" tab in historical mode since API doesn't support it
+      if (nftTab === 'owned') {
+        // Find first available tab
+        if (soldNfts.length > 0) {
+          setNftTab('sold')
+        } else if (mintedNfts.length > 0) {
+          setNftTab('minted')
+        } else if (burnedNfts.length > 0) {
+          setNftTab('burned')
+        }
+      }
     } else {
       setLedgerTimestampInput(new Date())
     }
-  }, [effectiveLedgerTimestamp])
+  }, [effectiveLedgerTimestamp, nftTab, soldNfts.length, mintedNfts.length, burnedNfts.length])
 
   useEffect(() => {
     setShowAllTokens(false)
@@ -897,7 +908,7 @@ export default function Account2({
 
   useEffect(() => {
     const availableTabs = []
-    if (ownedNfts.length > 0) {
+    if (ownedNfts.length > 0 && !effectiveLedgerTimestamp) {
       availableTabs.push('owned')
     }
     if (soldNfts.length > 0) {
@@ -911,12 +922,12 @@ export default function Account2({
     }
 
     if (availableTabs.length === 0) return
-    if (nftTab === 'owned') return
+    if (nftTab === 'owned' && !effectiveLedgerTimestamp) return
 
     if (!availableTabs.includes(nftTab)) {
       setNftTab(availableTabs[0])
     }
-  }, [nftTab, ownedNfts.length, soldNfts.length, mintedNfts.length, burnedNfts.length])
+  }, [nftTab, ownedNfts.length, soldNfts.length, mintedNfts.length, burnedNfts.length, effectiveLedgerTimestamp])
 
   useEffect(() => {
     setExpandedNftCardKey(null)
@@ -1094,13 +1105,9 @@ export default function Account2({
 
         setOwnedNftIds(nftIds)
 
-        if (nftIds.length > 0) {
+        if (nftIds.length > 0 && !effectiveLedgerTimestamp) {
           try {
-            const nftPreviewUrl =
-              `v2/nfts?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}` +
-              (effectiveLedgerTimestamp
-                ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
-                : '')
+            const nftPreviewUrl = `v2/nfts?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}`
 
             const nftResponse = await axios.get(nftPreviewUrl)
             setOwnedNfts(Array.isArray(nftResponse?.data?.nfts) ? nftResponse.data.nfts.slice(0, NFT_FETCH_LIMIT) : [])
@@ -1117,6 +1124,9 @@ export default function Account2({
             `v2/nft-sales?seller=${data.address}&list=lastSold&limit=${NFT_FETCH_LIMIT}` +
             (selectedCurrency
               ? `&convertCurrencies=${selectedCurrency.toLowerCase()}&sortCurrency=${selectedCurrency.toLowerCase()}`
+              : '') +
+            (effectiveLedgerTimestamp && data?.inception
+              ? `&period=${encodeURIComponent(new Date(data.inception * 1000).toISOString())}..${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
               : '')
           const soldResponse = await axios.get(soldNftsUrl)
           setSoldNfts(Array.isArray(soldResponse?.data?.sales) ? soldResponse.data.sales.slice(0, NFT_FETCH_LIMIT) : [])
