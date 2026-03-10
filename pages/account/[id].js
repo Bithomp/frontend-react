@@ -406,7 +406,7 @@ export default function Account2({
 
     const unit = units.find((item) => diffSeconds >= item.seconds) || units[units.length - 1]
     const value = Math.floor(diffSeconds / unit.seconds)
-    return `${value} ${unit.key}${value === 1 ? '' : 's'} before selected time`
+    return `${value} ${unit.key}${value === 1 ? '' : 's'} before`
   }
 
   const balanceList = balanceListServer
