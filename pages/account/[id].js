@@ -3625,8 +3625,19 @@ export default function Account2({
                           const shortTokenId = shortHash(nftId)
                           const nftDisplayData = nft?.nftoken || nft
                           const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortNftId
+                          const nftIssuer =
+                            nft?.issuer || nft?.Issuer || nft?.nftoken?.issuer || nft?.nftoken?.Issuer || null
                           const soldAt = nft?.acceptedAt || nft?.soldAt
-                          const updatedAt = soldAt || nft?.updatedAt || nft?.createdAt
+                          const mintedAt = nft?.issuedAt
+                          const burnedAt = nft?.deletedAt
+                          const actionAt =
+                            nftTab === 'sold'
+                              ? soldAt
+                              : nftTab === 'minted'
+                                ? mintedAt
+                                : nftTab === 'burned'
+                                  ? burnedAt
+                                  : nft?.updatedAt || nft?.createdAt
                           const soldPrice =
                             nftTab === 'sold' && nft?.amount
                               ? amountFormat(nft.amount, { short: true, maxFractionDigits: 2 })
@@ -3635,8 +3646,8 @@ export default function Account2({
                             nftTab === 'sold' && selectedCurrency
                               ? convertedAmount(nft, selectedCurrency.toLowerCase(), { short: true })
                               : null
-                          const updatedTimeAgo = updatedAt ? timeFromNow(updatedAt, i18n) : null
-                          const updatedExact = updatedAt ? fullDateAndTime(updatedAt) : null
+                          const actionTimeAgo = actionAt ? timeFromNow(actionAt, i18n) : null
+                          const actionExact = actionAt ? fullDateAndTime(actionAt) : null
                           const actionVerb =
                             nftTab === 'sold'
                               ? 'Sold'
@@ -3647,13 +3658,15 @@ export default function Account2({
                                   : 'Updated'
                           const fallbackSecondaryLine =
                             nftTab === 'owned' && shortNftId ? `Token ID ${shortNftId}` : actionVerb
-                          const secondaryLine = updatedTimeAgo ? (
-                            <>
-                              {actionVerb} {updatedTimeAgo}
-                            </>
-                          ) : (
-                            fallbackSecondaryLine
-                          )
+                          const shouldShowActionInSecondaryLine = nftTab === 'sold'
+                          const secondaryLine =
+                            shouldShowActionInSecondaryLine && actionTimeAgo ? (
+                              <>
+                                {actionVerb} {actionTimeAgo}
+                              </>
+                            ) : (
+                              fallbackSecondaryLine
+                            )
 
                           return (
                             <div
@@ -3701,8 +3714,8 @@ export default function Account2({
                                         </div>
                                       )}
                                     </>
-                                  ) : updatedTimeAgo ? (
-                                    <div className="asset-fiat">{updatedTimeAgo}</div>
+                                  ) : actionTimeAgo ? (
+                                    <div className="asset-fiat">{actionTimeAgo}</div>
                                   ) : null}
                                 </div>
                               </div>
@@ -3725,6 +3738,25 @@ export default function Account2({
                                       </span>
                                     </span>
                                   </div>
+                                  {nftIssuer && (
+                                    <div className="detail-row">
+                                      <span>Issuer:</span>
+                                      <span className="copy-inline">
+                                        <span>{shortHash(nftIssuer)}</span>
+                                        <Link
+                                          href={`/account/${nftIssuer}`}
+                                          className="inline-link-icon tooltip"
+                                          onClick={(event) => event.stopPropagation()}
+                                        >
+                                          <LinkIcon />
+                                          <span className="tooltiptext no-brake">Issuer account</span>
+                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={nftIssuer} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
                                   {soldPrice && (
                                     <div className="detail-row">
                                       <span>Sale price:</span>
@@ -3739,10 +3771,10 @@ export default function Account2({
                                       </span>
                                     </div>
                                   )}
-                                  {updatedExact && (
+                                  {actionExact && (
                                     <div className="detail-row">
-                                      <span>Last activity:</span>
-                                      <span>{updatedExact}</span>
+                                      <span>{actionVerb} at:</span>
+                                      <span>{actionExact}</span>
                                     </div>
                                   )}
                                 </div>
