@@ -8368,8 +8368,9 @@ export default function Account2({
         }
 
         .checks-wrapper {
-          background: var(--background-input);
-          border-radius: 6px;
+          background: transparent;
+          border-radius: 0;
+          margin-top: 6px;
         }
 
         .checks-details,
@@ -8383,6 +8384,10 @@ export default function Account2({
         .object-list {
           display: flex;
           flex-direction: column;
+        }
+
+        .checks-list {
+          gap: 8px;
         }
 
         .escrow-wrapper {
