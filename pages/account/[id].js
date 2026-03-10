@@ -1392,7 +1392,7 @@ export default function Account2({
   const applyTimeMachine = () => {
     if (!data?.address || !ledgerTimestampInput) return
     router.push({
-      pathname: `/account2/${data.address}`,
+      pathname: `/account/${data.address}`,
       query: {
         ledgerTimestamp: new Date(ledgerTimestampInput).toISOString()
       }
@@ -1403,7 +1403,7 @@ export default function Account2({
     if (!data?.address) return
     setLedgerTimestampInput(new Date())
     router.push({
-      pathname: `/account2/${data.address}`
+      pathname: `/account/${data.address}`
     })
   }
 
@@ -1811,7 +1811,7 @@ export default function Account2({
           <>
             {' '}
             by{' '}
-            <Link href={`/account2/${activatedByAddress}`} onClick={(event) => event.stopPropagation()}>
+            <Link href={`/account/${activatedByAddress}`} onClick={(event) => event.stopPropagation()}>
               <span
                 className={`activated-by ${activatedByIsService ? 'green' : ''} ${activatedByIsUsername ? 'blue' : ''}`}
               >
@@ -1922,7 +1922,7 @@ export default function Account2({
         image={{ file: avatarSrc(data.address) }}
       />
 
-      <div className="account2-container">
+      <div className="account-container">
         {isHistoricalLedger && (
           <div className="historical-banner">
             <span className="historical-badge">Historical mode</span>
@@ -1935,7 +1935,7 @@ export default function Account2({
         )}
         {/* Header with switch to old view */}
         {/* Grid Layout */}
-        <div className="account2-grid">
+        <div className="account-grid">
           {/* Column 1: Information */}
           <div className="info-section">
             {/* Avatar */}
@@ -6788,7 +6788,7 @@ export default function Account2({
       </div>
 
       <style jsx>{`
-        .account2-container {
+        .account-container {
           max-width: 1600px;
           margin: 0 auto;
           padding: 20px;
@@ -6819,7 +6819,7 @@ export default function Account2({
           color: var(--text);
         }
 
-        .account2-grid {
+        .account-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 20px;
@@ -6890,13 +6890,13 @@ export default function Account2({
         }
 
         @media (max-width: 1400px) {
-          .account2-grid {
+          .account-grid {
             grid-template-columns: repeat(2, 1fr);
           }
         }
 
         @media (max-width: 768px) {
-          .account2-grid {
+          .account-grid {
             grid-template-columns: 1fr;
           }
         }
