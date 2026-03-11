@@ -1854,7 +1854,7 @@ export default function Account2({
     )
   }
 
-  if (data?.parent?.address === data?.address) {
+  if (data?.parent?.address && data?.parent?.address === data?.address) {
     pushPublicRow(
       'Imported from XRPL',
       <a href={`${devNet ? networks.testnet.server : networks.mainnet.server}/account/${data.address}`}>
