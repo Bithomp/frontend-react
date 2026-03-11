@@ -452,19 +452,19 @@ export default function Account2({
     isBlackholed ||
     !!data?.ledgerInfo?.flags?.passwordSpent ||
     !!data?.ledgerInfo?.flags?.disableMaster
-  const hasAccountSettingsData =
+  const hasNextSequence = data?.ledgerInfo?.sequence !== undefined && data?.ledgerInfo?.sequence !== null
+  const hasAccountSettingsRows =
     !!data?.ledgerInfo?.accountIndex ||
-    !!data?.ledgerInfo?.sequence ||
+    hasNextSequence ||
     !!data?.ledgerInfo?.messageKey ||
-    !!data?.ledgerInfo?.walletLocator ||
-    !!data?.ledgerInfo?.ammID ||
     !!data?.ledgerInfo?.previousTxnID ||
     !!data?.ledgerInfo?.accountTxnID ||
-    !!data?.ledgerInfo?.tickSize ||
-    !!data?.ledgerInfo?.importSequence ||
+    !!data?.ledgerInfo?.walletLocator ||
+    !!data?.ledgerInfo?.ammID ||
     data?.ledgerInfo?.ticketCount === 0 ||
     !!data?.ledgerInfo?.ticketCount ||
-    !!data?.inceptionTxHash ||
+    !!data?.ledgerInfo?.importSequence ||
+    !!data?.ledgerInfo?.tickSize ||
     !!data?.ledgerInfo?.flags?.requireDestTag ||
     !!data?.ledgerInfo?.flags?.depositAuth ||
     !!data?.ledgerInfo?.flags?.requireAuth ||
@@ -475,6 +475,7 @@ export default function Account2({
     !!data?.ledgerInfo?.flags?.disallowIncomingRemit ||
     !!data?.ledgerInfo?.flags?.tshCollect ||
     !!data?.ledgerInfo?.flags?.disallowXRP
+  const hasAccountSettingsData = hasAccountSettingsRows
   const accountControlCollapsedLabel = isBlackholed
     ? 'Blackholed'
     : hasRegularKey && hasMultisig
@@ -2498,15 +2499,17 @@ export default function Account2({
                         </div>
                       )}
 
-                      <div className="detail-row issuer-detail-row">
-                        <span>Next sequence:</span>
-                        <span className="copy-inline">
-                          <span>{data.ledgerInfo.sequence}</span>
-                          <span onClick={(event) => event.stopPropagation()}>
-                            <CopyButton text={data.ledgerInfo.sequence} />
+                      {hasNextSequence && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Next sequence:</span>
+                          <span className="copy-inline">
+                            <span>{data.ledgerInfo.sequence}</span>
+                            <span onClick={(event) => event.stopPropagation()}>
+                              <CopyButton text={data.ledgerInfo.sequence} />
+                            </span>
                           </span>
-                        </span>
-                      </div>
+                        </div>
+                      )}
                       {data?.ledgerInfo?.messageKey && (
                         <div className="detail-row issuer-detail-row">
                           <span>
