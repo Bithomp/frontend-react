@@ -1956,7 +1956,7 @@ export default function Account2({
                 <div className="avatar-image-mask">
                   <img src={avatarSrc(data.address)} alt="Avatar" className="account-avatar" />
                 </div>
-                {achievements.length > 0 && (
+                {!data?.blacklist?.blacklisted && achievements.length > 0 && (
                   <div className={`achievements-orbit achievements-count-${Math.min(achievements.length, 6)}`}>
                     {achievements.slice(0, 6).map((achievement, index) => (
                       <span
