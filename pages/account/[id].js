@@ -494,6 +494,7 @@ export default function Account2({
   const hasAirdropsData = hasFlareAddress
   const didData = data?.ledgerInfo?.did || data?.did || null
   const didUrl = didData?.uri ? decode(didData.uri) : ''
+  const didCollapsedUrl = didUrl && isUrlValid(didUrl) ? stripDomain(didUrl) : didUrl
   const didDecodedData = didData?.data ? decode(didData.data) : ''
   const didDecodedDocument = didData?.didDocument ? decode(didData.didDocument) : ''
   const didMetadataText = didData?.metadata
@@ -2041,7 +2042,7 @@ export default function Account2({
                       <div className="nft-asset-info">
                         <div className="nft-asset-text">
                           <div className="asset-summary-title">DID</div>
-                          <div className="asset-fiat">{didUrl || shortHash(didData?.didID || '')}</div>
+                          <div className="asset-fiat">{didCollapsedUrl || shortHash(didData?.didID || '')}</div>
                         </div>
                       </div>
                     </div>
