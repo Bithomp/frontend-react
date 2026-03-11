@@ -1470,10 +1470,10 @@ export default function Account2({
   }
 
   useEffect(() => {
-    if (!data?.address || !data?.ledgerInfo?.activated) return
+    if (!data?.address) return
     fetchRecentTransactions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, data?.ledgerInfo?.activated, selectedCurrency, effectiveLedgerTimestamp, isMobile])
+  }, [data?.address, selectedCurrency, effectiveLedgerTimestamp, isMobile])
 
   const loadMoreTransactions = async () => {
     if (
