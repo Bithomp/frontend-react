@@ -182,18 +182,28 @@ export default function AccountWithTag({ data }) {
             <b>{data.xAddress}</b>
           </div>
 
-          <div className="account-tag-service-description">
-            This address belongs to{' '}
-            <a
-              href={`https://${accountData?.service?.domain}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="account-tag-service-link"
-            >
-              {accountData?.service?.domain}
-            </a>{' '}
-            <b>({accountData?.service?.name}).</b>
-          </div>
+          {(accountData?.service?.name || accountData?.service?.domain) && (
+            <div className="account-tag-service-description">
+              This address belongs to{' '}
+              {accountData?.service?.domain ? (
+                <a
+                  href={`https://${accountData.service.domain}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="account-tag-service-link"
+                >
+                  {accountData.service.domain}
+                </a>
+              ) : null}
+              {accountData?.service?.name && (
+                <>
+                  {accountData?.service?.domain ? ' ' : ''}
+                  <b>({accountData.service.name}).</b>
+                </>
+              )}
+              {accountData?.service?.domain && !accountData?.service?.name && <b>.</b>}
+            </div>
+          )}
 
           {accountData?.bithomp?.avatar && (
             <div className="account-tag-logo-container">
