@@ -7031,13 +7031,15 @@ export default function Account2({
         .tx-filter-grid {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 8px;
+          gap: 12px;
+          row-gap: 14px;
         }
 
         .tx-filter-field {
           display: flex;
           flex-direction: column;
           gap: 4px;
+          min-width: 0;
         }
 
         .tx-filter-field > span {
@@ -7047,6 +7049,9 @@ export default function Account2({
 
         .tx-filter-field select,
         .tx-filter-field input {
+          width: 100%;
+          min-width: 0;
+          box-sizing: border-box;
           border: 1px solid color-mix(in srgb, var(--accent-link) 60%, var(--border-color) 40%);
           border-radius: 6px;
           background: var(--background-table);
@@ -7057,6 +7062,28 @@ export default function Account2({
             border-color 0.2s ease,
             box-shadow 0.2s ease;
           box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-link) 25%, transparent);
+        }
+
+        .tx-filter-field select {
+          -webkit-appearance: none;
+          appearance: none;
+          background-image:
+            linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%),
+            linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
+          background-position:
+            calc(100% - 14px) calc(50% - 1px),
+            calc(100% - 9px) calc(50% - 1px);
+          background-size:
+            5px 5px,
+            5px 5px;
+          background-repeat: no-repeat;
+          padding-right: 28px;
+        }
+
+        .tx-filter-field input[type='datetime-local'] {
+          width: 100%;
+          min-width: 0;
+          display: block;
         }
 
         .tx-filter-field select:focus,
@@ -7113,6 +7140,18 @@ export default function Account2({
         .tx-filter-btn.primary {
           border-color: var(--accent-link);
           color: var(--accent-link);
+        }
+
+        @media (max-width: 600px) {
+          .tx-filter-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+            row-gap: 12px;
+          }
+
+          .tx-filter-field-wide {
+            grid-column: 1;
+          }
         }
 
         .tx-broker-inline {
