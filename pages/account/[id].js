@@ -6071,24 +6071,31 @@ export default function Account2({
                               </span>
                             </div>
 
-                            {!effectiveLedgerTimestamp && !!setSignRequest && offer?.Sequence && (
+                            {!effectiveLedgerTimestamp && offer?.Sequence && (
                               <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                                <button
-                                  type="button"
-                                  className="card-action-btn cancel"
-                                  onClick={() => {
-                                    setSignRequest({
-                                      request: {
-                                        Account: offer.Account,
-                                        TransactionType: 'OfferCancel',
-                                        OfferSequence: offer.Sequence
-                                      }
-                                    })
-                                  }}
-                                  title="Cancel"
-                                >
-                                  <MdMoneyOff /> Cancel
-                                </button>
+                                {(() => {
+                                  const canCancel = !!setSignRequest && offer?.Account === account?.address
+                                  return (
+                                    <button
+                                      type="button"
+                                      className={`card-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
+                                      disabled={!canCancel}
+                                      onClick={() => {
+                                        if (!canCancel) return
+                                        setSignRequest({
+                                          request: {
+                                            Account: offer.Account,
+                                            TransactionType: 'OfferCancel',
+                                            OfferSequence: offer.Sequence
+                                          }
+                                        })
+                                      }}
+                                      title="Cancel"
+                                    >
+                                      <MdMoneyOff /> Cancel
+                                    </button>
+                                  )
+                                })()}
                               </div>
                             )}
                           </div>
