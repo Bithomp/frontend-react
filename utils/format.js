@@ -1441,7 +1441,10 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
   }
 
   let output = ''
-  if (n > 999999999999) {
+  if (n > 999999999999999) {
+    // For numbers > 999 trillion, use scientific notation to avoid huge strings
+    output = n.toExponential(2)
+  } else if (n > 999999999999) {
     output = niceNumber(n / 1000000000000, largeNumberFractionDigits, currency) + 'T'
   } else if (n > 999999999) {
     output = niceNumber(n / 1000000000, largeNumberFractionDigits, currency) + 'B'
