@@ -5423,24 +5423,33 @@ export default function Account2({
                                 </div>
                               )}
 
-                              {isSource && tx?.Fee && (
-                                <div className="detail-row">
-                                  <span>Fee:</span>
-                                  <span>
-                                    {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
-                                    {nativeCurrencyToFiat({
-                                      amount: tx.Fee,
-                                      selectedCurrency,
-                                      fiatRate: txHistoricalRate
-                                    })}
-                                  </span>
-                                </div>
-                              )}
+                              {isSource &&
+                                tx?.Fee &&
+                                (() => {
+                                  const feeFiatText = nativeCurrencyToFiat({
+                                    amount: tx.Fee,
+                                    selectedCurrency,
+                                    fiatRate: txHistoricalRate,
+                                    asText: true
+                                  })
+
+                                  return (
+                                    <div className="detail-row">
+                                      <span>Fee:</span>
+                                      <span className="tx-detail-stacked-amount">
+                                        <span className="tx-inline-change grey">
+                                          {amountFormat(tx.Fee, { icon: true, precise: 'nice' })}
+                                        </span>
+                                        {!!feeFiatText && <span className="tx-change-fiat">{feeFiatText}</span>}
+                                      </span>
+                                    </div>
+                                  )
+                                })()}
 
                               {txSpecialAmountDisplay && (
                                 <div className="detail-row">
                                   <span>Amount:</span>
-                                  <span className="tx-detail-offer-amount">
+                                  <span className="tx-detail-stacked-amount">
                                     <span className="grey">{txSpecialAmountDisplay.expandedText}</span>
                                     {!!txSpecialAmountDisplay.expandedFiat && (
                                       <span className="tx-change-fiat">{txSpecialAmountDisplay.expandedFiat}</span>
@@ -5592,7 +5601,7 @@ export default function Account2({
                               {isNftOfferTx && hasNftOfferAmount && (
                                 <div className="detail-row">
                                   <span>Offer amount:</span>
-                                  <span className="tx-detail-offer-amount">
+                                  <span className="tx-detail-stacked-amount">
                                     <span className="tx-inline-change">{offerAmountExpandedText}</span>
                                     {!!offerAmountFiatDetailText && (
                                       <span className="tx-change-fiat">{offerAmountFiatDetailText}</span>
@@ -5604,7 +5613,7 @@ export default function Account2({
                               {!isNftOfferTx && nftMintSellOfferDisplay && (
                                 <div className="detail-row">
                                   <span>Offer amount:</span>
-                                  <span className="tx-detail-offer-amount">
+                                  <span className="tx-detail-stacked-amount">
                                     <span className="tx-inline-change">{nftMintSellOfferDisplay.expandedText}</span>
                                     {!!nftMintSellOfferDisplay.expandedFiat && (
                                       <span className="tx-change-fiat">{nftMintSellOfferDisplay.expandedFiat}</span>
@@ -7691,7 +7700,7 @@ export default function Account2({
           white-space: nowrap;
         }
 
-        .tx-detail-offer-amount {
+        .tx-detail-stacked-amount {
           display: inline-flex;
           flex-direction: column;
           align-items: flex-end;
