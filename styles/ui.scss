@@ -658,6 +658,25 @@ table {
   }
 }
 
+.button-outline {
+  display: inline-block;
+  border: 1px solid var(--accent-link);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent-link);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: normal;
+  &:disabled,
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
 .main-box {
   border: 1px solid var(--button-additional);
   word-break: break-word;

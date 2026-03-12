@@ -1503,7 +1503,7 @@ export default function Account2({
         <br />
         <button
           type="button"
-          className="button-action"
+          className="button-outline"
           onClick={continueTransactionsSearch}
           disabled={transactionsLoadingMore || transactionsLoading}
         >
@@ -1522,12 +1522,19 @@ export default function Account2({
     )
 
   const transactionsLoadMoreMessage = transactionsLoadingMore ? (
-    <span className="tx-inline-load">
-      <span>Loading more transactions</span>
+    <button type="button" className="button-outline" disabled>
+      Loading
       <span className="waiting inline" aria-hidden="true"></span>
-    </span>
+    </button>
   ) : (
-    'Scroll down to load more transactions'
+    <button
+      type="button"
+      className="button-outline"
+      onClick={loadMoreTransactions}
+      disabled={transactionsLoadingMore || transactionsLoading}
+    >
+      Load more transactions
+    </button>
   )
 
   const applyTransactionFilters = () => {
@@ -5428,7 +5435,7 @@ export default function Account2({
                           {canLoadMoreTransactions ? (
                             <button
                               type="button"
-                              className="tx-mobile-load-btn"
+                              className="button-outline"
                               onClick={loadMoreTransactions}
                               disabled={transactionsLoadingMore || transactionsLoading}
                             >
@@ -7190,26 +7197,6 @@ export default function Account2({
           align-items: center;
           gap: 8px;
           padding: 12px 0 4px;
-        }
-
-        .tx-mobile-load-btn {
-          border: 1px solid var(--accent-link);
-          border-radius: 999px;
-          background: transparent;
-          color: var(--accent-link);
-          font-size: 13px;
-          font-weight: 600;
-          padding: 8px 16px;
-          cursor: pointer;
-        }
-
-        .tx-mobile-load-btn :global(.waiting.inline) {
-          margin-left: 8px;
-        }
-
-        .tx-mobile-load-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
         }
 
         .tx-mobile-end-label {
