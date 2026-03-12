@@ -6273,7 +6273,7 @@ export default function Account2({
               </>
             )}
 
-            {(hasReceivedEscrows || hasSentEscrows) && (
+            {(hasSelfEscrows || hasReceivedEscrows || hasSentEscrows) && (
               <>
                 <div className="section-header-row object-section-header-row">
                   <div className="section-title object-section-title">
@@ -6363,7 +6363,7 @@ export default function Account2({
                               : '-'
                         const isOutgoingEscrow = activeEscrowsTab === 'sent'
                         const isSelfEscrow = activeEscrowsTab === 'self'
-                        const collapsedDirectionLabel = isSelfEscrow ? 'self' : isOutgoingEscrow ? 'to' : 'from'
+                        const collapsedDirectionLabel = isSelfEscrow ? '' : isOutgoingEscrow ? 'to' : 'from'
                         const collapsedAmountClass = isSelfEscrow ? 'grey' : isOutgoingEscrow ? 'red' : 'green'
                         const collapsedAmountSign = isSelfEscrow ? '' : isOutgoingEscrow ? '-' : '+'
                         const escrowAmountDrops = Number(escrow?.Amount || 0)
@@ -6394,7 +6394,9 @@ export default function Account2({
                             <div className="asset-main tx-asset-main">
                               <div className="asset-logo tx-asset-logo">
                                 <div className="tx-collapsed-top">
-                                  <span className="tx-type-main">Escrow {collapsedDirectionLabel}</span>
+                                  <span className="tx-type-main">
+                                    {isSelfEscrow ? 'Escrow' : `Escrow ${collapsedDirectionLabel}`}
+                                  </span>
                                   <span
                                     className={`tx-time tx-time-top ${isCanceled ? 'red' : isUnlockable ? 'green' : ''}`}
                                   >
@@ -6431,36 +6433,31 @@ export default function Account2({
 
                             {isExpanded && (
                               <div className="asset-details">
-                                <div className="detail-row">
-                                  <span>
-                                    {activeEscrowsTab === 'self'
-                                      ? 'Account'
-                                      : activeEscrowsTab === 'sent'
-                                        ? 'To'
-                                        : 'From'}
-                                    :
-                                  </span>
-                                  <span className="copy-inline">
-                                    {counterpartAddress ? (
-                                      <>
-                                        <span className="address-text">{counterpartAddress}</span>
-                                        <Link
-                                          href={`/account/${counterpartAddress}`}
-                                          className="inline-link-icon tooltip"
-                                          onClick={(event) => event.stopPropagation()}
-                                        >
-                                          <LinkIcon />
-                                          <span className="tooltiptext no-brake">Account page</span>
-                                        </Link>
-                                        <span onClick={(event) => event.stopPropagation()}>
-                                          <CopyButton text={counterpartAddress} />
-                                        </span>
-                                      </>
-                                    ) : (
-                                      '-'
-                                    )}
-                                  </span>
-                                </div>
+                                {!isSelfEscrow && (
+                                  <div className="detail-row">
+                                    <span>{activeEscrowsTab === 'sent' ? 'To' : 'From'}:</span>
+                                    <span className="copy-inline">
+                                      {counterpartAddress ? (
+                                        <>
+                                          <span className="address-text">{counterpartAddress}</span>
+                                          <Link
+                                            href={`/account/${counterpartAddress}`}
+                                            className="inline-link-icon tooltip"
+                                            onClick={(event) => event.stopPropagation()}
+                                          >
+                                            <LinkIcon />
+                                            <span className="tooltiptext no-brake">Account page</span>
+                                          </Link>
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <CopyButton text={counterpartAddress} />
+                                          </span>
+                                        </>
+                                      ) : (
+                                        '-'
+                                      )}
+                                    </span>
+                                  </div>
+                                )}
 
                                 <div className="detail-row">
                                   <span>Expire:</span>
