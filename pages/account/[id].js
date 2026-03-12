@@ -1959,19 +1959,24 @@ export default function Account2({
                 </div>
                 {!data?.blacklist?.blacklisted && achievements.length > 0 && (
                   <div className={`achievements-orbit achievements-count-${Math.min(achievements.length, 6)}`}>
-                    {achievements.slice(0, 6).map((achievement, index) => (
-                      <span
-                        className={`tooltip achievement-badge achievement-badge-${index + 1}`}
-                        key={achievement.key}
-                      >
-                        <img
-                          src={`/images/account/achivments/${achievement.image}`}
-                          alt={achievement.tooltip}
-                          className="achievement-image"
-                        />
-                        <span className="tooltiptext right no-brake">{achievement.tooltip}</span>
-                      </span>
-                    ))}
+                    {achievements.slice(0, 6).map((achievement, index) => {
+                      const isLeft = index % 2 === 0
+                      return (
+                        <span
+                          className={`tooltip achievement-badge achievement-badge-${index + 1}`}
+                          key={achievement.key}
+                        >
+                          <img
+                            src={`/images/account/achivments/${achievement.image}`}
+                            alt={achievement.tooltip}
+                            className="achievement-image"
+                          />
+                          <span className={`tooltiptext ${isLeft ? 'right' : 'left'} no-brake`}>
+                            {achievement.tooltip}
+                          </span>
+                        </span>
+                      )
+                    })}
                   </div>
                 )}
               </div>
@@ -7554,8 +7559,8 @@ export default function Account2({
 
         .achievement-badge {
           position: absolute;
-          width: 80px;
-          height: 80px;
+          width: 64px;
+          height: 64px;
           border-radius: 50%;
           background: transparent;
           border: 0;
@@ -7570,13 +7575,24 @@ export default function Account2({
           z-index: 20;
         }
 
+        .achievement-badge:hover .achievement-image {
+          transform: scale(1.15);
+        }
+
         .achievement-badge :global(.tooltiptext) {
           z-index: 30;
         }
 
         .achievement-badge :global(.tooltiptext.right) {
           right: unset !important;
-          left: 90% !important;
+          left: 105% !important;
+          top: 50% !important;
+          transform: translateY(-50%);
+        }
+
+        .achievement-badge :global(.tooltiptext.left) {
+          left: unset !important;
+          right: 105% !important;
           top: 50% !important;
           transform: translateY(-50%);
         }
@@ -7585,42 +7601,44 @@ export default function Account2({
           width: 100%;
           height: 100%;
           object-fit: contain;
+          transition: transform 0.2s ease;
         }
 
+        /* Fill order: left, right, left, right, left, right */
         .achievement-badge-1 {
           top: 0;
           left: 0;
-          transform: translate(-50%, -36%);
+          transform: translate(-33%, -33%);
         }
 
         .achievement-badge-2 {
           top: 0;
           right: 0;
-          transform: translate(50%, -36%);
+          transform: translate(33%, -33%);
         }
 
         .achievement-badge-3 {
-          top: 50%;
-          right: 0;
-          transform: translate(58%, -50%);
+          bottom: 0;
+          left: 0;
+          transform: translate(-33%, 33%);
         }
 
         .achievement-badge-4 {
           bottom: 0;
           right: 0;
-          transform: translate(46%, 40%);
+          transform: translate(33%, 33%);
         }
 
         .achievement-badge-5 {
-          bottom: 0;
+          top: 50%;
           left: 0;
-          transform: translate(-46%, 40%);
+          transform: translate(-75%, -50%);
         }
 
         .achievement-badge-6 {
           top: 50%;
-          left: 0;
-          transform: translate(-58%, -50%);
+          right: 0;
+          transform: translate(75%, -50%);
         }
 
         .account-info {
