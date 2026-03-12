@@ -327,7 +327,6 @@ export default function Account2({
   const [dexOrders, setDexOrders] = useState([])
   const [depositPreauthAccounts, setDepositPreauthAccounts] = useState([])
   const [hookList, setHookList] = useState([])
-  const [cronObjects, setCronObjects] = useState([])
   const [heldMpts, setHeldMpts] = useState([])
   const [issuedMpts, setIssuedMpts] = useState([])
   const [uriTokens, setUriTokens] = useState([])
@@ -859,7 +858,7 @@ export default function Account2({
   const hasDexOrders = dexOrders.length > 0
   const hasDepositPreauthAccounts = depositPreauthAccounts.length > 0
   const hasHooks = hookList.length > 0
-  const hasCronData = !!data?.ledgerInfo?.cron || cronObjects.length > 0
+  const hasCronData = !!data?.ledgerInfo?.cron
   const hasHeldMpts = heldMpts.length > 0
   const hasIssuedMpts = issuedMpts.length > 0
   const hasUriTokens = uriTokens.length > 0
@@ -1074,7 +1073,6 @@ export default function Account2({
       setDexOrders([])
       setDepositPreauthAccounts([])
       setHookList([])
-      setCronObjects([])
       setHeldMpts([])
       setIssuedMpts([])
       setUriTokens([])
@@ -1139,9 +1137,6 @@ export default function Account2({
         } else {
           setHookList([])
         }
-
-        const accountCronObjects = accountObjects.filter((node) => node.LedgerEntryType === 'Cron') || []
-        setCronObjects(accountCronObjects)
 
         const accountHeldMpts = accountObjects.filter((node) => node.LedgerEntryType === 'MPToken') || []
         const accountIssuedMpts = accountObjects.filter((node) => node.LedgerEntryType === 'MPTokenIssuance') || []
@@ -1283,7 +1278,6 @@ export default function Account2({
         setDexOrders([])
         setDepositPreauthAccounts([])
         setHookList([])
-        setCronObjects([])
         setHeldMpts([])
         setIssuedMpts([])
         setUriTokens([])
@@ -1894,7 +1888,7 @@ export default function Account2({
               >
                 <span className="tooltip no-brake">
                   {activatedByName}
-                  <span className="tooltiptext right no-brake activation-tooltip">{activatedByAddress}</span>
+                  <span className="tooltiptext right no-brake activation-tooltip">{shortHash(activatedByAddress)}</span>
                 </span>
               </span>
             </Link>
@@ -2632,29 +2626,6 @@ export default function Account2({
                           </span>
                         </div>
                       )}
-                      {cronObjects.map((cron, index) => (
-                        <div className="detail-row issuer-detail-row" key={`${cron?.index || 'cron'}-${index}`}>
-                          <span>Entry #{index + 1}:</span>
-                          <span className="copy-inline">
-                            <span>{cron?.index ? shortHash(cron.index) : '-'}</span>
-                            {!!cron?.index && (
-                              <>
-                                <Link
-                                  href={`/object/${cron.index}`}
-                                  className="inline-link-icon tooltip"
-                                  onClick={(event) => event.stopPropagation()}
-                                >
-                                  <LinkIcon />
-                                  <span className="tooltiptext no-brake">Object page</span>
-                                </Link>
-                                <span onClick={(event) => event.stopPropagation()}>
-                                  <CopyButton text={cron.index} />
-                                </span>
-                              </>
-                            )}
-                          </span>
-                        </div>
-                      ))}
                     </div>
                   )}
                 </div>
