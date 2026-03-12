@@ -486,7 +486,20 @@ export default function Account2({
         ? 'regKey'
         : hasMultisig
           ? 'multisig'
-          : null
+          : 'standard'
+  const issuerSettingsCollapsedLabel = isGlobalFreezeEnabled
+    ? 'global freeze'
+    : hasCustomTransferFee
+      ? `fee ${issuerTransferFeeText}`
+      : isRipplingEnabled
+        ? 'rippling'
+        : isTrustlineClawbackEnabled
+          ? 'clawback'
+          : isNoFreezeEnabled
+            ? 'no freeze'
+            : isCanEscrowEnabled
+              ? 'escrow'
+              : 'not configured'
   const hasNftDataDetails =
     !!data?.ledgerInfo?.firstNFTokenSequence ||
     !!data?.ledgerInfo?.nftokenMinter ||
@@ -2247,12 +2260,10 @@ export default function Account2({
                     onClick={() => setShowAccountControlDetails((prev) => !prev)}
                   >
                     Account control
-                    {accountControlCollapsedLabel && (
-                      <span className={`account-control-collapsed ${isBlackholed ? 'orange bold' : ''}`}>
-                        {' '}
-                        · {accountControlCollapsedLabel}
-                      </span>
-                    )}
+                    <span className={`account-control-collapsed${isBlackholed ? ' orange bold' : ''}`}>
+                      {' '}
+                      · {accountControlCollapsedLabel}
+                    </span>
                   </button>
 
                   {showAccountControlDetails && (
@@ -5518,9 +5529,7 @@ export default function Account2({
                   onClick={() => setShowIssuerSettingsDetails((prev) => !prev)}
                 >
                   Issuer settings
-                  {hasCustomTransferFee && (
-                    <span className="account-control-collapsed"> · fee {issuerTransferFeeText}</span>
-                  )}
+                  <span className={`account-control-collapsed`}> · {issuerSettingsCollapsedLabel}</span>
                 </button>
 
                 {showIssuerSettingsDetails && (
@@ -7817,10 +7826,30 @@ export default function Account2({
           color: var(--text-secondary);
           font-size: 13px;
           font-weight: 600;
-          padding: 8px 10px;
+          padding: 8px 28px 8px 10px;
           cursor: pointer;
           text-align: center;
           transition: all 0.16s ease;
+          position: relative;
+        }
+
+        .time-machine-toggle::after {
+          content: '›';
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 15px;
+          line-height: 1;
+          opacity: 0.4;
+          transition:
+            transform 0.16s ease,
+            opacity 0.16s ease;
+        }
+
+        .time-machine-toggle.active::after {
+          transform: translateY(-50%) rotate(90deg);
+          opacity: 0.7;
         }
 
         .time-machine-toggle.active,
@@ -7829,10 +7858,18 @@ export default function Account2({
           color: var(--accent-link);
         }
 
+        .time-machine-toggle:hover::after {
+          opacity: 0.7;
+        }
+
         .account-control-collapsed {
           font-size: 12px;
           font-weight: 500;
           color: var(--text-secondary);
+        }
+
+        .account-control-collapsed.dimmed {
+          opacity: 0.5;
         }
 
         .time-machine-panel {
