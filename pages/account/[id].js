@@ -2023,8 +2023,14 @@ export default function Account2({
               <div style={{ fontSize: '13px' }}>{accountStatusNode}</div>
               {data.service?.domain && (
                 <div className="account-domain grey">
-                  <a href={`https://${data.service.domain}`} target="_blank" rel="noreferrer">
-                    {data.service.domain}
+                  <a
+                    href={
+                      /^https?:\/\//i.test(data.service.domain) ? data.service.domain : `https://${data.service.domain}`
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {stripDomain(data.service.domain)}
                   </a>
                 </div>
               )}
