@@ -22,7 +22,8 @@ import {
   isTagValid,
   isDomainValid,
   stripDomain,
-  timestampExpired
+  timestampExpired,
+  xahauNetwork
 } from '../../utils'
 import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
 import { xAddressToClassicAddress } from 'ripple-address-codec'
@@ -340,6 +341,7 @@ export default function Account2({
   const [showTxSettingsDetails, setShowTxSettingsDetails] = useState(false)
   const [showAccountControlDetails, setShowAccountControlDetails] = useState(false)
   const [showDepositPreauthDetails, setShowDepositPreauthDetails] = useState(false)
+  const [showXahauRewardDetails, setShowXahauRewardDetails] = useState(false)
   const [showHooksDetails, setShowHooksDetails] = useState(false)
   const [showCronDetails, setShowCronDetails] = useState(false)
   const [expandedDidCard, setExpandedDidCard] = useState(false)
@@ -455,6 +457,37 @@ export default function Account2({
     !!data?.ledgerInfo?.flags?.passwordSpent ||
     !!data?.ledgerInfo?.flags?.disableMaster
   const hasNextSequence = data?.ledgerInfo?.sequence !== undefined && data?.ledgerInfo?.sequence !== null
+  const hasXahauRewardsConfigured = !!data?.ledgerInfo?.rewardLgrFirst
+  const shouldShowXahauRewardCard = xahauNetwork && (hasXahauRewardsConfigured || data?.address === account?.address)
+  const xahauRewardDelaySeconds = 2600000
+  const xahauRewardRate = 0.0033333333300000004
+  const xahauRewardRemainingSeconds = hasXahauRewardsConfigured
+    ? xahauRewardDelaySeconds - (Math.floor(new Date().getTime() / 1000) - (data.ledgerInfo.rewardTime + 946684800))
+    : null
+  const isXahauRewardClaimable = hasXahauRewardsConfigured && xahauRewardRemainingSeconds <= 0
+  const xahauRewardClaimableAt = hasXahauRewardsConfigured
+    ? Math.floor(new Date().getTime() / 1000) + xahauRewardRemainingSeconds
+    : null
+  let xahauRewardAmount = 0
+  if (hasXahauRewardsConfigured) {
+    const elapsed = data?.ledgerInfo?.ledger - data?.ledgerInfo?.rewardLgrFirst
+    const elapsedSinceLast = data?.ledgerInfo?.ledger - data?.ledgerInfo?.rewardLgrLast
+    let accumulator = parseInt(data?.ledgerInfo?.rewardAccumulator, 16)
+    if (parseInt(data?.ledgerInfo?.balance) > 0 && elapsedSinceLast > 0) {
+      accumulator += (parseInt(data?.ledgerInfo?.balance) / 1000000) * elapsedSinceLast
+    }
+    if (elapsed > 0) {
+      xahauRewardAmount = (accumulator / elapsed) * xahauRewardRate * 1000000
+    }
+  }
+  const xahauRewardCollapsedAmountText = hasXahauRewardsConfigured
+    ? amountFormat(xahauRewardAmount, { maxFractionDigits: 6 })
+    : 'not set'
+  const xahauRewardCollapsedTimeNode = hasXahauRewardsConfigured
+    ? isXahauRewardClaimable
+      ? 'claimable now'
+      : timeFromNow(xahauRewardClaimableAt, i18n)
+    : null
   const hasAccountSettingsRows =
     !!data?.ledgerInfo?.accountIndex ||
     hasNextSequence ||
@@ -2211,10 +2244,10 @@ export default function Account2({
                       )}
 
                       {canManageDid && (
-                        <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                        <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                           <button
                             type="button"
-                            className="check-action-btn redeem"
+                            className="card-action-btn redeem"
                             onClick={() =>
                               setSignRequest({
                                 action: 'setDid',
@@ -2229,7 +2262,7 @@ export default function Account2({
                           </button>
                           <button
                             type="button"
-                            className="check-action-btn cancel"
+                            className="card-action-btn cancel"
                             onClick={() =>
                               setSignRequest({
                                 request: {
@@ -2376,6 +2409,152 @@ export default function Account2({
                           </span>
                         </div>
                       ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {shouldShowXahauRewardCard && (
+                <div className="time-machine-card tx-settings-card">
+                  <button
+                    type="button"
+                    className={`time-machine-toggle ${showXahauRewardDetails ? 'active' : ''}`}
+                    onClick={() => setShowXahauRewardDetails((prev) => !prev)}
+                  >
+                    Reward
+                    <span
+                      className={`account-control-collapsed${isXahauRewardClaimable ? ' orange bold' : !hasXahauRewardsConfigured ? ' dimmed' : ''}`}
+                    >
+                      {' '}
+                      · {xahauRewardCollapsedAmountText}
+                      {!!xahauRewardCollapsedTimeNode && <> · {xahauRewardCollapsedTimeNode}</>}
+                    </span>
+                  </button>
+
+                  {showXahauRewardDetails && (
+                    <div className="time-machine-panel tx-settings-panel">
+                      <div className="detail-row issuer-detail-row">
+                        <span>Reward:</span>
+                        <span>
+                          {hasXahauRewardsConfigured ? (
+                            <>
+                              <span className="green">{amountFormat(xahauRewardAmount, { maxFractionDigits: 6 })}</span>{' '}
+                              {nativeCurrencyToFiat({
+                                amount: xahauRewardAmount,
+                                selectedCurrency,
+                                fiatRate: pageFiatRate
+                              })}
+                            </>
+                          ) : (
+                            <span className="grey">Not set</span>
+                          )}
+                        </span>
+                      </div>
+
+                      {hasXahauRewardsConfigured && (
+                        <div className="detail-row issuer-detail-row">
+                          <span>Claimable:</span>
+                          <span>{fullDateAndTime(xahauRewardClaimableAt)}</span>
+                        </div>
+                      )}
+
+                      <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                        {hasXahauRewardsConfigured ? (
+                          <>
+                            {data.address === account?.address && (
+                              <button
+                                type="button"
+                                className="card-action-btn cancel"
+                                onClick={() => {
+                                  setSignRequest({
+                                    request: {
+                                      TransactionType: 'ClaimReward',
+                                      Account: data.address,
+                                      Flags: 1
+                                    }
+                                  })
+                                }}
+                              >
+                                Rewards Opt-out
+                              </button>
+                            )}
+                            {!account?.address && data.address !== account?.address && (
+                              <button
+                                type="button"
+                                className="card-action-btn redeem"
+                                onClick={() => {
+                                  setSignRequest({})
+                                }}
+                              >
+                                Sign in to opt-out
+                              </button>
+                            )}
+                            {isXahauRewardClaimable && (
+                              <>
+                                {data.address === account?.address && (
+                                  <button
+                                    type="button"
+                                    className="card-action-btn redeem"
+                                    onClick={() => {
+                                      setSignRequest({
+                                        request: {
+                                          TransactionType: 'ClaimReward',
+                                          Issuer: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                                          Account: data.address
+                                        }
+                                      })
+                                    }}
+                                  >
+                                    <TbPigMoney style={{ fontSize: 16, marginBottom: -3 }} /> Claim now
+                                  </button>
+                                )}
+                                {!account?.address && data.address !== account?.address && (
+                                  <button
+                                    type="button"
+                                    className="card-action-btn redeem"
+                                    onClick={() => {
+                                      setSignRequest({})
+                                    }}
+                                  >
+                                    <TbPigMoney style={{ fontSize: 16, marginBottom: -3 }} /> Sign in to claim
+                                  </button>
+                                )}
+                              </>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            {data.address === account?.address && (
+                              <button
+                                type="button"
+                                className="card-action-btn redeem"
+                                onClick={() => {
+                                  setSignRequest({
+                                    request: {
+                                      TransactionType: 'ClaimReward',
+                                      Issuer: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                                      Account: data.address
+                                    }
+                                  })
+                                }}
+                              >
+                                Rewards Opt-in
+                              </button>
+                            )}
+                            {!account?.address && data.address !== account?.address && (
+                              <button
+                                type="button"
+                                className="card-action-btn redeem"
+                                onClick={() => {
+                                  setSignRequest({})
+                                }}
+                              >
+                                Sign in to opt-in
+                              </button>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -5913,10 +6092,10 @@ export default function Account2({
                             </div>
 
                             {!effectiveLedgerTimestamp && !!setSignRequest && offer?.Sequence && (
-                              <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                              <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                                 <button
                                   type="button"
-                                  className="check-action-btn cancel"
+                                  className="card-action-btn cancel"
                                   onClick={() => {
                                     setSignRequest({
                                       request: {
@@ -6064,10 +6243,10 @@ export default function Account2({
                                 </div>
 
                                 {!effectiveLedgerTimestamp && (
-                                  <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                                  <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                                     <button
                                       type="button"
-                                      className={`check-action-btn ${canRedeem ? 'redeem' : 'disabled'}`}
+                                      className={`card-action-btn ${canRedeem ? 'redeem' : 'disabled'}`}
                                       disabled={!canRedeem}
                                       onClick={() => {
                                         if (!canRedeem) return
@@ -6086,7 +6265,7 @@ export default function Account2({
                                     </button>
                                     <button
                                       type="button"
-                                      className={`check-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
+                                      className={`card-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
                                       disabled={!canCancel}
                                       onClick={() => {
                                         if (!canCancel) return
@@ -6358,10 +6537,10 @@ export default function Account2({
                                 </div>
 
                                 {!effectiveLedgerTimestamp && (
-                                  <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                                  <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                                     <button
                                       type="button"
-                                      className={`check-action-btn ${canExecute ? 'redeem' : 'disabled'}`}
+                                      className={`card-action-btn ${canExecute ? 'redeem' : 'disabled'}`}
                                       disabled={!canExecute}
                                       onClick={() => {
                                         if (!canExecute) return
@@ -6379,7 +6558,7 @@ export default function Account2({
                                     </button>
                                     <button
                                       type="button"
-                                      className={`check-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
+                                      className={`card-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
                                       disabled={!canCancel}
                                       onClick={() => {
                                         if (!canCancel) return
@@ -6662,10 +6841,10 @@ export default function Account2({
                                   )}
 
                                   {!effectiveLedgerTimestamp && (
-                                    <div className="check-actions" onClick={(event) => event.stopPropagation()}>
+                                    <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                                       <button
                                         type="button"
-                                        className={`check-action-btn ${canCancelNftOffer ? 'cancel' : 'disabled'}`}
+                                        className={`card-action-btn ${canCancelNftOffer ? 'cancel' : 'disabled'}`}
                                         disabled={!canCancelNftOffer}
                                         onClick={() => {
                                           if (!canCancelNftOffer) return
@@ -8757,7 +8936,7 @@ export default function Account2({
           overflow: hidden;
         }
 
-        .check-actions {
+        .card-actions {
           margin-top: 4px;
           display: flex;
           gap: 8px;
@@ -8765,10 +8944,10 @@ export default function Account2({
           flex-wrap: wrap;
         }
 
-        .check-action-btn {
-          border: 1px solid var(--border-color);
+        .card-action-btn {
+          border: 1px solid color-mix(in srgb, var(--text-secondary) 30%, var(--border-color));
           border-radius: 6px;
-          background: var(--background-input);
+          background: color-mix(in srgb, var(--background-input) 88%, var(--text-main) 12%);
           color: var(--text);
           font-size: 12px;
           padding: 5px 8px;
@@ -8776,23 +8955,50 @@ export default function Account2({
           align-items: center;
           gap: 5px;
           cursor: pointer;
+          transition:
+            background-color 0.16s ease,
+            border-color 0.16s ease,
+            color 0.16s ease;
         }
 
-        .check-action-btn.redeem {
+        .card-action-btn:hover {
+          border-color: var(--text-secondary);
+          background: color-mix(in srgb, var(--background-input) 74%, var(--text-main) 26%);
+        }
+
+        .card-action-btn:active {
+          background: color-mix(in srgb, var(--background-input) 66%, var(--text-main) 34%);
+        }
+
+        .card-action-btn.redeem {
           color: var(--green);
           border-color: color-mix(in srgb, var(--green) 40%, var(--border-color));
+          background: color-mix(in srgb, var(--green) 12%, var(--background-input));
         }
 
-        .check-action-btn.cancel {
+        .card-action-btn.redeem:hover {
+          border-color: color-mix(in srgb, var(--green) 60%, var(--border-color));
+          background: color-mix(in srgb, var(--green) 18%, var(--background-input));
+        }
+
+        .card-action-btn.cancel {
           color: var(--red);
-          border-color: color-mix(in srgb, var(--red) 40%, var(--border-color));
+          border-color: color-mix(in srgb, var(--red) 60%, var(--border-color));
+          background: color-mix(in srgb, var(--red) 16%, var(--background-input));
+          font-weight: 600;
         }
 
-        .check-action-btn.disabled,
-        .check-action-btn:disabled {
+        .card-action-btn.cancel:hover {
+          border-color: color-mix(in srgb, var(--red) 78%, var(--border-color));
+          background: color-mix(in srgb, var(--red) 24%, var(--background-input));
+        }
+
+        .card-action-btn.disabled,
+        .card-action-btn:disabled {
           color: var(--text-secondary);
-          border-color: var(--border-color);
-          opacity: 0.6;
+          border-color: color-mix(in srgb, var(--text-secondary) 18%, var(--border-color));
+          background: color-mix(in srgb, var(--background-main) 82%, var(--background-input));
+          opacity: 0.75;
           cursor: not-allowed;
         }
 
