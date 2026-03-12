@@ -6174,12 +6174,12 @@ export default function Account2({
                             key={escrowKey}
                             onClick={() => setExpandedEscrowKey(isExpanded ? null : escrowKey)}
                           >
-                            <div className="asset-main check-collapsed-main escrow-collapsed-main">
-                              <div className="asset-logo escrow-collapsed-logo">
-                                <div className="escrow-collapsed-top">
-                                  <span className="escrow-type-main">Escrow {collapsedDirectionLabel}</span>
+                            <div className="asset-main tx-asset-main">
+                              <div className="asset-logo tx-asset-logo">
+                                <div className="tx-collapsed-top">
+                                  <span className="tx-type-main">Escrow {collapsedDirectionLabel}</span>
                                   <span
-                                    className={`escrow-time-top ${isCanceled ? 'red' : isUnlockable ? 'green' : ''}`}
+                                    className={`tx-time tx-time-top ${isCanceled ? 'red' : isUnlockable ? 'green' : ''}`}
                                   >
                                     {collapsedTimeText}
                                   </span>
@@ -6199,7 +6199,7 @@ export default function Account2({
                                   )}
                                 </div>
                               </div>
-                              <div className="asset-value tx-collapsed-change escrow-collapsed-amount">
+                              <div className="asset-value tx-collapsed-change">
                                 <span className={`tx-inline-change ${collapsedAmountClass}`}>
                                   {collapsedAmountSign}
                                   {amountCollapsed}
@@ -8514,10 +8514,6 @@ export default function Account2({
           border-color: var(--accent-link);
         }
 
-        .escrow-card .asset-main {
-          align-items: flex-start;
-        }
-
         .escrow-collapsed-main {
           align-items: flex-start;
           position: relative;
@@ -8556,10 +8552,6 @@ export default function Account2({
           font-size: 12px;
           line-height: 1.2;
           white-space: nowrap;
-        }
-
-        .escrow-collapsed-amount {
-          text-align: right;
         }
 
         .paychannel-asset-item {
