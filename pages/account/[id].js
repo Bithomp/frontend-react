@@ -8724,7 +8724,7 @@ export default function Account2({
 
         .dex-order-card .escrow-collapsed-logo {
           width: 100%;
-          padding-right: 90px;
+          padding-right: 50px;
         }
 
         .dex-order-card .escrow-collapsed-top {
@@ -8741,6 +8741,7 @@ export default function Account2({
 
         .dex-order-card .escrow-type-main {
           display: block;
+          line-height: 18px;
           white-space: normal;
           word-break: break-word;
           overflow-wrap: anywhere;
@@ -8754,6 +8755,7 @@ export default function Account2({
 
         .dex-order-card .tx-accountset-inline {
           display: block;
+          line-height: 18px;
           max-width: 100%;
           overflow-wrap: anywhere;
           word-break: break-word;
@@ -8984,7 +8986,7 @@ export default function Account2({
 
         @media (max-width: 560px) {
           .dex-order-card .escrow-collapsed-logo {
-            padding-right: 82px;
+            padding-right: 50px;
           }
 
           .nft-asset-text .asset-summary-title {
