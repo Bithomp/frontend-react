@@ -1923,10 +1923,15 @@ export default function Account2({
       <>
         <SEO title="Account error" />
         <div className="center">
+          <br />
+          <br />
           <div className="orange bold">{errorT(t, initialErrorMessage)}</div>
+          <br />
+          <br />
           <Link href="/" className="button-action">
             Go Home
           </Link>
+          <br />
           <br />
           <br />
         </div>
@@ -6049,7 +6054,7 @@ export default function Account2({
                                 <div className="detail-row">
                                   <span>Check ID:</span>
                                   <span className="copy-inline">
-                                    <span>{check?.index || '-'}</span>
+                                    <span>{shortHash(check?.index)}</span>
                                     {!!check?.index && (
                                       <span onClick={(event) => event.stopPropagation()}>
                                         <CopyButton text={check.index} />
