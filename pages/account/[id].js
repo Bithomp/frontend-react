@@ -6167,6 +6167,24 @@ export default function Account2({
                         const collapsedDirectionLabel = isSelfEscrow ? 'self' : isOutgoingEscrow ? 'to' : 'from'
                         const collapsedAmountClass = isSelfEscrow ? 'grey' : isOutgoingEscrow ? 'red' : 'green'
                         const collapsedAmountSign = isSelfEscrow ? '' : isOutgoingEscrow ? '-' : '+'
+                        const escrowAmountDrops = Number(escrow?.Amount || 0)
+                        const signedEscrowAmountForFiat =
+                          Number.isFinite(escrowAmountDrops) && !isSelfEscrow
+                            ? isOutgoingEscrow
+                              ? -Math.abs(escrowAmountDrops)
+                              : Math.abs(escrowAmountDrops)
+                            : escrow?.Amount
+                        const collapsedAmountFiatText = nativeCurrencyToFiat({
+                          amount: signedEscrowAmountForFiat,
+                          selectedCurrency,
+                          fiatRate: pageFiatRate,
+                          asText: true
+                        })
+                        const expandedAmountFiatNode = nativeCurrencyToFiat({
+                          amount: escrow?.Amount,
+                          selectedCurrency,
+                          fiatRate: pageFiatRate
+                        })
 
                         return (
                           <div
@@ -6200,9 +6218,14 @@ export default function Account2({
                                 </div>
                               </div>
                               <div className="asset-value tx-collapsed-change">
-                                <span className={`tx-inline-change ${collapsedAmountClass}`}>
-                                  {collapsedAmountSign}
-                                  {amountCollapsed}
+                                <span className="tx-inline-change-item">
+                                  <span className={`tx-inline-change ${collapsedAmountClass}`}>
+                                    {collapsedAmountSign}
+                                    {amountCollapsed}
+                                  </span>
+                                  {!isSelfEscrow && !!collapsedAmountFiatText && (
+                                    <span className="tx-change-fiat">{collapsedAmountFiatText}</span>
+                                  )}
                                 </span>
                               </div>
                             </div>
@@ -6266,7 +6289,10 @@ export default function Account2({
 
                                 <div className="detail-row">
                                   <span>Amount:</span>
-                                  <span>{amountFormat(escrow?.Amount, { precise: 'nice' })}</span>
+                                  <span>
+                                    {amountFormat(escrow?.Amount, { precise: 'nice' })}
+                                    {!isSelfEscrow && expandedAmountFiatNode}
+                                  </span>
                                 </div>
 
                                 <div className="detail-row">
