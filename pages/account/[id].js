@@ -201,6 +201,7 @@ import {
   AddressWithIconInline,
   amountFormat,
   addressUsernameOrServiceLink,
+  codeHighlight,
   convertedAmount,
   fullDateAndTime,
   fullNiceNumber,
@@ -497,11 +498,17 @@ export default function Account2({
   const didCollapsedUrl = didUrl && isUrlValid(didUrl) ? stripDomain(didUrl) : didUrl
   const didDecodedData = didData?.data ? decode(didData.data) : ''
   const didDecodedDocument = didData?.didDocument ? decode(didData.didDocument) : ''
-  const didMetadataText = didData?.metadata
-    ? typeof didData.metadata === 'string'
-      ? didData.metadata
-      : JSON.stringify(didData.metadata, null, 2)
-    : ''
+  const didMetadataNode = (() => {
+    if (!didData?.metadata) return null
+    if (typeof didData.metadata === 'string') {
+      try {
+        return codeHighlight(JSON.parse(didData.metadata))
+      } catch {
+        return <pre className="tx-fail-description-text">{didData.metadata}</pre>
+      }
+    }
+    return codeHighlight(didData.metadata)
+  })()
   const didCreatedAgo = didData?.createdAt ? timeFromNow(didData.createdAt, i18n) : null
   const didCollapsedAgo = didData?.updatedAt ? timeFromNow(didData.updatedAt, i18n) : didCreatedAgo
   const didCollapsedAgoLabel = didData?.updatedAt ? 'Updated' : 'Created'
@@ -2159,11 +2166,13 @@ export default function Account2({
                         </div>
                       )}
 
-                      {!!didMetadataText && (
-                        <div className="detail-row tx-fail-description-row">
-                          <span>Metadata:</span>
-                          <pre className="tx-fail-description-text">{didMetadataText}</pre>
-                        </div>
+                      {!!didMetadataNode && (
+                        <>
+                          <div className="detail-row">
+                            <span>Metadata:</span>
+                          </div>
+                          <div>{didMetadataNode}</div>
+                        </>
                       )}
 
                       {canManageDid && (
