@@ -12,6 +12,7 @@ import {
   avatarSrc,
   decode,
   devNet,
+  errorT,
   getCoinsUrl,
   isUrlValid,
   nativeCurrency,
@@ -264,7 +265,7 @@ export default function Account2({
   accountWithTag,
   account
 }) {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const router = useRouter()
   const { Canvas } = useQRCode()
   const [showBalanceDetails, setShowBalanceDetails] = useState(false)
@@ -606,8 +607,11 @@ export default function Account2({
 
   const accountDisplayService = data?.service?.name
   const accountDisplayUsername = !accountDisplayService ? data?.username : null
+  const hasDisplayIdentity = !!accountDisplayService || !!accountDisplayUsername
+  const isOwnAccount = data?.address === account?.address
   const accountDisplayName =
-    userOrServiceName({ service: accountDisplayService, username: accountDisplayUsername }) || 'Account'
+    userOrServiceName({ service: accountDisplayService, username: accountDisplayUsername }) || 'No username'
+  const shouldShowUsernameRegisterButton = !hasDisplayIdentity && isOwnAccount
 
   const nativeAvailableFiatValue = ((balanceList?.available?.native || 0) / 1000000) * (pageFiatRate || 0)
   const isLpTrustlineToken = (token) => token?.Balance?.currency?.substring(0, 2) === '03'
@@ -1904,10 +1908,9 @@ export default function Account2({
   if (initialErrorMessage) {
     return (
       <>
-        <SEO title="Account not found" />
+        <SEO title="Account error" />
         <div className="center">
-          <h1>Account not found</h1>
-          <p>{initialErrorMessage}</p>
+          <div className="orange bold">{errorT(t, initialErrorMessage)}</div>
           <Link href="/" className="button-action">
             Go Home
           </Link>
@@ -2004,6 +2007,14 @@ export default function Account2({
                   {!!accountDisplayUsername && <CopyButton text={accountDisplayUsername} />}
                 </span>
               </h2>
+              <div style={{ fontSize: '13px' }}>{accountStatusNode}</div>
+              {data.service?.domain && (
+                <div className="account-domain grey">
+                  <a href={`https://${data.service.domain}`} target="_blank" rel="noreferrer">
+                    {data.service.domain}
+                  </a>
+                </div>
+              )}
               <div className="account-address">
                 <span className="account-address-text">{data.address}</span>
                 <CopyButton text={data.address} />
@@ -2037,18 +2048,18 @@ export default function Account2({
                   />
                 </div>
               )}
-              {data.service?.domain && (
-                <div className="account-domain grey">
-                  <a href={`https://${data.service.domain}`} target="_blank" rel="noreferrer">
-                    {data.service.domain}
-                  </a>
-                </div>
-              )}
-              <div style={{ fontSize: '13px' }}>{accountStatusNode}</div>
             </div>
 
             {/* Social icons */}
             {socialAccountsNode && <div className="social-icons-wrapper">{socialAccountsNode}</div>}
+
+            {shouldShowUsernameRegisterButton && (
+              <div className="get-first-native-wrap">
+                <a href={`/username?address=${data.address}`} className="get-first-native-btn">
+                  ⚡ Grab your username now
+                </a>
+              </div>
+            )}
 
             {didData && (
               <div className="cards-list info-cards-list">
