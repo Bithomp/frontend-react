@@ -1020,7 +1020,10 @@ export default function Account2({
             txHash: child?.tx_hash || child?.txHash || null,
             lastSubmittedAt: child?.last_submitted_at || child?.lastSubmittedAt || null,
             lastSubmittedLedgerIndex: child?.last_submitted_ledger_index ?? child?.lastSubmittedLedgerIndex ?? null,
-            lastSubmittedTxHash: child?.last_submitted_tx_hash || child?.lastSubmittedTxHash || null
+            lastSubmittedTxHash: child?.last_submitted_tx_hash || child?.lastSubmittedTxHash || null,
+            deletedAt: child?.deleted_at || child?.deletedAt || null,
+            deletedLedgerIndex: child?.deleted_ledger_index ?? child?.deletedLedgerIndex ?? null,
+            deletedTxHash: child?.deleted_tx_hash || child?.deletedTxHash || null
           }))
           .filter((child) => !!child.address)
 
@@ -1131,7 +1134,10 @@ export default function Account2({
             txHash: child?.tx_hash || child?.txHash || null,
             lastSubmittedAt: child?.last_submitted_at || child?.lastSubmittedAt || null,
             lastSubmittedLedgerIndex: child?.last_submitted_ledger_index ?? child?.lastSubmittedLedgerIndex ?? null,
-            lastSubmittedTxHash: child?.last_submitted_tx_hash || child?.lastSubmittedTxHash || null
+            lastSubmittedTxHash: child?.last_submitted_tx_hash || child?.lastSubmittedTxHash || null,
+            deletedAt: child?.deleted_at || child?.deletedAt || null,
+            deletedLedgerIndex: child?.deleted_ledger_index ?? child?.deletedLedgerIndex ?? null,
+            deletedTxHash: child?.deleted_tx_hash || child?.deletedTxHash || null
           }))
           .filter((child) => !!child.address)
 
@@ -7831,12 +7837,10 @@ export default function Account2({
                                   fiatRate: pageFiatRate,
                                   asText: true
                                 })
-                          const lastSubmittedAgo = child?.lastSubmittedAt
-                            ? timeFromNow(child.lastSubmittedAt, i18n)
-                            : null
                           const lastSubmittedFull = child?.lastSubmittedAt
                             ? fullDateAndTime(child.lastSubmittedAt)
                             : null
+                          const deletedFull = child?.deletedAt ? fullDateAndTime(child.deletedAt) : null
                           const isExpanded = expandedActivatedKey === activationKey
                           const toggleCard = () => setExpandedActivatedKey(isExpanded ? null : activationKey)
 
@@ -7862,9 +7866,15 @@ export default function Account2({
                                   </div>
                                 </div>
                                 <div className="asset-value tx-collapsed-change">
-                                  <span className="tx-inline-change red">
-                                    -{amountFormat(activationAmountDrops, { precise: 'nice' })}
-                                  </span>
+                                  {activationAmount > 0 ? (
+                                    <span className="tx-inline-change red">
+                                      -{amountFormat(activationAmountDrops, { precise: 'nice' })}
+                                    </span>
+                                  ) : (
+                                    <span className="tx-inline-change grey">
+                                      {amountFormat(activationAmountDrops, { precise: 'nice' })}
+                                    </span>
+                                  )}
                                 </div>
                               </div>
 
@@ -7903,7 +7913,7 @@ export default function Account2({
                                       </span>
                                     </div>
                                   )}
-                                  {currentBalanceDrops !== null && (
+                                  {currentBalanceDrops !== null && !child.deletedAt && !child.deletedTxHash && (
                                     <div className="detail-row">
                                       <span>Balance now:</span>
                                       <span className="tx-detail-stacked-amount">
@@ -7916,28 +7926,53 @@ export default function Account2({
                                       </span>
                                     </div>
                                   )}
-                                  {(lastSubmittedAgo || lastSubmittedFull || child.lastSubmittedTxHash) && (
-                                    <div className="detail-row">
-                                      <span>Last submitted tx:</span>
-                                      <span
-                                        className="copy-inline"
-                                        title={lastSubmittedFull ? String(lastSubmittedFull) : undefined}
-                                      >
-                                        {child.lastSubmittedTxHash ? (
-                                          <Link
-                                            href={`/transaction/${child.lastSubmittedTxHash}`}
-                                            onClick={(e) => e.stopPropagation()}
-                                          >
-                                            {lastSubmittedAgo ||
-                                              lastSubmittedFull ||
-                                              shortHash(child.lastSubmittedTxHash)}
-                                          </Link>
-                                        ) : (
-                                          <span>{lastSubmittedAgo || lastSubmittedFull}</span>
-                                        )}
-                                        {child.lastSubmittedTxHash && <CopyButton text={child.lastSubmittedTxHash} />}
-                                      </span>
-                                    </div>
+                                  {(lastSubmittedFull || child.lastSubmittedTxHash) && (
+                                    <>
+                                      {lastSubmittedFull && (
+                                        <div className="detail-row">
+                                          <span>Last active:</span>
+                                          <span title={String(lastSubmittedFull)}>{lastSubmittedFull}</span>
+                                        </div>
+                                      )}
+                                      {child.lastSubmittedTxHash && (
+                                        <div className="detail-row">
+                                          <span>Last submitted tx:</span>
+                                          <span className="copy-inline">
+                                            <Link
+                                              href={`/transaction/${child.lastSubmittedTxHash}`}
+                                              onClick={(e) => e.stopPropagation()}
+                                            >
+                                              {shortHash(child.lastSubmittedTxHash)}
+                                            </Link>
+                                            <CopyButton text={child.lastSubmittedTxHash} />
+                                          </span>
+                                        </div>
+                                      )}
+                                    </>
+                                  )}
+                                  {(deletedFull || child.deletedTxHash) && (
+                                    <>
+                                      {deletedFull && (
+                                        <div className="detail-row">
+                                          <span>Deleted:</span>
+                                          <span title={String(deletedFull)}>{deletedFull}</span>
+                                        </div>
+                                      )}
+                                      {child.deletedTxHash && (
+                                        <div className="detail-row">
+                                          <span>Delete tx:</span>
+                                          <span className="copy-inline">
+                                            <Link
+                                              href={`/transaction/${child.deletedTxHash}`}
+                                              onClick={(e) => e.stopPropagation()}
+                                            >
+                                              {shortHash(child.deletedTxHash)}
+                                            </Link>
+                                            <CopyButton text={child.deletedTxHash} />
+                                          </span>
+                                        </div>
+                                      )}
+                                    </>
                                   )}
                                 </div>
                               )}
