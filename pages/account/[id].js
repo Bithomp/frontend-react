@@ -693,7 +693,7 @@ export default function Account2({
   const totalWorthBreakdown = [
     { label: nativeCurrency, value: nativeAvailableFiatValue },
     ...(lpTokensCount > 0 ? [{ label: `LP tokens (${lpTokensCount})`, value: lpTokensFiatValue }] : []),
-    ...(issuedTokensCount > 0 ? [{ label: `Issued tokens (${issuedTokensCount})`, value: issuedTokensFiatValue }] : [])
+    ...(issuedTokensCount > 0 ? [{ label: `Tokens (${issuedTokensCount})`, value: issuedTokensFiatValue }] : [])
   ].sort((a, b) => b.value - a.value)
   const shouldShowTokenTabs = lpTokensCount > 0 && issuedTokensCount > 0
   const activeTokenList = tokenTab === 'lp' ? lpTokenList : tokenTab === 'tokens' ? standardTokenList : tokens
