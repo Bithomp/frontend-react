@@ -203,6 +203,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import { CurrencyWithIcon } from '../../utils/format'
 import { NftImage, nftName } from '../../utils/nft'
 import {
+  AddressWithIcon,
   AddressWithIconInline,
   amountFormat,
   addressUsernameOrServiceLink,
@@ -7514,17 +7515,16 @@ export default function Account2({
                             <div className="asset-main tx-asset-main">
                               <div className="asset-logo tx-asset-logo">
                                 <div className="tx-collapsed-top">
-                                  <span className="tx-type-main">Activated account</span>
                                   <span className="tx-time tx-time-top" title={activationTimeFull}>
                                     {activationTimeAgo}
                                   </span>
                                 </div>
                                 <div className="tx-collapsed-meta">
-                                  <AddressWithIconInline
-                                    data={{ address: child.address }}
-                                    name="address"
-                                    options={{ short: 6 }}
-                                  />
+                                  <AddressWithIcon address={child.address}>
+                                    <span className="activated-account-inline-address">
+                                      {shortHash(child.address, 6)}
+                                    </span>
+                                  </AddressWithIcon>
                                 </div>
                               </div>
                               <div className="asset-value tx-collapsed-change">
@@ -8052,6 +8052,10 @@ export default function Account2({
           min-width: 0;
           flex-wrap: wrap;
           padding-top: 2px;
+        }
+
+        .activated-account-inline-address {
+          color: var(--text-secondary);
         }
 
         .tx-time {

@@ -298,12 +298,34 @@ export const AddressWithIcon = ({ children, address }) => {
   if (!address) {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }
+  const shouldZoom = !!address
   return (
     <table style={{ minWidth: 126 }}>
       <tbody>
         <tr className="no-border">
           <td style={{ padding: 0, width: 35, height: 35 }}>
-            <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+            <div
+              style={{
+                width: 35,
+                height: 35,
+                borderRadius: '50%',
+                overflow: 'hidden',
+                display: 'inline-block',
+                verticalAlign: 'middle',
+                lineHeight: 0
+              }}
+            >
+              <Image
+                alt="avatar"
+                src={imageUrl}
+                width="35"
+                height="35"
+                style={{
+                  objectFit: 'cover',
+                  transform: shouldZoom ? 'scale(1.25)' : 'scale(1)'
+                }}
+              />
+            </div>
           </td>
           <td style={{ padding: '0 0 0 5px' }}>{children}</td>
         </tr>
@@ -1093,6 +1115,8 @@ export const capitalize = (word) => {
 }
 
 export const timeFromNow = (timestamp, i18n, type) => {
+  if (timestamp === null || typeof timestamp === 'undefined' || timestamp === '') return ''
+
   let lang = 'en'
   if (i18n.language === 'default' || i18n.language === 'undefined') {
     lang = 'en'
@@ -1101,11 +1125,30 @@ export const timeFromNow = (timestamp, i18n, type) => {
   }
   dayjs.locale(lang)
 
-  if (type === 'ripple') {
-    timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+  let parsedTime = null
+
+  if (typeof timestamp === 'number') {
+    let normalizedTimestamp = timestamp
+    if (type === 'ripple') {
+      normalizedTimestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+    }
+    parsedTime = normalizedTimestamp > 1e12 ? dayjs(normalizedTimestamp) : dayjs.unix(normalizedTimestamp)
+  } else if (typeof timestamp === 'string') {
+    const numericTimestamp = Number(timestamp)
+    if (Number.isFinite(numericTimestamp)) {
+      let normalizedTimestamp = numericTimestamp
+      if (type === 'ripple') {
+        normalizedTimestamp += 946684800
+      }
+      parsedTime = normalizedTimestamp > 1e12 ? dayjs(normalizedTimestamp) : dayjs.unix(normalizedTimestamp)
+    } else {
+      parsedTime = dayjs(timestamp)
+    }
+  } else {
+    parsedTime = dayjs(timestamp)
   }
 
-  return <span suppressHydrationWarning>{dayjs(timestamp * 1000, 'unix').fromNow()}</span>
+  return <span suppressHydrationWarning>{parsedTime?.isValid() ? parsedTime.fromNow() : '-'}</span>
 }
 
 export const fullDateAndTime = (timestamp, type = null, options) => {
