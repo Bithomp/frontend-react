@@ -45,7 +45,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function FaucetPage({ account, showAds, sessionTokenData, countryCode }) {
+export default function FaucetPage({ account, showAds, sessionTokenData, countryCode, setSignRequest }) {
   const { t } = useTranslation()
 
   return (
@@ -75,6 +75,7 @@ export default function FaucetPage({ account, showAds, sessionTokenData, country
           type={devNet ? 'faucet' : 'testPayment'}
           sessionTokenData={sessionTokenData}
           countryCode={countryCode}
+          setSignRequest={setSignRequest}
         />
       </div>
       {showAds && <Ads />}

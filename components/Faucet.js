@@ -2,6 +2,7 @@ import axios from 'axios'
 import { useTranslation, Trans } from 'next-i18next'
 import {
   nativeCurrency,
+  network,
   explorerName,
   ledgerName,
   turnstileSupportedLanguages,
@@ -19,6 +20,7 @@ import { useRouter } from 'next/router'
 
 import AddressInput from './UI/AddressInput'
 import FormInput from './UI/FormInput'
+import SimpleSelect from './UI/SimpleSelect'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
 import { addressLink, amountFormat, capitalize, duration, fullNiceNumber } from '../utils/format'
@@ -33,15 +35,24 @@ const convertToDrops = (amount) => {
 
 const maxAmount = 100 // in native currency
 const defaultAmount = 10 // in native currency
+const RLUSD_TRUSTLINE_LIMIT = '1000000000'
+const RLUSD_ISSUER = 'rQhWct2fv4Vc4KRjRgMrxa8xPN9Zx9iLKV'
+const RLUSD_CURRENCY = '524C555344000000000000000000000000000000'
 
-export default function Faucet({ account, type, sessionTokenData, countryCode }) {
+export default function Faucet({ account, type, sessionTokenData, countryCode, setSignRequest }) {
   const router = useRouter()
-  const { address: queryAddress, amount: queryAmount, destinationTag: queryDestinationTag } = router.query
+  const {
+    address: queryAddress,
+    amount: queryAmount,
+    destinationTag: queryDestinationTag,
+    currency: queryCurrency
+  } = router.query
 
   const [data, setData] = useState({})
   const [address, setAddress] = useState(isAddressValid(queryAddress) ? queryAddress : account?.address)
   const [destinationTag, setDestinationTag] = useState(isTagValid(queryDestinationTag) ? queryDestinationTag : null)
-  const [amount, setAmount] = useState(queryAmount ? convertToDrops(queryAmount) : convertToDrops(defaultAmount))
+  const [currency, setCurrency] = useState(String(queryCurrency || '').toUpperCase() === 'RLUSD' ? 'RLUSD' : 'native')
+  const [amount, setAmount] = useState(queryAmount ? String(queryAmount) : String(defaultAmount))
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState()
   const [token, setToken] = useState()
@@ -50,11 +61,15 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
   const [lastLedgerIndex, setLastLedgerIndex] = useState()
   const [resetKey, setResetKey] = useState(0)
   const [countries, setCountries] = useState(null)
+  const [showTrustlineButton, setShowTrustlineButton] = useState(false)
 
   const { t, i18n } = useTranslation()
   const { theme } = useTheme()
 
   const testPayment = type === 'testPayment'
+  const isRlusdEnabled = network === 'testnet' && !testPayment
+  const isRlusd = isRlusdEnabled && currency === 'RLUSD'
+  const amountCurrencyLabel = isRlusd ? 'RLUSD' : nativeCurrency
 
   const FAUCET_DENIED_COUNTRIES = [
     'ID', // Indonesia
@@ -63,6 +78,7 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
 
   const isCountryKnown = Boolean(countryCode)
   const isBlockedCountry = !isCountryKnown || FAUCET_DENIED_COUNTRIES.includes(countryCode)
+  const shouldShowFaucetButton = !(showTrustlineButton && isRlusd)
 
   useEffect(() => {
     const loadCountries = async () => {
@@ -73,6 +89,12 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
   }, [i18n.language])
 
   const countryName = (countryCode && countries?.getNameTranslated?.(countryCode)) || countryCode || 'Unknown'
+
+  useEffect(() => {
+    if (!isRlusdEnabled && currency !== 'native') {
+      setCurrency('native')
+    }
+  }, [isRlusdEnabled, currency])
 
   useEffect(() => {
     let queryAddList = []
@@ -100,11 +122,17 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
       }
     }
 
-    if (amount !== convertToDrops(queryAmount) && amount !== convertToDrops(defaultAmount)) {
-      if (amount) {
+    if (isRlusd) {
+      queryAddList.push({ name: 'currency', value: 'RLUSD' })
+    } else {
+      queryRemoveList.push('currency')
+    }
+
+    if (amount !== String(queryAmount || defaultAmount) && amount !== String(defaultAmount)) {
+      if (amount && Number(amount) > 0) {
         queryAddList.push({
           name: 'amount',
-          value: amount / 1000000
+          value: amount
         })
       } else {
         queryRemoveList.push('amount')
@@ -115,7 +143,7 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
 
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, destinationTag, amount, account])
+  }, [address, destinationTag, amount, currency, account, isRlusdEnabled, isRlusd])
 
   useEffect(() => {
     fetchData()
@@ -145,6 +173,7 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
   const onSubmit = async () => {
     setData({})
     setErrorMessage('')
+    setShowTrustlineButton(false)
 
     if (!token) {
       console.error('No token')
@@ -161,6 +190,16 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
       return
     }
 
+    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+      setErrorMessage('Please enter a valid amount')
+      return
+    }
+
+    if (Number(amount) > maxAmount) {
+      setErrorMessage("The amount can't be more than " + maxAmount + ' ' + amountCurrencyLabel)
+      return
+    }
+
     let data = { 'cf-turnstile-response': token, address }
 
     if (testPayment) {
@@ -170,7 +209,13 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
       }
       data.lastLedgerIndex = lastLedgerIndex
     } else {
-      data.amount = amount
+      data.amount = isRlusd
+        ? {
+            issuer: RLUSD_ISSUER,
+            currency: RLUSD_CURRENCY,
+            value: String(amount)
+          }
+        : convertToDrops(amount)
     }
 
     if (destinationTag) {
@@ -227,6 +272,9 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
         setErrorMessage(t('try-later', { ns: 'faucet', time }))
       } else if (response?.data?.state === 'tecNO_DST_INSUF_XRP') {
         setErrorMessage('The destination address is not activated, send a larger amount to activate it!')
+      } else if (isRlusd && response?.data?.state === 'tecPATH_DRY') {
+        setErrorMessage('First, you need to add a trustline.')
+        setShowTrustlineButton(true)
       } else {
         setErrorMessage(
           response?.data?.message || errorCodeDescription(response?.data?.state) || t('error-occured', { ns: 'faucet' })
@@ -237,13 +285,46 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
 
   const onAmountChange = (value) => {
     setErrorMessage('')
+    setShowTrustlineButton(false)
     let amountString = value
     if (!amountString || amountString < 0) return
     if (amountString > maxAmount) {
-      setErrorMessage("The amount can't be more than " + maxAmount + ' ' + nativeCurrency)
+      setErrorMessage("The amount can't be more than " + maxAmount + ' ' + amountCurrencyLabel)
     }
-    amountString = convertToDrops(amountString)
-    setAmount(amountString)
+    setAmount(String(amountString))
+  }
+
+  const onCurrencyChange = (value) => {
+    setCurrency(value)
+    setErrorMessage('')
+    setShowTrustlineButton(false)
+  }
+
+  const onAddTrustline = () => {
+    if (!setSignRequest) return
+
+    setErrorMessage('')
+
+    setSignRequest({
+      request: {
+        TransactionType: 'TrustSet',
+        LimitAmount: {
+          currency: RLUSD_CURRENCY,
+          issuer: RLUSD_ISSUER,
+          value: RLUSD_TRUSTLINE_LIMIT
+        },
+        Flags: 0x00020000
+      },
+      callback: (result) => {
+        const status = result.meta?.TransactionResult
+
+        if (status === 'tesSUCCESS') {
+          setShowTrustlineButton(false)
+        } else if (status) {
+          setErrorMessage(errorCodeDescription(status))
+        }
+      }
+    })
   }
 
   const setAddressValue = (value) => {
@@ -342,17 +423,37 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
                 ) : (
                   <div>
                     <div className="form-spacing" />
-                    <FormInput
-                      title={capitalize(t('enter-amount', { ns: 'faucet', nativeCurrency, devNet, maxAmount }))}
-                      placeholder={'Enter amount in ' + nativeCurrency}
-                      setInnerValue={onAmountChange}
-                      hideButton={true}
-                      onKeyPress={typeNumberOnly}
-                      defaultValue={amount / 1000000}
-                      maxLength={35}
-                      min={0}
-                      type="text"
-                    />
+                    <div className="flex flex-col gap-x-4 sm:flex-row">
+                      <div className="flex-1">
+                        <FormInput
+                          title={capitalize(
+                            t('enter-amount', { ns: 'faucet', nativeCurrency: amountCurrencyLabel, devNet, maxAmount })
+                          )}
+                          placeholder={'Enter amount in ' + amountCurrencyLabel}
+                          setInnerValue={onAmountChange}
+                          hideButton={true}
+                          onKeyPress={typeNumberOnly}
+                          defaultValue={amount}
+                          maxLength={35}
+                          min={0}
+                          type="text"
+                        />
+                      </div>
+                      {isRlusdEnabled && (
+                        <div className="flex-1" style={{ marginBottom: 20 }}>
+                          <span className="input-title">Currency</span>
+                          <SimpleSelect
+                            value={currency}
+                            setValue={onCurrencyChange}
+                            optionsList={[
+                              { value: 'native', label: nativeCurrency },
+                              { value: 'RLUSD', label: 'RLUSD' }
+                            ]}
+                            className="currency-select"
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
@@ -387,7 +488,7 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
                   </>
                 )}
                 <center>
-                  {siteKey && (
+                  {siteKey && shouldShowFaucetButton && (
                     <>
                       <br />
                       <Turnstile
@@ -407,16 +508,13 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
                       <button
                         className="center button-action"
                         disabled={
-                          !token ||
-                          !isAddressValid(address) ||
-                          loading ||
-                          (Number(amount) > maxAmount * 1000000 && !testPayment)
+                          !token || !isAddressValid(address) || loading || (!testPayment && Number(amount) > maxAmount)
                         }
                         onClick={onSubmit}
                       >
                         {testPayment
                           ? t('button.test-now', { ns: 'faucet' })
-                          : 'Get ' + explorerName + ' ' + nativeCurrency}
+                          : 'Get ' + explorerName + ' ' + amountCurrencyLabel}
                       </button>
                     </>
                   )}
@@ -461,7 +559,7 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
                       {amountFormat(data.amount, { noSpaces: true })})
                     </>
                   ) : (
-                    <b className="green">{amountFormat(data.amount, { noSpaces: true })}</b>
+                    <b className="green">{amountFormat(data.amount, { noSpaces: true, withIssuer: true })}</b>
                   )}
                 </p>
               )}
@@ -497,6 +595,15 @@ export default function Faucet({ account, type, sessionTokenData, countryCode })
         <div className="center">
           <br />
           <span className="bold red center">{errorMessage}</span>
+          {showTrustlineButton && (
+            <>
+              <br />
+              <br />
+              <button type="button" className="button-action" onClick={onAddTrustline} disabled={!setSignRequest}>
+                Add RLUSD trustline
+              </button>
+            </>
+          )}
         </div>
       )}
     </>
