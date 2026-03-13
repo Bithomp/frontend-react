@@ -8765,6 +8765,27 @@ export default function Account2({
           transform: none;
         }
 
+        @media (prefers-color-scheme: dark) {
+          .get-first-native-btn {
+            background: color-mix(in srgb, var(--accent-link) 66%, #000 34%);
+            border-color: color-mix(in srgb, var(--accent-link) 58%, #000 42%);
+            color: #f6fbff;
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+          }
+
+          .get-first-native-btn:hover {
+            background: color-mix(in srgb, var(--accent-link) 72%, #000 28%);
+            border-color: color-mix(in srgb, var(--accent-link) 64%, #000 36%);
+            opacity: 1;
+          }
+
+          .get-first-native-btn:disabled {
+            background: color-mix(in srgb, var(--accent-link) 24%, #000 76%);
+            border-color: color-mix(in srgb, var(--accent-link) 20%, #000 80%);
+            color: color-mix(in srgb, #f6fbff 70%, #8090a0 30%);
+          }
+        }
+
         .object-load-status {
           cursor: default;
           border: 1px dashed var(--border-color);
