@@ -80,3 +80,40 @@
     }
   }
 }
+
+.account-container {
+  .section-link {
+    height: 30px;
+    padding: 0 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--background-input);
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      color 0.16s ease,
+      border-color 0.16s ease,
+      background-color 0.16s ease;
+
+    &:hover {
+      color: var(--accent-link);
+      border-color: var(--accent-link);
+      background: color-mix(in srgb, var(--background-input) 86%, var(--accent-link) 14%);
+      text-decoration: none;
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--accent-link);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-link) 30%, transparent);
+    }
+  }
+
+}

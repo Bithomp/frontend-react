@@ -7950,17 +7950,6 @@ export default function Account2({
           }
         }
 
-        .section-link {
-          font-size: 13px;
-          color: var(--accent-link);
-          text-decoration: none;
-          white-space: nowrap;
-        }
-
-        .section-link:hover {
-          text-decoration: underline;
-        }
-
         .tx-asset-item.tx-failed {
           background: repeating-linear-gradient(
             45deg,
