@@ -1809,93 +1809,87 @@ export default function Account2({
 
   if (data?.ledgerInfo?.domain) {
     const domainText = stripDomain(data.ledgerInfo.domain)
-    const serviceDomainText = stripDomain(data.service?.domain || '')
     const isValidDomain = isDomainValid(domainText)
-    const isDifferentFromService = domainText.toLowerCase() !== serviceDomainText.toLowerCase()
-
-    // Only show if different from service domain
-    if (isDifferentFromService) {
-      const showUnverified =
-        isValidDomain &&
-        !data.verifiedDomain &&
-        (!data.service?.domain || !data.ledgerInfo.domain.toLowerCase().includes(data.service.domain.toLowerCase()))
-      const domainActionButtons = canManageDomain ? (
-        <span className="no-brake">
-          <span className="tooltip tooltip-icon" style={{ marginLeft: 5 }}>
-            <span
-              style={{ fontSize: 16, marginBottom: -3, display: 'inline-flex' }}
-              onClick={() =>
-                setSignRequest({
-                  action: 'setDomain',
-                  redirect: 'account',
-                  request: {
-                    TransactionType: 'AccountSet',
-                    Account: data?.address
-                  }
-                })
-              }
-            >
-              <FaPencil />
-            </span>
-            <span className="tooltiptext no-brake">Edit</span>
-          </span>{' '}
-          <span className="tooltip tooltip-icon">
-            <span
-              className="red"
-              style={{ fontSize: 18, marginBottom: -4, display: 'inline-flex' }}
-              onClick={() =>
-                setSignRequest({
-                  redirect: 'account',
-                  request: {
-                    TransactionType: 'AccountSet',
-                    Domain: '',
-                    Account: data?.address
-                  }
-                })
-              }
-            >
-              <MdDeleteForever />
-            </span>
-            <span className="tooltiptext no-brake">Remove</span>
+    const showUnverified =
+      isValidDomain &&
+      !data.verifiedDomain &&
+      (!data.service?.domain || !data.ledgerInfo.domain.toLowerCase().includes(data.service.domain.toLowerCase()))
+    const domainActionButtons = canManageDomain ? (
+      <span className="no-brake">
+        <span className="tooltip tooltip-icon" style={{ marginLeft: 5 }}>
+          <span
+            style={{ fontSize: 16, marginBottom: -3, display: 'inline-flex' }}
+            onClick={() =>
+              setSignRequest({
+                action: 'setDomain',
+                redirect: 'account',
+                request: {
+                  TransactionType: 'AccountSet',
+                  Account: data?.address
+                }
+              })
+            }
+          >
+            <FaPencil />
           </span>
+          <span className="tooltiptext no-brake">Edit</span>
+        </span>{' '}
+        <span className="tooltip tooltip-icon">
+          <span
+            className="red"
+            style={{ fontSize: 18, marginBottom: -4, display: 'inline-flex' }}
+            onClick={() =>
+              setSignRequest({
+                redirect: 'account',
+                request: {
+                  TransactionType: 'AccountSet',
+                  Domain: '',
+                  Account: data?.address
+                }
+              })
+            }
+          >
+            <MdDeleteForever />
+          </span>
+          <span className="tooltiptext no-brake">Remove</span>
         </span>
-      ) : null
+      </span>
+    ) : null
 
-      pushPublicRow(
-        'Domain',
-        isValidDomain ? (
-          <span>
-            <a
-              href={`https://${domainText}`}
-              className={data.verifiedDomain ? 'green bold' : ''}
-              target="_blank"
-              rel="noopener nofollow"
+    pushPublicRow(
+      'Domain',
+      isValidDomain ? (
+        <span>
+          <a
+            href={`https://${domainText}`}
+            className={data.verifiedDomain ? 'green bold' : ''}
+            target="_blank"
+            rel="noopener nofollow"
+          >
+            {domainText}
+          </a>{' '}
+          {data.verifiedDomain && (
+            <span
+              className="blue tooltip"
+              style={{
+                display: 'inline-block',
+                verticalAlign: 'middle'
+              }}
             >
-              {domainText}
-            </a>{' '}
-            {data.verifiedDomain && (
-              <span
-                className="blue tooltip"
-                style={{
-                  display: 'inline-block',
-                  verticalAlign: 'middle'
-                }}
-              >
-                <MdVerified />
-                <span className="tooltiptext right small no-brake">TOML Verified Domain</span>
-              </span>
-            )}{' '}
-            {showUnverified && <span className="grey">(unverified)</span>}
-            {domainActionButtons}
-          </span>
-        ) : (
-          <>
-            <code className="code-highlight">{data.ledgerInfo.domain}</code>
-            {domainActionButtons}
-          </>
-        )
+              <MdVerified />
+              <span className="tooltiptext right small no-brake">TOML Verified Domain</span>
+            </span>
+          )}{' '}
+          {showUnverified && <span className="grey">(unverified)</span>}
+          {domainActionButtons}
+        </span>
+      ) : (
+        <>
+          <code className="code-highlight">{data.ledgerInfo.domain}</code>
+          {domainActionButtons}
+        </>
       )
-    }
+    )
   }
 
   if (data?.inception) {
