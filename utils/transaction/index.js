@@ -3,6 +3,22 @@ import { nativeCurrency, safeClone } from '..'
 import { TData } from '../../components/Table'
 import { add } from '../calc'
 import { decodeJsonMemo } from '../format'
+import { FaKey, FaLink, FaRegHandPaper, FaUserShield, FaMoneyCheckAlt } from 'react-icons/fa6'
+import {
+  MdArrowDownward,
+  MdArrowUpward,
+  MdCompareArrows,
+  MdDeleteSweep,
+  MdPool,
+  MdSend,
+  MdSwapVert
+} from 'react-icons/md'
+import { BsFillSafeFill } from 'react-icons/bs'
+import { CiSettings } from 'react-icons/ci'
+import { FiDownload } from 'react-icons/fi'
+import { GiPassport } from 'react-icons/gi'
+import { LuFileCheck2 } from 'react-icons/lu'
+import { RiNftFill } from 'react-icons/ri'
 
 // sourse address and destination address is the same
 // sometimes source tag is added to show the dapp
@@ -118,6 +134,113 @@ const TRANSACTION_TYPE_LABELS = {
 export const getTransactionTypeLabel = (type) => {
   if (!type) return '-'
   return TRANSACTION_TYPE_LABELS[type] || type
+}
+
+export const getAccountTransactionTypeIcon = ({
+  txType,
+  isSource,
+  isRipplingPayment,
+  isSelfPayment,
+  isAccountDeleteTx,
+  isAmmTx
+}) => {
+  const iconStyle = { fontSize: 16 }
+
+  if (isAccountDeleteTx) {
+    return <MdDeleteSweep style={{ ...iconStyle, color: '#111' }} title="Account removed" />
+  }
+
+  if (isRipplingPayment) {
+    return <MdCompareArrows style={{ ...iconStyle, color: '#9b59b6', transform: 'rotate(90deg)' }} title="Rippling" />
+  }
+
+  if (isSelfPayment) {
+    return <MdSwapVert style={{ ...iconStyle, color: '#2980ef' }} title="Swap" />
+  }
+
+  if (txType === 'Payment') {
+    return isSource ? (
+      <MdArrowUpward style={{ ...iconStyle, color: '#e74c3c' }} title="Sent payment" />
+    ) : (
+      <MdArrowDownward style={{ ...iconStyle, color: '#27ae60' }} title="Received payment" />
+    )
+  }
+
+  if (txType === 'AccountSet') {
+    return <CiSettings style={{ ...iconStyle, color: '#888' }} title="Account settings" />
+  }
+
+  if (txType === 'SetRegularKey') {
+    return <FaKey style={{ ...iconStyle, color: '#9b59b6' }} title="Set Regular Key" />
+  }
+
+  if (txType === 'DelegateSet') {
+    return <FaUserShield style={{ ...iconStyle, color: '#1abc9c' }} title="Delegate Set" />
+  }
+
+  if (txType?.includes('Check')) {
+    return <FaMoneyCheckAlt style={{ ...iconStyle, color: '#27ae60' }} title="Check" />
+  }
+
+  if (txType?.includes('Escrow')) {
+    return <BsFillSafeFill style={{ ...iconStyle, color: '#2980ef' }} title="Escrow" />
+  }
+
+  if (isAmmTx) {
+    const ammColor =
+      txType === 'AMMDeposit'
+        ? '#e74c3c'
+        : txType === 'AMMWithdraw'
+          ? '#27ae60'
+          : txType === 'AMMVote'
+            ? '#9b59b6'
+            : '#2980ef'
+    return <MdPool style={{ ...iconStyle, color: ammColor }} title={txType} />
+  }
+
+  if (txType === 'OfferCancel') {
+    return <FaRegHandPaper style={{ ...iconStyle, color: '#e74c3c' }} title="Offer canceled" />
+  }
+
+  if (txType === 'OfferCreate') {
+    return <MdCompareArrows style={{ ...iconStyle, color: '#2980ef' }} title="Offer" />
+  }
+
+  if (txType?.includes('NFToken')) {
+    const nftColor =
+      txType === 'NFTokenBurn'
+        ? '#222'
+        : txType === 'NFTokenAcceptOffer'
+          ? isSource
+            ? '#e74c3c'
+            : '#27ae60'
+          : txType === 'NFTokenCancelOffer'
+            ? '#ff9800'
+            : '#9b59b6'
+    return <RiNftFill style={{ ...iconStyle, color: nftColor }} title="NFT" />
+  }
+
+  if (txType?.includes('DID')) {
+    return <GiPassport style={{ ...iconStyle, color: '#2980ef' }} title="DID" />
+  }
+
+  if (txType?.includes('URIToken')) {
+    return <FaLink style={{ ...iconStyle, color: '#2980ef' }} title="URI Token" />
+  }
+
+  if (txType === 'Import') {
+    return <FiDownload style={{ ...iconStyle, color: '#27ae60' }} title="Import" />
+  }
+
+  if (txType === 'Remit') {
+    return <MdSend style={{ ...iconStyle, color: '#e67e22' }} title="Remit" />
+  }
+
+  if (txType === 'EnableAmendment') {
+    return <LuFileCheck2 style={{ ...iconStyle, color: '#2980ef' }} title="Enable Amendment" />
+  }
+
+  return null
 }
 
 export const errorCodeDescription = (code) => {

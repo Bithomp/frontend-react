@@ -223,6 +223,7 @@ import { scaleAmount, subtract } from '../../utils/calc'
 import {
   addressBalanceChanges,
   errorCodeDescription,
+  getAccountTransactionTypeIcon,
   getTransactionTypeLabel,
   shortErrorCode
 } from '../../utils/transaction'
@@ -5068,6 +5069,14 @@ export default function Account2({
                               ? 'received NFT from'
                               : 'bought NFT from'
                             : ''
+                      const txTypeIconNode = getAccountTransactionTypeIcon({
+                        txType,
+                        isSource,
+                        isRipplingPayment,
+                        isSelfPayment,
+                        isAccountDeleteTx,
+                        isAmmTx
+                      })
 
                       return (
                         <div
@@ -5079,6 +5088,7 @@ export default function Account2({
                             <div className="asset-logo tx-asset-logo">
                               <div className="tx-collapsed-top">
                                 <span className="tx-type-main">
+                                  {txTypeIconNode && <span className="tx-type-icon">{txTypeIconNode}</span>}
                                   {showBrokerInCollapsedTitle ? (
                                     <>
                                       <span className="tx-broker-inline">
@@ -7747,6 +7757,9 @@ export default function Account2({
         }
 
         .tx-type-main {
+          display: inline-flex;
+          align-items: center;
+          gap: 2px;
           font-size: 14px;
           font-weight: 600;
           color: var(--text);
@@ -7754,6 +7767,13 @@ export default function Account2({
           min-width: 0;
           white-space: normal;
           word-break: break-word;
+        }
+
+        .tx-type-icon {
+          display: inline-flex;
+          align-items: center;
+          line-height: 1;
+          flex-shrink: 0;
         }
 
         .tx-amm-token-meta {
