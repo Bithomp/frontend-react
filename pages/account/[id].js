@@ -16,6 +16,7 @@ import {
   getCoinsUrl,
   isUrlValid,
   nativeCurrency,
+  network,
   networks,
   isValidPayString,
   isValidXAddress,
@@ -25,6 +26,7 @@ import {
   timestampExpired,
   xahauNetwork
 } from '../../utils'
+import { TESTNET_RLUSD_CURRENCY, TESTNET_RLUSD_ISSUER } from '../../utils/faucet'
 import { getIsSsrMobile, useIsMobile } from '../../utils/mobile'
 import { xAddressToClassicAddress } from 'ripple-address-codec'
 
@@ -3315,6 +3317,12 @@ export default function Account2({
               const tokenUniqueKey = `${token.Balance?.currency || 'token'}-${issuer?.issuer || 'issuer'}-${index}`
               const isExpanded = expandedToken === tokenUniqueKey
               const isLpToken = isLpTrustlineToken(token)
+              const canGetMoreRlusd =
+                network === 'testnet' &&
+                isOwnAccount &&
+                !effectiveLedgerTimestamp &&
+                token.Balance?.currency === TESTNET_RLUSD_CURRENCY &&
+                issuer?.issuer === TESTNET_RLUSD_ISSUER
 
               return (
                 <div
@@ -3624,6 +3632,17 @@ export default function Account2({
                             }
                           >
                             <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> Withdraw
+                          </button>
+                        </div>
+                      )}
+                      {canGetMoreRlusd && (
+                        <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                          <button
+                            type="button"
+                            className="card-action-btn redeem"
+                            onClick={() => router.push(`/faucet?currency=RLUSD&amount=1&address=${data?.address}`)}
+                          >
+                            <MdSouth style={{ fontSize: 16, marginBottom: -2 }} /> Get 1 more RLUSD
                           </button>
                         </div>
                       )}

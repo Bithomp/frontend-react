@@ -17,6 +17,7 @@ import {
 } from '../utils'
 import { useTheme } from './Layout/ThemeContext'
 import { useRouter } from 'next/router'
+import { TESTNET_RLUSD_CURRENCY, TESTNET_RLUSD_ISSUER, TESTNET_RLUSD_TRUSTLINE_LIMIT } from '../utils/faucet'
 
 import AddressInput from './UI/AddressInput'
 import FormInput from './UI/FormInput'
@@ -33,11 +34,9 @@ const convertToDrops = (amount) => {
   return parseInt(amount * 1000000).toString()
 }
 
-const maxAmount = 100 // in native currency
+const maxNativeAmount = 100
+const maxRlusdAmount = 10
 const defaultAmount = 10 // in native currency
-const RLUSD_TRUSTLINE_LIMIT = '1000000000'
-const RLUSD_ISSUER = 'rQhWct2fv4Vc4KRjRgMrxa8xPN9Zx9iLKV'
-const RLUSD_CURRENCY = '524C555344000000000000000000000000000000'
 
 export default function Faucet({ account, type, sessionTokenData, countryCode, setSignRequest }) {
   const router = useRouter()
@@ -69,6 +68,7 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
   const testPayment = type === 'testPayment'
   const isRlusdEnabled = network === 'testnet' && !testPayment
   const isRlusd = isRlusdEnabled && currency === 'RLUSD'
+  const maxAmount = isRlusd ? maxRlusdAmount : maxNativeAmount
   const amountCurrencyLabel = isRlusd ? 'RLUSD' : nativeCurrency
 
   const FAUCET_DENIED_COUNTRIES = [
@@ -211,8 +211,8 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
     } else {
       data.amount = isRlusd
         ? {
-            issuer: RLUSD_ISSUER,
-            currency: RLUSD_CURRENCY,
+            issuer: TESTNET_RLUSD_ISSUER,
+            currency: TESTNET_RLUSD_CURRENCY,
             value: String(amount)
           }
         : convertToDrops(amount)
@@ -309,9 +309,9 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
       request: {
         TransactionType: 'TrustSet',
         LimitAmount: {
-          currency: RLUSD_CURRENCY,
-          issuer: RLUSD_ISSUER,
-          value: RLUSD_TRUSTLINE_LIMIT
+          currency: TESTNET_RLUSD_CURRENCY,
+          issuer: TESTNET_RLUSD_ISSUER,
+          value: TESTNET_RLUSD_TRUSTLINE_LIMIT
         },
         Flags: 0x00020000
       },
