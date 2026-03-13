@@ -390,6 +390,7 @@ export default function Account2({
   const nftOffersRequestTokenRef = useRef(0)
   const transactionsRequestTokenRef = useRef(0)
   const activatedAccountsRequestTokenRef = useRef(0)
+  const refreshPageRef = useRef(refreshPage)
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
 
@@ -963,6 +964,15 @@ export default function Account2({
   const showObjectsLoadStatus = !!data?.ledgerInfo?.activated && (objectsLoading || !!objectsError)
 
   useEffect(() => {
+    if (refreshPageRef.current === refreshPage) return
+    refreshPageRef.current = refreshPage
+    if (!data?.address) return
+
+    // Re-run SSR data fetch on successful sign flow updates so balances, offers, and tx lists stay in sync.
+    router.replace(router.asPath, undefined, { scroll: false })
+  }, [refreshPage, data?.address, router])
+
+  useEffect(() => {
     if (!data?.address || effectiveLedgerTimestamp) {
       setActivatedAccounts([])
       setActivatedAccountsCount(0)
@@ -1094,7 +1104,7 @@ export default function Account2({
         activatedAccountsRequestTokenRef.current = requestToken + 1
       }
     }
-  }, [data?.address, effectiveLedgerTimestamp, activatedAccountsOrder, activatedAccountsReloadKey])
+  }, [data?.address, effectiveLedgerTimestamp, activatedAccountsOrder, activatedAccountsReloadKey, refreshPage])
 
   const loadMoreActivatedAccounts = () => {
     if (
@@ -1553,7 +1563,7 @@ export default function Account2({
 
     fetchTokens()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, data?.ledgerInfo?.activated, effectiveLedgerTimestamp, selectedCurrency])
+  }, [data?.address, data?.ledgerInfo?.activated, effectiveLedgerTimestamp, selectedCurrency, refreshPage])
 
   useEffect(() => {
     if (!data?.address) return
@@ -1587,7 +1597,7 @@ export default function Account2({
     }
 
     fetchIssuedTokens()
-  }, [data?.address, effectiveLedgerTimestamp])
+  }, [data?.address, effectiveLedgerTimestamp, refreshPage])
 
   useEffect(() => {
     nftOffersRequestTokenRef.current += 1
@@ -1603,7 +1613,7 @@ export default function Account2({
     setTransactionsMarker(null)
     setTransactionsSearchPaused(false)
     setTransactionsError(null)
-  }, [data?.address, effectiveLedgerTimestamp])
+  }, [data?.address, effectiveLedgerTimestamp, refreshPage])
 
   useEffect(() => {
     if (!data?.address || !data?.ledgerInfo?.activated || effectiveLedgerTimestamp) return
@@ -1663,7 +1673,7 @@ export default function Account2({
     return () => {
       cancelled = true
     }
-  }, [data?.address, data?.ledgerInfo?.activated, effectiveLedgerTimestamp])
+  }, [data?.address, data?.ledgerInfo?.activated, effectiveLedgerTimestamp, refreshPage])
 
   const buildTransactionsUrl = ({ markerValue, filtersOverride, limit } = {}) => {
     if (!data?.address) return ''
@@ -1792,7 +1802,14 @@ export default function Account2({
     if (!data?.address) return
     fetchRecentTransactions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, selectedCurrency, effectiveLedgerTimestamp, isMobile, data?.ledgerInfo?.previousTxnID])
+  }, [
+    data?.address,
+    selectedCurrency,
+    effectiveLedgerTimestamp,
+    isMobile,
+    data?.ledgerInfo?.previousTxnID,
+    refreshPage
+  ])
 
   const loadMoreTransactions = async () => {
     if (
@@ -6095,17 +6112,12 @@ export default function Account2({
                               {nftTokenId && (
                                 <div className="detail-row">
                                   <span>NFT:</span>
-                                  <span className="copy-inline id-inline">
-                                    <span className="address-text ellipsis-text" title={nftTokenId}>
-                                      {nftTokenId}
-                                    </span>
+                                  <span className="copy-inline">
                                     <Link
                                       href={`/nft/${nftTokenId}`}
-                                      className="inline-link-icon tooltip"
                                       onClick={(event) => event.stopPropagation()}
                                     >
-                                      <LinkIcon />
-                                      <span className="tooltiptext no-brake">NFT page</span>
+                                      {shortHash(nftTokenId)}
                                     </Link>
                                     <span onClick={(event) => event.stopPropagation()}>
                                       <CopyButton text={nftTokenId} />
@@ -6116,20 +6128,15 @@ export default function Account2({
 
                               {nftOfferIds.length > 0 && (
                                 <div className="detail-row">
-                                  <span>{nftOfferIds.length > 1 ? 'Offer IDs:' : 'Offer ID:'}</span>
+                                  <span>{nftOfferIds.length > 1 ? 'Offers:' : 'Offer:'}</span>
                                   <span className="tx-offer-id-list">
                                     {nftOfferIds.map((offerId, offerIndex) => (
-                                      <span className="copy-inline id-inline" key={`${txKey}-offer-${offerIndex}`}>
-                                        <span className="address-text ellipsis-text" title={offerId}>
-                                          {offerId}
-                                        </span>
+                                      <span className="copy-inline" key={`${txKey}-offer-${offerIndex}`}>
                                         <Link
                                           href={`/nft-offer/${offerId}`}
-                                          className="inline-link-icon tooltip"
                                           onClick={(event) => event.stopPropagation()}
                                         >
-                                          <LinkIcon />
-                                          <span className="tooltiptext no-brake">Offer page</span>
+                                          {shortHash(offerId)}
                                         </Link>
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <CopyButton text={offerId} />
@@ -7482,16 +7489,13 @@ export default function Account2({
                               {isExpanded && (
                                 <div className="asset-details">
                                   <div className="detail-row">
-                                    <span>Token ID:</span>
+                                    <span>NFT:</span>
                                     <span className="copy-inline">
-                                      <span>{shortTokenId}</span>
                                       <Link
                                         href={`/nft/${nftId}`}
-                                        className="inline-link-icon tooltip"
                                         onClick={(event) => event.stopPropagation()}
                                       >
-                                        <LinkIcon />
-                                        <span className="tooltiptext no-brake">NFT page</span>
+                                        {shortTokenId}
                                       </Link>
                                       <span onClick={(event) => event.stopPropagation()}>
                                         <CopyButton text={nftId} />
@@ -7500,16 +7504,13 @@ export default function Account2({
                                   </div>
                                   {offerIndex && (
                                     <div className="detail-row">
-                                      <span>Offer ID:</span>
+                                      <span>Offer:</span>
                                       <span className="copy-inline">
-                                        <span>{shortOfferId}</span>
                                         <Link
                                           href={`/nft-offer/${offerIndex}`}
-                                          className="inline-link-icon tooltip"
                                           onClick={(event) => event.stopPropagation()}
                                         >
-                                          <LinkIcon />
-                                          <span className="tooltiptext no-brake">Offer page</span>
+                                          {shortOfferId}
                                         </Link>
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <CopyButton text={offerIndex} />
