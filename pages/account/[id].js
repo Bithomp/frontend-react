@@ -36,6 +36,7 @@ const NFT_LOAD_MORE_STEP = 10
 const NFT_FETCH_LIMIT = 50
 const NFT_OFFERS_PREVIEW_LIMIT = 5
 const NFT_OFFERS_FETCH_LIMIT = 50
+const ACTIVATED_ACCOUNTS_FETCH_LIMIT = 20
 
 const isPositiveBalance = (balance) => balance !== '0' && balance?.[0] !== '-'
 
@@ -339,6 +340,7 @@ export default function Account2({
   const [checksTab, setChecksTab] = useState('received')
   const [escrowsTab, setEscrowsTab] = useState('received')
   const [paychannelsTab, setPaychannelsTab] = useState('incoming')
+  const [expandedActivatedKey, setExpandedActivatedKey] = useState(null)
   const [expandedCheckKey, setExpandedCheckKey] = useState(null)
   const [expandedEscrowKey, setExpandedEscrowKey] = useState(null)
   const [expandedPaychannelKey, setExpandedPaychannelKey] = useState(null)
@@ -370,6 +372,12 @@ export default function Account2({
   const [txFromDate, setTxFromDate] = useState('')
   const [txToDate, setTxToDate] = useState('')
   const [txFilterSpam, setTxFilterSpam] = useState(true)
+  const [activatedAccounts, setActivatedAccounts] = useState([])
+  const [activatedAccountsCount, setActivatedAccountsCount] = useState(0)
+  const [activatedAccountsSpent, setActivatedAccountsSpent] = useState(0)
+  const [activatedAccountsLoading, setActivatedAccountsLoading] = useState(false)
+  const [activatedAccountsError, setActivatedAccountsError] = useState(null)
+  const [activatedAccountsSummaryApproximate, setActivatedAccountsSummaryApproximate] = useState(false)
   const nftOffersRequestTokenRef = useRef(0)
   const transactionsRequestTokenRef = useRef(0)
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
@@ -905,6 +913,8 @@ export default function Account2({
   const hasMintedUriTokens = uriTokens.some((token) => token?.Issuer === data?.address)
   const activeUriTokens = uriTab === 'minted' ? uriTokens.filter((token) => token?.Issuer === data?.address) : uriTokens
   const hasIssuedTokensSection = issuedTokensLoading || !!issuedTokensError || issuedTokens.length > 0
+  const hasActivatedAccountsSection =
+    !effectiveLedgerTimestamp && (activatedAccountsLoading || !!activatedAccountsError || activatedAccountsCount > 0)
   const hasColumn4ObjectSections =
     hasIssuedTokensSection ||
     hasIssuerSettingsData ||
@@ -917,8 +927,124 @@ export default function Account2({
     hasSentEscrows ||
     hasAnyNftOffersData ||
     hasIncomingPaychannels ||
-    hasOutgoingPaychannels
+    hasOutgoingPaychannels ||
+    hasActivatedAccountsSection
   const showObjectsLoadStatus = !!data?.ledgerInfo?.activated && (objectsLoading || !!objectsError)
+
+  useEffect(() => {
+    if (!data?.address || effectiveLedgerTimestamp) {
+      setActivatedAccounts([])
+      setActivatedAccountsCount(0)
+      setActivatedAccountsSpent(0)
+      setActivatedAccountsLoading(false)
+      setActivatedAccountsError(null)
+      setActivatedAccountsSummaryApproximate(false)
+      setExpandedActivatedKey(null)
+      return
+    }
+
+    setExpandedActivatedKey(null)
+    let cancelled = false
+
+    const fetchActivatedAccounts = async () => {
+      setActivatedAccounts([])
+      setActivatedAccountsCount(0)
+      setActivatedAccountsSpent(0)
+      setActivatedAccountsLoading(true)
+      setActivatedAccountsError(null)
+      setActivatedAccountsSummaryApproximate(false)
+
+      try {
+        const response = await axios.get(
+          `xrpl/accounts?parent=${data.address}&time_format=iso&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}`
+        )
+        const payload = response?.data || {}
+
+        if (payload?.result && payload.result !== 'success') {
+          throw new Error(payload?.message || 'Failed to load activated accounts')
+        }
+
+        const totalFromList = Number(payload?.count || 0)
+        const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
+
+        if (totalFromList < 1 || accountRows.length < 1) {
+          if (cancelled) return
+          setActivatedAccounts([])
+          setActivatedAccountsCount(0)
+          setActivatedAccountsSpent(0)
+          setActivatedAccountsSummaryApproximate(false)
+          return
+        }
+
+        const normalizedRows = accountRows
+          .map((child) => ({
+            address: child?.account || child?.address || '',
+            inception: child?.inception || null,
+            initialBalance: Number(child?.initial_balance ?? child?.initialBalance ?? 0),
+            ledgerIndex: child?.ledger_index ?? child?.ledgerIndex ?? null,
+            txHash: child?.tx_hash || child?.txHash || null
+          }))
+          .filter((child) => !!child.address)
+
+        const orderedRows =
+          totalFromList !== ACTIVATED_ACCOUNTS_FETCH_LIMIT ? [...normalizedRows].reverse() : normalizedRows
+
+        let summaryCount = totalFromList || orderedRows.length
+        let summarySpent = orderedRows.reduce(
+          (sum, child) => sum + (Number.isFinite(child.initialBalance) ? child.initialBalance : 0),
+          0
+        )
+        let summaryFallback = false
+
+        if (totalFromList === ACTIVATED_ACCOUNTS_FETCH_LIMIT) {
+          try {
+            const summaryResponse = await axios.get(`xrpl/accounts/summary?parent=${data.address}`)
+            const summaryData = summaryResponse?.data || {}
+            const summaryCountValue = Number(summaryData?.count)
+            const summarySpentValue = Number(summaryData?.initial_balance)
+
+            if (Number.isFinite(summaryCountValue) && summaryCountValue >= 0) {
+              summaryCount = summaryCountValue
+            } else {
+              summaryFallback = true
+            }
+
+            if (Number.isFinite(summarySpentValue) && summarySpentValue >= 0) {
+              summarySpent = summarySpentValue
+            } else {
+              summaryFallback = true
+            }
+          } catch {
+            summaryFallback = true
+          }
+        }
+
+        if (cancelled) return
+
+        setActivatedAccounts(orderedRows)
+        setActivatedAccountsCount(summaryCount)
+        setActivatedAccountsSpent(summarySpent)
+        setActivatedAccountsSummaryApproximate(summaryFallback)
+      } catch (requestError) {
+        if (cancelled) return
+        setActivatedAccounts([])
+        setActivatedAccountsCount(0)
+        setActivatedAccountsSpent(0)
+        setActivatedAccountsError(requestError?.message || 'Failed to load activated accounts')
+        setActivatedAccountsSummaryApproximate(false)
+      } finally {
+        if (!cancelled) {
+          setActivatedAccountsLoading(false)
+        }
+      }
+    }
+
+    fetchActivatedAccounts()
+
+    return () => {
+      cancelled = true
+    }
+  }, [data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -6276,7 +6402,7 @@ export default function Account2({
 
                     return (
                       <div
-                        className={`asset-item token-asset-item check-row-card dex-order-card ${isExpanded ? 'expanded' : ''}`}
+                        className={`asset-item token-asset-item expandable-card check-row-card dex-order-card ${isExpanded ? 'expanded' : ''}`}
                         key={orderKey}
                         onClick={() => setExpandedDexOrderKey(isExpanded ? null : orderKey)}
                       >
@@ -6452,7 +6578,7 @@ export default function Account2({
 
                         return (
                           <div
-                            className={`asset-item token-asset-item check-row-card ${isExpanded ? 'expanded' : ''}`}
+                            className={`asset-item token-asset-item expandable-card check-row-card ${isExpanded ? 'expanded' : ''}`}
                             key={checkKey}
                             onClick={() => setExpandedCheckKey(isExpanded ? null : checkKey)}
                           >
@@ -6672,7 +6798,7 @@ export default function Account2({
 
                         return (
                           <div
-                            className={`asset-item token-asset-item check-row-card escrow-card ${isExpanded ? 'expanded' : ''}`}
+                            className={`asset-item token-asset-item expandable-card check-row-card escrow-card ${isExpanded ? 'expanded' : ''}`}
                             key={escrowKey}
                             onClick={() => setExpandedEscrowKey(isExpanded ? null : escrowKey)}
                           >
@@ -7226,7 +7352,7 @@ export default function Account2({
 
                     return (
                       <div
-                        className={`asset-item token-asset-item paychannel-asset-item ${isExpanded ? 'expanded' : ''}`}
+                        className={`asset-item token-asset-item expandable-card paychannel-asset-item ${isExpanded ? 'expanded' : ''}`}
                         key={channelKey}
                         onClick={() => setExpandedPaychannelKey(isExpanded ? null : channelKey)}
                       >
@@ -7337,6 +7463,122 @@ export default function Account2({
               </>
             )}
 
+            {hasActivatedAccountsSection && (
+              <>
+                <div className="section-header-row object-section-header-row">
+                  <div className="section-title object-section-title">
+                    Activated accounts <span className="object-title-count">{activatedAccountsCount}</span>
+                    {activatedAccountsSpent > 0 && (
+                      <span className="object-title-count" suppressHydrationWarning>
+                        ·{fullNiceNumber(activatedAccountsSpent)} {nativeCurrency}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {activatedAccountsLoading ? (
+                  <div className="asset-item object-load-status">
+                    <span className="tx-inline-load object-load-status-text">
+                      <span>Loading activated accounts</span>
+                      <span className="waiting inline" aria-hidden="true"></span>
+                    </span>
+                  </div>
+                ) : activatedAccountsError ? (
+                  <div className="asset-item object-load-status error">
+                    <span className="object-load-status-text">{activatedAccountsError}</span>
+                  </div>
+                ) : (
+                  <>
+                    {activatedAccountsSummaryApproximate && (
+                      <div className="asset-item object-load-status">
+                        <span className="object-load-status-text" suppressHydrationWarning>
+                          {`Showing first ${activatedAccounts.length} accounts.`}
+                        </span>
+                      </div>
+                    )}
+                    <div className="cards-list">
+                      {activatedAccounts.map((child, index) => {
+                        const activationKey = `${child?.address || 'activation'}-${child?.inception || index}`
+                        const activationTimeAgo = child?.inception ? timeFromNow(child.inception, i18n) : '-'
+                        const activationTimeFull = child?.inception ? fullDateAndTime(child.inception) : '-'
+                        const activationAmount = Number.isFinite(child?.initialBalance) ? child.initialBalance : 0
+                        const isExpanded = expandedActivatedKey === activationKey
+                        const toggleCard = () => setExpandedActivatedKey(isExpanded ? null : activationKey)
+
+                        return (
+                          <div
+                            className={`asset-item token-asset-item expandable-card check-row-card activated-account-card ${isExpanded ? 'expanded' : ''}`}
+                            key={activationKey}
+                            onClick={toggleCard}
+                          >
+                            <div className="asset-main tx-asset-main">
+                              <div className="asset-logo tx-asset-logo">
+                                <div className="tx-collapsed-top">
+                                  <span className="tx-type-main">Activated account</span>
+                                  <span className="tx-time tx-time-top" title={activationTimeFull}>
+                                    {activationTimeAgo}
+                                  </span>
+                                </div>
+                                <div className="tx-collapsed-meta">
+                                  <AddressWithIconInline
+                                    data={{ address: child.address }}
+                                    name="address"
+                                    options={{ short: 6 }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="asset-value tx-collapsed-change">
+                                <span className="tx-inline-change red">
+                                  -{fullNiceNumber(activationAmount)} {nativeCurrency}
+                                </span>
+                              </div>
+                            </div>
+
+                            {isExpanded && (
+                              <div className="asset-details" onClick={(e) => e.stopPropagation()}>
+                                <div className="detail-row">
+                                  <span>Address:</span>
+                                  <span className="copy-inline">
+                                    <AddressWithIconInline
+                                      data={{ address: child.address }}
+                                      name="address"
+                                      options={{ short: 6 }}
+                                    />
+                                    <CopyButton text={child.address} />
+                                  </span>
+                                </div>
+                                <div className="detail-row">
+                                  <span>Balance funded:</span>
+                                  <span>
+                                    {fullNiceNumber(activationAmount)} {nativeCurrency}
+                                  </span>
+                                </div>
+                                <div className="detail-row">
+                                  <span>Activated:</span>
+                                  <span>{activationTimeFull}</span>
+                                </div>
+                                {child.txHash && (
+                                  <div className="detail-row">
+                                    <span>Transaction:</span>
+                                    <span className="copy-inline">
+                                      <Link href={`/transaction/${child.txHash}`} onClick={(e) => e.stopPropagation()}>
+                                        {shortHash(child.txHash)}
+                                      </Link>
+                                      <CopyButton text={child.txHash} />
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+
             {!showObjectsLoadStatus && !hasColumn4ObjectSections && (
               <>
                 <div className="section-header-row object-section-header-row">
@@ -7344,7 +7586,8 @@ export default function Account2({
                 </div>
                 <div className="asset-item object-load-status">
                   <span className="object-load-status-text">
-                    No DEX orders, checks, escrows, NFT offers, paychannels, issued tokens, or issued MPTs.
+                    No DEX orders, checks, escrows, NFT offers, paychannels, issued tokens, issued MPTs, or activated
+                    accounts.
                   </span>
                 </div>
               </>
@@ -8939,6 +9182,7 @@ export default function Account2({
         .object-title-count {
           display: inline-flex;
           align-items: center;
+          gap: 4px;
           width: auto;
           text-align: left;
           font-variant-numeric: tabular-nums;
@@ -8993,12 +9237,11 @@ export default function Account2({
           margin-top: 6px;
         }
 
-        .object-row-card {
+        .expandable-card {
           cursor: pointer;
-          grid-template-columns: minmax(0, 1fr) auto;
         }
 
-        .check-row-card.expanded {
+        .expandable-card.expanded {
           border-color: var(--accent-link);
         }
 
@@ -9060,10 +9303,6 @@ export default function Account2({
           min-width: 0;
         }
 
-        .object-row-card.expanded {
-          border-color: var(--accent-link);
-        }
-
         .escrow-collapsed-main {
           align-items: flex-start;
           position: relative;
@@ -9106,11 +9345,6 @@ export default function Account2({
 
         .paychannel-asset-item {
           --asset-card-body-min-height: 58px;
-          cursor: pointer;
-        }
-
-        .paychannel-asset-item.expanded {
-          border-color: var(--accent-link);
         }
 
         .paychannel-card-main {
@@ -9291,10 +9525,6 @@ export default function Account2({
 
           .nft-details {
             min-height: 376px;
-          }
-
-          .object-row-card {
-            grid-template-columns: minmax(0, 1fr);
           }
         }
 
