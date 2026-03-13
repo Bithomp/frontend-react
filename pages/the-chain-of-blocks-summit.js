@@ -35,13 +35,13 @@ export default function ChainOfBlocksSummit() {
       />
       <article className="prose sm:prose-lg dark:prose-invert content-center">
         <h1>CHAIN OF BLOCKS SUMMIT</h1>
-        <h2>Europe | Malta 2026 (Date To Be Announced)</h2>
+        <h2>Europe | Malta | 20–22 May 2026</h2>
         <figure>
           <Image
-            src={'/images/chainOfBlocksSummit/summit-preview.avif'}
+            src={'/images/chainOfBlocksSummit/2026-summit-preview.jpeg'}
             alt="Chain of Blocks Summit 2026"
-            width={940}
-            height={348}
+            width={700}
+            height={330}
             className="max-w-full h-auto object-contain"
             priority
           />
@@ -49,19 +49,26 @@ export default function ChainOfBlocksSummit() {
         </figure>
         <p>
           {' '}
-          <strong>2026 (Date To Be Announced) · Valletta, Malta</strong>
+          <strong>20–22 May 2026 · Valletta, Malta</strong>
         </p>
 
         <p>
-          <strong>XRPL community summit in Europe.</strong> One day of inspiration, XRPL insights, great speakers, and
-          Web3 energy you’ll actually feel.
+          <strong>XRPL community summit in Europe.</strong> Over three days in the historic city of Valletta,
+          participants will come together for Innovation, Networking, Education, and Unforgettable Experiences.
         </p>
 
         <h2>📍 What’s Happening</h2>
         <p>
-          Join us on a beautiful Mediterranean island 🌞 for a full day dedicated to the XRPL. Whether you're building,
+          Join us on a beautiful Mediterranean island 🌞 for three days dedicated to the XRPL. Whether you're building,
           investing, or just getting started — this summit is for you.
         </p>
+        <p>Expect conversations and initiatives around:</p>
+        <ul>
+          <li>Cross-chain collaboration and interoperability</li>
+          <li>Real-world blockchain adoption</li>
+          <li>Tokenization and digital finance</li>
+          <li>Building bridges between ecosystems, institutions, and innovators</li>
+        </ul>
 
         <h2>👥 Who It’s For</h2>
         <ul>
@@ -118,7 +125,7 @@ export default function ChainOfBlocksSummit() {
 
         <h2>🎫 Get your Tickets</h2>
         <p>
-          Tickets will be available in 2026.
+          Tickets will be available soon.
           {/*
           All the event details and tickets are available on Eventbrite:{' '}
           <Link href="https://ChainOfBlocksSummit.eventbrite.com">https://ChainOfBlocksSummit.eventbrite.com</Link>.
@@ -129,7 +136,7 @@ export default function ChainOfBlocksSummit() {
         <p>
           📩 Interested in speaking, sponsoring, or helping out? DM <Link href="https://x.com/bithomp">Bithomp</Link>.
         </p>
-        <p>📅 See you in Malta - 2026 (Date To Be Announced)</p>
+        <p>📅 See you in Malta 20–22 May 2026 </p>
       </article>
     </>
   )
