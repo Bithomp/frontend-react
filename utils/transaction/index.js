@@ -64,6 +64,8 @@ const TRANSACTION_TYPE_LABELS = {
   Payment: 'Payment',
   AccountSet: 'Account settings update',
   AccountDelete: 'Account deletion',
+  DIDSet: 'DID set',
+  DIDDelete: 'DID removal',
   SetRegularKey: 'Set regular key',
   SignerListSet: 'Signer list set',
   TrustSet: 'Trust line set',

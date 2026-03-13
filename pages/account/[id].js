@@ -2294,6 +2294,7 @@ export default function Account2({
                             onClick={() =>
                               setSignRequest({
                                 action: 'setDid',
+                                redirect: 'account',
                                 request: {
                                   TransactionType: 'DIDSet',
                                   Account: data?.address
@@ -2308,6 +2309,7 @@ export default function Account2({
                             className="card-action-btn cancel"
                             onClick={() =>
                               setSignRequest({
+                                redirect: 'account',
                                 request: {
                                   TransactionType: 'DIDDelete',
                                   Account: data?.address
@@ -2941,25 +2943,47 @@ export default function Account2({
                         </div>
                       )}
 
-                      {!data?.ledgerInfo?.domain && canManageDomain && (
+                      {((!data?.ledgerInfo?.domain && canManageDomain) ||
+                        (!xahauNetwork && !didData && canManageDid)) && (
                         <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                          <button
-                            type="button"
-                            className="card-action-btn"
-                            onClick={() =>
-                              setSignRequest({
-                                action: 'setDomain',
-                                redirect: 'account',
-                                request: {
-                                  TransactionType: 'AccountSet',
-                                  Account: data?.address
-                                }
-                              })
-                            }
-                            title="Set domain"
-                          >
-                            Set domain
-                          </button>
+                          {!data?.ledgerInfo?.domain && canManageDomain && (
+                            <button
+                              type="button"
+                              className="card-action-btn"
+                              onClick={() =>
+                                setSignRequest({
+                                  action: 'setDomain',
+                                  redirect: 'account',
+                                  request: {
+                                    TransactionType: 'AccountSet',
+                                    Account: data?.address
+                                  }
+                                })
+                              }
+                              title="Set domain"
+                            >
+                              Set domain
+                            </button>
+                          )}
+                          {!xahauNetwork && !didData && canManageDid && (
+                            <button
+                              type="button"
+                              className="card-action-btn"
+                              onClick={() =>
+                                setSignRequest({
+                                  action: 'setDid',
+                                  redirect: 'account',
+                                  request: {
+                                    TransactionType: 'DIDSet',
+                                    Account: data?.address
+                                  }
+                                })
+                              }
+                              title="Set DID"
+                            >
+                              Set DID
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>
@@ -4257,7 +4281,7 @@ export default function Account2({
                       const txHash = tx?.hash
                       const txKey = txHash || `${tx?.TransactionType || 'tx'}-${index}`
                       const isExpanded = expandedTransactionKey === txKey
-                      const shortHash = txHash ? `${txHash.slice(0, 6)}...${txHash.slice(-6)}` : '-'
+                      const txShortHash = shortHash(txHash)
                       const txHistoricalRate = Number.isFinite(Number(txdata?.fiatRates?.[selectedCurrency]))
                         ? Number(txdata.fiatRates[selectedCurrency])
                         : null
@@ -4573,6 +4597,43 @@ export default function Account2({
                       const hasTrustSetLimit =
                         tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue > 0
                       const trustSetStatus = isTrustSetDeleted ? 'deleted' : hasTrustSetLimit ? 'added' : null
+                      const didChanges = outcome?.didChanges || null
+                      const isDidSetTx = txType === 'DIDSet'
+                      const isDidDeleteTx = txType === 'DIDDelete'
+                      const isDidTx = isDidSetTx || isDidDeleteTx
+                      const didStatus = didChanges?.status || null
+                      const didId = didChanges?.didID || null
+                      const didShortId = shortHash(didId)
+                      const didOriginalUri = didChanges?.uri ? decode(didChanges.uri) : ''
+                      const didUpdatedUri = didChanges?.uriChange ? decode(didChanges.uriChange) : ''
+                      const didTxLabel =
+                        isDidDeleteTx || didStatus === 'deleted'
+                          ? 'Removed DID'
+                          : didStatus === 'modified'
+                            ? 'Updated DID'
+                            : 'Set DID'
+                      const didStatusLabel =
+                        isDidDeleteTx || didStatus === 'deleted'
+                          ? 'Deleted'
+                          : didStatus === 'modified'
+                            ? 'Updated'
+                            : didStatus === 'created'
+                              ? 'Created'
+                              : isDidSetTx
+                                ? 'Set'
+                                : null
+                      const didOriginalCollapsedUri = didOriginalUri ? stripDomain(didOriginalUri) : ''
+                      const didUpdatedCollapsedUri = didUpdatedUri ? stripDomain(didUpdatedUri) : ''
+                      const didCollapsedModifiedMeta =
+                        didOriginalCollapsedUri && didUpdatedCollapsedUri
+                          ? `${didOriginalCollapsedUri} -> ${didUpdatedCollapsedUri}`
+                          : didUpdatedCollapsedUri || didOriginalCollapsedUri || didShortId
+                      const didCollapsedMeta =
+                        isDidDeleteTx || didStatus === 'deleted'
+                          ? didOriginalCollapsedUri || didShortId
+                          : didStatus === 'modified'
+                            ? didCollapsedModifiedMeta
+                            : didUpdatedCollapsedUri || didOriginalCollapsedUri || didShortId
 
                       const failedStatusText = !isSuccessful ? outcome?.result || 'Failed' : null
                       const failedStatusShort = failedStatusText
@@ -4625,7 +4686,9 @@ export default function Account2({
                           changes.push(`Message key: ${messageKeyStatus}`)
                         }
                         if (tx?.Domain !== undefined) {
-                          changes.push(`Domain: ${accountSetSpec?.domain || 'removed'}`)
+                          changes.push(
+                            `Domain: ${accountSetSpec?.domain ? stripDomain(accountSetSpec.domain) : 'removed'}`
+                          )
                         }
                         if (accountSetSpec?.defaultRipple !== undefined) {
                           changes.push(`Default ripple: ${accountSetSpec.defaultRipple ? 'enabled' : 'disabled'}`)
@@ -4896,6 +4959,7 @@ export default function Account2({
                         (isRipplingPayment ? 'Rippling' : null) ||
                         (isSelfPayment ? 'Swap' : null) ||
                         (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
+                        (isDidTx ? didTxLabel : null) ||
                         escrowCreateCollapsedLabel ||
                         checkCreateCollapsedLabel ||
                         dexOfferShortLabel ||
@@ -4905,25 +4969,27 @@ export default function Account2({
                       const txTypeCollapsedLabel =
                         isSelfPayment || isAccountDeleteTx || isRipplingPayment
                           ? txTypeShortLabel
-                          : txType === 'NFTokenMint'
+                          : isDidTx
                             ? txTypeShortLabel
-                            : txType === 'NFTokenBurn'
+                            : txType === 'NFTokenMint'
                               ? txTypeShortLabel
-                              : tx?.TransactionType === 'TrustSet'
-                                ? counterparty
-                                  ? `${isSource ? 'to' : 'from'}`
-                                  : ''
-                                : isNftOfferTx
-                                  ? txTypeShortLabel
-                                  : isDexOfferTx
+                              : txType === 'NFTokenBurn'
+                                ? txTypeShortLabel
+                                : tx?.TransactionType === 'TrustSet'
+                                  ? counterparty
+                                    ? `${isSource ? 'to' : 'from'}`
+                                    : ''
+                                  : isNftOfferTx
                                     ? txTypeShortLabel
-                                    : txType === 'EscrowCreate'
+                                    : isDexOfferTx
                                       ? txTypeShortLabel
-                                      : txType === 'CheckCreate'
+                                      : txType === 'EscrowCreate'
                                         ? txTypeShortLabel
-                                        : counterparty
-                                          ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
-                                          : txTypeShortLabel
+                                        : txType === 'CheckCreate'
+                                          ? txTypeShortLabel
+                                          : counterparty
+                                            ? `${txTypeShortLabel} ${isSource ? 'to' : 'from'}`
+                                            : txTypeShortLabel
                       const showBrokerInCollapsedTitle =
                         isBrokeredNftAccept &&
                         !!brokerAddress &&
@@ -4976,6 +5042,9 @@ export default function Account2({
                               <div className="tx-collapsed-meta">
                                 {txType === 'AccountSet' && accountSetCollapsedChangeNode && (
                                   <span className="tx-accountset-inline">{accountSetCollapsedChangeNode}</span>
+                                )}
+                                {isDidTx && !!didCollapsedMeta && (
+                                  <span className="tx-accountset-inline">{didCollapsedMeta}</span>
                                 )}
                                 {showDexCollapsedSequence && (
                                   <span className="tx-accountset-inline">
@@ -5442,6 +5511,70 @@ export default function Account2({
                                 </>
                               )}
 
+                              {isDidTx && (
+                                <>
+                                  {!!didStatusLabel && (
+                                    <div className="detail-row">
+                                      <span>Status:</span>
+                                      <span className="orange">{didStatusLabel}</span>
+                                    </div>
+                                  )}
+
+                                  {!!didId && (
+                                    <div className="detail-row">
+                                      <span>DID ID:</span>
+                                      <span className="copy-inline id-inline">
+                                        <span className="address-text ellipsis-text" title={didId}>
+                                          {didShortId}
+                                        </span>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={didId} />
+                                        </span>
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {isDidDeleteTx && !!didOriginalUri && (
+                                    <div className="detail-row">
+                                      <span>Removed URI:</span>
+                                      <span className="address-text ellipsis-text" title={didOriginalUri}>
+                                        {didOriginalUri}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {isDidSetTx && didStatus === 'modified' && !!didOriginalUri && (
+                                    <div className="detail-row">
+                                      <span>Previous URI:</span>
+                                      <span className="address-text ellipsis-text" title={didOriginalUri}>
+                                        {didOriginalUri}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {isDidSetTx && didStatus === 'modified' && !!didUpdatedUri && (
+                                    <div className="detail-row">
+                                      <span>Updated URI:</span>
+                                      <span className="address-text ellipsis-text" title={didUpdatedUri}>
+                                        {didUpdatedUri}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {isDidSetTx && didStatus !== 'modified' && !!(didUpdatedUri || didOriginalUri) && (
+                                    <div className="detail-row">
+                                      <span>URI:</span>
+                                      <span
+                                        className="address-text ellipsis-text"
+                                        title={didUpdatedUri || didOriginalUri}
+                                      >
+                                        {didUpdatedUri || didOriginalUri}
+                                      </span>
+                                    </div>
+                                  )}
+                                </>
+                              )}
+
                               <div className="detail-row">
                                 <span>Timestamp:</span>
                                 <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
@@ -5673,7 +5806,7 @@ export default function Account2({
                                       className="tx-link"
                                       onClick={(event) => event.stopPropagation()}
                                     >
-                                      {shortHash}
+                                      {txShortHash}
                                     </Link>
                                   ) : (
                                     '-'
