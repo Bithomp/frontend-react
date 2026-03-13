@@ -7352,6 +7352,8 @@ export default function Account2({
                             !!ownerAddress &&
                             ownerAddress === account.address
                           const isPrivateNftOfferTab = nftOffersTab === 'received'
+                          const isCreatedNftOfferTab = nftOffersTab === 'created'
+                          const isOwnedNftOfferTab = nftOffersTab === 'owned'
                           const canAcceptPrivateNftOffer =
                             !!setSignRequest &&
                             !effectiveLedgerTimestamp &&
@@ -7375,8 +7377,26 @@ export default function Account2({
                             }
                             return 'This offer cannot be accepted'
                           })()
-                          const disabledCancelNftOfferTooltip = (() => {
-                            if (!isPrivateNftOfferTab || canCancelNftOffer) return ''
+                          const canAcceptOwnedNftOffer =
+                            !!setSignRequest &&
+                            !effectiveLedgerTimestamp &&
+                            !!offerIndex &&
+                            !!account?.address &&
+                            account.address === data?.address &&
+                            (!ownerAddress || ownerAddress !== account.address)
+                          const disabledAcceptOwnedNftOfferTooltip = (() => {
+                            if (!isOwnedNftOfferTab || canAcceptOwnedNftOffer) return ''
+                            if (!account?.address) return 'Connect wallet to sell this NFT'
+                            if (ownerAddress && ownerAddress === account.address) {
+                              return 'Offer owner cannot accept this offer'
+                            }
+                            if (data?.address && account.address !== data.address) {
+                              return 'Only the viewed account can accept it'
+                            }
+                            return 'This offer cannot be accepted'
+                          })()
+                          const disabledCancelCreatedNftOfferTooltip = (() => {
+                            if (!isCreatedNftOfferTab || canCancelNftOffer) return ''
                             if (!account?.address) return 'Connect wallet to cancel this offer'
                             if (!ownerAddress) return 'Offer owner is unknown'
                             if (ownerAddress !== account.address) return 'Only offer owner can cancel it'
@@ -7596,7 +7616,12 @@ export default function Account2({
                                           </span>
                                         )}
                                       </span>
-                                      <span className={disabledCancelNftOfferTooltip ? 'tooltip' : ''}>
+                                    </div>
+                                  )}
+
+                                  {isCreatedNftOfferTab && (
+                                    <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                      <span className={disabledCancelCreatedNftOfferTooltip ? 'tooltip' : ''}>
                                         <button
                                           type="button"
                                           className={`card-action-btn ${canCancelNftOffer ? 'cancel' : 'disabled'}`}
@@ -7615,8 +7640,44 @@ export default function Account2({
                                         >
                                           <MdMoneyOff /> Cancel
                                         </button>
-                                        {!!disabledCancelNftOfferTooltip && (
-                                          <span className="tooltiptext no-brake">{disabledCancelNftOfferTooltip}</span>
+                                        {!!disabledCancelCreatedNftOfferTooltip && (
+                                          <span className="tooltiptext no-brake">
+                                            {disabledCancelCreatedNftOfferTooltip}
+                                          </span>
+                                        )}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {isOwnedNftOfferTab && (
+                                    <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                      <span className={disabledAcceptOwnedNftOfferTooltip ? 'tooltip' : ''}>
+                                        <button
+                                          type="button"
+                                          className={`card-action-btn ${canAcceptOwnedNftOffer ? 'redeem' : 'disabled'}`}
+                                          disabled={!canAcceptOwnedNftOffer}
+                                          onClick={() => {
+                                            if (!canAcceptOwnedNftOffer) return
+                                            setSignRequest({
+                                              offerAmount: offer.amount,
+                                              offerType: 'buy',
+                                              request: {
+                                                TransactionType: 'NFTokenAcceptOffer',
+                                                NFTokenBuyOffer: offerIndex
+                                              }
+                                            })
+                                          }}
+                                        >
+                                          {offer.amount === '0' || !offer.amount ? (
+                                            'Accept NFT transfer'
+                                          ) : (
+                                            <>Sell NFT for {amountFormat(offer.amount)}</>
+                                          )}
+                                        </button>
+                                        {!!disabledAcceptOwnedNftOfferTooltip && (
+                                          <span className="tooltiptext no-brake">
+                                            {disabledAcceptOwnedNftOfferTooltip}
+                                          </span>
                                         )}
                                       </span>
                                     </div>
