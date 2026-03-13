@@ -228,6 +228,7 @@ import { isRipplingOnIssuer } from '../../utils/transaction/payment'
 import {
   FaArrowsRotate,
   FaFacebook,
+  FaPencil,
   FaGear,
   FaInstagram,
   FaLinkedin,
@@ -237,7 +238,7 @@ import {
   FaYoutube,
   FaXTwitter
 } from 'react-icons/fa6'
-import { MdMoneyOff, MdQrCode2, MdVerified } from 'react-icons/md'
+import { MdDeleteForever, MdMoneyOff, MdQrCode2, MdVerified } from 'react-icons/md'
 import { TbPigMoney } from 'react-icons/tb'
 import { useQRCode } from 'next-qrcode'
 
@@ -509,6 +510,8 @@ export default function Account2({
     !!data?.ledgerInfo?.flags?.disallowIncomingRemit ||
     !!data?.ledgerInfo?.flags?.tshCollect ||
     !!data?.ledgerInfo?.flags?.disallowXRP
+  const canManageDomain =
+    data?.address === account?.address && !!setSignRequest && !effectiveLedgerTimestamp && !!data?.ledgerInfo?.activated
   const hasAccountSettingsData = hasAccountSettingsRows
   const accountControlCollapsedLabel = isBlackholed
     ? 'Blackholed'
@@ -1526,7 +1529,7 @@ export default function Account2({
     if (!data?.address) return
     fetchRecentTransactions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.address, selectedCurrency, effectiveLedgerTimestamp, isMobile])
+  }, [data?.address, selectedCurrency, effectiveLedgerTimestamp, isMobile, data?.ledgerInfo?.previousTxnID])
 
   const loadMoreTransactions = async () => {
     if (
@@ -1805,6 +1808,48 @@ export default function Account2({
         isValidDomain &&
         !data.verifiedDomain &&
         (!data.service?.domain || !data.ledgerInfo.domain.toLowerCase().includes(data.service.domain.toLowerCase()))
+      const domainActionButtons = canManageDomain ? (
+        <>
+          {' '}
+          <span className="tooltip tooltip-icon" style={{ marginLeft: 5 }}>
+            <span
+              style={{ fontSize: 16, marginBottom: -3, display: 'inline-flex' }}
+              onClick={() =>
+                setSignRequest({
+                  action: 'setDomain',
+                  redirect: 'account',
+                  request: {
+                    TransactionType: 'AccountSet',
+                    Account: data?.address
+                  }
+                })
+              }
+            >
+              <FaPencil />
+            </span>
+            <span className="tooltiptext no-brake">Edit</span>
+          </span>{' '}
+          <span className="tooltip tooltip-icon">
+            <span
+              className="red"
+              style={{ fontSize: 18, marginBottom: -4, display: 'inline-flex' }}
+              onClick={() =>
+                setSignRequest({
+                  redirect: 'account',
+                  request: {
+                    TransactionType: 'AccountSet',
+                    Domain: '',
+                    Account: data?.address
+                  }
+                })
+              }
+            >
+              <MdDeleteForever />
+            </span>
+            <span className="tooltiptext no-brake">Remove</span>
+          </span>
+        </>
+      ) : null
 
       pushPublicRow(
         'Domain',
@@ -1833,9 +1878,13 @@ export default function Account2({
               </span>
             )}{' '}
             {showUnverified && <span className="grey">(unverified)</span>}
+            {domainActionButtons}
           </>
         ) : (
-          <code className="code-highlight">{data.ledgerInfo.domain}</code>
+          <>
+            <code className="code-highlight">{data.ledgerInfo.domain}</code>
+            {domainActionButtons}
+          </>
         )
       )
     }
@@ -2889,6 +2938,28 @@ export default function Account2({
                         <div className="detail-row issuer-detail-row">
                           <span>Receiving {nativeCurrency}:</span>
                           <span>disabled</span>
+                        </div>
+                      )}
+
+                      {!data?.ledgerInfo?.domain && canManageDomain && (
+                        <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                          <button
+                            type="button"
+                            className="card-action-btn"
+                            onClick={() =>
+                              setSignRequest({
+                                action: 'setDomain',
+                                redirect: 'account',
+                                request: {
+                                  TransactionType: 'AccountSet',
+                                  Account: data?.address
+                                }
+                              })
+                            }
+                            title="Set domain"
+                          >
+                            Set domain
+                          </button>
                         </div>
                       )}
                     </div>
