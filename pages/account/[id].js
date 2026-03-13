@@ -4283,10 +4283,10 @@ export default function Account2({
                 </label>
 
                 <div className="tx-filter-actions">
-                  <button className="tx-filter-btn" type="button" onClick={resetTransactionFilters}>
+                  <button className="card-action-btn" type="button" onClick={resetTransactionFilters}>
                     Reset
                   </button>
-                  <button className="tx-filter-btn primary" type="button" onClick={applyTransactionFilters}>
+                  <button className="card-action-btn redeem" type="button" onClick={applyTransactionFilters}>
                     Search
                   </button>
                 </div>
@@ -7610,21 +7610,6 @@ export default function Account2({
           display: flex;
           gap: 8px;
           justify-content: flex-end;
-        }
-
-        .tx-filter-btn {
-          border: 1px solid var(--border-color);
-          border-radius: 6px;
-          background: var(--background-table);
-          color: var(--text);
-          font-size: 13px;
-          padding: 7px 10px;
-          cursor: pointer;
-        }
-
-        .tx-filter-btn.primary {
-          border-color: var(--accent-link);
-          color: var(--accent-link);
         }
 
         @media (max-width: 600px) {
