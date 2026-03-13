@@ -239,7 +239,7 @@ import {
   FaYoutube,
   FaXTwitter
 } from 'react-icons/fa6'
-import { MdDeleteForever, MdMoneyOff, MdQrCode2, MdVerified } from 'react-icons/md'
+import { MdDeleteForever, MdMoneyOff, MdNorth, MdQrCode2, MdSouth, MdVerified } from 'react-icons/md'
 import { TbPigMoney } from 'react-icons/tb'
 import { useQRCode } from 'next-qrcode'
 
@@ -3591,35 +3591,45 @@ export default function Account2({
                         </>
                       )}
                       {isLpToken && token.Balance?.currencyDetails?.asset && (
-                        <div className="lp-actions">
-                          <Link
-                            href={`/services/amm/deposit?currency=${token.Balance?.currencyDetails?.asset?.currency}${
-                              token.Balance?.currencyDetails?.asset?.issuer
-                                ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
-                                : ''
-                            }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
-                              token.Balance?.currencyDetails?.asset2?.issuer
-                                ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
-                                : ''
-                            }`}
-                            className="lp-action-btn"
+                        <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                          <button
+                            type="button"
+                            className="card-action-btn redeem"
+                            onClick={() =>
+                              router.push(
+                                `/services/amm/deposit?currency=${token.Balance?.currencyDetails?.asset?.currency}${
+                                  token.Balance?.currencyDetails?.asset?.issuer
+                                    ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
+                                    : ''
+                                }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
+                                  token.Balance?.currencyDetails?.asset2?.issuer
+                                    ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
+                                    : ''
+                                }`
+                              )
+                            }
                           >
-                            Deposit
-                          </Link>
-                          <Link
-                            href={`/services/amm/withdraw?currency=${token.Balance?.currencyDetails?.asset?.currency}${
-                              token.Balance?.currencyDetails?.asset?.issuer
-                                ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
-                                : ''
-                            }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
-                              token.Balance?.currencyDetails?.asset2?.issuer
-                                ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
-                                : ''
-                            }`}
-                            className="lp-action-btn"
+                            <MdSouth style={{ fontSize: 16, marginBottom: -2 }} /> Deposit
+                          </button>
+                          <button
+                            type="button"
+                            className="card-action-btn cancel"
+                            onClick={() =>
+                              router.push(
+                                `/services/amm/withdraw?currency=${token.Balance?.currencyDetails?.asset?.currency}${
+                                  token.Balance?.currencyDetails?.asset?.issuer
+                                    ? '&currencyIssuer=' + token.Balance.currencyDetails.asset.issuer
+                                    : ''
+                                }&currency2=${token.Balance?.currencyDetails?.asset2?.currency}${
+                                  token.Balance?.currencyDetails?.asset2?.issuer
+                                    ? '&currency2Issuer=' + token.Balance.currencyDetails.asset2.issuer
+                                    : ''
+                                }`
+                              )
+                            }
                           >
-                            Withdraw
-                          </Link>
+                            <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> Withdraw
+                          </button>
                         </div>
                       )}
                     </div>
@@ -5980,8 +5990,8 @@ export default function Account2({
                       <span>No freeze:</span>
                       <span className={isNoFreezeEnabled && 'bold'}>{isNoFreezeEnabled ? 'enabled' : 'not set'}</span>
                     </div>
-                    <div className="lp-actions issuer-settings-actions">
-                      <Link href="/services/account-settings" className="lp-action-btn">
+                    <div className="card-actions issuer-settings-actions">
+                      <Link href="/services/account-settings" className="card-action-btn">
                         Change settings
                       </Link>
                     </div>
@@ -9341,29 +9351,6 @@ export default function Account2({
           display: inline-flex;
           align-items: center;
           line-height: 1;
-        }
-
-        .lp-actions {
-          display: flex;
-          gap: 10px;
-          margin-top: 12px;
-        }
-
-        .lp-action-btn {
-          flex: 1;
-          padding: 8px 12px;
-          background: var(--accent-link);
-          color: white;
-          text-align: center;
-          border-radius: 6px;
-          text-decoration: none;
-          font-size: 14px;
-          font-weight: 500;
-          transition: opacity 0.2s;
-        }
-
-        .lp-action-btn:hover {
-          opacity: 0.85;
         }
 
         .pending-note {
