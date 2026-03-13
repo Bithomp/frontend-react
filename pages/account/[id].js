@@ -1821,7 +1821,6 @@ export default function Account2({
         (!data.service?.domain || !data.ledgerInfo.domain.toLowerCase().includes(data.service.domain.toLowerCase()))
       const domainActionButtons = canManageDomain ? (
         <span className="no-brake">
-          {' '}
           <span className="tooltip tooltip-icon" style={{ marginLeft: 5 }}>
             <span
               style={{ fontSize: 16, marginBottom: -3, display: 'inline-flex' }}
@@ -1865,7 +1864,7 @@ export default function Account2({
       pushPublicRow(
         'Domain',
         isValidDomain ? (
-          <>
+          <span>
             <a
               href={`https://${domainText}`}
               className={data.verifiedDomain ? 'green bold' : ''}
@@ -1879,18 +1878,16 @@ export default function Account2({
                 className="blue tooltip"
                 style={{
                   display: 'inline-block',
-                  verticalAlign: 'bottom',
-                  marginBottom: -6,
-                  marginLeft: -4
+                  verticalAlign: 'middle'
                 }}
               >
                 <MdVerified />
-                <span className="tooltiptext small no-brake">TOML Verified Domain</span>
+                <span className="tooltiptext right small no-brake">TOML Verified Domain</span>
               </span>
             )}{' '}
             {showUnverified && <span className="grey">(unverified)</span>}
             {domainActionButtons}
-          </>
+          </span>
         ) : (
           <>
             <code className="code-highlight">{data.ledgerInfo.domain}</code>
