@@ -755,6 +755,16 @@ export default function SignForm({
   }
 
   const validateTransactionOnLedger = async ({ txid, redirectName, txType, result }) => {
+    const redirectRoute = (() => {
+      if (!redirectName) return null
+      if (isUrlValid(redirectName)) return redirectName
+      if (redirectName === 'account') {
+        const accountAddress = signRequest?.request?.Account || account?.address
+        return accountAddress ? '/account/' + accountAddress : null
+      }
+      return null
+    })()
+
     // if we have result of the transaction, and we don't need check crawler and if we don't need to return transaction results (no callback), no need to validate just redirect
     if (
       result &&
@@ -762,7 +772,11 @@ export default function SignForm({
       !(txType?.includes('NFToken') || txType?.includes('URIToken') || txType?.includes('DID')) &&
       !signRequest?.callback
     ) {
-      router.push('/tx/' + txid)
+      if (redirectRoute) {
+        router.push(redirectRoute)
+      } else {
+        router.push('/tx/' + txid)
+      }
       closeSignInFormAndRefresh()
       return
     }
@@ -798,13 +812,11 @@ export default function SignForm({
               // if on desktop and there is a callback, call it with the result
               signRequest.callback(response.data || {})
             } else {
-              // For mobile, redirect to transaction page
-              if (redirectName && isUrlValid(redirectName)) {
-                //stay on the same page
-                router.push(redirectName)
-                return
+              if (redirectRoute) {
+                router.push(redirectRoute)
+              } else {
+                router.push('/tx/' + txid)
               }
-              router.push('/tx/' + txid)
             }
             closeSignInFormAndRefresh()
             return

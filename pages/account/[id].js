@@ -235,6 +235,7 @@ import {
   FaMedium,
   FaReddit,
   FaTelegram,
+  FaWallet,
   FaYoutube,
   FaXTwitter
 } from 'react-icons/fa6'
@@ -265,7 +266,8 @@ export default function Account2({
   isHistoricalLedger,
   ledgerTimestampQuery,
   accountWithTag,
-  account
+  account,
+  refreshPage
 }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -659,7 +661,16 @@ export default function Account2({
   const isOwnAccount = data?.address === account?.address
   const accountDisplayName =
     userOrServiceName({ service: accountDisplayService, username: accountDisplayUsername }) || 'No username'
-  const shouldShowUsernameRegisterButton = !hasDisplayIdentity && isOwnAccount
+  const hasPositiveNativeAvailableBalance = Number(balanceList?.available?.native || 0) > 0
+  const shouldShowUsernameRegisterButton =
+    !hasDisplayIdentity &&
+    isOwnAccount &&
+    hasPositiveNativeAvailableBalance &&
+    !isBlackholed &&
+    !isDeletedAccount &&
+    !isNotActivatedAccount
+  const shouldShowSetAvatarButton = isOwnAccount && !!account?.address && !data?.ledgerInfo?.blackholed && !devNet
+  const shouldShowSignInIdentityButton = !account?.address && !data?.service && !data?.ledgerInfo?.blackholed
 
   const nativeAvailableFiatValue = ((balanceList?.available?.native || 0) / 1000000) * (pageFiatRate || 0)
   const isLpTrustlineToken = (token) => token?.Balance?.currency?.substring(0, 2) === '03'
@@ -1809,7 +1820,7 @@ export default function Account2({
         !data.verifiedDomain &&
         (!data.service?.domain || !data.ledgerInfo.domain.toLowerCase().includes(data.service.domain.toLowerCase()))
       const domainActionButtons = canManageDomain ? (
-        <>
+        <span className="no-brake">
           {' '}
           <span className="tooltip tooltip-icon" style={{ marginLeft: 5 }}>
             <span
@@ -1848,7 +1859,7 @@ export default function Account2({
             </span>
             <span className="tooltiptext no-brake">Remove</span>
           </span>
-        </>
+        </span>
       ) : null
 
       pushPublicRow(
@@ -2043,7 +2054,7 @@ export default function Account2({
           ' ' +
           data.address
         }
-        image={{ file: avatarSrc(data.address) }}
+        image={{ file: avatarSrc(data.address, refreshPage) }}
       />
 
       <div className="account-container">
@@ -2066,7 +2077,7 @@ export default function Account2({
             <div className="avatar-container">
               <div className="avatar-wrapper">
                 <div className="avatar-image-mask">
-                  <img src={avatarSrc(data.address)} alt="Avatar" className="account-avatar" />
+                  <img src={avatarSrc(data.address, refreshPage)} alt="Avatar" className="account-avatar" />
                 </div>
                 {!data?.blacklist?.blacklisted && achievements.length > 0 && (
                   <div className={`achievements-orbit achievements-count-${Math.min(achievements.length, 6)}`}>
@@ -2153,11 +2164,50 @@ export default function Account2({
             {/* Social icons */}
             {socialAccountsNode && <div className="social-icons-wrapper">{socialAccountsNode}</div>}
 
-            {shouldShowUsernameRegisterButton && (
-              <div className="get-first-native-wrap">
-                <a href={`/username?address=${data.address}`} className="get-first-native-btn">
-                  ⚡ Grab your username now
-                </a>
+            {(shouldShowUsernameRegisterButton || shouldShowSetAvatarButton || shouldShowSignInIdentityButton) && (
+              <div className="identity-actions-wrap">
+                {shouldShowUsernameRegisterButton && (
+                  <a href={`/username?address=${data.address}`} className="get-first-native-btn">
+                    ⚡ Grab your username now
+                  </a>
+                )}
+
+                {shouldShowSetAvatarButton && (
+                  <button
+                    type="button"
+                    className="get-first-native-btn"
+                    onClick={() =>
+                      setSignRequest({
+                        action: 'setAvatar',
+                        request: {
+                          TransactionType: 'AccountSet',
+                          Account: data.address
+                        },
+                        data: {
+                          signOnly: true,
+                          action: 'set-avatar'
+                        }
+                      })
+                    }
+                    disabled={data.address !== account?.address}
+                  >
+                    🖼️ Set an Avatar
+                  </button>
+                )}
+
+                {shouldShowSignInIdentityButton && (
+                  <button
+                    type="button"
+                    className="get-first-native-btn"
+                    onClick={() =>
+                      setSignRequest({
+                        redirect: 'account'
+                      })
+                    }
+                  >
+                    <FaWallet style={{ fontSize: 14, marginRight: 6 }} /> Connect
+                  </button>
+                )}
               </div>
             )}
 
@@ -8409,6 +8459,18 @@ export default function Account2({
           margin-top: 2px;
         }
 
+        .identity-actions-wrap {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 2px;
+        }
+
+        .identity-actions-wrap .get-first-native-btn {
+          flex: 1 1 220px;
+          width: auto;
+        }
+
         .get-first-native-btn {
           width: 100%;
           display: inline-flex;
@@ -8429,6 +8491,12 @@ export default function Account2({
         .get-first-native-btn:hover {
           opacity: 0.92;
           transform: translateY(-1px);
+        }
+
+        .get-first-native-btn:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+          transform: none;
         }
 
         .object-load-status {
