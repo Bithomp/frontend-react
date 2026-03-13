@@ -3,7 +3,8 @@ import { nativeCurrency, safeClone } from '..'
 import { TData } from '../../components/Table'
 import { add } from '../calc'
 import { decodeJsonMemo } from '../format'
-import { FaKey, FaLink, FaRegHandPaper, FaUserShield, FaMoneyCheckAlt } from 'react-icons/fa6'
+import { FaKey, FaLink, FaUserShield } from 'react-icons/fa6'
+import { FaRegHandPaper, FaMoneyCheckAlt } from 'react-icons/fa'
 import {
   MdArrowDownward,
   MdArrowUpward,
