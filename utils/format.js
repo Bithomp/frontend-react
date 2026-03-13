@@ -895,7 +895,7 @@ export const amountFormat = (amount, options = {}) => {
           {showValue} {valuePrefix} {textCurrency}
         </StyleAmount>
         {issuer ? (
-          <span className="no-inherit">
+          <span className="no-inherit no-brake">
             (
             {amount.currencyDetails?.type === 'lp_token' ? (
               <LinkAmm ammId={issuer} hash={6} style={{ fontWeight: 400 }} />
