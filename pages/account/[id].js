@@ -2189,7 +2189,6 @@ export default function Account2({
                         }
                       })
                     }
-                    disabled={data.address !== account?.address}
                   >
                     🖼️ Set an Avatar
                   </button>
