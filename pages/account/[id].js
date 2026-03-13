@@ -37,6 +37,8 @@ const NFT_FETCH_LIMIT = 50
 const NFT_OFFERS_PREVIEW_LIMIT = 5
 const NFT_OFFERS_FETCH_LIMIT = 50
 const ACTIVATED_ACCOUNTS_FETCH_LIMIT = 20
+const OBJECT_PREVIEW_LIMIT = 5
+const OBJECT_LOAD_MORE_STEP = 5
 
 const isPositiveBalance = (balance) => balance !== '0' && balance?.[0] !== '-'
 
@@ -340,6 +342,9 @@ export default function Account2({
   const [checksTab, setChecksTab] = useState('received')
   const [escrowsTab, setEscrowsTab] = useState('received')
   const [paychannelsTab, setPaychannelsTab] = useState('incoming')
+  const [dexOrdersDisplayLimit, setDexOrdersDisplayLimit] = useState(OBJECT_PREVIEW_LIMIT)
+  const [checksDisplayLimit, setChecksDisplayLimit] = useState(OBJECT_PREVIEW_LIMIT)
+  const [escrowsDisplayLimit, setEscrowsDisplayLimit] = useState(OBJECT_PREVIEW_LIMIT)
   const [expandedActivatedKey, setExpandedActivatedKey] = useState(null)
   const [expandedCheckKey, setExpandedCheckKey] = useState(null)
   const [expandedEscrowKey, setExpandedEscrowKey] = useState(null)
@@ -873,6 +878,11 @@ export default function Account2({
   const showChecksTabs = hasReceivedChecks && hasSentChecks
   const activeChecksTab = showChecksTabs ? checksTab : hasSentChecks ? 'sent' : 'received'
   const activeChecksList = activeChecksTab === 'sent' ? sentChecks : receivedChecks
+  const activeChecksPreview = activeChecksList.slice(0, checksDisplayLimit)
+  const activeChecksShowMoreAvailable = activeChecksList.length > activeChecksPreview.length
+  const activeChecksRemainingCount = Math.max(activeChecksList.length - activeChecksPreview.length, 0)
+  const showChecksFewerButton = checksDisplayLimit > OBJECT_PREVIEW_LIMIT
+  const showChecksControlsVisible = activeChecksShowMoreAvailable || showChecksFewerButton
   const checksSectionTitle = showChecksTabs ? 'Checks' : activeChecksTab === 'sent' ? 'Sent checks' : 'Received checks'
 
   const hasReceivedEscrows = receivedEscrows.length > 0
@@ -890,6 +900,11 @@ export default function Account2({
   const activeEscrowsTab = showEscrowsTabs ? escrowsTab : availableEscrowsTabs[0] || 'received'
   const activeEscrowsList =
     activeEscrowsTab === 'sent' ? sentEscrows : activeEscrowsTab === 'self' ? selfEscrows : receivedEscrows
+  const activeEscrowsPreview = activeEscrowsList.slice(0, escrowsDisplayLimit)
+  const activeEscrowsShowMoreAvailable = activeEscrowsList.length > activeEscrowsPreview.length
+  const activeEscrowsRemainingCount = Math.max(activeEscrowsList.length - activeEscrowsPreview.length, 0)
+  const showEscrowsFewerButton = escrowsDisplayLimit > OBJECT_PREVIEW_LIMIT
+  const showEscrowsControlsVisible = activeEscrowsShowMoreAvailable || showEscrowsFewerButton
   const escrowsSectionTitle = showEscrowsTabs
     ? 'Escrows'
     : activeEscrowsTab === 'sent'
@@ -909,6 +924,11 @@ export default function Account2({
       ? 'Outgoing paychannels'
       : 'Incoming paychannels'
   const hasDexOrders = dexOrders.length > 0
+  const dexOrdersPreview = dexOrders.slice(0, dexOrdersDisplayLimit)
+  const dexOrdersShowMoreAvailable = dexOrders.length > dexOrdersPreview.length
+  const dexOrdersRemainingCount = Math.max(dexOrders.length - dexOrdersPreview.length, 0)
+  const showDexOrdersFewerButton = dexOrdersDisplayLimit > OBJECT_PREVIEW_LIMIT
+  const showDexOrdersControlsVisible = dexOrdersShowMoreAvailable || showDexOrdersFewerButton
   const hasDepositPreauthAccounts = depositPreauthAccounts.length > 0
   const hasHooks = hookList.length > 0
   const hasCronData = !!data?.ledgerInfo?.cron
@@ -1190,6 +1210,9 @@ export default function Account2({
     setTokenTab('all')
     setNftDisplayLimit(NFT_INITIAL_LIMIT)
     setNftOffersDisplayLimit(NFT_OFFERS_PREVIEW_LIMIT)
+    setDexOrdersDisplayLimit(OBJECT_PREVIEW_LIMIT)
+    setChecksDisplayLimit(OBJECT_PREVIEW_LIMIT)
+    setEscrowsDisplayLimit(OBJECT_PREVIEW_LIMIT)
     setExpandedNftCardKey(null)
     setExpandedNftOfferKey(null)
     setExpandedDexOrderKey(null)
@@ -1236,6 +1259,11 @@ export default function Account2({
       setNftTab(availableTabs[0])
     }
   }, [nftTab, ownedNfts.length, soldNfts.length, mintedNfts.length, burnedNfts.length, effectiveLedgerTimestamp])
+
+  useEffect(() => {
+    setExpandedDexOrderKey(null)
+    setDexOrdersDisplayLimit(OBJECT_PREVIEW_LIMIT)
+  }, [data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
     setExpandedNftCardKey(null)
@@ -1286,11 +1314,21 @@ export default function Account2({
   }, [showChecksTabs, checksTab, hasSentChecks, hasReceivedChecks])
 
   useEffect(() => {
+    setExpandedCheckKey(null)
+    setChecksDisplayLimit(OBJECT_PREVIEW_LIMIT)
+  }, [checksTab, data?.address, effectiveLedgerTimestamp])
+
+  useEffect(() => {
     if (availableEscrowsTabs.length === 0) return
     if (!availableEscrowsTabs.includes(escrowsTab)) {
       setEscrowsTab(availableEscrowsTabs[0])
     }
   }, [availableEscrowsTabs, escrowsTab])
+
+  useEffect(() => {
+    setExpandedEscrowKey(null)
+    setEscrowsDisplayLimit(OBJECT_PREVIEW_LIMIT)
+  }, [escrowsTab, data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
     if (!showPaychannelsTabs && paychannelsTab === 'outgoing' && !hasOutgoingPaychannels) {
@@ -6480,7 +6518,7 @@ export default function Account2({
                 </div>
 
                 <div className="cards-list">
-                  {dexOrders.map((offer, index) => {
+                  {dexOrdersPreview.map((offer, index) => {
                     const orderKey = `${offer?.index || 'offer'}-${index}`
                     const isExpanded = expandedDexOrderKey === orderKey
                     const isSell = !!offer?.flags?.sell
@@ -6630,6 +6668,41 @@ export default function Account2({
                     )
                   })}
                 </div>
+                {showDexOrdersControlsVisible && (
+                  <div className="asset-compact-actions">
+                    {dexOrdersShowMoreAvailable && (
+                      <button
+                        type="button"
+                        className="asset-compact-toggle"
+                        onClick={() =>
+                          setDexOrdersDisplayLimit((currentLimit) =>
+                            Math.min(dexOrders.length, currentLimit + OBJECT_LOAD_MORE_STEP)
+                          )
+                        }
+                      >
+                        Show {Math.min(OBJECT_LOAD_MORE_STEP, dexOrdersRemainingCount)} more DEX orders
+                      </button>
+                    )}
+                    {dexOrdersShowMoreAvailable && (
+                      <button
+                        type="button"
+                        className="asset-compact-toggle"
+                        onClick={() => setDexOrdersDisplayLimit(dexOrders.length)}
+                      >
+                        Show all DEX orders
+                      </button>
+                    )}
+                    {showDexOrdersFewerButton && (
+                      <button
+                        type="button"
+                        className="asset-compact-toggle"
+                        onClick={() => setDexOrdersDisplayLimit(OBJECT_PREVIEW_LIMIT)}
+                      >
+                        Show fewer DEX orders
+                      </button>
+                    )}
+                  </div>
+                )}
               </>
             )}
 
@@ -6665,7 +6738,7 @@ export default function Account2({
                 <div className="checks-wrapper">
                   <div className="checks-details">
                     <div className="checks-list cards-list">
-                      {activeChecksList.map((check, index) => {
+                      {activeChecksPreview.map((check, index) => {
                         const checkKey = `${check?.index || 'check'}-${activeChecksTab}-${index}`
                         const isExpanded = expandedCheckKey === checkKey
                         const counterpartAddress = activeChecksTab === 'sent' ? check?.Destination : check?.Account
@@ -6801,6 +6874,41 @@ export default function Account2({
                         )
                       })}
                     </div>
+                    {showChecksControlsVisible && (
+                      <div className="asset-compact-actions">
+                        {activeChecksShowMoreAvailable && (
+                          <button
+                            type="button"
+                            className="asset-compact-toggle"
+                            onClick={() =>
+                              setChecksDisplayLimit((currentLimit) =>
+                                Math.min(activeChecksList.length, currentLimit + OBJECT_LOAD_MORE_STEP)
+                              )
+                            }
+                          >
+                            Show {Math.min(OBJECT_LOAD_MORE_STEP, activeChecksRemainingCount)} more checks
+                          </button>
+                        )}
+                        {activeChecksShowMoreAvailable && (
+                          <button
+                            type="button"
+                            className="asset-compact-toggle"
+                            onClick={() => setChecksDisplayLimit(activeChecksList.length)}
+                          >
+                            Show all checks
+                          </button>
+                        )}
+                        {showChecksFewerButton && (
+                          <button
+                            type="button"
+                            className="asset-compact-toggle"
+                            onClick={() => setChecksDisplayLimit(OBJECT_PREVIEW_LIMIT)}
+                          >
+                            Show fewer checks
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </>
@@ -6851,7 +6959,7 @@ export default function Account2({
                 <div className="escrow-wrapper">
                   <div className="escrow-details">
                     <div className="escrow-list cards-list">
-                      {activeEscrowsList.map((escrow, index) => {
+                      {activeEscrowsPreview.map((escrow, index) => {
                         const escrowKey = `${escrow?.index || 'escrow'}-${activeEscrowsTab}-${index}`
                         const isExpanded = expandedEscrowKey === escrowKey
                         const counterpartName = activeEscrowsTab === 'sent' ? 'Destination' : 'Account'
@@ -7092,6 +7200,41 @@ export default function Account2({
                         )
                       })}
                     </div>
+                    {showEscrowsControlsVisible && (
+                      <div className="asset-compact-actions">
+                        {activeEscrowsShowMoreAvailable && (
+                          <button
+                            type="button"
+                            className="asset-compact-toggle"
+                            onClick={() =>
+                              setEscrowsDisplayLimit((currentLimit) =>
+                                Math.min(activeEscrowsList.length, currentLimit + OBJECT_LOAD_MORE_STEP)
+                              )
+                            }
+                          >
+                            Show {Math.min(OBJECT_LOAD_MORE_STEP, activeEscrowsRemainingCount)} more escrows
+                          </button>
+                        )}
+                        {activeEscrowsShowMoreAvailable && (
+                          <button
+                            type="button"
+                            className="asset-compact-toggle"
+                            onClick={() => setEscrowsDisplayLimit(activeEscrowsList.length)}
+                          >
+                            Show all escrows
+                          </button>
+                        )}
+                        {showEscrowsFewerButton && (
+                          <button
+                            type="button"
+                            className="asset-compact-toggle"
+                            onClick={() => setEscrowsDisplayLimit(OBJECT_PREVIEW_LIMIT)}
+                          >
+                            Show fewer escrows
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </>
