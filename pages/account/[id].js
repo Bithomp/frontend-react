@@ -4277,6 +4277,44 @@ export default function Account2({
                           const isSignedInNftOwner = !!account?.address && !!nftOwner && account.address === nftOwner
                           const isSignedInNftIssuer = !!account?.address && !!nftIssuer && account.address === nftIssuer
                           const shouldShowMakeBuyOfferButton = nftTab === 'owned' && !!nftOwner && !isSignedInNftOwner
+                          const shouldShowBurnNftButton =
+                            nftTab === 'owned' &&
+                            !!nftId &&
+                            !nftDeleted &&
+                            !!setSignRequest &&
+                            !!account?.address &&
+                            ((!!nftOwner && account.address === nftOwner) ||
+                              (!!nftIssuer && account.address === nftIssuer))
+                          const burnNftRequest = (() => {
+                            if (!shouldShowBurnNftButton) return null
+
+                            if (nft?.type === 'xls35') {
+                              return {
+                                Account: nftOwner || account.address,
+                                TransactionType: 'URITokenBurn',
+                                URITokenID: nftId
+                              }
+                            }
+
+                            if (isSignedInNftOwner) {
+                              return {
+                                TransactionType: 'NFTokenBurn',
+                                Account: nftOwner,
+                                NFTokenID: nftId
+                              }
+                            }
+
+                            if (isSignedInNftIssuer) {
+                              return {
+                                TransactionType: 'NFTokenBurn',
+                                Account: nftIssuer,
+                                ...(nftOwner ? { Owner: nftOwner } : {}),
+                                NFTokenID: nftId
+                              }
+                            }
+
+                            return null
+                          })()
                           const canMakeBuyOffer =
                             !!setSignRequest &&
                             !!account?.address &&
@@ -4454,6 +4492,22 @@ export default function Account2({
                                           <span className="tooltiptext no-brake">{disabledBuyOfferTooltip}</span>
                                         )}
                                       </span>
+                                    </div>
+                                  )}
+
+                                  {shouldShowBurnNftButton && !!burnNftRequest && (
+                                    <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                      <button
+                                        type="button"
+                                        className="card-action-btn cancel"
+                                        onClick={() => {
+                                          setSignRequest({
+                                            request: burnNftRequest
+                                          })
+                                        }}
+                                      >
+                                        Burn
+                                      </button>
                                     </div>
                                   )}
                                 </div>
@@ -6113,10 +6167,7 @@ export default function Account2({
                                 <div className="detail-row">
                                   <span>NFT:</span>
                                   <span className="copy-inline">
-                                    <Link
-                                      href={`/nft/${nftTokenId}`}
-                                      onClick={(event) => event.stopPropagation()}
-                                    >
+                                    <Link href={`/nft/${nftTokenId}`} onClick={(event) => event.stopPropagation()}>
                                       {shortHash(nftTokenId)}
                                     </Link>
                                     <span onClick={(event) => event.stopPropagation()}>
@@ -7491,10 +7542,7 @@ export default function Account2({
                                   <div className="detail-row">
                                     <span>NFT:</span>
                                     <span className="copy-inline">
-                                      <Link
-                                        href={`/nft/${nftId}`}
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
+                                      <Link href={`/nft/${nftId}`} onClick={(event) => event.stopPropagation()}>
                                         {shortTokenId}
                                       </Link>
                                       <span onClick={(event) => event.stopPropagation()}>
