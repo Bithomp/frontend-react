@@ -79,7 +79,6 @@ const setBalancesFunction = (networkInfo, data) => {
   }
 
   balanceList.available.native = balanceList.total.native - balanceList.reserved.native
-
   if (balanceList.available.native < 0) {
     balanceList.available.native = 0
   }
@@ -377,10 +376,15 @@ export default function Account2({
   const [activatedAccountsCount, setActivatedAccountsCount] = useState(0)
   const [activatedAccountsSpent, setActivatedAccountsSpent] = useState(0)
   const [activatedAccountsLoading, setActivatedAccountsLoading] = useState(false)
+  const [activatedAccountsLoadingMore, setActivatedAccountsLoadingMore] = useState(false)
   const [activatedAccountsError, setActivatedAccountsError] = useState(null)
-  const [activatedAccountsSummaryApproximate, setActivatedAccountsSummaryApproximate] = useState(false)
+  const [activatedAccountsMarker, setActivatedAccountsMarker] = useState(null)
+  const [showActivatedAccountsFilters, setShowActivatedAccountsFilters] = useState(false)
+  const [activatedAccountsOrder, setActivatedAccountsOrder] = useState('desc')
+  const [activatedAccountsReloadKey, setActivatedAccountsReloadKey] = useState(0)
   const nftOffersRequestTokenRef = useRef(0)
   const transactionsRequestTokenRef = useRef(0)
+  const activatedAccountsRequestTokenRef = useRef(0)
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
 
@@ -915,7 +919,12 @@ export default function Account2({
   const activeUriTokens = uriTab === 'minted' ? uriTokens.filter((token) => token?.Issuer === data?.address) : uriTokens
   const hasIssuedTokensSection = issuedTokensLoading || !!issuedTokensError || issuedTokens.length > 0
   const hasActivatedAccountsSection =
-    !effectiveLedgerTimestamp && (activatedAccountsLoading || !!activatedAccountsError || activatedAccountsCount > 0)
+    !effectiveLedgerTimestamp &&
+    (activatedAccountsLoading ||
+      activatedAccountsLoadingMore ||
+      !!activatedAccountsError ||
+      activatedAccountsCount > 0 ||
+      activatedAccounts.length > 0)
   const hasColumn4ObjectSections =
     hasIssuedTokensSection ||
     hasIssuerSettingsData ||
@@ -938,103 +947,117 @@ export default function Account2({
       setActivatedAccountsCount(0)
       setActivatedAccountsSpent(0)
       setActivatedAccountsLoading(false)
+      setActivatedAccountsLoadingMore(false)
       setActivatedAccountsError(null)
-      setActivatedAccountsSummaryApproximate(false)
+      setActivatedAccountsMarker(null)
       setExpandedActivatedKey(null)
       return
     }
 
     setExpandedActivatedKey(null)
-    let cancelled = false
+    const requestToken = activatedAccountsRequestTokenRef.current + 1
+    activatedAccountsRequestTokenRef.current = requestToken
 
-    const fetchActivatedAccounts = async () => {
-      setActivatedAccounts([])
-      setActivatedAccountsCount(0)
-      setActivatedAccountsSpent(0)
-      setActivatedAccountsLoading(true)
+    const fetchActivatedAccounts = async ({ markerValue = null, append = false } = {}) => {
+      if (append) {
+        setActivatedAccountsLoadingMore(true)
+      } else {
+        setActivatedAccountsLoading(true)
+      }
+
+      if (!append) {
+        setActivatedAccounts([])
+        setActivatedAccountsCount(0)
+        setActivatedAccountsSpent(0)
+        setActivatedAccountsMarker(null)
+      }
+
       setActivatedAccountsError(null)
-      setActivatedAccountsSummaryApproximate(false)
 
       try {
+        const markerQuery = markerValue ? `&marker=${encodeURIComponent(markerValue)}` : ''
+        const orderQuery = `&order=${activatedAccountsOrder}`
         const response = await axios.get(
-          `xrpl/accounts?parent=${data.address}&time_format=iso&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}`
+          `xrpl/accounts?parent=${data.address}&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}${orderQuery}${markerQuery}`
         )
+        if (activatedAccountsRequestTokenRef.current !== requestToken) return
+
         const payload = response?.data || {}
 
         if (payload?.result && payload.result !== 'success') {
           throw new Error(payload?.message || 'Failed to load activated accounts')
         }
 
-        const totalFromList = Number(payload?.count || 0)
         const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
-
-        if (totalFromList < 1 || accountRows.length < 1) {
-          if (cancelled) return
-          setActivatedAccounts([])
-          setActivatedAccountsCount(0)
-          setActivatedAccountsSpent(0)
-          setActivatedAccountsSummaryApproximate(false)
-          return
-        }
+        const nextMarker = payload?.marker || null
 
         const normalizedRows = accountRows
           .map((child) => ({
             address: child?.account || child?.address || '',
             inception: child?.inception || null,
             initialBalance: Number(child?.initial_balance ?? child?.initialBalance ?? 0),
-            ledgerIndex: child?.ledger_index ?? child?.ledgerIndex ?? null,
-            txHash: child?.tx_hash || child?.txHash || null
+            balance: Number(child?.balance ?? 0),
+            txHash: child?.tx_hash || child?.txHash || null,
+            lastSubmittedAt: child?.last_submitted_at || child?.lastSubmittedAt || null,
+            lastSubmittedLedgerIndex: child?.last_submitted_ledger_index ?? child?.lastSubmittedLedgerIndex ?? null,
+            lastSubmittedTxHash: child?.last_submitted_tx_hash || child?.lastSubmittedTxHash || null
           }))
           .filter((child) => !!child.address)
 
-        const orderedRows =
-          totalFromList !== ACTIVATED_ACCOUNTS_FETCH_LIMIT ? [...normalizedRows].reverse() : normalizedRows
+        if (append) {
+          setActivatedAccounts((prev) => [...prev, ...normalizedRows])
+        } else {
+          setActivatedAccounts(normalizedRows)
+        }
 
-        let summaryCount = totalFromList || orderedRows.length
-        let summarySpent = orderedRows.reduce(
-          (sum, child) => sum + (Number.isFinite(child.initialBalance) ? child.initialBalance : 0),
-          0
-        )
-        let summaryFallback = false
+        setActivatedAccountsMarker(nextMarker)
 
-        if (totalFromList === ACTIVATED_ACCOUNTS_FETCH_LIMIT) {
+        if (!append) {
+          let summaryCount = Number(payload?.count)
+          let summarySpent = normalizedRows.reduce(
+            (sum, child) => sum + (Number.isFinite(child.initialBalance) ? child.initialBalance : 0),
+            0
+          )
+
           try {
             const summaryResponse = await axios.get(`xrpl/accounts/summary?parent=${data.address}`)
+            if (activatedAccountsRequestTokenRef.current !== requestToken) return
             const summaryData = summaryResponse?.data || {}
             const summaryCountValue = Number(summaryData?.count)
             const summarySpentValue = Number(summaryData?.initial_balance)
 
             if (Number.isFinite(summaryCountValue) && summaryCountValue >= 0) {
               summaryCount = summaryCountValue
-            } else {
-              summaryFallback = true
             }
 
             if (Number.isFinite(summarySpentValue) && summarySpentValue >= 0) {
               summarySpent = summarySpentValue
-            } else {
-              summaryFallback = true
             }
           } catch {
-            summaryFallback = true
+            // Keep first-page summary values when summary endpoint fails.
           }
+
+          if (!Number.isFinite(summaryCount) || summaryCount < 0) {
+            summaryCount = normalizedRows.length
+          }
+
+          setActivatedAccountsCount(summaryCount)
+          setActivatedAccountsSpent(summarySpent)
         }
-
-        if (cancelled) return
-
-        setActivatedAccounts(orderedRows)
-        setActivatedAccountsCount(summaryCount)
-        setActivatedAccountsSpent(summarySpent)
-        setActivatedAccountsSummaryApproximate(summaryFallback)
       } catch (requestError) {
-        if (cancelled) return
-        setActivatedAccounts([])
-        setActivatedAccountsCount(0)
-        setActivatedAccountsSpent(0)
+        if (activatedAccountsRequestTokenRef.current !== requestToken) return
+        if (!append) {
+          setActivatedAccounts([])
+          setActivatedAccountsCount(0)
+          setActivatedAccountsSpent(0)
+          setActivatedAccountsMarker(null)
+        }
         setActivatedAccountsError(requestError?.message || 'Failed to load activated accounts')
-        setActivatedAccountsSummaryApproximate(false)
       } finally {
-        if (!cancelled) {
+        if (activatedAccountsRequestTokenRef.current !== requestToken) return
+        if (append) {
+          setActivatedAccountsLoadingMore(false)
+        } else {
           setActivatedAccountsLoading(false)
         }
       }
@@ -1043,9 +1066,68 @@ export default function Account2({
     fetchActivatedAccounts()
 
     return () => {
-      cancelled = true
+      if (activatedAccountsRequestTokenRef.current === requestToken) {
+        activatedAccountsRequestTokenRef.current = requestToken + 1
+      }
     }
-  }, [data?.address, effectiveLedgerTimestamp])
+  }, [data?.address, effectiveLedgerTimestamp, activatedAccountsOrder, activatedAccountsReloadKey])
+
+  const loadMoreActivatedAccounts = () => {
+    if (
+      !data?.address ||
+      !activatedAccountsMarker ||
+      activatedAccountsLoadingMore ||
+      activatedAccountsLoading ||
+      effectiveLedgerTimestamp
+    )
+      return
+
+    const requestToken = activatedAccountsRequestTokenRef.current
+    const markerValue = activatedAccountsMarker
+
+    const fetchMore = async () => {
+      setActivatedAccountsLoadingMore(true)
+      setActivatedAccountsError(null)
+
+      try {
+        const response = await axios.get(
+          `xrpl/accounts?parent=${data.address}&limit=${ACTIVATED_ACCOUNTS_FETCH_LIMIT}&order=${activatedAccountsOrder}&marker=${encodeURIComponent(markerValue)}`
+        )
+        if (activatedAccountsRequestTokenRef.current !== requestToken) return
+
+        const payload = response?.data || {}
+
+        if (payload?.result && payload.result !== 'success') {
+          throw new Error(payload?.message || 'Failed to load activated accounts')
+        }
+
+        const accountRows = Array.isArray(payload?.accounts) ? payload.accounts : []
+        const normalizedRows = accountRows
+          .map((child) => ({
+            address: child?.account || child?.address || '',
+            inception: child?.inception || null,
+            initialBalance: Number(child?.initial_balance ?? child?.initialBalance ?? 0),
+            balance: Number(child?.balance ?? 0),
+            txHash: child?.tx_hash || child?.txHash || null,
+            lastSubmittedAt: child?.last_submitted_at || child?.lastSubmittedAt || null,
+            lastSubmittedLedgerIndex: child?.last_submitted_ledger_index ?? child?.lastSubmittedLedgerIndex ?? null,
+            lastSubmittedTxHash: child?.last_submitted_tx_hash || child?.lastSubmittedTxHash || null
+          }))
+          .filter((child) => !!child.address)
+
+        setActivatedAccounts((prev) => [...prev, ...normalizedRows])
+        setActivatedAccountsMarker(payload?.marker || null)
+      } catch (requestError) {
+        if (activatedAccountsRequestTokenRef.current !== requestToken) return
+        setActivatedAccountsError(requestError?.message || 'Failed to load activated accounts')
+      } finally {
+        if (activatedAccountsRequestTokenRef.current !== requestToken) return
+        setActivatedAccountsLoadingMore(false)
+      }
+    }
+
+    fetchMore()
+  }
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -4123,6 +4205,25 @@ export default function Account2({
                           const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortNftId
                           const nftIssuer =
                             nft?.issuer || nft?.Issuer || nft?.nftoken?.issuer || nft?.nftoken?.Issuer || null
+                          const nftOwner =
+                            nft?.owner || nft?.Owner || nft?.nftoken?.owner || nft?.nftoken?.Owner || null
+                          const nftDeleted =
+                            !!nft?.deletedAt || !!nft?.nftoken?.deletedAt || !!nft?.deleted || !!nft?.nftoken?.deleted
+                          const nftTransferableFlag =
+                            nft?.flags?.transferable ?? nft?.nftoken?.flags?.transferable ?? true
+                          const nftIsTransferable = nftTransferableFlag !== false
+                          const isSignedInNftOwner = !!account?.address && !!nftOwner && account.address === nftOwner
+                          const isSignedInNftIssuer = !!account?.address && !!nftIssuer && account.address === nftIssuer
+                          const shouldShowMakeBuyOfferButton = nftTab === 'owned' && !!nftOwner && !isSignedInNftOwner
+                          const canMakeBuyOffer =
+                            !!setSignRequest &&
+                            !!account?.address &&
+                            !!nftId &&
+                            !!nftOwner &&
+                            !nftDeleted &&
+                            (nftIsTransferable || isSignedInNftIssuer)
+                          const disabledBuyOfferTooltip =
+                            !canMakeBuyOffer && !nftIsTransferable && !isSignedInNftIssuer ? 'Non-transferable NFT' : ''
                           const soldAt = nft?.acceptedAt || nft?.soldAt
                           const mintedAt = nft?.issuedAt
                           const burnedAt = nft?.deletedAt
@@ -4218,16 +4319,10 @@ export default function Account2({
                               {isExpanded && (
                                 <div className="asset-details">
                                   <div className="detail-row">
-                                    <span>Token ID:</span>
+                                    <span>NFT:</span>
                                     <span className="copy-inline">
-                                      <span>{shortTokenId}</span>
-                                      <Link
-                                        href={`/nft/${nftId}`}
-                                        className="inline-link-icon tooltip"
-                                        onClick={(event) => event.stopPropagation()}
-                                      >
-                                        <LinkIcon />
-                                        <span className="tooltiptext no-brake">NFT page</span>
+                                      <Link href={`/nft/${nftId}`} onClick={(event) => event.stopPropagation()}>
+                                        {shortTokenId}
                                       </Link>
                                       <span onClick={(event) => event.stopPropagation()}>
                                         <CopyButton text={nftId} />
@@ -4238,15 +4333,13 @@ export default function Account2({
                                     <div className="detail-row">
                                       <span>Issuer:</span>
                                       <span className="copy-inline">
-                                        <span>{shortHash(nftIssuer)}</span>
-                                        <Link
-                                          href={`/account/${nftIssuer}`}
-                                          className="inline-link-icon tooltip"
-                                          onClick={(event) => event.stopPropagation()}
-                                        >
-                                          <LinkIcon />
-                                          <span className="tooltiptext no-brake">Issuer account</span>
-                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <AddressWithIconInline
+                                            data={{ address: nftIssuer }}
+                                            name="address"
+                                            options={{ short: 6 }}
+                                          />
+                                        </span>
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <CopyButton text={nftIssuer} />
                                         </span>
@@ -4271,6 +4364,34 @@ export default function Account2({
                                     <div className="detail-row">
                                       <span>{actionVerb} at:</span>
                                       <span>{actionExact}</span>
+                                    </div>
+                                  )}
+
+                                  {shouldShowMakeBuyOfferButton && (
+                                    <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                                      <span className={disabledBuyOfferTooltip ? 'tooltip' : ''}>
+                                        <button
+                                          type="button"
+                                          className={`card-action-btn ${canMakeBuyOffer ? 'redeem' : 'disabled'}`}
+                                          disabled={!canMakeBuyOffer}
+                                          onClick={() => {
+                                            if (!canMakeBuyOffer) return
+                                            setSignRequest({
+                                              request: {
+                                                TransactionType: 'NFTokenCreateOffer',
+                                                Account: account.address,
+                                                NFTokenID: nftId,
+                                                Owner: nftOwner
+                                              }
+                                            })
+                                          }}
+                                        >
+                                          Make a buy offer
+                                        </button>
+                                        {!!disabledBuyOfferTooltip && (
+                                          <span className="tooltiptext no-brake">{disabledBuyOfferTooltip}</span>
+                                        )}
+                                      </span>
                                     </div>
                                   )}
                                 </div>
@@ -7074,7 +7195,12 @@ export default function Account2({
                             ? fullDateAndTime(offer.expiration, 'expiration')
                             : null
                           const canCancelNftOffer =
-                            !!setSignRequest && !effectiveLedgerTimestamp && !!offerIndex && !!account?.address
+                            !!setSignRequest &&
+                            !effectiveLedgerTimestamp &&
+                            !!offerIndex &&
+                            !!account?.address &&
+                            !!ownerAddress &&
+                            ownerAddress === account.address
                           const secondaryLine = offerAmountText ? (
                             <>
                               {offerType} · {offerAmountText}
@@ -7229,14 +7355,12 @@ export default function Account2({
                                     </div>
                                   )}
 
-                                  {!effectiveLedgerTimestamp && (
+                                  {canCancelNftOffer && (
                                     <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                                       <button
                                         type="button"
-                                        className={`card-action-btn ${canCancelNftOffer ? 'cancel' : 'disabled'}`}
-                                        disabled={!canCancelNftOffer}
+                                        className="card-action-btn cancel"
                                         onClick={() => {
-                                          if (!canCancelNftOffer) return
                                           setSignRequest({
                                             request: {
                                               TransactionType: 'NFTokenCancelOffer',
@@ -7468,14 +7592,68 @@ export default function Account2({
               <>
                 <div className="section-header-row object-section-header-row">
                   <div className="section-title object-section-title">
-                    Activated accounts <span className="object-title-count">{activatedAccountsCount}</span>
+                    Activated accounts{' '}
+                    {(!activatedAccountsLoading || activatedAccountsCount > 0) && (
+                      <span className="object-title-count" suppressHydrationWarning>
+                        <span className="tooltip">
+                          {shortNiceNumber(activatedAccountsCount, 2, 1)}
+                          <span className="tooltiptext no-brake">{fullNiceNumber(activatedAccountsCount)}</span>
+                        </span>
+                      </span>
+                    )}
                     {activatedAccountsSpent > 0 && (
                       <span className="object-title-count" suppressHydrationWarning>
-                        ·{fullNiceNumber(activatedAccountsSpent)} {nativeCurrency}
+                        {' · '}
+                        <span className="tooltip">
+                          {shortNiceNumber(activatedAccountsSpent, 2, 1)} {nativeCurrency}
+                          <span className="tooltiptext no-brake">
+                            {fullNiceNumber(activatedAccountsSpent)} {nativeCurrency}
+                          </span>
+                        </span>
                       </span>
                     )}
                   </div>
+                  <div className="tx-header-actions">
+                    <button
+                      className="tx-filter-toggle tooltip"
+                      onClick={() => setActivatedAccountsReloadKey((prev) => prev + 1)}
+                      aria-label="Reload activated accounts"
+                      type="button"
+                      disabled={!data?.address || activatedAccountsLoading || activatedAccountsLoadingMore}
+                    >
+                      <FaArrowsRotate
+                        className={`tx-refresh-icon ${activatedAccountsLoading || activatedAccountsLoadingMore ? 'spinning' : ''}`}
+                      />
+                      <span className="tooltiptext">Update</span>
+                    </button>
+                    <button
+                      className={`tx-filter-toggle tooltip ${showActivatedAccountsFilters ? 'active' : ''}`}
+                      onClick={() => setShowActivatedAccountsFilters((prev) => !prev)}
+                      aria-label="Toggle activated accounts filters"
+                      type="button"
+                    >
+                      <FaGear />
+                      <span className="tooltiptext">Settings</span>
+                    </button>
+                  </div>
                 </div>
+
+                {showActivatedAccountsFilters && (
+                  <div className="tx-filters-panel">
+                    <div className="tx-filter-grid">
+                      <label className="tx-filter-field">
+                        <span>Order</span>
+                        <select
+                          value={activatedAccountsOrder}
+                          onChange={(event) => setActivatedAccountsOrder(event.target.value)}
+                        >
+                          <option value="desc">Latest first</option>
+                          <option value="asc">Oldest first</option>
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+                )}
 
                 {activatedAccountsLoading ? (
                   <div className="asset-item object-load-status">
@@ -7489,92 +7667,203 @@ export default function Account2({
                     <span className="object-load-status-text">{activatedAccountsError}</span>
                   </div>
                 ) : (
-                  <>
-                    {activatedAccountsSummaryApproximate && (
-                      <div className="asset-item object-load-status">
-                        <span className="object-load-status-text" suppressHydrationWarning>
-                          {`Showing first ${activatedAccounts.length} accounts.`}
-                        </span>
-                      </div>
-                    )}
-                    <div className="cards-list">
-                      {activatedAccounts.map((child, index) => {
-                        const activationKey = `${child?.address || 'activation'}-${child?.inception || index}`
-                        const activationTimeAgo = child?.inception ? timeFromNow(child.inception, i18n) : '-'
-                        const activationTimeFull = child?.inception ? fullDateAndTime(child.inception) : '-'
-                        const activationAmount = Number.isFinite(child?.initialBalance) ? child.initialBalance : 0
-                        const isExpanded = expandedActivatedKey === activationKey
-                        const toggleCard = () => setExpandedActivatedKey(isExpanded ? null : activationKey)
+                  (() => {
+                    const renderActivatedAccountsList = () => (
+                      <div className="cards-list">
+                        {activatedAccounts.map((child, index) => {
+                          const activationKey = `${child?.address || 'activation'}-${child?.inception || index}`
+                          const activationTimeAgo = child?.inception ? timeFromNow(child.inception, i18n) : '-'
+                          const activationTimeFull = child?.inception ? fullDateAndTime(child.inception) : '-'
+                          const activationAmount = Number.isFinite(child?.initialBalance) ? child.initialBalance : 0
+                          const activationAmountDrops = Math.round(activationAmount * 1000000)
+                          const currentBalance = Number.isFinite(child?.balance) ? child.balance : null
+                          const currentBalanceDrops =
+                            currentBalance === null ? null : Math.round(currentBalance * 1000000)
+                          const currentBalanceFiatText =
+                            currentBalanceDrops === null
+                              ? ''
+                              : nativeCurrencyToFiat({
+                                  amount: currentBalanceDrops,
+                                  selectedCurrency,
+                                  fiatRate: pageFiatRate,
+                                  asText: true
+                                })
+                          const lastSubmittedAgo = child?.lastSubmittedAt
+                            ? timeFromNow(child.lastSubmittedAt, i18n)
+                            : null
+                          const lastSubmittedFull = child?.lastSubmittedAt
+                            ? fullDateAndTime(child.lastSubmittedAt)
+                            : null
+                          const isExpanded = expandedActivatedKey === activationKey
+                          const toggleCard = () => setExpandedActivatedKey(isExpanded ? null : activationKey)
 
-                        return (
-                          <div
-                            className={`asset-item token-asset-item expandable-card check-row-card activated-account-card ${isExpanded ? 'expanded' : ''}`}
-                            key={activationKey}
-                            onClick={toggleCard}
-                          >
-                            <div className="asset-main tx-asset-main">
-                              <div className="asset-logo tx-asset-logo">
-                                <div className="tx-collapsed-top">
-                                  <span className="tx-time tx-time-top" title={activationTimeFull}>
-                                    {activationTimeAgo}
-                                  </span>
-                                </div>
-                                <div className="tx-collapsed-meta">
-                                  <AddressWithIcon address={child.address}>
-                                    <span className="activated-account-inline-address">
-                                      {shortHash(child.address, 6)}
-                                    </span>
-                                  </AddressWithIcon>
-                                </div>
-                              </div>
-                              <div className="asset-value tx-collapsed-change">
-                                <span className="tx-inline-change red">
-                                  -{fullNiceNumber(activationAmount)} {nativeCurrency}
-                                </span>
-                              </div>
-                            </div>
-
-                            {isExpanded && (
-                              <div className="asset-details" onClick={(e) => e.stopPropagation()}>
-                                <div className="detail-row">
-                                  <span>Address:</span>
-                                  <span className="copy-inline">
-                                    <AddressWithIconInline
-                                      data={{ address: child.address }}
-                                      name="address"
-                                      options={{ short: 6 }}
-                                    />
-                                    <CopyButton text={child.address} />
-                                  </span>
-                                </div>
-                                <div className="detail-row">
-                                  <span>Balance funded:</span>
-                                  <span>
-                                    {fullNiceNumber(activationAmount)} {nativeCurrency}
-                                  </span>
-                                </div>
-                                <div className="detail-row">
-                                  <span>Activated:</span>
-                                  <span>{activationTimeFull}</span>
-                                </div>
-                                {child.txHash && (
-                                  <div className="detail-row">
-                                    <span>Transaction:</span>
-                                    <span className="copy-inline">
-                                      <Link href={`/transaction/${child.txHash}`} onClick={(e) => e.stopPropagation()}>
-                                        {shortHash(child.txHash)}
-                                      </Link>
-                                      <CopyButton text={child.txHash} />
+                          return (
+                            <div
+                              className={`asset-item token-asset-item expandable-card check-row-card activated-account-card ${isExpanded ? 'expanded' : ''}`}
+                              key={activationKey}
+                              onClick={toggleCard}
+                            >
+                              <div className="asset-main tx-asset-main">
+                                <div className="asset-logo tx-asset-logo">
+                                  <div className="tx-collapsed-top">
+                                    <span className="tx-time tx-time-top" title={activationTimeFull}>
+                                      {activationTimeAgo}
                                     </span>
                                   </div>
-                                )}
+                                  <div className="tx-collapsed-meta">
+                                    <AddressWithIcon address={child.address}>
+                                      <span className="activated-account-inline-address">
+                                        {shortHash(child.address, 6)}
+                                      </span>
+                                    </AddressWithIcon>
+                                  </div>
+                                </div>
+                                <div className="asset-value tx-collapsed-change">
+                                  <span className="tx-inline-change red">
+                                    -{amountFormat(activationAmountDrops, { precise: 'nice' })}
+                                  </span>
+                                </div>
                               </div>
+
+                              {isExpanded && (
+                                <div className="asset-details" onClick={(e) => e.stopPropagation()}>
+                                  <div className="detail-row">
+                                    <span>Address:</span>
+                                    <span className="copy-inline">
+                                      <AddressWithIconInline
+                                        data={{ address: child.address }}
+                                        name="address"
+                                        options={{ short: 6 }}
+                                      />
+                                      <CopyButton text={child.address} />
+                                    </span>
+                                  </div>
+                                  <div className="detail-row">
+                                    <span>Balance funded:</span>
+                                    <span>{amountFormat(activationAmountDrops, { precise: 'nice' })}</span>
+                                  </div>
+                                  <div className="detail-row">
+                                    <span>Activated:</span>
+                                    <span>{activationTimeFull}</span>
+                                  </div>
+                                  {child.txHash && (
+                                    <div className="detail-row">
+                                      <span>Activation tx:</span>
+                                      <span className="copy-inline">
+                                        <Link
+                                          href={`/transaction/${child.txHash}`}
+                                          onClick={(e) => e.stopPropagation()}
+                                        >
+                                          {shortHash(child.txHash)}
+                                        </Link>
+                                        <CopyButton text={child.txHash} />
+                                      </span>
+                                    </div>
+                                  )}
+                                  {currentBalanceDrops !== null && (
+                                    <div className="detail-row">
+                                      <span>Balance now:</span>
+                                      <span className="tx-detail-stacked-amount">
+                                        <span>{amountFormat(currentBalanceDrops, { precise: 'nice' })}</span>
+                                        {!!currentBalanceFiatText && (
+                                          <span className="tx-change-fiat" suppressHydrationWarning>
+                                            {currentBalanceFiatText}
+                                          </span>
+                                        )}
+                                      </span>
+                                    </div>
+                                  )}
+                                  {(lastSubmittedAgo || lastSubmittedFull || child.lastSubmittedTxHash) && (
+                                    <div className="detail-row">
+                                      <span>Last submitted tx:</span>
+                                      <span
+                                        className="copy-inline"
+                                        title={lastSubmittedFull ? String(lastSubmittedFull) : undefined}
+                                      >
+                                        {child.lastSubmittedTxHash ? (
+                                          <Link
+                                            href={`/transaction/${child.lastSubmittedTxHash}`}
+                                            onClick={(e) => e.stopPropagation()}
+                                          >
+                                            {lastSubmittedAgo ||
+                                              lastSubmittedFull ||
+                                              shortHash(child.lastSubmittedTxHash)}
+                                          </Link>
+                                        ) : (
+                                          <span>{lastSubmittedAgo || lastSubmittedFull}</span>
+                                        )}
+                                        {child.lastSubmittedTxHash && <CopyButton text={child.lastSubmittedTxHash} />}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )
+
+                    if (isMobile) {
+                      const canLoadMoreActivatedAccounts = !!activatedAccountsMarker
+                      return (
+                        <>
+                          {renderActivatedAccountsList()}
+                          <div className="tx-mobile-actions">
+                            {canLoadMoreActivatedAccounts ? (
+                              <button
+                                type="button"
+                                className="button-outline"
+                                onClick={loadMoreActivatedAccounts}
+                                disabled={activatedAccountsLoadingMore || activatedAccountsLoading}
+                              >
+                                {activatedAccountsLoadingMore ? (
+                                  <>
+                                    Loading
+                                    <span className="waiting inline" aria-hidden="true"></span>
+                                  </>
+                                ) : (
+                                  'Load 20 more activated accounts'
+                                )}
+                              </button>
+                            ) : (
+                              <span className="tx-mobile-end-label">End of list.</span>
                             )}
                           </div>
-                        )
-                      })}
-                    </div>
-                  </>
+                        </>
+                      )
+                    }
+
+                    return (
+                      <InfiniteScrolling
+                        dataLength={activatedAccounts.length}
+                        loadMore={loadMoreActivatedAccounts}
+                        hasMore={!!activatedAccountsMarker}
+                        errorMessage={null}
+                        loadMoreMessage={
+                          activatedAccountsLoadingMore ? (
+                            <button type="button" className="button-outline" disabled>
+                              Loading
+                              <span className="waiting inline" aria-hidden="true"></span>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="button-outline"
+                              onClick={loadMoreActivatedAccounts}
+                              disabled={activatedAccountsLoadingMore || activatedAccountsLoading}
+                            >
+                              Load 20 more activated accounts
+                            </button>
+                          )
+                        }
+                        subscriptionExpired={false}
+                        sessionToken={true}
+                      >
+                        {renderActivatedAccountsList()}
+                      </InfiniteScrolling>
+                    )
+                  })()
                 )}
               </>
             )}
