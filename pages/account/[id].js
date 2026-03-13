@@ -7351,13 +7351,18 @@ export default function Account2({
                             !!account?.address &&
                             !!ownerAddress &&
                             ownerAddress === account.address
-                          const secondaryLine = offerAmountText ? (
-                            <>
-                              {offerType} · {offerAmountText}
-                            </>
-                          ) : (
-                            offerType
-                          )
+                          const secondaryLine = offerType
+                          const collapsedAmountDirection = (() => {
+                            if (nftOffersTab === 'received') return { sign: '-', className: 'red' }
+                            if (nftOffersTab === 'owned') return { sign: '+', className: 'green' }
+
+                            // Created offers: buy offer means you pay; sell offer means you receive.
+                            return offerType === 'Buy'
+                              ? { sign: '-', className: 'red' }
+                              : { sign: '+', className: 'green' }
+                          })()
+                          const collapsedAmountClass = offerAmountText ? collapsedAmountDirection.className : 'grey'
+                          const collapsedAmountSign = offerAmountText ? collapsedAmountDirection.sign : ''
 
                           return (
                             <div
@@ -7396,7 +7401,20 @@ export default function Account2({
                                   </div>
                                 </div>
                                 <div className="asset-value">
-                                  {offerPlacedRelative && <div className="asset-fiat">{offerPlacedRelative}</div>}
+                                  {offerPlacedRelative && (
+                                    <div
+                                      className="asset-fiat"
+                                      title={offerPlacedExact ? String(offerPlacedExact) : undefined}
+                                    >
+                                      {offerPlacedRelative}
+                                    </div>
+                                  )}
+                                  <span className="tx-inline-change-item">
+                                    <span className={`tx-inline-change ${collapsedAmountClass}`}>
+                                      {collapsedAmountSign}
+                                      {offerAmountText || '-'}
+                                    </span>
+                                  </span>
                                 </div>
                               </div>
                               {isExpanded && (
