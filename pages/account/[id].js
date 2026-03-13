@@ -371,6 +371,29 @@ export default function Account2({
   const transactionsRequestTokenRef = useRef(0)
   const [tokenFiatRate, setTokenFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
   const [pageFiatRate, setPageFiatRate] = useState(!ledgerTimestampQuery ? fiatRateServer || fiatRateApp || null : 0)
+
+  const resetAccountObjectCollections = () => {
+    setTokens([])
+    setOwnedNfts([])
+    setSoldNfts([])
+    setMintedNfts([])
+    setBurnedNfts([])
+    setOwnedNftIds([])
+    setReceivedChecks([])
+    setSentChecks([])
+    setSelfEscrows([])
+    setReceivedEscrows([])
+    setSentEscrows([])
+    setIncomingPaychannels([])
+    setOutgoingPaychannels([])
+    setDexOrders([])
+    setDepositPreauthAccounts([])
+    setHookList([])
+    setHeldMpts([])
+    setIssuedMpts([])
+    setUriTokens([])
+  }
+
   const data = initialData
   const effectiveLedgerTimestamp = ledgerTimestampQuery || null
   const historicalTimestampForBanner = effectiveLedgerTimestamp || data?.ledgerInfo?.ledgerTimestamp || null
@@ -1071,31 +1094,20 @@ export default function Account2({
     if (!data?.address || !data?.ledgerInfo?.activated) {
       setObjectsLoading(false)
       setObjectsError(null)
-      setTokens([])
-      setOwnedNfts([])
-      setSoldNfts([])
-      setMintedNfts([])
-      setBurnedNfts([])
-      setOwnedNftIds([])
-      setReceivedChecks([])
-      setSentChecks([])
-      setSelfEscrows([])
-      setReceivedEscrows([])
-      setSentEscrows([])
-      setIncomingPaychannels([])
-      setOutgoingPaychannels([])
-      setDexOrders([])
-      setDepositPreauthAccounts([])
-      setHookList([])
-      setHeldMpts([])
-      setIssuedMpts([])
-      setUriTokens([])
+      resetAccountObjectCollections()
+      setSoldNftsLoading(false)
+      setMintedNftsLoading(false)
+      setBurnedNftsLoading(false)
       return
     }
 
     const fetchTokens = async () => {
       setObjectsLoading(true)
       setObjectsError(null)
+      resetAccountObjectCollections()
+      setSoldNftsLoading(false)
+      setMintedNftsLoading(false)
+      setBurnedNftsLoading(false)
 
       try {
         const objectsUrl =
@@ -1273,28 +1285,10 @@ export default function Account2({
       } catch (error) {
         console.error('Failed to fetch tokens:', error)
         setObjectsError(error?.message || 'Failed to load account objects')
-        setTokens([])
-        setOwnedNfts([])
-        setOwnedNftIds([])
-        setSoldNfts([])
+        resetAccountObjectCollections()
         setSoldNftsLoading(false)
-        setMintedNfts([])
         setMintedNftsLoading(false)
-        setBurnedNfts([])
         setBurnedNftsLoading(false)
-        setReceivedChecks([])
-        setSentChecks([])
-        setReceivedEscrows([])
-        setSentEscrows([])
-        setSelfEscrows([])
-        setIncomingPaychannels([])
-        setOutgoingPaychannels([])
-        setDexOrders([])
-        setDepositPreauthAccounts([])
-        setHookList([])
-        setHeldMpts([])
-        setIssuedMpts([])
-        setUriTokens([])
       } finally {
         setObjectsLoading(false)
       }
@@ -1308,6 +1302,7 @@ export default function Account2({
     if (!data?.address) return
 
     const fetchIssuedTokens = async () => {
+      setIssuedTokens([])
       setIssuedTokensLoading(true)
       setIssuedTokensError(null)
 
