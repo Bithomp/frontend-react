@@ -710,6 +710,7 @@ export default function Account2({
     !hasDisplayIdentity &&
     isOwnAccount &&
     hasPositiveNativeAvailableBalance &&
+    !devNet &&
     !isBlackholed &&
     !isDeletedAccount &&
     !isNotActivatedAccount
