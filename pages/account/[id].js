@@ -1475,16 +1475,23 @@ export default function Account2({
           setSoldNftsLoading(false)
         }
 
-        if (Number(data?.ledgerInfo?.mintedNFTokens || 0) > 0) {
+        const shouldFetchMintedNfts = xahauNetwork
+          ? Boolean(data?.ledgerInfo?.flags?.uriTokenIssuer)
+          : Number(data?.ledgerInfo?.mintedNFTokens || 0) > 0
+
+        if (shouldFetchMintedNfts) {
           try {
             setMintedNftsLoading(true)
+            const mintedNftResource = xahauNetwork ? 'uritokens' : 'nfts'
             const mintedNftsUrl =
-              `v2/nfts?issuer=${data.address}&order=mintedNew&includeDeleted=true&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}` +
+              `v2/${mintedNftResource}?issuer=${data.address}&order=mintedNew&includeDeleted=true&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}` +
               (effectiveLedgerTimestamp
                 ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
                 : '')
             const mintedResponse = await axios.get(mintedNftsUrl)
-            const mintedNftsList = Array.isArray(mintedResponse?.data?.nfts) ? mintedResponse.data.nfts : []
+            const mintedNftsList = Array.isArray(mintedResponse?.data?.[mintedNftResource])
+              ? mintedResponse.data[mintedNftResource]
+              : []
             setMintedNfts(mintedNftsList.slice(0, NFT_FETCH_LIMIT))
           } catch {
             setMintedNfts([])
