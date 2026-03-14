@@ -699,9 +699,19 @@ export default function Account2({
   const accountDisplayService = data?.service?.name
   const accountDisplayUsername = !accountDisplayService ? data?.username : null
   const hasDisplayIdentity = !!accountDisplayService || !!accountDisplayUsername
+  const accountAmmId = data?.ledgerInfo?.ammID
   const isOwnAccount = data?.address === account?.address
-  const accountDisplayName =
+  const accountDisplayName = accountAmmId ? (
+    <>
+      <span>AMM</span>{' '}
+      <Link href={`/amm/${accountAmmId}`} className="inline-link-icon tooltip" aria-label="Open AMM page">
+        <LinkIcon />
+        <span className="tooltiptext no-brake">AMM page</span>
+      </Link>
+    </>
+  ) : (
     userOrServiceName({ service: accountDisplayService, username: accountDisplayUsername }) || 'No username'
+  )
   const hasPositiveNativeAvailableBalance = Number(balanceList?.available?.native || 0) > 0
   const shouldShowUsernameRegisterButton =
     !hasDisplayIdentity &&
@@ -2365,7 +2375,7 @@ export default function Account2({
               <h2 className="account-name">
                 <span className="account-username">
                   {accountDisplayName}
-                  {!!accountDisplayUsername && <CopyButton text={accountDisplayUsername} />}
+                  {!accountAmmId && !!accountDisplayUsername && <CopyButton text={accountDisplayUsername} />}
                 </span>
               </h2>
               <div style={{ fontSize: '13px' }}>{accountStatusNode}</div>
