@@ -5962,7 +5962,7 @@ export default function Account2({
                                     <div className="detail-row">
                                       <span>DID ID:</span>
                                       <span className="copy-inline id-inline">
-                                        <span className="address-text ellipsis-text" title={didId}>
+                                        <span className="address-text" title={didId}>
                                           {didShortId}
                                         </span>
                                         <span onClick={(event) => event.stopPropagation()}>
@@ -5975,7 +5975,7 @@ export default function Account2({
                                   {isDidDeleteTx && !!didOriginalUri && (
                                     <div className="detail-row">
                                       <span>Removed URI:</span>
-                                      <span className="address-text ellipsis-text" title={didOriginalUri}>
+                                      <span className="brake" title={didOriginalUri}>
                                         {didOriginalUri}
                                       </span>
                                     </div>
@@ -5984,7 +5984,7 @@ export default function Account2({
                                   {isDidSetTx && didStatus === 'modified' && !!didOriginalUri && (
                                     <div className="detail-row">
                                       <span>Previous URI:</span>
-                                      <span className="address-text ellipsis-text" title={didOriginalUri}>
+                                      <span className="brake" title={didOriginalUri}>
                                         {didOriginalUri}
                                       </span>
                                     </div>
@@ -5993,7 +5993,7 @@ export default function Account2({
                                   {isDidSetTx && didStatus === 'modified' && !!didUpdatedUri && (
                                     <div className="detail-row">
                                       <span>Updated URI:</span>
-                                      <span className="address-text ellipsis-text" title={didUpdatedUri}>
+                                      <span className="brake" title={didUpdatedUri}>
                                         {didUpdatedUri}
                                       </span>
                                     </div>
@@ -6002,10 +6002,7 @@ export default function Account2({
                                   {isDidSetTx && didStatus !== 'modified' && !!(didUpdatedUri || didOriginalUri) && (
                                     <div className="detail-row">
                                       <span>URI:</span>
-                                      <span
-                                        className="address-text ellipsis-text"
-                                        title={didUpdatedUri || didOriginalUri}
-                                      >
+                                      <span className="brake" title={didUpdatedUri || didOriginalUri}>
                                         {didUpdatedUri || didOriginalUri}
                                       </span>
                                     </div>
@@ -10278,14 +10275,6 @@ export default function Account2({
           overflow-wrap: anywhere;
           word-break: break-all;
           text-align: right;
-        }
-
-        .ellipsis-text {
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          overflow-wrap: normal;
-          word-break: normal;
         }
 
         .change-limit-link {
