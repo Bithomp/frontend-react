@@ -338,7 +338,6 @@ export default function Account2({
   const [hookList, setHookList] = useState([])
   const [heldMpts, setHeldMpts] = useState([])
   const [issuedMpts, setIssuedMpts] = useState([])
-  const [uriTokens, setUriTokens] = useState([])
   const [checksTab, setChecksTab] = useState('received')
   const [escrowsTab, setEscrowsTab] = useState('received')
   const [paychannelsTab, setPaychannelsTab] = useState('incoming')
@@ -357,10 +356,8 @@ export default function Account2({
   const [showHooksDetails, setShowHooksDetails] = useState(false)
   const [showCronDetails, setShowCronDetails] = useState(false)
   const [expandedDidCard, setExpandedDidCard] = useState(false)
-  const [uriTab, setUriTab] = useState('owned')
   const [expandedHeldMptKey, setExpandedHeldMptKey] = useState(null)
   const [expandedIssuedMptKey, setExpandedIssuedMptKey] = useState(null)
-  const [expandedUriTokenKey, setExpandedUriTokenKey] = useState(null)
   const [expandedTransactionKey, setExpandedTransactionKey] = useState(null)
   const [recentTransactions, setRecentTransactions] = useState([])
   const [transactionsLoading, setTransactionsLoading] = useState(false)
@@ -413,7 +410,6 @@ export default function Account2({
     setHookList([])
     setHeldMpts([])
     setIssuedMpts([])
-    setUriTokens([])
   }
 
   const data = initialData
@@ -936,9 +932,6 @@ export default function Account2({
   const hasCronData = !!data?.ledgerInfo?.cron
   const hasHeldMpts = heldMpts.length > 0
   const hasIssuedMpts = issuedMpts.length > 0
-  const hasUriTokens = uriTokens.length > 0
-  const hasMintedUriTokens = uriTokens.some((token) => token?.Issuer === data?.address)
-  const activeUriTokens = uriTab === 'minted' ? uriTokens.filter((token) => token?.Issuer === data?.address) : uriTokens
   const hasIssuedTokensSection = issuedTokensLoading || !!issuedTokensError || issuedTokens.length > 0
   const hasActivatedAccountsSection =
     !effectiveLedgerTimestamp &&
@@ -1236,8 +1229,6 @@ export default function Account2({
     setExpandedDidCard(false)
     setExpandedHeldMptKey(null)
     setExpandedIssuedMptKey(null)
-    setExpandedUriTokenKey(null)
-    setUriTab('owned')
   }, [data?.address, effectiveLedgerTimestamp])
 
   useEffect(() => {
@@ -1436,9 +1427,6 @@ export default function Account2({
         setHeldMpts(accountHeldMpts)
         setIssuedMpts(accountIssuedMpts)
 
-        const accountUriTokens = accountObjects.filter((node) => node.LedgerEntryType === 'URIToken') || []
-        setUriTokens(accountUriTokens)
-
         const accountObjectWithDexOrders =
           accountObjects
             .filter((node) => node.LedgerEntryType === 'Offer' && node.Account === data.address)
@@ -1453,12 +1441,15 @@ export default function Account2({
 
         setOwnedNftIds(nftIds)
 
-        if (nftIds.length > 0 && !effectiveLedgerTimestamp) {
+        const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
+
+        if (!effectiveLedgerTimestamp && (nftIds.length > 0 || xahauNetwork)) {
           try {
-            const nftPreviewUrl = `v2/nfts?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}`
+            const nftPreviewUrl = `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}`
 
             const nftResponse = await axios.get(nftPreviewUrl)
-            setOwnedNfts(Array.isArray(nftResponse?.data?.nfts) ? nftResponse.data.nfts.slice(0, NFT_FETCH_LIMIT) : [])
+            const ownedNftsList = Array.isArray(nftResponse?.data?.[nftResource]) ? nftResponse.data[nftResource] : []
+            setOwnedNfts(ownedNftsList.slice(0, NFT_FETCH_LIMIT))
           } catch {
             setOwnedNfts([])
           }
@@ -1488,14 +1479,13 @@ export default function Account2({
           try {
             setMintedNftsLoading(true)
             const mintedNftsUrl =
-              `v2/nfts?list=nfts&issuer=${data.address}&order=mintedNew&includeDeleted=true&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}` +
+              `v2/nfts?issuer=${data.address}&order=mintedNew&includeDeleted=true&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}` +
               (effectiveLedgerTimestamp
                 ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
                 : '')
             const mintedResponse = await axios.get(mintedNftsUrl)
-            setMintedNfts(
-              Array.isArray(mintedResponse?.data?.nfts) ? mintedResponse.data.nfts.slice(0, NFT_FETCH_LIMIT) : []
-            )
+            const mintedNftsList = Array.isArray(mintedResponse?.data?.nfts) ? mintedResponse.data.nfts : []
+            setMintedNfts(mintedNftsList.slice(0, NFT_FETCH_LIMIT))
           } catch {
             setMintedNfts([])
           } finally {
@@ -1510,14 +1500,13 @@ export default function Account2({
           try {
             setBurnedNftsLoading(true)
             const burnedNftsUrl =
-              `v2/nfts?list=nfts&issuer=${data.address}&order=mintedNew&includeDeleted=true&deletedAt=all&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}` +
+              `v2/nfts?issuer=${data.address}&order=mintedNew&includeDeleted=true&deletedAt=all&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}` +
               (effectiveLedgerTimestamp
                 ? `&ledgerTimestamp=${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
                 : '')
             const burnedResponse = await axios.get(burnedNftsUrl)
-            setBurnedNfts(
-              Array.isArray(burnedResponse?.data?.nfts) ? burnedResponse.data.nfts.slice(0, NFT_FETCH_LIMIT) : []
-            )
+            const burnedNftsList = Array.isArray(burnedResponse?.data?.nfts) ? burnedResponse.data.nfts : []
+            setBurnedNfts(burnedNftsList.slice(0, NFT_FETCH_LIMIT))
           } catch {
             setBurnedNfts([])
           } finally {
@@ -3030,7 +3019,7 @@ export default function Account2({
 
                       {data?.ledgerInfo?.flags?.uriTokenIssuer && (
                         <div className="detail-row issuer-detail-row">
-                          <span>URI token issuer:</span>
+                          <span>NFT issuer:</span>
                           <span className="green">enabled</span>
                         </div>
                       )}
@@ -4047,131 +4036,6 @@ export default function Account2({
               </>
             )}
 
-            {hasUriTokens && (
-              <>
-                <div className="section-header-row nft-section-header-row">
-                  <div className="section-title nft-section-title">NFTs</div>
-                </div>
-
-                <div className="nft-tab-row nft-tab-row-outside">
-                  <div className="nft-tab-switch">
-                    <button
-                      type="button"
-                      className={`nft-tab-btn ${uriTab === 'owned' ? 'active' : ''}`}
-                      onClick={() => setUriTab('owned')}
-                    >
-                      Owned ({uriTokens.length})
-                    </button>
-                    {hasMintedUriTokens && (
-                      <button
-                        type="button"
-                        className={`nft-tab-btn ${uriTab === 'minted' ? 'active' : ''}`}
-                        onClick={() => setUriTab('minted')}
-                      >
-                        Minted ({uriTokens.filter((token) => token?.Issuer === data?.address).length})
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                <div className="cards-list">
-                  {activeUriTokens.map((uriToken, index) => {
-                    const tokenKey = `${uriToken?.index || 'uri-token'}-${uriTab}-${index}`
-                    const isExpanded = expandedUriTokenKey === tokenKey
-                    const uriTokenId = uriToken?.index
-                    const isOnSale = !!(uriToken?.Amount || uriToken?.Destination)
-
-                    return (
-                      <div
-                        key={tokenKey}
-                        className={`asset-item token-asset-item ${isExpanded ? 'expanded' : ''}`}
-                        onClick={() => setExpandedUriTokenKey(isExpanded ? null : tokenKey)}
-                      >
-                        <div className="asset-main">
-                          <div className="asset-logo">
-                            <div className="nft-asset-info">
-                              <div className="nft-asset-text">
-                                <div className="asset-summary-title">URI token {index + 1}</div>
-                                <div className="asset-fiat">{uriTokenId ? shortHash(uriTokenId) : '-'}</div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="asset-value">
-                            <div className="asset-fiat">{isOnSale ? 'On offer' : 'Owned'}</div>
-                          </div>
-                        </div>
-
-                        {isExpanded && (
-                          <div className="asset-details">
-                            <div className="detail-row">
-                              <span>Token ID:</span>
-                              <span className="copy-inline">
-                                <span>{uriTokenId ? shortHash(uriTokenId) : '-'}</span>
-                                {!!uriTokenId && (
-                                  <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={uriTokenId} />
-                                  </span>
-                                )}
-                              </span>
-                            </div>
-
-                            {!!uriToken?.Issuer && (
-                              <div className="detail-row">
-                                <span>Issuer:</span>
-                                <span className="copy-inline">
-                                  <AddressWithIconInline
-                                    data={{ address: uriToken.Issuer }}
-                                    options={{ short: 6, showAddress: true }}
-                                  />
-                                  <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={uriToken.Issuer} />
-                                  </span>
-                                </span>
-                              </div>
-                            )}
-
-                            {!!uriToken?.Destination && (
-                              <div className="detail-row">
-                                <span>Destination:</span>
-                                <span className="copy-inline">
-                                  <AddressWithIconInline
-                                    data={{ address: uriToken.Destination }}
-                                    options={{ short: 6, showAddress: true }}
-                                  />
-                                  <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={uriToken.Destination} />
-                                  </span>
-                                </span>
-                              </div>
-                            )}
-
-                            {!!uriToken?.Amount && (
-                              <div className="detail-row">
-                                <span>Amount:</span>
-                                <span>{amountFormat(uriToken.Amount, { icon: true, precise: 'nice' })}</span>
-                              </div>
-                            )}
-
-                            {!!uriToken?.URI && (
-                              <div className="detail-row">
-                                <span>URI:</span>
-                                <span className="copy-inline">
-                                  <span className="address-text">{String(uriToken.URI)}</span>
-                                  <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={String(uriToken.URI)} />
-                                  </span>
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              </>
-            )}
-
             {hasAnyNftSectionData && (
               <>
                 <div className="section-header-row nft-section-header-row">
@@ -4245,11 +4109,7 @@ export default function Account2({
                             }
                           }
 
-                          const shortNftId =
-                            typeof nftId === 'string' && nftId.length > 12
-                              ? `${nftId.slice(0, 6)}...${nftId.slice(-6)}`
-                              : nftId
-                          const shortTokenId = shortHash(nftId)
+                          const shortNftId = shortHash(nftId)
                           const nftDisplayData = nft?.nftoken || nft
                           const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortNftId
                           const nftIssuer =
@@ -4263,8 +4123,10 @@ export default function Account2({
                           const nftIsTransferable = nftTransferableFlag !== false
                           const isSignedInNftOwner = !!account?.address && !!nftOwner && account.address === nftOwner
                           const isSignedInNftIssuer = !!account?.address && !!nftIssuer && account.address === nftIssuer
-                          const shouldShowMakeBuyOfferButton = nftTab === 'owned' && !!nftOwner && !isSignedInNftOwner
+                          const shouldShowMakeBuyOfferButton =
+                            !xahauNetwork && nftTab === 'owned' && !!nftOwner && !isSignedInNftOwner
                           const shouldShowBurnNftButton =
+                            !xahauNetwork &&
                             nftTab === 'owned' &&
                             !!nftId &&
                             !nftDeleted &&
@@ -4274,14 +4136,6 @@ export default function Account2({
                               (!!nftIssuer && account.address === nftIssuer))
                           const burnNftRequest = (() => {
                             if (!shouldShowBurnNftButton) return null
-
-                            if (nft?.type === 'xls35') {
-                              return {
-                                Account: nftOwner || account.address,
-                                TransactionType: 'URITokenBurn',
-                                URITokenID: nftId
-                              }
-                            }
 
                             if (isSignedInNftOwner) {
                               return {
@@ -4309,8 +4163,11 @@ export default function Account2({
                             !!nftOwner &&
                             !nftDeleted &&
                             (nftIsTransferable || isSignedInNftIssuer)
-                          const disabledBuyOfferTooltip =
-                            !canMakeBuyOffer && !nftIsTransferable && !isSignedInNftIssuer ? 'Non-transferable NFT' : ''
+                          const disabledBuyOfferTooltip = (() => {
+                            if (canMakeBuyOffer) return ''
+                            if (!nftIsTransferable && !isSignedInNftIssuer) return 'Non-transferable NFT'
+                            return ''
+                          })()
                           const soldAt = nft?.acceptedAt || nft?.soldAt
                           const mintedAt = nft?.issuedAt
                           const burnedAt = nft?.deletedAt
@@ -4409,7 +4266,7 @@ export default function Account2({
                                     <span>NFT:</span>
                                     <span className="copy-inline">
                                       <Link href={`/nft/${nftId}`} onClick={(event) => event.stopPropagation()}>
-                                        {shortTokenId}
+                                        {shortNftId}
                                       </Link>
                                       <span onClick={(event) => event.stopPropagation()}>
                                         <CopyButton text={nftId} />
@@ -7592,7 +7449,7 @@ export default function Account2({
                                     </div>
                                   )}
 
-                                  {isPrivateNftOfferTab && (
+                                  {isPrivateNftOfferTab && !xahauNetwork && (
                                     <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                                       <span className={disabledAcceptPrivateNftOfferTooltip ? 'tooltip' : ''}>
                                         <button
@@ -7626,7 +7483,7 @@ export default function Account2({
                                     </div>
                                   )}
 
-                                  {isCreatedNftOfferTab && (
+                                  {isCreatedNftOfferTab && !xahauNetwork && (
                                     <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                                       <span className={disabledCancelCreatedNftOfferTooltip ? 'tooltip' : ''}>
                                         <button
@@ -7656,7 +7513,7 @@ export default function Account2({
                                     </div>
                                   )}
 
-                                  {isOwnedNftOfferTab && (
+                                  {isOwnedNftOfferTab && !xahauNetwork && (
                                     <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                                       <span className={disabledAcceptOwnedNftOfferTooltip ? 'tooltip' : ''}>
                                         <button
