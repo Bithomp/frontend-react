@@ -1487,18 +1487,32 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     }
   }
 
+  const appendMagnitudeSuffix = (formattedValue, magnitudeSuffix, currencyCode) => {
+    if (!formattedValue) return formattedValue
+
+    const code = currencyCode?.toUpperCase?.()
+    if (code) {
+      const trailingCodeRegex = new RegExp(`\\s*${code}$`)
+      if (trailingCodeRegex.test(formattedValue)) {
+        return formattedValue.replace(trailingCodeRegex, `${magnitudeSuffix} ${code}`)
+      }
+    }
+
+    return formattedValue + magnitudeSuffix
+  }
+
   let output = ''
   if (n > 999999999999999) {
     // For numbers > 999 trillion, use scientific notation to avoid huge strings
     output = n.toExponential(2)
   } else if (n > 999999999999) {
-    output = niceNumber(n / 1000000000000, largeNumberFractionDigits, currency) + 'T'
+    output = appendMagnitudeSuffix(niceNumber(n / 1000000000000, largeNumberFractionDigits, currency), 'T', currency)
   } else if (n > 999999999) {
-    output = niceNumber(n / 1000000000, largeNumberFractionDigits, currency) + 'B'
+    output = appendMagnitudeSuffix(niceNumber(n / 1000000000, largeNumberFractionDigits, currency), 'B', currency)
   } else if (n > 999999) {
-    output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M'
+    output = appendMagnitudeSuffix(niceNumber(n / 1000000, largeNumberFractionDigits, currency), 'M', currency)
   } else if (n > 9999) {
-    output = niceNumber(n / 1000, largeNumberFractionDigits, currency) + 'K'
+    output = appendMagnitudeSuffix(niceNumber(n / 1000, largeNumberFractionDigits, currency), 'K', currency)
   } else if (n > 999) {
     output = niceNumber(Math.floor(n), 0, currency)
   } else if (n === 0) {
