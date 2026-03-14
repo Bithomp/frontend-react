@@ -542,6 +542,7 @@ export const dappBySourceTag = (sourceTag) => {
     75437338: 'NGNC',
     75856879: 'Kudos Setler',
     77777777: 'Giving Universe',
+    79455288: 'QuantZilla Developer Console',
     80008000: 'Orchestra Finance',
     81818181: 'Cornermarket',
     83788309: 'OpenEden',

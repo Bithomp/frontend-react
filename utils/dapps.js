@@ -24,6 +24,13 @@ export const DAPPS_META = [
       x: 'first_ledger',
       logo: 'firstledger.png'
     },
+    79455288: {
+      name: 'QuantZilla Developer Console',
+      url: 'api.quantzilla.online/bp',
+      x: 'QuantZillaCoin',
+      telegram: 'QuantZillaCoinValidation',
+      logo: 'quantzilla.png'
+    },
     20221212: {
       name: 'XPMarket',
       url: 'xpmarket.com',
