@@ -288,7 +288,11 @@ export const AddressWithIconInline = ({ data, name = 'address', options }) => {
           />
         </div>
       </Link>
-      {addressUsernameOrServiceLink(data, name, options)}
+      {options?.showAddress ? (
+        <Link href={'/account/' + address}>{shortAddress(address, options?.short || 6)}</Link>
+      ) : (
+        addressUsernameOrServiceLink(data, name, options)
+      )}
     </span>
   )
 }

@@ -2752,7 +2752,6 @@ export default function Account2({
                           <span className="copy-inline">
                             <AddressWithIconInline
                               data={{ address: node?.Authorize, addressDetails: node?.authorizeDetails || {} }}
-                              name="address"
                               options={{ short: 6 }}
                             />
                             {node?.Authorize && (
@@ -4030,12 +4029,8 @@ export default function Account2({
                                 <span>Issuer:</span>
                                 <span className="copy-inline">
                                   <AddressWithIconInline
-                                    data={{
-                                      address: mptNode.mptokenCurrencyDetails.account,
-                                      addressDetails: mptNode?.mptokenCurrencyDetails?.accountDetails || {}
-                                    }}
-                                    name="address"
-                                    options={{ short: 6 }}
+                                    data={{ address: mptNode.mptokenCurrencyDetails.account }}
+                                    options={{ short: 6, showAddress: true }}
                                   />
                                   <span onClick={(event) => event.stopPropagation()}>
                                     <CopyButton text={mptNode.mptokenCurrencyDetails.account} />
@@ -4125,12 +4120,8 @@ export default function Account2({
                                 <span>Issuer:</span>
                                 <span className="copy-inline">
                                   <AddressWithIconInline
-                                    data={{
-                                      address: uriToken.Issuer,
-                                      addressDetails: uriToken?.issuerDetails || {}
-                                    }}
-                                    name="address"
-                                    options={{ short: 6 }}
+                                    data={{ address: uriToken.Issuer }}
+                                    options={{ short: 6, showAddress: true }}
                                   />
                                   <span onClick={(event) => event.stopPropagation()}>
                                     <CopyButton text={uriToken.Issuer} />
@@ -4144,12 +4135,8 @@ export default function Account2({
                                 <span>Destination:</span>
                                 <span className="copy-inline">
                                   <AddressWithIconInline
-                                    data={{
-                                      address: uriToken.Destination,
-                                      addressDetails: uriToken?.destinationDetails || {}
-                                    }}
-                                    name="address"
-                                    options={{ short: 6 }}
+                                    data={{ address: uriToken.Destination }}
+                                    options={{ short: 6, showAddress: true }}
                                   />
                                   <span onClick={(event) => event.stopPropagation()}>
                                     <CopyButton text={uriToken.Destination} />
@@ -4436,8 +4423,7 @@ export default function Account2({
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <AddressWithIconInline
                                             data={{ address: nftIssuer }}
-                                            name="address"
-                                            options={{ short: 6 }}
+                                            options={{ short: 6, showAddress: true }}
                                           />
                                         </span>
                                         <span onClick={(event) => event.stopPropagation()}>
@@ -5224,7 +5210,6 @@ export default function Account2({
                                   address: accountSetCollapsedChange.address,
                                   addressDetails: {}
                                 }}
-                                name="address"
                                 options={{ short: 6 }}
                               />
                             </>
@@ -5462,7 +5447,6 @@ export default function Account2({
                                             address: brokerAddress,
                                             addressDetails: txdata?.specification?.source?.addressDetails || {}
                                           }}
-                                          name="address"
                                           options={{ short: 6 }}
                                         />
                                       </span>
@@ -5517,7 +5501,6 @@ export default function Account2({
                                           address: resolvedCounterpartyAddress,
                                           addressDetails: resolvedCounterpartyDetails || {}
                                         }}
-                                        name="address"
                                         options={{ short: 6 }}
                                       />
                                     </span>
@@ -5660,15 +5643,12 @@ export default function Account2({
                                 <div className="detail-row">
                                   <span>{directionLabel}:</span>
                                   <span className="copy-inline">
-                                    <span className="address-text">{resolvedCounterpartyAddress}</span>
-                                    <Link
-                                      href={`/account/${resolvedCounterpartyAddress}`}
-                                      className="inline-link-icon tooltip"
-                                      onClick={(event) => event.stopPropagation()}
-                                    >
-                                      <LinkIcon />
-                                      <span className="tooltiptext no-brake">Account page</span>
-                                    </Link>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <AddressWithIconInline
+                                        data={{ address: resolvedCounterpartyAddress }}
+                                        options={{ short: 6, showAddress: true }}
+                                      />
+                                    </span>
                                     <span onClick={(event) => event.stopPropagation()}>
                                       <CopyButton text={resolvedCounterpartyAddress} />
                                     </span>
@@ -5680,15 +5660,12 @@ export default function Account2({
                                 <div className="detail-row">
                                   <span>By broker:</span>
                                   <span className="copy-inline">
-                                    <span className="address-text">{brokerAddress}</span>
-                                    <Link
-                                      href={`/account/${brokerAddress}`}
-                                      className="inline-link-icon tooltip"
-                                      onClick={(event) => event.stopPropagation()}
-                                    >
-                                      <LinkIcon />
-                                      <span className="tooltiptext no-brake">Account page</span>
-                                    </Link>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <AddressWithIconInline
+                                        data={{ address: brokerAddress }}
+                                        options={{ short: 6, showAddress: true }}
+                                      />
+                                    </span>
                                     <span onClick={(event) => event.stopPropagation()}>
                                       <CopyButton text={brokerAddress} />
                                     </span>
@@ -5724,15 +5701,12 @@ export default function Account2({
                                     <div className="detail-row">
                                       <span>Issuer:</span>
                                       <span className="copy-inline">
-                                        <span className="address-text">{trustSetToken.issuer}</span>
-                                        <Link
-                                          href={`/account/${trustSetToken.issuer}`}
-                                          className="inline-link-icon tooltip"
-                                          onClick={(event) => event.stopPropagation()}
-                                        >
-                                          <LinkIcon />
-                                          <span className="tooltiptext no-brake">Issuer account page</span>
-                                        </Link>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <AddressWithIconInline
+                                            data={{ address: trustSetToken.issuer }}
+                                            options={{ short: 6, showAddress: true }}
+                                          />
+                                        </span>
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <CopyButton text={trustSetToken.issuer} />
                                         </span>
@@ -5910,15 +5884,12 @@ export default function Account2({
                                       <span>NFT minter:</span>
                                       {accountSetSpec?.nftokenMinter ? (
                                         <span className="copy-inline">
-                                          <span className="address-text">{accountSetSpec.nftokenMinter}</span>
-                                          <Link
-                                            href={`/account/${accountSetSpec.nftokenMinter}`}
-                                            className="inline-link-icon tooltip"
-                                            onClick={(event) => event.stopPropagation()}
-                                          >
-                                            <LinkIcon />
-                                            <span className="tooltiptext no-brake">Account page</span>
-                                          </Link>
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <AddressWithIconInline
+                                              data={{ address: accountSetSpec.nftokenMinter }}
+                                              options={{ short: 6, showAddress: true }}
+                                            />
+                                          </span>
                                           <span onClick={(event) => event.stopPropagation()}>
                                             <CopyButton text={accountSetSpec.nftokenMinter} />
                                           </span>
@@ -6860,8 +6831,7 @@ export default function Account2({
                                     {counterpartAddress ? (
                                       <AddressWithIconInline
                                         data={{ address: counterpartAddress }}
-                                        name="address"
-                                        options={{ short: 6 }}
+                                        options={{ short: 6, showAddress: true }}
                                       />
                                     ) : (
                                       '-'
@@ -7142,15 +7112,12 @@ export default function Account2({
                                     <span className="copy-inline">
                                       {counterpartAddress ? (
                                         <>
-                                          <span className="address-text">{counterpartAddress}</span>
-                                          <Link
-                                            href={`/account/${counterpartAddress}`}
-                                            className="inline-link-icon tooltip"
-                                            onClick={(event) => event.stopPropagation()}
-                                          >
-                                            <LinkIcon />
-                                            <span className="tooltiptext no-brake">Account page</span>
-                                          </Link>
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <AddressWithIconInline
+                                              data={{ address: counterpartAddress }}
+                                              options={{ short: 6, showAddress: true }}
+                                            />
+                                          </span>
                                           <span onClick={(event) => event.stopPropagation()}>
                                             <CopyButton text={counterpartAddress} />
                                           </span>
@@ -7387,12 +7354,6 @@ export default function Account2({
                           const shortOfferId = offerIndex ? shortHash(offerIndex) : null
                           const ownerAddress = offer?.owner || offer?.account
                           const destinationAddress = offer?.destination
-                          const ownerInlineData = ownerAddress
-                            ? { owner: ownerAddress, ownerDetails: offer?.ownerDetails || offer?.accountDetails }
-                            : null
-                          const destinationInlineData = destinationAddress
-                            ? { destination: destinationAddress, destinationDetails: offer?.destinationDetails }
-                            : null
                           const expirationRelative = offer?.expiration
                             ? timeFromNow(offer.expiration, i18n, 'ripple')
                             : null
@@ -7602,9 +7563,9 @@ export default function Account2({
                                       <span className="copy-inline">
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <AddressWithIconInline
-                                            data={ownerInlineData}
+                                            data={{ owner: ownerAddress }}
                                             name="owner"
-                                            options={{ short: 6 }}
+                                            options={{ short: 6, showAddress: true }}
                                           />
                                         </span>
                                         <span onClick={(event) => event.stopPropagation()}>
@@ -7619,9 +7580,9 @@ export default function Account2({
                                       <span className="copy-inline">
                                         <span onClick={(event) => event.stopPropagation()}>
                                           <AddressWithIconInline
-                                            data={destinationInlineData}
+                                            data={{ destination: destinationAddress }}
                                             name="destination"
-                                            options={{ short: 6 }}
+                                            options={{ short: 6, showAddress: true }}
                                           />
                                         </span>
                                         <span onClick={(event) => event.stopPropagation()}>
@@ -7873,24 +7834,21 @@ export default function Account2({
                               <span>
                                 {isOutgoingPaychannel && counterpartAddress ? (
                                   <span className="copy-inline">
-                                    <span className="address-text">{counterpartAddress}</span>
-                                    <Link
-                                      href={`/account/${counterpartAddress}`}
-                                      className="inline-link-icon tooltip"
-                                      onClick={(event) => event.stopPropagation()}
-                                    >
-                                      <LinkIcon />
-                                      <span className="tooltiptext no-brake">Account page</span>
-                                    </Link>
+                                    <span onClick={(event) => event.stopPropagation()}>
+                                      <AddressWithIconInline
+                                        data={{ address: counterpartAddress }}
+                                        options={{ short: 6, showAddress: true }}
+                                      />
+                                    </span>
                                     <span onClick={(event) => event.stopPropagation()}>
                                       <CopyButton text={counterpartAddress} />
                                     </span>
                                   </span>
                                 ) : counterpartAddress ? (
                                   <AddressWithIconInline
-                                    data={counterpartData}
+                                    data={{ [counterpartName]: counterpartAddress }}
                                     name={counterpartName}
-                                    options={{ short: 6 }}
+                                    options={{ short: 6, showAddress: true }}
                                   />
                                 ) : (
                                   '-'
@@ -8089,8 +8047,7 @@ export default function Account2({
                                     <span className="copy-inline">
                                       <AddressWithIconInline
                                         data={{ address: child.address }}
-                                        name="address"
-                                        options={{ short: 6 }}
+                                        options={{ short: 6, showAddress: true }}
                                       />
                                       <CopyButton text={child.address} />
                                     </span>
