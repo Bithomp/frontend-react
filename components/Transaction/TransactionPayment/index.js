@@ -28,6 +28,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
   const isConvertion = isConvertionTx(specification)
   const isSuccessful = outcome?.result == 'tesSUCCESS'
   const iouPayment = isIOUpayment(data)
+  const isInsufFee = outcome?.result === 'tecINSUFF_FEE'
   //don't show sourcetag if it's the tag of a known dapp
   const dapp = dappBySourceTag(specification.source.tag)
 
@@ -154,7 +155,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           )}
         </>
       )}
-      {(isConvertion || iouPayment) && sourceBalanceChangesList?.length > 0 && (
+      {(isConvertion || iouPayment) && !isInsufFee && sourceBalanceChangesList?.length > 0 && (
         <>
           <tr>
             <TData>

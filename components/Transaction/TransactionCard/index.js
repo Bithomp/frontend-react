@@ -16,7 +16,7 @@ import {
   shortHash,
   timeFromNow
 } from '../../../utils/format'
-import { decodeCTID, isValidCTID, networksIds, server, xahauNetwork } from '../../../utils'
+import { decodeCTID, isValidCTID, nativeCurrency, networksIds, server, xahauNetwork } from '../../../utils'
 import { dappBySourceTag, errorCodeDescription, memoNode, shortErrorCode } from '../../../utils/transaction'
 import { add } from '../../../utils/calc'
 import ExchangesTable from './ExchangeTable'
@@ -106,6 +106,17 @@ export const TransactionCard = ({
   const txLink = server + '/tx/' + (tx?.ctid || tx?.hash)
 
   const filteredBalanceChanges = outcome?.balanceChanges?.filter((change) => !noBalanceChange(change))
+
+  const isInsufFee = outcome?.result === 'tecINSUFF_FEE'
+  const actualBurnedFeeAmount = (() => {
+    if (!isInsufFee || !tx?.Account) return null
+    const senderChange = outcome?.balanceChanges?.find((c) => c.address === tx.Account)
+    const nativeChange = senderChange?.balanceChanges?.find((c) => c.currency === nativeCurrency)
+    if (!nativeChange?.value) return null
+    const absValue = Math.abs(parseFloat(nativeChange.value))
+    if (!absValue) return null
+    return { currency: nativeCurrency, value: String(absValue) }
+  })()
 
   let emitTX = null
   if (xahauNetwork) {
@@ -222,12 +233,19 @@ export const TransactionCard = ({
                   <tr>
                     <TData>Ledger fee</TData>
                     <TData>
-                      <span className="bold">{amountFormat(tx?.Fee)}</span>
+                      <span className="bold">
+                        {amountFormat(isInsufFee && actualBurnedFeeAmount ? actualBurnedFeeAmount : tx?.Fee)}
+                      </span>
                       {nativeCurrencyToFiat({
-                        amount: tx?.Fee,
+                        amount: isInsufFee && actualBurnedFeeAmount ? actualBurnedFeeAmount : tx?.Fee,
                         selectedCurrency,
                         fiatRate: pageFiatRate
                       })}
+                      {isInsufFee && tx?.Fee && (
+                        <div className="orange" style={{ fontSize: '0.9em', marginTop: '2px' }}>
+                          It was specified to spend {amountFormat(tx?.Fee)} as transaction fee.
+                        </div>
+                      )}
                     </TData>
                   </tr>
 
