@@ -564,7 +564,11 @@ export default function Account2({
         ? 'regKey'
         : hasMultisig
           ? 'multisig'
-          : 'standard'
+          : data?.ledgerInfo?.flags?.disableMaster
+            ? 'master disabled'
+            : data?.ledgerInfo?.flags?.passwordSpent
+              ? 'free re-key spent'
+              : 'standard'
   const issuerSettingsCollapsedLabel = isGlobalFreezeEnabled
     ? 'global freeze'
     : hasCustomTransferFee
