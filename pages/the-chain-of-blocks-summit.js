@@ -117,7 +117,7 @@ export default function ChainOfBlocksSummit() {
         </p>
         <h2>🎫 Get your Tickets</h2>
         <p>
-          Tickets are available on <Link href="https://chainofblockssummit.com/">chainofblockssummit.com</Link>.
+          Tickets are available on <Link href="https://luma.com/8xdc6wgg">https://luma.com/8xdc6wgg</Link>.
           {/*
           All the event details and tickets are available on Eventbrite:{' '}
           <Link href="https://ChainOfBlocksSummit.eventbrite.com">https://ChainOfBlocksSummit.eventbrite.com</Link>.
