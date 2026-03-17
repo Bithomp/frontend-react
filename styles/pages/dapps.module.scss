@@ -296,7 +296,13 @@
   .failed-medium { color: #f59e0b; font-weight: 600; }
   .failed-high { color: #ef4444; font-weight: 700; }
 
-  @media (min-width: 1001px) {
+  @media (min-width: 1001px) and (max-width: 1400px) {
+    .dapps-activity {
+      min-width: 250px;
+    }
+  }
+
+  @media (min-width: 1401px) {
     .dapps-activity {
       min-width: 450px;
     }
