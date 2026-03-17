@@ -3872,7 +3872,7 @@ export default function Account({
                           {(token.flags.lowNoRipple || token.flags.highNoRipple) && (
                             <div className="detail-row">
                               <span>Rippling:</span>
-                              <span className="green">Enabled</span>
+                              <span className="green">Disabled</span>
                             </div>
                           )}
                           {(token.flags.lowAuth || token.flags.highAuth) && (
