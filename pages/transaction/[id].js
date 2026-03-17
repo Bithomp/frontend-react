@@ -83,7 +83,11 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
     const { ledgerTimestamp } = data?.outcome
     if (!ledgerTimestamp) return
 
-    fetchHistoricalRate({ timestamp: ledgerTimestamp * 1000, selectedCurrency: effectiveSelectedCurrency, setPageFiatRate })
+    fetchHistoricalRate({
+      timestamp: ledgerTimestamp * 1000,
+      selectedCurrency: effectiveSelectedCurrency,
+      setPageFiatRate
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [effectiveSelectedCurrency, data])
 
@@ -165,11 +169,7 @@ export default function Transaction({ data, selectedCurrency, selectedCurrencySe
         title={t('explorer.header.transaction') + ' ' + txHash}
         description={'Transaction details for tx: ' + txHash}
       />
-      <TransactionComponent
-        data={data}
-        pageFiatRate={pageFiatRate}
-        selectedCurrency={effectiveSelectedCurrency}
-      />
+      <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={effectiveSelectedCurrency} />
     </>
   )
 }
