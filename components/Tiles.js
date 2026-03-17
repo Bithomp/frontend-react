@@ -60,7 +60,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
       if (mpUrl(best)) {
         return (
           <>
-            {amountFormat(best.amount)}
+            {amountFormat(best.amount, { short: true })}
             {!partnerMarketplaces[best?.destination] && (
               <>
                 <br />
@@ -70,7 +70,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           </>
         )
       } else {
-        return amountFormat(best.amount)
+        return amountFormat(best.amount, { short: true })
       }
     }
     return t('table.text.private-offer') //shouldn't be the case
@@ -162,7 +162,8 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                       <div className="index">{i + 1}</div>
                       <div className="title"></div>
                       <div className="title-text">
-                        {convertedAmount(nft, convertCurrency, { short: true }) || amountFormat(nft.amount)}
+                        {convertedAmount(nft, convertCurrency, { short: true }) ||
+                          amountFormat(nft.amount, { short: true })}
                         <br />
                         <br />
                         {!disabled && timeOrDate(nft.acceptedAt)}
@@ -178,7 +179,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                           )}
                           {addressName(nft.nftoken?.issuerDetails, t('table.issuer'))}
                           <br />
-                          {t('table.price')}: {amountFormat(nft.amount)}
+                          {t('table.price')}: {amountFormat(nft.amount, { short: true })}
                           {nft.marketplace && (
                             <>
                               <br />
