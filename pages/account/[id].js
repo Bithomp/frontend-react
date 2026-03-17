@@ -201,13 +201,12 @@ import AccountWithTag from '../../components/Account/AccountWithTag'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 import { fetchHistoricalRate } from '../../utils/common'
 import CopyButton from '../../components/UI/CopyButton'
-import { CurrencyWithIcon } from '../../utils/format'
+import { CurrencyWithIcon, CurrencyWithIconInline } from '../../utils/format'
 import { NftImage, nftName } from '../../utils/nft'
 import {
   AddressWithIcon,
   AddressWithIconInline,
   amountFormat,
-  addressUsernameOrServiceLink,
   codeHighlight,
   convertedAmount,
   fullDateAndTime,
@@ -3690,45 +3689,17 @@ export default function Account({
                                     <div className="detail-row">
                                       <span>Asset 1:</span>
                                       <span className="copy-inline">
-                                        <span>{niceCurrency(asset1.currency)}</span>
-                                        {asset1?.issuer && (
-                                          <>
-                                            {' '}
-                                            <span>
-                                              ({addressUsernameOrServiceLink(asset1, 'issuer', { short: 6 })})
-                                            </span>
-                                            <Link
-                                              href={`/token/${asset1.issuer}/${asset1.currency}`}
-                                              className="inline-link-icon tooltip"
-                                              onClick={(event) => event.stopPropagation()}
-                                            >
-                                              <LinkIcon />
-                                              <span className="tooltiptext no-brake">Token page</span>
-                                            </Link>
-                                          </>
-                                        )}
+                                        <span>
+                                          <CurrencyWithIconInline token={asset1} link showIssuer />
+                                        </span>
                                       </span>
                                     </div>
                                     <div className="detail-row">
                                       <span>Asset 2:</span>
                                       <span className="copy-inline">
-                                        <span>{niceCurrency(asset2?.currency)}</span>
-                                        {asset2?.issuer && (
-                                          <>
-                                            {' '}
-                                            <span>
-                                              ({addressUsernameOrServiceLink(asset2, 'issuer', { short: 6 })})
-                                            </span>
-                                            <Link
-                                              href={`/token/${asset2.issuer}/${asset2.currency}`}
-                                              className="inline-link-icon tooltip"
-                                              onClick={(event) => event.stopPropagation()}
-                                            >
-                                              <LinkIcon />
-                                              <span className="tooltiptext no-brake">Token page</span>
-                                            </Link>
-                                          </>
-                                        )}
+                                        <span>
+                                          <CurrencyWithIconInline token={asset2} link showIssuer />
+                                        </span>
                                       </span>
                                     </div>
                                   </>

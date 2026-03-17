@@ -225,7 +225,7 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
   )
 }
 
-export const CurrencyWithIconInline = ({ token, copy, link }) => {
+export const CurrencyWithIconInline = ({ token, copy, link, showIssuer = false }) => {
   if (!token) return ''
   const { lp_token, currencyDetails } = token
   const currencyText = lp_token ? currencyDetails?.currency : niceCurrency(token.currency)
@@ -233,7 +233,10 @@ export const CurrencyWithIconInline = ({ token, copy, link }) => {
   return (
     <>
       <TokenImage token={token} />
-      {link && !lp_token ? <LinkToken token={token} /> : currencyText}
+      {link && !lp_token ? <LinkToken token={token} showIssuer={showIssuer} /> : currencyText}
+      {!link && showIssuer && token?.issuer && (
+        <> ({serviceUsernameOrAddressText(token, 'issuer') || shortHash(token.issuer, 6)})</>
+      )}
       {copy && (
         <>
           {' '}

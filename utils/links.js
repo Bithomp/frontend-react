@@ -5,9 +5,9 @@ import CopyButton from '../components/UI/CopyButton'
 import { isValidTaxon } from './nft'
 import { shortName } from '.'
 
-export const LinkToken = ({ token, icon, copy, children }) => {
+export const LinkToken = ({ token, icon, copy, children, showIssuer = false }) => {
   if (!token) return ''
-  const { currencyDetails, issuer, mptId, currency, metadata } = token
+  const { currencyDetails, issuer, issuerDetails, mptId, currency, metadata } = token
 
   const tokenUrl = '/token/' + issuer + '/' + currency
   const lpToken = currencyDetails?.type === 'lp_token'
@@ -28,6 +28,8 @@ export const LinkToken = ({ token, icon, copy, children }) => {
     currencyName = currencyName !== textCurrency ? shortName(currencyName, { maxLength: 10 }) : null
   }
 
+  const issuerLabel = issuerDetails?.service || issuerDetails?.username || null
+
   return (
     <>
       {!linkAmm && !mptId ? (
@@ -46,6 +48,12 @@ export const LinkToken = ({ token, icon, copy, children }) => {
               {mptId && <> {currencyName}</>}
             </>
           )}
+        </>
+      )}
+      {showIssuer && issuer && (
+        <>
+          {' '}
+          <span className="no-inherit">({<LinkAccount address={issuer} text={issuerLabel} short={6} />})</span>
         </>
       )}
       {copy && (
