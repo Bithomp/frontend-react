@@ -72,7 +72,7 @@ export const NiceNativeBalance = ({ amount }) => {
   )
 }
 
-const TokenImage = ({ token }) => {
+export const TokenImage = ({ token }) => {
   return (
     <div
       style={{
@@ -225,10 +225,27 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
   )
 }
 
-export const CurrencyWithIconInline = ({ token, copy, link, showIssuer = false }) => {
+export const CurrencyWithIconInline = ({ token, copy, link, linkIcon, showIssuer = false }) => {
   if (!token) return ''
   const { lp_token, currencyDetails } = token
   const currencyText = lp_token ? currencyDetails?.currency : niceCurrency(token.currency)
+
+  if (linkIcon) {
+    const tokenUrl = token.issuer ? `/token/${token.issuer}/${token.currency}` : null
+    return (
+      <>
+        <TokenImage token={token} />
+        <strong>{currencyText}</strong>
+        {showIssuer && token?.issuer && <> ({addressUsernameOrServiceLink(token, 'issuer', { short: 6 })})</>}
+        {tokenUrl && (
+          <Link href={tokenUrl} className="inline-link-icon tooltip" style={{ marginLeft: 3 }}>
+            <LinkIcon />
+            <span className="tooltiptext no-brake">Token page</span>
+          </Link>
+        )}
+      </>
+    )
+  }
 
   return (
     <>

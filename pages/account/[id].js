@@ -3688,18 +3688,14 @@ export default function Account({
                                   <>
                                     <div className="detail-row">
                                       <span>Asset 1:</span>
-                                      <span className="copy-inline">
-                                        <span>
-                                          <CurrencyWithIconInline token={asset1} link showIssuer />
-                                        </span>
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CurrencyWithIconInline token={asset1} linkIcon showIssuer />
                                       </span>
                                     </div>
                                     <div className="detail-row">
                                       <span>Asset 2:</span>
-                                      <span className="copy-inline">
-                                        <span>
-                                          <CurrencyWithIconInline token={asset2} link showIssuer />
-                                        </span>
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CurrencyWithIconInline token={asset2} linkIcon showIssuer />
                                       </span>
                                     </div>
                                   </>
