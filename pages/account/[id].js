@@ -260,7 +260,7 @@ const hookNameText = (hookHash) => {
 
 const mptId = (node) => node?.MPTokenIssuanceID || node?.mpt_issuance_id || null
 
-export default function Account2({
+export default function Account({
   initialData,
   initialErrorMessage,
   selectedCurrency: selectedCurrencyApp,

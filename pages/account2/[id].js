@@ -192,7 +192,7 @@ import MPTData from '../../components/Account/MPTData'
 import AccountWithTag from '../../components/Account/AccountWithTag'
 import { xAddressToClassicAddress } from 'ripple-address-codec'
 
-export default function Account({
+export default function AccountOld({
   initialData,
   initialErrorMessage,
   refreshPage,
