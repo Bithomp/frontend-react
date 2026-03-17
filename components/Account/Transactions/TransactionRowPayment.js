@@ -1,5 +1,5 @@
 import { TransactionRowCard } from './TransactionRowCard'
-import { AddressWithIconInline, amountFormat, nativeCurrencyToFiat } from '../../../utils/format'
+import { AddressWithIconInline, amountFormat, tokenToFiat } from '../../../utils/format'
 import { addressBalanceChanges, isConvertionTx } from '../../../utils/transaction'
 import {
   isIOUpayment,
@@ -88,7 +88,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                 precise: 'nice',
                 issuerShort: false
               })}
-              {nativeCurrencyToFiat({
+              {tokenToFiat({
                 amount: outcome?.deliveredAmount,
                 selectedCurrency,
                 fiatRate
@@ -110,7 +110,7 @@ export const TransactionRowPayment = ({ data, address, index, selectedCurrency }
                         precise: 'nice',
                         issuerShort: false
                       })}
-                      {nativeCurrencyToFiat({
+                      {tokenToFiat({
                         amount: optionalAbsPaymentAmount(change, isConvertion),
                         selectedCurrency,
                         fiatRate

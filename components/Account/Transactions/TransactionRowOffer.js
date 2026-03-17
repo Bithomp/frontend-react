@@ -1,6 +1,6 @@
 import { TransactionRowCard } from './TransactionRowCard'
 import { addressBalanceChanges } from '../../../utils/transaction'
-import { amountFormat, nativeCurrencyToFiat, showFlags } from '../../../utils/format'
+import { amountFormat, tokenToFiat, showFlags } from '../../../utils/format'
 import { isRipplingOnIssuer } from '../../../utils/transaction/payment'
 import { RipplingChanges } from './Elements/RipplingChanges'
 import { FaRegHandPaper } from 'react-icons/fa'
@@ -48,9 +48,11 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
   const takerGets = specification.takerGets || myOrderbookChange?.takerGets
   const takerPays = specification.takerPays || myOrderbookChange?.takerPays
 
-  const icon = rippling
-    ? <MdCompareArrows style={{ color: '#9b59b6', transform: 'rotate(90deg)', fontSize: 20 }} title="Rippling" />
-    : <FaRegHandPaper style={{ color: '#f1c40f', fontSize: 18 }} title="Offer" />
+  const icon = rippling ? (
+    <MdCompareArrows style={{ color: '#9b59b6', transform: 'rotate(90deg)', fontSize: 20 }} title="Rippling" />
+  ) : (
+    <FaRegHandPaper style={{ color: '#f1c40f', fontSize: 18 }} title="Offer" />
+  )
 
   return (
     <TransactionRowCard
@@ -102,7 +104,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
                           precise: 'nice',
                           issuerShort: false
                         })}
-                        {nativeCurrencyToFiat({ amount: change, selectedCurrency, fiatRate })}
+                        {tokenToFiat({ amount: change, selectedCurrency, fiatRate })}
                       </div>
                     )
                   })}

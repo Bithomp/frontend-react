@@ -1,11 +1,5 @@
 import { TData } from '../Table'
-import {
-  AddressWithIconFilled,
-  amountFormat,
-  expirationExpired,
-  nativeCurrencyToFiat,
-  shortHash
-} from '../../utils/format'
+import { AddressWithIconFilled, amountFormat, expirationExpired, tokenToFiat, shortHash } from '../../utils/format'
 
 import { TransactionCard } from './TransactionCard'
 import CopyButton from '../UI/CopyButton'
@@ -109,7 +103,7 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
               <TData>Max amount</TData>
               <TData>
                 {amountFormat(checkChanges.sendMax, { withIssuer: true, color: 'orange', bold: true })}
-                {nativeCurrencyToFiat({
+                {tokenToFiat({
                   amount: checkChanges.sendMax,
                   selectedCurrency,
                   fiatRate: pageFiatRate
@@ -145,7 +139,7 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
             {destinationBalanceChangesList.map((change, index) => (
               <div key={index}>
                 {amountFormat(change, { withIssuer: true, bold: true, color: 'direction' })}
-                {nativeCurrencyToFiat({
+                {tokenToFiat({
                   amount: change,
                   selectedCurrency,
                   fiatRate: pageFiatRate

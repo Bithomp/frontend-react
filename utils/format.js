@@ -12,7 +12,6 @@ import { mpUrl } from './nft'
 import {
   avatarServer,
   devNet,
-  isAmountInNativeCurrency,
   nativeCurrency,
   nativeCurrenciesImages,
   stripText,
@@ -357,39 +356,63 @@ export const AddressWithIconFilled = ({ data, name, copyButton, options }) => {
   )
 }
 
-export const nativeCurrencyToFiat = (params) => {
-  if (!isAmountInNativeCurrency(params?.amount)) return ''
-  return amountToFiat(params)
-}
-
-export const amountToFiat = (params) => {
+// Universal fiat helper: works for both native currency and IOU/MPT tokens.
+// For token amounts, uses the pre-computed valueInConvertCurrencies embedded in the
+// amount object (provided by the API) when available, or falls back to tokenFiatRate.
+export const tokenToFiat = (params) => {
   if (devNet) return ''
-  const { amount, selectedCurrency, fiatRate } = params
-  if (!amount || amount === '0' || !selectedCurrency || !fiatRate) return ''
+  const { amount, selectedCurrency, fiatRate, tokenFiatRate } = params
+  if (!amount || amount === '0' || !selectedCurrency) return ''
 
+  const currencyKey = selectedCurrency.toLowerCase()
   let currency = ''
   let initialAmount
   let calculatedAmount
+  let effectiveFiatRate
+  let precomputedFiat = null // pre-computed fiat total from API (for tokens)
 
   if (!amount?.currency) {
-    // drops
+    // native currency in drops (string or number)
+    if (!fiatRate) return ''
     initialAmount = amount / 1000000
     currency = nativeCurrency
+    effectiveFiatRate = fiatRate
   } else {
     initialAmount = amount.value
     currency = niceCurrency(amount.currency)
+    if (!amount.issuer && !amount.mpt_issuance_id) {
+      // native currency as an amount object e.g. { currency: 'XRP', value: '1.5' }
+      if (!fiatRate) return ''
+      effectiveFiatRate = fiatRate
+    } else {
+      // IOU / MPT token: use the pre-computed value embedded in the amount when available
+      const embedded = amount.valueInConvertCurrencies?.[currencyKey]
+      if (embedded !== undefined) {
+        precomputedFiat = Number(embedded)
+        const absTokenAmount = Math.abs(Number(initialAmount) || 0)
+        // derive per-unit rate for the tooltip
+        effectiveFiatRate = absTokenAmount > 0 ? Math.abs(precomputedFiat) / absTokenAmount : 0
+      } else if (tokenFiatRate) {
+        effectiveFiatRate = tokenFiatRate
+      } else {
+        return ''
+      }
+    }
   }
 
   const absolute = Math.abs(initialAmount)
 
   if (params.absolute) {
     initialAmount = absolute
+    if (precomputedFiat !== null) precomputedFiat = Math.abs(precomputedFiat)
   }
 
+  const fiatAmount = precomputedFiat !== null ? precomputedFiat : initialAmount * effectiveFiatRate
+
   if (absolute > 1) {
-    calculatedAmount = shortNiceNumber(initialAmount * fiatRate, 2, 1, selectedCurrency)
+    calculatedAmount = shortNiceNumber(fiatAmount, 2, 1, selectedCurrency)
   } else {
-    calculatedAmount = niceNumber(initialAmount * fiatRate, null, selectedCurrency, 6)
+    calculatedAmount = niceNumber(fiatAmount, null, selectedCurrency, 6)
   }
 
   if (params.asText) {
@@ -404,7 +427,7 @@ export const amountToFiat = (params) => {
         className={'tooltiptext no-brake' + (params?.tooltipDirection ? ' ' + params.tooltipDirection : '')}
         suppressHydrationWarning
       >
-        1 {currency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
+        1 {currency} = {shortNiceNumber(effectiveFiatRate, 2, 1, selectedCurrency)}
       </span>
     </span>
   )

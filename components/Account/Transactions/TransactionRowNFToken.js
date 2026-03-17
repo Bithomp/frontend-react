@@ -5,7 +5,7 @@ import {
   nftOfferLink,
   amountFormat,
   addressUsernameOrServiceLink,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   AddressWithIconInline
 } from '../../../utils/format'
 import { addressBalanceChanges } from '../../../utils/transaction'
@@ -267,7 +267,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
               <span>Amount: </span>
               <span className="bold">{amountFormat(amountChange, { icon: true })}</span>
               <span>
-                {nativeCurrencyToFiat({
+                {tokenToFiat({
                   amount: amountChange,
                   selectedCurrency,
                   fiatRate
@@ -300,7 +300,7 @@ export const TransactionRowNFToken = ({ data, address, index, selectedCurrency }
           <span>{txType === 'NFTokenMint' ? 'Price: ' : 'Amount: '}</span>
           <span className="bold">{amountFormat(specification.amount, { tooltip: 'right', icon: true })}</span>
           <span>
-            {nativeCurrencyToFiat({
+            {tokenToFiat({
               amount: specification.amount,
               selectedCurrency,
               fiatRate

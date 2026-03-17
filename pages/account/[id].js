@@ -212,7 +212,7 @@ import {
   convertedAmount,
   fullDateAndTime,
   fullNiceNumber,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   niceNumber,
   niceCurrency,
   shortHash,
@@ -2802,7 +2802,7 @@ export default function Account2({
                           {hasXahauRewardsConfigured ? (
                             <>
                               <span className="green">{amountFormat(xahauRewardAmount, { maxFractionDigits: 6 })}</span>{' '}
-                              {nativeCurrencyToFiat({
+                              {tokenToFiat({
                                 amount: xahauRewardAmount,
                                 selectedCurrency,
                                 fiatRate: pageFiatRate
@@ -3513,7 +3513,7 @@ export default function Account2({
                         <span className="amount-with-fiat">
                           <span>{amountFormat(nativeTotalDrops, { precise: 'nice' })}</span>
                           <span className="fiat-line" suppressHydrationWarning>
-                            {nativeCurrencyToFiat({
+                            {tokenToFiat({
                               amount: nativeTotalDrops,
                               selectedCurrency,
                               fiatRate: pageFiatRate,
@@ -3527,7 +3527,7 @@ export default function Account2({
                         <span className="grey amount-with-fiat">
                           <span>{amountFormat(nativeReservedDrops, { precise: 'nice' })}</span>
                           <span className="fiat-line" suppressHydrationWarning>
-                            {nativeCurrencyToFiat({
+                            {tokenToFiat({
                               amount: nativeReservedDrops,
                               selectedCurrency,
                               fiatRate: pageFiatRate,
@@ -4602,7 +4602,7 @@ export default function Account2({
                       const primaryChangeValue = Number(collapsedPrimaryChange?.value || 0)
                       const primaryChangeClass = primaryChangeValue > 0 ? 'green' : primaryChangeValue < 0 ? 'red' : ''
                       const primaryChangeFiat = collapsedPrimaryChange
-                        ? nativeCurrencyToFiat({
+                        ? tokenToFiat({
                             amount: collapsedPrimaryChange,
                             selectedCurrency,
                             fiatRate: txHistoricalRate,
@@ -4613,7 +4613,7 @@ export default function Account2({
                       const secondaryChangeClass =
                         secondaryChangeValue > 0 ? 'green' : secondaryChangeValue < 0 ? 'red' : ''
                       const secondaryChangeFiat = collapsedSecondaryChange
-                        ? nativeCurrencyToFiat({
+                        ? tokenToFiat({
                             amount: collapsedSecondaryChange,
                             selectedCurrency,
                             fiatRate: txHistoricalRate,
@@ -4735,7 +4735,7 @@ export default function Account2({
                         const displayAmount = typeof sign === 'number' ? toSignedDexAmount(amount, sign) : amount
                         if (!displayAmount) return null
 
-                        const displayAmountFiat = nativeCurrencyToFiat({
+                        const displayAmountFiat = tokenToFiat({
                           amount: displayAmount,
                           selectedCurrency,
                           fiatRate: txHistoricalRate,
@@ -4823,7 +4823,7 @@ export default function Account2({
                           })
                         : null
                       const nftOfferAmountFiatExpandedText = hasNftOfferAmount
-                        ? nativeCurrencyToFiat({
+                        ? tokenToFiat({
                             amount: nftOfferAmountRaw,
                             selectedCurrency,
                             fiatRate: txHistoricalRate,
@@ -5885,7 +5885,7 @@ export default function Account2({
                               {isSource &&
                                 tx?.Fee &&
                                 (() => {
-                                  const feeFiatText = nativeCurrencyToFiat({
+                                  const feeFiatText = tokenToFiat({
                                     amount: tx.Fee,
                                     selectedCurrency,
                                     fiatRate: txHistoricalRate,
@@ -5924,7 +5924,7 @@ export default function Account2({
                                     {changes.map((change, changeIndex) => {
                                       const changeValue = Number(change?.value || 0)
                                       const changeClass = changeValue > 0 ? 'green' : changeValue < 0 ? 'red' : ''
-                                      const changeFiat = nativeCurrencyToFiat({
+                                      const changeFiat = tokenToFiat({
                                         amount: change,
                                         selectedCurrency,
                                         fiatRate: txHistoricalRate,
@@ -6924,13 +6924,13 @@ export default function Account2({
                               ? -Math.abs(escrowAmountDrops)
                               : Math.abs(escrowAmountDrops)
                             : escrow?.Amount
-                        const collapsedAmountFiatText = nativeCurrencyToFiat({
+                        const collapsedAmountFiatText = tokenToFiat({
                           amount: signedEscrowAmountForFiat,
                           selectedCurrency,
                           fiatRate: pageFiatRate,
                           asText: true
                         })
-                        const expandedAmountFiatNode = nativeCurrencyToFiat({
+                        const expandedAmountFiatNode = tokenToFiat({
                           amount: escrow?.Amount,
                           selectedCurrency,
                           fiatRate: pageFiatRate
@@ -7656,7 +7656,7 @@ export default function Account2({
                       activePaychannelsTab === 'outgoing' ? channel?.Destination : channel?.Account
                     const amountText = amountFormat(channel?.Amount, { short: true, maxFractionDigits: 2 })
                     const balanceText = amountFormat(channel?.Balance, { short: true, maxFractionDigits: 2 })
-                    const balanceFiatNode = nativeCurrencyToFiat({
+                    const balanceFiatNode = tokenToFiat({
                       amount: channel?.Balance,
                       selectedCurrency,
                       fiatRate: pageFiatRate,
@@ -7871,7 +7871,7 @@ export default function Account2({
                           const currentBalanceFiatText =
                             currentBalanceDrops === null
                               ? ''
-                              : nativeCurrencyToFiat({
+                              : tokenToFiat({
                                   amount: currentBalanceDrops,
                                   selectedCurrency,
                                   fiatRate: pageFiatRate,

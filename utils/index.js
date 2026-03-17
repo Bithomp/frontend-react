@@ -955,11 +955,6 @@ export const shortName = (name, options) => {
   return name
 }
 
-export const isAmountInNativeCurrency = (amount) => {
-  if (!amount) return false
-  return !amount?.issuer && !amount?.mpt_issuance_id
-}
-
 export const isNativeCurrency = (currencyObj) => {
   if (!currencyObj) return false
 

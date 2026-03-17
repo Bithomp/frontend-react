@@ -11,7 +11,7 @@ import {
   amountFormat,
   codeHighlight,
   fullDateAndTime,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   niceCurrency,
   shortHash,
   timeFromNow
@@ -236,7 +236,7 @@ export const TransactionCard = ({
                       <span className="bold">
                         {amountFormat(isInsufFee && actualBurnedFeeAmount ? actualBurnedFeeAmount : tx?.Fee)}
                       </span>
-                      {nativeCurrencyToFiat({
+                      {tokenToFiat({
                         amount: isInsufFee && actualBurnedFeeAmount ? actualBurnedFeeAmount : tx?.Fee,
                         selectedCurrency,
                         fiatRate: pageFiatRate
@@ -259,7 +259,7 @@ export const TransactionCard = ({
                             {etx?.tx?.TransactionType === 'Payment' && (
                               <>
                                 [<span className="bold">{amountFormat(etx?.tx?.Amount, { noSpace: true })} </span>
-                                {nativeCurrencyToFiat({
+                                {tokenToFiat({
                                   amount: etx?.tx?.Amount,
                                   selectedCurrency,
                                   fiatRate: pageFiatRate
@@ -390,7 +390,7 @@ export const TransactionCard = ({
                                             showPlus: true,
                                             color: 'direction'
                                           })}
-                                          {nativeCurrencyToFiat({
+                                          {tokenToFiat({
                                             amount: c,
                                             selectedCurrency,
                                             fiatRate: pageFiatRate

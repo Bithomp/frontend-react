@@ -1,5 +1,5 @@
 import { i18n } from 'next-i18next'
-import { fullNiceNumber, nativeCurrencyToFiat, shortNiceNumber, timeFromNow } from '../../utils/format'
+import { fullNiceNumber, tokenToFiat, shortNiceNumber, timeFromNow } from '../../utils/format'
 import { avatarSrc, devNet, getCoinsUrl, nativeCurrency } from '../../utils'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -88,7 +88,11 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
                 {getCoinsUrl && (
                   <>
                     <br />
-                    <a href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')} target="_blank" rel="noreferrer">
+                    <a
+                      href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       Get your first {nativeCurrency}
                     </a>
                   </>
@@ -133,7 +137,7 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
         </span>
         <br />
         <span className="grey">
-          {nativeCurrencyToFiat({
+          {tokenToFiat({
             amount: balances.available?.native,
             selectedCurrency,
             fiatRate: pageFiatRate

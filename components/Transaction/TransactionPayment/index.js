@@ -3,7 +3,7 @@ import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
   amountFormat,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   niceCurrency,
   shortHash
 } from '../../../utils/format'
@@ -172,7 +172,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
                     bold: true,
                     color: 'direction'
                   })}
-                  {nativeCurrencyToFiat({
+                  {tokenToFiat({
                     amount: optionalAbsPaymentAmount(change, isConvertion),
                     selectedCurrency,
                     fiatRate: pageFiatRate
@@ -203,7 +203,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           <TData>Delivered amount</TData>
           <TData>
             {amountFormat(outcome?.deliveredAmount, { precise: 'nice', withIssuer: true, bold: true, color: 'green' })}
-            {nativeCurrencyToFiat({
+            {tokenToFiat({
               amount: outcome?.deliveredAmount,
               selectedCurrency,
               fiatRate: pageFiatRate

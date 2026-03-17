@@ -8,7 +8,7 @@ import {
   AddressWithIconFilled,
   amountFormat,
   convertedAmount,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   fullDateAndTime,
   timeFromNow,
   AddressWithIconInline
@@ -203,7 +203,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
                           <td>Price</td>
                           <td>
                             {amountFormat(item?.sellOffers?.[0]?.amount)}
-                            {nativeCurrencyToFiat({
+                            {tokenToFiat({
                               amount: item?.sellOffers?.[0]?.amount,
                               selectedCurrency,
                               fiatRate
@@ -307,7 +307,7 @@ export default function NftCollection({ id, nftList, selectedCurrency, fiatRate,
                     <td className="right">
                       {amountFormat(item?.sellOffers?.[0]?.amount)}
                       <br />
-                      {nativeCurrencyToFiat({ amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate })}
+                      {tokenToFiat({ amount: item?.sellOffers?.[0]?.amount, selectedCurrency, fiatRate })}
                     </td>
                     <td className="right">
                       {timeFromNow(item.sellOffers?.[0]?.createdAt, i18n)}{' '}

@@ -8,13 +8,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
 import { stripText, decode, network, isValidJson, xahauNetwork, devNet, encode } from '../../utils'
-import {
-  AddressWithIconFilled,
-  convertedAmount,
-  nativeCurrencyToFiat,
-  timeFromNow,
-  usernameOrAddress
-} from '../../utils/format'
+import { AddressWithIconFilled, convertedAmount, tokenToFiat, timeFromNow, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import {
   nftName,
@@ -485,7 +479,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               {/* only show the current prices, add to show historical for accepted/canceled*/}
               {!offer.canceledAt && !offer.acceptedAt && fiatRate > 0 && (
                 <span className="grey">
-                  {nativeCurrencyToFiat({
+                  {tokenToFiat({
                     amount: offer.amount,
                     selectedCurrency,
                     fiatRate

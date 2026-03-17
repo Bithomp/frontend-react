@@ -4,7 +4,7 @@ import {
   AddressWithIconInline,
   amountFormat,
   fullDateAndTime,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   NiceNativeBalance,
   shortHash,
   timeOrDate
@@ -331,7 +331,7 @@ export default function ObjectsData({
         <NiceNativeBalance amount={balance} />
         {options?.mobile ? ' ' : <br />}
         <span className="grey">
-          {nativeCurrencyToFiat({
+          {tokenToFiat({
             amount: balance,
             selectedCurrency,
             fiatRate: pageFiatRate

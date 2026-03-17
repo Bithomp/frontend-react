@@ -11,7 +11,7 @@ import { avatarServer, isAddressValid, isIdValid, isValidNftXls20, useWidth, xah
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import { MdDelete } from 'react-icons/md'
-import { addressLink, amountFormat, nativeCurrencyToFiat, nftIdLink, timeFromNow } from '../../utils/format'
+import { addressLink, amountFormat, tokenToFiat, nftIdLink, timeFromNow } from '../../utils/format'
 import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
@@ -304,7 +304,7 @@ export default function Watchlist({
                                 {amountFormat(a.info?.ledgerInfo?.balance, { maxFractionDigits: 2 })}
                               </b>
                               <br />
-                              {nativeCurrencyToFiat({
+                              {tokenToFiat({
                                 amount: a.info?.ledgerInfo?.balance,
                                 selectedCurrency,
                                 fiatRate
@@ -344,7 +344,7 @@ export default function Watchlist({
                                 <b className="green">
                                   {amountFormat(a.info?.ledgerInfo?.balance, { maxFractionDigits: 2 })}
                                 </b>
-                                {nativeCurrencyToFiat({
+                                {tokenToFiat({
                                   amount: a.info?.ledgerInfo?.balance,
                                   selectedCurrency,
                                   fiatRate

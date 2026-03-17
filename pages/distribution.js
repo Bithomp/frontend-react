@@ -57,8 +57,7 @@ import {
   amountFormat,
   niceNumber,
   percentFormat,
-  amountToFiat,
-  nativeCurrencyToFiat,
+  tokenToFiat,
   AddressWithIconFilled,
   niceCurrency,
   capitalize,
@@ -141,7 +140,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
     <>
       {amountFormat(amount)} {percentFormat(amount, totalCoins)}
       <br />
-      {devNet ? t('table.no-value') : fiatRate > 0 && nativeCurrencyToFiat({ amount, selectedCurrency, fiatRate })}
+      {devNet ? t('table.no-value') : fiatRate > 0 && tokenToFiat({ amount, selectedCurrency, fiatRate })}
     </>
   )
 
@@ -396,7 +395,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                                   {amountFormat({ value: r.balance, currency: r.currency, issuer: r.counterparty })}{' '}
                                   {percentFormat(r.balance, rawData.summary?.totalCoins)}
                                   <br />
-                                  {amountToFiat({
+                                  {tokenToFiat({
                                     amount: { value: r.balance, currency: r.currency, issuer: r.counterparty },
                                     selectedCurrency,
                                     fiatRate: priceFiat
@@ -456,7 +455,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                                 {percentFormat(r.balance, rawData.summary?.totalCoins)}{' '}
                                 {token?.issuer ? (
                                   <>
-                                    {amountToFiat({
+                                    {tokenToFiat({
                                       amount: { value: r.balance, currency: r.currency, issuer: r.counterparty },
                                       selectedCurrency,
                                       fiatRate: priceFiat
@@ -468,7 +467,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                                       ? t('table.no-value')
                                       : fiatRate > 0 &&
                                         token?.currency === nativeCurrency &&
-                                        nativeCurrencyToFiat({
+                                        tokenToFiat({
                                           amount: r.balance,
                                           selectedCurrency,
                                           fiatRate
@@ -485,7 +484,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                                       {devNet
                                         ? t('table.no-value')
                                         : fiatRate > 0 &&
-                                          nativeCurrencyToFiat({
+                                          tokenToFiat({
                                             amount: getEscrowAmount(r, 'short'),
                                             selectedCurrency,
                                             fiatRate
@@ -500,7 +499,7 @@ export default function Distribution({ selectedCurrency, fiatRate, initialRawDat
                                       {devNet
                                         ? t('table.no-value')
                                         : fiatRate > 0 &&
-                                          nativeCurrencyToFiat({
+                                          tokenToFiat({
                                             amount: getEscrowAmount(r, 'locked'),
                                             selectedCurrency,
                                             fiatRate
