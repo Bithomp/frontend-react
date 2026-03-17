@@ -223,7 +223,8 @@ export default function Dapps({
     // Exclude these sourceTags
     const excludeSourceTags = [0, 222, 777, 4004, 555002, 604802567, 446588767]
     const filtered = list.filter((d) => {
-      if (excludeSourceTags.includes(Number(d?.sourceTag))) return false
+      const sourceTag = Number(d?.sourceTag)
+      if (sourceTag < 100 || excludeSourceTags.includes(sourceTag)) return false
       const hasName = dappBySourceTag(d?.sourceTag)
       if (hasName) return true
       return Number(d?.uniqueSourceAddresses) > 3
