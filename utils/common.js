@@ -24,7 +24,7 @@ export const fetchHistoricalRate = async ({ timestamp, selectedCurrency, setPage
 export const fetchCurrentTokenFiatRate = async ({ issuer, currency, selectedCurrency, setRate }) => {
   if (devNet || !issuer || !currency || !selectedCurrency) return
   const response = await axios(
-    `v2/trustlines/token/rate/current/${issuer}/${encodeURIComponent(currency)}?convertCurrencies=${selectedCurrency}`
+    `v2/trustlines/token/${issuer}/${encodeURIComponent(currency)}/rate/current?convertCurrencies=${selectedCurrency}`
   ).catch(() => null)
   const rate = response?.data?.[selectedCurrency.toLowerCase()]
   if (rate !== undefined) setRate(Number(rate))
@@ -37,7 +37,7 @@ export const fetchHistoricalTokenFiatRate = async ({ issuer, currency, date, sel
   if (devNet || !issuer || !currency || !date || !selectedCurrency) return
   const timestamp = typeof date === 'number' ? date : Math.floor(new Date(date).getTime() / 1000)
   const response = await axios(
-    `v2/trustlines/token/rate/history/${issuer}/${encodeURIComponent(currency)}?date=${timestamp}&convertCurrencies=${selectedCurrency}`
+    `v2/trustlines/token/${issuer}/${encodeURIComponent(currency)}/rate/history?date=${timestamp}&convertCurrencies=${selectedCurrency}`
   ).catch(() => null)
   const rate = response?.data?.[selectedCurrency.toLowerCase()]
   if (rate !== undefined) setRate(Number(rate))
