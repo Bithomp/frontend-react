@@ -3734,26 +3734,16 @@ export default function Account({
                           <div className="detail-row">
                             <span>Issuer:</span>
                             <span className="copy-inline">
-                              <span className="address-text">{issuer?.issuer}</span>
-                              <Link
-                                href={`/account/${issuer?.issuer}`}
-                                className="inline-link-icon tooltip"
-                                onClick={(event) => event.stopPropagation()}
-                              >
-                                <LinkIcon />
-                                <span className="tooltiptext no-brake">Issuer account page</span>
-                              </Link>
+                              <AddressWithIconInline
+                                data={{ issuer: issuer?.issuer, issuerDetails: issuer?.issuerDetails }}
+                                name="issuer"
+                                options={{ short: 6 }}
+                              />
                               <span onClick={(event) => event.stopPropagation()}>
                                 <CopyButton text={issuer?.issuer} />
                               </span>
                             </span>
                           </div>
-                          {token.Balance?.issuerDetails?.username && (
-                            <div className="detail-row">
-                              <span>Service:</span>
-                              <span>{token.Balance?.issuerDetails?.username}</span>
-                            </div>
-                          )}
                         </>
                       )}
                       {token.LockedBalance?.value && parseFloat(token.LockedBalance.value) > 0 && (
