@@ -405,17 +405,31 @@ export const tokenToFiat = (params) => {
       if (!fiatRate) return ''
       effectiveFiatRate = fiatRate
     } else {
+      // LP token details can include token value + native spot price.
+      // Convert token units to native and then apply fiat rate.
+      const amountValue = Number(initialAmount)
+      const priceInNative = Number(amount?.priceNativeCurrencySpot)
+      if (Number.isFinite(amountValue) && Number.isFinite(priceInNative) && fiatRate) {
+        precomputedFiat = amountValue * priceInNative * fiatRate
+        effectiveFiatRate = priceInNative * fiatRate
+      }
+
       // IOU / MPT token: use the pre-computed value embedded in the amount when available
-      const embedded = amount.valueInConvertCurrencies?.[currencyKey]
+      const embedded = precomputedFiat === null ? amount.valueInConvertCurrencies?.[currencyKey] : undefined
       if (embedded !== undefined) {
         precomputedFiat = Number(embedded)
         const absTokenAmount = Math.abs(Number(initialAmount) || 0)
         // derive per-unit rate for the tooltip
         effectiveFiatRate = absTokenAmount > 0 ? Math.abs(precomputedFiat) / absTokenAmount : 0
-      } else if (tokenFiatRate) {
+      } else if (precomputedFiat === null && tokenFiatRate) {
         effectiveFiatRate = tokenFiatRate
-      } else {
+      } else if (precomputedFiat === null) {
         return ''
+      } else {
+        const absTokenAmount = Math.abs(Number(initialAmount) || 0)
+        if (!effectiveFiatRate && absTokenAmount > 0) {
+          effectiveFiatRate = Math.abs(precomputedFiat) / absTokenAmount
+        }
       }
     }
   }

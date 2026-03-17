@@ -3674,33 +3674,18 @@ export default function Account({
                             const asset2 = token.Balance?.currencyDetails?.asset2
                             const amount1Raw = token.Balance?.lpTokenDetails?.amount1
                             const amount2Raw = token.Balance?.lpTokenDetails?.amount2
-                            const getAmountNativeValue = (amountRaw, asset) => {
-                              if (!amountRaw && amountRaw !== 0) return null
-
-                              // String/number amounts from lpTokenDetails represent native drops.
-                              if (typeof amountRaw !== 'object') {
-                                const dropsValue = Number(amountRaw)
-                                if (!Number.isFinite(dropsValue)) return null
-                                return dropsValue / 1000000
-                              }
-
-                              const amountValue = Number(amountRaw?.value)
-                              if (!Number.isFinite(amountValue)) return null
-
-                              const amountCurrency = amountRaw?.currency || asset?.currency || nativeCurrency
-                              if (amountCurrency === nativeCurrency) {
-                                return amountValue
-                              }
-
-                              const priceInNative = Number(amountRaw?.priceNativeCurrencySpot)
-                              if (!Number.isFinite(priceInNative)) return null
-                              return amountValue * priceInNative
-                            }
-
-                            const amount1NativeValue = getAmountNativeValue(amount1Raw, asset1)
-                            const amount2NativeValue = getAmountNativeValue(amount2Raw, asset2)
-                            const amount1FiatValue = amount1NativeValue && tokenFiatRate ? amount1NativeValue * tokenFiatRate : null
-                            const amount2FiatValue = amount2NativeValue && tokenFiatRate ? amount2NativeValue * tokenFiatRate : null
+                            const amount1FiatText = tokenToFiat({
+                              amount: amount1Raw,
+                              selectedCurrency,
+                              fiatRate: tokenFiatRate,
+                              asText: true
+                            })
+                            const amount2FiatText = tokenToFiat({
+                              amount: amount2Raw,
+                              selectedCurrency,
+                              fiatRate: tokenFiatRate,
+                              asText: true
+                            })
 
                             return (
                               <>
@@ -3725,9 +3710,9 @@ export default function Account({
                                             short: true
                                           })}
                                         </span>
-                                        {amount1FiatValue && selectedCurrency ? (
+                                        {amount1FiatText ? (
                                           <span className="fiat-line" suppressHydrationWarning>
-                                            {shortNiceNumber(amount1FiatValue, 2, 1, selectedCurrency)}
+                                            {amount1FiatText}
                                           </span>
                                         ) : null}
                                       </span>
@@ -3753,9 +3738,9 @@ export default function Account({
                                             short: true
                                           })}
                                         </span>
-                                        {amount2FiatValue && selectedCurrency ? (
+                                        {amount2FiatText ? (
                                           <span className="fiat-line" suppressHydrationWarning>
-                                            {shortNiceNumber(amount2FiatValue, 2, 1, selectedCurrency)}
+                                            {amount2FiatText}
                                           </span>
                                         ) : null}
                                       </span>
@@ -3886,7 +3871,7 @@ export default function Account({
                           )}
                           {(token.flags.lowNoRipple || token.flags.highNoRipple) && (
                             <div className="detail-row">
-                              <span>No Rippling:</span>
+                              <span>Rippling:</span>
                               <span className="green">Enabled</span>
                             </div>
                           )}
