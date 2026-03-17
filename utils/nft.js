@@ -40,6 +40,8 @@ export const mpUrl = (offer) => {
     url = 'https://artdept.fun/nft/'
   } else if (service === 'OPMarket.ai') {
     url = 'https://opmarket.ai/nft/'
+  } else if (service === 'xSPECTAR') {
+    url = 'https://account.xspectar.com/marketplace?nft='
   }
   if (url) {
     return url + offer.nftokenID
