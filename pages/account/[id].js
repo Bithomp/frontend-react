@@ -201,7 +201,7 @@ import AccountWithTag from '../../components/Account/AccountWithTag'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 import { fetchHistoricalRate } from '../../utils/common'
 import CopyButton from '../../components/UI/CopyButton'
-import { CurrencyWithIcon, CurrencyWithIconInline } from '../../utils/format'
+import { CurrencyWithIcon } from '../../utils/format'
 import { NftImage, nftName } from '../../utils/nft'
 import {
   AddressWithIcon,
@@ -3672,6 +3672,35 @@ export default function Account({
                           {(() => {
                             const asset1 = token.Balance?.currencyDetails?.asset
                             const asset2 = token.Balance?.currencyDetails?.asset2
+                            const amount1Raw = token.Balance?.lpTokenDetails?.amount1
+                            const amount2Raw = token.Balance?.lpTokenDetails?.amount2
+                            const getAmountNativeValue = (amountRaw, asset) => {
+                              if (!amountRaw && amountRaw !== 0) return null
+
+                              // String/number amounts from lpTokenDetails represent native drops.
+                              if (typeof amountRaw !== 'object') {
+                                const dropsValue = Number(amountRaw)
+                                if (!Number.isFinite(dropsValue)) return null
+                                return dropsValue / 1000000
+                              }
+
+                              const amountValue = Number(amountRaw?.value)
+                              if (!Number.isFinite(amountValue)) return null
+
+                              const amountCurrency = amountRaw?.currency || asset?.currency || nativeCurrency
+                              if (amountCurrency === nativeCurrency) {
+                                return amountValue
+                              }
+
+                              const priceInNative = Number(amountRaw?.priceNativeCurrencySpot)
+                              if (!Number.isFinite(priceInNative)) return null
+                              return amountValue * priceInNative
+                            }
+
+                            const amount1NativeValue = getAmountNativeValue(amount1Raw, asset1)
+                            const amount2NativeValue = getAmountNativeValue(amount2Raw, asset2)
+                            const amount1FiatValue = amount1NativeValue && tokenFiatRate ? amount1NativeValue * tokenFiatRate : null
+                            const amount2FiatValue = amount2NativeValue && tokenFiatRate ? amount2NativeValue * tokenFiatRate : null
 
                             return (
                               <>
@@ -3688,16 +3717,60 @@ export default function Account({
                                   <>
                                     <div className="detail-row">
                                       <span>Asset 1:</span>
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CurrencyWithIconInline token={asset1} linkIcon showIssuer />
+                                      <span className="amount-with-fiat" onClick={(event) => event.stopPropagation()}>
+                                        <span>
+                                          {amountFormat(amount1Raw, {
+                                            icon: true,
+                                            bold: true,
+                                            short: true
+                                          })}
+                                        </span>
+                                        {amount1FiatValue && selectedCurrency ? (
+                                          <span className="fiat-line" suppressHydrationWarning>
+                                            {shortNiceNumber(amount1FiatValue, 2, 1, selectedCurrency)}
+                                          </span>
+                                        ) : null}
                                       </span>
                                     </div>
+                                    {asset1?.issuer && (
+                                      <div className="detail-row">
+                                        <span>Asset 1 issuer:</span>
+                                        <span className="copy-inline">
+                                          <AddressWithIconInline data={asset1} name="issuer" options={{ short: 6 }} />
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <CopyButton text={asset1?.issuer} />
+                                          </span>
+                                        </span>
+                                      </div>
+                                    )}
                                     <div className="detail-row">
                                       <span>Asset 2:</span>
-                                      <span onClick={(event) => event.stopPropagation()}>
-                                        <CurrencyWithIconInline token={asset2} linkIcon showIssuer />
+                                      <span className="amount-with-fiat" onClick={(event) => event.stopPropagation()}>
+                                        <span>
+                                          {amountFormat(amount2Raw, {
+                                            icon: true,
+                                            bold: true,
+                                            short: true
+                                          })}
+                                        </span>
+                                        {amount2FiatValue && selectedCurrency ? (
+                                          <span className="fiat-line" suppressHydrationWarning>
+                                            {shortNiceNumber(amount2FiatValue, 2, 1, selectedCurrency)}
+                                          </span>
+                                        ) : null}
                                       </span>
                                     </div>
+                                    {asset2?.issuer && (
+                                      <div className="detail-row">
+                                        <span>Asset 2 issuer:</span>
+                                        <span className="copy-inline">
+                                          <AddressWithIconInline data={asset2} name="issuer" options={{ short: 6 }} />
+                                          <span onClick={(event) => event.stopPropagation()}>
+                                            <CopyButton text={asset2?.issuer} />
+                                          </span>
+                                        </span>
+                                      </div>
+                                    )}
                                   </>
                                 )}
                               </>
