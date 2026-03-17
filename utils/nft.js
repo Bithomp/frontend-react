@@ -502,9 +502,9 @@ export const nftImageStyle = (nft, style = {}) => {
   return style
 }
 
-export const nftPriceData = (t, sellOffers, loggedInAddress) => {
-  if (!sellOffers) return ''
-  const best = bestNftOffer(sellOffers, loggedInAddress, 'sell')
+export const nftPriceData = (t, nftOffers, loggedInAddress, offerType = 'sell') => {
+  if (!nftOffers) return ''
+  const best = bestNftOffer(nftOffers, loggedInAddress, offerType)
   if (best) {
     if (mpUrl(best) && !partnerMarketplaces[best?.destination]) {
       return (

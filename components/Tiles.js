@@ -53,9 +53,9 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     }
   */
 
-  const saleData = (sellOffers) => {
-    if (!sellOffers) return ''
-    const best = bestNftOffer(sellOffers, account?.address, 'sell')
+  const saleData = (nftOffers, offerType = 'sell') => {
+    if (!nftOffers) return ''
+    const best = bestNftOffer(nftOffers, account?.address, offerType)
     if (best) {
       if (mpUrl(best)) {
         return (
@@ -86,7 +86,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     router.push('/nft/' + nft.nftokenID)
   }
 
-  if (type === 'name' || type === 'onSale') {
+  if (type === 'name' || type === 'onSale' || type === 'bids') {
     return (
       <div className={tiles}>
         <div className="grid">
@@ -105,7 +105,12 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                       <div className="title"></div>
 
                       <div className="title-text">
-                        {type === 'name' ? nftName(nft, { maxLength: 18 }) : saleData(nft.sellOffers)}
+                        {type === 'name'
+                          ? nftName(nft, { maxLength: 18 })
+                          : saleData(
+                              type === 'bids' ? nft.buyOffers : nft.sellOffers,
+                              type === 'bids' ? 'buy' : 'sell'
+                            )}
                       </div>
                       {!disabled && (
                         <div className="title-full">

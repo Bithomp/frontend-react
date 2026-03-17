@@ -563,6 +563,7 @@
     "public": "Публичные предложения",
     "knownBrokers": "Маркетплейсы",
     "onSale": "На продаже",
+    "bids": "Ставки",
     "all-tokens": "Все токены",
     "single-token": "Один токен",
     "mintedNew": "Новые",

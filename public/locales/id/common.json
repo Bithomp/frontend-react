@@ -563,6 +563,7 @@
     "public": "Publik",
     "knownBrokers": "Pasar",
     "onSale": "Sedang dijual",
+    "bids": "Bid",
     "all-tokens": "Semua Token",
     "single-token": "Token Tunggal",
     "mintedNew": "Latest",

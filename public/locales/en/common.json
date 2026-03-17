@@ -563,6 +563,7 @@
     "public": "Public",
     "knownBrokers": "Marketplaces",
     "onSale": "Listed",
+    "bids": "Bids",
     "all-tokens": "All tokens",
     "single-token": "Single token",
     "mintedNew": "Latest",

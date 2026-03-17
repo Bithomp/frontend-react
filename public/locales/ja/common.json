@@ -563,6 +563,7 @@
     "public": "公開",
     "knownBrokers": "マーケットプレイス",
     "onSale": "販売中です",
+    "bids": "入札",
     "all-tokens": "全トークン",
     "single-token": "単一トークン",
     "mintedNew": "新しい",
