@@ -5370,7 +5370,8 @@ export default function Account({
                         isRipplingPayment: isRipplingTransaction,
                         isSelfPayment,
                         isAccountDeleteTx,
-                        isAmmTx
+                        isAmmTx,
+                        nftViewerRole
                       })
 
                       return (

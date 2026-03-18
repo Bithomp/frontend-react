@@ -143,7 +143,8 @@ export const getAccountTransactionTypeIcon = ({
   isRipplingPayment,
   isSelfPayment,
   isAccountDeleteTx,
-  isAmmTx
+  isAmmTx,
+  nftViewerRole
 }) => {
   const iconStyle = { fontSize: 16 }
 
@@ -208,17 +209,25 @@ export const getAccountTransactionTypeIcon = ({
   }
 
   if (txType?.includes('NFToken')) {
+    const isNftBuyer = nftViewerRole === 'buyer'
+    const isNftSeller = nftViewerRole === 'seller'
     const nftColor =
       txType === 'NFTokenBurn'
         ? '#222'
         : txType === 'NFTokenAcceptOffer'
-          ? isSource
-            ? '#e74c3c'
-            : '#27ae60'
+          ? isNftBuyer
+            ? '#27ae60'
+            : isNftSeller
+              ? '#e74c3c'
+              : isSource
+                ? '#e74c3c'
+                : '#27ae60'
           : txType === 'NFTokenCancelOffer'
             ? '#ff9800'
             : '#9b59b6'
-    return <RiNftFill style={{ ...iconStyle, color: nftColor }} title="NFT" />
+    const nftTitle =
+      txType === 'NFTokenAcceptOffer' ? (isNftBuyer ? 'Received NFT' : isNftSeller ? 'Sent NFT' : 'NFT') : 'NFT'
+    return <RiNftFill style={{ ...iconStyle, color: nftColor }} title={nftTitle} />
   }
 
   if (txType?.includes('DID')) {
