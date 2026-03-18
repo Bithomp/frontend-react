@@ -32,7 +32,7 @@ export const TransactionRowOffer = ({ data, address, index, selectedCurrency }) 
     orderStatus = 'placed'
   } else {
     if (!myOrder) {
-      orderStatus = 'fullfilled'
+      orderStatus = 'fulfilled'
       const seq = specification.sequence || specification.ticketSequence
       if (seq) {
         orderStatus += ' #'.seq

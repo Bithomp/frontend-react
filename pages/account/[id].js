@@ -4682,8 +4682,8 @@ export default function Account({
                         !!sourceAddress &&
                         !!destinationAddress &&
                         sourceAddress === destinationAddress
-                      const isRipplingPayment =
-                        tx?.TransactionType === 'Payment' && isRipplingOnIssuer(changes, data?.address)
+                      const isRipplingByIssuer = isRipplingOnIssuer(changes, data?.address)
+                      const isRipplingPayment = tx?.TransactionType === 'Payment' && isRipplingByIssuer
                       const counterpartyDetails = isSource
                         ? txdata?.specification?.destination?.addressDetails
                         : txdata?.specification?.source?.addressDetails
@@ -4738,11 +4738,32 @@ export default function Account({
                         if (!isDexOfferTx) return null
                         if (txType === 'OfferCancel') return 'canceled'
                         if (changes?.length === 0 && isMyDexOrder) return 'placed'
-                        if (!isMyDexOrder) return 'fullfilled'
-                        return 'placed and fullfilled'
+                        if (!isMyDexOrder) return 'fulfilled'
+                        return 'placed and fulfilled'
                       })()
+                      const isRipplingDexOffer = isDexOfferTx && isRipplingByIssuer
+                      const isRipplingTransaction = isRipplingPayment || isRipplingDexOffer
+                      const canCollapseRipplingAmounts = (() => {
+                        if (!isRipplingTransaction || !collapsedPrimaryChange || !collapsedSecondaryChange) return false
+                        const primaryAbs = Math.abs(collapsedPrimaryChange?.value)
+                        const secondaryAbs = Math.abs(collapsedSecondaryChange?.value)
+                        return Math.abs(primaryAbs - secondaryAbs) < 0.000000000001
+                      })()
+                      const ripplingCollapsedFiat = canCollapseRipplingAmounts
+                        ? tokenToFiat({
+                            amount: collapsedPrimaryChange,
+                            selectedCurrency,
+                            fiatRate: txHistoricalRate,
+                            asText: true,
+                            absolute: true
+                          })
+                        : ''
                       const dexOfferShortLabel =
-                        isDexOfferTx && dexOrderStatus ? `${dexOfferDirection} order ${dexOrderStatus}` : null
+                        isDexOfferTx && dexOrderStatus
+                          ? isRipplingDexOffer
+                            ? 'Rippling through offer'
+                            : `${dexOfferDirection} order ${dexOrderStatus}`
+                          : null
                       const dexCollapsedSequences =
                         txType === 'OfferCancel'
                           ? myOrderbookSequences.length > 0
@@ -4755,7 +4776,7 @@ export default function Account({
                       const dexTakerGets = txdata?.specification?.takerGets || myOrderbookChange?.takerGets || null
                       const dexTakerPays = txdata?.specification?.takerPays || myOrderbookChange?.takerPays || null
                       const isDexNotFullfilled =
-                        isDexOfferTx && typeof dexOrderStatus === 'string' && !dexOrderStatus.includes('fullfilled')
+                        isDexOfferTx && typeof dexOrderStatus === 'string' && !dexOrderStatus.includes('fulfilled')
                       const toSignedDexAmount = (amount, sign) => {
                         if (!amount) return null
 
@@ -5291,18 +5312,18 @@ export default function Account({
                       const checkCreateCollapsedLabel =
                         txType === 'CheckCreate' ? (isSource ? 'Check sent to' : 'Check received from') : null
                       const txTypeShortLabel =
-                        (isRipplingPayment ? 'Rippling' : null) ||
+                        dexOfferShortLabel ||
+                        (isRipplingTransaction ? 'Rippling' : null) ||
                         (isSelfPayment ? 'Swap' : null) ||
                         (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
                         (isDidTx ? didTxLabel : null) ||
                         escrowCreateCollapsedLabel ||
                         checkCreateCollapsedLabel ||
-                        dexOfferShortLabel ||
                         nftOfferLegacyLabel ||
                         nftMintSpecialLabel ||
                         fallbackTxTypeLabel
                       const txTypeCollapsedLabel =
-                        isSelfPayment || isAccountDeleteTx || isRipplingPayment
+                        isSelfPayment || isAccountDeleteTx || isRipplingTransaction
                           ? txTypeShortLabel
                           : isDidTx
                             ? txTypeShortLabel
@@ -5342,7 +5363,7 @@ export default function Account({
                       const txTypeIconNode = getAccountTransactionTypeIcon({
                         txType,
                         isSource,
-                        isRipplingPayment,
+                        isRipplingPayment: isRipplingTransaction,
                         isSelfPayment,
                         isAccountDeleteTx,
                         isAmmTx
@@ -5460,6 +5481,20 @@ export default function Account({
                               ) : showFreeNftBadge ? (
                                 <span className={`tx-offer-free ${showFreeNftBadgeGreen ? 'green' : 'orange'}`}>
                                   Free
+                                </span>
+                              ) : canCollapseRipplingAmounts ? (
+                                <span className="tx-inline-change-item">
+                                  <span className="tx-inline-change orange">
+                                    {amountFormat(collapsedPrimaryChange, {
+                                      icon: !isLpAmount(collapsedPrimaryChange),
+                                      short: true,
+                                      maxFractionDigits: 2,
+                                      absolute: true
+                                    })}
+                                  </span>
+                                  {!!ripplingCollapsedFiat && (
+                                    <span className="tx-change-fiat">{ripplingCollapsedFiat}</span>
+                                  )}
                                 </span>
                               ) : (
                                 <>
