@@ -274,7 +274,7 @@ export default function TrustSet({
   // Sync limit when switching modes
   useEffect(() => {
     if (mode === 'advanced' && tokenSupply) {
-        setLimit(Math.round(Number(tokenSupply)))
+      setLimit(Math.round(Number(tokenSupply)))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, tokenSupply])
@@ -289,7 +289,7 @@ export default function TrustSet({
 
       if (token && token.supply) {
         setTokenSupply(token.supply)
-          setLimit(Math.round(Number(token.supply)))
+        setLimit(Math.round(Number(token.supply)))
       } else {
         // Default to 1B if no supply info available
         setTokenSupply('1000000000')

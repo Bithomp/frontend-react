@@ -68,6 +68,16 @@
       }
     }
 
+    .terms-checkbox-trustline {
+      margin-left: 60px;
+      margin-right: 60px;
+
+      @media only screen and (max-width: 480px) {
+        margin-left: 40px;
+        margin-right: 40px;
+      }
+    }
+
     .signin-apps {
       margin-top: 35px;
 

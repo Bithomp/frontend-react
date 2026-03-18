@@ -1484,7 +1484,7 @@ export default function SignForm({
                 )}
 
                 {!noCheckboxScreens.includes(screen) && (
-                  <div className="terms-checkbox">
+                    <div className={`terms-checkbox ${screen === 'setTrustline' ? 'terms-checkbox-trustline' : ''}`}>
                     <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks}>
                       {checkBoxText(screen, signRequest)}
                     </CheckBox>
