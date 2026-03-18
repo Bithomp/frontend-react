@@ -54,19 +54,25 @@ const canFit = (containerW, segPct, text, isMobile) => {
   return segPx >= needed && segPx >= minPx
 }
 
-const clampToViewport = (x, y, pad = 10) => {
-  const vw = typeof window !== 'undefined' ? window.innerWidth : 1200
-  const vh = typeof window !== 'undefined' ? window.innerHeight : 800
-  const xx = Math.max(pad, Math.min(x, vw - pad))
-  const yy = Math.max(pad, Math.min(y, vh - pad))
-  return { x: xx, y: yy }
-}
-
 const Tooltip = ({ x, y, lines }) => {
   if (!lines?.length) return null
-  const pos = clampToViewport(x + 12, y + 12)
+  const pad = 10
+  const vw = typeof window !== 'undefined' ? window.innerWidth : 1200
+  const vh = typeof window !== 'undefined' ? window.innerHeight : 800
+  const openLeft = x > vw * 0.7
+  const openUp = y > vh * 0.7
+  const left = Math.max(pad, Math.min(x + 12, vw - pad))
+  const top = Math.max(pad, Math.min(y + 12, vh - pad))
+
   return (
-    <div className="dapps-activity-tooltip" style={{ left: pos.x, top: pos.y }}>
+    <div
+      className="dapps-activity-tooltip"
+      style={{
+        left,
+        top,
+        transform: `${openLeft ? 'translateX(-100%)' : 'translateX(0)'} ${openUp ? 'translateY(-100%)' : 'translateY(0)'}`
+      }}
+    >
       {lines.map((l, i) => (
         <div key={i} className="dapps-activity-tooltip__line">
           {l}
