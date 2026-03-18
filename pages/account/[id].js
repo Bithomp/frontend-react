@@ -6000,8 +6000,6 @@ export default function Account({
                                   <span>Balance changes:</span>
                                   <span className="tx-detail-change-list">
                                     {changes.map((change, changeIndex) => {
-                                      const changeValue = Number(change?.value || 0)
-                                      const changeClass = changeValue > 0 ? 'green' : changeValue < 0 ? 'red' : ''
                                       const changeFiat = tokenToFiat({
                                         amount: change,
                                         selectedCurrency,
@@ -6009,15 +6007,13 @@ export default function Account({
                                         asText: true
                                       })
                                       return (
-                                        <span
-                                          className={`tx-change-row ${changeClass}`}
-                                          key={`${txKey}-change-${changeIndex}`}
-                                        >
+                                        <span className="tx-change-row" key={`${txKey}-change-${changeIndex}`}>
                                           <span>
                                             {amountFormat(change, {
                                               icon: !isLpAmount(change),
                                               withIssuer: !(isAmmDepositOrWithdraw && isLpAmount(change)),
                                               bold: true,
+                                              color: 'direction',
                                               precise: 'nice',
                                               showPlus: true
                                             })}
