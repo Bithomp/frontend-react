@@ -5002,6 +5002,7 @@ export default function Account({
                         : null
                       const hasDexOfferRates =
                         isDexOfferTx &&
+                        !isRipplingTransaction &&
                         changes.length === 2 &&
                         Number.isFinite(Number(changes?.[0]?.value)) &&
                         Number.isFinite(Number(changes?.[1]?.value)) &&
@@ -5942,16 +5943,19 @@ export default function Account({
                                 <span>{tx?.date ? fullDateAndTime(tx.date, 'ripple') : '-'}</span>
                               </div>
 
-                              {!!selectedCurrency && (shouldShowExpandedRate || isDexOfferTx) && !hasDexOfferRates && (
-                                <div className="detail-row">
-                                  <span>Rate:</span>
-                                  <span suppressHydrationWarning>
-                                    {txHistoricalRate
-                                      ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
-                                      : '-'}
-                                  </span>
-                                </div>
-                              )}
+                              {!!selectedCurrency &&
+                                !isRipplingTransaction &&
+                                (shouldShowExpandedRate || isDexOfferTx) &&
+                                !hasDexOfferRates && (
+                                  <div className="detail-row">
+                                    <span>Rate:</span>
+                                    <span suppressHydrationWarning>
+                                      {txHistoricalRate
+                                        ? `1 ${nativeCurrency} = ${shortNiceNumber(txHistoricalRate, 2, 1, selectedCurrency)}`
+                                        : '-'}
+                                    </span>
+                                  </div>
+                                )}
 
                               {isSource && (tx?.Sequence || tx?.TicketSequence) && (
                                 <div className="detail-row">
