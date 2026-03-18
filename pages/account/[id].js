@@ -3597,6 +3597,18 @@ export default function Account({
               const tokenUniqueKey = `${token.Balance?.currency || 'token'}-${issuer?.issuer || 'issuer'}-${index}`
               const isExpanded = expandedToken === tokenUniqueKey
               const isLpToken = isLpTrustlineToken(token)
+              const lpAmount1 = token.Balance?.lpTokenDetails?.amount1
+              const lpAmount2 = token.Balance?.lpTokenDetails?.amount2
+              const hasLpAmounts =
+                lpAmount1 !== undefined && lpAmount1 !== null && lpAmount2 !== undefined && lpAmount2 !== null
+              const showLpCollapsedLayout = isLpToken && hasLpAmounts
+              const lpAmount1Text = showLpCollapsedLayout
+                ? amountFormat(lpAmount1, { short: true, noSpace: true, bold: true })
+                : ''
+              const lpAmount2Text = showLpCollapsedLayout
+                ? amountFormat(lpAmount2, { short: true, noSpace: true, bold: true })
+                : ''
+              const collapsedAmountText = shortNiceNumber(balance)
               const canGetMoreRlusd =
                 network === 'testnet' &&
                 isOwnAccount &&
@@ -3612,10 +3624,23 @@ export default function Account({
                 >
                   <div className="asset-main">
                     <div className="asset-logo">
-                      <CurrencyWithIcon token={{ ...token.Balance, ...issuer }} options={{ disableTokenLink: true }} />
+                      {showLpCollapsedLayout ? (
+                        <div className="lp-collapsed-left">
+                          <CurrencyWithIcon
+                            token={{ ...token.Balance, ...issuer }}
+                            options={{ disableTokenLink: true, iconOnly: true }}
+                          />
+                          <div className="lp-collapsed-balances">
+                            <div className="asset-amount">{lpAmount1Text}</div>
+                            <div className="asset-amount">{lpAmount2Text}</div>
+                          </div>
+                        </div>
+                      ) : (
+                        <CurrencyWithIcon token={{ ...token.Balance, ...issuer }} options={{ disableTokenLink: true }} />
+                      )}
                     </div>
                     <div className="asset-value">
-                      <div className="asset-amount">{shortNiceNumber(balance)}</div>
+                      <div className="asset-amount">{collapsedAmountText}</div>
                       {fiatValue > 0 && (
                         <div className="asset-fiat">{shortNiceNumber(fiatValue, 2, 1, selectedCurrency)}</div>
                       )}
@@ -9352,6 +9377,23 @@ export default function Account({
           flex-shrink: 0;
           text-align: right;
           align-self: flex-start;
+        }
+
+        .lp-collapsed-left {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .lp-collapsed-balances {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          min-width: 0;
+        }
+
+        .lp-collapsed-balances .asset-amount {
+          white-space: nowrap;
         }
 
         .asset-summary-title,
