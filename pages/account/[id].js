@@ -7455,7 +7455,9 @@ export default function Account({
                                   )}
                                   <span className="tx-inline-change-item">
                                     <span className={`tx-inline-change ${collapsedAmountClass}`}>
-                                      {isFreePrivateNftOffer ? 'Free' : `${collapsedAmountSign}${offerAmountText || '-'}`}
+                                      {isFreePrivateNftOffer
+                                        ? 'Free'
+                                        : `${collapsedAmountSign}${offerAmountText || '-'}`}
                                     </span>
                                   </span>
                                 </div>
