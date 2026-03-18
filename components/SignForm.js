@@ -40,6 +40,7 @@ import { setAvatar } from '../utils/blobVerifications'
 import SetAvatar from './SignForms/SetAvatar'
 import SetDomain from './SignForms/SetDomain'
 import SetDid from './SignForms/SetDid'
+import SetTrustline from './SignForms/SetTrustline'
 import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
 import NftTransfer from './SignForms/NftTransfer'
 import { WalletConnect } from './Walletconnect'
@@ -58,6 +59,7 @@ const askInfoScreens = [
   'setDomain',
   'setDid',
   'setAvatar',
+  'setTrustline',
   'nftTransfer',
   'NFTokenModify'
 ]
@@ -74,6 +76,7 @@ const getRequiredInfoScreen = ({ signRequest, agreedToRisks }) => {
   if (signRequest.action === 'setDomain') return 'setDomain'
   if (signRequest.action === 'setDid') return 'setDid'
   if (signRequest.action === 'setAvatar') return 'setAvatar'
+  if (signRequest.action === 'setTrustline') return 'setTrustline'
   if (signRequest.action && voteTxs.includes(signRequest.action)) return signRequest.action
   return null
 }
@@ -1138,6 +1141,17 @@ export default function SignForm({
 
     if (screen === 'NFTokenBurn') return t('signin.confirm.nft-burn')
     if (screen === 'NFTokenModify') return 'I understand that URI will be updated for this NFT.'
+    if (screen === 'setTrustline') {
+      return (
+        <>
+          I confirm that I understand trustline risks and I agree to the{' '}
+          <Link href="/terms-and-conditions" target="_blank">
+            Terms and conditions
+          </Link>
+          .
+        </>
+      )
+    }
     if (screen === 'NFTokenCreateOffer' && (signRequest.request.Flags === 1 || xls35Sell)) {
       return t('signin.confirm.nft-create-sell-offer')
     }
@@ -1244,6 +1258,7 @@ export default function SignForm({
                   {screen === 'setDomain' && t('signin.confirm.set-domain')}
                   {screen === 'setDid' && t('signin.confirm.set-did')}
                   {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
+                  {screen === 'setTrustline' && 'Add a token'}
                   {voteTxs.includes(screen) && 'Cast a vote'}
                 </div>
 
@@ -1294,6 +1309,16 @@ export default function SignForm({
                     signRequest={signRequest}
                     setStatus={setStatus}
                     setAgreedToRisks={setAgreedToRisks}
+                  />
+                )}
+
+                {screen === 'setTrustline' && (
+                  <SetTrustline
+                    setSignRequest={setSignRequest}
+                    signRequest={signRequest}
+                    setStatus={setStatus}
+                    setAgreedToRisks={setAgreedToRisks}
+                    setFormError={setFormError}
                   />
                 )}
 

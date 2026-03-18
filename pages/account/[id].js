@@ -491,6 +491,13 @@ export default function Account({
   const isNotActivatedAccount = data?.ledgerInfo?.activated === false
   const shouldShowGetFirstNativeButton =
     !!getCoinsUrl && nativeAvailableDrops === 0 && (isNotActivatedAccount || isDeletedAccount)
+  const shouldShowAddTokenButton =
+    !!setSignRequest &&
+    !effectiveLedgerTimestamp &&
+    !!data?.address &&
+    !isDeletedAccount &&
+    data?.ledgerInfo?.activated !== false &&
+    (!account?.address || account.address === data.address)
   const getFirstNativeUrl = getCoinsUrl ? getCoinsUrl + (devNet ? '?address=' + data?.address : '') : ''
   const hasAccountControlData =
     hasRegularKey ||
@@ -3554,6 +3561,32 @@ export default function Account({
                 <a href={getFirstNativeUrl} target="_blank" rel="noreferrer" className="get-first-native-btn">
                   🚀 Get your first {nativeCurrency}
                 </a>
+              </div>
+            )}
+
+            {shouldShowAddTokenButton && (
+              <div className="get-first-native-wrap">
+                <button
+                  type="button"
+                  className="get-first-native-btn"
+                  onClick={() => {
+                    if (!account?.address) {
+                      setSignRequest({ redirect: 'account' })
+                      return
+                    }
+
+                    setSignRequest({
+                      action: 'setTrustline',
+                      redirect: 'account',
+                      request: {
+                        TransactionType: 'TrustSet',
+                        Account: data?.address
+                      }
+                    })
+                  }}
+                >
+                  Add a token
+                </button>
               </div>
             )}
 
