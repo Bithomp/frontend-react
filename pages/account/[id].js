@@ -6988,6 +6988,24 @@ export default function Account({
                           !!escrowSequence &&
                           !!escrow?.CancelAfter &&
                           timestampExpired(escrow.CancelAfter, 'ripple')
+                        const disabledExecuteEscrowTooltip = (() => {
+                          if (canExecute) return ''
+                          if (!setSignRequest) return 'Connect wallet to execute this escrow'
+                          if (!escrow?.FinishAfter) return 'This escrow has no unlock time'
+                          if (!timestampExpired(escrow.FinishAfter, 'ripple')) return 'This escrow is still locked'
+                          if (escrow?.CancelAfter && timestampExpired(escrow.CancelAfter, 'ripple')) {
+                            return 'This escrow has already expired'
+                          }
+                          return 'This escrow cannot be executed'
+                        })()
+                        const disabledCancelEscrowTooltip = (() => {
+                          if (canCancel) return ''
+                          if (!setSignRequest) return 'Connect wallet to cancel this escrow'
+                          if (!escrow?.CancelAfter) return 'This escrow cannot be canceled'
+                          if (!timestampExpired(escrow.CancelAfter, 'ripple'))
+                            return 'This escrow is not cancellable yet'
+                          return 'This escrow cannot be canceled'
+                        })()
                         const collapsedTimeText = isCanceled
                           ? cancelAfterText
                           : escrow?.FinishAfter
@@ -7146,42 +7164,50 @@ export default function Account({
 
                                 {!effectiveLedgerTimestamp && (
                                   <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                                    <button
-                                      type="button"
-                                      className={`card-action-btn ${canExecute ? 'redeem' : 'disabled'}`}
-                                      disabled={!canExecute}
-                                      onClick={() => {
-                                        if (!canExecute) return
-                                        setSignRequest({
-                                          request: {
-                                            TransactionType: 'EscrowFinish',
-                                            Owner: escrow?.Account,
-                                            OfferSequence: escrowSequence
-                                          }
-                                        })
-                                      }}
-                                      title="Execute"
-                                    >
-                                      <TbPigMoney /> Execute
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className={`card-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
-                                      disabled={!canCancel}
-                                      onClick={() => {
-                                        if (!canCancel) return
-                                        setSignRequest({
-                                          request: {
-                                            TransactionType: 'EscrowCancel',
-                                            Owner: escrow?.Account,
-                                            OfferSequence: escrowSequence
-                                          }
-                                        })
-                                      }}
-                                      title="Cancel"
-                                    >
-                                      <MdMoneyOff /> Cancel
-                                    </button>
+                                    <span className={disabledExecuteEscrowTooltip ? 'tooltip' : ''}>
+                                      <button
+                                        type="button"
+                                        className={`card-action-btn ${canExecute ? 'redeem' : 'disabled'}`}
+                                        disabled={!canExecute}
+                                        onClick={() => {
+                                          if (!canExecute) return
+                                          setSignRequest({
+                                            request: {
+                                              TransactionType: 'EscrowFinish',
+                                              Owner: escrow?.Account,
+                                              OfferSequence: escrowSequence
+                                            }
+                                          })
+                                        }}
+                                      >
+                                        <TbPigMoney /> Execute
+                                      </button>
+                                      {!!disabledExecuteEscrowTooltip && (
+                                        <span className="tooltiptext no-brake">{disabledExecuteEscrowTooltip}</span>
+                                      )}
+                                    </span>
+                                    <span className={disabledCancelEscrowTooltip ? 'tooltip' : ''}>
+                                      <button
+                                        type="button"
+                                        className={`card-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
+                                        disabled={!canCancel}
+                                        onClick={() => {
+                                          if (!canCancel) return
+                                          setSignRequest({
+                                            request: {
+                                              TransactionType: 'EscrowCancel',
+                                              Owner: escrow?.Account,
+                                              OfferSequence: escrowSequence
+                                            }
+                                          })
+                                        }}
+                                      >
+                                        <MdMoneyOff /> Cancel
+                                      </button>
+                                      {!!disabledCancelEscrowTooltip && (
+                                        <span className="tooltiptext no-brake">{disabledCancelEscrowTooltip}</span>
+                                      )}
+                                    </span>
                                   </div>
                                 )}
                               </div>
