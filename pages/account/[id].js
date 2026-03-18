@@ -5386,7 +5386,7 @@ export default function Account({
                                 <span className="tx-type-main">
                                   {txTypeIconNode && <span className="tx-type-icon">{txTypeIconNode}</span>}
                                   {showBrokerInCollapsedTitle ? (
-                                    <>
+                                    <span className="tx-broker-stack">
                                       <span className="tx-broker-inline">
                                         <span>Broker </span>
                                         <AddressWithIconInline
@@ -5398,7 +5398,7 @@ export default function Account({
                                         />
                                       </span>
                                       <span className="tx-broker-action">{brokerCollapsedAction}</span>
-                                    </>
+                                    </span>
                                   ) : (
                                     txTypeCollapsedLabel
                                   )}
@@ -8501,6 +8501,13 @@ export default function Account({
           display: block;
           line-height: 1.2;
           margin-bottom: 2px;
+        }
+
+        .tx-broker-stack {
+          display: inline-flex;
+          flex-direction: column;
+          align-items: flex-start;
+          min-width: 0;
         }
 
         .tx-broker-action {
