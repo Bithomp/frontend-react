@@ -7301,6 +7301,7 @@ export default function Account({
                           const nftTitle = nftName(nftDisplayData, { maxLength: 48 }) || shortHash(nftId)
                           const shortTokenId = shortHash(nftId)
                           const offerType = offer?.flags?.sellToken ? 'Sell' : 'Buy'
+                          const isFreePrivateNftOffer = nftOffersTab === 'received' && offer?.amount === '0'
                           const offerAmountText = offer?.amount
                             ? amountFormat(offer.amount, { short: true, maxFractionDigits: 2 })
                             : null
@@ -7399,8 +7400,13 @@ export default function Account({
                               ? { sign: '-', className: 'red' }
                               : { sign: '+', className: 'green' }
                           })()
-                          const collapsedAmountClass = offerAmountText ? collapsedAmountDirection.className : 'grey'
-                          const collapsedAmountSign = offerAmountText ? collapsedAmountDirection.sign : ''
+                          const collapsedAmountClass = isFreePrivateNftOffer
+                            ? 'orange'
+                            : offerAmountText
+                              ? collapsedAmountDirection.className
+                              : 'grey'
+                          const collapsedAmountSign =
+                            isFreePrivateNftOffer || !offerAmountText ? '' : collapsedAmountDirection.sign
 
                           return (
                             <div
@@ -7449,8 +7455,7 @@ export default function Account({
                                   )}
                                   <span className="tx-inline-change-item">
                                     <span className={`tx-inline-change ${collapsedAmountClass}`}>
-                                      {collapsedAmountSign}
-                                      {offerAmountText || '-'}
+                                      {isFreePrivateNftOffer ? 'Free' : `${collapsedAmountSign}${offerAmountText || '-'}`}
                                     </span>
                                   </span>
                                 </div>
