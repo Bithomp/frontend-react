@@ -3636,7 +3636,10 @@ export default function Account({
                           </div>
                         </div>
                       ) : (
-                        <CurrencyWithIcon token={{ ...token.Balance, ...issuer }} options={{ disableTokenLink: true }} />
+                        <CurrencyWithIcon
+                          token={{ ...token.Balance, ...issuer }}
+                          options={{ disableTokenLink: true }}
+                        />
                       )}
                     </div>
                     <div className="asset-value">
