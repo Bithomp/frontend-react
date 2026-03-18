@@ -4742,7 +4742,8 @@ export default function Account({
                         return 'placed and fulfilled'
                       })()
                       const isRipplingDexOffer = isDexOfferTx && isRipplingByIssuer
-                      const isRipplingTransaction = isRipplingPayment || isRipplingDexOffer
+                      const isRipplingAmmCreate = txType === 'AMMCreate' && isRipplingByIssuer
+                      const isRipplingTransaction = isRipplingPayment || isRipplingDexOffer || isRipplingAmmCreate
                       const canCollapseRipplingAmounts = (() => {
                         if (!isRipplingTransaction || !collapsedPrimaryChange || !collapsedSecondaryChange) return false
                         const primaryAbs = Math.abs(collapsedPrimaryChange?.value)
@@ -4764,6 +4765,7 @@ export default function Account({
                             ? 'Rippling through offer'
                             : `${dexOfferDirection} order ${dexOrderStatus}`
                           : null
+                      const ammCreateShortLabel = isRipplingAmmCreate ? 'Rippling through AMM creation' : null
                       const dexCollapsedSequences =
                         txType === 'OfferCancel'
                           ? myOrderbookSequences.length > 0
@@ -5314,6 +5316,7 @@ export default function Account({
                         txType === 'CheckCreate' ? (isSource ? 'Check sent to' : 'Check received from') : null
                       const txTypeShortLabel =
                         dexOfferShortLabel ||
+                        ammCreateShortLabel ||
                         (isRipplingTransaction ? 'Rippling' : null) ||
                         (isSelfPayment ? 'Swap' : null) ||
                         (isAccountDeleteTx ? 'Payment from deleted account' : null) ||
@@ -5436,6 +5439,7 @@ export default function Account({
                                 )}
                                 {tx?.TransactionType !== 'TrustSet' &&
                                   !isSelfPayment &&
+                                  !isRipplingTransaction &&
                                   !isDexOfferTx &&
                                   resolvedCounterpartyAddress && (
                                     <span className="tx-counterparty-inline">
