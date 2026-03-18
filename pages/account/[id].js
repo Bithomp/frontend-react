@@ -3692,7 +3692,7 @@ export default function Account({
                                 <div className="detail-row">
                                   <span>LP Token:</span>
                                   <span className="copy-inline">
-                                    <span>{token.Balance?.currency}</span>
+                                    <span>{shortHash(token.Balance?.currency)}</span>
                                     <span onClick={(event) => event.stopPropagation()}>
                                       <CopyButton text={token.Balance?.currency} />
                                     </span>
@@ -7800,7 +7800,7 @@ export default function Account({
                     {(!activatedAccountsLoading || activatedAccountsCount > 0) && (
                       <span className="object-title-count" suppressHydrationWarning>
                         <span className="tooltip">
-                          {shortNiceNumber(activatedAccountsCount, 2, 1)}
+                          {fullNiceNumber(activatedAccountsCount)}
                           <span className="tooltiptext no-brake">{fullNiceNumber(activatedAccountsCount)}</span>
                         </span>
                       </span>
