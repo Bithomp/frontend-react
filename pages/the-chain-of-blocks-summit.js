@@ -127,7 +127,7 @@ export default function ChainOfBlocksSummit() {
         <p>
           📩 Interested in speaking, sponsoring, or helping out? DM <Link href="https://x.com/bithomp">Bithomp</Link>.
         </p>
-        <p>📅 See you in Malta 20–22 May 2026 </p>
+        <p>📅 See you in Malta 20–22 May 2026</p>
       </article>
     </>
   )
