@@ -296,6 +296,7 @@ export default function Account({
   const [objectsError, setObjectsError] = useState(null)
   const [ownedNfts, setOwnedNfts] = useState([])
   const [soldNfts, setSoldNfts] = useState([])
+  const [soldNftsTotalCount, setSoldNftsTotalCount] = useState(null)
   const [soldNftsLoading, setSoldNftsLoading] = useState(false)
   const [mintedNfts, setMintedNfts] = useState([])
   const [burnedNfts, setBurnedNfts] = useState([])
@@ -396,6 +397,7 @@ export default function Account({
     setTokens([])
     setOwnedNfts([])
     setSoldNfts([])
+    setSoldNftsTotalCount(null)
     setMintedNfts([])
     setBurnedNfts([])
     setOwnedNftIds([])
@@ -411,6 +413,19 @@ export default function Account({
     setHookList([])
     setHeldMpts([])
     setIssuedMpts([])
+  }
+
+  const parseSoldNftsPayload = (payload, limit = null) => {
+    const sales = Array.isArray(payload?.sales) ? payload.sales : []
+    const soldList = typeof limit === 'number' ? sales.slice(0, limit) : sales
+
+    const soldTotal = Number(payload?.total?.primary || 0) + Number(payload?.total?.secondary || 0)
+    const soldTotalCount =
+      payload && typeof payload.total === 'object' && payload.total !== null && Number.isFinite(soldTotal)
+        ? Math.max(soldTotal, 0)
+        : null
+
+    return { soldList, soldTotalCount }
   }
 
   const data = initialData
@@ -772,7 +787,7 @@ export default function Account({
   }
   const activeTokenTabLabel = tokenTabDisplayNameMap[tokenTab] || 'tokens'
   const ownedNftCount = Math.max(ownedNftIds.length, ownedNfts.length)
-  const soldNftsCount = soldNfts.length
+  const soldNftsCount = Math.max(soldNfts.length, soldNftsTotalCount || 0)
   const mintedNftsLedgerCount = Number(data?.ledgerInfo?.mintedNFTokens || 0)
   const burnedNftsLedgerCount = Number(data?.ledgerInfo?.burnedNFTokens || 0)
   const mintedNftsCount = Math.max(mintedNfts.length, mintedNftsLedgerCount)
@@ -793,7 +808,7 @@ export default function Account({
   }
   const nftTabExactCountMap = {
     owned: ownedNftIds.length > 0 || ownedNfts.length < NFT_FETCH_LIMIT,
-    sold: soldNfts.length < NFT_FETCH_LIMIT,
+    sold: soldNftsTotalCount !== null || soldNfts.length < NFT_FETCH_LIMIT,
     minted: mintedNftsLedgerCount > 0 || mintedNfts.length < NFT_FETCH_LIMIT,
     burned: burnedNftsLedgerCount > 0 || burnedNfts.length < NFT_FETCH_LIMIT
   }
@@ -1224,8 +1239,13 @@ export default function Account({
       let newMarker = response?.data?.marker || null
 
       if (nftTab === 'sold') {
-        moreItems = Array.isArray(response?.data?.sales) ? response.data.sales : []
+        const soldPayload = response?.data || {}
+        const { soldList, soldTotalCount } = parseSoldNftsPayload(soldPayload)
+        moreItems = soldList
         setSoldNfts((prev) => [...prev, ...moreItems])
+        if (soldTotalCount !== null) {
+          setSoldNftsTotalCount(soldTotalCount)
+        }
       } else {
         moreItems = Array.isArray(response?.data?.[nftResource]) ? response.data[nftResource] : []
         if (nftTab === 'owned') setOwnedNfts((prev) => [...prev, ...moreItems])
@@ -1553,13 +1573,14 @@ export default function Account({
               ? `&period=${encodeURIComponent(new Date(data.inception * 1000).toISOString())}..${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
               : '')
           const soldResponse = await axios.get(soldNftsUrl)
-          const soldList = Array.isArray(soldResponse?.data?.sales)
-            ? soldResponse.data.sales.slice(0, NFT_FETCH_LIMIT)
-            : []
+          const soldPayload = soldResponse?.data || {}
+          const { soldList, soldTotalCount } = parseSoldNftsPayload(soldPayload, NFT_FETCH_LIMIT)
           setSoldNfts(soldList)
+          setSoldNftsTotalCount(soldTotalCount)
           setNftMarkers((prev) => ({ ...prev, sold: soldResponse?.data?.marker || null }))
         } catch {
           setSoldNfts([])
+          setSoldNftsTotalCount(null)
         } finally {
           setSoldNftsLoading(false)
         }
