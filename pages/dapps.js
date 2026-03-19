@@ -483,7 +483,7 @@ export default function Dapps({
                       <tr key={d?.sourceTag ?? idx}>
                         <td className="center">{idx + 1}</td>
 
-                        <td className="no-brake">
+                        <td>
                           <span style={{ display: 'flex', alignItems: 'center' }}>
                             {logo ? <DappLogo src={logo} /> : null}
                             {dappBySourceTag(d?.sourceTag) || d?.sourceTag}
