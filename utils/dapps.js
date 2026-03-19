@@ -241,7 +241,7 @@ export const DAPPS_META = [
       url: 'heroesxrpl.com',
       wallets: ['xaman'],
       x: 'HEROESxrp',
-      telegram: 't.me/memexrpl',
+      telegram: 'memexrpl',
       logo: 'heroes.png'
     },
     589141516: {
