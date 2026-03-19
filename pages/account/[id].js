@@ -33,7 +33,7 @@ import { xAddressToClassicAddress } from 'ripple-address-codec'
 const TOKEN_PREVIEW_LIMIT = 5
 const NFT_INITIAL_LIMIT = 5
 const NFT_LOAD_MORE_STEP = 10
-const NFT_FETCH_LIMIT = 50
+const NFT_FETCH_LIMIT = 45
 const NFT_OFFERS_PREVIEW_LIMIT = 5
 const NFT_OFFERS_FETCH_LIMIT = 50
 const ACTIVATED_ACCOUNTS_FETCH_LIMIT = 20
@@ -816,7 +816,9 @@ export default function Account({
   const activeNftShowMoreAvailable = !activeNftAllShown || !!activeNftMarker
   const activeNftRemainingCount = !activeNftAllShown
     ? Math.min(NFT_LOAD_MORE_STEP, Math.max(activeNftList.length - activeNftPreview.length, 0))
-    : NFT_LOAD_MORE_STEP
+    : activeNftMarker
+      ? NFT_LOAD_MORE_STEP
+      : Math.min(NFT_LOAD_MORE_STEP, Math.max(activeNftCount - activeNftPreview.length, 0))
   const showNftFewerButton = nftDisplayLimit > NFT_INITIAL_LIMIT
   const showNftControlsVisible = activeNftShowMoreAvailable || showNftFewerButton
   const activeNftTabLabel = nftTab.charAt(0).toUpperCase() + nftTab.slice(1)
@@ -4536,9 +4538,7 @@ export default function Account({
                             >
                               {nftLoadingMore
                                 ? `Loading ${activeNftTabLabel} NFTs...`
-                                : activeNftAllShown
-                                  ? `Load more ${activeNftTabLabel} NFTs`
-                                  : `Show ${activeNftRemainingCount} more ${activeNftTabLabel} NFTs`}
+                                : `Show ${activeNftRemainingCount} more ${activeNftTabLabel} NFTs`}
                             </button>
                           )}
                           {showNftFewerButton && (
