@@ -302,6 +302,8 @@ export default function Account({
   const [mintedNftsLoading, setMintedNftsLoading] = useState(false)
   const [burnedNftsLoading, setBurnedNftsLoading] = useState(false)
   const [ownedNftIds, setOwnedNftIds] = useState([])
+  const [nftMarkers, setNftMarkers] = useState({ owned: null, minted: null, burned: null, sold: null })
+  const [nftLoadingMore, setNftLoadingMore] = useState(false)
   const [nftDisplayLimit, setNftDisplayLimit] = useState(NFT_INITIAL_LIMIT)
   const [nftOffersDisplayLimit, setNftOffersDisplayLimit] = useState(NFT_OFFERS_PREVIEW_LIMIT)
   const [expandedNftCardKey, setExpandedNftCardKey] = useState(null)
@@ -809,8 +811,12 @@ export default function Account({
   }
   const activeNftCount = activeNftCountMap[nftTab] || 0
   const activeNftPreview = activeNftList.slice(0, activeNftLimit)
-  const activeNftShowMoreAvailable = activeNftList.length > activeNftPreview.length
-  const activeNftRemainingCount = Math.max(activeNftList.length - activeNftPreview.length, 0)
+  const activeNftMarker = nftMarkers[nftTab] || null
+  const activeNftAllShown = activeNftPreview.length >= activeNftList.length
+  const activeNftShowMoreAvailable = !activeNftAllShown || !!activeNftMarker
+  const activeNftRemainingCount = !activeNftAllShown
+    ? Math.min(NFT_LOAD_MORE_STEP, Math.max(activeNftList.length - activeNftPreview.length, 0))
+    : NFT_LOAD_MORE_STEP
   const showNftFewerButton = nftDisplayLimit > NFT_INITIAL_LIMIT
   const showNftControlsVisible = activeNftShowMoreAvailable || showNftFewerButton
   const activeNftTabLabel = nftTab.charAt(0).toUpperCase() + nftTab.slice(1)
@@ -1179,6 +1185,61 @@ export default function Account({
     fetchMore()
   }
 
+  const loadMoreNfts = async () => {
+    if (nftLoadingMore) return
+
+    // Still have loaded items not yet shown — just reveal them
+    if (activeNftList.length > nftDisplayLimit) {
+      setNftDisplayLimit((prev) => Math.min(activeNftList.length, prev + NFT_LOAD_MORE_STEP))
+      return
+    }
+
+    // All loaded items are shown — fetch the next batch using marker
+    const marker = nftMarkers[nftTab]
+    if (!marker || !data?.address) return
+
+    const nftResource = xahauNetwork ? 'uritokens' : 'nfts'
+
+    try {
+      setNftLoadingMore(true)
+      let url = ''
+      if (nftTab === 'owned') {
+        url = `v2/${nftResource}?owner=${data.address}&order=mintedNew&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
+      } else if (nftTab === 'sold') {
+        const currencyQuery = selectedCurrency
+          ? `&convertCurrencies=${selectedCurrency.toLowerCase()}&sortCurrency=${selectedCurrency.toLowerCase()}`
+          : ''
+        url = `v2/nft-sales?seller=${data.address}&list=lastSold&limit=${NFT_FETCH_LIMIT}${currencyQuery}&marker=${encodeURIComponent(marker)}`
+      } else if (nftTab === 'minted') {
+        const mintedNftResource = xahauNetwork ? 'uritokens' : 'nfts'
+        url = `v2/${mintedNftResource}?issuer=${data.address}&order=mintedNew&includeDeleted=true&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
+      } else {
+        url = `v2/nfts?issuer=${data.address}&order=mintedNew&includeDeleted=true&deletedAt=all&includeWithoutMediaData=true&limit=${NFT_FETCH_LIMIT}&marker=${encodeURIComponent(marker)}`
+      }
+
+      const response = await axios.get(url)
+      let moreItems = []
+      let newMarker = response?.data?.marker || null
+
+      if (nftTab === 'sold') {
+        moreItems = Array.isArray(response?.data?.sales) ? response.data.sales : []
+        setSoldNfts((prev) => [...prev, ...moreItems])
+      } else {
+        moreItems = Array.isArray(response?.data?.[nftResource]) ? response.data[nftResource] : []
+        if (nftTab === 'owned') setOwnedNfts((prev) => [...prev, ...moreItems])
+        else if (nftTab === 'minted') setMintedNfts((prev) => [...prev, ...moreItems])
+        else setBurnedNfts((prev) => [...prev, ...moreItems])
+      }
+
+      setNftMarkers((prev) => ({ ...prev, [nftTab]: newMarker }))
+      setNftDisplayLimit((prev) => prev + Math.min(NFT_LOAD_MORE_STEP, moreItems.length))
+    } catch {
+      // fetch failed — leave state unchanged so the button stays
+    } finally {
+      setNftLoadingMore(false)
+    }
+  }
+
   useEffect(() => {
     if (!selectedCurrency) return
     if (!effectiveLedgerTimestamp) {
@@ -1239,6 +1300,7 @@ export default function Account({
     setNftOffersTab('received')
     setTokenTab('all')
     setNftDisplayLimit(NFT_INITIAL_LIMIT)
+    setNftMarkers({ owned: null, minted: null, burned: null, sold: null })
     setNftOffersDisplayLimit(NFT_OFFERS_PREVIEW_LIMIT)
     setDexOrdersDisplayLimit(OBJECT_PREVIEW_LIMIT)
     setChecksDisplayLimit(OBJECT_PREVIEW_LIMIT)
@@ -1470,6 +1532,7 @@ export default function Account({
             const nftResponse = await axios.get(nftPreviewUrl)
             const ownedNftsList = Array.isArray(nftResponse?.data?.[nftResource]) ? nftResponse.data[nftResource] : []
             setOwnedNfts(ownedNftsList.slice(0, NFT_FETCH_LIMIT))
+            setNftMarkers((prev) => ({ ...prev, owned: nftResponse?.data?.marker || null }))
           } catch {
             setOwnedNfts([])
           }
@@ -1488,7 +1551,11 @@ export default function Account({
               ? `&period=${encodeURIComponent(new Date(data.inception * 1000).toISOString())}..${encodeURIComponent(new Date(effectiveLedgerTimestamp).toISOString())}`
               : '')
           const soldResponse = await axios.get(soldNftsUrl)
-          setSoldNfts(Array.isArray(soldResponse?.data?.sales) ? soldResponse.data.sales.slice(0, NFT_FETCH_LIMIT) : [])
+          const soldList = Array.isArray(soldResponse?.data?.sales)
+            ? soldResponse.data.sales.slice(0, NFT_FETCH_LIMIT)
+            : []
+          setSoldNfts(soldList)
+          setNftMarkers((prev) => ({ ...prev, sold: soldResponse?.data?.marker || null }))
         } catch {
           setSoldNfts([])
         } finally {
@@ -1513,6 +1580,7 @@ export default function Account({
               ? mintedResponse.data[mintedNftResource]
               : []
             setMintedNfts(mintedNftsList.slice(0, NFT_FETCH_LIMIT))
+            setNftMarkers((prev) => ({ ...prev, minted: mintedResponse?.data?.marker || null }))
           } catch {
             setMintedNfts([])
           } finally {
@@ -1534,6 +1602,7 @@ export default function Account({
             const burnedResponse = await axios.get(burnedNftsUrl)
             const burnedNftsList = Array.isArray(burnedResponse?.data?.nfts) ? burnedResponse.data.nfts : []
             setBurnedNfts(burnedNftsList.slice(0, NFT_FETCH_LIMIT))
+            setNftMarkers((prev) => ({ ...prev, burned: burnedResponse?.data?.marker || null }))
           } catch {
             setBurnedNfts([])
           } finally {
@@ -4462,13 +4531,14 @@ export default function Account({
                             <button
                               type="button"
                               className="asset-compact-toggle"
-                              onClick={() =>
-                                setNftDisplayLimit((currentLimit) =>
-                                  Math.min(activeNftList.length, currentLimit + NFT_LOAD_MORE_STEP)
-                                )
-                              }
+                              disabled={nftLoadingMore}
+                              onClick={loadMoreNfts}
                             >
-                              Show {Math.min(NFT_LOAD_MORE_STEP, activeNftRemainingCount)} more {activeNftTabLabel} NFTs
+                              {nftLoadingMore
+                                ? `Loading ${activeNftTabLabel} NFTs...`
+                                : activeNftAllShown
+                                  ? `Load more ${activeNftTabLabel} NFTs`
+                                  : `Show ${activeNftRemainingCount} more ${activeNftTabLabel} NFTs`}
                             </button>
                           )}
                           {showNftFewerButton && (
