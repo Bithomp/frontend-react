@@ -40,7 +40,7 @@ export default function ChainOfBlocksSummit() {
           <Image
             src={'/images/chainOfBlocksSummit/2026-summit-preview.jpeg'}
             alt="Chain of Blocks Summit 2026"
-            width={700}
+            width={684}
             height={330}
             className="max-w-full h-auto object-contain"
             priority
