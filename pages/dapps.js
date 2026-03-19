@@ -280,6 +280,24 @@ export default function Dapps({
     { label: `Volume (${convertCurrency.toUpperCase()})`, key: `totalSentInFiats.${convertCurrency}` }
   ]
 
+  const csvData = useMemo(() => {
+    return (data || []).map((d) => {
+      const successByType = getSuccessByType(d?.transactionTypesResults)
+      const typesText = Object.entries(successByType)
+        .filter(([, count]) => Number(count) > 0)
+        .sort((a, b) => Number(b[1]) - Number(a[1]))
+        .map(([type, count]) => `${type}: ${shortNiceNumber(count, 0)}`)
+        .join(', ')
+
+      return {
+        ...d,
+        dappName: dappBySourceTag(d?.sourceTag) || String(d?.sourceTag || ''),
+        transactionTypes: typesText,
+        successRate: Number(calcSuccessRate(d?.totalTransactions, d?.successTransactions).toFixed(1))
+      }
+    })
+  }, [data])
+
   useEffect(() => {
     if (!router.isReady) return
 
@@ -337,7 +355,7 @@ export default function Dapps({
         order={order}
         setOrder={setOrder}
         orderList={orderList}
-        data={data}
+        data={csvData}
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
         csvHeaders={csvHeaders}
