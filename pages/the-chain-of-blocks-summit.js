@@ -110,7 +110,7 @@ export default function ChainOfBlocksSummit() {
           <li>Welcoming sponsors</li>
           <li>Inviting everyone to join us in Malta — developers, creators, users, and newcomers</li>
         </ul>
-        Whan to become a sponsor or apply as a speaker? You can do it on <Link href="https://chainofblockssummit.com/">chainofblockssummit.com</Link>.<h2>🧡 Community First</h2>
+        Want to become a sponsor or apply as a speaker? You can do it on <Link href="https://chainofblockssummit.com/">chainofblockssummit.com</Link>.<h2>🧡 Community First</h2>
         <p>
           This event is made by the XRPL community, for the community. It’s the first step toward something bigger — and
           we’d love for you to be a part of it.
