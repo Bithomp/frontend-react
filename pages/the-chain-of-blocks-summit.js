@@ -23,13 +23,13 @@ export default function ChainOfBlocksSummit() {
         description="The XRPL Community Summit in Europe — 2026 in Valletta, Malta. Insights, inspiration, and IRL connection."
         noindex={network !== 'mainnet'}
         image={{
-          file: '/images/chainOfBlocksSummit/summit-preview.avif',
+          file: '/images/chainOfBlocksSummit/2026-summit-preview.jpeg',
           width: 'auto',
           height: 'auto',
           allNetworks: true
         }}
         twitterImage={{
-          file: '/images/chainOfBlocksSummit/summit-preview.avif',
+          file: '/images/chainOfBlocksSummit/2026-summit-preview.jpeg',
           allNetworks: true
         }}
       />
