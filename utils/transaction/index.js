@@ -502,6 +502,7 @@ export const dappBySourceTag = (sourceTag) => {
   const dapps = {
     16: 'UniversalNFT.dev',
     111: 'Horizon',
+    101010: 'HEROES-exchange',
     589123: 'Katz Wallet',
     999999: 'Loansnap',
     1060223: 'Epic Task',

@@ -235,8 +235,33 @@ export const DAPPS_META = [
       name: 'Ribble Trading Bot',
       url: 't.me/ribble_trading_bot',
       logo: 'ribbletradingbot.png'
+    },
+    101010: {
+      name: 'HEROES-exchange',
+      url: 'heroesxrpl.com',
+      wallets: ['xaman'],
+      x: 'HEROESxrp',
+      telegram: 'memexrpl',
+      logo: 'heroes.png'
+    },
+    589141516: {
+      name: 'DragonKill.online',
+      url: 'dragonkill.online',
+      wallets: ['xaman'],
+      x: 'DKP_DragonKill',
+      logo: 'dragonkill.png'
+    },
+    247645524: {
+      name: 'Frii World',
+      url: 'linktr.ee/friiworld',
+      x: 'FriiWorld',
+      logo: 'friiworld.png',
+    },
+    75856879: {
+      name: 'Kudos Setler',
+      logo: 'kudos.png',
     }
-  }
+    }
 ]
 
 const normalizeWalletId = (w) => (typeof w === 'string' ? w.trim().toLowerCase() : '')
