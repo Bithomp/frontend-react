@@ -1,8 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { network } from '../../utils'
-import { nativeCurrency, explorerName, xahauNetwork } from '../../utils'
+import { network, nativeCurrency, explorerName, xahauNetwork } from '../../utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import Breadcrumbs from '../../components/Breadcrumbs'
@@ -22,7 +21,7 @@ export default function TypesOfAssets() {
   return (
     <>
       <SEO
-        title="Types of asets: native asset, issued tokens, stablecoins, utility tokens, memecoins, RWA tokens, NFTs"
+        title="Types of assets: native asset, issued tokens, stablecoins, utility tokens, memecoins, RWA tokens, NFTs"
         description="Learn about the different types of assets, including the native asset, issued tokens, stablecoins, utility tokens, memecoins, RWA tokens, and NFTs. Understand their characteristics, use cases, and how they differ from each other."
         noindex={network !== 'mainnet'}
         image={{
@@ -40,7 +39,7 @@ export default function TypesOfAssets() {
             <figure>
               <Image
                 src={imagePath + 'cover.png'}
-                alt="Send payments"
+                alt="Types of assets: native asset, issued tokens, NFTs"
                 width={1520}
                 height={855}
                 className="max-w-full h-auto object-contain"
