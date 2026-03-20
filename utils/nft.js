@@ -50,7 +50,7 @@ export const mpUrl = (offer) => {
   }
 }
 
-export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell') => {
+export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell', showLowest = false) => {
   if (!nftOffers) return null
 
   //nftOffers = nftOffers.filter(function (offer) { return offer.valid; });
@@ -84,8 +84,14 @@ export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell') => {
       })
 
       if (type === 'buy') {
-        //sort most expansive on top
-        xrpOffers.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount) ? 1 : -1))
+        //for buy offers (bids): sort by price based on showLowest flag
+        if (showLowest) {
+          //sort cheapest on top (lowest bid)
+          xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount) ? 1 : -1))
+        } else {
+          //sort most expansive on top (highest bid)
+          xrpOffers.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount) ? 1 : -1))
+        }
       } else {
         //sell orders
         //sort cheapest on top
@@ -504,9 +510,11 @@ export const nftImageStyle = (nft, style = {}) => {
   return style
 }
 
-export const nftPriceData = (t, nftOffers, loggedInAddress, offerType = 'sell') => {
+export const nftPriceData = (t, nftOffers, loggedInAddress, offerType = 'sell', sortOrder = null) => {
   if (!nftOffers) return ''
-  const best = bestNftOffer(nftOffers, loggedInAddress, offerType)
+  // For buy offers (bids) with priceLow sort, show the lowest bid
+  const showLowest = offerType === 'buy' && sortOrder === 'priceLow'
+  const best = bestNftOffer(nftOffers, loggedInAddress, offerType, showLowest)
   if (best) {
     if (mpUrl(best) && !partnerMarketplaces[best?.destination]) {
       return (

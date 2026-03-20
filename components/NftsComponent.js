@@ -475,6 +475,7 @@ export default function NftsComponent({
     taxon,
     owner,
     order,
+    listTab,
     saleDestinationTab,
     search,
     includeBurned,
@@ -1002,7 +1003,8 @@ export default function NftsComponent({
                                         t,
                                         listTab === 'bids' ? nft.buyOffers : nft.sellOffers,
                                         account?.address,
-                                        listTab === 'bids' ? 'buy' : 'sell'
+                                        listTab === 'bids' ? 'buy' : 'sell',
+                                        order
                                       )}
                                     </td>
                                   )}
@@ -1079,7 +1081,8 @@ export default function NftsComponent({
                                           t,
                                           listTab === 'bids' ? nft.buyOffers : nft.sellOffers,
                                           account?.address,
-                                          listTab === 'bids' ? 'buy' : 'sell'
+                                          listTab === 'bids' ? 'buy' : 'sell',
+                                          order
                                         )}
                                         <br />
                                       </>
@@ -1118,6 +1121,7 @@ export default function NftsComponent({
                           nftList={data}
                           type={listTab === 'bids' ? 'bids' : listTab === 'onSale' ? 'onSale' : 'name'}
                           account={account}
+                          sortOrder={order}
                         />
                       )}
                     </>

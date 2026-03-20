@@ -30,7 +30,14 @@ const addressName = (details, name) => {
   return ''
 }
 
-export default function Tiles({ nftList, type = 'name', convertCurrency, account, disabled = false }) {
+export default function Tiles({
+  nftList,
+  type = 'name',
+  convertCurrency,
+  account,
+  disabled = false,
+  sortOrder = null
+}) {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -55,7 +62,9 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
 
   const saleData = (nftOffers, offerType = 'sell') => {
     if (!nftOffers) return ''
-    const best = bestNftOffer(nftOffers, account?.address, offerType)
+    // For buy offers (bids) with priceLow sort, show the lowest bid
+    const showLowest = offerType === 'buy' && sortOrder === 'priceLow'
+    const best = bestNftOffer(nftOffers, account?.address, offerType, showLowest)
     if (best) {
       if (mpUrl(best)) {
         return (
@@ -93,7 +102,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           <ul className="hexGrid">
             {nftList[0] &&
               nftList.map((nft, i) => (
-                <li className="hex" key={i}>
+                <li className="hex" key={nft.nftokenID || i}>
                   <div className="hexIn">
                     <Link
                       href={needNftAgeCheck(nft) ? '#' : '/nft/' + nft.nftokenID}
@@ -151,7 +160,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           <ul className="hexGrid">
             {nftList?.length > 0 &&
               nftList.map((nft, i) => (
-                <li className="hex" key={i}>
+                <li className="hex" key={nft.nftoken?.nftokenID || i}>
                   <div className="hexIn">
                     <Link
                       href={needNftAgeCheck(nft.nftoken) ? '#' : '/nft/' + nft.nftoken.nftokenID}
