@@ -515,6 +515,14 @@ export default function Account({
     !isDeletedAccount &&
     data?.ledgerInfo?.activated !== false &&
     (!account?.address || account.address === data.address)
+  const canSendFromAccount = !!setSignRequest && !!account?.address && isOwnAccount && !effectiveLedgerTimestamp
+  const disabledSendTooltip = (() => {
+    if (canSendFromAccount) return ''
+    if (!setSignRequest || !account?.address) return 'Only logged in users can do it'
+    if (!isOwnAccount) return 'Only the viewed account can do it'
+    if (effectiveLedgerTimestamp) return 'Unavailable in historical mode'
+    return 'Send is unavailable'
+  })()
   const getFirstNativeUrl = getCoinsUrl ? getCoinsUrl + (devNet ? '?address=' + data?.address : '') : ''
   const hasAccountControlData =
     hasRegularKey ||
@@ -3642,6 +3650,34 @@ export default function Account({
                           </span>
                         </div>
                       ) : null}
+                      <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                        <span className={disabledSendTooltip ? 'tooltip' : ''}>
+                          <button
+                            type="button"
+                            className={`card-action-btn ${canSendFromAccount ? 'redeem' : 'disabled'}`}
+                            disabled={!canSendFromAccount}
+                            onClick={() => {
+                              if (!canSendFromAccount) return
+                              setSignRequest({
+                                action: 'payment',
+                                redirect: 'account',
+                                request: {
+                                  TransactionType: 'Payment',
+                                  Account: data?.address,
+                                  Amount: '0'
+                                },
+                                data: {
+                                  currencyCode: nativeCurrency,
+                                  balance: String(nativeAvailable)
+                                }
+                              })
+                            }}
+                          >
+                            <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> Send
+                          </button>
+                          {!!disabledSendTooltip && <span className="tooltiptext no-brake">{disabledSendTooltip}</span>}
+                        </span>
+                      </div>
                     </div>
                   </>
                 )}
@@ -3742,6 +3778,21 @@ export default function Account({
                 issuer?.issuer === TESTNET_RLUSD_ISSUER
               const trustlineCurrencyCode = token.Balance?.currency
               const trustlineCurrencyCodeDisplay = trustlineCurrencyCode?.replace(/0+$/, '') || trustlineCurrencyCode
+              const canSendToken =
+                !!setSignRequest &&
+                !!account?.address &&
+                isOwnAccount &&
+                !effectiveLedgerTimestamp &&
+                !!issuer?.issuer &&
+                !!trustlineCurrencyCode
+              const disabledSendTokenTooltip = (() => {
+                if (canSendToken) return ''
+                if (!setSignRequest || !account?.address) return 'Only logged in users can do it'
+                if (!isOwnAccount) return 'Only the viewed account can do it'
+                if (effectiveLedgerTimestamp) return 'Unavailable in historical mode'
+                if (!issuer?.issuer || !trustlineCurrencyCode) return 'Trustline data is incomplete'
+                return 'Send is unavailable'
+              })()
               const canRemoveTrustline =
                 !isLpToken &&
                 !!setSignRequest &&
@@ -4107,6 +4158,40 @@ export default function Account({
                       )}
                       {!isLpToken && (
                         <div className="card-actions" onClick={(event) => event.stopPropagation()}>
+                          <span className={disabledSendTokenTooltip ? 'tooltip' : ''}>
+                            <button
+                              type="button"
+                              className={`card-action-btn ${canSendToken ? 'redeem' : 'disabled'}`}
+                              disabled={!canSendToken}
+                              onClick={() => {
+                                if (!canSendToken) return
+                                setSignRequest({
+                                  action: 'payment',
+                                  redirect: 'account',
+                                  request: {
+                                    TransactionType: 'Payment',
+                                    Account: data?.address,
+                                    Amount: {
+                                      currency: trustlineCurrencyCode,
+                                      issuer: issuer?.issuer,
+                                      value: '0'
+                                    },
+                                    Flags: 131072
+                                  },
+                                  data: {
+                                    currencyCode: trustlineCurrencyCode,
+                                    issuer: issuer?.issuer,
+                                    balance: String(balance)
+                                  }
+                                })
+                              }}
+                            >
+                              <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> Send
+                            </button>
+                            {!!disabledSendTokenTooltip && (
+                              <span className="tooltiptext no-brake">{disabledSendTokenTooltip}</span>
+                            )}
+                          </span>
                           {canGetMoreRlusd && (
                             <button
                               type="button"
@@ -4127,7 +4212,7 @@ export default function Account({
                                   redirect: 'account',
                                   request: {
                                     TransactionType: 'TrustSet',
-                                    Flags: 262144, // tfClearNoRipple
+                                    Flags: 2228224, // tfClearNoRipple clearNoFreeze
                                     Account: data?.address,
                                     LimitAmount: {
                                       currency: trustlineCurrencyCode,
@@ -5126,6 +5211,8 @@ export default function Account({
                             }
                           : null
                       const trustSetLimitValue = Number(trustSetToken?.value || 0)
+                      const trustSetCurrencyDisplay =
+                        trustSetToken?.currency?.replace(/0+$/, '') || trustSetToken?.currency
                       const isTrustSetDeleted =
                         tx?.TransactionType === 'TrustSet' && !!trustSetToken && trustSetLimitValue === 0
                       const hasTrustSetLimit =
@@ -5815,7 +5902,7 @@ export default function Account({
                                   <div className="detail-row">
                                     <span>Currency:</span>
                                     <span className="copy-inline">
-                                      <span>{trustSetToken?.currency || '-'}</span>
+                                      <span>{trustSetCurrencyDisplay || '-'}</span>
                                       {!!trustSetToken?.issuer && !!trustSetToken?.currency && (
                                         <Link
                                           href={`/token/${trustSetToken.issuer}/${trustSetToken.currency}`}
@@ -5826,9 +5913,9 @@ export default function Account({
                                           <span className="tooltiptext no-brake">Token page</span>
                                         </Link>
                                       )}
-                                      {!!trustSetToken?.currency && (
+                                      {!!trustSetCurrencyDisplay && (
                                         <span onClick={(event) => event.stopPropagation()}>
-                                          <CopyButton text={trustSetToken.currency} />
+                                          <CopyButton text={trustSetCurrencyDisplay} />
                                         </span>
                                       )}
                                     </span>

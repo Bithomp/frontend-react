@@ -41,6 +41,7 @@ import SetAvatar from './SignForms/SetAvatar'
 import SetDomain from './SignForms/SetDomain'
 import SetDid from './SignForms/SetDid'
 import SetTrustline from './SignForms/SetTrustline'
+import Payment from './SignForms/Payment'
 import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
 import NftTransfer from './SignForms/NftTransfer'
 import { WalletConnect } from './Walletconnect'
@@ -60,6 +61,7 @@ const askInfoScreens = [
   'setDid',
   'setAvatar',
   'setTrustline',
+  'payment',
   'nftTransfer',
   'NFTokenModify'
 ]
@@ -77,6 +79,7 @@ const getRequiredInfoScreen = ({ signRequest, agreedToRisks }) => {
   if (signRequest.action === 'setDid') return 'setDid'
   if (signRequest.action === 'setAvatar') return 'setAvatar'
   if (signRequest.action === 'setTrustline') return 'setTrustline'
+  if (signRequest.action === 'payment') return 'payment'
   if (signRequest.action && voteTxs.includes(signRequest.action)) return signRequest.action
   return null
 }
@@ -1141,6 +1144,19 @@ export default function SignForm({
 
     if (screen === 'NFTokenBurn') return t('signin.confirm.nft-burn')
     if (screen === 'NFTokenModify') return 'I understand that URI will be updated for this NFT.'
+    if (screen === 'payment') {
+      return (
+        <>
+          I understand that blockchain transactions are irreversible, and I confirm that I have verified the recipient
+          address, destination tag if required, and all payment details before sending, as funds can be lost. I also
+          agree to the{' '}
+          <Link href="/terms-and-conditions" target="_blank">
+            Terms and conditions
+          </Link>
+          .
+        </>
+      )
+    }
     if (screen === 'setTrustline') {
       return (
         <>
@@ -1259,6 +1275,7 @@ export default function SignForm({
                   {screen === 'setDid' && t('signin.confirm.set-did')}
                   {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
                   {screen === 'setTrustline' && 'Add a token'}
+                  {screen === 'payment' && 'Send'}
                   {voteTxs.includes(screen) && 'Cast a vote'}
                 </div>
 
@@ -1318,6 +1335,15 @@ export default function SignForm({
                     signRequest={signRequest}
                     setStatus={setStatus}
                     setAgreedToRisks={setAgreedToRisks}
+                    setFormError={setFormError}
+                  />
+                )}
+
+                {screen === 'payment' && (
+                  <Payment
+                    setSignRequest={setSignRequest}
+                    signRequest={signRequest}
+                    setStatus={setStatus}
                     setFormError={setFormError}
                   />
                 )}
