@@ -303,6 +303,7 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
 
   const onCurrencyChange = (value) => {
     setCurrency(value)
+    setAmount(String(getDefaultAmountByCurrency(value)))
     setErrorMessage('')
     setShowTrustlineButton(false)
   }
