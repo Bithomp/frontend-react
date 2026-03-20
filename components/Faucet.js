@@ -24,7 +24,7 @@ import FormInput from './UI/FormInput'
 import SimpleSelect from './UI/SimpleSelect'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
-import { addressLink, amountFormat, capitalize, duration, fullNiceNumber } from '../utils/format'
+import { addressLink, amountFormat, duration, fullNiceNumber } from '../utils/format'
 import { LedgerLink, LinkTx } from '../utils/links'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -434,9 +434,7 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
                     <div className="flex flex-col gap-x-4 sm:flex-row">
                       <div className="flex-1">
                         <FormInput
-                          title={capitalize(
-                            t('enter-amount', { ns: 'faucet', nativeCurrency: amountCurrencyLabel, devNet, maxAmount })
-                          )}
+                          title={`Amount (max ${maxAmount} ${amountCurrencyLabel} per day)`}
                           placeholder={'Enter amount in ' + amountCurrencyLabel}
                           setInnerValue={onAmountChange}
                           hideButton={true}
