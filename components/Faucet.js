@@ -36,7 +36,8 @@ const convertToDrops = (amount) => {
 
 const maxNativeAmount = 100
 const maxRlusdAmount = 10
-const defaultAmount = 10 // in native currency
+const defaultNativeAmount = 10
+const defaultRlusdAmount = 1
 
 export default function Faucet({ account, type, sessionTokenData, countryCode, setSignRequest }) {
   const router = useRouter()
@@ -46,12 +47,17 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
     destinationTag: queryDestinationTag,
     currency: queryCurrency
   } = router.query
+  const initialCurrency = String(queryCurrency || '').toUpperCase() === 'RLUSD' ? 'RLUSD' : 'native'
+  const getDefaultAmountByCurrency = (selectedCurrency) =>
+    selectedCurrency === 'RLUSD' ? defaultRlusdAmount : defaultNativeAmount
 
   const [data, setData] = useState({})
   const [address, setAddress] = useState(isAddressValid(queryAddress) ? queryAddress : account?.address)
   const [destinationTag, setDestinationTag] = useState(isTagValid(queryDestinationTag) ? queryDestinationTag : null)
-  const [currency, setCurrency] = useState(String(queryCurrency || '').toUpperCase() === 'RLUSD' ? 'RLUSD' : 'native')
-  const [amount, setAmount] = useState(queryAmount ? String(queryAmount) : String(defaultAmount))
+  const [currency, setCurrency] = useState(initialCurrency)
+  const [amount, setAmount] = useState(
+    queryAmount ? String(queryAmount) : String(getDefaultAmountByCurrency(initialCurrency))
+  )
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState()
   const [token, setToken] = useState()
@@ -69,6 +75,7 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
   const isRlusdEnabled = network === 'testnet' && !testPayment
   const isRlusd = isRlusdEnabled && currency === 'RLUSD'
   const maxAmount = isRlusd ? maxRlusdAmount : maxNativeAmount
+  const defaultAmount = isRlusd ? defaultRlusdAmount : defaultNativeAmount
   const amountCurrencyLabel = isRlusd ? 'RLUSD' : nativeCurrency
 
   const FAUCET_DENIED_COUNTRIES = [
