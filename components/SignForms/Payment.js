@@ -36,7 +36,7 @@ export default function Payment({ setSignRequest, signRequest, setStatus, setFor
     return ''
   }, [initialRequest.Amount, signRequest?.data?.issuer])
 
-  const isTokenPayment = !isNativeCurrency(currencyCode)
+  const isTokenPayment = !isNativeCurrency({ currency: currencyCode })
   const currencyLabel = useMemo(
     () => (isTokenPayment ? niceCurrency(currencyCode) : currencyCode),
     [currencyCode, isTokenPayment]

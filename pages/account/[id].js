@@ -504,6 +504,7 @@ export default function Account({
   const hasMultisig = !!data?.ledgerInfo?.signerList
   const isBlackholed = !!data?.ledgerInfo?.blackholed
   const isDeletedAccount = !!data?.ledgerInfo?.deleted
+  const isOwnAccount = data?.address === account?.address
   const showHistoricalDataCard = data?.ledgerInfo?.activated !== false || isDeletedAccount
   const isNotActivatedAccount = data?.ledgerInfo?.activated === false
   const shouldShowGetFirstNativeButton =
@@ -735,7 +736,6 @@ export default function Account({
   const accountDisplayUsername = !accountDisplayService ? data?.username : null
   const hasDisplayIdentity = !!accountDisplayService || !!accountDisplayUsername
   const accountAmmId = data?.ledgerInfo?.ammID
-  const isOwnAccount = data?.address === account?.address
   const accountDisplayName = accountAmmId ? (
     <>
       <span>AMM</span>{' '}
