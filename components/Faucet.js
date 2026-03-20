@@ -104,6 +104,46 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
   }, [isRlusdEnabled, currency])
 
   useEffect(() => {
+    let cancelled = false
+
+    const checkRlusdTrustline = async () => {
+      if (!isRlusd || !isAddressValid(address)) {
+        setShowTrustlineButton(false)
+        return
+      }
+
+      try {
+        const response = await axios.get(`v2/objects/${address}?limit=1000`)
+        if (cancelled) return
+
+        const objects = Array.isArray(response?.data?.objects) ? response.data.objects : []
+        const hasRlusdTrustline = objects.some((node) => {
+          if (node?.LedgerEntryType !== 'RippleState') return false
+
+          const lowCurrency = node?.LowLimit?.currency
+          const highCurrency = node?.HighLimit?.currency
+          const matchesCurrency = lowCurrency === TESTNET_RLUSD_CURRENCY || highCurrency === TESTNET_RLUSD_CURRENCY
+
+          if (!matchesCurrency) return false
+
+          return node?.LowLimit?.issuer === TESTNET_RLUSD_ISSUER || node?.HighLimit?.issuer === TESTNET_RLUSD_ISSUER
+        })
+
+        setShowTrustlineButton(!hasRlusdTrustline)
+      } catch {
+        if (cancelled) return
+        setShowTrustlineButton(false)
+      }
+    }
+
+    checkRlusdTrustline()
+
+    return () => {
+      cancelled = true
+    }
+  }, [address, isRlusd])
+
+  useEffect(() => {
     let queryAddList = []
     let queryRemoveList = []
 
@@ -180,7 +220,6 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
   const onSubmit = async () => {
     setData({})
     setErrorMessage('')
-    setShowTrustlineButton(false)
 
     if (!token) {
       console.error('No token')
@@ -279,9 +318,6 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
         setErrorMessage(t('try-later', { ns: 'faucet', time }))
       } else if (response?.data?.state === 'tecNO_DST_INSUF_XRP') {
         setErrorMessage('The destination address is not activated, send a larger amount to activate it!')
-      } else if (isRlusd && response?.data?.state === 'tecPATH_DRY') {
-        setErrorMessage('First, you need to add a trustline.')
-        setShowTrustlineButton(true)
       } else {
         setErrorMessage(
           response?.data?.message || errorCodeDescription(response?.data?.state) || t('error-occured', { ns: 'faucet' })
@@ -292,7 +328,6 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
 
   const onAmountChange = (value) => {
     setErrorMessage('')
-    setShowTrustlineButton(false)
     let amountString = value
     if (!amountString || amountString < 0) return
     if (amountString > maxAmount) {
@@ -305,7 +340,6 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
     setCurrency(value)
     setAmount(String(getDefaultAmountByCurrency(value)))
     setErrorMessage('')
-    setShowTrustlineButton(false)
   }
 
   const onAddTrustline = () => {
@@ -601,15 +635,17 @@ export default function Faucet({ account, type, sessionTokenData, countryCode, s
         <div className="center">
           <br />
           <span className="bold red center">{errorMessage}</span>
-          {showTrustlineButton && (
-            <>
-              <br />
-              <br />
-              <button type="button" className="button-action" onClick={onAddTrustline} disabled={!setSignRequest}>
-                Add RLUSD trustline
-              </button>
-            </>
-          )}
+        </div>
+      )}
+      {showTrustlineButton && (
+        <div className="center">
+          <br />
+          <span>RLUSD trustline is required for this address before requesting funds.</span>
+          <br />
+          <br />
+          <button type="button" className="button-action" onClick={onAddTrustline} disabled={!setSignRequest}>
+            Add RLUSD trustline
+          </button>
         </div>
       )}
     </>
