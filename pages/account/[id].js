@@ -750,7 +750,6 @@ export default function Account({
   const hasPositiveNativeAvailableBalance = Number(balanceList?.available?.native || 0) > 0
   const shouldShowUsernameRegisterButton =
     !hasDisplayIdentity &&
-    isOwnAccount &&
     hasPositiveNativeAvailableBalance &&
     !devNet &&
     !isBlackholed &&
