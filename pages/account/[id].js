@@ -3740,6 +3740,27 @@ export default function Account({
                 !effectiveLedgerTimestamp &&
                 token.Balance?.currency === TESTNET_RLUSD_CURRENCY &&
                 issuer?.issuer === TESTNET_RLUSD_ISSUER
+              const trustlineCurrencyCode = token.Balance?.currency
+              const trustlineCurrencyCodeDisplay = trustlineCurrencyCode?.replace(/0+$/, '') || trustlineCurrencyCode
+              const canRemoveTrustline =
+                !isLpToken &&
+                !!setSignRequest &&
+                !!account?.address &&
+                isOwnAccount &&
+                !effectiveLedgerTimestamp &&
+                Number(balance) === 0 &&
+                !!issuer?.issuer &&
+                !!trustlineCurrencyCode
+              const disabledRemoveTrustlineTooltip = (() => {
+                if (canRemoveTrustline) return ''
+                if (isLpToken) return 'LP trustlines cannot be removed here'
+                if (!setSignRequest || !account?.address) return 'Only logged in users can do it'
+                if (!isOwnAccount) return 'Only the viewed account can do it'
+                if (effectiveLedgerTimestamp) return 'Unavailable in historical mode'
+                if (Number(balance) !== 0) return 'Trustline can be removed only when balance is 0'
+                if (!issuer?.issuer || !trustlineCurrencyCode) return 'Trustline data is incomplete'
+                return 'Trustline cannot be removed'
+              })()
 
               return (
                 <div
@@ -3920,7 +3941,7 @@ export default function Account({
                           <div className="detail-row">
                             <span>Currency:</span>
                             <span className="copy-inline">
-                              <span>{token.Balance?.currency}</span>
+                              <span>{trustlineCurrencyCodeDisplay}</span>
                               <Link
                                 href={`/token/${issuer?.issuer}/${token.Balance?.currency}`}
                                 className="inline-link-icon tooltip"
@@ -3930,7 +3951,7 @@ export default function Account({
                                 <span className="tooltiptext no-brake">Token page</span>
                               </Link>
                               <span onClick={(event) => event.stopPropagation()}>
-                                <CopyButton text={token.Balance?.currency} />
+                                <CopyButton text={trustlineCurrencyCode} />
                               </span>
                             </span>
                           </div>
@@ -4084,15 +4105,45 @@ export default function Account({
                           </button>
                         </div>
                       )}
-                      {canGetMoreRlusd && (
+                      {!isLpToken && (
                         <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                          <button
-                            type="button"
-                            className="card-action-btn redeem"
-                            onClick={() => router.push(`/faucet?currency=RLUSD&amount=1&address=${data?.address}`)}
-                          >
-                            <MdSouth style={{ fontSize: 16, marginBottom: -2 }} /> Get 1 more RLUSD
-                          </button>
+                          {canGetMoreRlusd && (
+                            <button
+                              type="button"
+                              className="card-action-btn redeem"
+                              onClick={() => router.push(`/faucet?currency=RLUSD&amount=1&address=${data?.address}`)}
+                            >
+                              <MdSouth style={{ fontSize: 16, marginBottom: -2 }} /> Get 1 more RLUSD
+                            </button>
+                          )}
+                          <span className={disabledRemoveTrustlineTooltip ? 'tooltip' : ''}>
+                            <button
+                              type="button"
+                              className={`card-action-btn ${canRemoveTrustline ? 'cancel' : 'disabled'}`}
+                              disabled={!canRemoveTrustline}
+                              onClick={() => {
+                                if (!canRemoveTrustline) return
+                                setSignRequest({
+                                  redirect: 'account',
+                                  request: {
+                                    TransactionType: 'TrustSet',
+                                    Flags: 262144, // tfClearNoRipple
+                                    Account: data?.address,
+                                    LimitAmount: {
+                                      currency: trustlineCurrencyCode,
+                                      issuer: issuer?.issuer,
+                                      value: '0'
+                                    }
+                                  }
+                                })
+                              }}
+                            >
+                              <MdDeleteForever /> Remove
+                            </button>
+                            {!!disabledRemoveTrustlineTooltip && (
+                              <span className="tooltiptext no-brake">{disabledRemoveTrustlineTooltip}</span>
+                            )}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -10233,10 +10284,11 @@ export default function Account({
 
         .card-actions {
           margin-top: 4px;
-          display: flex;
+          display: inline-flex;
           gap: 8px;
           justify-content: flex-end;
           flex-wrap: wrap;
+          float: right;
         }
 
         .card-action-btn {
