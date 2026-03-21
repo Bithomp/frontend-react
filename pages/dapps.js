@@ -138,7 +138,7 @@ export default function Dapps({
 }) {
   const router = useRouter()
   const { t, i18n } = useTranslation()
-  const isMobile = useIsMobile(720)
+  const isMobile = useIsMobile(764)
 
   let selectedCurrency = selectedCurrencyServer
   if (fiatRateApp) {
