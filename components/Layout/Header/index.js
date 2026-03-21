@@ -501,7 +501,7 @@ export default function Header({
                       src={avatarServer + address}
                       width="24"
                       height="24"
-                      style={{ marginRight: '5px' }}
+                      style={{ marginRight: '5px', borderRadius: '50%' }}
                     />
                     {displayName}
                   </>
