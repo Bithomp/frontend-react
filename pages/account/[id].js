@@ -5896,6 +5896,13 @@ export default function Account({
                                 </div>
                               )}
 
+                              {isTagValid(tx?.DestinationTag) && (
+                                <div className="detail-row">
+                                  <span>Destination tag:</span>
+                                  <span>{tx.DestinationTag}</span>
+                                </div>
+                              )}
+
                               {tx?.TransactionType === 'TrustSet' && trustSetToken && (
                                 <>
                                   <div className="detail-row">
