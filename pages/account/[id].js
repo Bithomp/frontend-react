@@ -2463,7 +2463,7 @@ export default function Account({
             {/* Avatar */}
             <div className="avatar-container">
               <div className="avatar-wrapper">
-                <div className="avatar-image-mask">
+                <div className={`avatar-image-mask ${accountDisplayUsername ? 'has-username' : ''}`}>
                   <img src={avatarSrc(data.address, refreshPage)} alt="Avatar" className="account-avatar" />
                 </div>
                 {!data?.blacklist?.blacklisted && achievements.length > 0 && (
@@ -9209,6 +9209,32 @@ export default function Account({
           border-radius: 50%;
           overflow: hidden;
           border: 3px solid var(--accent-link);
+        }
+
+        .avatar-image-mask.has-username {
+          border-color: var(--accent-link);
+          box-shadow:
+            0 0 8px color-mix(in srgb, var(--accent-link) 62%, transparent),
+            0 0 14px color-mix(in srgb, var(--accent-link) 34%, transparent),
+            inset 0 0 7px color-mix(in srgb, var(--accent-link) 28%, transparent);
+          animation: avatarRingPulse 2.2s ease-in-out infinite;
+        }
+
+        @keyframes avatarRingPulse {
+          0%, 100% {
+            border-color: var(--accent-link);
+            box-shadow:
+              0 0 8px color-mix(in srgb, var(--accent-link) 62%, transparent),
+              0 0 14px color-mix(in srgb, var(--accent-link) 34%, transparent),
+              inset 0 0 7px color-mix(in srgb, var(--accent-link) 28%, transparent);
+          }
+          50% {
+            border-color: var(--accent-link);
+            box-shadow:
+              0 0 14px color-mix(in srgb, var(--accent-link) 78%, transparent),
+              0 0 24px color-mix(in srgb, var(--accent-link) 48%, transparent),
+              inset 0 0 11px color-mix(in srgb, var(--accent-link) 46%, transparent);
+          }
         }
 
         .account-avatar {
