@@ -189,7 +189,19 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
       />
     </div>
   ) : (
-    <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+    <Image
+      alt="avatar"
+      src={imageUrl}
+      width="35"
+      height="35"
+      style={{
+        borderRadius: '50%',
+        objectFit: 'cover',
+        backgroundColor: '#fff',
+        boxShadow: '0 0 0 1px #fff',
+        verticalAlign: 'middle'
+      }}
+    />
   )
 
   if (options?.iconOnly) {
