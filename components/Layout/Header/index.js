@@ -282,7 +282,9 @@ export default function Header({
       return <Image src="/images/wallets/xaman.png" alt="Xaman" {...shared} style={{ borderRadius: '50%' }} />
     }
     if (provider === 'ledgerwallet') {
-      return <Image src="/images/wallets/ledgerwallet.svg" alt="Ledger Wallet" {...shared} />
+      return (
+        <Image src="/images/wallets/ledgerwallet.svg" alt="Ledger Wallet" {...shared} style={{ marginBottom: -2 }} />
+      )
     }
     if (provider === 'trezor') {
       return <Image src="/images/wallets/trezor.svg" alt="Trezor Wallet" {...shared} />
