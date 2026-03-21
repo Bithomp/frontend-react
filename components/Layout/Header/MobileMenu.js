@@ -84,7 +84,7 @@ export default function MobileMenu({
                   {t('menu.services.username')}
                 </Link>
               )}
-              <span onClick={signOut} className="mobile-menu-item link">
+              <span onClick={() => signOut()} className="mobile-menu-item link">
                 {t('signin.signout')}
                 <span style={{ display: 'inline-block', width: 10 }}></span>
                 {account?.wallet === 'xaman' && (

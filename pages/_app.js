@@ -39,6 +39,55 @@ const Header = dynamic(() => import('../components/Layout/Header'), { ssr: true 
 const Footer = dynamic(() => import('../components/Layout/Footer'), { ssr: true })
 const ScrollToTop = dynamic(() => import('../components/Layout/ScrollToTop'), { ssr: true })
 
+const getWalletId = ({ provider, address }) => {
+  if (!provider || !address) return null
+  return `${provider}:${address}`
+}
+
+const getMostRecentlyConnectedWallet = (wallets = []) => {
+  if (!Array.isArray(wallets) || !wallets.length) return null
+  return wallets.reduce((latest, current) => {
+    if (!latest) return current
+    return (current.connectedAt || 0) > (latest.connectedAt || 0) ? current : latest
+  }, null)
+}
+
+const normalizeAccountState = (account) => {
+  const current = account && typeof account === 'object' ? account : {}
+  let wallets = Array.isArray(current.wallets) ? current.wallets.filter((wallet) => wallet?.id) : []
+
+  if (!wallets.length && current.wallet && current.address) {
+    const id = getWalletId({ provider: current.wallet, address: current.address })
+    if (id) {
+      wallets = [
+        {
+          id,
+          provider: current.wallet,
+          address: current.address,
+          username: current.username || null,
+          connectedAt: Date.now()
+        }
+      ]
+    }
+  }
+
+  const activeWalletId =
+    current.activeWalletId && wallets.some((wallet) => wallet.id === current.activeWalletId)
+      ? current.activeWalletId
+      : getMostRecentlyConnectedWallet(wallets)?.id || null
+
+  const activeWallet = wallets.find((wallet) => wallet.id === activeWalletId) || null
+
+  return {
+    ...current,
+    wallets,
+    activeWalletId,
+    address: activeWallet?.address || null,
+    wallet: activeWallet?.provider || null,
+    username: activeWallet?.username || null
+  }
+}
+
 function useIsBot() {
   const [isBot, setIsBot] = useState(false)
 
@@ -113,6 +162,7 @@ const MyApp = ({ Component, pageProps }) => {
   const [isClient, setIsClient] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
   const [countryCode, setCountryCode] = useState('')
+  const accountSchemaInitializedRef = useRef(false)
 
   const { isEmailLoginOpen, openEmailLogin, closeEmailLogin, handleLoginSuccess } = useEmailLogin()
 
@@ -279,20 +329,71 @@ const MyApp = ({ Component, pageProps }) => {
     }
   }, [sessionToken])
 
+  useEffect(() => {
+    // Wait for localStorage hydration; null is the pre-hydration placeholder.
+    if (account === null) return
+
+    if (accountSchemaInitializedRef.current) return
+    accountSchemaInitializedRef.current = true
+
+    const normalized = normalizeAccountState(account)
+    if (JSON.stringify(normalized) !== JSON.stringify(account || {})) {
+      setAccount(normalized)
+    }
+  }, [account, setAccount])
+
   const { uuid } = router.query
 
-  const signOut = async () => {
-    localStorage.removeItem('xamanUserToken')
-    if (account?.wallet === 'ledgerwallet') {
+  const setActiveWallet = (walletId) => {
+    setAccount((previousAccount) => {
+      const normalized = normalizeAccountState(previousAccount)
+      const activeWallet = normalized.wallets.find((wallet) => wallet.id === walletId)
+      if (!activeWallet) return normalized
+
+      return {
+        ...normalized,
+        activeWalletId: walletId,
+        address: activeWallet.address,
+        wallet: activeWallet.provider,
+        username: activeWallet.username || null
+      }
+    })
+  }
+
+  const signOut = async (walletId) => {
+    const normalized = normalizeAccountState(account)
+    const targetWallet = walletId
+      ? normalized.wallets.find((wallet) => wallet.id === walletId)
+      : normalized.wallets.find((wallet) => wallet.id === normalized.activeWalletId)
+
+    if (!targetWallet) return
+
+    if (targetWallet.provider === 'xaman') {
+      localStorage.removeItem('xamanUserToken')
+    }
+    if (targetWallet.provider === 'ledgerwallet') {
       await ledgerwalletDisconnect()
     }
-    setWcSession(null)
-    setAccount({
-      ...account,
-      address: null,
-      username: null,
-      wallet: null
+
+    setAccount((previousAccount) => {
+      const currentAccount = normalizeAccountState(previousAccount)
+      const wallets = currentAccount.wallets.filter((wallet) => wallet.id !== targetWallet.id)
+      const nextActiveWallet =
+        wallets.find((wallet) => wallet.id === currentAccount.activeWalletId) || getMostRecentlyConnectedWallet(wallets)
+
+      return {
+        ...currentAccount,
+        wallets,
+        activeWalletId: nextActiveWallet?.id || null,
+        address: nextActiveWallet?.address || null,
+        wallet: nextActiveWallet?.provider || null,
+        username: nextActiveWallet?.username || null
+      }
     })
+
+    if (targetWallet.provider === 'walletconnect') {
+      setWcSession(null)
+    }
   }
 
   const signOutPro = () => {
@@ -309,13 +410,43 @@ const MyApp = ({ Component, pageProps }) => {
     const response = await axios('v2/address/' + address + '?username=true')
     if (response.data) {
       const { username } = response.data
-      setAccount({ ...account, address, username, wallet })
+      const walletId = getWalletId({ provider: wallet, address })
+      if (!walletId) return
+
+      setAccount((previousAccount) => {
+        const normalized = normalizeAccountState(previousAccount)
+        const wallets = [...normalized.wallets]
+        const existingIndex = wallets.findIndex((walletItem) => walletItem.id === walletId)
+        const nextWallet = {
+          id: walletId,
+          provider: wallet,
+          address,
+          username: username || null,
+          connectedAt: Date.now()
+        }
+
+        if (existingIndex >= 0) {
+          wallets[existingIndex] = {
+            ...wallets[existingIndex],
+            ...nextWallet
+          }
+        } else {
+          wallets.push(nextWallet)
+        }
+
+        return {
+          ...normalized,
+          wallets,
+          activeWalletId: walletId,
+          address,
+          wallet,
+          username: username || null
+        }
+      })
     } else {
-      setAccount({
-        ...account,
-        address: null,
-        username: null,
-        wallet: null
+      setAccount((previousAccount) => {
+        const normalized = normalizeAccountState(previousAccount)
+        return normalized
       })
     }
   }
@@ -368,6 +499,7 @@ const MyApp = ({ Component, pageProps }) => {
                 setSignRequest={setSignRequest}
                 account={account}
                 signOut={signOut}
+                setActiveWallet={setActiveWallet}
                 signOutPro={signOutPro}
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
@@ -399,7 +531,6 @@ const MyApp = ({ Component, pageProps }) => {
                 <SignForm
                   setSignRequest={setSignRequest}
                   account={account}
-                  setAccount={setAccount}
                   signRequest={signRequest}
                   uuid={uuid}
                   setRefreshPage={setRefreshPage}

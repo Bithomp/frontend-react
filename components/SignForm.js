@@ -101,7 +101,6 @@ export default function SignForm({
   uuid,
   setRefreshPage,
   saveAddressData,
-  setAccount,
   wcSession,
   setWcSession
 }) {
@@ -135,8 +134,17 @@ export default function SignForm({
   useEffect(() => {
     if (!signRequest) return
 
+    const connectAnotherWallet = !!signRequest?.connectAnotherWallet
+
     setXyraPreparedTx(null)
     setXyraNeedsClick(false)
+
+    if (connectAnotherWallet) {
+      setScreen('choose-app')
+      setStatus('')
+      setAwaiting(false)
+      return
+    }
 
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile) {
@@ -256,26 +264,35 @@ export default function SignForm({
       setScreen(infoScreen)
       return
     }
-    //when the request is wallet specific it's a priority, logout if not matched
-    //when request is not wallet specific, use the account wallet if loggedin
+    // When request is wallet specific it has priority, but in multi-wallet mode
+    // we no longer clear account state if active wallet differs.
     const forcedWallet = signRequest?.wallet // only if request forces a wallet
-    let wallet = forcedWallet || account?.wallet
+    const connectAnotherWallet = !!signRequest?.connectAnotherWallet
+    let wallet = forcedWallet
+
+    // If user explicitly clicked a wallet in choose-app, that must win.
+    if (!wallet && options?.wallet) {
+      wallet = options.wallet
+      setChoosenWallet(options.wallet)
+    }
+
+    if (!wallet && !connectAnotherWallet) {
+      wallet = account?.wallet
+    }
 
     if (forcedWallet && account?.wallet && account.wallet !== forcedWallet) {
-      // if loggedin, but account wallet is different from the one in the request
-      // loggout from the account
-      setAccount({ ...account, address: null, username: null, wallet: null })
+      const hasForcedProvider = Array.isArray(account?.wallets)
+        ? account.wallets.some((walletItem) => walletItem?.provider === forcedWallet)
+        : false
+
+      if (!hasForcedProvider) {
+        wallet = null
+        setChoosenWallet(forcedWallet)
+      }
     }
 
     if (!wallet) {
-      // when request is not wallet specific and user is not loggedin
-      // check saved wallet from options.wallet on previous steps
       wallet = choosenWallet
-      if (!wallet && options?.wallet) {
-        wallet = options.wallet
-        // when user choosed a wallet in the form 'choose-app', save the wallet in choosenWallet
-        setChoosenWallet(options.wallet)
-      }
     }
 
     if (!wallet) {

@@ -28,9 +28,23 @@ import LogoSmall from '../LogoSmall'
 import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
 import XahauExplorer from '../../../public/images/xahauexplorer/long.svg'
 import LogoAnimated from '../LogoAnimated'
-import { IoWalletOutline } from 'react-icons/io5'
+import {
+  IoWalletOutline,
+  IoLogOutOutline,
+  IoPersonOutline,
+  IoListOutline,
+  IoPaperPlaneOutline,
+  IoSettingsOutline,
+  IoAtOutline,
+  IoStarOutline,
+  IoCardOutline,
+  IoPeopleOutline,
+  IoLocationOutline,
+  IoKeyOutline
+} from 'react-icons/io5'
 import SearchBlock from '../SearchBlock'
 import { niceNumber } from '../../../utils/format'
+import { serviceUsernameOrAddressText } from '../../../utils/format'
 
 const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
 const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
@@ -118,6 +132,7 @@ export default function Header({
   setSignRequest,
   account,
   signOut,
+  setActiveWallet,
   signOutPro,
   selectedCurrency,
   setSelectedCurrency,
@@ -235,6 +250,54 @@ export default function Header({
   }
 
   const proLoggedIn = proName && sessionToken
+  const wallets = Array.isArray(account?.wallets) ? account.wallets : []
+  const orderedWallets = [...wallets].sort((a, b) => (b?.connectedAt || 0) - (a?.connectedAt || 0))
+  const activeWalletId = account?.activeWalletId || null
+
+  const walletDisplayName = (walletItem) =>
+    serviceUsernameOrAddressText(
+      {
+        address: walletItem?.address,
+        addressDetails: {
+          username: walletItem?.username || null
+        }
+      },
+      'address',
+      { short: true }
+    )
+
+  const renderWalletIcon = (provider) => {
+    const size = 20
+    const shared = { height: size, width: size, className: 'wallet-logo' }
+    if (provider === 'walletconnect') {
+      return <Image src="/images/wallets/walletconnect.svg" alt="WalletConnect" {...shared} />
+    }
+    if (provider === 'metamask') {
+      return <Image src="/images/wallets/metamask.svg" alt="Metamask" {...shared} />
+    }
+    if (provider === 'gemwallet') {
+      return <Image src="/images/wallets/gemwallet.svg" alt="GemWallet" {...shared} />
+    }
+    if (provider === 'xaman') {
+      return <Image src="/images/wallets/xaman.png" alt="Xaman" {...shared} style={{ borderRadius: '50%' }} />
+    }
+    if (provider === 'ledgerwallet') {
+      return <Image src="/images/wallets/ledgerwallet.svg" alt="Ledger Wallet" {...shared} />
+    }
+    if (provider === 'trezor') {
+      return <Image src="/images/wallets/trezor.svg" alt="Trezor Wallet" {...shared} />
+    }
+    if (provider === 'crossmark') {
+      return (
+        <Image src="/images/wallets/crossmark.png" alt="Crossmark Wallet" {...shared} style={{ borderRadius: '50%' }} />
+      )
+    }
+    if (provider === 'xyra') {
+      return <Image src="/images/wallets/xyra.svg" alt="Xyra Wallet" {...shared} />
+    }
+
+    return null
+  }
 
   const mobileMenuToggle = () => {
     // remove scrollbar when menu is open
@@ -530,86 +593,83 @@ export default function Header({
             )}
             {displayName && (
               <>
-                <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
-                <Link href={'/account/' + address + '/transactions'}>{t('signin.actions.my-transactions')}</Link>
-                <Link href="/services/send">Send payment</Link>
-                <Link href="/services/account-settings/">Account settings</Link>
-                {!username && <Link href={'/username?address=' + address}>{t('menu.services.username')}</Link>}
-                <span onClick={signOut} className="link">
-                  {account?.wallet === 'walletconnect' && (
-                    <Image
-                      src="/images/wallets/walletconnect.svg"
-                      className="wallet-logo walletconnect-logo"
-                      alt="WalletConnect"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'metamask' && (
-                    <Image
-                      src="/images/wallets/metamask.svg"
-                      className="wallet-logo"
-                      alt="Metamask"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'gemwallet' && (
-                    <Image
-                      src="/images/wallets/gemwallet.svg"
-                      className="wallet-logo"
-                      alt="GemWallet"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'xaman' && (
-                    <Image
-                      src="/images/wallets/xaman.png"
-                      className="wallet-logo xaman-logo"
-                      alt="Xaman"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'ledgerwallet' && (
-                    <Image
-                      src="/images/wallets/ledgerwallet.svg"
-                      className="wallet-logo"
-                      alt="Ledger Wallet"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'trezor' && (
-                    <Image
-                      src="/images/wallets/trezor.svg"
-                      className="wallet-logo"
-                      alt="Trezor Wallet"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'crossmark' && (
-                    <Image
-                      src="/images/wallets/crossmark.png"
-                      className="wallet-logo"
-                      alt="Crossmark Wallet"
-                      height={24}
-                      width={24}
-                    />
-                  )}
-                  {account?.wallet === 'xyra' && (
-                    <Image
-                      src="/images/wallets/xyra.svg"
-                      className="wallet-logo"
-                      alt="Xyra Wallet"
-                      height={24}
-                      width={24}
-                      style={{ marginTop: -4, marginLeft: -2, marginRight: -2 }}
-                    />
-                  )}{' '}
-                  {t('signin.signout')}
+                <Link href={'/account/' + address}>
+                  <IoPersonOutline className="menu-item-icon" />
+                  {t('signin.actions.view')}
+                </Link>
+                <Link href={'/account/' + address + '/transactions'}>
+                  <IoListOutline className="menu-item-icon" />
+                  {t('signin.actions.my-transactions')}
+                </Link>
+                <Link href="/services/send">
+                  <IoPaperPlaneOutline className="menu-item-icon" />
+                  Send payment
+                </Link>
+                <Link href="/services/account-settings/">
+                  <IoSettingsOutline className="menu-item-icon" />
+                  Account settings
+                </Link>
+                {!!wallets.length && (
+                  <>
+                    <hr className="hr" />
+                    <div className="wallets-title center">Connected wallets</div>
+                    {orderedWallets.map((walletItem) => {
+                      const isActiveWallet = walletItem.id === activeWalletId
+
+                      return (
+                        <div key={walletItem.id} className={'wallet-row' + (isActiveWallet ? ' active' : '')}>
+                          <span
+                            className={'link wallet-switch' + (isActiveWallet ? ' wallet-switch-active' : '')}
+                            onClick={isActiveWallet ? undefined : () => setActiveWallet(walletItem.id)}
+                          >
+                            <Image
+                              alt="avatar"
+                              src={avatarServer + walletItem.address}
+                              width="20"
+                              height="20"
+                              style={{ borderRadius: '50%' }}
+                            />
+                            <span className="wallet-switch-label">{walletDisplayName(walletItem)}</span>
+                            <span className={'wallet-active-indicator' + (isActiveWallet ? ' is-active' : '')}>
+                              {isActiveWallet && (
+                                <>
+                                  ●<span className="wallet-active-tooltip">Active</span>
+                                </>
+                              )}
+                            </span>
+                          </span>
+                          <span className="wallet-provider-icon">{renderWalletIcon(walletItem.provider)}</span>
+                          <span className="link wallet-disconnect" onClick={() => signOut(walletItem.id)}>
+                            <IoLogOutOutline aria-label="Disconnect" />
+                            <span className="wallet-disconnect-tooltip">Disconnect</span>
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </>
+                )}
+                {!username && (
+                  <>
+                    <hr className="hr" />
+                    <Link href={'/username?address=' + address}>
+                      <IoAtOutline className="menu-item-icon" />
+                      {t('menu.services.username')}
+                    </Link>
+                  </>
+                )}
+                <hr className="hr" />
+                <span
+                  onClick={() => {
+                    setSignRequest(
+                      router.pathname.startsWith('/account')
+                        ? { redirect: 'account', connectAnotherWallet: true }
+                        : { connectAnotherWallet: true }
+                    )
+                  }}
+                  className="link"
+                >
+                  <IoWalletOutline className="menu-item-icon" />
+                  Connect another wallet
                 </span>
               </>
             )}
@@ -621,13 +681,32 @@ export default function Header({
             {proLoggedIn && (
               <>
                 <hr />
-                <Link href="/admin">{displayName ? proName : 'Profile'}</Link>
-                <Link href="/admin/watchlist">Watchlist</Link>
-                <Link href="/admin/subscriptions">Subscriptions</Link>
-                <Link href="/admin/referrals">Referrals</Link>
-                <Link href="/admin/pro">My addresses</Link>
-                <Link href="/admin/api">API management</Link>
+                <Link href="/admin">
+                  <IoPersonOutline className="menu-item-icon" />
+                  {displayName ? proName : 'Profile'}
+                </Link>
+                <Link href="/admin/watchlist">
+                  <IoStarOutline className="menu-item-icon" />
+                  Watchlist
+                </Link>
+                <Link href="/admin/subscriptions">
+                  <IoCardOutline className="menu-item-icon" />
+                  Subscriptions
+                </Link>
+                <Link href="/admin/referrals">
+                  <IoPeopleOutline className="menu-item-icon" />
+                  Referrals
+                </Link>
+                <Link href="/admin/pro">
+                  <IoLocationOutline className="menu-item-icon" />
+                  My addresses
+                </Link>
+                <Link href="/admin/api">
+                  <IoKeyOutline className="menu-item-icon" />
+                  API management
+                </Link>
                 <span onClick={signOutPro} className="link">
+                  <IoLogOutOutline className="menu-item-icon" />
                   {t('signin.signout')}
                 </span>
               </>
