@@ -346,6 +346,7 @@ export default function Account({
   const [dexOrdersDisplayLimit, setDexOrdersDisplayLimit] = useState(OBJECT_PREVIEW_LIMIT)
   const [checksDisplayLimit, setChecksDisplayLimit] = useState(OBJECT_PREVIEW_LIMIT)
   const [escrowsDisplayLimit, setEscrowsDisplayLimit] = useState(OBJECT_PREVIEW_LIMIT)
+  const [paychannelsDisplayLimit, setPaychannelsDisplayLimit] = useState(OBJECT_PREVIEW_LIMIT)
   const [expandedActivatedKey, setExpandedActivatedKey] = useState(null)
   const [expandedCheckKey, setExpandedCheckKey] = useState(null)
   const [expandedEscrowKey, setExpandedEscrowKey] = useState(null)
@@ -966,6 +967,11 @@ export default function Account({
   const showPaychannelsTabs = hasIncomingPaychannels && hasOutgoingPaychannels
   const activePaychannelsTab = showPaychannelsTabs ? paychannelsTab : hasOutgoingPaychannels ? 'outgoing' : 'incoming'
   const activePaychannelsList = activePaychannelsTab === 'outgoing' ? outgoingPaychannels : incomingPaychannels
+  const activePaychannelsPreview = activePaychannelsList.slice(0, paychannelsDisplayLimit)
+  const activePaychannelsShowMoreAvailable = activePaychannelsList.length > activePaychannelsPreview.length
+  const activePaychannelsRemainingCount = Math.max(activePaychannelsList.length - activePaychannelsPreview.length, 0)
+  const showPaychannelsFewerButton = paychannelsDisplayLimit > OBJECT_PREVIEW_LIMIT
+  const showPaychannelsControlsVisible = activePaychannelsShowMoreAvailable || showPaychannelsFewerButton
   const paychannelsSectionTitle = showPaychannelsTabs
     ? 'Paychannels'
     : activePaychannelsTab === 'outgoing'
@@ -1334,6 +1340,7 @@ export default function Account({
     setDexOrdersDisplayLimit(OBJECT_PREVIEW_LIMIT)
     setChecksDisplayLimit(OBJECT_PREVIEW_LIMIT)
     setEscrowsDisplayLimit(OBJECT_PREVIEW_LIMIT)
+    setPaychannelsDisplayLimit(OBJECT_PREVIEW_LIMIT)
     setExpandedNftCardKey(null)
     setExpandedNftOfferKey(null)
     setExpandedDexOrderKey(null)
@@ -1457,6 +1464,11 @@ export default function Account({
       setPaychannelsTab('outgoing')
     }
   }, [showPaychannelsTabs, paychannelsTab, hasOutgoingPaychannels, hasIncomingPaychannels])
+
+  useEffect(() => {
+    setExpandedPaychannelKey(null)
+    setPaychannelsDisplayLimit(OBJECT_PREVIEW_LIMIT)
+  }, [paychannelsTab, data?.address, effectiveLedgerTimestamp])
 
   // Fetch tokens
   useEffect(() => {
@@ -6997,9 +7009,9 @@ export default function Account({
                   </div>
                 )}
 
-                <div className="checks-wrapper">
-                  <div className="checks-details">
-                    <div className="checks-list cards-list">
+                <div className="object-cards-wrapper">
+                  <div className="object-cards-details">
+                    <div className="object-cards-list cards-list">
                       {activeChecksPreview.map((check, index) => {
                         const checkKey = `${check?.index || 'check'}-${activeChecksTab}-${index}`
                         const isExpanded = expandedCheckKey === checkKey
@@ -7217,9 +7229,9 @@ export default function Account({
                   </div>
                 )}
 
-                <div className="escrow-wrapper">
-                  <div className="escrow-details">
-                    <div className="escrow-list cards-list">
+                <div className="object-cards-wrapper">
+                  <div className="object-cards-details">
+                    <div className="object-cards-list cards-list">
                       {activeEscrowsPreview.map((escrow, index) => {
                         const escrowKey = `${escrow?.index || 'escrow'}-${activeEscrowsTab}-${index}`
                         const isExpanded = expandedEscrowKey === escrowKey
@@ -8024,139 +8036,178 @@ export default function Account({
                   </div>
                 )}
 
-                <div className="object-list cards-list">
-                  {activePaychannelsList.map((channel, index) => {
-                    const channelObjectId = channel?.index || channel?.Index
-                    const channelKey = `${channelObjectId || 'paychannel'}-${activePaychannelsTab}-${index}`
-                    const isExpanded = expandedPaychannelKey === channelKey
-                    const isOutgoingPaychannel = activePaychannelsTab === 'outgoing'
-                    const counterpartName = activePaychannelsTab === 'outgoing' ? 'Destination' : 'Account'
-                    const counterpartData = {
-                      ...channel,
-                      destinationDetails: channel?.destinationDetails || channel?.DestinationDetails,
-                      accountDetails: channel?.accountDetails || channel?.AccountDetails
-                    }
-                    const counterpartAddress =
-                      activePaychannelsTab === 'outgoing' ? channel?.Destination : channel?.Account
-                    const amountText = amountFormat(channel?.Amount, { short: true, maxFractionDigits: 2 })
-                    const balanceText = amountFormat(channel?.Balance, { short: true, maxFractionDigits: 2 })
-                    const balanceFiatNode = tokenToFiat({
-                      amount: channel?.Balance,
-                      selectedCurrency,
-                      fiatRate: pageFiatRate,
-                      asText: true
-                    })
-                    const counterpartLabel = activePaychannelsTab === 'outgoing' ? 'To' : 'From'
-                    const amountDisplay = amountText || '-'
-                    const balanceDisplay = balanceText || '-'
-                    const balanceFiatText = balanceFiatNode || '—'
+                <div className="object-cards-wrapper">
+                  <div className="object-cards-details">
+                    <div className="object-cards-list cards-list">
+                      {activePaychannelsPreview.map((channel, index) => {
+                        const channelObjectId = channel?.index || channel?.Index
+                        const channelKey = `${channelObjectId || 'paychannel'}-${activePaychannelsTab}-${index}`
+                        const isExpanded = expandedPaychannelKey === channelKey
+                        const isOutgoingPaychannel = activePaychannelsTab === 'outgoing'
+                        const counterpartName = activePaychannelsTab === 'outgoing' ? 'Destination' : 'Account'
+                        const counterpartData = {
+                          ...channel,
+                          destinationDetails: channel?.destinationDetails || channel?.DestinationDetails,
+                          accountDetails: channel?.accountDetails || channel?.AccountDetails
+                        }
+                        const counterpartAddress =
+                          activePaychannelsTab === 'outgoing' ? channel?.Destination : channel?.Account
+                        const amountText = amountFormat(channel?.Amount, { short: true, maxFractionDigits: 2 })
+                        const balanceText = amountFormat(channel?.Balance, { short: true, maxFractionDigits: 2 })
+                        const balanceFiatNode = tokenToFiat({
+                          amount: channel?.Balance,
+                          selectedCurrency,
+                          fiatRate: pageFiatRate,
+                          asText: true
+                        })
+                        const counterpartLabel = activePaychannelsTab === 'outgoing' ? 'To' : 'From'
+                        const amountDisplay = amountText || '-'
+                        const balanceDisplay = balanceText || '-'
+                        const balanceFiatText = balanceFiatNode || '—'
 
-                    return (
-                      <div
-                        className={`asset-item token-asset-item expandable-card paychannel-asset-item ${isExpanded ? 'expanded' : ''}`}
-                        key={channelKey}
-                        onClick={() => setExpandedPaychannelKey(isExpanded ? null : channelKey)}
-                      >
-                        <div className="asset-main paychannel-card-main">
-                          <div className="asset-logo">
-                            <div className="paychannel-counterparty">
-                              <span className="paychannel-counterparty-label">{counterpartLabel}:</span>
-                              <span className="paychannel-counterparty-value">
-                                {counterpartAddress ? (
-                                  <AddressWithIconInline
-                                    data={counterpartData}
-                                    name={counterpartName}
-                                    options={{ short: 6 }}
-                                  />
-                                ) : (
-                                  '-'
-                                )}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="asset-value paychannel-metrics">
-                            <span className="paychannel-metric-caption">Amount / Balance</span>
-                            <div className="paychannel-metric-main">
-                              <span className="paychannel-metric-balance">{balanceDisplay}</span>
-                              <span className="paychannel-metric-separator">/</span>
-                              <span className="paychannel-metric-amount">{amountDisplay}</span>
-                            </div>
-                            {balanceFiatText !== '—' && (
-                              <span className="paychannel-metric-fiat" suppressHydrationWarning>
-                                {balanceFiatText}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {isExpanded && (
-                          <div className="asset-details">
-                            <div className="detail-row">
-                              <span>{counterpartLabel}:</span>
-                              <span>
-                                {isOutgoingPaychannel && counterpartAddress ? (
-                                  <span className="copy-inline">
-                                    <span onClick={(event) => event.stopPropagation()}>
+                        return (
+                          <div
+                            className={`asset-item token-asset-item expandable-card paychannel-asset-item ${isExpanded ? 'expanded' : ''}`}
+                            key={channelKey}
+                            onClick={() => setExpandedPaychannelKey(isExpanded ? null : channelKey)}
+                          >
+                            <div className="asset-main paychannel-card-main">
+                              <div className="asset-logo">
+                                <div className="paychannel-counterparty">
+                                  <span className="paychannel-counterparty-label">{counterpartLabel}:</span>
+                                  <span className="paychannel-counterparty-value">
+                                    {counterpartAddress ? (
                                       <AddressWithIconInline
-                                        data={{ address: counterpartAddress }}
-                                        options={{ short: 6, showAddress: true }}
+                                        data={counterpartData}
+                                        name={counterpartName}
+                                        options={{ short: 6 }}
                                       />
-                                    </span>
-                                    <span onClick={(event) => event.stopPropagation()}>
-                                      <CopyButton text={counterpartAddress} />
-                                    </span>
+                                    ) : (
+                                      '-'
+                                    )}
                                   </span>
-                                ) : counterpartAddress ? (
-                                  <AddressWithIconInline
-                                    data={{ [counterpartName]: counterpartAddress }}
-                                    name={counterpartName}
-                                    options={{ short: 6, showAddress: true }}
-                                  />
-                                ) : (
-                                  '-'
-                                )}
-                              </span>
-                            </div>
-                            <div className="detail-row">
-                              <span>Amount:</span>
-                              <span>{amountDisplay}</span>
-                            </div>
-                            <div className="detail-row">
-                              <span>Balance:</span>
-                              <span>
-                                {balanceDisplay}
+                                </div>
+                              </div>
+                              <div className="asset-value paychannel-metrics">
+                                <span className="paychannel-metric-caption">Amount / Balance</span>
+                                <div className="paychannel-metric-main">
+                                  <span className="paychannel-metric-balance">{balanceDisplay}</span>
+                                  <span className="paychannel-metric-separator">/</span>
+                                  <span className="paychannel-metric-amount">{amountDisplay}</span>
+                                </div>
                                 {balanceFiatText !== '—' && (
-                                  <span className="fiat-line" suppressHydrationWarning>
-                                    {' '}
+                                  <span className="paychannel-metric-fiat" suppressHydrationWarning>
                                     {balanceFiatText}
                                   </span>
                                 )}
-                              </span>
+                              </div>
                             </div>
-                            {channelObjectId && (
-                              <div className="detail-row">
-                                <span>Object:</span>
-                                <span className="copy-inline">
-                                  <span>{shortHash(channelObjectId)}</span>
-                                  <Link
-                                    href={`/object/${channelObjectId}`}
-                                    className="inline-link-icon tooltip"
-                                    onClick={(event) => event.stopPropagation()}
-                                  >
-                                    <LinkIcon />
-                                    <span className="tooltiptext no-brake">Object page</span>
-                                  </Link>
-                                  <span onClick={(event) => event.stopPropagation()}>
-                                    <CopyButton text={channelObjectId} />
+
+                            {isExpanded && (
+                              <div className="asset-details">
+                                <div className="detail-row">
+                                  <span>{counterpartLabel}:</span>
+                                  <span>
+                                    {isOutgoingPaychannel && counterpartAddress ? (
+                                      <span className="copy-inline">
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <AddressWithIconInline
+                                            data={{ address: counterpartAddress }}
+                                            options={{ short: 6, showAddress: true }}
+                                          />
+                                        </span>
+                                        <span onClick={(event) => event.stopPropagation()}>
+                                          <CopyButton text={counterpartAddress} />
+                                        </span>
+                                      </span>
+                                    ) : counterpartAddress ? (
+                                      <AddressWithIconInline
+                                        data={{ [counterpartName]: counterpartAddress }}
+                                        name={counterpartName}
+                                        options={{ short: 6, showAddress: true }}
+                                      />
+                                    ) : (
+                                      '-'
+                                    )}
                                   </span>
-                                </span>
+                                </div>
+                                <div className="detail-row">
+                                  <span>Amount:</span>
+                                  <span>{amountDisplay}</span>
+                                </div>
+                                <div className="detail-row">
+                                  <span>Balance:</span>
+                                  <span>
+                                    {balanceDisplay}
+                                    {balanceFiatText !== '—' && (
+                                      <span className="fiat-line" suppressHydrationWarning>
+                                        {' '}
+                                        {balanceFiatText}
+                                      </span>
+                                    )}
+                                  </span>
+                                </div>
+                                {channelObjectId && (
+                                  <div className="detail-row">
+                                    <span>Object:</span>
+                                    <span className="copy-inline">
+                                      <span>{shortHash(channelObjectId)}</span>
+                                      <Link
+                                        href={`/object/${channelObjectId}`}
+                                        className="inline-link-icon tooltip"
+                                        onClick={(event) => event.stopPropagation()}
+                                      >
+                                        <LinkIcon />
+                                        <span className="tooltiptext no-brake">Object page</span>
+                                      </Link>
+                                      <span onClick={(event) => event.stopPropagation()}>
+                                        <CopyButton text={channelObjectId} />
+                                      </span>
+                                    </span>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>
+                        )
+                      })}
+                    </div>
+                    {showPaychannelsControlsVisible && (
+                      <div className="asset-compact-actions">
+                        {activePaychannelsShowMoreAvailable && (
+                          <button
+                            type="button"
+                            className="asset-compact-toggle"
+                            onClick={() =>
+                              setPaychannelsDisplayLimit((currentLimit) =>
+                                Math.min(activePaychannelsList.length, currentLimit + OBJECT_LOAD_MORE_STEP)
+                              )
+                            }
+                          >
+                            Show {Math.min(OBJECT_LOAD_MORE_STEP, activePaychannelsRemainingCount)} more paychannels
+                          </button>
+                        )}
+                        {activePaychannelsShowMoreAvailable && (
+                          <button
+                            type="button"
+                            className="asset-compact-toggle"
+                            onClick={() => setPaychannelsDisplayLimit(activePaychannelsList.length)}
+                          >
+                            Show all paychannels
+                          </button>
+                        )}
+                        {showPaychannelsFewerButton && (
+                          <button
+                            type="button"
+                            className="asset-compact-toggle"
+                            onClick={() => setPaychannelsDisplayLimit(OBJECT_PREVIEW_LIMIT)}
+                          >
+                            Show fewer paychannels
+                          </button>
                         )}
                       </div>
-                    )
-                  })}
+                    )}
+                  </div>
                 </div>
               </>
             )}
@@ -10136,33 +10187,21 @@ export default function Account({
           transform: none;
         }
 
-        .checks-wrapper {
+        .object-cards-wrapper {
           background: transparent;
           border-radius: 0;
           margin-top: 6px;
         }
 
-        .checks-details,
-        .escrow-details {
+        .object-cards-details {
           margin-top: 0;
           padding-top: 0;
         }
 
-        .checks-list,
-        .escrow-list,
+        .object-cards-list,
         .object-list {
           display: flex;
           flex-direction: column;
-        }
-
-        .checks-list {
-          gap: 8px;
-        }
-
-        .escrow-wrapper {
-          background: transparent;
-          border-radius: 0;
-          margin-top: 6px;
         }
 
         .expandable-card {
@@ -10272,12 +10311,12 @@ export default function Account({
         }
 
         .paychannel-asset-item {
-          --asset-card-body-min-height: 58px;
+          --asset-card-body-min-height: 46px;
         }
 
         .paychannel-card-main {
           align-items: center;
-          gap: 24px;
+          gap: 12px;
         }
 
         .paychannel-counterparty {
@@ -10301,7 +10340,7 @@ export default function Account({
         .paychannel-metrics {
           display: flex;
           flex-direction: column;
-          gap: 1px;
+          gap: 0;
           align-items: flex-end;
           justify-content: center;
           flex-wrap: nowrap;
@@ -10312,12 +10351,13 @@ export default function Account({
         }
 
         .paychannel-metric-caption {
+          display: block;
           font-size: 10px;
           font-weight: 600;
-          letter-spacing: 0.03em;
+          letter-spacing: 0.02em;
           text-transform: uppercase;
           color: var(--text-secondary);
-          line-height: 1.1;
+          line-height: 1;
         }
 
         .paychannel-metric-main {
@@ -10343,12 +10383,13 @@ export default function Account({
         }
 
         .paychannel-metric-fiat {
-          font-size: 11px;
+          font-size: 10px;
           color: var(--text-secondary);
           white-space: nowrap;
           text-align: right;
           overflow: hidden;
           text-overflow: ellipsis;
+          line-height: 1.1;
         }
 
         @media (max-width: 768px) {
