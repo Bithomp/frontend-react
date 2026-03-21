@@ -7044,6 +7044,29 @@ export default function Account({
                           !!setSignRequest &&
                           !effectiveLedgerTimestamp &&
                           (check?.Destination === account?.address || check?.Account === account?.address || isExpired)
+                        const disabledRedeemCheckTooltip = (() => {
+                          if (canRedeem) return ''
+                          if (!setSignRequest) return 'Connect wallet to redeem this check'
+                          if (isExpired) return 'This check is expired'
+                          if (!account?.address) return 'Connect wallet to redeem this check'
+                          if (check?.Destination && check.Destination !== account.address) {
+                            return 'Only destination account can redeem it'
+                          }
+                          return 'This check cannot be redeemed'
+                        })()
+                        const disabledCancelCheckTooltip = (() => {
+                          if (canCancel) return ''
+                          if (!setSignRequest) return 'Connect wallet to cancel this check'
+                          if (!account?.address) return 'Connect wallet to cancel this check'
+                          if (
+                            !isExpired &&
+                            check?.Destination !== account.address &&
+                            check?.Account !== account.address
+                          ) {
+                            return 'Only source or destination account can cancel it'
+                          }
+                          return 'This check cannot be canceled'
+                        })()
 
                         return (
                           <div
@@ -7103,42 +7126,50 @@ export default function Account({
 
                                 {!effectiveLedgerTimestamp && (
                                   <div className="card-actions" onClick={(event) => event.stopPropagation()}>
-                                    <button
-                                      type="button"
-                                      className={`card-action-btn ${canRedeem ? 'redeem' : 'disabled'}`}
-                                      disabled={!canRedeem}
-                                      onClick={() => {
-                                        if (!canRedeem) return
-                                        setSignRequest({
-                                          request: {
-                                            TransactionType: 'CheckCash',
-                                            Account: check.Destination,
-                                            Amount: check.SendMax,
-                                            CheckID: check.index
-                                          }
-                                        })
-                                      }}
-                                      title="Redeem"
-                                    >
-                                      <TbPigMoney /> Redeem
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className={`card-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
-                                      disabled={!canCancel}
-                                      onClick={() => {
-                                        if (!canCancel) return
-                                        setSignRequest({
-                                          request: {
-                                            TransactionType: 'CheckCancel',
-                                            CheckID: check.index
-                                          }
-                                        })
-                                      }}
-                                      title="Cancel"
-                                    >
-                                      <MdMoneyOff /> Cancel
-                                    </button>
+                                    <span className={disabledRedeemCheckTooltip ? 'tooltip' : ''}>
+                                      <button
+                                        type="button"
+                                        className={`card-action-btn ${canRedeem ? 'redeem' : 'disabled'}`}
+                                        disabled={!canRedeem}
+                                        onClick={() => {
+                                          if (!canRedeem) return
+                                          setSignRequest({
+                                            request: {
+                                              TransactionType: 'CheckCash',
+                                              Account: check.Destination,
+                                              Amount: check.SendMax,
+                                              CheckID: check.index
+                                            }
+                                          })
+                                        }}
+                                      >
+                                        <TbPigMoney /> Redeem
+                                      </button>
+                                      {!!disabledRedeemCheckTooltip && (
+                                        <span className="tooltiptext no-brake">{disabledRedeemCheckTooltip}</span>
+                                      )}
+                                    </span>
+                                    <span className={disabledCancelCheckTooltip ? 'tooltip' : ''}>
+                                      <button
+                                        type="button"
+                                        className={`card-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
+                                        disabled={!canCancel}
+                                        onClick={() => {
+                                          if (!canCancel) return
+                                          setSignRequest({
+                                            request: {
+                                              TransactionType: 'CheckCancel',
+                                              CheckID: check.index
+                                            }
+                                          })
+                                        }}
+                                      >
+                                        <MdMoneyOff /> Cancel
+                                      </button>
+                                      {!!disabledCancelCheckTooltip && (
+                                        <span className="tooltiptext no-brake">{disabledCancelCheckTooltip}</span>
+                                      )}
+                                    </span>
                                   </div>
                                 )}
                               </div>
@@ -9221,7 +9252,8 @@ export default function Account({
         }
 
         @keyframes avatarRingPulse {
-          0%, 100% {
+          0%,
+          100% {
             border-color: var(--accent-link);
             box-shadow:
               0 0 8px color-mix(in srgb, var(--accent-link) 62%, transparent),
