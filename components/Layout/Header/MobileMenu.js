@@ -161,6 +161,9 @@ export default function MobileMenu({
           <Link href="/services/account-settings/" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.account-settings')}
           </Link>
+          <Link href="/faucet" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.developers.faucet')}
+          </Link>
           <Link href="/services" className="mobile-menu-item" onClick={mobileMenuToggle}>
             <b>{t('menu.services.view-all-services')}</b>
           </Link>

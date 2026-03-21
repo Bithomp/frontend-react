@@ -400,6 +400,7 @@ export default function Header({
             <Link href="/username">{t('menu.services.username')}</Link>
             <Link href="/learn/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
             <Link href="/services/account-settings/">{t('menu.services.account-settings')}</Link>
+            <Link href="/faucet">{t('menu.developers.faucet')}</Link>
             <hr className="hr" />
             <Link href="/services">
               <b>{t('menu.services.view-all-services')}</b>
