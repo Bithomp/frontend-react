@@ -4,6 +4,7 @@ import { broadcastTransaction, getNextTransactionParams } from './user'
 import { encode } from 'xrpl-binary-codec-prerelease'
 import { nativeCurrency, xahauNetwork } from '.'
 import { xahauDefinitions } from './xahau'
+import axios from 'axios'
 
 const errorHandle = (error) => {
   const msg = String(error?.message || error)
@@ -226,6 +227,118 @@ export const ledgerwalletGetAddresses = async ({ start = 0, count = 20 } = {}) =
   }
 
   return entries
+}
+
+const isLedgerLockErrorMessage = ({ message, nativeCurrencyValue }) => {
+  const msg = String(message || '')
+  const lower = msg.toLowerCase()
+  return (
+    msg.includes('already in use') ||
+    msg.includes('already open') ||
+    msg.includes('InvalidState') ||
+    lower.includes('locked') ||
+    lower.includes('open the xrp app') ||
+    lower.includes('open the ' + String(nativeCurrencyValue || 'xrp').toLowerCase() + ' app')
+  )
+}
+
+export const ledgerwalletNeedsReconnectFromStatus = ({ statusText, nativeCurrencyValue }) => {
+  const lower = String(statusText || '').toLowerCase()
+  return (
+    lower.includes('locked') ||
+    lower.includes('open the xrp app') ||
+    lower.includes('open the ' + String(nativeCurrencyValue || 'xrp').toLowerCase() + ' app')
+  )
+}
+
+export const ledgerwalletGetAddressesWithBalances = async ({ start = 0, count = 10, nativeCurrencyValue }) => {
+  let discovered
+
+  try {
+    discovered = await ledgerwalletGetAddresses({ start, count })
+  } catch (err) {
+    const lockError = isLedgerLockErrorMessage({
+      message: err?.message || err,
+      nativeCurrencyValue
+    })
+    if (!lockError) throw err
+
+    await ledgerwalletForceReset()
+    await new Promise((resolve) => setTimeout(resolve, 250))
+    discovered = await ledgerwalletGetAddresses({ start, count })
+  }
+
+  const rows = discovered.map((item) => ({
+    ...item,
+    username: null,
+    balanceDrops: null,
+    isFunded: false
+  }))
+
+  const enrichPromise = Promise.all(
+    discovered.map(async (item) => {
+      try {
+        const [balanceResponse, usernameResponse] = await Promise.allSettled([
+          axios('/xrpl/accounts/' + item.address),
+          axios('/v2/address/' + item.address + '?username=true')
+        ])
+
+        const balanceNative =
+          balanceResponse.status === 'fulfilled' ? Number(balanceResponse.value?.data?.account_data?.balance) : 0
+        const username = usernameResponse.status === 'fulfilled' ? usernameResponse.value?.data?.username || null : null
+
+        return {
+          ...item,
+          username,
+          balanceDrops: Number.isFinite(balanceNative) ? balanceNative : 0,
+          isFunded: Number.isFinite(balanceNative) ? balanceNative > 0 : false
+        }
+      } catch (_) {
+        return {
+          ...item,
+          username: null,
+          balanceDrops: 0,
+          isFunded: false
+        }
+      }
+    })
+  )
+
+  return { rows, enrichPromise }
+}
+
+export const ledgerwalletBuildConnectSelection = ({ ledgerAccounts, ledgerSelectedAddresses }) => {
+  const visibleAddresses = (ledgerAccounts || []).map((item) => item.address)
+  const selectedVisible = (ledgerSelectedAddresses || []).filter((addressItem) =>
+    visibleAddresses.includes(addressItem)
+  )
+
+  if (!selectedVisible.length) {
+    return null
+  }
+
+  const ordered = (ledgerSelectedAddresses || [])
+    .filter((addressItem) => selectedVisible.includes(addressItem))
+    .map((addressItem) => (ledgerAccounts || []).find((item) => item.address === addressItem))
+    .filter(Boolean)
+
+  const walletMetaMap = {}
+  const usernameMap = {}
+
+  for (const entry of ordered) {
+    walletMetaMap[entry.address] = {
+      derivationPath: entry.path,
+      publicKey: entry.publicKey || null,
+      accountIndex: entry.accountIndex
+    }
+    usernameMap[entry.address] = entry.username || null
+  }
+
+  return {
+    addresses: ordered.map((item) => item.address),
+    walletMetaMap,
+    usernameMap
+  }
 }
 
 // one helper for both XRPL & Xahau

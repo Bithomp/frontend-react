@@ -282,6 +282,9 @@ export default function Header({
     if (provider === 'xyra') {
       return <Image src="/images/wallets/xyra.svg" alt="Xyra Wallet" {...shared} />
     }
+    if (provider === 'dcent') {
+      return <Image src="/images/wallets/square-logos/dcent.png" alt="D'Cent Wallet" {...shared} style={{ borderRadius: '50%' }} />
+    }
 
     return null
   }
