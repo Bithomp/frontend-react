@@ -3789,11 +3789,13 @@ export default function Account({
                 issuer?.issuer === TESTNET_RLUSD_ISSUER
               const trustlineCurrencyCode = token.Balance?.currency
               const trustlineCurrencyCodeDisplay = trustlineCurrencyCode?.replace(/0+$/, '') || trustlineCurrencyCode
+              const hasPositiveTokenBalance = Number(balance) > 0
               const canSendToken =
                 !!setSignRequest &&
                 !!account?.address &&
                 isOwnAccount &&
                 !effectiveLedgerTimestamp &&
+                hasPositiveTokenBalance &&
                 !!issuer?.issuer &&
                 !!trustlineCurrencyCode
               const disabledSendTokenTooltip = (() => {
@@ -3801,6 +3803,7 @@ export default function Account({
                 if (!setSignRequest || !account?.address) return 'Only logged in users can do it'
                 if (!isOwnAccount) return 'Only the viewed account can do it'
                 if (effectiveLedgerTimestamp) return 'Unavailable in historical mode'
+                if (!hasPositiveTokenBalance) return 'Send is available only when your token balance is above 0'
                 if (!issuer?.issuer || !trustlineCurrencyCode) return 'Trustline data is incomplete'
                 return 'Send is unavailable'
               })()
