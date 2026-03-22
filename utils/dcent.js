@@ -34,6 +34,79 @@ const getDcentDerivationPath = (accountIndex = 0) => `m/44'/144'/${accountIndex}
 
 const encodeTx = (tx) => (xahauNetwork ? encode(tx, xahauDefinitions) : encode(tx))
 
+const TF_FULLY_CANONICAL_SIG = 0x80000000
+
+const stripUndefinedDeep = (value) => {
+  if (Array.isArray(value)) {
+    return value.map((item) => stripUndefinedDeep(item)).filter((item) => item !== undefined)
+  }
+
+  if (value && typeof value === 'object') {
+    const next = {}
+    Object.entries(value).forEach(([key, nested]) => {
+      if (nested === undefined || nested === null) return
+      const cleaned = stripUndefinedDeep(nested)
+      if (cleaned !== undefined) next[key] = cleaned
+    })
+    return next
+  }
+
+  return value
+}
+
+const toFiniteNumber = (value) => {
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  if (typeof value === 'string' && value.trim() !== '') {
+    const parsed = Number(value)
+    if (Number.isFinite(parsed)) return parsed
+  }
+  return undefined
+}
+
+const normalizeFlags = (flags) => {
+  if (flags === undefined || flags === null) return undefined
+
+  let parsed
+  if (typeof flags === 'number') {
+    parsed = flags
+  } else if (typeof flags === 'string') {
+    const raw = flags.trim().toLowerCase()
+    if (raw.startsWith('0x')) parsed = Number.parseInt(raw, 16)
+    else parsed = Number(raw)
+  }
+
+  if (!Number.isFinite(parsed)) return undefined
+  return (parsed | TF_FULLY_CANONICAL_SIG) >>> 0
+}
+
+const normalizeDcentXrpTx = ({ tx, address, fallbackFee, fallbackSequence }) => {
+  const normalized = stripUndefinedDeep({ ...tx })
+
+  if (!normalized.Account && address) normalized.Account = address
+  if (normalized.Account !== undefined) normalized.Account = String(normalized.Account)
+  if (normalized.TransactionType !== undefined) normalized.TransactionType = String(normalized.TransactionType)
+
+  const normalizedSequence = toFiniteNumber(normalized.Sequence)
+  normalized.Sequence = Number.isFinite(normalizedSequence)
+    ? normalizedSequence
+    : Number(toFiniteNumber(fallbackSequence) ?? 0)
+
+  const feeValue = normalized.Fee ?? fallbackFee ?? '12'
+  normalized.Fee = String(feeValue)
+
+  const normalizedLastLedgerSequence = toFiniteNumber(normalized.LastLedgerSequence)
+  if (normalizedLastLedgerSequence !== undefined) {
+    normalized.LastLedgerSequence = normalizedLastLedgerSequence
+  }
+
+  const normalizedFlags = normalizeFlags(normalized.Flags)
+  if (normalizedFlags !== undefined) {
+    normalized.Flags = normalizedFlags
+  }
+
+  return normalized
+}
+
 export const dcentErrorMessage = (e) => {
   const code = e?.body?.error?.code || e?.code || ''
   const msg = e?.body?.error?.message || e?.message || String(e)
@@ -46,6 +119,9 @@ export const dcentErrorMessage = (e) => {
   if (code === 'user_cancel') return "Transaction signing cancelled on D'Cent device."
   if (code === 'pop-up_closed') return "D'Cent Bridge popup was closed. Please try again."
   if (code === 'time_out') return "D'Cent request timed out. Please try again."
+  if (code === 'invalid_format') {
+    return "D'Cent rejected the transaction format. Please update D'Cent Bridge/device firmware and try again."
+  }
   if (code === 'param_error') return "Invalid transaction parameters for D'Cent: " + msg
   return msg || "D'Cent wallet error"
 }
@@ -173,10 +249,12 @@ export const dcentTxSend = async ({
       setStatus("Please confirm the transaction on your D'Cent device.")
       setAwaiting(true)
 
-      const txToSign = { ...tx }
-      if (!txToSign.Account) txToSign.Account = address
-      txToSign.Fee = String(txToSign.Fee || '12')
-      txToSign.Sequence = Number(txToSign.Sequence || 0)
+      const txToSign = normalizeDcentXrpTx({
+        tx,
+        address,
+        fallbackFee: tx?.Fee,
+        fallbackSequence: tx?.Sequence
+      })
 
       const result = await DcentWebConnector.getXrpSignedTransaction(txToSign, keyPath)
       DcentWebConnector.popupWindowClose()
@@ -209,10 +287,17 @@ export const dcentTxSend = async ({
     tx.LastLedgerSequence = params.LastLedgerSequence
     if (!tx.Account) tx.Account = address
 
+    const txToSign = normalizeDcentXrpTx({
+      tx,
+      address,
+      fallbackFee: params.Fee,
+      fallbackSequence: params.Sequence
+    })
+
     setStatus("Please confirm the transaction on your D'Cent device.")
     setAwaiting(true)
 
-    const result = await DcentWebConnector.getXrpSignedTransaction(tx, keyPath)
+    const result = await DcentWebConnector.getXrpSignedTransaction(txToSign, keyPath)
     DcentWebConnector.popupWindowClose()
     setAwaiting(false)
 
@@ -222,9 +307,9 @@ export const dcentTxSend = async ({
       return
     }
 
-    tx.TxnSignature = sign.toUpperCase()
-    tx.SigningPubKey = pubkey.toUpperCase()
-    const blob = encodeTx(tx)
+    txToSign.TxnSignature = sign.toUpperCase()
+    txToSign.SigningPubKey = pubkey.toUpperCase()
+    const blob = encodeTx(txToSign)
 
     setStatus('Submitting transaction to the network...')
     setAwaiting(true)
@@ -233,10 +318,10 @@ export const dcentTxSend = async ({
       setStatus,
       onSignIn,
       afterSubmitExe,
-      address: tx.Account,
+      address: txToSign.Account,
       wallet,
       signRequest,
-      tx,
+      tx: txToSign,
       setAwaiting,
       t
     })
