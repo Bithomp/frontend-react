@@ -618,74 +618,107 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
       <span>{content}</span>
     </div>
   )
-  if (memos && Array.isArray(memos)) {
-    for (let j = 0; j < memos.length; j++) {
-      const memo = memos[j]
-      let memotype = memo?.type
-      let memopiece = memo?.data
-      let memoformat = memo?.format
-      let hiddenMemoPiece = null
 
-      const redFlags = ['airdrop', 'claim', 'reward', 'giveaway']
+  const normalizeMemo = (memo) => {
+    let memotype = memo?.type
+    let memopiece = memo?.data
+    let memoformat = memo?.format
+    let hiddenMemoPiece = null
+    const hadMemoPiece = Boolean(memopiece)
 
-      const memop = memopiece?.toString().toLowerCase() || ''
+    const redFlags = ['airdrop', 'claim', 'reward', 'giveaway']
+    const memop = memopiece?.toString().toLowerCase() || ''
 
-      if (redFlags.some((flag) => memop.includes(flag))) {
-        if (type === 'tr') {
-          memopiece = memop.replace(
-            /\b(https?:\/\/\S+|www\.\S+|[a-z0-9-]+\.(com|net|org|io|xyz|site|app|info|biz|ru|de|fr|es|co)(\/\S*)?)\b/gi,
-            '***hidden url***'
-          )
+    if (redFlags.some((flag) => memop.includes(flag))) {
+      if (type === 'tr') {
+        memopiece = memop.replace(
+          /\b(https?:\/\/\S+|www\.\S+|[a-z0-9-]+\.(com|net|org|io|xyz|site|app|info|biz|ru|de|fr|es|co)(\/\S*)?)\b/gi,
+          '***hidden url***'
+        )
+      } else {
+        return { skip: true }
+      }
+    }
+
+    if (!memopiece && memoformat?.slice(0, 2) === 'rt') {
+      memopiece = memoformat
+    }
+
+    let clientname = ''
+
+    if (memopiece) {
+      if (memopiece.includes('xrplexplorer.com') || memopiece.includes('bithomp.com')) {
+        // keep it for testnetworks
+        hiddenMemoPiece = memopiece
+        clientname = memopiece.replace(/xrplexplorer\.com/g, 'bithomp.com')
+        if (memopiece.includes(' faucet')) {
+          clientname = memopiece.replace(' faucet', '/faucet')
+        }
+        memopiece = ''
+      } else if (memopiece.includes('xahauexplorer.com')) {
+        hiddenMemoPiece = memopiece
+        clientname = memopiece
+        if (memopiece.includes(' faucet')) {
+          clientname = memopiece.replace(' faucet', '/faucet')
+        }
+        memopiece = ''
+      } else if (memopiece.includes('initiated via xmagnetic.org')) {
+        hiddenMemoPiece = memopiece
+        clientname = 'xmagnetic.org'
+        memopiece = ''
+      }
+
+      if (memotype) {
+        if (memotype.slice(0, 25) === '[https://xumm.community]-') {
+          memotype = memotype.slice(25)
+          clientname = 'xumm.community'
+        } else if (memotype.slice(0, 24) === '[https://xrpl.services]-') {
+          memotype = memotype.slice(24)
+          clientname = 'xrpl.services'
         } else {
-          continue
+          memotype = memotype.charAt(0).toUpperCase() + memotype.slice(1)
         }
       }
+    }
 
-      if (!memopiece && memoformat?.slice(0, 2) === 'rt') {
-        memopiece = memoformat
+    return { memotype, memopiece, hiddenMemoPiece, clientname, hadMemoPiece, skip: false }
+  }
+
+  const isJwtMemo = (memopiece) =>
+    memopiece?.length > 100 && memopiece.split(' ').length === 1 && memopiece.includes('.')
+
+  const shouldRenderMemoLabel = (normalizedMemo) => {
+    if (!normalizedMemo || normalizedMemo.skip) return false
+    if (showOnlyHiddenMemos) return Boolean(normalizedMemo.hiddenMemoPiece)
+    if (!normalizedMemo.memopiece) return false
+    return !isJwtMemo(normalizedMemo.memopiece)
+  }
+
+  if (memos && Array.isArray(memos)) {
+    const normalizedMemos = memos.map(normalizeMemo)
+    const memoLabelTotal = normalizedMemos.filter(shouldRenderMemoLabel).length
+    let memoLabelIndex = 0
+
+    const getMemoLabel = () => {
+      memoLabelIndex += 1
+      return memoLabelTotal > 1 ? 'Memo ' + memoLabelIndex : 'Memo'
+    }
+
+    for (let j = 0; j < normalizedMemos.length; j++) {
+      const normalizedMemo = normalizedMemos[j]
+      if (normalizedMemo.skip) {
+        continue
       }
 
-      let clientname = ''
+      let { memotype, memopiece, hiddenMemoPiece, clientname, hadMemoPiece } = normalizedMemo
 
-      if (memopiece) {
-        if (memopiece.includes('xrplexplorer.com') || memopiece.includes('bithomp.com')) {
-          // keep it for testnetworks
-          hiddenMemoPiece = memopiece
-          clientname = memopiece.replace(/xrplexplorer\.com/g, 'bithomp.com')
-          if (memopiece.includes(' faucet')) {
-            clientname = memopiece.replace(' faucet', '/faucet')
-          }
-          memopiece = ''
-        } else if (memopiece.includes('xahauexplorer.com')) {
-          hiddenMemoPiece = memopiece
-          clientname = memopiece
-          if (memopiece.includes(' faucet')) {
-            clientname = memopiece.replace(' faucet', '/faucet')
-          }
-          memopiece = ''
-        } else if (memopiece.includes('initiated via xmagnetic.org')) {
-          hiddenMemoPiece = memopiece
-          clientname = 'xmagnetic.org'
-          memopiece = ''
-        }
-
-        if (memotype) {
-          if (memotype.slice(0, 25) === '[https://xumm.community]-') {
-            memotype = memotype.slice(25)
-            clientname = 'xumm.community'
-          } else if (memotype.slice(0, 24) === '[https://xrpl.services]-') {
-            memotype = memotype.slice(24)
-            clientname = 'xrpl.services'
-          } else {
-            memotype = memotype.charAt(0).toUpperCase() + memotype.slice(1)
-          }
-        }
-
+      if (hadMemoPiece) {
         if (showOnlyHiddenMemos) {
           if (hiddenMemoPiece) {
+            const memoLabel = getMemoLabel()
             output.push(
               <tr key={'ah' + j}>
-                <TData>Memo{memos.length > 1 ? ' ' + (j + 1) : ''}</TData>
+                <TData>{memoLabel}</TData>
                 <TData>
                   {memotype && memotype.toLowerCase() !== 'memo' && (
                     <span className="bold">
@@ -700,10 +733,11 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
           }
         } else if (decodeJsonMemo(memopiece)) {
           const decodedMemo = decodeJsonMemo(memopiece)
+          const memoLabel = getMemoLabel()
           if (type === 'tr') {
             output.push(
               <tr key={'a2' + j}>
-                <TData>Memo{memos.length > 1 ? ' ' + (j + 1) : ''}</TData>
+                <TData>{memoLabel}</TData>
                 <TData>
                   {memotype && (
                     <>
@@ -719,7 +753,7 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
             output.push(
               renderDetailRow(
                 'a2' + j,
-                'Memo' + (memos.length > 1 ? ' ' + (j + 1) : '') + ':',
+                memoLabel + ':',
                 <span className="brake">
                   {memotype && (
                     <>
@@ -735,7 +769,7 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
           } else {
             output.push(
               <React.Fragment key={'a2' + j}>
-                Memo{memos.length > 1 ? ' ' + (j + 1) : ''}:
+                {memoLabel}:
                 <br />
                 {memotype && (
                   <>
@@ -818,9 +852,10 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
           } else {
             if (memopiece) {
               if (type === 'tr') {
+                const memoLabel = getMemoLabel()
                 output.push(
                   <tr key={'a1' + j}>
-                    <TData>Memo{memos.length > 1 ? ' ' + (j + 1) : ''}</TData>
+                    <TData>{memoLabel}</TData>
                     <TData>
                       {memotype && memotype.toLowerCase() !== 'memo' && (
                         <span className="bold">
@@ -833,10 +868,11 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
                   </tr>
                 )
               } else if (type === 'detail') {
+                const memoLabel = getMemoLabel()
                 output.push(
                   renderDetailRow(
                     'a1' + j,
-                    'Memo' + (memos.length > 1 ? ' ' + (j + 1) : '') + ':',
+                    memoLabel + ':',
                     <span className="brake">
                       {memotype && memotype.toLowerCase() !== 'memo' && (
                         <>
@@ -850,10 +886,10 @@ export const memoNode = (memos, type = 'tr', options = {}) => {
                   )
                 )
               } else {
+                const memoLabel = getMemoLabel()
                 output.push(
                   <span key={'a1' + j} className="brake">
-                    Memo{memos.length > 1 ? ' ' + (j + 1) : ''}:{' '}
-                    {memotype && memotype.toLowerCase() !== 'memo' && <>{memotype + ': '}</>}
+                    {memoLabel}: {memotype && memotype.toLowerCase() !== 'memo' && <>{memotype + ': '}</>}
                     {memopiece}
                     <br />
                   </span>
