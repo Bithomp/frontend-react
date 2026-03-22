@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 
 import {
   devNet,
+  explorerName,
   xahauNetwork,
   ledgerName,
   nativeCurrency,
@@ -389,6 +390,7 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
+            <Link href="/explorer">{explorerName} Explorer</Link>
             <Link href="/services/send">{t('menu.services.send')}</Link>
             <Link href="/services/trustline">{t('menu.services.add-token')}</Link>
             <Link href="/username">{t('menu.services.username')}</Link>

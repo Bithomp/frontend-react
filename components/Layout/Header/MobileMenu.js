@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, xahauNetwork, nativeCurrency, avatarServer } from '../../../utils'
+import { devNet, explorerName, xahauNetwork, nativeCurrency, avatarServer } from '../../../utils'
 
 import Image from 'next/image'
 
@@ -146,6 +146,9 @@ export default function MobileMenu({
           <MdMiscellaneousServices style={{ marginBottom: '-2px' }} /> {t('menu.services.services')}
         </div>
         <div className="mobile-menu__submenu">
+          <Link href="/explorer" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {explorerName} Explorer
+          </Link>
           <Link href="/services/send" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.services.send')}
           </Link>

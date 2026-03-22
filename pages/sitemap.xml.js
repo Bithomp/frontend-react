@@ -2,7 +2,7 @@ import { network, server, xahauNetwork } from '../utils'
 
 const pages = [
   { loc: 'dapps', changefreq: 'daily', priority: '1' },
-  { loc: 'explorer/', changefreq: 'monthly', priority: '1' },
+  { loc: 'explorer', changefreq: 'monthly', priority: '1' },
   { loc: '', changefreq: 'always', priority: '1' },
   { loc: 'faucet', changefreq: 'monthly', priority: '1' },
   { loc: 'username', changefreq: 'monthly', priority: '1' },

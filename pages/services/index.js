@@ -10,6 +10,7 @@ import styles from '../../styles/pages/services.module.scss'
 // Icons
 import { TbSend, TbShieldCheck, TbBell } from 'react-icons/tb'
 import {
+  RiCompassDiscoverLine,
   RiFilePaper2Line,
   RiPriceTag3Line,
   RiDeleteBin6Line,
@@ -64,6 +65,7 @@ export default function ServicesPage() {
       id: 'bithomp-services',
       title: '🦩 Bithomp Services',
       items: [
+        { href: '/explorer', title: `${explorerName} Explorer`, icon: RiCompassDiscoverLine },
         { href: '/learn/xrp-xah-taxes', title: t('menu.services.tax-reports'), icon: RiFilePaper2Line },
         { href: '/username', title: t('menu.services.username'), icon: RiPriceTag3Line },
         { href: '/submit-account-information', title: t('menu.project-registration'), icon: RiFilePaper2Line },
