@@ -1,4 +1,25 @@
 .account-container {
+  .button-action.thin.narrow {
+    height: 34px;
+    line-height: 32px;
+    min-width: unset;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--background-table);
+    border-color: var(--border-color);
+    color: var(--text);
+    transition: all 0.16s ease;
+
+    &:hover:not(:disabled) {
+      border-color: var(--accent-link);
+      background: var(--background-input);
+      color: var(--text);
+    }
+  }
+
   .detail-row {
     display: flex;
     justify-content: space-between;
