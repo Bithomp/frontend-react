@@ -49,21 +49,6 @@ import { serviceUsernameOrAddressText } from '../../../utils/format'
 const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
 const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
 
-const ROUTE_TAB_MAP = [
-  { prefix: '/account/[id]/transactions', tab: 'transactions' },
-  { prefix: '/account/[id]/dex', tab: 'dex' },
-  { prefix: '/account', tab: 'account' },
-  { prefix: '/nft-explorer', tab: 'nfts' },
-  { prefix: '/nfts', tab: 'nfts' },
-  { prefix: '/nft-offers', tab: 'nft-offers' },
-  { prefix: '/nft-offer', tab: 'nft-offer' },
-  { prefix: '/nft-volumes', tab: 'nft-volumes' },
-  { prefix: '/amm', tab: 'amm' },
-  { prefix: '/nft', tab: 'nft' },
-  { prefix: '/object', tab: 'object' },
-  { prefix: '/transaction', tab: 'transaction' }
-]
-
 let timeoutIds = {}
 
 const MenuDropDown = ({
@@ -548,7 +533,7 @@ export default function Header({
             <SearchBlock
               compact={true}
               //searchPlaceholderText="Search..."
-              tab={ROUTE_TAB_MAP.find((route) => router?.pathname?.startsWith(route.prefix))?.tab}
+              tab="account"
             />
           </div>
         ) : (
