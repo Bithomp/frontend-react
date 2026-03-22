@@ -80,7 +80,7 @@ export const DAPPS_META = [
     42697468: {
       name: 'Bithomp',
       url: 'bithomp.com',
-      wallets: ['xaman', 'ledger', 'xyra', 'crossmark', 'gemwallet', 'metamask'],
+      wallets: ['xaman', 'ledger', 'dcent', 'xyra', 'crossmark', 'gemwallet', 'metamask'],
       walletconnect: ['joey', 'bifrost', 'girin', 'uphodl'],
       x: 'bithomp',
       discord: 'invite/ZahGJ29WEs',
@@ -255,13 +255,13 @@ export const DAPPS_META = [
       name: 'Frii World',
       url: 'linktr.ee/friiworld',
       x: 'FriiWorld',
-      logo: 'friiworld.png',
+      logo: 'friiworld.png'
     },
     75856879: {
       name: 'Kudos Setler',
-      logo: 'kudos.png',
+      logo: 'kudos.png'
     }
-    }
+  }
 ]
 
 const normalizeWalletId = (w) => (typeof w === 'string' ? w.trim().toLowerCase() : '')
