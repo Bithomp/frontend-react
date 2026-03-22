@@ -1284,6 +1284,28 @@ export default function SignForm({
 
   const supportedByCrossmark = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
   const supportedByMetamask = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
+  const dcentSupportedTxTypes = [
+    'AccountSet',
+    'AccountDelete',
+    'CheckCancel',
+    'CheckCash',
+    'CheckCreate',
+    'DepositPreauth',
+    'EscrowCancel',
+    'EscrowCreate',
+    'EscrowFinish',
+    'OfferCancel',
+    'OfferCreate',
+    'Payment',
+    'PaymentChannelClaim',
+    'PaymentChannelCreate',
+    'PaymentChannelFund',
+    'SetRegularKey',
+    'SignerListSet',
+    'TrustSet'
+  ]
+  const supportedByDcent =
+    !signRequest?.request?.TransactionType || dcentSupportedTxTypes.includes(signRequest.request.TransactionType)
   const WalletTile = ({ name, alt, src, onClick, disabled, width, height, extraIcons, iconsOnly }) => {
     const iconSize = iconsOnly ? (isMobile ? 22 : 34) : 16
 
@@ -1643,7 +1665,7 @@ export default function SignForm({
                           width={48}
                           height={48}
                           onClick={() => txSend({ wallet: 'dcent' })}
-                          disabled={false}
+                          disabled={!supportedByDcent}
                         />
                       )}
 
