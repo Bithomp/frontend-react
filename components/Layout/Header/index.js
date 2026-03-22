@@ -614,8 +614,19 @@ export default function Header({
                       return (
                         <div key={walletItem.id} className={'wallet-row' + (isActiveWallet ? ' active' : '')}>
                           <span
-                            className={'link wallet-switch' + (isActiveWallet ? ' wallet-switch-active' : '')}
-                            onClick={isActiveWallet ? undefined : () => setActiveWallet(walletItem.id)}
+                            className={
+                              'link wallet-switch' +
+                              (isActiveWallet && router.asPath.startsWith('/account/' + walletItem.address)
+                                ? ' wallet-switch-active'
+                                : '')
+                            }
+                            onClick={
+                              isActiveWallet
+                                ? router.asPath.startsWith('/account/' + walletItem.address)
+                                  ? undefined
+                                  : () => router.push('/account/' + walletItem.address)
+                                : () => setActiveWallet(walletItem.id)
+                            }
                           >
                             <Image
                               alt="avatar"
