@@ -27,7 +27,6 @@ import { duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
 import { gemwalletTxSend } from '../utils/gemwallet'
 import { ledgerwalletTxSend } from '../utils/ledgerwallet'
-import { trezorTxSend } from '../utils/trezor'
 import { metamaskTxSend } from '../utils/metamask'
 import { crossmarkTxSend } from '../utils/crossmark'
 import { xyraSignOnly, xyraConnect } from '../utils/xyrawallet'
@@ -435,8 +434,6 @@ export default function SignForm({
       gemwalletTxSending(tx)
     } else if (wallet === 'ledgerwallet') {
       ledgerwalletTxSending(tx)
-    } else if (wallet === 'trezor') {
-      trezorTxSending(tx)
     } else if (wallet === 'metamask') {
       metamaskTxSending(tx)
     } else if (wallet === 'walletconnect') {
@@ -683,16 +680,6 @@ export default function SignForm({
       address: account?.address,
       publicKey: account?.publicKey
     })
-  }
-
-  const trezorTxSending = (tx) => {
-    setScreen('trezor')
-    if (tx.TransactionType !== 'SignIn' && tx.TransactionType !== 'Payment') {
-      setStatus('Unfortunatelly, Trezor supports only XRP Payments, and does not allow other Transaction Types =(')
-      return
-    }
-    setStatus('Please, connect your Trezor Wallet.')
-    trezorTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
   }
 
   const metamaskTxSending = async (tx) => {
@@ -1289,7 +1276,6 @@ export default function SignForm({
     'ledgerwallet-addresses': 'Ledger Wallet',
     dcent: "D'Cent",
     'dcent-addresses': "D'Cent",
-    trezor: 'Trezor',
     metamask: 'Metamask',
     walletconnect: 'WalletConnect',
     crossmark: 'Crossmark',
@@ -1298,7 +1284,6 @@ export default function SignForm({
 
   const supportedByCrossmark = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
   const supportedByMetamask = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
-  const supportedByTrezor = !signRequest?.request?.TransactionType || signRequest.request.TransactionType === 'Payment'
   const WalletTile = ({ name, alt, src, onClick, disabled, width, height, extraIcons, iconsOnly }) => {
     const iconSize = iconsOnly ? (isMobile ? 22 : 34) : 16
 
@@ -1731,18 +1716,6 @@ export default function SignForm({
                         onClick={() => txSend({ wallet: 'xyra' })}
                         disabled={false}
                       />
-
-                      {!isMobile && (
-                        <WalletTile
-                          name="Trezor (Hardware wallet)"
-                          alt="Trezor Wallet"
-                          src="/images/wallets/trezor-large.svg"
-                          width={110}
-                          height={48}
-                          onClick={() => txSend({ wallet: 'trezor' })}
-                          disabled={!supportedByTrezor}
-                        />
-                      )}
                     </div>
                   </>
                 ) : screen === 'ledgerwallet-addresses' ? (

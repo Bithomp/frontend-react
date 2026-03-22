@@ -271,9 +271,6 @@ export default function Header({
         <Image src="/images/wallets/ledgerwallet.svg" alt="Ledger Wallet" {...shared} style={{ marginBottom: -2 }} />
       )
     }
-    if (provider === 'trezor') {
-      return <Image src="/images/wallets/trezor.svg" alt="Trezor Wallet" {...shared} />
-    }
     if (provider === 'crossmark') {
       return (
         <Image src="/images/wallets/crossmark.png" alt="Crossmark Wallet" {...shared} style={{ borderRadius: '50%' }} />
@@ -283,7 +280,14 @@ export default function Header({
       return <Image src="/images/wallets/xyra.svg" alt="Xyra Wallet" {...shared} />
     }
     if (provider === 'dcent') {
-      return <Image src="/images/wallets/square-logos/dcent.png" alt="D'Cent Wallet" {...shared} style={{ borderRadius: '50%' }} />
+      return (
+        <Image
+          src="/images/wallets/square-logos/dcent.png"
+          alt="D'Cent Wallet"
+          {...shared}
+          style={{ borderRadius: '50%' }}
+        />
+      )
     }
 
     return null

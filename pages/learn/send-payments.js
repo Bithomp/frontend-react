@@ -234,11 +234,6 @@ export default function SendPayments() {
                 </li>
 
                 <li className="flex items-center gap-1">
-                  <Image src="/images/wallets/square-logos/trezor.png" alt="Trezor" width={20} height={20} />
-                  <span>Trezor</span>
-                </li>
-
-                <li className="flex items-center gap-1">
                   <Image src="/images/wallets/square-logos/metamask.png" alt="MetaMask" width={20} height={20} />
                   <span>MetaMask</span>
                 </li>
