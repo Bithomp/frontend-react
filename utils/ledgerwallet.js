@@ -20,8 +20,13 @@ const errorHandle = (error) => {
     // CLA_NOT_SUPPORTED
     if (statusCode === 0x6e00) {
       throw new Error(
-        'This Ledger app does not support the requested command. Make sure the ' + nativeCurrency + ' app is open.'
+        'Please unlock your Ledger by entering PIN and open the ' + nativeCurrency + ' app, then try again.'
       )
+    }
+
+    // Security status not satisfied (PIN not entered / device locked)
+    if (statusCode === 0x6901) {
+      throw new Error('Ledger device is locked. Please unlock it by entering your PIN, then try again.')
     }
 
     if (statusCode === 0x6985) {
@@ -34,7 +39,9 @@ const errorHandle = (error) => {
   // Device already in use (other tab/app)
   if (msg.includes('already open') || error?.name === 'InvalidStateError') {
     console.warn('Ledger WebHID: device is already open somewhere else.')
-    throw new Error('Ledger device is already in use. Close other Ledger apps or browser tabs and try again.')
+    throw new Error(
+      'Ledger device is already in use. If the page was refreshed, unplug/replug Ledger or close and reopen the browser tab, then try again.'
+    )
   }
 
   if (msg.includes('Locked device')) {
@@ -54,27 +61,132 @@ const errorHandle = (error) => {
 // 🔒 one instance for module
 let xrpAppPromise = null
 let xrpAppInstance = null
+const LEDGER_APP_GLOBAL_KEY = '__bithomp_ledger_xrp_app__'
+
+const getGlobalLedgerApp = () => {
+  if (typeof globalThis === 'undefined') return null
+  return globalThis[LEDGER_APP_GLOBAL_KEY] || null
+}
+
+const setGlobalLedgerApp = (app) => {
+  if (typeof globalThis === 'undefined') return
+  globalThis[LEDGER_APP_GLOBAL_KEY] = app || null
+}
+
+const closeOpenedHidDevices = async () => {
+  if (typeof navigator === 'undefined' || !navigator?.hid?.getDevices) return
+  const devices = await navigator.hid.getDevices()
+  if (!devices?.length) return
+
+  for (const device of devices) {
+    if (!device?.opened || typeof device.close !== 'function') continue
+    try {
+      await device.close()
+    } catch (_) {
+      // ignore close errors; we'll retry opening transport after best-effort cleanup
+    }
+  }
+}
+
+export const ledgerwalletForceReset = async () => {
+  try {
+    await ledgerwalletDisconnect()
+  } catch (_) {
+    // ignore
+  }
+
+  try {
+    await closeOpenedHidDevices()
+  } catch (_) {
+    // ignore
+  }
+
+  xrpAppInstance = null
+  xrpAppPromise = null
+  setGlobalLedgerApp(null)
+}
 
 const connectLedgerHID = async () => {
+  const globalApp = getGlobalLedgerApp()
+  if (globalApp?.transport) {
+    xrpAppInstance = globalApp
+    return globalApp
+  }
+
   // if already connected - reuse it
+  if (xrpAppInstance) return xrpAppInstance
   if (xrpAppPromise) return xrpAppPromise
+
+  const attachTransport = (transport) => {
+    const app = new Xrp(transport)
+    xrpAppInstance = app
+    setGlobalLedgerApp(app)
+
+    // if transport supports 'on' method - listen for disconnect event
+    if (typeof transport.on === 'function') {
+      transport.on('disconnect', () => {
+        xrpAppPromise = null
+        xrpAppInstance = null
+        setGlobalLedgerApp(null)
+      })
+    }
+
+    return app
+  }
 
   xrpAppPromise = TransportWebHID.create()
     .then((transport) => {
-      const app = new Xrp(transport)
-      xrpAppInstance = app
+      return attachTransport(transport)
+    })
+    .catch(async (error) => {
+      const msg = String(error?.message || error)
+      const isLockError = msg.includes('already open') || error?.name === 'InvalidStateError'
+      const canAttachOpenConnected = isLockError && typeof TransportWebHID.openConnected === 'function'
 
-      // if transport supports 'on' method - listen for disconnect event
-      if (typeof transport.on === 'function') {
-        transport.on('disconnect', () => {
+      if (canAttachOpenConnected) {
+        try {
+          const openTransport = await TransportWebHID.openConnected()
+          if (openTransport) {
+            return attachTransport(openTransport)
+          }
+        } catch (secondaryError) {
           xrpAppPromise = null
           xrpAppInstance = null
-        })
+          errorHandle(secondaryError)
+          return
+        }
       }
 
-      return app
-    })
-    .catch((error) => {
+      if (isLockError) {
+        try {
+          await closeOpenedHidDevices()
+          const retriedTransport = await TransportWebHID.create()
+          if (retriedTransport) {
+            return attachTransport(retriedTransport)
+          }
+        } catch (_) {
+          // continue to next fallback
+        }
+      }
+
+      const canReadHidDevices = typeof navigator !== 'undefined' && navigator?.hid?.getDevices
+      if (canReadHidDevices && typeof TransportWebHID.open === 'function') {
+        try {
+          const devices = await navigator.hid.getDevices()
+          if (devices?.length) {
+            const opened = await TransportWebHID.open(devices[0])
+            if (opened) {
+              return attachTransport(opened)
+            }
+          }
+        } catch (tertiaryError) {
+          xrpAppPromise = null
+          xrpAppInstance = null
+          errorHandle(tertiaryError)
+          return
+        }
+      }
+
       xrpAppPromise = null
       xrpAppInstance = null
       errorHandle(error)
@@ -86,10 +198,34 @@ const connectLedgerHID = async () => {
 const getLedgerAddress = async (xrpApp, path = "44'/144'/0'/0/0") => {
   try {
     const result = await xrpApp.getAddress(path)
-    return result
+    return { ...result, path }
   } catch (error) {
     errorHandle(error)
   }
+}
+
+const getLedgerDerivationPath = (accountIndex = 0) => `44'/144'/${accountIndex}'/0/0`
+
+export const ledgerwalletGetAddresses = async ({ start = 0, count = 20 } = {}) => {
+  const xrpApp = await connectLedgerHID()
+  const safeStart = Number.isFinite(start) ? Math.max(0, Number(start)) : 0
+  const safeCount = Number.isFinite(count) ? Math.min(50, Math.max(1, Number(count))) : 20
+
+  const entries = []
+  for (let i = 0; i < safeCount; i++) {
+    const accountIndex = safeStart + i
+    const path = getLedgerDerivationPath(accountIndex)
+    const result = await getLedgerAddress(xrpApp, path)
+    if (!result?.address) continue
+    entries.push({
+      accountIndex,
+      path,
+      address: result.address,
+      publicKey: result.publicKey?.toUpperCase?.() || result.publicKey || null
+    })
+  }
+
+  return entries
 }
 
 // one helper for both XRPL & Xahau
@@ -109,6 +245,7 @@ const signTransactionWithLedger = async (xrpApp, tx, path = "44'/144'/0'/0/0") =
 const ledgerwalletSign = async ({
   xrpApp,
   address,
+  path,
   tx,
   signRequest,
   afterSubmitExe,
@@ -123,7 +260,7 @@ const ledgerwalletSign = async ({
   if (signRequestData?.signOnly) {
     setStatus('Sign the transaction in Ledger Wallet.')
     try {
-      const signature = await signTransactionWithLedger(xrpApp, tx)
+      const signature = await signTransactionWithLedger(xrpApp, tx, path)
       tx.TxnSignature = signature
       const blob = encodeTx(tx)
       afterSigning({ signRequestData, blob, address })
@@ -155,7 +292,7 @@ const ledgerwalletSign = async ({
 
     setStatus('Sign the transaction in Ledger Wallet.')
     try {
-      const signature = await signTransactionWithLedger(xrpApp, tx)
+      const signature = await signTransactionWithLedger(xrpApp, tx, path)
       tx.TxnSignature = signature
 
       // use same encoding as for signing
@@ -183,6 +320,9 @@ const ledgerwalletSign = async ({
 
 export const ledgerwalletTxSend = async ({
   tx,
+  address: selectedAddress,
+  publicKey: selectedPublicKey,
+  path: selectedPath,
   signRequest,
   afterSubmitExe,
   afterSigning,
@@ -193,7 +333,17 @@ export const ledgerwalletTxSend = async ({
 }) => {
   try {
     const xrpApp = await connectLedgerHID()
-    const { publicKey, address } = await getLedgerAddress(xrpApp)
+    let path = selectedPath || getLedgerDerivationPath(0)
+    let address = selectedAddress || null
+    let publicKey = selectedPublicKey || null
+
+    if (!address || !publicKey) {
+      const resolved = await getLedgerAddress(xrpApp, path)
+      address = address || resolved?.address
+      publicKey = publicKey || resolved?.publicKey
+      path = resolved?.path || path
+    }
+
     if (!tx.Account) {
       tx.Account = address
     }
@@ -201,6 +351,7 @@ export const ledgerwalletTxSend = async ({
     ledgerwalletSign({
       xrpApp,
       address,
+      path,
       tx,
       signRequest,
       afterSubmitExe,
@@ -226,5 +377,6 @@ export const ledgerwalletDisconnect = async () => {
   } finally {
     xrpAppInstance = null
     xrpAppPromise = null
+    setGlobalLedgerApp(null)
   }
 }

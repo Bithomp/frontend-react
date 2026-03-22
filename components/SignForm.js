@@ -23,10 +23,10 @@ import {
   nativeCurrency,
   isUrlValid
 } from '../utils'
-import { duration } from '../utils/format'
+import { duration, shortAddress } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
 import { gemwalletTxSend } from '../utils/gemwallet'
-import { ledgerwalletTxSend } from '../utils/ledgerwallet'
+import { ledgerwalletForceReset, ledgerwalletGetAddresses, ledgerwalletTxSend } from '../utils/ledgerwallet'
 import { trezorTxSend } from '../utils/trezor'
 import { metamaskTxSend } from '../utils/metamask'
 import { crossmarkTxSend } from '../utils/crossmark'
@@ -130,6 +130,8 @@ export default function SignForm({
   const [rewardDelay, setRewardDelay] = useState()
 
   const [choosenWallet, setChoosenWallet] = useState(null)
+  const [ledgerAccounts, setLedgerAccounts] = useState([])
+  const [ledgerSelectedAddresses, setLedgerSelectedAddresses] = useState([])
 
   useEffect(() => {
     if (!signRequest) return
@@ -544,24 +546,195 @@ export default function SignForm({
     }
   }
 
-  const onSignIn = async ({ address, wallet, redirectName }) => {
-    if (address) {
-      await saveAddressData({ address, wallet })
+  const onSignIn = async ({ address, addresses, wallet, walletMetaMap, usernameMap, redirectName }) => {
+    const addressList = Array.isArray(addresses) ? addresses.filter(Boolean) : address ? [address] : []
+
+    if (addressList.length) {
+      const deduped = Array.from(new Set(addressList))
+      const activeAddress = deduped[0]
+      const toPersist = deduped.length > 1 ? [...deduped.slice(1), activeAddress] : deduped
+
+      for (const [index, itemAddress] of toPersist.entries()) {
+        if (wallet === 'ledgerwallet' && toPersist.length > 1) {
+          setStatus(`Connecting selected Ledger addresses... ${index + 1}/${toPersist.length}`)
+        }
+
+        await saveAddressData({
+          address: itemAddress,
+          wallet,
+          walletMeta: walletMetaMap?.[itemAddress] || null,
+          username: usernameMap?.[itemAddress]
+        })
+      }
+
       //if redirect
       if (redirectName) {
         signInCancelAndClose()
         if (redirectName === 'nfts') {
-          router.push('/nfts/' + address)
+          router.push('/nfts/' + activeAddress)
           return
         } else if (redirectName === 'nft-offers') {
-          router.push('/nft-offers/' + address)
+          router.push('/nft-offers/' + activeAddress)
           return
         } else if (redirectName === 'account') {
-          router.push('/account/' + address)
+          router.push('/account/' + activeAddress)
           return
         }
       }
     }
+  }
+
+  const LEDGER_BATCH = 10
+
+  const loadLedgerAddresses = async ({ append = false } = {}) => {
+    try {
+      setScreen('ledgerwallet-addresses')
+      setAwaiting(true)
+
+      const start = append ? ledgerAccounts.length : 0
+
+      if (!append) {
+        const previousStatusText = String(status || '').toLowerCase()
+        const previousNeedsReconnect =
+          previousStatusText.includes('locked') ||
+          previousStatusText.includes('open the xrp app') ||
+          previousStatusText.includes('open the ' + nativeCurrency.toLowerCase() + ' app')
+
+        if (previousNeedsReconnect) {
+          setStatus('Reconnecting to Ledger...')
+          await ledgerwalletForceReset()
+          await new Promise((resolve) => setTimeout(resolve, 800))
+        }
+
+        // Show connection prompt on first scan, or simpler message on retry
+        const isFirstScan = ledgerAccounts.length === 0
+        setStatus(
+          isFirstScan
+            ? 'Connect Ledger and open the ' + nativeCurrency + ' app. Reading addresses...'
+            : 'Reading addresses from Ledger...'
+        )
+        setLedgerAccounts([])
+        setLedgerSelectedAddresses([])
+      } else {
+        setStatus('Reading next ' + LEDGER_BATCH + ' addresses...')
+      }
+
+      let discovered
+      try {
+        discovered = await ledgerwalletGetAddresses({ start, count: LEDGER_BATCH })
+      } catch (err) {
+        const msg = String(err?.message || err || '')
+        const lockError =
+          msg.includes('already in use') ||
+          msg.includes('already open') ||
+          msg.includes('InvalidState') ||
+          msg.toLowerCase().includes('locked') ||
+          msg.toLowerCase().includes('open the xrp app') ||
+          msg.toLowerCase().includes('open the ' + nativeCurrency.toLowerCase() + ' app')
+
+        if (!lockError) throw err
+
+        setStatus('Resetting Ledger connection and retrying...')
+        await ledgerwalletForceReset()
+        await new Promise((resolve) => setTimeout(resolve, 250))
+        discovered = await ledgerwalletGetAddresses({ start, count: LEDGER_BATCH })
+      }
+
+      // Show new addresses immediately, balances load in background
+      const newRows = discovered.map((item) => ({
+        ...item,
+        username: null,
+        balanceDrops: null,
+        isFunded: false
+      }))
+      setLedgerAccounts((prev) => (append ? [...prev, ...newRows] : newRows))
+      if (!append) {
+        setLedgerSelectedAddresses(newRows.slice(0, 1).map((x) => x.address))
+      }
+      setAwaiting(false)
+      setStatus('Loading balances...')
+
+      // Fetch balances concurrently; update each row live
+      const enriched = await Promise.all(
+        discovered.map(async (item) => {
+          try {
+            const response = await axios('v2/address/' + item.address + '?username=true&ledgerInfo=true')
+            const balanceDrops = Number(response?.data?.ledgerInfo?.balance || 0)
+            const displayName = response?.data?.username || null
+            const result = { ...item, username: displayName, balanceDrops, isFunded: balanceDrops > 0 }
+            setLedgerAccounts((prev) => prev.map((acc) => (acc.address === item.address ? result : acc)))
+            return result
+          } catch (_) {
+            const result = { ...item, username: null, balanceDrops: 0, isFunded: false }
+            setLedgerAccounts((prev) => prev.map((acc) => (acc.address === item.address ? result : acc)))
+            return result
+          }
+        })
+      )
+
+      const allAccounts = append
+        ? [...ledgerAccounts.filter((a) => enriched.every((e) => e.address !== a.address)), ...enriched]
+        : enriched
+      const funded = allAccounts.filter((item) => item.isFunded)
+      if (!append) {
+        const initialSelection = funded.length
+          ? funded.map((item) => item.address)
+          : enriched.slice(0, 1).map((x) => x.address)
+        setLedgerSelectedAddresses(initialSelection)
+      }
+      setStatus(
+        funded.length
+          ? `Found ${funded.length} funded address(es).\nSelect one or more to connect.`
+          : `No funded address found yet.\nSelect address(es) to connect.`
+      )
+    } catch (err) {
+      setAwaiting(false)
+      setStatus(err?.message || 'Unable to read addresses from Ledger.')
+    }
+  }
+
+  const toggleLedgerAddress = (addressValue) => {
+    setLedgerSelectedAddresses((prev) => {
+      if (prev.includes(addressValue)) return prev.filter((item) => item !== addressValue)
+      return [...prev, addressValue]
+    })
+  }
+
+  const connectSelectedLedgerAddresses = async () => {
+    const visibleAddresses = ledgerAccounts.map((item) => item.address)
+
+    const selectedVisible = ledgerSelectedAddresses.filter((addressItem) => visibleAddresses.includes(addressItem))
+    if (!selectedVisible.length) {
+      setStatus('Please select at least one address to connect.')
+      return
+    }
+
+    const ordered = ledgerSelectedAddresses
+      .filter((addressItem) => selectedVisible.includes(addressItem))
+      .map((addressItem) => ledgerAccounts.find((item) => item.address === addressItem))
+      .filter(Boolean)
+    const walletMetaMap = {}
+    const usernameMap = {}
+    for (const entry of ordered) {
+      walletMetaMap[entry.address] = {
+        derivationPath: entry.path,
+        publicKey: entry.publicKey || null,
+        accountIndex: entry.accountIndex
+      }
+      usernameMap[entry.address] = entry.username || null
+    }
+
+    setAwaiting(true)
+    setStatus('Connecting selected Ledger addresses...')
+    await onSignIn({
+      addresses: ordered.map((item) => item.address),
+      wallet: 'ledgerwallet',
+      walletMetaMap,
+      usernameMap,
+      redirectName: signRequest?.redirect
+    })
+    setAwaiting(false)
+    closeSignInFormAndRefresh()
   }
 
   const gemwalletTxSending = (tx) => {
@@ -596,12 +769,29 @@ export default function SignForm({
 
   const ledgerwalletTxSending = (tx) => {
     setScreen('ledgerwallet')
+    if (!tx || tx.TransactionType === 'SignIn') {
+      loadLedgerAddresses()
+      return
+    }
+
     setStatus(
       'Please, connect your Ledger Wallet and open the ' +
         nativeCurrency +
         ' app. Note: Nano S does not support some transactions.'
     )
-    ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
+    ledgerwalletTxSend({
+      tx,
+      signRequest,
+      afterSubmitExe,
+      afterSigning,
+      onSignIn,
+      setStatus,
+      setAwaiting,
+      t,
+      path: account?.derivationPath,
+      address: account?.address,
+      publicKey: account?.publicKey
+    })
   }
 
   const trezorTxSending = (tx) => {
@@ -1205,6 +1395,7 @@ export default function SignForm({
     xaman: 'Xaman',
     gemwallet: 'GemWallet',
     ledgerwallet: 'Ledger Wallet',
+    'ledgerwallet-addresses': 'Ledger Wallet',
     trezor: 'Trezor',
     metamask: 'Metamask',
     walletconnect: 'WalletConnect',
@@ -1215,6 +1406,21 @@ export default function SignForm({
   const supportedByCrossmark = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
   const supportedByMetamask = !signRequest?.request?.TransactionType || signRequest.request.TransactionType !== 'Remit'
   const supportedByTrezor = !signRequest?.request?.TransactionType || signRequest.request.TransactionType === 'Payment'
+  const ledgerStatusText = String(status || '').toLowerCase()
+  const ledgerNeedsRetry =
+    screen === 'ledgerwallet-addresses' &&
+    (!ledgerAccounts.length ||
+      ledgerStatusText.includes('locked') ||
+      ledgerStatusText.includes('already in use') ||
+      ledgerStatusText.includes('already open') ||
+      ledgerStatusText.includes('unable to read addresses') ||
+      ledgerStatusText.includes('ledger error'))
+  const ledgerRetryLabel = ledgerStatusText.includes('locked')
+    ? 'I unlocked PIN'
+    : ledgerStatusText.includes('open the xrp app')
+      ? 'I opened XRP app'
+      : 'Retry scan'
+  const showLedgerScanMore = screen === 'ledgerwallet-addresses' && !!ledgerAccounts.length && !awaiting
 
   const WalletTile = ({ name, alt, src, onClick, disabled, width, height, extraIcons, iconsOnly }) => {
     const iconSize = iconsOnly ? (isMobile ? 22 : 34) : 16
@@ -1649,6 +1855,130 @@ export default function SignForm({
                         />
                       )}
                     </div>
+                  </>
+                ) : screen === 'ledgerwallet-addresses' ? (
+                  <>
+                    <div className="header">Select addresses to connect</div>
+
+                    <div className="orange bold center" style={{ margin: '30px', whiteSpace: 'pre-line' }}>
+                      {awaiting ? (
+                        <>
+                          <span className="waiting"></span>
+                          <br />
+                          <br />
+                        </>
+                      ) : null}
+                      {status}
+                    </div>
+
+                    {showLedgerScanMore && (
+                      <div className="center text-small grey" style={{ margin: '-12px 30px 18px', lineHeight: 1.5 }}>
+                        Scanned first {ledgerAccounts.length} address{ledgerAccounts.length === 1 ? '' : 'es'}.{' '}
+                        <button
+                          type="button"
+                          onClick={() => loadLedgerAddresses({ append: true })}
+                          disabled={awaiting}
+                          style={{
+                            border: 0,
+                            padding: 0,
+                            margin: 0,
+                            background: 'transparent',
+                            color: 'var(--accent-icon)',
+                            cursor: awaiting ? 'default' : 'pointer',
+                            font: 'inherit',
+                            textDecoration: 'underline'
+                          }}
+                        >
+                          Scan next {LEDGER_BATCH}
+                        </button>
+                      </div>
+                    )}
+
+                    {!!ledgerAccounts.length && (
+                      <>
+                        <div
+                          style={{
+                            maxHeight: 280,
+                            overflowY: 'auto',
+                            border: '1px solid var(--card-border)',
+                            borderRadius: 12,
+                            padding: 8,
+                            textAlign: 'left',
+                            margin: '0 52px'
+                          }}
+                        >
+                          {ledgerAccounts.map((entry) => {
+                            const isSelected = ledgerSelectedAddresses.includes(entry.address)
+                            const balanceLoading = entry.balanceDrops === null
+                            const displayBalance = balanceLoading
+                              ? '...'
+                              : `${(Number(entry.balanceDrops) / 1000000).toFixed(2)} ${nativeCurrency}`
+                            return (
+                              <CheckBox
+                                key={entry.address}
+                                checked={isSelected}
+                                setChecked={() => toggleLedgerAddress(entry.address)}
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  gap: 8,
+                                  padding: '6px 8px',
+                                  paddingLeft: 36,
+                                  borderRadius: 10,
+                                  marginTop: 0,
+                                  marginBottom: 4,
+                                  background: isSelected ? 'var(--background-secondary)' : 'transparent',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                <span
+                                  className="bold"
+                                  style={{
+                                    flex: '1 1 0',
+                                    minWidth: 0,
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap'
+                                  }}
+                                >
+                                  {entry.username || shortAddress(entry.address)}
+                                </span>
+                                <span className="no-brake text-small grey" style={{ flexShrink: 0 }}>
+                                  {displayBalance}
+                                </span>
+                              </CheckBox>
+                            )
+                          })}
+                        </div>
+
+                        <div style={{ marginTop: 14 }}>
+                          <button
+                            type="button"
+                            className="button-action"
+                            onClick={connectSelectedLedgerAddresses}
+                            style={buttonStyle}
+                            disabled={awaiting || !ledgerSelectedAddresses.length}
+                          >
+                            Connect selected
+                          </button>
+                        </div>
+                      </>
+                    )}
+
+                    {ledgerNeedsRetry && (
+                      <div style={{ marginTop: 14 }}>
+                        <button
+                          type="button"
+                          className="button-action"
+                          onClick={() => loadLedgerAddresses()}
+                          style={buttonStyle}
+                          disabled={awaiting}
+                        >
+                          {ledgerRetryLabel}
+                        </button>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>

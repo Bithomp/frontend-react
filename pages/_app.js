@@ -84,7 +84,10 @@ const normalizeAccountState = (account) => {
     activeWalletId,
     address: activeWallet?.address || null,
     wallet: activeWallet?.provider || null,
-    username: activeWallet?.username || null
+    username: activeWallet?.username || null,
+    derivationPath: activeWallet?.derivationPath || null,
+    publicKey: activeWallet?.publicKey || null,
+    accountIndex: Number.isFinite(activeWallet?.accountIndex) ? activeWallet.accountIndex : null
   }
 }
 
@@ -345,19 +348,28 @@ const MyApp = ({ Component, pageProps }) => {
   const { uuid } = router.query
 
   const setActiveWallet = (walletId) => {
+    const normalizedAccount = normalizeAccountState(account)
+    const activeWallet = normalizedAccount.wallets.find((wallet) => wallet.id === walletId)
+    if (!activeWallet) return
+
     setAccount((previousAccount) => {
       const normalized = normalizeAccountState(previousAccount)
-      const activeWallet = normalized.wallets.find((wallet) => wallet.id === walletId)
-      if (!activeWallet) return normalized
+      const nextActiveWallet = normalized.wallets.find((wallet) => wallet.id === walletId)
+      if (!nextActiveWallet) return normalized
 
       return {
         ...normalized,
         activeWalletId: walletId,
-        address: activeWallet.address,
-        wallet: activeWallet.provider,
-        username: activeWallet.username || null
+        address: nextActiveWallet.address,
+        wallet: nextActiveWallet.provider,
+        username: nextActiveWallet.username || null,
+        derivationPath: nextActiveWallet.derivationPath || null,
+        publicKey: nextActiveWallet.publicKey || null,
+        accountIndex: Number.isFinite(nextActiveWallet.accountIndex) ? nextActiveWallet.accountIndex : null
       }
     })
+
+    router.push('/account/' + activeWallet.address)
   }
 
   const signOut = async (walletId) => {
@@ -375,6 +387,11 @@ const MyApp = ({ Component, pageProps }) => {
       await ledgerwalletDisconnect()
     }
 
+    const remainingWallets = normalized.wallets.filter((wallet) => wallet.id !== targetWallet.id)
+    const nextActiveWallet =
+      remainingWallets.find((wallet) => wallet.id === normalized.activeWalletId) ||
+      getMostRecentlyConnectedWallet(remainingWallets)
+
     setAccount((previousAccount) => {
       const currentAccount = normalizeAccountState(previousAccount)
       const wallets = currentAccount.wallets.filter((wallet) => wallet.id !== targetWallet.id)
@@ -387,12 +404,19 @@ const MyApp = ({ Component, pageProps }) => {
         activeWalletId: nextActiveWallet?.id || null,
         address: nextActiveWallet?.address || null,
         wallet: nextActiveWallet?.provider || null,
-        username: nextActiveWallet?.username || null
+        username: nextActiveWallet?.username || null,
+        derivationPath: nextActiveWallet?.derivationPath || null,
+        publicKey: nextActiveWallet?.publicKey || null,
+        accountIndex: Number.isFinite(nextActiveWallet?.accountIndex) ? nextActiveWallet.accountIndex : null
       }
     })
 
     if (targetWallet.provider === 'walletconnect') {
       setWcSession(null)
+    }
+
+    if (nextActiveWallet?.address) {
+      router.push('/account/' + nextActiveWallet.address)
     }
   }
 
@@ -405,11 +429,18 @@ const MyApp = ({ Component, pageProps }) => {
     })
   }
 
-  const saveAddressData = async ({ address, wallet }) => {
-    //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
-    const response = await axios('v2/address/' + address + '?username=true')
-    if (response.data) {
-      const { username } = response.data
+  const saveAddressData = async ({ address, wallet, walletMeta = null, username = undefined }) => {
+    let resolvedUsername = username
+
+    if (resolvedUsername === undefined) {
+      //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
+      const response = await axios('v2/address/' + address + '?username=true')
+      if (response.data) {
+        resolvedUsername = response.data.username || null
+      }
+    }
+
+    if (resolvedUsername !== undefined) {
       const walletId = getWalletId({ provider: wallet, address })
       if (!walletId) return
 
@@ -421,8 +452,11 @@ const MyApp = ({ Component, pageProps }) => {
           id: walletId,
           provider: wallet,
           address,
-          username: username || null,
-          connectedAt: Date.now()
+          username: resolvedUsername || null,
+          connectedAt: Date.now(),
+          derivationPath: walletMeta?.derivationPath || null,
+          publicKey: walletMeta?.publicKey || null,
+          accountIndex: Number.isFinite(walletMeta?.accountIndex) ? walletMeta.accountIndex : null
         }
 
         if (existingIndex >= 0) {
@@ -440,7 +474,10 @@ const MyApp = ({ Component, pageProps }) => {
           activeWalletId: walletId,
           address,
           wallet,
-          username: username || null
+          username: resolvedUsername || null,
+          derivationPath: nextWallet.derivationPath,
+          publicKey: nextWallet.publicKey,
+          accountIndex: nextWallet.accountIndex
         }
       })
     } else {
