@@ -388,7 +388,7 @@ export default function AccountOld({
         <div className="explorer-tabs-shadow"></div>
       </div>
 
-      <div className="content-profile account">
+      <div className="content-profile account2">
         {id ? (
           <>
             {loading ? (

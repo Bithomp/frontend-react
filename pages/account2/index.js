@@ -25,7 +25,7 @@ export default function AccountIndex() {
         title={t('explorer.header.account')}
         description="Account details, transactions, NFTs, Tokens for XRP Ledger accounts"
       />
-      <div className="content-profile account">
+      <div className="content-profile account2">
         <h1 className="center">{t('explorer.header.account')}</h1>
         <p className="center">
           Here you will be able to see all the information about the account, including the transactions, tokens, NFTs,

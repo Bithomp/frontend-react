@@ -224,9 +224,11 @@ import {
 import { scaleAmount, subtract } from '../../utils/calc'
 import {
   addressBalanceChanges,
+  dappBySourceTag,
   errorCodeDescription,
   getAccountTransactionTypeIcon,
   getTransactionTypeLabel,
+  memoNode,
   shortErrorCode
 } from '../../utils/transaction'
 import { isRipplingOnIssuer } from '../../utils/transaction/payment'
@@ -4896,6 +4898,7 @@ export default function Account({
                         ? Number(txdata.fiatRates[selectedCurrency])
                         : null
                       const txType = tx?.TransactionType || ''
+                      const txDapp = dappBySourceTag(tx?.SourceTag)
                       const isAmmDepositOrWithdraw = txType === 'AMMDeposit' || txType === 'AMMWithdraw'
                       const isLpAmount = (amount) => {
                         if (!amount || typeof amount !== 'object') return false
@@ -6286,6 +6289,15 @@ export default function Account({
                                   </span>
                                 </div>
                               )}
+
+                              {txDapp && (
+                                <div className="detail-row">
+                                  <span>App/Dapp:</span>
+                                  <span>{txDapp}</span>
+                                </div>
+                              )}
+
+                              {txdata?.specification?.memos && memoNode(txdata.specification.memos, 'detail')}
 
                               {changes.length > 0 && (
                                 <div className="detail-row tx-detail-change-row">
@@ -9127,68 +9139,6 @@ export default function Account({
           white-space: nowrap;
         }
 
-        .tx-detail-address {
-          max-width: none !important;
-          text-align: left !important;
-          word-break: normal !important;
-        }
-
-        .tx-detail-change-row {
-          align-items: flex-start;
-        }
-
-        .tx-fail-description-row {
-          align-items: flex-start;
-        }
-
-        .tx-fail-description-text {
-          max-width: 72% !important;
-          white-space: normal !important;
-          word-break: normal !important;
-          overflow-wrap: break-word !important;
-          text-align: right;
-        }
-
-        .tx-detail-change-list {
-          display: inline-flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 2px;
-          max-width: 70% !important;
-          text-align: right;
-        }
-
-        .tx-detail-change-list :global(.no-inherit) {
-          white-space: nowrap;
-        }
-
-        .tx-detail-change-list :global(.no-inherit a) {
-          white-space: nowrap;
-        }
-
-        .tx-detail-stacked-amount {
-          display: inline-flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 2px;
-          text-align: right;
-        }
-
-        .tx-change-row {
-          display: inline-flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 1px;
-        }
-
-        .tx-change-fiat {
-          color: var(--text-secondary);
-          font-size: 11px;
-          font-weight: 500;
-          line-height: 1.2;
-          white-space: nowrap;
-        }
-
         .tx-link {
           color: var(--accent-link);
           text-decoration: none;
@@ -10557,24 +10507,6 @@ export default function Account({
           .nft-details {
             min-height: 376px;
           }
-        }
-
-        .detail-row {
-          display: flex;
-          justify-content: space-between;
-          padding: 6px 0;
-          font-size: 14px;
-        }
-
-        .detail-row > span:first-child {
-          color: var(--text-secondary);
-        }
-
-        .detail-row > span:last-child {
-          color: var(--text-secondary);
-          word-break: break-all;
-          max-width: 60%;
-          text-align: right;
         }
 
         .amount-with-fiat {

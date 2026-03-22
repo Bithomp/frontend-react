@@ -609,9 +609,15 @@ export const dappBySourceTag = (sourceTag) => {
   return dapps[sourceTag] || null
 }
 
-export const memoNode = (memos, type = 'tr') => {
+export const memoNode = (memos, type = 'tr', options = {}) => {
   let output = []
   const showOnlyHiddenMemos = type === 'additional'
+  const renderDetailRow = (key, label, content, alignTop = false) => (
+    <div key={key} className={'detail-row' + (alignTop ? ' tx-detail-change-row' : '')}>
+      <span>{label}</span>
+      <span>{content}</span>
+    </div>
+  )
   if (memos && Array.isArray(memos)) {
     for (let j = 0; j < memos.length; j++) {
       const memo = memos[j]
@@ -693,6 +699,7 @@ export const memoNode = (memos, type = 'tr') => {
             )
           }
         } else if (decodeJsonMemo(memopiece)) {
+          const decodedMemo = decodeJsonMemo(memopiece)
           if (type === 'tr') {
             output.push(
               <tr key={'a2' + j}>
@@ -704,9 +711,26 @@ export const memoNode = (memos, type = 'tr') => {
                       <br />
                     </>
                   )}
-                  {decodeJsonMemo(memopiece)}
+                  {decodedMemo}
                 </TData>
               </tr>
+            )
+          } else if (type === 'detail') {
+            output.push(
+              renderDetailRow(
+                'a2' + j,
+                'Memo' + (memos.length > 1 ? ' ' + (j + 1) : '') + ':',
+                <span className="brake">
+                  {memotype && (
+                    <>
+                      <span className="bold">{memotype}</span>
+                      <br />
+                    </>
+                  )}
+                  {decodedMemo}
+                </span>,
+                true
+              )
             )
           } else {
             output.push(
@@ -748,6 +772,31 @@ export const memoNode = (memos, type = 'tr') => {
                   </tr>
                 </React.Fragment>
               )
+            } else if (type === 'detail') {
+              output.push(
+                <React.Fragment key={'jwt' + j}>
+                  {renderDetailRow(
+                    'jwt-h-' + j,
+                    'JWT Header:',
+                    <span className="brake">{decodeJsonMemo(pieces[0], { code: 'base64' })}</span>,
+                    true
+                  )}
+                  {renderDetailRow(
+                    'jwt-p-' + j,
+                    'JWT Payload:',
+                    <span className="brake">{decodeJsonMemo(pieces[1], { code: 'base64' })}</span>,
+                    true
+                  )}
+                  {renderDetailRow(
+                    'jwt-s-' + j,
+                    'JWT Signature:',
+                    <span className="brake">
+                      <pre>{pieces[2]}</pre>
+                    </span>,
+                    true
+                  )}
+                </React.Fragment>
+              )
             } else {
               output.push(
                 <React.Fragment key={'jwt' + j}>
@@ -783,6 +832,23 @@ export const memoNode = (memos, type = 'tr') => {
                     </TData>
                   </tr>
                 )
+              } else if (type === 'detail') {
+                output.push(
+                  renderDetailRow(
+                    'a1' + j,
+                    'Memo' + (memos.length > 1 ? ' ' + (j + 1) : '') + ':',
+                    <span className="brake">
+                      {memotype && memotype.toLowerCase() !== 'memo' && (
+                        <>
+                          <span className="bold">{memotype}</span>
+                          <br />
+                        </>
+                      )}
+                      {memopiece}
+                    </span>,
+                    true
+                  )
+                )
               } else {
                 output.push(
                   <span key={'a1' + j} className="brake">
@@ -797,7 +863,7 @@ export const memoNode = (memos, type = 'tr') => {
           }
         }
 
-        if (clientname && !showOnlyHiddenMemos) {
+        if (clientname && !showOnlyHiddenMemos && options?.includeClientWeb !== false) {
           if (type === 'tr') {
             output.push(
               <tr key="a3">
@@ -808,6 +874,21 @@ export const memoNode = (memos, type = 'tr') => {
                   </a>
                 </TData>
               </tr>
+            )
+          } else if (type === 'detail') {
+            output.push(
+              renderDetailRow(
+                'a3-' + j,
+                'Client web:',
+                <a
+                  href={'https://' + clientname}
+                  rel="nofollow"
+                  onClick={(event) => event.stopPropagation()}
+                  className="blue"
+                >
+                  {clientname}
+                </a>
+              )
             )
           } else {
             output.push(
