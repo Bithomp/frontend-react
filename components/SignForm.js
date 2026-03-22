@@ -1659,18 +1659,6 @@ export default function SignForm({
 
                       {!isMobile && (
                         <WalletTile
-                          name="D'Cent (Hardware wallet)"
-                          alt="D'Cent"
-                          src="/images/wallets/square-logos/dcent.png"
-                          width={48}
-                          height={48}
-                          onClick={() => txSend({ wallet: 'dcent' })}
-                          disabled={!supportedByDcent}
-                        />
-                      )}
-
-                      {!isMobile && (
-                        <WalletTile
                           name="Ledger (Hardware wallet)"
                           alt="Ledger Wallet"
                           src="/images/wallets/ledgerwallet-large.svg"
@@ -1690,6 +1678,18 @@ export default function SignForm({
                           disabled={false}
                           extraIcons={wcWalletIcons}
                           iconsOnly={true}
+                        />
+                      )}
+
+                      {!isMobile && (
+                        <WalletTile
+                          name="D'Cent (Hardware wallet)"
+                          alt="D'Cent"
+                          src="/images/wallets/square-logos/dcent.png"
+                          width={48}
+                          height={48}
+                          onClick={() => txSend({ wallet: 'dcent' })}
+                          disabled={!supportedByDcent}
                         />
                       )}
 
