@@ -1,13 +1,13 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
+import Head from 'next/head'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
 import { server, explorerName, nativeCurrency, devNet, xahauNetwork, ledgerName } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
-import SearchBlock from '../components/Layout/SearchBlock'
 import Ads from '../components/Layout/Ads'
 import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
@@ -36,7 +36,6 @@ export default function Home({
   setSelectedCurrency,
   showAds,
   fiatRate,
-  isSsrMobile,
   selectedCurrencyServer,
   countryCode,
   statistics,
@@ -78,6 +77,32 @@ export default function Home({
               ]
         }
       />
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: nativeCurrency + ' Explorer and Tools',
+              alternateName: [
+                nativeCurrency + ' Explorer',
+                explorerName + ' Explorer',
+                'Scan ' + nativeCurrency + ' Ledger'
+              ],
+              url: server,
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: {
+                  '@type': 'EntryPoint',
+                  urlTemplate: server + '/explorer/{search_term_string}'
+                },
+                'query-input': 'required name=search_term_string'
+              }
+            })
+          }}
+        />
+      </Head>
       <SEO
         title={t('home.title', { explorerName, nativeCurrency })}
         titleWithNetwork="true"
@@ -93,13 +118,8 @@ export default function Home({
       />
 
       <section className="home-section">
-        <h1 className="center">
-          {t('explorer.header.main', {
-            explorerName: !devNet && !xahauNetwork ? 'XRP ' + t('table.ledger') : explorerName
-          })}
-        </h1>
+        <h1 className="center">{t('home.h1', { nativeCurrency })}</h1>
         <p className="center">{t('explorer.header.sub', { nativeCurrency })}</p>
-        <SearchBlock tab="explorer" isSsrMobile={isSsrMobile} type="explorer" />
         {showAds && <Ads countryCode={countryCode} />}
       </section>
 

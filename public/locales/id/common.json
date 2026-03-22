@@ -161,8 +161,9 @@
     }
   },
   "home": {
-    "title": "Pencarian {{explorerName}} | Telusuri {{nativeCurrency}} Ledger",
-    "description": "Grafik harga {{nativeCurrency}} | Statistik {{explorerName}} | Penjelajah NFT | Pencarian alamat dompet | Volume NFT {{explorerName}} | Beli dan Jual NFT | Layanan {{explorerName}}",
+    "title": "Penjelajah & Alat {{nativeCurrency}} Ledger — {{explorerName}} | Cari transaksi, akun, dan NFT",
+    "description": "{{explorerName}}: penjelajah dan alat untuk {{nativeCurrency}} Ledger. Cari transaksi, akun, dan NFT. Lacak saldo, validasi akun, periksa kepemilikan NFT, dan analisis {{nativeCurrency}} Ledger. Plus: konverter harga, alat, statistik, dan lainnya.",
+    "h1": "Penjelajah {{nativeCurrency}} Ledger dan Alat",
     "search-placeholder": "Cari berdasarkan Alamat / Transaksi / NFT / Username / PayString / Penawaran",
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
     "price": {

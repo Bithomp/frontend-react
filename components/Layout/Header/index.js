@@ -47,7 +47,7 @@ import SearchBlock from '../SearchBlock'
 import { niceNumber } from '../../../utils/format'
 import { serviceUsernameOrAddressText } from '../../../utils/format'
 
-const HIDE_SEARCH_HEADER = ['/', '/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
+const HIDE_SEARCH_HEADER = ['/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
 const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
 
 let timeoutIds = {}

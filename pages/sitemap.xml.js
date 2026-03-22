@@ -2,7 +2,7 @@ import { network, server, xahauNetwork } from '../utils'
 
 const pages = [
   { loc: 'dapps', changefreq: 'daily', priority: '1' },
-  { loc: 'explorer', changefreq: 'monthly', priority: '1' },
+  { loc: 'explorer', changefreq: 'weekly', priority: '1' },
   { loc: '', changefreq: 'always', priority: '1' },
   { loc: 'faucet', changefreq: 'monthly', priority: '1' },
   { loc: 'username', changefreq: 'monthly', priority: '1' },
@@ -107,7 +107,7 @@ if (network === 'mainnet') {
     { loc: 'learn/trustlines', changefreq: 'monthly', priority: '0.6' },
     { loc: 'learn/nft-explorer', changefreq: 'monthly', priority: '0.7' },
     { loc: 'learn/paystrings', changefreq: 'monthly', priority: '0.5' },
-    { loc: 'learn/send-payments', changefreq: 'monthly', priority: '0.5' },
+    { loc: 'learn/send-payments', changefreq: 'monthly', priority: '0.5' }
   )
 }
 

@@ -161,8 +161,9 @@
     }
   },
   "home": {
-    "title": "Explorador {{explorerName}} | Escanear el {{nativeCurrency}} Ledger",
-    "description": "Gráfica de precio {{nativeCurrency}} | Estadísticas | Explorador NFT | Buscar dirección de cartera",
+    "title": "Explorador y Herramientas del {{nativeCurrency}} Ledger — {{explorerName}} | Busca transacciones, cuentas y NFTs",
+    "description": "{{explorerName}}: explorador y herramientas del {{nativeCurrency}} Ledger. Busca transacciones, cuentas y NFTs. Sigue saldos, valida cuentas, revisa holdings de NFT y analiza el {{nativeCurrency}} Ledger. Además: convertidores de precio, herramientas, estadísticas y más.",
+    "h1": "Explorador de {{nativeCurrency}} Ledger y Herramientas",
     "search-placeholder": "Buscar por Dirección / Transacción / NFT / Nombre de usuario / PayString / Oferta",
     "search-placeholder-short": "Dirección / Transacción / Usuario",
     "price": {

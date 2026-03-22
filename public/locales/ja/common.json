@@ -161,8 +161,9 @@
     }
   },
   "home": {
-    "title": "{{explorerName}}エクスプローラ | {{nativeCurrency}} Ledgerを検索",
-    "description": "{{nativeCurrency}}価格アラート | {{explorerName}}統計情報 | NFTエクスプローラ | ウォレットアドレス検索 | {{explorerName}} NFT 情報 | NFTのトレード | {{explorerName}}サービス",
+    "title": "{{nativeCurrency}} Ledgerエクスプローラとツール — {{explorerName}} | トランザクション、アカウント、NFTを検索",
+    "description": "{{explorerName}}: {{nativeCurrency}} Ledgerのエクスプローラとツール。トランザクション、アカウント、NFTを検索できます。残高の追跡、アカウントの検証、NFT保有状況の確認、{{nativeCurrency}} Ledgerの分析が可能です。さらに、価格コンバーター、各種ツール、統計情報なども利用できます。",
+    "h1": "{{nativeCurrency}} Ledger エクスプローラと ツール",
     "search-placeholder": "アドレス/トランザクション/NFT/ユーザネーム/PayString/オファー/通貨のハッシュで検索",
     "search-placeholder-short": "アドレス/トランザクション/ユーザで検索",
     "price": {

@@ -161,8 +161,9 @@
     }
   },
   "home": {
-    "title": "Explorateur {{explorerName}} | Scanner le registre {{nativeCurrency}}",
-    "description": "Scannez le Registre {{nativeCurrency}}",
+    "title": "Explorateur et Outils du registre {{nativeCurrency}} — {{explorerName}} | Recherchez transactions, comptes et NFT",
+    "description": "{{explorerName}} : explorateur et outils du registre {{nativeCurrency}}. Recherchez des transactions, des comptes et des NFT. Suivez les soldes, validez les comptes, verifiez les avoirs NFT et analysez le registre {{nativeCurrency}}. En plus : convertisseurs de prix, outils, statistiques et plus encore.",
+    "h1": "Explorateur {{nativeCurrency}} Ledger et Outils",
     "search-placeholder": "Rechercher par Adresse / Transaction / NFT / Nom d'utilisateur / PayString / Offre / Hash",
     "search-placeholder-short": "Adresse / Transaction / Nom d'utilisateur",
     "price": {

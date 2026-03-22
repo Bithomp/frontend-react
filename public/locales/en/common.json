@@ -161,8 +161,9 @@
     }
   },
   "home": {
-    "title": "The best {{nativeCurrency}} Explorer | Scan {{nativeCurrency}} Ledger | {{explorerName}} Explorer",
-    "description": "Bithomp - The best {{nativeCurrency}} Explorer. Track Ripple USD (RLUSD), {{nativeCurrency}} accounts. Search {{nativeCurrency}} transactions. NFTs on {{explorerName}}. Validators, Amendments and much more.",
+    "title": "XRP Ledger Explorer & Tools — {{explorerName}} | Search {{nativeCurrency}} Transactions, Accounts, NFTs",
+    "description": "Bithomp: XRP Ledger explorer and tools. Search transactions, accounts, and NFTs. Track balances, validate accounts, check NFT holdings, and analyze the {{nativeCurrency}} Ledger. Plus: rate converters, tools, statistics, and more.",
+    "h1": "{{nativeCurrency}} Ledger Explorer and Tools",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
     "price": {

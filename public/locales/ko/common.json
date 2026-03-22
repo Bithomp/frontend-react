@@ -161,8 +161,9 @@
     }
   },
   "home": {
-    "title": "{{explorerName}} 탐색기가 {{nativeCurrency}} 레저를 감지했습니다",
-    "description": "{{nativeCurrency}} 가격 차트 | {{nativeCurrency}} 통계 | NFT 탐색기 | 지갑 주소 조회 | {{explorerName}} NFT 거래량 | NFT 구매 및 판매 | {{explorerName}} 서비스",
+    "title": "{{nativeCurrency}} Ledger 탐색기 및 도구 — {{explorerName}} | 트랜잭션, 계정, NFT 검색",
+    "description": "{{explorerName}}: {{nativeCurrency}} Ledger 탐색기 및 도구. 트랜잭션, 계정, NFT를 검색하세요. 잔액 추적, 계정 검증, NFT 보유 현황 확인, {{nativeCurrency}} Ledger 분석이 가능합니다. 추가로 가격 변환기, 도구, 통계 등을 제공합니다.",
+    "h1": "{{nativeCurrency}} Ledger 탐색기 및 도구",
     "search-placeholder": "주소/거래/NFT/사용자명/페이스트링/제안/통화 해시로 검색하기",
     "search-placeholder-short": "주소/거래/사용자별 검색",
     "price": {
