@@ -12,7 +12,7 @@ export default function TeaserTopNftCollections({ data = [], isLoading = false }
     <HomeTeaser
       title="home.teaser.topNftCollections"
       titleNote={t('tabs.week')}
-      href="/nft-volumes"
+      href="/nft-volumes?period=week&sale=primaryAndSecondary"
       isLoading={isLoading}
       isEmpty={!topCollections.length}
     >

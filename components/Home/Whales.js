@@ -2,7 +2,6 @@ import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { devNet } from '../../utils'
 import { AddressWithIconInline, shortNiceNumber, timeFromNow } from '../../utils/format'
 import HomeTeaser, { HomeTeaseRow } from './HomeTeaser'
 import styles from '@/styles/components/home-teaser.module.scss'
@@ -21,7 +20,7 @@ export default function Whales({ currency, data, setData }) {
   const [sourceColWidth, setSourceColWidth] = useState(null)
   const timeCellRefs = useRef([])
   const sourceCellRefs = useRef([])
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
 
   const checkStatApi = async () => {
     const response = await axios('v2/transactions/whale?limit=7')
@@ -104,11 +103,7 @@ export default function Whales({ currency, data, setData }) {
             <AddressWithIconInline data={tx} name="destinationAddress" options={{ short: 3 }} />
           </div>
           <div className={`${styles.metric} ${styles.whaleFiat}`}>
-            {devNet
-              ? t('table.no-value')
-              : tx.amountFiats
-                ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 2, 1, currency)
-                : ''}
+            {tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 2, 1, currency) : ''}
           </div>
         </HomeTeaseRow>
       ))}

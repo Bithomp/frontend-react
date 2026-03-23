@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Head from 'next/head'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
-import { server, explorerName, nativeCurrency, devNet, xahauNetwork, ledgerName } from '../utils'
+import { server, explorerName, nativeCurrency, xahauNetwork, ledgerName } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -163,154 +163,152 @@ export default function Home({
         {showAds && <Ads countryCode={countryCode} />}
       </section>
 
-      {!devNet && (
-        <section className="home-section">
-          <div className="home-dashboard">
-            {/* Begin: Discovery Widgets Grid */}
-            <div className="home-widgets-grid">
-              {/* Price Tools Section */}
-              <div className="home-widget">
-                <FeaturedCard className={styles.livePriceCard} title={t('home.price.header', { nativeCurrency })}>
-                  <Converter
-                    selectedCurrency={selectedCurrency}
-                    setSelectedCurrency={setSelectedCurrency}
-                    chartPeriod={chartPeriod}
-                    fiatRate={fiatRate}
-                  />
-                </FeaturedCard>
-              </div>
+      <section className="home-section">
+        <div className="home-dashboard">
+          {/* Begin: Discovery Widgets Grid */}
+          <div className="home-widgets-grid">
+            {/* Price Tools Section */}
+            <div className="home-widget">
+              <FeaturedCard className={styles.livePriceCard} title={t('home.price.header', { nativeCurrency })}>
+                <Converter
+                  selectedCurrency={selectedCurrency}
+                  setSelectedCurrency={setSelectedCurrency}
+                  chartPeriod={chartPeriod}
+                  fiatRate={fiatRate}
+                />
+              </FeaturedCard>
+            </div>
 
-              <div className="home-widget">
-                <FeaturedCard
-                  className={styles.chartCard}
-                  title={t('home.price.chartHeader', { nativeCurrency })}
-                  headerActions={
-                    <>
-                      {(selectedCurrency === 'eur' || selectedCurrency === 'usd') && (
-                        <button
-                          type="button"
-                          onClick={() => setChartPeriod('one_day')}
-                          className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_day' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                        >
-                          1D
-                        </button>
-                      )}
+            <div className="home-widget">
+              <FeaturedCard
+                className={styles.chartCard}
+                title={t('home.price.chartHeader', { nativeCurrency })}
+                headerActions={
+                  <>
+                    {(selectedCurrency === 'eur' || selectedCurrency === 'usd') && (
                       <button
                         type="button"
-                        onClick={() => setChartPeriod('one_week')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_week' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                        onClick={() => setChartPeriod('one_day')}
+                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_day' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
                       >
-                        1W
+                        1D
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => setChartPeriod('one_month')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_month' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                      >
-                        1M
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setChartPeriod('six_months')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'six_months' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                      >
-                        6M
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setChartPeriod('one_year')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_year' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                      >
-                        1Y
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setChartPeriod('ytd')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'ytd' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                      >
-                        YTD
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setChartPeriod('all')}
-                        className={`${styles.cardHeaderActionButton} ${chartPeriod === 'all' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
-                      >
-                        ALL
-                      </button>
-                    </>
-                  }
-                >
-                  <PriceChart
-                    currency={selectedCurrency}
-                    chartPeriod={chartPeriod}
-                    setChartPeriod={setChartPeriod}
-                    hideToolbar={true}
-                    liveFiatRate={fiatRate}
-                  />
-                </FeaturedCard>
-              </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setChartPeriod('one_week')}
+                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_week' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                    >
+                      1W
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setChartPeriod('one_month')}
+                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_month' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                    >
+                      1M
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setChartPeriod('six_months')}
+                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'six_months' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                    >
+                      6M
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setChartPeriod('one_year')}
+                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'one_year' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                    >
+                      1Y
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setChartPeriod('ytd')}
+                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'ytd' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                    >
+                      YTD
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setChartPeriod('all')}
+                      className={`${styles.cardHeaderActionButton} ${chartPeriod === 'all' ? styles.cardHeaderActionButtonActive : ''}`.trim()}
+                    >
+                      ALL
+                    </button>
+                  </>
+                }
+              >
+                <PriceChart
+                  currency={selectedCurrency}
+                  chartPeriod={chartPeriod}
+                  setChartPeriod={setChartPeriod}
+                  hideToolbar={true}
+                  liveFiatRate={fiatRate}
+                />
+              </FeaturedCard>
+            </div>
 
-              <div className="home-widget">
-                <Whales currency={selectedCurrency} data={whaleTransactions} setData={setWhaleTransactions} />
-              </div>
+            <div className="home-widget">
+              <Whales currency={selectedCurrency} data={whaleTransactions} setData={setWhaleTransactions} />
+            </div>
 
+            <div className="home-widget">
+              <Statistics
+                data={statistics}
+                setData={setStatistics}
+                title={t('home.stat.header', { ledgerName })}
+                mode="activity"
+              />
+            </div>
+
+            <div className="home-widget">
+              <Statistics data={statistics} setData={setStatistics} mode="ledger" fetchOnMount={false} />
+            </div>
+
+            <div className="home-widget">
+              <Statistics data={statistics} setData={setStatistics} mode="network" fetchOnMount={false} />
+            </div>
+
+            {/* Begin: Teaser Widgets - Each will be a HomeTeaser component */}
+            {!xahauNetwork && (
               <div className="home-widget">
-                <Statistics
-                  data={statistics}
-                  setData={setStatistics}
-                  title={t('home.stat.header', { ledgerName })}
-                  mode="activity"
+                <TeaserTopDapps data={teaserDapps} isLoading={false} />
+              </div>
+            )}
+
+            {!xahauNetwork && (
+              <div className="home-widget">
+                <TeaserTopNftCollections data={teaserNftCollections} isLoading={false} />
+              </div>
+            )}
+
+            <div className="home-widget">
+              <TeaserTopTokens data={teaserTokens} isLoading={false} />
+            </div>
+
+            {!xahauNetwork && (
+              <div className="home-widget">
+                <TeaserTopAmms
+                  data={teaserAmms}
+                  isLoading={false}
+                  fiatRate={fiatRate}
+                  selectedCurrency={selectedCurrency}
                 />
               </div>
+            )}
 
-              <div className="home-widget">
-                <Statistics data={statistics} setData={setStatistics} mode="ledger" fetchOnMount={false} />
-              </div>
-
-              <div className="home-widget">
-                <Statistics data={statistics} setData={setStatistics} mode="network" fetchOnMount={false} />
-              </div>
-
-              {/* Begin: Teaser Widgets - Each will be a HomeTeaser component */}
-              {!xahauNetwork && (
-                <div className="home-widget">
-                  <TeaserTopDapps data={teaserDapps} isLoading={false} />
-                </div>
-              )}
-
-              {!xahauNetwork && (
-                <div className="home-widget">
-                  <TeaserTopNftCollections data={teaserNftCollections} isLoading={false} />
-                </div>
-              )}
-
-              <div className="home-widget">
-                <TeaserTopTokens data={teaserTokens} isLoading={false} />
-              </div>
-
-              {!xahauNetwork && (
-                <div className="home-widget">
-                  <TeaserTopAmms
-                    data={teaserAmms}
-                    isLoading={false}
-                    fiatRate={fiatRate}
-                    selectedCurrency={selectedCurrency}
-                  />
-                </div>
-              )}
-
-              <div className="home-widget">
-                <TeaserTopValidators data={teaserValidators} isLoading={false} />
-              </div>
-
-              <div className="home-widget">
-                <TeaserTopAmendments data={teaserAmendments} isLoading={false} />
-              </div>
+            <div className="home-widget">
+              <TeaserTopValidators data={teaserValidators} isLoading={false} />
             </div>
-            {/* End: Discovery Widgets Grid */}
+
+            <div className="home-widget">
+              <TeaserTopAmendments data={teaserAmendments} isLoading={false} />
+            </div>
           </div>
-        </section>
-      )}
+          {/* End: Discovery Widgets Grid */}
+        </div>
+      </section>
     </>
   )
 }

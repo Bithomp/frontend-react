@@ -225,6 +225,7 @@
 
   .whaleRow {
     grid-template-columns: var(--whale-time-col, max-content) var(--whale-source-col, max-content) auto minmax(0, 1fr) auto;
+    cursor: pointer;
 
     @media (max-width: 640px) {
       gap: 8px;

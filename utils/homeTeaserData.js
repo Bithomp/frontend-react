@@ -6,7 +6,7 @@
 import { axiosServer, passHeaders } from './axios'
 import { dappBySourceTag } from './transaction'
 import { buildPrevMapBySourceTag, DAPPS_META } from './dapps'
-import { nativeCurrency } from './index'
+import { nativeCurrency, devNet } from './index'
 
 /**
  * Helper function to ensure we always get an array from API response
@@ -194,7 +194,7 @@ export const fetchTeaserValidators = async (req) => {
     }
 
     const sorted = list
-      .filter((v) => !v.nUnl && v.principals?.some((p) => p.twitter || p.x))
+      .filter((v) => !v.nUnl && (devNet || v.principals?.some((p) => p.twitter || p.x)))
       .sort((a, b) => {
         const nameA = a.principals?.[0]?.name || ''
         const nameB = b.principals?.[0]?.name || ''

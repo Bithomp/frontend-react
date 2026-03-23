@@ -5,6 +5,39 @@ import { broadcastTransaction, getNextTransactionParams } from '../utils/user'
 import { useTranslation } from 'next-i18next'
 import { encode } from 'xrpl-binary-codec-prerelease'
 
+const getSessionAccounts = (session) => {
+  if (!session?.namespaces?.xrpl?.accounts) return []
+  return session.namespaces.xrpl.accounts.map((item) => item.split(':')[2]).filter(Boolean)
+}
+
+const upsertSessionByTopic = (sessions = {}, session) => {
+  if (!session?.topic) return sessions
+  return {
+    ...(sessions || {}),
+    [session.topic]: session
+  }
+}
+
+const pickExistingSession = ({ sessions, tx, activeAddress }) => {
+  const list = Object.values(sessions || {}).filter((item) => item?.topic)
+  if (!list.length) return null
+
+  // Prefer a session that contains the transaction account.
+  if (tx?.Account) {
+    const byTxAccount = list.find((session) => getSessionAccounts(session).includes(tx.Account))
+    if (byTxAccount) return byTxAccount
+  }
+
+  // Then prefer session that contains currently active app address.
+  if (activeAddress) {
+    const byActiveAddress = list.find((session) => getSessionAccounts(session).includes(activeAddress))
+    if (byActiveAddress) return byActiveAddress
+  }
+
+  // Finally fallback to first known session.
+  return list[0]
+}
+
 function SendTx({
   topic,
   tx,
@@ -118,10 +151,12 @@ export function WalletConnect({
   setStatus,
   setAwaiting,
   afterSigning,
-  session,
-  setSession
+  sessions,
+  setSessions,
+  activeAddress
 }) {
   const [sendNow, setSendNow] = useState(false)
+  const [activeSession, setActiveSession] = useState(null)
 
   const wallet = 'walletconnect'
 
@@ -136,11 +171,13 @@ export function WalletConnect({
   })
 
   async function onConnect() {
-    let sessionNew = session
+    const forceNewSession = !!signRequest?.connectAnotherWallet
+    let sessionNew = forceNewSession ? null : pickExistingSession({ sessions, tx, activeAddress })
 
     if (!sessionNew) {
       try {
         sessionNew = await connect()
+        setSessions((previousSessions) => upsertSessionByTopic(previousSessions, sessionNew))
       } catch (err) {
         if (
           err?.message?.includes('WebSocket connection failed') ||
@@ -169,30 +206,43 @@ export function WalletConnect({
       }
     }
 
-    const accounts = sessionNew?.namespaces?.xrpl?.accounts?.map((a) => {
-      return a.split(':')[2]
-    })
-
-    const address0 = accounts?.[0]
-
-    if (!tx.Account) {
-      tx.Account = address0
-    } else if (tx.Account !== address0) {
-      setStatus(
-        'The account in the transaction (' +
-          tx.Account +
-          ') does not match the account in the WalletConnect session (' +
-          address0 +
-          '). Log out from the current account or Sign transaction with it.'
-      )
+    if (!sessionNew) {
       setAwaiting(false)
+      setStatus('WalletConnect session was not created.')
       return
     }
 
-    setSession(sessionNew)
+    const accounts = getSessionAccounts(sessionNew)
+
+    const address0 = accounts?.[0]
+    const hasTxAccount = tx?.Account && accounts.includes(tx.Account)
+
+    if (tx?.TransactionType !== 'SignIn') {
+      if (!tx?.Account) {
+        tx.Account = activeAddress && accounts.includes(activeAddress) ? activeAddress : address0
+      }
+
+      if (tx.Account && !accounts.includes(tx.Account)) {
+        setStatus(
+          'The account in the transaction (' +
+            tx.Account +
+            ') is not available in the selected WalletConnect session. Switch to the matching session or reconnect that wallet.'
+        )
+        setAwaiting(false)
+        return
+      }
+    }
+
+    setActiveSession(sessionNew)
+    setSessions((previousSessions) => upsertSessionByTopic(previousSessions, sessionNew))
 
     if (!tx || tx?.TransactionType === 'SignIn') {
-      onSignIn({ address: address0, wallet, redirectName: signRequest.redirect })
+      onSignIn({
+        address: hasTxAccount ? tx.Account : address0,
+        addresses: accounts,
+        wallet,
+        redirectName: signRequest.redirect
+      })
       //keept afterSubmitExe here to close the dialog form when signedin
       afterSubmitExe({})
       return
@@ -217,13 +267,11 @@ export function WalletConnect({
   }
 
   useEffect(() => {
-    if (tx && session?.namespaces?.xrpl?.accounts) {
+    const sessionCandidate = pickExistingSession({ sessions, tx, activeAddress })
+    if (tx && sessionCandidate?.namespaces?.xrpl?.accounts) {
       //don't show awaiting spinning when accounts do not match
-      const accounts = session?.namespaces?.xrpl?.accounts?.map((a) => {
-        return a.split(':')[2]
-      })
-      const address0 = accounts[0]
-      if (address0 === tx.Account) {
+      const accounts = getSessionAccounts(sessionCandidate)
+      if (!tx?.Account || accounts.includes(tx.Account)) {
         setAwaiting(true)
       }
     } else {
@@ -234,13 +282,13 @@ export function WalletConnect({
       delay(100, onConnect)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tx, session])
+  }, [tx, sessions, activeAddress])
 
   return (
     <>
       {sendNow && (
         <SendTx
-          topic={session?.topic}
+          topic={activeSession?.topic}
           tx={tx}
           signRequest={signRequest}
           setStatus={setStatus}
@@ -250,7 +298,6 @@ export function WalletConnect({
           wallet={wallet}
           setAwaiting={setAwaiting}
           afterSigning={afterSigning}
-          session={session}
         />
       )}
     </>
