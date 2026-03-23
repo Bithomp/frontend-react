@@ -102,6 +102,10 @@
     padding: 5.7px 0;
     gap: 8px;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .amendmentVersion {
@@ -142,6 +146,8 @@
     padding: 1px 7px;
     border: 1px solid transparent;
     line-height: 1.1;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .amendmentStatusVoting {
