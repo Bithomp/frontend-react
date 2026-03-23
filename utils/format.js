@@ -167,7 +167,8 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
           borderRadius: '50%',
           objectFit: 'cover',
           backgroundColor: '#fff',
-          boxShadow: '0 0 0 1px #fff' // subtle stroke to separate edges
+          border: '1px solid #fff',
+          boxSizing: 'border-box'
         }}
       />
       {/* front coin */}
@@ -184,7 +185,8 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
           objectFit: 'cover',
           zIndex: 2,
           backgroundColor: '#fff',
-          boxShadow: '0 0 0 1px #fff'
+          border: '1px solid #fff',
+          boxSizing: 'border-box'
         }}
       />
     </div>
@@ -198,7 +200,8 @@ export const CurrencyWithIcon = ({ token, copy, hideIssuer, options }) => {
         borderRadius: '50%',
         objectFit: 'cover',
         backgroundColor: '#fff',
-        boxShadow: '0 0 0 1px #fff',
+        border: '1px solid #fff',
+        boxSizing: 'border-box',
         verticalAlign: 'middle'
       }}
     />

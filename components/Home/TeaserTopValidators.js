@@ -13,7 +13,15 @@ export default function TeaserTopValidators({ data = [], isLoading = false }) {
       {data?.map((validator) => (
         <HomeTeaseRow key={validator.publicKey} className={styles.validatorRow}>
           <div className={styles.validatorPrimary}>
-            <Avatar src={avatarServer + validator.publicKey} size={35} style={{ flexShrink: 0 }} />
+            <Avatar
+              src={avatarServer + validator.publicKey}
+              size={35}
+              style={{
+                flexShrink: 0,
+                background: '#fff',
+                border: '1px solid #fff'
+              }}
+            />
             {validator.ownerCountry && (
               <ReactCountryFlag
                 countryCode={validator.ownerCountry}
