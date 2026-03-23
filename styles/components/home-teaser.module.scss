@@ -30,6 +30,10 @@
     transition: background-color 0.2s ease;
     text-decoration: none;
     color: inherit;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 
     &:last-child {
       border-bottom: none;
