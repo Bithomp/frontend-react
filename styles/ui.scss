@@ -23,7 +23,7 @@ body {
 
 body.dark {
   #logo, #receiptLogo {
-    path, rect {
+    path, rect, use, polygon, circle, ellipse {
       fill: white;
     }
   }
