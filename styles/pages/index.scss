@@ -5,171 +5,140 @@
   }
 }
 
-.home-price-tools {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
+.home-dashboard {
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
 
-  @media only screen and (max-width: 768px) {
-    flex-direction: column;
+.home-widgets-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1300px) {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-.home-converter {
-  margin-left: 20px;
-  z-index: 2; //to show over the chart
-  padding-top: 32px;
-  height: 200px;
-  text-align: center;
-  @media only screen and (max-width: 768px) {
-    padding-top: 0;
-    height: 170px;
-    margin-left: 0;
-  }
-}
+.home-widget {
+  width: 100%;
+  min-width: 0;
 
-.home-price-chart {
-  padding-top: 20px;
-  z-index: 1;
-  width: 404px;
-  margin-right: 20px;
-  min-height: 265px;
-  @media only screen and (max-width: 768px) {
-    min-height: 291px;
-    margin-left: 10px;
-    width: calc(100% - 20px);
+  &--full-width {
+    grid-column: 1 / -1;
   }
 }
 
 .home-statistics {
-  text-align: center;
-  padding-bottom: 20px;
-  min-height: 100px;
-  .statistics-block {
-    position: relative;
-    min-height: 60px;
-    width: calc(100% - 40px);
-    max-width: 760px;
-    z-index: 1;
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
-    background-color: var(--button-additional);
-    margin: auto;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 35px;
-    .stat-header {
-      position: absolute;
-      top: -25px;
-      left: 0;
-    }
-    .stat-piece {
-      display: inline-block;
-      margin: 10px;
-      font-size: 14px;
-      min-width: 70px;
-      .stat-piece-header {
-        color: var(--text-secondary);
-      }
-    }
-    @media screen and (max-width: 560px) {
-      min-height: 116px;
-    }
-  }
-}
-
-.home-whale-transactions {
-  position: relative;
-  z-index: 1;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 4px;
+  box-shadow: var(--card-shadow);
+  padding: 16px;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  .whale-transactions-block {
+  gap: 10px;
+  min-height: 100%;
+
+  .statistics-card-header {
     font-size: 14px;
-    min-height: 96px;
-    width: calc(100% - 40px);
-    max-width: 760px;
-    z-index: 1;
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
-    background-color: var(--button-additional);
-    margin-top: 20px;
-    @media only screen and (max-width: 800px) {
-      min-height: 202px;
+    font-weight: 600;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 12px;
+    overflow-wrap: anywhere;
+  }
+
+  .statistics-top-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+
+    @media (max-width: 560px) {
+      grid-template-columns: 1fr;
     }
-    .tx-row {
-      &.just-added {
-        background-color: var(--background-secondary);
-        animation: just-added 3s 1 linear;
-      }
-      padding-bottom: 5px;
-      padding-top: 5px;
-      .tx-time {
-        display: inline-block;
-        width: 6%;
-        text-align: center;
-        @media only screen and (max-width: 800px) {
-          width: 10%;
-        }
-        @media only screen and (max-width: 550px) {
-          width: 15%;
-        }
-      }
-      .tx-addresses {
-        padding-left: 5px;
-        width: 64%;
-        display: inline-block;
-        min-height: 22px;
-        @media only screen and (max-width: 800px) {
-          width: 68%;
-          overflow: hidden;
-          padding: 0;
-          vertical-align: middle;
-        }
-        @media only screen and (max-width: 550px) {
-          width: 50%;
-        }
-      }
-      .tx-link {
-        padding-right: 5px;
-        text-align: right;
-        width: calc(5% - 5px);
-        display: inline-block;
-        margin-bottom: -5px;
-        vertical-align: middle;
-        @media only screen and (max-width: 800px) {
-          width: calc(4% - 5px);
-          padding: 0;
-        }
-        @media only screen and (max-width: 550px) {
-          width: calc(8% - 5px);
-        }
-      }
-      .tx-amount {
-        padding-right: 5px;
-        text-align: right;
-        display: inline-block;
-        width: 12%;
-        @media only screen and (max-width: 800px) {
-          width: 0%;
-          padding-right: 0;
-        }
-      }
-      .tx-amount-fiat {
-        padding-right: 5px;
-        text-align: right;
-        display: inline-block;
-        width: 11%;
-        @media only screen and (max-width: 800px) {
-          width: 15%;
-        }
-        @media screen and (max-width: 550px) {
-          width: 26%;
-        }
-      }
+  }
+
+  .statistics-top-item {
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: var(--background-main);
+
+    .label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .statistics-sections {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .statistics-section {
+    border-top: 1px solid var(--card-border);
+    padding-top: 8px;
+
+    &:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+  }
+
+  :global(.statistics-section-title) {
+    font-size: 12px;
+  }
+
+  .statistics-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    padding: 4px 0;
+    font-size: 12px;
+
+    span:first-child {
+      color: var(--text-secondary);
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    span:last-child {
+      color: var(--text-main);
+      font-weight: 500;
+      text-align: right;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    a {
+      color: var(--link-color);
     }
   }
 }
@@ -179,3 +148,5 @@
   50%  { background-color: var(--background-contrast); color: var(--text-oposite); }
   100%  { background-color: var(--background-main); color: var(--text-main); }
 }
+
+

@@ -967,14 +967,14 @@ export const amountFormat = (amount, options = {}) => {
     showValue = '+' + showValue
   }
 
+  const amountText = [showValue, valuePrefix, options.noCurrency ? '' : textCurrency].filter(Boolean).join(' ')
+
   if (options.tooltip) {
     return (
       <span suppressHydrationWarning>
         {tokenImage}
-        <StyleAmount>
-          {showValue} {valuePrefix}{' '}
-        </StyleAmount>
-        {type === nativeCurrency ? (
+        <StyleAmount>{amountText} </StyleAmount>
+        {options.noCurrency ? null : type === nativeCurrency ? (
           <StyleAmount>{textCurrency}</StyleAmount>
         ) : (
           <span className="tooltip">
@@ -990,9 +990,7 @@ export const amountFormat = (amount, options = {}) => {
     return (
       <>
         {tokenImage}
-        <StyleAmount>
-          {showValue} {valuePrefix} {textCurrency}
-        </StyleAmount>
+        <StyleAmount>{amountText}</StyleAmount>
         {issuer ? (
           <span className="no-inherit no-brake">
             (
@@ -1015,11 +1013,11 @@ export const amountFormat = (amount, options = {}) => {
     return (
       <span className="no-brake">
         {tokenImage}
-        <StyleAmount>{showValue + ' ' + valuePrefix + ' ' + textCurrency}</StyleAmount>
+        <StyleAmount>{amountText}</StyleAmount>
       </span>
     )
   } else {
-    return showValue + ' ' + valuePrefix + ' ' + textCurrency
+    return amountText
   }
 }
 

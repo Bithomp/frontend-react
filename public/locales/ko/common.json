@@ -1,4 +1,11 @@
 {
+  "common": {
+    "viewAll": "모두 보기",
+    "noData": "이용 가능한 데이터가 없습니다",
+    "addresses": "주소",
+    "holders": 보유자",
+    "sales": "총기보 식"
+  },
   "menu": {
     "tokens": "토큰",
     "amm": {
@@ -48,7 +55,7 @@
       "distribution": "{{currency}} 분배",
       "last-ledger-information": "최근 원장 정보",
       "last-ledger-transactions": "최근 거래 정보",
-      "top-transfers-24h": "최대 이체 (24시간)",
+      "top-transfers-24h": "최대 이체",
       "verified-domains": "검증된 도메인",
       "validators": "벨리데이터",
       "amendments": "수정사항",
@@ -167,7 +174,8 @@
     "search-placeholder": "주소/거래/NFT/사용자명/페이스트링/제안/통화 해시로 검색하기",
     "search-placeholder-short": "주소/거래/사용자별 검색",
     "price": {
-      "header": "{{nativeCurrency}} 실시간 가격 & 변환"
+      "header": "{{nativeCurrency}} 실시간 가격 & 변환",
+      "chartHeader": "{{nativeCurrency}} 가격 차트"
     },
     "whales": {
       "header": "지난 24시간 동안 가장 중요한 거래"
@@ -196,6 +204,14 @@
       "escrows": "Escrows",
       "amms": "AMM pools",
       "nodes": "노드"
+    },
+    "teaser": {
+      "topDapps": "상위 Dapps",
+      "topNftCollections": "이번 주 상위 NFT 컬렉션",
+      "topTokens": "상위 토큰",
+      "topAmms": "상위 AMM 풀",
+      "topValidators": "검증자",
+      "topAmendments": "최신 수정 사항"
     }
   },
   "last-ledger-information": {
@@ -578,7 +594,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} 탐색기",
-      "sub": "{{nativeCurrency}} 거래, 계정, 토큰 및 NFT를 스캔하세요 — 빠르고 신뢰할 수 있는 방법으로 {{nativeCurrency}} Ledger를 탐색하세요.",
+      "topNftCollections": "상위 NFT 컬렉션",
       "amm": "AMM 풀 정보",
       "object": "객체 정보",
       "account": "계정 정보",

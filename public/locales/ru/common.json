@@ -1,4 +1,11 @@
 {
+  "common": {
+    "viewAll": "Показать всё",
+    "noData": "Нет доступных данных",
+    "addresses": "адреса",
+    "holders": "владельцы",
+    "sales": "продажи"
+  },
   "menu": {
     "tokens": "Токены",
     "amm": {
@@ -48,7 +55,7 @@
       "distribution": "ТОП адресов по балансу {{currency}}",
       "last-ledger-information": "Информация с последнего леджера",
       "last-ledger-transactions": "Транзакции последнего леджера",
-      "top-transfers-24h": "Крупнейшие переводы (24ч)",
+      "top-transfers-24h": "Крупнейшие переводы",
       "verified-domains": "Проверенные домены",
       "validators": "Валидаторы",
       "amendments": "Поправки",
@@ -167,7 +174,8 @@
     "search-placeholder": "Поиск по Адресу / Транзакции / Псевдониму / PayString / NFT / Offer ID",
     "search-placeholder-short": "Адрес / Транзакция / Псевдоним",
     "price": {
-      "header": "{{nativeCurrency}} Текущий курс & Конвертер"
+      "header": "{{nativeCurrency}} Текущий курс & Конвертер",
+      "chartHeader": "График цены {{nativeCurrency}}"
     },
     "whales": {
       "header": "Самые крупные транзакции за последние 24 часа"
@@ -196,6 +204,14 @@
       "escrows": "Эскроу",
       "amms": "Пулы AMM",
       "nodes": "Ноды"
+    },
+    "teaser": {
+      "topDapps": "Топ Dapps",
+      "topNftCollections": "Топ коллекции NFT на этой неделе",
+      "topTokens": "Топ токены",
+      "topAmms": "Топ пулы AMM",
+      "topValidators": "Валидаторы",
+      "topAmendments": "Последние поправки"
     }
   },
   "last-ledger-information": {
@@ -578,7 +594,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} Эксплорер",
-      "sub": "Сканируйте транзакции, аккаунты, токены и NFT в {{nativeCurrency}} — быстрый и надёжный способ исследовать {{nativeCurrency}} Ledger.",
+      "topNftCollections": "Топ коллекции NFT",
       "amm": "Информация об АММ пуле",
       "object": "Информация об объекте",
       "account": "Информация об адресе",

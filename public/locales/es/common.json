@@ -1,4 +1,11 @@
 {
+  "common": {
+    "viewAll": "Ver todo",
+    "noData": "Sin datos disponibles",
+    "addresses": "direcciones",
+    "holders": "poseedores",
+    "sales": "ventas"
+  },
   "menu": {
     "tokens": "Tokens",
     "amm": {
@@ -48,7 +55,7 @@
       "distribution": "Distribución de {{currency}}",
       "last-ledger-information": "Información del último libro contable",
       "last-ledger-transactions": "Transacciones del último libro contable",
-      "top-transfers-24h": "Top transferencias (24h)",
+      "top-transfers-24h": "Top transferencias",
       "verified-domains": "Dominios verificados",
       "validators": "Validadores",
       "amendments": "Enmiendas",
@@ -167,7 +174,8 @@
     "search-placeholder": "Buscar por Dirección / Transacción / NFT / Nombre de usuario / PayString / Oferta",
     "search-placeholder-short": "Dirección / Transacción / Usuario",
     "price": {
-      "header": "Precio en Vivo de {{nativeCurrency}} & Convertidor"
+      "header": "Precio en Vivo de {{nativeCurrency}} & Convertidor",
+      "chartHeader": "Gráfico de precio de {{nativeCurrency}}"
     },
     "whales": {
       "header": "Las transacciones más significativas en las últimas 24 horas"
@@ -196,6 +204,14 @@
       "escrows": "Escrows",
       "amms": "AMM pools",
       "nodes:": "Nodos"
+    },
+    "teaser": {
+      "topDapps": "Top Dapps",
+      "topNftCollections": "Top Colecciones NFT esta semana",
+      "topTokens": "Top Tokens",
+      "topAmms": "Top Pools AMM",
+      "topValidators": "Validadores",
+      "topAmendments": "Últimas Enmiendas"
     }
   },
   "last-ledger-information": {
@@ -578,7 +594,7 @@
   "explorer": {
     "header": {
       "main": "Explorador {{explorerName}}",
-      "sub": "Escanea transacciones, cuentas, tokens y NFTs de {{nativeCurrency}}: la forma rápida y confiable de explorar el {{nativeCurrency}} Ledger.",
+      "topNftCollections": "Top Colecciones NFT",
       "amm": "Información del pool AMM",
       "object": "Información del objeto",
       "account": "Información de la cuenta",

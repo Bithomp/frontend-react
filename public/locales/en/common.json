@@ -1,4 +1,11 @@
 {
+  "common": {
+    "viewAll": "View All",
+    "noData": "No data available",
+    "addresses": "addresses",
+    "holders": "holders",
+    "sales": "sales"
+  },
   "menu": {
     "tokens": "Tokens",
     "amm": {
@@ -48,7 +55,7 @@
       "distribution": "{{currency}} distribution",
       "last-ledger-information": "Last ledger information",
       "last-ledger-transactions": "Last ledger transactions",
-      "top-transfers-24h": "Top transfers (24h)",
+      "top-transfers-24h": "Top Transfers",
       "verified-domains": "Verified domains",
       "validators": "Validators",
       "amendments": "Amendments",
@@ -167,7 +174,8 @@
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
     "price": {
-      "header": "{{nativeCurrency}} Live Price & Converter"
+      "header": "{{nativeCurrency}} Live Price & Converter",
+      "chartHeader": "{{nativeCurrency}} Price Chart"
     },
     "whales": {
       "header": "The most significant transactions for the last 24 hours"
@@ -196,6 +204,14 @@
       "escrows": "Escrows",
       "amms": "AMM pools",
       "nodes": "Nodes"
+    },
+    "teaser": {
+      "topDapps": "Top Dapps",
+      "topNftCollections": "Top NFT Collections",
+      "topTokens": "Top Tokens",
+      "topAmms": "Top AMM Pools by TVL",
+      "topValidators": "Validators",
+      "topAmendments": "Latest Amendments"
     }
   },
   "last-ledger-information": {
