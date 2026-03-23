@@ -50,6 +50,13 @@ import { serviceUsernameOrAddressText } from '../../../utils/format'
 const HIDE_SEARCH_HEADER = ['/explorer', '/account', '/amm', '/object', '/transaction', '/nft-volumes']
 const HIDE_SEARCH_WHEN_NO_ID = ['/nfts', '/nft-offers', '/nft', '/nft-offer']
 
+const WALLETCONNECT_LOGOS = {
+  joey: 'joey.png',
+  bifrost: 'bifrost.png',
+  girin: 'girin.png',
+  uphodl: 'uphodl.png'
+}
+
 let timeoutIds = {}
 
 const MenuDropDown = ({
@@ -252,10 +259,22 @@ export default function Header({
       { short: true }
     )
 
-  const renderWalletIcon = (provider) => {
+  const renderWalletIcon = (provider, walletItem = null) => {
     const size = 20
     const shared = { height: size, width: size, className: 'wallet-logo' }
     if (provider === 'walletconnect') {
+      const walletConnectWalletId = walletItem?.walletConnectWalletId
+      const walletConnectWalletName = walletItem?.walletConnectWalletName || 'WalletConnect'
+      if (walletConnectWalletId && WALLETCONNECT_LOGOS[walletConnectWalletId]) {
+        return (
+          <Image
+            src={`/images/wallets/square-logos/${WALLETCONNECT_LOGOS[walletConnectWalletId]}`}
+            alt={walletConnectWalletName}
+            {...shared}
+            style={{ borderRadius: '4px' }}
+          />
+        )
+      }
       return <Image src="/images/wallets/walletconnect.svg" alt="WalletConnect" {...shared} />
     }
     if (provider === 'metamask') {
@@ -646,7 +665,7 @@ export default function Header({
                               )}
                             </span>
                           </span>
-                          <span className="wallet-provider-icon">{renderWalletIcon(walletItem.provider)}</span>
+                          <span className="wallet-provider-icon">{renderWalletIcon(walletItem.provider, walletItem)}</span>
                           <span className="link wallet-disconnect" onClick={() => signOut(walletItem.id)}>
                             <IoLogOutOutline aria-label="Disconnect" />
                             <span className="wallet-disconnect-tooltip">Disconnect</span>

@@ -52,6 +52,13 @@ const getMostRecentlyConnectedWallet = (wallets = []) => {
   }, null)
 }
 
+const getWalletConnectAddressesFromSession = (session) => {
+  if (!session?.namespaces?.xrpl?.accounts) return []
+  return session.namespaces.xrpl.accounts
+    .map((account) => account?.split(':')?.[2])
+    .filter(Boolean)
+}
+
 const normalizeAccountState = (account) => {
   const current = account && typeof account === 'object' ? account : {}
   let wallets = Array.isArray(current.wallets) ? current.wallets.filter((wallet) => wallet?.id) : []
@@ -161,7 +168,7 @@ const MyApp = ({ Component, pageProps }) => {
   )
   const [signRequest, setSignRequest] = useState(false)
   const [refreshPage, setRefreshPage] = useState('')
-  const [wcSession, setWcSession] = useState(null)
+  const [wcSessions, setWcSessions] = useState({})
   const [isClient, setIsClient] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
   const [countryCode, setCountryCode] = useState('')
@@ -412,7 +419,17 @@ const MyApp = ({ Component, pageProps }) => {
     })
 
     if (targetWallet.provider === 'walletconnect') {
-      setWcSession(null)
+      setWcSessions((previousSessions) => {
+        if (!previousSessions || typeof previousSessions !== 'object') return {}
+        const nextSessions = { ...previousSessions }
+        Object.entries(previousSessions).forEach(([topic, session]) => {
+          const addresses = getWalletConnectAddressesFromSession(session)
+          if (addresses.includes(targetWallet.address)) {
+            delete nextSessions[topic]
+          }
+        })
+        return nextSessions
+      })
     }
 
     if (nextActiveWallet?.address) {
@@ -456,7 +473,9 @@ const MyApp = ({ Component, pageProps }) => {
           connectedAt: Date.now(),
           derivationPath: walletMeta?.derivationPath || null,
           publicKey: walletMeta?.publicKey || null,
-          accountIndex: Number.isFinite(walletMeta?.accountIndex) ? walletMeta.accountIndex : null
+          accountIndex: Number.isFinite(walletMeta?.accountIndex) ? walletMeta.accountIndex : null,
+          walletConnectWalletId: walletMeta?.walletConnectWalletId || null,
+          walletConnectWalletName: walletMeta?.walletConnectWalletName || null
         }
 
         if (existingIndex >= 0) {
@@ -572,8 +591,8 @@ const MyApp = ({ Component, pageProps }) => {
                   uuid={uuid}
                   setRefreshPage={setRefreshPage}
                   saveAddressData={saveAddressData}
-                  wcSession={wcSession}
-                  setWcSession={setWcSession}
+                  wcSessions={wcSessions}
+                  setWcSessions={setWcSessions}
                 />
               )}
               {isEmailLoginOpen && (

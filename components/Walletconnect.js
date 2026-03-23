@@ -38,6 +38,63 @@ const pickExistingSession = ({ sessions, tx, activeAddress }) => {
   return list[0]
 }
 
+const detectWalletConnectWalletId = (session) => {
+  const name = String(session?.peer?.metadata?.name || '').toLowerCase()
+  const url = String(session?.peer?.metadata?.url || '').toLowerCase()
+  const iconText = Array.isArray(session?.peer?.metadata?.icons)
+    ? session.peer.metadata.icons.join(' ').toLowerCase()
+    : ''
+  const haystack = [name, url, iconText].join(' ')
+
+  if (haystack.includes('bifrost')) return 'bifrost'
+  if (haystack.includes('girin')) return 'girin'
+  if (haystack.includes('uphodl') || haystack.includes('uphold')) return 'uphodl'
+  if (haystack.includes('joey')) return 'joey'
+
+  return null
+}
+
+const getWalletConnectWalletMeta = (session) => {
+  const walletConnectWalletId = detectWalletConnectWalletId(session)
+  const walletConnectWalletName = session?.peer?.metadata?.name || null
+  return {
+    walletConnectWalletId,
+    walletConnectWalletName
+  }
+}
+
+const getErrorMessage = (error) => {
+  if (typeof error === 'string') return error
+  if (typeof error?.message === 'string') return error.message
+  try {
+    return JSON.stringify(error)
+  } catch (_) {
+    return ''
+  }
+}
+
+const isNoMatchingKeyError = (error) => getErrorMessage(error).includes('No matching key')
+
+const clearWalletConnectStorage = () => {
+  if (typeof window === 'undefined') return
+
+  const removeStorageKeys = (storage) => {
+    if (!storage) return
+    const keysToRemove = []
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i)
+      if (!key) continue
+      if (key.includes('walletconnect') || key.includes('wc@2') || key.startsWith('wc_')) {
+        keysToRemove.push(key)
+      }
+    }
+    keysToRemove.forEach((key) => storage.removeItem(key))
+  }
+
+  removeStorageKeys(window.localStorage)
+  removeStorageKeys(window.sessionStorage)
+}
+
 function SendTx({
   topic,
   tx,
@@ -160,6 +217,15 @@ export function WalletConnect({
 
   const wallet = 'walletconnect'
 
+  const handleNoMatchingKeyError = () => {
+    console.warn('Resetting WalletConnect storage due to invalid pairing key')
+    clearWalletConnectStorage()
+    setSessions({})
+    setActiveSession(null)
+    setAwaiting(false)
+    setStatus('WalletConnect cache was reset because a stale pairing was found. Please try connecting again.')
+  }
+
   const { connect } = useConnect({
     requiredNamespaces: {
       xrpl: {
@@ -179,29 +245,28 @@ export function WalletConnect({
         sessionNew = await connect()
         setSessions((previousSessions) => upsertSessionByTopic(previousSessions, sessionNew))
       } catch (err) {
+        const errMessage = getErrorMessage(err)
         if (
-          err?.message?.includes('WebSocket connection failed') ||
-          err?.message?.includes('Socket stalled when trying to connect')
+          errMessage.includes('WebSocket connection failed') ||
+          errMessage.includes('Socket stalled when trying to connect')
         ) {
           console.warn('WebSocket connection failed')
-        } else if (err.message?.includes('No matching key')) {
-          console.warn('Resetting WalletConnect storage due to invalid pairing')
-          localStorage.clear()
-          location.reload()
+        } else if (isNoMatchingKeyError(err)) {
+          handleNoMatchingKeyError()
           return
-        } else if (err.message === 'Modal closed') {
+        } else if (errMessage === 'Modal closed') {
           return
         } else if (
-          err.message.includes('setExternalProvider is not a function') ||
-          err.message.includes('Cannot redefine property')
+          errMessage.includes('setExternalProvider is not a function') ||
+          errMessage.includes('Cannot redefine property')
         ) {
           return // skip reporting
         }
         setAwaiting(false)
-        if (err.message === 'Requested chains reside on testnet') {
+        if (errMessage === 'Requested chains reside on testnet') {
           setStatus('Make sure your Wallet is connected to the Test network and then try again.')
         } else {
-          setStatus(err.message || 'Error connecting through WalletConnect')
+          setStatus(errMessage || 'Error connecting through WalletConnect')
         }
       }
     }
@@ -213,6 +278,7 @@ export function WalletConnect({
     }
 
     const accounts = getSessionAccounts(sessionNew)
+    const walletConnectMeta = getWalletConnectWalletMeta(sessionNew)
 
     const address0 = accounts?.[0]
     const hasTxAccount = tx?.Account && accounts.includes(tx.Account)
@@ -237,10 +303,16 @@ export function WalletConnect({
     setSessions((previousSessions) => upsertSessionByTopic(previousSessions, sessionNew))
 
     if (!tx || tx?.TransactionType === 'SignIn') {
+      const walletMetaMap = accounts.reduce((acc, itemAddress) => {
+        acc[itemAddress] = walletConnectMeta
+        return acc
+      }, {})
+
       onSignIn({
         address: hasTxAccount ? tx.Account : address0,
         addresses: accounts,
         wallet,
+        walletMetaMap,
         redirectName: signRequest.redirect
       })
       //keept afterSubmitExe here to close the dialog form when signedin
@@ -283,6 +355,30 @@ export function WalletConnect({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tx, sessions, activeAddress])
+
+  useEffect(() => {
+    const onUnhandledRejection = (event) => {
+      if (!isNoMatchingKeyError(event?.reason)) return
+      event.preventDefault()
+      handleNoMatchingKeyError()
+    }
+
+    const onWindowError = (event) => {
+      if (!isNoMatchingKeyError(event?.error) && !isNoMatchingKeyError(event?.message)) return
+      event.preventDefault()
+      handleNoMatchingKeyError()
+      return true
+    }
+
+    window.addEventListener('unhandledrejection', onUnhandledRejection)
+    window.addEventListener('error', onWindowError)
+
+    return () => {
+      window.removeEventListener('unhandledrejection', onUnhandledRejection)
+      window.removeEventListener('error', onWindowError)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>

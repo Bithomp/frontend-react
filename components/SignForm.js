@@ -102,8 +102,8 @@ export default function SignForm({
   uuid,
   setRefreshPage,
   saveAddressData,
-  wcSession,
-  setWcSession
+  wcSessions,
+  setWcSessions
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -1356,8 +1356,9 @@ export default function SignForm({
           onSignIn={onSignIn}
           setAwaiting={setAwaiting}
           afterSigning={afterSigning}
-          session={wcSession}
-          setSession={setWcSession}
+          sessions={wcSessions}
+          setSessions={setWcSessions}
+          activeAddress={account?.address}
         />
       )}
       {screen && (
