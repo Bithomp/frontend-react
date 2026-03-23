@@ -54,9 +54,7 @@ const getMostRecentlyConnectedWallet = (wallets = []) => {
 
 const getWalletConnectAddressesFromSession = (session) => {
   if (!session?.namespaces?.xrpl?.accounts) return []
-  return session.namespaces.xrpl.accounts
-    .map((account) => account?.split(':')?.[2])
-    .filter(Boolean)
+  return session.namespaces.xrpl.accounts.map((account) => account?.split(':')?.[2]).filter(Boolean)
 }
 
 const normalizeAccountState = (account) => {

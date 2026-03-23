@@ -665,7 +665,9 @@ export default function Header({
                               )}
                             </span>
                           </span>
-                          <span className="wallet-provider-icon">{renderWalletIcon(walletItem.provider, walletItem)}</span>
+                          <span className="wallet-provider-icon">
+                            {renderWalletIcon(walletItem.provider, walletItem)}
+                          </span>
                           <span className="link wallet-disconnect" onClick={() => signOut(walletItem.id)}>
                             <IoLogOutOutline aria-label="Disconnect" />
                             <span className="wallet-disconnect-tooltip">Disconnect</span>
