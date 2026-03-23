@@ -10,6 +10,14 @@ const errorHandle = (error) => {
   const msg = String(error?.message || error)
   const statusCode = error?.statusCode
 
+  if (msg.includes('DEVICE_NOT_ONBOARDED') || statusCode === 0x6d07) {
+    throw new Error(
+      'Ledger app is not installed on your device. Install the ' +
+        nativeCurrency +
+        ' app via Ledger Live Manager, open it on your Ledger, and try again.'
+    )
+  }
+
   // App-level status from Ledger (e.g. 0x650f when app is not open)
   if (error?.name === 'TransportStatusError' && typeof statusCode === 'number') {
     console.error('Ledger TransportStatusError:', statusCode, error.statusText)
@@ -32,6 +40,14 @@ const errorHandle = (error) => {
 
     if (statusCode === 0x6985) {
       throw new Error('Signing cancelled on your Ledger device.')
+    }
+
+    if (statusCode === 0x6d07) {
+      throw new Error(
+        'Ledger app is not installed on your device. Install the ' +
+          nativeCurrency +
+          ' app via Ledger Live Manager, open it on your Ledger, and try again.'
+      )
     }
 
     throw new Error(`Ledger error: ${error.statusText || 'Unknown status'} (0x${statusCode.toString(16)})`)
@@ -350,8 +366,7 @@ const signTransactionWithLedger = async (xrpApp, tx, path = "44'/144'/0'/0/0") =
     const signature = await xrpApp.signTransaction(path, encodetx)
     return signature.toUpperCase()
   } catch (error) {
-    console.error('Failed to sign transaction:', error)
-    throw new Error('Unable to sign transaction with Ledger via WebHID.')
+    errorHandle(error)
   }
 }
 
