@@ -109,9 +109,7 @@ export const fetchTeaserTokens = async (req, selectedCurrency = 'usd') => {
   try {
     const response = await axiosServer({
       method: 'get',
-      url:
-        'v2/trustlines/tokens?limit=5&order=rating&statistics=true&convertCurrencies=' +
-        selectedCurrency,
+      url: 'v2/trustlines/tokens?limit=5&order=rating&statistics=true&convertCurrencies=' + selectedCurrency,
       headers: passHeaders(req),
       timeout: 5000
     })

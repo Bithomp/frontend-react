@@ -41,10 +41,10 @@ export async function getServerSideProps(context) {
   // Fetch all teaser data in parallel
   const [teaserDapps, teaserTokens, teaserNftCollections, teaserAmms, teaserValidators, teaserAmendments] =
     await Promise.all([
-      fetchTeaserDapps(req, selectedCurrencyServer),
+      xahauNetwork ? [] : fetchTeaserDapps(req, selectedCurrencyServer),
       fetchTeaserTokens(req, selectedCurrencyServer),
-      fetchTeaserNftCollections(req, selectedCurrencyServer),
-      fetchTeaserAmms(req),
+      xahauNetwork ? [] : fetchTeaserNftCollections(req, selectedCurrencyServer),
+      xahauNetwork ? [] : fetchTeaserAmms(req),
       fetchTeaserValidators(req),
       fetchTeaserAmendments(req)
     ])
@@ -272,26 +272,32 @@ export default function Home({
               </div>
 
               {/* Begin: Teaser Widgets - Each will be a HomeTeaser component */}
-              <div className="home-widget">
-                <TeaserTopDapps data={teaserDapps} isLoading={false} />
-              </div>
+              {!xahauNetwork && (
+                <div className="home-widget">
+                  <TeaserTopDapps data={teaserDapps} isLoading={false} />
+                </div>
+              )}
 
-              <div className="home-widget">
-                <TeaserTopNftCollections data={teaserNftCollections} isLoading={false} />
-              </div>
+              {!xahauNetwork && (
+                <div className="home-widget">
+                  <TeaserTopNftCollections data={teaserNftCollections} isLoading={false} />
+                </div>
+              )}
 
               <div className="home-widget">
                 <TeaserTopTokens data={teaserTokens} isLoading={false} />
               </div>
 
-              <div className="home-widget">
-                <TeaserTopAmms
-                  data={teaserAmms}
-                  isLoading={false}
-                  fiatRate={fiatRate}
-                  selectedCurrency={selectedCurrency}
-                />
-              </div>
+              {!xahauNetwork && (
+                <div className="home-widget">
+                  <TeaserTopAmms
+                    data={teaserAmms}
+                    isLoading={false}
+                    fiatRate={fiatRate}
+                    selectedCurrency={selectedCurrency}
+                  />
+                </div>
+              )}
 
               <div className="home-widget">
                 <TeaserTopValidators data={teaserValidators} isLoading={false} />
