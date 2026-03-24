@@ -166,6 +166,36 @@
     border-color: rgba(47, 158, 68, 0.35);
   }
 
+  @media (max-width: 640px) {
+    .amendmentRow {
+      grid-template-columns: minmax(0, 1fr) 56px 54px 62px;
+      gap: 6px;
+      padding: 6px 0;
+    }
+
+    .amendmentRow .metric {
+      min-width: 0;
+    }
+
+    .amendmentVersion {
+      min-width: 0;
+      font-size: 9px;
+      padding: 1px 5px;
+    }
+
+    .amendmentDetail {
+      min-width: 0;
+      font-size: 10px;
+    }
+
+    .amendmentStatus {
+      min-width: 0;
+      font-size: 9px;
+      letter-spacing: 0.03em;
+      padding: 1px 5px;
+    }
+  }
+
   .itemName {
     font-size: 13px;
     font-weight: 500;
