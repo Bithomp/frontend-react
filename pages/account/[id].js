@@ -3688,7 +3688,7 @@ export default function Account({
                           >
                             <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> Send
                           </button>
-                          {!!disabledSendTooltip && <span className="tooltiptext no-brake">{disabledSendTooltip}</span>}
+                          {!!disabledSendTooltip && <span className="tooltiptext">{disabledSendTooltip}</span>}
                         </span>
                       </div>
                     </div>
@@ -4205,7 +4205,7 @@ export default function Account({
                               <MdNorth style={{ fontSize: 16, marginBottom: -2 }} /> Send
                             </button>
                             {!!disabledSendTokenTooltip && (
-                              <span className="tooltiptext no-brake">{disabledSendTokenTooltip}</span>
+                              <span className="tooltiptext">{disabledSendTokenTooltip}</span>
                             )}
                           </span>
                           {canGetMoreRlusd && (
@@ -4242,7 +4242,7 @@ export default function Account({
                               <MdDeleteForever /> Remove
                             </button>
                             {!!disabledRemoveTrustlineTooltip && (
-                              <span className="tooltiptext no-brake">{disabledRemoveTrustlineTooltip}</span>
+                              <span className="tooltiptext">{disabledRemoveTrustlineTooltip}</span>
                             )}
                           </span>
                         </div>
@@ -4673,7 +4673,7 @@ export default function Account({
                                           Make a buy offer
                                         </button>
                                         {!!disabledBuyOfferTooltip && (
-                                          <span className="tooltiptext no-brake">{disabledBuyOfferTooltip}</span>
+                                          <span className="tooltiptext">{disabledBuyOfferTooltip}</span>
                                         )}
                                       </span>
                                     </div>
@@ -7161,7 +7161,7 @@ export default function Account({
                                         <TbPigMoney /> Redeem
                                       </button>
                                       {!!disabledRedeemCheckTooltip && (
-                                        <span className="tooltiptext no-brake">{disabledRedeemCheckTooltip}</span>
+                                        <span className="tooltiptext">{disabledRedeemCheckTooltip}</span>
                                       )}
                                     </span>
                                     <span className={disabledCancelCheckTooltip ? 'tooltip' : ''}>
@@ -7182,7 +7182,7 @@ export default function Account({
                                         <MdMoneyOff /> Cancel
                                       </button>
                                       {!!disabledCancelCheckTooltip && (
-                                        <span className="tooltiptext no-brake">{disabledCancelCheckTooltip}</span>
+                                        <span className="tooltiptext">{disabledCancelCheckTooltip}</span>
                                       )}
                                     </span>
                                   </div>
@@ -7509,7 +7509,7 @@ export default function Account({
                                         <TbPigMoney /> Execute
                                       </button>
                                       {!!disabledExecuteEscrowTooltip && (
-                                        <span className="tooltiptext no-brake">{disabledExecuteEscrowTooltip}</span>
+                                        <span className="tooltiptext">{disabledExecuteEscrowTooltip}</span>
                                       )}
                                     </span>
                                     <span className={disabledCancelEscrowTooltip ? 'tooltip' : ''}>
@@ -7531,7 +7531,7 @@ export default function Account({
                                         <MdMoneyOff /> Cancel
                                       </button>
                                       {!!disabledCancelEscrowTooltip && (
-                                        <span className="tooltiptext no-brake">{disabledCancelEscrowTooltip}</span>
+                                        <span className="tooltiptext">{disabledCancelEscrowTooltip}</span>
                                       )}
                                     </span>
                                   </div>
@@ -7938,9 +7938,7 @@ export default function Account({
                                           )}
                                         </button>
                                         {!!disabledAcceptPrivateNftOfferTooltip && (
-                                          <span className="tooltiptext no-brake">
-                                            {disabledAcceptPrivateNftOfferTooltip}
-                                          </span>
+                                          <span className="tooltiptext">{disabledAcceptPrivateNftOfferTooltip}</span>
                                         )}
                                       </span>
                                     </div>
@@ -7968,9 +7966,7 @@ export default function Account({
                                           <MdMoneyOff /> Cancel
                                         </button>
                                         {!!disabledCancelCreatedNftOfferTooltip && (
-                                          <span className="tooltiptext no-brake">
-                                            {disabledCancelCreatedNftOfferTooltip}
-                                          </span>
+                                          <span className="tooltiptext">{disabledCancelCreatedNftOfferTooltip}</span>
                                         )}
                                       </span>
                                     </div>
@@ -8002,9 +7998,7 @@ export default function Account({
                                           )}
                                         </button>
                                         {!!disabledAcceptOwnedNftOfferTooltip && (
-                                          <span className="tooltiptext no-brake">
-                                            {disabledAcceptOwnedNftOfferTooltip}
-                                          </span>
+                                          <span className="tooltiptext">{disabledAcceptOwnedNftOfferTooltip}</span>
                                         )}
                                       </span>
                                     </div>

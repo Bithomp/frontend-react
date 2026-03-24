@@ -741,6 +741,15 @@ table {
 
     white-space: normal;
     pointer-events: none;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: manual;
+    line-height: 1.25;
+
+    @media (max-width: 768px) {
+      width: max-content;
+      max-width: min(140px, calc(100vw - 24px));
+    }
 
     opacity: 1;
     transition: opacity 0.7s ease;
