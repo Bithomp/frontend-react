@@ -9284,7 +9284,24 @@ export default function Account({
         }
 
         .achievement-badge :global(.tooltiptext) {
+          top: 100%;
+          bottom: auto;
           z-index: 30;
+        }
+
+        .achievement-badge :global(.tooltiptext):after {
+          top: auto;
+          bottom: 100%;
+          border-top: 0;
+          border-bottom: 6px solid rgba(28, 32, 38, 0.96);
+        }
+
+        .achievement-badge :global(.tooltiptext.right):after {
+          left: 25px;
+        }
+
+        .achievement-badge :global(.tooltiptext.left):after {
+          right: 26px;
         }
 
         .achievement-image {
