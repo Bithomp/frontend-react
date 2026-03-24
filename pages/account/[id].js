@@ -6928,25 +6928,38 @@ export default function Account({
                               <div className="card-actions" onClick={(event) => event.stopPropagation()}>
                                 {(() => {
                                   const canCancel = !!setSignRequest && offer?.Account === account?.address
+                                  const disabledCancelDexOrderTooltip = (() => {
+                                    if (canCancel) return ''
+                                    if (!setSignRequest) return 'Connect wallet to cancel this DEX order'
+                                    if (!account?.address) return 'Connect wallet to cancel this DEX order'
+                                    if (!offer?.Account) return 'Offer owner is unknown'
+                                    if (offer.Account !== account.address) return 'Only offer owner can cancel it'
+                                    return 'This DEX order cannot be canceled'
+                                  })()
                                   return (
-                                    <button
-                                      type="button"
-                                      className={`card-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
-                                      disabled={!canCancel}
-                                      onClick={() => {
-                                        if (!canCancel) return
-                                        setSignRequest({
-                                          request: {
-                                            Account: offer.Account,
-                                            TransactionType: 'OfferCancel',
-                                            OfferSequence: offer.Sequence
-                                          }
-                                        })
-                                      }}
-                                      title="Cancel"
-                                    >
-                                      <MdMoneyOff /> Cancel
-                                    </button>
+                                    <span className={disabledCancelDexOrderTooltip ? 'tooltip' : ''}>
+                                      <button
+                                        type="button"
+                                        className={`card-action-btn ${canCancel ? 'cancel' : 'disabled'}`}
+                                        disabled={!canCancel}
+                                        onClick={() => {
+                                          if (!canCancel) return
+                                          setSignRequest({
+                                            request: {
+                                              Account: offer.Account,
+                                              TransactionType: 'OfferCancel',
+                                              OfferSequence: offer.Sequence
+                                            }
+                                          })
+                                        }}
+                                        title="Cancel"
+                                      >
+                                        <MdMoneyOff /> Cancel
+                                      </button>
+                                      {!!disabledCancelDexOrderTooltip && (
+                                        <span className="tooltiptext">{disabledCancelDexOrderTooltip}</span>
+                                      )}
+                                    </span>
                                   )
                                 })()}
                               </div>
@@ -10215,10 +10228,6 @@ export default function Account({
 
         .expandable-card.expanded {
           border-color: var(--accent-link);
-        }
-
-        .dex-order-card {
-          overflow: hidden;
         }
 
         .dex-order-card .asset-main {
