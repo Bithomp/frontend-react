@@ -8723,7 +8723,7 @@ export default function Account({
         .assets-section:focus-within,
         .transactions-section:focus-within,
         .orders-section:focus-within {
-          z-index: 60;
+          z-index: 6;
         }
 
         .section-header-row {
@@ -9669,11 +9669,11 @@ export default function Account({
         .asset-item:hover {
           transform: translateY(-1px);
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          z-index: 40;
+          z-index: 5;
         }
 
         .asset-item:focus-within {
-          z-index: 40;
+          z-index: 5;
         }
 
         .get-first-native-wrap {
